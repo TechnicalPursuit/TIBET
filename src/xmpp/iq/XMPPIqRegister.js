@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqRegister}
- * @synopsis A wrapper for the IQ_REGISTER namespace'd payload element.
+ * @summary A wrapper for the IQ_REGISTER namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -37,8 +37,8 @@ TP.xmpp.IqRegister.Inst.defineMethod('handleArrival',
 function(aSignal) {
 
     /**
-     * @name handleArrival
-     * @synopsis Responds to inbound arrival of a new packet of the receiver's
+     * @method handleArrival
+     * @summary Responds to inbound arrival of a new packet of the receiver's
      *     type. For most packet types this requires no action but certain
      *     packets such as subscription requests require a response.
      * @param {TP.sig.Signal} aSignal The original inbound signal which

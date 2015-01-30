@@ -25,8 +25,8 @@ TP.tibet.sherpa.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */

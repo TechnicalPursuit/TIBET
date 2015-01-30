@@ -30,8 +30,8 @@ TP.$$pluginVersionMatcher = /(^| )(\d+)\.?(\d*)\.?([\d\.]*)/;
 TP.$$pluginVersionFunction = function(plugin, pluginEntry) {
 
     /**
-     * @name $$pluginVersionFunction
-     * @synopsis The 'standard version' of the function that retrieves the
+     * @method $$pluginVersionFunction
+     * @summary The 'standard version' of the function that retrieves the
      *     version information from the supplied plugin and populated the
      *     pluginEntry with it.
      * @param {Object} plugin The native plugin Object from the browser's
@@ -75,8 +75,8 @@ TP.definePrimitive('getPluginInfo',
 function(pluginKey) {
 
     /**
-     * @name getPluginInfo
-     * @synopsis Returns a TP.lang.Hash containing information about the plugin
+     * @method getPluginInfo
+     * @summary Returns a TP.lang.Hash containing information about the plugin
      *     matching the supplied plugin key.
      * @param {String} pluginKey The key for a particular key matching keys in
      *     the TP.PLUGIN_INFO hash.

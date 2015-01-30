@@ -10,10 +10,10 @@
 
 /**
  * @type {TP.sig.SignalCoalescer}
- * @synopsis An object whose goal is to coalesce a set of signals into a single
+ * @summary An object whose goal is to coalesce a set of signals into a single
  *     new signal. These operations form the cornerstone of using events as
  *     triggers in a Petri-net style workflow model.
- * @description When designing with events it quickly becomes necessary to
+ * @summary When designing with events it quickly becomes necessary to
  *     support ways of blending or coalescing a set of events into a new, more
  *     semantically-interesting event. Examples are points in workflow where an
  *     Or-Join or And-Join occur and a new signal defining the transition from
@@ -68,8 +68,8 @@ TP.sig.SignalCoalescer.Inst.defineMethod('init',
 function(aSignalName) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance for use. The signal name provided is
+     * @method init
+     * @summary Initializes a new instance for use. The signal name provided is
      *     the signal which will be fired when the receiver coalesces. This
      *     value defaults to the receiver's type name.
      * @param {String} aSignalName The signal type name the instance should
@@ -92,8 +92,8 @@ TP.sig.SignalCoalescer.Inst.defineMethod('addSpoiler',
 function(anOrigin, aSignal, aCount, aPolicy) {
 
     /**
-     * @name addSpoiler
-     * @synopsis Adds a spoiler observation to the receiver. Each spoiler is
+     * @method addSpoiler
+     * @summary Adds a spoiler observation to the receiver. Each spoiler is
      *     tracked by origin/signal key along with a count. The order of the
      *     spoilers may matter to certain subtypes. By default each spoiler only
      *     needs to appear once for it to reset the receiver's coalescing
@@ -144,8 +144,8 @@ TP.sig.SignalCoalescer.Inst.defineMethod('addTrigger',
 function(anOrigin, aSignal, aCount, aPolicy) {
 
     /**
-     * @name addTrigger
-     * @synopsis Adds a trigger observation to the receiver. Each trigger is
+     * @method addTrigger
+     * @summary Adds a trigger observation to the receiver. Each trigger is
      *     tracked by origin/signal key along with a count. The order of the
      *     triggers may matter to certain subtypes. By default each trigger only
      *     needs to appear once for it to contribute to the receiver's concept
@@ -196,8 +196,8 @@ TP.sig.SignalCoalescer.Inst.defineMethod('computeSignalID',
 function(anOrigin, aSignal) {
 
     /**
-     * @name computeSignalID
-     * @synopsis Returns a string computed from the two parameters provided. The
+     * @method computeSignalID
+     * @summary Returns a string computed from the two parameters provided. The
      *     resulting ID is used as a key for trigger storage.
      * @param {String} anOrigin What origin is being observed?
      * @param {String} aSignal What signal is being observed?
@@ -219,10 +219,10 @@ TP.sig.SignalCoalescer.Inst.defineMethod('handleSignal',
 function(aSignal) {
 
     /**
-     * @name handleSignal
-     * @synopsis Responds to signal notifications which drive the receiver by
+     * @method handleSignal
+     * @summary Responds to signal notifications which drive the receiver by
      *     updating the receiver's trigger observation counts.
-     * @description To support the semantics that are implied by using null, or
+     * @summary To support the semantics that are implied by using null, or
      *     TP.ANY for an origin in the observation phase this method will
      *     actually count an incoming signal both against a specific origin and
      *     against an undifferentiated origin, meaning that signals may be
@@ -286,12 +286,12 @@ TP.sig.SignalCoalescer.Inst.defineMethod('hasCoalesced',
 function(anItem) {
 
     /**
-     * @name hasCoalesced
-     * @synopsis Returns true if the receiver has reached a coalescing point. If
+     * @method hasCoalesced
+     * @summary Returns true if the receiver has reached a coalescing point. If
      *     true the handleSignal method will perform notification.
      * @param {Array} anItem A 'trigger' array. Used primarily to optimize for
      *     Or-Join scenarios.
-     * @raises SubtypeResponsibility
+     * @exception SubtypeResponsibility
      * @returns {Boolean} True if the receiver should signal it's notifier.
      */
 
@@ -304,8 +304,8 @@ TP.sig.SignalCoalescer.Inst.defineMethod('resetObservations',
 function() {
 
     /**
-     * @name resetObservations
-     * @synopsis Clears any counts of observed signals.
+     * @method resetObservations
+     * @summary Clears any counts of observed signals.
      * @returns {TP.sig.SignalCoalescer} The receiver.
      */
 
@@ -326,8 +326,8 @@ TP.sig.SignalCoalescer.Inst.defineMethod('setNotifier',
 function(aSignalName) {
 
     /**
-     * @name setNotifier
-     * @synopsis Sets the notification signal that will be sent when the
+     * @method setNotifier
+     * @summary Sets the notification signal that will be sent when the
      *     receiver coalesces.
      * @param {String} aSignalName The signal name to use.
      * @returns {TP.sig.SignalCoalescer} The receiver.
@@ -348,8 +348,8 @@ TP.sig.SignalCoalescer.Inst.defineMethod('shouldAutoReset',
 function(aFlag) {
 
     /**
-     * @name shouldAutoReset
-     * @synopsis Sets/gets the value for the auto-reset flag.
+     * @method shouldAutoReset
+     * @summary Sets/gets the value for the auto-reset flag.
      * @param {Boolean} aFlag The setting for auto-reset.
      * @returns {Boolean}
      */

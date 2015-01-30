@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqBrowse}
- * @synopsis A wrapper for the IQ_BROWSE namespace'd payload element.
+ * @summary A wrapper for the IQ_BROWSE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

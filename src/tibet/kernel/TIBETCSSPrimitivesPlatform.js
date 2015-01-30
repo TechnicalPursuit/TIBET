@@ -30,13 +30,13 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name $elementCSSFlush
-         * @synopsis Jiggers the element to flush out any CSS changes. IE should
+         * @method $elementCSSFlush
+         * @summary Jiggers the element to flush out any CSS changes. IE should
          *     do this automatically, but won't sometimes, especially for
          *     'custom' attributes.
          * @param {Element} anElement The element to flush the CSS style changes
          *     for.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         //  Just setting the className to its own value causes the flush to
@@ -49,13 +49,13 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name $elementCSSFlush
-         * @synopsis Jiggers the element to flush out any CSS changes. IE should
+         * @method $elementCSSFlush
+         * @summary Jiggers the element to flush out any CSS changes. IE should
          *     do this automatically, but won't sometimes, especially for
          *     'custom' attributes.
          * @param {Element} anElement The element to flush the CSS style changes
          *     for.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         //  For browser UIs other than 'trident', this is unnecessary.
@@ -73,8 +73,8 @@ TP.hc(
     function(anElement, propertyName) {
 
         /**
-         * @name elementClearStyleProperty
-         * @synopsis Clears the style property on the element provided.
+         * @method elementClearStyleProperty
+         * @summary Clears the style property on the element provided.
          * @param {Element} anElement The element to clear the style property
          *     on.
          * @param {String} propertyName The name of the CSS property to clear on
@@ -101,8 +101,8 @@ TP.hc(
     function(anElement, propertyName) {
 
         /**
-         * @name elementClearStyleProperty
-         * @synopsis Clears the style property on the element provided.
+         * @method elementClearStyleProperty
+         * @summary Clears the style property on the element provided.
          * @param {Element} anElement The element to clear the style property
          *     on.
          * @param {String} propertyName The name of the CSS property to clear on
@@ -125,12 +125,12 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementGetAppliedNativeStyleRules
-         * @synopsis Returns an Array of CSSRule objects that apply to the
+         * @method elementGetAppliedNativeStyleRules
+         * @summary Returns an Array of CSSRule objects that apply to the
          *     supplied element.
          * @param {Element} anElement The element to retrieve the CSS style
          *     rules for.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Array} An Array of CSSRule objects.
          */
 
@@ -205,12 +205,12 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementGetAppliedNativeStyleRules
-         * @synopsis Returns an Array of CSSRule objects that apply to the
+         * @method elementGetAppliedNativeStyleRules
+         * @summary Returns an Array of CSSRule objects that apply to the
          *     supplied element.
          * @param {Element} anElement The element to retrieve the CSS style
          *     rules for.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Array} An Array of CSSRule objects.
          */
 
@@ -240,12 +240,12 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementGetAppliedNativeStyleRules
-         * @synopsis Returns an Array of CSSRule objects that apply to the
+         * @method elementGetAppliedNativeStyleRules
+         * @summary Returns an Array of CSSRule objects that apply to the
          *     supplied element.
          * @param {Element} anElement The element to retrieve the CSS style
          *     rules for.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Array} An Array of CSSRule objects.
          */
 
@@ -303,14 +303,14 @@ TP.hc(
     function(aStyleRule) {
 
         /**
-         * @name styleRuleGetSourceInfo
-         * @synopsis Returns the 'origin' of the supplied style rule. This will
+         * @method styleRuleGetSourceInfo
+         * @summary Returns the 'origin' of the supplied style rule. This will
          *     be an Array of the source (either the String 'style element') or
          *     the href of the style sheet that the style rule belongs to and
          *     the line number of the style rule.
          * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
          *     origin of.
-         * @raises TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidParameter
          * @returns {Array} An Array of the style rule origin and its line
          *     number in that origin.
          */
@@ -385,14 +385,14 @@ TP.hc(
     function(aStyleRule) {
 
         /**
-         * @name styleRuleGetSourceInfo
-         * @synopsis Returns the 'origin' of the supplied style rule. This will
+         * @method styleRuleGetSourceInfo
+         * @summary Returns the 'origin' of the supplied style rule. This will
          *     be an Array of the source (either the String 'style element') or
          *     the href of the style sheet that the style rule belongs to and
          *     the line number of the style rule.
          * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
          *     origin of.
-         * @raises TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidParameter
          * @returns {Array} An Array of the style rule origin and its line
          *     number in that origin.
          */
@@ -432,14 +432,14 @@ TP.hc(
     function(aStyleRule) {
 
         /**
-         * @name styleRuleGetSourceInfo
-         * @synopsis Returns the 'origin' of the supplied style rule. This will
+         * @method styleRuleGetSourceInfo
+         * @summary Returns the 'origin' of the supplied style rule. This will
          *     be an Array of the source (either the String 'style element') or
          *     the href of the style sheet that the style rule belongs to and
          *     the line number of the style rule.
          * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
          *     origin of.
-         * @raises TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidParameter
          * @returns {Array} An Array of the style rule origin and its line
          *     number in that origin.
          */

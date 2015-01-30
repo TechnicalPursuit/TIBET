@@ -48,13 +48,13 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileIsDirectory
-         * @synopsis Returns true if the url provided represents a directory.
+         * @method $fileIsDirectory
+         * @summary Returns true if the url provided represents a directory.
          *     This function operates on file-based URLs only.
          * @param {String} targetUrl URL of the file to test.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI,TP.sig.UnsupportedFeature,
+         * @exception TP.sig.InvalidURI,TP.sig.UnsupportedFeature,
          *     TP.sig.URIException
          * @returns {Boolean}
          */
@@ -139,15 +139,15 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileDelete
-         * @synopsis Removes the targetUrl from the local file system, provided
+         * @method $fileDelete
+         * @summary Removes the targetUrl from the local file system, provided
          *     you have proper permissions. This method is rarely called
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
+         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
@@ -238,15 +238,15 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileDelete
-         * @synopsis Removes the targetUrl from the local file system, provided
+         * @method $fileDelete
+         * @summary Removes the targetUrl from the local file system, provided
          *     you have proper permissions. This method is rarely called
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
+         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
@@ -314,15 +314,15 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileDelete
-         * @synopsis Removes the targetUrl from the local file system, provided
+         * @method $fileDelete
+         * @summary Removes the targetUrl from the local file system, provided
          *     you have proper permissions. This method is rarely called
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
+         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
@@ -340,15 +340,15 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileDelete
-         * @synopsis Removes the targetUrl from the local file system, provided
+         * @method $fileDelete
+         * @summary Removes the targetUrl from the local file system, provided
          *     you have proper permissions. This method is rarely called
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
+         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
@@ -389,12 +389,12 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileExists
-         * @synopsis Returns true if targetUrl exists in the file system.
+         * @method $fileExists
+         * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI
+         * @exception TP.sig.InvalidURI
          * @returns {Boolean}
          */
 
@@ -434,12 +434,12 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileExists
-         * @synopsis Returns true if targetUrl exists in the file system.
+         * @method $fileExists
+         * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI
+         * @exception TP.sig.InvalidURI
          * @returns {Boolean}
          */
 
@@ -576,12 +576,12 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileExists
-         * @synopsis Returns true if targetUrl exists in the file system.
+         * @method $fileExists
+         * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI
+         * @exception TP.sig.InvalidURI
          * @returns {Boolean}
          */
 
@@ -655,12 +655,12 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileExists
-         * @synopsis Returns true if targetUrl exists in the file system.
+         * @method $fileExists
+         * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
-         * @raises TP.sig.InvalidURI
+         * @exception TP.sig.InvalidURI
          * @returns {Boolean}
          */
 
@@ -727,8 +727,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileLoad
-         * @synopsis Loads the content of targetUrl, returning data in the form
+         * @method $fileLoad
+         * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -737,7 +737,7 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting.
-         * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
+         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
@@ -883,8 +883,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileLoad
-         * @synopsis Loads the content of targetUrl, returning data in the form
+         * @method $fileLoad
+         * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -893,7 +893,7 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting.
-         * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
+         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
@@ -1052,8 +1052,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileLoad
-         * @synopsis Loads the content of targetUrl, returning data in the form
+         * @method $fileLoad
+         * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -1062,7 +1062,7 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting.
-         * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
+         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
@@ -1171,8 +1171,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileLoad
-         * @synopsis Loads the content of targetUrl, returning data in the form
+         * @method $fileLoad
+         * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -1181,7 +1181,7 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting.
-         * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
+         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
@@ -1282,8 +1282,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileSave
-         * @synopsis Saves content to the targetUrl provided using parameters
+         * @method $fileSave
+         * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -1294,7 +1294,7 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. verb String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
+         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
@@ -1488,8 +1488,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileSave
-         * @synopsis Saves content to the targetUrl provided using parameters
+         * @method $fileSave
+         * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -1500,7 +1500,7 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. verb String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
+         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
@@ -1617,8 +1617,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileSave
-         * @synopsis Saves content to the targetUrl provided using parameters
+         * @method $fileSave
+         * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -1629,7 +1629,7 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. verb String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
+         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
@@ -1647,8 +1647,8 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name $fileSave
-         * @synopsis Saves content to the targetUrl provided using parameters
+         * @method $fileSave
+         * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -1659,7 +1659,7 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. verb String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
+         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
@@ -1687,12 +1687,12 @@ TP.hc(
     function(shellUrl, aRequest) {
 
         /**
-         * @name $fileExecute
-         * @synopsis Executes a command (e.g. a file found on the current OS
+         * @method $fileExecute
+         * @summary Executes a command (e.g. a file found on the current OS
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @description The best way to think about this command is to imagine
+         * @summary The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
@@ -1720,7 +1720,7 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @raises TP.sig.InvalidURI,InvalidShell,ProcessException,
+         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
@@ -2229,12 +2229,12 @@ TP.hc(
     function(shellUrl, aRequest) {
 
         /**
-         * @name $fileExecute
-         * @synopsis Executes a command (e.g. a file found on the current OS
+         * @method $fileExecute
+         * @summary Executes a command (e.g. a file found on the current OS
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @description The best way to think about this command is to imagine
+         * @summary The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
@@ -2262,7 +2262,7 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @raises TP.sig.InvalidURI,InvalidShell,ProcessException,
+         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
@@ -2638,12 +2638,12 @@ TP.hc(
     function(shellUrl, aRequest) {
 
         /**
-         * @name $fileExecute
-         * @synopsis Executes a command (e.g. a file found on the current OS
+         * @method $fileExecute
+         * @summary Executes a command (e.g. a file found on the current OS
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @description The best way to think about this command is to imagine
+         * @summary The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
@@ -2671,7 +2671,7 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @raises TP.sig.InvalidURI,InvalidShell,ProcessException,
+         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
@@ -2690,12 +2690,12 @@ TP.hc(
     function(shellUrl, aRequest) {
 
         /**
-         * @name $fileExecute
-         * @synopsis Executes a command (e.g. a file found on the current OS
+         * @method $fileExecute
+         * @summary Executes a command (e.g. a file found on the current OS
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @description The best way to think about this command is to imagine
+         * @summary The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
@@ -2723,7 +2723,7 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @raises TP.sig.InvalidURI,InvalidShell,ProcessException,
+         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.

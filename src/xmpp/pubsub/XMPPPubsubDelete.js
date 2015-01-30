@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubDelete}
- * @synopsis A wrapper for the PubSub delete node type.
+ * @summary A wrapper for the PubSub delete node type.
  */
 
 //  ------------------------------------------------------------------------
@@ -33,8 +33,8 @@ TP.xmpp.PubsubDelete.Inst.defineMethod('setNodeID',
 function(anID) {
 
     /**
-     * @name setNodeID
-     * @synopsis Sets the node ID that the receiver is deleting.
+     * @method setNodeID
+     * @summary Sets the node ID that the receiver is deleting.
      * @param {String} anID The node ID that is being deleted.
      * @returns {TP.xmpp.PubsubDelete} The receiver.
      */

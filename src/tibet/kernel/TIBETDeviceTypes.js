@@ -53,8 +53,8 @@ TP.core.Device.Type.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name addObserver
-     * @synopsis Adds a local signal observation which is roughly like a DOM
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -169,8 +169,8 @@ TP.core.Device.Type.defineMethod('addShortcutObserver',
 function(aSignal, aHandler) {
 
     /**
-     * @name addShortcutObserver
-     * @synopsis Adds a local signal observation for a "signal path", which is
+     * @method addShortcutObserver
+     * @summary Adds a local signal observation for a "signal path", which is
      *     effectively a "gesture". Keyboard shortcuts are the primary example
      *     of signal paths. The default implementation simply returns.
      * @param {Object|Array} aSignal One or more signals to observe from the
@@ -188,8 +188,8 @@ TP.core.Device.Type.defineMethod('getDOMSignalName',
 function(normalizedEvent) {
 
     /**
-     * @name getDOMSignalName
-     * @synopsis Returns the DOM signal name for a particular event.
+     * @method getDOMSignalName
+     * @summary Returns the DOM signal name for a particular event.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      * @returns {String} The key event DOM signal name.
      */
@@ -203,9 +203,9 @@ TP.core.Device.Type.defineMethod('invokeObservers',
 function(singletonName, normalizedEvent, aSignal) {
 
     /**
-     * @name invokeObservers
-     * @synopsis Runs the event handlers for any registered observers.
-     * @description Each native event type has a singleton TIBET signal instance
+     * @method invokeObservers
+     * @summary Runs the event handlers for any registered observers.
+     * @summary Each native event type has a singleton TIBET signal instance
      *     registered with the device type. This singleton is acquired, updated,
      *     and then passed to each handler for processing. The normalizedEvent
      *     becomes the payload/native event for the signal and is thereby
@@ -231,8 +231,8 @@ TP.core.Device.Type.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name removeObserver
-     * @synopsis Removes a local signal observation which is roughly like a DOM
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -329,8 +329,8 @@ TP.core.Device.Type.defineMethod('removeShortcutObserver',
 function(aSignal, aHandler) {
 
     /**
-     * @name removeShortcutObserver
-     * @synopsis Removes a local signal observation for a "signal path", which
+     * @method removeShortcutObserver
+     * @summary Removes a local signal observation for a "signal path", which
      *     is effectively a "gesture". Keyboard shortcuts are the primary
      *     example of signal paths. The default implementation simply returns.
      * @param {Object|Array} aSignal One or more signals to observe from the
@@ -349,8 +349,8 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType,
 isCancelable, isBubbling) {
 
     /**
-     * @name signalObservers
-     * @synopsis Signals a local signal observation which is roughly like a DOM
+     * @method signalObservers
+     * @summary Signals a local signal observation which is roughly like a DOM
      *     element throwing an event. The observer is typically the handler
      *     provided to a signal() call while the signal is a signal or string
      *     which the receiver is likely to signal or is intercepting for
@@ -515,8 +515,8 @@ TP.core.Keyboard.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var name,
@@ -560,10 +560,10 @@ TP.core.Keyboard.Type.defineMethod('addShortcutObserver',
 function(aSignal, aHandler) {
 
     /**
-     * @name addShortcutObserver
-     * @synopsis Adds a local signal observation for a "signal path", which is
+     * @method addShortcutObserver
+     * @summary Adds a local signal observation for a "signal path", which is
      *     effectively a "gesture".
-     * @description Keyboard shortcuts are stored as a nested set of hashes
+     * @summary Keyboard shortcuts are stored as a nested set of hashes
      *     where each hash contains the name of the overall shortcut signal, an
      *     optional hash of shortcuts which extend the current one, and an
      *     optional array of handler objects/functions (observers).
@@ -595,8 +595,8 @@ TP.core.Keyboard.Type.defineMethod('resetEventData',
 function() {
 
     /**
-     * @name resetEventData
-     * @synopsis Resets any event data cached by the receiver. It is important
+     * @method resetEventData
+     * @summary Resets any event data cached by the receiver. It is important
      *     to call this when the GUI is flushed between page refreshes to avoid
      *     having obsolete references to old DOM structures.
      */
@@ -620,8 +620,8 @@ TP.core.Keyboard.Type.defineMethod('getShortcutData',
 function(aSignal, shouldBuild) {
 
     /**
-     * @name getShortcutData
-     * @synopsis Returns the hash used to store shortcut information for a
+     * @method getShortcutData
+     * @summary Returns the hash used to store shortcut information for a
      *     specific signal path.
      * @param {Object|Array} aSignal One or more signals to observe from the
      *     origin(s).
@@ -708,8 +708,8 @@ TP.core.Keyboard.Type.defineMethod('loadKeymap',
 function() {
 
     /**
-     * @name loadKeymap
-     * @synopsis Loads the XML keyboard map for the receiving keyboard type.
+     * @method loadKeymap
+     * @summary Loads the XML keyboard map for the receiving keyboard type.
      * @raise TP.sig.InvalidKeymap When the XML keyboard map file can't be
      *     loaded.
      */
@@ -756,8 +756,8 @@ TP.core.Keyboard.Type.defineMethod('getCurrentKeyboard',
 function() {
 
     /**
-     * @name getCurrentKeyboard
-     * @synopsis Returns the currently active keyboard instance used to perform
+     * @method getCurrentKeyboard
+     * @summary Returns the currently active keyboard instance used to perform
      *     all key-event related lookups and processing.
      * @returns {TP.core.Keyboard} The current keyboard instance.
      */
@@ -771,8 +771,8 @@ TP.core.Keyboard.Type.defineMethod('get',
 function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value for attributeName. TP.core.Keyboard subtypes
+     * @method get
+     * @summary Returns the value for attributeName. TP.core.Keyboard subtypes
      *     look first on themselves and then look to the root TP.core.Keyboard
      *     type for responses to this method.
      * @param {String} attributeName The attribute name to look up.
@@ -800,9 +800,9 @@ TP.core.Keyboard.Type.defineMethod('invokeObservers',
 function(singletonName, normalizedEvent, aSignal) {
 
     /**
-     * @name invokeObservers
-     * @synopsis Runs the event handlers for any registered observers.
-     * @description Each native event type has a singleton TIBET signal instance
+     * @method invokeObservers
+     * @summary Runs the event handlers for any registered observers.
+     * @summary Each native event type has a singleton TIBET signal instance
      *     registered with the device type. This singleton is acquired, updated,
      *     and then passed to each handler for processing. The normalizedEvent
      *     becomes the payload/native event for the signal and is thereby
@@ -1123,8 +1123,8 @@ TP.core.Keyboard.Type.defineMethod('removeShortcutObserver',
 function(aSignal, aHandler) {
 
     /**
-     * @name removeShortcutObserver
-     * @synopsis Removes a local signal observation for a "signal path", which
+     * @method removeShortcutObserver
+     * @summary Removes a local signal observation for a "signal path", which
      *     is effectively a "gesture". Keyboard shortcuts are the primary
      *     example of signal paths.
      * @param {Object|Array} aSignal One or more signals to observe from the
@@ -1149,8 +1149,8 @@ TP.core.Keyboard.Type.defineMethod('setCurrentKeyboard',
 function(aKeyboard) {
 
     /**
-     * @name setCurrentKeyboard
-     * @synopsis Defines the currently active keyboard instance used to perform
+     * @method setCurrentKeyboard
+     * @summary Defines the currently active keyboard instance used to perform
      *     all key-event related lookups and processing.
      * @param {TP.core.Keyboard} aKeyboard The keyboard instance to use for all
      *     key-event related processing.
@@ -1173,8 +1173,8 @@ TP.core.Keyboard.Type.defineMethod('$$handleKeyEvent',
 function(nativeEvent) {
 
     /**
-     * @name $$handleKeyEvent
-     * @synopsis Responds to notification of a native keyboard event. This is
+     * @method $$handleKeyEvent
+     * @summary Responds to notification of a native keyboard event. This is
      *     the primary entry point for all keyboard event handling.
      * @param {Event} nativeEvent The native event.
      */
@@ -1295,8 +1295,8 @@ TP.core.Keyboard.Type.defineMethod('$$handleKeyDown',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleKeyDown
-     * @synopsis Responds to notifications that a keyup event has occurred.
+     * @method $$handleKeyDown
+     * @summary Responds to notifications that a keyup event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -1313,8 +1313,8 @@ TP.core.Keyboard.Type.defineMethod('handleKeyDown',
 function(normalizedEvent) {
 
     /**
-     * @name handleKeyDown
-     * @synopsis A method which subtypes override to perform key handling
+     * @method handleKeyDown
+     * @summary A method which subtypes override to perform key handling
      *     specific to keydown events.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -1328,8 +1328,8 @@ TP.core.Keyboard.Type.defineMethod('$$handleKeyPress',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleKeyPress
-     * @synopsis Responds to notifications that a keyup event has occurred.
+     * @method $$handleKeyPress
+     * @summary Responds to notifications that a keyup event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -1344,8 +1344,8 @@ TP.core.Keyboard.Type.defineMethod('handleKeyPress',
 function(normalizedEvent) {
 
     /**
-     * @name handleKeyPress
-     * @synopsis A method which subtypes override to perform key handling
+     * @method handleKeyPress
+     * @summary A method which subtypes override to perform key handling
      *     specific to keypress events.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -1359,8 +1359,8 @@ TP.core.Keyboard.Type.defineMethod('$$handleKeyUp',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleKeyUp
-     * @synopsis Responds to notifications that a keyup event has occurred.
+     * @method $$handleKeyUp
+     * @summary Responds to notifications that a keyup event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -1377,8 +1377,8 @@ TP.core.Keyboard.Type.defineMethod('handleKeyUp',
 function(normalizedEvent) {
 
     /**
-     * @name handleKeyUp
-     * @synopsis A method which subtypes override to perform key handling
+     * @method handleKeyUp
+     * @summary A method which subtypes override to perform key handling
      *     specific to keyup events.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -1392,8 +1392,8 @@ TP.core.Keyboard.Type.defineMethod('$$updateModifierStates',
 function(normalizedEvent) {
 
     /**
-     * @name $$updateModifierStates
-     * @synopsis Updates the modifier status based on the supplied Event.
+     * @method $$updateModifierStates
+     * @summary Updates the modifier status based on the supplied Event.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -1441,8 +1441,8 @@ TP.core.Keyboard.Type.defineMethod('computeFullSignalName',
 function(normalizedEvent, keyName, shift) {
 
     /**
-     * @name computeFullSignalName
-     * @synopsis Returns the 'full' signal name for a particular event. This
+     * @method computeFullSignalName
+     * @summary Returns the 'full' signal name for a particular event. This
      *     method takes the key name and adds a prefix of 'Shift_', 'Alt_',
      *     'Ctrl_' or 'Meta_' and a suffix of '_Down', '_Press', '_Up', all
      *     dependent on the event's modifier states and 'action' (i.e. down,
@@ -1513,9 +1513,9 @@ TP.core.Keyboard.Type.defineMethod('getDOMSignalName',
 function(normalizedEvent) {
 
     /**
-     * @name getDOMSignalName
-     * @synopsis Returns the DOM signal name for a particular event.
-     * @description The returned signal name is based largely on the current
+     * @method getDOMSignalName
+     * @summary Returns the DOM signal name for a particular event.
+     * @summary The returned signal name is based largely on the current
      *     keyboard's mapping for the particular event information including
      *     charCode, keyCode, and modifier key states. For example, a keyup
      *     event with the shift key active and a keycode of 13 on a US ASCII 101
@@ -1533,8 +1533,8 @@ TP.core.Keyboard.Type.defineMethod('getEventVirtualKey',
 function(anEvent) {
 
     /**
-     * @name getEventVirtualKey
-     * @synopsis Returns the current keyboard's virtual key name for the code
+     * @method getEventVirtualKey
+     * @summary Returns the current keyboard's virtual key name for the code
      *     provided. The shift and special values help refine the search when a
      *     code represents a special key and/or is augmented by use of the Shift
      *     key.
@@ -1660,8 +1660,8 @@ TP.core.Keyboard.Type.defineMethod('getKeyCodeForKeyNamed',
 function(keyNameOrGlyph) {
 
     /**
-     * @name getKeyCodeForKeyNamed
-     * @synopsis Returns the current keyboard's virtual key code for the name
+     * @method getKeyCodeForKeyNamed
+     * @summary Returns the current keyboard's virtual key code for the name
      *     provided.
      * @param {String} keyNameOrGlyph The name or glyph of the key to look up.
      *     If a key name, this would be something like 'Backspace'. If a key
@@ -1738,11 +1738,11 @@ TP.core.Keyboard.Type.defineMethod('$getVirtualKeySignalName',
 function(normalizedEvent) {
 
     /**
-     * @name $getVirtualKeySignalName
-     * @synopsis Returns the 'raw key' signal name for a particular event. This
+     * @method $getVirtualKeySignalName
+     * @summary Returns the 'raw key' signal name for a particular event. This
      *     will then be prepended by 'DOM_' by the getDOMSignalName() method to
      *     generate the proper 'full' signal name.
-     * @description The returned signal name is based largely on the current
+     * @summary The returned signal name is based largely on the current
      *     keyboard's mapping for the particular event information including
      *     charCode, keyCode, and modifier key states. For example, a keyup
      *     event with the shift key active and a keycode of 13 on a US ASCII 101
@@ -1888,8 +1888,8 @@ TP.core.Keyboard.Type.defineMethod('isAltDown',
 function(aFlag) {
 
     /**
-     * @name isAltDown
-     * @synopsis Returns true if the Alt key is currently pressed.
+     * @method isAltDown
+     * @summary Returns true if the Alt key is currently pressed.
      * @param {Boolean} aFlag Set the 'isDown' state of the key to true or
      *     false.
      * @returns {Boolean} True if the Alt key is down.
@@ -1908,8 +1908,8 @@ TP.core.Keyboard.Type.defineMethod('isCtrlDown',
 function(aFlag) {
 
     /**
-     * @name isCtrlDown
-     * @synopsis Returns true if the Ctrl key is currently pressed.
+     * @method isCtrlDown
+     * @summary Returns true if the Ctrl key is currently pressed.
      * @param {Boolean} aFlag Set the 'isDown' state of the key to true or
      *     false.
      * @returns {Boolean} True if the Ctrl key is down.
@@ -1928,8 +1928,8 @@ TP.core.Keyboard.Type.defineMethod('isMetaDown',
 function(aFlag) {
 
     /**
-     * @name isMetaDown
-     * @synopsis Returns true if the Meta key is currently pressed.
+     * @method isMetaDown
+     * @summary Returns true if the Meta key is currently pressed.
      * @returns {Boolean} True if the Meta key is down.
      */
 
@@ -1946,8 +1946,8 @@ TP.core.Keyboard.Type.defineMethod('isPrintable',
 function(anEvent) {
 
     /**
-     * @name isPrintable
-     * @synopsis Returns true if the event represents a character that should be
+     * @method isPrintable
+     * @summary Returns true if the event represents a character that should be
      *     printable given the current keyboard mapping.
      * @param {Event} anEvent A native key event.
      * @returns {Boolean} True if the event's keycode/charcode should produce a
@@ -1963,8 +1963,8 @@ TP.core.Keyboard.Type.defineMethod('isShiftDown',
 function(aFlag) {
 
     /**
-     * @name isShiftDown
-     * @synopsis Returns true if the Shift key is currently pressed.
+     * @method isShiftDown
+     * @summary Returns true if the Shift key is currently pressed.
      * @param {Boolean} aFlag Set the 'isDown' state of the key to true or
      *     false.
      * @returns {Boolean} True if the Shift key is down.
@@ -1991,8 +1991,8 @@ TP.core.USAscii101Keyboard.Type.defineMethod('handleKeyDown',
 function(normalizedEvent) {
 
     /**
-     * @name handleKeyDown
-     * @synopsis Handles key down events for the TP.core.USAscii101Keyboard
+     * @method handleKeyDown
+     * @summary Handles key down events for the TP.core.USAscii101Keyboard
      *     type.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -2073,8 +2073,8 @@ TP.core.USAscii101Keyboard.Type.defineMethod('handleKeyPress',
 function(normalizedEvent) {
 
     /**
-     * @name handleKeyPress
-     * @synopsis Handles key press events for the TP.core.USAscii101Keyboard
+     * @method handleKeyPress
+     * @summary Handles key press events for the TP.core.USAscii101Keyboard
      *     type.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -2162,8 +2162,8 @@ TP.core.USAscii101Keyboard.Type.defineMethod('handleKeyUp',
 function(normalizedEvent) {
 
     /**
-     * @name handleKeyUp
-     * @synopsis Handles key up events for the TP.core.USAscii101Keyboard type.
+     * @method handleKeyUp
+     * @summary Handles key up events for the TP.core.USAscii101Keyboard type.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -2229,8 +2229,8 @@ TP.core.USAscii101Keyboard.Type.defineMethod('isPrintable',
 function(anEvent) {
 
     /**
-     * @name isPrintable
-     * @synopsis Returns true if the event represents a character that should be
+     * @method isPrintable
+     * @summary Returns true if the event represents a character that should be
      *     printable given the current keyboard mapping.
      * @param {Event} anEvent A native key event.
      * @returns {Boolean} True if the event's keycode/charcode should produce a
@@ -2447,8 +2447,8 @@ TP.core.Mouse.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     //  construct a template instance for signals we care about
@@ -2502,8 +2502,8 @@ TP.core.Mouse.Type.defineMethod('resetEventData',
 function() {
 
     /**
-     * @name resetEventData
-     * @synopsis Resets any event data cached by the receiver. It is important
+     * @method resetEventData
+     * @summary Resets any event data cached by the receiver. It is important
      *     to call this when the GUI is flushed between page refreshes to avoid
      *     having obsolete references to old DOM structures.
      */
@@ -2554,9 +2554,9 @@ TP.core.Mouse.Type.defineMethod('invokeObservers',
 function(singletonName, normalizedEvent, aSignal) {
 
     /**
-     * @name invokeObservers
-     * @synopsis Runs the event handlers for any registered observers.
-     * @description Each native event type has a singleton TIBET signal instance
+     * @method invokeObservers
+     * @summary Runs the event handlers for any registered observers.
+     * @summary Each native event type has a singleton TIBET signal instance
      *     registered with the device type. This singleton is acquired, updated,
      *     and then passed to each handler for processing. The normalizedEvent
      *     becomes the payload/native event for the signal and is thereby
@@ -2718,8 +2718,8 @@ TP.core.Mouse.Type.defineMethod('$$handleClick',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleClick
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleClick
+     * @summary Responds to notifications from the native event system that a
      *     click event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -2802,8 +2802,8 @@ TP.core.Mouse.Type.defineMethod('$$handleContextMenu',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleContextMenu
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleContextMenu
+     * @summary Responds to notifications from the native event system that a
      *     context menu event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -2830,8 +2830,8 @@ TP.core.Mouse.Type.defineMethod('$$handleDblClick',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleDblClick
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleDblClick
+     * @summary Responds to notifications from the native event system that a
      *     dblclick event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -2854,8 +2854,8 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseEvent',
 function(nativeEvent) {
 
     /**
-     * @name handleMouseEvent
-     * @synopsis Responds to notification of a native mouse event.
+     * @method handleMouseEvent
+     * @summary Responds to notification of a native mouse event.
      * @param {Event} nativeEvent The native event.
      */
 
@@ -2969,8 +2969,8 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseDown',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleMouseDown
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleMouseDown
+     * @summary Responds to notifications from the native event system that a
      *     mouse down event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -2991,8 +2991,8 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseMove',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleMouseMove
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleMouseMove
+     * @summary Responds to notifications from the native event system that a
      *     mouse move event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -3033,8 +3033,8 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseWheel',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleMouseWheel
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleMouseWheel
+     * @summary Responds to notifications from the native event system that a
      *     mouse wheel event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -3050,8 +3050,8 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseUp',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleMouseUp
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleMouseUp
+     * @summary Responds to notifications from the native event system that a
      *     mouse up event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -3090,8 +3090,8 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseOver',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleMouseOver
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleMouseOver
+     * @summary Responds to notifications from the native event system that a
      *     mouse over event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -3148,8 +3148,8 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseOut',
 function(normalizedEvent) {
 
     /**
-     * @name $$handleMouseOut
-     * @synopsis Responds to notifications from the native event system that a
+     * @method $$handleMouseOut
+     * @summary Responds to notifications from the native event system that a
      *     mouse over event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
@@ -3189,8 +3189,8 @@ TP.core.Mouse.Type.defineMethod('$$isDragging',
 function(normalizedEvent) {
 
     /**
-     * @name $$isDragging
-     * @synopsis Returns true if the mouse is currently in a 'dragging' mode.
+     * @method $$isDragging
+     * @summary Returns true if the mouse is currently in a 'dragging' mode.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      * @returns {Boolean} True if dragging, false otherwise.
      */
@@ -3274,8 +3274,8 @@ TP.core.Mouse.Type.defineMethod('$$updateButtonStates',
 function(normalizedEvent) {
 
     /**
-     * @name $$updateButtonStates
-     * @synopsis Updates the button status based on the supplied Event.
+     * @method $$updateButtonStates
+     * @summary Updates the button status based on the supplied Event.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 

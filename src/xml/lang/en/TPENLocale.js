@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.ENLocale}
- * @synopsis TP.core.ENLocale provides support for the English language,
+ * @summary TP.core.ENLocale provides support for the English language,
  *     regardless of any specific country. This is the default locale used when
  *     no other locale is specified and the user's language and country codes
  *     doesn't resolve to an alternative locale.

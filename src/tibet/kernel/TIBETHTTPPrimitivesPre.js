@@ -19,8 +19,8 @@ TP.definePrimitive('httpCreate',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpCreate
-     * @synopsis Returns a platform-specific XMLHttpRequest object for use.
+     * @method httpCreate
+     * @summary Returns a platform-specific XMLHttpRequest object for use.
      * @param {String} targetUrl The request's target URL.
      * @returns {XMLHttpRequest}
      */
@@ -63,9 +63,9 @@ TP.definePrimitive('httpDidSucceed',
 function(httpObj) {
 
     /**
-     * @name httpDidSucceed
-     * @synopsis Returns true if the request is done and was successful.
-     * @description In essence this simply tests the status code to see if it is
+     * @method httpDidSucceed
+     * @summary Returns true if the request is done and was successful.
+     * @summary In essence this simply tests the status code to see if it is
      *     in the range of 200 to 207. Normally success is 200, but for
      *     operations like WebDAV MkCol, Lock, etc. we may receive other 2xx
      *     codes which signify success. A status code of 304 (Not-Modified) is
@@ -118,10 +118,10 @@ TP.definePrimitive('httpDidRedirect',
 function(httpObj) {
 
     /**
-     * @name httpDidRedirect
-     * @synopsis Returns true if the request provided has a status code
+     * @method httpDidRedirect
+     * @summary Returns true if the request provided has a status code
      *     indicating a redirect.
-     * @description TIBET considers all 300-series codes other than a 304 (Not
+     * @summary TIBET considers all 300-series codes other than a 304 (Not
      *     Modified) to be valid redirection indicators. We avoid 304 in
      *     particular so we can support HTTP Validation via ETag headers. The
      *     300 series codes are:
@@ -163,14 +163,14 @@ TP.definePrimitive('httpEncode',
 function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
 
     /**
-     * @name httpEncode
-     * @synopsis Provides URI and data encoding support for commonly used MIME
+     * @method httpEncode
+     * @summary Provides URI and data encoding support for commonly used MIME
      *     types. The data is returned, either ready to be appended to the
      *     targetUrl, or ready for use as content for a POST, PUT, or similar
      *     operation. NOTE that if the data is a string already, or is
      *     null/undefined no new content is created and the data is returned as
      *     is.
-     * @description Encoding of data can be performed a number of ways but this
+     * @summary Encoding of data can be performed a number of ways but this
      *     method handles the most common formats related to content types
      *     typically used to communicate with web servers and web services.
      *     Supported MIME types include:
@@ -668,8 +668,8 @@ TP.definePrimitive('httpEncodeRequestBody',
 function(aRequest) {
 
     /**
-     * @name httpEncodeRequestBody
-     * @synopsis Encodes the request body for transmission. Processing in this
+     * @method httpEncodeRequestBody
+     * @summary Encodes the request body for transmission. Processing in this
      *     method makes use of keys in the request to drive a call to the
      *     TP.httpEncode() primitive. If you don't want this processing to occur
      *     you can put a key of 'noencode' with a value of true in the request.
@@ -715,11 +715,11 @@ TP.definePrimitive('httpError',
 function(targetUrl, aSignal, aRequest) {
 
     /**
-     * @name httpError
-     * @synopsis Low-level error handler for httpCall processing. This function
+     * @method httpError
+     * @summary Low-level error handler for httpCall processing. This function
      *     will cause both the IO log and Error log to be updated to reflect the
      *     error condition.
-     * @description aRequest could contain 1 or more of the following keys:
+     * @summary aRequest could contain 1 or more of the following keys:
      *
      *     'uri' - the targetUrl 'uriparams' - URI query parameters 'headers' -
      *     call headers 'verb' - the command verb 'body' - string content 'xhr'
@@ -732,7 +732,7 @@ function(targetUrl, aSignal, aRequest) {
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
      *     by this call.
      * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
-     * @raises HTTPException
+     * @exception HTTPException
      * @throws Error Throws an Error containing aString.
      */
 
@@ -776,8 +776,8 @@ TP.definePrimitive('httpGetDefaultHeaders',
 function() {
 
     /**
-     * @name httpGetDefaultHeaders
-     * @synopsis Builds and returns a set of default headers for a web call.
+     * @method httpGetDefaultHeaders
+     * @summary Builds and returns a set of default headers for a web call.
      * @returns {TP.lang.Hash} A hash of default headers which can be used for a
      *     standard web call.
      */
@@ -803,10 +803,10 @@ TP.definePrimitive('httpSetHeaders',
 function(targetUrl, aRequest, httpObj) {
 
     /**
-     * @name httpSetHeaders
-     * @synopsis Sets the HTTP headers on httpObj for the URL, call type (HTTP
+     * @method httpSetHeaders
+     * @summary Sets the HTTP headers on httpObj for the URL, call type (HTTP
      *     Verb), and header collection provided.
-     * @description TIBET manages certain headers by default, in particular
+     * @summary TIBET manages certain headers by default, in particular
      *     Cache-control and Pragma headers that help ensure that requests for
      *     data get current data whenever possible. You can override this by
      *     simply providing those keys in the header collection to tell TIBET
@@ -956,8 +956,8 @@ TP.definePrimitive('$httpTimeout',
 function(targetUrl, aRequest, httpObj) {
 
     /**
-     * @name $httpTimeout
-     * @synopsis Notifies the proper callback handlers and provides common
+     * @method $httpTimeout
+     * @summary Notifies the proper callback handlers and provides common
      *     signaling upon timeout of an HTTP request. This method is invoked
      *     automatically by the TP.httpCall() method when an asynchronous
      *     request times out.
@@ -1025,8 +1025,8 @@ TP.definePrimitive('$httpWrapup',
 function(targetUrl, aRequest, httpObj) {
 
     /**
-     * @name $httpWrapup
-     * @synopsis Notifies the proper callback handlers and provides common
+     * @method $httpWrapup
+     * @summary Notifies the proper callback handlers and provides common
      *     signaling upon completion of an HTTP request. Note that both
      *     synchronous and asynchronous requests will invoke this on completion
      *     of the request.

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.gYearMonth}
- * @synopsis An XML Schema gYearMonth string in the form [-]YYYY-MM followed by
+ * @summary An XML Schema gYearMonth string in the form [-]YYYY-MM followed by
  *     an optional time zone specification.
  */
 
@@ -41,8 +41,8 @@ TP.xs.gYearMonth.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a valid year/month
+     * @method validate
+     * @summary Returns true if the object provided is a valid year/month
      *     specification in XML Schema format.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

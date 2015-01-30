@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.hexBinary}
- * @synopsis A hexBinary string, a string containing a Hex representation of a
+ * @summary A hexBinary string, a string containing a Hex representation of a
  *     binary value.
  */
 
@@ -33,8 +33,8 @@ TP.xs.hexBinary.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided contains a string matching
+     * @method validate
+     * @summary Returns true if the object provided contains a string matching
      *     the restricted character set of a hexBinary encoded string.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

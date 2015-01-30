@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqRPC}
- * @synopsis A wrapper for the IQ_RPC namespace'd payload element.
+ * @summary A wrapper for the IQ_RPC namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

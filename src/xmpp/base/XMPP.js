@@ -10,7 +10,7 @@
 
 /**
  * @type {XMPP}
- * @synopsis A top-level type containing data specific to the overall XMPP
+ * @summary A top-level type containing data specific to the overall XMPP
  *     protocol such as namespaces, node descriptions, etc. This type is used
  *     primarily as a lookup point. Note that several global constants specific
  *     to the XMPP protocol are defined here.
@@ -187,8 +187,8 @@ TP.xmpp.XMLNS.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var xmppInfo,
@@ -333,8 +333,8 @@ TP.xmpp.XMLNS.Type.defineMethod('defineStanzaType',
 function(tagType, aType) {
 
     /**
-     * @name defineStanzaType
-     * @synopsis Defines the type for a particular stanza type attribute value.
+     * @method defineStanzaType
+     * @summary Defines the type for a particular stanza type attribute value.
      *     This mapping is used when attempting to construct stanzas based
      *     purely on type strings such as 'get' or 'available'.
      * @param {String} tagType The tag type for the stanza type.
@@ -353,8 +353,8 @@ TP.xmpp.XMLNS.Type.defineMethod('defineNodeType',
 function(aTagName, aType, aNamespace) {
 
     /**
-     * @name defineNodeType
-     * @synopsis Defines a particular node type to use when creating new
+     * @method defineNodeType
+     * @summary Defines a particular node type to use when creating new
      *     wrappers for primitive nodes. Typically used by the
      *     TP.xmpp.Node.getConcreteType() call to determine which type of
      *     instance to construct.
@@ -363,7 +363,7 @@ function(aTagName, aType, aNamespace) {
      *     object to map.
      * @param {String} aNamespace The namespace to qualify the tag name by.
      *     Default is TP.xmpp.XMLNS.CLIENT.
-     * @raises TP.sig.InvalidType
+     * @exception TP.sig.InvalidType
      */
 
     var nodeTypeNamespace,
@@ -396,8 +396,8 @@ TP.xmpp.XMLNS.Type.defineMethod('getErrorString',
 function(aCode) {
 
     /**
-     * @name getErrorString
-     * @synopsis Returns the common error string for the code provided.
+     * @method getErrorString
+     * @summary Returns the common error string for the code provided.
      * @param {Number} aCode The numeric error code to look up.
      * @returns {String}
      */
@@ -415,8 +415,8 @@ TP.xmpp.XMLNS.Type.defineMethod('getStanzaType',
 function(tagType) {
 
     /**
-     * @name getStanzaType
-     * @synopsis Returns the stanza type for the tag type attribute value
+     * @method getStanzaType
+     * @summary Returns the stanza type for the tag type attribute value
      *     provided. This is typically a string such as 'get', 'set',
      *     'available', etc.
      * @param {String} tagType The tag type for the stanza type.
@@ -432,8 +432,8 @@ TP.xmpp.XMLNS.Type.defineMethod('getNodeType',
 function(aTagName, aNamespace) {
 
     /**
-     * @name getNodeType
-     * @synopsis Returns the XMPP node type used for the specified tag/namespace
+     * @method getNodeType
+     * @summary Returns the XMPP node type used for the specified tag/namespace
      *     pair.
      * @param {String} aTagName The tag name to be looked up.
      * @param {String} aNamespace The namespace to qualify the tag name by.

@@ -45,8 +45,8 @@ TP.runConditionalFunction(
         function() {
 
             /**
-             * @name $$atobInit
-             * @synopsis Initializes global data structures to support the
+             * @method $$atobInit
+             * @summary Initializes global data structures to support the
              *     TP.atob() function implementation.
              */
 
@@ -78,8 +78,8 @@ TP.runConditionalFunction(
         function() {
 
             /**
-             * @name $$btoaInit
-             * @synopsis Initializes global data structures to support the
+             * @method $$btoaInit
+             * @summary Initializes global data structures to support the
              *     TP.btoa() function implementation.
              */
 
@@ -108,8 +108,8 @@ TP.definePrimitive('atob',
     function(aString) {
 
         /**
-         * @name atob
-         * @synopsis An implementation of the atob function found in Gecko which
+         * @method atob
+         * @summary An implementation of the atob function found in Gecko which
          *     takes a Base64-encoded ascii string and decodes it to binary
          *     form.
          * @param {String} aString The string to convert.
@@ -177,8 +177,8 @@ TP.definePrimitive('atob',
     function(aString) {
 
         /**
-         * @name atob
-         * @synopsis An implementation of the atob function found in Gecko which
+         * @method atob
+         * @summary An implementation of the atob function found in Gecko which
          *     takes a Base64-encoded ascii string and decodes it to binary
          *     form.
          * @param {String} aString The string to convert.
@@ -204,8 +204,8 @@ TP.definePrimitive('btoa',
     function(anObject) {
 
         /**
-         * @name btoa
-         * @synopsis An implementation of the btoa function found in Mozilla
+         * @method btoa
+         * @summary An implementation of the btoa function found in Mozilla
          *     which converts an object to a Base64-encoded string
          *     representation.
          * @param {Object} anObject The Object to convert. The string
@@ -267,8 +267,8 @@ TP.definePrimitive('btoa',
     function(anObject) {
 
         /**
-         * @name btoa
-         * @synopsis An implementation of the btoa function found in Mozilla
+         * @method btoa
+         * @summary An implementation of the btoa function found in Mozilla
          *     which converts an object to a Base64-encoded string
          *     representation.
          * @param {Object} anObject The Object to convert. The string
@@ -287,8 +287,8 @@ TP.definePrimitive('utf82unicode',
 function(utf8) {
 
     /**
-     * @name TP.utf82unicode
-     * @synopsis Decode UTF-8 argument into Unicode string return value.
+     * @method TP.utf82unicode
+     * @summary Decode UTF-8 argument into Unicode string return value.
      * @param {String} utf8 A UTF-8 encoded string to translate.
      * @returns {String} The Unicode representation of utf8.
      */
@@ -333,9 +333,9 @@ TP.definePrimitive('utf8decode',
 function(str) {
 
     /**
-     * @name TP.utf8decode
-     * @synopsis Decode a string encoded with TP.utf8encode above.
-     * @description If the string begins with the sentinel character 0x9D
+     * @method TP.utf8decode
+     * @summary Decode a string encoded with TP.utf8encode above.
+     * @summary If the string begins with the sentinel character 0x9D
      *     (OPERATING SYSTEM COMMAND), then we decode the balance as a UTF-8
      *     stream. Otherwise, the string is output unchanged, as it's guaranteed
      *     to contain only 8 bit characters excluding 0x9D.
@@ -356,10 +356,10 @@ TP.definePrimitive('utf8encode',
 function(str) {
 
     /**
-     * @name TP.utf8encode
-     * @synopsis Encode string as UTF8 only if it contains a character of 0x9D
+     * @method TP.utf8encode
+     * @summary Encode string as UTF8 only if it contains a character of 0x9D
      *     (Unicode OPERATING SYSTEM COMMAND) or a character greater than 0xFF.
-     * @description This permits all strings consisting exclusively of 8 bit
+     * @summary This permits all strings consisting exclusively of 8 bit
      *     graphic characters to be encoded as themselves. We choose 0x9D as the
      *     sentinel character as opposed to one of the more logical PRIVATE USE
      *     characters because 0x9D is not overloaded by the regrettable
@@ -398,8 +398,8 @@ TP.definePrimitive('unicode2utf8',
 function(str) {
 
     /**
-     * @name TP.unicode2utf8
-     * @synopsis Encode Unicode argument string as UTF-8 return value
+     * @method TP.unicode2utf8
+     * @summary Encode Unicode argument string as UTF-8 return value
      * @param {String} str A Unicode string to encode.
      * @returns {String} The UTF-8 representation of str.
      */
@@ -441,8 +441,8 @@ TP.definePrimitive('stringFindDelimiterIndex',
 function(aStr, startDelim, endDelim, startPos) {
 
     /**
-     * @name TP.stringFindDelimiterIndex
-     * @synopsis Finds the ending delimiter that matches (positionally) the
+     * @method TP.stringFindDelimiterIndex
+     * @summary Finds the ending delimiter that matches (positionally) the
      *     start delimiter. If further start and end delimiters are nested, this
      *     routine will keep searching for the matching end delimiter.
      * @param {String} aStr The string to search.
@@ -540,11 +540,11 @@ TP.definePrimitive('stringMatchRecursive',
 function(aString, left, right, flags) {
 
     /**
-     * @name TP.stringMatchRecursive
-     * @synopsis Makes recursive matches within the supplied String, using the
+     * @method TP.stringMatchRecursive
+     * @summary Makes recursive matches within the supplied String, using the
      *     'left' and 'right' RegExps. If the 'flags' parameter is supplied, all
      *     matches are returned, otherwise only the first one is.
-     * @description This method was adapted from Steven Levithan's
+     * @summary This method was adapted from Steven Levithan's
      *     'matchRecursiveRegExp' routine. Copyright 2007 Steven Levithan, MIT
      *     license.
      * @param {String} aString The string to match recursively on.
@@ -603,8 +603,8 @@ TP.definePrimitive('stringTokenizeUsingDelimiters',
 function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
 
     /**
-     * @name TP.stringTokenizeUsingDelimiters
-     * @synopsis Tokenizes chunks of Strings between the supplied start and end
+     * @method TP.stringTokenizeUsingDelimiters
+     * @summary Tokenizes chunks of Strings between the supplied start and end
      *     delimiters, places those chunks under numeric keys in the supplied
      *     expression Array and returns the tokenized String.
      * @param {String} aStr The string to tokenize.
@@ -689,8 +689,8 @@ TP.definePrimitive('stringUntokenizeUsingDelimiters',
 function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
 
     /**
-     * @name TP.stringUntokenizeUsingDelimiters
-     * @synopsis Untokenizes chunks of Strings that were tokenized by the
+     * @method TP.stringUntokenizeUsingDelimiters
+     * @summary Untokenizes chunks of Strings that were tokenized by the
      *     TP.stringTokenizeUsingDelimiters() method above.
      * @param {String} aStr The string to untokenize.
      * @param {String} startDelim The start delimiter.

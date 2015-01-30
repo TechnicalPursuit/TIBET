@@ -23,8 +23,8 @@ TP.definePrimitive('$$xpathResolverFunction',
 function(aPrefix) {
 
     /**
-     * @name $$xpathResolverFunction
-     * @synopsis Resolves the supplied prefix into a matching namespace URI.
+     * @method $$xpathResolverFunction
+     * @summary Resolves the supplied prefix into a matching namespace URI.
      * @param {String} aPrefix The prefix to use to look up a namespace URI.
      * @returns {String} The namespace URI that matches the supplied prefix.
      */
@@ -47,8 +47,8 @@ TP.definePrimitive('getQNameRegex',
 function(aName) {
 
     /**
-     * @name getQNameRegex
-     * @synopsis Returns a RegExp built to match a tag or attribute name with
+     * @method getQNameRegex
+     * @summary Returns a RegExp built to match a tag or attribute name with
      *     optional wildcarding for prefixes or names. For example, a name of
      *     'xf:*' will produce a regular expression that will find all
      *     tag/attribute names with an xf prefix. This function is normally used
@@ -103,8 +103,8 @@ TP.definePrimitive('documentCreateFragment',
 function(aDocument) {
 
     /**
-     * @name documentCreateFragment
-     * @synopsis Creates and returns a new document fragment for the document
+     * @method documentCreateFragment
+     * @summary Creates and returns a new document fragment for the document
      *     provided, or the document of the code frame. You should provide the
      *     document that you will append/insert the fragment into to avoid
      *     incorrect document DOM errors.
@@ -135,9 +135,9 @@ TP.definePrimitive('documentGetDoctypeInfo',
 function(aDocument) {
 
     /**
-     * @name documentGetDoctypeInfo
-     * @synopsis Returns the Document Type info for the supplied document.
-     * @description This function returns one of two values, depending on the
+     * @method documentGetDoctypeInfo
+     * @summary Returns the Document Type info for the supplied document.
+     * @summary This function returns one of two values, depending on the
      *     browser it is running in and whether or not the application author
      *     has placed a document type declaration at the top of the document. 1)
      *     If the document has a document type declaration and that information
@@ -198,9 +198,9 @@ TP.definePrimitive('documentGetMIMEType',
 function(aDocument) {
 
     /**
-     * @name documentGetMIMEType
-     * @synopsis Returns the MIME type for the supplied document.
-     * @description This function returns one of two values, depending on the
+     * @method documentGetMIMEType
+     * @summary Returns the MIME type for the supplied document.
+     * @summary This function returns one of two values, depending on the
      *     browser it is running in and whether or not the application author
      *     has placed a 'meta' element that has a 'Content-Type' attribute
      *     defined in it. 1) If the document has a 'meta' element that has a
@@ -270,12 +270,12 @@ TP.definePrimitive('nodeAddDefaultXMLNS',
 function(aNode, namespaceURI) {
 
     /**
-     * @name nodeAddDefaultXMLNS
-     * @synopsis Sets the default namespace for the supplied Node (which needs
+     * @method nodeAddDefaultXMLNS
+     * @summary Sets the default namespace for the supplied Node (which needs
      *     to be a Document or Element) *and returns a new Node* (since it is
      *     impossible to actually set the default namespace on an existing
      *     Element).
-     * @description If the supplied Node already has a default namespace, this
+     * @summary If the supplied Node already has a default namespace, this
      *     method will *not* reset it.
      * @param {Node} aNode The Node to add the default namespace to.
      * @returns {Node} A new Node (Document or Element depending on what was

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqGet}
- * @synopsis An Iq 'type="get"' wrapper.
+ * @summary An Iq 'type="get"' wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -30,8 +30,8 @@ TP.xmpp.IqGet.Inst.defineMethod('expectsResponse',
 function() {
 
     /**
-     * @name expectsResponse
-     * @synopsis A combined setter/getter for the 'response expected' flag. This
+     * @method expectsResponse
+     * @summary A combined setter/getter for the 'response expected' flag. This
      *     flag defines whether the receiver will attempt to observe its message
      *     ID for result signals.
      * @param {Boolean} aFlag The new value for the flag, if used as a setter.

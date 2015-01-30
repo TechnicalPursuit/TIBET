@@ -233,7 +233,7 @@ Cmd.prototype.execute = function() {
  * default implementation does nothing but subtypes can leverage this method
  * to ensure the command line meets their specific requirements.
  * @param {Array.<String>} arglist The argument list to finalize.
- * @return {Array.<String>} The finalized argument list.
+ * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizePhantomArglist = function(arglist) {
     return arglist;
@@ -244,7 +244,7 @@ Cmd.prototype.finalizePhantomArglist = function(arglist) {
  * Returns an array of arguments to be passed to a spawn() operation used to
  * invoke phantomjs. Subtypes can override this to default their behavior in
  * different ways.
- * @return {Array.<String>}
+ * @returns {Array.<String>}
  */
 Cmd.prototype.getPhantomArglist = function() {
 
@@ -301,7 +301,7 @@ Cmd.prototype.getPhantomArglist = function() {
 /**
  * Computes and returns the proper profile to boot in support of the TSH.
  * Profiles can vary based on project location (as can the URL).
- * @return {String} The profile to boot.
+ * @returns {String} The profile to boot.
  */
 Cmd.prototype.getProfile = function() {
 
@@ -323,7 +323,7 @@ Cmd.prototype.getProfile = function() {
 
 /**
  * Computes and returns the TIBET Shell script command line to be run.
- * @return {String} The TIBET Shell script command to execute.
+ * @returns {String} The TIBET Shell script command to execute.
  */
 Cmd.prototype.getScript = function() {
 
@@ -344,7 +344,7 @@ Cmd.prototype.getScript = function() {
 /**
  * Verify any command prerequisites are in place. In this case phantomjs must be
  * a binary we can locate.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.prereqs = function() {
 

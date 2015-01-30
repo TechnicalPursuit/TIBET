@@ -5,7 +5,7 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @fileoverview Bootstrap unit tests for the 'tibet' command line.
+ * @overview Bootstrap unit tests for the 'tibet' command line.
  *     The tibet command has its own 'test' option so the purpose of the
  *     mocha-based * tests is to ensure that command is operating correctly.
  *     The rest of the tests run within the context of TIBET itself.

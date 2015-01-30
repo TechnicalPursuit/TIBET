@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.GoogleResponse}
- * @synopsis A subtype of TP.sig.HTTPResponse that knows how to handle responses
+ * @summary A subtype of TP.sig.HTTPResponse that knows how to handle responses
  *     from generic Google servers. Usually, subclasses of this type are created
  *     to perform more specific tasks, but one notable exception is that
  *     instances of this type will act as responses for TP.sig.GoogleRequests

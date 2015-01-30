@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.RESTRequest}
- * @synopsis Simple REST request type with minimal encoding/serialization.
+ * @summary Simple REST request type with minimal encoding/serialization.
  */
 
 //  ------------------------------------------------------------------------

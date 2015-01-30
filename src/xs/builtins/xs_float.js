@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.float}
- * @synopsis An IEEE-754 float value (a 32-bit single precision value).
+ * @summary An IEEE-754 float value (a 32-bit single precision value).
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.float.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided meets the criteria for a
+     * @method validate
+     * @summary Returns true if the object provided meets the criteria for a
      *     valid TP.xs.float, a number defined in optional scientific notation
      *     representing a 32-bit floating point number.
      * @param {String} anObject The object to validate.

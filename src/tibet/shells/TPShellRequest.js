@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.ShellRequest}
- * @synopsis The primary type used to make requests of the shell. These requests
+ * @summary The primary type used to make requests of the shell. These requests
  *     can be made with or without a console to get shell processing to occur.
  *     This allows any object in the system to leverage the processing power of
  *     the shell without requiring a console UI.
@@ -39,8 +39,8 @@ TP.sig.ShellRequest.Type.defineMethod('construct',
 function(aPayload) {
 
     /**
-     * @name construct
-     * @synopsis Constructs a new instance of the receiver, ensuring it is
+     * @method construct
+     * @summary Constructs a new instance of the receiver, ensuring it is
      *     properly configured for use.
      * @param {String|TP.lang.Hash|TP.sig.Request} aPayload A string, hash, or
      *     other request whose value(s) will populate this new request.
@@ -77,8 +77,8 @@ TP.sig.ShellRequest.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. The default is true for most signals, but this type of
      *     signal checks the 'shouldLogTSHSignals' TIBET configuration flags to
      *     see if it can currently be logged.
@@ -119,8 +119,8 @@ TP.sig.ShellRequest.Inst.defineMethod('cancel',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancel
-     * @synopsis Tells the receiver to cancel, meaning it is being rescinded by
+     * @method cancel
+     * @summary Tells the receiver to cancel, meaning it is being rescinded by
      *     the user or calling process. If the receiver has specific behavior to
      *     implement it should override the cancelJob() method invoked as part
      *     of this method's operation.
@@ -141,8 +141,8 @@ TP.sig.ShellRequest.Inst.defineMethod('complete',
 function(aResult) {
 
     /**
-     * @name complete
-     * @synopsis Tells the receiver to complete, meaning the receiver should do
+     * @method complete
+     * @summary Tells the receiver to complete, meaning the receiver should do
      *     whatever finalization is necessary to reach the TP.SUCCEEDED state.
      *     If the receiver has specific behavior to implement it should override
      *     the completeJob() method invoked as part of this method's operation.
@@ -162,8 +162,8 @@ TP.sig.ShellRequest.Inst.defineMethod('fail',
 function(aFaultString, aFaultCode, anException) {
 
     /**
-     * @name fail
-     * @synopsis Tells the receiver to fail, meaning it failed due to some form
+     * @method fail
+     * @summary Tells the receiver to fail, meaning it failed due to some form
      *     of exception. If the receiver has specific behavior to implement it
      *     should override the failJob() method invoked as part of this method's
      *     operation.
@@ -194,8 +194,8 @@ TP.sig.ShellRequest.Inst.defineMethod('getEvaltime',
 function() {
 
     /**
-     * @name getEvaltime
-     * @synopsis Returns the amount of time in milliseconds that 'eval'
+     * @method getEvaltime
+     * @summary Returns the amount of time in milliseconds that 'eval'
      *     processing occurred during request processing.
      * @returns {Number}
      */
@@ -209,8 +209,8 @@ TP.sig.ShellRequest.Inst.defineMethod('getExectime',
 function() {
 
     /**
-     * @name getExectime
-     * @synopsis Returns the amount of time in milliseconds that the entire
+     * @method getExectime
+     * @summary Returns the amount of time in milliseconds that the entire
      *     request processing took.
      * @returns {Number}
      */
@@ -224,7 +224,7 @@ TP.sig.ShellRequest.Inst.defineMethod('getOriginalCmdText',
 function() {
 
     /**
-     * @name getOriginalCmdText
+     * @method getOriginalCmdText
      * @returns {String}
      * @abstract
      */
@@ -254,8 +254,8 @@ TP.sig.ShellRequest.Inst.defineMethod('getTagtime',
 function() {
 
     /**
-     * @name getTagtime
-     * @synopsis Returns the amount of time in milliseconds that tag-specific or
+     * @method getTagtime
+     * @summary Returns the amount of time in milliseconds that tag-specific or
      *     built-in processing occurred during request processing.
      * @returns {Number}
      */
@@ -269,8 +269,8 @@ TP.sig.ShellRequest.Inst.defineMethod('getMessageType',
 function() {
 
     /**
-     * @name getMessageType
-     * @synopsis Returns the message type, one of a number of values which map
+     * @method getMessageType
+     * @summary Returns the message type, one of a number of values which map
      *     directly to CSS entries and node templates used to provided
      *     theme-able output.
      * @returns {String}
@@ -291,8 +291,8 @@ TP.sig.ShellRequest.Inst.defineMethod('setMessageType',
 function(aMessageType) {
 
     /**
-     * @name setMessageType
-     * @synopsis Sets the receiver's message type, which provides information to
+     * @method setMessageType
+     * @summary Sets the receiver's message type, which provides information to
      *     the responder on the nature of the request.
      * @param {String} aMessageType The message type. Typically a string such as
      *     message, help, success, error, etc.
@@ -308,8 +308,8 @@ TP.sig.ShellRequest.Inst.defineMethod('stderr',
 function(output, request) {
 
     /**
-     * @name stderr
-     * @synopsis Standard function for writing error output during shell
+     * @method stderr
+     * @summary Standard function for writing error output during shell
      *     execution.
      * @param {Object} output The object to write to stderr.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional
@@ -338,8 +338,8 @@ TP.sig.ShellRequest.Inst.defineMethod('stdin',
 function() {
 
     /**
-     * @name stdin
-     * @synopsis Provides a common function for reading from "standard input"
+     * @method stdin
+     * @summary Provides a common function for reading from "standard input"
      *     during shell execution. Standard input is always provided as an array
      *     of 0 to N items provided by the various stdout, stderr, and input
      *     redirection calls related to a request.
@@ -359,8 +359,8 @@ TP.sig.ShellRequest.Inst.defineMethod('stdout',
 function(output, request) {
 
     /**
-     * @name stdout
-     * @synopsis Standard function for writing valid output during shell
+     * @method stdout
+     * @summary Standard function for writing valid output during shell
      *     execution.
      * @param {Object} output The object to write to stdout.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional
@@ -389,8 +389,8 @@ TP.sig.ShellRequest.Inst.defineMethod('$summarizeSubrequestData',
 function(aPropertyName) {
 
     /**
-     * @name $summarizeSubrequestData
-     * @synopsis When a request is processed via one or more subrequests we
+     * @method $summarizeSubrequestData
+     * @summary When a request is processed via one or more subrequests we
      *     often need to provide a summary of that data for requestors.
      * @param {String} aPropertyName The name of the property to sum.
      * @returns {Number} The result of summing subrequest data for a particular

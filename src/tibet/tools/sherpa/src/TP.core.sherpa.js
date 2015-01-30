@@ -27,9 +27,9 @@ TP.core.sherpa.Type.defineMethod('initialize',
 function(aName) {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
-     * @return {TP.core.Sherpa} The receiver.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
     var toggleKey,
@@ -147,8 +147,8 @@ TP.core.sherpa.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @returns {TP.core.sherpa} The receiver.
      */
 

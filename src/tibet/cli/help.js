@@ -81,7 +81,7 @@ Cmd.prototype.USAGE = 'tibet help [command]';
  * Processes requests of the form 'tibet --help', 'tibet help --help', or
  * 'tibet --help <command>'. Each variant has a different target (tibet, help,
  * or command respectively).
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.help = function() {
 
@@ -103,7 +103,7 @@ Cmd.prototype.help = function() {
  * Processes requests of the form 'tibet --usage', 'tibet help --usage', and
  * potentially 'tibet --usage <command>'. The last one is a bit tricky since
  * minimist will parse that and make <command> the value of the usage flag.
- * @return {Number} A return code.
+ * @returns {Number} A return code.
  */
 Cmd.prototype.usage = function() {
 
@@ -122,7 +122,7 @@ Cmd.prototype.usage = function() {
 /**
  * Runs the help command, outputting a list of usage strings for any commands
  * found.
- * @return {Number} A return code.
+ * @returns {Number} A return code.
  */
 Cmd.prototype.execute = function() {
 
@@ -216,7 +216,7 @@ Cmd.prototype.execute = function() {
  * Processes help for a specific command. This method forwards to the command
  * and invokes its help() method.
  * @param {string} command The command name we're running.
- * @return {Number} A return code.
+ * @returns {Number} A return code.
  */
 Cmd.prototype.executeForCommand = function(command) {
     var file,
@@ -251,7 +251,7 @@ Cmd.prototype.executeForCommand = function(command) {
 /**
  * Returns a list of command files found in the path provided.
  * @param {string} aPath The path to search.
- * @return {Array.<string>} The list of commands.
+ * @returns {Array.<string>} The list of commands.
  */
 Cmd.prototype.getCommands = function(aPath) {
     var files,
@@ -277,7 +277,7 @@ Cmd.prototype.getCommands = function(aPath) {
 /**
  * Returns a list of custom make targets found in any TIBET-style `makefile` for
  * the current project.
- * @return {Array.<string>} The list of targets.
+ * @returns {Array.<string>} The list of targets.
  */
 Cmd.prototype.getMakeTargets = function() {
     var targets,

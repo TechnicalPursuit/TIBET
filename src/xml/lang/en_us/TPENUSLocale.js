@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.ENUSLocale}
- * @synopsis TP.core.ENUSLocale provides support for the U.S. English language
+ * @summary TP.core.ENUSLocale provides support for the U.S. English language
  *     and related localizations. This is the default locale used when no other
  *     locale is specified and the user's language code doesn't resolve to an
  *     alternative locale.

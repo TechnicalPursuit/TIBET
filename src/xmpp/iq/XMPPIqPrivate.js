@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqPrivate}
- * @synopsis A wrapper for the IQ_PRIVATE namespace'd payload element.
+ * @summary A wrapper for the IQ_PRIVATE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -31,8 +31,8 @@ TP.xmpp.IqPrivate.Inst.defineMethod('getData',
 function() {
 
     /**
-     * @name getData
-     * @synopsis Returns the private data node associated with this node.
+     * @method getData
+     * @summary Returns the private data node associated with this node.
      * @returns {Node}
      */
 
@@ -54,8 +54,8 @@ TP.xmpp.IqPrivate.Inst.defineMethod('setData',
 function(aNode) {
 
     /**
-     * @name setData
-     * @synopsis Sets the private data node to store, if sent.
+     * @method setData
+     * @summary Sets the private data node to store, if sent.
      * @param {DOM} aNode Node The data node to store, in node form.
      * @returns {TP.xmpp.IqPrivate} The receiver.
      */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.AmazonSimpleDBRequest}
- * @synopsis A subtype of TP.sig.RESTRequest that is used in conjunction with
+ * @summary A subtype of TP.sig.RESTRequest that is used in conjunction with
  *     the TP.amz.AmazonSimpleDBService type to communicate to the Amazon
  *     SimpleDB service.
  * @example Accessing Amazon SimpleDB from TIBET consists of:

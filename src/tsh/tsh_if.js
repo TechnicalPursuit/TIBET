@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tsh.if}
- * @synopsis A subtype of TP.core.ActionElementNode that knows how to
+ * @summary A subtype of TP.core.ActionElementNode that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
@@ -28,8 +28,8 @@ TP.tsh.if.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @name tshExecute
-     * @synopsis Runs the receiver, effectively invoking its action. For tsh:uri
+     * @method tshExecute
+     * @summary Runs the receiver, effectively invoking its action. For tsh:uri
      *     this method is responsible for dispatching all the variations of pipe
      *     methods which are suitable for use with a URI.
      * @param {TP.sig.Request} aRequest The request containing command input for

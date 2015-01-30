@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.NCName}
- * @synopsis A "non-colonized" Name, i.e. an TP.xs.Name with no colons.
+ * @summary A "non-colonized" Name, i.e. an TP.xs.Name with no colons.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.NCName.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.NCName the return value is a string that is a valid
      *     TP.xs.Name with colons removed.
      * @param {Object} anObject The object to use as source data.
@@ -52,8 +52,8 @@ TP.xs.NCName.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a valid non-colonized
+     * @method validate
+     * @summary Returns true if the object provided is a valid non-colonized
      *     name.
      * @returns {Boolean}
      */

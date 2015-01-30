@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.OutputStream}
- * @synopsis Stream subtype specific to output directed at the server. This type
+ * @summary Stream subtype specific to output directed at the server. This type
  *     acts as a form of connection log, displaying the messages sent by the
  *     connection to the server.
  */
@@ -27,11 +27,11 @@ TP.xmpp.OutputStream.Inst.defineMethod('close',
 function() {
 
     /**
-     * @name close
-     * @synopsis Closes the output stream, which serves to close the connection
+     * @method close
+     * @summary Closes the output stream, which serves to close the connection
      *     to the server since it closes the 'send document' being used for one
      *     half of the conversation.
-     * @raises TP.sig.InvalidXMPPConnection
+     * @exception TP.sig.InvalidXMPPConnection
      * @returns {Boolean} True on success, false otherwise.
      */
 
@@ -62,9 +62,9 @@ TP.xmpp.OutputStream.Inst.defineMethod('read',
 function() {
 
     /**
-     * @name read
-     * @synopsis Invalid operation for an output stream.
-     * @raises TP.sig.InvalidOperation
+     * @method read
+     * @summary Invalid operation for an output stream.
+     * @exception TP.sig.InvalidOperation
      */
 
     return this.raise('TP.sig.InvalidOperation');
@@ -76,8 +76,8 @@ TP.xmpp.OutputStream.Inst.defineMethod('write',
 function(content) {
 
     /**
-     * @name write
-     * @synopsis Writes the XML string provided to the receiver's associated
+     * @method write
+     * @summary Writes the XML string provided to the receiver's associated
      *     server, acquired from the stream's connection object. This is the
      *     low-level 'send' operation for the XMPP subsystem.
      * @param {TP.xmpp.Stanza|String} content The content to write. If a stanza

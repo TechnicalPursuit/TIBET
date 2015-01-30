@@ -10,7 +10,7 @@
 
 /**
  * @type {tsh:}
- * @synopsis This type represents the TIBET Shell (TSH) namespace
+ * @summary This type represents the TIBET Shell (TSH) namespace
  *     (http://www.technicalpursuit.com/2007/tsh) in the tag processing system.
  */
 

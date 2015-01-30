@@ -52,8 +52,8 @@ TP.defineMetaInstMethod('asHTMLNode',
 function(aDocument) {
 
     /**
-     * @name asHTMLNode
-     * @synopsis Produces an HTML node representation of the receiver if
+     * @method asHTMLNode
+     * @summary Produces an HTML node representation of the receiver if
      *     possible. By default this method relies on the markup string produced
      *     by asHTMLString for source text. NOTE that when a string would
      *     produce multiple "top level" nodes for the receiver a document
@@ -72,8 +72,8 @@ TP.defineMetaInstMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -139,8 +139,8 @@ TP.defineMetaInstMethod('asStorageString',
 function() {
 
     /**
-     * @name asStorageString
-     * @synopsis Produces a string representation suitable for data storage.
+     * @method asStorageString
+     * @summary Produces a string representation suitable for data storage.
      *     This might be encoded in a variety of ways depending on the receiver
      *     and what "storage" means for it, but the default format is source
      *     code form.
@@ -156,8 +156,8 @@ TP.defineMetaInstMethod('asXHTMLNode',
 function() {
 
     /**
-     * @name asXHTMLNode
-     * @synopsis Produces an XHTML node representation of the receiver if
+     * @method asXHTMLNode
+     * @summary Produces an XHTML node representation of the receiver if
      *     possible. By default this method relies on the markup string produced
      *     by asXHTMLString for source text.
      * @returns {Node} The receiver in XHTML node format.
@@ -172,8 +172,8 @@ TP.defineMetaInstMethod('asXHTMLString',
 function() {
 
     /**
-     * @name asXHTMLString
-     * @synopsis Produces an XHTML string representation of the receiver. By
+     * @method asXHTMLString
+     * @summary Produces an XHTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XHTML string format.
@@ -188,8 +188,8 @@ TP.defineMetaInstMethod('asXMLNode',
 function(aDocument) {
 
     /**
-     * @name asXMLNode
-     * @synopsis Produces an XML node representation of the receiver if
+     * @method asXMLNode
+     * @summary Produces an XML node representation of the receiver if
      *     possible. By default this method relies on the markup string produced
      *     by asXMLString for source text.
      * @returns {Node} The receiver in XML node format.
@@ -204,8 +204,8 @@ TP.defineMetaInstMethod('asXMLString',
 function(aFilterName) {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @param {String} aFilterName A get*Interface() filter spec.
@@ -266,8 +266,8 @@ Array.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -327,8 +327,8 @@ Array.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -383,8 +383,8 @@ Array.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -450,8 +450,8 @@ Array.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -502,8 +502,8 @@ Boolean.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -518,8 +518,8 @@ Boolean.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -536,8 +536,8 @@ Boolean.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -552,8 +552,8 @@ Date.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -569,8 +569,8 @@ Date.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -585,8 +585,8 @@ Date.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -599,8 +599,8 @@ Date.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -618,8 +618,8 @@ Date.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -634,8 +634,8 @@ Function.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -657,8 +657,8 @@ Function.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -681,8 +681,8 @@ Function.Inst.defineMethod('asJSONSource',
 function(aFilterName, aLevel) {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @param {String} aFilterName Ignored.
      * @param {Number} aLevel If 0, returns function() {...}
      * @returns {String} A JSON-formatted string.
@@ -730,8 +730,8 @@ Function.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -763,8 +763,8 @@ Function.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -785,8 +785,8 @@ Number.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -801,8 +801,8 @@ Number.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -819,8 +819,8 @@ Number.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -835,8 +835,8 @@ RegExp.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -853,8 +853,8 @@ RegExp.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -869,8 +869,8 @@ RegExp.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -885,8 +885,8 @@ RegExp.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -903,8 +903,8 @@ RegExp.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -919,8 +919,8 @@ String.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -943,8 +943,8 @@ String.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -970,8 +970,8 @@ String.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -994,8 +994,8 @@ TP.lang.RootObject.Type.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -1010,8 +1010,8 @@ TP.lang.RootObject.Type.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -1026,8 +1026,8 @@ TP.lang.RootObject.Type.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -1049,8 +1049,8 @@ TP.lang.RootObject.Type.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -1074,8 +1074,8 @@ TP.lang.RootObject.Type.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -1088,8 +1088,8 @@ TP.lang.Object.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -1146,8 +1146,8 @@ TP.lang.Object.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -1205,8 +1205,8 @@ TP.lang.Object.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -1262,8 +1262,8 @@ TP.lang.Object.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -1328,8 +1328,8 @@ TP.lang.Object.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.RESTResponse}
- * @synopsis Provides a simple purpose XMLHTTP response wrapper with little or
+ * @summary Provides a simple purpose XMLHTTP response wrapper with little or
  *     no result decoding/deserialization logic.
  */
 

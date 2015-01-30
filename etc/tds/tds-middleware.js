@@ -45,7 +45,7 @@ TDS._package = null;
 /**
  * Expands virtual paths using configuration data loaded from TIBET.
  * @param {String} aPath The virtual path to expand.
- * @return {String} The expanded path.
+ * @returns {String} The expanded path.
  */
 TDS.expandPath = function(aPath) {
     this.initPackage();
@@ -55,7 +55,7 @@ TDS.expandPath = function(aPath) {
 
 /**
  * Return the application head, the location serving as the top-level root.
- * @return {String} The application head path.
+ * @returns {String} The application head path.
  */
 TDS.getAppHead = function() {
     this.initPackage();
@@ -66,7 +66,7 @@ TDS.getAppHead = function() {
 /**
  * Returns the value for a specific configuration property.
  * @param {String} property A configuration property name.
- * @return {Object} The property value, if found.
+ * @returns {Object} The property value, if found.
  */
 TDS.getcfg = function(property) {
     this.initPackage();
@@ -79,7 +79,7 @@ TDS.getcfg = function(property) {
  * needed such as app_root or lib_root. If the package has already been
  * configured this method simply returns.
  * @param {Object} options The package options to use.
- * @return {Package} The package instance.
+ * @returns {Package} The package instance.
  */
 TDS.initPackage = function(options) {
     if (this._package) {
@@ -93,7 +93,7 @@ TDS.initPackage = function(options) {
  * Provides a useful 'skip' function for the Express logger. This will filter
  * out a lot of logging overhead that might otherwise occur when the TDS is
  * being accessed.
- * @return {Boolean} true to skip logging the current request.
+ * @returns {Boolean} true to skip logging the current request.
  */
 TDS.logFilter = function(req, res) {
     var url = TDS.getcfg('tds.watch_uri');
@@ -121,7 +121,7 @@ TDS.logFilter = function(req, res) {
  * url.getContent();
  *
  * @param {Object} options Configuration options. Currently ignored.
- * @return {Function} A connect/express middleware function.
+ * @returns {Function} A connect/express middleware function.
  */
 TDS.cli = function(options) {
 
@@ -302,7 +302,7 @@ TDS.patcher = function(options) {
  * Watches for file change activity within a directory. If changes occur a
  * server-sent event is created and transmitted.
  * @param {Object} options Configuration options. Currently ignored.
- * @return {Function} A connect/express middleware function.
+ * @returns {Function} A connect/express middleware function.
  */
 TDS.watcher = function(options) {
     var root,
@@ -451,7 +451,7 @@ TDS.webdav = {};
  * of this middleware is to give TIBET a way to update the server without
  * relying on any non-standard APIs or server functionality.
  * @param {Object} options Configuration options. Currently ignored.
- * @return {Function} A connect/express middleware function.
+ * @returns {Function} A connect/express middleware function.
  */
 TDS.webdav = function(options) {
     var node,

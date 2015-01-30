@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XExpire}
- * @synopsis A wrapper for the X_EXPIRE namespace'd payload element.
+ * @summary A wrapper for the X_EXPIRE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.log}
- * @synopsis Manages log XControls.
+ * @summary Manages log XControls.
  */
 
 //  ------------------------------------------------------------------------
@@ -57,8 +57,8 @@ TP.xctrls.log.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -79,8 +79,8 @@ TP.xctrls.log.Inst.defineMethod('handleChange',
 function(aSignal) {
 
     /**
-     * @name handleChange
-     * @synopsis Handles any TP.sig.Change signals by logging information to the
+     * @method handleChange
+     * @summary Handles any TP.sig.Change signals by logging information to the
      *     receiver.
      * @param {TP.sig.Change} aSignal The signal that caused this handler to
      *     trip.
@@ -109,8 +109,8 @@ TP.xctrls.log.Inst.defineMethod('logData',
 function(aData) {
 
     /**
-     * @name logData
-     * @synopsis Logs the supplied data to the receiver by executing the
+     * @method logData
+     * @summary Logs the supplied data to the receiver by executing the
      *     receiver's template.
      * @param {Object} aData The data to log to the receiver.
      */

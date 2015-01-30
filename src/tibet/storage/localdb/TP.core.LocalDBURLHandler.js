@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.LocalDBURLHandler}
- * @synopsis A URI handler type that can store and load from 'localdb://' URIs.
+ * @summary A URI handler type that can store and load from 'localdb://' URIs.
  */
 
 //  ------------------------------------------------------------------------
@@ -29,8 +29,8 @@ TP.core.LocalDBURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content and returns it on request. This is a
+     * @method load
+     * @summary Loads URI data content and returns it on request. This is a
      *     template method which defines the overall process used for loading
      *     URI data and ensuring that the URI's cache and header content are
      *     kept up to date. You should normally override one of the more
@@ -120,8 +120,8 @@ TP.core.LocalDBURLHandler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes the target URL.
+     * @method nuke
+     * @summary Deletes the target URL.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -196,7 +196,7 @@ TP.core.LocalDBURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
-     * @name save
+     * @method save
      * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing

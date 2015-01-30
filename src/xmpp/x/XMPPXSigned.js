@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XSigned}
- * @synopsis A wrapper for the X_SIGNED namespace'd payload element.
+ * @summary A wrapper for the X_SIGNED namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

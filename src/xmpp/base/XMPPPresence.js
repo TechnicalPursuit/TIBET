@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Presence}
- * @synopsis A presence element wrapper. This node type provides convenience
+ * @summary A presence element wrapper. This node type provides convenience
  *     methods for working with XMPP presence elements.
  */
 
@@ -34,8 +34,8 @@ TP.xmpp.Presence.Inst.defineMethod('constructResponse',
 function() {
 
     /**
-     * @name constructResponse
-     * @synopsis Creates an appropriate response object based on the current
+     * @method constructResponse
+     * @summary Creates an appropriate response object based on the current
      *     packet. For presence packets the response defaults to an affirmative
      *     response for subscribe and unsubscribe messages. Other presence
      *     packets have no valid response so this method returns null in those
@@ -74,8 +74,8 @@ TP.xmpp.Presence.Inst.defineMethod('getDefaultType',
 function() {
 
     /**
-     * @name getDefaultType
-     * @synopsis Returns the default stanza type for the receiver.
+     * @method getDefaultType
+     * @summary Returns the default stanza type for the receiver.
      * @returns {String}
      */
 
@@ -88,8 +88,8 @@ TP.xmpp.Presence.Inst.defineMethod('getPriority',
 function() {
 
     /**
-     * @name getPriority
-     * @synopsis Returns the packet priority of the receiver.
+     * @method getPriority
+     * @summary Returns the packet priority of the receiver.
      * @returns {String}
      */
 
@@ -102,8 +102,8 @@ TP.xmpp.Presence.Inst.defineMethod('getShow',
 function() {
 
     /**
-     * @name getShow
-     * @synopsis Returns the text value of the receiver's show attribute.
+     * @method getShow
+     * @summary Returns the text value of the receiver's show attribute.
      * @returns {String}
      */
 
@@ -116,11 +116,11 @@ TP.xmpp.Presence.Inst.defineMethod('getSignalOrigin',
 function(aStanza) {
 
     /**
-     * @name getSignalOrigin
-     * @synopsis Returns the signal origin to use when signaling arrival of
+     * @method getSignalOrigin
+     * @summary Returns the signal origin to use when signaling arrival of
      *     packets of this type. Presence stanzas signal presence change signal
      *     from the corresponding JID.
-     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalOrigin() calls as the stanza. This method should return
      *     TP.NONE if it does not want the XMPP connection to send a signal on
@@ -138,8 +138,8 @@ TP.xmpp.Presence.Inst.defineMethod('getStatus',
 function() {
 
     /**
-     * @name getStatus
-     * @synopsis Returns the text status of the receiver.
+     * @method getStatus
+     * @summary Returns the text status of the receiver.
      * @returns {String}
      */
 
@@ -152,11 +152,11 @@ TP.xmpp.Presence.Inst.defineMethod('setStanzaType',
 function(aStanzaType) {
 
     /**
-     * @name setStanzaType
-     * @synopsis Sets the receiver's stanza type attribute. The type must be
+     * @method setStanzaType
+     * @summary Sets the receiver's stanza type attribute. The type must be
      *     mapped in the type's stanzaTypes array to be valid.
      * @param {String} aStanzaType The stanza type string to set.
-     * @raises TP.sig.InvalidXMPPStanzaType
+     * @exception TP.sig.InvalidXMPPStanzaType
      * @returns {TP.xmpp.Stanza} The receiver.
      */
 
@@ -177,8 +177,8 @@ TP.xmpp.Presence.Inst.defineMethod('setPriority',
 function(aString) {
 
     /**
-     * @name setPriority
-     * @synopsis Sets the message priority of the receiver.
+     * @method setPriority
+     * @summary Sets the message priority of the receiver.
      * @param {String} aString The message priority.
      * @returns {TP.xmpp.Presence} The receiver.
      */
@@ -197,8 +197,8 @@ TP.xmpp.Presence.Inst.defineMethod('setShow',
 function(aString) {
 
     /**
-     * @name setShow
-     * @synopsis Sets the text to show as the presence notice.
+     * @method setShow
+     * @summary Sets the text to show as the presence notice.
      * @param {String} aString The string to show as our presence note.
      * @returns {TP.xmpp.Presence} The receiver.
      */
@@ -217,8 +217,8 @@ TP.xmpp.Presence.Inst.defineMethod('setStatus',
 function(aString) {
 
     /**
-     * @name setStatus
-     * @synopsis Sets the presence status text.
+     * @method setStatus
+     * @summary Sets the presence status text.
      * @param {String} aString The status text to set.
      * @returns {TP.xmpp.Presence} The receiver.
      */
@@ -246,8 +246,8 @@ TP.xmpp.Presence.Inst.defineMethod('handleArrival',
 function(aSignal) {
 
     /**
-     * @name handleArrival
-     * @synopsis Responds to inbound arrival of a new packet of the receiver's
+     * @method handleArrival
+     * @summary Responds to inbound arrival of a new packet of the receiver's
      *     type. For most packet types this requires no action but certain
      *     packets such as subscription requests require a response.
      * @param {TP.sig.Signal} aSignal The original inbound signal which

@@ -10,9 +10,9 @@
 
 /**
  * @type {acl:}
- * @synopsis A simple namespace for managing user interface access control in a
+ * @summary A simple namespace for managing user interface access control in a
  *     way that is easy for authors to manage.
- * @description A common issue in web UI is to enable/disable, show/hide, or
+ * @summary A common issue in web UI is to enable/disable, show/hide, or
  *     otherwise modify the UI based on current user and data values.
  *
  *     TIBET's TP.core.User type maintains two user identities, a "real" user

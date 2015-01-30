@@ -17,7 +17,7 @@
 
 /**
  * @type {TP.core.DragMachine}
- * @synopsis A StateMachine specific to managing "dragging" states.
+ * @summary A StateMachine specific to managing "dragging" states.
  */
 
 //  ------------------------------------------------------------------------
@@ -42,8 +42,8 @@ TP.core.DragMachine.Inst.defineMethod('init',
 function(source) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver. The optional source
+     * @method init
+     * @summary Initializes a new instance of the receiver. The optional source
      *     parameter can be used to define which object the receiver will use as
      *     the data source for its event stream.
      * @param {HTMLElement|String|TP.core.Mouse} source The source object the
@@ -82,8 +82,8 @@ TP.core.DragMachine.Inst.defineMethod('acceptActive',
 function(signalOrParams) {
 
     /**
-     * @name acceptActive
-     * @synopsis Returns true if a state transition to "active" is valid.
+     * @method acceptActive
+     * @summary Returns true if a state transition to "active" is valid.
      * @param {TP.sig.Signal|Object} signalOrParams Input data which can
      *     influence the result of the test.
      * @returns {Boolean} True if we can transition to the state.
@@ -98,8 +98,8 @@ TP.core.DragMachine.Inst.defineMethod('acceptDragging',
 function(signalOrParams) {
 
     /**
-     * @name acceptDragging
-     * @synopsis Returns true if a state transition to "dragging" is valid.
+     * @method acceptDragging
+     * @summary Returns true if a state transition to "dragging" is valid.
      * @param {TP.sig.Signal|Object} signalOrParams Input data which can
      *     influence the result of the test.
      * @returns {Boolean} True if we can transition to the state.
@@ -114,8 +114,8 @@ TP.core.DragMachine.Inst.defineMethod('defineDefaultStates',
 function() {
 
     /**
-     * @name defineDefaultStates
-     * @synopsis Provides for state configuration by subtypes so different
+     * @method defineDefaultStates
+     * @summary Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
      */
 
@@ -132,7 +132,7 @@ function() {
 
 /**
  * @type {TP.core.DragResponder}
- * @synopsis A StateResponder responsible for simple drag operations.
+ * @summary A StateResponder responsible for simple drag operations.
  */
 
 //  ------------------------------------------------------------------------
@@ -526,8 +526,8 @@ TP.core.DragResponder.Inst.defineMethod('init',
 function(stateMachine, actionElement) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @param {TP.core.StateMachine} stateMachine The state machine this
      *     responder should observe.
      * @param {HTMLElement|String} actionElement The action element the
@@ -575,8 +575,8 @@ TP.core.DragResponder.Inst.defineMethod('addDataModifier',
 function(aModifierFunc, modifierData) {
 
     /**
-     * @name addDataModifier
-     * @synopsis Adds a 'data modifier' function to the receiver's list of
+     * @method addDataModifier
+     * @summary Adds a 'data modifier' function to the receiver's list of
      *     modifiers. Modifier functions are those that impose some constraint
      *     (i.e. 'only increment in the X direction') on the gesture.
      * @param {Function} aModifierFunc The modifier function to add to the
@@ -604,9 +604,9 @@ TP.core.DragResponder.Inst.defineMethod('computeOffsetPoint',
 function() {
 
     /**
-     * @name computeOffsetPoint
-     * @synopsis Computes the gestures initial 'offset point'.
-     * @description When computing the offset point, this method takes into
+     * @method computeOffsetPoint
+     * @summary Computes the gestures initial 'offset point'.
+     * @summary When computing the offset point, this method takes into
      *     account the following parameters: - The initial starting point - The
      *     offset from the action element's offset parent to the action element.
      *     - The border of the action element. - The 'drag corner' that was
@@ -769,8 +769,8 @@ TP.core.DragResponder.Inst.defineMethod('defineDefaultHandlers',
 function() {
 
     /**
-     * @name defineDefaultHandlers
-     * @synopsis Provides for state configuration by subtypes so different
+     * @method defineDefaultHandlers
+     * @summary Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
      */
 
@@ -790,8 +790,8 @@ TP.core.DragResponder.Inst.defineMethod('draggingTP_sig_DOMDragHover',
 function(aSignal) {
 
     /**
-     * @name draggingDOMDragHover
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingDOMDragHover
+     * @summary Executed when the state machine associated with this receiver
      *     receives a TP.sig.DOMDragHover signal while in the 'dragging' state.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
      *     the state machine machinery.
@@ -806,8 +806,8 @@ TP.core.DragResponder.Inst.defineMethod('draggingTP_sig_DOMDragMove',
 function(aSignal) {
 
     /**
-     * @name draggingDOMDragMove
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingDOMDragMove
+     * @summary Executed when the state machine associated with this receiver
      *     receives a TP.sig.DOMDragMove signal while in the 'dragging' state.
      *     This signal does *not* cause a state transition, but is important to
      *     the dragging state machine (as you might imagine ;-)).
@@ -839,8 +839,8 @@ TP.core.DragResponder.Inst.defineMethod('draggingEnter',
 function(aSignal) {
 
     /**
-     * @name draggingEnter
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingEnter
+     * @summary Executed when the state machine associated with this receiver
      *     enters the 'dragging' state. This method performs whatever processing
      *     is necessary to start the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -879,8 +879,8 @@ TP.core.DragResponder.Inst.defineMethod('draggingExit',
 function(aSignal) {
 
     /**
-     * @name draggingExit
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingExit
+     * @summary Executed when the state machine associated with this receiver
      *     exits the 'dragging' state. This method performs whatever processing
      *     is necessary to stop the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -902,8 +902,8 @@ TP.core.DragResponder.Inst.defineMethod('getCurrentPoint',
 function(runModifiers) {
 
     /**
-     * @name getCurrentPoint
-     * @synopsis Returns the gesture's 'current point' (after running any 'data
+     * @method getCurrentPoint
+     * @summary Returns the gesture's 'current point' (after running any 'data
      *     modifiers' on the point data).
      * @param {Boolean} runModifiers Whether or not to run the 'data modifiers'
      *     (i.e. Functions that alter the current point). Defaults to true.
@@ -964,8 +964,8 @@ TP.core.DragResponder.Inst.defineMethod('modifyResponderData',
 function(aSignal, aPoint) {
 
     /**
-     * @name modifyResponderData
-     * @synopsis Executes all of the registered 'data modifiers' (such as the
+     * @method modifyResponderData
+     * @summary Executes all of the registered 'data modifiers' (such as the
      *     constraint functions that are type constants on this type).
      * @param {TP.sig.DOMDragMove} aSignal The current DOMDragMove signal.
      * @param {TP.core.Point} aPoint Optional point data to modify.
@@ -1019,8 +1019,8 @@ TP.core.DragResponder.Inst.defineMethod('setActionElement',
 function(anElement) {
 
     /**
-     * @name setActionElement
-     * @synopsis Sets the 'action element' for the receiver. This defined setter
+     * @method setActionElement
+     * @summary Sets the 'action element' for the receiver. This defined setter
      *     method also configured internal responder state based on the element
      *     provided.
      * @param {HTMLElement} anElement The Element to use as the the action
@@ -1067,8 +1067,8 @@ TP.core.DragResponder.Inst.defineMethod('setupDataModifiers',
 function() {
 
     /**
-     * @name setupDataModifiers
-     * @synopsis Sets up any installed data modifiers in preparation for a 'drag
+     * @method setupDataModifiers
+     * @summary Sets up any installed data modifiers in preparation for a 'drag
      *     session'.
      * @returns {TP.core.DragResponder} The receiver.
      */
@@ -1101,8 +1101,8 @@ TP.core.DragResponder.Inst.defineMethod('setupFrom',
 function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 
     /**
-     * @name setupFrom
-     * @synopsis Sets up the receiver by using well-known attributes present on
+     * @method setupFrom
+     * @summary Sets up the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -1291,8 +1291,8 @@ TP.core.DragResponder.Inst.defineMethod('teardownDataModifiers',
 function() {
 
     /**
-     * @name teardownDataModifiers
-     * @synopsis Tears down any installed data modifiers at the conclusion of a
+     * @method teardownDataModifiers
+     * @summary Tears down any installed data modifiers at the conclusion of a
      *     'drag session'.
      * @returns {TP.core.DragResponder} The receiver.
      */
@@ -1323,7 +1323,7 @@ function() {
 
 /**
  * @type {TP.core.MoveResponder}
- * @synopsis A DragResponder responsible for simple move operations.
+ * @summary A DragResponder responsible for simple move operations.
  */
 
 //  ------------------------------------------------------------------------
@@ -1338,8 +1338,8 @@ TP.core.MoveResponder.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var moveStateMachine,
@@ -1395,8 +1395,8 @@ TP.core.MoveResponder.Inst.defineMethod('draggingTP_sig_DOMDragMove',
 function(aSignal) {
 
     /**
-     * @name draggingDOMDragMove
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingDOMDragMove
+     * @summary Executed when the state machine associated with this receiver
      *     receives a TP.sig.DOMDragMove signal while in the 'dragging' state.
      *     This signal does *not* cause a state transition, but is important to
      *     the dragging state machine (as you might imagine ;-)).
@@ -1465,8 +1465,8 @@ TP.core.MoveResponder.Inst.defineMethod('draggingEnter',
 function(aSignal) {
 
     /**
-     * @name draggingEnter
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingEnter
+     * @summary Executed when the state machine associated with this receiver
      *     enters the 'dragging' state. This method performs whatever processing
      *     is necessary to start the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -1570,8 +1570,8 @@ TP.core.MoveResponder.Inst.defineMethod('draggingExit',
 function(aSignal) {
 
     /**
-     * @name draggingExit
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingExit
+     * @summary Executed when the state machine associated with this receiver
      *     exits the 'dragging' state. This method performs whatever processing
      *     is necessary to stop the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -1615,8 +1615,8 @@ TP.core.MoveResponder.Inst.defineMethod('setupFrom',
 function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 
     /**
-     * @name setupFrom
-     * @synopsis Sets up the receiver by using well-known attributes present on
+     * @method setupFrom
+     * @summary Sets up the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -1673,7 +1673,7 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 
 /**
  * @type {TP.core.ResizeResponder}
- * @synopsis A DragResponder responsible for simple resize operations.
+ * @summary A DragResponder responsible for simple resize operations.
  */
 
 //  ------------------------------------------------------------------------
@@ -1728,8 +1728,8 @@ TP.core.ResizeResponder.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var resizeStateMachine,
@@ -1796,8 +1796,8 @@ TP.core.ResizeResponder.Inst.defineMethod('init',
 function(stateMachine, actionElement) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @param {TP.core.StateMachine} stateMachine The state machine this
      *     responder should observe.
      * @param {HTMLElement|String} actionElement The action element the
@@ -1826,9 +1826,9 @@ TP.core.ResizeResponder.Inst.defineMethod('computeOffsetPoint',
 function() {
 
     /**
-     * @name computeOffsetPoint
-     * @synopsis Computes the gestures initial 'offset point'.
-     * @description When computing the offset point, this method takes into
+     * @method computeOffsetPoint
+     * @summary Computes the gestures initial 'offset point'.
+     * @summary When computing the offset point, this method takes into
      *     account the following parameters: - The initial starting point - The
      *     offset from the action element's offset parent to the action element.
      *     - The border of the action element. - The 'drag corner' that was
@@ -2129,8 +2129,8 @@ TP.core.ResizeResponder.Inst.defineMethod('draggingTP_sig_DOMDragMove',
 function(aSignal) {
 
     /**
-     * @name draggingDOMDragMove
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingDOMDragMove
+     * @summary Executed when the state machine associated with this receiver
      *     receives a TP.sig.DOMDragMove signal while in the 'dragging' state.
      *     This signal does *not* cause a state transition, but is important to
      *     the dragging state machine (as you might imagine ;-)).
@@ -2368,8 +2368,8 @@ TP.core.ResizeResponder.Inst.defineMethod('draggingEnter',
 function(aSignal) {
 
     /**
-     * @name draggingEnter
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingEnter
+     * @summary Executed when the state machine associated with this receiver
      *     enters the 'dragging' state. This method performs whatever processing
      *     is necessary to start the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -2474,8 +2474,8 @@ TP.core.ResizeResponder.Inst.defineMethod('draggingExit',
 function(aSignal) {
 
     /**
-     * @name draggingExit
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingExit
+     * @summary Executed when the state machine associated with this receiver
      *     exits the 'dragging' state. This method performs whatever processing
      *     is necessary to stop the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -2523,8 +2523,8 @@ TP.core.ResizeResponder.Inst.defineMethod('setupFrom',
 function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 
     /**
-     * @name setupFrom
-     * @synopsis Sets up the receiver by using well-known attributes present on
+     * @method setupFrom
+     * @summary Sets up the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -2618,7 +2618,7 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 
 /**
  * @type {TP.core.DNDResponder}
- * @synopsis A DragResponder responsible for drag and drop operations.
+ * @summary A DragResponder responsible for drag and drop operations.
  */
 
 //  ------------------------------------------------------------------------
@@ -2875,8 +2875,8 @@ TP.core.DNDResponder.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var dndStateMachine,
@@ -2939,9 +2939,9 @@ TP.core.DNDResponder.Inst.defineMethod('computeOffsetPoint',
 function() {
 
     /**
-     * @name computeOffsetPoint
-     * @synopsis Computes the gestures initial 'offset point'.
-     * @description When computing the offset point, this method takes into
+     * @method computeOffsetPoint
+     * @summary Computes the gestures initial 'offset point'.
+     * @summary When computing the offset point, this method takes into
      *     account the following parameters: - The initial starting point - The
      *     offset from the action element's offset parent to the action element.
      *     - The border and margin from the action element's offset parent. -
@@ -3062,8 +3062,8 @@ TP.core.DNDResponder.Inst.defineMethod('draggingEnter',
 function(aSignal) {
 
     /**
-     * @name draggingEnter
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingEnter
+     * @summary Executed when the state machine associated with this receiver
      *     enters the 'dragging' state. This method performs whatever processing
      *     is necessary to start the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -3104,8 +3104,8 @@ TP.core.DNDResponder.Inst.defineMethod('draggingExit',
 function(aSignal) {
 
     /**
-     * @name draggingExit
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingExit
+     * @summary Executed when the state machine associated with this receiver
      *     exits the 'dragging' state. This method performs whatever processing
      *     is necessary to stop the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -3223,8 +3223,8 @@ TP.core.DNDResponder.Inst.defineMethod('makeDragElementFrom',
 function(anElement) {
 
     /**
-     * @name makeDragElementFrom
-     * @synopsis Returns the element to drag, creating it if necessary. This
+     * @method makeDragElementFrom
+     * @summary Returns the element to drag, creating it if necessary. This
      *     presets the manufactured drag element's top, left, width and height
      *     to those of the supplied element.
      * @param {HTMLElement} anElement The element supplied to use to position
@@ -3312,8 +3312,8 @@ TP.core.DNDResponder.Inst.defineMethod('setupFrom',
 function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 
     /**
-     * @name setupFrom
-     * @synopsis Sets up the receiver by using well-known attributes present on
+     * @method setupFrom
+     * @summary Sets up the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -3369,7 +3369,7 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 //  ========================================================================
 
 /**
- * @synopsis Additions to the TP.core.UIElementNode type to support drag and
+ * @summary Additions to the TP.core.UIElementNode type to support drag and
  *     drop operations.
  */
 
@@ -3421,11 +3421,11 @@ TP.core.UIElementNode.Type.defineMethod('ondragdown',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name ondragdown
+     * @method ondragdown
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      * @abstract
      */
@@ -3574,7 +3574,7 @@ TP.core.UIElementNode.Inst.defineMethod('getDragInfo',
 function() {
 
     /**
-     * @name getDragInfo
+     * @method getDragInfo
      * @returns {TP.core.ElementNode}
      * @abstract
      */
@@ -3612,7 +3612,7 @@ TP.core.UIElementNode.Inst.defineMethod('getDragItem',
 function() {
 
     /**
-     * @name getDragItem
+     * @method getDragItem
      * @returns {TP.core.ElementNode}
      * @abstract
      */
@@ -3667,7 +3667,7 @@ TP.core.UIElementNode.Inst.defineMethod('getDragSource',
 function() {
 
     /**
-     * @name getDragSource
+     * @method getDragSource
      * @returns {TP.core.ElementNode}
      * @abstract
      */
@@ -3728,7 +3728,7 @@ TP.core.UIElementNode.Inst.defineMethod('getDNDInfo',
 function() {
 
     /**
-     * @name getDNDInfo
+     * @method getDNDInfo
      * @returns {TP.core.ElementNode}
      * @abstract
      */
@@ -3767,12 +3767,12 @@ TP.core.UIElementNode.Inst.defineMethod('getDNDRepElement',
 function() {
 
     /**
-     * @name getDNDRepElement
-     * @synopsis Returns a native Element node that will represent the receiver
+     * @method getDNDRepElement
+     * @summary Returns a native Element node that will represent the receiver
      *     during a drag and drop operation. At this type level, this method
      *     provides the default implementation of this method, which is to
      *     return the receiver's native node.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The native Element to use as a representation during a
      *     drag and drop operation.
      */
@@ -3828,7 +3828,7 @@ TP.core.UIElementNode.Inst.defineMethod('getDNDSource',
 function() {
 
     /**
-     * @name getDNDSource
+     * @method getDNDSource
      * @returns {TP.core.ElementNode}
      * @abstract
      */
@@ -3856,7 +3856,7 @@ TP.core.UIElementNode.Inst.defineMethod('getDNDTarget',
 function() {
 
     /**
-     * @name getDNDTarget
+     * @method getDNDTarget
      * @returns {TP.core.ElementNode}
      * @abstract
      */
@@ -3884,7 +3884,7 @@ TP.core.UIElementNode.Inst.defineMethod('isValidTarget',
 function() {
 
     /**
-     * @name isValidTarget
+     * @method isValidTarget
      * @returns {Boolean}
      * @abstract
      */
@@ -3954,7 +3954,7 @@ TP.core.UIElementNode.Inst.defineMethod('willDrop',
 function() {
 
     /**
-     * @name willDrop
+     * @method willDrop
      * @returns {Boolean}
      * @abstract
      */
@@ -3968,7 +3968,7 @@ TP.core.UIElementNode.Inst.defineMethod('willGrab',
 function() {
 
     /**
-     * @name willGrab
+     * @method willGrab
      * @returns {Boolean}
      * @abstract
      */
@@ -3982,7 +3982,7 @@ TP.core.UIElementNode.Inst.defineMethod('willMove',
 function() {
 
     /**
-     * @name willMove
+     * @method willMove
      * @returns {Boolean}
      * @abstract
      */
@@ -4038,7 +4038,7 @@ TP.core.UIElementNode.Inst.defineMethod('willResize',
 function() {
 
     /**
-     * @name willResize
+     * @method willResize
      * @returns {Boolean}
      * @abstract
      */
@@ -4094,10 +4094,10 @@ function() {
 
 /**
  * @type {TP.core.DragTracker}
- * @synopsis The TP.core.DragTracker is a StateResponder which responds to the
+ * @summary The TP.core.DragTracker is a StateResponder which responds to the
  *     current drag state and related events by tracking the mouse relative to a
  *     "domain" of objects.
- * @description Based on the configuration of the tracker instance the various
+ * @summary Based on the configuration of the tracker instance the various
  *     geometric relationships between the mouse, any currently active drag
  *     element, and the domain objects, cause the tracker to signal
  *     "interesting" events. For example, a tracker configured for drag
@@ -4262,8 +4262,8 @@ TP.core.DragTracker.Inst.defineMethod('init',
 function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @param {TP.core.StateMachine} stateMachine The state machine this
      *     responder should observe.
      * @param {String|Function} domainSpec A domain specification function or
@@ -4335,8 +4335,8 @@ TP.core.DragTracker.Inst.defineMethod('clearComputables',
 function() {
 
     /**
-     * @name clearComputables
-     * @synopsis Clears the receiver's cache of computable data.
+     * @method clearComputables
+     * @summary Clears the receiver's cache of computable data.
      * @returns {TP.core.DragTracker} The receiver.
      */
 
@@ -4354,8 +4354,8 @@ TP.core.DragTracker.Inst.defineMethod('clearDomain',
 function() {
 
     /**
-     * @name clearDomain
-     * @synopsis Clears the receiver's cache of domain objects, the objects
+     * @method clearDomain
+     * @summary Clears the receiver's cache of domain objects, the objects
      *     which provide the basis for selection sets and computations.
      * @returns {TP.core.DragTracker} The receiver.
      */
@@ -4374,8 +4374,8 @@ TP.core.DragTracker.Inst.defineMethod('defineDefaultHandlers',
 function() {
 
     /**
-     * @name defineDefaultHandlers
-     * @synopsis Provides for state configuration by subtypes so different
+     * @method defineDefaultHandlers
+     * @summary Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
      */
 
@@ -4393,8 +4393,8 @@ TP.core.DragTracker.Inst.defineMethod('draggingEnter',
 function(aSignal) {
 
     /**
-     * @name draggingEnter
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingEnter
+     * @summary Executed when the state machine associated with this receiver
      *     enters the 'dragging' state. This method performs whatever processing
      *     is necessary to start the dragging process.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -4414,8 +4414,8 @@ TP.core.DragTracker.Inst.defineMethod('draggingExit',
 function(aSignal) {
 
     /**
-     * @name draggingExit
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingExit
+     * @summary Executed when the state machine associated with this receiver
      *     exits the 'dragging' state. This method performs whatever processing
      *     is necessary to stop drag tracking.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
@@ -4436,8 +4436,8 @@ TP.core.DragTracker.Inst.defineMethod('draggingTP_sig_DOMDragHover',
 function(aSignal) {
 
     /**
-     * @name draggingDOMDragHover
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingDOMDragHover
+     * @summary Executed when the state machine associated with this receiver
      *     receives a TP.sig.DOMDragHover signal while in the 'dragging' state.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
      *     the state machine machinery.
@@ -4452,8 +4452,8 @@ TP.core.DragTracker.Inst.defineMethod('draggingTP_sig_DOMDragMove',
 function(aSignal) {
 
     /**
-     * @name draggingDOMDragMove
-     * @synopsis Executed when the state machine associated with this receiver
+     * @method draggingDOMDragMove
+     * @summary Executed when the state machine associated with this receiver
      *     receives a TP.sig.DOMDragMove signal while in the 'dragging' state.
      * @param {TP.sig.StateInput} aSignal The state input signal generated by
      *     the state machine machinery.
@@ -4468,8 +4468,8 @@ TP.core.DragTracker.Inst.defineMethod('refreshComputables',
 function() {
 
     /**
-     * @name refreshComputables
-     * @synopsis Refreshes the receiver's cache of computable data.
+     * @method refreshComputables
+     * @summary Refreshes the receiver's cache of computable data.
      * @returns {TP.core.DragTracker} The receiver.
      */
 
@@ -4488,8 +4488,8 @@ TP.core.DragTracker.Inst.defineMethod('refreshDomain',
 function() {
 
     /**
-     * @name refreshDomain
-     * @synopsis Refreshes the receiver's cache of domain objects, the objects
+     * @method refreshDomain
+     * @summary Refreshes the receiver's cache of domain objects, the objects
      *     which provide the basis for selection sets and computations.
      * @returns {TP.core.DragTracker} The receiver.
      */
@@ -4514,8 +4514,8 @@ TP.core.DragTracker.Inst.defineMethod('setFilterFunction',
 function(filterFunction) {
 
     /**
-     * @name setFilterFunction
-     * @synopsis Sets the filter function for the receiver. When the value
+     * @method setFilterFunction
+     * @summary Sets the filter function for the receiver. When the value
      *     changes the domain is re-filtered and the range function is rerun to
      *     update the computables list.
      * @param {Function} filterFunction The function to invoke on each domain
@@ -4543,8 +4543,8 @@ TP.core.DragTracker.Inst.defineMethod('setRangeFunction',
 function(rangeFunction) {
 
     /**
-     * @name setRangeFunction
-     * @synopsis Sets the range function for the receiver. When the value
+     * @method setRangeFunction
+     * @summary Sets the range function for the receiver. When the value
      *     changes all computables are refreshed by querying the domain objects
      *     for their computable value.
      * @param {Function} rangeFunction The function to invoke on each domain
@@ -4571,8 +4571,8 @@ TP.core.DragTracker.Inst.defineMethod('setTestFunction',
 function(testFunction) {
 
     /**
-     * @name setTestFunction
-     * @synopsis Sets the test function for the receiver. This function is run
+     * @method setTestFunction
+     * @summary Sets the test function for the receiver. This function is run
      *     when the event stream handler invokes it. All computables which pass
      *     the test function's checks are then placed in the payload of a
      *     tracking signal which notifies observers.
@@ -4597,8 +4597,8 @@ TP.core.DragTracker.Inst.defineMethod('setTrackingSignal',
 function(trackingSignal) {
 
     /**
-     * @name setTrackingSignal
-     * @synopsis Sets the tracking signal to fire when tracking matches are
+     * @method setTrackingSignal
+     * @summary Sets the tracking signal to fire when tracking matches are
      *     found.
      * @param {TP.sig.Signal|String} trackingSignal A signal or string which can
      *     provide the signal name to fire when tracking matches are found.

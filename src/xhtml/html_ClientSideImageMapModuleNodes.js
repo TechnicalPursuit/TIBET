@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.area}
- * @synopsis 'area' tag. A clickable area.
+ * @summary 'area' tag. A clickable area.
  */
 
 //  ------------------------------------------------------------------------
@@ -50,7 +50,7 @@ TP.html.area.finalizeTraits();
 
 /**
  * @type {TP.html.map}
- * @synopsis 'map' tag. Client-side image map.
+ * @summary 'map' tag. Client-side image map.
  */
 
 //  ------------------------------------------------------------------------

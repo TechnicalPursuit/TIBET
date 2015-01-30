@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.SignalPayload}
- * @synopsis Payload for TIBET signal types, allowing them to move across the
+ * @summary Payload for TIBET signal types, allowing them to move across the
  *     wire within the context of an XMPP packet. We leverage IQ packets to
  *     avoid store/forward issues and remain compliant.
  */
@@ -48,8 +48,8 @@ TP.xmpp.SignalPayload.Type.defineMethod('fromTP_sig_Signal',
 function(aSignal) {
 
     /**
-     * @name fromTP_sig_Signal
-     * @synopsis Constructs a new instance from a TP.sig.Signal instance.
+     * @method fromTP_sig_Signal
+     * @summary Constructs a new instance from a TP.sig.Signal instance.
      * @param {TP.sig.Signal} aSignal The instance to use as a template.
      * @returns {TP.xmpp.SignalPayload} A new instance.
      */
@@ -98,10 +98,10 @@ TP.xmpp.SignalPayload.Inst.defineMethod('asTP_sig_Signal',
 function() {
 
     /**
-     * @name asTP_sig_Signal
-     * @synopsis Returns the instance, encoded as a TP.sig.Signal. This
+     * @method asTP_sig_Signal
+     * @summary Returns the instance, encoded as a TP.sig.Signal. This
      *     effectively reconstitutes the embedded signal content.
-     * @raises SignalNodeNotFound, SignalTypeNotFound, ReconstitutionFailure
+     * @exception SignalNodeNotFound, SignalTypeNotFound, ReconstitutionFailure
      * @returns {TP.sig.Signal} A new instance.
      */
 

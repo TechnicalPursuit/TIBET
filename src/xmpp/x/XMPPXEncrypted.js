@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XEncrypted}
- * @synopsis A wrapper for the X_ENCRYPTED namespace'd payload element.
+ * @summary A wrapper for the X_ENCRYPTED namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

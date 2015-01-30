@@ -10,8 +10,8 @@
 
 /**
  * @type {TP.xmpp.URL}
- * @synopsis A subtype of URL specific to handling XMPP formatted urls.
- * @description This type is typically used within TIBET to define a unique ID
+ * @summary A subtype of URL specific to handling XMPP formatted urls.
+ * @summary This type is typically used within TIBET to define a unique ID
  *     for a particular XMPP session. Note that RFC5122 defines the 'xmpp:' URI
  *     standard. This type implements a subset of that functionality. According
  *     to RFC5122, XMPP URLs begin with the 'xmpp:' scheme, followed by a double
@@ -166,8 +166,8 @@ TP.xmpp.URL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Return the default URI handler type for this URI type. The
+     * @method $getDefaultHandler
+     * @summary Return the default URI handler type for this URI type. The
      *     returned type must respond to the route() method to be a valid
      *     handler.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
@@ -213,8 +213,8 @@ TP.xmpp.URL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @param {String} aURIString A String containing a proper URI.
      * @returns {TP.xmpp.URL} A new instance.
      */
@@ -287,8 +287,8 @@ TP.xmpp.URL.Inst.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name addObserver
-     * @synopsis Adds a local signal observation which is roughly like a DOM
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -494,8 +494,8 @@ TP.xmpp.URL.Inst.defineMethod('processTP_sig_XMPPPubsubEventInput',
 function(aSignal) {
 
     /**
-     * @name processTP_sig_XMPPPubsubEventInput
-     * @synopsis Responds to notification that a pubsub event packet has
+     * @method processTP_sig_XMPPPubsubEventInput
+     * @summary Responds to notification that a pubsub event packet has
      *     arrived.
      * @param {TP.sig.XMPPPubsubEventInput} aSignal The triggering signal.
      */
@@ -548,8 +548,8 @@ TP.xmpp.URL.Inst.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name removeObserver
-     * @synopsis Removes a local signal observation which is roughly like a DOM
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -718,8 +718,8 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType,
     isCancelable, isBubbling) {
 
     /**
-     * @name signalObservers
-     * @synopsis Signals a local signal observation which is roughly like a DOM
+     * @method signalObservers
+     * @summary Signals a local signal observation which is roughly like a DOM
      *     element throwing an event. The observer is typically the handler
      *     provided to a signal() call while the signal is a signal or string
      *     which the receiver is likely to signal or is intercepting for

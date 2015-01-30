@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Iq}
- * @synopsis An Iq element wrapper. This node type provides convenience methods
+ * @summary An Iq element wrapper. This node type provides convenience methods
  *     for working with XMPP Iq elements and their common children.
  */
 
@@ -38,8 +38,8 @@ TP.xmpp.Iq.Inst.defineMethod('addQuery',
 function(aNamespace) {
 
     /**
-     * @name addQuery
-     * @synopsis Adds a query node child with the namespace provided. This is a
+     * @method addQuery
+     * @summary Adds a query node child with the namespace provided. This is a
      *     convenient way to add a content node for some of the more common
      *     packet types. For example, myNode.addQuery(IQ_LAST).
      * @param {String} aNamespace The namespace, usually a namespace constant
@@ -61,8 +61,8 @@ TP.xmpp.Iq.Inst.defineMethod('constructResponse',
 function() {
 
     /**
-     * @name constructResponse
-     * @synopsis Creates an appropriate response object based on the current
+     * @method constructResponse
+     * @summary Creates an appropriate response object based on the current
      *     packet. For IQ packets the namespace of the current packet is
      *     leveraged to construct a new instance with proper type.
      * @returns {TP.xmpp.Stanza}
@@ -93,8 +93,8 @@ TP.xmpp.Iq.Inst.defineMethod('getDefaultType',
 function() {
 
     /**
-     * @name getDefaultType
-     * @synopsis Returns the default stanza type for the receiver.
+     * @method getDefaultType
+     * @summary Returns the default stanza type for the receiver.
      * @returns {String}
      */
 
@@ -107,12 +107,12 @@ TP.xmpp.Iq.Inst.defineMethod('getSignalName',
 function(aStanza) {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name to use when signaling arrival of
+     * @method getSignalName
+     * @summary Returns the signal name to use when signaling arrival of
      *     packets of this type. The default is XMPP*Input where the asterisk is
      *     replaced by the current tag/type string, for example
      *     TP.sig.XMPPMessageInput.
-     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.

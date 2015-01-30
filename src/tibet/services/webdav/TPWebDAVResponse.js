@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.WebDAVResponse}
- * @synopsis Provides a simple purpose WebDAV response wrapper with little or no
+ * @summary Provides a simple purpose WebDAV response wrapper with little or no
  *     result decoding/deserialization logic.
  */
 

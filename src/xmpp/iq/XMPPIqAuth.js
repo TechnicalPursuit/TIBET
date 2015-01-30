@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqAuth}
- * @synopsis A wrapper for the IQ_AUTH namespace'd payload element.
+ * @summary A wrapper for the IQ_AUTH namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

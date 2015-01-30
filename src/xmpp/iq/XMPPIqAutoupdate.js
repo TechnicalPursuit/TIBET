@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqAutoupdate}
- * @synopsis A wrapper for the IQ_AUTOUPDATE namespace'd payload element.
+ * @summary A wrapper for the IQ_AUTOUPDATE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -33,8 +33,8 @@ TP.xmpp.IqAutoupdate.Inst.defineMethod('getReleaseDescription',
 function() {
 
     /**
-     * @name getReleaseDescription
-     * @synopsis Returns the description of the release specified by this node.
+     * @method getReleaseDescription
+     * @summary Returns the description of the release specified by this node.
      * @returns {String}
      */
 
@@ -54,8 +54,8 @@ TP.xmpp.IqAutoupdate.Inst.defineMethod('getReleasePriority',
 function() {
 
     /**
-     * @name getReleasePriority
-     * @synopsis Returns the priority assigned to the release described by this
+     * @method getReleasePriority
+     * @summary Returns the priority assigned to the release described by this
      *     node.
      * @returns {String}
      */
@@ -76,8 +76,8 @@ TP.xmpp.IqAutoupdate.Inst.defineMethod('getReleaseURL',
 function() {
 
     /**
-     * @name getReleaseURL
-     * @synopsis Returns the URL of the release specified by this node.
+     * @method getReleaseURL
+     * @summary Returns the URL of the release specified by this node.
      * @returns {TP.core.URL}
      */
 
@@ -97,8 +97,8 @@ TP.xmpp.IqAutoupdate.Inst.defineMethod('getReleaseVersion',
 function() {
 
     /**
-     * @name getReleaseVersion
-     * @synopsis Returns the version of the release specified by this node.
+     * @method getReleaseVersion
+     * @summary Returns the version of the release specified by this node.
      * @returns {String}
      */
 

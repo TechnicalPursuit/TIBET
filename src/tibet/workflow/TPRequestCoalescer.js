@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.RequestCoalescer}
- * @synopsis An object designed to help with management of multiple
+ * @summary An object designed to help with management of multiple
  *     TP.sig.Request objects, treating them as a single request in terms of
  *     state. The coalescer will fire RequestCompleted only upon completion of
  *     all of its component requests.
@@ -28,13 +28,13 @@ TP.sig.RequestCoalescer.Inst.defineMethod('addRequest',
 function(aRequest) {
 
     /**
-     * @name addRequest
-     * @synopsis Adds a request as a trigger for the receiver. This method is a
+     * @method addRequest
+     * @summary Adds a request as a trigger for the receiver. This method is a
      *     convenience wrapper for the appropriate addTrigger call using the
      *     various properties of the request. The signal observed in this case
      *     is RequestCompleted.
      * @param {TP.sig.Request} aRequest A new request to observe.
-     * @raises TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidRequest
      * @returns {TP.sig.RequestCoalescer} The receiver.
      */
 

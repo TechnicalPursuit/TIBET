@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XRoster}
- * @synopsis A wrapper for the X_ROSTER namespace'd payload element.
+ * @summary A wrapper for the X_ROSTER namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

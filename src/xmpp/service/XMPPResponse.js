@@ -25,8 +25,8 @@ TP.sig.XMPPResponse.Inst.defineMethod('getFaultCode',
 function() {
 
     /**
-     * @name getFaultCode
-     * @synopsis Returns the fault code if any.
+     * @method getFaultCode
+     * @summary Returns the fault code if any.
      * @returns {String} A fault code.
      */
 
@@ -49,8 +49,8 @@ TP.sig.XMPPResponse.Inst.defineMethod('getFaultText',
 function() {
 
     /**
-     * @name getFaultText
-     * @synopsis Returns the fault message string if any.
+     * @method getFaultText
+     * @summary Returns the fault message string if any.
      * @returns {String} A fault message string.
      */
 

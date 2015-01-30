@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.ENTITIES}
- * @synopsis A space-separated list of TP.xs.ENTITY values.
+ * @summary A space-separated list of TP.xs.ENTITY values.
  */
 
 //  ------------------------------------------------------------------------
@@ -32,8 +32,8 @@ TP.xs.ENTITIES.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.ENTITIES the return value is a string value containing one
      *     or more TP.xs.ENTITY values, each separated by a single space. Any
      *     individual elements in the object's string representation which

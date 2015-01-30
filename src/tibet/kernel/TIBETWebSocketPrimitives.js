@@ -18,8 +18,8 @@ TP.definePrimitive('webSocketAbort',
 function(wsObj) {
 
     /**
-     * @name webSocketAbort
-     * @synopsis Aborts an in-process WebSocket, clearing any handlers which may
+     * @method webSocketAbort
+     * @summary Aborts an in-process WebSocket, clearing any handlers which may
      *     be present.
      * @param {WebSocket} wsObj The native WebSocket to abort.
      * @returns {WebSocket} The aborted WebSocket object.
@@ -47,15 +47,15 @@ TP.definePrimitive('webSocketCall',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webSocketCall
-     * @synopsis Performs a WebSocket call based on the information provided in
+     * @method webSocketCall
+     * @summary Performs a WebSocket call based on the information provided in
      *     aRequest. NOTE that the request object is updated with a number of
      *     keys which define the actual data used for the current WebSocket
      *     call.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI,WebSocketException,WebSocketSendException
+     * @exception TP.sig.InvalidURI,WebSocketException,WebSocketSendException
      * @throws Error Various WebSocket-related errors.
      * @returns {WebSocket} The result object.
      */
@@ -209,8 +209,8 @@ TP.definePrimitive('webSocketClose',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webSocketClose
-     * @synopsis Closes an open WebSocket, clearing any handlers which may be
+     * @method webSocketClose
+     * @summary Closes an open WebSocket, clearing any handlers which may be
      *     present.
      * @param {String} targetUrl The request's target URL.
      * @returns {WebSocket} The aborted WebSocket object.
@@ -249,8 +249,8 @@ TP.definePrimitive('webSocketCreate',
 function(targetUrl, openCallback) {
 
     /**
-     * @name webSocketCreate
-     * @synopsis Returns a WebSocket object for use.
+     * @method webSocketCreate
+     * @summary Returns a WebSocket object for use.
      * @param {String} targetUrl The request's target URL.
      * @param {Function} openCallback
      * @returns {WebSocket}
@@ -389,11 +389,11 @@ TP.definePrimitive('webSocketError',
 function(targetUrl, aSignal, aRequest) {
 
     /**
-     * @name webSocketError
-     * @synopsis Low-level error handler for WebSocket processing. This function
+     * @method webSocketError
+     * @summary Low-level error handler for WebSocket processing. This function
      *     will cause both the IO log and Error log to be updated to reflect the
      *     error condition.
-     * @description aRequest could contain 1 or more of the following keys:
+     * @summary aRequest could contain 1 or more of the following keys:
      *
      *     'uri' - the targetUrl 'uriparams' - URI query parameters 'body' -
      *     string content 'wsObj' - websocket object 'response' -
@@ -405,7 +405,7 @@ function(targetUrl, aSignal, aRequest) {
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
      *     by this call.
      * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
-     * @raises WebSocketException
+     * @exception WebSocketException
      * @throws Error Throws an Error containing aString.
      */
 
@@ -474,8 +474,8 @@ TP.definePrimitive('$webSocketTimeout',
 function(targetUrl, aRequest, wsObj) {
 
     /**
-     * @name $webSocketTimeout
-     * @synopsis Notifies the proper callback handlers and provides common
+     * @method $webSocketTimeout
+     * @summary Notifies the proper callback handlers and provides common
      *     signaling upon timeout of a WebSocket request. This method is invoked
      *     automatically by the webSocketCall() method when a request times out.
      * @param {String} targetUrl The full target URI in string form.
@@ -545,8 +545,8 @@ TP.definePrimitive('$webSocketWrapup',
 function(targetUrl, aRequest, wsObj) {
 
     /**
-     * @name $webSocketWrapup
-     * @synopsis Notifies the proper callback handlers and provides common
+     * @method $webSocketWrapup
+     * @summary Notifies the proper callback handlers and provides common
      *     signaling upon completion of a WebSocket request.
      * @param {String} targetUrl The full target URI in string form.
      * @param {TP.sig.Request} aRequest The request object holding parameter

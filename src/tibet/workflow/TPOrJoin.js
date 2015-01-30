@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.OrJoin}
- * @synopsis An 'or-join' is a coalescer which will notify when any one of its
+ * @summary An 'or-join' is a coalescer which will notify when any one of its
  *     configured notifiers is seen. When counts are involved an or-join can be
  *     spoiled by seeing a spoiler prior to reaching the target count for one of
  *     its triggers.
@@ -28,8 +28,8 @@ TP.sig.OrJoin.Inst.defineMethod('hasCoalesced',
 function(anItem) {
 
     /**
-     * @name hasCoalesced
-     * @synopsis Returns true if the receiver has reached a coalescing point. If
+     * @method hasCoalesced
+     * @summary Returns true if the receiver has reached a coalescing point. If
      *     true the handleSignal method will perform notification.
      * @param {Array} anItem A 'trigger' array. Used primarily to optimize for
      *     Or-Join scenarios.

@@ -10,10 +10,10 @@
 
 /**
  * @type {TP.tsh.history}
- * @synopsis Provides support for constrained history expansion during command
+ * @summary Provides support for constrained history expansion during command
  *     processing. This is a subset of standard shell history referencing which
  *     is focused on accessing entire commands and reinvoking them.
- * @description Traditional shell history substitution is literally
+ * @summary Traditional shell history substitution is literally
  *     that...substitution of some or all of a prior command's text into the
  *     current command input stream. The tsh:history tag does that to a certain
  *     extent, but there are some clear differences between goals. This tag's
@@ -43,7 +43,7 @@ TP.tsh.history.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
+     * @method cmdRunContent
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object}
@@ -174,8 +174,8 @@ TP.tsh.history.Type.defineMethod('translateHistoryReference',
 function(aString, aRequest, aShell) {
 
     /**
-     * @name translateHistoryReference
-     * @synopsis Translates a history reference to the appropriate replacement
+     * @method translateHistoryReference
+     * @summary Translates a history reference to the appropriate replacement
      *     string. History entries come in the form #n[:w] where the N can be an
      *     absolute or relative reference to a history entry and W represents a
      *     word specifier.

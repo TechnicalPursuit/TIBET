@@ -185,8 +185,8 @@ application manifest for different user role/unit affiliations.
 
 /**
  * @type {TP.core.Resource}
- * @synopsis Root type for TIBET resources.
- * @description In a strict workflow sense resources are elements which can
+ * @summary Root type for TIBET resources.
+ * @summary In a strict workflow sense resources are elements which can
  *     perform tasks. Using that definition, specific resource types would
  *     include people and machines. In TIBET we model people as 'users' (note
  *     that each person may well have more than one login/username they use). We
@@ -241,8 +241,8 @@ TP.core.Resource.Type.defineMethod('addResource',
 function(aResource) {
 
     /**
-     * @name addResource
-     * @synopsis Adds a new resource instance to the global resource hash.
+     * @method addResource
+     * @summary Adds a new resource instance to the global resource hash.
      * @param {TP.core.Resource} aResource The resource to add.
      */
 
@@ -264,11 +264,11 @@ TP.core.Resource.Type.defineMethod('construct',
 function(resourceID) {
 
     /**
-     * @name construct
-     * @synopsis Constructs a new instance of the receiver. If the resourceID
+     * @method construct
+     * @summary Constructs a new instance of the receiver. If the resourceID
      *     provided is a duplicate an exception is thrown.
      * @param {TP.core.Resource} aResource The resource to add.
-     * @raises TP.sig.NonUniqueID
+     * @exception TP.sig.NonUniqueID
      */
 
     var inst;
@@ -301,8 +301,8 @@ TP.core.Resource.Type.defineMethod('getResourceById',
 function(anID) {
 
     /**
-     * @name getResourceById
-     * @synopsis Returns the resource instance with the given ID.
+     * @method getResourceById
+     * @summary Returns the resource instance with the given ID.
      * @param {String} anID The resource ID to look up.
      * @returns {TP.core.Resource}
      */
@@ -339,12 +339,12 @@ TP.core.Resource.Inst.defineMethod('init',
 function(resourceID) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @param {String} resourceID A unique TIBET identifier. By unique we mean
      *     an ID which will not conflict with any other ID registered using
      *     TIBET's object registration methods.
-     * @raises TP.sig.InvalidResourceID
+     * @exception TP.sig.InvalidResourceID
      * @returns {TP.core.Resource} A new instance.
      */
 
@@ -365,8 +365,8 @@ TP.core.Resource.Inst.defineMethod('acceptRequest',
 function(aRequest) {
 
     /**
-     * @name acceptRequest
-     * @synopsis Does the work necessary to ensure that the receiver and the
+     * @method acceptRequest
+     * @summary Does the work necessary to ensure that the receiver and the
      *     request are properly associated via responder links etc.
      * @param {TP.sig.Request} aRequest The request to accept.
      * @returns {TP.core.Resource} The receiver.
@@ -388,8 +388,8 @@ TP.core.Resource.Inst.defineMethod('getAccessKeys',
 function() {
 
     /**
-     * @name getAccessKeys
-     * @synopsis Returns the receiver's permission keys, based on any vCard that
+     * @method getAccessKeys
+     * @summary Returns the receiver's permission keys, based on any vCard that
      *     may have been assigned.
      * @returns {TP.lang.Hash} The receiver's permission keys.
      */
@@ -412,10 +412,10 @@ TP.core.Resource.Inst.defineMethod('getPrimaryRole',
 function() {
 
     /**
-     * @name getPrimaryRole
-     * @synopsis Returns the primary role, the first role in the receiver's
+     * @method getPrimaryRole
+     * @summary Returns the primary role, the first role in the receiver's
      *     vCard, if any.
-     * @description Note the ordering here. Unlike unit assignments which
+     * @summary Note the ordering here. Unlike unit assignments which
      *     typically go from least specific to most specific the presumption
      *     here is that the user's roles are defined in order from most-specific
      *     to least-specific (or at least to "least important") so the first
@@ -438,10 +438,10 @@ TP.core.Resource.Inst.defineMethod('getPrimaryUnit',
 function() {
 
     /**
-     * @name getPrimaryUnit
-     * @synopsis Returns the primary unit, the _last_ unit in the receiver's
+     * @method getPrimaryUnit
+     * @summary Returns the primary unit, the _last_ unit in the receiver's
      *     vCard, if any.
-     * @description Note the subtle distinction here. Units are normally defined
+     * @summary Note the subtle distinction here. Units are normally defined
      *     in hierarchy order, so the first unit is actually the least specific
      *     one. For that reason we return the last unit in line as the primary
      *     (most-specific) unit.
@@ -463,8 +463,8 @@ TP.core.Resource.Inst.defineMethod('getResourceID',
 function() {
 
     /**
-     * @name getResourceID
-     * @synopsis Returns the unique resource identifier for the receiver.
+     * @method getResourceID
+     * @summary Returns the unique resource identifier for the receiver.
      * @returns {String}
      */
 
@@ -477,10 +477,10 @@ TP.core.Resource.Inst.defineMethod('getTriggerOrigins',
 function() {
 
     /**
-     * @name getTriggerOrigins
-     * @synopsis Returns one or more origins for the TIBET signaling system
+     * @method getTriggerOrigins
+     * @summary Returns one or more origins for the TIBET signaling system
      *     which should cause the receiver to respond to requests.
-     * @description The trigger origins are typically null meaning any origin is
+     * @summary The trigger origins are typically null meaning any origin is
      *     valid and responsiveness depends on the signal type. You can override
      *     this for specific instances so that a particular resource is focused
      *     on responding to a particular requestor.
@@ -502,8 +502,8 @@ TP.core.Resource.Inst.defineMethod('getTriggerSignals',
 function() {
 
     /**
-     * @name getTriggerSignals
-     * @synopsis Returns one or more trigger signals for the TIBET signaling
+     * @method getTriggerSignals
+     * @summary Returns one or more trigger signals for the TIBET signaling
      *     system which should cause the receiver to respond to requests. The
      *     trigger signals default based on the receiver's type.
      * @returns {Object}
@@ -524,8 +524,8 @@ TP.core.Resource.Inst.defineMethod('getVCard',
 function() {
 
     /**
-     * @name getVCard
-     * @synopsis Returns the receiver's vCard, if one has been set.
+     * @method getVCard
+     * @summary Returns the receiver's vCard, if one has been set.
      * @returns {TP.vcard_temp.vCard} A TIBET vCard wrapper element.
      */
 
@@ -538,9 +538,9 @@ TP.core.Resource.Inst.defineMethod('handle',
 function(aSignal) {
 
     /**
-     * @name handle
-     * @synopsis Handles notification of an incoming signal.
-     * @description For TP.core.Resources this method provides the same lookup
+     * @method handle
+     * @summary Handles notification of an incoming signal.
+     * @summary For TP.core.Resources this method provides the same lookup
      *     semantics as a normal TIBET object, but checks specifically for
      *     TP.sig.Request and TP.sig.Response objects to keep things moving as
      *     quickly as possible with respect to processing requests and
@@ -597,11 +597,11 @@ TP.core.Resource.Inst.defineMethod('handleRequest',
 function(aRequest) {
 
     /**
-     * @name handleRequest
-     * @synopsis Default request-type handling method. Intended to be overridden
+     * @method handleRequest
+     * @summary Default request-type handling method. Intended to be overridden
      *     in specific resource subtypes, or to have a more specific handler
      *     catching requests before they reach this default handler.
-     * @description When a handle call is received the search for a handler
+     * @summary When a handle call is received the search for a handler
      *     proceeds through the type hierarchy of the request and terminates at
      *     handleRequest. This implementation raises a MissingOverride
      *     Exception.
@@ -618,8 +618,8 @@ TP.core.Resource.Inst.defineMethod('hasAccessKey',
 function(aKey) {
 
     /**
-     * @name hasAccessKey
-     * @synopsis Returns true if the receiver has the access key provided by
+     * @method hasAccessKey
+     * @summary Returns true if the receiver has the access key provided by
      *     virtue of their current vCard assignment.
      * @returns {Boolean} True if the receiver's vCard data includes the key
      *     provided.
@@ -634,8 +634,8 @@ TP.core.Resource.Inst.defineMethod('isAvailable',
 function(aRequest) {
 
     /**
-     * @name isAvailable
-     * @synopsis Returns true if the receiver is available to service the
+     * @method isAvailable
+     * @summary Returns true if the receiver is available to service the
      *     request provided.
      * @param {TP.sig.Request} aRequest The request to be serviced.
      * @returns {Boolean}
@@ -664,8 +664,8 @@ TP.core.Resource.Inst.defineMethod('isEnabled',
 function(aRequest) {
 
     /**
-     * @name isEnabled
-     * @synopsis Returns a boolean defining whether the receiver is runnable. If
+     * @method isEnabled
+     * @summary Returns a boolean defining whether the receiver is runnable. If
      *     the receiver has prerequisites this would be where testing for them
      *     would be appropriate.
      * @param {TP.sig.Request} aRequest The request to be serviced.
@@ -681,8 +681,8 @@ TP.core.Resource.Inst.defineMethod('isRegistered',
 function(aFlag) {
 
     /**
-     * @name isRegistered
-     * @synopsis Returns a boolean defining whether the receiver has registered
+     * @method isRegistered
+     * @summary Returns a boolean defining whether the receiver has registered
      *     to observe its triggers. Resources only need to register if they are
      *     going to be triggered by signals rather than by direct invocation.
      * @param {Boolean} aFlag A new value for this property. Optional.
@@ -702,8 +702,8 @@ TP.core.Resource.Inst.defineMethod('isTargeted',
 function(aRequest) {
 
     /**
-     * @name isTargeted
-     * @synopsis Returns a boolean defining whether the receiver matches the
+     * @method isTargeted
+     * @summary Returns a boolean defining whether the receiver matches the
      *     target resourceID of the request. Not all requests target a specific
      *     ID and if they don't this call will return true.
      * @param {TP.sig.Request} aRequest The request to be serviced.
@@ -729,10 +729,10 @@ TP.core.Resource.Inst.defineMethod('populateMissingVCardData',
 function(aParamInfo, aRequest) {
 
     /**
-     * @name populateMissingVCardData
-     * @synopsis Populates any missing parameters in the request from the
+     * @method populateMissingVCardData
+     * @summary Populates any missing parameters in the request from the
      *     receiver's vCard.
-     * @description This method uses the information in the supplied 'parameter
+     * @summary This method uses the information in the supplied 'parameter
      *     info' to perform this process. This hash has the following format:
      *
      *     TP.hc('<name_of_param>', TP.ac('<vCard_name>', <prompt_message>'));
@@ -882,8 +882,8 @@ TP.core.Resource.Inst.defineMethod('register',
 function() {
 
     /**
-     * @name register
-     * @synopsis Registers the receiver observe its trigger signals so that
+     * @method register
+     * @summary Registers the receiver observe its trigger signals so that
      *     requests will cause activation of the service.
      * @returns {TP.core.Resource} The receiver.
      */
@@ -932,8 +932,8 @@ TP.core.Resource.Inst.defineMethod('setVCard',
 function(aVCard) {
 
     /**
-     * @name setVCard
-     * @synopsis Sets the VCard description for the resource.
+     * @method setVCard
+     * @summary Sets the VCard description for the resource.
      * @param {TP.vcard_temp.vCard} aVCard The vCard description for the
      *     resource.
      * @returns {TP.core.Resource} The receiver.
@@ -953,8 +953,8 @@ TP.core.Resource.Inst.defineMethod('unregister',
 function() {
 
     /**
-     * @name unregister
-     * @synopsis Turns off registration (ignores) the receivers triggers.
+     * @method unregister
+     * @summary Turns off registration (ignores) the receivers triggers.
      * @returns {TP.core.Resource} The receiver.
      */
 
@@ -1002,8 +1002,8 @@ function() {
 
 /**
  * @type {TP.sig.WorkflowSignal}
- * @synopsis Top level workflow signal type.
- * @description The TP.sig.WorkflowSignal type is a root signal type for
+ * @summary Top level workflow signal type.
+ * @summary The TP.sig.WorkflowSignal type is a root signal type for
  *     workflow request/response signal types such as TP.sig.Request and
  *     TP.sig.Response.
  */
@@ -1040,9 +1040,9 @@ TP.sig.WorkflowSignal.Inst.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
     /**
-     * @name fire
-     * @synopsis Fires the signal so that registered observers are notified.
-     * @description For TP.sig.WorkflowSignals and their subtypes the firing
+     * @method fire
+     * @summary Fires the signal so that registered observers are notified.
+     * @summary For TP.sig.WorkflowSignals and their subtypes the firing
      *     policy is TP.INHERITANCE_FIRING meaning that observers of any form of
      *     TP.sig.WorkflowSignal are notified. Also, the origin is typically the
      *     request ID for the signal's associated request so that "processes"
@@ -1100,12 +1100,12 @@ TP.sig.WorkflowSignal.finalizeTraits();
 
 /**
  * @type {TP.sig.Request}
- * @synopsis TIBET's main workflow request signal type. This type most closely
+ * @summary TIBET's main workflow request signal type. This type most closely
  *     relates to a 'work item' in a formal workflow model by binding a 'case'
  *     (the payload/args data) to a task (a set of one or more steps for
  *     processing a case -- i.e. the handler logic of the responding resource
  *     and the request type itself.
- * @description In workflow systems the binding between a particular 'case' and
+ * @summary In workflow systems the binding between a particular 'case' and
  *     a particular 'task' is a 'work item'. In TIBET the tasks can be thought
  *     of as the specific handlers implemented by resource objects while the
  *     'case' is represented by the data contained within request signals, also
@@ -1154,10 +1154,10 @@ TP.definePrimitive('request',
 function(varargs) {
 
     /**
-     * @name request
-     * @synopsis Constructs a standard TP.sig.Request populated differently
+     * @method request
+     * @summary Constructs a standard TP.sig.Request populated differently
      *     depending on the nature of the argument list.
-     * @description When no arguments are given this is a synonym for
+     * @summary When no arguments are given this is a synonym for
      *     TP.sig.Request.construct(), when a single argument is given if it's a
      *     TP.sig.Signal of any kind then the signal's payload becomes the
      *     request's payload, otherwise the object itself becomes the request
@@ -1192,8 +1192,8 @@ TP.sig.Request.Type.defineMethod('isSynchronous',
 function() {
 
     /**
-     * @name isSynchronous
-     * @synopsis Returns true if the instances of the receiver can support
+     * @method isSynchronous
+     * @summary Returns true if the instances of the receiver can support
      *     synchronous operation. This method is called from the instance-level
      *     'isSynchronous' method if a mode cannot be determined from the
      *     request instance or from the resource it is being fired against.
@@ -1209,8 +1209,8 @@ TP.sig.Request.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns whether or not this request should be logged. The
+     * @method shouldLog
+     * @summary Returns whether or not this request should be logged. The
      *     default at this level is to return whether TIBET is logging request
      *     signals in general.
      * @returns {Boolean} Whether or not this signal will be logged.
@@ -1290,8 +1290,8 @@ TP.sig.Request.Inst.defineMethod('init',
 function(aRequest, aResourceID, aThreadID) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new request. Each request is composed of a request
+     * @method init
+     * @summary Initialize a new request. Each request is composed of a request
      *     payload (usually a hash), and optional resourceID and threadID
      *     elements. The resourceID allows a request to target a particular
      *     resource while the threadID allows the request to be associated with
@@ -1329,8 +1329,8 @@ TP.sig.Request.Inst.defineMethod('$initTemplate',
 function(aRequest) {
 
     /**
-     * @name $initTemplate
-     * @synopsis Generates and returns a viable request payload from the
+     * @method $initTemplate
+     * @summary Generates and returns a viable request payload from the
      *     incoming payload object and any local template for the receiver. When
      *     both a template and a request are provided the keys in the template
      *     missing in the request are merged to fill in those default values.
@@ -1398,8 +1398,8 @@ TP.sig.Request.Inst.defineMethod('asQueryString',
 function() {
 
     /**
-     * @name asQueryString
-     * @synopsis Returns the receiver's "query string" content, the parameters
+     * @method asQueryString
+     * @summary Returns the receiver's "query string" content, the parameters
      *     which make up the query portion of an HTTP URI.
      * @returns {String} The query string, or an empty string.
      */
@@ -1417,8 +1417,8 @@ TP.sig.Request.Inst.defineMethod('configureSTDIO',
 function(aRequest) {
 
     /**
-     * @name configureSTDIO
-     * @synopsis Maps STDIO functions and content from one request to another so
+     * @method configureSTDIO
+     * @summary Maps STDIO functions and content from one request to another so
      *     the subrequest/peer can leverage the IO channels of the original
      *     request.
      * @param {TP.sig.Request} aRequest The object to map IO from.
@@ -1457,8 +1457,8 @@ TP.sig.Request.Inst.defineMethod('constructResponse',
 function(aResult) {
 
     /**
-     * @name constructResponse
-     * @synopsis The default method for getting a response instance for the
+     * @method constructResponse
+     * @summary The default method for getting a response instance for the
      *     request. This method is invoked automatically by services when
      *     building up responses to incoming requests. The returned instance is
      *     then updated with the result data and fired when ready.
@@ -1498,9 +1498,9 @@ TP.sig.Request.Inst.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
     /**
-     * @name fire
-     * @synopsis Fires the signal so that registered observers are notified.
-     * @description For TP.sig.WorkflowSignal types the signaling origin is
+     * @method fire
+     * @summary Fires the signal so that registered observers are notified.
+     * @summary For TP.sig.WorkflowSignal types the signaling origin is
      *     typically the request ID for the signal's associated request so that
      *     "processes" can be constructed using the request ID as the common
      *     reference.
@@ -1534,8 +1534,8 @@ TP.sig.Request.Inst.defineMethod('getDelegate',
 function() {
 
     /**
-     * @name getDelegate
-     * @synopsis Returns the receiver's delegate, the object used by the
+     * @method getDelegate
+     * @summary Returns the receiver's delegate, the object used by the
      *     TP.delegate utility function when constructing delegation methods.
      *     For TP.sig.Request this is the request's response.
      * @returns {Object} The receiver's delegation object.
@@ -1550,8 +1550,8 @@ TP.sig.Request.Inst.defineMethod('getPromise',
 function () {
 
     /**
-     * @name getPromise
-     * @synopsis Returns a 'promise' (a 'Promises/A+'-compliant Promise) for the
+     * @method getPromise
+     * @summary Returns a 'promise' (a 'Promises/A+'-compliant Promise) for the
      *     receiving object. Note that, in TIBET, all a promise really is is a
      *     TP.sig.Response. See the 'then()' method on that type for more
      *     information.
@@ -1568,8 +1568,8 @@ TP.sig.Request.Inst.defineMethod('getRequestID',
 function() {
 
     /**
-     * @name getRequestID
-     * @synopsis Returns the request ID for this request. The request ID may be
+     * @method getRequestID
+     * @summary Returns the request ID for this request. The request ID may be
      *     a standard OID, a URL, or whatever is appropriate for the type of
      *     request. The default is an OID. The important thing about a request
      *     ID is that they serve as origins for any response signals which are
@@ -1586,8 +1586,8 @@ TP.sig.Request.Inst.defineMethod('getRequestor',
 function() {
 
     /**
-     * @name getRequestor
-     * @synopsis Returns the receiver's requestor, the object that is configured
+     * @method getRequestor
+     * @summary Returns the receiver's requestor, the object that is configured
      *     to receive notifications of results/callbacks. The request itself is
      *     the default requestor, meaning without some explicit setter the
      *     request is called back with results when any low-level processing is
@@ -1610,8 +1610,8 @@ TP.sig.Request.Inst.defineMethod('getResponder',
 function() {
 
     /**
-     * @name getResponder
-     * @synopsis Returns the object which responded to this request. Only viable
+     * @method getResponder
+     * @summary Returns the object which responded to this request. Only viable
      *     after the request has been activated.
      * @returns {Object}
      */
@@ -1625,8 +1625,8 @@ TP.sig.Request.Inst.defineMethod('getResponse',
 function() {
 
     /**
-     * @name getResponse
-     * @synopsis Returns the response object for this request, if any.
+     * @method getResponse
+     * @summary Returns the response object for this request, if any.
      * @returns {Object}
      */
 
@@ -1639,8 +1639,8 @@ TP.sig.Request.Inst.defineMethod('getResponseName',
 function() {
 
     /**
-     * @name getResponseName
-     * @synopsis Returns the response name for this request. The response name
+     * @method getResponseName
+     * @summary Returns the response name for this request. The response name
      *     is the signal name that should be used when signaling a response.
      *     Normally this defaults to the type name of the response type, but you
      *     can alter it when you want to fine tune handler lookup without having
@@ -1661,8 +1661,8 @@ TP.sig.Request.Inst.defineMethod('getResponseType',
 function() {
 
     /**
-     * @name getResponseType
-     * @synopsis Returns the type of response this request expects. By default
+     * @method getResponseType
+     * @summary Returns the type of response this request expects. By default
      *     this is TP.sig.Response but custom subtypes can be used to provide
      *     specific response processing.
      * @returns {TP.lang.RootObject.<TP.core.Response>} A TP.core.Response
@@ -1697,8 +1697,8 @@ TP.sig.Request.Inst.defineMethod('getResult',
 function() {
 
     /**
-     * @name getResult
-     * @synopsis Returns the request result, the object returned as a result of
+     * @method getResult
+     * @summary Returns the request result, the object returned as a result of
      *     processing the receiver's request.
      * @returns {Object}
      */
@@ -1719,8 +1719,8 @@ TP.sig.Request.Inst.defineMethod('getResultNode',
 function() {
 
     /**
-     * @name getResultNode
-     * @synopsis Returns the receiver's result in TP.core.Node form if possible.
+     * @method getResultNode
+     * @summary Returns the receiver's result in TP.core.Node form if possible.
      *     When the result isn't valid XML this method returns null.
      * @returns {Node} A valid Node instance.
      */
@@ -1741,8 +1741,8 @@ TP.sig.Request.Inst.defineMethod('getResultObject',
 function() {
 
     /**
-     * @name getResultObject
-     * @synopsis Returns the receiver's result in object form.
+     * @method getResultObject
+     * @summary Returns the receiver's result in object form.
      * @returns {Object}
      */
 
@@ -1762,8 +1762,8 @@ TP.sig.Request.Inst.defineMethod('getResultText',
 function() {
 
     /**
-     * @name getResultText
-     * @synopsis Returns the receiver's content in text (String) form.
+     * @method getResultText
+     * @summary Returns the receiver's content in text (String) form.
      * @returns {String}
      */
 
@@ -1783,8 +1783,8 @@ TP.sig.Request.Inst.defineMethod('handle',
 function(aSignal) {
 
     /**
-     * @name handle
-     * @synopsis The top-level signal hander for this type. To ensure proper
+     * @method handle
+     * @summary The top-level signal hander for this type. To ensure proper
      *     response processing while allowing the default handleResponse method
      *     to be the override point we handle some response-specific
      *     housekeeping here. NOTE that it is still up to the individual
@@ -1832,12 +1832,12 @@ TP.sig.Request.Inst.defineMethod('handleResponse',
 function(aSignal) {
 
     /**
-     * @name handleResponse
-     * @synopsis Generic response handling method. When using simple
+     * @method handleResponse
+     * @summary Generic response handling method. When using simple
      *     request/response processing it's possible to leverage the request
      *     instances themselves as responders so this method is often invoked to
      *     perform response processing.
-     * @description Default response processing ensures that observation of the
+     * @summary Default response processing ensures that observation of the
      *     request/response ID are turned off, that the request is removed from
      *     any pending request queues, and that a RequestCompleted is signaled
      *     with the request's ID.
@@ -1854,8 +1854,8 @@ TP.sig.Request.Inst.defineMethod('isSynchronous',
 function(aResource) {
 
     /**
-     * @name isSynchronous
-     * @synopsis Returns true if the request specifies a synchronous response.
+     * @method isSynchronous
+     * @summary Returns true if the request specifies a synchronous response.
      * @param {TP.core.Resource} aResource The resource to check for
      *     synchronicity settings if the receiver has no explicit 'async'
      *     setting.
@@ -1884,8 +1884,8 @@ TP.sig.Request.Inst.defineMethod('recycle',
 function() {
 
     /**
-     * @name recycle
-     * @synopsis Prepares the receiver for a new usage cycle.
+     * @method recycle
+     * @summary Prepares the receiver for a new usage cycle.
      * @returns {Object} The receiver.
      */
 
@@ -1906,8 +1906,8 @@ TP.sig.Request.Inst.defineMethod('setRequest',
 function(aRequest) {
 
     /**
-     * @name setRequest
-     * @synopsis Sets the receiver's internal request hash. This is the same as
+     * @method setRequest
+     * @summary Sets the receiver's internal request hash. This is the same as
      *     setting the receiver's signal "payload" via setPayload.
      * @param {TP.lang.Hash} aRequest A set of key/value pairs defining the
      *     request specifics.
@@ -1925,8 +1925,8 @@ TP.sig.Request.Inst.defineMethod('setRequestID',
 function(aRequestID) {
 
     /**
-     * @name setRequestID
-     * @synopsis Sets the receiver's request ID. This effectively changes the
+     * @method setRequestID
+     * @summary Sets the receiver's request ID. This effectively changes the
      *     request for purposes of most operations since requestors and
      *     responders use the request ID to correlate instances. If you are
      *     going to change this value you should do it once, prior to initiating
@@ -1947,8 +1947,8 @@ TP.sig.Request.Inst.defineMethod('setRequestor',
 function(aRequestor) {
 
     /**
-     * @name setRequestor
-     * @synopsis Sets the receiver's requestor, the object that will be
+     * @method setRequestor
+     * @summary Sets the receiver's requestor, the object that will be
      *     configured to receive notifications of results. NOTE that a null
      *     value is valid here as a way of clearing a requestor.
      * @param {Object} aRequestor The object to register for notifications.
@@ -1964,8 +1964,8 @@ TP.sig.Request.Inst.defineMethod('setResponder',
 function(aResource) {
 
     /**
-     * @name setResponder
-     * @synopsis Sets the receiver's responder, the object which is handling the
+     * @method setResponder
+     * @summary Sets the receiver's responder, the object which is handling the
      *     request. This should be a valid TP.core.Resource, typically a
      *     TP.core.Service of some type. This is typically invoked by the
      *     responder itself when it accepts responsibility for the request.
@@ -1984,8 +1984,8 @@ TP.sig.Request.Inst.defineMethod('setResponse',
 function(aResponse) {
 
     /**
-     * @name setResponse
-     * @synopsis Sets the associated response instance for the receiver.
+     * @method setResponse
+     * @summary Sets the associated response instance for the receiver.
      * @param {TP.sig.Response} aResponse The associated response instance.
      * @returns {TP.sig.Request} The receiver.
      */
@@ -2007,8 +2007,8 @@ TP.sig.Request.Inst.defineMethod('setResponseName',
 function(aName) {
 
     /**
-     * @name setResponseName
-     * @synopsis Sets the receiver's response name, the name of the specific
+     * @method setResponseName
+     * @summary Sets the receiver's response name, the name of the specific
      *     signal that should be used when signaling a response. Under normal
      *     circumstances this defaults to the receiving object type's response
      *     type name, but it can be changed to create more focused response
@@ -2030,8 +2030,8 @@ TP.sig.Request.Inst.defineMethod('setResponseType',
 function(aType) {
 
     /**
-     * @name setResponseType
-     * @synopsis Sets the receiver's response type, the type used to construct
+     * @method setResponseType
+     * @summary Sets the receiver's response type, the type used to construct
      *     the receiver's response instance. This value is typically taken from
      *     the receiver's type, but it can be overridden for a specific request
      *     using this method.
@@ -2050,8 +2050,8 @@ TP.sig.Request.Inst.defineMethod('setResult',
 function(aResult) {
 
     /**
-     * @name setResult
-     * @synopsis Defines the request's result, the object returned as a result
+     * @method setResult
+     * @summary Defines the request's result, the object returned as a result
      *     of processing the request.
      * @param {Object} aResult The result of request processing.
      * @returns {Object}
@@ -2071,10 +2071,10 @@ TP.sig.Request.Inst.defineMethod('updateRequestMode',
 function(aRequest) {
 
     /**
-     * @name updateRequestMode
-     * @synopsis Updates the receiver's request mode to match that of the
+     * @method updateRequestMode
+     * @summary Updates the receiver's request mode to match that of the
      *     supplied request, with particular regards to asynchronous behavior.
-     * @description If the receiver is configured for synchronous operation, but
+     * @summary If the receiver is configured for synchronous operation, but
      *     the supplied request is configured for asynchronous operation, the
      *     receiver will be configured for asynchronous operation. NOTE: The
      *     reverse is *NOT* true - if the receiver is asynchronous, but the
@@ -2112,10 +2112,10 @@ TP.sig.Request.Inst.defineMethod('andJoin',
 function(aRequest, aState) {
 
     /**
-     * @name andJoin
-     * @synopsis Adds a peer request and state to the list of requests which
+     * @method andJoin
+     * @summary Adds a peer request and state to the list of requests which
      *     must reach a prescribed state before the receiver will fire.
-     * @description The andJoin call allows a request to wait on multiple
+     * @summary The andJoin call allows a request to wait on multiple
      *     request prerequisites before it will fire. Because most pipes should
      *     stop processing if an error occurs in an early segment the default
      *     state is TP.SUCCEEDED. A failed prerequisite request will typically
@@ -2149,8 +2149,8 @@ TP.sig.Request.Inst.defineMethod('andJoinChild',
 function(aChildRequest) {
 
     /**
-     * @name andJoinChild
-     * @synopsis Adds a child request to the list of requests which must
+     * @method andJoinChild
+     * @summary Adds a child request to the list of requests which must
      *     complete before the receiver can complete. Note that a single failed
      *     child will cause the parent request to fail.
      * @param {TP.sig.Request} aChildRequest A request instance to observe for
@@ -2176,8 +2176,8 @@ TP.sig.Request.Inst.defineMethod('$cancelJoin',
 function(aChildRequest, aFaultString, aFaultCode) {
 
     /**
-     * @name $cancelJoin
-     * @synopsis Tells the receiver to cancel its join processing. This method
+     * @method $cancelJoin
+     * @summary Tells the receiver to cancel its join processing. This method
      *     is called internally to finalize processing for a parent request
      *     which had one or more child join requests.
      * @param {TP.sig.Request} aChildRequest A child request which cancelled.
@@ -2214,8 +2214,8 @@ TP.sig.Request.Inst.defineMethod('canComplete',
 function() {
 
     /**
-     * @name canComplete
-     * @synopsis Returns true if the receiver has no pending child joins haven't
+     * @method canComplete
+     * @summary Returns true if the receiver has no pending child joins haven't
      *     joined, meaning the receiver probably has pending asynchronous child
      *     requests and should not complete.
      * @returns {Array} The current and-joined or or-joined requests.
@@ -2260,8 +2260,8 @@ TP.sig.Request.Inst.defineMethod('$completeJoin',
 function(aChildRequest, aResult) {
 
     /**
-     * @name $completeJoin
-     * @synopsis Tells the receiver to "complete" its join processing. This
+     * @method $completeJoin
+     * @summary Tells the receiver to "complete" its join processing. This
      *     method is called internally to finalize processing for a parent
      *     request which had one or more child join requests.
      * @param {TP.sig.Request} aChildRequest A child request which completed.
@@ -2291,8 +2291,8 @@ TP.sig.Request.Inst.defineMethod('$failJoin',
 function(aChildRequest, aFaultString, aFaultCode) {
 
     /**
-     * @name $failJoin
-     * @synopsis Tells the receiver to fail its join processing. This method is
+     * @method $failJoin
+     * @summary Tells the receiver to fail its join processing. This method is
      *     called internally to finalize processing for a parent request which
      *     had one or more child join requests.
      * @param {TP.sig.Request} aChildRequest A child request which cancelled.
@@ -2329,8 +2329,8 @@ TP.sig.Request.Inst.defineMethod('getChildJoins',
 function(aJoinKey) {
 
     /**
-     * @name getChildJoins
-     * @synopsis Returns the joined requests which will be checked during join
+     * @method getChildJoins
+     * @summary Returns the joined requests which will be checked during join
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant.
@@ -2365,8 +2365,8 @@ TP.sig.Request.Inst.defineMethod('getJoins',
 function(aJoinKey, aRequest) {
 
     /**
-     * @name getJoins
-     * @synopsis Returns the joined requests which will be checked during join
+     * @method getJoins
+     * @summary Returns the joined requests which will be checked during join
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant, or a specific wrapup state code.
@@ -2403,8 +2403,8 @@ TP.sig.Request.Inst.defineMethod('getParentJoins',
 function(aJoinKey) {
 
     /**
-     * @name getParentJoins
-     * @synopsis Returns the joined requests which will be checked during join
+     * @method getParentJoins
+     * @summary Returns the joined requests which will be checked during join
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant.
@@ -2439,8 +2439,8 @@ TP.sig.Request.Inst.defineMethod('hasJoined',
 function(aRequest, childJoin) {
 
     /**
-     * @name hasJoined
-     * @synopsis Invoked by requests which have been joined to the receiver in
+     * @method hasJoined
+     * @summary Invoked by requests which have been joined to the receiver in
      *     some form or another when those requests complete. If the receiver
      *     checks its join configuration and recognizes that conditions for
      *     triggering have been met it returns true so the invoker can
@@ -2505,8 +2505,8 @@ TP.sig.Request.Inst.defineMethod('joinTo',
 function(aRequest, aState, aCondition) {
 
     /**
-     * @name joinTo
-     * @synopsis Joins the receiver to a downstream peer request. When the
+     * @method joinTo
+     * @summary Joins the receiver to a downstream peer request. When the
      *     receiver reaches aState it will check the downstream request to see
      *     if it should be triggered based on any other requests which might
      *     also be joined to that request. By default this method uses an orJoin
@@ -2537,8 +2537,8 @@ TP.sig.Request.Inst.defineMethod('orJoin',
 function(aRequest, aState) {
 
     /**
-     * @name orJoin
-     * @synopsis Adds a request and state to the list of requests which may
+     * @method orJoin
+     * @summary Adds a request and state to the list of requests which may
      *     reach a prescribed state before the receiver can trigger. For orJoin
      *     requests only one pair must match for the receiver to trigger in
      *     response.
@@ -2570,8 +2570,8 @@ TP.sig.Request.Inst.defineMethod('orJoinChild',
 function(aChildRequest) {
 
     /**
-     * @name orJoinChild
-     * @synopsis Adds a child request to the list of requests which must
+     * @method orJoinChild
+     * @summary Adds a child request to the list of requests which must
      *     complete before the receiver can complete. Note that a single failed
      *     child will cause the parent request to fail.
      * @param {TP.sig.Request} aChildRequest A request instance to observe for
@@ -2597,8 +2597,8 @@ TP.sig.Request.Inst.defineMethod('$wrapupJoin',
 function(aRequest, aState, childJoin) {
 
     /**
-     * @name $wrapupJoin
-     * @synopsis Invoked internally to register a request and state for join
+     * @method $wrapupJoin
+     * @summary Invoked internally to register a request and state for join
      *     testing during job wrapup processing.
      * @param {TP.sig.Request} aRequest A request instance to observe as a
      *     trigger.
@@ -2632,8 +2632,8 @@ TP.sig.Request.Inst.defineMethod('cancelJob',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancelJob
-     * @synopsis Tells the receiver to "cancel", meaning whatever work is needed
+     * @method cancelJob
+     * @summary Tells the receiver to "cancel", meaning whatever work is needed
      *     to get to a TP.CANCELLED state.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
@@ -2675,8 +2675,8 @@ TP.sig.Request.Inst.defineMethod('completeJob',
 function(aResult) {
 
     /**
-     * @name completeJob
-     * @synopsis Tells the receiver to "complete", meaning whatever work is
+     * @method completeJob
+     * @summary Tells the receiver to "complete", meaning whatever work is
      *     needed to get to a proper TP.SUCCEEDED state.
      * @param {Object} aResult An optional object to set as the result of the
      *     request.
@@ -2702,8 +2702,8 @@ TP.sig.Request.Inst.defineMethod('failJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
-     * @name failJob
-     * @synopsis Tells the receiver to "fail", meaning whatever work is needed
+     * @method failJob
+     * @summary Tells the receiver to "fail", meaning whatever work is needed
      *     to get to a TP.FAILED state.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
@@ -2748,11 +2748,11 @@ TP.sig.Request.Inst.defineMethod('$wrapupJob',
 function(aSuffix, aState, aResultOrFault, aFaultCode) {
 
     /**
-     * @name $wrapupJob
-     * @synopsis Handles notifying the common parties to a request, the request,
+     * @method $wrapupJob
+     * @summary Handles notifying the common parties to a request, the request,
      *     responder, and requestor of request completion and ensures any joined
      *     requests are triggered properly based on the final request status.
-     * @description The various job control methods (completeJob, failJob,
+     * @summary The various job control methods (completeJob, failJob,
      *     cancelJob) invoke this wrapup method to handle their final
      *     notification and join work.
      * @param {String} aSuffix The suffix provided is typically based on the
@@ -2978,7 +2978,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode) {
 
 /**
  * @type {TP.sig.Response}
- * @synopsis Top-level response signal for TP.sig.Request signals. All response
+ * @summary Top-level response signal for TP.sig.Request signals. All response
  *     signals are subtypes of this signal. When a TP.sig.Request is handled by
  *     a resource the resource's handle calls will construct and eventually
  *     signal a TP.sig.Response of the proper name/type to notify any observers.
@@ -3012,8 +3012,8 @@ TP.sig.Response.Inst.defineMethod('init',
 function(aRequest, aResult) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new instance. The request should be the original
+     * @method init
+     * @summary Initialize a new instance. The request should be the original
      *     TP.sig.Request instance while the optional result is whatever data
      *     should be assigned to the request as the result.
      * @param {TP.sig.Request} aRequest A request object. In the case of
@@ -3046,8 +3046,8 @@ TP.sig.Response.Inst.defineMethod('cancelJob',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancelJob
-     * @synopsis Tells the receiver to "cancel", meaning whatever work is needed
+     * @method cancelJob
+     * @summary Tells the receiver to "cancel", meaning whatever work is needed
      *     to get to a TP.CANCELLED state.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
@@ -3071,8 +3071,8 @@ TP.sig.Response.Inst.defineMethod('completeJob',
 function(aResult) {
 
     /**
-     * @name completeJob
-     * @synopsis Tells the receiver to "complete", meaning whatever work is
+     * @method completeJob
+     * @summary Tells the receiver to "complete", meaning whatever work is
      *     needed to get to a proper TP.SUCCEEDED state.
      * @param {Object} aResult An optional object to set as the result of the
      *     request.
@@ -3101,8 +3101,8 @@ TP.sig.Response.Inst.defineMethod('failJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
-     * @name failJob
-     * @synopsis Tells the receiver to "fail", meaning whatever work is needed
+     * @method failJob
+     * @summary Tells the receiver to "fail", meaning whatever work is needed
      *     to get to a TP.FAILED state.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
@@ -3129,8 +3129,8 @@ TP.sig.Response.Inst.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
     /**
-     * @name fire
-     * @synopsis Fires the response using either the request ID or null ID. NOTE
+     * @method fire
+     * @summary Fires the response using either the request ID or null ID. NOTE
      *     that the request itself is considered a local listener and is
      *     notified directly via this call. Other response observers may exist
      *     however, so this call still fires the response signal as its last
@@ -3205,8 +3205,8 @@ TP.sig.Response.Inst.defineMethod('getDelegate',
 function() {
 
     /**
-     * @name getDelegate
-     * @synopsis Returns the receiver's delegate, the object used by the
+     * @method getDelegate
+     * @summary Returns the receiver's delegate, the object used by the
      *     TP.delegate utility function when constructing delegation methods.
      *     For TP.sig.Response this is the request object.
      * @returns {Object} The receiver's delegation object.
@@ -3221,8 +3221,8 @@ TP.sig.Response.Inst.defineMethod('getFaultCode',
 function() {
 
     /**
-     * @name getFaultCode
-     * @synopsis Returns the fault code of the receiver.
+     * @method getFaultCode
+     * @summary Returns the fault code of the receiver.
      * @returns {Number} A TIBET fault code constant.
      */
 
@@ -3242,8 +3242,8 @@ TP.sig.Response.Inst.defineMethod('getFaultText',
 function() {
 
     /**
-     * @name getFaultText
-     * @synopsis Returns the fault string (description) of the receiver.
+     * @method getFaultText
+     * @summary Returns the fault string (description) of the receiver.
      * @returns {String} A text description of the fault.
      */
 
@@ -3263,8 +3263,8 @@ TP.sig.Response.Inst.defineMethod('getPayload',
 function() {
 
     /**
-     * @name getPayload
-     * @synopsis Returns the optional arguments to the signal. If the response
+     * @method getPayload
+     * @summary Returns the optional arguments to the signal. If the response
      *     contains a payload it is returned by this call, otherwise any payload
      *     used by the original request is returned.
      * @returns {Object} The receiver's payload.
@@ -3285,8 +3285,8 @@ TP.sig.Response.Inst.defineMethod('getRequest',
 function() {
 
     /**
-     * @name getRequest
-     * @synopsis Returns the receiver's original request object.
+     * @method getRequest
+     * @summary Returns the receiver's original request object.
      * @returns {TP.sig.Request} The request this is the response for.
      */
 
@@ -3299,8 +3299,8 @@ TP.sig.Response.Inst.defineMethod('getRequestID',
 function() {
 
     /**
-     * @name getRequestID
-     * @synopsis Returns the request ID for this request. The request ID may be
+     * @method getRequestID
+     * @summary Returns the request ID for this request. The request ID may be
      *     a standard OID, a URL, or whatever is appropriate for the type of
      *     request. The default is an OID. The important thing about a request
      *     ID is that they serve as origins for any response signals which are
@@ -3324,8 +3324,8 @@ TP.sig.Response.Inst.defineMethod('getResult',
 function() {
 
     /**
-     * @name getResult
-     * @synopsis Returns the request result, the object returned as a result of
+     * @method getResult
+     * @summary Returns the request result, the object returned as a result of
      *     processing the receiver's request.
      * @returns {Object}
      */
@@ -3339,8 +3339,8 @@ TP.sig.Response.Inst.defineMethod('getResultNode',
 function() {
 
     /**
-     * @name getResultNode
-     * @synopsis Returns the receiver's result in TP.core.Node form if possible.
+     * @method getResultNode
+     * @summary Returns the receiver's result in TP.core.Node form if possible.
      *     When the result isn't valid XML this method returns null.
      * @returns {Node} A valid Node instance.
      */
@@ -3354,8 +3354,8 @@ TP.sig.Response.Inst.defineMethod('getResultObject',
 function() {
 
     /**
-     * @name getResultObject
-     * @synopsis Returns the receiver's result in object form.
+     * @method getResultObject
+     * @summary Returns the receiver's result in object form.
      * @returns {Object}
      */
 
@@ -3368,8 +3368,8 @@ TP.sig.Response.Inst.defineMethod('getResultText',
 function() {
 
     /**
-     * @name getResultText
-     * @synopsis Returns the receiver's content in text (String) form.
+     * @method getResultText
+     * @summary Returns the receiver's content in text (String) form.
      * @returns {String}
      */
 
@@ -3382,8 +3382,8 @@ TP.sig.Response.Inst.defineMethod('getStatusCode',
 function() {
 
     /**
-     * @name getStatusCode
-     * @synopsis Returns the job status code of the receiver.
+     * @method getStatusCode
+     * @summary Returns the job status code of the receiver.
      * @returns {Number} A TIBET status code constant.
      */
 
@@ -3403,8 +3403,8 @@ TP.sig.Response.Inst.defineMethod('getStatusText',
 function() {
 
     /**
-     * @name getStatusText
-     * @synopsis Returns the job status of the receiver in text form.
+     * @method getStatusText
+     * @summary Returns the job status of the receiver in text form.
      * @returns {String} The current status in text form.
      */
 
@@ -3424,8 +3424,8 @@ TP.sig.Response.Inst.defineMethod('setRequest',
 function(aRequest) {
 
     /**
-     * @name setRequest
-     * @synopsis Sets the receiver's request object.
+     * @method setRequest
+     * @summary Sets the receiver's request object.
      * @param {TP.sig.Request} aRequest The response's request.
      * @returns {TP.sig.Response} The receiver.
      */
@@ -3441,8 +3441,8 @@ TP.sig.Response.Inst.defineMethod('setResult',
 function(aResult) {
 
     /**
-     * @name setResult
-     * @synopsis Defines the request's result, the object returned as a result
+     * @method setResult
+     * @summary Defines the request's result, the object returned as a result
      *     of processing the request. This method is often overridden in
      *     subtypes so they can manage how the result data is stored.
      * @param {Object} aResult The result of request processing.
@@ -3460,10 +3460,10 @@ TP.sig.Response.Inst.defineMethod('then',
 function (onFulfilled, onRejected) {
 
     /**
-     * @name then
-     * @synopsis A method which implements, as closely as possible, a
+     * @method then
+     * @summary A method which implements, as closely as possible, a
      *     'Promises/A+' implementation in TIBET.
-     * @description This method, which is standardized by the 'Promises/A+'
+     * @summary This method, which is standardized by the 'Promises/A+'
      *     standard, implements the core functionality of TIBET-based JavaScript
      *      Promises. Note that, in TIBET, Promises are really just instances of
      *      TP.sig.Response. This method allows for Promise composition as
@@ -3597,10 +3597,10 @@ function (onFulfilled, onRejected) {
 
 /**
  * @type {TP.core.PermissionGroup}
- * @synopsis An object whose primary purpose is to hold permission-specific
+ * @summary An object whose primary purpose is to hold permission-specific
  *     behavior and one or more keyrings that provide permissions to members of
  *     the group.
- * @description Roles and units in a workflow sense are mapped to permission
+ * @summary Roles and units in a workflow sense are mapped to permission
  *     groups in TIBET. These permission groups are then assigned by way of
  *     vCard entries which are typically assigned to TP.core.User instances
  *     representing the "real" and "effective" user.
@@ -3629,12 +3629,12 @@ TP.core.PermissionGroup.Type.defineMethod('addKeyRing',
 function(keyRingName) {
 
     /**
-     * @name addKeyRing
-     * @synopsis Adds a key ring to the receiver, granting it the permissions
+     * @method addKeyRing
+     * @summary Adds a key ring to the receiver, granting it the permissions
      *     defined by the keys contained in the key ring. Note that this
      *     operation is typically done via an initialize method which defines
      *     the permissions related to each group type.
-     * @description When defining different permission group types one of the
+     * @summary When defining different permission group types one of the
      *     operations needed is to define the keyrings which that group has
      *     access to. This is typically done by string name so that the keyrings
      *     don't have to exist at the time of the assignment -- allowing
@@ -3674,8 +3674,8 @@ TP.core.PermissionGroup.Type.defineMethod('getAccessKeys',
 function() {
 
     /**
-     * @name getAccessKeys
-     * @synopsis Returns an array of the permission keys associated with the
+     * @method getAccessKeys
+     * @summary Returns an array of the permission keys associated with the
      *     receiver by virtue of its associated keyrings.
      * @returns {Array} An array containing the string keys of the receiver.
      */
@@ -3711,9 +3711,9 @@ function() {
 
 /**
  * @type {TP.core.Role}
- * @synopsis A functionally-oriented permission group capable of providing both
+ * @summary A functionally-oriented permission group capable of providing both
  *     permissions and behavior to a TP.core.Resource.
- * @description Roles are typically used as a way of grouping capabilities
+ * @summary Roles are typically used as a way of grouping capabilities
  *     related to a specific job function such as "Manager" or "Clerk" in an
  *     application. This is in contrast to TP.core.Unit, which allows you to
  *     organize functionality and permissions based on organizational boundaries
@@ -3732,8 +3732,8 @@ TP.core.Role.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Initializes the type, defining the baseline keyrings.
+     * @method initialize
+     * @summary Initializes the type, defining the baseline keyrings.
      */
 
     //  We initialize a key ring for the 'Guest' role. This matches the role
@@ -3760,9 +3760,9 @@ TP.core.Role.defineSubtype('Public:Guest');
 
 /**
  * @type {TP.core.Unit}
- * @synopsis A organizationally-oriented permission group capable of providing
+ * @summary A organizationally-oriented permission group capable of providing
  *     both permissions and behavior to a TP.core.Resource.
- * @description Units are used as a way of grouping functionality along
+ * @summary Units are used as a way of grouping functionality along
  *     organizational lines and can be useful when designing applications which
  *     deploy across organizational boundaries.
  */
@@ -3779,8 +3779,8 @@ TP.core.Unit.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Initializes the type, defining the baseline keyrings.
+     * @method initialize
+     * @summary Initializes the type, defining the baseline keyrings.
      */
 
     this.addKeyRing('Public');
@@ -3812,8 +3812,8 @@ TP.sig.Request.defineSubtype('UserRequest');
 
 /**
  * @type {TP.core.User}
- * @synopsis A resource specific to the application user.
- * @description TP.core.User is a somewhat special, and perhaps unexpected,
+ * @summary A resource specific to the application user.
+ * @summary TP.core.User is a somewhat special, and perhaps unexpected,
  *     resource.
  *
  *     TIBET thinks of the user as another resource, one that can service
@@ -3870,8 +3870,8 @@ TP.core.User.Type.defineMethod('construct',
 function(resourceID) {
 
     /**
-     * @name construct
-     * @synopsis Constructs and returns a new TP.core.User instance. Also
+     * @method construct
+     * @summary Constructs and returns a new TP.core.User instance. Also
      *     ensures that the first TP.core.User instance constructed is
      *     automatically set to be the real user.
      * @returns {TP.core.User} A newly constructed user instance.
@@ -3894,8 +3894,8 @@ TP.core.User.Type.defineMethod('$distributeEffectiveAccessKeys',
 function() {
 
     /**
-     * @name $distributeEffectiveAccessKeys
-     * @synopsis Updates all open window body elements to contain the current
+     * @method $distributeEffectiveAccessKeys
+     * @summary Updates all open window body elements to contain the current
      *     "effective user" key string value. This method is invoked any time
      *     the effective user is changed, or has its vCard set to a new value.
      */
@@ -3918,8 +3918,8 @@ TP.core.User.Type.defineMethod('$distributeRealAccessKeys',
 function() {
 
     /**
-     * @name $distributeRealAccessKeys
-     * @synopsis Updates all open window body elements to contain the current
+     * @method $distributeRealAccessKeys
+     * @summary Updates all open window body elements to contain the current
      *     "real user" key string value. This method is invoked any time the
      *     real user is changed, or has its vCard set to a new value.
      */
@@ -3942,8 +3942,8 @@ TP.core.User.Type.defineMethod('getEffectiveAccessKeys',
 function() {
 
     /**
-     * @name getEffectiveAccessKeys
-     * @synopsis Returns the effective access keys, the access keys owned by the
+     * @method getEffectiveAccessKeys
+     * @summary Returns the effective access keys, the access keys owned by the
      *     effective user instance if there is one.
      * @returns {Array} An array of the effective user's access keys.
      */
@@ -3967,8 +3967,8 @@ TP.core.User.Type.defineMethod('getEffectiveUser',
 function() {
 
     /**
-     * @name getEffectiveUser
-     * @synopsis Returns the current "effective" user instance. Defaults to the
+     * @method getEffectiveUser
+     * @summary Returns the current "effective" user instance. Defaults to the
      *     current real user when no effective user instance has been set.
      * @returns {TP.core.User} The current effective user instance.
      */
@@ -3990,8 +3990,8 @@ TP.core.User.Type.defineMethod('getInstanceById',
 function(aUserID) {
 
     /**
-     * @name getInstanceById
-     * @synopsis Returns the instance with the ID provided, if available.
+     * @method getInstanceById
+     * @summary Returns the instance with the ID provided, if available.
      * @param {String} aUserID The user ID to look up.
      * @returns {TP.core.User} The user instance with the ID provided.
      */
@@ -4013,8 +4013,8 @@ TP.core.User.Type.defineMethod('getRealAccessKeys',
 function() {
 
     /**
-     * @name getRealAccessKeys
-     * @synopsis Returns the real user access keys, the access keys owned by the
+     * @method getRealAccessKeys
+     * @summary Returns the real user access keys, the access keys owned by the
      *     real user instance if there is one.
      * @returns {Array} An array of the real user's access keys.
      */
@@ -4038,8 +4038,8 @@ TP.core.User.Type.defineMethod('getRealUser',
 function() {
 
     /**
-     * @name getRealUser
-     * @synopsis Returns the "real" user instance, the one most typically
+     * @method getRealUser
+     * @summary Returns the "real" user instance, the one most typically
      *     associated with the server session, when there is a server.
      * @returns {TP.core.User} The current real user instance.
      */
@@ -4067,8 +4067,8 @@ TP.core.User.Type.defineMethod('setEffectiveUser',
 function(aUser) {
 
     /**
-     * @name setEffectiveUser
-     * @synopsis Sets the application's effective user to the instance provided.
+     * @method setEffectiveUser
+     * @summary Sets the application's effective user to the instance provided.
      *     This will cause certain UI updates to potentially occur as TIBET
      *     updates the effective role/unit permissions.
      * @param {TP.core.User} aUser The instance to make effective.
@@ -4099,8 +4099,8 @@ TP.core.User.Type.defineMethod('setRealUser',
 function(aUser) {
 
     /**
-     * @name setRealUser
-     * @synopsis Sets the application's real user to the instance provided. This
+     * @method setRealUser
+     * @summary Sets the application's real user to the instance provided. This
      *     will cause certain UI updates to potentially occur as TIBET updates
      *     the effective role/unit permissions.
      * @param {TP.core.User} aUser The instance to make "real".
@@ -4149,8 +4149,8 @@ TP.core.User.Inst.defineMethod('init',
 function(resourceID) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new user instance. This method extends the
+     * @method init
+     * @summary Initializes a new user instance. This method extends the
      *     default resource initializer to automatically search for a matching
      *     vCard entry for the user ID.
      * @param {String} resourceID A unique user identifier. This ID will be used
@@ -4181,8 +4181,8 @@ TP.core.User.Inst.defineMethod('clearCredentialsFor',
 function(resourceID) {
 
     /**
-     * @name clearCredentialsFor
-     * @synopsis Clears the credentials information for the specified resource.
+     * @method clearCredentialsFor
+     * @summary Clears the credentials information for the specified resource.
      * @param {String} resourceID A unique TIBET identifier. By unique we mean
      *     an ID which will not conflict with any other ID registered using
      *     TIBET's object registration methods.
@@ -4203,8 +4203,8 @@ TP.core.User.Inst.defineMethod('getCredentialsFor',
 function(resourceID) {
 
     /**
-     * @name getCredentialsFor
-     * @synopsis Returns the credentials information for the specified resource.
+     * @method getCredentialsFor
+     * @summary Returns the credentials information for the specified resource.
      * @param {String} resourceID A unique TIBET identifier. By unique we mean
      *     an ID which will not conflict with any other ID registered using
      *     TIBET's object registration methods.
@@ -4272,8 +4272,8 @@ TP.core.User.Inst.defineMethod('getCredentialsPassword',
 function() {
 
     /**
-     * @name getCredentialsPassword
-     * @synopsis Returns the password used for saving the user's credentials.
+     * @method getCredentialsPassword
+     * @summary Returns the password used for saving the user's credentials.
      * @returns {TP.core.String} The credentials password.
      */
 
@@ -4301,8 +4301,8 @@ TP.core.User.Inst.defineMethod('saveCredentials',
 function() {
 
     /**
-     * @name saveCredentials
-     * @synopsis Saves the user's credentials information.
+     * @method saveCredentials
+     * @summary Saves the user's credentials information.
      * @returns {TP.core.User} The receiver.
      */
 
@@ -4336,7 +4336,7 @@ function() {
 
 /**
  * @type {TP.core.Service}
- * @synopsis A processing resource.
+ * @summary A processing resource.
  */
 
 //  ------------------------------------------------------------------------
@@ -4362,8 +4362,8 @@ TP.core.Service.Type.defineMethod('getDefaultInstance',
 function(resourceID, aSignal) {
 
     /**
-     * @name getDefaultInstance
-     * @synopsis Returns the instance with the service ID provided, if
+     * @method getDefaultInstance
+     * @summary Returns the instance with the service ID provided, if
      *     available.
      * @param {String} resourceID A unique TIBET identifier. By unique we mean
      *     an ID which will not conflict with any other ID registered using
@@ -4433,8 +4433,8 @@ TP.core.Service.Type.defineMethod('getInstanceById',
 function(aServiceID) {
 
     /**
-     * @name getInstanceById
-     * @synopsis Returns the instance with the service ID provided, if
+     * @method getInstanceById
+     * @summary Returns the instance with the service ID provided, if
      *     available.
      * @param {String} aServiceID The service ID to look up.
      * @returns {TP.core.Service} The instance whose ID matches the supplied
@@ -4458,8 +4458,8 @@ TP.core.Service.Type.defineMethod('handleRequest',
 function(aSignal) {
 
     /**
-     * @name handleRequest
-     * @synopsis Handles requests by creating a default instance on demand and
+     * @method handleRequest
+     * @summary Handles requests by creating a default instance on demand and
      *     forwarding the work to that instance. Once the instance has been
      *     constructed the receiver ignores future request signals so that it is
      *     no longer part of the request cycle.
@@ -4497,8 +4497,8 @@ TP.core.Service.Type.defineMethod('isRegistered',
 function(aFlag) {
 
     /**
-     * @name isRegistered
-     * @synopsis Returns a boolean defining whether the receiver has registered
+     * @method isRegistered
+     * @summary Returns a boolean defining whether the receiver has registered
      *     to observe its triggers. Services register so they can avoid instance
      *     creation until the first request.
      * @param {Boolean} aFlag A new value for this property. Optional.
@@ -4518,8 +4518,8 @@ TP.core.Service.Type.defineMethod('register',
 function() {
 
     /**
-     * @name register
-     * @synopsis Registers the receiver observe its trigger signals so that
+     * @method register
+     * @summary Registers the receiver observe its trigger signals so that
      *     requests will cause activation of the service. In the case of the
      *     type itself this is done by certain subtypes which want to avoid
      *     explicit instance creation/registration before a request can be
@@ -4569,8 +4569,8 @@ TP.core.Service.Type.defineMethod('unregister',
 function() {
 
     /**
-     * @name unregister
-     * @synopsis Unregisters the receiver observe its trigger signals so that
+     * @method unregister
+     * @summary Unregisters the receiver observe its trigger signals so that
      *     future requests will no longer trigger the type as a potential
      *     handler.
      * @returns {TP.core.Service} The receiver.
@@ -4631,8 +4631,8 @@ TP.core.Service.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver, providing it with a
+     * @method init
+     * @summary Initializes a new instance of the receiver, providing it with a
      *     unique resourceID and any parameters that might be needed via an
      *     optional request/parameter hash.
      * @param {String} resourceID A unique TIBET identifier. By unique we mean
@@ -4641,7 +4641,7 @@ function(resourceID, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A hash or request object
      *     that should provide any additional parameters necessary to construct
      *     an instance.
-     * @raises TP.sig.InvalidResourceID
+     * @exception TP.sig.InvalidResourceID
      * @returns {TP.core.Resource} A new instance.
      */
 
@@ -4668,8 +4668,8 @@ TP.core.Service.Inst.defineMethod('clearAuthData',
 function() {
 
     /**
-     * @name clearAuthData
-     * @synopsis Clears any stored authentication data from the receiver and any
+     * @method clearAuthData
+     * @summary Clears any stored authentication data from the receiver and any
      *     backing store.
      * @returns {TP.core.Service} The receiver.
      */
@@ -4685,8 +4685,8 @@ TP.core.Service.Inst.defineMethod('configureAuthData',
 function(aRequest) {
 
     /**
-     * @name configureAuthData
-     * @synopsis Configures authentication data for the receiver. This method
+     * @method configureAuthData
+     * @summary Configures authentication data for the receiver. This method
      *     should be overridden by subtypes to do something real.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
@@ -4703,8 +4703,8 @@ TP.core.Service.Inst.defineMethod('isEnabled',
 function() {
 
     /**
-     * @name isEnabled
-     * @synopsis Returns true if the service can process requests.
+     * @method isEnabled
+     * @summary Returns true if the service can process requests.
      * @returns {Boolean} Whether or not the service is enabled.
      */
 
@@ -4717,8 +4717,8 @@ TP.core.Service.Inst.defineMethod('register',
 function() {
 
     /**
-     * @name register
-     * @synopsis Registers the receiver observe its trigger signals.
+     * @method register
+     * @summary Registers the receiver observe its trigger signals.
      * @returns {TP.core.Service} The receiver.
      */
 
@@ -4785,8 +4785,8 @@ TP.core.FunctionService.Inst.defineMethod('handleFunctionRequest',
 function(aRequest) {
 
     /**
-     * @name handleFunctionRequest
-     * @synopsis Handles when an TP.sig.FunctionRequest is fired. Since
+     * @method handleFunctionRequest
+     * @summary Handles when an TP.sig.FunctionRequest is fired. Since
      *     this service will register itself as the default handler for these
      *     kinds of requests, the default instance of it will usually handle all
      *     of these kinds of requests.
@@ -4830,8 +4830,8 @@ Function.Inst.defineMethod('asFunctionRequest',
 function () {
 
     /**
-     * @name asFunctionRequest
-     * @synopsis A convenience wrapper method to turn a Function into a
+     * @method asFunctionRequest
+     * @summary A convenience wrapper method to turn a Function into a
      *     FunctionRequest.
      * @returns {TP.core.FunctionRequest} A new FunctionRequest containing the
      *     receiving Function.
@@ -4846,8 +4846,8 @@ Function.Inst.defineMethod('fire',
 function () {
 
     /**
-     * @name fire
-     * @synopsis A convenience wrapper method to 'fire' a Function. This first
+     * @method fire
+     * @summary A convenience wrapper method to 'fire' a Function. This first
      *     converts the a Function into a FunctionRequest and then 'fire()'s it.
      * @returns {TP.core.FunctionResponse} The supplied FunctionRequest's
      *     response object.
@@ -4862,7 +4862,7 @@ function () {
 
 /**
  * @type {TP.sig.IORequest}
- * @synopsis Common supertype for IO-related requests.
+ * @summary Common supertype for IO-related requests.
  */
 
 //  ------------------------------------------------------------------------
@@ -4875,7 +4875,7 @@ TP.sig.Request.defineSubtype('IORequest');
 
 /**
  * @type {TP.sig.IOResponse}
- * @synopsis Common supertype for IO-related responses.
+ * @summary Common supertype for IO-related responses.
  */
 
 //  ------------------------------------------------------------------------
@@ -4888,8 +4888,8 @@ TP.sig.Response.defineSubtype('IOResponse');
 
 /**
  * @type {TP.core.IOService}
- * @synopsis Common supertype for IO-related responses.
- * @description This type adds polling capability to TP.core.Service.
+ * @summary Common supertype for IO-related responses.
+ * @summary This type adds polling capability to TP.core.Service.
  */
 
 //  ------------------------------------------------------------------------
@@ -4926,8 +4926,8 @@ TP.core.IOService.Inst.defineMethod('isPolling',
 function() {
 
     /**
-     * @name isPolling
-     * @synopsis Returns true if the receiver is currently 'actively polling'.
+     * @method isPolling
+     * @summary Returns true if the receiver is currently 'actively polling'.
      *     This means that the receiver is a polling mode and is not paused.
      * @returns {Boolean} Whether or not the service is in a polling mode.
      */
@@ -4947,9 +4947,9 @@ TP.core.IOService.Inst.defineMethod('inPollMode',
 function() {
 
     /**
-     * @name inPollMode
-     * @synopsis Returns true if the receiver is currently in a polling mode.
-     * @description The receiver might not actually be polling at the time, but
+     * @method inPollMode
+     * @summary Returns true if the receiver is currently in a polling mode.
+     * @summary The receiver might not actually be polling at the time, but
      *     it is in an 'active poll' mode. Note also that pausing the polling
      *     behavior will cause this method to return false.
      * @returns {Boolean} Whether or not the service is in a polling mode.
@@ -4968,8 +4968,8 @@ TP.core.IOService.Inst.defineMethod('$computeInterval',
 function(aJob) {
 
     /**
-     * @name $computeInterval
-     * @synopsis Returns a value which grows slowly over time by adding 1 second
+     * @method $computeInterval
+     * @summary Returns a value which grows slowly over time by adding 1 second
      *     to the delay with each iteration when the service did not get data
      *     the last time it polled. If it did get data, the initial interval
      *     value is used and the decay process starts all over again.
@@ -4995,8 +4995,8 @@ TP.core.IOService.Inst.defineMethod('handleRequestFailed',
 function(aSignal) {
 
     /**
-     * @name handleRequestFailed
-     * @synopsis Handles any signal being managed by this service that has
+     * @method handleRequestFailed
+     * @summary Handles any signal being managed by this service that has
      *     unsuccessfully completed.
      * @param {TP.sig.Response} aSignal The response masquerading as a "Failed"
      *     signal.
@@ -5017,8 +5017,8 @@ TP.core.IOService.Inst.defineMethod('handleRequestSucceeded',
 function(aSignal) {
 
     /**
-     * @name handleRequestSucceeded
-     * @synopsis Handles any signal being managed by this service that has
+     * @method handleRequestSucceeded
+     * @summary Handles any signal being managed by this service that has
      *     successfully completed.
      * @param {TP.sig.Response} aSignal The response masquerading as a
      *     "Succeeded" signal.
@@ -5061,8 +5061,8 @@ TP.core.IOService.Inst.defineMethod('pausePolling',
 function() {
 
     /**
-     * @name pausePolling
-     * @synopsis Pauses any current polling behavior.
+     * @method pausePolling
+     * @summary Pauses any current polling behavior.
      * @returns {TP.core.IOService} The receiver.
      */
 
@@ -5082,8 +5082,8 @@ TP.core.IOService.Inst.defineMethod('$poll',
 function() {
 
     /**
-     * @name $poll
-     * @synopsis Polls the server for new data.
+     * @method $poll
+     * @summary Polls the server for new data.
      * @returns {Boolean} Always returns true.
      */
 
@@ -5103,8 +5103,8 @@ TP.core.IOService.Inst.defineMethod('resumePolling',
 function() {
 
     /**
-     * @name resumePolling
-     * @synopsis Resumes any previously paused polling behavior.
+     * @method resumePolling
+     * @summary Resumes any previously paused polling behavior.
      * @returns {TP.core.IOService} The receiver.
      */
 
@@ -5124,9 +5124,9 @@ TP.core.IOService.Inst.defineMethod('startPolling',
 function(pollParams) {
 
     /**
-     * @name startPolling
-     * @synopsis Start the service's polling behavior.
-     * @description The polling parameters supplied to this method can contain a
+     * @method startPolling
+     * @summary Start the service's polling behavior.
+     * @summary The polling parameters supplied to this method can contain a
      *     'polling interval computation' Function in the 'poll' key. This
      *     Function will be bound to this object (so the 'this' reference point
      *     to this service) and will take the polling job as the only parameter.
@@ -5245,8 +5245,8 @@ TP.core.IOService.Inst.defineMethod('stopPolling',
 function() {
 
     /**
-     * @name stopPolling
-     * @synopsis Stop the service's polling behavior.
+     * @method stopPolling
+     * @summary Stop the service's polling behavior.
      * @returns {TP.core.IOService} The receiver.
      */
 
@@ -5272,7 +5272,7 @@ function() {
 
 /**
  * @type {TP.sig.URIRequest}
- * @synopsis Common supertype for URI-related requests.
+ * @summary Common supertype for URI-related requests.
  */
 
 //  ------------------------------------------------------------------------
@@ -5293,9 +5293,9 @@ TP.sig.URIRequest.Inst.defineMethod('getFinalURI',
 function() {
 
     /**
-     * @name getFinalURI
-     * @synopsis Returns the final URI associated with this request.
-     * @description There are effectively two URIs that are related to a
+     * @method getFinalURI
+     * @summary Returns the final URI associated with this request.
+     * @summary There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the latter, the URI actually sent to the
@@ -5312,9 +5312,9 @@ TP.sig.URIRequest.Inst.defineMethod('getRequestURI',
 function() {
 
     /**
-     * @name getRequestURI
-     * @synopsis Returns the target URI associated with this request.
-     * @description There are effectively two URIs that are related to a
+     * @method getRequestURI
+     * @summary Returns the target URI associated with this request.
+     * @summary There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the former, the URI used as the "root"
@@ -5338,7 +5338,7 @@ function() {
 
 /**
  * @type {TP.sig.URIResponse}
- * @synopsis Common supertype for URI-related responses.
+ * @summary Common supertype for URI-related responses.
  */
 
 //  ------------------------------------------------------------------------
@@ -5353,9 +5353,9 @@ TP.sig.URIResponse.Inst.defineMethod('getFinalURI',
 function() {
 
     /**
-     * @name getFinalURI
-     * @synopsis Returns the final URI associated with this request.
-     * @description There are effectively two URIs that are related to a
+     * @method getFinalURI
+     * @summary Returns the final URI associated with this request.
+     * @summary There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the latter, the URI actually sent to the
@@ -5379,9 +5379,9 @@ TP.sig.URIResponse.Inst.defineMethod('getRequestURI',
 function() {
 
     /**
-     * @name getRequestURI
-     * @synopsis Returns the target URI associated with this request.
-     * @description There are effectively two URIs that are related to a
+     * @method getRequestURI
+     * @summary Returns the target URI associated with this request.
+     * @summary There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the former, the URI used as the "root"
@@ -5406,7 +5406,7 @@ function() {
 
 /**
  * @type {TP.core.URIService}
- * @synopsis Provides common functionality for services focused on processing
+ * @summary Provides common functionality for services focused on processing
  *     URI-targeted requests. TP.core.URIServices can be given an initial URI
  *     which will be used for all requests they process, or they can be
  *     initialized to handle certain request types with a variety of specific
@@ -5449,8 +5449,8 @@ TP.core.URIService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Returns an initialized instance of the receiver. If aRequest is
+     * @method init
+     * @summary Returns an initialized instance of the receiver. If aRequest is
      *     provided it can help define the service's operation by providing a
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
@@ -5548,8 +5548,8 @@ TP.core.URIService.Inst.defineMethod('getRequestURI',
 function(aRequest) {
 
     /**
-     * @name getRequestURI
-     * @synopsis Returns the URI to use for the request. This method ensures
+     * @method getRequestURI
+     * @summary Returns the URI to use for the request. This method ensures
      *     that each request has a viable target URI by defaulting to the
      *     receiver's serviceURI value if the request doesn't specify a URI of
      *     its own.
@@ -5576,8 +5576,8 @@ TP.core.URIService.Inst.defineMethod('getServiceURI',
 function() {
 
     /**
-     * @name getServiceURI
-     * @synopsis Returns the default service URI for the receiver. This is the
+     * @method getServiceURI
+     * @summary Returns the default service URI for the receiver. This is the
      *     URI used when an individual request does not override it with an
      *     alternative URI.
      * @returns {TP.core.URI} The receiver's default URI.
@@ -5593,8 +5593,8 @@ TP.core.URIService.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestURI
-     * @synopsis Rewrites the request's URI, ensuring it defaults to the service
+     * @method rewriteRequestURI
+     * @summary Rewrites the request's URI, ensuring it defaults to the service
      *     URI and is rewritten to the current concrete location based on
      *     TIBET's rewriting rules.
      * @param {TP.sig.Request} aRequest The request to rewrite.
@@ -5654,8 +5654,8 @@ TP.core.URIService.Inst.defineMethod('updateServiceURI',
 function(aRequest) {
 
     /**
-     * @name updateServiceURI
-     * @synopsis If the supplied request has either a 'serviceURI' parameter or
+     * @method updateServiceURI
+     * @summary If the supplied request has either a 'serviceURI' parameter or
      *     a 'uri' parameter that has an 'absolute path' value, we update our
      *     service URI to that value. This allows on-the-fly per-request
      *     retargeting of the endpoint URI that we represent.
@@ -5683,7 +5683,7 @@ function(aRequest) {
 
 /**
  * @type {TP.core.Application}
- * @synopsis This type acts as the 'main type' for the application. It handles
+ * @summary This type acts as the 'main type' for the application. It handles
  *     such things as starting the 'main GUI' for the application and handles
  *     application-level signals, such as 'location changes' as the user
  *     interacts with the browser controls.
@@ -5713,8 +5713,8 @@ TP.core.Application.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time type initialization.
+     * @method initialize
+     * @summary Performs one-time type initialization.
      */
 
     this.observe(TP.sys, 'TP.sig.AppStart');
@@ -5728,10 +5728,10 @@ TP.core.Application.Type.defineMethod('handleAppStart',
 function(aSignal) {
 
     /**
-     * @name handleAppStart
-     * @synopsis A handler that is called when the system has set up everything
+     * @method handleAppStart
+     * @summary A handler that is called when the system has set up everything
      *     required to run a TIBET application and is ready to start the GUI.
-     * @description At this level, this type does nothing.
+     * @summary At this level, this type does nothing.
      * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
      *     trip.
      * @returns {TP.core.Application} The receiver.
@@ -5780,8 +5780,8 @@ TP.core.Application.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {String} aResourceID The unique identifier for this application.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
      *     hash containing initialization parameters.
@@ -5803,8 +5803,8 @@ TP.core.Application.Inst.defineMethod('finalizeGUI',
 function() {
 
     /**
-     * @name finalizeGUI
-     * @synopsis Performs any UI presentation work necessary for startup. This
+     * @method finalizeGUI
+     * @summary Performs any UI presentation work necessary for startup. This
      *     method should be called by the application when it is ready to show
      *     its start GUI.
      * @returns {TP.core.Application} The receiver.
@@ -5821,13 +5821,13 @@ TP.core.Application.Inst.defineMethod('getCurrentTheme',
 function() {
 
     /**
-     * @name getCurrentTheme
-     * @synopsis Returns the current UI theme. The value here is taken from any
+     * @method getCurrentTheme
+     * @summary Returns the current UI theme. The value here is taken from any
      *     setting data-theme attribute on the current UICANVAS body element, or
      *     the value of the application's currentTheme attribute. The value
      *     returned by this method is used as part of computations for loading
      *     CSS style sheets.
-     * @return {String} The name of the current UI theme.
+     * @returns {String} The name of the current UI theme.
      */
 
     var doc,
@@ -5849,8 +5849,8 @@ TP.core.Application.Inst.defineMethod('handleLocationBack',
 function(aSignal) {
 
     /**
-     * @name handleLocationBack
-     * @synopsis A handler that is called when the user has advanced backward in
+     * @method handleLocationBack
+     * @summary A handler that is called when the user has advanced backward in
      *     history via the 'backward' button of the browser.
      * @param {TP.sig.LocationBack} aSignal The signal that caused this handler
      *     to trip.
@@ -5870,13 +5870,13 @@ TP.core.Application.Inst.defineMethod('handleLocationChanged',
 function(aSignal) {
 
     /**
-     * @name handleLocationChanged
-     * @synopsis A handler that is called when the user has changed the location
+     * @method handleLocationChanged
+     * @summary A handler that is called when the user has changed the location
      *     and changed history in some way, either by using the forward or
      *     backward controls in the browser or by attempting to load a bookmark.
      *     The default implementation that this type supplies attempts to load
      *     the URI that the user is navigating to into the current 'UI canvas'.
-     * @description If a 'direction' (forward or backward) can be determined a
+     * @summary If a 'direction' (forward or backward) can be determined a
      *     'TP.sig.LocationBack' or 'TP.sig.LocationNext' signal is *also*
      *     signaled, in addition to this signal.
      * @param {TP.sig.LocationChanged} aSignal The signal that caused this
@@ -5909,8 +5909,8 @@ TP.core.Application.Inst.defineMethod('handleLocationNext',
 function(aSignal) {
 
     /**
-     * @name handleLocationNext
-     * @synopsis A handler that is called when the user has advanced forward in
+     * @method handleLocationNext
+     * @summary A handler that is called when the user has advanced forward in
      *     history either via the 'forward' button of the browser or by
      *     specifying a new location to navigate to.
      * @param {TP.sig.LocationNext} aSignal The signal that caused this handler
@@ -5931,8 +5931,8 @@ TP.core.Application.Inst.defineMethod('start',
 function(aSignal) {
 
     /**
-     * @name start
-     * @synopsis Starts the application, performing any initialization necessary
+     * @method start
+     * @summary Starts the application, performing any initialization necessary
      *     for startup.
      * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
      *     trip.
@@ -5966,8 +5966,8 @@ TP.sys.defineMethod('getApplication',
 function() {
 
     /**
-     * @name getApplication
-     * @synopsis Retrieves the application singleton object.
+     * @method getApplication
+     * @summary Retrieves the application singleton object.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -5980,7 +5980,7 @@ function() {
 
 /**
  * @type {TP.core.History}
- * @synopsis This type manages the browser history by trapping back & forward
+ * @summary This type manages the browser history by trapping back & forward
  *     behavior and bookmark navigations and allowing TIBET to manage them. It
  *     also ensures that the user cannot back up into 'main TIBET top-level
  *     window'.
@@ -6014,8 +6014,8 @@ TP.core.History.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time type initialization.
+     * @method initialize
+     * @summary Performs one-time type initialization.
      */
 
     //  Install an 'onhashchange' event handler onto the top-level window
@@ -6039,8 +6039,8 @@ TP.core.History.Type.defineMethod('clearHistory',
 function() {
 
     /**
-     * @name clearHistory
-     * @synopsis Empties the receiver's history list.
+     * @method clearHistory
+     * @summary Empties the receiver's history list.
      * @returns {TP.core.History} The receiver.
      */
 
@@ -6053,10 +6053,10 @@ TP.core.History.Type.defineMethod('getIndexForHash',
 function(hashValue) {
 
     /**
-     * @name getIndexForHash
-     * @synopsis Returns the numeric 'index' within the history list of the
+     * @method getIndexForHash
+     * @summary Returns the numeric 'index' within the history list of the
      *     hashValue or null if one can't be determined.
-     * @description If the hashValue occurs more than once in the history list
+     * @summary If the hashValue occurs more than once in the history list
      *     (i.e. the location has been navigated to more than once), this
      *     routine will examine entries 'around' (front and back) of each of
      *     those entries in the real history list to try to determine the 'best
@@ -6099,8 +6099,8 @@ TP.core.History.Type.defineMethod('handleHashChanged',
 function(anEvent) {
 
     /**
-     * @name handleHashChanged
-     * @synopsis A native browser-level event handler that is called when the
+     * @method handleHashChanged
+     * @summary A native browser-level event handler that is called when the
      *     user has changed the top-level window hash in some fashion. For
      *     TIBET, this usually means they've navigated with the forward or back
      *     buttons, used a bookmark or double-clicked on a file from the file
@@ -6226,8 +6226,8 @@ TP.core.History.Type.defineMethod('replaceLocation',
 function(histValue) {
 
     /**
-     * @name replaceLocation
-     * @synopsis Replaces the current location of the browser and sets it to an
+     * @method replaceLocation
+     * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
      * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
      * @returns {TP.core.History} The receiver.
@@ -6242,8 +6242,8 @@ TP.core.History.Type.defineMethod('setLocation',
 function(histValue) {
 
     /**
-     * @name setLocation
-     * @synopsis Sets the current location of the browser to an encoded version
+     * @method setLocation
+     * @summary Sets the current location of the browser to an encoded version
      *     of the supplied history value.
      * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
      * @returns {TP.core.History} The receiver.
@@ -6306,7 +6306,7 @@ function(histValue) {
 
 /**
  * @type {TP.core.Controller}
- * @synopsis This type is a common supertype for all 'TIBET controllers'.
+ * @summary This type is a common supertype for all 'TIBET controllers'.
  *     Controllers are objects that typically control some GUI or application
  *     workflow.
  */
@@ -6321,7 +6321,7 @@ TP.lang.Object.defineSubtype('core:Controller');
 
 /**
  * @type {TP.core.URIController}
- * @synopsis This type is a common supertype for 'URI controllers'. That is,
+ * @summary This type is a common supertype for 'URI controllers'. That is,
  *     controller objects that are associated with a URI, typically a 'page' or
  *     'screen' in TP.sys.
  */
@@ -6347,8 +6347,8 @@ TP.core.URIController.Inst.defineMethod('isResponderFor',
 function(aSignal, isCapturing) {
 
     /**
-     * @name isResponderFor
-     * @synopsis Whether or not the receiver is a responder for the supplied
+     * @method isResponderFor
+     * @summary Whether or not the receiver is a responder for the supplied
      *     signal and capturing mode.
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
@@ -6383,8 +6383,8 @@ TP.core.URIController.Inst.defineMethod('getNextResponder',
 function(aSignal, isCapturing) {
 
     /**
-     * @name getNextResponder
-     * @synopsis Returns the next responder as computed by the receiver.
+     * @method getNextResponder
+     * @summary Returns the next responder as computed by the receiver.
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
      * @param {Boolean} isCapturing Whether or not the responder computation

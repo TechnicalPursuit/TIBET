@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.whiteSpace}
- * @synopsis XMLSchema whiteSpace processing node. This node is used when
+ * @summary XMLSchema whiteSpace processing node. This node is used when
  *     creating simple types which require specialized whitespace processing.
  */
 
@@ -26,8 +26,8 @@ TP.xs.whiteSpace.Type.defineMethod('fromObject',
 function(aValue, aFacet) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.whitespace this method will attempt to process the value
      *     into another data type if the 'value' attribute on the supplied facet
      *     node is either 'collapse' (producing an 'TP.xs.token') or 'replace'

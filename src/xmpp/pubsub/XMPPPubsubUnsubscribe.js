@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubUnsubscribe}
- * @synopsis A wrapper for the PubSub unsubscribe node type.
+ * @summary A wrapper for the PubSub unsubscribe node type.
  */
 
 //  ------------------------------------------------------------------------
@@ -33,8 +33,8 @@ TP.xmpp.PubsubUnsubscribe.Inst.defineMethod('setNodeID',
 function(anID) {
 
     /**
-     * @name setNodeID
-     * @synopsis Sets the node ID that the receiver is subscribing to.
+     * @method setNodeID
+     * @summary Sets the node ID that the receiver is subscribing to.
      * @param {String} anID The node ID that is being subscribed to.
      * @returns {TP.xmpp.PubsubUnsubscribe} The receiver.
      */
@@ -53,8 +53,8 @@ TP.xmpp.PubsubUnsubscribe.Inst.defineMethod('setSubscriberJID',
 function(aJID) {
 
     /**
-     * @name setSubscriberJID
-     * @synopsis Sets the subscriber JID that is retracting the subscription.
+     * @method setSubscriberJID
+     * @summary Sets the subscriber JID that is retracting the subscription.
      * @param {TP.xmpp.JID} aJID The subscriber JID that is retracting the
      *     subscription.
      * @returns {TP.xmpp.PubsubUnsubscribe} The receiver.

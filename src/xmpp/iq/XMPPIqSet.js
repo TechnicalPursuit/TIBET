@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqSet}
- * @synopsis An Iq 'type="set"' wrapper.
+ * @summary An Iq 'type="set"' wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -30,8 +30,8 @@ TP.xmpp.IqSet.Inst.defineMethod('expectsResponse',
 function() {
 
     /**
-     * @name expectsResponse
-     * @synopsis A combined setter/getter for the 'response expected' flag. This
+     * @method expectsResponse
+     * @summary A combined setter/getter for the 'response expected' flag. This
      *     flag defines whether the receiver will attempt to observe its message
      *     ID for result signals.
      * @param {Boolean} aFlag The new value for the flag, if used as a setter.
@@ -47,12 +47,12 @@ TP.xmpp.IqSet.Inst.defineMethod('getSignalName',
 function(aStanza) {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name to use when signaling arrival of
+     * @method getSignalName
+     * @summary Returns the signal name to use when signaling arrival of
      *     packets of this type. The default is XMPP*Input where the asterisk is
      *     replaced by the current tag/type string, for example
      *     TP.sig.XMPPMessageInput.
-     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
@@ -72,8 +72,8 @@ TP.xmpp.IqSet.Inst.defineMethod('isSignal',
 function() {
 
     /**
-     * @name isSignal
-     * @synopsis Returns true if the receiver represents a TIBET Signal in
+     * @method isSignal
+     * @summary Returns true if the receiver represents a TIBET Signal in
      *     encoded form.
      * @returns {Boolean}
      */

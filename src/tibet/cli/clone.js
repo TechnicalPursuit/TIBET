@@ -111,7 +111,7 @@ Cmd.prototype.USAGE =
 
 /**
  * Runs the specific command in question.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 

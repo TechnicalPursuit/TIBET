@@ -148,7 +148,7 @@ Cmd.prototype.USAGE =
 /**
  * Processes any csslint command line options, processes any csslintrc content,
  * and returns a 'ruleset' appropriate for the csslint.verify() call.
- * @return {Object} A csslint-compatible ruleset object.
+ * @returns {Object} A csslint-compatible ruleset object.
  */
 Cmd.prototype.configureCSSLintOptions = function() {
     var file,
@@ -217,7 +217,7 @@ Cmd.prototype.configureCSSLintOptions = function() {
 /**
  * Processes the command line options and maps the proper settings into their
  * corresponding eslint command arguments.
- * @return {Object} The options specific to running eslint.
+ * @returns {Object} The options specific to running eslint.
  */
 Cmd.prototype.configureEslintOptions = function() {
 
@@ -252,7 +252,7 @@ Cmd.prototype.configureEslintOptions = function() {
 /**
  * Performs lint processing, verifying TIBET's xml configuration files
  * first, then any assets listed as part of the project in its manifest(s).
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 
@@ -330,7 +330,7 @@ Cmd.prototype.execute = function() {
  * extension doesn't match one of those considered valid by this command that
  * file will be filtered by this method.
  * @param {Array.<Node>} list An array of package asset nodes.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
 
@@ -419,7 +419,7 @@ Cmd.prototype.executeForEach = function(list) {
 /**
  * Returns a list of assets based on scanning the project directory structure.
  * Any node_modules directory content will be ignored.
- * @return {Array} The list of project assets found in the directory tree.
+ * @returns {Array} The list of project assets found in the directory tree.
  */
 Cmd.prototype.getScannedAssetList = function() {
 
@@ -561,7 +561,7 @@ Cmd.prototype.processEslintResult = function(result) {
 /**
  * Outputs summary information about how the overall lint run ran.
  * @param {Object} results A container with error 'count' and 'files' count.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.summarize = function(results) {
 
@@ -588,7 +588,7 @@ Cmd.prototype.summarize = function(results) {
  * Verifies that the configuration files which are leveraged by the package
  * command, and hence which are prerequisites to proper functionality, are
  * themselves free of lint and well-formed.
- * @return {Object} A results container with error 'count' and 'files' count.
+ * @returns {Object} A results container with error 'count' and 'files' count.
  */
 Cmd.prototype.validateConfigFiles = function() {
 
@@ -622,7 +622,7 @@ Cmd.prototype.validateConfigFiles = function() {
  * @param {Array|String} files A single file name or array of them.
  * @param {Object} results An object supporting collection of summary results
  *     across multiple lint passes.
- * @return {Object} A results container with error 'count' and 'files' count.
+ * @returns {Object} A results container with error 'count' and 'files' count.
  */
 Cmd.prototype.validateCSSFiles = function(files, results) {
 
@@ -719,7 +719,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
  * @param {Array|String} files A single file name or array of them.
  * @param {Object} results An object supporting collection of summary results
  *     across multiple lint passes.
- * @return {Object} A results container with error 'count' and 'files' count.
+ * @returns {Object} A results container with error 'count' and 'files' count.
  */
 Cmd.prototype.validateJSONFiles = function(files, results) {
 
@@ -768,7 +768,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
  * @param {Array|String} files A single file name or array of them.
  * @param {Object} results An object supporting collection of summary results
  *     across multiple lint passes.
- * @return {Object} A results container with error 'count' and 'files' count.
+ * @returns {Object} A results container with error 'count' and 'files' count.
  */
 Cmd.prototype.validateSourceFiles = function(files, results) {
 
@@ -824,7 +824,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
  * @param {Array|String} files A single file name or array of them.
  * @param {Object} results An object supporting collection of summary results
  *     across multiple lint passes.
- * @return {Object} A results container with error 'count' and 'files' count.
+ * @returns {Object} A results container with error 'count' and 'files' count.
  */
 Cmd.prototype.validateXMLFiles = function(files, results) {
 

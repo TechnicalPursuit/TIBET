@@ -29,8 +29,8 @@ TP.svg.Element.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Invoked by the TIBET Shell when the tag is being "run" as part
+     * @method cmdRunContent
+     * @summary Invoked by the TIBET Shell when the tag is being "run" as part
      *     of a pipe or command sequence. For a UI element like an HTML element
      *     this effectively means to render itself onto the standard output
      *     stream.
@@ -60,8 +60,8 @@ TP.svg.Element.Type.defineMethod('tagUnmarshal',
 function(aRequest) {
 
     /**
-     * @name tagUnmarshal
-     * @synopsis Unmarshals the receiver's content. This includes resolving XML
+     * @method tagUnmarshal
+     * @summary Unmarshals the receiver's content. This includes resolving XML
      *     Base URIs and virtual URIs that may occur on the receiver's
      *     attributes.
      * @param {TP.sig.Request} aRequest A request containing processing
@@ -100,8 +100,8 @@ TP.svg.Element.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqVersion}
- * @synopsis A wrapper for the IQ_VERSION namespace'd payload element.
+ * @summary A wrapper for the IQ_VERSION namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

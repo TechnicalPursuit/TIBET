@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubCreate}
- * @synopsis A wrapper for the PubSub create node type.
+ * @summary A wrapper for the PubSub create node type.
  */
 
 //  ------------------------------------------------------------------------
@@ -33,8 +33,8 @@ TP.xmpp.PubsubCreate.Inst.defineMethod('setConfigure',
 function(aNode) {
 
     /**
-     * @name setConfigure
-     * @synopsis Sets the configuration to the supplied TP.xmpp.XData node.
+     * @method setConfigure
+     * @summary Sets the configuration to the supplied TP.xmpp.XData node.
      * @param {TP.xmpp.XData} aNode The configuration node.
      * @returns {TP.xmpp.PubsubCreate} The receiver.
      */
@@ -60,8 +60,8 @@ TP.xmpp.PubsubCreate.Inst.defineMethod('setNodeID',
 function(anID) {
 
     /**
-     * @name setNodeID
-     * @synopsis Sets the node ID that the receiver is creating.
+     * @method setNodeID
+     * @summary Sets the node ID that the receiver is creating.
      * @param {String} anID The node ID that is being created.
      * @returns {TP.xmpp.PubsubCreate} The receiver.
      */

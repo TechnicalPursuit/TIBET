@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.BOSHTransport}
- * @synopsis Implements a subtype of TP.xmpp.Transport that implements the
+ * @summary Implements a subtype of TP.xmpp.Transport that implements the
  *     'XEP-124 Binding' specification.
  *     behavior. Implement a queued sending model.
  */
@@ -75,12 +75,12 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('init',
 function(aConnectionInfo) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {TP.lang.Hash} aConnectionInfo A hash of connection information.
      *     This hash should contain values for: 'httpServerURI', 'serverName',
      *     'inStream', 'outStream'.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.Transport} A new instance.
      */
 
@@ -101,8 +101,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('$computeMessageKeys',
 function() {
 
     /**
-     * @name $computeMessageKeys
-     * @synopsis Computes a 'message key sequence' for use between TIBET and the
+     * @method $computeMessageKeys
+     * @summary Computes a 'message key sequence' for use between TIBET and the
      *     server.
      */
 
@@ -140,10 +140,10 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('connect',
 function() {
 
     /**
-     * @name connect
-     * @synopsis Connects the receiver to the server it is configured to connect
+     * @method connect
+     * @summary Connects the receiver to the server it is configured to connect
      *     to.
-     * @raises TP.sig.XMPPTransportException
+     * @exception TP.sig.XMPPTransportException
      * @returns {Boolean} True if the transport connects successfully to the
      *     server.
      */
@@ -233,8 +233,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('connectionDidAuthenticate',
 function() {
 
     /**
-     * @name connectionDidAuthenticate
-     * @synopsis A method that is called by the connection that owns this
+     * @method connectionDidAuthenticate
+     * @summary A method that is called by the connection that owns this
      *     transport letting the transport know that the connection did
      *     successfully authenticate with the server.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
@@ -288,8 +288,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('$extractFromBody',
 function(aStr) {
 
     /**
-     * @name $extractFromBody
-     * @synopsis Extracts the contents of the '<body>....</body>' tag used by
+     * @method $extractFromBody
+     * @summary Extracts the contents of the '<body>....</body>' tag used by
      *     BOSH to transport XML to and from the server and returns those
      *     contents.
      * @param {String} aStr The content which is wrapped by a 'body' tag.
@@ -313,8 +313,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('$getNextMessageID',
 function() {
 
     /**
-     * @name $getNextMessageID
-     * @synopsis Returns a newly generated message ID for use.
+     * @method $getNextMessageID
+     * @summary Returns a newly generated message ID for use.
      * @returns {String} The message ID that will be used for the next message.
      */
 
@@ -332,8 +332,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('getNextRID',
 function() {
 
     /**
-     * @name getNextRID
-     * @synopsis Returns the next 'request ID'. If the 'request ID sequence' has
+     * @method getNextRID
+     * @summary Returns the next 'request ID'. If the 'request ID sequence' has
      *     already begun, this merely increments the request ID and returns
      *     that, per the BOSH specification.
      * @returns {Number} The next request ID that should be used.
@@ -374,8 +374,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('isBusy',
 function() {
 
     /**
-     * @name isBusy
-     * @synopsis Whether or not the transport is 'busy' sending something.
+     * @method isBusy
+     * @summary Whether or not the transport is 'busy' sending something.
      * @returns {Boolean} Whether or not the transport is busy.
      */
 
@@ -389,8 +389,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('receive',
 function() {
 
     /**
-     * @name receive
-     * @synopsis Receives any currently available XMPP data by reading data from
+     * @method receive
+     * @summary Receives any currently available XMPP data by reading data from
      *     the server.
      * @returns {TP.xmpp.Packet} The currently available XMPP packet read from
      *     the server.
@@ -436,8 +436,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('$processResults',
 function(aHref, aRequest) {
 
     /**
-     * @name $processResults
-     * @synopsis Processes any results returned by the server.
+     * @method $processResults
+     * @summary Processes any results returned by the server.
      * @param {String} aHref The href that was used to communicate with the
      *     server.
      * @param {TP.lang.Hash|TP.sig.Request} aRequest The request object used
@@ -555,10 +555,10 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('sendInitialRequest',
 function() {
 
     /**
-     * @name sendInitialRequest
-     * @synopsis Sends the 'initial request' to the BOSH server to 'get things
+     * @method sendInitialRequest
+     * @summary Sends the 'initial request' to the BOSH server to 'get things
      *     started'.
-     * @raises TP.sig.XMPPTransportException
+     * @exception TP.sig.XMPPTransportException
      * @returns {TP.xmpp.BOSHTransport} The receiver.
      */
 
@@ -675,12 +675,12 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('transmit',
 function(aStr, extraAttrs) {
 
     /**
-     * @name transmit
-     * @synopsis Sends the raw data provided to the server.
+     * @method transmit
+     * @summary Sends the raw data provided to the server.
      * @param {String} aStr The raw data to be sent over the transport.
      * @param {TP.lang.Hash} extraAttrs Any extra attributes to be added to the
      *     '<body>' start tag.
-     * @raises TP.sig.XMPPTransportException
+     * @exception TP.sig.XMPPTransportException
      */
 
     var href,
@@ -886,8 +886,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('startReceiving',
 function() {
 
     /**
-     * @name startReceiving
-     * @synopsis Start the transport's 'receiving process'. For transports that
+     * @method startReceiving
+     * @summary Start the transport's 'receiving process'. For transports that
      *     operate over HTTP, this will typically start a polling or listening
      *     process.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
@@ -942,8 +942,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('stopReceiving',
 function() {
 
     /**
-     * @name stopReceiving
-     * @synopsis Stop the transport's 'receiving process'. For transports that
+     * @method stopReceiving
+     * @summary Stop the transport's 'receiving process'. For transports that
      *     operate over HTTP, this will typically stop a polling or listening
      *     process.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
@@ -973,8 +973,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('$wrapWithBody',
 function(aStr, extraAttrs) {
 
     /**
-     * @name $wrapWithBody
-     * @synopsis Wraps the supplied String with a '<body>....</body>' tag as
+     * @method $wrapWithBody
+     * @summary Wraps the supplied String with a '<body>....</body>' tag as
      *     required by the BOSH specification, including the session ID and a
      *     computed request ID.
      * @param {String} aStr The content to wrap.
@@ -1024,8 +1024,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('writeRecvMessageToLog',
 function(logInfo) {
 
     /**
-     * @name writeRecvMessageToLog
-     * @synopsis Writes the information supplied in the hash to TIBET's IO log,
+     * @method writeRecvMessageToLog
+     * @summary Writes the information supplied in the hash to TIBET's IO log,
      *     under the auspices of a 'receive message'. Note that this logging is
      *     in addition to the low-level IO logging that TIBET will do if you
      *     have IO logging switched on.
@@ -1064,8 +1064,8 @@ TP.xmpp.BOSHTransport.Inst.defineMethod('writeSendMessageToLog',
 function(logInfo) {
 
     /**
-     * @name writeSendMessageToLog
-     * @synopsis Writes the information supplied in the hash to TIBET's IO log,
+     * @method writeSendMessageToLog
+     * @summary Writes the information supplied in the hash to TIBET's IO log,
      *     under the auspices of a 'send message'. Note that this logging is in
      *     addition to the low-level IO logging that TIBET will do if you have
      *     IO logging switched on.

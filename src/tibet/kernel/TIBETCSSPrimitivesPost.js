@@ -392,16 +392,16 @@ TP.definePrimitive('convertHueToRGB',
 function(m1, m2, aHue) {
 
     /**
-     * @name convertHueToRGB
-     * @synopsis Converts the supplied hue (given by the values) to its RGB
+     * @method convertHueToRGB
+     * @summary Converts the supplied hue (given by the values) to its RGB
      *     equivalent.
-     * @description This uses the CSS3 Color Module algorithm for converting
+     * @summary This uses the CSS3 Color Module algorithm for converting
      *     hsla values to rgba.
      * @param {Number} m1
      * @param {Number} m2
      * @param {Number} aHue The color hue information.
      * @param {Number} anAlpha The color alpha information.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The converted number.
      */
 
@@ -445,10 +445,10 @@ TP.definePrimitive('convertHSLAToRGBA',
 function(aHue, aSaturation, aLightness, anAlpha) {
 
     /**
-     * @name convertHSLAToRGBA
-     * @synopsis Converts the supplied hue, saturation, lightness and alpha
+     * @method convertHSLAToRGBA
+     * @summary Converts the supplied hue, saturation, lightness and alpha
      *     values to their RGB equivalents.
-     * @description This uses the CSS3 Color Module algorithm for converting
+     * @summary This uses the CSS3 Color Module algorithm for converting
      *     hsla values to rgba.
      * @param {Number} aHue The color hue information.
      * @param {Number} aSaturation The color saturation information, given as a
@@ -456,7 +456,7 @@ function(aHue, aSaturation, aLightness, anAlpha) {
      * @param {Number} aLightness The color lightness information, given as a
      *     fractional number between 0 and 1.
      * @param {Number} anAlpha The color alpha information.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Array} The color expressed as an RGBA value in an Array of [r,
      *     g, b, a].
      */
@@ -515,15 +515,15 @@ TP.definePrimitive('convertColorStringToHex',
 function(aString) {
 
     /**
-     * @name convertColorStringToHex
-     * @synopsis Converts a String containing a color value to a String
+     * @method convertColorStringToHex
+     * @summary Converts a String containing a color value to a String
      *     containing the hex-formatted value: #RRGGBB
-     * @description The supplied String can be in one of nine formats: FFFFFF
+     * @summary The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @param {String} aString The String containing color information to
      *     convert.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} A String having this color value expressed as a hex
      *     color: #RRGGBB.
      */
@@ -635,15 +635,15 @@ TP.definePrimitive('convertColorStringToArray',
 function(aString) {
 
     /**
-     * @name convertColorStringToArray
-     * @synopsis Converts a String containing a color to an Array containing,
+     * @method convertColorStringToArray
+     * @summary Converts a String containing a color to an Array containing,
      *     [r, g, b]
-     * @description The supplied String can be in one of nine formats: FFFFFF
+     * @summary The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @param {String} aString The String containing color information to
      *     convert.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Array} An Array having this color value expressed as 3 Numbers
      *     [r, g, b].
      */
@@ -766,15 +766,15 @@ TP.definePrimitive('convertColorStringToLongNumber',
 function(aString) {
 
     /**
-     * @name convertColorStringToLongNumber
-     * @synopsis Converts a String containing a color value to a 'long' number
+     * @method convertColorStringToLongNumber
+     * @summary Converts a String containing a color value to a 'long' number
      *     representing the color numerically.
-     * @description The supplied String can be in one of nine formats: FFFFFF
+     * @summary The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @param {String} aString The String containing color information to
      *     convert.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} A 'long' number (one between 0 and 16777215 -
      *     parseInt('FFFFFF',16) ).
      */
@@ -799,13 +799,13 @@ TP.definePrimitive('convertLongNumberToColorString',
 function(aLongNumber) {
 
     /**
-     * @name convertLongNumberToColorString
-     * @synopsis Converts a 'long' number representing a color numerically to
+     * @method convertLongNumberToColorString
+     * @summary Converts a 'long' number representing a color numerically to
      *     the equivalent 'hex' color (#RRGGBB) used for CSS colors.
-     * @description This algorithm from Oliver Steele (http://osteele.com).
+     * @summary This algorithm from Oliver Steele (http://osteele.com).
      * @param {Number} aLongNumber A 'long' number (one between 0 and 16777215 -
      *     parseInt('FFFFFF',16) ).
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {String} A color 'hex' String.
      */
 
@@ -838,17 +838,17 @@ TP.definePrimitive('interpolateColors',
 function(color1, color2, aPercentage) {
 
     /**
-     * @name interpolateColors
-     * @synopsis Interpolates a mixture of color2 into color1 according to the
+     * @method interpolateColors
+     * @summary Interpolates a mixture of color2 into color1 according to the
      *     supplied percentage.
-     * @description This algorithm from Oliver Steele (http://osteele.com).
+     * @summary This algorithm from Oliver Steele (http://osteele.com).
      * @param {Number} color1 A 'long' number (one between 0 and 16777215 -
      *     parseInt('FFFFFF',16) ) that specifies the color to start from.
      * @param {Number} color2 A 'long' number (one between 0 and 16777215 -
      *     parseInt('FFFFFF',16) ) that specifies the color to end at.
      * @param {Number} aPercentage The percentage of color2 that should be mixed
      *     into color1.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {Number} The number that is a mix of color1 and color using the
      *     supplied percentage.
      */
@@ -891,13 +891,13 @@ TP.definePrimitive('elementGetNumericValueFromPercentage',
 function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
     /**
-     * @name elementGetNumericValueFromPercentage
-     * @synopsis This method computes the numeric value for the given element
+     * @method elementGetNumericValueFromPercentage
+     * @summary This method computes the numeric value for the given element
      *     name, property name and percentage value and the property name. Note
      *     that, for properties that compute a percentage of the (possibly
      *     offset) parent, this method will recurse upwards if that parent is
      *     also found to have a percentage value.
-     * @description Depending on the property being requested, a percentage
+     * @summary Depending on the property being requested, a percentage
      *     value can mean different things. In most cases, it is computed as a
      *     percentage of the containing block, but there are a few exceptions:
      *
@@ -937,7 +937,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Number} A number of that can be computed from the supplied
      *     element, property and percentage.
      */
@@ -1136,8 +1136,8 @@ TP.definePrimitive('elementGetPropertyValueAsNumber',
 function(anElement, aPropertyName, aPropertyValue, wantsTransformed) {
 
     /**
-     * @name elementGetPropertyValueAsNumber
-     * @synopsis Returns the value of the supplied property on the supplied
+     * @method elementGetPropertyValueAsNumber
+     * @summary Returns the value of the supplied property on the supplied
      *     element as a Number. This method also manages percentage value
      *     formats.
      * @param {HTMLElement} anElement The element to retrieve the numeric value
@@ -1149,7 +1149,7 @@ function(anElement, aPropertyName, aPropertyValue, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Number} The property value converted to a numeric value.
      */
 
@@ -1197,15 +1197,15 @@ TP.definePrimitive('elementAddStyle',
 function(anElement, aProperty, aValue) {
 
     /**
-     * @name elementAddStyle
-     * @synopsis Adds a style value to the property provided. Note that many of
+     * @method elementAddStyle
+     * @summary Adds a style value to the property provided. Note that many of
      *     the properties in CSS don't actually allow the value to have
      *     space-separated content so this is only viable for a small subset of
      *     property names.
      * @param {HTMLElement} anElement The element to retrieve the inline CSS
      *     style for.
      * @param {String} aProperty An optional property name to query for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} The inline CSS style of the supplied element/property,
      *     or null if not found.
      */
@@ -1244,8 +1244,8 @@ TP.definePrimitive('elementGetComputedStyle',
 function(anElement, aProperty) {
 
     /**
-     * @name elementGetComputedStyle
-     * @synopsis Returns the element's computed style as a String, or the value
+     * @method elementGetComputedStyle
+     * @summary Returns the element's computed style as a String, or the value
      *     of a specific property if one is provided. When acquiring the entire
      *     style string you can get a TP.lang.Hash of those values using
      *     TP.lang.Hash.fromCSSString(str);
@@ -1253,7 +1253,7 @@ function(anElement, aProperty) {
      *     for.
      * @param {String|Array} aProperty An optional property name or names to
      *     query for.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {String} The computed style of the supplied element/property, or
      *     the empty String if there was no style.
      */
@@ -1305,13 +1305,13 @@ TP.definePrimitive('elementGetComputedStyleProperty',
 function(anElement, aProperty) {
 
     /**
-     * @name elementGetComputedStyleProperty
-     * @synopsis Gets the element's *computed* style property named by the
+     * @method elementGetComputedStyleProperty
+     * @summary Gets the element's *computed* style property named by the
      *     supplied property name.
      * @param {HTMLElement} anElement The element to get the computed style
      *     property from.
      * @param {String} aProperty The name of the style property to get.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,
      *         TP.sig.InvalidStyle
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
@@ -1343,8 +1343,8 @@ TP.definePrimitive('elementGetStyle',
 function(anElement, aProperty) {
 
     /**
-     * @name elementGetStyle
-     * @synopsis Returns the element's CSS style (its 'inline style') as a
+     * @method elementGetStyle
+     * @summary Returns the element's CSS style (its 'inline style') as a
      *     String, or the value of a specific property if one is provided. When
      *     acquiring the entire style string you can get a TP.lang.Hash of those
      *     values using TP.lang.Hash.fromCSSString(str);
@@ -1352,7 +1352,7 @@ function(anElement, aProperty) {
      *     style for.
      * @param {String|Array} aProperty An optional property name or names to
      *     query for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} The inline CSS style of the supplied element/property,
      *     or the empty String if there was no style.
      */
@@ -1408,11 +1408,11 @@ TP.definePrimitive('elementGetStyleObj',
 function(anElement) {
 
     /**
-     * @name elementGetStyleObj
-     * @synopsis Returns the element's CSS style object (its 'inline style').
+     * @method elementGetStyleObj
+     * @summary Returns the element's CSS style object (its 'inline style').
      * @param {HTMLElement} anElement The element to retrieve the inline CSS
      *     style object for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Object} The inline CSS style object of the supplied element.
      */
 
@@ -1435,13 +1435,13 @@ TP.definePrimitive('elementGetStyleProperty',
 function(anElement, aProperty) {
 
     /**
-     * @name elementGetStyleProperty
-     * @synopsis Gets the style property named by the supplied property name on
+     * @method elementGetStyleProperty
+     * @summary Gets the style property named by the supplied property name on
      *     the style of the supplied element.
      * @param {HTMLElement} anElement The element to get the style property
      *     from.
      * @param {String} aProperty The name of the style property to get.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {String} The current value of the style property named by
      *     aProperty on the supplied element.
      */
@@ -1470,13 +1470,13 @@ TP.definePrimitive('elementHasStyle',
 function(anElement, aProperty) {
 
     /**
-     * @name elementHasStyle
-     * @synopsis Returns true if the element has 'inline style'. If a property
+     * @method elementHasStyle
+     * @summary Returns true if the element has 'inline style'. If a property
      *     is provided the return value is based on whether that property is
      *     inline for the element.
      * @param {HTMLElement} anElement The element to test.
      * @param {String} aProperty A CSS property name.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Boolean} True if the element's inline style is not empty.
      */
 
@@ -1493,14 +1493,14 @@ TP.definePrimitive('elementPopStyleProperty',
 function(anElement, aProperty) {
 
     /**
-     * @name elementPopStyleProperty
-     * @synopsis 'Pop's the previously pushed style property named by aProperty
+     * @method elementPopStyleProperty
+     * @summary 'Pop's the previously pushed style property named by aProperty
      *     from the receiver and returns that value. NB: This call does *not*
      *     set any style properties of the supplied element.
      * @param {HTMLElement} anElement The element to pop the style property
      *     from.
      * @param {String} aProperty The name of the style property to pop.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Object} The value of the style property named by aProperty on
      *     anElement that had been pushed earlier.
      */
@@ -1530,14 +1530,14 @@ TP.definePrimitive('elementPopAndSetStyleProperty',
 function(anElement, aProperty) {
 
     /**
-     * @name elementPopStyleProperty
-     * @synopsis 'Pop's the previously pushed style property named by aProperty
+     * @method elementPopStyleProperty
+     * @summary 'Pop's the previously pushed style property named by aProperty
      *     from the receiver, uses that value as the new value for the property
      *     on the supplied element and returns that value.
      * @param {HTMLElement} anElement The element to pop the style property
      *     from.
      * @param {String} aProperty The name of the style property to pop and set.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Object} The value of the style property named by aProperty on
      *     anElement that had been pushed earlier.
      */
@@ -1564,11 +1564,11 @@ TP.definePrimitive('elementPreserveStyle',
 function(anElement) {
 
     /**
-     * @name elementPreserveStyle
-     * @synopsis Saves anElement's current inline style, if it exists. This can
+     * @method elementPreserveStyle
+     * @summary Saves anElement's current inline style, if it exists. This can
      *     later be restored using TP.elementRestoreStyle().
      * @param {HTMLElement} anElement The element to test.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
 
@@ -1587,14 +1587,14 @@ TP.definePrimitive('elementPushStyleProperty',
 function(anElement, aProperty, aPropertyValue) {
 
     /**
-     * @name elementPushStyleProperty
-     * @synopsis Pushes a value for the style property named by aProperty on the
+     * @method elementPushStyleProperty
+     * @summary Pushes a value for the style property named by aProperty on the
      *     supplied element using the supplied property value. NB: This call
      *     does *not* set any style properties of the supplied element.
      * @param {HTMLElement} anElement The element to push the style property on.
      * @param {String} aProperty The name of the style property to push.
      * @param {String|Number} aPropertyValue The value to push.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      */
 
     var propVal,
@@ -1630,14 +1630,14 @@ TP.definePrimitive('elementPushAndSetStyleProperty',
 function(anElement, aProperty, aPropertyValue) {
 
     /**
-     * @name elementPushAndSetStyleProperty
-     * @synopsis Pushes the *current* value for the style property named by
+     * @method elementPushAndSetStyleProperty
+     * @summary Pushes the *current* value for the style property named by
      *     aProperty on the supplied element and sets the style property to the
      *     supplied property value.
      * @param {HTMLElement} anElement The element to push the style property on.
      * @param {String} aProperty The name of the style property to push.
      * @param {String|Number} aPropertyValue The value to set as the new value.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      */
 
     if (!TP.isElement(anElement)) {
@@ -1667,12 +1667,12 @@ TP.definePrimitive('elementRemoveStyle',
 function(anElement, aProperty) {
 
     /**
-     * @name elementRemoveStyle
-     * @synopsis Removes a property from the element's inline style, or all
+     * @method elementRemoveStyle
+     * @summary Removes a property from the element's inline style, or all
      *     inline style if no property is provided.
      * @param {HTMLElement} anElement The element to test.
      * @param {String} aProperty The property name to remove.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
 
@@ -1705,13 +1705,13 @@ TP.definePrimitive('elementRemoveStyleProperty',
 function(anElement, aProperty) {
 
     /**
-     * @name elementRemoveStyleProperty
-     * @synopsis Removes the style property named by the supplied property name
+     * @method elementRemoveStyleProperty
+     * @summary Removes the style property named by the supplied property name
      *     from the style of the supplied element.
      * @param {HTMLElement} anElement The element to remove the style property
      *     from.
      * @param {String|Array} aProperty The name of the style property to remove.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      */
 
     var style,
@@ -1751,13 +1751,13 @@ TP.definePrimitive('elementReplaceStyle',
 function(anElement, aProperty, oldValue, newValue) {
 
     /**
-     * @name elementReplaceStyle
-     * @synopsis Replaces a property value in the receiver's inline style.
+     * @method elementReplaceStyle
+     * @summary Replaces a property value in the receiver's inline style.
      * @param {HTMLElement} anElement The element to test.
      * @param {String} aProperty The property name to replace.
      * @param {String} oldValue The current value to find.
      * @param {String} newValue The new value to set.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
 
@@ -1790,10 +1790,10 @@ TP.definePrimitive('elementRestoreStyle',
 function(anElement) {
 
     /**
-     * @name elementRestoreStyle
-     * @synopsis Restores anElement's preserved style, if it exists.
+     * @method elementRestoreStyle
+     * @summary Restores anElement's preserved style, if it exists.
      * @param {HTMLElement} anElement The element to test.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
 
@@ -1812,13 +1812,13 @@ TP.definePrimitive('elementSetStyle',
 function(anElement, theStyle) {
 
     /**
-     * @name elementSetStyle
-     * @synopsis Sets the element's CSS style (its 'inline style') to the
+     * @method elementSetStyle
+     * @summary Sets the element's CSS style (its 'inline style') to the
      *     supplied CSS-formatted style String.
      * @param {HTMLElement} anElement The element to set the inline CSS style
      *     for.
      * @param {String|TP.lang.Hash} theStyle A string or hash of style content.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
 
@@ -1851,14 +1851,14 @@ TP.definePrimitive('elementSetStyleProperty',
 function(anElement, aProperty, aPropertyValue) {
 
     /**
-     * @name elementSetStyleProperty
-     * @synopsis Sets the style property named by the supplied property name on
+     * @method elementSetStyleProperty
+     * @summary Sets the style property named by the supplied property name on
      *     the style of the supplied element using the supplied property value.
      * @param {HTMLElement} anElement The element to set the style property on.
      * @param {String} aProperty The name of the style property to set.
      * @param {String|Number} aPropertyValue The value to set the style property
      *     to.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
      */
 
     var style,
@@ -1895,11 +1895,11 @@ TP.definePrimitive('$eventHandleStyleInsertion',
 function(insertionEvent) {
 
     /**
-     * @name $eventHandleStyleNodeInsertion
-     * @synopsis An event handler that is called upon document loading or
+     * @method $eventHandleStyleNodeInsertion
+     * @summary An event handler that is called upon document loading or
      *     writing to capture DOM Node insertions of 'style' or 'link' (to CSS
      *     style sheets) elements.
-     * @description Because Webkit-based browsers are so "particular" about the
+     * @summary Because Webkit-based browsers are so "particular" about the
      *     CSS in loaded sheets (normally a good thing), we've got to grab our
      *     CSS sheets early and rip them out of the document to avoid all of the
      *     errors that it will spew to the JavaScript console.
@@ -1989,8 +1989,8 @@ TP.definePrimitive('styleStringAsHash',
 function(aStyleString) {
 
     /**
-     * @name styleStringAsHash
-     * @synopsis Converts a properly formatted CSS style string into the
+     * @method styleStringAsHash
+     * @summary Converts a properly formatted CSS style string into the
      *     equivalent TP.lang.Hash. The keys in the hash are in their "DOM"
      *     form, i.e. 'float' becomes 'cssFloat', etc.
      * @param {String} aStyleString A string of the form key:value;key:value;.
@@ -2010,8 +2010,8 @@ TP.definePrimitive('styleStringFromHash',
 function(aHash, quoteWhitespaceValues) {
 
     /**
-     * @name styleStringFromHash
-     * @synopsis Returns the provided hash's key/value pairs as a valid CSS
+     * @method styleStringFromHash
+     * @summary Returns the provided hash's key/value pairs as a valid CSS
      *     style string. Each key in the hash is processed via the asCSSName()
      *     String method to try to ensure a valid result.
      * @param {TP.lang.Hash} aHash A valid TP.lang.Hash containing keys suitable
@@ -2060,10 +2060,10 @@ TP.definePrimitive('cssDimensionValuesFromString',
 function(aValueString) {
 
     /**
-     * @name cssDimensionValuesFromString
-     * @synopsis Extracts dimension values from the supplied String, according
+     * @method cssDimensionValuesFromString
+     * @summary Extracts dimension values from the supplied String, according
      *     to the standard CSS rules for doing so.
-     * @description The CSS rules used for parsing values for dimensional
+     * @summary The CSS rules used for parsing values for dimensional
      *     properties, like padding, are:
      *
      *     1 value applies to all sides 2 values first value applies to top &
@@ -2164,8 +2164,8 @@ TP.definePrimitive('$$setupSelectorParseRecord',
 function(selectorStr) {
 
     /**
-     * @name $$setupSelectorParseRecord
-     * @synopsis An internal method that sets up an internal data structure for
+     * @method $$setupSelectorParseRecord
+     * @summary An internal method that sets up an internal data structure for
      *     use by the 'TP.parseCSSSelector' method below.
      * @param {String} strSelectorText The selector String to parse.
      * @returns {Object} A private 'parsing record' for use by the calling
@@ -2529,12 +2529,12 @@ TP.definePrimitive('parseCSSSelector',
 function(strSelectorText, strictPseudos) {
 
     /**
-     * @name parseCSSSelector
-     * @synopsis Parses the supplied selector text into a data structure
+     * @method parseCSSSelector
+     * @summary Parses the supplied selector text into a data structure
      *     containing an Array of alternating TP.lang.Hashes (representing each
      *     'simple' selector) and constant values representing the combinators
      *     separating them.
-     * @description The returned data structure has the following keys (note
+     * @summary The returned data structure has the following keys (note
      *     that due to the way selectors can be constructed, all of these are
      *     optional and may not exist):
      *

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.ENGBLocale}
- * @synopsis TP.core.ENGBLocale provides support for the British English
+ * @summary TP.core.ENGBLocale provides support for the British English
  *     language and related localizations.
  */
 

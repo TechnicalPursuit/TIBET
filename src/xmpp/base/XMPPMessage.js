@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Message}
- * @synopsis A message element wrapper. This node type provides convenience
+ * @summary A message element wrapper. This node type provides convenience
  *     methods for working with XMPP message elements.
  */
 
@@ -33,8 +33,8 @@ TP.xmpp.Message.Inst.defineMethod('handleRequest',
 function() {
 
     /**
-     * @name handleRequest
-     * @synopsis Constructs an appropriate response object based on the current
+     * @method handleRequest
+     * @summary Constructs an appropriate response object based on the current
      *     packet. For message packets the response uses the same message type
      *     and simply inverts the from/to attributes.
      * @returns {TP.xmpp.Stanza}
@@ -66,8 +66,8 @@ TP.xmpp.Message.Inst.defineMethod('getBody',
 function() {
 
     /**
-     * @name getBody
-     * @synopsis Returns the body text, i.e. the message, from the receiver.
+     * @method getBody
+     * @summary Returns the body text, i.e. the message, from the receiver.
      * @returns {String}
      */
 
@@ -80,8 +80,8 @@ TP.xmpp.Message.Inst.defineMethod('getDefaultType',
 function() {
 
     /**
-     * @name getDefaultType
-     * @synopsis Returns the default stanza type for the receiver.
+     * @method getDefaultType
+     * @summary Returns the default stanza type for the receiver.
      * @returns {String}
      */
 
@@ -94,8 +94,8 @@ TP.xmpp.Message.Inst.defineMethod('getHtml',
 function() {
 
     /**
-     * @name getHtml
-     * @synopsis Returns the html content, if any, of the receiver.
+     * @method getHtml
+     * @summary Returns the html content, if any, of the receiver.
      * @returns {String}
      */
 
@@ -122,12 +122,12 @@ TP.xmpp.Message.Inst.defineMethod('getSignalName',
 function(aStanza) {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name to use when signaling arrival of
+     * @method getSignalName
+     * @summary Returns the signal name to use when signaling arrival of
      *     packets of this type. The default is XMPP*Input where the asterisk is
      *     replaced by the current tag/type string, for example
      *     TP.sig.XMPPMessageInput.
-     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
@@ -163,10 +163,10 @@ TP.xmpp.Message.Inst.defineMethod('getSignalOrigin',
 function(aStanza) {
 
     /**
-     * @name getSignalOrigin
-     * @synopsis Returns the signal origin to use when signaling arrival of
+     * @method getSignalOrigin
+     * @summary Returns the signal origin to use when signaling arrival of
      *     packets of this type.
-     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalOrigin() calls as the stanza. This method should return
      *     TP.NONE if it does not want the XMPP connection to send a signal on
@@ -204,8 +204,8 @@ TP.xmpp.Message.Inst.defineMethod('getSubject',
 function() {
 
     /**
-     * @name getSubject
-     * @synopsis Returns the subject, if any, of the receiver.
+     * @method getSubject
+     * @summary Returns the subject, if any, of the receiver.
      * @returns {String}
      */
 
@@ -218,8 +218,8 @@ TP.xmpp.Message.Inst.defineMethod('getThread',
 function() {
 
     /**
-     * @name getThread
-     * @synopsis Returns the thread id, if any, of the receiver.
+     * @method getThread
+     * @summary Returns the thread id, if any, of the receiver.
      * @returns {String}
      */
 
@@ -232,8 +232,8 @@ TP.xmpp.Message.Inst.defineMethod('setBody',
 function(aString) {
 
     /**
-     * @name setBody
-     * @synopsis Sets the text message content of the receiver.
+     * @method setBody
+     * @summary Sets the text message content of the receiver.
      * @param {String} aString The message's text content.
      * @returns {TP.xmpp.Message} The receiver.
      */
@@ -252,8 +252,8 @@ TP.xmpp.Message.Inst.defineMethod('setHtml',
 function(aString) {
 
     /**
-     * @name setHtml
-     * @synopsis Sets the html content of the receiver. If the content includes
+     * @method setHtml
+     * @summary Sets the html content of the receiver. If the content includes
      *     an opening/closing html tag pair it is removed.
      * @param {String} aString The HTML content to set.
      * @returns {TP.xmpp.Message} The receiver.
@@ -289,8 +289,8 @@ TP.xmpp.Message.Inst.defineMethod('setSubject',
 function(aString) {
 
     /**
-     * @name setSubject
-     * @synopsis Sets the subject value for the receiver.
+     * @method setSubject
+     * @summary Sets the subject value for the receiver.
      * @param {String} aString The subject line text.
      * @returns {TP.xmpp.Message} The receiver.
      */
@@ -309,8 +309,8 @@ TP.xmpp.Message.Inst.defineMethod('setThread',
 function(aString) {
 
     /**
-     * @name setThread
-     * @synopsis Sets the thread ID for the receiver.
+     * @method setThread
+     * @summary Sets the thread ID for the receiver.
      * @param {String} aString The thread ID.
      * @returns {TP.xmpp.Message} The receiver.
      */

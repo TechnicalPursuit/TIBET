@@ -14,10 +14,10 @@
 
 /**
  * @type {TP.core.UICanvas}
- * @synopsis A type intended to be used as a trait type for objects which
+ * @summary A type intended to be used as a trait type for objects which
  *     provide UI canvas support such as windows, frames, iframes, and the
  *     Mozilla "canvas" object.
- * @description UI canvases are the surfaces you use to display content to the
+ * @summary UI canvases are the surfaces you use to display content to the
  *     user. In TIBET these can be a variety of things including windows,
  *     iframes, and canvas objects. When dealing with IFRAME elements in
  *     particular there are a few complexities since an IFRAME exists within a
@@ -44,8 +44,8 @@ TP.core.UICanvas.Inst.defineMethod('getCanvasID',
 function() {
 
     /**
-     * @name getCanvasID
-     * @synopsis Returns the canvas ID for the receiver. For non-canvas elements
+     * @method getCanvasID
+     * @summary Returns the canvas ID for the receiver. For non-canvas elements
      *     this is the ID of their containing canvas (window, iframe, or canvas
      *     object). For canvases themselves it is the global ID of the canvas.
      * @returns {String} The canvas's global ID.
@@ -60,8 +60,8 @@ TP.core.UICanvas.Inst.defineMethod('getContentDocument',
 function() {
 
     /**
-     * @name getContentDocument
-     * @synopsis Returns a TP.core.Document instance wrapping the receiver's
+     * @method getContentDocument
+     * @summary Returns a TP.core.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument.
      * @returns {TP.core.Document}
@@ -77,8 +77,8 @@ TP.core.UICanvas.Inst.defineMethod('getContentNode',
 function() {
 
     /**
-     * @name getContentNode
-     * @synopsis Returns the native node of the TP.core.DocumentNode wrapping
+     * @method getContentNode
+     * @summary Returns the native node of the TP.core.DocumentNode wrapping
      *     the receiver's document object.
      * @returns {Node}
      */
@@ -93,8 +93,8 @@ TP.core.UICanvas.Inst.defineMethod('getContentWindow',
 function() {
 
     /**
-     * @name getContentWindow
-     * @synopsis Returns the content window (that is the 'contained window') of
+     * @method getContentWindow
+     * @summary Returns the content window (that is the 'contained window') of
      *     the receiver as a TP.core.Window wrapper.
      * @returns {TP.core.Window} The Window contained by the receiver.
      */
@@ -110,8 +110,8 @@ TP.core.UICanvas.Inst.defineMethod('getGlobalID',
 function(assignIfAbsent) {
 
     /**
-     * @name getGlobalID
-     * @synopsis Returns the global ID for the receiver.
+     * @method getGlobalID
+     * @summary Returns the global ID for the receiver.
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The canvas's global ID.
@@ -126,8 +126,8 @@ TP.core.UICanvas.Inst.defineMethod('getLocalID',
 function(assignIfAbsent) {
 
     /**
-     * @name getLocalID
-     * @synopsis Returns the local ID for the receiver.
+     * @method getLocalID
+     * @summary Returns the local ID for the receiver.
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The canvas's local ID.
@@ -142,8 +142,8 @@ TP.core.UICanvas.Inst.defineMethod('getNativeContentDocument',
 function() {
 
     /**
-     * @name getNativeContentDocument
-     * @synopsis Returns the content document (that is the contained 'document')
+     * @method getNativeContentDocument
+     * @summary Returns the content document (that is the contained 'document')
      *     of the receiver in a TP.core.Document wrapper.
      * @returns {TP.core.Document} The Document object contained by the
      *     receiver.
@@ -158,8 +158,8 @@ TP.core.UICanvas.Inst.defineMethod('getNativeContentWindow',
 function() {
 
     /**
-     * @name getNativeContentWindow
-     * @synopsis Returns the content window (that is the 'contained window') of
+     * @method getNativeContentWindow
+     * @summary Returns the content window (that is the 'contained window') of
      *     the receiver.
      * @returns {Window} The Window object contained by the receiver.
      */
@@ -175,8 +175,8 @@ TP.core.UICanvas.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name canResolveDNU
-     * @synopsis Provides an instance that has triggered DNU machinery with an
+     * @method canResolveDNU
+     * @summary Provides an instance that has triggered DNU machinery with an
      *     opportunity to handle the problem itself. For TP.core.Window and
      *     other UI canvas types we typically check the native window and the
      *     content document to see if either one can respond reasonably to the
@@ -244,10 +244,10 @@ TP.core.UICanvas.Inst.defineMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name resolveDNU
-     * @synopsis Invoked by the main DNU machinery when the instance has
+     * @method resolveDNU
+     * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
-     * @description Handles resolution of methods which have triggered the
+     * @summary Handles resolution of methods which have triggered the
      *     inferencer. For TP.core.Window the resolution process is used in
      *     conjunction with method aspects to allow the receiver to translate
      *     method calls.
@@ -305,8 +305,8 @@ TP.core.UICanvas.Inst.defineMethod('getContentMIMEType',
 function() {
 
     /**
-     * @name getContentMIMEType
-     * @synopsis Returns the receiver's "content MIME type", that is the MIME
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", that is the MIME
      *     type that the receiver can render most effectively.
      * @returns {String} The receiver's MIME type.
      */
@@ -320,8 +320,8 @@ TP.core.UICanvas.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
     /**
-     * @name setContent
-     * @synopsis Sets the content of the receiver's native DOM counterpart to
+     * @method setContent
+     * @summary Sets the content of the receiver's native DOM counterpart to
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
@@ -338,8 +338,8 @@ function(aContentObject, aRequest) {
 
 /**
  * @type {TP.core.Window}
- * @synopsis TP.core.Window is a top-level type for wrapping windows and frames.
- * @description In TIBET you typically operate with documents and elements via
+ * @summary TP.core.Window is a top-level type for wrapping windows and frames.
+ * @summary In TIBET you typically operate with documents and elements via
  *     the TP.core.Node hierarchy. The TP.core.Window hierarchy is intended to
  *     provide functional support for window-level operations. When creating a
  *     TP.core.Window the specific subtype vended back on construct().
@@ -380,8 +380,8 @@ TP.definePrimitive('tpwin',
 function(anObject) {
 
     /**
-     * @name tpwin
-     * @synopsis A general purpose routine that can return a TP.core.Window
+     * @method tpwin
+     * @summary A general purpose routine that can return a TP.core.Window
      *     based on a variety of input object types.
      * @param {Object} anObject A window, node, or other object which can
      *     provide a TP.core.Window or be used to acquire one.
@@ -449,8 +449,8 @@ TP.core.Window.Type.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name addObserver
-     * @synopsis Adds a local signal observation which is roughly like a DOM
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -640,8 +640,8 @@ TP.core.Window.Type.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name removeObserver
-     * @synopsis Removes a local signal observation which is roughly like a DOM
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -741,8 +741,8 @@ TP.core.Window.Type.defineMethod('construct',
 function(aWindow, aName, aSpec) {
 
     /**
-     * @name construct
-     * @synopsis Constructs a new instance of the receiver, or returns the
+     * @method construct
+     * @summary Constructs a new instance of the receiver, or returns the
      *     previously constructed instance for the window provided. When
      *     creating a new window you can provide a URI, name, and specification
      *     (feature) string/hash as with open().
@@ -807,8 +807,8 @@ TP.core.Window.Type.defineMethod('closeRegisteredWindows',
 function() {
 
     /**
-     * @name closeRegisteredWindows
-     * @synopsis Closes any "auxillary" windows opened by TIBET. Typically
+     * @method closeRegisteredWindows
+     * @summary Closes any "auxillary" windows opened by TIBET. Typically
      *     called when you exit the TIBET window.
      */
 
@@ -844,8 +844,8 @@ TP.core.Window.Type.defineMethod('getOpenWindows',
 function() {
 
     /**
-     * @name getOpenWindows
-     * @synopsis Returns an array of all windows TIBET is aware of (registered
+     * @method getOpenWindows
+     * @summary Returns an array of all windows TIBET is aware of (registered
      *     windows) that are open.
      * @returns {Array} An array of native window instances.
      */
@@ -882,8 +882,8 @@ TP.core.Window.Type.defineMethod('getWindowInfo',
 function(aWindowOrID, aKey) {
 
     /**
-     * @name getWindowInfo
-     * @synopsis Return the hash of information (load signals, onload signals,
+     * @method getWindowInfo
+     * @summary Return the hash of information (load signals, onload signals,
      *     etc.) for the window, or window ID and key provided. If no key is
      *     provided the entire hash of window information is returned.
      * @param {Window|String} aWindowOrID The window, or window ID to use as the
@@ -916,8 +916,8 @@ TP.core.Window.Type.defineMethod('getWindowSpec',
 function() {
 
     /**
-     * @name getWindowSpec
-     * @synopsis Returns the window specification hash used by default when
+     * @method getWindowSpec
+     * @summary Returns the window specification hash used by default when
      *     creating instances of this type.
      * @returns {TP.lang.Hash}
      */
@@ -931,8 +931,8 @@ TP.core.Window.Type.defineMethod('getWindowType',
 function() {
 
     /**
-     * @name getWindowType
-     * @synopsis Returns the type object which should be used to construct new
+     * @method getWindowType
+     * @summary Returns the type object which should be used to construct new
      *     instances of OS window wrappers.
      * @returns {TP.lang.RootObject.<TP.core.Window>} The TP.core.Window type
      *     object.
@@ -947,8 +947,8 @@ TP.core.Window.Type.defineMethod('installWindowBase',
 function(aWindow) {
 
     /**
-     * @name installWindowBase
-     * @synopsis Installs a set of common functions onto aWindow to enhance that
+     * @method installWindowBase
+     * @summary Installs a set of common functions onto aWindow to enhance that
      *     window's capability within the TIBET framework.
      * @param {The} aWindow window to install the TIBET functionality on.
      * @returns {TP.core.Window} The receiver.
@@ -963,8 +963,8 @@ TP.core.Window.Type.defineMethod('installDocumentBase',
 function(aWindow) {
 
     /**
-     * @name installDocumentBase
-     * @synopsis Instruments the document belonging to aWindow with TIBET
+     * @method installDocumentBase
+     * @summary Instruments the document belonging to aWindow with TIBET
      *     specific functions.
      * @param {Window} aWindow The window of the document to install the
      *     functions on.
@@ -980,9 +980,9 @@ TP.core.Window.Type.defineMethod('instrument',
 function(aWindow) {
 
     /**
-     * @name instrument
-     * @synopsis Instruments a native window to set it up for use with TIBET.
-     * @description This method instruments a native window to provide common
+     * @method instrument
+     * @summary Instruments a native window to set it up for use with TIBET.
+     * @summary This method instruments a native window to provide common
      *     facilities to consumers of the window, such as component acquisition,
      *     DHTML or event facilties. This also includes setting the opener, the
      *     onerror handler, etc.
@@ -1063,8 +1063,8 @@ TP.core.Window.Type.defineMethod('open',
 function(url, aName, aSpec, shouldReplace) {
 
     /**
-     * @name open
-     * @synopsis Constructs a new TP.core.Window instance (having retrieved a
+     * @method open
+     * @summary Constructs a new TP.core.Window instance (having retrieved a
      *     real native window to go underneath it and having set it up for use
      *     with TIBET).
      * @param {TP.core.URI|String} url The URL to load into the window.
@@ -1122,8 +1122,8 @@ TP.core.Window.Type.defineMethod('registerOnloadFunction',
 function(aWindowOrID, aFunction, runFirst) {
 
     /**
-     * @name registerOnloadFunction
-     * @synopsis Registers a function to be executed when the onload is fired in
+     * @method registerOnloadFunction
+     * @summary Registers a function to be executed when the onload is fired in
      *     the window provided. Since this registration is separate from the
      *     actual existence of the window (you can register by ID) this can be
      *     done without requiring the window to exist.
@@ -1167,9 +1167,9 @@ TP.core.Window.Type.defineMethod('registerWindow',
 function(aWindow) {
 
     /**
-     * @name registerWindow
-     * @synopsis Registers aWindow with the window information registry.
-     * @description If aWindow is already registered with the window registry,
+     * @method registerWindow
+     * @summary Registers aWindow with the window information registry.
+     * @summary If aWindow is already registered with the window registry,
      *     this method will just return. Otherwise, it will check to make sure
      *     that this window isn't registered under another name (it might have
      *     been, if it was registered before the real global ID could have been
@@ -1249,8 +1249,8 @@ TP.core.Window.Type.defineMethod('removeWindowInfo',
 function(aWindowOrID, aKey) {
 
     /**
-     * @name removeWindowInfo
-     * @synopsis Removes a value in the window's information hash, or the entire
+     * @method removeWindowInfo
+     * @summary Removes a value in the window's information hash, or the entire
      *     hash when no key is provided.
      * @param {Window|String} aWindowOrID The window, or window ID to use as the
      *     first key.
@@ -1289,8 +1289,8 @@ TP.core.Window.Type.defineMethod('$setWindowContent',
 function(aWindowOrID, theContent, aLoadedFunction) {
 
     /**
-     * @name $setWindowContent
-     * @synopsis Sets the content of aWindowOrID's window to the content
+     * @method $setWindowContent
+     * @summary Sets the content of aWindowOrID's window to the content
      *     provided. The content is typically specified as a URI string whose
      *     content is acquired and processed.
      * @param {Window|String} aWindowOrID The window or window name.
@@ -1340,8 +1340,8 @@ TP.core.Window.Type.defineMethod('setWindowInfo',
 function(aWindowOrID, aKey, aValue) {
 
     /**
-     * @name setWindowInfo
-     * @synopsis Sets a value in the window's information hash. When the hash
+     * @method setWindowInfo
+     * @summary Sets a value in the window's information hash. When the hash
      *     doesn't exist yet it is constructed as a result of this call.
      * @param {Window|String} aWindowOrID The window, or window ID to use as the
      *     first key.
@@ -1393,8 +1393,8 @@ TP.core.Window.Inst.defineMethod('init',
 function(aWindow) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {Window|String} aWindow A window handle. If the handle is an
      *     actual window reference a proper subtype is returned. If the handle
      *     is a string the assumption is a new OS window object if no '.' is in
@@ -1427,8 +1427,8 @@ TP.core.Window.Inst.defineMethod('setLocation',
 function(aURL, wantsHistoryEntry, onloadFunction) {
 
     /**
-     * @name setLocation
-     * @synopsis Sets the window's location to the URL provided. This method is
+     * @method setLocation
+     * @summary Sets the window's location to the URL provided. This method is
      *     similar to the native '<windowRef>.location =' call, except that it
      *     attempts to ensure that the onloadFunction is executed onload.
      * @param {String|TP.core.URI} aURL The URL of the content to load into this
@@ -1545,8 +1545,8 @@ TP.core.Window.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -1587,8 +1587,8 @@ TP.core.Window.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -1626,8 +1626,8 @@ TP.core.Window.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -1667,8 +1667,8 @@ TP.core.Window.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -1713,8 +1713,8 @@ TP.core.Window.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -1729,8 +1729,8 @@ TP.core.Window.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver as a string.
+     * @method asString
+     * @summary Returns the receiver as a string.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Window's String representation. The default is true.
      * @returns {String} The receiver as a String.
@@ -1777,8 +1777,8 @@ TP.core.Window.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -1817,8 +1817,8 @@ TP.core.Window.Inst.defineMethod('close',
 function() {
 
     /**
-     * @name close
-     * @synopsis Closes the receiver.
+     * @method close
+     * @summary Closes the receiver.
      */
 
     //  this will close the window, and the unload hook should do the rest
@@ -1833,8 +1833,8 @@ TP.core.Window.Inst.defineMethod('getCanvasID',
 function() {
 
     /**
-     * @name getCanvasID
-     * @synopsis Returns the receiver's "canvas ID" or global ID.
+     * @method getCanvasID
+     * @summary Returns the receiver's "canvas ID" or global ID.
      * @returns {String} The window's global ID.
      */
 
@@ -1848,8 +1848,8 @@ TP.core.Window.Inst.defineMethod('getContentDocument',
 function() {
 
     /**
-     * @name getContentDocument
-     * @synopsis Returns a TP.core.Document instance wrapping the receiver's
+     * @method getContentDocument
+     * @summary Returns a TP.core.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument().
      * @returns {TP.core.Document} The TP.core.Document object wrapping the
@@ -1885,8 +1885,8 @@ TP.core.Window.Inst.defineMethod('getContentWindow',
 function() {
 
     /**
-     * @name getContentWindow
-     * @synopsis Returns the content window (that is the 'contained window') of
+     * @method getContentWindow
+     * @summary Returns the content window (that is the 'contained window') of
      *     the receiver as a TP.core.Window wrapper. For TP.core.Window
      *     instances this returns the instance itself.
      * @returns {TP.core.Window} The Window contained by the receiver.
@@ -1901,8 +1901,8 @@ TP.core.Window.Inst.defineMethod('getGlobalID',
 function(assignIfAbsent) {
 
     /**
-     * @name getGlobalID
-     * @synopsis Returns the receiver's global ID.
+     * @method getGlobalID
+     * @summary Returns the receiver's global ID.
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The window's global ID (it's fully-qualified name).
@@ -1918,8 +1918,8 @@ TP.core.Window.Inst.defineMethod('getLocalID',
 function(assignIfAbsent) {
 
     /**
-     * @name getLocalID
-     * @synopsis Returns the receiver's "local ID", also known as it's 'name',
+     * @method getLocalID
+     * @summary Returns the receiver's "local ID", also known as it's 'name',
      *     but without any prefixes for parent windows.
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
@@ -1941,8 +1941,8 @@ TP.core.Window.Inst.defineMethod('getNativeContentDocument',
 function() {
 
     /**
-     * @name getNativeContentDocument
-     * @synopsis Returns the content document (that is the contained 'document')
+     * @method getNativeContentDocument
+     * @summary Returns the content document (that is the contained 'document')
      *     of the receiver in a TP.core.Document wrapper.
      * @returns {TP.core.Document} The TP.core.Document object contained by the
      *     receiver.
@@ -1957,8 +1957,8 @@ TP.core.Window.Inst.defineMethod('getNativeContentWindow',
 function() {
 
     /**
-     * @name getNativeContentWindow
-     * @synopsis Returns the content window (that is the 'contained window') of
+     * @method getNativeContentWindow
+     * @summary Returns the content window (that is the 'contained window') of
      *     the receiver.
      * @returns {Window} The Window object contained by the receiver.
      */
@@ -1972,8 +1972,8 @@ TP.core.Window.Inst.defineMethod('handleDOMClose',
 function(aSignal) {
 
     /**
-     * @name handleDOMClose
-     * @synopsis Closes the receiver.
+     * @method handleDOMClose
+     * @summary Closes the receiver.
      * @param {TP.sig.DOMClose} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -1987,8 +1987,8 @@ TP.core.Window.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
     /**
-     * @name setContent
-     * @synopsis Sets the content of the receiver's native DOM counterpart to
+     * @method setContent
+     * @summary Sets the content of the receiver's native DOM counterpart to
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
@@ -2052,8 +2052,8 @@ TP.core.Window.Inst.defineMethod('attachSTDIO',
 function(aProvider) {
 
     /**
-     * @name attachSTDIO
-     * @synopsis Attaches the receiver's stdio hooks to a STDIO provider, an
+     * @method attachSTDIO
+     * @summary Attaches the receiver's stdio hooks to a STDIO provider, an
      *     object which implements those hooks for reuse.
      * @param {Object} aProvider An object implementing stdin, stdout, and
      *     stderr hook functions.
@@ -2100,8 +2100,8 @@ TP.core.Window.Inst.defineMethod('back',
 function() {
 
     /**
-     * @name back
-     * @synopsis Causes the receiver to go back a page in session history
+     * @method back
+     * @summary Causes the receiver to go back a page in session history
      */
 
     this.getNativeWindow().history.back();
@@ -2115,8 +2115,8 @@ TP.core.Window.Inst.defineMethod('blur',
 function() {
 
     /**
-     * @name blur
-     * @synopsis Blurs the receiver.
+     * @method blur
+     * @summary Blurs the receiver.
      */
 
     this.getNativeWindow().blur();
@@ -2130,9 +2130,9 @@ TP.core.Window.Inst.defineMethod('constructObject',
 function(constructorName, varargs) {
 
     /**
-     * @name constructObject
-     * @synopsis Constructs an object in the receiver's native window.
-     * @description Note that all parameters to this method are passed along in
+     * @method constructObject
+     * @summary Constructs an object in the receiver's native window.
+     * @summary Note that all parameters to this method are passed along in
      *     the object creation process. Therefore, arguments to the 'new', if
      *     you will, should be passed after the constructorName.
      * @param {String} constructorName The name of the constructor to use to
@@ -2159,11 +2159,11 @@ TP.core.Window.Inst.defineMethod('getDocument',
 function() {
 
     /**
-     * @name getDocument
-     * @synopsis Returns a TP.core.Document instance wrapping the receiver's
+     * @method getDocument
+     * @summary Returns a TP.core.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument.
-     * @description Windows are unique in that their content document and their
+     * @summary Windows are unique in that their content document and their
      *     document are the same object. For other UICanvas objects the content
      *     document is contained within the canvas, but the document contains
      *     the canvas. Windows sit at the boundary.
@@ -2179,8 +2179,8 @@ TP.core.Window.Inst.defineMethod('getNativeDocument',
 function() {
 
     /**
-     * @name getNativeDocument
-     * @synopsis Returns the receiver's native document object without creating
+     * @method getNativeDocument
+     * @summary Returns the receiver's native document object without creating
      *     a TP.core.Document wrapper.
      * @returns {Document} A native document instance.
      */
@@ -2200,8 +2200,8 @@ TP.core.Window.Inst.defineMethod('getNativeNode',
 function() {
 
     /**
-     * @name getNativeNode
-     * @synopsis Returns the native node representing the receiver's content,
+     * @method getNativeNode
+     * @summary Returns the native node representing the receiver's content,
      *     which for a window is actually the native document node.
      * @returns {Document} The receiver's document object.
      */
@@ -2215,8 +2215,8 @@ TP.core.Window.Inst.defineMethod('getNativeObject',
 function() {
 
     /**
-     * @name getNativeObject
-     * @synopsis Returns the native object that the receiver is wrapping. In the
+     * @method getNativeObject
+     * @summary Returns the native object that the receiver is wrapping. In the
      *     case of TP.core.Window, this is the receiver's native window object.
      * @returns {Window} The receiver's native object.
      */
@@ -2230,8 +2230,8 @@ TP.core.Window.Inst.defineMethod('getNativeWindow',
 function() {
 
     /**
-     * @name getNativeWindow
-     * @synopsis Returns the window object itself.
+     * @method getNativeWindow
+     * @summary Returns the window object itself.
      * @returns {Window} The receiver's window instance.
      */
 
@@ -2262,8 +2262,8 @@ TP.core.Window.Inst.defineMethod('getProperty',
 function(attributeName) {
 
     /**
-     * @name getProperty
-     * @synopsis Returns the value of the named attribute.
+     * @method getProperty
+     * @summary Returns the value of the named attribute.
      * @param {String} attributeName The attribute to get.
      * @returns {Object}
      */
@@ -2297,9 +2297,9 @@ TP.core.Window.Inst.defineMethod('getWindow',
 function() {
 
     /**
-     * @name getWindow
-     * @synopsis Returns the receiver.
-     * @description This method exists for polymorphism purposes.
+     * @method getWindow
+     * @summary Returns the receiver.
+     * @summary This method exists for polymorphism purposes.
      * @returns {TP.core.Window} The receiver.
      */
 
@@ -2312,8 +2312,8 @@ TP.core.Window.Inst.defineMethod('focus',
 function() {
 
     /**
-     * @name focus
-     * @synopsis Focuses the receiver, possibly bringing it to the front.
+     * @method focus
+     * @summary Focuses the receiver, possibly bringing it to the front.
      */
 
     this.getNativeWindow().focus();
@@ -2327,8 +2327,8 @@ TP.core.Window.Inst.defineMethod('isInstrumented',
 function() {
 
     /**
-     * @name isInstrumented
-     * @synopsis Returns true if the window's native window has been
+     * @method isInstrumented
+     * @summary Returns true if the window's native window has been
      *     instrumented with TIBET features.
      * @returns {Boolean} True if the window has been instrumented.
      */
@@ -2342,8 +2342,8 @@ TP.core.Window.Inst.defineMethod('refresh',
 function(aSignalOrHash) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver's content by refreshing all bound elements
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound elements
      *     in the window's document.
     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash. If this is a signal, this
@@ -2368,8 +2368,8 @@ TP.core.Window.Inst.defineMethod('reload',
 function(forceReload) {
 
     /**
-     * @name reload
-     * @synopsis Reloads the resource currently displayed in the receiver.
+     * @method reload
+     * @summary Reloads the resource currently displayed in the receiver.
      * @param {Boolean} forceReload An optional parameter that determines
      *     whether the browser should reload the page from the server or from
      *     its cache. The default value is false.

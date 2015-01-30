@@ -12,7 +12,7 @@
 
 /**
  * @type {TP.tsh.script}
- * @synopsis Provides support for the TIBET Shell (TSH) during raw content
+ * @summary Provides support for the TIBET Shell (TSH) during raw content
  *     compilation and execution. This tag is typically wrapped around raw
  *     content entered in a TIBET console to provide an XML context for it.
  *     During tag compilation this tag handles XML desugaring as well as
@@ -45,8 +45,8 @@ TP.tsh.script.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     this.set(
@@ -105,8 +105,8 @@ TP.tsh.script.Type.defineMethod('$adjustPipeSymbols',
 function(aNode, aCommandList, aRequest) {
 
     /**
-     * @name $adjustPipeSymbols
-     * @synopsis Migrates pipe symbols from the leading element to the trailing
+     * @method $adjustPipeSymbols
+     * @summary Migrates pipe symbols from the leading element to the trailing
      *     element so that the currently executing request can see what the
      *     input pipe may have been.
      * @param {Node} aNode A native node containing one or more executable child
@@ -185,8 +185,8 @@ TP.tsh.script.Type.defineMethod('$connectPipeSections',
 function(commands, aRequest) {
 
     /**
-     * @name $connectPipeSections
-     * @synopsis Joins the various requests involved in processing the pipe so
+     * @method $connectPipeSections
+     * @summary Joins the various requests involved in processing the pipe so
      *     that the proper workflow semantics are observed.
      * @param {Array} commands An array of arrays of requests which make up the
      *     individual sections of command pipeline.
@@ -310,11 +310,11 @@ TP.tsh.script.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @name cmdAddContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdAddContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @description On this type, this method merely invokes 'tshExecute'
+     * @summary On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -330,11 +330,11 @@ TP.tsh.script.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
-     * @name cmdFilterInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdFilterInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @description On this type, this method merely invokes 'tshExecute'
+     * @summary On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -350,10 +350,10 @@ TP.tsh.script.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
-     * @description On this type, this method merely invokes 'tshExecute'
+     * @summary On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -369,9 +369,9 @@ TP.tsh.script.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Runs the receiver, effectively invoking its action.
-     * @description This method is invoked any time a tag is being run as part
+     * @method cmdRunContent
+     * @summary Runs the receiver, effectively invoking its action.
+     * @summary This method is invoked any time a tag is being run as part
      *     of the processing of an enclosing tsh:script, which happens most
      *     often when the tag is being run interactively. The default defers to
      *     the tshExecute method of their type. On this type, this method merely
@@ -391,11 +391,11 @@ TP.tsh.script.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
-     * @description On this type, this method merely invokes 'tshExecute'
+     * @summary On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -411,11 +411,11 @@ TP.tsh.script.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @name cmdTransformInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdTransformInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description On this type, this method merely invokes 'tshExecute'
+     * @summary On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -431,11 +431,11 @@ TP.tsh.script.Type.defineMethod('$desugarXML',
 function(source, shell, sibling, request) {
 
     /**
-     * @name $desugarXML
-     * @synopsis Converts TSH syntax sugaring, particularly XML sugaring, into
+     * @method $desugarXML
+     * @summary Converts TSH syntax sugaring, particularly XML sugaring, into
      *     its verbose equivalent so the returned string can be turned in to
      *     valid XML nodes.
-     * @description The primary purpose of this method is to convert sugared TSH
+     * @summary The primary purpose of this method is to convert sugared TSH
      *     input into a viable XML string. This means finding any TSH pipe or
      *     redirection operators as well as any other sugared tag syntax. TSH
      *     sugaring is intended to eliminate the need for entering brackets or
@@ -1723,8 +1723,8 @@ TP.tsh.script.Type.defineMethod('scriptFail',
 function(aRequest, aMessage) {
 
     /**
-     * @name scriptFail
-     * @synopsis Handles failing a request during execution such that commands
+     * @method scriptFail
+     * @summary Handles failing a request during execution such that commands
      *     which are nested will properly manage request data and return value.
      * @param {TP.sig.Request} aRequest The request to fail.
      * @param {String} aMessage The failure error message, if any.
@@ -1760,8 +1760,8 @@ TP.tsh.script.Type.defineMethod('tshCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
-     * @synopsis Compiles the content of a tsh:script tag, replacing the tag's
+     * @method tshCompile
+     * @summary Compiles the content of a tsh:script tag, replacing the tag's
      *     content with one or more child tags which will handle the concrete
      *     processing for the script.
      * @param {TP.sig.Request} aRequest The request containing command input for
@@ -1863,8 +1863,8 @@ TP.tsh.script.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @name tshExecute
-     * @synopsis Manages the overall execution process for a tsh:script and its
+     * @method tshExecute
+     * @summary Manages the overall execution process for a tsh:script and its
      *     content elements. The primary focus of this method is to parse the
      *     script into separate pipe segments (if any) and to construct a
      *     request pipeline which can process the pipeline while managing any
@@ -2380,8 +2380,8 @@ TP.tsh.script.Type.defineMethod('$xmlifyContent',
 function(src, shell, request) {
 
     /**
-     * @name $xmlifyContent
-     * @synopsis Processes incoming source text, massaging it to handle mixed
+     * @method $xmlifyContent
+     * @summary Processes incoming source text, massaging it to handle mixed
      *     XML and JavaScript input as well as certain TIBET Shell operators to
      *     create the best possible XML string value. As part of this process
      *     XML literals are converted to entities when found outside of opening
@@ -2818,7 +2818,7 @@ TP.tsh.script.Inst.defineMethod('constructActRequest',
 function(aSignal) {
 
     /**
-     * @name constructActRequest
+     * @method constructActRequest
      * @param {TP.sig.Signal} aSignal The signal instance which triggered this
      *     activity.
      * @returns {TP.sig.Request} The request that was generated (or was
@@ -2851,7 +2851,7 @@ function(aSignal) {
 
 /**
  * @type {TP.sig.TSHRunRequest}
- * @synopsis The TSH uses child requests to perform the actual work of running a
+ * @summary The TSH uses child requests to perform the actual work of running a
  *     script. All requests of this kind are TP.sig.TSHRunRequests.
  */
 
@@ -2881,8 +2881,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('addInputRequest',
 function(aRequest) {
 
     /**
-     * @name addInputRequest
-     * @synopsis Adds a request whose purpose is to provide input to the
+     * @method addInputRequest
+     * @summary Adds a request whose purpose is to provide input to the
      *     receiver. These requests are parsed from input redirection and 'here
      *     document' symbols.
      * @param {TP.sig.TSHRunRequest} aRequest The input data request.
@@ -2908,8 +2908,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('addOutputRequest',
 function(aRequest) {
 
     /**
-     * @name addOutputRequest
-     * @synopsis Adds a request whose purpose is to store output from the
+     * @method addOutputRequest
+     * @summary Adds a request whose purpose is to store output from the
      *     receiver. These requests are parsed from output redirection symbols.
      * @param {TP.sig.TSHRunRequest} aRequest The output data request.
      * @returns {TP.sig.TSHRunRequest} The receiver.
@@ -2934,8 +2934,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('cancel',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancel
-     * @synopsis Tells the receiver to cancel, meaning it is being rescinded by
+     * @method cancel
+     * @summary Tells the receiver to cancel, meaning it is being rescinded by
      *     the user or calling process. If the receiver has specific behavior to
      *     implement it should override the cancelJob() method invoked as part
      *     of this method's operation.
@@ -2971,8 +2971,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('complete',
 function(aResult) {
 
     /**
-     * @name complete
-     * @synopsis Tells the receiver to complete, meaning the receiver should do
+     * @method complete
+     * @summary Tells the receiver to complete, meaning the receiver should do
      *     whatever finalization is necessary to reach the TP.SUCCEEDED state.
      *     If the receiver has specific behavior to implement it should override
      *     the completeJob() method invoked as part of this method's operation.
@@ -3004,8 +3004,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('fail',
 function(aFaultString, aFaultCode, anException) {
 
     /**
-     * @name fail
-     * @synopsis Tells the receiver to fail, meaning it failed due to some form
+     * @method fail
+     * @summary Tells the receiver to fail, meaning it failed due to some form
      *     of exception. If the receiver has specific behavior to implement it
      *     should override the failJob() method invoked as part of this method's
      *     operation.
@@ -3057,8 +3057,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('notify',
 function(output, request) {
 
     /**
-     * @name notify
-     * @synopsis Standard function for notifying of "out of band" content during
+     * @method notify
+     * @summary Standard function for notifying of "out of band" content during
      *     request execution.
      * @param {Object} output The object to write to stderr.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
@@ -3078,8 +3078,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('stderr',
 function(output, request) {
 
     /**
-     * @name stderr
-     * @synopsis Standard function for writing error output during shell
+     * @method stderr
+     * @summary Standard function for writing error output during shell
      *     execution.
      * @param {Object} output The object to write to stderr.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
@@ -3141,8 +3141,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('stdin',
 function() {
 
     /**
-     * @name stdin
-     * @synopsis Provides a common function for reading from "standard input"
+     * @method stdin
+     * @summary Provides a common function for reading from "standard input"
      *     during shell execution. Standard input is always provided as an array
      *     of 0 to N items provided by the various stdout, stderr, and input
      *     redirection calls related to a request.
@@ -3309,8 +3309,8 @@ TP.sig.TSHRunRequest.Inst.defineMethod('stdout',
 function(output, request) {
 
     /**
-     * @name stdout
-     * @synopsis Standard function for writing valid output during shell
+     * @method stdout
+     * @summary Standard function for writing valid output during shell
      *     execution.
      * @param {Object} output The object to write to stdout.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
@@ -3394,7 +3394,7 @@ TP.sig.ShellResponse.defineSubtype('TSHRunResponse');
 
 /**
  * @type {TP.tsh.RunService}
- * @synopsis The primary "working service" for execution of TSH scripts.
+ * @summary The primary "working service" for execution of TSH scripts.
  */
 
 TP.core.Service.defineSubtype('tsh:RunService');
@@ -3417,8 +3417,8 @@ TP.tsh.RunService.Inst.defineMethod('handleTSHRunRequest',
 function(aRequest) {
 
     /**
-     * @name handleTSHRunRequest
-     * @synopsis Processes individual execution requests, dispatching the
+     * @method handleTSHRunRequest
+     * @summary Processes individual execution requests, dispatching the
      *     request to the proper targeting method so that command tags can
      *     implement fine-grained processing logic easier.
      * @param {TP.sig.TSHRunRequest} aRequest The request instance to process.

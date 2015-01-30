@@ -58,15 +58,15 @@ iframes in an attempt to locate the shared TIBET code frame.
 $$getNextWindow = function(aWindow, aTimestamp) {
 
     /**
-     * @name $$getNextWindow
-     * @synopsis Given a window reference this routine returns the next window
+     * @method $$getNextWindow
+     * @summary Given a window reference this routine returns the next window
      *     to check when looking for a TIBET reference. This method relies
      *     heavily on the $$checked slot, which calling routines such as
      *     $$findTIBET() should set as they operate on each window.
      * @param {Window} aWindow The window to start looking for the TIBET frame
      *     in.
      * @param {String} aTimestamp The timestamp to use in the $$checked slot.
-     * @return {Window} The next window to check in finding the TIBET frame.
+     * @returns {Window} The next window to check in finding the TIBET frame.
      */
 
     var win,
@@ -131,12 +131,12 @@ $$getNextWindow = function(aWindow, aTimestamp) {
 $$findTIBET = function(aWindow) {
 
     /**
-     * @name $$findTIBET
-     * @synopsis Finds the TIBET code frame by traversing up the opener or
+     * @method $$findTIBET
+     * @summary Finds the TIBET code frame by traversing up the opener or
      *     parent chain until the window containing the slot named '$$TIBET' (a
      *     well known slot in the TIBET code frame that is used solely for this
      *     purpose) is found.
-     * @description This function works hand-in-hand with $$getNextWindow() by
+     * @summary This function works hand-in-hand with $$getNextWindow() by
      *     setting the $$checked attribute on each frame/window as it is tested.
      *     The $$getNextWindow() call observes these and skips windows with a
      *     value matching the timestamp set at the start of this call. The use
@@ -146,7 +146,7 @@ $$findTIBET = function(aWindow) {
      *     variable.
      * @param {Window} aWindow The window to start looking for the TIBET frame
      *     in.
-     * @return {Window} The TIBET frame.
+     * @returns {Window} The TIBET frame.
      */
 
     var win,
@@ -210,8 +210,8 @@ if (self.TP == null) {
     window.onerror = function(msg, url, line, column, errorObj) {
 
         /**
-         * @name onerror
-         * @synopsis Captures global errors and outputs them appropriately. This
+         * @method onerror
+         * @summary Captures global errors and outputs them appropriately. This
          *     hook allows TIBET to capture native JavaScript errors and avoid
          *     reporting them via the normal browser mechanism. This keeps users
          *     from being bombarded by messages about JS errors while allowing
@@ -321,10 +321,10 @@ Simple testing functions for various objects and their state.
 TP.boot.$isElement = function(anObj) {
 
     /**
-     * @name $isElement
-     * @synopsis Returns true if the object provided is a DOM element.
+     * @method $isElement
+     * @summary Returns true if the object provided is a DOM element.
      * @param {Object} anObj The object to test.
-     * @return {Boolean}
+     * @returns {Boolean}
      */
 
     return (anObj != null && anObj.nodeType === Node.ELEMENT_NODE);
@@ -335,10 +335,10 @@ TP.boot.$isElement = function(anObj) {
 TP.boot.$isEmpty = function(anObj) {
 
     /**
-     * @name $isEmpty
-     * @synopsis Returns true if the object is null, has 0 length, or is ''.
+     * @method $isEmpty
+     * @summary Returns true if the object is null, has 0 length, or is ''.
      * @param {Object} anObj The object to test.
-     * @return {Boolean}
+     * @returns {Boolean}
      */
 
     return (anObj == null || anObj === '' || anObj.length === 0);
@@ -349,10 +349,10 @@ TP.boot.$isEmpty = function(anObj) {
 TP.boot.$isEvent = function(anObj) {
 
     /**
-     * @name $isEvent
-     * @synopsis Returns true if the object provided is an Event object.
+     * @method $isEvent
+     * @summary Returns true if the object provided is an Event object.
      * @param {Object} anObj The Object to test.
-     * @return {Boolean} Whether or not the supplied object is an Event object.
+     * @returns {Boolean} Whether or not the supplied object is an Event object.
      */
 
     return (anObj != null &&
@@ -365,12 +365,12 @@ TP.boot.$isEvent = function(anObj) {
 TP.boot.$isTrue = function(aValue) {
 
     /**
-     * @name $isTrue
-     * @synopsis Return true if the argument is the Boolean 'true'. This is a
+     * @method $isTrue
+     * @summary Return true if the argument is the Boolean 'true'. This is a
      *     more explicit test than 'if (anObj)' since that test will often lead
      *     your code astray due to bizarre type conversions.
      * @param {Object} aValue The value to test.
-     * @return {Boolean} True if aValue === true.
+     * @returns {Boolean} True if aValue === true.
      */
 
     //  Seems pendantic, but its the best performer
@@ -391,11 +391,11 @@ TP.boot.$isTrue = function(aValue) {
 TP.boot.$isValid = function(anObj) {
 
     /**
-     * @name $isValid
-     * @synopsis Returns whether or not the object is valid (that is, whether it
+     * @method $isValid
+     * @summary Returns whether or not the object is valid (that is, whether it
      *     is not undefined and not null).
      * @param {Object} anObj The object to test.
-     * @return {Boolean} Whether or not anObj is valid.
+     * @returns {Boolean} Whether or not anObj is valid.
      */
 
     return anObj != null;
@@ -406,11 +406,11 @@ TP.boot.$isValid = function(anObj) {
 TP.boot.$isWindow = function(anObj) {
 
     /**
-     * @name isWindow
-     * @synopsis Returns true if the object provided appears to be a valid
+     * @method isWindow
+     * @summary Returns true if the object provided appears to be a valid
      *     window instance based on location and navigator slot checks.
      * @param {Object} anObj The object to test.
-     * @return {Boolean} True if the object is a window.
+     * @returns {Boolean} True if the object is a window.
      */
 
     if (anObj != null && anObj.moveBy !== undefined) {
@@ -425,10 +425,10 @@ TP.boot.$isWindow = function(anObj) {
 TP.boot.$notValid = function(aValue) {
 
     /**
-     * @name $notValid
-     * @synopsis Returns true if the object provided is null or undefined.
+     * @method $notValid
+     * @summary Returns true if the object provided is null or undefined.
      * @param {Object} aValue The object to test.
-     * @return {Boolean}
+     * @returns {Boolean}
      */
 
     return aValue == null;
@@ -457,9 +457,9 @@ if (!self.Window) {
 TP.boot.$$isIE = function() {
 
     /**
-     * @name $$isIE
-     * @synopsis Returns true if the current browser looks like it's IE.
-     * @return {Boolean}
+     * @method $$isIE
+     * @summary Returns true if the current browser looks like it's IE.
+     * @returns {Boolean}
      */
 
     return (/Trident/).test(navigator.userAgent);
@@ -470,10 +470,10 @@ TP.boot.$$isIE = function() {
 TP.boot.$$isMoz = function() {
 
     /**
-     * @name $$isMoz
-     * @synopsis Returns true if the current browser looks like it's a
+     * @method $$isMoz
+     * @summary Returns true if the current browser looks like it's a
      *     Mozilla-based browser.
-     * @return {Boolean}
+     * @returns {Boolean}
      */
 
     //  Firefox at least will always show an rv: and Gecko in the string.
@@ -486,10 +486,10 @@ TP.boot.$$isMoz = function() {
 TP.boot.$$isWebkit = function() {
 
     /**
-     * @name $$isWebkit
-     * @synopsis Returns true if the current browser looks like it's a
+     * @method $$isWebkit
+     * @summary Returns true if the current browser looks like it's a
      *     Webkit-based browser.
-     * @return {Boolean}
+     * @returns {Boolean}
      */
 
     return (/Konqueror|AppleWebKit|KHTML/).test(navigator.userAgent);
@@ -622,11 +622,11 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$formatCookieSource = function(anObj) {
 
         /**
-         * @name $formatCookieSource
-         * @synopsis Returns anObj, in JavaScript source-code format suitable
+         * @method $formatCookieSource
+         * @summary Returns anObj, in JavaScript source-code format suitable
          *     for storage in a cookie.
          * @param {Object} anObj The object to format.
-         * @return {String}
+         * @returns {String}
          */
 
         var str;
@@ -649,10 +649,10 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.getCookie = function(aName) {
 
         /**
-         * @name getCookie
-         * @synopsis Returns the value of the named cookie or undefined.
+         * @method getCookie
+         * @summary Returns the value of the named cookie or undefined.
          * @param {String} aName The name of the desired cookie.
-         * @return {String}
+         * @returns {String}
          */
 
         var cooky,
@@ -693,8 +693,8 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.setCookie = function(aName, aValue, expiresAt, aPath, aDomain,
                                     wantsSecurity) {
         /**
-         * @name setCookie
-         * @synopsis Sets the value of the named cookie with associated params.
+         * @method setCookie
+         * @summary Sets the value of the named cookie with associated params.
          *     The values and rules for the various params are documented in
          *     most JS texts. See JSTDG3 for a good discussion.
          * @param {String} aName The cookie name.
@@ -703,7 +703,7 @@ if (window.onerror.failedlaunch !== true &&
          * @param {String} aPath The cookie's path.
          * @param {String} aDomain An alternate cookie domain.
          * @param {Boolean} wantsSecurity Whether security is desired.
-         * @return {Boolean} Whether the cookie was successfully set or not.
+         * @returns {Boolean} Whether the cookie was successfully set or not.
          */
 
         var cooky;
@@ -743,12 +743,12 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$byId = function(anID) {
 
         /**
-         * @name $byId
-         * @synopsis The de-facto standard $ function, a simple wrapper for
+         * @method $byId
+         * @summary The de-facto standard $ function, a simple wrapper for
          *     document.getElementById.
          * @param {String|Element} anID The string ID to locate, or an element
          *     (which will be returned).
-         * @return {Element}
+         * @returns {Element}
          */
 
         if (typeof anID === 'string') {
@@ -763,10 +763,10 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.getWindowLocation = function() {
 
         /**
-         * @name getWindowLocation
-         * @synopsis Returns the window location (or the location that the
+         * @method getWindowLocation
+         * @summary Returns the window location (or the location that the
          *     system was trying to set the window to)
-         * @return {String} The window's location (or attempted set location)
+         * @returns {String} The window's location (or attempted set location)
          */
 
         //  If the window is inside of an iframe, then we have to poke around a
@@ -802,12 +802,12 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.hideContent = function(anID) {
 
         /**
-         * @name hideContent
-         * @synopsis Hides the identified element, or the current content
+         * @method hideContent
+         * @summary Hides the identified element, or the current content
          *     element if no element is specified.
          * @param {String|Element} anID The element whose content should be
          *     hidden.
-         * @return {null}
+         * @returns {null}
          */
 
         var elem,
@@ -828,10 +828,10 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.hideUICanvas = function() {
 
         /**
-         * @name hideUICanvas
-         * @synopsis Hides the current tibet.uicanvas element in the
+         * @method hideUICanvas
+         * @summary Hides the current tibet.uicanvas element in the
          *     application's main window.
-         * @return {null}
+         * @returns {null}
          */
 
         var win;
@@ -850,10 +850,10 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.hideUIRoot = function() {
 
         /**
-         * @name hideUIRoot
-         * @synopsis Hides the current tibet.uiroot element in the application's
+         * @method hideUIRoot
+         * @summary Hides the current tibet.uiroot element in the application's
          *     main window.
-         * @return {null}
+         * @returns {null}
          */
 
         var win;
@@ -872,10 +872,10 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.launchApp = function() {
 
         /**
-         * @name launchApp
-         * @synopsis Forces the application's boot page into place, triggering
+         * @method launchApp
+         * @summary Forces the application's boot page into place, triggering
          *     an application startup sequence.
-         * @return {null}
+         * @returns {null}
          */
 
         window.location = TP.$$bootpage;
@@ -888,12 +888,12 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.showContent = function(anID) {
 
         /**
-         * @name showContent
-         * @synopsis Shows the identified element, or the current content
+         * @method showContent
+         * @summary Shows the identified element, or the current content
          *     element if no element is specified.
          * @param {String|Element} anID The element whose content should be
          *     displayed.
-         * @return {null}
+         * @returns {null}
          */
 
         var elem,
@@ -915,13 +915,13 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.showUICanvas = function(aURI) {
 
         /**
-         * @name showUICanvas
-         * @synopsis Displays the current tibet.uicanvas element in the
+         * @method showUICanvas
+         * @summary Displays the current tibet.uicanvas element in the
          *     application's main window. If aURI is provided the content of
          *     that URI is placed in the canvas.
          * @param {String} aURI The URI whose content should be loaded and
          *     displayed.
-         * @return {null}
+         * @returns {null}
          */
 
         var win,
@@ -952,12 +952,12 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.startGUI = function() {
 
         /**
-         * @name startGUI
-         * @synopsis Triggers activation of the application's UI startup
+         * @method startGUI
+         * @summary Triggers activation of the application's UI startup
          *     sequence. The actual boot process for loading all static
          *     elements of the application should have been completed prior to
          *     calling this function.
-         * @return {null}
+         * @returns {null}
          */
 
         var tWin;
@@ -1186,12 +1186,12 @@ if (window.onerror.failedlaunch !== true &&
         if (TP.boot.$notValid(aWindow.atob)) {
             aWindow.atob = function(aString) {
                 /**
-                 * @name atob
-                 * @synopsis An implementation of the atob function found in
+                 * @method atob
+                 * @summary An implementation of the atob function found in
                  *     Mozilla which takes a Base64-encoded ascii string and
                  *     decodes it to binary form.
                  * @param {String} aString The string to convert.
-                 * @return {Object} A decoded String.
+                 * @returns {Object} A decoded String.
                  */
 
                 var atobData,
@@ -1703,12 +1703,12 @@ if (window.onerror.failedlaunch !== true &&
     TP.windowIsInstrumented = TP.windowIsInstrumented || function(aWindow) {
 
         /**
-         * @name windowIsInstrumented
-         * @synopsis Returns true if the receiving window still sees TIBET
+         * @method windowIsInstrumented
+         * @summary Returns true if the receiving window still sees TIBET
          *     instrumentation.
          * @param {Window} aWindow The native window to test. For the hook file
          *     version this defaults to 'window'.
-         * @return {Boolean}
+         * @returns {Boolean}
          */
 
         var win;
@@ -1736,11 +1736,11 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$computeDispatchOrigin = function(orig, elem, args) {
 
         /**
-         * @name $$computeDispatchOrigin
-         * @synopsis Computes the likely origin for TP.boot.$$dispatch() when
+         * @method $$computeDispatchOrigin
+         * @summary Computes the likely origin for TP.boot.$$dispatch() when
          *     provided with an element and/or event object but not a string
          *     origin.
-         * @description TIBET uses string origins for actual signaling to allow
+         * @summary TIBET uses string origins for actual signaling to allow
          *     more flexibility and control. This method will attempt to compute
          *     a string origin for an element or event when no string origin is
          *     provided.
@@ -1750,7 +1750,7 @@ if (window.onerror.failedlaunch !== true &&
          * @param {Event} args The event object that generated the event. If
          *     orig or elem can't be used, use this object to try to get its
          *     'source element' or 'target'.
-         * @return {Element|String} Typically a string, but sometimes the
+         * @returns {Element|String} Typically a string, but sometimes the
          *     element when no string value can be computed with certainty.
          */
 
@@ -1821,11 +1821,11 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$displaySignalData = function(origin, signal, elem, args, policy) {
 
         /**
-         * @name $$displaySignalData
-         * @synopsis Provides a simple feedback mechanism during UI prototyping
+         * @method $$displaySignalData
+         * @summary Provides a simple feedback mechanism during UI prototyping
          *     to ensure that the proper events are being thrown in response to
          *     UI interactions.
-         * @description During UI prototyping it can be useful to have visual
+         * @summary During UI prototyping it can be useful to have visual
          *     display of event data to confirm that the proper origin and
          *     signal data are being dispatched. This function is part of the
          *     default processing for the lightweight TP.boot.$$dispatch() call
@@ -1839,7 +1839,7 @@ if (window.onerror.failedlaunch !== true &&
          *     hash of parameter data.
          * @param {String} policy A TIBET dispatch policy. Ignored at this
          *     level.
-         * @return {null}
+         * @returns {null}
          */
 
         try {
@@ -1863,8 +1863,8 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$dispatch = function(orig, sig, elem, args, policy, display) {
 
         /**
-         * @name $$dispatch
-         * @synopsis Placeholder for TIBET's TP.dispatch action, which is
+         * @method $$dispatch
+         * @summary Placeholder for TIBET's TP.dispatch action, which is
          *     installed on successful launch. This version supports the
          *     initial UI development process -- which can be done outside of
          *     TIBET.
@@ -1878,7 +1878,7 @@ if (window.onerror.failedlaunch !== true &&
          *     level.
          * @param {Boolean} display Should the signal data be displayed,
          *     normally true.
-         * @return {null}
+         * @returns {null}
          */
 
         var signal,
@@ -1963,15 +1963,15 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$raise = function(anOrigin, anException, aPayload) {
 
         /**
-         * @name $raise
-         * @synopsis Dispatches the exception as a signal, using the origin and
+         * @method $raise
+         * @summary Dispatches the exception as a signal, using the origin and
          *     argument data provided. TIBET exceptions are lightweight and can
          *     be 'handled' or proceed to throw a native Error.
          * @param {Object} anOrigin The origin signaled for this event. Can be a
          *     string to allow spoofing of element IDs etc.
          * @param {Object} anException The signal being triggered.
          * @param {Object} aPayload arguments for the signal.
-         * @return {null}
+         * @returns {null}
          */
 
         //  NOTE the context gets dropped here since the primitive version
@@ -1986,8 +1986,8 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc) {
 
         /**
-         * @name $$addUIHandler
-         * @synopsis Adds a special 'UI' event handler to the object under the
+         * @method $$addUIHandler
+         * @summary Adds a special 'UI' event handler to the object under the
          *     supplied event name. This handler is used to send low-level
          *     events to TIBET for further processing.
          * @param {Object} anObject The object that the event handler is to be
@@ -1995,7 +1995,7 @@ if (window.onerror.failedlaunch !== true &&
          * @param {String} eventName The name of the event that the handler will
          *     be installed for.
          * @param {Function} handlerFunc The handler function to use.
-         * @return {null}
+         * @returns {null}
          */
 
         var theEventName;
@@ -2020,14 +2020,14 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$removeUIHandler = function(anObject, eventName) {
 
         /**
-         * @name TP.boot.$$removeUIHandler
-         * @synopsis Removes the special 'UI' event handler that was installed
+         * @method TP.boot.$$removeUIHandler
+         * @summary Removes the special 'UI' event handler that was installed
          *     on the object.
          * @param {Object} anObject The object that the event handler was
          *     installed on.
          * @param {String} eventName The name of the event that the handler was
          *     installed for.
-         * @return {null}
+         * @returns {null}
          */
 
         var handlerFunc,
@@ -2078,10 +2078,10 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$captureStyle = function() {
 
         /**
-         * @name $$captureStyle
-         * @synopsis Hides style elements from the browser to keep it from
+         * @method $$captureStyle
+         * @summary Hides style elements from the browser to keep it from
          *     reporting "errors" for namespaces other than HTML.
-         * @return {null}
+         * @returns {null}
          */
 
         var head,
@@ -2156,12 +2156,12 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$stopAndPreventEvent = function(anEvent) {
 
         /**
-         * @name $$stopAndPreventEvent
-         * @synopsis A method that is meant to be used as an event handler that
+         * @method $$stopAndPreventEvent
+         * @summary A method that is meant to be used as an event handler that
          *     stops propagation and prevents default on the supplied event.
          * @param {HTMLEvent} anEvent The HTML event to stop propagation and
          *     prevent default of.
-         * @return {null}
+         * @returns {null}
          */
 
         anEvent.stopPropagation();
@@ -2175,14 +2175,14 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$documentSetup = function(aDocument) {
 
         /**
-         * @name $$documentSetup
-         * @synopsis Sets up the supplied Document with event handlers that will
+         * @method $$documentSetup
+         * @summary Sets up the supplied Document with event handlers that will
          *     cause elements in the page to have advanced event management.
          *     This includes the use of enhanced CSS constructs as managed by
          *     TIBET.
          * @param {HTMLDocument} aDocument The HTML document to enhance with
          *     advanced event management event handlers.
-         * @return {null}
+         * @returns {null}
          */
 
         TP.boot.$$addUIHandler(aDocument,
@@ -2273,14 +2273,14 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.$$documentTeardown = function(aDocument) {
 
         /**
-         * @name $$documentTeardown
-         * @synopsis Tears down the supplied Document from the event handlers
+         * @method $$documentTeardown
+         * @summary Tears down the supplied Document from the event handlers
          *     that caused elements in the page to have advanced event
          *     management. This includes the use of enhanced CSS constructs as
          *     managed by TIBET.
          * @param {HTMLDocument} aDocument The HTML document to tear down the
          *     advanced event management event handlers.
-         * @return {null}
+         * @returns {null}
          */
 
         TP.boot.$$removeUIHandler(aDocument, 'click');
@@ -2328,12 +2328,12 @@ if (window.onerror.failedlaunch !== true &&
     $$init = function() {
 
         /**
-         * @name $$init
-         * @synopsis Performs any startup initialization the user interface
+         * @method $$init
+         * @summary Performs any startup initialization the user interface
          *     elements require. This might include both minor layout
          *     adjustments and connection of low-level event handlers as well
          *     as dynamic content generation.
-         * @return {null}
+         * @returns {null}
          */
 
         var tWin;
@@ -2384,11 +2384,11 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.autoBoot = function() {
 
         /**
-         * @name autoBoot
-         * @synopsis Attempts to boot the TIBET index.html file for the current
+         * @method autoBoot
+         * @summary Attempts to boot the TIBET index.html file for the current
          *     file's application, setting the current location to a cookie as a
          *     parameter to override the typical home page.
-         * @return {null}
+         * @returns {null}
          */
 
         var loc,
@@ -2441,11 +2441,11 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.bootFromBookmark = function() {
 
         /**
-         * @name bootFromBookmark
-         * @synopsis Attempts to boot the TIBET index.html file for the current
+         * @method bootFromBookmark
+         * @summary Attempts to boot the TIBET index.html file for the current
          *     file's application, setting the current location to a cookie as a
          *     parameter to override the typical home page.
-         * @return {null}
+         * @returns {null}
          */
 
         var loc,
@@ -2476,14 +2476,14 @@ if (window.onerror.failedlaunch !== true &&
     TP.boot.initializeCanvas = function(aWindow) {
 
         /**
-         * @name initializeCanvas
-         * @synopsis Performs the operations necessary to get this canvas
+         * @method initializeCanvas
+         * @summary Performs the operations necessary to get this canvas
          *     (window) integrated with TIBET and ready to use.
-         * @description This function is invoked when TIBET is found and the
+         * @summary This function is invoked when TIBET is found and the
          *     boot process has been detected to have reached a stage where its
          *     possible to properly setup the page.
          * @param aWindow {Window} The window (canvas) to initialize.
-         * @return {null}
+         * @returns {null}
          */
 
         var loadedHandler,

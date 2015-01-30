@@ -13,7 +13,7 @@
 //  ========================================================================
 
 /**
- * @synopsis A type that can manage point (x, y) values.
+ * @summary A type that can manage point (x, y) values.
  */
 
 //  ------------------------------------------------------------------------
@@ -61,8 +61,8 @@ TP.core.Point.Inst.defineMethod('init',
 function(x, y) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {Number|TP.core.Point|Object|TP.lang.Hash|Array} x The x value
      *     of the receiver or a TP.core.Point to copy or an object that has 'x'
      *     and 'y' (or 'top' and 'left') slots or an Array that has x in the
@@ -118,10 +118,10 @@ TP.core.Point.Inst.defineMethod('add',
 function(aPoint) {
 
     /**
-     * @name add
-     * @synopsis Adds the dimensions of the supplied point to the receiver.
+     * @method add
+     * @summary Adds the dimensions of the supplied point to the receiver.
      * @param {TP.core.Point} aPoint The point to add to the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -145,10 +145,10 @@ TP.core.Point.Inst.defineMethod('addToX',
 function(xDiff) {
 
     /**
-     * @name addToX
-     * @synopsis Adds the value supplied to the x value of the receiver.
+     * @method addToX
+     * @summary Adds the value supplied to the x value of the receiver.
      * @param {Number} xDiff The amount to add to the x value of the receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -167,10 +167,10 @@ TP.core.Point.Inst.defineMethod('addToY',
 function(yDiff) {
 
     /**
-     * @name addToY
-     * @synopsis Adds the value supplied to the y value of the receiver.
+     * @method addToY
+     * @summary Adds the value supplied to the y value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -189,8 +189,8 @@ TP.core.Point.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -219,8 +219,8 @@ TP.core.Point.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -247,8 +247,8 @@ TP.core.Point.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -269,8 +269,8 @@ TP.core.Point.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -308,8 +308,8 @@ TP.core.Point.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -326,8 +326,8 @@ TP.core.Point.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver.
+     * @method asString
+     * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Point's String representation. This flag is ignored in
      *     this version of this method.
@@ -349,8 +349,8 @@ TP.core.Point.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -376,8 +376,8 @@ TP.core.Point.Inst.defineMethod('clampToPoint',
 function(aPoint) {
 
     /**
-     * @name clampToPoint
-     * @synopsis Clamps the receiver's X and Y values to values less than or
+     * @method clampToPoint
+     * @summary Clamps the receiver's X and Y values to values less than or
      *     equal to the supplied point.
      * @param {TP.core.Point} aPoint The point to clamp to.
      * @returns {TP.core.Point} The receiver.
@@ -401,8 +401,8 @@ TP.core.Point.Inst.defineMethod('clampToRect',
 function(aRect) {
 
     /**
-     * @name clampToRect
-     * @synopsis Clamps the receiver's X and Y values to values within the
+     * @method clampToRect
+     * @summary Clamps the receiver's X and Y values to values within the
      *     supplied rectangle.
      * @param {TP.core.Rect} aRect The rect to clamp to.
      * @returns {TP.core.Point} The receiver.
@@ -426,14 +426,14 @@ TP.core.Point.Inst.defineMethod('clampXToMinMax',
 function(aMin, aMax) {
 
     /**
-     * @name clampXToMinMax
-     * @synopsis Clamps the receiver's X value to the minimum and maximum values
+     * @method clampXToMinMax
+     * @summary Clamps the receiver's X value to the minimum and maximum values
      *     provided.
      * @param {Number} aMin The minimum amount to clamp the X value of the
      *     receiver to.
      * @param {Number} aMax The maximum amount to clamp the X value of the
      *     receiver to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -456,14 +456,14 @@ TP.core.Point.Inst.defineMethod('clampYToMinMax',
 function(aMin, aMax) {
 
     /**
-     * @name clampYToMinMax
-     * @synopsis Clamps the receiver's Y value to the minimum and maximum values
+     * @method clampYToMinMax
+     * @summary Clamps the receiver's Y value to the minimum and maximum values
      *     provided.
      * @param {Number} aMin The minimum amount to clamp the Y value of the
      *     receiver to.
      * @param {Number} aMax The maximum amount to clamp the Y value of the
      *     receiver to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -486,12 +486,12 @@ TP.core.Point.Inst.defineMethod('computeMidpoint',
 function(aPoint) {
 
     /**
-     * @name computeMidpoint
-     * @synopsis Computes the midpoint between the receiver and the supplied
+     * @method computeMidpoint
+     * @summary Computes the midpoint between the receiver and the supplied
      *     point
      * @param {TP.core.Point} aPoint The other point to use to compute the
      *     midpoint.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Point} A new TP.core.Point which is the midpoint
      *     between the receiver and the supplied point.
      */
@@ -514,8 +514,8 @@ TP.core.Point.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.core.Point} A new TP.core.Point which is a copy of the
      *     receiver.
@@ -530,12 +530,12 @@ TP.core.Point.Inst.defineMethod('distanceBetween',
 function(aPoint) {
 
     /**
-     * @name distanceBetween
-     * @synopsis Returns the distance between the receiver and the supplied
+     * @method distanceBetween
+     * @summary Returns the distance between the receiver and the supplied
      *     point.
      * @param {TP.core.Point} aPoint The other point to compute the distance
      *     from.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The distance between the receiver and the supplied
      *     point.
      */
@@ -564,8 +564,8 @@ TP.core.Point.Inst.defineMethod('getX',
 function() {
 
     /**
-     * @name getX
-     * @synopsis Returns the X coordinate of the receiver as a Number.
+     * @method getX
+     * @summary Returns the X coordinate of the receiver as a Number.
      * @returns {Number} The X coordinate of the receiver.
      */
 
@@ -578,8 +578,8 @@ TP.core.Point.Inst.defineMethod('getY',
 function() {
 
     /**
-     * @name getY
-     * @synopsis Returns the Y coordinate of the receiver as a Number.
+     * @method getY
+     * @summary Returns the Y coordinate of the receiver as a Number.
      * @returns {Number} The Y coordinate of the receiver.
      */
 
@@ -592,10 +592,10 @@ TP.core.Point.Inst.defineMethod('interpolate',
 function(aPoint, t) {
 
     /**
-     * @name interpolate
-     * @synopsis Computes an interpolated point between the receiver and the
+     * @method interpolate
+     * @summary Computes an interpolated point between the receiver and the
      *     supplied point.
-     * @description The interpolation factor determines how much a 'weight'
+     * @summary The interpolation factor determines how much a 'weight'
      *     towards the supplied point will be used. It should be a Number
      *     between 0 and 1. To weight the computed point towards the receiver,
      *     use a value approaching 0. To weight it towards the supplied point,
@@ -604,7 +604,7 @@ function(aPoint, t) {
      *     the receiver.
      * @param {Number} t Interpolation factor. Should be a Number between 0 and
      *     1.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} A new point with the coordinates of the receiver
      *     interpolated with the supplied point using the supplied interpolation
      *     factor.
@@ -638,8 +638,8 @@ TP.core.Point.Inst.defineMethod('invert',
 function() {
 
     /**
-     * @name invert
-     * @synopsis Inverts the values in the receiver by multiplying them by -1.
+     * @method invert
+     * @summary Inverts the values in the receiver by multiplying them by -1.
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -659,11 +659,11 @@ TP.core.Point.Inst.defineMethod('setX',
 function(xVal) {
 
     /**
-     * @name setX
-     * @synopsis Sets the X coordinate of the receiver to the supplied value.
+     * @method setX
+     * @summary Sets the X coordinate of the receiver to the supplied value.
      * @param {Number} xVal The amount to set the 'x' coordinate of the receiver
      *     to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -682,11 +682,11 @@ TP.core.Point.Inst.defineMethod('setY',
 function(yVal) {
 
     /**
-     * @name setY
-     * @synopsis Sets the Y coordinate of the receiver to the supplied value.
+     * @method setY
+     * @summary Sets the Y coordinate of the receiver to the supplied value.
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -705,14 +705,14 @@ TP.core.Point.Inst.defineMethod('setXY',
 function(xVal, yVal) {
 
     /**
-     * @name setXY
-     * @synopsis Sets the X and Y coordinates of the receiver to the supplied
+     * @method setXY
+     * @summary Sets the X and Y coordinates of the receiver to the supplied
      *     values.
      * @param {Number} xVal The amount to set the 'x' coordinate of the receiver
      *     to.
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -736,11 +736,11 @@ TP.core.Point.Inst.defineMethod('snapToIncrement',
 function(xIncrement, yIncrement) {
 
     /**
-     * @name snapToIncrement
+     * @method snapToIncrement
      * @param {Number} xIncrement The amount to snap the x value of the receiver
      *     to.
      * @param {Number} yDiff The amount to snap the y value of the receiver to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      * @abstract
      */
@@ -765,12 +765,12 @@ TP.core.Point.Inst.defineMethod('sortByDistance',
 function(points) {
 
     /**
-     * @name sortByDistance
-     * @synopsis Sorts the supplied Array by comparing the distance of each
+     * @method sortByDistance
+     * @summary Sorts the supplied Array by comparing the distance of each
      *     point in the Array to the receiver. This returns the same Array with
      *     the points sorted in ascending order (i.e closest one first).
      * @param {Array} points The Array of TP.core.Points to sort.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Array} The supplied Array with the points sorted by computing
      *     the distance between the receiver and each point.
      */
@@ -808,11 +808,11 @@ TP.core.Point.Inst.defineMethod('subtract',
 function(aPoint) {
 
     /**
-     * @name subtract
-     * @synopsis Subtracts the dimensions of the supplied point from the
+     * @method subtract
+     * @summary Subtracts the dimensions of the supplied point from the
      *     receiver.
      * @param {TP.core.Point} aPoint The point to subtract from the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -836,11 +836,11 @@ TP.core.Point.Inst.defineMethod('subtractFromX',
 function(xDiff) {
 
     /**
-     * @name subtractFromX
-     * @synopsis Subtracts the value supplied from the x value of the receiver.
+     * @method subtractFromX
+     * @summary Subtracts the value supplied from the x value of the receiver.
      * @param {Number} xDiff The amount to subtract from the x value of the
      *     receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -859,11 +859,11 @@ TP.core.Point.Inst.defineMethod('subtractFromY',
 function(yDiff) {
 
     /**
-     * @name subtractFromY
-     * @synopsis Subtracts the value supplied from the y value of the receiver.
+     * @method subtractFromY
+     * @summary Subtracts the value supplied from the y value of the receiver.
      * @param {Number} yDiff The amount to subtract from the y value of the
      *     receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -882,11 +882,11 @@ TP.core.Point.Inst.defineMethod('translate',
 function(xDiff, yDiff) {
 
     /**
-     * @name translate
-     * @synopsis Translates the position of the receiver by the values supplied.
+     * @method translate
+     * @summary Translates the position of the receiver by the values supplied.
      * @param {Number} xDiff The amount to add to the x value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -910,11 +910,11 @@ TP.core.Point.Inst.defineMethod('translateByPoint',
 function(aPoint) {
 
     /**
-     * @name translateByPoint
-     * @synopsis Translates the position of the receiver by the values of the
+     * @method translateByPoint
+     * @summary Translates the position of the receiver by the values of the
      *     supplied point.
      * @param {TP.core.Point} aPoint The point to use to translate the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Point} The receiver.
      */
 
@@ -937,7 +937,7 @@ function(aPoint) {
 //  ========================================================================
 
 /**
- * @synopsis A type that can manage rectangle (x, y, width, height) values.
+ * @summary A type that can manage rectangle (x, y, width, height) values.
  */
 
 //  ------------------------------------------------------------------------
@@ -969,8 +969,8 @@ TP.core.Rect.Inst.defineMethod('init',
 function(x, y, width, height) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {Number|TP.core.Rect|Object|TP.lang.Hash|Array} x The x value of
      *     the receiver or a TP.core.Rect to copy or an object that has 'x', 'y'
      *     (or 'top', 'left'), 'width' and 'height' slots or an Array that has x
@@ -1044,10 +1044,10 @@ TP.core.Rect.Inst.defineMethod('addByPoint',
 function(aPoint) {
 
     /**
-     * @name addByPoint
-     * @synopsis Adds the dimensions of the supplied point to the receiver.
+     * @method addByPoint
+     * @summary Adds the dimensions of the supplied point to the receiver.
      * @param {TP.core.Point} aPoint The point to add to the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -1071,10 +1071,10 @@ TP.core.Rect.Inst.defineMethod('addToX',
 function(xDiff) {
 
     /**
-     * @name addToX
-     * @synopsis Adds the value supplied to the x value of the receiver.
+     * @method addToX
+     * @summary Adds the value supplied to the x value of the receiver.
      * @param {Number} xDiff The amount to add to the x value of the receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -1093,10 +1093,10 @@ TP.core.Rect.Inst.defineMethod('addToY',
 function(yDiff) {
 
     /**
-     * @name addToY
-     * @synopsis Adds the value supplied to the y value of the receiver.
+     * @method addToY
+     * @summary Adds the value supplied to the y value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -1115,8 +1115,8 @@ TP.core.Rect.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -1147,8 +1147,8 @@ TP.core.Rect.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -1177,8 +1177,8 @@ TP.core.Rect.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -1201,8 +1201,8 @@ TP.core.Rect.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -1248,8 +1248,8 @@ TP.core.Rect.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -1267,8 +1267,8 @@ TP.core.Rect.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver.
+     * @method asString
+     * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Rect's String representation. This flag is ignored in
      *     this version of this method.
@@ -1292,8 +1292,8 @@ TP.core.Rect.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -1320,8 +1320,8 @@ TP.core.Rect.Inst.defineMethod('clampToRect',
 function(aRect) {
 
     /**
-     * @name clampToRect
-     * @synopsis Clamps the receiver's X and Y values to values within the
+     * @method clampToRect
+     * @summary Clamps the receiver's X and Y values to values within the
      *     supplied rectangle, taking into account the receiver's width and
      *     height.
      * @param {TP.core.Rect} aRect The rect to clamp to.
@@ -1346,12 +1346,12 @@ TP.core.Rect.Inst.defineMethod('closestEdgePointFromPoint',
 function(aPoint) {
 
     /**
-     * @name closestEdgePointFromPoint
-     * @synopsis Returns the 'closest edge point to the supplied point' of the
+     * @method closestEdgePointFromPoint
+     * @summary Returns the 'closest edge point to the supplied point' of the
      *     receiver.
      * @param {TP.core.Point} aPoint The point to use to calculate the closest
      *     edge point from.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Point} The closest edge point of the receiver.
      */
 
@@ -1407,11 +1407,11 @@ TP.core.Rect.Inst.defineMethod('constrainPoint',
 function(aPoint) {
 
     /**
-     * @name constrainPoint
-     * @synopsis Constrains the supplied point to be within the bounds of the
+     * @method constrainPoint
+     * @summary Constrains the supplied point to be within the bounds of the
      *     receiver.
      * @param {TP.core.Point} aPoint The point to clamp.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -1437,11 +1437,11 @@ TP.core.Rect.Inst.defineMethod('containsPoint',
 function(aPoint) {
 
     /**
-     * @name containsPoint
-     * @synopsis Returns whether or not the receiver contains the supplied
+     * @method containsPoint
+     * @summary Returns whether or not the receiver contains the supplied
      *     point.
      * @param {TP.core.Point} aPoint The point to test.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not the receiver contains the point.
      */
 
@@ -1471,11 +1471,11 @@ TP.core.Rect.Inst.defineMethod('containsRect',
 function(aRect) {
 
     /**
-     * @name containsRect
-     * @synopsis Returns whether or not the receiver contains the supplied
+     * @method containsRect
+     * @summary Returns whether or not the receiver contains the supplied
      *     rectangle.
      * @param {TP.core.Rect} aRect The rectangle to test.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not the receiver contains the rectangle.
      */
 
@@ -1505,8 +1505,8 @@ TP.core.Rect.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.core.Rect} A new TP.core.Rect which is a copy of the
      *     receiver.
@@ -1521,11 +1521,11 @@ TP.core.Rect.Inst.defineMethod('difference',
 function(aRect) {
 
     /**
-     * @name difference
-     * @synopsis Returns an Array of rectangles that contain the remaining
+     * @method difference
+     * @summary Returns an Array of rectangles that contain the remaining
      *     regions of the receiver after the supplied rectangle has been
      *     subtracted.
-     * @description This routine is adapted from Google's Closure library.
+     * @summary This routine is adapted from Google's Closure library.
      * @param {TP.core.Rect} aRect The rectangle to test.
      * @returns {Array} An Array of TP.core.Rectangles containing the remaining
      *     regions.
@@ -1617,8 +1617,8 @@ TP.core.Rect.Inst.defineMethod('empty',
 function() {
 
     /**
-     * @name empty
-     * @synopsis Sets the receiver to be the 'empty' rectangle (i.e. all
+     * @method empty
+     * @summary Sets the receiver to be the 'empty' rectangle (i.e. all
      *     coordinates are set to 0).
      * @returns {TP.core.Rect} The receiver.
      */
@@ -1641,8 +1641,8 @@ TP.core.Rect.Inst.defineMethod('getCenterPoint',
 function() {
 
     /**
-     * @name getCenterPoint
-     * @synopsis Returns the center point of the receiver.
+     * @method getCenterPoint
+     * @summary Returns the center point of the receiver.
      * @returns {TP.core.Point} The center point of the receiver.
      */
 
@@ -1660,9 +1660,9 @@ TP.core.Rect.Inst.defineMethod('getCompassCorner',
 function(aPoint) {
 
     /**
-     * @name getCompassCorner
-     * @synopsis Returns the 'compass corner' of the receiver.
-     * @description This method returns the 'compass corner' that the supplied
+     * @method getCompassCorner
+     * @summary Returns the 'compass corner' of the receiver.
+     * @summary This method returns the 'compass corner' that the supplied
      *     point occupies within the receiver. Note that this routine clamps its
      *     value to the 'common 8' compass values matching these constants:
      *
@@ -1672,7 +1672,7 @@ function(aPoint) {
      *
      * @param {TP.core.Point} aPoint The point to use to calculate the compass
      *     point from.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} A Number matching the constant corresponding to the
      *     compass corner.
      */
@@ -1697,8 +1697,8 @@ TP.core.Rect.Inst.defineMethod('getHeight',
 function() {
 
     /**
-     * @name getHeight
-     * @synopsis Returns the height of the receiver as a Number.
+     * @method getHeight
+     * @summary Returns the height of the receiver as a Number.
      * @returns {Number} The height of the receiver.
      */
 
@@ -1711,8 +1711,8 @@ TP.core.Rect.Inst.defineMethod('getWidth',
 function() {
 
     /**
-     * @name getWidth
-     * @synopsis Returns the width of the receiver as a Number.
+     * @method getWidth
+     * @summary Returns the width of the receiver as a Number.
      * @returns {Number} The width of the receiver.
      */
 
@@ -1725,8 +1725,8 @@ TP.core.Rect.Inst.defineMethod('getX',
 function() {
 
     /**
-     * @name getX
-     * @synopsis Returns the X coordinate of the receiver as a Number.
+     * @method getX
+     * @summary Returns the X coordinate of the receiver as a Number.
      * @returns {Number} The X coordinate of the receiver.
      */
 
@@ -1739,8 +1739,8 @@ TP.core.Rect.Inst.defineMethod('getY',
 function() {
 
     /**
-     * @name getY
-     * @synopsis Returns the Y coordinate of the receiver as a Number.
+     * @method getY
+     * @summary Returns the Y coordinate of the receiver as a Number.
      * @returns {Number} The Y coordinate of the receiver.
      */
 
@@ -1753,8 +1753,8 @@ TP.core.Rect.Inst.defineMethod('grow',
 function(widthDiff, heightDiff) {
 
     /**
-     * @name grow
-     * @synopsis Grows the width and height of the receiver by the values
+     * @method grow
+     * @summary Grows the width and height of the receiver by the values
      *     supplied.
      * @param {Number} widthDiff The amount to add to the width value of the
      *     receiver.
@@ -1783,11 +1783,11 @@ TP.core.Rect.Inst.defineMethod('growByPoint',
 function(aPoint) {
 
     /**
-     * @name growByPoint
-     * @synopsis Grows the width and height of the receiver by the values of the
+     * @method growByPoint
+     * @summary Grows the width and height of the receiver by the values of the
      *     supplied point.
      * @param {TP.core.Point} aPoint The point to use to grow the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -1811,10 +1811,10 @@ TP.core.Rect.Inst.defineMethod('interpolate',
 function(aRect, t) {
 
     /**
-     * @name interpolate
-     * @synopsis Computes an interpolated rectangle between the receiver and the
+     * @method interpolate
+     * @summary Computes an interpolated rectangle between the receiver and the
      *     supplied rectangle.
-     * @description The interpolation factor determines how much a 'weight'
+     * @summary The interpolation factor determines how much a 'weight'
      *     towards the supplied rectangle will be used. It should be a Number
      *     between 0 and 1. To weight the computed rectangle towards the
      *     receiver, use a value approaching 0. To weight it towards the
@@ -1823,7 +1823,7 @@ function(aRect, t) {
      *     with the receiver.
      * @param {Number} t Interpolation factor. Should be a Number between 0 and
      *     1.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} A new rectangle with the coordinates of the
      *     receiver interpolated with the supplied rectangle using the supplied
      *     interpolation factor.
@@ -1859,8 +1859,8 @@ TP.core.Rect.Inst.defineMethod('intersection',
 function(aRect) {
 
     /**
-     * @name intersection
-     * @synopsis Returns a new rectangle that contains the area common to both
+     * @method intersection
+     * @summary Returns a new rectangle that contains the area common to both
      *     the receiver and the supplied rectangle.
      * @param {TP.core.Rect} aRect The rectangle to compute an intersection with
      *     the receiver.
@@ -1912,8 +1912,8 @@ TP.core.Rect.Inst.defineMethod('intersects',
 function(aRect) {
 
     /**
-     * @name intersects
-     * @synopsis Returns whether the supplied rectangle intersects the receiver.
+     * @method intersects
+     * @summary Returns whether the supplied rectangle intersects the receiver.
      * @param {TP.core.Rect} aRect The rectangle to test to see if it intersects
      *     with the receiver.
      * @returns {Boolean} Whether or not the supplied rectangle intersects the
@@ -1942,8 +1942,8 @@ TP.core.Rect.Inst.defineMethod('isEmpty',
 function() {
 
     /**
-     * @name isEmpty
-     * @synopsis Returns whether the receiver is an 'empty' rectangle - that is,
+     * @method isEmpty
+     * @summary Returns whether the receiver is an 'empty' rectangle - that is,
      *     whether its width or height is less than or equal to 0.
      * @returns {Boolean}
      */
@@ -1957,11 +1957,11 @@ TP.core.Rect.Inst.defineMethod('isOffsetFromCenterBy',
 function(aPoint, offset) {
 
     /**
-     * @name isOffsetFromCenterBy
+     * @method isOffsetFromCenterBy
      * @param {TP.core.Point} aPoint The point to test.
      * @param {Number|String} offset The minimum amount that the supplied point
      *     should be offset from the receiver's center point.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean}
      * @abstract
      */
@@ -2003,13 +2003,13 @@ TP.core.Rect.Inst.defineMethod('maxFittedPoint',
 function(aRect) {
 
     /**
-     * @name maxFittedPoint
-     * @synopsis Computes the maximum X/Y coordinates that the receiver can have
+     * @method maxFittedPoint
+     * @summary Computes the maximum X/Y coordinates that the receiver can have
      *     while still remaining completely enclosed within the supplied
      *     rectangle.
      * @param {TP.core.Rect} aRect The rectangle to use to compute the maximum
      *     fitted point for the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Point} The maximum 'fitted point'.
      */
 
@@ -2038,8 +2038,8 @@ TP.core.Rect.Inst.defineMethod('union',
 function(aRect) {
 
     /**
-     * @name union
-     * @synopsis Returns a new rectangle that contains both the receiver and the
+     * @method union
+     * @summary Returns a new rectangle that contains both the receiver and the
      *     supplied rectangle.
      * @param {TP.core.Rect} aRect The rectangle to compute a union with the
      *     receiver.
@@ -2082,8 +2082,8 @@ TP.core.Rect.Inst.defineMethod('scale',
 function(xScaleFactor, yScaleFactor) {
 
     /**
-     * @name scale
-     * @synopsis Scales the coordinates of the receiver around its center using
+     * @method scale
+     * @summary Scales the coordinates of the receiver around its center using
      *     the supplied scaling factor and returns a new TP.core.Rect with those
      *     new coordinates.
      * @param {Number} xScaleFactor The amount to scale the coordinates of the
@@ -2091,7 +2091,7 @@ function(xScaleFactor, yScaleFactor) {
      *     also be scaled using this argument.
      * @param {Number} yScaleFactor The amount to scale the coordinates of the
      *     receiver to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} A new rectangle with the coordinates of the
      *     receiver scaled using the scaling factor.
      */
@@ -2129,10 +2129,10 @@ TP.core.Rect.Inst.defineMethod('setHeight',
 function(aHeight) {
 
     /**
-     * @name setHeight
-     * @synopsis Sets the height of the receiver to the supplied value.
+     * @method setHeight
+     * @summary Sets the height of the receiver to the supplied value.
      * @param {Number} aHeight The amount to set the height of the receiver to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2151,10 +2151,10 @@ TP.core.Rect.Inst.defineMethod('setWidth',
 function(aWidth) {
 
     /**
-     * @name setWidth
-     * @synopsis Sets the width of the receiver to the supplied value.
+     * @method setWidth
+     * @summary Sets the width of the receiver to the supplied value.
      * @param {Number} aWidth The amount to set the width of the receiver to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2173,11 +2173,11 @@ TP.core.Rect.Inst.defineMethod('setX',
 function(xVal) {
 
     /**
-     * @name setX
-     * @synopsis Sets the X coordinate of the receiver to the supplied value.
+     * @method setX
+     * @summary Sets the X coordinate of the receiver to the supplied value.
      * @param {Number} xVal The amount to set the 'x' coordinate of the receiver
      *     to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2196,11 +2196,11 @@ TP.core.Rect.Inst.defineMethod('setY',
 function(yVal) {
 
     /**
-     * @name setY
-     * @synopsis Sets the Y coordinate of the receiver to the supplied value.
+     * @method setY
+     * @summary Sets the Y coordinate of the receiver to the supplied value.
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2219,14 +2219,14 @@ TP.core.Rect.Inst.defineMethod('setXY',
 function(xVal, yVal) {
 
     /**
-     * @name setXY
-     * @synopsis Sets the X and Y coordinates of the receiver to the supplied
+     * @method setXY
+     * @summary Sets the X and Y coordinates of the receiver to the supplied
      *     values.
      * @param {Number} xVal The amount to set the 'x' coordinate of the receiver
      *     to.
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2250,8 +2250,8 @@ TP.core.Rect.Inst.defineMethod('shrink',
 function(widthDiff, heightDiff) {
 
     /**
-     * @name shrink
-     * @synopsis Shrinks the width and height of the receiver by the values
+     * @method shrink
+     * @summary Shrinks the width and height of the receiver by the values
      *     supplied.
      * @param {Number} widthDiff The amount to subtract from the width value of
      *     the receiver.
@@ -2280,11 +2280,11 @@ TP.core.Rect.Inst.defineMethod('shrinkByPoint',
 function(aPoint) {
 
     /**
-     * @name shrinkByPoint
-     * @synopsis Shrinks the width and height of the receiver by the values of
+     * @method shrinkByPoint
+     * @summary Shrinks the width and height of the receiver by the values of
      *     the supplied point.
      * @param {TP.core.Point} aPoint The point to use to grow the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2308,11 +2308,11 @@ TP.core.Rect.Inst.defineMethod('subtractByPoint',
 function(aPoint) {
 
     /**
-     * @name subtractByPoint
-     * @synopsis Subtracts the dimensions of the supplied point from the
+     * @method subtractByPoint
+     * @summary Subtracts the dimensions of the supplied point from the
      *     receiver.
      * @param {TP.core.Point} aPoint The point to subtract from the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2336,11 +2336,11 @@ TP.core.Rect.Inst.defineMethod('subtractFromX',
 function(xDiff) {
 
     /**
-     * @name subtractFromX
-     * @synopsis Subtracts the value supplied from the x value of the receiver.
+     * @method subtractFromX
+     * @summary Subtracts the value supplied from the x value of the receiver.
      * @param {Number} xDiff The amount to subtract from the x value of the
      *     receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2359,11 +2359,11 @@ TP.core.Rect.Inst.defineMethod('subtractFromY',
 function(yDiff) {
 
     /**
-     * @name subtractFromY
-     * @synopsis Subtracts the value supplied from the y value of the receiver.
+     * @method subtractFromY
+     * @summary Subtracts the value supplied from the y value of the receiver.
      * @param {Number} yDiff The amount to subtract from the y value of the
      *     receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2382,11 +2382,11 @@ TP.core.Rect.Inst.defineMethod('translate',
 function(xDiff, yDiff) {
 
     /**
-     * @name translate
-     * @synopsis Translates the position of the receiver by the values supplied.
+     * @method translate
+     * @summary Translates the position of the receiver by the values supplied.
      * @param {Number} xDiff The amount to add to the x value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2410,11 +2410,11 @@ TP.core.Rect.Inst.defineMethod('translateByPoint',
 function(aPoint) {
 
     /**
-     * @name translateByPoint
-     * @synopsis Translates the position of the receiver by the values of the
+     * @method translateByPoint
+     * @summary Translates the position of the receiver by the values of the
      *     supplied point.
      * @param {TP.core.Point} aPoint The point to use to translate the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
 
@@ -2437,7 +2437,7 @@ function(aPoint) {
 //  ========================================================================
 
 /**
- * @synopsis A type that can manage matrix (xx, xy, yx, yy, dx, dy) values.
+ * @summary A type that can manage matrix (xx, xy, yx, yy, dx, dy) values.
  */
 
 //  ------------------------------------------------------------------------
@@ -2494,10 +2494,10 @@ TP.core.Matrix.Type.defineConstant('STYLE_DECLVALUE_PARSER',
 function(aString) {
 
     /**
-     * @name STYLE_DECLVALUE_PARSER
-     * @synopsis Converts a String containing a matrix description to a
+     * @method STYLE_DECLVALUE_PARSER
+     * @summary Converts a String containing a matrix description to a
      *     TP.core.Matrix object.
-     * @description The supplied String can be in one of seven formats:
+     * @summary The supplied String can be in one of seven formats:
      *     translate(xCoord, yCoord) translate(xAndYCoord) scale(xFactor,
      *     yFactor) scale(xAndYFactor) rotate(rotationAngle) skewX(skewAngle)
      *     skewY(skewAngle) matrix(xx, yx, xy, yy, dx, dy)
@@ -2592,8 +2592,8 @@ TP.core.Matrix.Type.defineMethod('cloneIdentityData',
 function() {
 
     /**
-     * @name cloneIdentityData
-     * @synopsis Returns a copy of the type's 'identity data' that can be used
+     * @method cloneIdentityData
+     * @summary Returns a copy of the type's 'identity data' that can be used
      *     in an identity matrix or in other computations.
      * @returns {Object} An object that contains identity matrix information.
      */
@@ -2616,8 +2616,8 @@ TP.core.Matrix.Type.defineMethod('constructIdentityMatrix',
 function() {
 
     /**
-     * @name constructIdentityMatrix
-     * @synopsis Returns a matrix that has configured its data to be an identity
+     * @method constructIdentityMatrix
+     * @summary Returns a matrix that has configured its data to be an identity
      *     matrix.
      * @returns {TP.core.Matrix} An identity matrix.
      */
@@ -2632,8 +2632,8 @@ TP.core.Matrix.Type.defineMethod('constructFlipXMatrix',
 function() {
 
     /**
-     * @name constructFlipXMatrix
-     * @synopsis Returns a matrix that will flip coordinates on the X axis.
+     * @method constructFlipXMatrix
+     * @summary Returns a matrix that will flip coordinates on the X axis.
      * @returns {TP.core.Matrix} A matrix that flips X coordinates.
      */
 
@@ -2652,8 +2652,8 @@ TP.core.Matrix.Type.defineMethod('constructFlipYMatrix',
 function() {
 
     /**
-     * @name constructFlipYMatrix
-     * @synopsis Returns a matrix that will flip coordinates on the Y axis.
+     * @method constructFlipYMatrix
+     * @summary Returns a matrix that will flip coordinates on the Y axis.
      * @returns {TP.core.Matrix} A matrix that flips Y coordinates.
      */
 
@@ -2672,8 +2672,8 @@ TP.core.Matrix.Type.defineMethod('constructFlipXYMatrix',
 function() {
 
     /**
-     * @name constructFlipXYMatrix
-     * @synopsis Returns a matrix that will flip coordinates on both the X and Y
+     * @method constructFlipXYMatrix
+     * @summary Returns a matrix that will flip coordinates on both the X and Y
      *     axis.
      * @returns {TP.core.Matrix} A matrix that flips both X and Y coordinates.
      */
@@ -2694,13 +2694,13 @@ TP.core.Matrix.Type.defineMethod('constructProjectionMatrix',
 function(projectX, projectY) {
 
     /**
-     * @name constructProjectionMatrix
-     * @synopsis Returns a matrix that will project X and Y coordinates around a
+     * @method constructProjectionMatrix
+     * @summary Returns a matrix that will project X and Y coordinates around a
      *     point defined by the supplied X and Y.
      * @param {Number|TP.core.Point} projectX The X coordinate to project points
      *     around or a TP.core.Point to use as both the X and Y coordinates.
      * @param {Number} projectY The Y coordinate to project points around.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that projects X and Y coordinates
      *     around the supplied X and Y point.
      */
@@ -2758,13 +2758,13 @@ TP.core.Matrix.Type.defineMethod('constructReflectionMatrix',
 function(reflectX, reflectY) {
 
     /**
-     * @name constructReflectionMatrix
-     * @synopsis Returns a matrix that will reflect X and Y coordinates around a
+     * @method constructReflectionMatrix
+     * @summary Returns a matrix that will reflect X and Y coordinates around a
      *     point defined by the supplied X and Y.
      * @param {Number|TP.core.Point} reflectX The X coordinate to reflect points
      *     around or a TP.core.Point to use as both the X and Y coordinates.
      * @param {Number} reflectY The Y coordinate to reflect points around.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that reflects X and Y coordinates
      *     around the supplied X and Y point.
      */
@@ -2822,12 +2822,12 @@ TP.core.Matrix.Type.defineMethod('constructRotationMatrix',
 function(angle) {
 
     /**
-     * @name constructRotationMatrix
-     * @synopsis Returns a matrix that will rotate its X and Y coordinates by
+     * @method constructRotationMatrix
+     * @summary Returns a matrix that will rotate its X and Y coordinates by
      *     the supplied amount around the (0,0) point.
      * @param {Number} angle The angle in radians to rotate the X and Y
      *     coordinates by.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Matrix} A matrix that rotates X and Y coordinates
      *     around the (0,0) point by the supplied amounts.
      */
@@ -2863,13 +2863,13 @@ TP.core.Matrix.Type.defineMethod('constructScalingMatrix',
 function(diffX, diffY) {
 
     /**
-     * @name constructScalingMatrix
-     * @synopsis Returns a matrix that will scale X and Y coordinates by the
+     * @method constructScalingMatrix
+     * @summary Returns a matrix that will scale X and Y coordinates by the
      *     supplied amounts.
      * @param {Number|TP.core.Point} diffX The amount to scale X coordinates or
      *     a TP.core.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to scale Y coordinates.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that scales X and Y coordinates by the
      *     supplied amounts.
      */
@@ -2902,12 +2902,12 @@ TP.core.Matrix.Type.defineMethod('constructSkewXMatrix',
 function(skewAngle) {
 
     /**
-     * @name constructSkewXMatrix
-     * @synopsis Returns a matrix that will skew coordinates on the X axis
+     * @method constructSkewXMatrix
+     * @summary Returns a matrix that will skew coordinates on the X axis
      *     around the (0,0) point.
      * @param {Number} skewAngle The angle in radians to skew the X coordinates
      *     by.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Matrix} A matrix that skews X coordinates.
      */
 
@@ -2930,12 +2930,12 @@ TP.core.Matrix.Type.defineMethod('constructSkewYMatrix',
 function(skewAngle) {
 
     /**
-     * @name constructSkewYMatrix
-     * @synopsis Returns a matrix that will skew coordinates on the Y axis
+     * @method constructSkewYMatrix
+     * @summary Returns a matrix that will skew coordinates on the Y axis
      *     around the (0,0) point.
      * @param {Number} skewAngle The angle in radians to skew the Y coordinates
      *     by.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Matrix} A matrix that skews Y coordinates.
      */
 
@@ -2958,13 +2958,13 @@ TP.core.Matrix.Type.defineMethod('constructTranslationMatrix',
 function(diffX, diffY) {
 
     /**
-     * @name constructTranslationMatrix
-     * @synopsis Returns a matrix that will move X and Y coordinates by the
+     * @method constructTranslationMatrix
+     * @summary Returns a matrix that will move X and Y coordinates by the
      *     supplied amounts.
      * @param {Number|TP.core.Point} diffX The amount to move X coordinates or a
      *     TP.core.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to move Y coordinates.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that moves X and Y coordinates by the
      *     supplied amounts.
      */
@@ -2997,10 +2997,10 @@ TP.core.Matrix.Type.defineMethod('fromCSSString',
 function(aString) {
 
     /**
-     * @name fromString
-     * @synopsis Converts a String containing a CSS matrix represenation to a
+     * @method fromString
+     * @summary Converts a String containing a CSS matrix represenation to a
      *     TP.core.Matrix object.
-     * @description The supplied String can be in either the 3X2 'matrix()'
+     * @summary The supplied String can be in either the 3X2 'matrix()'
      *     format for CSS 2D transforms or the 4X4 'matrix3d()' format for CSS
      *     3D transforms. Since this type only supports 3X2 matrices, however,
      *     3D 4X4 matrices will be converted to 3X2 matrices.
@@ -3020,11 +3020,11 @@ TP.core.Matrix.Type.defineMethod('fromArray',
 function(anObj) {
 
     /**
-     * @name fromArray
-     * @synopsis Returns an instance of this type as extracted from anObj, which
+     * @method fromArray
+     * @summary Returns an instance of this type as extracted from anObj, which
      *     should be an Array. This Array should be in the format of:
      *     [[xx, xy, dx], [yx, yy, dy]]
-     * @description This type only supports 3X2 matrices, so this method will
+     * @summary This type only supports 3X2 matrices, so this method will
      *     only take a 3X2 set of Arrays representing that. 4X4 3D matrices have
      *     to be converted to a 3X2 matrix first.
      * @param {Array} anObj The Array that an instance of this type will be
@@ -3056,14 +3056,14 @@ TP.core.Matrix.Type.defineMethod('rotateAt',
 function(angle, aPoint) {
 
     /**
-     * @name rotateAt
-     * @synopsis Returns a matrix that is rotated around the supplied point
+     * @method rotateAt
+     * @summary Returns a matrix that is rotated around the supplied point
      *     (used as a center point) according to the supplied rotation angle.
      * @param {Number} angle The angle in radians to rotate around the X and Y
      *     coordinates.
      * @param {TP.core.Point} aPoint The point to use as the center point of the
      *     rotation.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that is rotated around the point by
      *     the angle supplied.
      */
@@ -3085,15 +3085,15 @@ TP.core.Matrix.Type.defineMethod('scaleAt',
 function(aPoint, xFactor, yFactor) {
 
     /**
-     * @name scaleAt
-     * @synopsis Returns a matrix that scales its X and Y axis around the
+     * @method scaleAt
+     * @summary Returns a matrix that scales its X and Y axis around the
      *     supplied point (used as a center point) according to the supplied
      *     scaling factors.
      * @param {TP.core.Point} aPoint The point to use as the center point of the
      *     scaling.
      * @param {Number} xFactor The amount to scale the X axis by.
      * @param {Number} yFactor The amount to scale the Y axis by.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that scales around the point by the
      *     angle supplied.
      */
@@ -3117,14 +3117,14 @@ TP.core.Matrix.Type.defineMethod('skewXAt',
 function(angle, aPoint) {
 
     /**
-     * @name skewXAt
-     * @synopsis Returns a matrix that skews the X axis using the supplied point
+     * @method skewXAt
+     * @summary Returns a matrix that skews the X axis using the supplied point
      *     (used as a center point) according to the supplied rotation angle.
      * @param {Number} angle The angle in radians to skew the X axis around the
      *     X and Y coordinates.
      * @param {TP.core.Point} aPoint The point to use as the center point of the
      *     skew.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that skews the X axis around the point
      *     by the angle supplied.
      */
@@ -3146,14 +3146,14 @@ TP.core.Matrix.Type.defineMethod('skewYAt',
 function(angle, aPoint) {
 
     /**
-     * @name skewYAt
-     * @synopsis Returns a matrix that skews the Y axis using the supplied point
+     * @method skewYAt
+     * @summary Returns a matrix that skews the Y axis using the supplied point
      *     (used as a center point) according to the supplied rotation angle.
      * @param {Number} angle The angle in radians to skew the Y axis around the
      *     X and Y coordinates.
      * @param {TP.core.Point} aPoint The point to use as the center point of the
      *     skew.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that skews the Y axis around the point
      *     by the angle supplied.
      */
@@ -3175,15 +3175,15 @@ TP.core.Matrix.Type.defineMethod('translateBy',
 function(diffX, diffY, aPoint) {
 
     /**
-     * @name translateBy
-     * @synopsis Returns a matrix that translates the X and Y axis using the
+     * @method translateBy
+     * @summary Returns a matrix that translates the X and Y axis using the
      *     supplied point (used as a center point) according to the supplied
      *     rotation angle.
      * @param {Number} diffX The difference to translate the X axis.
      * @param {Number} diffY The difference to translate the Y axis.
      * @param {TP.core.Point} aPoint The point to use as the center point of the
      *     skew.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that translates the X and Y axis
      *     around the point by the differences supplied.
      */
@@ -3214,9 +3214,9 @@ TP.core.Matrix.Inst.defineMethod('init',
 function(matrixData) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
-     * @description The argument to this method may be either a literal Object
+     * @method init
+     * @summary Initialize the instance.
+     * @summary The argument to this method may be either a literal Object
      *     that contains matrix data to initialize the new instance with, a
      *     TP.core.Matrix or an Array of either of these type of objects. If the
      *     objects are literal Objects, they should have the following keys /
@@ -3297,8 +3297,8 @@ TP.core.Matrix.Inst.defineMethod('add',
 function(aMatrix) {
 
     /**
-     * @name add
-     * @synopsis Changes the receiver by summing the receiver and the supplied
+     * @method add
+     * @summary Changes the receiver by summing the receiver and the supplied
      *     matrix together.
      * @param {TP.core.Matrix} aMatrix The matrix to add to the receiver.
      * @returns {TP.core.Matrix} The receiver.
@@ -3326,13 +3326,13 @@ TP.core.Matrix.Inst.defineMethod('applyTransformsUsing',
 function(aPoint) {
 
     /**
-     * @name applyTransformsUsing
-     * @synopsis Applies the a positive translation, the receiver (which
+     * @method applyTransformsUsing
+     * @summary Applies the a positive translation, the receiver (which
      *     performs the actual transformation) and a negative translation to the
      *     point given and returns a matrix.
      * @param {TP.core.Point} aPoint The point to use to compute the two
      *     translation matrices.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A new TP.core.Matrix containing the result of
      *     executing the translations and the receiver against the supplied
      *     point.
@@ -3367,8 +3367,8 @@ TP.core.Matrix.Inst.defineMethod('asCSSTransformString',
 function() {
 
     /**
-     * @name asCSSTransformString
-     * @synopsis Returns the receiver as a String value that can be used for CSS
+     * @method asCSSTransformString
+     * @summary Returns the receiver as a String value that can be used for CSS
      *     Transforms.
      * @returns {String} The CSS Transform representation of the receiver.
      */
@@ -3388,8 +3388,8 @@ TP.core.Matrix.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -3426,8 +3426,8 @@ TP.core.Matrix.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -3458,8 +3458,8 @@ TP.core.Matrix.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -3484,8 +3484,8 @@ TP.core.Matrix.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -3539,8 +3539,8 @@ TP.core.Matrix.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -3567,8 +3567,8 @@ TP.core.Matrix.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the matrix data formatted as a JavaScript literal
+     * @method asString
+     * @summary Returns the matrix data formatted as a JavaScript literal
      *     object as its String representation.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Matrix's String representation. This flag is ignored
@@ -3599,8 +3599,8 @@ TP.core.Matrix.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -3628,8 +3628,8 @@ TP.core.Matrix.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.core.Matrix} A new TP.core.Matrix which is a copy of the
      *     receiver.
@@ -3644,8 +3644,8 @@ TP.core.Matrix.Inst.defineMethod('invert',
 function() {
 
     /**
-     * @name invert
-     * @synopsis Inverts the receiver.
+     * @method invert
+     * @summary Inverts the receiver.
      * @returns {TP.core.Matrix} The receiver.
      */
 
@@ -3673,10 +3673,10 @@ TP.core.Matrix.Inst.defineMethod('multiply',
 function() {
 
     /**
-     * @name multiply
-     * @synopsis Multiplies the supplied 1 or more TP.core.Matrix objects
+     * @method multiply
+     * @summary Multiplies the supplied 1 or more TP.core.Matrix objects
      *     against the receiver, beginning with the receiver.
-     * @description This method accepts 1 or more TP.core.Matrix objects as
+     * @summary This method accepts 1 or more TP.core.Matrix objects as
      *     arguments and therefore has no named parameters.
      * @returns {TP.core.Matrix} The receiver.
      */
@@ -3723,11 +3723,11 @@ TP.core.Matrix.Inst.defineMethod('rotate',
 function(angle) {
 
     /**
-     * @name rotate
-     * @synopsis Applies a rotation transformation to the receiver.
+     * @method rotate
+     * @summary Applies a rotation transformation to the receiver.
      * @param {Number} angle The angle in radians to rotate the X and Y
      *     coordinates by.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Matrix} The receiver.
      */
 
@@ -3760,12 +3760,12 @@ TP.core.Matrix.Inst.defineMethod('scale',
 function(diffX, diffY) {
 
     /**
-     * @name scale
-     * @synopsis Applies a scaling transformation to the receiver.
+     * @method scale
+     * @summary Applies a scaling transformation to the receiver.
      * @param {Number|TP.core.Point} diffX The amount to scale X coordinates or
      *     a TP.core.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to scale Y coordinates.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} The receiver.
      */
 
@@ -3794,8 +3794,8 @@ TP.core.Matrix.Inst.defineMethod('subtract',
 function(aMatrix) {
 
     /**
-     * @name subtract
-     * @synopsis Changes the receiver by subtracting the supplied matrix and the
+     * @method subtract
+     * @summary Changes the receiver by subtracting the supplied matrix and the
      *     receiver.
      * @param {TP.core.Matrix} aMatrix The matrix to subtract from the receiver.
      * @returns {TP.core.Matrix} The receiver.
@@ -3823,11 +3823,11 @@ TP.core.Matrix.Inst.defineMethod('transformPoint',
 function(aPoint) {
 
     /**
-     * @name transformPoint
-     * @synopsis Uses the receiver to multiply the supplied TP.core.Point,
+     * @method transformPoint
+     * @summary Uses the receiver to multiply the supplied TP.core.Point,
      *     thereby transforming it.
      * @param {TP.core.Point} aPoint The point to apply the receiver to.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Point} The transformed point.
      */
 
@@ -3856,11 +3856,11 @@ TP.core.Matrix.Inst.defineMethod('transformRect',
 function(aRect) {
 
     /**
-     * @name transformRect
-     * @synopsis Uses the receiver to multiply the supplied TP.core.Rect,
+     * @method transformRect
+     * @summary Uses the receiver to multiply the supplied TP.core.Rect,
      *     thereby transforming it.
      * @param {TP.core.Rect} aRect The rect to apply the receiver to.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The transformed rect.
      */
 
@@ -3893,12 +3893,12 @@ TP.core.Matrix.Inst.defineMethod('translate',
 function(diffX, diffY) {
 
     /**
-     * @name translate
-     * @synopsis Applies a translation transformation to the receiver.
+     * @method translate
+     * @summary Applies a translation transformation to the receiver.
      * @param {Number|TP.core.Point} diffX The amount to move X coordinates or a
      *     TP.core.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to move Y coordinates.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} The receiver.
      */
 
@@ -3927,8 +3927,8 @@ TP.core.Matrix.Inst.defineMethod('transpose',
 function() {
 
     /**
-     * @name transpose
-     * @synopsis Transposes the receiver.
+     * @method transpose
+     * @summary Transposes the receiver.
      * @returns {TP.core.Matrix} The receiver.
      */
 
@@ -3957,9 +3957,9 @@ function() {
 //  ========================================================================
 
 /**
- * @synopsis A type that can manage color values. These values contain red,
+ * @summary A type that can manage color values. These values contain red,
  *     green, blue and alpha information.
- * @description This type can be produced by a String having one of the
+ * @summary This type can be produced by a String having one of the
  *     following nine formats: FFFFFF #FFFFFF FFF #FFF rgb(255, 255, 255)
  *     rgba(255, 255, 255, .5) hsl(120, 50%, 50%) hsla(120, 50%, 50%, .5)
  *     <aColorName>
@@ -3988,9 +3988,9 @@ TP.core.Color.Type.defineMethod('fromString',
 function(aString) {
 
     /**
-     * @name fromString
-     * @synopsis Converts a String containing a color to a TP.core.Color object.
-     * @description The supplied String can be in one of nine formats: FFFFFF
+     * @method fromString
+     * @summary Converts a String containing a color to a TP.core.Color object.
+     * @summary The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @returns {TP.core.Color} A TP.core.Color having this color value
@@ -4011,8 +4011,8 @@ TP.core.Color.Type.defineMethod('fromArray',
 function(anObj) {
 
     /**
-     * @name fromArray
-     * @synopsis Returns an instance of this type as extracted from anObj, which
+     * @method fromArray
+     * @summary Returns an instance of this type as extracted from anObj, which
      *     should be an Array. This Array should be in the format of:
      *     [redNumber, greenNumber, blueNumber, alphaNumber]
      * @param {Array} anObj The Array that an instance of this type will be
@@ -4042,8 +4042,8 @@ TP.core.Color.Inst.defineMethod('init',
 function(red, green, blue, alpha) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {Number|TP.core.Color|Object|Array|String} red The red value of
      *     the receiver or a TP.core.Color to copy or an object that has 'r',
      *     'g', 'b', and 'a' slots or an Array that has r in the first position,
@@ -4137,8 +4137,8 @@ TP.core.Color.Inst.defineMethod('add',
 function(aColor) {
 
     /**
-     * @name addColor
-     * @synopsis Adds the supplied color to the receiver.
+     * @method addColor
+     * @summary Adds the supplied color to the receiver.
      * @param {TP.core.Color} aColor The color to add to the receiver.
      * @returns {TP.core.Color} The receiver.
      */
@@ -4163,8 +4163,8 @@ TP.core.Color.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as an Array of: [red, green, blue, alpha].
+     * @method asArray
+     * @summary Returns the receiver as an Array of: [red, green, blue, alpha].
      * @returns {Array} An Array containing the color expressed in RGB values
      *     ([red, green, blue, alpha]).
      */
@@ -4184,8 +4184,8 @@ TP.core.Color.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -4211,8 +4211,8 @@ TP.core.Color.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -4241,8 +4241,8 @@ TP.core.Color.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -4265,8 +4265,8 @@ TP.core.Color.Inst.defineMethod('asRGBString',
 function() {
 
     /**
-     * @name asRGBString
-     * @synopsis Returns the receiver as a CSS RGB String: rgb(red, green,
+     * @method asRGBString
+     * @summary Returns the receiver as a CSS RGB String: rgb(red, green,
      *     blue).
      * @returns {String} A String containing the color expressed as a CSS RGB
      *     string.
@@ -4288,8 +4288,8 @@ TP.core.Color.Inst.defineMethod('asRGBAString',
 function() {
 
     /**
-     * @name asRGBAString
-     * @synopsis Returns the receiver as a CSS RGBA String: rgb(red, green,
+     * @method asRGBAString
+     * @summary Returns the receiver as a CSS RGBA String: rgb(red, green,
      *     blue, alpha).
      * @returns {String} A String containing the color expressed as a CSS RGBA
      *     string.
@@ -4310,8 +4310,8 @@ TP.core.Color.Inst.defineMethod('asHexString',
 function() {
 
     /**
-     * @name asHexString
-     * @synopsis Returns the receiver as a CSS hexadecimal String: #RRGGBB
+     * @method asHexString
+     * @summary Returns the receiver as a CSS hexadecimal String: #RRGGBB
      * @returns {String} A String containing the color expressed as a CSS hex
      *     string.
      */
@@ -4325,8 +4325,8 @@ TP.core.Color.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a JavaScript source code string. This
+     * @method asSource
+     * @summary Returns the receiver as a JavaScript source code string. This
      *     method is intended to provide a primitive form of serialization ala
      *     the eval(obj = firstObj.asSource()) operation.
      * @returns {Object} An appropriate form for recreating the receiver.
@@ -4341,8 +4341,8 @@ TP.core.Color.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver.
+     * @method asString
+     * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Color's String representation. This flag is ignored in
      *     this version of this method.
@@ -4358,8 +4358,8 @@ TP.core.Color.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -4405,8 +4405,8 @@ TP.core.Color.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -4433,8 +4433,8 @@ TP.core.Color.Inst.defineMethod('blendToColor',
 function(toColor, weight) {
 
     /**
-     * @name blendColor
-     * @synopsis Blends the supplied color with the receiver, according to the
+     * @method blendColor
+     * @summary Blends the supplied color with the receiver, according to the
      *     supplied weight and returns the result of that blend.
      * @param {TP.core.Color} toColor The color to blend to starting at the
      *     receiver.
@@ -4475,8 +4475,8 @@ TP.core.Color.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.core.Color} A new TP.core.Color which is a copy of the
      *     receiver.
@@ -4491,8 +4491,8 @@ TP.core.Color.Inst.defineMethod('getAlpha',
 function() {
 
     /**
-     * @name getAlpha
-     * @synopsis Returns the alpha component of the receiver.
+     * @method getAlpha
+     * @summary Returns the alpha component of the receiver.
      * @returns {Number} The alpha component of the receiver.
      */
 
@@ -4505,8 +4505,8 @@ TP.core.Color.Inst.defineMethod('getBlue',
 function() {
 
     /**
-     * @name getBlue
-     * @synopsis Returns the blue component of the receiver.
+     * @method getBlue
+     * @summary Returns the blue component of the receiver.
      * @returns {Number} The blue component of the receiver.
      */
 
@@ -4519,8 +4519,8 @@ TP.core.Color.Inst.defineMethod('getGreen',
 function() {
 
     /**
-     * @name getGreen
-     * @synopsis Returns the green component of the receiver.
+     * @method getGreen
+     * @summary Returns the green component of the receiver.
      * @returns {Number} The green component of the receiver.
      */
 
@@ -4533,8 +4533,8 @@ TP.core.Color.Inst.defineMethod('getRed',
 function() {
 
     /**
-     * @name getRed
-     * @synopsis Returns the red component of the receiver.
+     * @method getRed
+     * @summary Returns the red component of the receiver.
      * @returns {Number} The red component of the receiver.
      */
 
@@ -4547,8 +4547,8 @@ TP.core.Color.Inst.defineMethod('subtract',
 function(aColor) {
 
     /**
-     * @name subtract
-     * @synopsis Subtracts the supplied color from the receiver.
+     * @method subtract
+     * @summary Subtracts the supplied color from the receiver.
      * @param {TP.core.Color} aColor The color to subtract from the receiver.
      * @returns {TP.core.Color} The receiver.
      */
@@ -4572,7 +4572,7 @@ function(aColor) {
 //  ========================================================================
 
 /**
- * @synopsis A type which models a progression of color values along a vector,
+ * @summary A type which models a progression of color values along a vector,
  *     either linear or radial.
  */
 
@@ -4604,10 +4604,10 @@ TP.core.Gradient.Type.defineConstant('STYLE_DECLVALUE_PARSER',
 function(aString) {
 
     /**
-     * @name STYLE_DECLVALUE_PARSER
-     * @synopsis Converts a String containing a gradient description to a
+     * @method STYLE_DECLVALUE_PARSER
+     * @summary Converts a String containing a gradient description to a
      *     TP.core.Gradient object.
-     * @description The supplied String can be in one of two formats:
+     * @summary The supplied String can be in one of two formats:
      *     gradient-linear(angle, color stop, ...) gradient-radial(center-x
      *     center-y, color stop, ...)
      * @param {The} aString String definition to use to build a TP.core.Gradient
@@ -4719,11 +4719,11 @@ TP.core.Gradient.Type.defineMethod('$extractColorsAndStops',
 function(aString) {
 
     /**
-     * @name $extractColorsAndStops
-     * @synopsis Extracts the color and stop values from the supplied String.
+     * @method $extractColorsAndStops
+     * @summary Extracts the color and stop values from the supplied String.
      * @param {String} aString The String to extract the color and stop values
      *     from.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Gradient} The receiver.
      */
 
@@ -4779,14 +4779,14 @@ TP.core.Gradient.Type.defineMethod('constructShadowGradient',
 function(color, opacity) {
 
     /**
-     * @name constructShadowGradient
-     * @synopsis Constructs a gradient that uses the color to fade from the
+     * @method constructShadowGradient
+     * @summary Constructs a gradient that uses the color to fade from the
      *     given opacity value to a 0 opacity.
      * @param {TP.core.Color|Number|String} color A color value that can be
      *     represented as a TP.core.Color.
      * @param {Number} opacity An opacity percentage value, given as a Number
      *     between 0.0 and 1.0.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidNumber
      * @returns {TP.core.Gradient} The receiver.
      */
 
@@ -4829,8 +4829,8 @@ TP.core.Gradient.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @returns {TP.core.Gradient} The receiver.
      */
 
@@ -4863,13 +4863,13 @@ TP.core.Gradient.Inst.defineMethod('addColorStop',
 function(aStopValue, aColorValue) {
 
     /**
-     * @name addColorStop
-     * @synopsis Adds a 'color stop', a color value paired with a length,
+     * @method addColorStop
+     * @summary Adds a 'color stop', a color value paired with a length,
      *     usually a number or percentage, denoting where that color should stop
      *     along the gradient vector.
      * @param {String} aStopValue A value denoting where the color should stop.
      * @param {TP.core.Color|String} aColorValue A color value.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Gradient} The receiver.
      */
 
@@ -4900,8 +4900,8 @@ TP.core.Gradient.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a JavaScript source code string. This
+     * @method asSource
+     * @summary Returns the receiver as a JavaScript source code string. This
      *     method is intended to provide a primitive form of serialization ala
      *     the eval(obj = firstObj.asSource()) operation.
      * @returns {Object} An appropriate form for recreating the receiver.
@@ -4916,8 +4916,8 @@ TP.core.Gradient.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.core.Gradient} A new TP.core.Gradient which is a copy of the
      *     receiver.
@@ -4939,8 +4939,8 @@ TP.core.Gradient.Inst.defineMethod('normalizeGradientValues',
 function() {
 
     /**
-     * @name normalizeGradientValues
-     * @synopsis Normalizes the receiver's color stops so that there are a
+     * @method normalizeGradientValues
+     * @summary Normalizes the receiver's color stops so that there are a
      *     consistent number of stops that match the number of colors.
      * @returns {TP.core.Gradient} The receiver.
      */
@@ -5004,7 +5004,7 @@ function() {
 //  ========================================================================
 
 /**
- * @synopsis A type that represents a 'linear gradient' - that is, a color
+ * @summary A type that represents a 'linear gradient' - that is, a color
  *     transition that proceeds along an angle having one or more 'color stops'.
  */
 
@@ -5031,8 +5031,8 @@ TP.core.LinearGradient.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @returns {TP.core.LinearGradient} The receiver.
      */
 
@@ -5050,8 +5050,8 @@ TP.core.LinearGradient.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -5105,8 +5105,8 @@ TP.core.LinearGradient.Inst.defineMethod('asGeckoCSSString',
 function() {
 
     /**
-     * @name asGeckoCSSString
-     * @synopsis Returns the receiver as a String value that can be used in
+     * @method asGeckoCSSString
+     * @summary Returns the receiver as a String value that can be used in
      *     Gecko 1.9.2+ (FF 3.6+) browsers.
      * @returns {String} The Gecko CSS String representation of the receiver.
      */
@@ -5141,8 +5141,8 @@ TP.core.LinearGradient.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -5186,8 +5186,8 @@ TP.core.LinearGradient.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -5226,8 +5226,8 @@ TP.core.LinearGradient.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -5282,8 +5282,8 @@ TP.core.LinearGradient.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver.
+     * @method asString
+     * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.LinearGradient's String representation. This flag is
      *     ignored in this version of this method.
@@ -5330,8 +5330,8 @@ TP.core.LinearGradient.Inst.defineMethod('asWebkitCSSString',
 function() {
 
     /**
-     * @name asWebkitCSSString
-     * @synopsis Returns the receiver as a String value that can be used in
+     * @method asWebkitCSSString
+     * @summary Returns the receiver as a String value that can be used in
      *     Webkit browsers.
      * @returns {String} The Webkit CSS String representation of the receiver.
      */
@@ -5369,8 +5369,8 @@ TP.core.LinearGradient.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -5410,12 +5410,12 @@ TP.core.LinearGradient.Inst.defineMethod('setAngle',
 function(anAngle) {
 
     /**
-     * @name setAngle
-     * @synopsis Sets the angle of the receiver.
-     * @description For now, only the following discrete values are supported as
+     * @method setAngle
+     * @summary Sets the angle of the receiver.
+     * @summary For now, only the following discrete values are supported as
      *     the angle: 0, 45, 90, 135, 180, 225, 270, 315
      * @param {Number} anAngle The angle of the gradient.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.LinearGradient} The receiver.
      */
 
@@ -5541,7 +5541,7 @@ function(anAngle) {
 //  ========================================================================
 
 /**
- * @synopsis A type that represents a 'radial gradient' - that is, a color
+ * @summary A type that represents a 'radial gradient' - that is, a color
  *     transition that radiates outward from a supplied center point along one
  *     or more 'color stops'.
  */
@@ -5568,8 +5568,8 @@ TP.core.RadialGradient.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @returns {TP.core.RadialGradient} The receiver.
      */
 
@@ -5596,8 +5596,8 @@ TP.core.RadialGradient.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -5650,8 +5650,8 @@ TP.core.RadialGradient.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -5691,8 +5691,8 @@ TP.core.RadialGradient.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -5737,8 +5737,8 @@ TP.core.RadialGradient.Inst.defineMethod('asGeckoCSSString',
 function() {
 
     /**
-     * @name asGeckoCSSString
-     * @synopsis Returns the receiver as a String value that can be used in
+     * @method asGeckoCSSString
+     * @summary Returns the receiver as a String value that can be used in
      *     Gecko 1.9.2+ (FF 3.6+) browsers.
      * @returns {String} The Gecko CSS String representation of the receiver.
      */
@@ -5752,8 +5752,8 @@ TP.core.RadialGradient.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -5812,8 +5812,8 @@ TP.core.RadialGradient.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver.
+     * @method asString
+     * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.RadialGradient's String representation. This flag is
      *     ignored in this version of this method.
@@ -5859,8 +5859,8 @@ TP.core.RadialGradient.Inst.defineMethod('asWebkitCSSString',
 function() {
 
     /**
-     * @name asWebkitCSSString
-     * @synopsis Returns the receiver as a String value that can be used in
+     * @method asWebkitCSSString
+     * @summary Returns the receiver as a String value that can be used in
      *     Webkit browsers.
      * @returns {String} The Webkit CSS String representation of the receiver.
      */
@@ -5874,8 +5874,8 @@ TP.core.RadialGradient.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -5915,7 +5915,7 @@ function() {
 //  ========================================================================
 
 /**
- * @synopsis A type that can manage patterns (i.e. a repeatable image within a
+ * @summary A type that can manage patterns (i.e. a repeatable image within a
  *     particular boundary).
  */
 
@@ -5939,10 +5939,10 @@ TP.core.Pattern.Type.defineConstant('STYLE_DECLVALUE_PARSER',
 function(aString) {
 
     /**
-     * @name STYLE_DECLVALUE_PARSER
-     * @synopsis Converts a String containing a matrix description to a
+     * @method STYLE_DECLVALUE_PARSER
+     * @summary Converts a String containing a matrix description to a
      *     TP.core.Pattern object.
-     * @description The supplied String can be in the following format:
+     * @summary The supplied String can be in the following format:
      *     pattern(url(...), rect(...))
      * @param {The} aString String definition to use to build a TP.core.Pattern
      *     object from.
@@ -6026,8 +6026,8 @@ TP.core.Pattern.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -6066,8 +6066,8 @@ TP.core.Pattern.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -6094,8 +6094,8 @@ TP.core.Pattern.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -6115,8 +6115,8 @@ TP.core.Pattern.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -6166,8 +6166,8 @@ TP.core.Pattern.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a JavaScript source code string. This
+     * @method asSource
+     * @summary Returns the receiver as a JavaScript source code string. This
      *     method is intended to provide a primitive form of serialization ala
      *     the eval(obj = firstObj.asSource()) operation.
      * @returns {Object} An appropriate form for recreating the receiver.
@@ -6182,8 +6182,8 @@ TP.core.Pattern.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver.
+     * @method asString
+     * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Pattern's String representation. This flag is ignored
      *     in this version of this method.
@@ -6215,8 +6215,8 @@ TP.core.Pattern.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -6245,8 +6245,8 @@ TP.core.Pattern.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.core.Pattern} A new TP.core.Pattern which is a copy of the
      *     receiver.
@@ -6272,8 +6272,8 @@ TP.core.Pattern.Inst.defineMethod('getURI',
 function() {
 
     /**
-     * @name getURI
-     * @synopsis Returns the location of the internally stored URI.
+     * @method getURI
+     * @summary Returns the location of the internally stored URI.
      * @returns {String} The location of the pattern's URI.
      */
 
@@ -6286,7 +6286,7 @@ function() {
 //  ========================================================================
 
 /**
- * @synopsis A type that can manage an arbitrarily complex set of points.
+ * @summary A type that can manage an arbitrarily complex set of points.
  */
 
 //  ------------------------------------------------------------------------
@@ -6339,8 +6339,8 @@ TP.core.Path.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @returns {TP.core.Path} A new instance.
      */
 
@@ -6355,8 +6355,8 @@ TP.core.Path.Inst.defineMethod('addSegment',
 function(segmentOpConstant, segmentArgs) {
 
     /**
-     * @name addSegment
-     * @synopsis Adds a segment to the path, using the supplied operator
+     * @method addSegment
+     * @summary Adds a segment to the path, using the supplied operator
      *     constant and segmentArgs Array.
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
@@ -6397,8 +6397,8 @@ TP.core.Path.Inst.defineMethod('operandsAsNumbers',
 function(operandsArray) {
 
     /**
-     * @name operandsAsNumbers
-     * @synopsis Converts the supplied Array of operands (each of which can be a
+     * @method operandsAsNumbers
+     * @summary Converts the supplied Array of operands (each of which can be a
      *     Number, a Boolean, an Array or a TP.core.Point), into a Number
      *     sequence suitable for use in a segment.
      * @param {Array} operandsArray An Array of objects to convert.
@@ -6439,8 +6439,8 @@ TP.core.Path.Inst.defineMethod('deleteSegment',
 function(segmentOpConstant, occurrenceCount) {
 
     /**
-     * @name deleteSegment
-     * @synopsis Deletes a segment from the path, using the supplied operator
+     * @method deleteSegment
+     * @summary Deletes a segment from the path, using the supplied operator
      *     constant and occurrence of the segment's operator.
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
@@ -6475,8 +6475,8 @@ TP.core.Path.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -6509,8 +6509,8 @@ TP.core.Path.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -6525,8 +6525,8 @@ TP.core.Path.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -6542,8 +6542,8 @@ TP.core.Path.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -6567,8 +6567,8 @@ TP.core.Path.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns a String representation of the receiver.
+     * @method asString
+     * @summary Returns a String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Path's String representation. The default is true.
      * @returns {String} The receiver's String representation.
@@ -6594,8 +6594,8 @@ TP.core.Path.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -6610,8 +6610,8 @@ TP.core.Path.Inst.defineMethod('getSegment',
 function(segmentOpConstant, occurrenceCount) {
 
     /**
-     * @name getSegment
-     * @synopsis Retrieves a segment from the path, using the supplied operator
+     * @method getSegment
+     * @summary Retrieves a segment from the path, using the supplied operator
      *     constant and occurrence of the segment's operator.
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
@@ -6650,8 +6650,8 @@ TP.core.Path.Inst.defineMethod('getSegmentIndex',
 function(segmentOpConstant, occurrenceCount) {
 
     /**
-     * @name getSegmentIndex
-     * @synopsis Retrieves a segment's index from the path, using the supplied
+     * @method getSegmentIndex
+     * @summary Retrieves a segment's index from the path, using the supplied
      *     operator constant and occurrence of the segment's operator.
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
@@ -6696,8 +6696,8 @@ function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
 occurrenceCount) {
 
     /**
-     * @name insertSegment
-     * @synopsis Inserts a segment into the path, using the supplied operator
+     * @method insertSegment
+     * @summary Inserts a segment into the path, using the supplied operator
      *     constant and segmentArgs Array. This segment will be inserted before
      *     the 'occurrenceCount' occurrence of the insertion point segment
      *     constant.
@@ -6769,8 +6769,8 @@ TP.core.Path.Inst.defineMethod('updateSegment',
 function(segmentOpConstant, segmentArgs, occurrenceCount) {
 
     /**
-     * @name updateSegment
-     * @synopsis Updates a segment in the path, using the supplied operator
+     * @method updateSegment
+     * @summary Updates a segment in the path, using the supplied operator
      *     constant and segmentArgs Array.
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
@@ -6822,7 +6822,7 @@ function(segmentOpConstant, segmentArgs, occurrenceCount) {
 //  ========================================================================
 
 /**
- * @synopsis A subtype of TP.core.Path that can manage SVG paths.
+ * @summary A subtype of TP.core.Path that can manage SVG paths.
  */
 
 //  ------------------------------------------------------------------------
@@ -6870,8 +6870,8 @@ TP.core.SVGPath.Type.defineConstant('PATH_PARSER',
 function(aString) {
 
     /**
-     * @name PATH_PARSER
-     * @synopsis Converts a String containing a path description to a
+     * @method PATH_PARSER
+     * @summary Converts a String containing a path description to a
      *     TP.core.Path object.
      * @param {The} aString String definition to use to build a TP.core.Path
      *     object from.
@@ -6941,8 +6941,8 @@ TP.core.SVGPath.Type.defineMethod('elementGetBoundingBox',
 function(anElement) {
 
     /**
-     * @name elementGetBoundingBox
-     * @synopsis Returns the rectangle that completely encloses the shape.
+     * @method elementGetBoundingBox
+     * @summary Returns the rectangle that completely encloses the shape.
      * @param {Element} anElement An SVG 'path' element to return the bounding
      *     box rectangle for.
      * @returns {TP.core.Rect} The rectangle that encloses the shape.
@@ -6971,8 +6971,8 @@ TP.core.Path.Inst.defineMethod('$updateBBoxData',
 function(bboxData, x, y) {
 
     /**
-     * @name $updateBBoxData
-     * @synopsis Update
+     * @method $updateBBoxData
+     * @summary Update
      * @returns {TP.core.Path}
      */
 
@@ -7008,7 +7008,7 @@ TP.core.SVGPath.Inst.defineMethod('$updateBBoxFromSegment',
 function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
     /**
-     * @name $updateBBox
+     * @method $updateBBox
      * @returns {TP.core.SVGPath}
      * @abstract
      */
@@ -7242,8 +7242,8 @@ TP.core.SVGPath.Inst.defineMethod('getBoundingBox',
 function() {
 
     /**
-     * @name getBoundingBox
-     * @synopsis Returns the rectangle that completely encloses the shape.
+     * @method getBoundingBox
+     * @summary Returns the rectangle that completely encloses the shape.
      * @param {Element} anElement An SVG 'path' element to return the bounding
      *     box rectangle for.
      * @returns {TP.core.Rect} The rectangle that encloses the shape.
@@ -7285,7 +7285,7 @@ function() {
 
 /**
  * @type {TP.core.Transition}
- * @synopsis The common supertype for transition types in TIBET, providing
+ * @summary The common supertype for transition types in TIBET, providing
  *     (mostly abstract) methods for use in subtypes.
  */
 
@@ -7310,9 +7310,9 @@ TP.core.Transition.Inst.defineMethod('init',
 function(controlParams, stepParams) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @method init
+     * @summary Initialize the instance.
+     * @summary Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -7351,8 +7351,8 @@ TP.core.Transition.Inst.defineMethod('clearValues',
 function(params) {
 
     /**
-     * @name clearValues
-     * @synopsis Clears the values for the targets given the property name.
+     * @method clearValues
+     * @summary Clears the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -7365,10 +7365,10 @@ TP.core.Transition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
-     * @name configure
-     * @synopsis Configures the transition, based on what this particular type
+     * @method configure
+     * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -7389,10 +7389,10 @@ TP.core.Transition.Inst.defineMethod('constructJob',
 function(controlParams, stepParams) {
 
     /**
-     * @name constructJob
-     * @synopsis Constructs a TP.core.Job to execute the receiving transition
+     * @method constructJob
+     * @summary Constructs a TP.core.Job to execute the receiving transition
      *     type.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @summary Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -7523,8 +7523,8 @@ TP.core.Transition.Inst.defineMethod('constructJobGroup',
 function() {
 
     /**
-     * @name constructJobGroup
-     * @synopsis Constructs a TP.core.JobGroup and adds any objects that were
+     * @method constructJobGroup
+     * @summary Constructs a TP.core.JobGroup and adds any objects that were
      *     handed in (and that should conform to the TP.core.JobStatus
      *     specification which means that they could be TP.core.Jobs or other
      *     TP.core.JobGroups) as children to the new TP.core.JobGroup.
@@ -7560,8 +7560,8 @@ TP.core.Transition.Inst.defineMethod('getComputeFunction',
 function() {
 
     /**
-     * @name getComputeFunction
-     * @synopsis Returns the default compute Function for the receiving
+     * @method getComputeFunction
+     * @summary Returns the default compute Function for the receiving
      *     transition type.
      * @returns {Function} The default compute Function for this type.
      */
@@ -7577,8 +7577,8 @@ TP.core.Transition.Inst.defineMethod('getCount',
 function() {
 
     /**
-     * @name getCount
-     * @synopsis Returns the default number of times that the transition should
+     * @method getCount
+     * @summary Returns the default number of times that the transition should
      *     execute for this transition type.
      * @returns {Number} The default number of times the transition should
      *     execute.
@@ -7596,8 +7596,8 @@ TP.core.Transition.Inst.defineMethod('getDelay',
 function() {
 
     /**
-     * @name getDelay
-     * @synopsis Returns the default delay to begin executing the transition in
+     * @method getDelay
+     * @summary Returns the default delay to begin executing the transition in
      *     either Number, String or Duration or a Function to compute the delay.
      *     Depending on type, the delay will be computed thusly: Number The
      *     number of milliseconds to delay String The number of milliseconds to
@@ -7618,8 +7618,8 @@ TP.core.Transition.Inst.defineMethod('getInterval',
 function() {
 
     /**
-     * @name getInterval
-     * @synopsis Returns the default interval which determines the millisecond
+     * @method getInterval
+     * @summary Returns the default interval which determines the millisecond
      *     interval between iterations of the receiver's 'stepping' function.
      * @returns {Number} The number of milliseconds between iterations of the
      *     receiver's 'step' function.
@@ -7637,8 +7637,8 @@ TP.core.Transition.Inst.defineMethod('getLimit',
 function() {
 
     /**
-     * @name getLimit
-     * @synopsis Returns the default limit which determines how long the
+     * @method getLimit
+     * @summary Returns the default limit which determines how long the
      *     receiving transition should execute using either Number, String or
      *     Duration or a Function to compute the limit. Depending on type, the
      *     limit will be computed thusly: Number The number of steps to execute
@@ -7658,8 +7658,8 @@ TP.core.Transition.Inst.defineMethod('preserveValues',
 function(params) {
 
     /**
-     * @name preserveValues
-     * @synopsis Preserves the values for the targets given the property name.
+     * @method preserveValues
+     * @summary Preserves the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -7672,8 +7672,8 @@ TP.core.Transition.Inst.defineMethod('reset',
 function() {
 
     /**
-     * @name reset
-     * @synopsis Resets the effect so that it can be executed again.
+     * @method reset
+     * @summary Resets the effect so that it can be executed again.
      * @returns {TP.core.Transition} The receiver.
      */
 
@@ -7689,8 +7689,8 @@ TP.core.Transition.Inst.defineMethod('restoreValues',
 function(params) {
 
     /**
-     * @name restoreValues
-     * @synopsis Restores the values for the targets given the property name.
+     * @method restoreValues
+     * @summary Restores the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -7703,8 +7703,8 @@ TP.core.Transition.Inst.defineMethod('start',
 function(params) {
 
     /**
-     * @name start
-     * @synopsis Executes the transition against the supplied element.
+     * @method start
+     * @summary Executes the transition against the supplied element.
      * @param {TP.lang.Hash} params A TP.lang.Hash of the following stepping
      *     parameters: target.
      * @returns {TP.core.JobStatus} The job or job group that was forked to
@@ -7738,10 +7738,10 @@ TP.core.Transition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
-     * @name step
-     * @synopsis Changes some aspect of the target given when this transition
+     * @method step
+     * @summary Changes some aspect of the target given when this transition
      *     was executed via the 'start()' method.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -7782,9 +7782,9 @@ TP.core.MultiTransition.Inst.defineMethod('init',
 function(controlParams, stepParams) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @method init
+     * @summary Initialize the instance.
+     * @summary Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -7811,8 +7811,8 @@ TP.core.MultiTransition.Inst.defineMethod('addTransitionEntry',
 function(transitionEntry) {
 
     /**
-     * @name addTransitionEntry
-     * @synopsis Adds the supplied transition entry to the receiver.
+     * @method addTransitionEntry
+     * @summary Adds the supplied transition entry to the receiver.
      * @param {TP.lang.Hash} aTransitionEntry The transition entry to add to the
      *     list of the receiver's transitions.
      * @returns {TP.core.MultiTransition} A new instance.
@@ -7843,8 +7843,8 @@ TP.core.MultiTransition.Inst.defineMethod('clearValues',
 function(params) {
 
     /**
-     * @name clearValues
-     * @synopsis Clears the values for the targets given the property name.
+     * @method clearValues
+     * @summary Clears the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -7884,10 +7884,10 @@ TP.core.MultiTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
-     * @name configure
-     * @synopsis Configures the transition, based on what this particular type
+     * @method configure
+     * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -7944,8 +7944,8 @@ TP.core.MultiTransition.Inst.defineMethod('preserveValues',
 function(params) {
 
     /**
-     * @name preserveValues
-     * @synopsis Preserves the values for the targets given the property name.
+     * @method preserveValues
+     * @summary Preserves the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -7986,8 +7986,8 @@ TP.core.MultiTransition.Inst.defineMethod('restoreValues',
 function(params) {
 
     /**
-     * @name restoreValues
-     * @synopsis Restores the values for the targets given the property name.
+     * @method restoreValues
+     * @summary Restores the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -8028,10 +8028,10 @@ TP.core.MultiTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
-     * @name step
-     * @synopsis Changes the clipping rect of the target element given when this
+     * @method step
+     * @summary Changes the clipping rect of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8098,7 +8098,7 @@ function(job, params) {
 
 /**
  * @type {TP.core.ObjectPropertyTransition}
- * @synopsis A subtype of TP.core.Transition that supplies some common methods
+ * @summary A subtype of TP.core.Transition that supplies some common methods
  *     for transitioning object properties.
  */
 
@@ -8114,14 +8114,14 @@ TP.core.ObjectPropertyTransition.Type.defineMethod('transition',
 function(aTarget, propertyName, aTransitionParams) {
 
     /**
-     * @name transition
-     * @synopsis A convenience wrapper for invoking this type of
+     * @method transition
+     * @summary A convenience wrapper for invoking this type of
      *     TP.core.Transition to do a 'simple transition'.
      * @param {Array|Element} aTarget The target or targets to transition.
      * @param {String} propertyName The name of the property to transition.
      * @param {TP.lang.Hash} aTransitionParams A hash of parameters to use for
      *     the transition.
-     * @raises TP.sig.InvalidObject,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidObject,TP.sig.InvalidParameter
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     transition.
      */
@@ -8371,10 +8371,10 @@ TP.core.ObjectPropertyTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
-     * @name configure
-     * @synopsis Configures the transition, based on what this particular type
+     * @method configure
+     * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8471,10 +8471,10 @@ TP.core.ObjectPropertyTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
-     * @name step
-     * @synopsis Changes the attribute of the target element given when this
+     * @method step
+     * @summary Changes the attribute of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8536,7 +8536,7 @@ function(job, params) {
 
 /**
  * @type {TP.core.AttributeTransition}
- * @synopsis A subtype of TP.core.ObjectPropertyTransition that supplies some
+ * @summary A subtype of TP.core.ObjectPropertyTransition that supplies some
  *     common methods for transitioning element attributes.
  */
 
@@ -8552,10 +8552,10 @@ TP.core.AttributeTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
-     * @name configure
-     * @synopsis Configures the transition, based on what this particular type
+     * @method configure
+     * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8650,10 +8650,10 @@ TP.core.AttributeTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
-     * @name step
-     * @synopsis Changes the attribute of the target element given when this
+     * @method step
+     * @summary Changes the attribute of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this

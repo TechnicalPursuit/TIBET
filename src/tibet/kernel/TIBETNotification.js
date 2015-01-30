@@ -91,12 +91,12 @@ TP.core.Annotation.Inst.defineMethod('as',
         function(typeOrFormat, formatParams) {
 
     /**
-     * @name as
+     * @method as
      * @summary Returns the receiver formatted to the type or format provided.
      * @param {Object} typeOrFormat The type, typename, or format to use.
      * @param {TP.lang.Hash} formatParams Option parameters for the formatting
      *     process.
-     * @return {String}
+     * @returns {String}
      */
 
     var type,
@@ -131,7 +131,7 @@ TP.core.Annotation.Inst.defineMethod('as',
 TP.core.Annotation.Inst.defineMethod('asHTMLString', function() {
 
     /**
-     * @name asHTMLString
+     * @method asHTMLString
      * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
@@ -152,7 +152,7 @@ TP.core.Annotation.Inst.defineMethod('asHTMLString', function() {
 TP.core.Annotation.Inst.defineMethod('asJSONSource', function() {
 
     /**
-     * @name asJSONSource
+     * @method asJSONSource
      * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
@@ -169,10 +169,10 @@ TP.core.Annotation.Inst.defineMethod('asJSONSource', function() {
 TP.core.Annotation.Inst.defineMethod('asString', function() {
 
     /**
-     * @name asString
+     * @method asString
      * @summary Returns the receiver as a simple string. Just the message is
      *     used for this output.
-     * @return {String} An appropriate form for recreating the receiver.
+     * @returns {String} An appropriate form for recreating the receiver.
      */
 
     return this.$get('message');
@@ -183,7 +183,7 @@ TP.core.Annotation.Inst.defineMethod('asString', function() {
 TP.core.Annotation.Inst.defineMethod('asXMLString', function() {
 
     /**
-     * @name asXMLString
+     * @method asXMLString
      * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
@@ -200,9 +200,9 @@ TP.core.Annotation.Inst.defineMethod('asXMLString', function() {
 TP.core.Annotation.Inst.defineMethod('toString', function() {
 
     /**
-     * @name toString
+     * @method toString
      * @summary Returns a string representation of the receiver.
-     * @return {String}
+     * @returns {String}
      */
 
     return TP.join(TP.str(this.$get('message')),
@@ -290,8 +290,8 @@ TP.sig.Signal.Type.defineMethod('getDefaultPolicy',
 function() {
 
     /**
-     * @name getDefaultPolicy
-     * @synopsis Returns the default firing policy to use for signals of this
+     * @method getDefaultPolicy
+     * @summary Returns the default firing policy to use for signals of this
      *     type when no other policy is provided.
      * @returns {String} The firing policy name such as TP.INHERITANCE_FIRING.
      */
@@ -305,8 +305,8 @@ TP.sig.Signal.Type.defineMethod('getHandlerName',
 function(anOrigin, wantsFullName, aSignal, aState) {
 
     /**
-     * @name getHandlerName
-     * @synopsis Computes and returns the standard handler name defined by the
+     * @method getHandlerName
+     * @summary Computes and returns the standard handler name defined by the
      *     origin and signal combination. If no signal is provided the
      *     receiver's signal name is used as a default. Handler names follow a
      *     convention of 'handle' + signalName + 'From' + origin + 'When' +
@@ -378,8 +378,8 @@ TP.sig.Signal.Type.defineMethod('getPhases',
 function() {
 
     /**
-     * @name getPhases
-     * @synopsis Returns the different phases a signal might be at during
+     * @method getPhases
+     * @summary Returns the different phases a signal might be at during
      *     firing. These typically correspond to the DOM phases.
      * @returns {Array}
      */
@@ -393,8 +393,8 @@ TP.sig.Signal.Type.defineMethod('getSignalName',
 function() {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the name of the signal. This method is added to the
+     * @method getSignalName
+     * @summary Returns the name of the signal. This method is added to the
      *     type to allow the type and instances to work polymorphically in
      *     defining the signal name.
      * @returns {String}
@@ -410,8 +410,8 @@ TP.sig.Signal.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
-     * @name getSignalOwner
-     * @synopsis Returns the name of the signal's owner, an object which takes
+     * @method getSignalOwner
+     * @summary Returns the name of the signal's owner, an object which takes
      *     responsibility for observations of this signal type. Default is null
      *     since most signals aren't "owned".
      * @returns {Object} The receiver's owner.
@@ -426,10 +426,10 @@ TP.sig.Signal.Type.defineMethod('isBubbling',
 function() {
 
     /**
-     * @name isBubbling
-     * @synopsis Returns true if the signal bubbles. This is typically only used
+     * @method isBubbling
+     * @summary Returns true if the signal bubbles. This is typically only used
      *     by signals which use DOM firing policies.
-     * @description When a signal isBubbling and it is being fired via a DOM
+     * @summary When a signal isBubbling and it is being fired via a DOM
      *     policy it will not stop TP.AT_TARGET but will continue up through the
      *     parent chain until it reaches the outermost DOM element containing
      *     it. Most signals bubble.
@@ -445,8 +445,8 @@ TP.sig.Signal.Type.defineMethod('isCancelable',
 function() {
 
     /**
-     * @name isCancelable
-     * @synopsis Returns true if the signal can be cancelled (i.e. it will
+     * @method isCancelable
+     * @summary Returns true if the signal can be cancelled (i.e. it will
      *     respond to a stopPropagation() message by allowing itself to stop
      *     being sent to qualified handlers.
      * @returns {Boolean} True if the signal can be cancelled.
@@ -461,8 +461,8 @@ TP.sig.Signal.Type.defineMethod('isSignalingRoot',
 function(aFlag) {
 
     /**
-     * @name isSignalingRoot
-     * @synopsis Combined setter/getter for whether signals of this type form a
+     * @method isSignalingRoot
+     * @summary Combined setter/getter for whether signals of this type form a
      *     local signaling root. When true certain forms of signaling will stop
      *     traversing supertypes and stop with the receiver.
      * @param {Boolean} aFlag
@@ -554,8 +554,8 @@ TP.sig.Signal.Inst.defineMethod('init',
 function(aPayload) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new signal instance.
+     * @method init
+     * @summary Initialize a new signal instance.
      * @param {Object} aPayload A subtype-specific payload/parameter object.
      * @returns {TP.sig.Signal} A new instance.
      */
@@ -578,14 +578,14 @@ TP.sig.Signal.Inst.defineMethod('addIfAbsent',
 function(anItemOrKey, aValue) {
 
     /**
-     * @name addIfAbsent
-     * @synopsis Using the key/value pair provided assign the value to the key
+     * @method addIfAbsent
+     * @summary Using the key/value pair provided assign the value to the key
      *     in the receiver if the key doesn't already exist.
      * @param {TPOrderedPair|String} anItemOrKey The ordered pair to add, or the
      *     key for a pair.
      * @param {Object} aValue Optional value to store when the first argument is
      *     a string.
-     * @raises TP.sig.InvalidPair
+     * @exception TP.sig.InvalidPair
      * @returns {Object} The key's value after processing.
      */
 
@@ -620,8 +620,8 @@ TP.sig.Signal.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -662,8 +662,8 @@ TP.sig.Signal.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -705,8 +705,8 @@ TP.sig.Signal.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -745,8 +745,8 @@ TP.sig.Signal.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -791,8 +791,8 @@ TP.sig.Signal.Inst.defineMethod('asRecursionString',
 function() {
 
     /**
-     * @name asRecursionString
-     * @synopsis Returns a string representation of the receiver which is used
+     * @method asRecursionString
+     * @summary Returns a string representation of the receiver which is used
      *     when the receiver is encountered in a circularly referenced manner
      *     during the production of some sort of formatted String
      *     representation.
@@ -808,8 +808,8 @@ TP.sig.Signal.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver as a string.
+     * @method asString
+     * @summary Returns the receiver as a string.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.sig.Signal's String representation. The default is true.
      * @returns {String} The receiver as a String.
@@ -859,8 +859,8 @@ TP.sig.Signal.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -911,8 +911,8 @@ TP.sig.Signal.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -953,8 +953,8 @@ TP.sig.Signal.Inst.defineMethod('at',
 function(aKey) {
 
     /**
-     * @name at
-     * @synopsis Returns the value of the named parameter from the receiver's
+     * @method at
+     * @summary Returns the value of the named parameter from the receiver's
      *     payload/parameter object. This is the proper way to access the
      *     content of the signal in terms of its control parameters. Don't use
      *     set() to manage parameter data.
@@ -988,8 +988,8 @@ TP.sig.Signal.Inst.defineMethod('atIfInvalid',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfInvalid
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfInvalid
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns null or undefined.
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if invalid.
@@ -1013,8 +1013,8 @@ TP.sig.Signal.Inst.defineMethod('atIfNull',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfNull
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfNull
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns specifically null.
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if null.
@@ -1038,8 +1038,8 @@ TP.sig.Signal.Inst.defineMethod('atIfUndefined',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfUndefined
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfUndefined
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns specifically undefined.
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if undefined.
@@ -1063,12 +1063,12 @@ TP.sig.Signal.Inst.defineMethod('atPut',
 function(aKey, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Defines a key/value pair in the receiver's payload, provided
+     * @method atPut
+     * @summary Defines a key/value pair in the receiver's payload, provided
      *     that the payload is empty and can be constructed, or that it can
      *     handle an atPut operation. This is the preferred way of manipulating
      *     the content of the signal in terms of its control parameters.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true. Observe the payload for
      *     change notification.
      * @param {String} aKey The key for the parameter.
@@ -1116,11 +1116,11 @@ TP.sig.Signal.Inst.defineMethod('atPutIfAbsent',
 function(aKey, aValue) {
 
     /**
-     * @name atPutIfAbsent
-     * @synopsis Defines a key/value pair in the receiver's payload, provided
+     * @method atPutIfAbsent
+     * @summary Defines a key/value pair in the receiver's payload, provided
      *     that the payload does not already contain a value for the key in
      *     question.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true. Observe the payload for
      *     change notification.
      * @param {String} aKey The key for the parameter.
@@ -1158,8 +1158,8 @@ TP.sig.Signal.Inst.defineMethod('clearIgnores',
 function() {
 
     /**
-     * @name clearIgnores
-     * @synopsis Clears any ignored handlers from the receiver's list so that
+     * @method clearIgnores
+     * @summary Clears any ignored handlers from the receiver's list so that
      *     all handlers are "renewed". Ignores allow a handler to be invoked
      *     once even if it's been registered multiple times. Clearing them means
      *     the same handler can be reinvoked.
@@ -1182,8 +1182,8 @@ TP.sig.Signal.Inst.defineMethod('computeSignalName',
 function() {
 
     /**
-     * @name computeSignalName
-     * @synopsis Computes the signal name. By default, this is the receiver's
+     * @method computeSignalName
+     * @summary Computes the signal name. By default, this is the receiver's
      *     type name.
      * @returns {String} The signal name of the receiver.
      */
@@ -1197,8 +1197,8 @@ TP.sig.Signal.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.sig.Signal} A shallow copy of the receiver.
      */
@@ -1237,8 +1237,8 @@ TP.sig.Signal.Inst.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
     /**
-     * @name fire
-     * @synopsis Activates the signal instance via the policy specified. The
+     * @method fire
+     * @summary Activates the signal instance via the policy specified. The
      *     signal should have been fully configured prior to invocation of this
      *     method.
      * @param {Object} anOrigin Optional origin for this call.
@@ -1274,8 +1274,8 @@ TP.sig.Signal.Inst.defineMethod('getActiveTime',
 function() {
 
     /**
-     * @name getActiveTime
-     * @synopsis Returns the active time from fire() to the current time in
+     * @method getActiveTime
+     * @summary Returns the active time from fire() to the current time in
      *     milliseconds.
      * @returns {Number} The active time of the receiver.
      */
@@ -1295,8 +1295,8 @@ TP.sig.Signal.Inst.defineMethod('getDocument',
 function() {
 
     /**
-     * @name getDocument
-     * @synopsis Returns the document from which the signal originated. This is
+     * @method getDocument
+     * @summary Returns the document from which the signal originated. This is
      *     typically the TIBET window's document, but it can vary when UI events
      *     are involved.
      * @returns {Document} The document that the signal originated in.
@@ -1311,8 +1311,8 @@ TP.sig.Signal.Inst.defineMethod('getElapsedTime',
 function() {
 
     /**
-     * @name getElapsedTime
-     * @synopsis Returns the total elapsed time from fire() to completion. When
+     * @method getElapsedTime
+     * @summary Returns the total elapsed time from fire() to completion. When
      *     the signal is not done being processed this method returns NaN.
      * @returns {Number} The elapsed time of the receiver.
      */
@@ -1326,8 +1326,8 @@ TP.sig.Signal.Inst.defineMethod('getFirstResponder',
 function() {
 
     /**
-     * @name getFirstResponder
-     * @synopsis Returns the first responder as computed by the receiver. For
+     * @method getFirstResponder
+     * @summary Returns the first responder as computed by the receiver. For
      *     events originating in the DOM this is typically the object
      *     responsible for the event target. For non-DOM events the responder
      *     will typically default to the current controller instance, either a
@@ -1351,8 +1351,8 @@ TP.sig.Signal.Inst.defineMethod('getOrigin',
 function() {
 
     /**
-     * @name getOrigin
-     * @synopsis Returns the origin of the signal.
+     * @method getOrigin
+     * @summary Returns the origin of the signal.
      * @returns {Object} The origin of the receiver.
      */
 
@@ -1365,8 +1365,8 @@ TP.sig.Signal.Inst.defineMethod('getParameters',
 function() {
 
     /**
-     * @name getParameters
-     * @synopsis Returns the signal's parameters, which are typically encoded in
+     * @method getParameters
+     * @summary Returns the signal's parameters, which are typically encoded in
      *     the receiver's payload. The semantics of this call are slightly
      *     different however, only returning the payload when it implements the
      *     at/atPut methods. You should not manipulate this hash to set
@@ -1394,8 +1394,8 @@ TP.sig.Signal.Inst.defineMethod('getPayload',
 function() {
 
     /**
-     * @name getPayload
-     * @synopsis Returns the optional arguments to the signal.
+     * @method getPayload
+     * @summary Returns the optional arguments to the signal.
      * @returns {Object} The payload of the receiver.
      */
 
@@ -1408,8 +1408,8 @@ TP.sig.Signal.Inst.defineMethod('getPhase',
 function() {
 
     /**
-     * @name getPhase
-     * @synopsis Returns the currently executing phase of the signal.
+     * @method getPhase
+     * @summary Returns the currently executing phase of the signal.
      * @returns {String} The currently executing phase of the receiver.
      */
 
@@ -1422,9 +1422,9 @@ TP.sig.Signal.Inst.defineMethod('getProperty',
 function(attributeName) {
 
     /**
-     * @name getProperty
-     * @synopsis Returns the value, if any, for the attribute provided.
-     * @description This method takes over when get() fails to find a specific
+     * @method getProperty
+     * @summary Returns the value, if any, for the attribute provided.
+     * @summary This method takes over when get() fails to find a specific
      *     getter or an aspect adapted getter. For signals we vary the default
      *     implementation in that no inferencing or backstop invocation occurs
      *     when attempting to look up values. If the receiver doesn't have the
@@ -1446,8 +1446,8 @@ TP.sig.Signal.Inst.defineMethod('getRequestID',
 function() {
 
     /**
-     * @name getRequestID
-     * @synopsis A synonymn for getOrigin for non-request/response signal types.
+     * @method getRequestID
+     * @summary A synonymn for getOrigin for non-request/response signal types.
      *     Provided to ensure polymorphic support for workflow signal
      *     processing.
      * @returns {Object} The request ID of the receiver.
@@ -1462,8 +1462,8 @@ TP.sig.Signal.Inst.defineMethod('getSignalName',
 function() {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name. This corresponds most often to the
+     * @method getSignalName
+     * @summary Returns the signal name. This corresponds most often to the
      *     Signal's type name.
      * @returns {String} The signal name of the receiver.
      */
@@ -1484,10 +1484,10 @@ TP.sig.Signal.Inst.defineMethod('getSignalNames',
 function() {
 
     /**
-     * @name getSignalNames
-     * @synopsis Returns the all of the receiver's 'signal names' - that is,
+     * @method getSignalNames
+     * @summary Returns the all of the receiver's 'signal names' - that is,
      *     each supertype signal name *and* the receiver's direct *signal* name.
-     * @description Note that this method is different than
+     * @summary Note that this method is different than
      *     'getTypeSignalNames()' below in that this method will always use the
      *     signal name, even for the receiving type - which for a spoofed signal
      *     will be different than its type name.
@@ -1514,8 +1514,8 @@ TP.sig.Signal.Inst.defineMethod('getSupertypeSignalNames',
 function() {
 
     /**
-     * @name getSupertypeSignalNames
-     * @synopsis Returns the 'supertypes signal names' - that is, each supertype
+     * @method getSupertypeSignalNames
+     * @summary Returns the 'supertypes signal names' - that is, each supertype
      *     name encoded as a signal name.
      * @returns {Array} An Array of supertype signal names.
      */
@@ -1546,8 +1546,8 @@ TP.sig.Signal.Inst.defineMethod('getSignalOrigin',
 function() {
 
     /**
-     * @name getSignalOrigin
-     * @synopsis Returns the origin of the signal. This is an alias for
+     * @method getSignalOrigin
+     * @summary Returns the origin of the signal. This is an alias for
      *     getOrigin to maintain API symmetry with getSignalName.
      * @returns {String} The signal origin of the receiver.
      */
@@ -1561,8 +1561,8 @@ TP.sig.Signal.Inst.defineMethod('getTarget',
 function() {
 
     /**
-     * @name getTarget
-     * @synopsis Returns the target of the signal. For most events this is the
+     * @method getTarget
+     * @summary Returns the target of the signal. For most events this is the
      *     origin _object_, but for DOM events, particularly those with a native
      *     event component, this will be the element.
      * @returns {Object} The target of the receiver.
@@ -1616,8 +1616,8 @@ TP.sig.Signal.Inst.defineMethod('getTargetGlobalID',
 function() {
 
     /**
-     * @name getTargetGlobalID
-     * @synopsis Returns the target of the signal. For most events this is the
+     * @method getTargetGlobalID
+     * @summary Returns the target of the signal. For most events this is the
      *     same as the origin, but for DOM events, particularly those with a
      *     native event component, this will often be the global ID of the
      *     targeted element
@@ -1660,8 +1660,8 @@ TP.sig.Signal.Inst.defineMethod('getTargetLocalID',
 function() {
 
     /**
-     * @name getTargetLocalID
-     * @synopsis Returns the target ID of the signal. For most events this is
+     * @method getTargetLocalID
+     * @summary Returns the target ID of the signal. For most events this is
      *     the same as the origin ID, but for DOM events, particularly those
      *     with a native event component, this will often be the local ID of the
      *     targeted element.
@@ -1704,10 +1704,10 @@ TP.sig.Signal.Inst.defineMethod('getTypeSignalNames',
 function() {
 
     /**
-     * @name getTypeSignalNames
-     * @synopsis Returns the 'types signal names' - that is, each supertype
+     * @method getTypeSignalNames
+     * @summary Returns the 'types signal names' - that is, each supertype
      *     signal name *and* the receiver's direct type signal name.
-     * @description Note that this method is different than 'getSignalNames()'
+     * @summary Note that this method is different than 'getSignalNames()'
      *     above in that this method will always use the type name as converted
      *     to a signal name, even for the receiving type - which for a spoofed
      *     signal will be different than its signal name.
@@ -1739,8 +1739,8 @@ TP.sig.Signal.Inst.defineMethod('getWindow',
 function() {
 
     /**
-     * @name getWindow
-     * @synopsis Returns the window from which the signal originated. This is
+     * @method getWindow
+     * @summary Returns the window from which the signal originated. This is
      *     typically the TIBET window, but it can vary when UI events are
      *     involved.
      * @returns {Window} The native window object that the receiver occurred in.
@@ -1776,8 +1776,8 @@ TP.sig.Signal.Inst.defineMethod('ignoreHandler',
 function(aHandler) {
 
     /**
-     * @name ignoreHandler
-     * @synopsis Tells the signal instance to ignore a specific handler ID. This
+     * @method ignoreHandler
+     * @summary Tells the signal instance to ignore a specific handler ID. This
      *     can be called on the signal instance at any time, but is typically
      *     called by the signaling system to avoid duplicate notifications
      *     during DOM traversals.
@@ -1808,10 +1808,10 @@ TP.sig.Signal.Inst.defineMethod('isBubbling',
 function() {
 
     /**
-     * @name isBubbling
-     * @synopsis Returns true if the signal bubbles. This is typically only used
+     * @method isBubbling
+     * @summary Returns true if the signal bubbles. This is typically only used
      *     by signals which use DOM firing policies.
-     * @description When a signal isBubbling and it is being fired via a DOM
+     * @summary When a signal isBubbling and it is being fired via a DOM
      *     policy it will not stop TP.AT_TARGET but will continue up through the
      *     parent chain until it reaches the outermost DOM element containing
      *     it. Most signals bubble.
@@ -1833,8 +1833,8 @@ TP.sig.Signal.Inst.defineMethod('isCancelable',
 function() {
 
     /**
-     * @name isCancelable
-     * @synopsis Returns true if the signal can be cancelled (i.e. it will
+     * @method isCancelable
+     * @summary Returns true if the signal can be cancelled (i.e. it will
      *     respond to a stopPropagation() message by allowing itself to stop
      *     being sent to qualified handlers.
      * @returns {Boolean} True if the signal can be cancelled.
@@ -1855,8 +1855,8 @@ TP.sig.Signal.Inst.defineMethod('isIgnoring',
 function(aHandler) {
 
     /**
-     * @name isIgnoring
-     * @synopsis Returns true if the signal should skip over notification of the
+     * @method isIgnoring
+     * @summary Returns true if the signal should skip over notification of the
      *     handler ID provided. This method works along with the ignoreHandler()
      *     method to let the signaling system support turning off multiple
      *     notifications to a handler of a particular signal instance.
@@ -1885,8 +1885,8 @@ TP.sig.Signal.Inst.defineMethod('isRecyclable',
 function(aFlag) {
 
     /**
-     * @name isRecyclable
-     * @synopsis Returns true if the signal can be recycled.
+     * @method isRecyclable
+     * @summary Returns true if the signal can be recycled.
      * @param {Boolean} aFlag A new setting. Optional.
      * @returns {Boolean} True if the signal can be recycled.
      */
@@ -1904,8 +1904,8 @@ TP.sig.Signal.Inst.defineMethod('isSignalingRoot',
 function(aFlag) {
 
     /**
-     * @name isSignalingRoot
-     * @synopsis Combined setter/getter for whether signals of this type form a
+     * @method isSignalingRoot
+     * @summary Combined setter/getter for whether signals of this type form a
      *     local signaling root. When true certain forms of signaling will stop
      *     traversing supertypes and stop with the receiver.
      * @param {Boolean} aFlag
@@ -1934,8 +1934,8 @@ TP.sig.Signal.Inst.defineMethod('isSpoofed',
 function() {
 
     /**
-     * @name isSpoofed
-     * @synopsis Returns true if the signal is 'spoofed' - that is, it has a
+     * @method isSpoofed
+     * @summary Returns true if the signal is 'spoofed' - that is, it has a
      *     custom signal name different from its type name.
      * @returns {Boolean} True if the signal is spoofed.
      */
@@ -1949,10 +1949,10 @@ TP.sig.Signal.Inst.defineMethod('preventDefault',
 function(aFlag) {
 
     /**
-     * @name preventDefault
-     * @synopsis Tells a potential handler to not perform whatever default
+     * @method preventDefault
+     * @summary Tells a potential handler to not perform whatever default
      *     action it might perform.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Prevent default: yes or no?
      * @returns {Boolean} True if the signal should not perform its default
@@ -1972,8 +1972,8 @@ TP.sig.Signal.Inst.defineMethod('release',
 function() {
 
     /**
-     * @name release
-     * @synopsis Clears the receiver's recyclable flag, allowing it to be
+     * @method release
+     * @summary Clears the receiver's recyclable flag, allowing it to be
      *     reused.
      * @returns {TP.sig.Signal} The receiver.
      */
@@ -1989,8 +1989,8 @@ TP.sig.Signal.Inst.defineMethod('recycle',
 function() {
 
     /**
-     * @name recycle
-     * @synopsis Prepares the receiver for a new usage cycle.
+     * @method recycle
+     * @summary Prepares the receiver for a new usage cycle.
      * @returns {TP.sig.Signal} The receiver.
      */
 
@@ -2024,10 +2024,10 @@ TP.sig.Signal.Inst.defineMethod('removeKey',
 function(aKey) {
 
     /**
-     * @name removeKey
-     * @synopsis Removes a key (and it's attendant value) from the receiver's
+     * @method removeKey
+     * @summary Removes a key (and it's attendant value) from the receiver's
      *     payload, provided that the payload can handle a removeKey operation.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true. Observe the payload for
      *     change notification.
      * @param {String} aKey The key for the parameter.
@@ -2059,8 +2059,8 @@ TP.sig.Signal.Inst.defineMethod('renewHandler',
 function(aHandler) {
 
     /**
-     * @name renewHandler
-     * @synopsis Tells the signal instance to reset a specific handler ID so
+     * @method renewHandler
+     * @summary Tells the signal instance to reset a specific handler ID so
      *     that the handler can be told multiple times about a single signal
      *     instance. Usually invoked by the handler itself so it can be invoked
      *     multiple times.
@@ -2091,9 +2091,9 @@ TP.sig.Signal.Inst.defineMethod('setOrigin',
 function(anOrigin) {
 
     /**
-     * @name setOrigin
-     * @synopsis Sets the origin of the signal.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @method setOrigin
+     * @summary Sets the origin of the signal.
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Object} anOrigin The originating object.
      * @returns {TP.sig.Signal} The receiver.
@@ -2116,9 +2116,9 @@ TP.sig.Signal.Inst.defineMethod('setPayload',
 function(anObject) {
 
     /**
-     * @name setPayload
-     * @synopsis Sets the payload/parameter object of the signal.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @method setPayload
+     * @summary Sets the payload/parameter object of the signal.
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Object} anObject The optional signal payload.
      * @returns {TP.sig.Signal} The receiver.
@@ -2135,9 +2135,9 @@ TP.sig.Signal.Inst.defineMethod('setPhase',
 function(aPhase) {
 
     /**
-     * @name setPhase
-     * @synopsis Sets the phase of the signal.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @method setPhase
+     * @summary Sets the phase of the signal.
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {String} aPhase The current dispatch phase.
      * @returns {TP.sig.Signal} The receiver.
@@ -2154,9 +2154,9 @@ TP.sig.Signal.Inst.defineMethod('setSignalName',
 function(aSignalName, clearIgnores) {
 
     /**
-     * @name setSignalName
-     * @synopsis Defines the name of the signal.
-     * @description By default a signal's name matches its type, but to support
+     * @method setSignalName
+     * @summary Defines the name of the signal.
+     * @summary By default a signal's name matches its type, but to support
      *     lightweight signals whose only differentiation is their name we allow
      *     TP.sig.Signal and other subtypes to stand in for a subtype simply by
      *     changing their names. An additional side-effect of this call is that
@@ -2188,8 +2188,8 @@ TP.sig.Signal.Inst.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. The default is true for most signals, but many types of
      *     signals have to check TIBET configuration flags to see if they can
      *     currently be logged.
@@ -2205,11 +2205,11 @@ TP.sig.Signal.Inst.defineMethod('shouldPrevent',
 function(aFlag) {
 
     /**
-     * @name shouldPrevent
-     * @synopsis Returns true if the signal handler(s) should not perform the
+     * @method shouldPrevent
+     * @summary Returns true if the signal handler(s) should not perform the
      *     default action. If a flag is provided this flag is used to set the
      *     prevent status.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Prevent default: yes or no?
      * @returns {Boolean} True if the signal should not perform its default
@@ -2229,10 +2229,10 @@ TP.sig.Signal.Inst.defineMethod('shouldStop',
 function(aFlag) {
 
     /**
-     * @name shouldStop
-     * @synopsis Returns true if the signal should stop propagating. If a flag
+     * @method shouldStop
+     * @summary Returns true if the signal should stop propagating. If a flag
      *     is provided this flag is used to set the propagation status.
-     * @description Note that this method does not signal 'Change', even if it's
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Stop propagating: yes or no?
      * @returns {Boolean} True if the signal should stop propagation.
@@ -2256,11 +2256,11 @@ TP.sig.Signal.Inst.defineMethod('stopPropagation',
 function(aFlag) {
 
     /**
-     * @name stopPropagation
-     * @synopsis Tells the signal to stop propagation -- subject to the
+     * @method stopPropagation
+     * @summary Tells the signal to stop propagation -- subject to the
      *     observance of this property by the various firing policies and
      *     whether the receiver isCancelable()
-     * @description Note that this method does not signal 'Change', even if it's
+     * @summary Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Stop propagating: yes or no?
      * @returns {Boolean} True if the signal should stop propagation.
@@ -2307,8 +2307,8 @@ TP.definePrimitive('ec',
 function(anError, aMessage) {
 
     /**
-     * @name ec
-     * @synopsis Constructs a new TP.sig.Exception using anError as the key
+     * @method ec
+     * @summary Constructs a new TP.sig.Exception using anError as the key
      *     element of the payload. An optional message augmenting the Error's
      *     native message can also be provided.
      * @param {Error} anError The Error object to use as the key element of the
@@ -2342,8 +2342,8 @@ TP.sig.Exception.Type.defineMethod('getLevel',
 function() {
 
     /**
-     * @name getLevel
-     * @synopsis Returns the severity level associated with this type.
+     * @method getLevel
+     * @summary Returns the severity level associated with this type.
      * @returns {Number} The type's severity level.
      */
 
@@ -2358,8 +2358,8 @@ TP.sig.Exception.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -2421,8 +2421,8 @@ TP.sig.Exception.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -2476,8 +2476,8 @@ TP.sig.Exception.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -2539,8 +2539,8 @@ TP.sig.Exception.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -2602,8 +2602,8 @@ TP.sig.Exception.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -2671,8 +2671,8 @@ TP.sig.Exception.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns a reasonable string represention of the exception.
+     * @method asString
+     * @summary Returns a reasonable string represention of the exception.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.sig.Exception's String representation. The default is true.
      * @returns {String} The receiver as a String
@@ -2729,8 +2729,8 @@ TP.sig.Exception.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -2790,8 +2790,8 @@ TP.sig.Exception.Inst.defineMethod('getError',
 function() {
 
     /**
-     * @name getError
-     * @synopsis Returns the Error object, if any, associated with this
+     * @method getError
+     * @summary Returns the Error object, if any, associated with this
      *     exception. This object is typically found in the payload under the
      *     key 'object'.
      * @returns {Error} A native Error object.
@@ -2806,8 +2806,8 @@ TP.sig.Exception.Inst.defineMethod('getLevel',
 function() {
 
     /**
-     * @name getLevel
-     * @synopsis Returns the severity level associated with this instance.
+     * @method getLevel
+     * @summary Returns the severity level associated with this instance.
      * @returns {Number} The severity level of the receiver.
      */
 
@@ -2820,8 +2820,8 @@ TP.sig.Exception.Inst.defineMethod('getMessage',
 function() {
 
     /**
-     * @name getMessage
-     * @synopsis Returns the message(s), if any, associated with this instance.
+     * @method getMessage
+     * @summary Returns the message(s), if any, associated with this instance.
      * @returns {String} The message entry/entries associated with the receiver.
      */
 
@@ -2834,8 +2834,8 @@ TP.sig.Exception.Inst.defineMethod('preventDefault',
 function(aFlag) {
 
     /**
-     * @name preventDefault
-     * @synopsis Turns off default processing for the receiver. In the case of a
+     * @method preventDefault
+     * @summary Turns off default processing for the receiver. In the case of a
      *     TP.sig.Exception this means that the standard throw call that would
      *     follow signaling the lightweight exception will not occur. This
      *     should be done whenever you've handled an exception in a way that
@@ -2909,8 +2909,8 @@ TP.sig.Change.Inst.defineMethod('getAction',
 function() {
 
     /**
-     * @name getAction
-     * @synopsis Returns the action which caused the sender to change.
+     * @method getAction
+     * @summary Returns the action which caused the sender to change.
      * @returns {String} The action of the receiver.
      */
 
@@ -2923,8 +2923,8 @@ TP.sig.Change.Inst.defineMethod('getAspect',
 function() {
 
     /**
-     * @name getAspect
-     * @synopsis Returns the aspect of the sender which changed.
+     * @method getAspect
+     * @summary Returns the aspect of the sender which changed.
      * @returns {String} The aspect of the receiver.
      */
 
@@ -2937,8 +2937,8 @@ TP.sig.Change.Inst.defineMethod('getSignalNames',
 function() {
 
     /**
-     * @name getSignalNames
-     * @synopsis Returns the all of the receiver's 'signal names' - that is,
+     * @method getSignalNames
+     * @summary Returns the all of the receiver's 'signal names' - that is,
      *     each supertype signal name *and* the receiver's direct *signal* name.
      * @returns {Array} An Array of signal names.
      */
@@ -2974,8 +2974,8 @@ TP.sig.Change.Inst.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the new value.
+     * @method getValue
+     * @summary Returns the new value.
      * @returns {String} The value of the receiver.
      */
 
@@ -3041,8 +3041,8 @@ TP.sig.FacetChange.Inst.defineMethod('getFacet',
 function() {
 
     /**
-     * @name getFacet
-     * @synopsis Returns the facet of the sender which changed.
+     * @method getFacet
+     * @summary Returns the facet of the sender which changed.
      * @returns {String} The facet of the receiver.
      */
 
@@ -3144,8 +3144,8 @@ TP.sig.SignalMap.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     //  turn off logging unless we're debugging the internals of notification
@@ -3160,8 +3160,8 @@ TP.sig.SignalMap.defineMethod('$computeResponderChain',
 function(aSignal, startResponder, isCapturing) {
 
     /**
-     * @name $computeResponderChain
-     * @synopsis Computes the 'responder chain' for the supplied signal. All
+     * @method $computeResponderChain
+     * @summary Computes the 'responder chain' for the supplied signal. All
      *     signals have a responder chain of sorts although signals with an
      *     originating DOM element tend to have more interesting ones since
      *     they include one or more DOM elements starting at the event target.
@@ -3221,8 +3221,8 @@ TP.sig.SignalMap.defineMethod('$getPolicyName',
 function(aPolicy) {
 
     /**
-     * @name $getPolicyName
-     * @synopsis Returns the public name of the policy provided. If the policy
+     * @method $getPolicyName
+     * @summary Returns the public name of the policy provided. If the policy
      *     is provided as a string that string is returned.
      * @param {Function|String} aPolicy The policy specification.
      * @returns {String} The policy's public name.
@@ -3247,11 +3247,11 @@ TP.sig.SignalMap.defineMethod('$getSignalInstance',
 function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
 
     /**
-     * @name $getSignalInstance
-     * @synopsis Returns a signal instance for use. This is optimized via the
+     * @method $getSignalInstance
+     * @summary Returns a signal instance for use. This is optimized via the
      *     TP.sig.Signal construct machinery to reuse a common instance in most
      *     cases so that instance creation overhead is minimized.
-     * @description When processing signals provided in string form the default
+     * @summary When processing signals provided in string form the default
      *     type rules will cause types with Change in their name to be turned
      *     into Change signals, while types with Exception in their name will
      *     become subtypes of TP.sig.Exception. Exception is tested first, so a
@@ -3324,13 +3324,13 @@ TP.sig.SignalMap.defineMethod('$getSignalType',
 function(aSignal, aDefaultType) {
 
     /**
-     * @name $getSignalType
-     * @synopsis Returns a signal type for use by looking up the type matching
+     * @method $getSignalType
+     * @summary Returns a signal type for use by looking up the type matching
      *     the supplied signal. If the optional aDefaultType parameter is
      *     supplied it is used as the return type. If its not defined, a number
      *     of rules (explained below) are used to try to 'compute' the return
      *     type.
-     * @description When returning signal types for signal values provided in
+     * @summary When returning signal types for signal values provided in
      *     String form the default type rules will cause types with Change in
      *     their name to return Change signals, while types with Exception in
      *     their name will return TP.sig.Exception. TP.sig.Exception is tested
@@ -3433,8 +3433,8 @@ TP.sig.SignalMap.defineMethod('$isInterestSuspended',
 function(anOrigin, aSignal) {
 
     /**
-     * @name $isInterestSuspended
-     * @synopsis Returns true if the combination of origin and signal ID is
+     * @method $isInterestSuspended
+     * @summary Returns true if the combination of origin and signal ID is
      *     marked as suspended in the signal map.
      * @param {String} anOrigin What origin are we checking?
      * @param {String|tp.sig.Signal} aSignal What signal name?
@@ -3461,8 +3461,8 @@ TP.sig.SignalMap.defineMethod('$constructHandlerEntries',
 function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserver, xmlEvent) {
 
     /**
-     * @name $constructHandlerEntries
-     * @synopsis Creates 1..n signal map entries for the interest specified.
+     * @method $constructHandlerEntries
+     * @summary Creates 1..n signal map entries for the interest specified.
      * @param {Object} anOrigin What origin?
      * @param {String|TP.sig.Signal} aSignal What signal?
      * @param {Object} aHandler What object will get notification?
@@ -3612,9 +3612,9 @@ TP.sig.SignalMap.defineMethod('$registerHandlerEntry',
 function(aHandlerEntry, quiet) {
 
     /**
-     * @name $registerHandlerEntry
-     * @synopsis Registers the supplied signal map entry into the signal map.
-     * @description Note that no duplicate entries are made meaning each handler
+     * @method $registerHandlerEntry
+     * @summary Registers the supplied signal map entry into the signal map.
+     * @summary Note that no duplicate entries are made meaning each handler
      *     is notified only once per signal occurrence unless the TIBET flag
      *     shouldAllowDuplicateInterests() returns true. Also, if the enclosing
      *     interest container has already been created for another handler, and
@@ -3860,8 +3860,8 @@ TP.sig.SignalMap.defineMethod('$removeHandlerEntry',
 function(aHandlerEntry) {
 
     /**
-     * @name $removeHandlerEntry
-     * @synopsis Removes the supplied signal map entry from the signal map.
+     * @method $removeHandlerEntry
+     * @summary Removes the supplied signal map entry from the signal map.
      * @param {Object} aHandlerEntry A listener entry.
      */
 
@@ -4016,9 +4016,9 @@ TP.sig.SignalMap.defineMethod('$registerInterest',
 function(anOrigin, aSignal, aHandler, isCapturing) {
 
     /**
-     * @name $registerInterest
-     * @synopsis Creates a signal map entry for the interest specified.
-     * @description No duplicate entries are made meaning each handler is
+     * @method $registerInterest
+     * @summary Creates a signal map entry for the interest specified.
+     * @summary No duplicate entries are made meaning each handler is
      *     notified only once per signal occurrence unless the TIBET flag
      *     shouldAllowDuplicateInterests() returns true. Also, if the enclosing
      *     interest container has already been created for another handler, and
@@ -4170,10 +4170,10 @@ TP.sig.SignalMap.defineMethod('$removeInterest',
 function(anOrigin, aSignal, aHandler, isCapturing) {
 
     /**
-     * @name $removeInterest
-     * @synopsis Removes the signal map entry for the specific interest
+     * @method $removeInterest
+     * @summary Removes the signal map entry for the specific interest
      *     specified.
-     * @description This method affects the handler provided, or all handlers of
+     * @summary This method affects the handler provided, or all handlers of
      *     the particular capturing type (ie. capturing or non-capturing) if no
      *     handler is present. Note that when a handler is present the
      *     isCapturing flag is ignored and the handler's entry is removed
@@ -4305,8 +4305,8 @@ TP.sig.SignalMap.Type.defineMethod('getListeners',
 function(anOrigin, aSignal, captureState) {
 
     /**
-     * @name getListeners
-     * @synopsis Returns all listener entries found for the origin/signal name
+     * @method getListeners
+     * @summary Returns all listener entries found for the origin/signal name
      *     pair provided, adjusting for capturing semantics as needed. Note that
      *     "ANY" references are treated as "special origin" or "special signal"
      *     rather than as "wildcards" for purposes of this routine. In other
@@ -4388,10 +4388,10 @@ function(anOrigin, aSignalName, aSignal, checkPropagation, captureState,
 aSigEntry, checkTarget) {
 
     /**
-     * @name notifyHandlers
-     * @synopsis Notifies all handlers found for the origin/signal name pair
+     * @method notifyHandlers
+     * @summary Notifies all handlers found for the origin/signal name pair
      *     provided, adjusting for capturing semantics as needed.
-     * @description This method notifies every available listener it can find
+     * @summary This method notifies every available listener it can find
      *     which meet the captureState requirements -- unless the
      *     checkPropagation flag is true in which case the notification only
      *     occurs until a handler sets the stopPropagation() flag on the signal.
@@ -4721,8 +4721,8 @@ TP.sig.SignalMap.defineMethod('FIRE_ONE',
 function(anOrigin, aSignal, aPayload, aType) {
 
     /**
-     * @name FIRE_ONE
-     * @synopsis Fires a single signal from a single origin. This is the routine
+     * @method FIRE_ONE
+     * @summary Fires a single signal from a single origin. This is the routine
      *     which handles the majority of work in the signaling process.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
@@ -4802,8 +4802,8 @@ TP.sig.SignalMap.defineMethod('DEFAULT_FIRING',
 function(anOrigin, signalSet, aPayload, aType) {
 
     /**
-     * @name DEFAULT_FIRING
-     * @synopsis Fires a signal or set of signals from an origin. If a single
+     * @method DEFAULT_FIRING
+     * @summary Fires a signal or set of signals from an origin. If a single
      *     signal/origin pair is provided this method defers to FIRE_ONE.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
@@ -4874,8 +4874,8 @@ TP.sig.SignalMap.defineMethod('DOM_FIRING',
 function(originSet, aSignal, aPayload, aType) {
 
     /**
-     * @name DOM_FIRING
-     * @synopsis Fires signals across a series of origins which should be
+     * @method DOM_FIRING
+     * @summary Fires signals across a series of origins which should be
      *     provided in DOM hierarchy order. The caller/signaler should have
      *     assembled the list prior to signaling. The behavior in this policy is
      *     intended to mirror the basic behavior of DOM2 signaling. The arm
@@ -5210,8 +5210,8 @@ function(originSet, aSignal, aPayload, aType) {
 
 
     /**
-     * @name RESPONDER_FIRING
-     * @synopsis Fires signals across a series of responders which should be
+     * @method RESPONDER_FIRING
+     * @summary Fires signals across a series of responders which should be
      *     computed by asking the signal for its 'first responder' and then
      *     asking each responder to 'get its next responder' and then using that
      *     to go up the chain.
@@ -5369,8 +5369,8 @@ TP.sig.SignalMap.defineMethod('EXCEPTION_FIRING',
 function(anOrigin, signalSet, aPayload, aType) {
 
     /**
-     * @name EXCEPTION_FIRING
-     * @synopsis Fires a series of exceptions from the origin provided until a
+     * @method EXCEPTION_FIRING
+     * @summary Fires a series of exceptions from the origin provided until a
      *     handler for one of the exception types/supertypes stops signal
      *     propagation.
      * @param {Object} anOrigin The originator of the signal.
@@ -5472,8 +5472,8 @@ TP.sig.SignalMap.defineMethod('INHERITANCE_FIRING',
 function(anOrigin, aSignal, aPayload, aType) {
 
     /**
-     * @name INHERITANCE_FIRING
-     * @synopsis Fires a signal ensuring that observers of supertypes of that
+     * @method INHERITANCE_FIRING
+     * @summary Fires a signal ensuring that observers of supertypes of that
      *     signal are notified. This is a single origin/single signal policy.
      * @param {Object} anOrigin The originator of the signal.
      * @param {TP.sig.Signal} aSignal The signal to fire.
@@ -5606,10 +5606,10 @@ TP.sig.SignalMap.defineMethod('REGISTER_CAPTURING',
 function(anOrigin, aSignal, aHandler) {
 
     /**
-     * @name REGISTER_CAPTURING
-     * @synopsis Handles registration of a capturing handler for the
+     * @method REGISTER_CAPTURING
+     * @summary Handles registration of a capturing handler for the
      *     registration data provided.
-     * @description One feature yet to be added is the concept of a "cleanup
+     * @summary One feature yet to be added is the concept of a "cleanup
      *     policy". We want registrations to occur in which the observer
      *     specifies when to clean them out or "auto-ignore" them. A couple
      *     obvious policies would be to remove the observer after a certain
@@ -5669,8 +5669,8 @@ TP.sig.SignalMap.defineMethod('REGISTER_NONCAPTURING',
 function(anOrigin, aSignal, aHandler) {
 
     /**
-     * @name REGISTER_NONCAPTURING
-     * @synopsis Handles registration of a non-capturing handler for the
+     * @method REGISTER_NONCAPTURING
+     * @summary Handles registration of a non-capturing handler for the
      *     registration data provided.
      * @param {String} anOrigin The origin to register interest in.
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to
@@ -5724,8 +5724,8 @@ TP.sig.SignalMap.defineMethod('REMOVE_CAPTURING',
 function(anOrigin, aSignal, aHandler) {
 
     /**
-     * @name REMOVE_CAPTURING
-     * @synopsis Removes registration of a capturing handler for the
+     * @method REMOVE_CAPTURING
+     * @summary Removes registration of a capturing handler for the
      *     registration data provided. If no handler is provided ALL capturing
      *     notifications for the signal/origin pair are removed.
      * @param {String} anOrigin The origin to register interest in.
@@ -5751,8 +5751,8 @@ TP.sig.SignalMap.defineMethod('REMOVE_NONCAPTURING',
 function(anOrigin, aSignal, aHandler) {
 
     /**
-     * @name REMOVE_NONCAPTURING
-     * @synopsis Removes registration of a non-capturing handler for the
+     * @method REMOVE_NONCAPTURING
+     * @summary Removes registration of a non-capturing handler for the
      *     registration data provided. If no handler is provided ALL capturing
      *     notifications for the signal/origin pair are removed.
      * @param {String} anOrigin The origin to register interest in.
@@ -5778,7 +5778,7 @@ TP.sig.SignalMap.defineMethod('RESUME',
 function(anOrigin, aSignal) {
 
     /**
-     * @name RESUME
+     * @method RESUME
      * @param {String} anOrigin The origin to resume interest in.
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to resume
      *     interest in.
@@ -5806,8 +5806,8 @@ TP.sig.SignalMap.defineMethod('SUSPEND',
 function(anOrigin, aSignal) {
 
     /**
-     * @name SUSPEND
-     * @synopsis Suspends signaling status for a particular origin/signal pair.
+     * @method SUSPEND
+     * @summary Suspends signaling status for a particular origin/signal pair.
      * @param {String} anOrigin The origin to suspend interest in.
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to
      *     suspend interest in.
@@ -5833,8 +5833,8 @@ function(anOrigin, aSignal) {
 TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name $ignore
-     * @synopsis The primary observation removal method. This method is
+     * @method $ignore
+     * @summary The primary observation removal method. This method is
      *     typically invoked via the ignore instance method on most objects, you
      *     don't normally need to invoke it yourself.
      * @param {Object|Array} anOrigin An origin (or origins) to ignore.
@@ -5980,8 +5980,8 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
 
     /**
-     * @name $invokePolicy
-     * @synopsis General purpose signal invocation method. Each policy gets
+     * @method $invokePolicy
+     * @summary General purpose signal invocation method. Each policy gets
      *     invoked from this entry point.
      * @param {Object|Array} origins An origin or origins.
      * @param {TP.sig.Signal|Array} signals A signal or signals.
@@ -6029,8 +6029,8 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
 TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name $observe
-     * @synopsis The primary observation installation method. This method is
+     * @method $observe
+     * @summary The primary observation installation method. This method is
      *     typically invoked via the observe instance method on most objects,
      *     you don't normally need to invoke it yourself.
      * @param {Object|Array} anOrigin An origin (or origins) to observe.
@@ -6185,8 +6185,8 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
 TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
 
     /**
-     * @name $resume
-     * @synopsis The primary observation resume method. When an observation has
+     * @method $resume
+     * @summary The primary observation resume method. When an observation has
      *     been suspended this method will resume active notifications for it.
      * @param {Object|Array} anOrigin An origin (or origins) to resume
      *     notifications for.
@@ -6316,8 +6316,8 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
 TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
     /**
-     * @name $suspend
-     * @synopsis The primary observation suspention method. When an observation
+     * @method $suspend
+     * @summary The primary observation suspention method. When an observation
      *     has been suspended the registration is maintained but notifications
      *     are not made until a TP.resume().
      * @param {Object|Array} anOrigin An origin (or origins) to suspend
@@ -6487,8 +6487,8 @@ TP.definePrimitive('signal',
 function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
-     * @name signal
-     * @synopsis Signals activity to registered observers. Any additional
+     * @method signal
+     * @summary Signals activity to registered observers. Any additional
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
      * @param {Object} anOrigin The originator of the signal.
@@ -6746,9 +6746,9 @@ TP.definePrimitive('raise',
 function(anOrigin, anException, aPayload) {
 
     /**
-     * @name raise
-     * @synopsis Raise an exception.
-     * @description The exception type can be either a type or a String
+     * @method raise
+     * @summary Raise an exception.
+     * @summary The exception type can be either a type or a String
      *     representing a type as appropriate. The calling context should be a
      *     reference to the function in which the exception was issued. This is
      *     usually provided as arguments (too bad about 'caller' isn't it). The
@@ -7003,8 +7003,8 @@ TP.core.MutationSignalSource.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     this.set('observers', TP.hc());
@@ -7019,11 +7019,11 @@ TP.core.MutationSignalSource.Type.defineMethod('addObserverFor',
 function(aDocument) {
 
     /**
-     * @name addObserverFor
+     * @method addObserverFor
      * @synopsis
      * @param {Document} aDocument The document to register a Mutation Observer
      *     on.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.lang.RootObject.<TP.core.MutationSignalSource>} The
      *     MutationSignalSource type.
      */
@@ -7080,11 +7080,11 @@ TP.core.MutationSignalSource.Type.defineMethod('removeObserverFor',
 function(aDocument) {
 
     /**
-     * @name removeObserverFor
+     * @method removeObserverFor
      * @synopsis
      * @param {Document} aDocument The document to remove a Mutation Observer
      *     from.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.lang.RootObject.<TP.core.MutationSignalSource>} The
      *     MutationSignalSource type.
      */
@@ -7114,10 +7114,10 @@ TP.core.MutationSignalSource.Type.defineMethod('handleMutationEvent',
 function(aMutationRecord) {
 
     /**
-     * @name handleMutationEvent
+     * @method handleMutationEvent
      * @synopsis
      * @param {MutationRecord} aMutationRecord
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.lang.RootObject.<TP.core.MutationSignalSource>} The
      *     MutationSignalSource type.
      */
@@ -7368,10 +7368,10 @@ TP.core.URISignalSource.Inst.defineMethod('init',
 function(aURI) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new signal instance.
+     * @method init
+     * @summary Initialize a new signal instance.
      * @param {TP.core.URI} aURI The URI to use to listen for events from.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {TP.core.URISignalSource} A new instance.
      */
 
@@ -7420,8 +7420,8 @@ TP.core.SSESignalSource.Inst.defineMethod('init',
 function(aURI) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new signal instance.
+     * @method init
+     * @summary Initialize a new signal instance.
      * @param {TP.core.URI} aURI The URI to use to listen for events from.
      * @returns {TP.core.SSESignalSource} A new instance.
      */
@@ -7440,8 +7440,8 @@ TP.core.SSESignalSource.Inst.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name addObserver
-     * @synopsis Adds a local signal observation which is roughly like a DOM
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -7522,9 +7522,9 @@ TP.core.SSESignalSource.Inst.defineMethod('closeConnection',
 function() {
 
     /**
-     * @name closeConnection
-     * @synopsis Closes the connection to the remote server-sent events server.
-     * @raises TP.sig.InvalidSource
+     * @method closeConnection
+     * @summary Closes the connection to the remote server-sent events server.
+     * @exception TP.sig.InvalidSource
      * @returns {Boolean} Whether or not the connection closed successfully.
      */
 
@@ -7560,8 +7560,8 @@ TP.core.SSESignalSource.Inst.defineMethod('connectionIsOpen',
 function() {
 
     /**
-     * @name connectionIsOpen
-     * @synopsis Returns whether or not the connection is currently open.
+     * @method connectionIsOpen
+     * @summary Returns whether or not the connection is currently open.
      * @returns {Boolean} Whether or not the connection is currently open.
      */
 
@@ -7575,9 +7575,9 @@ TP.core.SSESignalSource.Inst.defineMethod('openConnection',
 function() {
 
     /**
-     * @name openConnection
-     * @synopsis Opens the connection to the remote server-sent events server.
-     * @raises TP.sig.InvalidURI, TP.sig.InvalidSource
+     * @method openConnection
+     * @summary Opens the connection to the remote server-sent events server.
+     * @exception TP.sig.InvalidURI, TP.sig.InvalidSource
      * @returns {Boolean} Whether or not the connection opened successfully.
      */
 
@@ -7620,8 +7620,8 @@ TP.core.SSESignalSource.Inst.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name removeObserver
-     * @synopsis Removes a local signal observation which is roughly like a DOM
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -7697,9 +7697,9 @@ TP.core.SSESignalSource.Inst.defineMethod('setupCustomHandlers',
 function(signalTypes) {
 
     /**
-     * @name setupCustomHandlers
-     * @synopsis Sets up handlers for 'custom' server-side events.
-     * @description Because the Server-Sent Events specification does not
+     * @method setupCustomHandlers
+     * @summary Sets up handlers for 'custom' server-side events.
+     * @summary Because the Server-Sent Events specification does not
      *     specify that the general 'message' handler will fire when there is a
      *     custom 'event' (as specified by the 'event:' tag in the received
      *     data), we look at the signals being registered and if they have a
@@ -7707,7 +7707,7 @@ function(signalTypes) {
      *     private EventSource object to broadcast the signal.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
-     * @raises TP.sig.InvalidSource
+     * @exception TP.sig.InvalidSource
      * @returns {TP.core.SSESignalSource} The receiver.
      */
 
@@ -7782,10 +7782,10 @@ TP.core.SSESignalSource.Inst.defineMethod('setupStandardHandlers',
 function() {
 
     /**
-     * @name setupStandardHandlers
-     * @synopsis Sets up the 'standard' Server-Side Events handlers for our
+     * @method setupStandardHandlers
+     * @summary Sets up the 'standard' Server-Side Events handlers for our
      *     event source object.
-     * @raises TP.sig.InvalidSource
+     * @exception TP.sig.InvalidSource
      * @returns {TP.core.SSESignalSource} The receiver.
      */
 
@@ -7884,9 +7884,9 @@ TP.core.SSESignalSource.Inst.defineMethod('teardownCustomHandlers',
 function(signalTypes) {
 
     /**
-     * @name teardownCustomHandlers
-     * @synopsis Tears down handlers for 'custom' server-side events.
-     * @description Because the Server-Sent Events specification does not
+     * @method teardownCustomHandlers
+     * @summary Tears down handlers for 'custom' server-side events.
+     * @summary Because the Server-Sent Events specification does not
      *     specify that the general 'message' handler will fire when there is a
      *     custom 'event' (as specified by the 'event:' tag in the received
      *     data), we look at the signals being registered and if they have a
@@ -7894,7 +7894,7 @@ function(signalTypes) {
      *     private EventSource objec
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
-     * @raises TP.sig.InvalidSource
+     * @exception TP.sig.InvalidSource
      * @returns {TP.core.SSESignalSource} The receiver.
      */
 
@@ -7964,8 +7964,8 @@ TP.sig.SourceSignal.defineSubtype('SourceError');
 
 /**
  * @type {Object}
- * @synopsis Responder Computation API extensions for Object.
- * @description These allow any Object in the system to respond to the responder
+ * @summary Responder Computation API extensions for Object.
+ * @summary These allow any Object in the system to respond to the responder
  *     computation machinery. They are typically overridden to provide real
  *     functionality.
  * @subject Responder Computation Extensions
@@ -7979,8 +7979,8 @@ TP.lang.Object.Inst.defineMethod('isResponderFor',
 function(aSignal, isCapturing) {
 
     /**
-     * @name isResponderFor
-     * @synopsis Whether or not the receiver is a responder for the supplied
+     * @method isResponderFor
+     * @summary Whether or not the receiver is a responder for the supplied
      *     signal and capturing mode.
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
@@ -8001,8 +8001,8 @@ TP.lang.Object.Inst.defineMethod('getNextResponder',
 function(aSignal, isCapturing) {
 
     /**
-     * @name getNextResponder
-     * @synopsis Returns the next responder as computed by the receiver.
+     * @method getNextResponder
+     * @summary Returns the next responder as computed by the receiver.
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
      * @param {Boolean} isCapturing Whether or not the responder computation

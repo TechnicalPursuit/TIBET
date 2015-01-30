@@ -14,7 +14,7 @@
 
 /**
  * @type {html:b}
- * @synopsis 'b' tag. Bold font.
+ * @summary 'b' tag. Bold font.
  */
 
 //  ------------------------------------------------------------------------
@@ -27,7 +27,7 @@ TP.html.Attrs.defineSubtype('b');
 
 /**
  * @type {html:big}
- * @synopsis 'big' tag. Bigger font.
+ * @summary 'big' tag. Bigger font.
  */
 
 //  ------------------------------------------------------------------------
@@ -40,7 +40,7 @@ TP.html.Attrs.defineSubtype('big');
 
 /**
  * @type {html:datalist}
- * @synopsis 'datalist' tag. Together with 'list' attribute for input can be
+ * @summary 'datalist' tag. Together with 'list' attribute for input can be
  *     used to make a combobox.
  */
 
@@ -54,7 +54,7 @@ TP.html.Attrs.defineSubtype('datalist');
 
 /**
  * @type {html:details}
- * @synopsis 'details' tag. Represents additional information which the user can
+ * @summary 'details' tag. Represents additional information which the user can
  *     obtain on demand.
  */
 
@@ -70,7 +70,7 @@ TP.html.details.Type.set('booleanAttrs', TP.ac('open'));
 
 /**
  * @type {html:hr}
- * @synopsis 'hr' tag. Horizontal rule.
+ * @summary 'hr' tag. Horizontal rule.
  */
 
 //  ------------------------------------------------------------------------
@@ -102,7 +102,7 @@ TP.html.hr.finalizeTraits();
 
 /**
  * @type {html:i}
- * @synopsis 'i' tag. Italic font.
+ * @summary 'i' tag. Italic font.
  */
 
 //  ------------------------------------------------------------------------
@@ -115,7 +115,7 @@ TP.html.Attrs.defineSubtype('i');
 
 /**
  * @type {html:output}
- * @synopsis 'output' tag. Some form of output.
+ * @summary 'output' tag. Some form of output.
  */
 
 //  ------------------------------------------------------------------------
@@ -130,7 +130,7 @@ TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
 
 /**
  * @type {html:meter}
- * @synopsis 'meter' tag. A measurement, such as disk usage.
+ * @summary 'meter' tag. A measurement, such as disk usage.
  */
 
 //  ------------------------------------------------------------------------
@@ -143,7 +143,7 @@ TP.html.Attrs.defineSubtype('meter');
 
 /**
  * @type {html:progress}
- * @synopsis 'progress' tag. A completion of a task, such as downloading.
+ * @summary 'progress' tag. A completion of a task, such as downloading.
  */
 
 //  ------------------------------------------------------------------------
@@ -156,7 +156,7 @@ TP.html.Attrs.defineSubtype('progress');
 
 /**
  * @type {html:small}
- * @synopsis 'small' tag. Smaller font.
+ * @summary 'small' tag. Smaller font.
  */
 
 //  ------------------------------------------------------------------------
@@ -169,7 +169,7 @@ TP.html.Attrs.defineSubtype('small');
 
 /**
  * @type {html:sub}
- * @synopsis 'sub' tag. Subscript.
+ * @summary 'sub' tag. Subscript.
  */
 
 //  ------------------------------------------------------------------------
@@ -182,7 +182,7 @@ TP.html.Attrs.defineSubtype('sub');
 
 /**
  * @type {html:summary}
- * @synopsis 'summary' tag. Represents summary information for a 'details' tag.
+ * @summary 'summary' tag. Represents summary information for a 'details' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -195,7 +195,7 @@ TP.html.Attrs.defineSubtype('summary');
 
 /**
  * @type {html:sup}
- * @synopsis 'sup' tag. Superscript.
+ * @summary 'sup' tag. Superscript.
  */
 
 //  ------------------------------------------------------------------------
@@ -208,7 +208,7 @@ TP.html.Attrs.defineSubtype('sup');
 
 /**
  * @type {html:time}
- * @synopsis 'time' tag. A data and/or time.
+ * @summary 'time' tag. A data and/or time.
  */
 
 //  ------------------------------------------------------------------------
@@ -221,7 +221,7 @@ TP.html.Attrs.defineSubtype('time');
 
 /**
  * @type {html:tt}
- * @synopsis 'tt' tag. Fixed (teletype/typewriter) font.
+ * @summary 'tt' tag. Fixed (teletype/typewriter) font.
  */
 
 //  ------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 
 /**
  * @type {html:bdo}
- * @synopsis 'bdo' Tag. Override layout directionality.
+ * @summary 'bdo' Tag. Override layout directionality.
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqTime}
- * @synopsis A wrapper for the IQ_TIME namespace'd payload element.
+ * @summary A wrapper for the IQ_TIME namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

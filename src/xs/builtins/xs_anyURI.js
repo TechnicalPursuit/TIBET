@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.anyURI}
- * @synopsis A standard URI string per the URI specification.
+ * @summary A standard URI string per the URI specification.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.anyURI.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     This will be a URI string if the incoming data represents a string in
      *     proper URI format.
      * @param {Object} anObject The object to use as source data.
@@ -69,8 +69,8 @@ TP.xs.anyURI.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided represents a valid URI
+     * @method validate
+     * @summary Returns true if the object provided represents a valid URI
      *     string.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

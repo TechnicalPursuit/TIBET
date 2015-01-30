@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.VCard}
- * @synopsis A wrapper for the VCard content type.
+ * @summary A wrapper for the VCard content type.
  */
 
 //  ------------------------------------------------------------------------

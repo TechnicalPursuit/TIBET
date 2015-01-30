@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.base64Binary}
- * @synopsis A base64 encoded string value. Note that this implementation
+ * @summary A base64 encoded string value. Note that this implementation
  *     matches the TP.atob() and TP.btoa() function input/output format which
  *     does not include spaces as a requirement of a valid base64 encoded
  *     string.
@@ -36,8 +36,8 @@ TP.xs.base64Binary.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Returns a base64 encoded string representing the incoming
+     * @method fromObject
+     * @summary Returns a base64 encoded string representing the incoming
      *     object.
      * @param {Object} anObject The object to encode.
      * @returns {String} A valid base64-encoded string.
@@ -68,8 +68,8 @@ TP.xs.base64Binary.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided contains a string matching
+     * @method validate
+     * @summary Returns true if the object provided contains a string matching
      *     the restricted character set of a base64 encoded string.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

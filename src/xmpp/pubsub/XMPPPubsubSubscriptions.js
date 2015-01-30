@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubSubscriptions}
- * @synopsis A wrapper for the PubSub subscriptions node type.
+ * @summary A wrapper for the PubSub subscriptions node type.
  */
 
 //  ------------------------------------------------------------------------

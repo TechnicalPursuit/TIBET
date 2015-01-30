@@ -129,7 +129,7 @@ TP.sherpa.world.Inst.defineMethod('createScreenElement',
 function(anID, position) {
 
     /**
-     * @name createScreenElement
+     * @method createScreenElement
      */
 
     var newScreenElem;
@@ -152,7 +152,7 @@ TP.sherpa.world.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
 function(aSignal) {
 
     /**
-     * @name handleHiddenChange
+     * @method handleHiddenChange
      */
 
     var isHidden;
@@ -178,7 +178,7 @@ TP.sherpa.world.Inst.defineMethod('refocus',
 function() {
 
     /**
-     * @name refocus
+     * @method refocus
      */
 
     var currentFocus;
@@ -204,7 +204,7 @@ TP.sherpa.world.Inst.defineMethod('getWorldCenterPoint',
 function() {
 
     /**
-     * @name getWorldCenterPoint
+     * @method getWorldCenterPoint
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -225,7 +225,7 @@ TP.sherpa.world.Inst.defineMethod('fitToElement',
 function(anElement) {
 
     /**
-     * @name fitToElement
+     * @method fitToElement
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -248,7 +248,7 @@ TP.sherpa.world.Inst.defineMethod('fitToScreen',
 function(screenRowNum, screenColNum) {
 
     /**
-     * @name fitToScreen
+     * @method fitToScreen
      * @param {Number} screenRowNum
      * @param {Number} screenColNum
      * @returns {TP.sherpa.world} The receiver.
@@ -309,7 +309,7 @@ TP.sherpa.world.Inst.defineMethod('fitToSelf',
 function() {
 
     /**
-     * @name fitToSelf
+     * @method fitToSelf
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -357,7 +357,7 @@ TP.sherpa.world.Inst.defineMethod('fitToVisibleWindow',
 function() {
 
     /**
-     * @name fitToVisibleWindow
+     * @method fitToVisibleWindow
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -384,7 +384,7 @@ TP.sherpa.world.Inst.defineMethod('moveToCenterPointAndFitToDocument',
 function(aPoint) {
 
     /**
-     * @name moveToCenterPointAndFitToDocument
+     * @method moveToCenterPointAndFitToDocument
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -415,7 +415,7 @@ TP.sherpa.world.Inst.defineMethod('setView',
 function(aRect) {
 
     /**
-     * @name setView
+     * @method setView
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -471,7 +471,7 @@ TP.sherpa.world.Inst.defineMethod('zoom',
 function(aValue) {
 
     /**
-     * @name zoom
+     * @method zoom
      * @returns {TP.sherpa.world} The receiver.
      */
 

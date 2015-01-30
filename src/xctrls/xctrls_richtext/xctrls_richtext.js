@@ -33,8 +33,8 @@ TP.xctrls.richtext.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -63,8 +63,8 @@ TP.xctrls.richtext.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -106,7 +106,7 @@ TP.xctrls.richtext.Inst.defineMethod('configure',
 function() {
 
     /**
-     * @name configure
+     * @method configure
      * @returns {TP.xctrls.richtext} The receiver.
      * @abstract
      */
@@ -140,8 +140,8 @@ TP.xctrls.richtext.Inst.defineMethod('focus',
 function(moveAction) {
 
     /**
-     * @name focus
-     * @synopsis Focuses the receiver for keyboard input.
+     * @method focus
+     * @summary Focuses the receiver for keyboard input.
      * @param {Constant} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *          TP.FIRST
@@ -166,8 +166,8 @@ TP.xctrls.richtext.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -182,8 +182,8 @@ TP.xctrls.richtext.Inst.defineMethod('$getEditorInstance',
 function() {
 
     /**
-     * @name $getEditorInstance
-     * @synopsis Returns the internal TinyMCE editor instance.
+     * @method $getEditorInstance
+     * @summary Returns the internal TinyMCE editor instance.
      * @returns {Object} The internal TinyMCE editor instance.
      */
 
@@ -196,8 +196,8 @@ TP.xctrls.richtext.Inst.defineMethod('refresh',
 function(aSignal) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specified a
      *     'deep' refresh then descendant elements are also updated.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
@@ -222,8 +222,8 @@ TP.xctrls.richtext.Inst.defineMethod('focus',
 function() {
 
     /**
-     * @name focus
-     * @synopsis Focuses the receiver for keyboard input.
+     * @method focus
+     * @summary Focuses the receiver for keyboard input.
      * @returns {TP.xctrls.richtext} The receiver.
      */
 
@@ -236,7 +236,7 @@ TP.xctrls.richtext.Inst.defineMethod('selectionChangeHandler',
 function(editorID, ctrlManager, elem, isCollapsed, otherObj) {
 
     /**
-     * @name selectionChangeHandler
+     * @method selectionChangeHandler
      * @param {undefined} editorID
      * @param {undefined} ctrlManager
      * @param {undefined} elem
@@ -269,8 +269,8 @@ TP.xctrls.richtext.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure
@@ -292,7 +292,7 @@ TP.xctrls.richtext.Inst.defineMethod('handleXMPPPubsubEventInput',
 function(aSignal) {
 
     /**
-     * @name handleXMPPPubsubEventInput
+     * @method handleXMPPPubsubEventInput
      * @param {undefined} aSignal
      * @returns {TP.xctrls.richtext} The receiver.
      * @abstract
@@ -317,7 +317,7 @@ TP.xctrls.richtext.Inst.defineMethod('publishContent',
 function(publishName) {
 
     /**
-     * @name publishContent
+     * @method publishContent
      * @param {undefined} publishName
      * @returns {undefined}
      * @abstract
@@ -369,7 +369,7 @@ TP.xctrls.richtext.Inst.defineMethod('shouldShare',
 function(shareFlag, shareName) {
 
     /**
-     * @name shouldShare
+     * @method shouldShare
      * @param {undefined} shareFlag
      * @param {undefined} shareName
      * @returns {TP.xctrls.richtext} The receiver.
@@ -432,8 +432,8 @@ TP.xctrls.richtext.Inst.defineMethod('clearValue',
 function() {
 
     /**
-     * @name clearValue
-     * @synopsis Clears the entire value of the receiver.
+     * @method clearValue
+     * @summary Clears the entire value of the receiver.
      * @returns {TP.xctrls.richtext} The receiver.
      */
 
@@ -455,7 +455,7 @@ TP.xctrls.richtext.Inst.defineMethod('clearSelection',
 function() {
 
     /**
-     * @name clearSelection
+     * @method clearSelection
      * @returns {undefined}
      * @abstract
      */
@@ -478,8 +478,8 @@ TP.xctrls.richtext.Inst.defineMethod('collapseSelection',
 function(toStart) {
 
     /**
-     * @name collapseSelection
-     * @synopsis Collapse the current selection to one end or the other.
+     * @method collapseSelection
+     * @summary Collapse the current selection to one end or the other.
      * @param {Boolean} toStart Whether or not to collapse the selection to the
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
@@ -497,8 +497,8 @@ TP.xctrls.richtext.Inst.defineMethod('getSelection',
 function() {
 
     /**
-     * @name getSelection
-     * @synopsis Returns the currently selected text.
+     * @method getSelection
+     * @summary Returns the currently selected text.
      * @returns {String} The currently selected text.
      */
 
@@ -511,8 +511,8 @@ TP.xctrls.richtext.Inst.defineMethod('getSelectionEnd',
 function() {
 
     /**
-     * @name getSelectionEnd
-     * @synopsis Returns the ending index of the currently selected text.
+     * @method getSelectionEnd
+     * @summary Returns the ending index of the currently selected text.
      * @returns {Number} The ending index of the current selection.
      */
 
@@ -525,8 +525,8 @@ TP.xctrls.richtext.Inst.defineMethod('getSelectionStart',
 function() {
 
     /**
-     * @name getSelectionStart
-     * @synopsis Returns the starting index of the currently selected text.
+     * @method getSelectionStart
+     * @summary Returns the starting index of the currently selected text.
      * @returns {Number} The starting index of the current selection.
      */
 
@@ -539,8 +539,8 @@ TP.xctrls.richtext.Inst.defineMethod('insertAfterSelection',
 function(aText) {
 
     /**
-     * @name insertAfterSelection
-     * @synopsis Inserts the supplied text after the current selection.
+     * @method insertAfterSelection
+     * @summary Inserts the supplied text after the current selection.
      * @param {String} aText The text to insert.
      * @returns {TP.xctrls.richtext} The receiver.
      */
@@ -557,8 +557,8 @@ TP.xctrls.richtext.Inst.defineMethod('insertBeforeSelection',
 function(aText) {
 
     /**
-     * @name insertBeforeSelection
-     * @synopsis Inserts the supplied text before the current selection.
+     * @method insertBeforeSelection
+     * @summary Inserts the supplied text before the current selection.
      * @param {String} aText The text to insert before the current selection.
      * @returns {TP.xctrls.richtext} The receiver.
      */
@@ -575,7 +575,7 @@ TP.xctrls.richtext.Inst.defineMethod('replaceSelection',
 function(aText) {
 
     /**
-     * @name replaceSelection
+     * @method replaceSelection
      * @param {undefined} aText
      * @returns {undefined}
      * @abstract
@@ -602,8 +602,8 @@ TP.xctrls.richtext.Inst.defineMethod('selectFromTo',
 function(aStartIndex, anEndIndex) {
 
     /**
-     * @name selectFromTo
-     * @synopsis Selects the contents of the receiver from the supplied starting
+     * @method selectFromTo
+     * @summary Selects the contents of the receiver from the supplied starting
      *     index to the supplied ending index.
      * @param {Number} aStartIndex The starting index.
      * @param {Number} aEndIndex The ending index.
@@ -621,8 +621,8 @@ TP.xctrls.richtext.Inst.defineMethod('setCursorToEnd',
 function() {
 
     /**
-     * @name setCursorToEnd
-     * @synopsis Sets the cursor to the end position of the receiver.
+     * @method setCursorToEnd
+     * @summary Sets the cursor to the end position of the receiver.
      * @returns {TP.xctrls.richtext} The receiver.
      */
 
@@ -637,8 +637,8 @@ TP.xctrls.richtext.Inst.defineMethod('setCursorToStart',
 function() {
 
     /**
-     * @name setCursorToStart
-     * @synopsis Sets the cursor to the start position of the receiver.
+     * @method setCursorToStart
+     * @summary Sets the cursor to the start position of the receiver.
      * @returns {TP.xctrls.richtext} The receiver.
      */
 
@@ -653,7 +653,7 @@ TP.xctrls.richtext.Inst.defineMethod('setSelection',
 function(aText) {
 
     /**
-     * @name setSelection
+     * @method setSelection
      * @param {undefined} aText
      * @returns {undefined}
      * @abstract
@@ -671,8 +671,8 @@ TP.xctrls.richtext.Inst.defineMethod('wrapSelection',
 function(beforeText, afterText) {
 
     /**
-     * @name wrapSelection
-     * @synopsis Wraps the current selection with the beforeText and afterText.
+     * @method wrapSelection
+     * @summary Wraps the current selection with the beforeText and afterText.
      * @param {String} beforeText The text to insert before the selection.
      * @param {String} afterText The text to insert after the selection.
      * @returns {TP.xctrls.richtext} The receiver.

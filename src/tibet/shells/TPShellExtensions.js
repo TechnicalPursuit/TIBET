@@ -27,11 +27,11 @@ TP.defineMetaTypeMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
-     * @name cmdFilterInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdFilterInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @description This method work in conjunction with 'tsh:cmd' type's
+     * @summary This method work in conjunction with 'tsh:cmd' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'filter' content. At this level, it simply complete()s the request
      *     with the receiver as the result.
@@ -49,11 +49,11 @@ TP.defineMetaTypeMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @name cmdTransformInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdTransformInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description This method work in conjunction with 'tsh:cmd' type's
+     * @summary This method work in conjunction with 'tsh:cmd' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'transform' content. At this level, it simply complete()s the request
      *     with the receiver as the result.
@@ -73,12 +73,12 @@ Object.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @name cmdAddContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdAddContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
      * @param {TP.sig.Request} aRequest The shell request being processed.
-     * @raises TP.sig.InvalidSink
+     * @exception TP.sig.InvalidSink
      */
 
     this.raise('TP.sig.InvalidSink');
@@ -92,8 +92,8 @@ Object.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -123,9 +123,9 @@ Object.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Runs the receiver, effectively invoking its action.
-     * @description This method is invoked any time a tag is being run as part
+     * @method cmdRunContent
+     * @summary Runs the receiver, effectively invoking its action.
+     * @summary This method is invoked any time a tag is being run as part
      *     of the processing of an enclosing tsh:script, which happens most
      *     often when the tag is being run interactively. The default defers to
      *     the tshExecute method of their type.
@@ -144,8 +144,8 @@ Object.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -184,8 +184,8 @@ Array.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @name cmdAddContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdAddContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -219,8 +219,8 @@ Array.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -259,8 +259,8 @@ RegExp.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
-     * @name cmdFilterInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdFilterInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -339,8 +339,8 @@ RegExp.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @name cmdTransformInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdTransformInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -441,8 +441,8 @@ String.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
-     * @name cmdFilterInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdFilterInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -530,11 +530,11 @@ String.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @name cmdTransformInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdTransformInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description This occurs when the string is quoted in a pipe segment
+     * @summary This occurs when the string is quoted in a pipe segment
      *     which does not include a ? implying filtering. In these cases the
      *     string is treated either as a template or as an aspect path used to
      *     query the objects for a new value.
@@ -666,8 +666,8 @@ TP.core.Node.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -704,8 +704,8 @@ TP.core.Node.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -735,8 +735,8 @@ TP.core.Node.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -775,11 +775,11 @@ TP.core.XSLDocumentNode.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @name cmdTransformInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdTransformInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description This occurs when the XSL Node is quoted in a pipe segment
+     * @summary This occurs when the XSL Node is quoted in a pipe segment
      *     which does not include a ? implying filtering. In these cases the
      *     Node is treated an XSLT for use in transforming the content supplied
      *     to it, resulting in new content.
@@ -858,8 +858,8 @@ TP.core.UICanvas.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -887,8 +887,8 @@ TP.core.UICanvas.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -926,11 +926,11 @@ TP.core.URI.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @name cmdAddContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdAddContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -944,11 +944,11 @@ TP.core.URI.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
-     * @name cmdFilterInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdFilterInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -962,10 +962,10 @@ TP.core.URI.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -979,8 +979,8 @@ TP.core.URI.Type.defineMethod('cmdRunContent',
 function(aRequest, cmdType) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Runs the receiver, effectively invoking its action. For
+     * @method cmdRunContent
+     * @summary Runs the receiver, effectively invoking its action. For
      *     TP.core.URI this method is responsible for dispatching all the
      *     variations of pipe methods which are suitable for use with a URI.
      * @param {TP.sig.Request} aRequest The request containing command input for
@@ -1263,11 +1263,11 @@ TP.core.URI.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -1281,11 +1281,11 @@ TP.core.URI.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @name cmdTransformInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdTransformInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -1301,11 +1301,11 @@ TP.core.Window.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @name cmdAddContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdAddContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -1325,8 +1325,8 @@ TP.core.Window.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -1346,8 +1346,8 @@ TP.core.Window.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
      * @param {TP.sig.Request} aRequest The shell request being processed.

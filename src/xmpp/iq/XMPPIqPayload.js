@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqPayload}
- * @synopsis A wrapper for payload objects specific to IQ packets.
+ * @summary A wrapper for payload objects specific to IQ packets.
  */
 
 //  ------------------------------------------------------------------------

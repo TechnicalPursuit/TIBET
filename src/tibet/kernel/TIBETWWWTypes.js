@@ -36,9 +36,9 @@ handling of different text dialects such as CSS or JSON.
 
 /**
  * @type {TP.w3.DocType}
- * @synopsis A type that represents a Document Type in the TIBET system, as
+ * @summary A type that represents a Document Type in the TIBET system, as
  *     defined by the DOCTYPE information that it is holding.
- * @description This is TIBET's data structure for a Document Type Declaration,
+ * @summary This is TIBET's data structure for a Document Type Declaration,
  *     which would usually be found at the top of a document before any of the
  *     markup begins. These declarations indicate to the browser which DTD that
  *     the markup in this page in going to conform to. Older browsers typically
@@ -80,8 +80,8 @@ TP.w3.DocType.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     //  "Canonical Instances"
@@ -149,12 +149,12 @@ TP.w3.DocType.Type.defineMethod('docTypeForInfo',
 function(docTypeInfo) {
 
     /**
-     * @name docTypeForInfo
-     * @synopsis Search for a matching document type object based on the
+     * @method docTypeForInfo
+     * @summary Search for a matching document type object based on the
      *     document type information passed in.
      * @param {TP.lang.Hash} docTypeInfo The document type information. The keys
      *     needed to match are 'docTypeName' and 'publicID'.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.lang.RootObject.<TP.w3.DocType>} A TP.w3.DocType subtype
      *     type object matching the info in docTypeInfo or null if one can't be
      *     found.
@@ -196,8 +196,8 @@ TP.w3.DocType.Inst.defineMethod('init',
 function(docTypeName, publicID, systemID) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} docTypeName The name of the document type.
      * @param {String} publicID The document type's public identifier.
      * @param {String} systemID The document type's system identifier.
@@ -222,8 +222,8 @@ TP.w3.DocType.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -255,8 +255,8 @@ TP.w3.DocType.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -280,8 +280,8 @@ TP.w3.DocType.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -307,8 +307,8 @@ TP.w3.DocType.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -340,8 +340,8 @@ TP.w3.DocType.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -357,8 +357,8 @@ TP.w3.DocType.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver formatted in the standard Document Type
+     * @method asString
+     * @summary Returns the receiver formatted in the standard Document Type
      *     Declaration format.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.w3.DocType's String representation. This flag is ignored in
@@ -390,8 +390,8 @@ TP.w3.DocType.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -414,7 +414,7 @@ function() {
 
 /**
  * @type {TP.core.HTTP}
- * @synopsis Provides registration and lookup services for HTTP data.
+ * @summary Provides registration and lookup services for HTTP data.
  */
 
 //  ------------------------------------------------------------------------
@@ -481,8 +481,8 @@ TP.core.HTTP.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     //  using the prior hash construct constants for each string so code
@@ -504,8 +504,8 @@ TP.core.HTTP.Type.defineMethod('getStatusText',
 function(aStatusCode) {
 
     /**
-     * @name getStatusText
-     * @synopsis Returns the string representation of an HTTP status code.
+     * @method getStatusText
+     * @summary Returns the string representation of an HTTP status code.
      * @param {Number} aStatusCode A numerical HTTP status code.
      * @returns {String} The status text corresponding to the supplied numerical
      *     status code.
@@ -524,8 +524,8 @@ function(aStatusCode) {
 
 /**
  * @type {TP.ietf.Mime}
- * @synopsis Provides registration and lookup services for MIME data.
- * @description The TP.ietf.Mime type is largely a container for constants to
+ * @summary Provides registration and lookup services for MIME data.
+ * @summary The TP.ietf.Mime type is largely a container for constants to
  *     make working with MIME strings easier. One feature of this type that is
  *     more interesting is the ability to register "content handlers" for
  *     different MIME types. The canonical example for this is the CSS MIME type
@@ -613,8 +613,8 @@ TP.ietf.Mime.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
             var info = this.get('info');
@@ -790,8 +790,8 @@ TP.ietf.Mime.Type.defineMethod('getAlias',
 function(aMIMEType) {
 
     /**
-     * @name getAlias
-     * @synopsis Returns an easier-to-use 'alias' for the given MIME type. For
+     * @method getAlias
+     * @summary Returns an easier-to-use 'alias' for the given MIME type. For
      *     instance, if the MIME type is 'application/xhtml+xml' this method
      *     will return the string 'XHTML'.
      * @param {String} aMIMEType The MIME type to return an alias for.
@@ -815,10 +815,10 @@ TP.ietf.Mime.Type.defineMethod('getConcreteType',
 function(aMIMEType) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Looks up a TIBET Type for the MIME type provided. This type is
+     * @method getConcreteType
+     * @summary Looks up a TIBET Type for the MIME type provided. This type is
      *     used to handle content in an intelligent fashion.
-     * @description This method will return any MIME-specific content handler
+     * @summary This method will return any MIME-specific content handler
      *     type which may be registered. The common example in TIBET is the
      *     handler for TP.ietf.Mime.CSS which can parse a CSS style sheet,
      *     making CSS content "smarter" than pure text.
@@ -854,8 +854,8 @@ TP.ietf.Mime.Type.defineMethod('getExtensions',
 function(aMIMEType) {
 
     /**
-     * @name getExtensions
-     * @synopsis Returns an array of file extensions for the given MIME type.
+     * @method getExtensions
+     * @summary Returns an array of file extensions for the given MIME type.
      *     For instance, if the MIME type is 'application/xhtml+xml' this method
      *     will return ['xht', 'xhtml'].
      * @param {String} aMIMEType The MIME type to look up.
@@ -881,8 +881,8 @@ TP.ietf.Mime.Type.defineMethod('getExtensionType',
 function(anExtension) {
 
     /**
-     * @name getExtensionType
-     * @synopsis Returns the MIME type of the extension provided -- almost
+     * @method getExtensionType
+     * @summary Returns the MIME type of the extension provided -- almost
      *     guaranteed to be wrong at least some of the time. When in doubt this
      *     routine defaults to returning text/plain.
      * @param {String} anExtension The extension to try to match a MIME type to.
@@ -901,11 +901,11 @@ TP.ietf.Mime.Type.defineMethod('guessMIMEType',
 function(aContent, aURI, defaultMIME) {
 
     /**
-     * @name guessMIMEType
-     * @synopsis Guesses the MIME type of the incoming content data, using a
+     * @method guessMIMEType
+     * @summary Guesses the MIME type of the incoming content data, using a
      *     multi-pronged approach that hopefully provides an accurate answer
      *     based on content testing followed by extension tests.
-     * @description This method tries to guess the MIME type of the receiver.
+     * @summary This method tries to guess the MIME type of the receiver.
      *     The testing starts with testing for XML and moves on to testing text
      *     content and URI extension information using the TP.ietf.Mime 'info'
      *     hash to help with resolution. The specific steps used are: 1. If XML,
@@ -1071,8 +1071,8 @@ TP.ietf.Mime.Type.defineMethod('registerMIMEInfo',
 function(aMIMEType, aHash) {
 
     /**
-     * @name registerMIMEInfo
-     * @synopsis Registers information about the MIME type provided. If an info
+     * @method registerMIMEInfo
+     * @summary Registers information about the MIME type provided. If an info
      *     hash already exists the new hash's keys are merged with the existing
      *     registration, replacing any existing values for the new keys, but
      *     preserving other values not defined in the incoming hash.
@@ -1080,7 +1080,7 @@ function(aMIMEType, aHash) {
      *     TP.ietf.Mime.CSS or the equivalent MIME type string (text/css).
      * @param {TP.lang.Hash} aHash A hash whose keys match those defined for
      *     this type.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      */
 
     var info,
@@ -1129,9 +1129,9 @@ function(aMIMEType, aHash) {
 
 /**
  * @type {TP.w3.Xmlns}
- * @synopsis The TP.w3.Xmlns type provides registration and lookup services for
+ * @summary The TP.w3.Xmlns type provides registration and lookup services for
  *     information about common XML namespaces.
- * @description A large number of TIBET features rely on namespace support,
+ * @summary A large number of TIBET features rely on namespace support,
  *     which requires information regarding common prefixes, MIME types,
  *     document element names, etc. which are all managed by the TP.w3.Xmlns
  *     type.
@@ -1365,8 +1365,8 @@ TP.w3.Xmlns.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     //  Define an 'info' hash that will contain the following information
@@ -1614,11 +1614,11 @@ TP.w3.Xmlns.Type.defineMethod('addCommonNamespacesTo',
 function(anElement) {
 
     /**
-     * @name addCommonNamespacesTo
-     * @synopsis Adds commonly used namespaces (the list is defined on this
+     * @method addCommonNamespacesTo
+     * @summary Adds commonly used namespaces (the list is defined on this
      *     type) to the element.
      * @param {Element} anElement The element to install the namespaces on.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var namespaces,
@@ -1643,9 +1643,9 @@ TP.w3.Xmlns.Type.defineMethod('addNamespaceTo',
 function(anNSURI, anElement) {
 
     /**
-     * @name addNamespaceTo
-     * @synopsis Adds the namespace supplied in anNSURI to the element.
-     * @description One of the constants available on the TP.w3.Xmlns type must
+     * @method addNamespaceTo
+     * @summary Adds the namespace supplied in anNSURI to the element.
+     * @summary One of the constants available on the TP.w3.Xmlns type must
      *     be used as the URI as this method will try to determine the canonical
      *     prefix to install the namespace under. Otherwise, if a canonical
      *     prefix cannot be found this method will fail. See the lower-level
@@ -1654,7 +1654,7 @@ function(anNSURI, anElement) {
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @param {Element} anElement The element to install the namespace on.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidURI
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidURI
      */
 
     var prefix;
@@ -1682,13 +1682,13 @@ TP.w3.Xmlns.Type.defineMethod('addTransform',
 function(anNSURI, aTransformURI) {
 
     /**
-     * @name addTransform
-     * @synopsis Adds an XSLT tranformation for the namespace which will be used
+     * @method addTransform
+     * @summary Adds an XSLT tranformation for the namespace which will be used
      *     during content processing.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @param {String} aTransformURI A URI pointing to an XSLT.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} The canonical prefix, if found.
      */
 
@@ -1719,8 +1719,8 @@ TP.w3.Xmlns.Type.defineMethod('computeCustomNSDetectionXPath',
 function() {
 
     /**
-     * @name computeCustomNSDetectionXPath
-     * @synopsis Computes and returns an XPath suitable for locating custom
+     * @method computeCustomNSDetectionXPath
+     * @summary Computes and returns an XPath suitable for locating custom
      *     namespaces (i.e. non-native namespaces) in a document or element.
      *     This path is built based on knowledge in the registry of namespace
      *     URI data.
@@ -1779,8 +1779,8 @@ TP.w3.Xmlns.Type.defineMethod('computeCustomTagDetectionXPath',
 function() {
 
     /**
-     * @name computeCustomTagDetectionXPath
-     * @synopsis Computes and returns an XPath suitable for locating custom tags
+     * @method computeCustomTagDetectionXPath
+     * @summary Computes and returns an XPath suitable for locating custom tags
      *     in a document or element. This path is built based on knowledge in
      *     the registry of namespace URI data.
      * @returns {String} An XPath string.
@@ -1833,11 +1833,11 @@ TP.w3.Xmlns.Type.defineMethod('getCanonicalPrefix',
 function(anNSURI) {
 
     /**
-     * @name getCanonicalPrefix
-     * @synopsis Returns the canonical prefix for the namespace URI provided.
+     * @method getCanonicalPrefix
+     * @summary Returns the canonical prefix for the namespace URI provided.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} The canonical prefix, if found.
      */
 
@@ -1861,12 +1861,12 @@ TP.w3.Xmlns.Type.defineMethod('getRootElementName',
 function(anNSURI) {
 
     /**
-     * @name getRootElementName
-     * @synopsis Returns the root element tag name for documents in the
+     * @method getRootElementName
+     * @summary Returns the root element tag name for documents in the
      *     namespace provided.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} The root element tag name, if appropriate.
      */
 
@@ -1890,11 +1890,11 @@ TP.w3.Xmlns.Type.defineMethod('getMIMEType',
 function(anNSURI) {
 
     /**
-     * @name getMIMEType
-     * @synopsis Returns the default MIME type for the namespace URI provided.
+     * @method getMIMEType
+     * @summary Returns the default MIME type for the namespace URI provided.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} The MIME type, if found.
      */
 
@@ -1918,8 +1918,8 @@ TP.w3.Xmlns.Type.defineMethod('getNativePrefixes',
 function() {
 
     /**
-     * @name getNativePrefixes
-     * @synopsis Returns an array of canonical prefixes supported natively on
+     * @method getNativePrefixes
+     * @summary Returns an array of canonical prefixes supported natively on
      *     the current browser.
      * @returns {Array} The list of native prefixes.
      */
@@ -1960,8 +1960,8 @@ TP.w3.Xmlns.Type.defineMethod('getNativeURIs',
 function() {
 
     /**
-     * @name getNativeURIs
-     * @synopsis Returns an array of natively supported namespace URIS on the
+     * @method getNativeURIs
+     * @summary Returns an array of natively supported namespace URIS on the
      *     current browser.
      * @returns {Array} The list of native namespace URIs.
      */
@@ -2002,8 +2002,8 @@ TP.w3.Xmlns.Type.defineMethod('getNonNativePrefixes',
 function() {
 
     /**
-     * @name getNonNativePrefixes
-     * @synopsis Returns an array of canonical prefixes which are known but not
+     * @method getNonNativePrefixes
+     * @summary Returns an array of canonical prefixes which are known but not
      *     supported on the current browser.
      * @returns {Array} The list of non-native prefixes.
      */
@@ -2044,8 +2044,8 @@ TP.w3.Xmlns.Type.defineMethod('getNonNativeURIs',
 function() {
 
     /**
-     * @name getNonNativeURIs
-     * @synopsis Returns an array of known URIs which are not native to the
+     * @method getNonNativeURIs
+     * @summary Returns an array of known URIs which are not native to the
      *     current browser.
      * @returns {Array} The list of non-native namespace URIs.
      */
@@ -2086,8 +2086,8 @@ TP.w3.Xmlns.Type.defineMethod('getNSHandler',
 function(anNSURI) {
 
     /**
-     * @name getNSHandler
-     * @synopsis Returns the type responsible for handling the namespace whose
+     * @method getNSHandler
+     * @summary Returns the type responsible for handling the namespace whose
      *     URI is provided, if available.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
@@ -2131,11 +2131,11 @@ TP.w3.Xmlns.Type.defineMethod('getPrefixURI',
 function(aPrefix) {
 
     /**
-     * @name getPrefixURI
-     * @synopsis Returns the namespace URI whose canonical prefix matches the
+     * @method getPrefixURI
+     * @summary Returns the namespace URI whose canonical prefix matches the
      *     one provided.
      * @param {String} aPrefix A canonical prefix such as "xforms".
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} The namespace URI.
      */
 
@@ -2155,14 +2155,14 @@ TP.w3.Xmlns.Type.defineMethod('getTransforms',
 function(anNSURI) {
 
     /**
-     * @name getTransforms
-     * @synopsis Returns any registered XSLT transforms for the namespace URI
+     * @method getTransforms
+     * @summary Returns any registered XSLT transforms for the namespace URI
      *     provided. These are registered when a namespace has custom XSLTs
      *     which can assist with content processing. See the process call in
      *     TP.core.XMLNamespace for more info.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {Array|null} An array or null if no transforms are registered.
      */
 
@@ -2186,8 +2186,8 @@ TP.w3.Xmlns.Type.defineMethod('getURIPrefix',
 function(anNSURI, aNode) {
 
     /**
-     * @name getURIPrefix
-     * @synopsis Returns the prefix used for the URI provided, either in
+     * @method getURIPrefix
+     * @summary Returns the prefix used for the URI provided, either in
      *     canonical terms, or specifically within the node provided.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
@@ -2220,8 +2220,8 @@ TP.w3.Xmlns.Type.defineMethod('getXMLNSDefs',
 function() {
 
     /**
-     * @name getXMLNSDefs
-     * @synopsis Returns a string containing all known XMLNS definitions that
+     * @method getXMLNSDefs
+     * @summary Returns a string containing all known XMLNS definitions that
      *     have been registered. This string is added to node creation text when
      *     command tags are entered so that input doesn't have to include xmlns
      *     declarations.
@@ -2269,13 +2269,13 @@ TP.w3.Xmlns.Type.defineMethod('isNative',
 function(anNSURI) {
 
     /**
-     * @name isNative
-     * @synopsis Returns true if the namespace URI is natively supported on the
+     * @method isNative
+     * @summary Returns true if the namespace URI is natively supported on the
      *     current browser. Note that the result of this call is
      *     browser-specific.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {Boolean} True if the namespace is natively supported.
      */
 
@@ -2300,14 +2300,14 @@ TP.w3.Xmlns.Type.defineMethod('registerNSInfo',
 function(anNSURI, aHash) {
 
     /**
-     * @name registerNSInfo
-     * @synopsis Registers information about the namespaceURI provide, merging
+     * @method registerNSInfo
+     * @summary Registers information about the namespaceURI provide, merging
      *     the data from aHash if an entry already exists for that URI.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @param {TP.lang.Hash} aHash A hash whose keys match those defined for
      *     this type.
-     * @raises TP.sig.InvalidURI,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidParameter
      */
 
     var uriStr,
@@ -2382,13 +2382,13 @@ TP.w3.Xmlns.Type.defineMethod('unregisterNamespace',
 function(anNSURI) {
 
     /**
-     * @name unregisterNamespace
-     * @synopsis Removes any information about the namespaceURI provided. This
+     * @method unregisterNamespace
+     * @summary Removes any information about the namespaceURI provided. This
      *     method can be used prior to a registerNamespace call to clear any
      *     pre-existing registration data.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      */
 
     var info;
@@ -2416,7 +2416,7 @@ function(anNSURI) {
 
 /**
  * @type {TP.core.XMLNamespace}
- * @synopsis This type is the common supertype of all objects representing XML
+ * @summary This type is the common supertype of all objects representing XML
  *     namespaces in the TIBET system.
  */
 
@@ -2432,9 +2432,9 @@ TP.core.XMLNamespace.Type.defineMethod('activate',
 function(declarationName, declarationValue, affectedElements) {
 
     /**
-     * @name activate
-     * @synopsis Activates the supplied CSS declaration.
-     * @description At this level, this method does nothing. Subtypes must
+     * @method activate
+     * @summary Activates the supplied CSS declaration.
+     * @summary At this level, this method does nothing. Subtypes must
      *     implement this to provide real functionality.
      * @param {String} declarationsName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
@@ -2451,9 +2451,9 @@ TP.core.XMLNamespace.Type.defineMethod('deactivate',
 function(declarationName, declarationValue, affectedElements) {
 
     /**
-     * @name deactivate
-     * @synopsis Deactivates the supplied CSS declaration.
-     * @description At this level, this method does nothing. Subtypes must
+     * @method deactivate
+     * @summary Deactivates the supplied CSS declaration.
+     * @summary At this level, this method does nothing. Subtypes must
      *     implement this to provide real functionality.
      * @param {String} declarationsName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
@@ -2470,8 +2470,8 @@ TP.core.XMLNamespace.Type.defineMethod('getCanonicalName',
 function() {
 
     /**
-     * @name getCanonicalName
-     * @synopsis Returns the receiver's canonical tag name. For namespace types,
+     * @method getCanonicalName
+     * @summary Returns the receiver's canonical tag name. For namespace types,
      *     this is the tag prefix (usually corresponding to the tag type's
      *     namespace) followed by a colon (':').
      * @returns {String} The receiver's tag name.
@@ -2486,7 +2486,7 @@ function() {
 
 /**
  * @type {html:}
- * @synopsis Represents the XHTML namespace (http://www.w3.org/1999/xhtml) in
+ * @summary Represents the XHTML namespace (http://www.w3.org/1999/xhtml) in
  *     the tag processing system.
  */
 
@@ -2500,7 +2500,7 @@ TP.core.XMLNamespace.defineSubtype('html:XMLNS');
 
 /**
  * @type {xi:}
- * @synopsis The XInclude namespace (http://www.w3.org/2001/XInclude).
+ * @summary The XInclude namespace (http://www.w3.org/2001/XInclude).
  */
 
 //  ------------------------------------------------------------------------
@@ -2513,7 +2513,7 @@ TP.core.XMLNamespace.defineSubtype('xi:XMLNS');
 
 /**
  * @type {xsl:}
- * @synopsis The XSLT namespace (http://www.w3.org/1999/XSL/Transform).
+ * @summary The XSLT namespace (http://www.w3.org/1999/XSL/Transform).
  */
 
 //  ------------------------------------------------------------------------
@@ -2526,9 +2526,9 @@ TP.core.XMLNamespace.defineSubtype('xsl:XMLNS');
 
 /**
  * @type {TP.core.Cookie}
- * @synopsis TP.core.Cookie provides simple utility routines for setting and
+ * @summary TP.core.Cookie provides simple utility routines for setting and
  *     getting browser cookie values.
- * @description The storage format is basically an escaped source code form so
+ * @summary The storage format is basically an escaped source code form so
  *     you can do the following:
  *
  *     TP.core.Cookie.setCookie('name', someObject); ... myObj =
@@ -2550,8 +2550,8 @@ TP.core.Cookie.Type.defineMethod('cookiesEnabled',
 function() {
 
     /**
-     * @name cookiesEnabled
-     * @synopsis Returns true if cookies appear to be enabled in the current
+     * @method cookiesEnabled
+     * @summary Returns true if cookies appear to be enabled in the current
      *     environment.
      * @returns {Boolean} True if cookies are enabled, false if they are not.
      */
@@ -2580,9 +2580,9 @@ TP.core.Cookie.Type.defineMethod('getCookie',
 function(aName) {
 
     /**
-     * @name getCookie
-     * @synopsis Returns the value of the named cookie or undefined.
-     * @description The value returned is a source-code form string derived from
+     * @method getCookie
+     * @summary Returns the value of the named cookie or undefined.
+     * @summary The value returned is a source-code form string derived from
      *     the original object so using eval on it will effectively construct a
      *     new instance of the original object -- provided that you are working
      *     primarily with hashes or arrays etc.
@@ -2607,8 +2607,8 @@ TP.core.Cookie.Type.defineMethod('getCookieFromText',
 function(aName, aCookieText) {
 
     /**
-     * @name getCookieFromText
-     * @synopsis Returns the value of the named cookie or null.
+     * @method getCookieFromText
+     * @summary Returns the value of the named cookie or null.
      * @param {String} aName The name of the desired cookie.
      * @param {String} aCookieText The text to extract the cookie from.
      * @returns {Object} The value of the cookie matching the supplied name and
@@ -2647,8 +2647,8 @@ TP.core.Cookie.Type.defineMethod('removeCookie',
 function(aName, aPath, aDomain) {
 
     /**
-     * @name removeCookie
-     * @synopsis Removes the named cookie.
+     * @method removeCookie
+     * @summary Removes the named cookie.
      * @param {String} aName The name of the cookie to remove.
      * @param {String} aPath The path of the cookie to remove.
      * @param {String} aDomain The domain of the cookie to remove.
@@ -2668,8 +2668,8 @@ TP.core.Cookie.Type.defineMethod('setCookie',
 function(aName, aValue, expiresAt, aPath, aDomain, wantsSecurity) {
 
     /**
-     * @name setCookie
-     * @synopsis Sets the value of the named cookie with associated params. The
+     * @method setCookie
+     * @summary Sets the value of the named cookie with associated params. The
      *     values and rules for the various params are documented in most JS
      *     texts. See JSTDG3 for a good discussion.
      * @param {String} aName The cookie name.
@@ -2720,8 +2720,8 @@ TP.core.Cookie.Type.defineMethod('load',
 function(aURI, aRequest, logError) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content and returns it on request. This is a
+     * @method load
+     * @summary Loads URI data content and returns it on request. This is a
      *     template method which defines the overall process used for loading
      *     URI data and ensuring that the URI's cache and header content are
      *     kept up to date. You should normally override one of the more
@@ -2767,8 +2767,8 @@ TP.core.Cookie.Type.defineMethod('nuke',
 function(aURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes the target URL.
+     * @method nuke
+     * @summary Deletes the target URL.
      * @param {TP.core.URI} aURI The URI to nuke. NOTE that this URI will not
      *     have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -2807,8 +2807,8 @@ TP.core.Cookie.Type.defineMethod('save',
 function(aURI, aRequest) {
 
     /**
-     * @name save
-     * @synopsis Attempts to save data using standard TIBET save primitives to
+     * @method save
+     * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided.
      * @param {TP.core.URI} aURI The URI to save. NOTE that this URI will not
      *     have been rewritten/ resolved.
@@ -2865,8 +2865,8 @@ function(aURI, aRequest) {
 
 /**
  * @type {TP.core.CookieURL}
- * @synopsis A subtype of TP.core.URL specific to the 'cookie://' scheme.
- * @description The overall format of a cookie URI is:
+ * @summary A subtype of TP.core.URL specific to the 'cookie://' scheme.
+ * @summary The overall format of a cookie URI is:
  *
  *     cookie://[domain]/[path]/[cookie_name]?[expires=<value>]&[secure=true]
  *
@@ -2957,8 +2957,8 @@ TP.core.CookieURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Return the default URI handler type for this URI type. The
+     * @method $getDefaultHandler
+     * @summary Return the default URI handler type for this URI type. The
      *     returned type must respond to the route() method to be a valid
      *     handler.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
@@ -2980,8 +2980,8 @@ TP.core.CookieURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
      * @returns {TP.core.CookieURL} A new instance.
      */

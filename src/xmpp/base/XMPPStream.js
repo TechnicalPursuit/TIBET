@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Stream}
- * @synopsis A valid stream of XMPP content. In XMPP terms the streams between
+ * @summary A valid stream of XMPP content. In XMPP terms the streams between
  *     two XMPP entities don't close until the connection does, and each carries
  *     half of a conversation that takes place between the two entities. There
  *     are two subtypes specific to input and output processing which are used
@@ -46,8 +46,8 @@ TP.xmpp.Stream.Type.defineMethod('getClosingTag',
 function() {
 
     /**
-     * @name getClosingTag
-     * @synopsis Returns the closing tag content for a stream.
+     * @method getClosingTag
+     * @summary Returns the closing tag content for a stream.
      * @returns {String}
      */
 
@@ -64,8 +64,8 @@ TP.xmpp.Stream.Type.defineMethod('getOpeningTag',
 function() {
 
     /**
-     * @name getOpeningTag
-     * @synopsis Returns the stream's opening tag content.
+     * @method getOpeningTag
+     * @summary Returns the stream's opening tag content.
      * @returns {String}
      */
 
@@ -91,12 +91,12 @@ TP.xmpp.Stream.Inst.defineMethod('init',
 function(aNode, aConnection) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @param {A} aNode native node, or null to use the type's default template.
      * @param {TP.xmpp.Connection} aConnection The stream's connection. This is
      *     a required parameter.
-     * @raises TP.sig.InvalidXMPPConnection
+     * @exception TP.sig.InvalidXMPPConnection
      * @returns {TP.xmpp.Stream} A new instance.
      */
 
@@ -138,8 +138,8 @@ TP.xmpp.Stream.Inst.defineMethod('getClosingTag',
 function() {
 
     /**
-     * @name getClosingTag
-     * @synopsis Returns the closing tag text for the receiver.
+     * @method getClosingTag
+     * @summary Returns the closing tag text for the receiver.
      * @returns {String}
      */
 
@@ -158,8 +158,8 @@ TP.xmpp.Stream.Inst.defineMethod('getLastPacket',
 function() {
 
     /**
-     * @name getLastPacket
-     * @synopsis Returns the last node written to the stream.
+     * @method getLastPacket
+     * @summary Returns the last node written to the stream.
      * @returns {Node} DOM Node.
      */
 
@@ -172,8 +172,8 @@ TP.xmpp.Stream.Inst.defineMethod('getOpeningTag',
 function() {
 
     /**
-     * @name getOpeningTag
-     * @synopsis Returns the opening tag content for the receiver.
+     * @method getOpeningTag
+     * @summary Returns the opening tag content for the receiver.
      * @returns {String}
      */
 
@@ -192,8 +192,8 @@ TP.xmpp.Stream.Inst.defineMethod('getStream',
 function() {
 
     /**
-     * @name getStream
-     * @synopsis Returns the native node containing the stream content.
+     * @method getStream
+     * @summary Returns the native node containing the stream content.
      * @returns {Node} DOM Node.
      */
 
@@ -206,8 +206,8 @@ TP.xmpp.Stream.Inst.defineMethod('getVersion',
 function() {
 
     /**
-     * @name getVersion
-     * @synopsis Reserved for future. Returns the version implementation string
+     * @method getVersion
+     * @summary Reserved for future. Returns the version implementation string
      *     for the receiver.
      */
 
@@ -220,8 +220,8 @@ TP.xmpp.Stream.Inst.defineMethod('isOpen',
 function(aFlag) {
 
     /**
-     * @name isOpen
-     * @synopsis Combined setter/getter for the receiver's open status. Returns
+     * @method isOpen
+     * @summary Combined setter/getter for the receiver's open status. Returns
      *     true if the receiving connection is open.
      * @param {Boolean} aFlag A new value to set for the open status.
      * @returns {Boolean}
@@ -240,8 +240,8 @@ TP.xmpp.Stream.Inst.defineMethod('setVersion',
 function(aString) {
 
     /**
-     * @name setVersion
-     * @synopsis Reserved for future. Sets the implementation version for the
+     * @method setVersion
+     * @summary Reserved for future. Sets the implementation version for the
      *     receiver.
      * @param {String} aString An XMPP implementation version.
      * @returns {TP.xmpp.Stream} The receiver.

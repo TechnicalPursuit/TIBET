@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.goog.GoogleContactsService}
- * @synopsis A subtype of GoogleService that communicates with the Google-hosted
+ * @summary A subtype of GoogleService that communicates with the Google-hosted
  *     Google Contacts server.
  * @example If the TP.goog.GoogleContactsRequest / TP.sig.GoogleContactsResponse
  *     processing model is used, it is unnecessary to manually set up an
@@ -82,8 +82,8 @@ TP.goog.GoogleContactsService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
-     * @name finalizeRequest
-     * @synopsis Perform any final updates or processing on the request to make
+     * @method finalizeRequest
+     * @summary Perform any final updates or processing on the request to make
      *     sure it is ready to send to TP.httpCall() for processing.
      * @param {TP.goog.GoogleContactsRequest} aRequest The request being
      *     finalized.
@@ -118,8 +118,8 @@ TP.goog.GoogleContactsService.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestURI
-     * @synopsis Rewrites the request's URI.
+     * @method rewriteRequestURI
+     * @summary Rewrites the request's URI.
      * @param {TP.goog.GoogleContactsRequest} aRequest The request to rewrite.
      * @returns {TP.core.URI} The new/updated URI instance.
      */
@@ -141,8 +141,8 @@ TP.goog.GoogleContactsService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestVerb
-     * @synopsis Returns the HTTP verb to use for the request. For Contacts
+     * @method rewriteRequestVerb
+     * @summary Returns the HTTP verb to use for the request. For Contacts
      *     requests, this varies depending on operation.
      * @param {TP.goog.GoogleContactsRequest} aRequest The request whose
      *     parameters define the HTTP request.

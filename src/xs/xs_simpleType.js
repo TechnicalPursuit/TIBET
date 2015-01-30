@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.simpleType}
- * @synopsis XMLSchema simple node wrapper.
+ * @summary XMLSchema simple node wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.simpleType.Inst.defineMethod('defineType',
 function() {
 
     /**
-     * @name defineType
-     * @synopsis Defines a TIBET type from the XML Schema data found in the
+     * @method defineType
+     * @summary Defines a TIBET type from the XML Schema data found in the
      *     receiver's schema node.
      * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaSimpleCompositeType>} The
      *     newly defined type (or the existing type if it already exists).
@@ -67,8 +67,8 @@ TP.xs.simpleType.Inst.defineMethod('getRepresentedType',
 function() {
 
     /**
-     * @name getRepresentedType
-     * @synopsis Returns a type that this object might be 'representing'. This
+     * @method getRepresentedType
+     * @summary Returns a type that this object might be 'representing'. This
      *     is used in here to return the type that the receiver is describing to
      *     the system.
      * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaSimpleCompositeType>} The

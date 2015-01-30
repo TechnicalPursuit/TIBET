@@ -10,9 +10,9 @@
 
 /**
  * @type {TP.xctrls.MultiItemElement}
- * @synopsis Mixin that defines methods that allow the receiver to manage
+ * @summary Mixin that defines methods that allow the receiver to manage
  *     multiple child items, such as a listbox or tabbox.
- * @description This type uses 3 different 'getters' that it expects the type
+ * @summary This type uses 3 different 'getters' that it expects the type
  *     that it is being mixed into to provide:
  *
  *     'body' -> The element that new items will be inserted into.
@@ -36,8 +36,8 @@ TP.xctrls.MultiItemElement.Inst.defineMethod('addItem',
 function(aValue, aPositionOrPath, templateName) {
 
     /**
-     * @name addItem
-     * @synopsis Adds a child item to the receiver using a template that should
+     * @method addItem
+     * @summary Adds a child item to the receiver using a template that should
      *     be embedded under the receiver. If a value for templateName is
      *     supplied, this method attempts to find and use the template named
      *     that. Otherwise, it will use the first embedded template found.

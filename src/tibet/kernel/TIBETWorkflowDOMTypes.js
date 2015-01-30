@@ -14,8 +14,8 @@
 
 /**
  * @type {TP.vcard_temp.vCard}
- * @synopsis A VCard based on the Jabber/XEP-0054 vcard-temp specification.
- * @description The primary purpose of this type in TIBET is to support
+ * @summary A VCard based on the Jabber/XEP-0054 vcard-temp specification.
+ * @summary The primary purpose of this type in TIBET is to support
  *     TP.core.User instances in the definition of their organization and role
  *     affiliations. By virtue of vCard association types can autoload
  *     organization-specific role/unit types which serve as delegates for
@@ -62,12 +62,12 @@ TP.vcard_temp.vCard.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
-     * @name getInstanceById
-     * @synopsis Returns the vCard instance whose FN entry matches the ID
+     * @method getInstanceById
+     * @summary Returns the vCard instance whose FN entry matches the ID
      *     provided. NOTE that the FN data doesn't have to match the ID of the
      *     TP.core.User you'll associate it with, allowing you to reuse commonly
      *     named vCard instances across numerous users.
-     * @description This method defaults to loading the shared vCard data
+     * @summary This method defaults to loading the shared vCard data
      *     normally found at ~app_dat/vcards.xml. When your needs are simple
      *     this is probably adequate, but in more complex applications you
      *     probably want to override this method and replace it with one that
@@ -104,11 +104,11 @@ TP.vcard_temp.vCard.Type.defineMethod('getVCardXML',
 function(forceRefresh) {
 
     /**
-     * @name getVCardXML
-     * @synopsis Returns the vCard XML containing the application's set of
+     * @method getVCardXML
+     * @summary Returns the vCard XML containing the application's set of
      *     vCards. This method is typically used by applications that don't
      *     required a large number of unique vCard entries.
-     * @description The vCard data file location can be altered by setting the
+     * @summary The vCard data file location can be altered by setting the
      *     environment parameter 'vcards', or by altering the tibet.vcard_file
      *     parameter. This URI is then loaded to provide the application vCard
      *     XML data.
@@ -274,8 +274,8 @@ TP.vcard_temp.vCard.Inst.defineMethod('getAccessKeys',
 function() {
 
     /**
-     * @name getAccessKeys
-     * @synopsis Returns an array of permission keys defined by the receiver's
+     * @method getAccessKeys
+     * @summary Returns an array of permission keys defined by the receiver's
      *     role and unit definitions.
      * @returns {Array} An array of permission keys (strings).
      */
@@ -323,8 +323,8 @@ TP.vcard_temp.vCard.Inst.defineMethod('getRoleNames',
 function() {
 
     /**
-     * @name getRoleNames
-     * @synopsis Returns an array of role names found in the vCard instance.
+     * @method getRoleNames
+     * @summary Returns an array of role names found in the vCard instance.
      *     NOTE that TIBET automatically "namespace-qualifies" the content of
      *     the ROLE element with the content of the ORGNAME element to produce
      *     these names.
@@ -355,8 +355,8 @@ TP.vcard_temp.vCard.Inst.defineMethod('getRoles',
 function() {
 
     /**
-     * @name getRoles
-     * @synopsis Returns an array of TP.core.Role types that were found for the
+     * @method getRoles
+     * @summary Returns an array of TP.core.Role types that were found for the
      *     receiver. When a named role can't be loaded it won't be included in
      *     this list, and a warning will be logged.
      * @returns {Array} An array containing loadable TP.core.Role types.
@@ -379,7 +379,7 @@ TP.vcard_temp.vCard.Inst.defineMethod('getUnitNames',
 function() {
 
     /**
-     * @synopsis Returns an array of unit names found in the vCard instance.
+     * @summary Returns an array of unit names found in the vCard instance.
      *     NOTE that TIBET automatically "namespace-qualifies" the content of
      *     the ORGUNIT element with the content of the ORGNAME element in
      *     producing this list.
@@ -411,7 +411,7 @@ TP.vcard_temp.vCard.Inst.defineMethod('getUnits',
 function() {
 
     /**
-     * @name getUnits
+     * @method getUnits
      * @returns {Array}
      * @abstract
      */
@@ -437,9 +437,9 @@ function() {
 
 /**
  * @type {TP.tibet.keyring}
- * @synopsis A keyring is a container for one or more keys, strings that
+ * @summary A keyring is a container for one or more keys, strings that
  *     represent individual permissions within an application.
- * @description To help manage permissions in the most flexible way possible
+ * @summary To help manage permissions in the most flexible way possible
  *     TIBET uses the concept of keys, strings you define to have some meaning
  *     relative to permissions in your application. These keys can be grouped
  *     within keyrings, which can be nested to keep things easier to maintain in
@@ -465,10 +465,10 @@ TP.tibet.keyring.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
-     * @name getInstanceById
-     * @synopsis Returns the keyring instance whose id attribute matches the ID
+     * @method getInstanceById
+     * @summary Returns the keyring instance whose id attribute matches the ID
      *     provided.
-     * @description This method defaults to loading the shared keyring data
+     * @summary This method defaults to loading the shared keyring data
      *     normally found at ~app_dat/keyrings.xml. When your needs are simple
      *     this is probably adequate, but in more complex applications you
      *     probably want to override this method and replace it with one that
@@ -500,11 +500,11 @@ TP.tibet.keyring.Type.defineMethod('getKeyringXML',
 function(forceRefresh) {
 
     /**
-     * @name getKeyringXML
-     * @synopsis Returns the keyring XML containing the application's set of
+     * @method getKeyringXML
+     * @summary Returns the keyring XML containing the application's set of
      *     keyrings. This method is typically used by applications that don't
      *     required a large number of unique keyring entries.
-     * @description The keyring data file location can be altered by setting the
+     * @summary The keyring data file location can be altered by setting the
      *     environment parameter 'keyrings', or by altering the
      *     tibet.keyring_file setting. This URI is then loaded to provide the
      *     application keyring XML data.
@@ -589,8 +589,8 @@ TP.tibet.keyring.Inst.defineMethod('getAccessKeys',
 function() {
 
     /**
-     * @name getAccessKeys
-     * @synopsis Returns an array of the string keys found in the receiver.
+     * @method getAccessKeys
+     * @summary Returns an array of the string keys found in the receiver.
      * @returns {Array} An array containing the string keys of the receiver.
      */
 
@@ -655,8 +655,8 @@ TP.tibet.keyring.Inst.defineMethod('getKeyrings',
 function() {
 
     /**
-     * @name getKeyrings
-     * @synopsis Returns an array of any nested keyrings found in the receiver.
+     * @method getKeyrings
+     * @summary Returns an array of any nested keyrings found in the receiver.
      *     This list's related keys also become part of the overall key set
      *     returned by the getAccessKeys() method so you rarely need to call it
      *     directly.
@@ -682,8 +682,8 @@ TP.tibet.keyring.Inst.defineMethod('hasAccessKey',
 function(aKey) {
 
     /**
-     * @name hasAccessKey
-     * @synopsis Returns true if the receiving key ring has the named key.
+     * @method hasAccessKey
+     * @summary Returns true if the receiving key ring has the named key.
      * @returns {Boolean} True if the key is found.
      */
 
@@ -696,7 +696,7 @@ function(aKey) {
 
 /**
  * @type {TP.core.TagProcessor}
- * @synopsis The core engine responsible for processing tags (or any type of DOM
+ * @summary The core engine responsible for processing tags (or any type of DOM
  *     construct like PIs or Text nodes, really). This object holds a set of
  *     processing phases and is responsible for executing them against a chunk
  *     of supplied content.
@@ -762,8 +762,8 @@ TP.core.TagProcessor.Type.defineMethod('constructWithPhaseTypes',
 function(phaseTypesArray) {
 
     /**
-     * @name constructWithPhaseTypes
-     * @synopsis Returns an instance of a tag processor with a set of instances
+     * @method constructWithPhaseTypes
+     * @summary Returns an instance of a tag processor with a set of instances
      *     of phases constructed from the supplied Array of phase types.
      * @param {Array} phaseTypesArray The Array of phase type objects to
      *     construct the phases from.
@@ -804,8 +804,8 @@ TP.core.TagProcessor.Inst.defineMethod('init',
 function(phases) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {Array} phases The list of phases to use when this processor is
      *     run over supplied content.
      * @returns {TP.core.TagProcessor} The receiver.
@@ -828,15 +828,15 @@ TP.core.TagProcessor.Inst.defineMethod('processTree',
 function(aNode, aRequest) {
 
     /**
-     * @name processTree
-     * @synopsis Processes the supplied tree of content through this processor's
+     * @method processTree
+     * @summary Processes the supplied tree of content through this processor's
      *     configured set of phases.
      * @param {Node} aNode The node tree to use as the root to start the
      *     processing.
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.core.TagProcessor} The receiver.
      */
 
@@ -870,7 +870,7 @@ function(aNode, aRequest) {
 
 /**
  * @type {TP.core.TagProcessorPhase}
- * @synopsis The top-level tag processor 'phase' type, used in conjunction with
+ * @summary The top-level tag processor 'phase' type, used in conjunction with
  *     the tag processor type. The tag processor holds 1...n phases and
  *     processes it's content through each one.
  */
@@ -887,14 +887,14 @@ TP.core.TagProcessorPhase.Inst.defineMethod('getFilteredNodes',
 function(aNode, aProcessor) {
 
     /**
-     * @name getFilteredNodes
-     * @synopsis Given the supplied node, this method queries it (using the
+     * @method getFilteredNodes
+     * @summary Given the supplied node, this method queries it (using the
      *     'queryForNodes()' method) and then filters that set down to the nodes
      *     whose TIBET wrapper type can respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
      * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
      *     phase.
-     * @raises TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode, TP.sig.InvalidParameter
      * @returns {Array} An array containing a set of filtered Nodes.
      */
 
@@ -975,8 +975,8 @@ TP.core.TagProcessorPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -992,8 +992,8 @@ TP.core.TagProcessorPhase.Inst.defineMethod('processNode',
 function(aNode, aProcessor, aRequest) {
 
     /**
-     * @name processNode
-     * @synopsis Processes the content of the supplied Node through this
+     * @method processNode
+     * @summary Processes the content of the supplied Node through this
      *     processor phase.
      * @param {Node} aNode The root node to start the processing from.
      * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
@@ -1001,7 +1001,7 @@ function(aNode, aProcessor, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
-     * @raises TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode, TP.sig.InvalidParameter
      * @returns {TP.core.TagProcessorPhase} The receiver.
      */
 
@@ -1136,10 +1136,10 @@ TP.core.TagProcessorPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1186,8 +1186,8 @@ TP.core.IncludesPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1203,10 +1203,10 @@ TP.core.IncludesPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1253,8 +1253,8 @@ TP.core.InstructionsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1270,10 +1270,10 @@ TP.core.InstructionsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1318,8 +1318,8 @@ TP.core.PrecompilePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1348,8 +1348,8 @@ TP.core.CompilePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1365,10 +1365,10 @@ TP.core.CompilePhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1410,8 +1410,8 @@ TP.core.TidyPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1427,10 +1427,10 @@ TP.core.TidyPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1471,8 +1471,8 @@ TP.core.UnmarshalPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1488,10 +1488,10 @@ TP.core.UnmarshalPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1532,8 +1532,8 @@ TP.core.LocalizePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1577,8 +1577,8 @@ TP.core.AttachDOMPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1607,8 +1607,8 @@ TP.core.AttachEventsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1624,10 +1624,10 @@ TP.core.AttachEventsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1679,8 +1679,8 @@ TP.core.AttachDataPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1709,8 +1709,8 @@ TP.core.AttachInfoPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1726,10 +1726,10 @@ TP.core.AttachInfoPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1775,8 +1775,8 @@ TP.core.AttachBindsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1792,10 +1792,10 @@ TP.core.AttachBindsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1850,8 +1850,8 @@ TP.core.AttachStylePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1880,8 +1880,8 @@ TP.core.DetachDOMPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1910,8 +1910,8 @@ TP.core.DetachEventsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -1927,10 +1927,10 @@ TP.core.DetachEventsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1982,8 +1982,8 @@ TP.core.DetachDataPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -2012,8 +2012,8 @@ TP.core.DetachInfoPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -2029,10 +2029,10 @@ TP.core.DetachInfoPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -2078,8 +2078,8 @@ TP.core.DetachBindsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message
@@ -2095,10 +2095,10 @@ TP.core.DetachBindsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
-     * @name queryForNodes
-     * @synopsis Given the supplied node, this method queries it using a query
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @description This method should produce the sparsest result set possible
+     * @summary This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -2152,8 +2152,8 @@ TP.core.DetachStylePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
-     * @name getTargetMethod
-     * @synopsis Returns the method that a target of this tag processor phase
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
      *     (usually a TIBET wrapper type for a node) needs to implement in order
      *     for this phase to consider that part of content in its processing.
      * @returns {String} The name of the method this phase will use to message

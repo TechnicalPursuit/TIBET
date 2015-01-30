@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Error}
- * @synopsis A wrapper for XMPP error nodes. These are typically child nodes of
+ * @summary A wrapper for XMPP error nodes. These are typically child nodes of
  *     another packet such as a stream or some kind of stanza packet, like an
  *     message, iq, or presence packet.
  */
@@ -27,8 +27,8 @@ TP.xmpp.Error.Inst.defineMethod('getErrorCondition',
 function() {
 
     /**
-     * @name getErrorCondition
-     * @synopsis Returns an element containing the error condition that
+     * @method getErrorCondition
+     * @summary Returns an element containing the error condition that
      *     occurred.
      * @returns {Element} The element denoting the error condition as per the
      *     XMPP 1.0 specification.
@@ -43,8 +43,8 @@ TP.xmpp.Error.Inst.defineMethod('getErrorDescription',
 function() {
 
     /**
-     * @name getErrorDescription
-     * @synopsis Returns the 'error description'. That is, a description of the
+     * @method getErrorDescription
+     * @summary Returns the 'error description'. That is, a description of the
      *     error based on the type of error.
      * @returns {String} The error description.
      */
@@ -69,8 +69,8 @@ TP.xmpp.Error.Inst.defineMethod('getErrorElement',
 function() {
 
     /**
-     * @name getErrorElement
-     * @synopsis Returns the native node of the receiver since this type is, by
+     * @method getErrorElement
+     * @summary Returns the native node of the receiver since this type is, by
      *     defintion, an error
      * @returns {TP.core.ElementNode} The receiver.
      */
@@ -84,8 +84,8 @@ TP.xmpp.Error.Inst.defineMethod('getErrorException',
 function() {
 
     /**
-     * @name getErrorException
-     * @synopsis Returns the name of the exception that should be raised when
+     * @method getErrorException
+     * @summary Returns the name of the exception that should be raised when
      *     this error occurs.
      * @returns {String} The type name of the exception.
      */
@@ -99,8 +99,8 @@ TP.xmpp.Error.Inst.defineMethod('getErrorText',
 function() {
 
     /**
-     * @name getErrorText
-     * @synopsis Returns a String containing the error message of the error that
+     * @method getErrorText
+     * @summary Returns a String containing the error message of the error that
      *     occurred. Note that error texts are completely optional as per the
      *     XMPP 1.0 specification.
      * @returns {String} The error text for the current error condition.
@@ -130,8 +130,8 @@ TP.xmpp.Error.Inst.defineMethod('getSignalName',
 function(aStanza) {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name to use when signaling arrival of
+     * @method getSignalName
+     * @summary Returns the signal name to use when signaling arrival of
      *     packets of this type. The default is XMPP*ErrorInput where the
      *     asterisk is replaced by the error condition tag string, for example:
      *     'TP.sig.XMPPInvalidXmlErrorInput'.
@@ -174,8 +174,8 @@ TP.xmpp.Error.Inst.defineMethod('isError',
 function() {
 
     /**
-     * @name isError
-     * @synopsis Returns true since this element type is, by definition, an
+     * @method isError
+     * @summary Returns true since this element type is, by definition, an
      *     error.
      * @returns {Boolean}
      */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.JSONPURLHandler}
- * @synopsis Supports operations specific to loading, saving, or deleting jsonp:
+ * @summary Supports operations specific to loading, saving, or deleting jsonp:
  *     URL content. For these types of URLs a 'load' operation is typically all
  *     that's reasonable.
  */
@@ -27,9 +27,9 @@ TP.core.JSONPURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content and returns it on request.
-     * @description This method performs the actual work of querying a JSONP URL
+     * @method load
+     * @summary Loads URI data content and returns it on request.
+     * @summary This method performs the actual work of querying a JSONP URL
      *     for its content. Two notable parameters from the request are passed
      *     on to the JSON call:
      *
@@ -108,8 +108,8 @@ TP.core.JSONPURLHandler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes the target URL. This is an unsupported operation for a
+     * @method nuke
+     * @summary Deletes the target URL. This is an unsupported operation for a
      *     JSONP URL. NOTE: 'jsonp://' URIs don't implement this functionality.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
@@ -137,8 +137,8 @@ TP.core.JSONPURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
-     * @name save
-     * @synopsis Attempts to save data using standard TIBET save primitives to
+     * @method save
+     * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided. NOTE: 'jsonp://' URIs
      *     don't implement this functionality.
      * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will

@@ -332,7 +332,7 @@
      * color name. The color name must be found in PhantomTSH.COLORS.
      * @param {String} string The string to color.
      * @param {String} color The name of the color to be used.
-     * @return {String} The colorized string, if the color is found.
+     * @returns {String} The colorized string, if the color is found.
      */
     PhantomTSH.color = function(string, color) {
         var pair;
@@ -939,7 +939,7 @@
      * Responds to confirm() calls in the client. This implementation returns
      * true (OK) if the message includes the word "please" in any form.
      * @param {String} msg The confirmation message.
-     * @return {Boolean} True if you ask nicely.
+     * @returns {Boolean} True if you ask nicely.
      */
     PhantomTSH.page.onConfirm = function(msg) {
         PhantomTSH.log('confirm(' + msg + ');', 'yellow');
@@ -1005,7 +1005,7 @@
      * Responds to file picker requests from the client by returning whatever is
      * passed in oldFile.
      * @param {String} oldFile The original file provided to the file picker.
-     * @return {String} oldFile.
+     * @returns {String} oldFile.
      */
     PhantomTSH.page.onFilePicker = function(oldFile) {
         PhantomTSH.log('onFilePicker(' + oldFile + ');', 'yellow');
@@ -1018,7 +1018,7 @@
      * Responds to prompt() calls in the client. This implementation returns
      * a random string.
      * @param {String} msg The prompt message.
-     * @return {String} A random string.
+     * @returns {String} A random string.
      */
     PhantomTSH.page.onPrompt = function(msg) {
         PhantomTSH.log('prompt(' + msg + ');', 'yellow');

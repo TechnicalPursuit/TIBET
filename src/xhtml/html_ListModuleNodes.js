@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.dl}
- * @synopsis 'dl' tag. Definition list.
+ * @summary 'dl' tag. Definition list.
  */
 
 //  ------------------------------------------------------------------------
@@ -31,8 +31,8 @@ TP.html.dl.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
 
     /**
-     * @name generateMarkup
-     * @synopsis Generates markup for the supplied Object using the other
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
      *     parameters supplied.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {String} attrStr The String containing either the literal
@@ -101,8 +101,8 @@ TP.html.dl.Type.defineMethod('getItemTagName',
 function() {
 
     /**
-     * @name getItemTagName
-     * @synopsis Returns the 'default item tag name' for use it the
+     * @method getItemTagName
+     * @summary Returns the 'default item tag name' for use it the
      *     fromArray()/fromObject() methods.
      * @returns {String} The ID of the observer.
      */
@@ -122,8 +122,8 @@ TP.html.dl.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing
@@ -143,7 +143,7 @@ function(anObject, formatArgs) {
 
 /**
  * @type {TP.html.dt}
- * @synopsis 'dt' tag. Definition term.
+ * @summary 'dt' tag. Definition term.
  */
 
 //  ------------------------------------------------------------------------
@@ -156,7 +156,7 @@ TP.html.Attrs.defineSubtype('dt');
 
 /**
  * @type {TP.html.dd}
- * @synopsis 'dd' tag. Definition definition ;).
+ * @summary 'dd' tag. Definition definition ;).
  */
 
 //  ------------------------------------------------------------------------
@@ -169,7 +169,7 @@ TP.html.Attrs.defineSubtype('dd');
 
 /**
  * @type {TP.html.ol}
- * @synopsis 'ol' tag. Ordered list.
+ * @summary 'ol' tag. Ordered list.
  */
 
 //  ------------------------------------------------------------------------
@@ -184,7 +184,7 @@ TP.html.ol.Type.set('booleanAttrs', TP.ac('compact', 'reversed'));
 
 /**
  * @type {TP.html.ul}
- * @synopsis 'ul' tag. Unordered list.
+ * @summary 'ul' tag. Unordered list.
  */
 
 //  ------------------------------------------------------------------------
@@ -202,8 +202,8 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
 theRequest) {
 
     /**
-     * @name generateMarkup
-     * @synopsis Generates markup for the supplied Object using the other
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
      *     parameters supplied.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {String} attrStr The String containing either the literal
@@ -263,7 +263,7 @@ theRequest) {
 
 /**
  * @type {TP.html.li}
- * @synopsis 'li' tag. List item.
+ * @summary 'li' tag. List item.
  */
 
 //  ------------------------------------------------------------------------

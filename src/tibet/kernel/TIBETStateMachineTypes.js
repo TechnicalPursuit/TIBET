@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @fileoverview Support for state machines in TIBET is provided by a pair of
+ * @overview Support for state machines in TIBET is provided by a pair of
  *     base types: TP.core.StateMachine and TP.core.StateResponder.
  *     Responsibility for state testing resides in StateMachine, while
  *     responsibility for state transition action processing is in
@@ -36,8 +36,8 @@ TP.core.StateObject.Inst.defineMethod('getNameForState',
 function(state) {
 
     /**
-     * @name getNameForState
-     * @synopsis Returns a viable string state name for a state. This is largely
+     * @method getNameForState
+     * @summary Returns a viable string state name for a state. This is largely
      *     used to help convert numeric job status states such as TP.ACTIVE and
      *     TP.READY to their English equivalents.
      * @param {Number|String} state A state code or state name.
@@ -77,7 +77,7 @@ function(state) {
 
 /**
  * @type {TP.core.StateMachine}
- * @synopsis A small state machine implementation. The basic elements of a state
+ * @summary A small state machine implementation. The basic elements of a state
  *     machine regarding state testing are managed here and signaling is used to
  *     notify when a transition occurs. See the TP.core.StateResponder type for
  *     transition "action" handling.
@@ -128,8 +128,8 @@ TP.core.StateMachine.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @returns {TP.core.StateMachine} A new instance.
      */
 
@@ -157,8 +157,8 @@ TP.core.StateMachine.Inst.defineMethod('activate',
 function(startState) {
 
     /**
-     * @name activate
-     * @synopsis Activates the instance, causing it to transition into its start
+     * @method activate
+     * @summary Activates the instance, causing it to transition into its start
      *     state. If no start state is provided the default is the job state
      *     TP.ACTIVE. The state must have no prerequisite states or a
      *     prerequisite state of TP.READY to be valid.
@@ -203,8 +203,8 @@ TP.core.StateMachine.Inst.defineMethod('activateEventStream',
 function() {
 
     /**
-     * @name activateEventStream
-     * @synopsis Turns on an optional input event stream for the receiver by
+     * @method activateEventStream
+     * @summary Turns on an optional input event stream for the receiver by
      *     observing one or more input-related events.
      */
 
@@ -225,8 +225,8 @@ TP.core.StateMachine.Inst.defineMethod('deactivate',
 function(signalState) {
 
     /**
-     * @name deactivate
-     * @synopsis Shuts down the state machine, returning it to a TP.READY state.
+     * @method deactivate
+     * @summary Shuts down the state machine, returning it to a TP.READY state.
      *     The transition is checked to see if the current state was registered
      *     as being able to transition to TP.COMPLETED. If not then an
      *     intermediate transition of TP.CANCELLED is used.
@@ -273,8 +273,8 @@ TP.core.StateMachine.Inst.defineMethod('deactivateEventStream',
 function() {
 
     /**
-     * @name deactivateEventStream
-     * @synopsis Turns off an optional input event stream for the receiver by
+     * @method deactivateEventStream
+     * @summary Turns off an optional input event stream for the receiver by
      *     observing one or more input-related events.
      */
 
@@ -293,8 +293,8 @@ TP.core.StateMachine.Inst.defineMethod('defineDefaultStates',
 function() {
 
     /**
-     * @name defineDefaultStates
-     * @synopsis Provides for state configuration by subtypes so different
+     * @method defineDefaultStates
+     * @summary Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
      */
 
@@ -307,8 +307,8 @@ TP.core.StateMachine.Inst.defineMethod('defineState',
 function(stateName, stateCheck, statePrereqs) {
 
     /**
-     * @name defineState
-     * @synopsis Adds a state description, which consists of a state name, a
+     * @method defineState
+     * @summary Adds a state description, which consists of a state name, a
      *     check function or check object, and one or more prerequisite state
      *     names.
      * @param {String} stateName The name of the state.
@@ -389,8 +389,8 @@ TP.core.StateMachine.Inst.defineMethod('getJobState',
 function() {
 
     /**
-     * @name getJobState
-     * @synopsis Returns the current Job state, which is one of the state values
+     * @method getJobState
+     * @summary Returns the current Job state, which is one of the state values
      *     such as active, completed, cancelled, etc.
      * @returns {TP.core.Job.STATE}
      */
@@ -420,8 +420,8 @@ TP.core.StateMachine.Inst.defineMethod('getStateName',
 function() {
 
     /**
-     * @name getStateName
-     * @synopsis Returns the current state as a string with the canonical name.
+     * @method getStateName
+     * @summary Returns the current state as a string with the canonical name.
      *     The result is equivalent to calling getNameForState() on the current
      *     state.
      * @returns {String} The current state name.
@@ -436,8 +436,8 @@ TP.core.StateMachine.Inst.defineMethod('handleSignal',
 function(aSignal) {
 
     /**
-     * @name handleTPSignal
-     * @synopsis Responds to notifications of a signal/event that makes up part
+     * @method handleTPSignal
+     * @summary Responds to notifications of a signal/event that makes up part
      *     of the state machine's "input event stream". This method is invoked
      *     when you connect a state machine to an event stream via observe()
      *     without providing an explicit handler.
@@ -455,8 +455,8 @@ TP.core.StateMachine.Inst.defineMethod('isActive',
 function() {
 
     /**
-     * @name isActive
-     * @synopsis Returns true if the receiver is in an active state.
+     * @method isActive
+     * @summary Returns true if the receiver is in an active state.
      * @returns {Boolean} Whether or not the receiver is in an active state.
      */
 
@@ -470,8 +470,8 @@ TP.core.StateMachine.Inst.defineMethod('rollbackState',
 function() {
 
     /**
-     * @name rollbackState
-     * @synopsis Rolls back a state transition (without triggering any
+     * @method rollbackState
+     * @summary Rolls back a state transition (without triggering any
      *     handlers). This method is normally invoked by a state responder of
      *     some form when it detects that an *exit, *ToB, or *enter action
      *     function has prevented the default action.
@@ -492,8 +492,8 @@ TP.core.StateMachine.Inst.defineMethod('setState',
 function(newState) {
 
     /**
-     * @name setState
-     * @synopsis Sets the current state of the receiver without invoking any
+     * @method setState
+     * @summary Sets the current state of the receiver without invoking any
      *     handlers for state transitions. Note that this call can cause the
      *     state machine to become inconsistent if not used carefully.
      * @param {Number} newState A TP state code value.
@@ -519,8 +519,8 @@ TP.core.StateMachine.Inst.defineMethod('updateCurrentState',
 function(signalOrParams) {
 
     /**
-     * @name updateCurrentState
-     * @synopsis Returns the current (non-job) state. This will be one of the
+     * @method updateCurrentState
+     * @summary Returns the current (non-job) state. This will be one of the
      *     state values provided during the defineState phase.
      * @param {TP.sig.Signal|Object} signalOrParams An object containing
      *     information which might help determine the state. Usually a signal
@@ -644,7 +644,7 @@ function(signalOrParams) {
 
 /**
  * @type {TP.core.StateResponder}
- * @synopsis An object which observes a state machine and responds to transition
+ * @summary An object which observes a state machine and responds to transition
  *     notifications by running one or more handlers.
  */
 
@@ -667,8 +667,8 @@ TP.core.StateResponder.Inst.defineMethod('init',
 function(stateMachine) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of the receiver.
+     * @method init
+     * @summary Initializes a new instance of the receiver.
      * @param {TP.core.StateMachine} stateMachine The state machine this
      *     responder should observe.
      * @returns {TP.core.StateResponder} A new instance.
@@ -699,8 +699,8 @@ TP.core.StateResponder.Inst.defineMethod('activate',
 function(startState) {
 
     /**
-     * @name activate
-     * @synopsis Activates the instance, causing it to transition into its start
+     * @method activate
+     * @summary Activates the instance, causing it to transition into its start
      *     state. If no start state is provided the default is the job state
      *     TP.ACTIVE. The state must have no prerequisite states or a
      *     prerequisite state of TP.READY to be valid.
@@ -727,8 +727,8 @@ TP.core.StateResponder.Inst.defineMethod('deactivate',
 function(signalState) {
 
     /**
-     * @name deactivate
-     * @synopsis Shuts down the state machine, returning it to a TP.READY state.
+     * @method deactivate
+     * @summary Shuts down the state machine, returning it to a TP.READY state.
      *     The transition is checked to see if the current state was registered
      *     as being able to transition to TP.COMPLETED. If not then an
      *     intermediate transition of TP.CANCELLED is used.
@@ -758,8 +758,8 @@ TP.core.StateResponder.Inst.defineMethod('defineDefaultHandlers',
 function() {
 
     /**
-     * @name defineDefaultHandlers
-     * @synopsis Provides for state configuration by subtypes so different
+     * @method defineDefaultHandlers
+     * @summary Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
      */
 
@@ -772,8 +772,8 @@ TP.core.StateResponder.Inst.defineMethod('defineStateHandler',
 function(stateName, stateHandler, statePhase, originState) {
 
     /**
-     * @name defineStateHandler
-     * @synopsis Adds a state handler, a function or object which should be
+     * @method defineStateHandler
+     * @summary Adds a state handler, a function or object which should be
      *     invoked when a particular state transition is observed.
      * @param {String} stateName The name of the state.
      * @param {Object|Function} stateHandler A handler object or function. If an
@@ -816,8 +816,8 @@ TP.core.StateResponder.Inst.defineMethod('getActionName',
 function(stateName, statePhase, toState) {
 
     /**
-     * @name getActionName
-     * @synopsis Computes a valid state transition function name of the form
+     * @method getActionName
+     * @summary Computes a valid state transition function name of the form
      *     state[Enter|Exit|State] which can be used to register and/or lookup
      *     handler functions.
      * @param {String} stateName The name of the state.
@@ -855,8 +855,8 @@ TP.core.StateResponder.Inst.defineMethod('getActionHandlers',
 function(actionName) {
 
     /**
-     * @name getActionHandlers
-     * @synopsis Returns any registered state handers for the transition name
+     * @method getActionHandlers
+     * @summary Returns any registered state handers for the transition name
      *     provided.
      * @param {String} actionName The action name used to lookup handler
      *     functions and/or delegation objects.
@@ -876,8 +876,8 @@ TP.core.StateResponder.Inst.defineMethod('getPhaseName',
 function(statePhase) {
 
     /**
-     * @name getPhaseName
-     * @synopsis Computes a valid state transition phase name for the phase
+     * @method getPhaseName
+     * @summary Computes a valid state transition phase name for the phase
      *     provided. This converts numeric phase constant values into their
      *     English equivalents.
      * @param {String} statePhase TP.ENTER, TP.EXIT. If null/empty then the
@@ -903,10 +903,10 @@ TP.core.StateResponder.Inst.defineMethod('handleStateInput',
 function(aSignal) {
 
     /**
-     * @name handleStateInput
-     * @synopsis Responds to notifications of new input which didn't cause a
+     * @method handleStateInput
+     * @summary Responds to notifications of new input which didn't cause a
      *     state transition to occur.
-     * @description The default implementation passes this data along to the
+     * @summary The default implementation passes this data along to the
      *     invokeStateAction() method for TP.INPUT unless a method specific to
      *     the input data can be found. The lookup in this case is based on the
      *     signal and any embedded 'trigger' signal or data it may have for type
@@ -985,10 +985,10 @@ TP.core.StateResponder.Inst.defineMethod('handleStateTransition',
 function(aSignal) {
 
     /**
-     * @name handleStateTransition
-     * @synopsis Responds to notifications of state transitions from the
+     * @method handleStateTransition
+     * @summary Responds to notifications of state transitions from the
      *     receiver's internal StateMachine object.
-     * @description When a transition occurs the receiver attempts to run any
+     * @summary When a transition occurs the receiver attempts to run any
      *     TP.EXIT functions for the old state followed by any TP.ENTER
      *     functions for the new state, and finally any TP.TRANSITION functions
      *     for the new state completing the transition.
@@ -1049,8 +1049,8 @@ TP.core.StateResponder.Inst.defineMethod('invokeStateAction',
 function(actionName, aSignal) {
 
     /**
-     * @name invokeStateAction
-     * @synopsis Run the functions related to a specific state transition.
+     * @method invokeStateAction
+     * @summary Run the functions related to a specific state transition.
      * @param {String} actionName The transition name to process.
      * @param {TP.sig.StateTransition} aSignal The state transition signal which
      *     triggered the invocation.
@@ -1095,8 +1095,8 @@ TP.core.StateResponder.Inst.defineMethod('isActive',
 function() {
 
     /**
-     * @name isActive
-     * @synopsis Returns true if the receiver is in an active state.
+     * @method isActive
+     * @summary Returns true if the receiver is in an active state.
      * @returns {Boolean} Whether or not the receiver is in an active state.
      */
 

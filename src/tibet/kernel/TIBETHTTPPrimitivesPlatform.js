@@ -31,8 +31,8 @@ TP.hc(
     function(httpObj) {
 
         /**
-         * @name $httpObtainSecurityInfo
-         * @synopsis Obtains Gecko-specific security information from the
+         * @method $httpObtainSecurityInfo
+         * @summary Obtains Gecko-specific security information from the
          *     supplied httpObj's channel, if it has one.
          * @param {XHR} httpObj The XMLHttpRequest object containing the channel
          *     to retrieve security information from.
@@ -215,15 +215,15 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name httpCall
-         * @synopsis Performs an XMLHttpRequest based on the information
+         * @method httpCall
+         * @summary Performs an XMLHttpRequest based on the information
          *     provided in aRequest. NOTE that the request object is updated
          *     with a number of keys which define the actual data used for the
          *     current HTTP call.
          * @param {String} targetUrl The request's target URL.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
          *     additional parameters.
-         * @raises TP.sig.InvalidURI,PrivilegeException,HTTPException,
+         * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
          *     HTTPHeaderException,HTTPSendException
          * @throws Error Various HTTP-related errors.
          * @returns {XMLHttpRequest} The result object. On success this object's
@@ -479,15 +479,15 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name httpCall
-         * @synopsis Performs an XMLHttpRequest based on the information
+         * @method httpCall
+         * @summary Performs an XMLHttpRequest based on the information
          *     provided in aRequest. NOTE that the request object is updated
          *     with a number of keys which define the actual data used for the
          *     current HTTP call.
          * @param {String} targetUrl The request's target URL.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
          *     additional parameters.
-         * @raises TP.sig.InvalidURI,PrivilegeException,HTTPException,
+         * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
          *     HTTPHeaderException,HTTPSendException
          * @throws Error Various HTTP-related errors.
          * @returns {XMLHttpRequest} The result object. On success this object's
@@ -697,15 +697,15 @@ TP.hc(
     function(targetUrl, aRequest) {
 
         /**
-         * @name httpCall
-         * @synopsis Performs an XMLHttpRequest based on the information
+         * @method httpCall
+         * @summary Performs an XMLHttpRequest based on the information
          *     provided in aRequest. NOTE that the request object is updated
          *     with a number of keys which define the actual data used for the
          *     current HTTP call.
          * @param {String} targetUrl The request's target URL.
          * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
          *     additional parameters.
-         * @raises TP.sig.InvalidURI,PrivilegeException,HTTPException,
+         * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
          *     HTTPHeaderException,HTTPSendException
          * @throws Error Various HTTP-related errors.
          * @returns {XMLHttpRequest} The result object. On success this object's

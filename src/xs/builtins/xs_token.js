@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.token}
- * @synopsis An TP.xs.token is an TP.xs.normalizedString in which any sequences
+ * @summary An TP.xs.token is an TP.xs.normalizedString in which any sequences
  *     of spaces (\u0020) have been reduced to single spaces and any leading or
  *     trailing spaces have been removed.
  */
@@ -27,8 +27,8 @@ TP.xs.token.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.token the return value is simply the string value of the
      *     incoming object after calling replaceWhitespace() on it to remove
      *     tabs, CRs and LFs and then collapseWhitespace() to remove
@@ -59,8 +59,8 @@ TP.xs.token.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a string containing
+     * @method validate
+     * @summary Returns true if the object provided is a string containing
      *     tokenized whitespace, i.e. whitespace which has been converted to
      *     spaces rather than tabs, newlines, etc. and condensed into
      *     single-space elements only.

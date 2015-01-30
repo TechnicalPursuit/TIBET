@@ -38,10 +38,10 @@ TP.sys.defineMethod('getURIXML',
 function(forceRefresh) {
 
     /**
-     * @name getURIXML
-     * @synopsis Returns a DOM reference to the XML Catalog file used to store
+     * @method getURIXML
+     * @summary Returns a DOM reference to the XML Catalog file used to store
      *     URI mappings for the current application.
-     * @description At runtime TIBET will use data in this file to assist with
+     * @summary At runtime TIBET will use data in this file to assist with
      *     URI lookup, caching, loading, and storage. This file is typically
      *     named uris.xml but that name can be altered in the tibet.xml file
      *     using the 'uris' boot parameter. You can also change it using the
@@ -125,10 +125,10 @@ TP.sys.defineMethod('getURIXMLString',
 function(forceRefresh) {
 
     /**
-     * @name getURIXMLString
-     * @synopsis Returns a String representation of the XML file used to store
+     * @method getURIXMLString
+     * @summary Returns a String representation of the XML file used to store
      *     URI mappings for the current application.
-     * @description At runtime TIBET will use data in this file to assist with
+     * @summary At runtime TIBET will use data in this file to assist with
      *     URI lookup, caching, loading, and storage. RegExp-based tests are the
      *     fastest at determining exact matches for keys so this string is
      *     reused quite heavily.
@@ -166,8 +166,8 @@ TP.sys.defineMethod('initializeXMLCatalog',
 function(aNode) {
 
     /**
-     * @name initializeXMLCatalog
-     * @synopsis Initializes an XML Catalog node so that any embedded TIBET URI
+     * @method initializeXMLCatalog
+     * @summary Initializes an XML Catalog node so that any embedded TIBET URI
      *     references are fully expanded to their resource URI values (file: or
      *     http: uri values).
      * @param {Node} aNode An XML Catalog document which may contain unexpanded
@@ -250,8 +250,8 @@ TP.sys.defineMethod('getLoadedScripts',
 function() {
 
     /**
-     * @name getLoadedScripts
-     * @synopsis Returns a list of all scripts loaded in the current system.
+     * @method getLoadedScripts
+     * @summary Returns a list of all scripts loaded in the current system.
      * @returns {Array} An array of all script nodes loaded in the system.
      */
 
@@ -285,8 +285,8 @@ TP.sys.defineMethod('getPackageScripts',
 function(aPath) {
 
     /**
-     * @name getPackageScripts
-     * @synopsis Returns a list of all scripts loaded from a particular package
+     * @method getPackageScripts
+     * @summary Returns a list of all scripts loaded from a particular package
      *     path.
      * @param {String} aPath The package path to obtain the scripts for.
      * @returns {Array} An array of all script nodes loaded from the supplied
@@ -321,8 +321,8 @@ TP.sys.defineMethod('getPackageTypes',
 function(aPath) {
 
     /**
-     * @name getPackageTypes
-     * @synopsis Returns a list of all types loaded from the package defined by
+     * @method getPackageTypes
+     * @summary Returns a list of all types loaded from the package defined by
      *     either a URI or root object. When a URI is provided it should be a
      *     package configuration URI.
      * @param {String} aPath The package path to obtain the types for.
@@ -348,8 +348,8 @@ TP.sys.defineMethod('getScriptTypes',
 function(aPath) {
 
     /**
-     * @name getScriptTypes
-     * @synopsis Returns a list of all types loaded from the script path
+     * @method getScriptTypes
+     * @summary Returns a list of all types loaded from the script path
      *     defined.
      * @param {String} aPath The script path to obtain the types for.
      * @returns {Array} An array of all TIBET types loaded from the supplied
@@ -376,13 +376,13 @@ TP.sys.defineMethod('importPackage',
 function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
 
     /**
-     * @name importPackage
-     * @synopsis Optionally imports a package and target by name. No attempt to
+     * @method importPackage
+     * @summary Optionally imports a package and target by name. No attempt to
      *     manage inter-package dependencies is made. Using the shouldReload
      *     flag allows you to force reloading of package content when a
      *     particular package has already been loaded. NOTE that you can not
      *     reload the Kernel package.
-     * @description This method is a useful way to load code from a package
+     * @summary This method is a useful way to load code from a package
      *     target. To assist with determining whether a particular target has
      *     already been loaded the target will default to 'base' during the test
      *     phase. This is the typical core target and using base also avoids
@@ -471,8 +471,8 @@ TP.sys.defineMethod('importNamespace',
 function(aNamespaceURI, aPackageName) {
 
     /**
-     * @name importNamespace
-     * @synopsis Loads the canonically prefixed target for the specified
+     * @method importNamespace
+     * @summary Loads the canonically prefixed target for the specified
      *     namespace provided that the namespace's canonical prefix is mentioned
      *     as a target in either the TNS.xml configuration file or in the XMLNS
      *     'info' hash.
@@ -499,8 +499,8 @@ TP.sys.defineMethod('importScript',
 function(aURI, aRequest) {
 
     /**
-     * @name importScript
-     * @synopsis Loads the uri provided (which should be a JavaScript uri),
+     * @method importScript
+     * @summary Loads the uri provided (which should be a JavaScript uri),
      *     adding its code to the currently running application. Note that this
      *     call is done in a synchronous fashion, even though a callback
      *     function may be provided.
@@ -537,8 +537,8 @@ TP.sys.defineMethod('importType',
 function(aTypeName, shouldReload, isProxy) {
 
     /**
-     * @name importType
-     * @synopsis Optionally imports a type by name. Note that this method makes
+     * @method importType
+     * @summary Optionally imports a type by name. Note that this method makes
      *     no attempt to load supertypes, use TP.sys.require for that behavior.
      *     This method is leveraged by the require() function to load single
      *     types, reloading them if forced via the shouldReload flag.

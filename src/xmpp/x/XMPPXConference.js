@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XConference}
- * @synopsis A wrapper for the X_CONFERENCE namespace'd payload element.
+ * @summary A wrapper for the X_CONFERENCE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

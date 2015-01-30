@@ -25,8 +25,8 @@ TP.definePrimitive('computeCommonSizes',
 function() {
 
     /**
-     * @name computeCommonSizes
-     * @synopsis Computes a number of 'system-wide' global numbers used for
+     * @method computeCommonSizes
+     * @summary Computes a number of 'system-wide' global numbers used for
      *     DHTML computations, such as the font metrics for a certain set of
      *     font heights and the scrollbar width.
      */
@@ -172,8 +172,8 @@ TP.definePrimitive('getPixelsPerPoint',
 function() {
 
     /**
-     * @name getPixelsPerPoint
-     * @synopsis Returns the number of 'pixels per point' (i.e. the number of
+     * @method getPixelsPerPoint
+     * @summary Returns the number of 'pixels per point' (i.e. the number of
      *     'px' in a 'pt') in the currently executing browser environment.
      * @returns {Number} The number of pixels per point.
      */
@@ -207,12 +207,12 @@ TP.definePrimitive('documentEnsureHeadElement',
 function(aDocument) {
 
     /**
-     * @name documentEnsureHeadElement
-     * @synopsis Ensures that a 'head' element is present in the supplied
+     * @method documentEnsureHeadElement
+     * @summary Ensures that a 'head' element is present in the supplied
      *     Document. If it isn't, it creates one and appends it to the
      *     Document's documentElement.
      * @param {Document} aDocument The document to create the 'head' element in.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The head element that existed or was created in
      *     the supplied document.
      */
@@ -248,13 +248,13 @@ TP.definePrimitive('documentFocusAutofocusedElement',
 function(aDocument) {
 
     /**
-     * @name documentFocusAutofocusedElement
-     * @synopsis Focuses the element in the supplied document that contains the
+     * @method documentFocusAutofocusedElement
+     * @summary Focuses the element in the supplied document that contains the
      *     HTML5 'autofocus' attribute (which would be the first one to focus
      *     when the document first loads).
      * @param {Document} aDocument The document to focus the autofocused element
      *     in.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var autofocusedElem;
@@ -279,12 +279,12 @@ TP.definePrimitive('documentGetAllIFrames',
 function(aDocument) {
 
     /**
-     * @name documentGetAllIFrames
-     * @synopsis Returns all of the iframes nested in aDocument. This function
+     * @method documentGetAllIFrames
+     * @summary Returns all of the iframes nested in aDocument. This function
      *     recursively descends into iframes in aDocument and retrieves any
      *     embedded iframes in it.
      * @param {Document} aDocument The document to begin searching for iframes.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Array} The list of nested iframes.
      */
 
@@ -333,10 +333,10 @@ TP.definePrimitive('documentGetBody',
 function(aDocument) {
 
     /**
-     * @name documentGetBody
-     * @synopsis Returns the enclosing document's body element.
+     * @method documentGetBody
+     * @summary Returns the enclosing document's body element.
      * @param {Document} aDocument The document to use.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The document's body element.
      */
 
@@ -357,12 +357,12 @@ TP.definePrimitive('documentGetBodyContent',
 function(aDocument) {
 
     /**
-     * @name documentGetBodyContent
-     * @synopsis Returns the enclosing document's body in text form. This is
+     * @method documentGetBodyContent
+     * @summary Returns the enclosing document's body in text form. This is
      *     used when creating a static application version so that the packaged
      *     file's body matches that of the config file itself.
      * @param {Document} aDocument The document to use.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The document's body text.
      */
 
@@ -386,10 +386,10 @@ TP.definePrimitive('documentGetHead',
 function(aDocument) {
 
     /**
-     * @name documentGetHead
-     * @synopsis Returns the enclosing document's head element.
+     * @method documentGetHead
+     * @summary Returns the enclosing document's head element.
      * @param {Document} aDocument The document to use.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The document's head element.
      */
 
@@ -406,12 +406,12 @@ TP.definePrimitive('documentGetHeadContent',
 function(aDocument) {
 
     /**
-     * @name documentGetHeadContent
-     * @synopsis Returns the enclosing document's head in text form. This is
+     * @method documentGetHeadContent
+     * @summary Returns the enclosing document's head in text form. This is
      *     used when creating a static, inlined boot configuration page for
      *     stripping/zipping.
      * @param {Document} aDocument The document to use.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The document's head text.
      */
 
@@ -435,12 +435,12 @@ TP.definePrimitive('documentGetFocusedElement',
 function(aDocument) {
 
     /**
-     * @name documentGetFocusedElement
-     * @synopsis Returns the supplied document's currently focused (i.e.
+     * @method documentGetFocusedElement
+     * @summary Returns the supplied document's currently focused (i.e.
      *     'active') element. If no element is currently focused, this will
      *     return the 'body' element, as per the HTML5 specification.
      * @param {Document} aDocument The document to query.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Element} The currently focused element.
      */
 
@@ -479,8 +479,8 @@ TP.definePrimitive('documentGetLinkFileNames',
 function(aDocument) {
 
     /**
-     * @name documentGetLinkFileNames
-     * @synopsis Returns an array of any link (<a href="") files referenced in
+     * @method documentGetLinkFileNames
+     * @summary Returns an array of any link (<a href="") files referenced in
      *     the document.
      * @param {Document} aDocument The document to search.
      * @returns {Array}
@@ -518,8 +518,8 @@ TP.definePrimitive('documentGetTitleContent',
 function(aDocument) {
 
     /**
-     * @name documentGetTitleContent
-     * @synopsis Returns the supplied document's 'title' content. This is the
+     * @method documentGetTitleContent
+     * @summary Returns the supplied document's 'title' content. This is the
      *     text content of the 'title' element in the document's 'head' element.
      * @param {Document} aDocument The document to obtain the title content of.
      * @returns {String} The document's title content.
@@ -545,8 +545,8 @@ TP.definePrimitive('documentGetLocation',
 function(aDocument, trimFile) {
 
     /**
-     * @name documentGetLocation
-     * @synopsis Returns the supplied document's location, optionally minus the
+     * @method documentGetLocation
+     * @summary Returns the supplied document's location, optionally minus the
      *     document name itself. If there is no window associated with the
      *     supplied document and it has no internal data such as a tibet:src or
      *     xml:base value this method returns the empty String (''). NOTE also
@@ -555,7 +555,7 @@ function(aDocument, trimFile) {
      * @param {Document} aDocument The document to use.
      * @param {Boolean} trimFile True will cause any file reference to be
      *     trimmed, returning only a directory. Default is false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The document's location.
      */
 
@@ -639,14 +639,14 @@ TP.definePrimitive('documentGetPixelsForFontSize',
 function(aDocument, aFontSize) {
 
     /**
-     * @name documentGetPixelsForFontSize
-     * @synopsis Returns the number of pixels for a particular font size in the
+     * @method documentGetPixelsForFontSize
+     * @summary Returns the number of pixels for a particular font size in the
      *     supplied document.
      * @param {Document} aDocument The document to use to compute the font
      *     metrics.
      * @param {String} aFontSize The font size to use to compute the pixels. For
      *     instance, '1em' or '9pt'.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The number of pixels the supplied font size takes up in
      *     the supplied document.
      */
@@ -728,11 +728,11 @@ TP.definePrimitive('documentGetScriptFileNames',
 function(aDocument) {
 
     /**
-     * @name documentGetScriptFileNames
-     * @synopsis Returns an array of any JavaScript files referenced in the
+     * @method documentGetScriptFileNames
+     * @summary Returns an array of any JavaScript files referenced in the
      *     document.
      * @param {Document} aDocument The document to search.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Array}
      */
 
@@ -769,10 +769,10 @@ TP.definePrimitive('documentGetScriptNodes',
 function(aDocument) {
 
     /**
-     * @name documentGetScriptNodes
-     * @synopsis Returns the enclosing document's script nodes, if any.
+     * @method documentGetScriptNodes
+     * @summary Returns the enclosing document's script nodes, if any.
      * @param {Document} aDocument The document to use.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Array}
      */
 
@@ -789,16 +789,16 @@ TP.definePrimitive('documentRewriteSpecialHacks',
 function(theContent) {
 
     /**
-     * @name documentRewriteSpecialHacks
-     * @synopsis Rewrites any 'style' content in the head (either 'link'
+     * @method documentRewriteSpecialHacks
+     * @summary Rewrites any 'style' content in the head (either 'link'
      *     elements or content within a 'style' element) that was placed there
      *     to work around Mozilla bugs.
-     * @description Even though this function rewrites content because of
+     * @summary Even though this function rewrites content because of
      *     Mozilla bugs, it needs to exist across all platforms since content
      *     generated on Mozilla may be saved in cache files and used on other
      *     browsers.
      * @param {String} aContent The content to rewrite the style rules in.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String}
      */
 
@@ -828,12 +828,12 @@ TP.definePrimitive('documentScrollBy',
 function(aDocument, deltaX, deltaY) {
 
     /**
-     * @name documentScrollBy
-     * @synopsis Scrolls the document by the deltaX and deltaY amounts provided.
+     * @method documentScrollBy
+     * @summary Scrolls the document by the deltaX and deltaY amounts provided.
      * @param {Document} aDocument The document to scroll.
      * @param {Number} deltaX The X amount to scroll the document by.
      * @param {Number} deltaY The Y amount to scroll the document by.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
@@ -851,12 +851,12 @@ TP.definePrimitive('documentScrollTo',
 function(aDocument, x, y) {
 
     /**
-     * @name documentScrollTo
-     * @synopsis Scrolls the document to the X and Y coordinates provided.
+     * @method documentScrollTo
+     * @summary Scrolls the document to the X and Y coordinates provided.
      * @param {Document} aDocument The document to scroll.
      * @param {Number} x The X coordinate to scroll the document to.
      * @param {Number} y The Y coordinate to scroll the document to.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
@@ -874,15 +874,15 @@ TP.definePrimitive('documentSetLocation',
 function(aDocument, aURIStr, force) {
 
     /**
-     * @name documentSetLocation
-     * @synopsis Sets the document's location. This is done by stamping the
+     * @method documentSetLocation
+     * @summary Sets the document's location. This is done by stamping the
      *     document's 'root element' with a 'tibet:src' attribute.
      * @param {Document} aDocument The document to use.
      * @param {String} aURIStr The URL string to use as the document's location.
      * @param {Boolean} force If true, this method will ignore any existing
      *     value for 'tibet:src' (or 'xml:base') and stamp in the supplied URI
      *     value for 'tibet:src'.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The document's location.
      */
 
@@ -927,11 +927,11 @@ TP.definePrimitive('documentSetTitleContent',
 function(aDocument, titleText) {
 
     /**
-     * @name documentSetTitleContent
-     * @synopsis Sets the supplied document's 'title' content.
+     * @method documentSetTitleContent
+     * @summary Sets the supplied document's 'title' content.
      * @param {Document} aDocument The document to set the title content of.
      * @param {String} titleText The value to use as the title content.
-     * @raises TP.sig.InvalidDocument,TP.sig.InvalidString
+     * @exception TP.sig.InvalidDocument,TP.sig.InvalidString
      */
 
     var theTitle,
@@ -974,8 +974,8 @@ TP.definePrimitive('htmlDocumentAddContent',
 function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name htmlDocumentAddContent
-     * @synopsis Adds content from theContent onto the end of the child content
+     * @method htmlDocumentAddContent
+     * @summary Adds content from theContent onto the end of the child content
      *     of the document element of the supplied document.
      * @param {Document} aDocument The document to receive the content.
      * @param {Node|String} theContent The object to use as the source of the
@@ -984,7 +984,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just added. The default for an 'add' operation is false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -1013,8 +1013,8 @@ TP.definePrimitive('htmlDocumentInsertContent',
 function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
-     * @name htmlDocumentInsertContent
-     * @synopsis Inserts content from theContent into/around the document
+     * @method htmlDocumentInsertContent
+     * @summary Inserts content from theContent into/around the document
      *     element of the supplied document based on the position given. The
      *     position should indicate whether the content should become the
      *     previous sibling, next sibling, first child or last child.
@@ -1030,7 +1030,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for an 'insert' operation is false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -1051,10 +1051,10 @@ TP.definePrimitive('htmlDocumentSetContent',
 function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name htmlDocumentSetContent
-     * @synopsis Sets the content of the supplied document, replacing the
+     * @method htmlDocumentSetContent
+     * @summary Sets the content of the supplied document, replacing the
      *     document's documentElement with the resulting content if valid.
-     * @description Content sent to a document must be suitable for replacing
+     * @summary Content sent to a document must be suitable for replacing
      *     the entire content of the document, i.e. it becomes the source of the
      *     new documentElement. This implies that the content must be able to
      *     provide a valid node containing a single root element of the same
@@ -1322,12 +1322,12 @@ TP.definePrimitive('elementAddClass',
 function(anElement, className) {
 
     /**
-     * @name elementAddClass
-     * @synopsis Adds a CSS class name to the element if it is not already
+     * @method elementAddClass
+     * @summary Adds a CSS class name to the element if it is not already
      *     present.
      * @param {Element} anElement The element to add the CSS class to.
      * @param {String} className The CSS class name to add.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element the supplied class was added to.
      */
 
@@ -1367,8 +1367,8 @@ TP.definePrimitive('elementComputeBoxSizeOfMarkup',
 function(anElement, markup, boxType, wantsTransformed) {
 
     /**
-     * @name elementComputeSizeOfMarkup
-     * @synopsis Returns an Array of width and height of the element as if it
+     * @method elementComputeSizeOfMarkup
+     * @summary Returns an Array of width and height of the element as if it
      *     contained the supplied markup. For now, this markup is limited to
      *     (X)HTML markup.
      * @param {Element} anElement The element to obtain the size of, given the
@@ -1382,7 +1382,7 @@ function(anElement, markup, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Array} The [width, height] pair computed when the content of
      *     the element is set to the supplied markup.
      */
@@ -1438,10 +1438,10 @@ function(anElement, pointX, pointY, insetTop, insetRight, insetBottom,
 insetLeft) {
 
     /**
-     * @name elementComputeCornersUsing
-     * @synopsis Computes a 'corner' that a particular point is in, given a set
+     * @method elementComputeCornersUsing
+     * @summary Computes a 'corner' that a particular point is in, given a set
      *     of offsets.
-     * @description Given the point and the offsets, this method will return one
+     * @summary Given the point and the offsets, this method will return one
      *     of the following values: TP.TOP TP.RIGHT TP.BOTTOM TP.LEFT
      *     TP.TOP_LEFT TP.TOP_RIGHT TP.BOTTOM_LEFT TP.BOTTOM_RIGHT
      * @param {Element} anElement The element to compute the corner for.
@@ -1455,7 +1455,7 @@ insetLeft) {
      *     the center of the supplied Element.
      * @param {Number} insetLeft The left offset from the edge 'in' towards the
      *     center of the supplied Element.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String}
      */
 
@@ -1524,10 +1524,10 @@ TP.definePrimitive('elementComputeOnScreenXY',
 function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) {
 
     /**
-     * @name elementComputeOnScreenXY
-     * @synopsis Returns an Array of data that includes X and Y values for the
+     * @method elementComputeOnScreenXY
+     * @summary Returns an Array of data that includes X and Y values for the
      *     supplied Element that are guaranteed to keep the element 'on-screen'.
-     * @description This method takes the supplied preferred X and Y for the
+     * @summary This method takes the supplied preferred X and Y for the
      *     element and, using the element to compute a width and height for the
      *     element, computes an X and Y that keeps the element on screen. This
      *     method also accepts an X and Y offset to 'pad' around the supplied
@@ -1546,7 +1546,7 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
      * @param {Array} preferredCorners An Array of 'corners' to use to test.
      *     This should be one of: TP.TOP_LEFT TP.BOTTOM_LEFT TP.TOP_RIGHT
      *     TP.BOTTOM_RIGHT.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
      * @returns {Array} An Array of the following return values: [on-screen X,
      *     on-screen Y, corner used, distanceComputation].
      */
@@ -1765,15 +1765,15 @@ TP.definePrimitive('elementContainsPoint',
 function(anElement, x, y) {
 
     /**
-     * @name elementContainsPoint
-     * @synopsis Returns true or false depending on whether the given x and y
+     * @method elementContainsPoint
+     * @summary Returns true or false depending on whether the given x and y
      *     falls inside of the element.
-     * @description Note that the coordinates should be given in 'document'
+     * @summary Note that the coordinates should be given in 'document'
      *     coordinates.
      * @param {HTMLElement} anElement The element to test the x and y against.
      * @param {Number} x The X coordinate to test.
      * @param {Number} y The Y coordinate to test.
-     * @raises TP.sig.InvalidElement, TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement, TP.sig.InvalidNumber
      * @returns {Boolean} Whether or not the x and y coordinates fall inside of
      *     the element.
      */
@@ -1810,12 +1810,12 @@ TP.definePrimitive('elementDefaultDisplay',
 function(anElement) {
 
     /**
-     * @name elementDefaultDisplay
-     * @synopsis Sets the element back to the 'default' display value. This
+     * @method elementDefaultDisplay
+     * @summary Sets the element back to the 'default' display value. This
      *     includes clearing any specific inline style setting for the CSS
      *     display property.
      * @param {HTMLElement} anElement The element to default the display of.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -1869,8 +1869,8 @@ TP.definePrimitive('elementGetBorderBox',
 function(anElement, wantsTransformed) {
 
     /**
-     * @name elementGetBorderBox
-     * @synopsis Returns the 'border box' of the supplied element. This can
+     * @method elementGetBorderBox
+     * @summary Returns the 'border box' of the supplied element. This can
      *     be a tortuous and error-prone process on some browsers, so this
      *     method provides a cross-platform way of obtaining it.
      * @param {HTMLElement} anElement The element to use to compute the
@@ -1878,7 +1878,7 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.lang.Hash} A hash containing the border box at: 'left',
      *     'top', 'width', 'height'.
      */
@@ -1973,8 +1973,8 @@ TP.definePrimitive('elementGetFirstEnabledWith',
 function(anElement, anAttrName, anAttrValue) {
 
     /**
-     * @name elementGetFirstEnabledWith
-     * @synopsis Starting at the supplied element, this method works its way up
+     * @method elementGetFirstEnabledWith
+     * @summary Starting at the supplied element, this method works its way up
      *     the ancestor chain to an element that doesn't have a 'disabled'
      *     attribute on it and has the supplied attribute name (and possible
      *     attribute value) present on it. If any element in the chain is
@@ -2037,8 +2037,8 @@ TP.definePrimitive('$elementGetBusyLayer',
 function(anElement) {
 
     /**
-     * @name $elementGetBusyLayer
-     * @synopsis Returns a busy layer for the supplied element. This allows the
+     * @method $elementGetBusyLayer
+     * @summary Returns a busy layer for the supplied element. This allows the
      *     element to show a busy message along with a spinning icon when
      *     performing time-consuming operations. This element may be reused
      *     across invocations for a particular element.
@@ -2106,11 +2106,11 @@ TP.definePrimitive('elementGetClass',
 function(anElement) {
 
     /**
-     * @name elementGetClass
-     * @synopsis Returns the element's CSS class name(s) as a String.
+     * @method elementGetClass
+     * @summary Returns the element's CSS class name(s) as a String.
      * @param {Element} anElement The element to retrieve the CSS class name
      *     for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} The CSS class name of the supplied element.
      */
 
@@ -2131,9 +2131,9 @@ TP.definePrimitive('elementGetClipRect',
 function(anElement) {
 
     /**
-     * @name elementGetClipRect
-     * @synopsis Returns the element's clipping rectangle.
-     * @description The clipping rectangle is assumed to be in pixels (something
+     * @method elementGetClipRect
+     * @summary Returns the element's clipping rectangle.
+     * @summary The clipping rectangle is assumed to be in pixels (something
      *     like 'rect(10px 10px 10px 10px)'). If the clipping rectangle is not a
      *     '4 valued' value, null is returned. Each individual value is
      *     processed and turned from its current value into pixels (i.e. the
@@ -2141,7 +2141,7 @@ function(anElement) {
      *     is 'auto', a null is placed into that position in the Array.
      * @param {HTMLElement} anElement The element to extract the clipping
      *     rectangle from.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Array} An Array of Numbers containing the element's clipping
      *     rectangle *expressed in number of pixels*. The numbers are arranged
      *     in the following order: top, right, bottom, left.
@@ -2216,8 +2216,8 @@ TP.definePrimitive('elementGetContentHeight',
 function(anElement, wantsTransformed) {
 
     /**
-     * @name elementGetContentHeight
-     * @synopsis Returns the element's content height. This is equivalent to the
+     * @method elementGetContentHeight
+     * @summary Returns the element's content height. This is equivalent to the
      *     height of the element if the element's height was set to 'auto' -
      *     that is, if the element was 'shrink-wrapping' its content.
      * @param {HTMLElement} anElement The element to extract the content height
@@ -2225,7 +2225,7 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The element's content height in pixels.
      */
 
@@ -2249,8 +2249,8 @@ TP.definePrimitive('elementGetContentWidth',
 function(anElement, wantsTransformed) {
 
     /**
-     * @name elementGetContentWidth
-     * @synopsis Returns the element's content width. This is equivalent to the
+     * @method elementGetContentWidth
+     * @summary Returns the element's content width. This is equivalent to the
      *     width of the element if the element's width was set to 'auto' - that
      *     is, if the element was 'shrink-wrapping' its content.
      * @param {HTMLElement} anElement The element to extract the content width
@@ -2258,7 +2258,7 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The element's content width in pixels.
      */
 
@@ -2282,14 +2282,14 @@ TP.definePrimitive('elementGetEffectiveBackgroundColor',
 function(anElement) {
 
     /**
-     * @name elementGetEffectiveBackgroundColor
-     * @synopsis Obtains the effective background color from the element,
+     * @method elementGetEffectiveBackgroundColor
+     * @summary Obtains the effective background color from the element,
      *     ignoring a value of transparent. This method will traverse the
      *     supplied element's ancestor chain, looking for the first
      *     non-transparent element.
      * @param {HTMLElement} anElement The element to obtain the effective
      *     background color for.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {String} The element's effective background color.
      */
 
@@ -2352,8 +2352,8 @@ TP.definePrimitive('elementGetGlobalBox',
 function(anElement, boxType, wantsTransformed) {
 
     /**
-     * @name elementGetGlobalBox
-     * @synopsis Returns the element's 'box' of coordinates expressed as
+     * @method elementGetGlobalBox
+     * @summary Returns the element's 'box' of coordinates expressed as
      *     'global' coordinates. This is the value of the element's page box,
      *     plus any offset of the document window (which normally occurs if the
      *     element is hosted inside of an iframe). Therefore, this is the
@@ -2366,7 +2366,7 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
      */
@@ -2446,8 +2446,8 @@ TP.definePrimitive('elementGetGlobalX',
 function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
-     * @name elementGetGlobalX
-     * @synopsis Gets the element's global X coordinate. This is the value of
+     * @method elementGetGlobalX
+     * @summary Gets the element's global X coordinate. This is the value of
      *     the element's page X coordinate, plus any offset of the document
      *     window (which normally occurs if the element is hosted inside of an
      *     iframe). Therefore, this is the element's X coordinate relative to
@@ -2463,7 +2463,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {Number} The global X coordinate of the element in pixels.
      */
 
@@ -2514,8 +2514,8 @@ TP.definePrimitive('elementGetGlobalY',
 function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
-     * @name elementGetGlobalY
-     * @synopsis Gets the element's global Y coordinate. This is the value of
+     * @method elementGetGlobalY
+     * @summary Gets the element's global Y coordinate. This is the value of
      *     the element's page Y coordinate, plus any offset of the document
      *     window (which normally occurs if the element is hosted inside of an
      *     iframe). Therefore, this is the element's Y coordinate relative to
@@ -2531,7 +2531,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {Number} The global Y coordinate of the element in pixels.
      */
 
@@ -2582,8 +2582,8 @@ TP.definePrimitive('elementGetGlobalXY',
 function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
-     * @name elementGetGlobalXY
-     * @synopsis Gets the element's global X and Y coordinates. This is the
+     * @method elementGetGlobalXY
+     * @summary Gets the element's global X and Y coordinates. This is the
      *     value of the element's page X and Y coordinates, plus any offset of
      *     the document window (which normally occurs if the element is hosted
      *     inside of an iframe). Therefore, this is the element's X and Y
@@ -2600,7 +2600,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {Number} The global X and Y coordinates of the element in
      *     pixels.
      */
@@ -2655,8 +2655,8 @@ TP.definePrimitive('elementGetHeight',
 function(anElement, boxType, wantsTransformed) {
 
     /**
-     * @name elementGetHeight
-     * @synopsis Returns the element's height.
+     * @method elementGetHeight
+     * @summary Returns the element's height.
      * @param {HTMLElement} anElement The element to extract the height from.
      * @param {String} boxType A TIBET constant that determines the 'box' to
      *     compute the height from. This can one of the following values:
@@ -2665,7 +2665,7 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The element's height in pixels.
      */
 
@@ -2748,13 +2748,13 @@ TP.definePrimitive('elementGetInnerContent',
 function(anElement) {
 
     /**
-     * @name elementGetInnerContent
-     * @synopsis Gets the 'inner content' of anElement.
-     * @description This method gets the 'inner content' of anElement which
+     * @method elementGetInnerContent
+     * @summary Gets the 'inner content' of anElement.
+     * @summary This method gets the 'inner content' of anElement which
      *     means that just the contents of the element, not including its start
      *     and end tags, will be returned.
      * @param {HTMLElement} anElement The element to get the 'inner content' of.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} The 'inner content' of anElement.
      */
 
@@ -2779,8 +2779,8 @@ TP.definePrimitive('elementGetOffsetFromContainer',
 function(anElement, wantsTransformed) {
 
     /**
-     * @name elementGetOffsetFromContainer
-     * @synopsis Returns an Array containing the X and Y of the total amount
+     * @method elementGetOffsetFromContainer
+     * @summary Returns an Array containing the X and Y of the total amount
      *     that the supplied Element is offset from the top, left corner of *its
      *     nearest positioned parent element*. This may or may not be the
      *     element's direct parentNode.
@@ -2788,7 +2788,7 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
@@ -2822,8 +2822,8 @@ TP.definePrimitive('elementGetPageBox',
 function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
-     * @name elementGetPageBox
-     * @synopsis Returns the element's 'box' of coordinates relative to the
+     * @method elementGetPageBox
+     * @summary Returns the element's 'box' of coordinates relative to the
      *     page.
      * @param {HTMLElement} anElement The element to extract the box from.
      * @param {String} boxType A TIBET constant that determines the 'box' to
@@ -2836,7 +2836,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
      */
@@ -2995,8 +2995,8 @@ TP.definePrimitive('elementGetPageX',
 function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
-     * @name elementGetPageX
-     * @synopsis Gets the element's page X coordinate.
+     * @method elementGetPageX
+     * @summary Gets the element's page X coordinate.
      * @param {HTMLElement} anElement The element to get the X coordinate of.
      * @param {String} boxType A TIBET constant that determines the 'box' to
      *     compute the coordinate from. This can one of the following values:
@@ -3008,7 +3008,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The page X coordinate of the element in pixels.
      */
 
@@ -3090,8 +3090,8 @@ TP.definePrimitive('elementGetPageY',
 function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
-     * @name elementGetPageY
-     * @synopsis Gets the element's page Y coordinate.
+     * @method elementGetPageY
+     * @summary Gets the element's page Y coordinate.
      * @param {HTMLElement} anElement The element to get the Y coordinate of.
      * @param {String} boxType A TIBET constant that determines the 'box' to
      *     compute the coordinate from. This can one of the following values:
@@ -3103,7 +3103,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The page Y coordinate of the element in pixels.
      */
 
@@ -3185,8 +3185,8 @@ TP.definePrimitive('elementGetPageXY',
 function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
-     * @name elementGetPageXY
-     * @synopsis Gets the element's page X and Y coordinates.
+     * @method elementGetPageXY
+     * @summary Gets the element's page X and Y coordinates.
      * @param {HTMLElement} anElement The element to get the X and Y coordinates
      *     of.
      * @param {String} boxType A TIBET constant that determines the 'box' to
@@ -3199,7 +3199,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} The page X and Y coordinates of the element in pixels.
      */
 
@@ -3298,8 +3298,8 @@ TP.definePrimitive('elementGetOffsetBox',
 function(anElement, boxType, wantsTransformed) {
 
     /**
-     * @name elementGetOffsetBox
-     * @synopsis Returns the element's 'box' of coordinates expressed as
+     * @method elementGetOffsetBox
+     * @summary Returns the element's 'box' of coordinates expressed as
      *     'offset' coordinates. This is the value of the element's page box,
      *     minus any offset of the element's offset parent. Therefore, this is
      *     the element's box relative to its offset parent.
@@ -3311,7 +3311,7 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
      */
@@ -3343,8 +3343,8 @@ TP.definePrimitive('elementGetOffsetX',
 function(anElement, boxType, wantsTransformed) {
 
     /**
-     * @name elementGetOffsetX
-     * @synopsis Gets the element's offset X coordinate.
+     * @method elementGetOffsetX
+     * @summary Gets the element's offset X coordinate.
      * @param {HTMLElement} anElement The element to get the X coordinate of.
      * @param {String} boxType A TIBET constant that determines the 'box' to
      *     compute the coordinate from. This can one of the following values:
@@ -3353,7 +3353,7 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The offset X coordinate of the element in pixels.
      */
 
@@ -3379,8 +3379,8 @@ TP.definePrimitive('elementGetOffsetY',
 function(anElement, boxType, wantsTransformed) {
 
     /**
-     * @name elementGetOffsetY
-     * @synopsis Gets the element's offset Y coordinate.
+     * @method elementGetOffsetY
+     * @summary Gets the element's offset Y coordinate.
      * @param {HTMLElement} anElement The element to get the Y coordinate of.
      * @param {String} boxType A TIBET constant that determines the 'box' to
      *     compute the coordinate from. This can one of the following values:
@@ -3389,7 +3389,7 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The offset Y coordinate of the element in pixels.
      */
 
@@ -3415,8 +3415,8 @@ TP.definePrimitive('elementGetOffsetXY',
 function(anElement, boxType, wantsTransformed) {
 
     /**
-     * @name elementGetOffsetXY
-     * @synopsis Gets the element's offset X and Y coordinates.
+     * @method elementGetOffsetXY
+     * @summary Gets the element's offset X and Y coordinates.
      * @param {HTMLElement} anElement The element to get the X and Y coordinates
      *     of.
      * @param {String} boxType A TIBET constant that determines the 'box' to
@@ -3426,7 +3426,7 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} The offset X and Y coordinates of the element in pixels.
      */
 
@@ -3452,8 +3452,8 @@ TP.definePrimitive('elementGetScrollOffsetFromAncestor',
 function(anElement, anAncestor, wantsTransformed) {
 
     /**
-     * @name elementGetScrollOffsetFromAncestor
-     * @synopsis Returns an Array containing the X and Y of the total amount
+     * @method elementGetScrollOffsetFromAncestor
+     * @summary Returns an Array containing the X and Y of the total amount
      *     that the supplied Element is scrolled from the top, left corner of
      *     the supplied ancestor. If the ancestor isn't supplied, it defaults to
      *     the supplied element's document.
@@ -3465,7 +3465,7 @@ function(anElement, anAncestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
@@ -3524,8 +3524,8 @@ TP.definePrimitive('elementGetScrollOffsetFromContainer',
 function(anElement, wantsTransformed) {
 
     /**
-     * @name elementGetScrollOffsetFromContainer
-     * @synopsis Returns an Array containing the X and Y of the total amount
+     * @method elementGetScrollOffsetFromContainer
+     * @summary Returns an Array containing the X and Y of the total amount
      *     that the supplied Element is scrolled from the top, left corner of
      *     *its nearest positioned parent element*. This may or may not be the
      *     element's direct parentNode.
@@ -3534,7 +3534,7 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
@@ -3590,14 +3590,14 @@ TP.definePrimitive('elementGetScrollXY',
 function(anElement, wantsTransformed) {
 
     /**
-     * @name elementGetScrollXY
-     * @synopsis Returns an Array containing the X and Y scroll offsets for the
+     * @method elementGetScrollXY
+     * @summary Returns an Array containing the X and Y scroll offsets for the
      *     element provided.
      * @param {HTMLElement} anElement The element to get scroll offsets for.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} The X and Y offset in pixels.
      */
 
@@ -3624,15 +3624,15 @@ TP.definePrimitive('elementGetSideClosestTo',
 function(anElement, xCoord, yCoord) {
 
     /**
-     * @name elementGetSideClosestTo
-     * @synopsis Returns the horizontal and vertical 'side' of the element
+     * @method elementGetSideClosestTo
+     * @summary Returns the horizontal and vertical 'side' of the element
      *     closest to the point given.
      * @param {HTMLElement} anElement The element to get the 'closest side' of.
      * @param {Number} xCoord The X coordinate, expressed in document-level
      *     coordinates.
      * @param {Number} yCoord The Y coordinate, expressed in document-level
      *     coordinates.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} Two of the following four values: First position:
      *     TP.RIGHT or TP.LEFT First position: TP.TOP or TP.BOTTOM.
      */
@@ -3690,8 +3690,8 @@ TP.definePrimitive('elementGetWidth',
 function(anElement, boxType, wantsTransformed) {
 
     /**
-     * @name elementGetWidth
-     * @synopsis Returns the element's width.
+     * @method elementGetWidth
+     * @summary Returns the element's width.
      * @param {HTMLElement} anElement The element to extract the width from.
      * @param {String} boxType A TIBET constant that determines the 'box' to
      *     compute the width from. This can one of the following values:
@@ -3700,7 +3700,7 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Number} The element's width in pixels.
      */
 
@@ -3782,11 +3782,11 @@ TP.definePrimitive('elementHasClass',
 function(anElement, className) {
 
     /**
-     * @name elementHasClass
-     * @synopsis Returns true if the element has the CSS class name specified.
+     * @method elementHasClass
+     * @summary Returns true if the element has the CSS class name specified.
      * @param {Element} anElement The element to test.
      * @param {String} className The CSS class name to test for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not the element has the supplied CSS class.
      */
 
@@ -3814,11 +3814,11 @@ TP.definePrimitive('elementHasFocus',
 function(anElement) {
 
     /**
-     * @name elementHasFocus
-     * @synopsis Returns true if the element is the currently focused element in
+     * @method elementHasFocus
+     * @summary Returns true if the element is the currently focused element in
      *     its document.
      * @param {Element} anElement The element to test.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not the element has the focus in its
      *     document.
      */
@@ -3833,14 +3833,14 @@ TP.definePrimitive('elementHide',
 function(anElement, preserveSpace) {
 
     /**
-     * @name elementHide
-     * @synopsis Hides the element. If the preserveSpace parameter is true, this
+     * @method elementHide
+     * @summary Hides the element. If the preserveSpace parameter is true, this
      *     method adjusts the CSS 'visibility' property of the supplied element.
      *     Otherwise, it adjusts both the 'display' and the visibility.
      * @param {HTMLElement} anElement The element to hide.
      * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
      *     taken up by the element in its document. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -3861,8 +3861,8 @@ TP.definePrimitive('elementHideBusyMessage',
 function(anElement) {
 
     /**
-     * @name elementHideBusyMessage
-     * @synopsis Hides the busy message for the supplied element.
+     * @method elementHideBusyMessage
+     * @summary Hides the busy message for the supplied element.
      * @param {HTMLElement} anElement The element to hide the busy element for.
      * @returns {HTMLElement} The busy element itself.
      */
@@ -3898,11 +3898,11 @@ TP.definePrimitive('elementIsDisplayed',
 function(anElement) {
 
     /**
-     * @name elementIsDisplayed
-     * @synopsis Returns whether or not anElement is displayed to the user. This
+     * @method elementIsDisplayed
+     * @summary Returns whether or not anElement is displayed to the user. This
      *     is dependent not only on its own 'display' and 'visibility' settings,
      *     but on those settings of its parents.
-     * @description Note that this only tests whether the element is currently
+     * @summary Note that this only tests whether the element is currently
      *     being displayed insofar as CSS is concerned. The element very well
      *     may be scrolled off screen or under the influence of a CSS transform
      *     that would cause it to not be visible to the user. Use the
@@ -3910,7 +3910,7 @@ function(anElement) {
      *     visible.
      * @param {HTMLElement} anElement The element to determine the displayed
      *     state of.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not anElement is displayed.
      */
 
@@ -3973,15 +3973,15 @@ TP.definePrimitive('elementIsVisible',
 function(anElement) {
 
     /**
-     * @name elementIsVisible
-     * @synopsis Returns whether or not anElement is *really* visible to the
+     * @method elementIsVisible
+     * @summary Returns whether or not anElement is *really* visible to the
            user, no matter what its CSS setting is.
-     * @description In addition to the standard CSS properties of 'display' and
+     * @summary In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any
            CSS transformation that has been applied to the element.
      * @param {HTMLElement} anElement The element to determine the visibility
      *     of.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
@@ -4025,11 +4025,11 @@ TP.definePrimitive('elementMakeAbsolute',
 function(anElement) {
 
     /**
-     * @name elementMakeAbsolute
-     * @synopsis Makes the supplied element 'absolutely positioned' at its
+     * @method elementMakeAbsolute
+     * @summary Makes the supplied element 'absolutely positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make absolute.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4068,12 +4068,12 @@ TP.definePrimitive('elementMakePositioned',
 function(anElement) {
 
     /**
-     * @name elementMakePositioned
-     * @synopsis Makes the supplied element 'positioned' (relatively) at its
+     * @method elementMakePositioned
+     * @summary Makes the supplied element 'positioned' (relatively) at its
      *     current location in its document. If the element was already
      *     positioned, this method just returns.
      * @param {HTMLElement} anElement The element to make positioned.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
     var computedStyle;
@@ -4100,11 +4100,11 @@ TP.definePrimitive('elementMakeRelative',
 function(anElement) {
 
     /**
-     * @name elementMakeRelative
-     * @synopsis Makes the supplied element 'relatively positioned' at its
+     * @method elementMakeRelative
+     * @summary Makes the supplied element 'relatively positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make relative.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4168,15 +4168,15 @@ TP.definePrimitive('elementMoveBy',
 function(anElement, deltaX, deltaY) {
 
     /**
-     * @name elementMoveBy
-     * @synopsis Moves the element by the deltaX and deltaY amounts provided.
-     * @description deltaX and deltaY are assumed to be Numbers of pixels to
+     * @method elementMoveBy
+     * @summary Moves the element by the deltaX and deltaY amounts provided.
+     * @summary deltaX and deltaY are assumed to be Numbers of pixels to
      *     move the element by. Also note that if the supplied element is not
      *     positioned either absolute or relative, this method does nothing.
      * @param {HTMLElement} anElement The element to move.
      * @param {Number} deltaX The X amount to move the element by.
      * @param {Number} deltaY The Y amount to move the element by.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4214,14 +4214,14 @@ TP.definePrimitive('elementMoveTo',
 function(anElement, x, y) {
 
     /**
-     * @name elementMoveTo
-     * @synopsis Moves the element to the X and Y coordinates provided.
-     * @description If a Number is supplied to x or y a default unit of 'px' is
+     * @method elementMoveTo
+     * @summary Moves the element to the X and Y coordinates provided.
+     * @summary If a Number is supplied to x or y a default unit of 'px' is
      *     assumed.
      * @param {HTMLElement} anElement The element to move.
      * @param {Number|String} x The X coordinate to move the element to.
      * @param {Number|String} y The Y coordinate to move the element to.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var styleObj;
@@ -4253,11 +4253,11 @@ TP.definePrimitive('elementOrderOver',
 function(anElement, anotherElement) {
 
     /**
-     * @name elementOrderOver
-     * @synopsis Places the element over the other element.
+     * @method elementOrderOver
+     * @summary Places the element over the other element.
      * @param {HTMLElement} anElement The element to move 'up' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement over.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4286,11 +4286,11 @@ TP.definePrimitive('elementOrderUnder',
 function(anElement, anotherElement) {
 
     /**
-     * @name elementOrderUnder
-     * @synopsis Places the element under the other element.
+     * @method elementOrderUnder
+     * @summary Places the element under the other element.
      * @param {HTMLElement} anElement The element to move 'down' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement under.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4318,8 +4318,8 @@ TP.definePrimitive('elementPlaceNearElement',
 function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferredCorners) {
 
     /**
-     * @name elementPlaceNearElement
-     * @synopsis Places the element near the other element, making sure to keep
+     * @method elementPlaceNearElement
+     * @summary Places the element near the other element, making sure to keep
      *     it on screen. Note that for this method to take effect on the
      *     element, the element should be 'positioned' in some fashion - this
      *     method does *not* position the element.
@@ -4339,7 +4339,7 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
      * @param {Array} preferredCorners An Array of 'corners' to use to test.
      *     This should be one of: TP.TOP_LEFT TP.BOTTOM_LEFT TP.TOP_RIGHT
      *     TP.BOTTOM_RIGHT.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var theMeasuringBoxType,
@@ -4474,15 +4474,15 @@ TP.definePrimitive('elementRemoveAttributeValue',
 function(anElement, attrName, attrValue) {
 
     /**
-     * @name elementRemoveAttributeValue
-     * @synopsis Removes one or more occurrences of the attribute value from the
+     * @method elementRemoveAttributeValue
+     * @summary Removes one or more occurrences of the attribute value from the
      *     supplied element.
      * @param {Element} anElement The element to remove the attribute value
      *     from.
      * @param {String} attrName The name of the attribute to remove the value
      *     from.
      * @param {String} attrValue The value to remove from the attribute's value.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
      *     TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
@@ -4530,8 +4530,8 @@ TP.definePrimitive('elementReplaceAttributeValue',
 function(anElement, attrName, oldValue, newValue) {
 
     /**
-     * @name elementReplaceAttributeValue
-     * @synopsis Replaces the old attribute value with the new attribute value
+     * @method elementReplaceAttributeValue
+     * @summary Replaces the old attribute value with the new attribute value
      *     in the supplied element.
      * @param {Element} anElement The element to remove the attribute value
      *     from.
@@ -4541,7 +4541,7 @@ function(anElement, attrName, oldValue, newValue) {
      *     value.
      * @param {String} newValue The new value to put in place of the old value
      *     in the attribute's value.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Element} The element.
      */
 
@@ -4590,12 +4590,12 @@ TP.definePrimitive('elementRemoveClass',
 function(anElement, className) {
 
     /**
-     * @name elementRemoveClass
-     * @synopsis Removes a CSS class name from anElement's 'className' CSS class
+     * @method elementRemoveClass
+     * @summary Removes a CSS class name from anElement's 'className' CSS class
      *     list.
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} className The CSS class name to remove.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
 
@@ -4637,13 +4637,13 @@ TP.definePrimitive('elementReplaceClass',
 function(anElement, oldClassName, newClassName) {
 
     /**
-     * @name elementReplaceClass
-     * @synopsis Replaces the old CSS class name in anElement's 'className' CSS
+     * @method elementReplaceClass
+     * @summary Replaces the old CSS class name in anElement's 'className' CSS
      *     class list with the new CSS class name.
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} oldClassName The CSS class name to replace.
      * @param {String} newClassName The CSS class name to replace it with.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Element} The element.
      */
 
@@ -4686,11 +4686,11 @@ TP.definePrimitive('nodeReplaceTextWithEditor',
 function(aNode) {
 
     /**
-     * @name nodeReplaceTextWithEditor
-     * @synopsis Replaces the child text content of the supplied element with an
+     * @method nodeReplaceTextWithEditor
+     * @summary Replaces the child text content of the supplied element with an
      *     'editor' (that is, an XHTML 'input' field).
      * @param {Node} aNode The node to replace with the editor.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Element} The newly-inserted input field element.
      */
 
@@ -4735,12 +4735,12 @@ TP.definePrimitive('elementScrollBy',
 function(anElement, deltaX, deltaY) {
 
     /**
-     * @name elementScrollBy
-     * @synopsis Scrolls the element by the deltaX and deltaY amounts provided.
+     * @method elementScrollBy
+     * @summary Scrolls the element by the deltaX and deltaY amounts provided.
      * @param {HTMLElement} anElement The element to scroll.
      * @param {Number} deltaX The X coordinate to scroll the element by.
      * @param {Number} deltaY The Y coordinate to scroll the element by.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
      */
 
     if (!TP.isElement(anElement)) {
@@ -4763,12 +4763,12 @@ TP.definePrimitive('elementScrollTo',
 function(anElement, x, y) {
 
     /**
-     * @name elementScrollTo
-     * @synopsis Scrolls the element to the X and Y coordinates provided.
+     * @method elementScrollTo
+     * @summary Scrolls the element to the X and Y coordinates provided.
      * @param {HTMLElement} anElement The element to scroll.
      * @param {Number} x The X coordinate to scroll the element to.
      * @param {Number} y The Y coordinate to scroll the element to.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -4791,8 +4791,8 @@ TP.definePrimitive('elementSetBusyMessage',
 function(anElement, aMessage) {
 
     /**
-     * @name elementSetBusyMessage
-     * @synopsis Sets the busy element message to the supplied message.
+     * @method elementSetBusyMessage
+     * @summary Sets the busy element message to the supplied message.
      * @param {HTMLElement} anElement The element to set the busy element
      *     message for.
      * @param {String} aMessage The message to use for the busy message.
@@ -4817,9 +4817,9 @@ TP.definePrimitive('elementSetClipRect',
 function(anElement, top, right, bottom, left) {
 
     /**
-     * @name elementSetClipRect
-     * @synopsis Sets the element's clipping rectangle.
-     * @description If a Number is supplied to top, right, bottom or left, a
+     * @method elementSetClipRect
+     * @summary Sets the element's clipping rectangle.
+     * @summary If a Number is supplied to top, right, bottom or left, a
      *     default unit of 'px' is assumed.
      * @param {HTMLElement} anElement The element to set the clip rect on.
      * @param {Number|String} top The value to set the top coordinate of the
@@ -4830,7 +4830,7 @@ function(anElement, top, right, bottom, left) {
      *     the element's clipping rectangle to.
      * @param {Number|String} left The value to set the left coordinate of the
      *     element's clipping rectangle to.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -4853,14 +4853,14 @@ TP.definePrimitive('elementSetHeight',
 function(anElement, aHeight) {
 
     /**
-     * @name elementSetHeight
-     * @synopsis Sets the element's height.
-     * @description If a Number is supplied to aHeight a default unit of 'px' is
+     * @method elementSetHeight
+     * @summary Sets the element's height.
+     * @summary If a Number is supplied to aHeight a default unit of 'px' is
      *     assumed.
      * @param {HTMLElement} anElement The element to set the height on.
      * @param {Number|String} aHeight The height dimension to set anElement's
      *     height to.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -4882,14 +4882,14 @@ TP.definePrimitive('elementSetWidth',
 function(anElement, aWidth) {
 
     /**
-     * @name elementSetWidth
-     * @synopsis Sets the element's width.
-     * @description If a Number is supplied to aWidth a default unit of 'px' is
+     * @method elementSetWidth
+     * @summary Sets the element's width.
+     * @summary If a Number is supplied to aWidth a default unit of 'px' is
      *     assumed.
      * @param {HTMLElement} anElement The element to set the width on.
      * @param {Number|String} aWidth The width dimension to set anElement's
      *     width to.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -4911,10 +4911,10 @@ TP.definePrimitive('elementShow',
 function(anElement) {
 
     /**
-     * @name elementShow
-     * @synopsis Shows the element.
+     * @method elementShow
+     * @summary Shows the element.
      * @param {HTMLElement} anElement The element to display.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -4936,8 +4936,8 @@ TP.definePrimitive('$elementShowBusyLayer',
 function(anElement, aMessage, topCoord, leftCoord, width, height) {
 
     /**
-     * @name $elementShowBusyLayer
-     * @synopsis Shows the busy element for the supplied element. If there is no
+     * @method $elementShowBusyLayer
+     * @summary Shows the busy element for the supplied element. If there is no
      *     busy element for the supplied element, one is created and then shown.
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
@@ -4954,7 +4954,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      *     supplied, it will default to the width of the supplied element.
      * @param {Number} height The height of the busy element. If this is not
      *     supplied, it will default to the height of the supplied element.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {HTMLElement} The busy element itself.
      */
 
@@ -5044,13 +5044,13 @@ TP.definePrimitive('elementShowBusyMessage',
 function(anElement, aMessage) {
 
     /**
-     * @name elementShowBusyMessage
-     * @synopsis Shows a busy message along with associated graphic (when styled
+     * @method elementShowBusyMessage
+     * @summary Shows a busy message along with associated graphic (when styled
      *     using the defaults) for the element provided.
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
      * @param {String} aMessage The message to use for the busy message.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      */
 
     var busyElement,
@@ -5116,8 +5116,8 @@ TP.definePrimitive('elementSumAncestorValues',
 function(anElement, propName, useOffsetAncestors) {
 
     /**
-     * @name elementSumAncestorValues
-     * @synopsis Adds up the values of the given property starting at the
+     * @method elementSumAncestorValues
+     * @summary Adds up the values of the given property starting at the
      *     supplied element's ancestor and proceeding up the document tree until
      *     just under the #document node.
      * @param {Element} anElement The element to begin adding the property value
@@ -5126,7 +5126,7 @@ function(anElement, propName, useOffsetAncestors) {
      *     we traverse the ancestors.
      * @param {Boolean} useOffsetAncestors Whether or not to use the supplied
      *     element's 'offset' ancestors (i.e. 'offsetParent' up the chain).
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Number} The value of the property as computed up the ancestorp
      *     chain.
      */
@@ -5175,15 +5175,15 @@ TP.definePrimitive('elementSumAttributeValue',
 function(anElement, attrName, attrValue, atEnd, allowDuplicates) {
 
     /**
-     * @name elementSumAttributeValue
-     * @synopsis Adds the attribute value to the attribute named by attrName of
+     * @method elementSumAttributeValue
+     * @summary Adds the attribute value to the attribute named by attrName of
      *     the supplied element.
      * @param {Element} anElement The element to add the attribute value to.
      * @param {String} attrName The name of the attribute to add the value to.
      * @param {String} attrValue The value to add to the attribute's value.
      * @param {Boolean} atEnd Should the add go in at the end?
      * @param {Boolean} allowDuplicates Should we allow duplicate values?
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
      *     TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
@@ -5258,13 +5258,13 @@ TP.definePrimitive('elementWrapToContent',
 function(anElement) {
 
     /**
-     * @name elementWrapToContent
-     * @synopsis "Shrink wraps" the element to its content.
-     * @description This method grows or shrinks the element's size to be the
+     * @method elementWrapToContent
+     * @summary "Shrink wraps" the element to its content.
+     * @summary This method grows or shrinks the element's size to be the
      *     size of its contents. It also adjusts the clipping rectangle to that
      *     same dimension.
      * @param {HTMLElement} anElement The element to wrap to its content.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var elementWidth,
@@ -5299,8 +5299,8 @@ TP.definePrimitive('htmlElementAddContent',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name htmlElementAddContent
-     * @synopsis Adds content from theContent onto the end of the child content
+     * @method htmlElementAddContent
+     * @summary Adds content from theContent onto the end of the child content
      *     of anElement.
      * @param {Element} anElement The element receiving content.
      * @param {Node|String} theContent The content to insert into the element.
@@ -5326,8 +5326,8 @@ TP.definePrimitive('htmlElementInsertContent',
 function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
-     * @name htmlElementInsertContent
-     * @synopsis Inserts content from theContent into/around anElement based on
+     * @method htmlElementInsertContent
+     * @summary Inserts content from theContent into/around anElement based on
      *     the position given. The position should indicate whether the content
      *     should become the previous sibling, next sibling, first child or last
      *     child.
@@ -5342,7 +5342,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for an 'insert' operation is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -5754,9 +5754,9 @@ TP.definePrimitive('htmlElementReplaceWith',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name htmlElementReplaceWith
-     * @synopsis Replaces anElement which should be an HTML element.
-     * @description This method sets the 'outer content' of anElement to
+     * @method htmlElementReplaceWith
+     * @summary Replaces anElement which should be an HTML element.
+     * @summary This method sets the 'outer content' of anElement to
      *     theContent which means that the entire element, including its start
      *     and end tags, will be replaced with theContent. NOTE: This method may
      *     replace anElement!!! To use this method safely, always capture its
@@ -5768,7 +5768,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just replaced. The default for this operation is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element|Text} The newly created Node (could be a Text node) or
      *     anElement, depending on how the replacement happened.
      */
@@ -5949,10 +5949,10 @@ TP.definePrimitive('htmlElementSetContent',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name htmlElementSetContent
-     * @synopsis Sets the 'content' of anElement, which should be an HTML
+     * @method htmlElementSetContent
+     * @summary Sets the 'content' of anElement, which should be an HTML
      *     element.
-     * @description This method sets the 'inner content' of anElement to
+     * @summary This method sets the 'inner content' of anElement to
      *     theContent which means that just the contents of the element, not
      *     including its start and end tags, will be replaced with theContent.
      * @param {HTMLElement} anElement The element to set the 'inner content' of.
@@ -5963,7 +5963,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether anElement has
      *     a Window object associated with it or not.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
 
@@ -6113,12 +6113,12 @@ TP.definePrimitive('htmlElementAsXHTMLString',
 function(anElement) {
 
     /**
-     * @name htmlElementAsXHTMLString
-     * @synopsis Returns a String of well-formed XHTML for the HTML element.
+     * @method htmlElementAsXHTMLString
+     * @summary Returns a String of well-formed XHTML for the HTML element.
      *     This method tries to build a compliant XHTML string from the supplied
      *     element, which should be an HTML element.
      * @param {HTMLElement} anElement The Element to serialize.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} A String representation of the Element converted into
      *     XHTML.
      */
@@ -6442,10 +6442,10 @@ TP.definePrimitive('$htmlFragmentRepair',
 function(aFragment) {
 
     /**
-     * @name $htmlFragmentRepair
-     * @synopsis "Repairs" any content in the fragment that doesn't get properly
+     * @method $htmlFragmentRepair
+     * @summary "Repairs" any content in the fragment that doesn't get properly
      *     created when the supplied fragment is created.
-     * @description This method is only used in the htmlElement*Content()
+     * @summary This method is only used in the htmlElement*Content()
      *     methods to repair XML content that has been placed within HTML. For
      *     now, this is limited to Gecko/Webkit browsers and is used only for
      *     SVG embedded in HTML.
@@ -6511,12 +6511,12 @@ TP.definePrimitive('htmlNodeAsXHTMLNode',
 function(aNode, aDocument) {
 
     /**
-     * @name htmlNodeAsXHTMLNode
-     * @synopsis Returns an XHTML Node representing the supplied HTML node.
+     * @method htmlNodeAsXHTMLNode
+     * @summary Returns an XHTML Node representing the supplied HTML node.
      * @param {HTMLNode} aNode The HTML Node to convert into XHTML.
      * @param {XMLDocument} aDocument The document which should own the result
      *     node. Defaults to the XML document TP.XML_FACTORY_DOCUMENT.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} An XML Node representation of aNode.
      */
 
@@ -6622,10 +6622,10 @@ TP.definePrimitive('htmlNodeAsXHTMLString',
 function(aNode) {
 
     /**
-     * @name htmlNodeAsXHTMLString
-     * @synopsis Returns an XHTML String representing the supplied HTML node.
+     * @method htmlNodeAsXHTMLString
+     * @summary Returns an XHTML String representing the supplied HTML node.
      * @param {HTMLNode} aNode The Node to serialize.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {String} A String representation of the Node converted into
      *     XHTML.
      */
@@ -6650,12 +6650,12 @@ TP.definePrimitive('iframeAddContent',
 function(anElement, aContent) {
 
     /**
-     * @name iframeAddContent
-     * @synopsis Adds the content to that of the supplied HTML iframe element.
+     * @method iframeAddContent
+     * @summary Adds the content to that of the supplied HTML iframe element.
      * @param {HTMLElement} anElement The iframe element to set the content of.
      * @param {String|Node} aContent The content to add to the content in the
      *     iframe.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidElement,
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
      *     TP.sig.InvalidDocument
      */
 
@@ -6693,8 +6693,8 @@ TP.definePrimitive('iframeSetContent',
 function(anElement, aContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name iframeSetContent
-     * @synopsis Set the content of the supplied HTML iframe element.
+     * @method iframeSetContent
+     * @summary Set the content of the supplied HTML iframe element.
      * @param {HTMLElement} anElement The iframe element to set the content of.
      * @param {String|Node} aContent The content to set into the iframe.
      * @param {Function} loadedFunction The Function object to execute when the
@@ -6702,7 +6702,7 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether anElement has
      *     a Window object associated with it or not.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidElement,
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
      *     TP.sig.InvalidDocument
      */
 
@@ -6770,12 +6770,12 @@ TP.definePrimitive('nodeAsHTMLNode',
 function(aNode, aDocument) {
 
     /**
-     * @name nodeAsHTMLNode
-     * @synopsis Returns an HTML Node built from the supplied node, if possible.
+     * @method nodeAsHTMLNode
+     * @summary Returns an HTML Node built from the supplied node, if possible.
      * @param {Node} aNode The Node to convert into HTML.
      * @param {HTMLDocument} aDocument The document which should own the result
      *     node. Defaults to the current canvas's document.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} An HTML node.
      */
 
@@ -6911,13 +6911,13 @@ TP.definePrimitive('nodeAsHTMLString',
 function(aNode) {
 
     /**
-     * @name nodeAsHTMLString
-     * @synopsis Returns an HTML string built from the supplied node. The HTML
+     * @method nodeAsHTMLString
+     * @summary Returns an HTML string built from the supplied node. The HTML
      *     string returned is a best-attempt at producing a valid string of
      *     markup that could be used in an innerHTML call. This is part of the
      *     core "cleansing" pathway to help ensure that content going into the
      *     UI is proper HTML content.
-     * @description The setContent pipeline of TIBET requires properly formatted
+     * @summary The setContent pipeline of TIBET requires properly formatted
      *     HTML content when the target node is an HTML node. This routine is
      *     the primary interface to perform any translation that's needed to get
      *     the new content ready. You have two options when using this routine.
@@ -6928,7 +6928,7 @@ function(aNode) {
      *     more rigorous and accurate, however it can also be slower on larger
      *     target nodes.
      * @param {Node} aNode The Node to convert into HTML.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {String} An HTML string.
      */
 
@@ -6949,14 +6949,14 @@ TP.definePrimitive('nodeAsXMLNode',
 function(aNode, aDocument) {
 
     /**
-     * @name nodeAsXMLNode
-     * @synopsis Returns an XML Node representing the supplied node. For most
+     * @method nodeAsXMLNode
+     * @summary Returns an XML Node representing the supplied node. For most
      *     nodes this just returns the node, but for HTML nodes it will return
      *     an XHTML node representation built from the receiver's content.
      * @param {Node} aNode The Node to convert into XML as needed.
      * @param {XMLDocument} aDocument The document which should own the result
      *     node. Defaults to the XML document TP.XML_FACTORY_DOCUMENT.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} An XML Node representation of aNode.
      */
 
@@ -6984,10 +6984,10 @@ TP.definePrimitive('nodeAsXMLString',
 function(aNode) {
 
     /**
-     * @name nodeAsXMLString
-     * @synopsis Returns a String of well-formed XML for the node.
+     * @method nodeAsXMLString
+     * @summary Returns a String of well-formed XML for the node.
      * @param {Node} aNode The Node to serialize.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {String} A String representation of the Node converted into XML.
      */
 
@@ -7010,8 +7010,8 @@ TP.definePrimitive('stringAsHTMLAttribute',
 function(aString) {
 
     /**
-     * @name stringAsHTMLAttribute
-     * @synopsis Returns the incoming string properly escaped for use in an HTML
+     * @method stringAsHTMLAttribute
+     * @summary Returns the incoming string properly escaped for use in an HTML
      *     attribute value.
      * @param {String} aString The string to process.
      * @returns {String}
@@ -7030,14 +7030,14 @@ TP.definePrimitive('stringAsHTMLNode',
 function(aString, aDocument) {
 
     /**
-     * @name stringAsHTMLNode
-     * @synopsis Converts the supplied markup to an HTML node. Note that in
+     * @method stringAsHTMLNode
+     * @summary Converts the supplied markup to an HTML node. Note that in
      *     order to ensure that the node is being created from HTML markup, this
      *     method calls TP.stringAsHTMLString() on the supplied String.
      * @param {String} aString The markup to create the Node from.
      * @param {HTMLDocument} aDocument The document which should own the result
      *     node. Defaults to the current canvas's document.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {Node} The node created from the supplied content.
      */
 
@@ -7134,10 +7134,10 @@ TP.definePrimitive('stringAsHTMLString',
 function(aString) {
 
     /**
-     * @name stringAsHTMLString
-     * @synopsis Converts the supplied markup to a string of HTML markup.
+     * @method stringAsHTMLString
+     * @summary Converts the supplied markup to a string of HTML markup.
      * @param {String} aString The markup to create the Node from.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {Node} The node created from the supplied content.
      */
 
@@ -7289,14 +7289,14 @@ TP.definePrimitive('nodeAwakenContent',
 function(aNode, aDocument, aWindow) {
 
     /**
-     * @name nodeAwakenContent
-     * @synopsis Awakens aNode and any child nodes under it. This version is a
+     * @method nodeAwakenContent
+     * @summary Awakens aNode and any child nodes under it. This version is a
      *     placeholder until the entire kernel has loaded and the rest of the
      *     awakening machinery is available.
      * @param {Node} aNode The node to awaken.
      * @param {Document} aDocument The node's document.
      * @param {Window} aWindow The node's window.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     return;
@@ -7308,8 +7308,8 @@ TP.definePrimitive('nodeAwakenChildNodesFromTo',
 function(aNode, startIndex, endIndex) {
 
     /**
-     * @name nodeAwakenChildNodesFromTo
-     * @synopsis Awakens child nodes of aNode from startIndex to endIndex. Note
+     * @method nodeAwakenChildNodesFromTo
+     * @summary Awakens child nodes of aNode from startIndex to endIndex. Note
      *     that this function treats its supplied indexes as inclusive, which
      *     means that the child nodes at startIndex and at endIndex will also be
      *     awakened.
@@ -7381,14 +7381,14 @@ TP.definePrimitive('nodeGetElementsByClassName',
 function(aNode, aClassName) {
 
     /**
-     * @name nodeGetElementsByClassName
-     * @synopsis Returns an Array of Elements under aNode whose CSS class name
+     * @method nodeGetElementsByClassName
+     * @summary Returns an Array of Elements under aNode whose CSS class name
      *     matches aClassName.
      * @param {Node} aNode The node to act as the common parent when looking for
      *     elements with the supplied class name.
      * @param {String} aClassName The class name to use to find matching
      *     elements. Multiple class names should be space separated.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Array} An Array of Elements under anElement whose CSS class
      *     name matches aClassName.
      */
@@ -7424,12 +7424,12 @@ TP.definePrimitive('nodeEmptyContent',
 function(aNode) {
 
     /**
-     * @name nodeEmptyContent
-     * @synopsis Removes all content from the node provided, effectively setting
+     * @method nodeEmptyContent
+     * @summary Removes all content from the node provided, effectively setting
      *     the node's content to either null or the empty string depending on
      *     node capabilities.
      * @param {Node} aNode The node to empty.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The node.
      */
 
@@ -7517,8 +7517,8 @@ TP.definePrimitive('computeAngleFromCenter',
 function(centerObj, endObj) {
 
     /**
-     * @name computeAngleFromCenter
-     * @synopsis Returns the angle (in degrees) between two objects one of which
+     * @method computeAngleFromCenter
+     * @summary Returns the angle (in degrees) between two objects one of which
      *     represents a 'center point' and the other an 'end point'.
      * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} centerObj
      *     An event object or an element specification, or element suitable for
@@ -7562,10 +7562,10 @@ TP.definePrimitive('computeAngleFromEnds',
 function(obj1, obj2) {
 
     /**
-     * @name computeAngleFromEnds
-     * @synopsis Returns the angle (in degrees) between two objects that
+     * @method computeAngleFromEnds
+     * @summary Returns the angle (in degrees) between two objects that
      *     represent the 'end points'.
-     * @description Given the two points (x1, y1) and (x2, y2), the distance
+     * @summary Given the two points (x1, y1) and (x2, y2), the distance
      *     between these points is given by the formula:
      *
      *     degreesStandardizedTo360(atan2(y2 - y1, x2 - x1))
@@ -7624,11 +7624,11 @@ TP.definePrimitive('computeCompassCorner',
 function(angle, numIncrements, centerInIncrement) {
 
     /**
-     * @name computeCompassCorner
-     * @synopsis Computes a 'compass corner' given an angle. The values advance
+     * @method computeCompassCorner
+     * @summary Computes a 'compass corner' given an angle. The values advance
      *     around the compass in a clockwise fashion (i.e. north is 1, east is
      *     9, south is 17, west is 25).
-     * @description Given the angle, this method returns a value which is
+     * @summary Given the angle, this method returns a value which is
      *     compatible with the following constants:
      *
      *     TP.NORTH TP.NORTH_BY_EAST TP.NORTH_NORTHEAST TP.NORTHEAST_BY_NORTH
@@ -7659,7 +7659,7 @@ function(angle, numIncrements, centerInIncrement) {
      *     This prevents the computation from snapping at the 'first clockwise
      *     edge' and snapping to the center of the wedge instead. It is true by
      *     default, but requires the 'numIncrements' parameter to be supplied.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {Number} A Number matching the constant corresponding to the
      *     compass corner.
      */
@@ -7710,10 +7710,10 @@ TP.definePrimitive('computeDistance',
 function(obj1, obj2) {
 
     /**
-     * @name computeDistance
-     * @synopsis Returns the distance between two objects. Useful for things
+     * @method computeDistance
+     * @summary Returns the distance between two objects. Useful for things
      *     like drag and drop tolerances or magnetism.
-     * @description Given the two points (x1, y1) and (x2, y2), the distance
+     * @summary Given the two points (x1, y1) and (x2, y2), the distance
      *     between these points is given by the formula:
      *
      *     d = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
@@ -7761,8 +7761,8 @@ TP.definePrimitive('computeVector',
 function(obj1, obj2) {
 
     /**
-     * @name computeVector
-     * @synopsis Computes an informal vector, effectively a magnitude (distance)
+     * @method computeVector
+     * @summary Computes an informal vector, effectively a magnitude (distance)
      *     and a direction (in degrees) between two objects. The typical inputs
      *     are elements or events whose coordinates are used for the
      *     computation.
@@ -7813,14 +7813,14 @@ TP.definePrimitive('$computeOpaqueEnabledTargetFrom',
 function(anElement) {
 
     /**
-     * @name $computeOpaqueEnabledTargetFrom
-     * @synopsis Computes an event target starting at the supplied element and
+     * @method $computeOpaqueEnabledTargetFrom
+     * @summary Computes an event target starting at the supplied element and
      *     working up the parent chain to an element (which may be the supplied
      *     element) that has a 'tibet:opaque' attribute on it. If any element in
      *     the chain is 'disabled', this routine returns null.
      * @param {HTMLElement} anElement The element to begin searching for the
      *     event target.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var theElement,
@@ -7868,9 +7868,9 @@ TP.definePrimitive('$$checkWindowClosed',
 function(aWindow, aWindowID) {
 
     /**
-     * @synopsis Checks to see if the window whose ID is provided is indeed
+     * @summary Checks to see if the window whose ID is provided is indeed
      *     closed.
-     * @description This function checks to see if a window which got an
+     * @summary This function checks to see if a window which got an
      *     onunload event is truly closed. This function is scheduled by the
      *     standard onunload event handler to ensure that it will fire the
      *     proper TIBET event accurately. If the window is closed, this function
@@ -7883,7 +7883,7 @@ function(aWindow, aWindowID) {
      *     this method.
      * @param {Window} aWindow The window to check.
      * @param {String} aWindowID The ID of the window to check.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidString
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidString
      * @returns {Boolean} True if the call succeeded.
      * @function $$checkWindowClosed
      */
@@ -7920,9 +7920,9 @@ TP.definePrimitive('open',
 function(url, name, aSpec, shouldReplace) {
 
     /**
-     * @synopsis Opens a new Window and instruments it to set it up for use with
+     * @summary Opens a new Window and instruments it to set it up for use with
      *     TIBET.
-     * @description This function opens a new window and sets it up for use with
+     * @summary This function opens a new window and sets it up for use with
      *     TIBET. This function manages a number of problems with the standard
      *     window.open() call, including firing an onload properly after an
      *     asychronous window.load call that is loaded externally (which native
@@ -8030,9 +8030,9 @@ TP.definePrimitive('$$processDocumentLoaded',
 function(aWindow) {
 
     /**
-     * @name $$processDocumentLoaded
-     * @synopsis The standard TIBET hook for consistent onload processing.
-     * @description This function is attached to native windows by tibet_hook.js
+     * @method $$processDocumentLoaded
+     * @summary The standard TIBET hook for consistent onload processing.
+     * @summary This function is attached to native windows by tibet_hook.js
      *     to ensure we get a consistent entry point for page setup. Once
      *     invoked, this function will find and invoke any onload functions
      *     registered for the window via the TP.core.Window method
@@ -8040,7 +8040,7 @@ function(aWindow) {
      *     TP.sig.DocumentLoaded and TP.sig.DOMContentLoaded for the window and
      *     document respectively.
      * @param {Window} aWindow The window which was loaded.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      */
 
     var allElems,
@@ -8190,14 +8190,14 @@ function(aWindow) {
 TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
 
     /**
-     * @name $$processDocumentUnloaded
-     * @synopsis Processes an onunload event from the window by executing all of
+     * @method $$processDocumentUnloaded
+     * @summary Processes an onunload event from the window by executing all of
      *     the onunload functions registered by the function above and then
      *     signaling the tibet frame with our window's global ID.
      * @param {Window} aWindow The window which was loaded.
      * @param {Boolean} checkForWindowClosed Whether we should check to see if
      *     the window is closing.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      */
 
     var checkWindow,
@@ -8312,8 +8312,8 @@ TP.definePrimitive('win',
 function(anObject) {
 
     /**
-     * @name win
-     * @synopsis A general purpose routine that can return a window based on a
+     * @method win
+     * @summary A general purpose routine that can return a window based on a
      *     variety of input object types.
      * @param {Object} anObject A string, window, node, or other object which
      *     can provide a window or be used to construct one.
@@ -8345,15 +8345,15 @@ TP.definePrimitive('windowAssignACLKeys',
 function(aWindow, aclType) {
 
     /**
-     * @name windowAssignACLKeys
-     * @synopsis Updates the current set of ACL keys on the window's document's
+     * @method windowAssignACLKeys
+     * @summary Updates the current set of ACL keys on the window's document's
      *     body element (when available). This operation sets acl: attributes
      *     which can be leveraged to drive UI changes via CSS that are
      *     "permission-specific" to the current user.
      * @param {Window} aWindow The native window to update.
      * @param {String} aclType The acl type: real or effective. When not present
      *     both are set.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      */
 
     var doc;
@@ -8415,11 +8415,11 @@ TP.definePrimitive('windowAssignCommonIds',
 function(aWindow) {
 
     /**
-     * @name windowAssignCommonIds
-     * @synopsis Assigns ids to commonly used elements, such as the root
+     * @method windowAssignCommonIds
+     * @summary Assigns ids to commonly used elements, such as the root
      *     element, the head, the body, etc. (if they don't already exist).
      * @param {Window} aWindow The native window to update.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      */
 
     var doc,
@@ -8484,10 +8484,10 @@ TP.definePrimitive('windowComputeWindowOffsets',
 function(aWindow, otherWindow, wantsTransformed) {
 
     /**
-     * @name windowComputeWindowOffsets
-     * @synopsis Computes position offsets between the first window and the
+     * @method windowComputeWindowOffsets
+     * @summary Computes position offsets between the first window and the
      *     second window.
-     * @description This method assumes that the supplied windows are either
+     * @summary This method assumes that the supplied windows are either
      *     iframe windows embedded somewhere in the same top-level window (maybe
      *     at different levels) or one of them is the top-level window itself.
      *     Note that this routine will hand back positive values if the second
@@ -8500,7 +8500,7 @@ function(aWindow, otherWindow, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the window's iframe element
      *     has been transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Array} The offsets expressed as [left, top].
      */
 
@@ -8565,10 +8565,10 @@ TP.definePrimitive('windowComputeTransformationMatrix',
 function(aWindow, wants2DMatrix) {
 
     /**
-     * @name windowComputeTransformationMatrix
-     * @synopsis Returns the 'computed' transformation matrix for the window
+     * @method windowComputeTransformationMatrix
+     * @summary Returns the 'computed' transformation matrix for the window
      *     (really its iframe element).
-     * @description This method assumes that the window is embedded in an iframe
+     * @summary This method assumes that the window is embedded in an iframe
      *      (which may be embedded in more iframes up to a top-level window) and
      *      is really returning the transformation of those iframe elements up
      *      to the top-level window.
@@ -8622,10 +8622,10 @@ TP.definePrimitive('windowGetParentNames',
 function(aWindow) {
 
     /**
-     * @name windowGetParentNames
-     * @synopsis Returns the list of parent window/frame names for the window
+     * @method windowGetParentNames
+     * @summary Returns the list of parent window/frame names for the window
      *     provided. This data is used in building a global ID.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Array} The names of all of the parent windows of aWindow all
      *     the way up to the top level window containing it.
      */
@@ -8677,12 +8677,12 @@ TP.definePrimitive('windowGetScreenWidthAndHeight',
 function(aWindow) {
 
     /**
-     * @name windowGetScreenWidthAndHeight
-     * @synopsis Obtains the width and height of the screen that contains the
+     * @method windowGetScreenWidthAndHeight
+     * @summary Obtains the width and height of the screen that contains the
      *     supplied window.
      * @param {Window} aWindow The window whose screen the width and height will
      *     be obtained.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Array} An ordered pair containing the width amount in the first
      *     position and the height amount in the second position.
      */
@@ -8700,8 +8700,8 @@ TP.definePrimitive('windowIsInstrumented',
 function(aWindow) {
 
     /**
-     * @name windowIsInstrumented
-     * @synopsis Checks to see whether the supplied native window has been
+     * @method windowIsInstrumented
+     * @summary Checks to see whether the supplied native window has been
      *     instrumented (that is, provided with TIBET window features.
      * @param {Window} aWindow The window to test.
      * @returns {Boolean} Whether or not the supplied native window has been
@@ -8723,12 +8723,12 @@ TP.definePrimitive('windowMoveBy',
 function(aWindow, deltaX, deltaY) {
 
     /**
-     * @name windowMoveBy
-     * @synopsis Moves the window by the deltaX and deltaY amounts provided.
+     * @method windowMoveBy
+     * @summary Moves the window by the deltaX and deltaY amounts provided.
      * @param {Window} aWindow The window to move.
      * @param {Number} deltaX The X amount to move the window by.
      * @param {Number} deltaY The Y amount to move the window by.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNumber
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -8750,12 +8750,12 @@ TP.definePrimitive('windowMoveTo',
 function(aWindow, x, y) {
 
     /**
-     * @name windowMoveTo
-     * @synopsis Moves the window to the X and Y coordinates provided.
+     * @method windowMoveTo
+     * @summary Moves the window to the X and Y coordinates provided.
      * @param {Window} aWindow The window to move.
      * @param {Number} x The X coordinate to move the window to.
      * @param {Number} y The Y coordinate to move the window to.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNumber
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -8777,13 +8777,13 @@ TP.definePrimitive('windowRefreshContentFrom',
 function(aWindow, anHref) {
 
     /**
-     * @name windowRefreshContentFrom
-     * @synopsis Looks for content within the supplied Window that is associated
+     * @method windowRefreshContentFrom
+     * @summary Looks for content within the supplied Window that is associated
      *     with the supplied href and refreshes it on the page.
      * @param {Window} aWindow The window to reset the location of.
      * @param {String} anHref The href to search in the Window for associated
      *     content.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidURI,TP.sig.InvalidDocument,
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidURI,TP.sig.InvalidDocument,
      *     TP.sig.InvalidElement
      */
 
@@ -8854,11 +8854,11 @@ TP.definePrimitive('windowResetLocation',
 function(aWindow) {
 
     /**
-     * @name windowResetLocation
-     * @synopsis Resets the window's location using the 'TIBET-approved' way of
+     * @method windowResetLocation
+     * @summary Resets the window's location using the 'TIBET-approved' way of
      *     doing so. This method is used by the hook file to (re)process
      *     navigations using links, etc.
-     * @description The tibet_hook.js file captures all inbound locations and
+     * @summary The tibet_hook.js file captures all inbound locations and
      *     routes them to this call so that all TIBET-enabled pages which find
      *     their way into a window are properly processed for CSS and/or markup
      *     extensions. This allows TIBET to work effectively with content
@@ -8935,8 +8935,8 @@ TP.definePrimitive('windowSetupBackKeyHandlers',
 function(aWindow) {
 
     /**
-     * @name windowSetupBackKeyHandlers
-     * @synopsis Configures the top level window(s) so that keydown (in the case
+     * @method windowSetupBackKeyHandlers
+     * @summary Configures the top level window(s) so that keydown (in the case
      *     of IE) or keypress (in the case of Mozilla) with the 'backspace' key
      *     received by the window itself will not cause TIBET to be flushed back
      *     to its frameset.
@@ -8970,8 +8970,8 @@ TP.definePrimitive('windowSetupFocusHandlers',
 function(aWindow) {
 
     /**
-     * @name windowSetupFocusHandlers
-     * @synopsis Configures the top level window(s) so that focus will return to
+     * @method windowSetupFocusHandlers
+     * @summary Configures the top level window(s) so that focus will return to
      *     the canvas rather than moving outside the ui frame(s).
      * @param {Window} aWindow The window to configure.
      */

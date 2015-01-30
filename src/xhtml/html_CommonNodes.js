@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @description The following types aren't strict XHTML "entities" as defined in
+ * @summary The following types aren't strict XHTML "entities" as defined in
  *     the XTHML DTD but they form a useful framework for attribute inheritance.
  *     TIBET's XHTML node types inherit from appropriate points in this
  *     hierarchy. To improve reuse where necessary, multiple inheritance is used
@@ -68,8 +68,8 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
 theRequest) {
 
     /**
-     * @name generateMarkup
-     * @synopsis Generates markup for the supplied Object using the other
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
      *     parameters supplied.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {String} attrStr The String containing either the literal
@@ -129,8 +129,8 @@ TP.html.List.Type.defineMethod('getItemTagName',
 function() {
 
     /**
-     * @name getItemTagName
-     * @synopsis Returns the 'default item tag name' for use it the
+     * @method getItemTagName
+     * @summary Returns the 'default item tag name' for use it the
      *     fromArray()/fromObject() methods.
      * @returns {String} The ID of the observer.
      */
@@ -144,8 +144,8 @@ TP.html.List.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing

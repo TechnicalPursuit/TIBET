@@ -30,8 +30,8 @@ TP.hc(
     function(anObj) {
 
         /**
-         * @name isError
-         * @synopsis Returns true if the object provided is an Error object.
+         * @method isError
+         * @summary Returns true if the object provided is an Error object.
          * @param {Object} anObj The Object to test.
          * @returns {Boolean} Whether or not the supplied object is an Event
          *     object.
@@ -49,8 +49,8 @@ TP.hc(
     function(anObj) {
 
         /**
-         * @name isError
-         * @synopsis Returns true if the object provided is an Error object.
+         * @method isError
+         * @summary Returns true if the object provided is an Error object.
          * @param {Object} anObj The Object to test.
          * @returns {Boolean} Whether or not the supplied object is an Event
          *     object.
@@ -85,8 +85,8 @@ TP.hc(
         privilegedFunction) {
 
         /**
-         * @name executePrivileged
-         * @synopsis Execute a function that requires some sort of special
+         * @method executePrivileged
+         * @summary Execute a function that requires some sort of special
          *     browser privileges, like reading data or a page in another domain
          *     or writing to the file system.
          * @param {String} privilegedOp One of the 'privileged operation'
@@ -353,8 +353,8 @@ TP.hc(
             privilegedFunction) {
 
         /**
-         * @name executePrivileged
-         * @synopsis Execute a function that requires some sort of special
+         * @method executePrivileged
+         * @summary Execute a function that requires some sort of special
          *     browser privileges, like reading data or a page in another domain
          *     or writing to the file system.
          * @param {String} privilegedOp One of the 'privileged operation'
@@ -559,8 +559,8 @@ TP.hc(
         privilegedFunction) {
 
         /**
-         * @name executePrivileged
-         * @synopsis Execute a function that requires some sort of special
+         * @method executePrivileged
+         * @summary Execute a function that requires some sort of special
          *     browser privileges, like reading data or a page in another domain
          *     or writing to the file system.
          * @param {String} privilegedOp One of the 'privileged operation'
@@ -598,8 +598,8 @@ TP.hc(
     function(errorObj) {
 
         /**
-         * @name errorAsString
-         * @synopsis Returns a String representation of the supplied Error
+         * @method errorAsString
+         * @summary Returns a String representation of the supplied Error
          *     object.
          * @param {Error} errorObj The Error object to obtain the String
          *     representation of.
@@ -641,8 +641,8 @@ TP.hc(
     function(errorObj) {
 
         /**
-         * @name errorAsString
-         * @synopsis Returns a String representation of the supplied Error
+         * @method errorAsString
+         * @summary Returns a String representation of the supplied Error
          *     object.
          * @param {Error} errorObj The Error object to obtain the String
          *     representation of.
@@ -663,8 +663,8 @@ TP.hc(
     function(errorObj) {
 
         /**
-         * @name errorAsString
-         * @synopsis Returns a String representation of the supplied Error
+         * @method errorAsString
+         * @summary Returns a String representation of the supplied Error
          *     object.
          * @param {Error} errorObj The Error object to obtain the String
          *     representation of.
@@ -727,9 +727,9 @@ TP.hc(
     function(errorObj) {
 
         /**
-         * @name getStackInfo
-         * @synopsis Extracts stack information from the supplied Error object.
-         * @description This method returns an Array of function names, file
+         * @method getStackInfo
+         * @summary Extracts stack information from the supplied Error object.
+         * @summary This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number]
@@ -773,9 +773,9 @@ TP.hc(
     function(errorObj) {
 
         /**
-         * @name getStackInfo
-         * @synopsis Extracts stack information from the supplied Error object.
-         * @description This method returns an Array of function names, file
+         * @method getStackInfo
+         * @summary Extracts stack information from the supplied Error object.
+         * @summary This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number]
@@ -821,9 +821,9 @@ TP.hc(
     function(errorObj) {
 
         /**
-         * @name getStackInfo
-         * @synopsis Extracts stack information from the supplied Error object.
-         * @description This method returns an Array of function names, file
+         * @method getStackInfo
+         * @summary Extracts stack information from the supplied Error object.
+         * @summary This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number]
@@ -868,9 +868,9 @@ TP.hc(
     function(errorObj) {
 
         /**
-         * @name getStackInfo
-         * @synopsis Extracts stack information from the supplied Error object.
-         * @description This method returns an Array of function names, file
+         * @method getStackInfo
+         * @summary Extracts stack information from the supplied Error object.
+         * @summary This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number, character number]
@@ -945,8 +945,8 @@ TP.hc(
     function(setting) {
 
         /**
-         * @name $setPrivilegeFlag
-         * @synopsis Sets the privilege flag of the supplied privileged
+         * @method $setPrivilegeFlag
+         * @summary Sets the privilege flag of the supplied privileged
          *     operation to the supplied setting.
          */
 
@@ -981,8 +981,8 @@ TP.hc(
     function(setting) {
 
         /**
-         * @name $setPrivilegeFlag
-         * @synopsis Sets the privilege flag of the supplied privileged
+         * @method $setPrivilegeFlag
+         * @summary Sets the privilege flag of the supplied privileged
          *     operation to the supplied setting.
          */
 
@@ -995,8 +995,8 @@ TP.hc(
     function() {
 
         /**
-         * @name $setPrivilegeFlag
-         * @synopsis Sets the privilege flag of the supplied privileged
+         * @method $setPrivilegeFlag
+         * @summary Sets the privilege flag of the supplied privileged
          *     operation to the supplied setting.
          */
 
@@ -1022,9 +1022,9 @@ TP.hc(
     function(aNode) {
 
         /**
-         * @name $nodeToString
-         * @synopsis Returns a 'representational' String of the supplied Node.
-         * @description Because IE does such a poor job of printing a reasonable
+         * @method $nodeToString
+         * @summary Returns a 'representational' String of the supplied Node.
+         * @summary Because IE does such a poor job of printing a reasonable
          *     representation of Nodes (they aren't even JS objects that one can
          *     send toString() to), we take in Nodes here and produce the same
          *     String that Mozilla produces.
@@ -1134,9 +1134,9 @@ TP.hc(
     function(aNode) {
 
         /**
-         * @name $nodeToString
-         * @synopsis Returns a 'representational' String of the supplied Node.
-         * @description Because Webkit does such a poor job of printing a
+         * @method $nodeToString
+         * @summary Returns a 'representational' String of the supplied Node.
+         * @summary Because Webkit does such a poor job of printing a
          *     reasonable representation of Nodes, we take in Nodes here and
          *     produce the same String that Gecko produces.
          * @param {Node} aNode The Node to produce a representational String
@@ -1253,9 +1253,9 @@ TP.hc(
     function(anObject) {
 
         /**
-         * @name objectToString
-         * @synopsis Returns a 'representational String' of anObject.
-         * @description This function is mostly used when the object in question
+         * @method objectToString
+         * @summary Returns a 'representational String' of anObject.
+         * @summary This function is mostly used when the object in question
          *     cannot respond to toString(). In IE, this happens quite often
          *     with DOM / XML objects because they're not real JavaScript
          *     objects, but ActiveX objects :-(. For most browsers this function
@@ -1375,12 +1375,12 @@ TP.hc(
     function(anObject) {
 
         /**
-         * @name objectToString
-         * @synopsis Returns a 'representational string' of anObject that is
+         * @method objectToString
+         * @summary Returns a 'representational string' of anObject that is
          *     consistent in format to the builtin toString method which, for
          *     some reason known only to the implementers of IE, doesn't
          *     actually work on all objects.
-         * @description This function is mostly used when the object in question
+         * @summary This function is mostly used when the object in question
          *     cannot respond to toString(). In IE, this happens in particular
          *     with DOM / XML objects because they're not real JS objects, but
          *     ActiveX objects :-(.
@@ -1513,9 +1513,9 @@ TP.hc(
     function(anObject) {
 
         /**
-         * @name objectToString
-         * @synopsis Returns a 'representational String' of anObject.
-         * @description This function is mostly used when the object in question
+         * @method objectToString
+         * @summary Returns a 'representational String' of anObject.
+         * @summary This function is mostly used when the object in question
          *     cannot respond to toString(). In IE, this happens quite often
          *     with DOM / XML objects because they're not real JavaScript
          *     objects, but ActiveX objects :-(. For Webkit based browsers this

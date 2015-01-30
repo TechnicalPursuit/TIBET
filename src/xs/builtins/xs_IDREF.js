@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.IDREF}
- * @synopsis An TP.xs.NCName-formatted value which must refer to a unique
+ * @summary An TP.xs.NCName-formatted value which must refer to a unique
  *     element within the document in which it is defined. Note that the current
  *     implementation does not check for this constraint but simply verifies
  *     that the IDREF value is a valid NCName.

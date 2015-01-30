@@ -32,7 +32,7 @@ TP.core.UIElementNode.Inst.defineMethod('getHaloParent',
 function(aHalo) {
 
     /**
-     * @name getHaloParent
+     * @method getHaloParent
      * @abstract
      * @param
      * @returns {TP.core.ElementNode}
@@ -47,7 +47,7 @@ TP.core.UIElementNode.Inst.defineMethod('getHaloRect',
 function(aHalo) {
 
     /**
-     * @name getHaloParent
+     * @method getHaloParent
      * @returns {TP.core.ElementNode}
      * @abstract
      */
@@ -87,7 +87,7 @@ TP.core.UIElementNode.Inst.defineMethod('getNextHaloChild',
 function(aHalo, aSignal) {
 
     /**
-     * @name getNextHaloChild
+     * @method getNextHaloChild
      * @param {TP.sig.Signal} aSignal
      * @returns {TP.core.ElementNode}
      * @abstract
@@ -128,8 +128,8 @@ TP.core.UIElementNode.Inst.defineMethod('getUIEditorType',
 function() {
 
     /**
-     * @name getUIEditorType
-     * @synopsis Returns the UIEditor subtype used to edit any UI elements.
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit any UI elements.
      * @returns {Type}
      */
 
@@ -191,8 +191,8 @@ TP.html.body.Type.defineMethod('getUIEditorType',
 function(anElement) {
 
     /**
-     * @name getUIEditorType
-     * @synopsis Returns the UIEditor subtype used to edit 'body' elements.
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit 'body' elements.
      * @param {HTMLElement} anElement
      * @returns {Type}
      */
@@ -206,8 +206,8 @@ TP.html.head.Type.defineMethod('getUIEditorType',
 function(anElement) {
 
     /**
-     * @name getUIEditorType
-     * @synopsis Returns the UIEditor subtype used to edit 'head' elements.
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit 'head' elements.
      * @param {HTMLElement} anElement
      * @returns {Type}
      */
@@ -221,8 +221,8 @@ TP.html.html.Type.defineMethod('getUIEditorType',
 function(anElement) {
 
     /**
-     * @name getUIEditorType
-     * @synopsis Returns the UIEditor subtype used to edit 'html' elements.
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit 'html' elements.
      * @param {HTMLElement} anElement
      * @returns {Type}
      */
@@ -238,7 +238,7 @@ TP.html.body.Inst.defineMethod('getHaloParent',
 function(aHalo) {
 
     /**
-     * @name getHaloParent
+     * @method getHaloParent
      * @abstract
      * @param
      * @returns {TP.core.ElementNode}
@@ -259,8 +259,8 @@ TP.core.UIElementNodeEditor.Type.defineMethod('haloNorthwestClick',
 function(targetTPElement, cornerTPElement) {
 
     /**
-     * @name getUIEditorType
-     * @synopsis Returns the UIEditor subtype used to edit 'html' elements.
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit 'html' elements.
      * @param {} targetTPElement
      * @returns {Type}
      */

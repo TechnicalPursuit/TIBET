@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tsh.transform}
- * @synopsis A subtype of TP.core.ActionElementNode that knows how to transform
+ * @summary A subtype of TP.core.ActionElementNode that knows how to transform
  *     source data (supplied by stdin) against registered templates (or
  *     templates embedded as child nodes) and write it to stdout.
  */
@@ -30,8 +30,8 @@ TP.tsh.transform.Type.defineMethod('compileTemplates',
 function(transformElem) {
 
     /**
-     * @name compileTemplates
-     * @synopsis Compiles all of the 'tsh:template' elements under the supplied
+     * @method compileTemplates
+     * @summary Compiles all of the 'tsh:template' elements under the supplied
      *     transform element
      * @param {TP.tsh.transform} transformElem The transform element to look for
      *     templates.
@@ -113,16 +113,16 @@ TP.tsh.transform.Type.defineMethod('transformInput',
 function(anInput, cmdNode, aRequest) {
 
     /**
-     * @name transformInput
-     * @synopsis Transforms an input object using information from the request
+     * @method transformInput
+     * @summary Transforms an input object using information from the request
      *     provided.
-     * @description This type's version of this method executes the templates
+     * @summary This type's version of this method executes the templates
      *     configured for it against the supplied input and returns the result.
      * @param {Object} anInput The object to transform.
      * @param {Node} cmdNode The original transformation node.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @raises TP.sig.InvalidTransform
+     * @exception TP.sig.InvalidTransform
      * @returns {Object} The transformed input.
      */
 
@@ -191,9 +191,9 @@ TP.tsh.transform.Inst.defineMethod('isSingleValued',
 function() {
 
     /**
-     * @name isSingleValued
-     * @synopsis Returns true if the receiver binds to single values.
-     * @description This method on this type always returns 'false', since we
+     * @method isSingleValued
+     * @summary Returns true if the receiver binds to single values.
+     * @summary This method on this type always returns 'false', since we
      *     can handle 'collection' data, not just single values.
      * @returns {Boolean} True when single valued.
      */

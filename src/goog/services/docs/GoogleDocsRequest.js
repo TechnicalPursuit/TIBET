@@ -10,7 +10,7 @@
 
 /**
  * @type {GoogleDocsRequest}
- * @synopsis A subtype of TP.sig.HTTPRequest that knows how to manage data from
+ * @summary A subtype of TP.sig.HTTPRequest that knows how to manage data from
  *     the Google-hosted Google Docs server.
  * @example Using the Google Docs server from TIBET consists of:
  *

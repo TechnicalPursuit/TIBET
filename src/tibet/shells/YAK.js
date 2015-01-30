@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.YAK(tm)}
- * @synopsis A TP.core.Shell specific to handling XMPP (Jabber) communication.
+ * @summary A TP.core.Shell specific to handling XMPP (Jabber) communication.
  *     The default "execution" in this shell is to send the input to the
  *     currently targeted JID.
  */
@@ -91,8 +91,8 @@ TP.core.YAK.Inst.defineMethod('init',
 function(resourceID) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {String} resourceID A unique resource identifier for this shell
      *     instance.
      * @returns {TP.core.YAK} A new instance.
@@ -116,8 +116,8 @@ TP.core.YAK.Inst.defineMethod('canSend',
 function() {
 
     /**
-     * @name canSend
-     * @synopsis Returns true if the receiver has an open, authenticated
+     * @method canSend
+     * @summary Returns true if the receiver has an open, authenticated
      *     connection which will support a send operation.
      * @returns {Boolean}
      */
@@ -143,8 +143,8 @@ TP.core.YAK.Inst.defineMethod('displayDebugData',
 function(aMessage) {
 
     /**
-     * @name displayDebugData
-     * @synopsis Displays debugging information related to the message provided.
+     * @method displayDebugData
+     * @summary Displays debugging information related to the message provided.
      *     This method is typically invoked when the shell has debugging turned
      *     on.
      * @param {TP.xmpp.Message} aMessage The message instance.
@@ -189,7 +189,7 @@ function() {
 
     /**
      * Returns the announcement string to use for the receiver.
-     * @return {String} The announcement string.
+     * @returns {String} The announcement string.
      */
 
     var str;
@@ -210,8 +210,8 @@ TP.core.YAK.Inst.defineMethod('getServiceID',
 function() {
 
     /**
-     * @name getServiceID
-     * @synopsis Returns the service ID for the service this instance of shell
+     * @method getServiceID
+     * @summary Returns the service ID for the service this instance of shell
      *     uses for its server communication.
      * @returns {String} The service ID.
      */
@@ -226,8 +226,8 @@ TP.core.YAK.Inst.defineMethod('setTargetJID',
 function(aJID) {
 
     /**
-     * @name setTargetJID
-     * @synopsis Sets the default JID to target with unqualified sends.
+     * @method setTargetJID
+     * @summary Sets the default JID to target with unqualified sends.
      * @param {TP.xmpp.JID} aJID The JID to target.
      * @returns {TP.core.YAK} The receiver.
      */
@@ -248,8 +248,8 @@ TP.core.YAK.Inst.defineMethod('login',
 function(aRequest) {
 
     /**
-     * @name login
-     * @synopsis Performs any login sequence necessary for the receiver. The
+     * @method login
+     * @summary Performs any login sequence necessary for the receiver. The
      *     TP.core.YAK initiates a query sequence to get proper values for a
      *     server uri, server name, jid, and password.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
@@ -424,8 +424,8 @@ TP.core.YAK.Inst.defineMethod('loginCompletion',
 function(aUserInputSeries) {
 
     /**
-     * @name loginCompletion
-     * @synopsis Completes a login sequence using the information contained in
+     * @method loginCompletion
+     * @summary Completes a login sequence using the information contained in
      *     the receiver's instance variables and the user input series provided.
      *     This method is leveraged by both the login and register sequences to
      *     complete the login process.
@@ -534,8 +534,8 @@ TP.core.YAK.Inst.defineMethod('logout',
 function(aRequest) {
 
     /**
-     * @name logout
-     * @synopsis Logs out of the current session, closing the connection.
+     * @method logout
+     * @summary Logs out of the current session, closing the connection.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
      *     this activity.
      * @returns {TP.core.YAK} The receiver.
@@ -580,8 +580,8 @@ TP.core.YAK.Inst.defineMethod('register',
 function(aRequest) {
 
     /**
-     * @name register
-     * @synopsis Initiates the registration process for a new user with the
+     * @method register
+     * @summary Initiates the registration process for a new user with the
      *     Jabber server.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
      *     this activity.
@@ -771,8 +771,8 @@ TP.core.YAK.Inst.defineMethod('registerCompletion',
 function(aRegistrationNode) {
 
     /**
-     * @name registerCompletion
-     * @synopsis Completes a registration sequence using the information
+     * @method registerCompletion
+     * @summary Completes a registration sequence using the information
      *     contained in the receiver's instance variables and the user input
      *     series provided.
      * @param {TP.xmpp.Node} aRegistrationNode The node containing the
@@ -953,8 +953,8 @@ TP.core.YAK.Inst.defineMethod('start',
 function(aRequest) {
 
     /**
-     * @name start
-     * @synopsis Performs common startup processing, including displaying an
+     * @method start
+     * @summary Performs common startup processing, including displaying an
      *     announcement specific to the current shell. The login() sequence is
      *     initiated as part of this method.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
@@ -1032,8 +1032,8 @@ TP.core.YAK.Inst.defineMethod('echoRequest',
 function(aRequest) {
 
     /**
-     * @name echoRequest
-     * @synopsis Outputs the request by making a TP.sig.UserOutputRequest with
+     * @method echoRequest
+     * @summary Outputs the request by making a TP.sig.UserOutputRequest with
      *     the request command text.
      * @param {TP.sig.Request} aRequest The request object containing the input.
      * @returns {TP.sig.Request} The request.
@@ -1118,8 +1118,8 @@ TP.core.YAK.Inst.defineMethod('executeAvailable',
 function(aRequest) {
 
     /**
-     * @name executeAvailable
-     * @synopsis Updates the availability status of the current JID in response
+     * @method executeAvailable
+     * @summary Updates the availability status of the current JID in response
      *     to command requests.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1157,8 +1157,8 @@ TP.core.YAK.Inst.defineMethod('executeAway',
 function(aRequest) {
 
     /**
-     * @name executeAway
-     * @synopsis Updates the current JID's away status in response to a command
+     * @method executeAway
+     * @summary Updates the current JID's away status in response to a command
      *     request.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1196,8 +1196,8 @@ TP.core.YAK.Inst.defineMethod('executeDebug',
 function(aRequest) {
 
     /**
-     * @name executeDebug
-     * @synopsis Turns on or off debugging output in response to a command
+     * @method executeDebug
+     * @summary Turns on or off debugging output in response to a command
      *     request.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1228,8 +1228,8 @@ TP.core.YAK.Inst.defineMethod('executeRegister',
 function(aRequest) {
 
     /**
-     * @name executeRegister
-     * @synopsis Initiates a registration sequence.
+     * @method executeRegister
+     * @summary Initiates a registration sequence.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
      * @returns {TP.sig.ShellRequest} The request.
@@ -1246,8 +1246,8 @@ TP.core.YAK.Inst.defineMethod('executeRoster',
 function(aRequest) {
 
     /**
-     * @name executeRoster
-     * @synopsis Requests and displays the current JIDs roster information.
+     * @method executeRoster
+     * @summary Requests and displays the current JIDs roster information.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
      * @returns {TP.sig.ShellRequest} The request.
@@ -1274,8 +1274,8 @@ TP.core.YAK.Inst.defineMethod('executeSecure',
 function(aRequest) {
 
     /**
-     * @name executeSecure
-     * @synopsis Defines a secure key for a target JID. The first argument is
+     * @method executeSecure
+     * @summary Defines a secure key for a target JID. The first argument is
      *     the JID and all remaining text is considered to be the key string to
      *     use for that JID. If no key is provided it defaults to the current
      *     window location, allowing users across a single server to have a
@@ -1323,8 +1323,8 @@ TP.core.YAK.Inst.defineMethod('executeSend',
 function(aRequest) {
 
     /**
-     * @name executeSend
-     * @synopsis Responds to requests to send content to the currently targeted
+     * @method executeSend
+     * @summary Responds to requests to send content to the currently targeted
      *     JID.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1367,8 +1367,8 @@ TP.core.YAK.Inst.defineMethod('executeStatus',
 function(aRequest) {
 
     /**
-     * @name executeStatus
-     * @synopsis Displays status information for all known JIDs (the current
+     * @method executeStatus
+     * @summary Displays status information for all known JIDs (the current
      *     JID's buddy list) in response to a command request.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1448,8 +1448,8 @@ TP.core.YAK.Inst.defineMethod('executeSubscribe',
 function(aRequest) {
 
     /**
-     * @name executeSubscribe
-     * @synopsis Places a request to subscribe to a particular JID in response
+     * @method executeSubscribe
+     * @summary Places a request to subscribe to a particular JID in response
      *     to a command request.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1487,8 +1487,8 @@ TP.core.YAK.Inst.defineMethod('executeTo',
 function(aRequest) {
 
     /**
-     * @name executeTo
-     * @synopsis Sets the target JID for any unqualified messages, or, when
+     * @method executeTo
+     * @summary Sets the target JID for any unqualified messages, or, when
      *     followed directly by message text sends a one-time message to the JID
      *     provided without altering the default JID.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
@@ -1569,8 +1569,8 @@ TP.core.YAK.Inst.defineMethod('executeUnavailable',
 function(aRequest) {
 
     /**
-     * @name executeUnavailable
-     * @synopsis Sets the current JID's status to unavailable in response to a
+     * @method executeUnavailable
+     * @summary Sets the current JID's status to unavailable in response to a
      *     command request.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1586,8 +1586,8 @@ TP.core.YAK.Inst.defineMethod('executeUnsecure',
 function(aRequest) {
 
     /**
-     * @name executeUnsecure
-     * @synopsis Removes any secure encryption key for the JID provided, making
+     * @method executeUnsecure
+     * @summary Removes any secure encryption key for the JID provided, making
      *     communication with that JID unsecure.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1616,8 +1616,8 @@ TP.core.YAK.Inst.defineMethod('executeUnsubscribe',
 function(aRequest) {
 
     /**
-     * @name executeUnsubscribe
-     * @synopsis Responds to requests to unsubscribe the current JID from a
+     * @method executeUnsubscribe
+     * @summary Responds to requests to unsubscribe the current JID from a
      *     particular target JID's presence updates.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
@@ -1656,8 +1656,8 @@ TP.core.YAK.Inst.defineMethod('handleXMPPInput',
 function(aSignal) {
 
     /**
-     * @name handleXMPPInput
-     * @synopsis Responds to notifications of XMPP input. This method provides
+     * @method handleXMPPInput
+     * @summary Responds to notifications of XMPP input. This method provides
      *     the hook between the XMPP data stream and the console, allowing the
      *     console to see packets as they arrive.
      * @param {TP.sig.XMPPInput} aSignal The triggering signal.

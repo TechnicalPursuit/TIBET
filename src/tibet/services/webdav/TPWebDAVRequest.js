@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.WebDAVRequest}
- * @synopsis Simple WebDAV request type with minimal encoding/serialization.
+ * @summary Simple WebDAV request type with minimal encoding/serialization.
  * @example Using a WebDAV server from TIBET consists of:
  *
  *     1. Define the operation you want to perform via a set of 'request

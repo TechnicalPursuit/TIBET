@@ -10,8 +10,8 @@
 
 /**
  * @type {ev:listener}
- * @synopsis A wrapper for the XML Events ev:listener element.
- * @description The official XML Events listener element is considered by some
+ * @summary A wrapper for the XML Events ev:listener element.
+ * @summary The official XML Events listener element is considered by some
  *     to be superfluous since you can place ev: attributes on elements to
  *     event-enable them. Of course, you can XInclude listener elements as one
  *     way of getting "value" from them by allowing you to factor them out into

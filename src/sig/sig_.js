@@ -10,7 +10,7 @@
 
 /**
  * @type {sig:}
- * @synopsis This type represents the TIBET Signals namespace
+ * @summary This type represents the TIBET Signals namespace
  *     (http://www.technicalpursuit.com/1999/signals) in the tag processing
  *     system.
  */
@@ -25,10 +25,10 @@ TP.sig.XMLNS.Type.defineMethod('dispatchSignal',
 function(anElement) {
 
     /**
-     * @name dispatchSignal
-     * @synopsis Dispatches a signal as specified by the supplied element's
+     * @method dispatchSignal
+     * @summary Dispatches a signal as specified by the supplied element's
      *     attributes.
-     * @description This method is a slight variation on the 'tshExecute' method
+     * @summary This method is a slight variation on the 'tshExecute' method
      *     on the sig:dispatch type but that method uses a request object
      *     whereas this operates directly on the supplied element.
      * @param {Element} anElement The element to use to derive dispatching

@@ -28,8 +28,8 @@ TP.hc(
     function(anAttributeNode) {
 
         /**
-         * @name attributeGetOwnerElement
-         * @synopsis Returns the owning element of the supplied attribute node.
+         * @method attributeGetOwnerElement
+         * @summary Returns the owning element of the supplied attribute node.
          *     NOTE: This method only works on attribute nodes that exist on
          *     elements in an XML document.
          * @param {Attribute} anAttributeNode The attribute node to retrieve the
@@ -59,8 +59,8 @@ TP.hc(
     function(anAttributeNode) {
 
         /**
-         * @name attributeGetOwnerElement
-         * @synopsis Returns the owning element of the supplied attribute node.
+         * @method attributeGetOwnerElement
+         * @summary Returns the owning element of the supplied attribute node.
          *     NOTE: This method only works on attribute nodes that exist on
          *     elements in an XML document.
          * @param {Attribute} anAttributeNode The attribute node to retrieve the
@@ -107,8 +107,8 @@ TP.hc(
     function(aString, defaultNS, shouldReport) {
 
         /**
-         * @name documentFromString
-         * @synopsis Parses aString and returns the XML document representing
+         * @method documentFromString
+         * @summary Parses aString and returns the XML document representing
          *     the string's DOM representation.
          * @param {String} aString The source string to be parsed.
          * @param {String|null} defaultNS What namespace should be used for the
@@ -244,8 +244,8 @@ TP.hc(
     function(aString, defaultNS, shouldReport) {
 
         /**
-         * @name documentFromString
-         * @synopsis Parses aString and returns the XML document representing
+         * @method documentFromString
+         * @summary Parses aString and returns the XML document representing
          *     the string's DOM representation.
          * @param {String} aString The source string to be parsed.
          * @param {String|null} defaultNS What namespace should be used for the
@@ -364,8 +364,8 @@ TP.hc(
     function(aString, defaultNS, shouldReport) {
 
         /**
-         * @name documentFromString
-         * @synopsis Parses aString and returns the XML document representing
+         * @method documentFromString
+         * @summary Parses aString and returns the XML document representing
          *     the string's DOM representation.
          * @param {String} aString The source string to be parsed.
          * @param {String|null} defaultNS What namespace should be used for the
@@ -499,10 +499,10 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name $$elementPreserveIFrameContent
-         * @synopsis Preserves iframe content for browser platforms which need
+         * @method $$elementPreserveIFrameContent
+         * @summary Preserves iframe content for browser platforms which need
          *     it.
-         * @description This patch is required for DOM modification calls (such
+         * @summary This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Gecko, do not
@@ -563,10 +563,10 @@ TP.hc(
     function() {
 
         /**
-         * @name $$elementPreserveIFrameContent
-         * @synopsis Preserves iframe content for browser platforms which need
+         * @method $$elementPreserveIFrameContent
+         * @summary Preserves iframe content for browser platforms which need
          *     it.
-         * @description This patch is only required for certain browser
+         * @summary This patch is only required for certain browser
          *     platforms. See the versions of this method in those
          *     browser-specific files for more information. As of this writing,
          *     Trident does not require this method to do anything, but Gecko
@@ -585,10 +585,10 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name $$elementPreserveIFrameContent
-         * @synopsis Preserves iframe content for browser platforms which need
+         * @method $$elementPreserveIFrameContent
+         * @summary Preserves iframe content for browser platforms which need
          *     it.
-         * @description This patch is required for DOM modification calls (such
+         * @summary This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Webkit-based
@@ -657,10 +657,10 @@ TP.hc(
     function(anElement, docElemsHash) {
 
         /**
-         * @name $$elementRestoreIFrameContent
-         * @synopsis Restores previously preserved iframe content for browser
+         * @method $$elementRestoreIFrameContent
+         * @summary Restores previously preserved iframe content for browser
          *     platforms which need it.
-         * @description This patch is required for DOM modification calls (such
+         * @summary This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Gecko, do not
@@ -723,11 +723,11 @@ TP.hc(
     function(anElement, docElemsHash) {
 
         /**
-         * @name $$elementRestoreIFrameContent
-         * @synopsis Restores previously preserved iframe content for browser
+         * @method $$elementRestoreIFrameContent
+         * @summary Restores previously preserved iframe content for browser
          *     platforms which need it. This version of this method just
          *     returns.
-         * @description This patch is only required for certain browser
+         * @summary This patch is only required for certain browser
          *     platforms. See the versions of this method in those
          *     browser-specific files for more information. As of this writing,
          *     Trident does not require this method to do anything, but Gecko
@@ -746,10 +746,10 @@ TP.hc(
     function(anElement, docElemsHash) {
 
         /**
-         * @name $$elementRestoreIFrameContent
-         * @synopsis Restores previously preserved iframe content for browser
+         * @method $$elementRestoreIFrameContent
+         * @summary Restores previously preserved iframe content for browser
          *     platforms which need it.
-         * @description This patch is required for DOM modification calls (such
+         * @summary This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Webkit-based
@@ -820,12 +820,12 @@ TP.hc(
     function(anElement, attrName, attrValue, attrNS) {
 
         /**
-         * @name elementSetAttributeInNS
-         * @synopsis Sets an attribute on the supplied element in the namespace
+         * @method elementSetAttributeInNS
+         * @summary Sets an attribute on the supplied element in the namespace
          *     provided. Note that the desired prefix should be provided as part
          *     of the attribute name. Note also that the attribute value can be
          *     the empty string ('') but not null or undefined.
-         * @description If the supplied element's document is an HTML document,
+         * @summary If the supplied element's document is an HTML document,
          *     this method will perform a simple 'setAttribute()' call, but will
          *     use the 'whole name' (i.e. with a colon-separated name) as the
          *     name of the attribute.
@@ -881,12 +881,12 @@ TP.hc(
     function(anElement, attrName, attrValue, attrNS) {
 
         /**
-         * @name elementSetAttributeInNS
-         * @synopsis Sets an attribute on the supplied element in the namespace
+         * @method elementSetAttributeInNS
+         * @summary Sets an attribute on the supplied element in the namespace
          *     provided. Note that the desired prefix should be provided as part
          *     of the attribute name. Note also that the attribute value can be
          *     the empty string ('') but not null or undefined.
-         * @description If the supplied element's document is an HTML document,
+         * @summary If the supplied element's document is an HTML document,
          *     this method will perform a simple 'setAttribute()' call, but will
          *     use the 'whole name' (i.e. with a colon-separated name) as the
          *     name of the attribute.
@@ -1012,9 +1012,9 @@ TP.hc(
     function(aNode, wantsXMLDeclaration, shallow) {
 
         /**
-         * @name nodeAsString
-         * @synopsis Returns the string representation of aNode.
-         * @description This function takes in a flag as to whether the caller
+         * @method nodeAsString
+         * @summary Returns the string representation of aNode.
+         * @summary This function takes in a flag as to whether the caller
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
@@ -1297,9 +1297,9 @@ TP.hc(
     function(aNode, wantsXMLDeclaration, shallow) {
 
         /**
-         * @name nodeAsString
-         * @synopsis Returns the string representation of aNode.
-         * @description This function takes in a flag as to whether the caller
+         * @method nodeAsString
+         * @summary Returns the string representation of aNode.
+         * @summary This function takes in a flag as to whether the caller
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
@@ -1576,9 +1576,9 @@ TP.hc(
     function(aNode, wantsXMLDeclaration, shallow) {
 
         /**
-         * @name nodeAsString
-         * @synopsis Returns the string representation of aNode.
-         * @description This function takes in a flag as to whether the caller
+         * @method nodeAsString
+         * @summary Returns the string representation of aNode.
+         * @summary This function takes in a flag as to whether the caller
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
@@ -1870,9 +1870,9 @@ TP.hc(
     function(aNode, deep, viaString) {
 
         /**
-         * @name nodeCloneNode
-         * @synopsis Clones a node, deeply if the 'deep' parameter is true.
-         * @description If aNode is an XML Document node, this method builds and
+         * @method nodeCloneNode
+         * @summary Clones a node, deeply if the 'deep' parameter is true.
+         * @summary If aNode is an XML Document node, this method builds and
          *     returns a proper clone of it. It it is an HTML Document node it
          *     returns null.
          * @param {Node|XMLDocument} aNode The node to clone.
@@ -1966,9 +1966,9 @@ TP.hc(
     function(aNode, deep, viaString) {
 
         /**
-         * @name nodeCloneNode
-         * @synopsis Clones a node, deeply if the 'deep' parameter is true.
-         * @description If aNode is an XML Document node, this method builds and
+         * @method nodeCloneNode
+         * @summary Clones a node, deeply if the 'deep' parameter is true.
+         * @summary If aNode is an XML Document node, this method builds and
          *     returns a proper clone of it. It it is an HTML Document node it
          *     returns null.
          * @param {Node|XMLDocument} aNode The node to clone.

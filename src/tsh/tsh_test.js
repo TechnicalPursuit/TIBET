@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tsh.test}
- * @synopsis A command tag capable of running a test operation on one or more
+ * @summary A command tag capable of running a test operation on one or more
  *     objects/functions.
  */
 
@@ -28,7 +28,7 @@ TP.tsh.test.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
+     * @method cmdRunContent
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object}

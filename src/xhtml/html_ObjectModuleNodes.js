@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.audio}
- * @synopsis 'audio' tag. Embedded audio.
+ * @summary 'audio' tag. Embedded audio.
  */
 
 //  ------------------------------------------------------------------------
@@ -27,7 +27,7 @@ TP.html.Attrs.defineSubtype('audio');
 
 /**
  * @type {TP.html.canvas}
- * @synopsis A subtype of TP.html.Attrs that manages HTML Canvas objects.
+ * @summary A subtype of TP.html.Attrs that manages HTML Canvas objects.
  */
 
 //  ------------------------------------------------------------------------
@@ -83,8 +83,8 @@ TP.html.canvas.Inst.defineMethod('toDataURL',
 function(type) {
 
     /**
-     * @name toDataURL
-     * @synopsis Returns the data which contains a representation of the canvas
+     * @method toDataURL
+     * @summary Returns the data which contains a representation of the canvas
      *     as an image.
      * @param {String} type The MIME type indicating which data type to return.
      * @returns {String} The image data.
@@ -106,8 +106,8 @@ TP.html.canvas.Inst.defineMethod('get2DContext',
 function() {
 
     /**
-     * @name get2DContext
-     * @synopsis Returns the receiver's '2D graphics context'.
+     * @method get2DContext
+     * @summary Returns the receiver's '2D graphics context'.
      * @returns {Object} The receiver's 2D graphics context.
      * @raise TP.sig.InvalidNode
      */
@@ -127,8 +127,8 @@ TP.html.canvas.Inst.defineMethod('getContext',
 function(contextId) {
 
     /**
-     * @name getContext
-     * @synopsis Returns the receiver's graphics context matching the supplied
+     * @method getContext
+     * @summary Returns the receiver's graphics context matching the supplied
      *     context id.
      * @param {String} contextId The ID of the context to fetch.
      * @returns {Object} The receiver's matching graphics context.
@@ -152,8 +152,8 @@ TP.html.canvas.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name canResolveDNU
-     * @synopsis Provides an instance that has triggered DNU machinery with an
+     * @method canResolveDNU
+     * @summary Provides an instance that has triggered DNU machinery with an
      *     opportunity to handle the problem itself.
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
@@ -182,10 +182,10 @@ TP.html.canvas.Inst.defineMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name resolveDNU
-     * @synopsis Invoked by the main DNU machinery when the instance has
+     * @method resolveDNU
+     * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
-     * @description Handles resolution of methods which have triggered the
+     * @summary Handles resolution of methods which have triggered the
      *     inferencer. For TP.core.Window the resolution process is used in
      *     conjunction with method aspects to allow the receiver to translate
      *     method calls.
@@ -232,8 +232,8 @@ TP.html.canvas.Inst.defineMethod('$get',
 function(attributeName) {
 
     /**
-     * @name $get
-     * @synopsis Primitive $get() hook. Allows instances of this type to look up
+     * @method $get
+     * @summary Primitive $get() hook. Allows instances of this type to look up
      *     globals on their 2D context if a value for the attribute cannot be
      *     found on the receiver itself.
      * @param {String} attributeName The name/key of the attribute to return.
@@ -269,8 +269,8 @@ TP.html.canvas.Inst.defineMethod('$set',
 function(attributeName, attributeValue) {
 
     /**
-     * @name $set
-     * @synopsis Primitive $set() hook. Allows instances of this type to set
+     * @method $set
+     * @summary Primitive $set() hook. Allows instances of this type to set
      *     globals on their 2D context if the attribute cannot be found on the
      *     receiver itself.
      * @param {String} attributeName The attribute to set.
@@ -305,7 +305,7 @@ function(attributeName, attributeValue) {
 
 /**
  * @type {TP.html.embed}
- * @synopsis 'embed' tag. Embedded object.
+ * @summary 'embed' tag. Embedded object.
  */
 
 //  ------------------------------------------------------------------------
@@ -320,7 +320,7 @@ TP.html.embed.Type.set('uriAttrs', TP.ac('src'));
 
 /**
  * @type {TP.html.object}
- * @synopsis 'object' tag. Embedded object.
+ * @summary 'object' tag. Embedded object.
  */
 
 //  ------------------------------------------------------------------------
@@ -340,8 +340,8 @@ TP.html.object.Type.defineMethod('getConcreteType',
 function(aNodeOrId) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the subtype to use for the node provided. Note that for
+     * @method getConcreteType
+     * @summary Returns the subtype to use for the node provided. Note that for
      *     TP.html.object elements the specific type returned is based on the
      *     value of the type attribute.
      * @param {Node|String} aNodeOrId The native node to wrap or an ID used to
@@ -368,7 +368,7 @@ function(aNodeOrId) {
 
 /**
  * @type {TP.html.param}
- * @synopsis 'param' tag. Applet parameter.
+ * @summary 'param' tag. Applet parameter.
  */
 
 //  ------------------------------------------------------------------------
@@ -396,7 +396,7 @@ TP.html.param.finalizeTraits();
 
 /**
  * @type {TP.html.source}
- * @synopsis 'source' tag. Video or audio source.
+ * @summary 'source' tag. Video or audio source.
  */
 
 //  ------------------------------------------------------------------------
@@ -411,7 +411,7 @@ TP.html.source.Type.set('uriAttrs', TP.ac('src'));
 
 /**
  * @type {TP.html.video}
- * @synopsis 'video' tag. Embedded video.
+ * @summary 'video' tag. Embedded video.
  */
 
 //  ------------------------------------------------------------------------

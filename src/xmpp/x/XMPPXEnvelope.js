@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XEnvelope}
- * @synopsis A wrapper for the X_ENVELOPE namespace'd payload element.
+ * @summary A wrapper for the X_ENVELOPE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

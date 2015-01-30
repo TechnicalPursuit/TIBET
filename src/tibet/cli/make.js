@@ -88,7 +88,7 @@ Cmd.prototype.USAGE = 'tibet make [<target>] [--list] [--timeout <ms>]';
 
 /**
  * Perform the actual command processing logic.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 
@@ -192,7 +192,7 @@ Cmd.prototype.execute = function() {
  * Lists available make targets. Ensures only valid function targets are listed
  * and outputs the list in sorted order.
  * @param {Object} targets The object export from the TIBET make file used.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeList = function(targets) {
     var list;
@@ -217,7 +217,7 @@ Cmd.prototype.executeList = function(targets) {
 
 /**
  * Returns the name of the current project as defined in the Package.NPM_FILE.
- * @return {String} The project name.
+ * @returns {String} The project name.
  */
 Cmd.prototype.getProjectName = function() {
     return CLI.getProjectName();

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqGateway}
- * @synopsis A wrapper for the IQ_GATEWAY namespace'd payload element.
+ * @summary A wrapper for the IQ_GATEWAY namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

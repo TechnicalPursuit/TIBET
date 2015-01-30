@@ -88,14 +88,14 @@ if (TP.sys.$features == null) {
 TP.sys.hasFeature = function(aFeatureName, retest) {
 
     /**
-     * @name hasFeature
+     * @method hasFeature
      * @summary Returns true if the named feature is a feature of the current
      *     system. The feature list is populated primarily during TIBET startup
      *     and kernel finalization.
      * @param {String} aFeatureName The feature name, typically provided as a
      *     constant from a published list of names.
      * @param {Boolean} retest Whether or not to ignore any cached value.
-     * @return {Boolean} True if the feature is available.
+     * @returns {Boolean} True if the feature is available.
      */
 
     var testVal,
@@ -131,7 +131,7 @@ TP.sys.hasFeature = function(aFeatureName, retest) {
 TP.sys.addFeatureTest = function(aFeatureName, featureTest, testNow) {
 
     /**
-     * @name addFeatureTest
+     * @method addFeatureTest
      * @summary Adds a feature test under the name provided. If testNow is
      *     true, the test is performed immediately.
      * @param {String} aFeatureName The feature name, typically provided as a
@@ -139,7 +139,7 @@ TP.sys.addFeatureTest = function(aFeatureName, featureTest, testNow) {
      * @param {Function} featureTest The feature test function to execute.
      * @param {Boolean} testNow Whether or not to execute the test immediately
      *     instead of waiting until the first time the test is used.
-     * @return {Boolean} The result of the test if 'testNow' is specified.
+     * @returns {Boolean} The result of the test if 'testNow' is specified.
      */
 
     TP.sys.$featureTests[aFeatureName] = featureTest;
@@ -154,11 +154,11 @@ TP.sys.addFeatureTest = function(aFeatureName, featureTest, testNow) {
 TP.sys.hasFeatureTest = function(aFeatureName) {
 
     /**
-     * @name hasFeatureTest
+     * @method hasFeatureTest
      * @summary Returns whether or not a particular feature test exists.
      * @param {String} aFeatureName The feature name, typically provided as a
      *     constant from a published list of names.
-     * @return {Boolean} True if the feature test is defined.
+     * @returns {Boolean} True if the feature test is defined.
      */
 
     return (typeof TP.sys.$featureTests[aFeatureName] === 'function');
@@ -215,7 +215,7 @@ TP.sys.addFeatureTest('opera',
 TP.sys.hasPackage = function(aPackageFile, aConfig) {
 
     /**
-     * @name hasPackage
+     * @method hasPackage
      * @summary Returns true if the named package/config pair has been
      *     loaded. If the config isn't defined then the 'base' config is
      *     assumed. NOTE that the 'full' config is always checked and if that
@@ -224,7 +224,7 @@ TP.sys.hasPackage = function(aPackageFile, aConfig) {
      * @param {String} aPackageFile A package filename, which should typically
      *     be a .xml file in the lib_cfg or app_cfg path.
      * @param {String} aConfig A specific config name. Default is 'full'.
-     * @return {Boolean} True if the package/config has been loaded.
+     * @returns {Boolean} True if the package/config has been loaded.
      */
 
     var config;
@@ -267,7 +267,7 @@ TP.boot.$notify = TP.boot.$alert;
 TP.boot.STDERR_ALERT = function(msg, obj, level) {
 
     /**
-     * @name STDERR_ALERT
+     * @method STDERR_ALERT
      * @summary Logs an error and alerts it. Only the first parameter is passed
      *     to $alert().
      * @param {String} msg The error string to log and alert.
@@ -286,7 +286,7 @@ TP.boot.STDERR_ALERT = function(msg, obj, level) {
 TP.boot.STDERR_BREAK = function(msg, obj, level) {
 
     /**
-     * @name STDERR_BREAK
+     * @method STDERR_BREAK
      * @summary Logs an error and triggers the debugger.
      * @param {String} msg The error string.
      * @param {Object|Number} obj Optional annotation, arguments, or a logging
@@ -307,7 +307,7 @@ TP.boot.STDERR_BREAK = function(msg, obj, level) {
 TP.boot.STDERR_LOG = function(msg, obj, level) {
 
     /**
-     * @name STDERR_LOG
+     * @method STDERR_LOG
      * @summary Logs an error, augmenting it with any optional annotation data.
      * @param {String|Object} msg The error string or object to be logged.
      * @param {Object|Number} obj Optional annotation, arguments, or a logging
@@ -375,7 +375,7 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
 TP.boot.STDERR_NOTIFY = function(msg, obj, level) {
 
     /**
-     * @name STDERR_NOTIFY
+     * @method STDERR_NOTIFY
      * @summary Logs an error and displays it via TP.boot.$notify. Only the
      *     first argument is passed to $notify().
      * @param {String} msg The error string.
@@ -394,7 +394,7 @@ TP.boot.STDERR_NOTIFY = function(msg, obj, level) {
 TP.boot.STDERR_NULL = function(msg, obj, level) {
 
     /**
-     * @name STDERR_NULL
+     * @method STDERR_NULL
      * @summary Silently consumes errors. Set during post-boot operations to
      *     ensure they don't report through the boot log.
      * @param {String} msg The error string.
@@ -414,10 +414,10 @@ TP.boot.STDERR_NULL = function(msg, obj, level) {
 TP.boot.STDIN_CONFIRM = function(msg) {
 
     /**
-     * @name STDIN_CONFIRM
+     * @method STDIN_CONFIRM
      * @summary Requests confirmation of an operation.
      * @param {String} msg The confirmation request message.
-     * @return {Boolean} True if the operation was confirmed.
+     * @returns {Boolean} True if the operation was confirmed.
      */
 
     var input;
@@ -433,12 +433,12 @@ TP.boot.STDIN_CONFIRM = function(msg) {
 TP.boot.STDIN_PROMPT = function(msg, def) {
 
     /**
-     * @name STDIN_PROMPT
+     * @method STDIN_PROMPT
      * @summary Prompts the user for a value, returning either the user-entered
      * value or a default value.
      * @param {String} msg The input request message.
      * @param {Object} def The default object to display/use.
-     * @return {Boolean} The value the user chooses.
+     * @returns {Boolean} The value the user chooses.
      */
 
     var input;
@@ -458,7 +458,7 @@ TP.boot.STDIN_PROMPT = function(msg, def) {
 TP.boot.STDOUT_ALERT = function(msg, obj, level) {
 
     /**
-     * @name STDOUT_ALERT
+     * @method STDOUT_ALERT
      * @summary Logs a message and alerts it. Only the first parameter is passed
      *     to $alert().
      * @param {String} msg The message to log and alert.
@@ -476,7 +476,7 @@ TP.boot.STDOUT_ALERT = function(msg, obj, level) {
 TP.boot.STDOUT_LOG = function(msg, obj, level) {
 
     /**
-     * @name STDOUT_LOG
+     * @method STDOUT_LOG
      * @summary Logs a message.
      * @param {String} msg The message to log.
      * @param {Object|Number} obj Optional annotation, argument list, or logging
@@ -537,7 +537,7 @@ TP.boot.STDOUT_LOG = function(msg, obj, level) {
 TP.boot.STDOUT_NOTIFY = function(msg, obj, level) {
 
     /**
-     * @name STDOUT_NOTIFY
+     * @method STDOUT_NOTIFY
      * @summary Logs a message and displays it via TP.boot.$notify. Only the
      *     first parameter is passed to $notify().
      * @param {String} msg The message to log.
@@ -573,7 +573,7 @@ TP.boot.$stdout = TP.boot.STDOUT_LOG;
 TP.boot.$$log = function(argList, aLogLevel) {
 
     /**
-     * @name $$log
+     * @method $$log
      * @summary Routes logging output to either stderr or stdout based on
      *     logging level.
      * @param {Arguments} argList A list of arguments from a logging call.
@@ -606,8 +606,8 @@ TP.boot.$$log = function(argList, aLogLevel) {
 window.onerror = function(msg, url, line, column, errorObj) {
 
     /**
-     * @name onerror
-     * @synopsis Captures global errors and outputs them appropriately. This
+     * @method onerror
+     * @summary Captures global errors and outputs them appropriately. This
      *     hook allows TIBET to capture native JavaScript errors and avoid
      *     reporting them via the normal browser mechanism. This keeps users
      *     from being bombarded by messages about JS errors while allowing
@@ -987,10 +987,10 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
 TP.sys.getBrowser = function() {
 
     /**
-     * @name getBrowser
+     * @method getBrowser
      * @summary Returns the standard 'browser' string, typically one of:
      *     'firefox', 'ie', 'safari', 'chrome'.
-     * @return {String} The String representing the 'browser'.
+     * @returns {String} The String representing the 'browser'.
      */
 
     return TP.$browser;
@@ -1001,10 +1001,10 @@ TP.sys.getBrowser = function() {
 TP.sys.getBrowserUI = function() {
 
     /**
-     * @name getBrowserUI
+     * @method getBrowserUI
      * @summary Returns the standard 'browser UI' string, typically one of:
      *     'gecko', 'trident', 'webkit'.
-     * @return {String} The String representing the 'browser UI'.
+     * @returns {String} The String representing the 'browser UI'.
      */
 
     return TP.$browserUI;
@@ -1037,7 +1037,7 @@ TP.sys.isWin = function() {
 TP.sys.isUA = function(browser, varargs) {
 
     /**
-     * @name isUA
+     * @method isUA
      * @summary Tests the current user agent (UA) for a specific version, or a
      *     version equal-to-or-above (TP.UP) or equal-to-or-below (TP.DOWN) a
      *     specified version number.
@@ -1050,7 +1050,7 @@ TP.sys.isUA = function(browser, varargs) {
      *     to specify a version to varying degrees of detail. The comparison
      *     value should be a string, either TP.UP or TP.DOWN, which defines how
      *     the version testing should be done.
-     * @return {Boolean} True if the current browser matches the test criteria.
+     * @returns {Boolean} True if the current browser matches the test criteria.
      */
 
     var ua,
@@ -1306,7 +1306,7 @@ if (TP.sys.isUA('IE')) {
 TP.sys.isMSXML = function(version, comparison) {
 
     /**
-     * @name isMSXML
+     * @method isMSXML
      * @summary Tests IE's MSXML version for an explicit version, or a version
      *     equal-to-or-above (TP.UP) or equal-to-or-below (TP.DOWN) a specified
      *     version number.
@@ -1330,11 +1330,11 @@ TP.sys.isMSXML = function(version, comparison) {
 TP.sys.isObsolete = function() {
 
     /**
-     * @name isObsolete
+     * @method isObsolete
      * @summary Returns whether or not TIBET considers the current browser to be
      *     obsolete. Any browser not appearing to be ECMAScript-5 compliant is
      *     considered to be obsolete. Obsolete browsers refuse to boot TIBET.
-     * @return {Boolean} Whether TIBET considers the browser obsolete.
+     * @returns {Boolean} Whether TIBET considers the browser obsolete.
      */
 
     //  simple check for rough ECMAScript 5 compliance.
@@ -1351,13 +1351,13 @@ TP.sys.isObsolete = function() {
 TP.sys.isSupported = function() {
 
     /**
-     * @name isSupported
+     * @method isSupported
      * @summary Returns whether or not TIBET is supported in the browser that
      *     is currently trying to execute it. Supported browsers boot without
      *     any warnings. Obsolete browsers refuse to boot. "Unsupported" which
      *     is the gap between obsolete and supported (or those which aren't in
      *     the primary browser list) boot with warnings.
-     * @return {Boolean} Whether or not TIBET is supported in the currently
+     * @returns {Boolean} Whether or not TIBET is supported in the currently
      *     executing browser.
      */
 
@@ -1420,9 +1420,9 @@ if (TP.sys.$httpBased) {
 TP.sys.isHTTPBased = function() {
 
     /**
-     * @name isHTTPBased
+     * @method isHTTPBased
      * @summary Returns true if the TIBET codebase was loaded via HTTP.
-     * @return {Boolean} Whether or not the TIBET codebase was loaded over
+     * @returns {Boolean} Whether or not the TIBET codebase was loaded over
      *     HTTP.
      */
 
@@ -1434,10 +1434,10 @@ TP.sys.isHTTPBased = function() {
 TP.sys.getLaunchRoot = function() {
 
     /**
-     * @name getLaunchRoot
+     * @method getLaunchRoot
      * @summary Returns the "launch root", either the web server's root or the
      *     root of the file system from which the current app was launched.
-     * @return {String} The root path that the TIBET codebase was launched
+     * @returns {String} The root path that the TIBET codebase was launched
      *     from.
      */
 
@@ -1478,9 +1478,9 @@ TP.sys.getLaunchRoot = function() {
 TP.sys.getHost = function() {
 
     /**
-     * @name getHost
+     * @method getHost
      * @summary Returns the hostname from which TIBET was loaded.
-     * @return {String} The host from which TIBET was loaded.
+     * @returns {String} The host from which TIBET was loaded.
      */
 
     return TP.sys.$host;
@@ -1491,9 +1491,9 @@ TP.sys.getHost = function() {
 TP.sys.getPathname = function() {
 
     /**
-     * @name getPathname
+     * @method getPathname
      * @summary Returns the pathname from which TIBET was loaded.
-     * @return {String} The pathname from which TIBET was loaded.
+     * @returns {String} The pathname from which TIBET was loaded.
      */
 
     return TP.sys.$pathname;
@@ -1504,10 +1504,10 @@ TP.sys.getPathname = function() {
 TP.sys.getPort = function() {
 
     /**
-     * @name getPort
+     * @method getPort
      * @summary Returns the port number string from which TIBET was loaded. If
      *     no port number was specified in the load URL this string is empty.
-     * @return {Number} The port number from which TIBET was loaded.
+     * @returns {Number} The port number from which TIBET was loaded.
      */
 
     return TP.sys.$port;
@@ -1518,12 +1518,12 @@ TP.sys.getPort = function() {
 TP.sys.getScheme = function() {
 
     /**
-     * @name getScheme
+     * @method getScheme
      * @summary Returns the scheme used when TIBET was loaded. This is
      *     typically http or https which allows TIBET to determine if a secure
      *     connection is required as the default for future connections to the
      *     server.
-     * @return {String} The protocol used when TIBET was loaded.
+     * @returns {String} The protocol used when TIBET was loaded.
      */
 
     return TP.sys.$scheme;
@@ -1545,7 +1545,7 @@ TP.sys.getScheme = function() {
 TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
 
     /**
-     * @name $httpCall
+     * @method $httpCall
      * @summary Performs an XMLHTTPRequest based on the information provided.
      *     NOTE again that this version is specific to the boot system where
      *     synchronous loads are actually what's desired/required to ensure
@@ -1560,8 +1560,8 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
      *     kernel's $httpCall API which uses a hash.
      * @param {String} callUri Optional URI data for the call. Often used for
      *     GET/POST calls to provide CGI parameter strings, etc.
-     * @raises Error Various HTTP-related errors.
-     * @return {XMLHTTPRequest} The request object used for the call.
+     * @exception Error Various HTTP-related errors.
+     * @returns {XMLHTTPRequest} The request object used for the call.
      */
 
     var i,
@@ -1675,9 +1675,9 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
 TP.boot.$httpCreate = function() {
 
     /**
-     * @name $httpCreate
+     * @method $httpCreate
      * @summary Returns a platform-specific XMLHttpRequest object for use.
-     * @return {XMLHttpRequest} A new XMLHttpRequest object.
+     * @returns {XMLHttpRequest} A new XMLHttpRequest object.
      */
 
     var request,
@@ -1730,7 +1730,7 @@ TP.boot.$httpCreate = function() {
 TP.boot.$httpError = function(aString, errObj) {
 
     /**
-     * @name $httpError
+     * @method $httpError
      * @summary Throws an error containing aString, and optionally logs the
      *     string to TP.boot.$stderr. This allows debug mode to control
      *     whether all such calls are logged at the low level, while allowing
@@ -1739,8 +1739,8 @@ TP.boot.$httpError = function(aString, errObj) {
      * @param {String} aString The error message, if any.
      * @param {Object} errObj An optional Error object, as creatd by the
      *     TP.boot.$ec() call.
-     * @raises Error Throws an Error containing aString.
-     * @return {null}
+     * @exception Error Throws an Error containing aString.
+     * @returns {null}
      */
 
     //  since we're throwing an exception here we'll rely on debug mode to
@@ -1766,11 +1766,11 @@ names to meet platform requirements and deal with "virtualized" paths.
 TP.boot.$uriCollapsePath = function(aPath) {
 
     /**
-     * @name $uriCollapsePath
+     * @method $uriCollapsePath
      * @summary Collapses a URI path to remove any embedded . or .. segments
      *     which may exist.
      * @param {String} aPath The path to collapse.
-     * @return {String} The path with any . or .. collapsed.
+     * @returns {String} The path with any . or .. collapsed.
      */
 
     var path,
@@ -1814,7 +1814,7 @@ TP.boot.$uriCollapsePath = function(aPath) {
 TP.boot.$uriExpandPath = function(aPath) {
 
     /**
-     * @name $uriExpandPath
+     * @method $uriExpandPath
      * @summary Returns the expanded form of the TIBET '~' (tilde) path
      *     provided. Variable values in the path (~[varname]/) are expanded
      *     using the corresponding TP.sys.cfg(path.varname) lookup. NOTE the
@@ -1822,7 +1822,7 @@ TP.boot.$uriExpandPath = function(aPath) {
      *     registered under a path.app_* or path.lib_* style key to help
      *     maintain lookup conventions.
      * @param {String} aPath The TIBET path to expand.
-     * @return {String} A newly constructed path string.
+     * @returns {String} A newly constructed path string.
      */
 
     var path,
@@ -1920,11 +1920,11 @@ TP.boot.$uriExpandPath = function(aPath) {
 TP.boot.$uriInLocalFormat = function(aPath) {
 
     /**
-     * @name $uriInLocalFormat
+     * @method $uriInLocalFormat
      * @summary Returns the path with proper adjustments made to represent a
      *     valid file on the current platform.
      * @param {String} aPath The path to adjust.
-     * @return {String} The supplied path adjusted to be a 'proper URL' for the
+     * @returns {String} The supplied path adjusted to be a 'proper URL' for the
      *     current platform.
      */
 
@@ -1969,12 +1969,12 @@ TP.boot.$$tibetURIS = {};
 TP.boot.$uriInTIBETFormat = function(aPath) {
 
     /**
-     * @name $uriInTIBETFormat
+     * @method $uriInTIBETFormat
      * @summary Returns the path with typical TIBET prefixes for app_cfg,
      *     lib_cfg, app_root, and lib_root replaced with their TIBET aliases.
      *     This is typically used to shorten log output.
      * @param {String} aPath The URI path to process.
-     * @return {String} The supplied path with typical TIBET prefixes.
+     * @returns {String} The supplied path with typical TIBET prefixes.
      */
 
     var path;
@@ -2014,7 +2014,7 @@ TP.boot.$uriIsAbsolute = function(aPath) {
      * that this will return true for TIBET virtual paths since they are
      * absolute paths when expanded.
      * @param {string} aPath The path to be tested.
-     * @return {Boolean} True if the path is absolute.
+     * @returns {Boolean} True if the path is absolute.
      */
 
     if (aPath.indexOf('~') === 0) {
@@ -2040,7 +2040,7 @@ TP.boot.$uriIsVirtual = function(aPath) {
     /**
      * Returns true if the path provided appears to be a virtual path.
      * @param {string} aPath The path to be tested.
-     * @return {Boolean} True if the path is virtual.
+     * @returns {Boolean} True if the path is virtual.
      */
 
     return aPath.indexOf('~') === 0;
@@ -2051,13 +2051,13 @@ TP.boot.$uriIsVirtual = function(aPath) {
 TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
 
     /**
-     * @name uriJoinPaths
+     * @method uriJoinPaths
      * @summary Returns the two path components joined appropriately. Note that
      *     the second path has precedence, meaning that if the second path
      *     appears to be an absolute path the first path isn't used.
      * @param {String} firstPath The 'root' path.
      * @param {String} secondPath The 'tail' path.
-     * @return {String} The two supplied paths joined together.
+     * @returns {String} The two supplied paths joined together.
      */
 
     var i,
@@ -2189,11 +2189,11 @@ TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
 TP.boot.$uriMinusFileScheme = function(aPath) {
 
     /**
-     * @name $uriMinusFileScheme
+     * @method $uriMinusFileScheme
      * @summary Returns the filename trimmed of any leading file://[/] chars.
      *     This is often necessary for proper use based on host platform.
      * @param {String} aPath The path to trim.
-     * @return {String} The path trimmed of any leading file://[/] characters.
+     * @returns {String} The path trimmed of any leading file://[/] characters.
      */
 
     var path;
@@ -2225,11 +2225,11 @@ TP.boot.$uriMinusFileScheme = function(aPath) {
 TP.boot.$uriPlusFileScheme = function(aPath) {
 
     /**
-     * @name $uriPlusFileScheme
+     * @method $uriPlusFileScheme
      * @summary Returns the filename padded with leading file://[/] chars. This
      *     is often necessary for proper use based on host platform.
      * @param {String} aPath The path to pad.
-     * @return {String} The supplied path padded with the proper leading
+     * @returns {String} The supplied path padded with the proper leading
      *     file://[/] characters.
      */
 
@@ -2268,11 +2268,11 @@ TP.boot.$uriPlusFileScheme = function(aPath) {
 TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
 
     /**
-     * @name uriRelativeToPath
+     * @method uriRelativeToPath
      * @summary Returns a "relativized" version of the firstPath at it relates
      *     to the second path. In essence, what path would you have to append to
      *     the secondPath to acquire the resource defined by the first path.
-     * @description This method is a core method for helping stored files remain
+     * @summary This method is a core method for helping stored files remain
      *     "relocatable". When storing TIBET metadata or compiled pages their
      *     internal references are automatically adjusted to relative paths
      *     using this routine. For example, given a path of ~lib_cfg/TIBET.xml
@@ -2290,7 +2290,7 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
      *     reference. This is important since the offset is relative to
      *     directories, not files. Defaults to true since the vast majority of
      *     URI references are to files.
-     * @return {String} The relativized version of firstPath.
+     * @returns {String} The relativized version of firstPath.
      */
 
     var file,
@@ -2528,7 +2528,7 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
 TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
 
     /**
-     * @name $uriWithRoot
+     * @method $uriWithRoot
      * @summary Returns the path provided with any additional root information
      * which is necessary to create a full path name. The root used is the
      * result of calling TP.boot.$getRootPath(), which may be referencing either
@@ -2536,7 +2536,7 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
      * settings.
      * @param {String} targetUrl A url to expand as needed.
      * @param {String} aRoot The root path to use. Default is launch root.
-     * @return {String} The url - after ensuring a root exists.
+     * @returns {String} The url - after ensuring a root exists.
      */
 
     var url,
@@ -2580,12 +2580,12 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
 TP.boot.$uriLocation = function(targetUrl) {
 
     /**
-     * @name $uriLocation
+     * @method $uriLocation
      * @summary Returns the true location of the URL. If the URL has been
      *     moved this will return the Location header value from the redirect,
      *     otherwise the original URL location is returned.
      * @param {String} targetUrl URL of the target resource.
-     * @return {String} The true location of the resource which may or may not
+     * @returns {String} The true location of the resource which may or may not
      *     be at targetUrl.
      */
 
@@ -2607,12 +2607,12 @@ TP.boot.$uriLocation = function(targetUrl) {
 TP.boot.$uriLocationFile = function(targetUrl) {
 
     /**
-     * @name $uriLocationFile
+     * @method $uriLocationFile
      * @summary Returns the true location of the file. For file urls (no HTTP)
      *     this is the original url. HTTP urls will return a value based on
      *     whether the final url is a redirected value.
      * @param {String} targetUrl URL of the target file.
-     * @return {String} The true location of the file which may or may not be
+     * @returns {String} The true location of the file which may or may not be
      *     at targetUrl.
      */
 
@@ -2624,12 +2624,12 @@ TP.boot.$uriLocationFile = function(targetUrl) {
 TP.boot.$uriLocationHttp = function(targetUrl) {
 
     /**
-     * @name $uriLocationHttp
+     * @method $uriLocationHttp
      * @summary Returns the true location of the resource. If the resource has
      *     been moved this will return the Location header value from the
      *     redirect, otherwise the original URL location is returned.
      * @param {String} targetUrl URL of the target resource.
-     * @return {String} The true location of the resource which may or may not
+     * @returns {String} The true location of the resource which may or may not
      *     be at targetUrl.
      */
 
@@ -2667,11 +2667,11 @@ TP.boot.$uriLocationHttp = function(targetUrl) {
 TP.boot.$uriLastModified = function(targetUrl) {
 
     /**
-     * @name $uriLastModified
+     * @method $uriLastModified
      * @summary Returns the last-modified-date of the target resource.
      * @param {String} targetUrl URL of the target resource.
-     * @raises InvalidURL, UnsupportedFeature
-     * @return {Date} The Date the targetUrl was last modified.
+     * @exception InvalidURL, UnsupportedFeature
+     * @returns {Date} The Date the targetUrl was last modified.
      */
 
     var fname;
@@ -2706,11 +2706,11 @@ TP.boot.$uriLastModified = function(targetUrl) {
 TP.boot.$uriLastModifiedIEFile = function(targetUrl) {
 
     /**
-     * @name $uriLastModifiedIEFile
+     * @method $uriLastModifiedIEFile
      * @summary Returns the last-modified-date of a file in the file system.
      * @param {String} targetUrl URL of the target file.
-     * @raises AccessException, NotFound
-     * @return {Date} The Date the targetUrl was last modified.
+     * @exception AccessException, NotFound
+     * @returns {Date} The Date the targetUrl was last modified.
      */
 
     var fname,
@@ -2748,12 +2748,12 @@ TP.boot.$uriLastModifiedIEFile = function(targetUrl) {
 TP.boot.$uriLastModifiedMozFile = function(targetUrl) {
 
     /**
-     * @name $uriLastModifiedMozFile
+     * @method $uriLastModifiedMozFile
      * @summary Returns the last-modified-date of a file in the file system.
      * @param {String} targetUrl URL of the target file.
-     * @raises AccessException, PrivilegeException,
+     * @exception AccessException, PrivilegeException,
      *     NotFound, FileComponentError
-     * @return {Date} The Date the targetUrl was last modified.
+     * @returns {Date} The Date the targetUrl was last modified.
      */
 
     //  it turns out that on Mozilla if you query for a directory you'll get
@@ -2828,11 +2828,11 @@ TP.boot.$uriLastModifiedMozFile = function(targetUrl) {
 TP.boot.$uriLastModifiedHttp = function(targetUrl) {
 
     /**
-     * @name $uriLastModifiedHttp
+     * @method $uriLastModifiedHttp
      * @summary Returns the last-modified-date of a resource on a web server.
      * @param {String} targetUrl URL of the target resource.
-     * @raises AccessException, NotFound
-     * @return {Date} The Date the targetUrl was last modified.
+     * @exception AccessException, NotFound
+     * @returns {Date} The Date the targetUrl was last modified.
      */
 
     var httpObj,
@@ -2875,13 +2875,13 @@ generated resources is older than its source.
 TP.boot.$uriCurrent = function(targetUrl, sourceUrl) {
 
     /**
-     * @name $uriCurrent
+     * @method $uriCurrent
      * @summary Returns true if targetUrl has a newer modified date than
      *     sourceUrl. This version dispatches to the proper low-level
      *     browser-specific version appropriate to the environment.
      * @param {String} targetUrl URL of the target resource.
      * @param {String} sourceUrl URL of the source resource.
-     * @return {Boolean} Whether or not the targetUrl is 'current' against the
+     * @returns {Boolean} Whether or not the targetUrl is 'current' against the
      *     sourceUrl.
      */
 
@@ -2935,10 +2935,10 @@ used to test for resource existence. This avoids 404's etc.
 TP.boot.$uriExists = function(targetUrl) {
 
     /**
-     * @name $uriExists
+     * @method $uriExists
      * @summary Returns true if targetUrl exists on the boot server.
      * @param {String} targetUrl URL of the target resource.
-     * @return {Boolean} Whether or not the targetUrl exists.
+     * @returns {Boolean} Whether or not the targetUrl exists.
      */
 
     if (!targetUrl) {
@@ -2957,10 +2957,10 @@ TP.boot.$uriExists = function(targetUrl) {
 TP.boot.$uriExistsFile = function(targetUrl) {
 
     /**
-     * @name $uriExistsFile
+     * @method $uriExistsFile
      * @summary Returns true if targetUrl exists on the boot server.
      * @param {String} targetUrl URL of the target file.
-     * @return {Boolean} Whether or not the targetUrl exists.
+     * @returns {Boolean} Whether or not the targetUrl exists.
      */
 
     var httpObj;
@@ -3064,10 +3064,10 @@ TP.boot.$uriExistsFile = function(targetUrl) {
 TP.boot.$uriExistsHttp = function(targetUrl) {
 
     /**
-     * @name $uriExistsHttp
+     * @method $uriExistsHttp
      * @summary Returns true if targetUrl exists on the boot server.
      * @param {String} targetUrl URL of the target resource.
-     * @return {Boolean} Whether or not the targetUrl exists.
+     * @returns {Boolean} Whether or not the targetUrl exists.
      */
 
     var httpObj;
@@ -3119,7 +3119,7 @@ system or the net and produce XML documents which can be manipulated.
 TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
 
     /**
-     * @name $uriLoad
+     * @method $uriLoad
      * @summary Loads the content of a targetUrl, returning that content as
      *     either XML or text depending on the desired resultType.
      * @param {String} targetUrl URL of the target resource.
@@ -3128,7 +3128,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
      *     'manifest' are common values here.
      * @param {Boolean} isPackage True if the resource being imported is a
      *     package-level resource.
-     * @return {XMLDocument|String} The XML document or String that was loaded
+     * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      */
 
@@ -3170,11 +3170,11 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
 TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
 
     /**
-     * @name $uriLoadCommonFile
+     * @method $uriLoadCommonFile
      * @summary Loads (reads and produces an XML document for) targetUrl.
      * @param {String} targetUrl URL of the target file.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
-     * @return {XMLDocument|String} The XML document or String that was loaded
+     * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      */
 
@@ -3217,11 +3217,11 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
 TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
 
     /**
-     * @name $uriLoadIEFile
+     * @method $uriLoadIEFile
      * @summary Loads (reads and produces an XML document for) targetUrl.
      * @param {String} targetUrl URL of the target file.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
-     * @return {XMLDocument|String} The XML document or String that was loaded
+     * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      */
 
@@ -3269,14 +3269,14 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
 TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
 
     /**
-     * @name uriLoadMozFile
+     * @method uriLoadMozFile
      * @summary Loads (reads and produces an XML document for) targetUrl. This
      *     version is specific to Mozilla 1.3+ browsers.
      * @param {String} targetUrl URL of the target file.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
-     * @raises URINotFound, AccessViolation, DOMParseException,
+     * @exception URINotFound, AccessViolation, DOMParseException,
      *     PrivilegeViolation, URIComponentException
-     * @return {XMLDocument|String} The XML document or String that was loaded
+     * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      * @since 2.0
      */
@@ -3370,7 +3370,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                                         isPackage) {
 
     /**
-     * @name $uriLoadCommonHttp
+     * @method $uriLoadCommonHttp
      * @summary Loads (reads and produces an XML document for) targetUrl.
      * @param {String} targetUrl URL of the target resource.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
@@ -3379,7 +3379,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
      *     content is cached but needs to be refreshed.
      * @param {Boolean} isPackage True if the resource being imported is a
      *     package-level resource.
-     * @return {XMLDocument|String} The XML document or String that was loaded
+     * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      */
 
@@ -3431,12 +3431,12 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
 TP.boot.$uriResult = function(text, type) {
 
     /**
-     * @name $uriResult
+     * @method $uriResult
      * @summary Returns the proper result object given the result text and
      *     result type, typically from an XMLHTTPRequest's responseText.
      * @param {String} text The response text to process.
      * @param {TP.DOM|TP.TEXT|null} type The result type desired.
-     * @return {String|Document} An XML document or the response text.
+     * @returns {String|Document} An XML document or the response text.
      */
 
     var doc;
@@ -3468,14 +3468,14 @@ TP.boot.$uriResult = function(text, type) {
 TP.boot.$uriResultType = function(targetUrl, resultType) {
 
     /**
-     * @name $uriResultType
+     * @method $uriResultType
      * @summary Returns a reasonable result type, TP.TEXT or TP.DOM, based on
      *     examination of the targetUrl's extension. If that check isn't
      *     definitive then the original resultType is returned (which may mean a
      *     null result type is returned).
      * @param {String} targetUrl A url to define a result type for.
      * @param {TP.DOM|TP.TEXT|null} resultType A result type constant.
-     * @return {Number} TP.DOM|TP.TEXT|null
+     * @returns {Number} TP.DOM|TP.TEXT|null
      */
 
     //  Certain extensions are clearly not intended to be XML, like .js and
@@ -3509,7 +3509,7 @@ file-system versions require varying permissions.
 TP.boot.$uriSave = function(targetUrl, fileContent, fileMode) {
 
     /**
-     * @name $uriSave
+     * @method $uriSave
      * @summary Saves the fileContent to the targetUrl provided. If fileMode is
      *     'w' then the existing contents of the file, if any, are replaced with
      *     the new content. If fileMode is 'a' then the new content is appended
@@ -3518,9 +3518,9 @@ TP.boot.$uriSave = function(targetUrl, fileContent, fileMode) {
      * @param {String} targetUrl URL of the target file.
      * @param {String} fileContent The content of the file to save.
      * @param {String} fileMode Write (w) or append (a).
-     * @raises NotFound, AccessException,
+     * @exception NotFound, AccessException,
      *     InvalidFileMode, PrivilegeException, UnsupportedFeature
-     * @return {Boolean} True on success, false on failure.
+     * @returns {Boolean} True on success, false on failure.
      */
 
     var fname;
@@ -3553,7 +3553,7 @@ TP.boot.$uriSave = function(targetUrl, fileContent, fileMode) {
 TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
 
     /**
-     * @name $uriSaveIEFile
+     * @method $uriSaveIEFile
      * @summary Saves the fileContent to the targetUrl provided. If fileMode is
      *     'w' then the existing contents of the file, if any, are replaced with
      *     the new content. If fileMode is 'a' then the new content is appended
@@ -3563,9 +3563,9 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
      * @param {String} targetUrl URL of the target file.
      * @param {String} fileContent The content of the file to save.
      * @param {String} fileMode Write (w) or append (a).
-     * @raises NotFound, InvalidFileMode,
+     * @exception NotFound, InvalidFileMode,
      *     AccessException
-     * @return {Boolean} True on success, false on failure.
+     * @returns {Boolean} True on success, false on failure.
      */
 
     var fname,
@@ -3625,7 +3625,7 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
 TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
 
     /**
-     * @name $uriSaveMozFile
+     * @method $uriSaveMozFile
      * @summary Saves the fileContent to the targetUrl provided. If fileMode is
      *     'w' then the existing contents of the file, if any, are replaced with
      *     the new content. If fileMode is 'a' then the new content is appended
@@ -3635,9 +3635,9 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
      * @param {String} targetUrl URL of the target file.
      * @param {String} fileContent The content of the file to save.
      * @param {String} fileMode Write (w) or append (a).
-     * @raises NotFound, InvalidFileMode,
+     * @exception NotFound, InvalidFileMode,
      *     AccessException, PrivilegeException
-     * @return {Boolean} True on success, false on failure.
+     * @returns {Boolean} True on success, false on failure.
      */
 
     var FP,
@@ -3747,7 +3747,7 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
 TP.boot.$uriSaveWebkitFile = function(targetUrl, fileContent, fileMode) {
 
     /**
-     * @name $uriSaveWebkitFile
+     * @method $uriSaveWebkitFile
      * @summary Saves the fileContent to the targetUrl provided. If fileMode is
      *     'w' then the existing contents of the file, if any, are replaced with
      *     the new content. If fileMode is 'a' then the new content is appended
@@ -3757,9 +3757,9 @@ TP.boot.$uriSaveWebkitFile = function(targetUrl, fileContent, fileMode) {
      * @param {String} targetUrl URL of the target file.
      * @param {String} fileContent The content of the file to save.
      * @param {String} fileMode Write (w) or append (a).
-     * @raises NotFound, InvalidFileMode,
+     * @exception NotFound, InvalidFileMode,
      *     AccessException
-     * @return {Boolean} True on success, false on failure.
+     * @returns {Boolean} True on success, false on failure.
      */
 
     TP.boot.$stderr('UnsupportedFeature: TP.boot.$uriSaveWebkitFile()');
@@ -3772,7 +3772,7 @@ TP.boot.$uriSaveWebkitFile = function(targetUrl, fileContent, fileMode) {
 TP.boot.$uriSaveHttp = function(targetUrl, fileContent, fileMode) {
 
     /**
-     * @name $uriSaveHttp
+     * @method $uriSaveHttp
      * @summary Saves the fileContent to the targetUrl provided. If fileMode is
      *     'w' then the existing contents of the file, if any, are replaced with
      *     the new content. If fileMode is 'a' then the new content is appended
@@ -3782,8 +3782,8 @@ TP.boot.$uriSaveHttp = function(targetUrl, fileContent, fileMode) {
      * @param {String} targetUrl URL of the target file.
      * @param {String} fileContent The content of the file to save.
      * @param {String} fileMode Write (w) or append (a).
-     * @raises HTTPError, AccessException
-     * @return {Boolean} True on success, false on failure.
+     * @exception HTTPError, AccessException
+     * @returns {Boolean} True on success, false on failure.
      */
 
     var path,
@@ -3826,11 +3826,11 @@ Minimal functions to support boot system requirements for new documents.
 TP.boot.$documentCreate = function(versionNumber) {
 
     /**
-     * @name $documentCreate
+     * @method $documentCreate
      * @summary Creates a DOM document element for use.
      * @param {Number} versionNumber A specific version number which must be
      *     returned as a minimum version.
-     * @return {XMLDocument} A new XML document.
+     * @returns {XMLDocument} A new XML document.
      */
 
     return document.implementation.createDocument('', '', null);
@@ -3841,11 +3841,11 @@ TP.boot.$documentCreate = function(versionNumber) {
 TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 
     /**
-     * @name $activeXDocumentCreateIE
+     * @method $activeXDocumentCreateIE
      * @summary Creates a DOM document element for use.
      * @param {Number} versionNumber A specific version number which must be
      *     returned as a minimum version.
-     * @return {XMLDocument} A new XML document.
+     * @returns {XMLDocument} A new XML document.
      */
 
     var doc,
@@ -3926,12 +3926,12 @@ TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 TP.boot.$documentGetElementById = function(xmldoc, id) {
 
     /**
-     * @name $documentGetElementById
+     * @method $documentGetElementById
      * @summary Returns a descendant element of the document provided which has
      *     the ID given.
      * @param {XMLDocument} xmldoc The document to query.
      * @param {String} id The ID of the element to find.
-     * @return {Element} The found element or undefined.
+     * @returns {Element} The found element or undefined.
      */
 
     return xmldoc.querySelector('*[id="' + id + '"]');
@@ -3942,13 +3942,13 @@ TP.boot.$documentGetElementById = function(xmldoc, id) {
 TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
 
     /**
-     * @name $nodeAppendChild
+     * @method $nodeAppendChild
      * @summary Appends the newNode to the supplied node.
      * @param {Node} aNode The node to append the child node to.
      * @param {Node} newNode The node to append to aNode.
      * @param {Boolean} shouldThrow True to cause errors to throw a native Error
      *     so outer catch blocks will trigger.
-     * @return {Node} The new node. This may be a different node than what was
+     * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
      */
 
@@ -4003,7 +4003,7 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
 TP.boot.$nodeInsertBefore = function(aNode, newNode, insertionPointNode) {
 
     /**
-     * @name $nodeInsertBefore
+     * @method $nodeInsertBefore
      * @summary Inserts the newNode into the child content of the supplied node
      *     before the supplied insertion point node. If insertionPointNode is
      *     null, then the new node is just appended to the child content of the
@@ -4012,7 +4012,7 @@ TP.boot.$nodeInsertBefore = function(aNode, newNode, insertionPointNode) {
      * @param {Node} newNode The node to insert into aNode.
      * @param {Node} insertionPointNode The node to use as an insertion point.
      *     The new content will be inserted before this point.
-     * @return {Node} The new node. This may be a different node than what was
+     * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
      */
 
@@ -4045,12 +4045,12 @@ TP.boot.$nodeInsertBefore = function(aNode, newNode, insertionPointNode) {
 TP.boot.$nodeReplaceChild = function(aNode, newNode, oldNode) {
 
     /**
-     * @name $nodeReplaceChild
+     * @method $nodeReplaceChild
      * @summary Replaces the oldNode in the supplied node with the newNode.
      * @param {Node} aNode The node to replace the child in.
      * @param {Node} newNode The node to replace oldNode with.
      * @param {Node} oldNode The node to be replaced with newNode.
-     * @return {Node} The new node. This may be a different node than what was
+     * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
      */
 
@@ -4091,11 +4091,11 @@ nodeAsString and documentFromString processing to help with XML processing
 TP.boot.$documentFromString = function(aString) {
 
     /**
-     * @name $documentFromString
+     * @method $documentFromString
      * @summary Parses aString and returns the XML node representing the root
      *     element of the string's DOM representation.
      * @param {String} aString The source string to be parsed.
-     * @return {Node}
+     * @returns {Node}
      */
 
     return TP.boot.$documentFromStringCommon(aString);
@@ -4117,11 +4117,11 @@ if (TP.sys.isUA('GECKO')) {
 TP.boot.$documentFromStringCommon = function(aString) {
 
     /**
-     * @name $documentFromStringCommon
+     * @method $documentFromStringCommon
      * @summary Parses aString and returns the XML node representing the root
      *     element of the string's DOM representation.
      * @param {String} aString The source string to be parsed.
-     * @return {XMLDocument} The XML document created from the supplied String.
+     * @returns {XMLDocument} The XML document created from the supplied String.
      */
 
     var parser,
@@ -4150,13 +4150,13 @@ TP.boot.$documentFromStringCommon = function(aString) {
 TP.boot.$documentFromStringIE = function(aString, prohibitDTD) {
 
     /**
-     * @name $documentFromStringIE
+     * @method $documentFromStringIE
      * @summary Parses aString and returns the XML node representing the root
      *     element of the string's DOM representation.
      * @param {String} aString The source string to be parsed.
      * @param {Boolean} prohibitDTD Turn off ability to parse in documents with
      *     DTDs.
-     * @return {XMLDocument} The XML document created from the supplied String.
+     * @returns {XMLDocument} The XML document created from the supplied String.
      */
 
     var xmlDoc,
@@ -4183,10 +4183,10 @@ TP.boot.$documentFromStringIE = function(aString, prohibitDTD) {
 TP.boot.$nodeAsString = function(aNode) {
 
     /**
-     * @name $nodeAsString
+     * @method $nodeAsString
      * @summary Returns the string representation of aNode.
      * @param {Node} aNode The node to transform.
-     * @return {String} The String representation of the supplied Node.
+     * @returns {String} The String representation of the supplied Node.
      */
 
     return TP.boot.$nodeAsStringCommon(aNode);
@@ -4197,10 +4197,10 @@ TP.boot.$nodeAsString = function(aNode) {
 TP.boot.$nodeAsStringCommon = function(aNode) {
 
     /**
-     * @name $nodeAsStringMoz
+     * @method $nodeAsStringMoz
      * @summary Returns the string representation of aNode.
      * @param {Node} aNode The node to transform.
-     * @return {String} The String representation of the supplied Node.
+     * @returns {String} The String representation of the supplied Node.
      */
 
     var str;
@@ -4225,10 +4225,10 @@ TP.boot.$nodeAsStringCommon = function(aNode) {
 TP.boot.$currentDocumentLocation = function() {
 
     /**
-     * @name $currentDocumentLocation
+     * @method $currentDocumentLocation
      * @summary Returns the enclosing document's location, minus the docname
      *     itself and any parameters on the URI.
-     * @return {String} The document's location.
+     * @returns {String} The document's location.
      */
 
     var str,
@@ -4250,7 +4250,7 @@ TP.boot.$currentDocumentLocation = function() {
 TP.sys.getWindowById = function(anID, aWindow) {
 
     /**
-     * @name getWindowById
+     * @method getWindowById
      * @summary Returns a reference to the window with the ID provided. This
      *     method tries a number of variations to locate a window whose name may
      *     be '.' separated without actually using the open call because we
@@ -4258,7 +4258,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
      *     doesn't exist.
      * @param {String} anID A window/frame name.
      * @param {Window} aWindow A native window to root the search.
-     * @return {Window} A native window reference.
+     * @returns {Window} A native window reference.
      */
 
     var id,
@@ -4500,13 +4500,13 @@ TP.sys.getWindowById = function(anID, aWindow) {
 TP.windowIsInstrumented = function(nativeWindow) {
 
     /**
-     * @name windowIsInstrumented
+     * @method windowIsInstrumented
      * @summary Returns true if the window provided has been instrumented with
      *     TIBET base window functionality. If no window is provided this method
      *     returns true since the receiving window is clearly instrumented :).
      * @param {Window} nativeWindow A window to test. If none is provided the
      *     receiver is tested.
-     * @return {Boolean} Whether or not the window is instrumented.
+     * @returns {Boolean} Whether or not the window is instrumented.
      */
 
     //  if no window is passed in treat it like a query for local window
@@ -4544,13 +4544,13 @@ After that the versions in the kernel take over.
 TP.boot.$elementAddClass = function(anElement, aClassname) {
 
     /**
-     * @name $elementAddClass
+     * @method $elementAddClass
      * @summary Adds a CSS class name to the element if it is not already
      *     present.
      * @param {Element} anElement The element to add the CSS class to.
      * @param {String} aClassname The CSS class name to add.
-     * @raises InvalidElement,InvalidString
-     * @return {Element} The element the supplied class was added to.
+     * @exception InvalidElement,InvalidString
+     * @returns {Element} The element the supplied class was added to.
      */
 
     var cls;
@@ -4578,11 +4578,11 @@ TP.boot.$elementAddClass = function(anElement, aClassname) {
 TP.boot.$elementHasClass = function(anElement, aClassname) {
 
     /**
-     * @name $elementHasClass
-     * @synopsis Returns true if the element has the CSS class name specified.
+     * @method $elementHasClass
+     * @summary Returns true if the element has the CSS class name specified.
      * @param {Element} anElement The element to test.
      * @param {String} className The CSS class name to test for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not the element has the supplied CSS class.
      */
 
@@ -4607,13 +4607,13 @@ TP.boot.$elementHasClass = function(anElement, aClassname) {
 TP.boot.$elementReplaceClass = function(anElement, aPattern, aClassname) {
 
     /**
-     * @name elementReplaceClass
-     * @synopsis Replaces the old CSS class name in anElement's 'className' CSS
+     * @method elementReplaceClass
+     * @summary Replaces the old CSS class name in anElement's 'className' CSS
      *     class list with the new CSS class name.
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} oldClassName The CSS class name to replace.
      * @param {String} newClassName The CSS class name to replace it with.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Element} The element.
      */
 
@@ -4656,15 +4656,15 @@ TP.boot.$elementReplaceClass = function(anElement, aPattern, aClassname) {
 TP.boot.$elementSetInnerContent = function(anElement, theContent) {
 
     /**
-     * @name $elementSetInnerContent
+     * @method $elementSetInnerContent
      * @summary Sets the 'inner content' of anElement.
-     * @description This method sets the 'inner content' of anElement to
+     * @summary This method sets the 'inner content' of anElement to
      *     theContent which means that just the contents of the element, not
      *     including its start and end tags, will be replaced with theContent.
      * @param {HTMLElement} anElement The element to set the 'inner content' of.
      * @param {String} theContent The content to replace the 'inner content' of
      *     anElement with.
-     * @return {null}
+     * @returns {null}
      */
 
     if (anElement && anElement.ownerDocument) {
@@ -4681,7 +4681,7 @@ TP.boot.$elementSetInnerContent = function(anElement, theContent) {
 TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
 
     /**
-     * @name anObject
+     * @method anObject
      * @summary Dumps an object's key/value pairs in sorted order. This is used
      *     to produce output for configuration and environment data. By sorting
      *     the keys we make it a little easier to find specific properties
@@ -4689,7 +4689,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
      * @param {Object} anObject The object to dump.
      * @param {String} aSeparator An optional separator string used to separate
      *     entries. Default is '\n'.
-     * @return {String} A formatted object string.
+     * @returns {String} A formatted object string.
      */
 
     var str,
@@ -4900,8 +4900,8 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
 TP.boot.$xmlEscape = function(aString) {
 
     /**
-     * @name $xmlEscape
-     * @synopsis Converts the supplied String into a String where any XML
+     * @method $xmlEscape
+     * @summary Converts the supplied String into a String where any XML
      *     entities have been converted into their escaped equivalent (i.e. have
      *     been "entitified")
      * @param {String} aString The String to escape.
@@ -4939,11 +4939,11 @@ TP.boot.$xmlEscape = function(aString) {
 TP.boot.$join = function(varargs) {
 
     /**
-     * @name $join
+     * @method $join
      * @summary Returns a string built from joining the various arguments to
      *     the function.
      * @param {Object} varargs The first of a set of variable arguments.
-     * @return {String}
+     * @returns {String}
      */
 
     //  NB: In modern browsers, going back to the old '+=' method of String
@@ -4969,7 +4969,7 @@ TP.boot.$join = function(varargs) {
 TP.boot.$lpad = function(obj, length, padChar) {
 
     /**
-     * @name $lpad
+     * @method $lpad
      * @summary Returns a new String representing the obj with a leading number
      *     of padChar characters according to the supplied length.
      * @param {Object} obj The object to format with leading characters.
@@ -4977,7 +4977,7 @@ TP.boot.$lpad = function(obj, length, padChar) {
      *     representation with.
      * @param {String} padChar The pad character to use to pad the String
      *     representation.
-     * @return {String}
+     * @returns {String}
      */
 
     var str,
@@ -4998,8 +4998,8 @@ TP.boot.$lpad = function(obj, length, padChar) {
 TP.boot.$quoted = function(aString) {
 
     /**
-     * @name $quoted
-     * @synopsis Returns the supplied String as a quoted String with embedded
+     * @method $quoted
+     * @summary Returns the supplied String as a quoted String with embedded
      *     quotes escaped. The quote character used is a single quote in keeping
      *     with TIBET coding standards which use single quoted strings for
      *     JavaScript and double quoted strings for *ML.
@@ -5015,7 +5015,7 @@ TP.boot.$quoted = function(aString) {
 TP.boot.$rpad = function(obj, length, padChar) {
 
     /**
-     * @name $rpad
+     * @method $rpad
      * @summary Returns a new String representing the obj with a trailing number
      *     of padChar characters according to the supplied length.
      * @param {Object} obj The object to format with trailing characters.
@@ -5023,7 +5023,7 @@ TP.boot.$rpad = function(obj, length, padChar) {
      *     representation with.
      * @param {String} padChar The pad character to use to pad the String
      *     representation.
-     * @return {String}
+     * @returns {String}
      */
 
     var str,
@@ -5044,7 +5044,7 @@ TP.boot.$rpad = function(obj, length, padChar) {
 TP.boot.$str = function(anObject, aSeparator) {
 
     /**
-     * @name $str
+     * @method $str
      * @summary Returns a string representation of the object provided. This
      *     simple version is a basic wrapper for toString. The TIBET kernel
      *     provides a method which can produce more specialized responses to
@@ -5052,7 +5052,7 @@ TP.boot.$str = function(anObject, aSeparator) {
      * @param {Object} anObject The object whose string value is being
      *     requested.
      * @param {String} aSeparator The string to use as a record separator.
-     * @return {String} A string of some form, even when empty.
+     * @returns {String} A string of some form, even when empty.
      */
 
     if (anObject !== null) {
@@ -5080,11 +5080,11 @@ TP.boot.$str = function(anObject, aSeparator) {
 TP.boot.$trim = function(aString) {
 
     /**
-     * @name $trim
+     * @method $trim
      * @summary Returns a new String representing the parameter with any
      *     leading and trailing whitespace removed.
      * @param {String} aString The string to trim.
-     * @return {String}
+     * @returns {String}
      */
 
     var str,
@@ -5128,9 +5128,9 @@ TP.boot.Annotation = function(anObject, aMessage) {
 TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
 
     /**
-     * @name as
+     * @method as
      * @summary
-     * @return {String}
+     * @returns {String}
      */
 
     var type,
@@ -5165,10 +5165,10 @@ TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
 TP.boot.Annotation.prototype.asDumpString = function() {
 
     /**
-     * @name asDumpString
+     * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
-     * @return {String} A new String containing the dump string of the receiver.
+     * @returns {String} A new String containing the dump string of the receiver.
      */
 
     return TP.boot.$join('TP.boot.Annotation :: ',
@@ -5181,7 +5181,7 @@ TP.boot.Annotation.prototype.asDumpString = function() {
 TP.boot.Annotation.prototype.asHTMLString = function() {
 
     /**
-     * @name asHTMLString
+     * @method asHTMLString
      * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
@@ -5200,7 +5200,7 @@ TP.boot.Annotation.prototype.asHTMLString = function() {
 TP.boot.Annotation.prototype.asJSONSource = function() {
 
     /**
-     * @name asJSONSource
+     * @method asJSONSource
      * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
@@ -5215,7 +5215,7 @@ TP.boot.Annotation.prototype.asJSONSource = function() {
 TP.boot.Annotation.prototype.asPrettyString = function() {
 
     /**
-     * @name asPrettyString
+     * @method asPrettyString
      * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
@@ -5243,9 +5243,9 @@ TP.boot.Annotation.prototype.asPrettyString = function() {
 TP.boot.Annotation.prototype.asSource = function() {
 
     /**
-     * @name asSource
+     * @method asSource
      * @summary Returns the receiver as a TIBET source code string.
-     * @return {String} An appropriate form for recreating the receiver.
+     * @returns {String} An appropriate form for recreating the receiver.
      */
 
     return TP.boot.$join('TP.boot.$annotate(\'',
@@ -5258,10 +5258,10 @@ TP.boot.Annotation.prototype.asSource = function() {
 TP.boot.Annotation.prototype.asString = function() {
 
     /**
-     * @name asString
+     * @method asString
      * @summary Returns the receiver as a simple string. Just the message is
      *     used for this.
-     * @return {String} An appropriate form for recreating the receiver.
+     * @returns {String} An appropriate form for recreating the receiver.
      */
 
     return '' + this.message;
@@ -5272,7 +5272,7 @@ TP.boot.Annotation.prototype.asString = function() {
 TP.boot.Annotation.prototype.asXMLString = function() {
 
     /**
-     * @name asXMLString
+     * @method asXMLString
      * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
@@ -5291,7 +5291,7 @@ TP.boot.Annotation.prototype.get = function(attributeName) {
     /**
      * Returns the value of the attribute name provided.
      * @param {String} attributeName The name of the slot to return.
-     * @return {Object} The value of the slot name.
+     * @returns {Object} The value of the slot name.
      */
 
     return this[attributeName];
@@ -5302,9 +5302,9 @@ TP.boot.Annotation.prototype.get = function(attributeName) {
 TP.boot.Annotation.prototype.getTypeName = function() {
 
     /**
-     * @name getTypeName
+     * @method getTypeName
      * @summary
-     * @return {String}
+     * @returns {String}
      */
 
     return 'TP.boot.Annotation';
@@ -5315,9 +5315,9 @@ TP.boot.Annotation.prototype.getTypeName = function() {
 TP.boot.Annotation.prototype.getSupertypes = function() {
 
     /**
-     * @name getSupertypes
+     * @method getSupertypes
      * @summary
-     * @return {String}
+     * @returns {String}
      */
 
     return [Object];
@@ -5328,9 +5328,9 @@ TP.boot.Annotation.prototype.getSupertypes = function() {
 TP.boot.Annotation.prototype.toString = function() {
 
     /**
-     * @name toString
+     * @method toString
      * @summary Returns a string representation of the receiver.
-     * @return {String}
+     * @returns {String}
      */
 
     return TP.boot.$join(TP.boot.$str(this.message),
@@ -5342,14 +5342,14 @@ TP.boot.Annotation.prototype.toString = function() {
 TP.boot.$annotate = function(anObject, aMessage) {
 
     /**
-     * @name $annotate
+     * @method $annotate
      * @summary Creates an annotated object, essentially a simple pairing
      *     between an object and an associated label or message. Often used for
      *     logging Node content without having to convert the Node into a string
      *     to bind it to an associated message.
      * @param {Object} anObject The object to annotate.
      * @param {String} aNote The note to annotate the object with.
-     * @return {Object} An object whose keys include 'object' and 'message'
+     * @returns {Object} An object whose keys include 'object' and 'message'
      *     such that a standard query can find those values.
      */
 
@@ -5370,14 +5370,14 @@ TP.boot.$annotate = function(anObject, aMessage) {
 TP.boot.$ec = function(anError, aMessage) {
 
     /**
-     * @name $ec
+     * @method $ec
      * @summary TP.core.Exception.create shortcut, later replaced by a
      *     full-featured version that ensures the resulting object can take
      *     advantage of TP.core.Exception's implementation of asString.
      * @param {Error} anError A native error object.
      * @param {String} aMessage A related string, usually a context-specific
      *     explanation of the native error.
-     * @return {Object} An object whose keys include 'object' and 'message'
+     * @returns {Object} An object whose keys include 'object' and 'message'
      *     such that a standard query can find those values.
      */
 
@@ -5798,11 +5798,11 @@ can be used to manage the boot log along with the rest of TIBET's logs.
 TP.boot.Log = function() {
 
     /**
-     * @name TP.boot.Log
+     * @method TP.boot.Log
      * @summary Contructor for a primitive log data structure. This construct
      *     is used by all TIBET logs although it is wrapped by higher-level
      *     objects once the kernel has loaded.
-     * @return {Log} A new instance.
+     * @returns {Log} A new instance.
      */
 
     //  the array of all messages sent to the log
@@ -5821,8 +5821,8 @@ TP.boot.Log = function() {
 TP.boot.Log.canLogLevel = function(aLevel) {
 
     /**
-     * @name canLogLevel
-     * @synopsis Returns true if logging is set at or above aLevel.
+     * @method canLogLevel
+     * @summary Returns true if logging is set at or above aLevel.
      * @param {Constant} aLevel A logging level constant such as TP.INFO
      *     or TP.DEBUG. The default is TP.WARN.
      * @returns {Boolean} True if logging is active for the given level.
@@ -5841,11 +5841,11 @@ TP.boot.Log.canLogLevel = function(aLevel) {
 TP.boot.Log.getStringForLevel = function(aLogLevel) {
 
     /**
-     * @name getStringForLevel
+     * @method getStringForLevel
      * @summary Returns the string value for the logging level provided.
      * @param {Number} aLogLevel The level to check, defaults to the current
      *     level if no level is passed.
-     * @return {String} The String representation of the boot log level.
+     * @returns {String} The String representation of the boot log level.
      */
 
     //  If inbound data is TP.INFO etc it's already a string...
@@ -5881,8 +5881,8 @@ TP.boot.Log.getStringForLevel = function(aLogLevel) {
 TP.boot.Log.isErrorLevel = function(aLevel) {
 
     /**
-     * @name isErrorLevel
-     * @synopsis Returns true if the level provided represents a form of error.
+     * @method isErrorLevel
+     * @summary Returns true if the level provided represents a form of error.
      * @param {Constant} aLevel A TP error level such as TP.SEVERE.
      * @returns {Boolean} True if the given level is considered an error.
      */
@@ -5903,8 +5903,8 @@ TP.boot.Log.isErrorLevel = function(aLevel) {
 TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
 
     /**
-     * @name isFatalCondition
-     * @synopsis Returns true if the level and stage combine to make the
+     * @method isFatalCondition
+     * @summary Returns true if the level and stage combine to make the
      *     combination represent a fatal boot error.
      * @param {Constant} aLevel A TP error level such as TP.SEVERE.
      * @param {Constant} aStage A TP boot stage such as 'rendering'. Defaults to
@@ -5956,10 +5956,10 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
 TP.boot.Log.prototype.asDumpString = function() {
 
     /**
-     * @name asDumpString
+     * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
-     * @return {String} A new String containing the dump string of the receiver.
+     * @returns {String} A new String containing the dump string of the receiver.
      */
 
     return TP.boot.$join('TP.boot.Log :: ', this.asString());
@@ -5970,7 +5970,7 @@ TP.boot.Log.prototype.asDumpString = function() {
 TP.boot.Log.prototype.asHTMLString = function() {
 
     /**
-     * @name asHTMLString
+     * @method asHTMLString
      * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
@@ -5989,7 +5989,7 @@ TP.boot.Log.prototype.asHTMLString = function() {
 TP.boot.Log.prototype.asJSONSource = function() {
 
     /**
-     * @name asJSONSource
+     * @method asJSONSource
      * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
@@ -6005,7 +6005,7 @@ TP.boot.Log.prototype.asJSONSource = function() {
 TP.boot.Log.prototype.asPrettyString = function() {
 
     /**
-     * @name asPrettyString
+     * @method asPrettyString
      * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
@@ -6029,7 +6029,7 @@ TP.boot.Log.prototype.asPrettyString = function() {
 TP.boot.Log.prototype.asXMLString = function() {
 
     /**
-     * @name asXMLString
+     * @method asXMLString
      * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
@@ -6058,10 +6058,10 @@ TP.boot.Log.prototype.flush = function() {
 TP.boot.Log.prototype.getEntries = function() {
 
     /**
-     * @name getEntries
+     * @method getEntries
      * @summary Returns an array containing individual log entries. The array
      *     should be considered read-only.
-     * @return {Array}
+     * @returns {Array}
      */
 
     return this.messages;
@@ -6072,9 +6072,9 @@ TP.boot.Log.prototype.getEntries = function() {
 TP.boot.Log.prototype.getSize = function() {
 
     /**
-     * @name getSize
+     * @method getSize
      * @summary Returns the size (in number of entries) of the log.
-     * @return {Number} The number of log entries.
+     * @returns {Number} The number of log entries.
      */
 
     return this.messages.length;
@@ -6085,9 +6085,9 @@ TP.boot.Log.prototype.getSize = function() {
 TP.boot.Log.prototype.getTypeName = function() {
 
     /**
-     * @name getTypeName
+     * @method getTypeName
      * @summary
-     * @return {String}
+     * @returns {String}
      */
 
     return 'TP.boot.Log';
@@ -6098,9 +6098,9 @@ TP.boot.Log.prototype.getTypeName = function() {
 TP.boot.Log.prototype.getSupertypes = function() {
 
     /**
-     * @name getSupertypes
+     * @method getSupertypes
      * @summary
-     * @return {String}
+     * @returns {String}
      */
 
     return [Object];
@@ -6111,9 +6111,9 @@ TP.boot.Log.prototype.getSupertypes = function() {
 TP.boot.Log.prototype.last = function() {
 
     /**
-     * @name last
+     * @method last
      * @summary Returns the last entry made in the log.
-     * @return {Array} A log entry.
+     * @returns {Array} A log entry.
      */
 
     return this.messages[this.messages.length - 1];
@@ -6124,13 +6124,13 @@ TP.boot.Log.prototype.last = function() {
 TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
 
     /**
-     * @name log
+     * @method log
      * @summary Creates a new log entry. The entry will include a timestamp as
      *     well as the log name, log level, and object given. The object isn't
      *     processed in any way, it is simply added to the log entry. It's up to
      *     consumers of the log to format the data in a log entry to meet their
      *     requirements.
-     * @description The object being logged isn't required to meet any
+     * @summary The object being logged isn't required to meet any
      *     particular format requirements, however there are a couple of
      *     convenience functions in TIBET which make it easy to deal with common
      *     cases. For example, the TP.boot.$ec() function
@@ -6145,7 +6145,7 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
      * @param {String} aLogName The log name (TP.IO_LOG, etc.) which qualifies
      *     the entry within the overall log. Default value is TP.ACTIVITY_LOG.
      * @param {Number} aLogLevel A TIBET log level, such as TP.INFO.
-     * @return {Log} The receiver.
+     * @returns {Log} The receiver.
      */
 
     var entry,
@@ -6221,7 +6221,7 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
 TP.boot.Log.prototype.report = function(entry) {
 
     /**
-     * @name report
+     * @method report
      * @summary Writes a log entry using the currently configured reporter.
      * @param {Object} entry A boot log entry object.
      */
@@ -6295,11 +6295,11 @@ TP.boot.Log.prototype.report = function(entry) {
 TP.boot.Log.prototype.shift = function() {
 
     /**
-     * @name shift
+     * @method shift
      * @summary Shifts the first message off the log, allowing the log to
      *     shrink in size by one entry. This method is often called to keep log
      *     sizes from exceeding configured limits.
-     * @return {Array} A log entry.
+     * @returns {Array} A log entry.
      */
 
     return this.messages.shift();
@@ -6325,11 +6325,11 @@ if (TP.sys.$bootlog == null) {
 TP.sys.getBootLog = function() {
 
     /**
-     * @name getBootLog
+     * @method getBootLog
      * @summary Returns the system boot log. This will contain any messages
      *     generated during boot processing, assuming the application was booted
      *     using the TIBET boot system.
-     * @return {TP.boot.Log} The boot log object, a primitive instance
+     * @returns {TP.boot.Log} The boot log object, a primitive instance
      *     supporting limited string output routines.
      */
 
@@ -6341,14 +6341,14 @@ TP.sys.getBootLog = function() {
 TP.boot.log = function(anObject, aLogLevel) {
 
     /**
-     * @name log
+     * @method log
      * @summary Adds an entry in the boot log for anObject, associating it with
      *     the style provided. Note that the object logged in this fashion is
      *     just captured, not formatted. How an object appears is a function of
      *     the particular log viewing logic used to display the log.
      * @param {Object} anObject The object to log.
      * @param {Number} aLogLevel The logging level to use.
-     * @return {null}
+     * @returns {null}
      */
 
     var level;
@@ -6372,10 +6372,10 @@ TP.boot.$consoleConfigured = false;
 TP.boot.$getBootElement = function(id, name) {
 
     /**
-     * @name $getBootElement
+     * @method $getBootElement
      * @summary Returns the boot element referenced by the configuration
      *     parameter 'boot.{{id}}' which should be cached in TP.boot[name].
-     * @return {HTMLElement} The HTML element specified.
+     * @returns {HTMLElement} The HTML element specified.
      */
 
     var uiboot,
@@ -6405,10 +6405,10 @@ TP.boot.$getBootElement = function(id, name) {
 TP.boot.$getBootHeadElement = function() {
 
     /**
-     * @name $getBootHeadElement
+     * @method $getBootHeadElement
      * @summary Returns the boot heading display element used for showing the
      *     current top-level boot message.
-     * @return {HTMLElement} The HTML element specified.
+     * @returns {HTMLElement} The HTML element specified.
      */
 
     return TP.boot.$getBootElement('uihead', '$$uiHead');
@@ -6419,9 +6419,9 @@ TP.boot.$getBootHeadElement = function() {
 TP.boot.$getBootImageElement = function() {
 
     /**
-     * @name $getBootImageElement
+     * @method $getBootImageElement
      * @summary Returns the boot image element used to highlight current status.
-     * @return {HTMLElement} The HTML element specified.
+     * @returns {HTMLElement} The HTML element specified.
      */
 
     return TP.boot.$getBootElement('uiimage', '$$uiImage');
@@ -6432,9 +6432,9 @@ TP.boot.$getBootImageElement = function() {
 TP.boot.$getBootInputElement = function() {
 
     /**
-     * @name $getBootInputElement
+     * @method $getBootInputElement
      * @summary Returns the boot log element used as a display console.
-     * @return {HTMLElement} The HTML element displaying boot console output.
+     * @returns {HTMLElement} The HTML element displaying boot console output.
      */
 
     return TP.boot.$getBootElement('uiinput', '$$uiInput');
@@ -6445,9 +6445,9 @@ TP.boot.$getBootInputElement = function() {
 TP.boot.$getBootLogElement = function() {
 
     /**
-     * @name $getBootLogElement
+     * @method $getBootLogElement
      * @summary Returns the boot log element used as a display console.
-     * @return {HTMLElement} The HTML element displaying boot console output.
+     * @returns {HTMLElement} The HTML element displaying boot console output.
      */
 
     return TP.boot.$getBootElement('uilog', '$$uiLog');
@@ -6458,10 +6458,10 @@ TP.boot.$getBootLogElement = function() {
 TP.boot.$getProgressBarElement = function() {
 
     /**
-     * @name $getProgressBarElement
+     * @method $getProgressBarElement
      * @summary Returns the progress bar element, which contains the overall
      *     prgress bar content element.
-     * @return {HTMLElement} The HTML element displaying the 'progress bar'.
+     * @returns {HTMLElement} The HTML element displaying the 'progress bar'.
      */
 
     return TP.boot.$getBootElement('uipercent', '$$uiProgress');
@@ -6472,9 +6472,9 @@ TP.boot.$getProgressBarElement = function() {
 TP.boot.$getBootSubheadElement = function() {
 
     /**
-     * @name $getBootSubheadElement
+     * @method $getBootSubheadElement
      * @summary Returns the boot log element used to display subheading data.
-     * @return {HTMLElement} The HTML element displaying boot console output.
+     * @returns {HTMLElement} The HTML element displaying boot console output.
      */
 
     return TP.boot.$getBootElement('uisubhead', '$$uiSubhead');
@@ -6485,7 +6485,7 @@ TP.boot.$getBootSubheadElement = function() {
 TP.boot.$getUIElement = function(varargs) {
 
     /**
-     * @name $getUIElement
+     * @method $getUIElement
      * @summary Locates and returns an element based on the ID or IDs provided
      *     as arguments.
      * @param {String} varargs One or more arguments containing string IDs.
@@ -6562,9 +6562,9 @@ TP.boot.getUIRoot = function() {
 TP.boot.$releaseUIElements = function() {
 
     /**
-     * @name $releaseUIElements
+     * @method $releaseUIElements
      * @summary Releases any cached UI references created during startup.
-     * @return {null}
+     * @returns {null}
      */
 
     TP.boot.$$uiHead = null;
@@ -6702,13 +6702,13 @@ TP.boot.$displayImage = function(aUrl) {
 TP.boot.$displayMessage = function(aString, flush) {
 
     /**
-     * @name $displayMessage
+     * @method $displayMessage
      * @summary Adds aString to the current boot log display, if available. This
      *     method is the low-level method responsible for adding to the boot UI
      *     output.
      * @param {String} aString The string of content to be added.
      * @param {Boolean} flush True to flush the log prior to output.
-     * @return {Node} The node appended to the UI.
+     * @returns {Node} The node appended to the UI.
      */
 
     var elem,
@@ -6929,10 +6929,10 @@ TP.boot.hideUIRoot = function() {
 TP.sys.showBootLog = function(reporter, level) {
 
     /**
-     * @name showBootLog
+     * @method showBootLog
      * @summary Dump the bootlog to the current target location. By default this
      *     is routed to the consoleReporter.
-     * @return {null}
+     * @returns {null}
      */
 
     var lvl,
@@ -6972,8 +6972,8 @@ TP.sys.showBootLog = function(reporter, level) {
 TP.boot.showUIBoot = function() {
 
     /**
-     * @name showUIBoot
-     * @synopsis Displays the current tibet.uiboot element in the
+     * @method showUIBoot
+     * @summary Displays the current tibet.uiboot element in the
      *     application's main window.
      */
 
@@ -7002,8 +7002,8 @@ TP.boot.showUIBoot = function() {
 TP.boot.showUIRoot = function() {
 
     /**
-     * @name showUIRoot
-     * @synopsis Displays the current tibet.uiroot element in the
+     * @method showUIRoot
+     * @summary Displays the current tibet.uiroot element in the
      *     application's main window.
      */
 
@@ -7032,8 +7032,8 @@ TP.boot.showUIRoot = function() {
 TP.boot.toggleUI = function() {
 
     /**
-     * @name toggleUI
-     * @synopsis Toggles the UI between UIRoot and UIBoot.
+     * @method toggleUI
+     * @summary Toggles the UI between UIRoot and UIBoot.
      */
 
     var elem,
@@ -7088,8 +7088,8 @@ TP.boot.toggleUI = function() {
 TP.ifTrace = function(aLogName) {
 
     /**
-     * @name ifTrace
-     * @synopsis Returns true if logging is enabled for TP.TRACE level
+     * @method ifTrace
+     * @summary Returns true if logging is enabled for TP.TRACE level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifTrace() ? TP.trace(...) : 0;code> This idiom can help
@@ -7106,8 +7106,8 @@ TP.ifTrace = function(aLogName) {
 TP.ifDebug = function(aLogName) {
 
     /**
-     * @name ifDebug
-     * @synopsis Returns true if logging is enabled for TP.DEBUG level
+     * @method ifDebug
+     * @summary Returns true if logging is enabled for TP.DEBUG level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifDebug() ? TP.debug(...) : 0;code> This idiom can help
@@ -7124,8 +7124,8 @@ TP.ifDebug = function(aLogName) {
 TP.ifInfo = function(aLogName) {
 
     /**
-     * @name ifInfo
-     * @synopsis Returns true if logging is enabled for TP.INFO level
+     * @method ifInfo
+     * @summary Returns true if logging is enabled for TP.INFO level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifInfo() ? TP.info(...) : 0;code> This idiom can help
@@ -7142,8 +7142,8 @@ TP.ifInfo = function(aLogName) {
 TP.ifWarn = function(aLogName) {
 
     /**
-     * @name ifWarn
-     * @synopsis Returns true if logging is enabled for TP.WARN level
+     * @method ifWarn
+     * @summary Returns true if logging is enabled for TP.WARN level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifWarn() ? TP.warn(...) : 0;code> This idiom can help
@@ -7160,8 +7160,8 @@ TP.ifWarn = function(aLogName) {
 TP.ifError = function(aLogName) {
 
     /**
-     * @name ifError
-     * @synopsis Returns true if logging is enabled for TP.boot.ERROR level
+     * @method ifError
+     * @summary Returns true if logging is enabled for TP.boot.ERROR level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifError() ? TP.error(...) : 0;code> This idiom can help
@@ -7178,8 +7178,8 @@ TP.ifError = function(aLogName) {
 TP.ifSevere = function(aLogName) {
 
     /**
-     * @name ifSevere
-     * @synopsis Returns true if logging is enabled for TP.SEVERE level
+     * @method ifSevere
+     * @summary Returns true if logging is enabled for TP.SEVERE level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifSevere() ? TP.severe(...) : 0;code> This idiom can help
@@ -7196,8 +7196,8 @@ TP.ifSevere = function(aLogName) {
 TP.ifFatal = function(aLogName) {
 
     /**
-     * @name ifFatal
-     * @synopsis Returns true if logging is enabled for TP.FATAL level
+     * @method ifFatal
+     * @summary Returns true if logging is enabled for TP.FATAL level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifFatal() ? TP.fatal(...) : 0;code> This idiom can help
@@ -7214,8 +7214,8 @@ TP.ifFatal = function(aLogName) {
 TP.ifSystem = function(aLogName) {
 
     /**
-     * @name ifSystem
-     * @synopsis Returns true if logging is enabled for TP.SYSTEM level
+     * @method ifSystem
+     * @summary Returns true if logging is enabled for TP.SYSTEM level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
      *     <code>TP.ifSystem() ? TP.system(...) : 0;code> This idiom can help
@@ -7234,7 +7234,7 @@ TP.ifSystem = function(aLogName) {
 TP.$$log = function(argList, aLogLevel) {
 
     /**
-     * @name $$log
+     * @method $$log
      * @summary Shared routine for routing a logging call such as TP.trace to
      *     either a boot-level routing or a post-startup routine. The final
      *     logging is ultimately handled by TP.boot.$std[out|err] or by the
@@ -7255,8 +7255,8 @@ TP.$$log = function(argList, aLogLevel) {
 TP.trace = function(varargs) {
 
     /**
-     * @name trace
-     * @synopsis Logs anObject at TP.TRACE level, if active.
+     * @method trace
+     * @summary Logs anObject at TP.TRACE level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7271,8 +7271,8 @@ TP.trace = function(varargs) {
 TP.debug = function(varargs) {
 
     /**
-     * @name debug
-     * @synopsis Logs anObject at TP.DEBUG level, if active.
+     * @method debug
+     * @summary Logs anObject at TP.DEBUG level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7287,8 +7287,8 @@ TP.debug = function(varargs) {
 TP.info = function(varargs) {
 
     /**
-     * @name info
-     * @synopsis Logs anObject at TP.INFO level, if active.
+     * @method info
+     * @summary Logs anObject at TP.INFO level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7303,8 +7303,8 @@ TP.info = function(varargs) {
 TP.warn = function(varargs) {
 
     /**
-     * @name warn
-     * @synopsis Logs anObject at TP.WARN level, if active.
+     * @method warn
+     * @summary Logs anObject at TP.WARN level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7319,8 +7319,8 @@ TP.warn = function(varargs) {
 TP.error = function(varargs) {
 
     /**
-     * @name error
-     * @synopsis Logs anObject at TP.ERROR level, if active.
+     * @method error
+     * @summary Logs anObject at TP.ERROR level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7335,8 +7335,8 @@ TP.error = function(varargs) {
 TP.severe = function(varargs) {
 
     /**
-     * @name severe
-     * @synopsis Logs anObject at TP.SEVERE level, if active.
+     * @method severe
+     * @summary Logs anObject at TP.SEVERE level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7351,8 +7351,8 @@ TP.severe = function(varargs) {
 TP.fatal = function(varargs) {
 
     /**
-     * @name fatal
-     * @synopsis Logs anObject at TP.FATAL level, if active.
+     * @method fatal
+     * @summary Logs anObject at TP.FATAL level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7367,8 +7367,8 @@ TP.fatal = function(varargs) {
 TP.system = function(varargs) {
 
     /**
-     * @name system
-     * @synopsis Logs anObject at TP.SYSTEM level, if active.
+     * @method system
+     * @summary Logs anObject at TP.SYSTEM level, if active.
      * @param {Object} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
@@ -7426,14 +7426,14 @@ TP.boot.$hasReachedStage = function(aStage) {
 TP.boot.$setStage = function(aStage, aReason) {
 
     /**
-     * @name $setStage
+     * @method $setStage
      * @summary Sets the current boot stage and reports it to the log.
      * @param {String} aStage A valid boot stage. This list is somewhat flexible
      *     but common stages include: config, config_*, phase_one, phase_two,
      *     phase_*_complete, activation, starting, and running :).
      * @param {String} aReason Optional text currently used only when stage is
      *     'stopped' to provide the termination reason.
-     * @return {String} The current stage after the set completes.
+     * @returns {String} The current stage after the set completes.
      */
 
     var info,
@@ -7586,14 +7586,14 @@ TP.boot.$getPriorStage = function(aStage) {
 TP.boot.$getStageTime = function(aStage, startStage) {
 
     /**
-     * @name $getStageTime
+     * @method $getStageTime
      * @summary Returns the amount of time a stage took relative to the
      *     startStage or the prior stage. If the stage isn't complete this
      *     method returns a rough time based on the time of the call.
      * @param {String} aStage The stage to report on. Defaults to current stage.
      * @param {String} startStage The stage to compute from. Defaults to the
      *     stage prior to aStage.
-     * @return {Number} An elapsed time value in milliseconds.
+     * @returns {Number} An elapsed time value in milliseconds.
      */
 
     var stage,
@@ -7674,14 +7674,14 @@ TP.boot.$getArgumentPrimitive = function(value) {
 TP.boot.getURLArguments = function(url) {
 
     /**
-     * @name getURLArguments
+     * @method getURLArguments
      * @summary Parses the URL for any TIBET-specific argument block. When
      *     parsing the hash is checked for any & segment and that segment is
      *     split just as if it were a set of server parameters. For example,
      *     http://localhost/index.html#foo&boot.debug=true results in the
      *     argument object containing {'boot.debug':true};
      * @param {string} url The url string to decode for arguments.
-     * @return {Object}
+     * @returns {Object}
      */
 
     var hash,
@@ -7727,10 +7727,10 @@ TP.boot.getURLArguments = function(url) {
 TP.boot.getURLBookmark = function(url) {
 
     /**
-     * @name getURLBookmark
+     * @method getURLBookmark
      * @summary Parses the URL for a bootable bookmark hash reference.
      * @param {string} url The url string to decode for arguments.
-     * @return {string} The bookmark, if any.
+     * @returns {string} The bookmark, if any.
      */
 
     var hash;
@@ -7769,11 +7769,11 @@ typical approaches.
 TP.boot.$getAppHead = function() {
 
     /**
-     * @name $getAppHead
+     * @method $getAppHead
      * @summary Returns the portion of the launch location just above whichever
      *     file actually triggered the launch sequence. Always computed from the
      *     window.location (if available).
-     * @return {String} The computed path.
+     * @returns {String} The computed path.
      */
 
     var path,
@@ -7841,14 +7841,14 @@ TP.boot.$getAppHead = function() {
 TP.boot.$getAppRoot = function() {
 
     /**
-     * @name $getAppRoot
+     * @method $getAppRoot
      * @summary Returns the root path for the application, the point from which
      *     most if not all "app path" resolution occurs. Unless this has been
      *     defined otherwise the return value is computed based on the value
      *     found via $getAppHead. If the application launch path includes a
      *     reference to node_modules the app root is presumed to be the location
      *     containing node_modules and it is adjusted accordingly.
-     * @return {String} The computed path.
+     * @returns {String} The computed path.
      */
 
     var root;
@@ -7876,12 +7876,12 @@ TP.boot.$getAppRoot = function() {
 TP.boot.$getLibRoot = function() {
 
     /**
-     * @name $getLibRoot
+     * @method $getLibRoot
      * @summary Returns the root path for the TIBET codebase.
-     * @description When the value for path.lib_root is not specified this
+     * @summary When the value for path.lib_root is not specified this
      *     method will try to compute one. The computation can be altered via
      *     the boot.libcomp setting.
-     * @return {String} The root path for the TIBET codebase.
+     * @returns {String} The root path for the TIBET codebase.
      */
 
     var comp,
@@ -8008,9 +8008,9 @@ TP.boot.$getLibRoot = function() {
 TP.boot.$getRootPath = function() {
 
     /**
-     * @name $getRootPath
+     * @method $getRootPath
      * @summary Returns the currently active root path for the codebase.
-     * @return {String}
+     * @returns {String}
      */
 
     var path,
@@ -8042,11 +8042,11 @@ TP.boot.$getRootPath = function() {
 TP.boot.$setAppRoot = function(aPath) {
 
     /**
-     * @name $setAppRoot
+     * @method $setAppRoot
      * @summary Sets the application root path, the path used as a base path
      *     for any relative path computations for application content.
      * @param {String} aPath A new root path for application content.
-     * @return {String} The expanded path value.
+     * @returns {String} The expanded path value.
      */
 
     var path,
@@ -8072,11 +8072,11 @@ TP.boot.$setAppRoot = function(aPath) {
 TP.boot.$setLibRoot = function(aPath) {
 
     /**
-     * @name $setLibRoot
+     * @method $setLibRoot
      * @summary Sets the library root path, the path used as a base path for
      *     any relative path computations for library content.
      * @param {String} aPath A new root path for library content.
-     * @return {String} The expanded path value.
+     * @returns {String} The expanded path value.
      */
 
     var path,
@@ -8104,7 +8104,7 @@ TP.boot.$setLibRoot = function(aPath) {
 TP.boot.$configurePackage = function() {
 
     /**
-     * @name $configurePackage
+     * @method $configurePackage
      * @summary Locates the package file if at all possible. The search checks
      *     both boot.profile and boot.package with profile taking precedence.
      *     Note that boot.profile can also override boot.config if it includes a
@@ -8217,7 +8217,7 @@ TP.boot.$configurePackage = function() {
 TP.boot.$configureBootstrap = function() {
 
     /**
-     * @name $configureBootstrap
+     * @method $configureBootstrap
      * @summary Configures any boot properties based on the current project
      *     (tibet.json) file provided that loading that file works.
      */
@@ -8264,12 +8264,12 @@ TP.boot.$configureBootstrap = function() {
 TP.boot.$configureEnvironment = function() {
 
     /**
-     * @name $configureEnvironment
+     * @method $configureEnvironment
      * @summary Defines a number of 'environment' variables which support
      *     conditional processing of tasks/targets. These variables are set
      *     based browser and feature-detection techniques as needed to try to
      *     describe the environment accurately.
-     * @return {null}
+     * @returns {null}
      */
 
     //  start with platform
@@ -8374,7 +8374,7 @@ TP.boot.$configureOptions = function(anObject) {
 TP.boot.$$configureOverrides = function(options, activate) {
 
     /**
-     * @name $$configureOverrides
+     * @method $$configureOverrides
      * @summary Processes any arg values that the user may have set,
      *     allowing them to override certain boot properties. Common overrides
      *     include debug, verbose, and display. The args for environment
@@ -8382,7 +8382,7 @@ TP.boot.$$configureOverrides = function(options, activate) {
      *     function prior to loading the environment-specific configuration.
      * @param {Object} options An object containing option values.
      *
-     * @return {null}
+     * @returns {null}
      */
 
     var keys,
@@ -8482,7 +8482,7 @@ TP.boot.$configureProject = function() {
 TP.boot.$configureTarget = function() {
 
     /**
-     * @name $configureTarget
+     * @method $configureTarget
      */
 
     var doc,
@@ -8507,7 +8507,7 @@ TP.boot.$configureTarget = function() {
 TP.boot.$configureUI = function() {
 
     /**
-     * @name $configureUI
+     * @method $configureUI
      */
 
     var show,
@@ -8602,13 +8602,13 @@ TP.boot.$updateDependentVars = function() {
 TP.boot.$ifUnlessPassed = function(aNode) {
 
     /**
-     * @name $ifUnlessPassed
+     * @method $ifUnlessPassed
      * @summary Tests if and unless conditions on the node, returning true if
      *     the node passes and should be retained based on those conditions.
      *     This test is typically used to filter for the current browser
      *     environment based on TP.sys.isUA()-style tests.
      * @param {Node} aNode
-     * @return {Boolean}
+     * @returns {Boolean}
      */
 
     var j,
@@ -8691,10 +8691,10 @@ TP.boot.$ifUnlessPassed = function(aNode) {
 TP.boot.$getElementCount = function(aNodeList) {
 
     /**
-     * @name $getElementCount
+     * @method $getElementCount
      * @summary Returns the count of elements in a node list.
      * @param {Nodelist} aNodeList A native nodelist or array of nodes.
-     * @return {Number} The number of element nodes in the list.
+     * @returns {Number} The number of element nodes in the list.
      */
 
     var node,
@@ -8721,11 +8721,11 @@ TP.boot.$getElementCount = function(aNodeList) {
 TP.boot.$uniqueNodeList = function(aNodeArray) {
 
     /**
-     * @name $uniqueNodeList
+     * @method $uniqueNodeList
      * @summary Removes any duplicates from the array provided so that
      *     subsequent loads of the list don't try to load things twice.
      * @param {Array } aNodeArray
-     * @return {Array} The supplied Array of nodes filtered for duplicates.
+     * @returns {Array} The supplied Array of nodes filtered for duplicates.
      */
 
     var i,
@@ -8806,7 +8806,7 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
                                     shouldThrow) {
     /**
-     * @name $sourceImport
+     * @method $sourceImport
      * @summary Imports a script text which loads and integrates JS. This
      *     returns the script node used for the import. Note that the import
      *     call is synchronous, ensuring that the code is loaded prior to
@@ -8820,7 +8820,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
      * @param {Function} aCallback A function to invoke when done.
      * @param {Boolean} shouldThrow True to cause errors to throw a native Error
      *     so outer catch blocks will trigger.
-     * @return {HTMLElement} The new 'script' element that was created to
+     * @returns {HTMLElement} The new 'script' element that was created to
      *     import the code.
      */
 
@@ -8931,7 +8931,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
 
     /**
-     * @name $uriImport
+     * @method $uriImport
      * @summary Imports a target script which loads and integrates JS with the
      *     currently running "image".
      * @param {String} targetUrl URL of the target resource.
@@ -8940,7 +8940,7 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
      *     so outer catch blocks will trigger.
      * @param {Boolean} isPackage True if the resource being imported is a
      *     package-level resource.
-     * @return {HTMLElement} The new 'script' element that was created to
+     * @returns {HTMLElement} The new 'script' element that was created to
      *     import the code.
      */
 
@@ -8981,15 +8981,15 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
 TP.boot.$importApplication = function() {
 
     /**
-     * @name $importApplication
+     * @method $importApplication
      * @summary Dynamically imports application content.
-     * @description This method makes heavy use of the config/build file
+     * @summary This method makes heavy use of the config/build file
      *     information to construct a list of script files and inline source
      *     code to import/execute to create a running application image in the
      *     browser. Note that this method 'chains' its parts via setTimeout so
      *     that interim output can be displayed. This helps to avoid long delays
      *     without user feedback.
-     * @return {null}
+     * @returns {null}
      */
 
     TP.boot.$$importPhaseOne();
@@ -9002,10 +9002,10 @@ TP.boot.$importApplication = function() {
 TP.boot.$$importComplete = function() {
 
     /**
-     * @name $$importComplete
+     * @method $$importComplete
      * @summary Finalizes an import sequence. Called internally by the
      *     $importComponents routine.
-     * @return {null}
+     * @returns {null}
      */
 
     var stage,
@@ -9108,7 +9108,7 @@ TP.boot.$$importComplete = function() {
 TP.boot.$importComponents = function(loadSync) {
 
     /**
-     * @name $importComponents
+     * @method $importComponents
      * @summary Dynamically imports a set of application elements read from a
      *     list of 'bootnodes' configured by the invoking function. This boot
      *     node list is a shared property on TP.boot so only one import sequence
@@ -9116,7 +9116,7 @@ TP.boot.$importComponents = function(loadSync) {
      *     of this routine to trigger imports.
      * @param {Boolean} loadSync Should the import be done synchronously or not?
      *     Default is false so that each file is loaded via a short setTimeout.
-     * @return {null}
+     * @returns {null}
      */
 
     var j,
@@ -9461,10 +9461,10 @@ TP.boot.$$importPhase = function() {
 TP.boot.$$importPhaseOne = function() {
 
     /**
-     * @name $$importPhaseOne
+     * @method $$importPhaseOne
      * @summary Imports any elements of the original boot file/config that were
      *     specific to phase one.
-     * @return {Number} The number of phase one nodes imported.
+     * @returns {Number} The number of phase one nodes imported.
      */
 
     TP.boot.$setStage('import_phase_one');
@@ -9484,10 +9484,10 @@ TP.boot.$$importPhaseOne = function() {
 TP.boot.$$importPhaseTwo = function(manifest) {
 
     /**
-     * @name $$importPhaseTwo
+     * @method $$importPhaseTwo
      * @summary Imports any elements of the original boot file/config that were
      *     specific to phase two.
-     * @return {Number} The number of phase two nodes imported.
+     * @returns {Number} The number of phase two nodes imported.
      */
 
     if (TP.sys.cfg('boot.twophase') !== true) {
@@ -9513,7 +9513,7 @@ TP.boot.$$importPhaseTwo = function(manifest) {
 TP.boot.$config = function() {
 
     /**
-     * @name $config
+     * @method $config
      * @summary Configures various aspects of the boot system prior to final
      * expansion and importing of the application's components.
      */
@@ -9801,13 +9801,13 @@ TP.boot.$expandConfig = function(anElement) {
 TP.boot.$expandPackage = function(aPath, aConfig) {
 
     /**
-     * @name $expandPackage
+     * @method $expandPackage
      * @summary Expands a package, resolving any embedded package references and
      *     virtual paths which might be included.
      * @param {String} aPath The path to the package manifest file to be
      *     processed.
      * @param {String} aConfig The config ID within the package to be expanded.
-     * @return {Document} An xml document containing the expanded configuration.
+     * @returns {Document} An xml document containing the expanded configuration.
      */
 
     var expanded,   //  The expanded path equivalent.
@@ -9878,10 +9878,10 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
 TP.boot.$expandPath = function(aPath) {
 
     /**
-     * @name $expandPath
+     * @method $expandPath
      * @summary Expands a TIBET virtual path to its equivalent non-virtual path.
      * @param {String} aPath The path to be expanded.
-     * @return {String} The fully-expanded path value.
+     * @returns {String} The fully-expanded path value.
      */
 
     var path,
@@ -9957,14 +9957,14 @@ TP.boot.$expandPath = function(aPath) {
 TP.boot.$expandReference = function(aRef) {
 
     /**
-     * @name $expandReference
+     * @method $expandReference
      * @summary Looks up a configuration reference and provides its value. This
      *     routine is specifically concerned with expanding embedded property
      *     references from TIBET's setcfg/getcfg operations. For command-line
      *     processing the values should be provided to the instance when it is
      *     created.
      * @param {String} aRef A potential property value reference to expand.
-     * @return {String} The expanded value, or the original string value.
+     * @returns {String} The expanded value, or the original string value.
      */
     var ref;
 
@@ -9985,9 +9985,9 @@ TP.boot.$expandReference = function(aRef) {
 TP.boot.$getCurrentPackage = function() {
 
     /**
-     * @name $getCurrentPackage
+     * @method $getCurrentPackage
      * @summary Returns the file name of the currently processing package.
-     * @return {string} The package file name.
+     * @returns {string} The package file name.
      */
 
     return TP.boot.$$packageStack[0];
@@ -9998,12 +9998,12 @@ TP.boot.$getCurrentPackage = function() {
 TP.boot.$getDefaultConfig = function(aPackageDoc) {
 
     /**
-     * @name $getDefaultConfig
+     * @method $getDefaultConfig
      * @summary Returns the default configuration from the package document
      *     provided.
      * @param {Document} aPackageDoc The XML package document to use for
      *     defaulting.
-     * @return {String} The configuration ID which is the default.
+     * @returns {String} The configuration ID which is the default.
      */
 
     var package;
@@ -10022,14 +10022,14 @@ TP.boot.$getDefaultConfig = function(aPackageDoc) {
 TP.boot.$getFullPath = function(anElement, aPath) {
 
     /**
-     * @name $getFullPath
+     * @method $getFullPath
      * @summary Returns a full path by using any basedir information in
      *     anElement and blending it with any virtual or relative path
      *     information from aPath.
      * @param {Element} anElement The element from which to begin basedir
      *     lookups.
      * @param {String} aPath The path to resolve into a full path.
-     * @return {string} The fully-expanded path.
+     * @returns {string} The fully-expanded path.
      */
 
     var elem,
@@ -10062,7 +10062,7 @@ TP.boot.$getFullPath = function(anElement, aPath) {
 TP.boot.$ifAssetPassed = function(anElement) {
 
     /**
-     * @name $ifAssetPassed
+     * @method $ifAssetPassed
      * @summary Returns true if the element's tag name passes any asset-type
      *     filtering which is in place. Asset filtering is done via tag name.
      * @param {Element} anElement The element to filter.
@@ -10097,11 +10097,11 @@ TP.boot.$ifAssetPassed = function(anElement) {
 TP.boot.$ifUnlessPassedLite = function(anElement) {
 
     /**
-     * @name $ifUnlessPassedLite
+     * @method $ifUnlessPassedLite
      * @summary Tests if and unless conditions on the node, returning true if
      *     the node passes and should be retained based on those conditions.
      * @param {Node} anElement The element to test.
-     * @return {Boolean} True if the element passes the filtering tests.
+     * @returns {Boolean} True if the element passes the filtering tests.
      */
 
     var i,
@@ -10158,13 +10158,13 @@ TP.boot.$ifUnlessPassedLite = function(anElement) {
 TP.boot.$listConfigAssets = function(anElement, aList) {
 
     /**
-     * @name $listConfigAssets
+     * @method $listConfigAssets
      * @summary Lists assets from a package configuration. The assets will be
      *     concatenated into aList if the list is provided (aList is used during
      *     recursive calls from within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
      * @param {Array.<>} aList The array of asset descriptions to expand upon.
-     * @return {Array.<>} The asset array.
+     * @returns {Array.<>} The asset array.
      */
 
     var list,
@@ -10282,7 +10282,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
 TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
 
     /**
-     * @name $listPackageAssets
+     * @method $listPackageAssets
      * @summary Lists assets from a package configuration. The assets will be
      *     concatenated into aList if the list is provided (aList is used
      *     during recursive calls from within this routine to build up the
@@ -10290,7 +10290,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
      * @param {string} aPath The path to the package manifest to list.
      * @param {string} aConfig The ID of the config in the package to list.
      * @param {Array.<>} aList The array of asset descriptions to expand upon.
-     * @return {Array.<>} The asset array.
+     * @returns {Array.<>} The asset array.
      */
 
     var path,
@@ -10341,7 +10341,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
 TP.boot.$popPackage = function() {
 
     /**
-     * @name popPackage
+     * @method popPackage
      * @summary Pops an entry off the current stack of packages which are being
      *     processed as part of an expansion.
      */
@@ -10354,7 +10354,7 @@ TP.boot.$popPackage = function() {
 TP.boot.$pushPackage = function(aPath) {
 
     /**
-     * @name $pushPackage
+     * @method $pushPackage
      * @summary Pushes a package path onto the currently processing package name
      *     stack.
      * @param {string} aPath The package's full path.
@@ -10387,7 +10387,7 @@ TP.boot.$import = function() {
 TP.boot.boot = function() {
 
     /**
-     * @name boot
+     * @method boot
      * @summary Triggers the actual boot process. This function is typically
      *     invoked by the launch() function after all pre-configuration work has
      *     been completed and the boot UI elements have been found/initialized.
@@ -10411,7 +10411,7 @@ TP.boot.boot = function() {
 TP.boot.launch = function(options) {
 
     /**
-     * @name launch
+     * @method launch
      * @summary Launches a new TIBET application. By default TIBET launches with
      *     the boot console visible, without using a login page, and assuming
      *     defaults for all other boot-prefixed startup parameters. The options
@@ -10421,7 +10421,7 @@ TP.boot.launch = function(options) {
      * @param {Object} options A set of options which control the boot process.
      *     Common keys used by this function include 'uselogin' and 'parallel'.
      *     Other keys are passed through to boot(), config() et al.
-     * @return {Window} The window the application launched in.
+     * @returns {Window} The window the application launched in.
      */
 
     var nologin;
@@ -10530,7 +10530,7 @@ TP.boot.launch = function(options) {
 TP.boot.main = function() {
 
     /**
-     * @name main
+     * @method main
      * @summary Invoked when all booting has been completed. The primary
      *     purpose of this function is to hide any boot-time display content
      *     and then invoke the TP.sys.activate method to cause the system to
@@ -10644,7 +10644,7 @@ TP.boot.$stageAction = function() {
 TP.boot.$uiRootConfig = function() {
 
     /**
-     * @name $uiRootConfig
+     * @method $uiRootConfig
      * @summary Confirms a UIROOT can be found, and configures one it necessary.
      *     Configuration requires asynchronous loading so this routine is the
      *     first half of a pair of routines, the other being $uiRootReady.
@@ -10743,7 +10743,7 @@ TP.boot.$uiRootConfig = function() {
 TP.boot.$uiRootReady = function() {
 
     /**
-     * @name $uiRootReady
+     * @method $uiRootReady
      * @summary Called to complete the process of launching a new TIBET
      *     application once the UI root frame is loaded.
      */

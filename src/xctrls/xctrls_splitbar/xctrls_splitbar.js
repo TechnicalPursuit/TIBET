@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.splitbar}
- * @synopsis Manages splitbar XControls.
+ * @summary Manages splitbar XControls.
  */
 
 //  ------------------------------------------------------------------------
@@ -39,8 +39,8 @@ TP.xctrls.splitbar.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -68,8 +68,8 @@ TP.xctrls.splitbar.Inst.defineMethod('handleDOMDragMove',
 function(aSignal) {
 
     /**
-     * @name handleDOMDragMove
-     * @synopsis This method is invoked as the splitbar is dragged. It notifies
+     * @method handleDOMDragMove
+     * @summary This method is invoked as the splitbar is dragged. It notifies
      *     any observers that the splitbar's value has changed.
      * @param {TP.sig.DOMDragMove} aSignal The signal that caused this handler
      *     to trip.
@@ -88,8 +88,8 @@ TP.xctrls.splitbar.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure

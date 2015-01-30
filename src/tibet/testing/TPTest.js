@@ -93,7 +93,7 @@ function() {
 
     /**
      * Returns the number of milliseconds of elapsed time for the operation.
-     * @return {Number}
+     * @returns {Number}
      */
 
     var end,
@@ -122,7 +122,7 @@ function() {
 
     /**
      * Returns the millisecond timeout value for the test case.
-     * @return {Number}
+     * @returns {Number}
      */
 
     return this.$get('mslimit');
@@ -136,7 +136,7 @@ function() {
     /**
      * Returns the number of milliseconds remaining between elapsed time and the
      * receiver's timeout value.
-     * @return {Number}
+     * @returns {Number}
      */
 
     return Math.max(0, this.getTimeout() - this.getElapsedTime());
@@ -149,7 +149,7 @@ function() {
 
     /**
      * Returns true if the receiver is configured to be run exclusively.
-     * @return {Boolean} True if the receiver is exclusive.
+     * @returns {Boolean} True if the receiver is exclusive.
      */
 
     return this.$get('exclusive') === true;
@@ -162,7 +162,7 @@ function() {
 
     /**
      * Returns true if the receiver is configured to be skipped (not run).
-     * @return {Boolean} True if the receiver is skipped.
+     * @returns {Boolean} True if the receiver is skipped.
      */
 
     return this.$get('skipped') === true;
@@ -175,7 +175,7 @@ function() {
 
     /**
      * Returns true if the receiver is configured as a 'todo' test item.
-     * @return {Boolean} True if the receiver is marked as a todo item.
+     * @returns {Boolean} True if the receiver is marked as a todo item.
      */
 
     return this.$get('ignored') === true;
@@ -300,7 +300,7 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @return {TP.lang.Hash} The updated collection of test suites.
+     * @returns {TP.lang.Hash} The updated collection of test suites.
      */
 
     var id,
@@ -349,7 +349,7 @@ function(target, options) {
      * effectively a "slice" of the system suite hash.
      * @param {Object} target The object whose test suites should be returned.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {TP.lang.Hash} The target's collection of test suites.
+     * @returns {TP.lang.Hash} The target's collection of test suites.
      */
 
     var suites,
@@ -411,7 +411,7 @@ function(target, options) {
      * object is provided.
      * @param {Object} target The object whose test suites should be run.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     var suites,
@@ -720,7 +720,7 @@ function(suiteFunc) {
     /**
      * Adds an additional suite function to the current test suite.
      * @param {Function} suiteFunc The test case-generating function.
-     * @return {Array.<Function>} The updated list of suite functions.
+     * @returns {Array.<Function>} The updated list of suite functions.
      */
 
     var suites;
@@ -930,7 +930,7 @@ function(aKey) {
      * @param {String} aKey The key that the driver is registered under with the
      *     suite. If this isn't supplied, the default key 'gui' is used, which
      *     means this method will return the GUI driver.
-     * @return {Object} The test driver registered under aKey.
+     * @returns {Object} The test driver registered under aKey.
      */
 
     var driverKey;
@@ -950,7 +950,7 @@ function(options) {
      * case instances created as a result. The 'suite functions' are the
      * functions passed to describe() which define the suite.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Array.<TP.test.Case>} The case list.
+     * @returns {Array.<TP.test.Case>} The case list.
      */
 
     var cases,
@@ -994,7 +994,7 @@ function() {
 
     /**
      * Returns the list of define functions specific to this test suite.
-     * @return {Array.<Function>} An array of suite 'describe' functions.
+     * @returns {Array.<Function>} An array of suite 'describe' functions.
      */
 
     return this.$get('suiteList');
@@ -1007,7 +1007,7 @@ function() {
 
     /**
      * Returns the name of the suite as provided to 'describe'.
-     * @return {String} The suite name.
+     * @returns {String} The suite name.
      */
 
     return this.$get('suiteName');
@@ -1024,7 +1024,7 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @return {TP.lang.Hash} The new test suite instance.
+     * @returns {TP.lang.Hash} The new test suite instance.
      */
 
     if (TP.notValid(target) ||
@@ -1069,7 +1069,7 @@ function(caseName, caseFunc) {
      * @param {String} caseName The name assigned to the case. Should be unique
      *     for the specific test suite.
      * @param {Function} caseFunc The function implementing the test case.
-     * @return {TP.test.Case} The newly created test case.
+     * @returns {TP.test.Case} The newly created test case.
      */
 
     var testCase,
@@ -1219,7 +1219,7 @@ function(options) {
     /**
      * Runs the test cases for the suite.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     //  Protect against running twice while we already have a pending promise.
@@ -1240,7 +1240,7 @@ function(options) {
      * Executes the receiver's test cases, providing each with the options
      * object provided to help control execution.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     var caselist,
@@ -1500,7 +1500,7 @@ function() {
 
     /**
      * Starts tracking signals for usage by assertion methods.
-     * @return {TP.test.Suite} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     this.set('$capturingSignals', true);
@@ -1517,7 +1517,7 @@ function() {
 
     /**
      * Stops tracking signals for usage by assertion methods.
-     * @return {TP.test.Suite} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     TP.signal.restore();
@@ -1539,7 +1539,7 @@ function(onFulfilled, onRejected) {
      *     been fulfilled.
      * @param {Function} onRejected The Function to run to if the Promise has
      *     been rejected.
-     * @return {TP.test.Suite} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     var internalPromise,
@@ -1679,7 +1679,7 @@ function() {
 
     /**
      * A convenience mechanism to give the GUI a chance to refresh.
-     * @return {TP.test.Suite} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     this.thenPromise(
@@ -1703,7 +1703,7 @@ function(aFunction) {
      * Note that this operation will also reset the internally-held Promise to
      * be the new Promise that it creates.
      * @param {Function} aFunction The Function to run to fulfill the Promise.
-     * @return {TP.test.Suite} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     var internalPromise,
@@ -1759,7 +1759,7 @@ function(timeoutMS) {
      * A convenience mechanism to wait a certain number of milliseconds using
      * the receiver's Promise machinery.
      * @param {Number} timeoutMS The number of milliseconds to wait.
-     * @return {TP.test.Suite} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     this.thenPromise(
@@ -1890,7 +1890,7 @@ function(anObj) {
      *     test case access to a BDD-style 'expect' assertion interface for
      *     making assertions.
      * @param {Object} anObj The object to make assertions against.
-     * @return {TP.test.Expect} The expectation to use to make assertions.
+     * @returns {TP.test.Expect} The expectation to use to make assertions.
      */
 
     var currentExpect;
@@ -1954,7 +1954,7 @@ function() {
 
     /**
      * Returns the individual case name.
-     * @return {String} The case name.
+     * @returns {String} The case name.
      */
 
     return this.$get('caseName');
@@ -1970,7 +1970,7 @@ function(aKey) {
      * @param {String} aKey The key that the driver is registered under with the
      *     suite. If this isn't supplied, the default key 'gui' is used, which
      *     means this method will return the GUI driver.
-     * @return {Object} The test driver registered under aKey.
+     * @returns {Object} The test driver registered under aKey.
      */
 
     var driverKey;
@@ -1987,7 +1987,7 @@ function() {
 
     /**
      * Returns the result status for the test case, if it has finished.
-     * @return {Number} The status code.
+     * @returns {Number} The status code.
      */
 
     return this.$get('status');
@@ -2000,7 +2000,7 @@ function() {
 
     /**
      * Returns the TP.test.Suite that owns this test case.
-     * @return {TP.test.Suite}
+     * @returns {TP.test.Suite}
      */
 
     return this.$get('suite');
@@ -2017,7 +2017,7 @@ function(suite, caseName, caseFunc) {
      * @param {String} caseName The name assigned to the case. Should be unique
      *     for the specific test suite.
      * @param {Function} caseFunc The function implementing the test case.
-     * @return {TP.test.Case} The newly created test case.
+     * @returns {TP.test.Case} The newly created test case.
      */
 
     if (TP.notValid(suite) ||
@@ -2048,7 +2048,7 @@ function(wantsRequests) {
      * @param {Boolean} wantsRequests Whether or not to return all of the
      *     signals, including TP.sig.Requests, fired since the spy was last
      *     reset. The default is false.
-     * @return {Array} A list of the signals fired using the TP.signal spy.
+     * @returns {Array} A list of the signals fired using the TP.signal spy.
      */
 
     //  If the caller wants TP.sig.Requests as well (false by default), then we
@@ -2076,7 +2076,7 @@ function(signalIndex, wantsRequests) {
      * @param {Boolean} wantsRequests Whether or not to return all of the
      *     signal names, including those of TP.sig.Requests, fired since the spy
      *     was last reset. The default is false.
-     * @return {TP.lang.Hash} A hash of information about the signal at the
+     * @returns {TP.lang.Hash} A hash of information about the signal at the
      *     given index.
      */
 
@@ -2121,7 +2121,7 @@ function(wantsRequests) {
      * @param {Boolean} wantsRequests Whether or not to return all of the
      *     signal names, including those of TP.sig.Requests, fired since the spy
      *     was last reset. The default is false.
-     * @return {Array} A list of the signal names fired using the TP.signal spy.
+     * @returns {Array} A list of the signal names fired using the TP.signal spy.
      */
 
     return this.getFiredSignals(wantsRequests).collect(
@@ -2248,7 +2248,7 @@ function(options) {
      * the 'then' method of the Promise API to take action upon success or
      * failure of the test case.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     var params,
@@ -2470,7 +2470,7 @@ function(onFulfilled, onRejected) {
      *     been fulfilled.
      * @param {Function} onRejected The Function to run to if the Promise has
      *     been rejected.
-     * @return {TP.test.Case} The receiver.
+     * @returns {TP.test.Case} The receiver.
      */
 
     var internalPromise,
@@ -2610,7 +2610,7 @@ function() {
 
     /**
      * A convenience mechanism to give the GUI a chance to refresh.
-     * @return {TP.test.Case} The receiver.
+     * @returns {TP.test.Case} The receiver.
      */
 
     this.thenPromise(
@@ -2634,7 +2634,7 @@ function(aFunction) {
      * Note that this operation will also reset the internally-held Promise to
      * be the new Promise that it creates.
      * @param {Function} aFunction The Function to run to fulfill the Promise.
-     * @return {TP.test.Case} The receiver.
+     * @returns {TP.test.Case} The receiver.
      */
 
     var internalPromise,
@@ -2690,7 +2690,7 @@ function(timeoutMS) {
      * A convenience mechanism to wait a certain number of milliseconds using
      * the receiver's Promise machinery.
      * @param {Number} timeoutMS The number of milliseconds to wait.
-     * @return {TP.test.Case} The receiver.
+     * @returns {TP.test.Case} The receiver.
      */
 
     this.thenPromise(
@@ -2733,7 +2733,7 @@ function(options) {
      * on comparing the test suite names with the receiver's method names. Test
      * suite names matching method names serve as tests for that method.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Array.<String>} An array of method names without tests.
+     * @returns {Array.<String>} An array of method names without tests.
      */
 
     var methods,
@@ -2771,7 +2771,7 @@ function(options) {
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Object} A test fixture for the receiver.
+     * @returns {Object} A test fixture for the receiver.
      */
 
     return this;
@@ -2785,7 +2785,7 @@ function(options) {
     /**
      * Returns the dictionary containing test suites for the receiver.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this, options);
@@ -2800,7 +2800,7 @@ function(options) {
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     return TP.test.Suite.runTargetSuites(this, options);
@@ -2818,8 +2818,8 @@ TP.lang.RootObject.Type.defineMethod('$installMethodChain',
 function(stepNames, endName) {
 
     /**
-     * @name $installMethodChain
-     * @synopsis Sets up a 'traversal chain', such that an instance of the
+     * @method $installMethodChain
+     * @summary Sets up a 'traversal chain', such that an instance of the
      *     receiver will respond to '.foo.bar()' as if '.bar()' was invoked. The
      *     'chain' of names used to invoke '.bar()' will be available under the
      *     private '$$methodChainNames' instance attribute.
@@ -2945,9 +2945,9 @@ TP.lang.RootObject.Type.defineMethod('setupMethodChains',
 function(methodInfoDict) {
 
     /**
-     * @name setupMethodChains
-     * @synopsis Sets up method chains per the supplied dictionary.
-     * @description The supplied dictionary should supply the 'end name' as a
+     * @method setupMethodChains
+     * @summary Sets up method chains per the supplied dictionary.
+     * @summary The supplied dictionary should supply the 'end name' as a
      *     key with an Array of the 'valid steps' that can be taken to get to
      *     that 'end'.
      *     E.g. An info dict of:

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Session}
- * @synopsis A wrapper for the XMPP session element.
+ * @summary A wrapper for the XMPP session element.
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubEvent}
- * @synopsis A wrapper for the PubSub event node type.
+ * @summary A wrapper for the PubSub event node type.
  */
 
 //  ------------------------------------------------------------------------
@@ -36,8 +36,8 @@ TP.xmpp.PubsubEvent.Inst.defineMethod('getSignalName',
 function(aStanza) {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name to use when signaling arrival of
+     * @method getSignalName
+     * @summary Returns the signal name to use when signaling arrival of
      *     packets of this type.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
      * @returns {String}
@@ -52,8 +52,8 @@ TP.xmpp.PubsubEvent.Inst.defineMethod('getSignalOrigin',
 function(aStanza) {
 
     /**
-     * @name getSignalOrigin
-     * @synopsis Returns the signal origin to use when signaling arrival of
+     * @method getSignalOrigin
+     * @summary Returns the signal origin to use when signaling arrival of
      *     packets of this type. Presence stanzas signal presence change signal
      *     from the corresponding JID. This method should return TP.NONE if it
      *     does not want the XMPP connection to send a signal on the receiver's

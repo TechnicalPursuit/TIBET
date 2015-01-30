@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.StreamFeatures}
- * @synopsis A wrapper for the stream features element
+ * @summary A wrapper for the stream features element
  */
 
 //  ------------------------------------------------------------------------

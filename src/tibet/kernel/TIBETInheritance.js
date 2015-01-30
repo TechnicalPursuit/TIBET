@@ -36,8 +36,8 @@ String.Inst.defineMethod('isJSIdentifier',
 function() {
 
     /**
-     * @name isJSIdentifier
-     * @synopsis Returns true if the string follows the rules for a valid JS
+     * @method isJSIdentifier
+     * @summary Returns true if the string follows the rules for a valid JS
      *     identifier.
      * @returns {Boolean}
      */
@@ -51,10 +51,10 @@ String.Inst.defineMethod('asJSIdentifier',
 function(ensureUniqueness) {
 
     /**
-     * @name asJSIdentifier
-     * @synopsis Returns a version of the string suitable for use as a valid JS
+     * @method asJSIdentifier
+     * @summary Returns a version of the string suitable for use as a valid JS
      *     identifier.
-     * @description This method is used by the defineSubtype call to allow strings
+     * @summary This method is used by the defineSubtype call to allow strings
      *     of the form "html:form" to actually act as types within the system.
      *     The return value is a mangled form of the original and the two are
      *     mapped into the metadata so that a call to the string
@@ -108,8 +108,8 @@ TP.lang.RootObject.Type.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string, capable of
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string, capable of
      *     recreating the type. Since TIBET doesn't use a nested structure for
      *     type construction we don't include any property construction in this
      *     output.
@@ -127,8 +127,8 @@ TP.lang.RootObject.Type.defineMethod('asString',
 function() {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver as a simple string.
+     * @method asString
+     * @summary Returns the receiver as a simple string.
      * @returns {String} The simple string form of the receiver.
      */
 
@@ -141,13 +141,13 @@ TP.lang.RootObject.Type.defineMethod('defineSubtype',
 function(name) {
 
     /**
-     * @name defineSubtype
-     * @synopsis Defines a new subtype of the receiver and returns it. This is
+     * @method defineSubtype
+     * @summary Defines a new subtype of the receiver and returns it. This is
      *     the core method for inheritance responsible for all the setup of a
      *     TIBET Type. Note that typenames can contain 'invalid' characters so
      *     you can create types named '(999)-999-9999' or 'MyNamespace:Mytype'
      *     etc.
-     * @description Types are central to TIBET, and one of the areas where TIBET
+     * @summary Types are central to TIBET, and one of the areas where TIBET
      *     differs largely from other JavaScript libraries. TIBET's type system
      *     uses metatypes so each type object is actually an instance of a
      *     metatype. This is important because it means that unlike many other
@@ -394,8 +394,8 @@ TP.lang.RootObject.Type.defineMethod('computeCommonSupertype',
 function(otherType) {
 
     /**
-     * @name computeCommonSupertype
-     * @synopsis Finds the common supertype of both the receiver and the
+     * @method computeCommonSupertype
+     * @summary Finds the common supertype of both the receiver and the
      *     supplied type object.
      * @param {TP.lang.RootObject} otherType The other type to use to compare.
      * @returns {TP.lang.RootObject|null} The common supertype or null if there
@@ -428,8 +428,8 @@ TP.lang.RootObject.Type.defineMethod('getLocalName',
 function() {
 
     /**
-     * @name getLocalName
-     * @synopsis Returns the local (aka short) name of the receiver without any
+     * @method getLocalName
+     * @summary Returns the local (aka short) name of the receiver without any
      *     namespace prefix.
      * @returns {String} The receiver's local name.
      */
@@ -443,8 +443,8 @@ TP.lang.RootObject.Type.defineMethod('getNamespaceObject',
 function() {
 
     /**
-     * @name getNamespaceObject
-     * @synopsis Returns the namespace object of the receiver. For example, the
+     * @method getNamespaceObject
+     * @summary Returns the namespace object of the receiver. For example, the
      * namespace object for TP.lang.RootObject is TP.lang etc.
      * @returns {String} The receiver's namespace object.
      */
@@ -463,8 +463,8 @@ TP.lang.RootObject.Type.defineMethod('getNamespacePrefix',
 function() {
 
     /**
-     * @name getNamespacePrefix
-     * @synopsis Returns the namespace (in TIBET terms) of the receiver. For
+     * @method getNamespacePrefix
+     * @summary Returns the namespace (in TIBET terms) of the receiver. For
      *     example, the namespace of the TP.sig.Signal type is 'sig'.
      * @returns {String} The receiver's namespace.
      */
@@ -478,8 +478,8 @@ TP.lang.RootObject.Type.defineMethod('getNamespaceRoot',
 function() {
 
     /**
-     * @name getNamespaceRoot
-     * @synopsis Returns the namespace root (in TIBET terms) of the receiver.
+     * @method getNamespaceRoot
+     * @summary Returns the namespace root (in TIBET terms) of the receiver.
      *     For example, the namespace root of the TP.sig.Signal type is 'TP'.
      * @returns {String} The receiver's namespace root.
      */
@@ -493,8 +493,8 @@ TP.lang.RootObject.Type.defineMethod('getSupertypes',
 function() {
 
     /**
-     * @name getSupertypes
-     * @synopsis Returns an array containing the supertypes of the receiver. You
+     * @method getSupertypes
+     * @summary Returns an array containing the supertypes of the receiver. You
      *     should consider the return value private and make a copy if you're
      *     going to manipulate the array.
      * @returns {Array} Array of supertypes.
@@ -539,9 +539,9 @@ TP.defineMetaInstMethod('$init',
 function() {
 
     /**
-     * @name $init
-     * @synopsis Provides low-level initialization of a new instance.
-     * @description The main task here is to construct specific instances of
+     * @method $init
+     * @summary Provides low-level initialization of a new instance.
+     * @summary The main task here is to construct specific instances of
      *     reference type attributes on each new instance based on information
      *     from the add*Attribute calls made when defining the type. Since
      *     reference type attributes do NOT support copy-on-write semantics this
@@ -568,10 +568,10 @@ TP.defineMetaInstMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initializes a new object instance. The default implementation
+     * @method init
+     * @summary Initializes a new object instance. The default implementation
      *     simply returns.
-     * @description Subclasses can override this method to do proper instance
+     * @summary Subclasses can override this method to do proper instance
      *     initialization. This method is called by the construct() methods to
      *     allow each class to 'do the right thing' for each instance without
      *     placing initialization code in the constructor...which would break
@@ -590,9 +590,9 @@ TP.lang.RootObject.Type.defineMethod('isAbstract',
 function(aFlag) {
 
     /**
-     * @name isAbstract
-     * @synopsis Returns true if the receiver is abstract.
-     * @description In TIBET this means instances can be constructed as long as
+     * @method isAbstract
+     * @summary Returns true if the receiver is abstract.
+     * @summary In TIBET this means instances can be constructed as long as
      *     a valid subtype can be found to provide them. Instances of a subtype
      *     are, by definition, an instance of their supertype so this is a valid
      *     OO concept and offers a lot of support for both localization and
@@ -615,8 +615,8 @@ TP.lang.RootObject.Type.defineMethod('canConstruct',
 function() {
 
     /**
-     * @name canConstruct
-     * @synopsis Returns true if the receiver can construct a valid instance
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided. This method is invoked by supertype
      *     processing of the constructViaSubtype method when searching for a
      *     potential subtype to manage the instance.
@@ -634,8 +634,8 @@ TP.lang.RootObject.Type.defineMethod('constructForSignal',
 function(aSignal) {
 
     /**
-     * @name constructForSignal
-     * @synopsis Constructs a new instance intended to handle the signal
+     * @method constructForSignal
+     * @summary Constructs a new instance intended to handle the signal
      *     provided. This method defaults to calling construct() to acquire the
      *     instance and should be overridden for types which require parameters
      *     for successful instance creation.
@@ -652,10 +652,10 @@ TP.lang.RootObject.Type.defineMethod('constructViaSubtype',
 function() {
 
     /**
-     * @name constructViaSubtype
-     * @synopsis Returns a new instance of the receiving type in the form of an
+     * @method constructViaSubtype
+     * @summary Returns a new instance of the receiving type in the form of an
      *     instance of a viable subtype.
-     * @description This method supports a variety of "localization" mechanisms
+     * @summary This method supports a variety of "localization" mechanisms
      *     which rely on a common TIBET design pattern referred to as "type
      *     clustering". This allows a common abstract supertype such as
      *     TP.core.Browser to be messaged for a new instance and for different
@@ -689,8 +689,8 @@ TP.lang.RootObject.Type.defineMethod('getConcreteType',
 function() {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the concrete type for the receiver. When the receiving
+     * @method getConcreteType
+     * @summary Returns the concrete type for the receiver. When the receiving
      *     type is abstract this will not be the receiver, but when the receiver
      *     is abstract the type returned is the one that would be used to
      *     construct an instance based on the incoming parameters.
@@ -765,9 +765,9 @@ TP.defineMetaTypeMethod('from',
 function(anObj) {
 
     /**
-     * @name from
-     * @synopsis Constructs a new instance from the incoming object.
-     * @description This method attempts to find a method like from[Type]() for
+     * @method from
+     * @summary Constructs a new instance from the incoming object.
+     * @summary This method attempts to find a method like from[Type]() for
      *     the object's type to do a custom conversion. Note that this method
      *     doesn't attempt to use as() since that method calls from() as its
      *     last resort. You should avoid overriding this method and work with
@@ -792,9 +792,9 @@ TP.lang.RootObject.Type.defineMethod('from',
 function(anObj) {
 
     /**
-     * @name from
-     * @synopsis Constructs a new instance from the incoming object.
-     * @description This method attempts to find a method like from[Type]() for
+     * @method from
+     * @summary Constructs a new instance from the incoming object.
+     * @summary This method attempts to find a method like from[Type]() for
      *     the object's type to do a custom conversion. Note that this method
      *     doesn't attempt to use as() since that method calls from() as its
      *     last resort. You should avoid overriding this method and work with
@@ -819,8 +819,8 @@ TP.defineMetaTypeMethod('fromObject',
 function(anObj) {
 
     /**
-     * @name fromObject
-     * @synopsis Constructs a new instance from the incoming object. The default
+     * @method fromObject
+     * @summary Constructs a new instance from the incoming object. The default
      *     implementation forwards to construct.
      * @returns {Object} A new instance of the receiver.
      */
@@ -834,8 +834,8 @@ TP.lang.RootObject.Type.defineMethod('fromObject',
 function(anObj) {
 
     /**
-     * @name fromObject
-     * @synopsis Constructs a new instance from the incoming object. The default
+     * @method fromObject
+     * @summary Constructs a new instance from the incoming object. The default
      *     implementation forwards to construct.
      * @param {Object} anObj The source object.
      * @returns {Object} A new instance of the receiver.
@@ -850,8 +850,8 @@ TP.defineMetaTypeMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
-     * @synopsis Returns a new instance from the string provided by invoking the
+     * @method fromString
+     * @summary Returns a new instance from the string provided by invoking the
      *     receiver's parse() functionality.
      * @param {String} aString The content string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -871,8 +871,8 @@ TP.lang.RootObject.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
-     * @synopsis Returns a new instance from the string provided by invoking the
+     * @method fromString
+     * @summary Returns a new instance from the string provided by invoking the
      *     receiver's parse() functionality.
      * @param {String} aString The content string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -892,10 +892,10 @@ TP.defineMetaTypeMethod('addParser',
 function(aParser) {
 
     /**
-     * @name addParser
-     * @synopsis Adds a registered parser to the receiving type. Note that this
+     * @method addParser
+     * @summary Adds a registered parser to the receiving type. Note that this
      *     only applies to those instances of function which are actual Types.
-     * @description Note that parsers are executed in the order in which they're
+     * @summary Note that parsers are executed in the order in which they're
      *     registered unless you manually adjust the parser list.
      * @param {Object} aParser An object implementing the 'parse' method. By
      *     default this means types and functions.
@@ -931,10 +931,10 @@ TP.lang.RootObject.Type.defineMethod('addParser',
 function(aParser) {
 
     /**
-     * @name addParser
-     * @synopsis Adds a registered parser to the receiving type. Note that this
+     * @method addParser
+     * @summary Adds a registered parser to the receiving type. Note that this
      *     only applies to those instances of function which are actual Types.
-     * @description Note that parsers are executed in the order in which they're
+     * @summary Note that parsers are executed in the order in which they're
      *     registered unless you manually adjust the parser list.
      * @param {Object} aParser An object implementing the 'parse' method. By
      *     default this means types and functions.
@@ -965,8 +965,8 @@ TP.FunctionProto.defineMethod('parse',
 function(aString, sourceLocale) {
 
     /**
-     * @name parse
-     * @synopsis Parses aString using the best method possible given the
+     * @method parse
+     * @summary Parses aString using the best method possible given the
      *     receiver's type.
      * @param {String} aString The content string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -1025,11 +1025,11 @@ Date.Type.defineMethod('parse',
 function(aString) {
 
     /**
-     * @name parse
-     * @synopsis Parses the supplied String and returns the number of
+     * @method parse
+     * @summary Parses the supplied String and returns the number of
      *     milliseconds January 1, 1970, 00:00:00 UTC. represented by a Date
      *     within the String.
-     * @description This method returns a new Date by parsing the supplied
+     * @summary This method returns a new Date by parsing the supplied
      *     content String. It first tries the built in Date.parse() method and,
      *     if that doesn't produce Date output, it will try any other parsers it
      *     has been supplied with.
@@ -1064,10 +1064,10 @@ TP.lang.RootObject.Type.defineMethod('parse',
 function(aString, sourceLocale) {
 
     /**
-     * @name parse
-     * @synopsis Parses aString using the best method possible given the
+     * @method parse
+     * @summary Parses aString using the best method possible given the
      *     receiver and the target object/type.
-     * @description The parser search attempts to locate methods of the form
+     * @summary The parser search attempts to locate methods of the form
      *     'parse[Type]String' where Type is replaced with the target's type or
      *     one of its supertypes. For example, a Date would try to find
      *     'parseDateString'.
@@ -1134,11 +1134,11 @@ TP.defineMetaInstMethod('as',
 function(typeOrFormat, formatParams) {
 
     /**
-     * @name as
-     * @synopsis Returns a new object representing the receiver as an instance
+     * @method as
+     * @summary Returns a new object representing the receiver as an instance
      *     of the type provided, or formatted as the format specification
      *     defines.
-     * @description This method attempts to convert an object to either another
+     * @summary This method attempts to convert an object to either another
      *     type or to a string of a specific form. The former process is
      *     performed by using reflection to locate possible methods for
      *     converting the receiver. When the parameter doesn't appear to
@@ -1338,11 +1338,11 @@ TP.defineMetaInstMethod('format',
 function(aFormat, formatParams) {
 
     /**
-     * @name format
-     * @synopsis Formats the receiver using the format provided, formatting the
+     * @method format
+     * @summary Formats the receiver using the format provided, formatting the
      *     object and possibly using any optional formatting specification
      *     provided.
-     * @description In this method, the receiver is the object that is formatted
+     * @summary In this method, the receiver is the object that is formatted
      *     using the format specification defined by the aFormat parameter.
      *
      *     For example, a string with {{varname}} entries, or which names a
@@ -1371,8 +1371,8 @@ String.Inst.defineMethod('transformDate',
 function(aDate, transformParams) {
 
     /**
-     * @name transformDate
-     * @synopsis Transforms the supplied Date using the formats provided by the
+     * @method transformDate
+     * @summary Transforms the supplied Date using the formats provided by the
      *     'substitute' call.
      * @param {Date} aDate The Date object to format.
      * @param {TP.lang.Hash|TP.core.Request} transformParams Optional format
@@ -1443,8 +1443,8 @@ String.Inst.defineMethod('transformNumber',
 function(aNumber, transformParams) {
 
     /**
-     * @name transformNumber
-     * @synopsis Transforms the supplied Number using the formats provided by
+     * @method transformNumber
+     * @summary Transforms the supplied Number using the formats provided by
      *     the 'substitute()' call. Note: This method does not use the
      *     'transformParams' parameter.
      * @param {Number} aNumber The Number object to format.
@@ -1471,9 +1471,9 @@ String.Inst.defineMethod('transformObject',
 function(anObject, transformParams) {
 
     /**
-     * @name transformObject
-     * @synopsis Transforms an object using the 'substitute()' call.
-     * @description Depending on the character given in the format of the
+     * @method transformObject
+     * @summary Transforms an object using the 'substitute()' call.
+     * @summary Depending on the character given in the format of the
      *     receiver, this call will perform the following substitutions (and
      *     expect the following types for anObject):
      * @param {Object} anObject The object to format.
@@ -1515,8 +1515,8 @@ String.Inst.defineMethod('transformString',
 function(aString, transformParams) {
 
     /**
-     * @name transformString
-     * @synopsis Transforms the supplied String using the 'character
+     * @method transformString
+     * @summary Transforms the supplied String using the 'character
      *     substitution' format provided by the internal 'substitute()' call.
      *     Note: This method does not use the 'transformParams' parameter.
      * @param {String} aString The String object to format.
@@ -1557,10 +1557,10 @@ TP.defineMetaInstMethod('getHandler',
 function(aSignal, dontTraverseSpoofs, startSignalName) {
 
     /**
-     * @name getHandler
-     * @synopsis Returns the specific function or method which the receiver
+     * @method getHandler
+     * @summary Returns the specific function or method which the receiver
      *     would (or did) leverage to respond to the signal provided.
-     * @description Note that the startSignalName parameter contains an optional
+     * @summary Note that the startSignalName parameter contains an optional
      *     signal name to 'start consideration' from. The computation machinery
      *     in this method will always derive it's signal names by querying
      *     aSignal, but sometimes the caller already knows that it wants to
@@ -1702,9 +1702,9 @@ TP.defineMetaInstMethod('handle',
 function(aSignal, dontTraverseSpoofs, startSignalName) {
 
     /**
-     * @name handle
-     * @synopsis Handles notification of an incoming signal.
-     * @description The implementation of this function on Object instances
+     * @method handle
+     * @summary Handles notification of an incoming signal.
+     * @summary The implementation of this function on Object instances
      *     looks for a signal-specific handler before defaulting to simply
      *     logging the signal. You shouldn't override this method. Instead,
      *     create custom handle* methods for the various TP.core.Signal subtypes
@@ -1739,8 +1739,8 @@ TP.defineCommonMethod('process',
 function(aRequest) {
 
     /**
-     * @name process
-     * @synopsis Core request processing method. This method follows the
+     * @method process
+     * @summary Core request processing method. This method follows the
      *     standard TIBET "best method" pattern of searching the receiver for
      *     the best fitting method for the parameter type and invoking that
      *     method. If no other method can be found the default
@@ -1770,8 +1770,8 @@ TP.defineCommonMethod('processAndExecuteWith',
 function(aRequest, stdinContent) {
 
     /**
-     * @name processAndExecuteWith
-     * @synopsis Similar to the 'process' method, this method takes in 'stdin'
+     * @method processAndExecuteWith
+     * @summary Similar to the 'process' method, this method takes in 'stdin'
      *     content and will 'execute' as well as 'process' the request.
      * @param {TP.sig.Request} aRequest The request to process and execute.
      * @param {Object} stdinContent The content to use as 'stdin' when executing
@@ -1796,8 +1796,8 @@ TP.defineCommonMethod('processTP_sig_Request',
 function(aRequest) {
 
     /**
-     * @name processTP_sig_Request
-     * @synopsis Default request processing method. By default this method
+     * @method processTP_sig_Request
+     * @summary Default request processing method. By default this method
      *     simply returns. Subtypes with processing responsibilities are
      *     expected to override this method.
      * @param {TP.sig.Request} aRequest The request to process.
@@ -1832,8 +1832,8 @@ Window.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name canResolveDNU
-     * @synopsis Provides an instance that has triggered the DNU machinery with
+     * @method canResolveDNU
+     * @summary Provides an instance that has triggered the DNU machinery with
      *     an opportunity to handle the problem itself. This is a useful option
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
@@ -1855,8 +1855,8 @@ TP.defineMetaInstMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name canResolveDNU
-     * @synopsis Provides an instance that has triggered the DNU machinery with
+     * @method canResolveDNU
+     * @summary Provides an instance that has triggered the DNU machinery with
      *     an opportunity to handle the problem itself. This is a useful option
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
@@ -1879,8 +1879,8 @@ TP.defineMetaInstMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name resolveDNU
-     * @synopsis Invoked by the main DNU machinery when the instance has
+     * @method resolveDNU
+     * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
@@ -1992,9 +1992,9 @@ TP.sys.defineMethod('infer',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name infer
-     * @synopsis The inferencing driver.
-     * @description The inference engine. The current version uses as()
+     * @method infer
+     * @summary The inferencing driver.
+     * @summary The inference engine. The current version uses as()
      *     information which is captured during method registration to keep
      *     track of which objects can respond to the method and which type
      *     conversions the origin can be put through. Future versions will add a
@@ -2249,10 +2249,10 @@ TP.sys.defineMethod('dnu',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name dnu
-     * @synopsis A standard function for catching methods targeted at the wrong
+     * @method dnu
+     * @summary A standard function for catching methods targeted at the wrong
      *     receiver.
-     * @description This method is typically invoked via an instance's
+     * @summary This method is typically invoked via an instance's
      *     doesNotUnderstand call. The doesNotUnderstand functionality is
      *     installed when TIBET's $$shouldConstructDNUs flag is true. When
      *     triggered, this method first checks with the origin to see if it
@@ -2490,8 +2490,8 @@ TP.definePrimitive('profile',
 function(aFunction, anArgArray, aCount) {
 
     /**
-     * @name profile
-     * @synopsis Times the invocation of the function provided. This method
+     * @method profile
+     * @summary Times the invocation of the function provided. This method
      *     allows direct invocation of functions to occur for performance tuning
      *     purposes.
      * @param {Function} aFunction The function being profiled.
@@ -2533,8 +2533,8 @@ TP.sys.defineMethod('addStatistic',
 function(aFunction, millisecondCount, stackNames) {
 
     /**
-     * @name addStatistic
-     * @synopsis Adds a statistic for an invocation of a function.
+     * @method addStatistic
+     * @summary Adds a statistic for an invocation of a function.
      * @param {Function} aFunction The function being tracked.
      * @param {Number} millisecondCount A particular "run time" figure.
      * @param {Array} stackNames An optional call stack array.
@@ -2616,8 +2616,8 @@ TP.sys.defineMethod('getStatistics',
 function(aFunction) {
 
     /**
-     * @name getStatistics
-     * @synopsis Returns any statistics TIBET may have on the particular
+     * @method getStatistics
+     * @summary Returns any statistics TIBET may have on the particular
      *     function's performance.
      * @param {Function} aFunction The function being tracked.
      * @returns {Array} An array of millisecond counts.
@@ -2668,8 +2668,8 @@ TP.FunctionProto.defineMethod('getImplementers',
 function(aName) {
 
     /**
-     * @name getImplementers
-     * @synopsis Returns an array containing objects which have declared that
+     * @method getImplementers
+     * @summary Returns an array containing objects which have declared that
      *     they implement the receiver or a function with that name.
      * @returns {Array} An Array of objects that implement the receiver.
      */
@@ -2693,8 +2693,8 @@ TP.defineMetaTypeMethod('finalizeTraits',
 function() {
 
     /**
-     * @name finalizeTraits
-     * @synopsis Executes traits resolution machinery if the traits for the
+     * @method finalizeTraits
+     * @summary Executes traits resolution machinery if the traits for the
            receiver have not yet been resolved. For these objects, this method
            is a no-op.
      * @returns {Object} The receiver.
@@ -2709,8 +2709,8 @@ TP.defineMetaTypeMethod('getSupertype',
 function() {
 
     /**
-     * @name getSupertype
-     * @synopsis Return the supertype of the receiver. For most native types
+     * @method getSupertype
+     * @summary Return the supertype of the receiver. For most native types
      *     this returns Object.
      * @returns {Object} The supertype of the receiver.
      */
@@ -2737,8 +2737,8 @@ TP.defineMetaTypeMethod('getSupertypeName',
 function() {
 
     /**
-     * @name getSupertypeName
-     * @synopsis Return the supertype name of the receiver. For most native
+     * @method getSupertypeName
+     * @summary Return the supertype name of the receiver. For most native
      *     types this returns Object.
      * @returns {String} The supertype name of the receiver.
      */
@@ -2765,8 +2765,8 @@ TP.defineMetaTypeMethod('defineSubtype',
 function(name) {
 
     /**
-     * @name defineSubtype
-     * @synopsis Adds a new subtype to the receiver. The default implementation
+     * @method defineSubtype
+     * @summary Adds a new subtype to the receiver. The default implementation
      *     throws an exception due to restrictions in certain browsers. This
      *     call is therefore only valid for subtypes of TP.FunctionProto.
      * @param {String} name The name of the subtype, including an optional
@@ -2792,8 +2792,8 @@ TP.defineMetaTypeMethod('$alloc',
 function() {
 
     /**
-     * @name $alloc
-     * @synopsis Allocates and returns a new instance but doesn't initialize it.
+     * @method $alloc
+     * @summary Allocates and returns a new instance but doesn't initialize it.
      *     This is the primitive form of object allocation used to construct new
      *     instances.
      * @returns {Object}
@@ -2817,9 +2817,9 @@ TP.defineMetaTypeMethod('isAbstract',
 function(aFlag) {
 
     /**
-     * @name isAbstract
-     * @synopsis Returns true if the receiver is abstract.
-     * @description In TIBET this means instances can be constructed as long as
+     * @method isAbstract
+     * @summary Returns true if the receiver is abstract.
+     * @summary In TIBET this means instances can be constructed as long as
      *     a valid subtype can be found to provide them. Instances of a subtype
      *     are, by definition, an instance of their supertype so this is a valid
      *     OO construct and offers a lot of support for both localization and
@@ -2839,8 +2839,8 @@ TP.defineMetaTypeMethod('canConstruct',
 function() {
 
     /**
-     * @name canConstruct
-     * @synopsis Returns true if the receiver can construct a valid instance
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided. This method is invoked by supertype
      *     processing of the constructViaSubtype() method when searching for a
      *     potential subtype to manage the instance.
@@ -2858,8 +2858,8 @@ TP.defineMetaTypeMethod('constructViaSubtype',
 function() {
 
     /**
-     * @name constructViaSubtype
-     * @synopsis Returns a new instance of the receiving type in the form of an
+     * @method constructViaSubtype
+     * @summary Returns a new instance of the receiving type in the form of an
      *     instance of a viable subtype.
      * @returns {Object}
      */
@@ -2874,8 +2874,8 @@ TP.defineMetaTypeMethod('getConcreteType',
 function() {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the concrete type for the receiver. When the receiving
+     * @method getConcreteType
+     * @summary Returns the concrete type for the receiver. When the receiving
      *     type is abstract this will not be the receiver, but when the receiver
      *     is abstract the type returned is the one that would be used to
      *     construct an instance based on the incoming parameters.
@@ -2895,8 +2895,8 @@ TP.defineMetaTypeMethod('construct',
 function() {
 
     /**
-     * @name construct
-     * @synopsis Returns a new instance of the receiving constructor. This
+     * @method construct
+     * @summary Returns a new instance of the receiving constructor. This
      *     variant is here to support a common api that includes the native
      *     classes. One aspect of this call is that, when the receiving type is
      *     abstract the instance returned, if any, will be of a valid subtype of
@@ -2954,8 +2954,8 @@ TP.FunctionProto.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the value of the receiver. In the case of functions
+     * @method getValue
+     * @summary Returns the value of the receiver. In the case of functions
      *     this is analogous to invocation.
      * @returns {Object} The function's return value upon invocation.
      */
@@ -2971,8 +2971,8 @@ TP.FunctionProto.defineMethod('getHandler',
 function(aSignal) {
 
     /**
-     * @name getHandler
-     * @synopsis Returns the specific function or method which the receiver
+     * @method getHandler
+     * @summary Returns the specific function or method which the receiver
      *     would (or did) leverage to respond to the signal provided.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
      * @returns {Function} The specific function or method that would be (or
@@ -2996,8 +2996,8 @@ TP.FunctionProto.defineMethod('handle',
 function(aSignal) {
 
     /**
-     * @name handle
-     * @synopsis Handles notification of an incoming signal. The version of this
+     * @method handle
+     * @summary Handles notification of an incoming signal. The version of this
      *     method on non-type Function instances simply calls the receiver with
      *     the signal as the only parameter. This model allows both observers
      *     and handlers to be registered for notification and to handle the
@@ -3041,8 +3041,8 @@ TP.lang.RootObject.Type.defineMethod('fromTP_sig_Signal',
 function(aSignal) {
 
     /**
-     * @name fromTP.core.Signal
-     * @synopsis Common backstop for constructing instances from a
+     * @method fromTP.core.Signal
+     * @summary Common backstop for constructing instances from a
      *     TP.core.Signal which should normally only occur for types that are
      *     being used as handlers for signal data.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
@@ -3059,8 +3059,8 @@ TP.lang.RootObject.Type.defineMethod('handleSignal',
 function(aSignal) {
 
     /**
-     * @name handleSignal
-     * @synopsis Handles notification of an incoming signal. For types the
+     * @method handleSignal
+     * @summary Handles notification of an incoming signal. For types the
      *     standard handle call will try to locate a signal-specific handler
      *     function just like with instances, but the default method for
      *     handling them defers to an instance rather than the type itself.
@@ -3099,8 +3099,8 @@ TP.definePrimitive('backstop',
 function(anInterface, anObject, shouldForce) {
 
     /**
-     * @name backstop
-     * @synopsis Iterate over anInterface and install backstop methods for any
+     * @method backstop
+     * @summary Iterate over anInterface and install backstop methods for any
      *     methods for which no current backstop exists. Creating these dnu
      *     methods helps ensure proper dnu/infer processing will be triggered as
      *     needed when any of these methods is called for a receiver than can't
@@ -3183,8 +3183,8 @@ TP.definePrimitive('unstop',
 function(anInterface, anObject) {
 
     /**
-     * @name unstop
-     * @synopsis Iterate over anInterface and remove backstop methods for any
+     * @method unstop
+     * @summary Iterate over anInterface and remove backstop methods for any
      *     current backstops found on the object. The default object is
      *     TP.ObjectProto so you normally want to provide a specific target
      *     rather than defaulting this value. NOTE that on browsers with global
@@ -3282,8 +3282,8 @@ TP.lang.RootObject.Type.defineMethod('addTraits',
 function(varargs) {
 
     /**
-     * @name addTraits
-     * @synopsis Adds trait types in the arguments list to the receiver.
+     * @method addTraits
+     * @summary Adds trait types in the arguments list to the receiver.
      * @param {Array} varargs A variable list of 0 to N TIBET types that
      *     represent 'traits' to add to the receiving type.
      * @returns {TP.lang.RootObject} The receiving type.
@@ -3319,9 +3319,9 @@ TP.lang.RootObject.Type.defineMethod('computeC3Linearization',
 function() {
 
     /**
-     * @name computeC3Linearization
-     * @synopsis Computes a 'C3 linearization' off of the receiving type.
-     * @description In TIBET, multiple inheritance is implemented using traits.
+     * @method computeC3Linearization
+     * @summary Computes a 'C3 linearization' off of the receiving type.
+     * @summary In TIBET, multiple inheritance is implemented using traits.
      *     In other multiple inheritance systems, the 'C3 linearization'
      *     algorithm is used to compute the 'method resolution order' when
      *     looking up methods. Although traits doesn't use C3, sometimes it's
@@ -3513,8 +3513,8 @@ TP.lang.RootObject.Type.defineMethod('finalizeTraits',
 function() {
 
     /**
-     * @name finalizeTraits
-     * @synopsis Executes traits resolution machinery if the traits for the
+     * @method finalizeTraits
+     * @summary Executes traits resolution machinery if the traits for the
            receiver have not yet been resolved.
      * @returns {TP.lang.RootObject} The receiver.
      */
@@ -3545,8 +3545,8 @@ TP.lang.RootObject.Type.defineMethod('getAllTraits',
 function() {
 
     /**
-     * @name getAllTraits
-     * @synopsis Returns a list of all of the receiver's trait types, and any
+     * @method getAllTraits
+     * @summary Returns a list of all of the receiver's trait types, and any
      *     trait types they might have, etc. recursively.
      * @returns {Array} A complete list of trait types that affect the
      *     receiver.
@@ -3575,8 +3575,8 @@ TP.lang.RootObject.Type.defineMethod('hasTraits',
 function() {
 
     /**
-     * @name hasTraits
-     * @synopsis Returns whether or not this type has traits.
+     * @method hasTraits
+     * @summary Returns whether or not this type has traits.
      * @returns {Boolean} Whether or not the receiver has traits
      */
 
@@ -3589,8 +3589,8 @@ TP.lang.RootObject.Type.defineMethod('$performTraitComposition',
 function() {
 
     /**
-     * @name $performTraitComposition
-     * @synopsis 'Composes' the traits of the receiver into a set of 'property
+     * @method $performTraitComposition
+     * @summary 'Composes' the traits of the receiver into a set of 'property
      *     sources' for each property that exists on both the receiver and each
      *     of the receiver's traits types *that have the same property name but
      *     different values* between the two.
@@ -3867,8 +3867,8 @@ TP.lang.RootObject.Type.defineMethod('$performTraitResolution',
 function() {
 
     /**
-     * @name $performTraitResolution
-     * @synopsis Performs the final resolution of trait resolution for the type.
+     * @method $performTraitResolution
+     * @summary Performs the final resolution of trait resolution for the type.
      *     This is normally called the first time an instance is constructed and
      *     can be considered a 'one way' operation (i.e. once it's done and the
      *     type starts returning proper instances, it cannot be done again).
@@ -4133,8 +4133,8 @@ TP.lang.RootObject.Type.defineMethod('$populateC3Resolver',
 function(c3Resolver) {
 
     /**
-     * @name $populateC3Resolver
-     * @synopsis Populates
+     * @method $populateC3Resolver
+     * @summary Populates
      * @param {Object} c3Resolver The object used to compute a C3 linearization
      *     of types.
      * @returns {TP.lang.RootObject} The receiver.
@@ -4183,8 +4183,8 @@ TP.lang.RootObject.Type.defineMethod('$populateTraitedSlot',
 function(resolution, propName, targetObject, forInstances) {
 
     /**
-     * @name $populateTraitedSlot
-     * @synopsis Populates the slot on the receiver given the trait resolution.
+     * @method $populateTraitedSlot
+     * @summary Populates the slot on the receiver given the trait resolution.
      * @param {Function|String|TP.lang.RootObject} resolution The object that
      *     will be used to bring the particular trait slot to resolution.
      * @param {String} propName The property name to use to fetch the property
@@ -4364,9 +4364,9 @@ TP.lang.RootObject.Type.defineMethod('$resolveConflictedTraits',
 function(targetType, conflictedTraits, track) {
 
     /**
-     * @name $resolveConflictedTraits
-     * @synopsis Processes the supplied hash of conflicted traits.
-     * @description If auto-resolution is turned on, it will try to resolve the
+     * @method $resolveConflictedTraits
+     * @summary Processes the supplied hash of conflicted traits.
+     * @summary If auto-resolution is turned on, it will try to resolve the
      *     conflicts. If it cannot, an error will be raised. If auto-resolution
      *     is not turned on, an error will be raised straightaway.
      * @param {TP.lang.RootObject} targetType The type object that the
@@ -4563,11 +4563,11 @@ TP.lang.RootObject.Inst.defineMethod('resolveTrait',
 function(propertyName, resolverObject, resolvingOption) {
 
     /**
-     * @name resolveTrait
-     * @synopsis Adds an entry to resolve the named trait according to the
+     * @method resolveTrait
+     * @summary Adds an entry to resolve the named trait according to the
      *     supplied resolverObject, which can either be a TIBET Type object or
      *     a JavaScript Function.
-     * @description This resolves a trait in a number of ways:
+     * @summary This resolves a trait in a number of ways:
      *
      *     1. If the resolverObject is a JavaScript Function, then the property
      *     on the receiver will be resolved by installing the Function as a
@@ -4666,8 +4666,8 @@ TP.lang.RootObject.Inst.defineMethod('resolveTraits',
 function(propertyNames, resolverObject) {
 
     /**
-     * @name resolveTraits
-     * @synopsis Adds an entry to resolve the named trait according to the
+     * @method resolveTraits
+     * @summary Adds an entry to resolve the named trait according to the
      *     supplied resolverObject, which must be a TIBET Type object. This is a
      *     convenience wrapper for the singular 'resolveTrait' method with the
      *     ability to supply an Array of propertyNames, but limited to providing
@@ -4717,11 +4717,11 @@ TP.lang.RootObject.Type.defineMethod('resolveTrait',
 function(propertyName, resolverObject, resolvingOption) {
 
     /**
-     * @name resolveTrait
-     * @synopsis Adds an entry to resolve the named trait according to the
+     * @method resolveTrait
+     * @summary Adds an entry to resolve the named trait according to the
      *     supplied resolverObject, which can either be a TIBET Type object or
      *     a JavaScript Function.
-     * @description This resolves a trait in a number of ways:
+     * @summary This resolves a trait in a number of ways:
      *
      *     1. If the resolverObject is a JavaScript Function, then the property
      *     on the receiver will be resolved by installing the Function as a
@@ -4820,8 +4820,8 @@ TP.lang.RootObject.Type.defineMethod('resolveTraits',
 function(propertyNames, resolverObject) {
 
     /**
-     * @name resolveTraits
-     * @synopsis Adds an entry to resolve the named trait according to the
+     * @method resolveTraits
+     * @summary Adds an entry to resolve the named trait according to the
      *     supplied resolverObject, which must be a TIBET Type object. This is a
      *     convenience wrapper for the singular 'resolveTrait' method with the
      *     ability to supply an Array of propertyNames, but limited to providing
@@ -4873,11 +4873,11 @@ TP.defineMetaInstMethod('removeInstProperties',
 function(aList) {
 
     /**
-     * @name removeInstProperties
-     * @synopsis Iterate over aList and remove properties found on receiver
+     * @method removeInstProperties
+     * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
-     * @raises TP.sig.InvalidType
+     * @exception TP.sig.InvalidType
      * @returns {Object} The receiver.
      */
 
@@ -4890,8 +4890,8 @@ TP.defineMetaInstMethod('removeLocalProperties',
 function(aList) {
 
     /**
-     * @name removeLocalProperties
-     * @synopsis Iterate over aList and remove properties found on receiver
+     * @method removeLocalProperties
+     * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list. Note that the removal will only occur if
      *     the receiver owns the properties in question.
      * @param {Array} aList The list of method names to remove.
@@ -4921,11 +4921,11 @@ TP.defineMetaInstMethod('removeTypeProperties',
 function(aList) {
 
     /**
-     * @name removeTypeProperties
-     * @synopsis Iterate over aList and remove properties found on receiver
+     * @method removeTypeProperties
+     * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
-     * @raises TP.sig.InvalidType
+     * @exception TP.sig.InvalidType
      * @returns {Object} The receiver.
      */
 
@@ -4938,8 +4938,8 @@ TP.defineMetaTypeMethod('removeInstProperties',
 function(aList) {
 
     /**
-     * @name removeInstProperties
-     * @synopsis Iterate over aList and remove properties found on receiver
+     * @method removeInstProperties
+     * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
@@ -4970,8 +4970,8 @@ TP.lang.RootObject.Type.defineMethod('removeInstProperties',
 function(aList) {
 
     /**
-     * @name removeInstProperties
-     * @synopsis Iterate over aList and remove properties found on receiver
+     * @method removeInstProperties
+     * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
@@ -5002,8 +5002,8 @@ TP.defineMetaTypeMethod('removeTypeProperties',
 function(aList) {
 
     /**
-     * @name removeTypeProperties
-     * @synopsis Iterate over aList and remove properties found on receiver
+     * @method removeTypeProperties
+     * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
@@ -5031,8 +5031,8 @@ TP.lang.RootObject.Type.defineMethod('removeTypeProperties',
 function(aList) {
 
     /**
-     * @name removeTypeProperties
-     * @synopsis Iterate over aList and remove properties found on receiver
+     * @method removeTypeProperties
+     * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
@@ -5079,8 +5079,8 @@ TP.defineMetaInstMethod('isa',
 function(aType) {
 
     /**
-     * @name isa
-     * @synopsis Core type-checking method. This method follows the standard
+     * @method isa
+     * @summary Core type-checking method. This method follows the standard
      *     TIBET "best method" pattern of searching the receiver for the best
      *     matching routine to invoke and then calling it. The receiver is
      *     tested first, then the type, and in this case, any is* primitives
@@ -5113,8 +5113,8 @@ TP.defineMetaInstMethod('isaObject',
 function(aType) {
 
     /**
-     * @name isaObject
-     * @synopsis Returns true if the receiver is an instance of the type
+     * @method isaObject
+     * @summary Returns true if the receiver is an instance of the type
      *     provided. Before answering this question a search via isa() is
      *     typically performed, followed by a check to see if the type can use
      *     validate() to test the object.
@@ -5144,8 +5144,8 @@ TP.defineMetaTypeMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validate
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of the type and failing that checks for each supertype as an
      *     option.
      * @param {Object} anObject The object to test.
@@ -5167,8 +5167,8 @@ TP.defineMetaTypeMethod('validateObject',
 function(anObject) {
 
     /**
-     * @name validateObject
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validateObject
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of the receiver's type.
      * @param {Object} anObject The object to test.
      * @returns {Boolean}
@@ -5191,10 +5191,10 @@ TP.lang.RootObject.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validate
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of the receiving type.
-     * @description In performing this test the receiver will begin with
+     * @summary In performing this test the receiver will begin with
      *     validating any aspects on the supplied that match any validity facets
      *     on the receiver. If none can be found, then it will use the
      *     callBestMethod() approach to find a validation suitable for any
@@ -5261,8 +5261,8 @@ TP.lang.RootObject.Type.defineMethod('validateAspects',
 function(anObject, aspectNames) {
 
     /**
-     * @name validateAspects
-     * @synopsis Validates the aspects of the supplied object against any
+     * @method validateAspects
+     * @summary Validates the aspects of the supplied object against any
      *     validity facets that are defined by the receiver.
      * @param {Object} anObject The object to test.
      * @param {Array} aspectNames An array of aspect names to test. If not
@@ -5345,8 +5345,8 @@ TP.lang.RootObject.Type.defineMethod('validateConstraintsOn',
 function(anObject, constraints) {
 
     /**
-     * @name validateConstraints
-     * @synopsis Validates a supplied object against a set of validity
+     * @method validateConstraints
+     * @summary Validates a supplied object against a set of validity
      *     constraints supplied in a second, literal POJO object.
      * @param {Object} anObject The object to test.
      * @param {Object} constraints The POJO object containing 1...n validity
@@ -5758,8 +5758,8 @@ TP.lang.RootObject.Type.defineMethod('validateObject',
 function(anObject) {
 
     /**
-     * @name validateObject
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validateObject
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of the receiver's type.
      * @param {Object} anObject The object to test.
      * @returns {Boolean}
@@ -5822,8 +5822,8 @@ TP.definePrimitive('deprecated',
 function(aNote) {
 
     /**
-     * @name deprecated
-     * @synopsis Reports a warning that a deprecated method/type is in use.
+     * @method deprecated
+     * @summary Reports a warning that a deprecated method/type is in use.
      * @param {String} aNote An optional note to output.
      */
 
@@ -5836,8 +5836,8 @@ TP.definePrimitive('override',
 function(aNote) {
 
     /**
-     * @name override
-     * @synopsis Standard "abstract" method stub indicating the method needs to
+     * @method override
+     * @summary Standard "abstract" method stub indicating the method needs to
      *     be overridden in concrete subtypes.
      * @param {String} aNote A description of what to do :).
      */
@@ -5851,8 +5851,8 @@ TP.definePrimitive('todo',
 function(aNote) {
 
     /**
-     * @name todo
-     * @synopsis Standard "under construction" method stub.
+     * @method todo
+     * @summary Standard "under construction" method stub.
      * @param {String} aNote A description of what to do :).
      */
 
@@ -5940,8 +5940,8 @@ Array.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as an Array instance.
+     * @method asArray
+     * @summary Returns the receiver as an Array instance.
      * @returns {Array}
      */
 
@@ -5954,8 +5954,8 @@ Array.Inst.defineMethod('asBoolean',
 function() {
 
     /**
-     * @name asBoolean
-     * @synopsis Returns the receiver as a Boolean instance. This method differs
+     * @method asBoolean
+     * @summary Returns the receiver as a Boolean instance. This method differs
      *     slightly from JS behavior in that an empty array returns 'false'
      *     while an array with content returns 'true'. The various browsers
      *     don't follow a common mechanism for implicit conversion so you should
@@ -5974,8 +5974,8 @@ Array.Inst.defineMethod('asNumber',
 function() {
 
     /**
-     * @name asNumber
-     * @synopsis Returns the result implied by the ECMA standard and implemented
+     * @method asNumber
+     * @summary Returns the result implied by the ECMA standard and implemented
      *     by IE4. If the array contains a single element the result is to
      *     convert the single element to a number; else this method returns NaN.
      * @returns {Number}
@@ -5994,9 +5994,9 @@ Array.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the array as a string.
-     * @description Constructs a new string from the array.
+     * @method asString
+     * @summary Returns the array as a string.
+     * @summary Constructs a new string from the array.
      *     The join is done using the receiver's current 'delimiter' value,
      *     normally ', '. Set the 'delimiter' value on the receiver to use a
      *     different delimiter.
@@ -6066,8 +6066,8 @@ Array.Type.defineMethod('fromNodeList',
 function(aNodeList) {
 
     /**
-     * @name fromNodeList
-     * @synopsis Returns a new instance constructed from a DOM NodeList
+     * @method fromNodeList
+     * @summary Returns a new instance constructed from a DOM NodeList
      * @param {NodeList} aNodeList The NodeList object.
      * @returns {Array}
      */
@@ -6092,8 +6092,8 @@ Array.Type.defineMethod('fromString',
 function(aString) {
 
     /**
-     * @name fromString
-     * @synopsis Returns a new instance constructed from the string provided.
+     * @method fromString
+     * @summary Returns a new instance constructed from the string provided.
      *     The return value is symmetrical with the behavior of asArray() on
      *     String.
      * @param {String} aString Source string.
@@ -6109,8 +6109,8 @@ Array.Inst.defineMethod('setDelimiter',
 function(aString) {
 
     /**
-     * @name setDelimiter
-     * @synopsis Sets the join delimiter to use when converting the array to and
+     * @method setDelimiter
+     * @summary Sets the join delimiter to use when converting the array to and
      *     from a string.
      * @param {String} aString The string used to join() the array.
      * @returns {Array} The receiver.
@@ -6133,8 +6133,8 @@ Boolean.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as a single item array [this];
+     * @method asArray
+     * @summary Returns the receiver as a single item array [this];
      * @returns {Array}
      */
 
@@ -6153,8 +6153,8 @@ Boolean.Inst.defineMethod('asBoolean',
 function() {
 
     /**
-     * @name asBoolean
-     * @synopsis Returns the receiver as a Boolean instance.
+     * @method asBoolean
+     * @summary Returns the receiver as a Boolean instance.
      * @returns {Boolean}
      */
 
@@ -6167,8 +6167,8 @@ Boolean.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a TP.lang.Hash.
+     * @method asHash
+     * @summary Returns the receiver as a TP.lang.Hash.
      * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
      */
 
@@ -6181,8 +6181,8 @@ Boolean.Inst.defineMethod('asNumber',
 function() {
 
     /**
-     * @name asNumber
-     * @synopsis Returns the receiver as a Number instance.
+     * @method asNumber
+     * @summary Returns the receiver as a Number instance.
      * @returns {Number}
      */
 
@@ -6196,8 +6196,8 @@ Boolean.Inst.defineMethod('format',
 function(aFormat) {
 
     /**
-     * @name format
-     * @synopsis Returns the receiver as a string in source form: 'true' or
+     * @method format
+     * @summary Returns the receiver as a string in source form: 'true' or
      *     'false' by default. If a format string is provided it should contain
      *     a one or two 'y' or 'n' characters in the "case" style desired. For
      *     example, "Yy" will format the receiver as 'Yes', 'Y' as Y, 'y', as
@@ -6257,8 +6257,8 @@ Boolean.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
-     * @synopsis Returns a Boolean value from the string provided. Unlike the
+     * @method fromString
+     * @summary Returns a Boolean value from the string provided. Unlike the
      *     default constructor this method uses an array of "false strings" such
      *     as 'n', 'N', 'no', '', '0', etc. to make a determination about
      *     boolean value. The strings used are acquired from the current TIBET
@@ -6289,8 +6289,8 @@ Date.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as a single element array [this];
+     * @method asArray
+     * @summary Returns the receiver as a single element array [this];
      * @returns {Array}
      */
 
@@ -6308,8 +6308,8 @@ Date.Inst.defineMethod('asBoolean',
 function() {
 
     /**
-     * @name asBoolean
-     * @synopsis Returns the receiver as a Boolean instance. Invalid dates are
+     * @method asBoolean
+     * @summary Returns the receiver as a Boolean instance. Invalid dates are
      *     considered false.
      * @returns {Boolean}
      */
@@ -6324,8 +6324,8 @@ Date.Inst.defineMethod('asDate',
 function() {
 
     /**
-     * @name asDate
-     * @synopsis Returns the receiver as a Date instance.
+     * @method asDate
+     * @summary Returns the receiver as a Date instance.
      * @returns {Date}
      */
 
@@ -6338,8 +6338,8 @@ Date.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a TP.lang.Hash.
+     * @method asHash
+     * @summary Returns the receiver as a TP.lang.Hash.
      * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
      */
 
@@ -6352,8 +6352,8 @@ Date.Inst.defineMethod('asNumber',
 function() {
 
     /**
-     * @name asNumber
-     * @synopsis Returns the receiver as an instance of Number. In particular,
+     * @method asNumber
+     * @summary Returns the receiver as an instance of Number. In particular,
      *     the return value is the internal milliseconds format for the date.
      * @returns {Number}
      */
@@ -6367,8 +6367,8 @@ Date.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver in string form, localized as needed.
+     * @method asString
+     * @summary Returns the receiver in string form, localized as needed.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the Date's String representation. The default is true.
      * @returns {String} The date in default string format.
@@ -6395,8 +6395,8 @@ Function.Inst.defineMethod('asFunction',
 function() {
 
     /**
-     * @name asFunction
-     * @synopsis Returns the receiver as a Function instance.
+     * @method asFunction
+     * @summary Returns the receiver as a Function instance.
      * @returns {Function}
      */
 
@@ -6409,8 +6409,8 @@ Function.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a TP.lang.Hash.
+     * @method asHash
+     * @summary Returns the receiver as a TP.lang.Hash.
      * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
      */
 
@@ -6423,8 +6423,8 @@ Function.Inst.defineMethod('asNumber',
 function() {
 
     /**
-     * @name asNumber
-     * @synopsis Returns the receiver as a number instance. Functions always
+     * @method asNumber
+     * @summary Returns the receiver as a number instance. Functions always
      *     return 0 for this call.
      * @returns {Function}
      */
@@ -6438,8 +6438,8 @@ Function.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver in string form.
+     * @method asString
+     * @summary Returns the receiver in string form.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the Function's String representation. The default is true.
      * @returns {String} The receiver as a String.
@@ -6462,8 +6462,8 @@ Number.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as a single element array [this];
+     * @method asArray
+     * @summary Returns the receiver as a single element array [this];
      * @returns {Array}
      */
 
@@ -6481,8 +6481,8 @@ Number.Inst.defineMethod('asDate',
 function() {
 
     /**
-     * @name asDate
-     * @synopsis Returns the receiver as an instance of Date. The receiver
+     * @method asDate
+     * @summary Returns the receiver as an instance of Date. The receiver
      *     should represent a milliseconds format acceptable to the Date
      *     constructor.
      * @returns {Date}
@@ -6497,8 +6497,8 @@ Number.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a TP.lang.Hash.
+     * @method asHash
+     * @summary Returns the receiver as a TP.lang.Hash.
      * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
      */
 
@@ -6511,7 +6511,7 @@ Number.Inst.defineMethod('asNumber',
 function() {
 
     /**
-     * @name asNumber
+     * @method asNumber
      * @returns {Number}
      * @abtract Returns the receiver as a Number instance.
      */
@@ -6525,7 +6525,7 @@ Number.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
+     * @method fromString
      * @param {String} aString The string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in. Defaults
@@ -6556,8 +6556,8 @@ TP.defineCommonMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as an Array instance.
+     * @method asArray
+     * @summary Returns the receiver as an Array instance.
      * @returns {Array}
      */
 
@@ -6581,8 +6581,8 @@ TP.defineCommonMethod('asBoolean',
 function() {
 
     /**
-     * @name asBoolean
-     * @synopsis Returns the receiver as a Boolean instance.
+     * @method asBoolean
+     * @summary Returns the receiver as a Boolean instance.
      * @returns {Boolean}
      */
 
@@ -6595,8 +6595,8 @@ TP.defineCommonMethod('asDate',
 function() {
 
     /**
-     * @name asDate
-     * @synopsis Returns the receiver as a Date instance.
+     * @method asDate
+     * @summary Returns the receiver as a Date instance.
      * @returns {Date}
      */
 
@@ -6613,8 +6613,8 @@ TP.defineCommonMethod('asFunction',
 function() {
 
     /**
-     * @name asFunction
-     * @synopsis Returns the receiver as a Function instance.
+     * @method asFunction
+     * @summary Returns the receiver as a Function instance.
      * @returns {Function}
      */
 
@@ -6629,8 +6629,8 @@ TP.defineCommonMethod('asNumber',
 function() {
 
     /**
-     * @name asNumber
-     * @synopsis Returns the receiver as a Number instance.
+     * @method asNumber
+     * @summary Returns the receiver as a Number instance.
      * @returns {Number}
      */
 
@@ -6643,8 +6643,8 @@ TP.defineCommonMethod('asRegExp',
 function() {
 
     /**
-     * @name asRegExp
-     * @synopsis Returns the receiver as a RegExp instance.
+     * @method asRegExp
+     * @summary Returns the receiver as a RegExp instance.
      * @returns {RegExp}
      */
 
@@ -6657,8 +6657,8 @@ RegExp.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as an Array instance.
+     * @method asArray
+     * @summary Returns the receiver as an Array instance.
      * @returns {Array}
      */
 
@@ -6676,8 +6676,8 @@ RegExp.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a TP.lang.Hash.
+     * @method asHash
+     * @summary Returns the receiver as a TP.lang.Hash.
      * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
      */
 
@@ -6690,8 +6690,8 @@ RegExp.Inst.defineMethod('asRegExp',
 function() {
 
     /**
-     * @name asRegExp
-     * @synopsis Returns the receiver as a RegExp instance.
+     * @method asRegExp
+     * @summary Returns the receiver as a RegExp instance.
      * @returns {RegExp}
      */
 
@@ -6704,8 +6704,8 @@ RegExp.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver as a String.
+     * @method asString
+     * @summary Returns the receiver as a String.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the RegExp's String representation. This flag is ignore in this
      *     version of this method.
@@ -6723,8 +6723,8 @@ String.Inst.defineMethod('asArray',
 function(splitChar) {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as an Array instance. The string is split
+     * @method asArray
+     * @summary Returns the receiver as an Array instance. The string is split
      *     using the delimiter provided or the empty string which results in an
      *     array of characters (the default).
      * @param {String} splitChar The delimiter to split on.
@@ -6749,8 +6749,8 @@ String.Inst.defineMethod('asNumber',
 function() {
 
     /**
-     * @name asNumber
-     * @synopsis Returns the receiver as a Number instance.
+     * @method asNumber
+     * @summary Returns the receiver as a Number instance.
      * @returns {Number}
      */
 
@@ -6776,8 +6776,8 @@ String.Inst.defineMethod('defineSubtype',
 function(name) {
 
     /**
-     * @name defineSubtype
-     * @synopsis Adds a new subtype to the type represented by the receiving
+     * @method defineSubtype
+     * @summary Adds a new subtype to the type represented by the receiving
      *     string.
      * @param {String} name The name of the subtype, including an optional
      *     namespace prefix and colon separator.
@@ -6801,8 +6801,8 @@ String.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name canResolveDNU
-     * @synopsis Provides an instance that has triggered the DNU machinery with
+     * @method canResolveDNU
+     * @summary Provides an instance that has triggered the DNU machinery with
      *     an opportunity to handle the problem itself. For string instances
      *     this results in a test to see if conversion to a type with the name
      *     contained in the string would succeed.
@@ -6839,8 +6839,8 @@ String.Inst.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
-     * @synopsis Returns a new instance of the type represented by the receiving
+     * @method construct
+     * @summary Returns a new instance of the type represented by the receiving
      *     string.
      * @returns {Object} The new instance.
      */
@@ -6861,8 +6861,8 @@ String.Inst.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis When the receiver is being treated like a Type this will cause
+     * @method initialize
+     * @summary When the receiver is being treated like a Type this will cause
      *     that type to be loaded and initialized.
      * @returns {Object} The new instance.
      */
@@ -6889,8 +6889,8 @@ String.Inst.defineMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name resolveDNU
-     * @synopsis Invoked by the main DNU machinery when the instance has
+     * @method resolveDNU
+     * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given. For a
      *     string instance that means conversion via asType() would succeed.
      * @param {Object} anOrigin The object asking for help.
@@ -6933,8 +6933,8 @@ TP.lang.RootObject.Type.defineMethod('defineInstGetter',
 function(propertyName, methodBody) {
 
     /**
-     * @name defineInstGetter
-     * @synopsis Adds an ECMA edition 5 'getter' with name and body provided as
+     * @method defineInstGetter
+     * @summary Adds an ECMA edition 5 'getter' with name and body provided as
      *     an instance 'getter'.
      * @param {String} propertyName The name of the property that the getter
      *     should be installed for.
@@ -6955,8 +6955,8 @@ TP.lang.RootObject.Type.defineMethod('defineInstSetter',
 function(propertyName, methodBody) {
 
     /**
-     * @name defineInstSetter
-     * @synopsis Adds an ECMA edition 5 'setter' with name and body provided as
+     * @method defineInstSetter
+     * @summary Adds an ECMA edition 5 'setter' with name and body provided as
      *     an instance 'setter'.
      * @param {String} propertyName The name of the property that the setter
      *     should be installed for.
@@ -6977,8 +6977,8 @@ TP.lang.RootObject.Type.defineMethod('defineTypeGetter',
 function(propertyName, methodBody) {
 
     /**
-     * @name defineTypeGetter
-     * @synopsis Adds an ECMA edition 5 'getter' with name and body provided as
+     * @method defineTypeGetter
+     * @summary Adds an ECMA edition 5 'getter' with name and body provided as
      *     a type 'getter'.
      * @param {String} propertyName The name of the property that the getter
      *     should be installed for.
@@ -6999,8 +6999,8 @@ TP.lang.RootObject.Type.defineMethod('defineTypeSetter',
 function(propertyName, methodBody) {
 
     /**
-     * @name defineTypeSetter
-     * @synopsis Adds an ECMA edition 5 'setter' with name and body provided as
+     * @method defineTypeSetter
+     * @summary Adds an ECMA edition 5 'setter' with name and body provided as
      *     an type 'setter'.
      * @param {String} propertyName The name of the property that the setter
      *     should be installed for.
@@ -7023,8 +7023,8 @@ TP.lang.RootObject.Type.defineMethod('getAccessPathAliases',
 function(aPath, includeSupertypes) {
 
     /**
-     * @name getAccessPathAliases
-     * @synopsis Returns an Array of 'access path aliases' - that is, the
+     * @method getAccessPathAliases
+     * @summary Returns an Array of 'access path aliases' - that is, the
      *     aliased names that the receiver uses for a particular path (i.e.
      *     '/person/lastName' might map to 'lastName').
      * @param {String} aPath The path to check for aliases.
@@ -7072,8 +7072,8 @@ TP.lang.RootObject.Inst.defineMethod('getAccessPathAliases',
 function(aPath, includeSupertypes) {
 
     /**
-     * @name getAccessPathAliases
-     * @synopsis Returns an Array of 'access path aliases' - that is, the
+     * @method getAccessPathAliases
+     * @summary Returns an Array of 'access path aliases' - that is, the
      *     aliased names that the receiver uses for a particular path (i.e.
      *     '/person/lastName' might map to 'lastName').
      * @param {String} aPath The path to check for aliases.
@@ -7123,8 +7123,8 @@ TP.lang.RootObject.Type.defineMethod('getDescriptorFor',
 function(attributeName, includeSupertypes) {
 
     /**
-     * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the type attribute
+     * @method getDescriptorFor
+     * @summary Returns the property descriptor, if any, for the type attribute
      *     provided. See the 'TP.sys.addMetadata()' call for more information
      *     about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
@@ -7168,8 +7168,8 @@ TP.lang.RootObject.Type.defineMethod('getInstDescriptorFor',
 function(attributeName, includeSupertypes) {
 
     /**
-     * @name getInstDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the instance
+     * @method getInstDescriptorFor
+     * @summary Returns the property descriptor, if any, for the instance
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
@@ -7213,8 +7213,8 @@ TP.lang.RootObject.Inst.defineMethod('getDescriptorFor',
 function(attributeName, includeSupertypes) {
 
     /**
-     * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the instance
+     * @method getDescriptorFor
+     * @summary Returns the property descriptor, if any, for the instance
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
@@ -7238,8 +7238,8 @@ TP.lang.RootObject.Inst.defineMethod('checkFacets',
 function(aspectName, facetList) {
 
     /**
-     * @name checkFacets
-     * @synopsis Checks the facets of the supplied aspect on the receiver
+     * @method checkFacets
+     * @summary Checks the facets of the supplied aspect on the receiver
      *     according to the list of facets supplied (or TP.FACET_NAMES if one
      *     isn't supplied). If a valid facet value can be computed for a
      *     particular aspect, that facet value is set for that aspect.
@@ -7285,8 +7285,8 @@ TP.lang.RootObject.Inst.defineMethod('facetChanged',
 function(anAspect, aFacet, aDescription) {
 
     /**
-     * @name facetChanged
-     * @synopsis Notifies observers that the named facet of the receiver has
+     * @method facetChanged
+     * @summary Notifies observers that the named facet of the receiver has
      *     changed.
      * @param {String} anAspect The aspect of the receiver that changed. This is
      *     usually an attribute name.
@@ -7295,7 +7295,7 @@ function(anAspect, aFacet, aDescription) {
      * @param {TP.lang.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var asp,
@@ -7352,10 +7352,10 @@ TP.lang.RootObject.Inst.defineMethod('getFacetValueFor',
 function(aspectName, facetName) {
 
     /**
-     * @name getFacetValueFor
-     * @synopsis Returns the facet value for the named facet of the named aspect
+     * @method getFacetValueFor
+     * @summary Returns the facet value for the named facet of the named aspect
      *     on the receiver.
-     * @description Note that the facet value is *not* the same as the facet
+     * @summary Note that the facet value is *not* the same as the facet
      *     setting. The facet setting is the mechanism, supplied by the code
      *     author, of computing the facet value. It may be a simple literal
      *     value, an access path or the name of a method to execute on the
@@ -7442,8 +7442,8 @@ TP.lang.RootObject.Inst.defineMethod('$setFacet',
 function(aspectName, facetName, facetValue, shouldSignal) {
 
     /**
-     * @name $setFacet
-     * @synopsis Sets the value of the named facet of the named aspect to the
+     * @method $setFacet
+     * @summary Sets the value of the named facet of the named aspect to the
      *     value provided. This method should be called from any 'custom facet
      *     setter' in order to a) set the property and b) signal a change, if
      *     configured.
@@ -7509,8 +7509,8 @@ TP.lang.RootObject.Inst.defineMethod('setFacet',
 function(aspectName, facetName, facetValue, shouldSignal) {
 
     /**
-     * @name setFacet
-     * @synopsis Sets the value of the named facet of the named aspect to the
+     * @method setFacet
+     * @summary Sets the value of the named facet of the named aspect to the
      *     value provided.
      * @param {String} aspectName The name of the aspect to set.
      * @param {String} facetName The name of the facet to set.
@@ -7554,8 +7554,8 @@ TP.lang.RootObject.Type.defineMethod('$alloc',
 function() {
 
     /**
-     * @name $alloc
-     * @synopsis Allocates and returns a new instance but doesn't initialize it.
+     * @method $alloc
+     * @summary Allocates and returns a new instance but doesn't initialize it.
      *     When the type is defined to allocate a singleton this method
      *     allocates and reuses that object.
      * @returns {Object} A new instance.
@@ -7582,8 +7582,8 @@ TP.lang.RootObject.Type.defineMethod('shouldUseSingleton',
 function(aFlag) {
 
     /**
-     * @name shouldUseSingleton
-     * @synopsis Combined setter/getter for the instance singleton flag.
+     * @method shouldUseSingleton
+     * @summary Combined setter/getter for the instance singleton flag.
      * @param {Boolean} aFlag An optional new flag value to set.
      * @returns {Boolean} The current state of the singleton flag.
      */
@@ -7601,8 +7601,8 @@ TP.lang.RootObject.Type.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
-     * @synopsis Makes a new instance of the receiver by calling the most
+     * @method construct
+     * @summary Makes a new instance of the receiver by calling the most
      *     primitive constructor and then executing init() on the new instance.
      *     The init() call is then allowed to pass back an optional instance
      *     which, if valid, will be returned to the caller. If not, then the
@@ -7681,8 +7681,8 @@ TP.lang.RootObject.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Provides instances with an opportunity to initialize. The
+     * @method init
+     * @summary Provides instances with an opportunity to initialize. The
      *     default implementation does nothing.
      * @returns {Object} A new instance.
      */
@@ -7696,8 +7696,8 @@ TP.lang.RootObject.Inst.defineMethod('getRepresentedType',
 function() {
 
     /**
-     * @name getRepresentedType
-     * @synopsis Returns a type that this object might be 'representing'. This
+     * @method getRepresentedType
+     * @summary Returns a type that this object might be 'representing'. This
      *     is used in places like TIBET's XMLSchema support to return the type
      *     that the element containing the schema is describing to the system.
      *     The default implementation here returns null.
@@ -7712,8 +7712,8 @@ TP.lang.RootObject.Inst.defineMethod('isRecyclable',
 function(aFlag) {
 
     /**
-     * @name isRecyclable
-     * @synopsis Returns true if the instance can be recycled.
+     * @method isRecyclable
+     * @summary Returns true if the instance can be recycled.
      * @param {Boolean} aFlag A new setting. Optional.
      * @returns {Boolean} True if the instance can be recycled.
      */
@@ -7731,8 +7731,8 @@ TP.lang.RootObject.Inst.defineMethod('recycle',
 function() {
 
     /**
-     * @name recycle
-     * @synopsis Prepares the receiver for a new usage cycle. This is typically
+     * @method recycle
+     * @summary Prepares the receiver for a new usage cycle. This is typically
      *     used in conjunction with types who manage a singlegon instance which
      *     may potentially need to be reused or recycled between usages. By
      *     default this method does nothing, leaving the instance in its
@@ -7768,8 +7768,8 @@ TP.lang.RootObject.Type.defineMethod('callNextMethod',
 function() {
 
     /**
-     * @name callNextMethod
-     * @synopsis Invokes the next method in the lookup chain. This is somewhat
+     * @method callNextMethod
+     * @summary Invokes the next method in the lookup chain. This is somewhat
      *     analogous to a super() call but with the added aspect that an
      *     instance which has been programmed differently from its standard
      *     instance behavior can use this method to skip the specific local
@@ -7916,8 +7916,8 @@ TP.defineMetaInstMethod('callNextMethod',
 function() {
 
     /**
-     * @name callNextMethod
-     * @synopsis Invokes the next method in the lookup chain. This is somewhat
+     * @method callNextMethod
+     * @summary Invokes the next method in the lookup chain. This is somewhat
      *     analogous to a super() call but with the added aspect that an
      *     instance which has been programmed differently from its standard
      *     instance behavior can use this method to skip the specific local
@@ -8004,8 +8004,8 @@ TP.defineMetaInstMethod('callBestMethod',
 function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     /**
-     * @name callBestMethod
-     * @synopsis Finds and invokes the best method possible which begins with
+     * @method callBestMethod
+     * @summary Finds and invokes the best method possible which begins with
      *     the common prefix provided. The match is based on the type of
      *     anObject, with the most specific type first. For example, a call of:
      *         this.callBestMethod(
@@ -8046,8 +8046,8 @@ TP.defineMetaInstMethod('getBestMethod',
 function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     /**
-     * @name getBestMethod
-     * @synopsis Finds the best method possible which begins with the common
+     * @method getBestMethod
+     * @summary Finds the best method possible which begins with the common
      *     prefix provided. The match is based on the type of anObject, with the
      *     most specific type first. See 'callBestMethod' for an example.
      * @param {Arguments} callingContext The arguments object of the calling
@@ -8082,8 +8082,8 @@ TP.defineMetaInstMethod('getBestMethodName',
 function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     /**
-     * @name getBestMethodName
-     * @synopsis Finds the best method name possible which begins with the
+     * @method getBestMethodName
+     * @summary Finds the best method name possible which begins with the
      *     common prefix provided. The match is based on the type of anObject,
      *     with the most specific type first. For example, a call of
      *     this.getBestMethodName(arguments, myString, 'from'); will try to find
@@ -8258,8 +8258,8 @@ TP.lang.RootObject.Type.defineMethod('getConstructor',
 function() {
 
     /**
-     * @name getConstructor
-     * @synopsis Returns the true constructor for an instance.
+     * @method getConstructor
+     * @summary Returns the true constructor for an instance.
      * @returns {Object}
      */
 
@@ -8276,8 +8276,8 @@ TP.lang.RootObject.Type.defineMethod('getName',
 function() {
 
     /**
-     * @name getName
-     * @synopsis Returns the type name of the receiver.
+     * @method getName
+     * @summary Returns the type name of the receiver.
      * @returns {String}
      */
 
@@ -8300,8 +8300,8 @@ TP.lang.RootObject.Type.defineMethod('getSupertype',
 function() {
 
     /**
-     * @name getSupertype
-     * @synopsis Returns the supertype of the receiver. Returns undefined if the
+     * @method getSupertype
+     * @summary Returns the supertype of the receiver. Returns undefined if the
            receiver is a root type.
      * @returns {Object} The supertype of the receiver.
      */
@@ -8315,8 +8315,8 @@ TP.lang.RootObject.Type.defineMethod('getSupertypeName',
 function() {
 
     /**
-     * @name getSupertypeName
-     * @synopsis Returns the supertype name of the receiver.
+     * @method getSupertypeName
+     * @summary Returns the supertype name of the receiver.
      * @returns {String} The supertype name of the receiver.
      */
 
@@ -8329,8 +8329,8 @@ TP.lang.RootObject.Type.defineMethod('getSupertypeNames',
 function() {
 
     /**
-     * @name getSupertypeNames
-     * @synopsis Returns an array containing the supertype names of the
+     * @method getSupertypeNames
+     * @summary Returns an array containing the supertype names of the
      *     receiver. You should consider this array private and avoid
      *     manipulating it. The first element in this array is the name of the
      *     immediate supertype of the receiver.
@@ -8365,8 +8365,8 @@ TP.lang.RootObject.Type.defineMethod('getType',
 function() {
 
     /**
-     * @name getType
-     * @synopsis Returns the type object for the receiver. In this case we're
+     * @method getType
+     * @summary Returns the type object for the receiver. In this case we're
      *     talking about a TIBET type so we can leverage the meta-data. Normally
      *     if you ask an instance for its type the answer is clear. In TIBET
      *     since all Type objects are actually instances the response to this
@@ -8384,8 +8384,8 @@ TP.lang.RootObject.Type.defineMethod('getTypeName',
 function() {
 
     /**
-     * @name getTypeName
-     * @synopsis Returns the type name of the receiver. This method is a synonym
+     * @method getTypeName
+     * @summary Returns the type name of the receiver. This method is a synonym
      *     for getName() for types.
      * @returns {String}
      */
@@ -8400,8 +8400,8 @@ TP.lang.RootObject.Type.defineMethod('getTypes',
 function() {
 
     /**
-     * @name getTypes
-     * @synopsis Returns an array containing the type and supertype objects of
+     * @method getTypes
+     * @summary Returns an array containing the type and supertype objects of
      *     the receiver. The first element in this array is the type of the
      *     receiver.
      * @returns {Array}
@@ -8425,8 +8425,8 @@ TP.lang.RootObject.Type.defineMethod('$$isReferenceType',
 function() {
 
     /**
-     * @name $$isReferenceType
-     * @synopsis Returns true if the receiver is a reference type meaning it
+     * @method $$isReferenceType
+     * @summary Returns true if the receiver is a reference type meaning it
      *     doesn't support copy-on-write semantics. TP*Objects are all reference
      *     types.
      * @returns {Boolean}
@@ -8441,8 +8441,8 @@ TP.lang.RootObject.Type.defineMethod('isInitialized',
 function(aFlag) {
 
     /**
-     * @name isInitialized
-     * @synopsis Returns true if the receiver has been initialized. Most types
+     * @method isInitialized
+     * @summary Returns true if the receiver has been initialized. Most types
      *     don't require initialization but those that do need to protect
      *     against having it done more than once :).
      * @param {Boolean} aFlag The new state of the initialized flag.
@@ -8462,8 +8462,8 @@ TP.lang.RootObject.Type.defineMethod('ownsMethod',
 function(aName) {
 
     /**
-     * @name ownsMethod
-     * @synopsis Returns true if the name represents a unique method on the
+     * @method ownsMethod
+     * @summary Returns true if the name represents a unique method on the
      *     receiver, one that is either introduced or overridden so that the
      *     method is "owned" by the receiver.
      * @param {String} aName The method name to check.
@@ -8489,8 +8489,8 @@ TP.lang.RootObject.Inst.defineMethod('getConstructor',
 function() {
 
     /**
-     * @name getConstructor
-     * @synopsis Returns the true constructor for an instance.
+     * @method getConstructor
+     * @summary Returns the true constructor for an instance.
      * @returns {Object}
      */
 
@@ -8507,8 +8507,8 @@ TP.lang.RootObject.Inst.defineMethod('getLocalName',
 function() {
 
     /**
-     * @name getLocalName
-     * @synopsis Returns the local (aka short) name of the receiver without any
+     * @method getLocalName
+     * @summary Returns the local (aka short) name of the receiver without any
      *     namespace prefix.
      * @returns {String}
      */
@@ -8522,8 +8522,8 @@ TP.lang.RootObject.Inst.defineMethod('getNamespacePrefix',
 function() {
 
     /**
-     * @name getNamespacePrefix
-     * @synopsis Returns the namespace (in TIBET terms) of the receiver. For
+     * @method getNamespacePrefix
+     * @summary Returns the namespace (in TIBET terms) of the receiver. For
      *     example, the namespace of the TP.sig.Signal type is 'sig'.
      * @returns {String} The receiver's namespace.
      */
@@ -8537,8 +8537,8 @@ TP.lang.RootObject.Inst.defineMethod('getType',
 function() {
 
     /**
-     * @name getType
-     * @synopsis Returns the type object for the receiver. In this case we're
+     * @method getType
+     * @summary Returns the type object for the receiver. In this case we're
      *     talking about a TIBET type so we can leverage the meta-data. Normally
      *     if you ask an instance for its type the answer is clear. In TIBET
      *     since all Type objects are actually instances the response to this
@@ -8556,8 +8556,8 @@ TP.lang.RootObject.Inst.defineMethod('getTypeName',
 function() {
 
     /**
-     * @name getTypeName
-     * @synopsis Returns the type name of the receiver. This method is a synonym
+     * @method getTypeName
+     * @summary Returns the type name of the receiver. This method is a synonym
      *     for getType().getName() for instances.
      * @returns {String}
      */
@@ -8586,8 +8586,8 @@ TP.sys.defineMethod('getTypeInitializers',
 function() {
 
     /**
-     * @name getTypeInitializers
-     * @synopsis Returns an array of functions which will properly initialize
+     * @method getTypeInitializers
+     * @summary Returns an array of functions which will properly initialize
      *     the various types in the system.
      * @returns {Array.<Function>}
      */
@@ -8666,8 +8666,8 @@ TP.lang.RootObject.Type.defineMethod('getInstPrototype',
 function() {
 
     /**
-     * @name getInstPrototype
-     * @synopsis Returns the object which instances of the receiver use as their
+     * @method getInstPrototype
+     * @summary Returns the object which instances of the receiver use as their
      *     prototype.
      * @returns {Object}
      */
@@ -8688,8 +8688,8 @@ TP.lang.RootObject.Inst.defineMethod('getPrototype',
 function() {
 
     /**
-     * @name getPrototype
-     * @synopsis Returns the object the receiver uses as its prototype.
+     * @method getPrototype
+     * @summary Returns the object the receiver uses as its prototype.
      * @returns {Object}
      */
 
@@ -8704,8 +8704,8 @@ TP.defineMetaInstMethod('getPrototypes',
 function() {
 
     /**
-     * @name getPrototypes
-     * @synopsis Returns an array containing the various objects which affect
+     * @method getPrototypes
+     * @summary Returns an array containing the various objects which affect
      *     inheritance for the receiver via the prototype chain.
      * @returns {Array}
      */
@@ -8743,8 +8743,8 @@ TP.definePrimitive('method',
 function(target, name, track) {
 
     /**
-     * @name method
-     * @synopsis Returns the named method on the target, if it exists.
+     * @method method
+     * @summary Returns the named method on the target, if it exists.
      * @param {Object} target The object to try to locate the method on.
      * @param {String} name The method name to locate.
      * @param {String} track The track to locate the method on.
@@ -8769,8 +8769,8 @@ TP.definePrimitive('methods',
 function(target, track) {
 
     /**
-     * @name methods
-     * @synopsis Returns the Array of methods on the target.
+     * @method methods
+     * @summary Returns the Array of methods on the target.
      * @param {Object} target The object to try to locate the methods on.
      * @param {String} track The track to locate the method on.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -8805,8 +8805,8 @@ TP.defineMetaInstMethod('getMethod',
 function(aName, aTrack) {
 
     /**
-     * @name getMethod
-     * @synopsis Returns the named method, if it exists.
+     * @method getMethod
+     * @summary Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
      * @param {String} aTrack The track to locate the method on. This is an
      *     optional parameter.
@@ -8832,8 +8832,8 @@ TP.defineMetaInstMethod('getMethods',
 function(aTrack) {
 
     /**
-     * @name getMethods
-     * @synopsis Returns an Array of methods for the receiver.
+     * @method getMethods
+     * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -8858,8 +8858,8 @@ TP.FunctionProto.defineMethod('getMethod',
 function(aName, aTrack) {
 
     /**
-     * @name getMethod
-     * @synopsis Returns the named method, if it exists.
+     * @method getMethod
+     * @summary Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
      * @param {String} aTrack The track to locate the method on. This is an
      *     optional parameter.
@@ -8896,8 +8896,8 @@ TP.FunctionProto.defineMethod('getMethods',
 function(aTrack) {
 
     /**
-     * @name getMethods
-     * @synopsis Returns an Array of methods for the receiver.
+     * @method getMethods
+     * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -8933,8 +8933,8 @@ TP.lang.RootObject.Type.defineMethod('getMethod',
 function(aName, aTrack) {
 
     /**
-     * @name getMethod
-     * @synopsis Returns the named method, if it exists.
+     * @method getMethod
+     * @summary Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
      * @param {String} aTrack The track to locate the method on. This is an
      *     optional parameter.
@@ -8961,8 +8961,8 @@ TP.lang.RootObject.Type.defineMethod('getMethods',
 function(aTrack) {
 
     /**
-     * @name getMethods
-     * @synopsis Returns an Array of methods for the receiver.
+     * @method getMethods
+     * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -8988,8 +8988,8 @@ TP.lang.RootObject.Inst.defineMethod('getMethod',
 function(aName, aTrack) {
 
     /**
-     * @name getMethod
-     * @synopsis Returns the named method, if it exists.
+     * @method getMethod
+     * @summary Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
      * @param {String} aTrack The track to locate the method on. This is an
      *     optional parameter.
@@ -9016,8 +9016,8 @@ TP.lang.RootObject.Inst.defineMethod('getMethods',
 function(aTrack) {
 
     /**
-     * @name getMethods
-     * @synopsis Returns an Array of methods for the receiver.
+     * @method getMethods
+     * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -9043,10 +9043,10 @@ TP.defineMetaInstMethod('getMethodInfoFor',
 function(methodName) {
 
     /**
-     * @name getMethodInfoFor
-     * @synopsis Returns information for the method with the supplied name on
+     * @method getMethodInfoFor
+     * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @summary This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9084,10 +9084,10 @@ TP.FunctionProto.defineMethod('getMethodInfoFor',
 function(methodName) {
 
     /**
-     * @name getMethodInfoFor
-     * @synopsis Returns information for the method with the supplied name on
+     * @method getMethodInfoFor
+     * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @summary This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9140,10 +9140,10 @@ TP.lang.RootObject.Type.defineMethod('getMethodInfoFor',
 function(methodName) {
 
     /**
-     * @name getMethodInfoFor
-     * @synopsis Returns information for the method with the supplied name on
+     * @method getMethodInfoFor
+     * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @summary This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9188,10 +9188,10 @@ TP.lang.RootObject.Inst.defineMethod('getMethodInfoFor',
 function(methodName) {
 
     /**
-     * @name getMethodInfoFor
-     * @synopsis Returns information for the method with the supplied name on
+     * @method getMethodInfoFor
+     * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @summary This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9236,8 +9236,8 @@ TP.definePrimitive('isGlobalMethod',
 function(anObj) {
 
     /**
-     * @name isGlobalMethod
-     * @synopsis Returns true if the object provided is a global method.
+     * @method isGlobalMethod
+     * @summary Returns true if the object provided is a global method.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean}
      */
@@ -9251,8 +9251,8 @@ TP.definePrimitive('isInstMethod',
 function(anObj) {
 
     /**
-     * @name isInstMethod
-     * @synopsis Returns true if the object provided is an instance method
+     * @method isInstMethod
+     * @summary Returns true if the object provided is an instance method
      *     relative to a particular type.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean}
@@ -9267,8 +9267,8 @@ TP.definePrimitive('isLocalMethod',
 function(anObj) {
 
     /**
-     * @name isLocalMethod
-     * @synopsis Returns true if the object provided is a local method relative
+     * @method isLocalMethod
+     * @summary Returns true if the object provided is a local method relative
      *     to a particular object.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean}
@@ -9290,8 +9290,8 @@ TP.definePrimitive('isTypeMethod',
 function(anObj) {
 
     /**
-     * @name isTypeMethod
-     * @synopsis Returns true if the object provided is a type method relative
+     * @method isTypeMethod
+     * @summary Returns true if the object provided is a type method relative
      *     to a particular type.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean}
@@ -9321,8 +9321,8 @@ TP.lang.Object.Type.defineMethod('fromObject',
 function(anObj) {
 
     /**
-     * @name fromObject
-     * @synopsis Constructs a new instance from the incoming object. The default
+     * @method fromObject
+     * @summary Constructs a new instance from the incoming object. The default
      *     implementation forwards to construct.
      * @param {Object} anObj The source object.
      * @returns {Object} A new instance of the receiver.
@@ -9361,8 +9361,8 @@ TP.lang.Object.Type.defineMethod('getConstructor',
 function() {
 
     /**
-     * @name getConstructor
-     * @synopsis Returns the receivers constructor.
+     * @method getConstructor
+     * @summary Returns the receivers constructor.
      * @returns {Object}
      */
 
@@ -9377,8 +9377,8 @@ TP.lang.Object.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -9412,8 +9412,8 @@ TP.lang.Object.Inst.defineMethod('$generateSourceSets',
 function(keyArray, forceInvalid) {
 
     /**
-     * @name $generateSourceSets
-     * @synopsis Generates a '.set()' for each key in the key Array, along with
+     * @method $generateSourceSets
+     * @summary Generates a '.set()' for each key in the key Array, along with
      *     the receiver's value for that key, obtained by executing a 'get()'
      *     on the receiver.
      * @param {Array} keyArray An optional parameter listing the keys that the
@@ -9462,8 +9462,8 @@ TP.lang.Object.Inst.defineMethod('getConstructor',
 function() {
 
     /**
-     * @name getConstructor
-     * @synopsis Returns the true constructor for an instance.
+     * @method getConstructor
+     * @summary Returns the true constructor for an instance.
      * @returns {Object}
      */
 
@@ -9476,8 +9476,7 @@ TP.lang.Object.Inst.defineMethod('getKeys',
 function() {
 
     /**
-     * @name getKeys
-     * @abstract Returns an Array of all of the receiver's keys. In this case,
+     * @method getKeys
      *     the receivers keys will be all of its attributes, hidden or shown,
      *     instance-level or local-level.
      * @returns {Array} An Array of all attributes of the receiver, hidden or
@@ -9505,8 +9504,7 @@ TP.lang.Object.Inst.defineMethod('getUniqueValueKeys',
 function() {
 
     /**
-     * @name getUniqueValueKeys
-     * @abstract Returns an Array of all of the receiver's keys that reference a
+     * @method getUniqueValueKeys
      *     *uniquely-valued* slot on the receiver. That is, any attributes,
      *     hidden or shown, instance-level or local-level, that have a value
      *     different from the receiver's prototype object.
@@ -9533,9 +9531,9 @@ TP.FunctionProto.defineMethod('replaceWith',
 function(aFunction) {
 
     /**
-     * @name replaceWith
-     * @synopsis Replaces the receiver with an alternate function.
-     * @description This method provides an easy way to reinstall a function
+     * @method replaceWith
+     * @summary Replaces the receiver with an alternate function.
+     * @summary This method provides an easy way to reinstall a function
      *     in the proper context, particularly when you don't know the original
      *     context. In other words, you can ask a function to
      *     'replaceWith(aReplacement)' and the proper 'defineMethod' call will
@@ -9581,8 +9579,8 @@ Window.Inst.defineMethod('getType',
 function() {
 
     /**
-     * @name getType
-     * @synopsis Returns the type object for the receiver.
+     * @method getType
+     * @summary Returns the type object for the receiver.
      * @returns {Object}
      */
 
@@ -9595,8 +9593,8 @@ Window.Inst.defineMethod('getTypeName',
 function() {
 
     /**
-     * @name getTypeName
-     * @synopsis Returns the type name of the receiver. This method is a synonym
+     * @method getTypeName
+     * @summary Returns the type name of the receiver. This method is a synonym
      *     for getType().getName() for instances.
      * @returns {String}
      */

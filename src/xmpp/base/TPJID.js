@@ -10,8 +10,8 @@
 
 /**
  * @type {TP.xmpp.JID}
- * @synopsis A XMPP ID (JID) type.
- * @description The TP.xmpp.JID type provides a central point from which to
+ * @summary A XMPP ID (JID) type.
+ * @summary The TP.xmpp.JID type provides a central point from which to
  *     manage JID-related information such as roster/presence info etc. It also
  *     provides convenience methods for extraction of various portions of the
  *     JID string for use.
@@ -49,11 +49,11 @@ TP.xmpp.JID.Type.defineMethod('construct',
 function(aString) {
 
     /**
-     * @name construct
-     * @synopsis Constructs a new JID instance for use with XMPP connections.
+     * @method construct
+     * @summary Constructs a new JID instance for use with XMPP connections.
      *     Note that each JID is a singleton relative to that string.
      * @param {String} aString A valid JID: [node@]domain[/resource].
-     * @raises TP.sig.InvalidJID
+     * @exception TP.sig.InvalidJID
      * @returns {TP.xmpp.JID}
      */
 
@@ -113,8 +113,8 @@ TP.xmpp.JID.Type.defineMethod('escapeJID',
 function(aJID) {
 
     /**
-     * @name escapeJID
-     * @synopsis Escapes the supplied JID according to XEP-106
+     * @method escapeJID
+     * @summary Escapes the supplied JID according to XEP-106
      * @param {String} aJID The JID to escape.
      * @returns {String} The escaped JID.
      */
@@ -142,8 +142,8 @@ TP.xmpp.JID.Type.defineMethod('unescapeJID',
 function(aJID) {
 
     /**
-     * @name unescapeJID
-     * @synopsis Unescapes the supplied JID according to XEP-106
+     * @method unescapeJID
+     * @summary Unescapes the supplied JID according to XEP-106
      * @param {String} aJID The JID to unescape.
      * @returns {String} The unescaped JID.
      */
@@ -190,10 +190,10 @@ TP.xmpp.JID.Inst.defineMethod('init',
 function(aString) {
 
     /**
-     * @name init
-     * @synopsis Constructs a new JID instance for use with XMPP connections.
+     * @method init
+     * @summary Constructs a new JID instance for use with XMPP connections.
      * @param {String} aString A valid JID: [node@]domain[/resource].
-     * @raises TP.sig.InvalidJID
+     * @exception TP.sig.InvalidJID
      * @returns {TP.xmpp.JID}
      */
 
@@ -217,8 +217,8 @@ TP.xmpp.JID.Inst.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name addObserver
-     * @synopsis Adds a local signal observation which is roughly like a DOM
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -287,8 +287,8 @@ TP.xmpp.JID.Inst.defineMethod('asJID',
 function() {
 
     /**
-     * @name asJID
-     * @synopsis Returns the receiver as a TP.xmpp.JID instance.
+     * @method asJID
+     * @summary Returns the receiver as a TP.xmpp.JID instance.
      * @returns {TP.xmpp.JID} The receiver.
      */
 
@@ -301,8 +301,8 @@ TP.xmpp.JID.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver's JID in string form.
+     * @method asString
+     * @summary Returns the receiver's JID in string form.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.xmpp.JID's String representation. This flag is ignored in
      *     this version of this method.
@@ -318,8 +318,8 @@ TP.xmpp.JID.Inst.defineMethod('getBareJID',
 function() {
 
     /**
-     * @name getBareJID
-     * @synopsis Returns the [node@]domain portion of the JID, but no resource
+     * @method getBareJID
+     * @summary Returns the [node@]domain portion of the JID, but no resource
      *     information.
      * @returns {String}
      */
@@ -342,8 +342,8 @@ TP.xmpp.JID.Inst.defineMethod('getDomain',
 function() {
 
     /**
-     * @name getDomain
-     * @synopsis Returns the domain portion of the JID.
+     * @method getDomain
+     * @summary Returns the domain portion of the JID.
      * @returns {String}
      */
 
@@ -367,8 +367,8 @@ TP.xmpp.JID.Inst.defineMethod('getNode',
 function() {
 
     /**
-     * @name getNode
-     * @synopsis Returns the node (or component name) portion of the JID.
+     * @method getNode
+     * @summary Returns the node (or component name) portion of the JID.
      * @returns {String}
      */
 
@@ -389,8 +389,8 @@ TP.xmpp.JID.Inst.defineMethod('getPresence',
 function() {
 
     /**
-     * @name getPresence
-     * @synopsis Returns the JID's current presence in TP.sig.XMPPPresence form.
+     * @method getPresence
+     * @summary Returns the JID's current presence in TP.sig.XMPPPresence form.
      *     This entity can be queried for type, show, status, etc.
      * @returns {TP.sig.XMPPPresence} The current presence packet instance.
      */
@@ -404,8 +404,8 @@ TP.xmpp.JID.Inst.defineMethod('getResourcePath',
 function() {
 
     /**
-     * @name getResourcePath
-     * @synopsis Returns the resource portion of the JID, if available.
+     * @method getResourcePath
+     * @summary Returns the resource portion of the JID, if available.
      * @returns {String}
      */
 
@@ -429,8 +429,8 @@ TP.xmpp.JID.Inst.defineMethod('getRoster',
 function() {
 
     /**
-     * @name getRoster
-     * @synopsis Returns the TP.xmpp.IqRoster instance for the receiver, if
+     * @method getRoster
+     * @summary Returns the TP.xmpp.IqRoster instance for the receiver, if
      *     available. This is typically only available for the current user's
      *     JID(s). JIDs representing roster entries themselves won't have a
      *     roster.
@@ -446,8 +446,8 @@ TP.xmpp.JID.Inst.defineMethod('handleXMPPPresenceInput',
 function(aSignal) {
 
     /**
-     * @name handleXMPPPresenceInput
-     * @synopsis Responds to notification that a presence packet has arrived.
+     * @method handleXMPPPresenceInput
+     * @summary Responds to notification that a presence packet has arrived.
      *     This implementation makes sure that the receiver's presence is
      *     updated with the content of the presence packet.
      * @param {TP.sig.XMPPPresenceInput} aSignal The triggering signal.
@@ -483,8 +483,8 @@ TP.xmpp.JID.Inst.defineMethod('handleXMPPPubsubNodeChanged',
 function(aSignal) {
 
     /**
-     * @name handleXMPPPubsubNodeChanged
-     * @synopsis Responds to notification that a pubsub node has changed.
+     * @method handleXMPPPubsubNodeChanged
+     * @summary Responds to notification that a pubsub node has changed.
      * @param {TP.sig.XMPPPubsubNodeChanged} aSignal The triggering signal.
      */
 
@@ -549,8 +549,8 @@ TP.xmpp.JID.Inst.defineMethod('isPresent',
 function() {
 
     /**
-     * @name isPresent
-     * @synopsis Returns true if the receiver's status indicates that it is
+     * @method isPresent
+     * @summary Returns true if the receiver's status indicates that it is
      *     present.
      * @returns {Boolean} Whether or not the receiver is present.
      */
@@ -584,8 +584,8 @@ TP.xmpp.JID.Inst.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name removeObserver
-     * @synopsis Removes a local signal observation which is roughly like a DOM
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
      *     element adding an event listener. The observer is typically the
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
@@ -654,8 +654,8 @@ TP.xmpp.JID.Inst.defineMethod('setPresence',
 function(aPresencePacket) {
 
     /**
-     * @name setPresence
-     * @synopsis Sets the receiver's presence node to the node provided. This
+     * @method setPresence
+     * @summary Sets the receiver's presence node to the node provided. This
      *     can then be queried to determine the JID's current availability etc.
      * @returns {TP.xmpp.JID} The receiver.
      */
@@ -674,8 +674,8 @@ TP.xmpp.JID.Inst.defineMethod('setRoster',
 function(aRoster) {
 
     /**
-     * @name setRoster
-     * @synopsis Sets the roster instance for the receiver.
+     * @method setRoster
+     * @summary Sets the roster instance for the receiver.
      * @param {A} TP.xmpp.IqRoster roster instance representing the JID's
      *     current roster content.
      * @returns {TP.xmpp.JID} The receiver.
@@ -695,8 +695,8 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType,
     isCancelable, isBubbling) {
 
     /**
-     * @name signalObservers
-     * @synopsis Signals a local signal observation which is roughly like a DOM
+     * @method signalObservers
+     * @summary Signals a local signal observation which is roughly like a DOM
      *     element throwing an event. The observer is typically the handler
      *     provided to a signal() call while the signal is a signal or string
      *     which the receiver is likely to signal or is intercepting for
@@ -804,8 +804,8 @@ String.Inst.defineMethod('asJID',
 function() {
 
     /**
-     * @name asJID
-     * @synopsis Returns the receiver as a TP.xmpp.JID instance.
+     * @method asJID
+     * @summary Returns the receiver as a TP.xmpp.JID instance.
      * @returns {TP.xmpp.JID}
      */
 

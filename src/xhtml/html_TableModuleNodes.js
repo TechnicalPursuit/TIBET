@@ -34,7 +34,7 @@ TP.html.tcolumn.isAbstract(true);
 
 /**
  * @type {TP.html.caption}
- * @synopsis 'caption' tag.
+ * @summary 'caption' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -47,7 +47,7 @@ TP.html.Aligned.defineSubtype('caption');
 
 /**
  * @type {TP.html.col}
- * @synopsis 'col' tag.
+ * @summary 'col' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -77,7 +77,7 @@ TP.html.col.finalizeTraits();
 
 /**
  * @type {TP.html.colgroup}
- * @synopsis 'colgroup' tag.
+ * @summary 'colgroup' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -90,7 +90,7 @@ TP.html.tcolumn.defineSubtype('colgroup');
 
 /**
  * @type {TP.html.table}
- * @synopsis 'table' tag.
+ * @summary 'table' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -121,8 +121,8 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
 theRequest) {
 
     /**
-     * @name generateMarkup
-     * @synopsis Generates markup for the supplied Object using the other
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
      *     parameters supplied.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {String} attrStr The String containing either the literal
@@ -172,8 +172,8 @@ TP.html.table.Type.defineMethod('getItemTagName',
 function() {
 
     /**
-     * @name getItemTagName
-     * @synopsis Returns the 'default item tag name' for use it the
+     * @method getItemTagName
+     * @summary Returns the 'default item tag name' for use it the
      *     fromArray()/fromObject() methods.
      * @returns {String} The item tag name.
      */
@@ -187,8 +187,8 @@ TP.html.table.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing
@@ -211,7 +211,7 @@ function(anObject, formatArgs) {
 
 /**
  * @type {TP.html.tbody}
- * @synopsis 'tbody' tag. Table body.
+ * @summary 'tbody' tag. Table body.
  */
 
 //  ------------------------------------------------------------------------
@@ -231,7 +231,7 @@ TP.backstop(
 
 /**
  * @type {TP.html.td}
- * @synopsis 'td' tag. Table data.
+ * @summary 'td' tag. Table data.
  */
 
 //  ------------------------------------------------------------------------
@@ -244,7 +244,7 @@ TP.html.tcell.defineSubtype('td');
 
 /**
  * @type {TP.html.tfoot}
- * @synopsis 'tfoot' tag. Table footing.
+ * @summary 'tfoot' tag. Table footing.
  */
 
 //  ------------------------------------------------------------------------
@@ -257,7 +257,7 @@ TP.html.tcell.defineSubtype('tfoot');
 
 /**
  * @type {TP.html.th}
- * @synopsis 'th' tag. Table heading.
+ * @summary 'th' tag. Table heading.
  */
 
 //  ------------------------------------------------------------------------
@@ -270,7 +270,7 @@ TP.html.tcell.defineSubtype('th');
 
 /**
  * @type {TP.html.thead}
- * @synopsis 'thead' tag. Table heading.
+ * @summary 'thead' tag. Table heading.
  */
 
 //  ------------------------------------------------------------------------
@@ -283,7 +283,7 @@ TP.html.tcell.defineSubtype('thead');
 
 /**
  * @type {TP.html.tr}
- * @synopsis 'tr' tag. Table row.
+ * @summary 'tr' tag. Table row.
  */
 
 //  ------------------------------------------------------------------------
@@ -306,8 +306,8 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
 theRequest) {
 
     /**
-     * @name generateMarkup
-     * @synopsis Generates markup for the supplied Object using the other
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
      *     parameters supplied.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {String} attrStr The String containing either the literal
@@ -367,8 +367,8 @@ TP.html.tr.Type.defineMethod('getItemTagName',
 function() {
 
     /**
-     * @name getItemTagName
-     * @synopsis Returns the 'default item tag name' for use it the
+     * @method getItemTagName
+     * @summary Returns the 'default item tag name' for use it the
      *     fromArray()/fromObject() methods.
      * @returns {String} The item tag name.
      */
@@ -382,8 +382,8 @@ TP.html.tr.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing

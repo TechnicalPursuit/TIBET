@@ -25,7 +25,7 @@ TP.core.Searcher.Inst.defineMethod('search',
 function(usingText) {
 
     /**
-     * @name search
+     * @method search
      */
 
     return TP.override();
@@ -37,7 +37,7 @@ TP.core.Searcher.Inst.defineMethod('getTitle',
 function() {
 
     /**
-     * @name search
+     * @method search
      */
 
     return TP.override();
@@ -57,7 +57,7 @@ TP.core.CSSPropertySearcher.Inst.defineMethod('search',
 function(usingText) {
 
     /**
-     * @name search
+     * @method search
      */
 
     var results,
@@ -86,7 +86,7 @@ TP.core.CSSPropertySearcher.Inst.defineMethod('getTitle',
 function() {
 
     /**
-     * @name title
+     * @method title
      */
 
     return 'CSS PROPERTIES';
@@ -106,7 +106,7 @@ TP.core.CustomTypeSearcher.Inst.defineMethod('search',
 function(usingText) {
 
     /**
-     * @name search
+     * @method search
      */
 
     var results,
@@ -139,7 +139,7 @@ TP.core.CustomTypeSearcher.Inst.defineMethod('getTitle',
 function() {
 
     /**
-     * @name title
+     * @method title
      */
 
     return 'TYPES';
@@ -159,7 +159,7 @@ TP.core.MethodSearcher.Inst.defineMethod('search',
 function(usingText) {
 
     /**
-     * @name search
+     * @method search
      */
 
     var results,
@@ -207,7 +207,7 @@ TP.core.MethodSearcher.Inst.defineMethod('getTitle',
 function() {
 
     /**
-     * @name search
+     * @method search
      */
 
     return 'METHODS';
@@ -227,7 +227,7 @@ TP.core.NamespaceSearcher.Inst.defineMethod('search',
 function(usingText) {
 
     /**
-     * @name search
+     * @method search
      */
 
     return TP.ac();
@@ -239,7 +239,7 @@ TP.core.NamespaceSearcher.Inst.defineMethod('getTitle',
 function() {
 
     /**
-     * @name title
+     * @method title
      */
 
     return 'NAMESPACES';

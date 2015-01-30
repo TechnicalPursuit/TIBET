@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.sig.HTTPRequest}
- * @synopsis Top-level request type for HTTP-based services.
+ * @summary Top-level request type for HTTP-based services.
  */
 
 //  ------------------------------------------------------------------------
@@ -35,8 +35,8 @@ TP.sig.HTTPRequest.Inst.defineMethod('failJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
-     * @name failJob
-     * @synopsis Fails the HTTP request, aborting any underlying native
+     * @method failJob
+     * @summary Fails the HTTP request, aborting any underlying native
      *     XMLHttpRequest object as well. NOTE that this would have to be an
      *     asynchronous request for this to work effectively.
      * @param {String} aFaultString A text description of the reason for the
@@ -91,8 +91,8 @@ TP.sig.HTTPRequest.Inst.defineMethod('cancelJob',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancelJob
-     * @synopsis Cancels an HTTP request, aborting any underlying native
+     * @method cancelJob
+     * @summary Cancels an HTTP request, aborting any underlying native
      *     XMLHttpRequest object as well. NOTE that this would have to
      * @param {String} aFaultString A text description of the reason for the
      *     cancellation.
@@ -143,8 +143,8 @@ TP.sig.HTTPRequest.Inst.defineMethod('completeJob',
 function(aResult) {
 
     /**
-     * @name completeJob
-     * @synopsis Completes the request, peforming any wrapup that might be
+     * @method completeJob
+     * @summary Completes the request, peforming any wrapup that might be
      *     necessary to ensure proper capture of the result data.
      *     TP.sig.URIRequests will attempt to update their target URI instance
      *     with any result data in response to this call.
@@ -186,8 +186,8 @@ TP.sig.HTTPRequest.Inst.defineMethod('handleIOFailed',
 function(aSignal) {
 
     /**
-     * @name handleIOFailed
-     * @synopsis Handles notification that the underlying IO operation failed
+     * @method handleIOFailed
+     * @summary Handles notification that the underlying IO operation failed
      *     for some reason. The reason for the failure should be recorded in the
      *     response's faultCode/faultText content. IFF the receiver handles the
      *     specific status code, i.e. it has a method such as handle404, then
@@ -260,8 +260,8 @@ TP.sig.HTTPRequest.Inst.defineMethod('handleIOSucceeded',
 function(aSignal) {
 
     /**
-     * @name handleIOSucceeded
-     * @synopsis A handler which is invoked when the request's low-level IO has
+     * @method handleIOSucceeded
+     * @summary A handler which is invoked when the request's low-level IO has
      *     completed successfully.
      * @param {TP.sig.IOSucceeded} aSignal The signal, whose payload is includes
      *     the low-level request object itself as httpObj.
@@ -325,7 +325,7 @@ function(aSignal) {
 
 /**
  * @type {TP.sig.HTTPResponse}
- * @synopsis Provides a general purpose HTTP response wrapper.
+ * @summary Provides a general purpose HTTP response wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -346,8 +346,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getFaultCode',
 function() {
 
     /**
-     * @name getFaultCode
-     * @synopsis Returns the fault code if any.
+     * @method getFaultCode
+     * @summary Returns the fault code if any.
      * @returns {String} A fault code.
      */
 
@@ -378,8 +378,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getFaultText',
 function() {
 
     /**
-     * @name getFaultText
-     * @synopsis Returns the fault message string if any.
+     * @method getFaultText
+     * @summary Returns the fault message string if any.
      * @returns {String} A fault message string.
      */
 
@@ -401,8 +401,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getNativeObject',
 function() {
 
     /**
-     * @name getNativeObject
-     * @synopsis Returns the native XMLHttpRequest object which serves as the
+     * @method getNativeObject
+     * @summary Returns the native XMLHttpRequest object which serves as the
      *     container for the response data managed by this type. This method is
      *     consistent with the requirements of TP.unwrap() so that
      *     TP.unwrap()ing a TP.sig.HTTPResponse will return you the native
@@ -420,8 +420,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getResponseHeader',
 function(headerName) {
 
     /**
-     * @name getResponseHeader
-     * @synopsis Returns the value of the named response header.
+     * @method getResponseHeader
+     * @summary Returns the value of the named response header.
      * @param {String} headerName The HTTP header to return.
      * @returns {String}
      */
@@ -451,8 +451,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getResponseHeaders',
 function() {
 
     /**
-     * @name getResponseHeaders
-     * @synopsis Returns a hash containing all response header key/value pairs.
+     * @method getResponseHeaders
+     * @summary Returns a hash containing all response header key/value pairs.
      * @returns {TP.lang.Hash}
      */
 
@@ -498,8 +498,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getResponseStatusCode',
 function() {
 
     /**
-     * @name getResponseStatusCode
-     * @synopsis Returns the HTTP status code (200 for success) of the response.
+     * @method getResponseStatusCode
+     * @summary Returns the HTTP status code (200 for success) of the response.
      * @returns {Number} The status code.
      */
 
@@ -526,8 +526,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getResponseStatusText',
 function() {
 
     /**
-     * @name getResponseStatusText
-     * @synopsis Returns the status message (text) of the response.
+     * @method getResponseStatusText
+     * @summary Returns the status message (text) of the response.
      * @returns {String}
      */
 
@@ -552,8 +552,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getResponseText',
 function() {
 
     /**
-     * @name getResponseText
-     * @synopsis Returns the response text.
+     * @method getResponseText
+     * @summary Returns the response text.
      * @returns {String}
      */
 
@@ -579,8 +579,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getResponseXML',
 function() {
 
     /**
-     * @name getResponseXML
-     * @synopsis Returns the DOM Node containing the response in XML form.
+     * @method getResponseXML
+     * @summary Returns the DOM Node containing the response in XML form.
      * @returns {XMLDocument}
      */
 
@@ -626,8 +626,8 @@ TP.sig.HTTPResponse.Inst.defineMethod('getResult',
 function(aFormat) {
 
     /**
-     * @name getResult
-     * @synopsis Returns the request result. By default it tries to return the
+     * @method getResult
+     * @summary Returns the request result. By default it tries to return the
      *     XML representation, followed by the text representation if the XML
      *     can't be formed from the response. An explicit return type can be
      *     forced by supplying a format constant.
@@ -662,7 +662,7 @@ function(aFormat) {
 
 /**
  * @type {TP.core.HTTPService}
- * @synopsis The top-level service for all services which use HTTP-based
+ * @summary The top-level service for all services which use HTTP-based
  *     primitives for their transport layer. This service is capable of
  *     performing all the basic requirements of making XMLHttpRequest calls
  *     while offering several template methods that subtypes can override to
@@ -698,8 +698,8 @@ TP.core.HTTPService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
-     * @name finalizeRequest
-     * @synopsis Perform any final updates or processing on the request to make
+     * @method finalizeRequest
+     * @summary Perform any final updates or processing on the request to make
      *     sure it is ready to send to TP.httpCall() for processing.
      * @param {TP.sig.Request} aRequest The request being finalized.
      * @returns {TP.sig.HTTPRequest} The request to send. NOTE that this may not
@@ -748,8 +748,8 @@ TP.core.HTTPService.Inst.defineMethod('getMIMEType',
 function() {
 
     /**
-     * @name getMIMEType
-     * @synopsis Returns the MIME type this service uses for body encoding by
+     * @method getMIMEType
+     * @summary Returns the MIME type this service uses for body encoding by
      *     default. This value is only used when a request does not specify a
      *     mimetype directly.
      * @returns {Constant} A constant suitable for TP.httpEncode.
@@ -765,8 +765,8 @@ TP.core.HTTPService.Inst.defineMethod('getVerb',
 function() {
 
     /**
-     * @name getVerb
-     * @synopsis Returns the HTTP verb used for this service type by default. In
+     * @method getVerb
+     * @summary Returns the HTTP verb used for this service type by default. In
      *     some cases this value isn't simply a default, it's the value used for
      *     all requests made via this service.
      * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
@@ -781,13 +781,13 @@ TP.core.HTTPService.Inst.defineMethod('handleHTTPRequest',
 function(aRequest) {
 
     /**
-     * @name handleHTTPRequest
-     * @synopsis Constructs an appropriate response for the request provided,
+     * @method handleHTTPRequest
+     * @summary Constructs an appropriate response for the request provided,
      *     working to manage asynchronous calls in a manner consistent with the
      *     rest of the service/request/response model.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @raises TP.sig.InvalidRequest, TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest, TP.sig.InvalidURI
      * @returns {TP.sig.HTTPResponse} The service's response to the request.
      */
 
@@ -863,14 +863,14 @@ TP.core.HTTPService.Inst.defineMethod('performHTTPCall',
 function(aRequest) {
 
     /**
-     * @name performHTTPCall
-     * @synopsis Performs the HTTP call. This is the method that actually does
+     * @method performHTTPCall
+     * @summary Performs the HTTP call. This is the method that actually does
      *     the work and can be overridden in subtypes of this type that have
      *     special types of HTTP calling semantics (WebDAV is a good example of
      *     this).
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {TP.sig.HTTPRequest} The supplied request.
      */
 
@@ -908,8 +908,8 @@ TP.core.HTTPService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestBody
-     * @synopsis Encodes the request body for transmission. Processing in this
+     * @method rewriteRequestBody
+     * @summary Encodes the request body for transmission. Processing in this
      *     method makes use of keys in the request to drive a call to the
      *     TP.httpEncode() primitive. If you don't want this processing to occur
      *     you can put a key of 'noencode' with a value of true in the request.
@@ -927,8 +927,8 @@ TP.core.HTTPService.Inst.defineMethod('rewriteRequestMIMEType',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestMIMEType
-     * @synopsis Returns the MIME type this service uses for body encoding.
+     * @method rewriteRequestMIMEType
+     * @summary Returns the MIME type this service uses for body encoding.
      * @returns {Constant} A constant suitable for TP.httpEncode.
      */
 
@@ -955,8 +955,8 @@ TP.core.HTTPService.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestHeaders
-     * @synopsis Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @method rewriteRequestHeaders
+     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
      *     service. Typical headers include an X-Request-Id for the request ID
      *     to help identify "conversations" related to a particular request.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
@@ -1000,8 +1000,8 @@ TP.core.HTTPService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestVerb
-     * @synopsis Returns the HTTP verb to use for the request. For many services
+     * @method rewriteRequestVerb
+     * @summary Returns the HTTP verb to use for the request. For many services
      *     the value in the request will be used, but some services force the
      *     verb to be a specific one, such as XML-RPC where POST is a
      *     requirement.

@@ -365,8 +365,8 @@ function() {
 
 /**
  * @type {TP.test.SimpleJSONContentType}
- * @synopsis A simple type to test JSON content.
- * @description Note that TP.core.JSONContent automatically checks facets and
+ * @summary A simple type to test JSON content.
+ * @summary Note that TP.core.JSONContent automatically checks facets and
  *     sets their value when its set() call is made. Therefore, the 'manual
  *     facet setting' and 'individual aspect facet checking' tests are skipped
  *     here.
@@ -573,8 +573,8 @@ function() {
 
 /**
  * @type {TP.test.SimpleXMLContentType}
- * @synopsis A simple type to test XML content.
- * @description Note that TP.core.XMLContent automatically checks facets and
+ * @summary A simple type to test XML content.
+ * @summary Note that TP.core.XMLContent automatically checks facets and
  *     sets their value when its set() call is made. Therefore, the 'manual
  *     facet setting' and 'individual aspect facet checking' tests are skipped
  *     here.

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubSubscription}
- * @synopsis A wrapper for the PubSub subscription node type.
+ * @summary A wrapper for the PubSub subscription node type.
  */
 
 //  ------------------------------------------------------------------------
@@ -31,8 +31,8 @@ TP.xmpp.PubsubSubscription.Inst.defineMethod('getJID',
 function() {
 
     /**
-     * @name getJID
-     * @synopsis Returns the string value of the receiver's jid attribute.
+     * @method getJID
+     * @summary Returns the string value of the receiver's jid attribute.
      * @returns {String}
      */
 
@@ -45,8 +45,8 @@ TP.xmpp.PubsubSubscription.Inst.defineMethod('getNode',
 function() {
 
     /**
-     * @name getNode
-     * @synopsis Returns the string value of the receiver's node attribute.
+     * @method getNode
+     * @summary Returns the string value of the receiver's node attribute.
      * @returns {String}
      */
 

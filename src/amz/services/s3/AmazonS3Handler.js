@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.amz.AmazonS3Handler}
- * @synopsis A URL handler type that can store and load from Amazon S3 URLs.
+ * @summary A URL handler type that can store and load from Amazon S3 URLs.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.amz.AmazonS3Handler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content and returns it on request. This is a
+     * @method load
+     * @summary Loads URI data content and returns it on request. This is a
      *     template method which defines the overall process used for loading
      *     URI data and ensuring that the URI's cache and header content are
      *     kept up to date. You should normally override one of the more
@@ -89,8 +89,8 @@ TP.amz.AmazonS3Handler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes the target URL.
+     * @method nuke
+     * @summary Deletes the target URL.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -108,8 +108,8 @@ TP.amz.AmazonS3Handler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
-     * @name save
-     * @synopsis Attempts to save data using standard TIBET save primitives to
+     * @method save
+     * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided.
      * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.

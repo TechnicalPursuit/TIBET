@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.boolean}
- * @synopsis A boolean string representation. Valid XML Schema booleans are
+ * @summary A boolean string representation. Valid XML Schema booleans are
  *     "true", "false", "0", and "1".
  */
 
@@ -26,8 +26,8 @@ TP.xs.boolean.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided represents a boolean in XML
+     * @method validate
+     * @summary Returns true if the object provided represents a boolean in XML
      *     Schema format. Acceptable values are the strings true, false, 0, and
      *     1.
      * @param {String} anObject The object to validate.

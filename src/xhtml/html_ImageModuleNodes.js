@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.img}
- * @synopsis 'img' tag. An inline image.
+ * @summary 'img' tag. An inline image.
  */
 
 //  ------------------------------------------------------------------------
@@ -52,8 +52,8 @@ TP.html.img.Type.defineMethod('constructContentObject',
 function(aURI) {
 
     /**
-     * @name constructContentObject
-     * @synopsis Returns a content object for the URI provided. This method is
+     * @method constructContentObject
+     * @summary Returns a content object for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs vended as on
      *     of the 'img' MIME types. This method returns an image tag which is
      *     suitable for displaying the image described by the URI.

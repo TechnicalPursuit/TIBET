@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.JSONService}
- * @synopsis A subtype of TP.core.Service that communicates with JSON data
+ * @summary A subtype of TP.core.Service that communicates with JSON data
  *     services.
  * @example If the TP.sig.JSONRequest/TP.sig.JSONResponse processing model is
  *     used, it is unnecessary to manually set up a TP.core.JSONService. As part
@@ -61,8 +61,8 @@ TP.core.JSONService.Inst.defineMethod('handleJSONRequest',
 function(aRequest) {
 
     /**
-     * @name handleJSONRequest
-     * @synopsis Handles when an TP.sig.JSONRequest is fired. Since this service
+     * @method handleJSONRequest
+     * @summary Handles when an TP.sig.JSONRequest is fired. Since this service
      *     will register itself as the default handler for these kinds of
      *     requests, the default instance of it will usually handle all of these
      *     kinds of requests.

@@ -314,8 +314,8 @@ TP.core.ElementNode.Type.defineMethod('isBoundElement',
 function(anElement, aDirection) {
 
     /**
-     * @name isBoundElement
-     * @synopsis Returns true if the element has a binding for the specified
+     * @method isBoundElement
+     * @summary Returns true if the element has a binding for the specified
      *     STDIO reference.
      * @param {Element} anElement A native element to test.
      * @param {Constant} aDirection TP.STDIN, TP.STDOUT, or TP.STDERR.
@@ -363,8 +363,8 @@ TP.core.ElementNode.Inst.defineMethod('isReadonly',
 function() {
 
     /**
-     * @name isReadonly
-     * @synopsis Returns true if the receiver is currently readonly, meaning
+     * @method isReadonly
+     * @summary Returns true if the receiver is currently readonly, meaning
      *     that it should reject efforts to change its value. Readonly state can
      *     be explicit due to the receiver's attributes or binding information,
      *     or it can be implicit if the receiver has a readonly ancestor.
@@ -404,8 +404,8 @@ TP.core.ElementNode.Inst.defineMethod('isBoundBidi',
 function() {
 
     /**
-     * @name isBoundBidi
-     * @synopsis Returns true if the receiver's bindings for input and output
+     * @method isBoundBidi
+     * @summary Returns true if the receiver's bindings for input and output
      *     were expressed as a single bidirectional binding. This has
      *     implications for setBoundOutput which tests current value when the
      *     bind is bidirection to avoid setting a value that's already been set.
@@ -421,8 +421,8 @@ TP.core.ElementNode.Inst.defineMethod('isBoundElement',
 function(aDirection) {
 
     /**
-     * @name isBoundElement
-     * @synopsis Returns true if the element has a binding for the specified
+     * @method isBoundElement
+     * @summary Returns true if the element has a binding for the specified
      *     STDIO reference.
      * @param {Constant} aDirection TP.STDIN, TP.STDOUT, or TP.STDERR.
      * @returns {Boolean} True if the receiver has a binding relative to the
@@ -438,9 +438,9 @@ TP.core.ElementNode.Inst.defineMethod('isScalarValued',
 function() {
 
     /**
-     * @name isScalarValued
-     * @synopsis Returns true if the receiver binds to scalar values.
-     * @description Most 'field-level' UI controls bind to scalar values, but
+     * @method isScalarValued
+     * @summary Returns true if the receiver binds to scalar values.
+     * @summary Most 'field-level' UI controls bind to scalar values, but
      *     action tags and certain more complex UI elements can bind to nodes or
      *     nodelists. When you combine isScalarValued() with isSingleValued()
      *     you get a fairly broad range of options for what a control wants to
@@ -457,8 +457,8 @@ TP.core.ElementNode.Inst.defineMethod('isSingleValued',
 function() {
 
     /**
-     * @name isSingleValued
-     * @synopsis Returns true if the receiver binds to single values.
+     * @method isSingleValued
+     * @summary Returns true if the receiver binds to single values.
      * @returns {Boolean} True when single valued.
      */
 
@@ -480,7 +480,7 @@ TP.core.ElementNode.Inst.defineMethod('$getBoundSTDIO',
 function(aDirection) {
 
     /**
-     * @name $getBoundSTDIO
+     * @method $getBoundSTDIO
      * @returns {Array} A triple containing a TP.core.URI, the bound script
      *     source, and a boolean which is true when the script represents a TSH
      *     pipe segment.
@@ -549,8 +549,8 @@ TP.core.ElementNode.Inst.defineMethod('$getBoundSTDIOScript',
 function(aDirection) {
 
     /**
-     * @name $getBoundSTDIOScript
-     * @synopsis Attempts to locate a TSH script which represents the pipe
+     * @method $getBoundSTDIOScript
+     * @summary Attempts to locate a TSH script which represents the pipe
      *     processing for aDirection (TP.STDIN, TP.STDOUT, TP.STDERR).
      * @param {Constant} aDirection TP.STDIN, TP.STDOUT, or TP.STDERR.
      * @returns {String} A string of TSH source which represents the pipe used
@@ -606,7 +606,7 @@ TP.core.ElementNode.Inst.defineMethod('$setBoundSTDIO',
 function(aDirection, aValue, shouldSignal) {
 
     /**
-     * @name $setBoundSTDIO
+     * @method $setBoundSTDIO
      * @param {Constant} aDirection TP.STDOUT or TP.STDERR.
      * @param {Object} aValue The value to set.
      * @param {Boolean} shouldSignal Should changes be notified. Defaults to the
@@ -667,9 +667,9 @@ TP.core.ElementNode.Inst.defineMethod('getBoundInput',
 function(aRequest) {
 
     /**
-     * @name getBoundInput
-     * @synopsis Returns the value of the receiver's bound input content.
-     * @description This method can return different results based on the nature
+     * @method getBoundInput
+     * @summary Returns the value of the receiver's bound input content.
+     * @summary This method can return different results based on the nature
      *     of both the receiver and the bound content. For example, controls
      *     that bind to scalars may request a scalar value whereas controls
      *     which bind to nodelists may simply return the nodelist as the value.
@@ -814,8 +814,8 @@ TP.core.ElementNode.Inst.defineMethod('$getBoundInputDefault',
 function() {
 
     /**
-     * @name $getBoundInputDefault
-     * @synopsis Returns the value this element considers to be an appropriate
+     * @method $getBoundInputDefault
+     * @summary Returns the value this element considers to be an appropriate
      *     default when a binding doesn't resolve to a non-null value. For
      *     non-UI nodes this is typically null.
      * @returns {Object} An appropriate default value. The type of this object
@@ -832,8 +832,8 @@ TP.core.ElementNode.Inst.defineMethod('handleBoundInputChange',
 function(aSignal) {
 
     /**
-     * @name handleBoundInputChange
-     * @synopsis Responds to notifications of change events affecting a bound
+     * @method handleBoundInputChange
+     * @summary Responds to notifications of change events affecting a bound
      *     value. This signal is thrown by data under the control of an
      *     xforms:instance (aka xctrls:instance).
      * @param {Change} aSignal The signal which triggered this handler.
@@ -853,8 +853,8 @@ TP.core.ElementNode.Inst.defineMethod('$hasObservedBoundInput',
 function(aFlag) {
 
     /**
-     * @name $hasObservedBoundInput
-     * @synopsis Combined setter/getter for the receiver's "has observed" flag.
+     * @method $hasObservedBoundInput
+     * @summary Combined setter/getter for the receiver's "has observed" flag.
      *     This is a private flag used to manage observation of the content
      *     which defines the receiver's bound value.
      * @param {Boolean} aFlag True to flag the receiver as having configured its
@@ -875,8 +875,8 @@ TP.core.ElementNode.Inst.defineMethod('$observeBoundInput',
 function(sourceURI, theContent) {
 
     /**
-     * @name $observeBoundInput
-     * @synopsis Sets up observations designed to ensure that the receiver will
+     * @method $observeBoundInput
+     * @summary Sets up observations designed to ensure that the receiver will
      *     be notified of any changes in the bound content which drives its
      *     value.
      * @param {TP.core.URI} sourceURI The URI whose content has been accessed.
@@ -942,13 +942,13 @@ TP.core.ElementNode.Inst.defineMethod('$reduceBoundInput',
 function(theContent, aRequest) {
 
     /**
-     * @name $reduceBoundInput
-     * @synopsis When the receiver isSingleValued this method will return a
+     * @method $reduceBoundInput
+     * @summary When the receiver isSingleValued this method will return a
      *     single object from a content result set (a nodelist or Array). The
      *     result set must be an ordered collection for this method to operate
      *     correctly. In all other cases the original content object is
      *     returned.
-     * @description The supplied request parameter can contain the following
+     * @summary The supplied request parameter can contain the following
      *     data:
      *
      *     repeatIndex Number An index for the current iteration of a repeat.
@@ -1008,8 +1008,8 @@ TP.core.ElementNode.Inst.defineMethod('setBoundOutput',
 function(aValue, shouldSignal) {
 
     /**
-     * @name setBoundOutput
-     * @synopsis Updates the receiver's bound output value to reflect aValue.
+     * @method setBoundOutput
+     * @summary Updates the receiver's bound output value to reflect aValue.
      *     This call is typically invoked by user interface controls whose
      *     values have been changed via user action. The value provided is
      *     almost always a string or array of strings coming from a common HTML
@@ -1059,7 +1059,7 @@ TP.core.ElementNode.Inst.defineMethod('setBoundError',
 function(anError) {
 
     /**
-     * @name setBoundError
+     * @method setBoundError
      * @param {Object} anError The value to set as the error resource's aspect
      *     value.
      * @returns {TP.core.ElementNode} The receiver.
@@ -1084,11 +1084,11 @@ TP.core.ElementNode.Inst.defineMethod('refresh',
 function(aSignal) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specifies a
      *     'deep' refresh then descendant elements are also updated.
-     * @description For bound elements there are really two "values", the
+     * @summary For bound elements there are really two "values", the
      *     element's internal value such as its text value (what we call its
      *     "display" value) and the element's bound value which is the value
      *     found by evaluating its binding aspect against its source. This
@@ -1143,8 +1143,8 @@ TP.core.ElementNode.Inst.defineMethod('$refreshBoundAspect',
 function(aSignal) {
 
     /**
-     * @name $refreshBoundAspect
-     * @synopsis Elements with bindings can have an optional bind:set aspect on
+     * @method $refreshBoundAspect
+     * @summary Elements with bindings can have an optional bind:set aspect on
      *     them which allows them to bind something other than their value
      *     aspect to a query result. This method handles refresh operations for
      *     standard elements, defaulting the aspect to value when no bind:set is
@@ -1177,11 +1177,11 @@ TP.core.ElementNode.Inst.defineMethod('$refreshBoundRoots',
 function(aSignal) {
 
     /**
-     * @name $refreshBoundRoots
-     * @synopsis Updates the receiver's bound descendant roots, but not the
+     * @method $refreshBoundRoots
+     * @summary Updates the receiver's bound descendant roots, but not the
      *     receiver itself. This method is normally called indirectly via
      *     refresh() when the refresh signal requested 'deep'.
-     * @description This method uses an iteration model that tries to locate
+     * @summary This method uses an iteration model that tries to locate
      *     only the "topmost" descendant along each branch so that the traversal
      *     works top-down to help populate content caches during the refresh,
      *     never tries to refresh the same node more than once, and doesn't miss
@@ -1222,8 +1222,8 @@ function(aSignal) {
 TP.core.ElementNode.$refreshElementEntered = function(anElement) {
 
     /**
-     * @name $refreshElementEntered
-     * @synopsis An "enter function" for TP.nodeBreadthTraversal used by the
+     * @method $refreshElementEntered
+     * @summary An "enter function" for TP.nodeBreadthTraversal used by the
      *     awakenElement() routine to awaken an individual element. The return
      *     value of this function is the return value from calling awaken()
      * @param {Element} anElement The element to awaken.
@@ -1253,8 +1253,8 @@ TP.core.ElementNode.Inst.defineMethod('$refreshBoundTargets',
 function(aSignal) {
 
     /**
-     * @name $refreshBoundTargets
-     * @synopsis Bindings which contain bind:target definitions can update those
+     * @method $refreshBoundTargets
+     * @summary Bindings which contain bind:target definitions can update those
      *     targets directly in response to this method. Standard elements simply
      *     return.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
@@ -1273,8 +1273,8 @@ TP.core.ElementNode.Inst.defineMethod('$clearValueCaches',
 function() {
 
     /**
-     * @name $clearValueCaches
-     * @synopsis Clears both local instance variables and any cache-related
+     * @method $clearValueCaches
+     * @summary Clears both local instance variables and any cache-related
      *     attributes on the receiver's native element. This helps the
      *     development process by making it easy to reset an element. You won't
      *     normally call this in application code.
@@ -1303,8 +1303,8 @@ TP.core.ElementNode.Inst.defineMethod('$clearCachedValue',
 function(cacheName) {
 
     /**
-     * @name $clearCachedValue
-     * @synopsis Clears any cache for the named slot provided.
+     * @method $clearCachedValue
+     * @summary Clears any cache for the named slot provided.
      * @param {String} cacheName The attribute/slot name to use.
      * @returns {TP.core.ElementNode} The receiver.
      */
@@ -1333,9 +1333,9 @@ TP.core.ElementNode.Inst.defineMethod('$getCachedValue',
 function(cacheName, isID, useGOBI) {
 
     /**
-     * @name $getCachedValue
-     * @synopsis Returns a cached value from the receiver if possible.
-     * @description Due to differences between XML and HTML nodes across
+     * @method $getCachedValue
+     * @summary Returns a cached value from the receiver if possible.
+     * @summary Due to differences between XML and HTML nodes across
      *     browsers some cached entries can be found directly on the node while
      *     others are found by locating an ID in an attribute and reacquiring
      *     the object by ID.
@@ -1415,8 +1415,8 @@ TP.core.ElementNode.Inst.defineMethod('$setCachedValue',
 function(cacheName, cacheValue, cacheID) {
 
     /**
-     * @name $setCachedValue
-     * @synopsis Stores a cached value with the receiver if possible. Due to
+     * @method $setCachedValue
+     * @summary Stores a cached value with the receiver if possible. Due to
      *     differences between XML and HTML nodes across browsers some cached
      *     entries can be stored directly on the node while others are stored by
      *     placing an ID in an attribute for later lookup.
@@ -1459,12 +1459,12 @@ TP.core.ElementNode.Inst.defineMethod('$createBindingCaches',
 function(aRequest) {
 
     /**
-     * @name $createBindingCaches
-     * @synopsis Populates all bind-related information related to the receiver
+     * @method $createBindingCaches
+     * @summary Populates all bind-related information related to the receiver
      *     in the various bind information cache locations.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
-     * @signals bind-binding-exception
+     * @fires bind-binding-exception
      */
 
     var val,
@@ -1980,8 +1980,8 @@ TP.core.UIElementNode.Inst.defineMethod('$getBoundInputDefault',
 function(aRequest) {
 
     /**
-     * @name $getBoundInputDefault
-     * @synopsis Returns the value this element considers to be a viable default
+     * @method $getBoundInputDefault
+     * @summary Returns the value this element considers to be a viable default
      *     when a binding doesn't resolve to a non-null value. This is typically
      *     the empty string so that text controls don't display undefined or
      *     some other inappropriate value.

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.textinput}
- * @synopsis Manages textinput XControls.
+ * @summary Manages textinput XControls.
  */
 
 //  ------------------------------------------------------------------------
@@ -47,7 +47,7 @@ TP.xctrls.textinput.Inst.defineMethod('blur',
 function() {
 
     /**
-     * @name blur
+     * @method blur
      * @returns {TP.xctrls.textinput} The receiver.
      * @abtract Blurs the receiver for keyboard input.
      */
@@ -68,8 +68,8 @@ TP.xctrls.textinput.Inst.defineMethod('focus',
 function(moveAction) {
 
     /**
-     * @name focus
-     * @synopsis Focuses the receiver for keyboard input.
+     * @method focus
+     * @summary Focuses the receiver for keyboard input.
      * @param {Constant} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *          TP.FIRST
@@ -101,8 +101,8 @@ TP.xctrls.textinput.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -121,8 +121,8 @@ TP.xctrls.textinput.Inst.defineMethod('setAttrDisabled',
 function(beDisabled) {
 
     /**
-     * @name setAttrDisabled
-     * @synopsis The setter for the receiver's disabled state.
+     * @method setAttrDisabled
+     * @summary The setter for the receiver's disabled state.
      * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
      *     state.
      * @returns {Boolean} Whether the receiver's state is disabled.
@@ -149,8 +149,8 @@ TP.xctrls.textinput.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure

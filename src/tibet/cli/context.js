@@ -74,7 +74,7 @@ Cmd.prototype.USAGE = 'tibet context';
 
 /**
  * Perform the actual command processing logic.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
     var context,

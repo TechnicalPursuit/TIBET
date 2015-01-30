@@ -26,8 +26,8 @@ TP.definePrimitive('httpAbort',
 function(httpObj) {
 
     /**
-     * @name httpAbort
-     * @synopsis Aborts an in-process XMLHttpRequest, clearing any handlers
+     * @method httpAbort
+     * @summary Aborts an in-process XMLHttpRequest, clearing any handlers
      *     which may be present.
      * @param {XMLHttpRequest} httpObj The native XMLHttpRequest to abort.
      * @returns {XMLHttpRequest} The aborted XHR object.
@@ -50,8 +50,8 @@ TP.definePrimitive('httpDelete',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpDelete
-     * @synopsis Attempts to delete the target URL via an HTTP DELETE. On
+     * @method httpDelete
+     * @summary Attempts to delete the target URL via an HTTP DELETE. On
      *     success the return value's status property will be TP.core.HTTP.OK.
      *     Note that no redirect processing is used in this call to avoid any
      *     potential confusion related to the true target unless you
@@ -60,7 +60,7 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI, HTTPException
+     * @exception TP.sig.InvalidURI, HTTPException
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -82,8 +82,8 @@ TP.definePrimitive('httpGet',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpGet
-     * @synopsis Gets the named resource via an HTTP GET call. You can pass
+     * @method httpGet
+     * @summary Gets the named resource via an HTTP GET call. You can pass
      *     parameters to the root url by using the query parameter of aRequest.
      *     The query is application/x-www-form-urlencoded and appended to the
      *     targetUrl. If no query is provided then the URI is assumed to be
@@ -94,7 +94,7 @@ function(targetUrl, aRequest) {
      *     URL, ready for the addition of any encoded data values.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI, HTTPException
+     * @exception TP.sig.InvalidURI, HTTPException
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */
@@ -134,13 +134,13 @@ TP.definePrimitive('httpHead',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpHead
-     * @synopsis Returns an XMLHttpRequest containing the result of a HEAD call
+     * @method httpHead
+     * @summary Returns an XMLHttpRequest containing the result of a HEAD call
      *     with the specified URL.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */
@@ -154,14 +154,14 @@ TP.definePrimitive('httpOptions',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpOptions
-     * @synopsis Makes an OPTIONS request of the URL provided. The 'Allow'
+     * @method httpOptions
+     * @summary Makes an OPTIONS request of the URL provided. The 'Allow'
      *     header from the response, available via getResponseHeader, provides
      *     the option list.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */
@@ -175,13 +175,13 @@ TP.definePrimitive('httpPost',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpPost
-     * @synopsis Sends the data contained in the 'body' parameter of the request
+     * @method httpPost
+     * @summary Sends the data contained in the 'body' parameter of the request
      *     to the targetUrl using an HTTP POST.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */
@@ -195,13 +195,13 @@ TP.definePrimitive('httpPut',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpPut
-     * @synopsis Sends the data contained in the 'body' parameter of the request
+     * @method httpPut
+     * @summary Sends the data contained in the 'body' parameter of the request
      *     to the targetUrl using an HTTP PUT.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */
@@ -215,14 +215,14 @@ TP.definePrimitive('httpTrace',
 function(targetUrl, aRequest) {
 
     /**
-     * @name httpTrace
-     * @synopsis Returns an XMLHttpRequest object containing TRACE results for
+     * @method httpTrace
+     * @summary Returns an XMLHttpRequest object containing TRACE results for
      *     the specified URL. Response headers and resultText of that object
      *     will contain the requested data.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */
@@ -236,8 +236,8 @@ TP.definePrimitive('$httpQuery',
 function(httpVerb, targetUrl, aRequest) {
 
     /**
-     * @name $httpQuery
-     * @synopsis Returns an XMLHttpRequest containing the result of an HTTP
+     * @method $httpQuery
+     * @summary Returns an XMLHttpRequest containing the result of an HTTP
      *     "query", meaning a non-state-changing request, with the specified
      *     verb, URL, and associated parameters. This routine is the common
      *     handler for GET, HEAD, OPTIONS, and TRACE. You can pass parameters to
@@ -249,7 +249,7 @@ function(httpVerb, targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */
@@ -290,15 +290,15 @@ TP.definePrimitive('$httpSend',
 function(httpVerb, targetUrl, aRequest) {
 
     /**
-     * @name $httpSend
-     * @synopsis Sends the data contained in the 'body' parameter of the request
+     * @method $httpSend
+     * @summary Sends the data contained in the 'body' parameter of the request
      *     to the targetUrl using the command verb provided (normally
      *     TP.HTTP_POST or TP.HTTP_PUT).
      * @param {String} httpVerb TP.HTTP_POST, TP.HTTP_PUT, etc.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */

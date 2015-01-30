@@ -899,8 +899,8 @@ TP.sys.defineMethod('getNativeTypes',
 function() {
 
     /**
-     * @name getNativeTypes
-     * @synopsis Returns an object containing the names and type objects for all
+     * @method getNativeTypes
+     * @summary Returns an object containing the names and type objects for all
      *     native types. These types are those which are defined at some level
      *     in JavaScript or the DOM.
      * @returns {Object} A hash containing all of the native types in the
@@ -979,8 +979,8 @@ TP.definePrimitive('htmlEntitiesToLiterals',
 function(aString) {
 
     /**
-     * @name htmlEntitiesToLiterals
-     * @synopsis Converts HTML entities into their literal character
+     * @method htmlEntitiesToLiterals
+     * @summary Converts HTML entities into their literal character
      *     representation.
      * @param {String} aString The string that may contain HTML entities to be
      *     converted.
@@ -1010,8 +1010,8 @@ TP.definePrimitive('htmlLiteralsToEntities',
 function(aString, replaceSpaces) {
 
     /**
-     * @name htmlLiteralsToEntities
-     * @synopsis Converts literal characters in the supplied String to their
+     * @method htmlLiteralsToEntities
+     * @summary Converts literal characters in the supplied String to their
      *     HTML entity equivalent. Spaces, when replaced, become &nbsp;
      * @param {String} aString The string that may contain literal characters to
      *     convert to HTML entities.
@@ -1077,8 +1077,8 @@ TP.definePrimitive('xmlEntitiesToLiterals',
 function(aString) {
 
     /**
-     * @name xmlEntitiesToLiterals
-     * @synopsis Converts XML entities into their literal character
+     * @method xmlEntitiesToLiterals
+     * @summary Converts XML entities into their literal character
      *     representation.
      * @param {String} aString The string that may contain XML entities to be
      *     converted.
@@ -1108,8 +1108,8 @@ TP.definePrimitive('xmlLiteralsToEntities',
 function(aString, replaceSpaces) {
 
     /**
-     * @name xmlLiteralsToEntities
-     * @synopsis Converts literal characters in the supplied String to their XML
+     * @method xmlLiteralsToEntities
+     * @summary Converts literal characters in the supplied String to their XML
      *     entities.
      * @param {String} aString The string that may contain literal characters to
      *     convert to XML entities.
@@ -1175,8 +1175,8 @@ TP.definePrimitive('htmlEntitiesToXmlEntities',
 function(aString) {
 
     /**
-     * @name htmlEntitiesToXmlEntities
-     * @synopsis Converts an HTML string to an XML equivalent. This attempts to
+     * @method htmlEntitiesToXmlEntities
+     * @summary Converts an HTML string to an XML equivalent. This attempts to
      *     preserve entities that exist in the HTML in the XML.
      * @param {String} aString The string that may contain HTML entities.
      * @returns {String} The supplied String with the HTML entities converted to
@@ -1205,8 +1205,8 @@ TP.definePrimitive('xmlEntitiesToHtmlEntities',
 function(aString) {
 
     /**
-     * @name xmlEntitiesToHtmlEntities
-     * @synopsis Converts an XML string to an HTML equivalent. This attempts to
+     * @method xmlEntitiesToHtmlEntities
+     * @summary Converts an XML string to an HTML equivalent. This attempts to
      *     preserve entities that exist in the XML in the HTML.
      * @param {String} aString The string that may contain XML entities.
      * @returns {String} The supplied String with the XML entities converted to
@@ -1235,8 +1235,8 @@ TP.definePrimitive('regExpEscape',
 function(aString) {
 
     /**
-     * @name regExpEscape
-     * @synopsis Escapes any RegExp metacharacters contained in the supplied
+     * @method regExpEscape
+     * @summary Escapes any RegExp metacharacters contained in the supplied
      *     String.
      * @param {String} aString The string that contains the regexp.
      * @returns {String} The regexp string with all RegExp metacharacters
@@ -1254,8 +1254,8 @@ TP.definePrimitive('regExpConstruct',
 function(aList, aPrefix, aSuffix) {
 
     /**
-     * @name regExpConstruct
-     * @synopsis Construct a RegExp using the prefix, an alternation built from
+     * @method regExpConstruct
+     * @summary Construct a RegExp using the prefix, an alternation built from
      *     the list and the suffix.
      * @param {Array} aList An Array of items that will be built up into an
      *     alternation.
@@ -1281,8 +1281,8 @@ TP.definePrimitive('getNextWindowName',
 function() {
 
     /**
-     * @name getNextWindowName
-     * @synopsis Returns a generated window name of the form window_N where N is
+     * @method getNextWindowName
+     * @summary Returns a generated window name of the form window_N where N is
      *     a unique number based on the TP.sys.$$windowCount.
      * @returns {String} The next available window name.
      */
@@ -1299,8 +1299,8 @@ TP.definePrimitive('escapeTypeName',
 function(aString) {
 
     /**
-     * @name escapeTypeName
-     * @synopsis Escapes the supplied type name so that it can be used as a
+     * @method escapeTypeName
+     * @summary Escapes the supplied type name so that it can be used as a
      *     signal name, etc. This method turns all periods ('.') into
      *     underscores ('_').
      * @param {String} aString The string that contains the type name.
@@ -1320,8 +1320,8 @@ TP.definePrimitive('escapeMethodName',
 function(aString) {
 
     /**
-     * @name escapeMethodName
-     * @synopsis Escapes the supplied method name so that it can be used as a
+     * @method escapeMethodName
+     * @summary Escapes the supplied method name so that it can be used as a
      *     method name, etc. This method turns all spaces (' ') into
      *     underscores ('_').
      * @param {String} aString The string that contains the method name.
@@ -1341,8 +1341,8 @@ TP.definePrimitive('unescapeMethodName',
 function(aString) {
 
     /**
-     * @name unescapeMethodName
-     * @synopsis Unescapes the supplied escaped method name so that it can be
+     * @method unescapeMethodName
+     * @summary Unescapes the supplied escaped method name so that it can be
      *     used as a method name. This method turns all underscores ('_') into
      *     spaces ('_').
      * @param {String} aString The string that contains the escaped method name.
@@ -1362,8 +1362,8 @@ TP.definePrimitive('unescapeTypeName',
 function(aString) {
 
     /**
-     * @name unescapeTypeName
-     * @synopsis Unescapes the supplied escaped type name so that it can be used
+     * @method unescapeTypeName
+     * @summary Unescapes the supplied escaped type name so that it can be used
      *     as a type name. This method turns all underscores ('_') into periods
      *     ('.').
      * @param {String} aString The string that contains the escaped type name.
@@ -1383,9 +1383,9 @@ TP.definePrimitive('expandSignalName',
 function(signame) {
 
     /**
-     * @name expandSignalName
-     * @synopsis Produces the 'long form' of the supplied signal name.
-     * @description Given a signal name of 'fooSignal', this method will produce
+     * @method expandSignalName
+     * @summary Produces the 'long form' of the supplied signal name.
+     * @summary Given a signal name of 'fooSignal', this method will produce
      *     'TP.sig.fooSignal'. If the signal name already has a period ('.'),
      *     this method will just prepend 'TP.'.
      * @param {String} signame The signal name.
@@ -1430,9 +1430,9 @@ TP.definePrimitive('contractSignalName',
 function(signame) {
 
     /**
-     * @name contractSignalName
-     * @synopsis Produces the 'short form' of the supplied signal name.
-     * @description Given a signal name of 'TP.sig.fooSignal', this method will
+     * @method contractSignalName
+     * @summary Produces the 'short form' of the supplied signal name.
+     * @summary Given a signal name of 'TP.sig.fooSignal', this method will
      *     produce 'fooSignal'.
      * @param {String} signame The signal name.
      * @returns {String} The shortened signal name.
@@ -1474,8 +1474,8 @@ TP.definePrimitive('eventAsHTMLString',
 function(eventObj) {
 
     /**
-     * @name eventAsHTMLString
-     * @synopsis Returns an HTML String representation of the supplied event
+     * @method eventAsHTMLString
+     * @summary Returns an HTML String representation of the supplied event
      *     object.
      * @param {event} eventObj The event object to produce the HTML String
      *     representation of.
@@ -1517,8 +1517,8 @@ TP.definePrimitive('eventAsJSONSource',
 function(eventObj) {
 
     /**
-     * @name eventAsJSONSource
-     * @synopsis Returns a JSON String representation of the supplied event
+     * @method eventAsJSONSource
+     * @summary Returns a JSON String representation of the supplied event
      *     object.
      * @param {event} eventObj The event object to produce the JSON String
      *     representation of.
@@ -1562,8 +1562,8 @@ TP.definePrimitive('eventAsPrettyString',
 function(eventObj) {
 
     /**
-     * @name eventAsPrettyString
-     * @synopsis Returns a 'pretty print' representation of the supplied event
+     * @method eventAsPrettyString
+     * @summary Returns a 'pretty print' representation of the supplied event
      *     object.
      * @param {event} eventObj The event object to produce the pretty print
      *     representation of.
@@ -1606,8 +1606,8 @@ TP.definePrimitive('eventAsSource',
 function(eventObj) {
 
     /**
-     * @name eventAsSource
-     * @synopsis Returns a TIBET source string representation of the supplied
+     * @method eventAsSource
+     * @summary Returns a TIBET source string representation of the supplied
      *     event object.
      * @param {event} eventObj The event object to produce the TIBET source
      *     representation of.
@@ -1660,8 +1660,8 @@ TP.definePrimitive('eventAsString',
 function(eventObj) {
 
     /**
-     * @name eventAsString
-     * @synopsis Returns a String representation of the supplied event
+     * @method eventAsString
+     * @summary Returns a String representation of the supplied event
      *     object.
      * @param {event} eventObj The event object to produce the String
      *     representation of.
@@ -1703,8 +1703,8 @@ TP.definePrimitive('eventAsXMLString',
 function(eventObj) {
 
     /**
-     * @name eventAsXMLString
-     * @synopsis Returns an XML String representation of the supplied event
+     * @method eventAsXMLString
+     * @summary Returns an XML String representation of the supplied event
      *     object.
      * @param {event} eventObj The event object to produce the XML String
      *     representation of.
@@ -1753,8 +1753,8 @@ TP.definePrimitive('objectGlobalID',
 function(anObject, assignIfAbsent) {
 
     /**
-     * @name objectGlobalID
-     * @synopsis Returns the global ID of the object, an identifier that
+     * @method objectGlobalID
+     * @summary Returns the global ID of the object, an identifier that
      *     uniquely identifies the element within a particular TIBET
      *     environment. Most objects can be found via their global ID however
      *     certain scenarios are not handled automatically including Node
@@ -1765,7 +1765,7 @@ function(anObject, assignIfAbsent) {
      *     memory leaks. NOTE that return values from this function are encoded
      *     via encodeURI since they are typically TIBET URI strings. Also note
      *     that the TP.gid() function is aliased to this call.
-     * @description The return value of this function may vary between what
+     * @summary The return value of this function may vary between what
      *     looks like typical TIBET ID, a window path, or a TIBET URI. The
      *     reason for the variation has to do with trying to keep the IDs as
      *     simple as possible while keeping them unique enough to use with
@@ -2114,12 +2114,12 @@ TP.definePrimitive('objectLocalID',
 function(anObject, assignIfAbsent) {
 
     /**
-     * @name objectLocalID
-     * @synopsis Returns the local ID of the object provided. This method is
+     * @method objectLocalID
+     * @summary Returns the local ID of the object provided. This method is
      *     normally used on nodes as a way of getting an ID that is local to the
      *     node's enclosing document. NOTE that the TP.lid() function is aliased
      *     to this function as a 'shorthand'.
-     * @description It's often necessary to get a handle to an object by ID. In
+     * @summary It's often necessary to get a handle to an object by ID. In
      *     a typical environment this would be done via the native
      *     document.getElementById() call. Unfortunately, that call won't work
      *     on XML DOMs cross-browser so in TIBET you'd normally use
@@ -2409,8 +2409,8 @@ TP.definePrimitive('objectID',
 function(anObject, assignIfAbsent) {
 
     /**
-     * @name objectID
-     * @synopsis Returns the ID of anObject, the value considered to be the
+     * @method objectID
+     * @summary Returns the ID of anObject, the value considered to be the
      *     object's unique identifier. NOTE that the TP.id() function is aliased
      *     to this function as a 'shorthand'.
      * @param {Object} anObject The object to interrogate.
@@ -2497,8 +2497,8 @@ TP.definePrimitive('objectName',
 function(anObject) {
 
     /**
-     * @name objectName
-     * @synopsis Returns the name of the receiver, most often associated with
+     * @method objectName
+     * @summary Returns the name of the receiver, most often associated with
      *     types, functions, or node "tag names". When dealing with tag names
      *     this method returns the canonical name of the tag. When all else
      *     fails this method will return the local ID of the object. NOTE that
@@ -2577,8 +2577,8 @@ TP.definePrimitive('elemGenID',
 function(anElement, assignIfAbsent) {
 
     /**
-     * @name elemGenID
-     * @synopsis Generates a unique ID (if the element doesn't already have one)
+     * @method elemGenID
+     * @summary Generates a unique ID (if the element doesn't already have one)
      *     that is compliant with XML ID rules.
      * @param {TP.core.ElementNode|Element} anElement An Element or element
      *     wrapper.
@@ -2614,8 +2614,8 @@ TP.definePrimitive('nsuri',
 function(anObject) {
 
     /**
-     * @name nsuri
-     * @synopsis Returns the namespace URI of the object, if it has one. This is
+     * @method nsuri
+     * @summary Returns the namespace URI of the object, if it has one. This is
      *     only relevant for nodes. The search includes both the namespaceURI
      *     property and a search for an xmlns attribute.
      * @param {TP.core.Node|Node} anObject A Node or node wrapper.
@@ -2640,8 +2640,8 @@ TP.definePrimitive('objectCopy',
 function(anObject, shallow) {
 
     /**
-     * @name objectCopy
-     * @synopsis Returns a copy of the object provided. When the object is a
+     * @method objectCopy
+     * @summary Returns a copy of the object provided. When the object is a
      *     Node the copy is deep unless overridden by the shallow flag. When the
      *     object is a standard JS object the clone is shallow. NOTE that window
      *     objects cannot be copied, nor can various ActiveX elements so not all
@@ -2693,8 +2693,8 @@ TP.definePrimitive('format',
 function(anObject, aFormat, formatParams) {
 
     /**
-     * @name format
-     * @synopsis Formats an object using the format provided. The process here
+     * @method format
+     * @summary Formats an object using the format provided. The process here
      *     tries to leverage TIBET's object layer to produce the best possible
      *     formatted output based on the combination of object and format.
      * @param {Object} anObject The object to format.
@@ -2757,11 +2757,11 @@ TP.definePrimitive('objectHTMLNode',
 function(anObject, aDocument) {
 
     /**
-     * @name objectHTMLNode
-     * @synopsis Returns an HTML node representation of the receiver. NOTE that
+     * @method objectHTMLNode
+     * @summary Returns an HTML node representation of the receiver. NOTE that
      *     the TP.htmlnode() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an HTML-compatible node. For objects which can't
      *     provide their own asHTMLNode() implementations this method typically
@@ -2847,11 +2847,11 @@ TP.definePrimitive('objectHTMLString',
 function(anObject) {
 
     /**
-     * @name objectHTMLString
-     * @synopsis Returns an HTML string representation of the receiver. NOTE
+     * @method objectHTMLString
+     * @summary Returns an HTML string representation of the receiver. NOTE
      *     that the TP.htmlstr() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an HTML-compatible string. For objects which can't
      *     provide their own asHTMLString implementations this method typically
@@ -3024,11 +3024,11 @@ TP.definePrimitive('objectJSONString',
 function(anObject) {
 
     /**
-     * @name objectJSONString
-     * @synopsis Returns a best-possible JSON representation of the object. NOTE
+     * @method objectJSONString
+     * @summary Returns a best-possible JSON representation of the object. NOTE
      *     that the TP.json() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need a JSON string.
      * @param {Object} anObject The object to return the JSON for.
@@ -3189,9 +3189,9 @@ TP.definePrimitive('objectKeys',
 function(anObject) {
 
     /**
-     * @name objectKeys
-     * @synopsis Returns the keys of the object.
-     * @description This function is used to avoid type checking an object or
+     * @method objectKeys
+     * @summary Returns the keys of the object.
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need the object's keys.
      * @param {Object} anObject The object to return the keys for.
@@ -3236,8 +3236,8 @@ TP.definePrimitive('objectLocation',
 function(anObject) {
 
     /**
-     * @name objectLocation
-     * @synopsis Returns the location represented by the receiver. The typical
+     * @method objectLocation
+     * @summary Returns the location represented by the receiver. The typical
      *     usage is in methods that might accept either a string or a
      *     TP.core.URI which need a common way to ask for the location. When the
      *     object is neither a TP.core.URI instance or a String the return value
@@ -3275,8 +3275,8 @@ TP.definePrimitive('parse',
 function(aType, aString, aLocale) {
 
     /**
-     * @name parse
-     * @synopsis Attempts to produce an instance of aType by parsing the string
+     * @method parse
+     * @summary Attempts to produce an instance of aType by parsing the string
      *     provided.
      * @param {TP.FunctionProto|TP.lang.RootObject} aType A specific target type
      *     to produce.
@@ -3315,8 +3315,8 @@ TP.definePrimitive('process',
 function(anObject, aRequest) {
 
     /**
-     * @name process
-     * @synopsis Attempts to process a request using the object as a "service".
+     * @method process
+     * @summary Attempts to process a request using the object as a "service".
      *     If the object can't respond to a process request then its value
      *     (TP.val()) is used as the result of processing.
      * @param {Object} anObject The object to process.
@@ -3352,8 +3352,8 @@ TP.definePrimitive('processAndExecuteWith',
 function(anObject, aRequest, stdinContent) {
 
     /**
-     * @name processAndExecuteWith
-     * @synopsis Attempts to process and execute a request using the object as a
+     * @method processAndExecuteWith
+     * @summary Attempts to process and execute a request using the object as a
      *     "service". If the object can't respond to a process request then its
      *     value (TP.val()) is used as the result of processing.
      * @param {Object} anObject The object to process and execute.
@@ -3393,8 +3393,8 @@ TP.definePrimitive('objectSize',
 function(anObject) {
 
     /**
-     * @name objectSize
-     * @synopsis Returns the best size for the object, or TP.NO_SIZE if the
+     * @method objectSize
+     * @summary Returns the best size for the object, or TP.NO_SIZE if the
      *     object doens't appear to have a size.
      * @param {Object} anObject The object to query for size.
      * @returns {Number} The size, or TP.NO_SIZE if no size is found.
@@ -3425,11 +3425,11 @@ TP.definePrimitive('objectSourceValue',
 function(anObject) {
 
     /**
-     * @name objectSourceValue
-     * @synopsis Returns a JavaScript source representation of the object. NOTE
+     * @method objectSourceValue
+     * @summary Returns a JavaScript source representation of the object. NOTE
      *     that the TP.src() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need a source rep of the return value.
      * @param {Object} anObject The object to return the representational String
@@ -3547,11 +3547,11 @@ TP.definePrimitive('objectStringValue',
 function(anObject, verbose) {
 
     /**
-     * @name objectStringValue
-     * @synopsis Returns a best-possible string representation of the object.
+     * @method objectStringValue
+     * @summary Returns a best-possible string representation of the object.
      *     NOTE that the TP.str() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need a string rep of the return value. This method will
      *     attempt to get the best possible string by using asString and then
@@ -3749,8 +3749,8 @@ TP.definePrimitive('objectValue',
 function(anObject, anAspect, autoCollapse) {
 
     /**
-     * @name objectValue
-     * @synopsis Returns anObject's value for anAspect, where the aspect
+     * @method objectValue
+     * @summary Returns anObject's value for anAspect, where the aspect
      *     defaults to 'value'. This method will attempt to use various TIBET
      *     methods such as get(), at(), etc. to get the best result. NOTE that
      *     the TP.val() function is aliased to this function as a 'shorthand'.
@@ -3865,11 +3865,11 @@ TP.definePrimitive('objectXHTMLNode',
 function(anObject, aDocument) {
 
     /**
-     * @name objectXHTMLNode
-     * @synopsis Returns an XHTML node representation of the supplied object.
+     * @method objectXHTMLNode
+     * @summary Returns an XHTML node representation of the supplied object.
      *     NOTE that the TP.xhtmlnode() function is aliased to this function as
      *     a 'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XHTML-compatible node.
      * @param {Object} anObject The object to format as XHTML.
@@ -3925,11 +3925,11 @@ TP.definePrimitive('objectXHTMLString',
 function(anObject) {
 
     /**
-     * @name objectXHTMLString
-     * @synopsis Returns an XHTML string representation of the supplied object.
+     * @method objectXHTMLString
+     * @summary Returns an XHTML string representation of the supplied object.
      *     NOTE that the TP.xhtmlstr() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XHTML-compatible string. For objects which can't
      *     provide their own asXHTMLString implementations this method typically
@@ -3974,11 +3974,11 @@ TP.definePrimitive('objectXMLNode',
 function(anObject, aDocument) {
 
     /**
-     * @name objectXMLNode
-     * @synopsis Returns an XML node representation of the supplied object.
+     * @method objectXMLNode
+     * @summary Returns an XML node representation of the supplied object.
      *     NOTE that the TP.xmlnode() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XML-compatible node.
      * @param {Object} anObject The object to format as XML.
@@ -4027,11 +4027,11 @@ TP.definePrimitive('objectXMLString',
 function(anObject) {
 
     /**
-     * @name objectXMLString
-     * @synopsis Returns an XML string representation of the supplied object.
+     * @method objectXMLString
+     * @summary Returns an XML string representation of the supplied object.
      *     NOTE that the TP.xmlstr() function is aliased to this function as a
      *     'shorthand'.
-     * @description This function is used to avoid type checking an object or
+     * @summary This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XML-compatible string. For objects which can't
      *     provide their own asXHTMLString implementations this method typically
@@ -4177,8 +4177,8 @@ TP.definePrimitive('windowAsHTMLString',
 function(windowObj) {
 
     /**
-     * @name windowAsHTMLString
-     * @synopsis Returns an HTML String representation of the supplied Window
+     * @method windowAsHTMLString
+     * @summary Returns an HTML String representation of the supplied Window
      *     object.
      * @param {Window} windowObj The window object to produce the HTML String
      *     representation of.
@@ -4219,8 +4219,8 @@ TP.definePrimitive('windowAsJSONSource',
 function(windowObj) {
 
     /**
-     * @name windowAsJSONSource
-     * @synopsis Returns a JSON String representation of the supplied Window
+     * @method windowAsJSONSource
+     * @summary Returns a JSON String representation of the supplied Window
      *     object.
      * @param {Window} windowObj The window object to produce the JSON String
      *     representation of.
@@ -4268,8 +4268,8 @@ TP.definePrimitive('windowAsPrettyString',
 function(windowObj) {
 
     /**
-     * @name windowAsPrettyString
-     * @synopsis Returns a 'pretty print' representation of the supplied Window
+     * @method windowAsPrettyString
+     * @summary Returns a 'pretty print' representation of the supplied Window
      *     object.
      * @param {Window} windowObj The window object to produce the pretty print
      *     representation of.
@@ -4315,8 +4315,8 @@ TP.definePrimitive('windowAsString',
 function(windowObj) {
 
     /**
-     * @name windowAsString
-     * @synopsis Returns a String representation of the supplied Window
+     * @method windowAsString
+     * @summary Returns a String representation of the supplied Window
      *     object.
      * @param {Window} windowObj The window object to produce the String
      *     representation of.
@@ -4355,8 +4355,8 @@ TP.definePrimitive('windowAsXMLString',
 function(windowObj) {
 
     /**
-     * @name windowAsXMLString
-     * @synopsis Returns an XML String representation of the supplied Window
+     * @method windowAsXMLString
+     * @summary Returns an XML String representation of the supplied Window
      *     object.
      * @param {Window} windowObj The window object to produce the XML String
      *     representation of.
@@ -4399,12 +4399,12 @@ TP.definePrimitive('objectType',
 function(anObject) {
 
     /**
-     * @name objectType
-     * @synopsis Returns the type object for the object provided. NOTE that this
+     * @method objectType
+     * @summary Returns the type object for the object provided. NOTE that this
      *     is not the same as the value returned by the native typeof keyword,
      *     which is the type name. NOTE that the TP.type() function is aliased
      *     to this function as a 'shorthand'.
-     * @description While we prefer polymorphic messaging to type checking it's
+     * @summary While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the Type object responsible for the object provided. If you want
      *     the type name use TP.objectTypeName instead. Note that the value
@@ -4458,8 +4458,8 @@ TP.definePrimitive('objectSuperType',
 function(anObject) {
 
     /**
-     * @name objectSuperType
-     * @synopsis Returns the supertype object for the object provided.
+     * @method objectSuperType
+     * @summary Returns the supertype object for the object provided.
      * @param {Object} anObject The object to return the supertype for.
      * @returns {Object} The supertype of the supplied object.
      */
@@ -4493,12 +4493,12 @@ TP.definePrimitive('objectTypeName',
 function(anObject) {
 
     /**
-     * @name objectTypeName
-     * @synopsis Returns the type name for the object provided. NOTE that this
+     * @method objectTypeName
+     * @summary Returns the type name for the object provided. NOTE that this
      *     is not the same as the value returned by the native typeof keyword,
      *     which is often inadequately detailed and/or simply wrong. NOTE that
      *     the TP.tname() function is aliased to this function as a 'shorthand'.
-     * @description While we prefer polymorphic messaging to type checking it's
+     * @summary While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the Type name of the object provided. If you want the type object
      *     use TP.objectType instead. Note that the value returned by these
@@ -4567,11 +4567,11 @@ TP.definePrimitive('objectSupertypes',
 function(anObject) {
 
     /**
-     * @name objectSupertypes
-     * @synopsis Returns an Array of 'supertype' for the object provided.
+     * @method objectSupertypes
+     * @summary Returns an Array of 'supertype' for the object provided.
      *     NOTE that the TP.stnames() function is aliased to this function as a
      *     'shorthand'.
-     * @description While we prefer polymorphic messaging to type checking it's
+     * @summary While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the list of supertypes of the object provided. Note that the
      *     values returned by these functions is based on the TIBET concept of
@@ -4691,11 +4691,11 @@ TP.definePrimitive('objectSupertypeNames',
 function(anObject) {
 
     /**
-     * @name objectSupertypeNames
-     * @synopsis Returns an Array of 'supertype' names for the object provided.
+     * @method objectSupertypeNames
+     * @summary Returns an Array of 'supertype' names for the object provided.
      *     NOTE that the TP.stnames() function is aliased to this function as a
      *     'shorthand'.
-     * @description While we prefer polymorphic messaging to type checking it's
+     * @summary While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the list of supertype names of the object provided. Note that the
      *     values returned by these functions is based on the TIBET concept of
@@ -4729,8 +4729,8 @@ TP.definePrimitive('objectSetValue',
 function(anObject, anAspect, aValue) {
 
     /**
-     * @name objectSetValue
-     * @synopsis Sets the value for anAspect using set(), atPut(), or a direct
+     * @method objectSetValue
+     * @summary Sets the value for anAspect using set(), atPut(), or a direct
      *     slot access in that order.
      * @param {Object} anObject The object to update.
      * @param {String} anAspect The aspect whose value to alter. Default is
@@ -4816,8 +4816,8 @@ TP.definePrimitive('validate',
 function(anObject, aType) {
 
     /**
-     * @name validate
-     * @synopsis Validates anObject with respect to the constraints defined by
+     * @method validate
+     * @summary Validates anObject with respect to the constraints defined by
      *     aType. This method will attempt to use the object's isa() method if
      *     possible and, failing that, will try to use the type's validate()
      *     method. When no means can be found to be sure that the validation
@@ -4870,8 +4870,8 @@ TP.definePrimitive('objectUnwrap',
 function(anObject) {
 
     /**
-     * @name objectUnwrap
-     * @synopsis Returns the native object equivalent (or content) of the
+     * @method objectUnwrap
+     * @summary Returns the native object equivalent (or content) of the
      *     receiver. This is a way of "unboxing" TIBET wrappers in a consistent
      *     fashion regardless of their type. NOTE that the TP.unwrap() function
      *     is aliased to this function as a 'shorthand'.
@@ -4970,8 +4970,8 @@ TP.definePrimitive('objectWrap',
 function(anObject) {
 
     /**
-     * @name objectWrap
-     * @synopsis Wraps the object in a suitable TIBET encapsulation type. Most
+     * @method objectWrap
+     * @summary Wraps the object in a suitable TIBET encapsulation type. Most
      *     objects don't require this and simply pass through, however Node and
      *     Window instances will be wrapped in TP.core.Node or TP.core.Window
      *     wrappers as appropriate. NOTE that passing an array or, more
@@ -5082,8 +5082,8 @@ TP.definePrimitive('collapse',
 function(anObject) {
 
     /**
-     * @name collapse
-     * @synopsis If the supplied object is a Collection, this function
+     * @method collapse
+     * @summary If the supplied object is a Collection, this function
      *     'collapses' it by returning the first item. Otherwise the object
      *     itself is returned.
      * @param {Object} anObject The object to collapse.
@@ -5118,8 +5118,8 @@ TP.definePrimitive('getPathType',
 function(aPath) {
 
     /**
-     * @name getPathType
-     * @synopsis Obtains the 'path type' of the supplied path. This allows TIBET
+     * @method getPathType
+     * @summary Obtains the 'path type' of the supplied path. This allows TIBET
      *     to distinguish between different query languages.
      * @param {String} aPath The path to obtain the type of.
      * @returns {String} One of the 'path type' constants:
@@ -5233,9 +5233,9 @@ TP.definePrimitive('getPointerScheme',
 function(aPath) {
 
     /**
-     * @name getPointerScheme
-     * @synopsis Returns the 'pointer scheme' given a path.
-     * @description Depending on the type of path supplied, this method will
+     * @method getPointerScheme
+     * @summary Returns the 'pointer scheme' given a path.
+     * @summary Depending on the type of path supplied, this method will
      *     return the proper 'scheme' to be used in an XPointer. These are the
      *     current return values:
      *
@@ -5290,8 +5290,8 @@ TP.definePrimitive('prefixAssignmentStatements',
 function(prefixStr, aScriptStr) {
 
     /**
-     * @name prefixAssignmentStatements
-     * @synopsis Prefixes assignment statements ('x = 2') in aScriptStr with the
+     * @method prefixAssignmentStatements
+     * @summary Prefixes assignment statements ('x = 2') in aScriptStr with the
      *     prefix supplied in prefixStr.
      * @param {String} prefixStr The String to prefix onto assignment statements
      *     within the script String.
@@ -5313,8 +5313,8 @@ function(prefixStr, aScriptStr) {
 TP.boot.$configurePluginEnvironment = function() {
 
     /**
-     * @name $configurePluginEnvironment
-     * @synopsis Populates the TIBET environment metadata with information about
+     * @method $configurePluginEnvironment
+     * @summary Populates the TIBET environment metadata with information about
      *     all of the known plugins, whether they are installed or not and, if
      *     so, their version number.
      */

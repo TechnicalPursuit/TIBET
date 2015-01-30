@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.abbr}
- * @synopsis 'abbr' tag. Abbreviation.
+ * @summary 'abbr' tag. Abbreviation.
  */
 
 //  ------------------------------------------------------------------------
@@ -27,7 +27,7 @@ TP.html.Attrs.defineSubtype('abbr');
 
 /**
  * @type {TP.html.acronym}
- * @synopsis 'acronym' tag. Acronym.
+ * @summary 'acronym' tag. Acronym.
  */
 
 //  ------------------------------------------------------------------------
@@ -40,7 +40,7 @@ TP.html.Attrs.defineSubtype('acronym');
 
 /**
  * @type {TP.html.address}
- * @synopsis 'address' tag. Address information.
+ * @summary 'address' tag. Address information.
  */
 
 //  ------------------------------------------------------------------------
@@ -53,7 +53,7 @@ TP.html.Attrs.defineSubtype('address');
 
 /**
  * @type {TP.html.blockquote}
- * @synopsis 'blockquote' tag. Inline quotation.
+ * @summary 'blockquote' tag. Inline quotation.
  */
 
 //  ------------------------------------------------------------------------
@@ -68,7 +68,7 @@ TP.html.blockquote.Type.set('uriAttrs', TP.ac('cite'));
 
 /**
  * @type {TP.html.br}
- * @synopsis 'br' tag. Paragraph break.
+ * @summary 'br' tag. Paragraph break.
  */
 
 //  ------------------------------------------------------------------------
@@ -96,7 +96,7 @@ TP.html.br.finalizeTraits();
 
 /**
  * @type {TP.html.cite}
- * @synopsis 'cite' tag. Citation.
+ * @summary 'cite' tag. Citation.
  */
 
 //  ------------------------------------------------------------------------
@@ -109,7 +109,7 @@ TP.html.Citation.defineSubtype('cite');
 
 /**
  * @type {TP.html.code}
- * @synopsis 'code' tag. Program code.
+ * @summary 'code' tag. Program code.
  */
 
 //  ------------------------------------------------------------------------
@@ -122,7 +122,7 @@ TP.html.Attrs.defineSubtype('code');
 
 /**
  * @type {TP.html.dfn}
- * @synopsis 'dfn' tag. Definition.
+ * @summary 'dfn' tag. Definition.
  */
 
 //  ------------------------------------------------------------------------
@@ -135,7 +135,7 @@ TP.html.Attrs.defineSubtype('dfn');
 
 /**
  * @type {TP.html.div}
- * @synopsis DIV tag. Generic block container.
+ * @summary DIV tag. Generic block container.
  */
 
 //  ------------------------------------------------------------------------
@@ -148,7 +148,7 @@ TP.html.Aligned.defineSubtype('div');
 
 /**
  * @type {TP.html.em}
- * @synopsis 'em' tag. Emphasis.
+ * @summary 'em' tag. Emphasis.
  */
 
 //  ------------------------------------------------------------------------
@@ -161,7 +161,7 @@ TP.html.Attrs.defineSubtype('em');
 
 /**
  * @type {TP.html.h1}
- * @synopsis 'h1' tag. Heading.
+ * @summary 'h1' tag. Heading.
  */
 
 //  ------------------------------------------------------------------------
@@ -174,7 +174,7 @@ TP.html.Aligned.defineSubtype('h1');
 
 /**
  * @type {TP.html.h2}
- * @synopsis 'h2' tag. Sub-heading.
+ * @summary 'h2' tag. Sub-heading.
  */
 
 //  ------------------------------------------------------------------------
@@ -187,7 +187,7 @@ TP.html.Aligned.defineSubtype('h2');
 
 /**
  * @type {TP.html.h3}
- * @synopsis 'h3' tag. Sub-sub-heading.
+ * @summary 'h3' tag. Sub-sub-heading.
  */
 
 //  ------------------------------------------------------------------------
@@ -200,7 +200,7 @@ TP.html.Aligned.defineSubtype('h3');
 
 /**
  * @type {TP.html.h4}
- * @synopsis 'h4' tag. Sub-sub-sub-heading.
+ * @summary 'h4' tag. Sub-sub-sub-heading.
  */
 
 //  ------------------------------------------------------------------------
@@ -213,7 +213,7 @@ TP.html.Aligned.defineSubtype('h4');
 
 /**
  * @type {TP.html.h5}
- * @synopsis 'h5' tag. Sub-sub-sub-sub-heading. Are we there yet?
+ * @summary 'h5' tag. Sub-sub-sub-sub-heading. Are we there yet?
  */
 
 //  ------------------------------------------------------------------------
@@ -226,7 +226,7 @@ TP.html.Aligned.defineSubtype('h5');
 
 /**
  * @type {TP.html.h6}
- * @synopsis 'h6' tag. You get the picture ;).
+ * @summary 'h6' tag. You get the picture ;).
  */
 
 //  ------------------------------------------------------------------------
@@ -239,7 +239,7 @@ TP.html.Aligned.defineSubtype('h6');
 
 /**
  * @type {TP.html.kbd}
- * @synopsis 'kbd' tag. Example keyboard input.
+ * @summary 'kbd' tag. Example keyboard input.
  */
 
 //  ------------------------------------------------------------------------
@@ -252,7 +252,7 @@ TP.html.Attrs.defineSubtype('kbd');
 
 /**
  * @type {TP.html.mark}
- * @synopsis 'mark' tag. A run of text highlighted for reference purposes.
+ * @summary 'mark' tag. A run of text highlighted for reference purposes.
  */
 
 //  ------------------------------------------------------------------------
@@ -265,7 +265,7 @@ TP.html.Attrs.defineSubtype('mark');
 
 /**
  * @type {TP.html.p}
- * @synopsis 'p' tag. Paragraph.
+ * @summary 'p' tag. Paragraph.
  */
 
 //  ------------------------------------------------------------------------
@@ -278,7 +278,7 @@ TP.html.Aligned.defineSubtype('p');
 
 /**
  * @type {TP.html.pre}
- * @synopsis 'pre' tag. Preserve formatting.
+ * @summary 'pre' tag. Preserve formatting.
  */
 
 //  ------------------------------------------------------------------------
@@ -291,7 +291,7 @@ TP.html.Attrs.defineSubtype('pre');
 
 /**
  * @type {TP.html.q}
- * @synopsis 'q' tag. Inline quotation.
+ * @summary 'q' tag. Inline quotation.
  */
 
 //  ------------------------------------------------------------------------
@@ -306,7 +306,7 @@ TP.html.q.Type.set('uriAttrs', TP.ac('cite'));
 
 /**
  * @type {TP.html.ruby}
- * @synopsis 'ruby' tag. Mark up 'Ruby text' annotations.
+ * @summary 'ruby' tag. Mark up 'Ruby text' annotations.
  */
 
 //  ------------------------------------------------------------------------
@@ -319,7 +319,7 @@ TP.html.Attrs.defineSubtype('ruby');
 
 /**
  * @type {TP.html.rp}
- * @synopsis 'rp' tag. Mark up 'Ruby text' annotations.
+ * @summary 'rp' tag. Mark up 'Ruby text' annotations.
  */
 
 //  ------------------------------------------------------------------------
@@ -332,7 +332,7 @@ TP.html.Attrs.defineSubtype('rp');
 
 /**
  * @type {TP.html.rt}
- * @synopsis 'rt' tag. Mark up 'Ruby text' annotations.
+ * @summary 'rt' tag. Mark up 'Ruby text' annotations.
  */
 
 //  ------------------------------------------------------------------------
@@ -345,7 +345,7 @@ TP.html.Attrs.defineSubtype('rt');
 
 /**
  * @type {TP.html.samp}
- * @synopsis 'samp' tag. Sample.
+ * @summary 'samp' tag. Sample.
  */
 
 //  ------------------------------------------------------------------------
@@ -358,7 +358,7 @@ TP.html.Attrs.defineSubtype('samp');
 
 /**
  * @type {TP.html.span}
- * @synopsis 'span' tag. Generic inline container.
+ * @summary 'span' tag. Generic inline container.
  */
 
 //  ------------------------------------------------------------------------
@@ -371,7 +371,7 @@ TP.html.Attrs.defineSubtype('span');
 
 /**
  * @type {TP.html.strong}
- * @synopsis 'strong' tag. Strong emphasis.
+ * @summary 'strong' tag. Strong emphasis.
  */
 
 //  ------------------------------------------------------------------------
@@ -384,7 +384,7 @@ TP.html.Attrs.defineSubtype('strong');
 
 /**
  * @type {TP.html.var}
- * @synopsis 'var' tag. Variable.
+ * @summary 'var' tag. Variable.
  */
 
 //  ------------------------------------------------------------------------
@@ -397,7 +397,7 @@ TP.html.Attrs.defineSubtype('var');
 
 /**
  * @type {TP.html.wbr}
- * @synopsis 'wbr' tag. Line break opportunity.
+ * @summary 'wbr' tag. Line break opportunity.
  */
 
 //  ------------------------------------------------------------------------

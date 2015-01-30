@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XEvent}
- * @synopsis A wrapper for the X_EVENT namespace'd payload element.
+ * @summary A wrapper for the X_EVENT namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -34,8 +34,8 @@ TP.xmpp.XEvent.Inst.defineMethod('getEventMsgID',
 function() {
 
     /**
-     * @name getEventMsgID
-     * @synopsis Returns the message ID this event is bound to.
+     * @method getEventMsgID
+     * @summary Returns the message ID this event is bound to.
      * @returns {String}
      */
 

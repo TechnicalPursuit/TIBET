@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqRosterItem}
- * @synopsis A wrapper for item tags within the the IQ_ROSTER namespace'd
+ * @summary A wrapper for item tags within the the IQ_ROSTER namespace'd
  *     payload element.
  */
 
@@ -36,8 +36,8 @@ TP.xmpp.IqRosterItem.Inst.defineMethod('getGroupNames',
 function() {
 
     /**
-     * @name getGroupNames
-     * @synopsis Returns an Array of group names this item belongs to.
+     * @method getGroupNames
+     * @summary Returns an Array of group names this item belongs to.
      * @returns {Array}
      */
 
@@ -58,8 +58,8 @@ TP.xmpp.IqRosterItem.Inst.defineMethod('getJid',
 function() {
 
     /**
-     * @name getJid
-     * @synopsis Returns the TP.xmpp.JID instance associated with this item.
+     * @method getJid
+     * @summary Returns the TP.xmpp.JID instance associated with this item.
      * @returns {TP.xmpp.JID}
      */
 
@@ -72,8 +72,8 @@ TP.xmpp.IqRosterItem.Inst.defineMethod('getNickname',
 function() {
 
     /**
-     * @name getNickname
-     * @synopsis Returns the item's nickname, if any.
+     * @method getNickname
+     * @summary Returns the item's nickname, if any.
      * @returns {String}
      */
 
@@ -86,8 +86,8 @@ TP.xmpp.IqRosterItem.Inst.defineMethod('getSubscription',
 function() {
 
     /**
-     * @name getSubscription
-     * @synopsis Returns the subscription form (none, both, from, to) for the
+     * @method getSubscription
+     * @summary Returns the subscription form (none, both, from, to) for the
      *     item.
      * @returns {String}
      */
@@ -101,8 +101,8 @@ TP.xmpp.IqRosterItem.Inst.defineMethod('isPending',
 function() {
 
     /**
-     * @name isPending
-     * @synopsis Returns true if the item's subscription is pending.
+     * @method isPending
+     * @summary Returns true if the item's subscription is pending.
      * @returns {Boolean}
      */
 

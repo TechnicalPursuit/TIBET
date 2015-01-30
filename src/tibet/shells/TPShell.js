@@ -25,8 +25,8 @@ TP.definePrimitive('shell',
 function(aRequest) {
 
     /**
-     * @name shell
-     * @synopsis A wrapper for constructing and firing a TP.sig.ShellRequest.
+     * @method shell
+     * @summary A wrapper for constructing and firing a TP.sig.ShellRequest.
      *     This is often used in UI event handlers to avoid complex
      *     TP.dispatch() logic for triggering script execution. NOTE that this
      *     command makes use of the current TP.core.User instance to provide
@@ -319,8 +319,8 @@ TP.core.Shell.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Prepares the type for operation by initializing any data
+     * @method initialize
+     * @summary Prepares the type for operation by initializing any data
      *     structures or other components.
      */
 
@@ -352,8 +352,8 @@ TP.core.Shell.Type.defineMethod('handleUpdateAvailable',
 function(aSignal) {
 
     /**
-     * @name handleUpdateAvailable
-     * @synopsis Handles when an 'TP.sig.UpdateAvailable' signal is thrown.
+     * @method handleUpdateAvailable
+     * @summary Handles when an 'TP.sig.UpdateAvailable' signal is thrown.
      * @param {TP.sig.UpdateAvailable} aSignal The signal that caused this
      *     handler to execute.
      * @returns {TP.lang.RootObject.<TP.core.Shell>} The TP.core.Shell type
@@ -455,8 +455,8 @@ TP.core.Shell.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance, preparing it for command
+     * @method init
+     * @summary Initializes a new instance, preparing it for command
      *     processing. The resource ID provided will be used to register the
      *     instance for later lookup/targeting logic.
      * @param {String} aResourceID The standard service identifier.
@@ -498,8 +498,8 @@ TP.core.Shell.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver.
      * @returns {String} The test value, typically the shell's GID.
      */
@@ -513,8 +513,8 @@ TP.core.Shell.Inst.defineMethod('getNextPID',
 function() {
 
     /**
-     * @name getNextPID
-     * @synopsis Returns the next available PID for requests made of this shell.
+     * @method getNextPID
+     * @summary Returns the next available PID for requests made of this shell.
      * @returns {Number} The PID value.
      */
 
@@ -533,8 +533,8 @@ TP.core.Shell.Inst.defineMethod('getPrefix',
 function() {
 
     /**
-     * @name getPrefix
-     * @synopsis Returns the current command prefix, including a trailing
+     * @method getPrefix
+     * @summary Returns the current command prefix, including a trailing
      *     namespace separator (:). For example, this method typically returns
      *     tsh: in the TSH (TIBET Shell).
      * @returns {String} The command prefix plus NS separator.
@@ -549,8 +549,8 @@ TP.core.Shell.Inst.defineMethod('getPrompt',
 function() {
 
     /**
-     * @name getPrompt
-     * @synopsis Returns the prompt a console or other UI should display for
+     * @method getPrompt
+     * @summary Returns the prompt a console or other UI should display for
      *     this shell.
      * @returns {String} The prompt.
      */
@@ -564,8 +564,8 @@ TP.core.Shell.Inst.defineMethod('setPrefix',
 function(aPrefix) {
 
     /**
-     * @name setPrefix
-     * @synopsis Sets the default command prefix for any unprefixed commands.
+     * @method setPrefix
+     * @summary Sets the default command prefix for any unprefixed commands.
      * @param {String} aPrefix The namespace prefix. This should typically be in
      *     lower case (tsh, yak, etc).
      * @returns {TP.core.Shell} The receiver.
@@ -585,8 +585,8 @@ TP.core.Shell.Inst.defineMethod('setPrompt',
 function(aPromptString) {
 
     /**
-     * @name setPrompt
-     * @synopsis Sets the prompt string, a string which will be transformed and
+     * @method setPrompt
+     * @summary Sets the prompt string, a string which will be transformed and
      *     used by this shell to signify command input.
      * @param {String} aPromptString The prompt.
      * @returns {TP.core.Shell} The receiver.
@@ -605,8 +605,8 @@ TP.core.Shell.Inst.defineMethod('announce',
 function(aRequest) {
 
     /**
-     * @name announce
-     * @synopsis Displays an announcement specific to the current shell and/or
+     * @method announce
+     * @summary Displays an announcement specific to the current shell and/or
      *     request being processed. This is typically invoked by the
      *     TP.tdp.Console to emulate how standard shells announce their version
      *     etc.
@@ -640,8 +640,8 @@ TP.core.Shell.Inst.defineMethod('handleAppShutdown',
 function(aSignal) {
 
     /**
-     * @name handleAppShutdown
-     * @synopsis Handles when an 'TP.sig.AppShutdown' signal is thrown.
+     * @method handleAppShutdown
+     * @summary Handles when an 'TP.sig.AppShutdown' signal is thrown.
      * @param {TP.sig.AppShutdown} aSignal The signal that caused this
      *     handler to execute.
      * @returns {TP.lang.RootObject.<TP.core.Shell>} The TP.core.Shell type
@@ -659,8 +659,8 @@ TP.core.Shell.Inst.defineMethod('isLoginShell',
 function() {
 
     /**
-     * @name isLoginShell
-     * @synopsis Returns true if the receiver is a top-level login shell.
+     * @method isLoginShell
+     * @summary Returns true if the receiver is a top-level login shell.
      * @returns {Boolean}
      */
 
@@ -674,8 +674,8 @@ TP.core.Shell.Inst.defineMethod('isRunning',
 function(aFlag) {
 
     /**
-     * @name isRunning
-     * @synopsis Combined setter/getter for whether the shell is active.
+     * @method isRunning
+     * @summary Combined setter/getter for whether the shell is active.
      * @param {Boolean} aFlag Optional new value to set.
      * @returns {Boolean} The current value.
      */
@@ -693,8 +693,8 @@ TP.core.Shell.Inst.defineMethod('login',
 function(aRequest) {
 
     /**
-     * @name login
-     * @synopsis Performs any login sequence necessary for the receiver. The
+     * @method login
+     * @summary Performs any login sequence necessary for the receiver. The
      *     default is to take no action. Subtypes should override this to
      *     provide target-specific login/profile management features.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
@@ -713,9 +713,9 @@ TP.core.Shell.Inst.defineMethod('logout',
 function(aRequest) {
 
     /**
-     * @name logout
-     * @synopsis Logs out of the current login shell.
-     * @description The shell uses several variables on logout to determine what
+     * @method logout
+     * @summary Logs out of the current login shell.
+     * @summary The shell uses several variables on logout to determine what
      *     values if any to save. These variables are SAVEVARS, SAVEALIAS,
      *     SAVEHIST, and SAVEDIRS. The DISCARD variable controls whether change
      *     set data should be discarded, the default is false.
@@ -753,8 +753,8 @@ TP.core.Shell.Inst.defineMethod('start',
 function(aRequest) {
 
     /**
-     * @name start
-     * @synopsis Performs common startup processing, including displaying an
+     * @method start
+     * @summary Performs common startup processing, including displaying an
      *     announcement specific to the current shell. The login() sequence is
      *     initiated as part of this method.
      * @returns {TP.sig.ShellRequest} The request.
@@ -788,8 +788,8 @@ TP.core.Shell.Inst.defineMethod('initProfile',
 function() {
 
     /**
-     * @name initProfile
-     * @synopsis Initializes common and user-phase profile data.
+     * @method initProfile
+     * @summary Initializes common and user-phase profile data.
      */
 
     var name,
@@ -868,8 +868,8 @@ TP.core.Shell.Inst.defineMethod('saveProfile',
 function() {
 
     /**
-     * @name saveProfile
-     * @synopsis Stores common and user-phase profile data.
+     * @method saveProfile
+     * @summary Stores common and user-phase profile data.
      */
 
     var name,
@@ -915,8 +915,8 @@ TP.core.Shell.Inst.defineMethod('getAlias',
 function(aName) {
 
     /**
-     * @name getAlias
-     * @synopsis Returns the value of the named alias, if found.
+     * @method getAlias
+     * @summary Returns the value of the named alias, if found.
      * @param {String} aName The alias name to look up.
      * @returns {String} The string value entered.
      */
@@ -951,8 +951,8 @@ TP.core.Shell.Inst.defineMethod('setAlias',
 function(aName, aValue) {
 
     /**
-     * @name setAlias
-     * @synopsis Sets the string value of an alias.
+     * @method setAlias
+     * @summary Sets the string value of an alias.
      * @param {String} aName The alias name to set.
      * @param {String} aValue The string value to set. No object resolution is
      *     done on alias values so this will be used literally.
@@ -978,8 +978,8 @@ TP.core.Shell.Inst.defineMethod('unsetAlias',
 function(aName) {
 
     /**
-     * @name unsetAlias
-     * @synopsis Removes an alias definition from the receiver.
+     * @method unsetAlias
+     * @summary Removes an alias definition from the receiver.
      * @param {String} aName The alias name to remove.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -997,9 +997,9 @@ TP.core.Shell.Inst.defineMethod('addHistory',
 function(aRequest) {
 
     /**
-     * @name addHistory
-     * @synopsis Adds a request to the command history for the receiver.
-     * @description The variable HISTSIZE controls whether the list will be
+     * @method addHistory
+     * @summary Adds a request to the command history for the receiver.
+     * @summary The variable HISTSIZE controls whether the list will be
      *     trimmed as a result, keeping a maximum number of entries. Also, the
      *     HISTDUP variable will determine if the entry is actually added. If
      *     HISTDUP is 'prev' the entry will only be added if its command text is
@@ -1068,8 +1068,8 @@ TP.core.Shell.Inst.defineMethod('decrementHistoryIndex',
 function() {
 
     /**
-     * @name decrementHistoryIndex
-     * @synopsis Decreases the current history index by 1, unless the index is
+     * @method decrementHistoryIndex
+     * @summary Decreases the current history index by 1, unless the index is
      *     already at 0. This method shifts the 'current history' entry to point
      *     to the new index location.
      * @returns {Number} The new index.
@@ -1086,8 +1086,8 @@ TP.core.Shell.Inst.defineMethod('getHistory',
 function(anIndex, afterExpansion) {
 
     /**
-     * @name getHistory
-     * @synopsis Returns the history entry at the index provided, or the entire
+     * @method getHistory
+     * @summary Returns the history entry at the index provided, or the entire
      *     list if no index is provided.
      * @param {Number|String|RegExp} anIndex The history index to look up.
      * @param {Boolean} afterExpansion True to work against the expanded form
@@ -1185,8 +1185,8 @@ TP.core.Shell.Inst.defineMethod('incrementHistoryIndex',
 function() {
 
     /**
-     * @name incrementHistoryIndex
-     * @synopsis Increases the current history index by 1, unless the index is
+     * @method incrementHistoryIndex
+     * @summary Increases the current history index by 1, unless the index is
      *     already at HISTSIZE. This method shifts the 'current history' entry
      *     to point to the new index location.
      * @returns {Number} The new index.
@@ -1208,8 +1208,8 @@ TP.core.Shell.Inst.defineMethod('getVariable',
 function(aName) {
 
     /**
-     * @name getVariable
-     * @synopsis Returns the value of the named shell variable, if found.
+     * @method getVariable
+     * @summary Returns the value of the named shell variable, if found.
      * @param {String} aName The variable name to look up.
      * @returns {String} The string value entered.
      */
@@ -1251,8 +1251,8 @@ TP.core.Shell.Inst.defineMethod('setVariable',
 function(aName, aValue) {
 
     /**
-     * @name setVariable
-     * @synopsis Sets the string value of a variable name. Note that variable
+     * @method setVariable
+     * @summary Sets the string value of a variable name. Note that variable
      *     names are normalized to uppercase $-prefixed values for storage in
      *     the $SCOPE object. For example, aName of 'focus' will become '$focus'
      *     for variable storage. The getVariable call follows this convention as
@@ -1284,8 +1284,8 @@ TP.core.Shell.Inst.defineMethod('unsetVariable',
 function(aName) {
 
     /**
-     * @name unsetVariable
-     * @synopsis Removes a variable definition from the receiver.
+     * @method unsetVariable
+     * @summary Removes a variable definition from the receiver.
      * @param {String} aName The variable name to remove.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -1311,8 +1311,8 @@ TP.core.Shell.Inst.defineMethod('handleShellRequest',
 function(aRequest) {
 
     /**
-     * @name handleShellRequest
-     * @synopsis Constructs a response to the request provided.
+     * @method handleShellRequest
+     * @summary Constructs a response to the request provided.
      *     TP.sig.ShellRequest instances are the typical way commands are
      *     provided to the shell for processing.
      * @param {TP.sig.ShellRequest} aRequest The request to respond to.
@@ -1396,10 +1396,10 @@ TP.core.Shell.Inst.defineMethod('handleUserInput',
 function(aSignal) {
 
     /**
-     * @name handleUserInput
-     * @synopsis Responds to TP.sig.UserInput signals, which are sent in
+     * @method handleUserInput
+     * @summary Responds to TP.sig.UserInput signals, which are sent in
      *     response to a previous TP.sig.UserInputRequest from the shell itself.
-     * @description The implication is that this method is only invoked when the
+     * @summary The implication is that this method is only invoked when the
      *     shell had a prior request in the queue. The request itself will have
      *     been bound to the input response. The shell's response is to invoke
      *     the input as if it were a standard shell request.
@@ -1458,8 +1458,8 @@ TP.core.Shell.Inst.defineMethod('attachSTDIO',
 function(aProvider) {
 
     /**
-     * @name attachSTDIO
-     * @synopsis Attaches the receiver's stdio hooks to a STDIO provider, an
+     * @method attachSTDIO
+     * @summary Attaches the receiver's stdio hooks to a STDIO provider, an
      *     object which implements those hooks for reuse.
      * @param {Object} aProvider An object implementing stdin, stdout, and
      *     stderr hook functions.
@@ -1512,8 +1512,8 @@ TP.core.Shell.Inst.defineMethod('detachSTDIO',
 function() {
 
     /**
-     * @name detachSTDIO
-     * @synopsis Detaches the receiver's stdio hooks from a STDIO provider,
+     * @method detachSTDIO
+     * @summary Detaches the receiver's stdio hooks from a STDIO provider,
      *     reverting them to their original settings.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -1536,9 +1536,9 @@ TP.core.Shell.Inst.defineMethod('notify',
 function(anObject, aRequest) {
 
     /**
-     * @name notify
-     * @synopsis Notifies the user outside of "stdout" of a message.
-     * @description The default version of this method uses the low-level
+     * @method notify
+     * @summary Notifies the user outside of "stdout" of a message.
+     * @summary The default version of this method uses the low-level
      *     TP.boot.$alert() function. Shells which are connect to a Console or
      *     other UI will typically have this version overwritten so output is
      *     directed to the UI.
@@ -1584,8 +1584,8 @@ TP.core.Shell.Inst.defineMethod('stderr',
 function(anError, aRequest) {
 
     /**
-     * @name stderr
-     * @synopsis Outputs the error provided using any parameters in the request
+     * @method stderr
+     * @summary Outputs the error provided using any parameters in the request
      *     to assist with formatting etc. Parameters include messageType,
      *     cmdAsIs, etc.
      * @param {String} anError The error to output.
@@ -1622,8 +1622,8 @@ TP.core.Shell.Inst.defineMethod('stdin',
 function(aQuery, aDefault, aRequest) {
 
     /**
-     * @name stdin
-     * @synopsis Requests input from the user.
+     * @method stdin
+     * @summary Requests input from the user.
      * @param {String} aQuery An optional query string to format as a question
      *     for the user.
      * @param {String} aDefault An optional string value to use as the default
@@ -1660,8 +1660,8 @@ TP.core.Shell.Inst.defineMethod('stdout',
 function(anObject, aRequest) {
 
     /**
-     * @name stdout
-     * @synopsis Outputs the object provided using any parameters in the request
+     * @method stdout
+     * @summary Outputs the object provided using any parameters in the request
      *     to assist with formatting etc. Parameters include messageType,
      *     cmdAsIs, etc.
      * @param {Object} anObject The object to output.
@@ -1703,8 +1703,8 @@ TP.core.Shell.Inst.defineMethod('addPath',
 function(aPath) {
 
     /**
-     * @name addPath
-     * @synopsis Pushes a path on the path stack of the receiver. Paths in the
+     * @method addPath
+     * @summary Pushes a path on the path stack of the receiver. Paths in the
      *     path stack are used to support URI expansion operations. Paths are
      *     expanded when added so all paths in the stack are absolute paths once
      *     the add has completed.
@@ -1765,8 +1765,8 @@ TP.core.Shell.Inst.defineMethod('clearPaths',
 function() {
 
     /**
-     * @name clearPaths
-     * @synopsis Empties the path stack.
+     * @method clearPaths
+     * @summary Empties the path stack.
      * @returns {TP.core.Shell} The receiver.
      */
 
@@ -1781,8 +1781,8 @@ TP.core.Shell.Inst.defineMethod('execute',
 function(aRequest) {
 
     /**
-     * @name execute
-     * @synopsis The main command execution method, responsible for parsing and
+     * @method execute
+     * @summary The main command execution method, responsible for parsing and
      *     processing shell input in a fashion suitable for the specific
      *     requirements of each shell and for the specific content being
      *     processed.
@@ -1800,10 +1800,10 @@ TP.core.Shell.Inst.defineMethod('expandPath',
 function(aPath) {
 
     /**
-     * @name expandPath
-     * @synopsis Expands a path to absolute form using current path stack and
+     * @method expandPath
+     * @summary Expands a path to absolute form using current path stack and
      *     environment information.
-     * @description Expansion uses the following rules:
+     * @summary Expansion uses the following rules:
      *
      *     Absolute paths start with a scheme, either http(s) or file and are
      *     left unchanged by this process. All other paths are considered
@@ -1917,8 +1917,8 @@ TP.core.Shell.Inst.defineMethod('getPath',
 function(anIndex) {
 
     /**
-     * @name getPath
-     * @synopsis Returns the path entry at the index provided, or at the current
+     * @method getPath
+     * @summary Returns the path entry at the index provided, or at the current
      *     index if no value is provided.
      * @param {Number} anIndex The path index to look up.
      * @returns {String} The path entry.
@@ -1953,8 +1953,8 @@ TP.core.Shell.Inst.defineMethod('getLastPath',
 function() {
 
     /**
-     * @name getLastPath
-     * @synopsis Returns the text of the last path entry.
+     * @method getLastPath
+     * @summary Returns the text of the last path entry.
      * @returns {String} The last path string.
      */
 
@@ -1967,8 +1967,8 @@ TP.core.Shell.Inst.defineMethod('removePath',
 function(anIndex) {
 
     /**
-     * @name removePath
-     * @synopsis Removes the path at anIndex, or the last path in the list if no
+     * @method removePath
+     * @summary Removes the path at anIndex, or the last path in the list if no
      *     index is provided.
      * @param {Number} anIndex The index of the path to remove, if provided.
      * @returns {String} The path removed.
@@ -2005,8 +2005,8 @@ TP.core.Shell.Inst.defineMethod('getExecutionContext',
 function(aRequest) {
 
     /**
-     * @name getExecutionContext
-     * @synopsis Returns the execution context for the receiver, the window or
+     * @method getExecutionContext
+     * @summary Returns the execution context for the receiver, the window or
      *     frame used for eval calls. This is typically the window in which the
      *     code was loaded, and therefore virtually always the top window in a
      *     standard installation.
@@ -2054,8 +2054,8 @@ TP.core.Shell.Inst.defineMethod('getExecutionInstance',
 function(aRequest) {
 
     /**
-     * @name getExecutionInstance
-     * @synopsis Returns the execution instance, an object used to provide
+     * @method getExecutionInstance
+     * @summary Returns the execution instance, an object used to provide
      *     scoped variable support for the shell.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing parameters.
@@ -2122,8 +2122,8 @@ TP.core.Shell.Inst.defineMethod('resolveObjectReference',
 function(anObjectSpec, aRequest) {
 
     /**
-     * @name resolveObjectReference
-     * @synopsis Returns an object based on the string specification provided.
+     * @method resolveObjectReference
+     * @summary Returns an object based on the string specification provided.
      *     This method will attempt to evaluate the spec as an expression as
      *     well as treating it like a tibet://URI in an attempt to locate the
      *     object.
@@ -2260,8 +2260,8 @@ TP.core.Shell.Inst.defineMethod('resolveVariableSubstitutions',
 function(aString) {
 
     /**
-     * @name resolveVariableSubstitutions
-     * @synopsis Handles variable substitution syntax, typically in values
+     * @method resolveVariableSubstitutions
+     * @summary Handles variable substitution syntax, typically in values
      *     provided as command tag attributes or content.
      * @param {String} aString A string requiring resolution.
      * @returns {String} The string with resolved variable substitutions.
@@ -2310,8 +2310,8 @@ TP.core.Shell.Inst.defineMethod('setExecutionContext',
 function(aWindow) {
 
     /**
-     * @name setExecutionContext
-     * @synopsis Sets the execution context, the window or frame used for eval
+     * @method setExecutionContext
+     * @summary Sets the execution context, the window or frame used for eval
      *     calls. A side-effect of this call is that a local method for
      *     executing native JS is installed which uses the context
      *     window/frame's eval call for processing.
@@ -2355,8 +2355,8 @@ TP.core.Shell.Inst.defineMethod('updateCommandNode',
 function(aRequest, shouldReport) {
 
     /**
-     * @name updateCommandNode
-     * @synopsis Handles variable substitution syntax, typically in values
+     * @method updateCommandNode
+     * @summary Handles variable substitution syntax, typically in values
      *     provided as command tag attributes or content, specifically expanding
      *     attribute values on the request's command node.
      * @param {TP.sig.Request} aRequest A TP.sig.TSHRunRequest in most cases.
@@ -2394,8 +2394,8 @@ TP.core.Shell.Inst.defineMethod('updateExecutionInstance',
 function(aRequest) {
 
     /**
-     * @name updateExecutionInstance
-     * @synopsis Updates the execution instance ($SCOPE object) with the data
+     * @method updateExecutionInstance
+     * @summary Updates the execution instance ($SCOPE object) with the data
      *     from the request to help ensure that variable substitution and other
      *     data access references are current.
      * @param {TP.sig.Request} aRequest A TP.sig.TSHRunRequest in most cases.
@@ -2451,10 +2451,10 @@ TP.core.Shell.Inst.defineMethod('getArgument',
 function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
 
     /**
-     * @name getArgument
-     * @synopsis Returns a single value acquired from the current command node's
+     * @method getArgument
+     * @summary Returns a single value acquired from the current command node's
      *     primary argument, argv, or the node's content.
-     * @description A number of tags have a single argument which defines the
+     * @summary A number of tags have a single argument which defines the
      *     target of the tag's operation. For sugaring purposes it's not
      *     uncommon for that argument's name to be left off so that the argument
      *     value ends up in the argv vector. Alternatively the argument content
@@ -2555,8 +2555,8 @@ TP.core.Shell.Inst.defineMethod('getArguments',
 function(aRequest, allForms) {
 
     /**
-     * @name getArguments
-     * @synopsis Returns a hash of key/value pairs where the keys are the
+     * @method getArguments
+     * @summary Returns a hash of key/value pairs where the keys are the
      *     request command node's attribute names and the values are the
      *     attribute values. These represent the named parameters and flags
      *     provided to the command. Positional arguments are named ARG0 through
@@ -2836,7 +2836,7 @@ function(aRequest, anArgument) {
      * --checked="checked".
      * @param {TP.sig.ShellRequest} aRequest The request to query.
      * @param {String} The argument name to check.
-     * @return {Boolean} True if the argument exists.
+     * @returns {Boolean} True if the argument exists.
      */
 
     var arg;
@@ -2855,7 +2855,7 @@ function(aRequest) {
     /**
      * Returns true if the incoming request has at least one usable argument.
      * @param {TP.sig.ShellRequest} aRequest The request to query.
-     * @return {Boolean} True for non-zero argument lists.
+     * @returns {Boolean} True for non-zero argument lists.
      */
 
     var args,
@@ -2877,8 +2877,8 @@ TP.core.Shell.Inst.defineMethod('getParam',
 function(aRequest, parameterName) {
 
     /**
-     * @name getParam
-     * @synopsis Returns a single value acquired from the current command node's
+     * @method getParam
+     * @summary Returns a single value acquired from the current command node's
      *     child <param> tags, if any.
      * @param {TP.sig.ShellRequest} aRequest The request to query.
      * @param {String} parameterName The parameter to look up.
@@ -2898,8 +2898,8 @@ TP.core.Shell.Inst.defineMethod('getParams',
 function(aRequest) {
 
     /**
-     * @name getParams
-     * @synopsis Returns a hash of key/value pairs where the keys are the
+     * @method getParams
+     * @summary Returns a hash of key/value pairs where the keys are the
      *     request command node's child <param> names and the values are the
      *     <param> values.
      * @param {TP.sig.ShellRequest} aRequest The request to query.
@@ -3012,8 +3012,8 @@ TP.core.Shell.Inst.defineMethod('executeAbout',
 function(aRequest) {
 
     /**
-     * @name executeAbout
-     * @synopsis Displays information about the current shell.
+     * @method executeAbout
+     * @summary Displays information about the current shell.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing parameters.
      */
@@ -3032,8 +3032,8 @@ TP.core.Shell.Inst.defineMethod('executeAlias',
 function(aRequest) {
 
     /**
-     * @name executeAlias
-     * @synopsis Processes alias-related commands which can list all aliases,
+     * @method executeAlias
+     * @summary Processes alias-related commands which can list all aliases,
      *     list the value of a specific alias, define an alias, or remove an
      *     alias (by setting its value to null or to the key).
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
@@ -3105,8 +3105,8 @@ TP.core.Shell.Inst.defineMethod('executeClear',
 function(aRequest) {
 
     /**
-     * @name executeClear
-     * @synopsis Clears any receiver-related console display by issuing a
+     * @method executeClear
+     * @summary Clears any receiver-related console display by issuing a
      *     TP.sig.ConsoleRequest. If there is no associated console then the
      *     signal is simply ignored.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
@@ -3130,8 +3130,8 @@ TP.core.Shell.Inst.defineMethod('executeFlag',
 function(aRequest) {
 
     /**
-     * @name executeFlag
-     * @synopsis Processes configuration flag commands, allowing the user to
+     * @method executeFlag
+     * @summary Processes configuration flag commands, allowing the user to
      *     view a list of all flags, flags with a specific prefix, a specific
      *     flag, or allowing a flag value to be set.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
@@ -3188,7 +3188,7 @@ TP.core.Shell.Inst.defineMethod('executeSave',
 function(aRequest) {
 
     /**
-     * @name executeSave
+     * @method executeSave
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
@@ -3206,8 +3206,8 @@ TP.core.Shell.Inst.defineMethod('executeSet',
 function(aRequest) {
 
     /**
-     * @name executeSet
-     * @synopsis Sets a shell variable in response to a command request.
+     * @method executeSet
+     * @summary Sets a shell variable in response to a command request.
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
      * @returns {TP.sig.ShellRequest} The request.

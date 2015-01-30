@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Payload}
- * @synopsis A common supertype for XMPP elements which can't travel on their
+ * @summary A common supertype for XMPP elements which can't travel on their
  *     own, only as payload within a valid XMPP stanza.
  */
 
@@ -37,8 +37,8 @@ TP.xmpp.Payload.Inst.defineMethod('get',
 function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value, if any, of the attribute provided. For XMPP
+     * @method get
+     * @summary Returns the value, if any, of the attribute provided. For XMPP
      *     nodes, this may reach into child nodes and obtain their 'text value'
      *     if the attribute has been mapped as a 'child tag' in this type.
      * @param {String} attributeName The name of the attribute to return.
@@ -71,8 +71,8 @@ TP.xmpp.Payload.Inst.defineMethod('set',
 function(attributeName, attributeValue) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided.
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided.
      *     For XMPP nodes, this may reach into child nodes and obtain their
      *     'text value' if the attribute has been mapped as a 'child tag' in
      *     this type.

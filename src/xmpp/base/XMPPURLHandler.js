@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.URLHandler}
- * @synopsis A URI handler type that can store and load from 'xmpp://' URIs.
+ * @summary A URI handler type that can store and load from 'xmpp://' URIs.
  */
 
 //  ------------------------------------------------------------------------
@@ -29,8 +29,8 @@ TP.xmpp.URLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content and returns it on request. This is a
+     * @method load
+     * @summary Loads URI data content and returns it on request. This is a
      *     template method which defines the overall process used for loading
      *     URI data and ensuring that the URI's cache and header content are
      *     kept up to date. You should normally override one of the more
@@ -386,8 +386,8 @@ TP.xmpp.URLHandler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes the target URL. This is an unsupported operation for an
+     * @method nuke
+     * @summary Deletes the target URL. This is an unsupported operation for an
      *     XMPP URL.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
@@ -415,10 +415,10 @@ TP.xmpp.URLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
-     * @name save
-     * @synopsis Attempts to save data using standard TIBET save primitives to
+     * @method save
+     * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided.
-     * @description The 'save' method on TP.xmpp.URLHandler just checks for
+     * @summary The 'save' method on TP.xmpp.URLHandler just checks for
      *     content that the URI might have and, depending on the XMPP URI's
      *     action, it makes that the value of one of the request's parameters.
      *     Then it just calls this type's 'load' method to complete the

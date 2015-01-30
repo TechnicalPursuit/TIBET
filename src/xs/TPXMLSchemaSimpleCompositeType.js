@@ -25,8 +25,8 @@ TP.xs.XMLSchemaSimpleCompositeType.Type.defineMethod('validate',
 function(aValue) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided it meets all of the
+     * @method validate
+     * @summary Returns true if the object provided it meets all of the
      *     criteria supplied in this type.
      * @param {Object} aValue The object to validate.
      * @returns {Boolean} True if the object validates against the receiver.
@@ -91,8 +91,8 @@ TP.xs.XMLSchemaSimpleCompositeType.Type.defineMethod('validateList',
 function(aValue, listElem) {
 
     /**
-     * @name validateList
-     * @synopsis Returns true if all values provided meet the requirements of
+     * @method validateList
+     * @summary Returns true if all values provided meet the requirements of
      *     the TP.xs.list specification provided.
      * @param {String} aValue A string of whitespace separated values to
      *     validate.
@@ -206,10 +206,10 @@ TP.xs.XMLSchemaSimpleCompositeType.Type.defineMethod('validateRestriction',
 function(aValue, restrictionElem) {
 
     /**
-     * @name validateRestriction
-     * @synopsis Returns true if the value provided meets the requirements of
+     * @method validateRestriction
+     * @summary Returns true if the value provided meets the requirements of
      *     the various restriction facets.
-     * @description Restriction-based type checking is the most common form of
+     * @summary Restriction-based type checking is the most common form of
      *     user-defined datatyping, however there are several special case
      *     treatments that have to be handled for proper results. For example,
      *     the TP.xs.whiteSpace facet actually has to be used to alter the
@@ -327,8 +327,8 @@ TP.xs.XMLSchemaSimpleCompositeType.Type.defineMethod('validateUnion',
 function(aValue, unionElem) {
 
     /**
-     * @name validateUnion
-     * @synopsis Returns true if all values provided meet the requirements of
+     * @method validateUnion
+     * @summary Returns true if all values provided meet the requirements of
      *     the TP.xs.union specification provided.
      * @param {Object} aValue The object to validate.
      * @param {TP.xs.union} unionElem The element containing the information to

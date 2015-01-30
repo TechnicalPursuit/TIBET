@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tibet.group}
- * @synopsis A subtype of TP.core.ElementNode that implements 'grouping'
+ * @summary A subtype of TP.core.ElementNode that implements 'grouping'
  *     behavior for UI elements.
  */
 
@@ -30,8 +30,8 @@ TP.tibet.group.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -84,8 +84,8 @@ TP.tibet.group.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
-     * @name tagDetachDOM
-     * @synopsis Tears down runtime machinery for the element in aRequest.
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -113,8 +113,8 @@ TP.tibet.group.Inst.defineMethod('findFocusableElements',
 function(includesGroups) {
 
     /**
-     * @name findFocusableElements
-     * @synopsis Finds focusable elements under the receiver and returns an
+     * @method findFocusableElements
+     * @summary Finds focusable elements under the receiver and returns an
      *     Array of TP.core.ElementNodes of them.
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
      *     elements as 'focusable' elements under the receiver. The default is
@@ -182,8 +182,8 @@ TP.tibet.group.Inst.defineMethod('focus',
 function(moveAction) {
 
     /**
-     * @name focus
-     * @synopsis Focuses the receiver for keyboard input.
+     * @method focus
+     * @summary Focuses the receiver for keyboard input.
      * @param {Constant} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *          TP.FIRST
@@ -224,10 +224,10 @@ TP.tibet.group.Inst.defineMethod('getMembers',
 function() {
 
     /**
-     * @name getMembers
-     * @synopsis Returns the members of the group based on the query on the
+     * @method getMembers
+     * @summary Returns the members of the group based on the query on the
      *     receiver.
-     * @description If no query is supplied, a default of './*' (all descendants
+     * @summary If no query is supplied, a default of './*' (all descendants
      *     from the receiver down) is used. Also, if the receiver is not empty,
      *     it is used as the 'context' of the query. If the receiver is empty,
      *     then the document element of the document the receiver is in is used
@@ -284,8 +284,8 @@ TP.tibet.group.Inst.defineMethod('getMemberGroups',
 function() {
 
     /**
-     * @name getMemberGroups
-     * @synopsis Returns the members of the group that are themselves groups
+     * @method getMemberGroups
+     * @summary Returns the members of the group that are themselves groups
      * @returns {Array} The Array of member 'tibet:group' TP.core.ElementNodes.
      */
 
@@ -310,8 +310,8 @@ TP.tibet.group.Inst.defineMethod('mutationAddedFilteredNodes',
 function(addedNodes) {
 
     /**
-     * @name mutationAddedFilteredNodes
-     * @synopsis Handles when nodes got added to the DOM we're in, filtered by
+     * @method mutationAddedFilteredNodes
+     * @summary Handles when nodes got added to the DOM we're in, filtered by
      *     the query that we registered with the MutationSignalSource.
      * @param {Array} addedNodes The Array of nodes that got added to the DOM,
      *     then filtered by our query.
@@ -349,8 +349,8 @@ TP.tibet.group.Inst.defineMethod('mutationRemovedFilteredNodes',
 function(removedNodes) {
 
     /**
-     * @name mutationRemovedFilteredNodes
-     * @synopsis Handles when nodes got added to the DOM we're in, filtered by
+     * @method mutationRemovedFilteredNodes
+     * @summary Handles when nodes got added to the DOM we're in, filtered by
      *     the query that we registered with the MutationSignalSource.
      * @param {Array} removedNodes The Array of nodes that got removed from the
      *     DOM, then filtered by our query.

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.unsignedLong}
- * @synopsis A value whose range is limited by unsigned 64-bit storage limits.
+ * @summary A value whose range is limited by unsigned 64-bit storage limits.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.unsignedLong.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is an unsigned 64-bit value
+     * @method validate
+     * @summary Returns true if the object provided is an unsigned 64-bit value
      *     between 0 and 18446744073709551615 inclusive.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

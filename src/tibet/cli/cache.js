@@ -167,7 +167,7 @@ Cmd.prototype.USAGE =
 
 /**
  * Perform the actual command processing logic.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 
@@ -232,7 +232,7 @@ Cmd.prototype.execute = function() {
  * Perform the work specific to updating the actual cache file, or listing which
  * files may be missing from it.
  * @param {String} cachefile The name of the cache file being configured.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
@@ -542,7 +542,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
  * Perform the work specific to enabling/disabling the cache via the index.html
  * file's html element manifest attribute setting.
  * @param {String} cachefile The name of the cache file being configured.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
@@ -678,7 +678,7 @@ Cmd.prototype.executeTouch = function(cachefile) {
  * cache file that TIBET can manage. If the tests are successful the text of the
  * cache is returned for further processing.
  * @param {String} cachefile The name of the cache file being configured.
- * @return {String} The file content.
+ * @returns {String} The file content.
  */
 Cmd.prototype.validateCacheFile = function(cachefile) {
 

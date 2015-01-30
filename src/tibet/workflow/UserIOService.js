@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.UserIOService}
- * @synopsis A TP.core.Service specific to handling TP.sig.UserIORequests. The
+ * @summary A TP.core.Service specific to handling TP.sig.UserIORequests. The
  *     best example is the TIBET console which provides a way for the system to
  *     interact with the User.
  */
@@ -45,8 +45,8 @@ TP.core.UserIOService.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {String} aResourceID The unique identifier for this service.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
      *     hash containing a service URI if the service is going to be tied to a
@@ -67,8 +67,8 @@ TP.core.UserIOService.Inst.defineMethod('getRequestQueue',
 function() {
 
     /**
-     * @name getRequestQueue
-     * @synopsis Returns the receiver's request queue, the list of requests
+     * @method getRequestQueue
+     * @summary Returns the receiver's request queue, the list of requests
      *     which are currently awaiting processing.
      * @returns {Array}
      */
@@ -82,8 +82,8 @@ TP.core.UserIOService.Inst.defineMethod('getNextRequest',
 function(aRequest) {
 
     /**
-     * @name getNextRequest
-     * @synopsis Removes a request from the queue and returns it for processing.
+     * @method getNextRequest
+     * @summary Removes a request from the queue and returns it for processing.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
      *     need to provide information to this process.
      * @returns {TP.sig.UserIORequest} The IO request to process.
@@ -98,8 +98,8 @@ TP.core.UserIOService.Inst.defineMethod('getRequestById',
 function(aRequestID) {
 
     /**
-     * @name getRequestById
-     * @synopsis Retrieves a request from the queue and returns it for
+     * @method getRequestById
+     * @summary Retrieves a request from the queue and returns it for
      *     processing. This is typically used to retrieve queued requests as
      *     part of RequestCompleted processing since those signals originate
      *     from the ID of the request that is complete.
@@ -133,8 +133,8 @@ TP.core.UserIOService.Inst.defineMethod('handleNextRequest',
 function(aRequest) {
 
     /**
-     * @name handleNextRequest
-     * @synopsis Processes the next request in the receiver's request queue.
+     * @method handleNextRequest
+     * @summary Processes the next request in the receiver's request queue.
      *     This method is automatically invoked at the end of each request cycle
      *     so any pending requests are handled in FIFO order.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
@@ -196,8 +196,8 @@ TP.core.UserIOService.Inst.defineMethod('handleNoMoreRequests',
 function(aRequest) {
 
     /**
-     * @name handleNoMoreRequests
-     * @synopsis Performs any processing required when all queued requests have
+     * @method handleNoMoreRequests
+     * @summary Performs any processing required when all queued requests have
      *     been processed. The default is simply to return.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
      *     need to provide information to this process.
@@ -212,8 +212,8 @@ TP.core.UserIOService.Inst.defineMethod('handleUserInputRequest',
 function(aSignal) {
 
     /**
-     * @name handleUserInputRequest
-     * @synopsis Responds to input requests, either handling them directly or
+     * @method handleUserInputRequest
+     * @summary Responds to input requests, either handling them directly or
      *     queuing them for later processing.
      * @param {TP.sig.UserInputRequest} aSignal
      */
@@ -227,8 +227,8 @@ TP.core.UserIOService.Inst.defineMethod('handleUserInputSeries',
 function(aSignal) {
 
     /**
-     * @name handleUserInpuSeries
-     * @synopsis Responds to input series, either handling them directly or
+     * @method handleUserInpuSeries
+     * @summary Responds to input series, either handling them directly or
      *     queuing them for later processing.
      * @param {TP.sig.UserInputSeries} aSignal
      */
@@ -242,8 +242,8 @@ TP.core.UserIOService.Inst.defineMethod('handleUserOutputRequest',
 function(aSignal) {
 
     /**
-     * @name handleUserOutputRequest
-     * @synopsis Responds to output requests, either handling them directly or
+     * @method handleUserOutputRequest
+     * @summary Responds to output requests, either handling them directly or
      *     queuing them for later processing.
      * @param {TP.sig.UserOutputRequest} aSignal
      */
@@ -257,8 +257,8 @@ TP.core.UserIOService.Inst.defineMethod('isAwaitingInput',
 function(aFlag) {
 
     /**
-     * @name isAwaitingInput
-     * @synopsis Combined setter/getter for whether the receiver is waiting for
+     * @method isAwaitingInput
+     * @summary Combined setter/getter for whether the receiver is waiting for
      *     input. This method will interrogate the input cell as part of the
      *     process.
      * @param {Boolean} aFlag An optional new setting.
@@ -274,8 +274,8 @@ TP.core.UserIOService.Inst.defineMethod('queueIORequest',
 function(aSignal) {
 
     /**
-     * @name queueIORequest
-     * @synopsis Queues the incoming signal for later processing. This method is
+     * @method queueIORequest
+     * @summary Queues the incoming signal for later processing. This method is
      *     typically invoked automatically by services that are currently
      *     blocked servicing a prior request.
      * @param {TP.sig.UserIORequest} aSignal
@@ -292,8 +292,8 @@ TP.core.UserIOService.Inst.defineMethod('refreshFromRequest',
 function(aRequest) {
 
     /**
-     * @name refreshFromRequest
-     * @synopsis Performs any updates necessary to ensure that the display is
+     * @method refreshFromRequest
+     * @summary Performs any updates necessary to ensure that the display is
      *     current with the current state of the request. The default
      *     implementation does nothing.
      * @param {TP.sig.UserIORequest} aRequest

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqConference}
- * @synopsis A wrapper for the IQ_CONFERENCE namespace'd payload element.
+ * @summary A wrapper for the IQ_CONFERENCE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -34,8 +34,8 @@ TP.xmpp.IqConference.Inst.defineMethod('getConferenceID',
 function() {
 
     /**
-     * @name getConferenceID
-     * @synopsis Returns the ID of the conference.
+     * @method getConferenceID
+     * @summary Returns the ID of the conference.
      * @returns {String}
      */
 
@@ -48,8 +48,8 @@ TP.xmpp.IqConference.Inst.defineMethod('shouldHideJID',
 function(aFlag) {
 
     /**
-     * @name shouldHideJID
-     * @synopsis A combined setter/getter defining whether the JID should be
+     * @method shouldHideJID
+     * @summary A combined setter/getter defining whether the JID should be
      *     kept private when interacting with this conference.
      * @param {Boolean} aFlag The new flag value.
      * @returns {Boolean} The flag value, after optional set.

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.LocalDBStorageRequest}
- * @synopsis A subtype of TP.sig.Request that is used in conjunction with the
+ * @summary A subtype of TP.sig.Request that is used in conjunction with the
  *     TP.core.LocalDBStorageService type to communicate to in-browser 'local
  *     storage' data stores.
  * @example Communicating with a local data store from TIBET consists of:

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.LocalDBStorageService}
- * @synopsis A subtype of TP.core.Service that communicates with in-browser
+ * @summary A subtype of TP.core.Service that communicates with in-browser
  *     'local storage' local data stores.
  * @example If the TP.sig.LocalDBStorageRequest/TP.sig.LocalDBStorageResponse
  *     processing model is used, it is unnecessary to manually set up a
@@ -86,8 +86,8 @@ TP.core.LocalDBStorageService.Inst.defineMethod('handleLocalDBStorageRequest',
 function(aRequest) {
 
     /**
-     * @name handleLocalDBStorageRequest
-     * @synopsis Handles when an TP.sig.LocalDBStorageRequest is fired. Since
+     * @method handleLocalDBStorageRequest
+     * @summary Handles when an TP.sig.LocalDBStorageRequest is fired. Since
      *     this service will register itself as the default handler for these
      *     kinds of requests, the default instance of it will usually handle all
      *     of these kinds of requests.

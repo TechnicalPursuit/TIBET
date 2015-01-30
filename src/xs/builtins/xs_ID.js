@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.ID}
- * @synopsis An TP.xs.NCName-formatted value which must refer to a set of unique
+ * @summary An TP.xs.NCName-formatted value which must refer to a set of unique
  *     values within the document in which it is defined. Note that the current
  *     implementation does not check for this constraint but simply verifies
  *     that the ID value is a valid NCName.

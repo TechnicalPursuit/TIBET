@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.time}
- * @synopsis A string representing a time and optional time zone data in the
+ * @summary A string representing a time and optional time zone data in the
  *     format HH:MM:SS[.sss] followed by Z for UTC time, or a +/- prefixed HH:MM
  *     timezone offset.
  */
@@ -41,8 +41,8 @@ TP.xs.time.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided it meets the criteria for a
+     * @method validate
+     * @summary Returns true if the object provided it meets the criteria for a
      *     valid time string with optional time zone data.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}
@@ -115,8 +115,8 @@ TP.xs.time.Type.defineMethod('validateFacetMaxExclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxExclusive
-     * @synopsis Tests the incoming value to see if its value is less than the
+     * @method validateFacetMaxExclusive
+     * @summary Tests the incoming value to see if its value is less than the
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -188,8 +188,8 @@ TP.xs.time.Type.defineMethod('validateFacetMaxInclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxInclusive
-     * @synopsis Tests the incoming value to see if it is less than or equal to
+     * @method validateFacetMaxInclusive
+     * @summary Tests the incoming value to see if it is less than or equal to
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -261,8 +261,8 @@ TP.xs.time.Type.defineMethod('validateFacetMinExclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMinExclusive
-     * @synopsis Tests the incoming value to verify that it is larger than the
+     * @method validateFacetMinExclusive
+     * @summary Tests the incoming value to verify that it is larger than the
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -334,8 +334,8 @@ TP.xs.time.Type.defineMethod('validateFacetMinInclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMinInclusive
-     * @synopsis Tests the incoming value to make sure its value is at least the
+     * @method validateFacetMinInclusive
+     * @summary Tests the incoming value to make sure its value is at least the
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.

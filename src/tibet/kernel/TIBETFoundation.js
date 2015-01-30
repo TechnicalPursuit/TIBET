@@ -29,9 +29,9 @@ TP.sys.defineMethod('$getContextGlobals',
 function(params, windowContext) {
 
     /**
-     * @name $getContextGlobals
-     * @synopsis Returns an Array of global property names.
-     * @description Computing this list is done by iterating over the context
+     * @method $getContextGlobals
+     * @summary Returns an Array of global property names.
+     * @summary Computing this list is done by iterating over the context
      *     object provided and filtering the resulting keys against known window
      *     slots and "exclusions" that don't represent global functionality. In
      *     other words, a property on a window that's truly a property of a
@@ -172,8 +172,8 @@ TP.sys.defineMethod('addCustomType',
 function(typeName, customType) {
 
     /**
-     * @name addCustomType
-     * @synopsis Adds the named custom type to the global type hash.
+     * @method addCustomType
+     * @summary Adds the named custom type to the global type hash.
      * @param {String} typeName The key under which to store the type.
      * @param {Object} customType The type to store.
      * @returns {Object} The receiver.
@@ -201,8 +201,8 @@ TP.sys.defineMethod('getCustomTypes',
 function() {
 
     /**
-     * @name getCustomTypes
-     * @synopsis Returns an object containing the names and type objects for all
+     * @method getCustomTypes
+     * @summary Returns an object containing the names and type objects for all
      *     custom types in the system.
      *
      *     NOTE: this object is considered private. You should not manipulate
@@ -238,8 +238,8 @@ TP.sys.defineMethod('getMissingTypes',
 function() {
 
     /**
-     * @name getMissingTypes
-     * @synopsis Returns a hash whose keys represent type names that TIBET was
+     * @method getMissingTypes
+     * @summary Returns a hash whose keys represent type names that TIBET was
      *     asked for (typically via require) which do not exist. Common cases
      *     are node wrappers for unknown XML tags and signal names for
      *     fabricated signals.
@@ -263,8 +263,8 @@ TP.sys.defineMethod('getTypeByName',
 function(aName, shouldFault) {
 
     /**
-     * @name getTypeByName
-     * @synopsis Returns a handle to the type with the name provided. If the
+     * @method getTypeByName
+     * @summary Returns a handle to the type with the name provided. If the
      *     type isn't found this method returns undefined. This method is used
      *     extensively to assist with dynamic loading of types.
      * @param {String} aName The name of the type to locate.
@@ -372,8 +372,8 @@ TP.sys.defineMethod('getTypes',
 function() {
 
     /**
-     * @name getTypes
-     * @synopsis Returns a hash containing the names and type objects which have
+     * @method getTypes
+     * @summary Returns a hash containing the names and type objects which have
      *     actual implementations in the current environment. This is a
      *     combination of custom types and those native types which have true
      *     type object implementations.
@@ -492,9 +492,9 @@ Function.Inst.defineMethod('bind',
 function(aThis) {
 
     /**
-     * @name bind
-     * @synopsis Binds a function to a particular context...for good :).
-     * @description Returns a function which ensures the receiver will be
+     * @method bind
+     * @summary Binds a function to a particular context...for good :).
+     * @summary Returns a function which ensures the receiver will be
      *     executed in the context of aThis. This is relevant any time the
      *     function contains a 'this' reference and might be invoked via a
      *     non-binding syntax. This is common when attempting to pass a method
@@ -576,11 +576,11 @@ Function.Inst.defineMethod('atEnd',
 function(aFlag) {
 
     /**
-     * @name atEnd
-     * @synopsis Combined setter/getter that allows functions used during
+     * @method atEnd
+     * @summary Combined setter/getter that allows functions used during
      *     iterations to be configured with the current loop index state, or
      *     checked for it inside your processing logic.
-     * @description The TIBET iteration process sets loop index state on the
+     * @summary The TIBET iteration process sets loop index state on the
      *     function being invoked so you can write more intelligent loops that
      *     can deal with edge cases. To do this the functions (which may be
      *     bound) drill down to set their values as low as possible in the
@@ -623,11 +623,11 @@ Function.Inst.defineMethod('atStart',
 function(aFlag) {
 
     /**
-     * @name atStart
-     * @synopsis Combined setter/getter that allows functions used during
+     * @method atStart
+     * @summary Combined setter/getter that allows functions used during
      *     iterations to be configured with the current loop index state, or
      *     checked for it inside your processing logic.
-     * @description The TIBET iteration process sets loop index state on the
+     * @summary The TIBET iteration process sets loop index state on the
      *     function being invoked so you can write more intelligent loops that
      *     can deal with edge cases. To do this the functions (which may be
      *     bound) drill down to set their values as low as possible in the
@@ -670,8 +670,8 @@ TP.definePrimitive('unbound',
 function(aFunction) {
 
     /**
-     * @name unbound
-     * @synopsis Returns the true function that would be invoked by a
+     * @method unbound
+     * @summary Returns the true function that would be invoked by a
      *     potentially bound function (or series of them). This method "drills
      *     down" through a set of bound functions until it reaches the
      *     originally bound function reference.
@@ -701,10 +701,10 @@ Function.Inst.defineMethod('afterUnwind',
 function() {
 
     /**
-     * @name afterUnwind
-     * @synopsis Causes the receiver to be executed when the stack has been
+     * @method afterUnwind
+     * @summary Causes the receiver to be executed when the stack has been
      *     completely 'unwound' (i.e. when we're back at the main event loop).
-     * @description The provides a convenient way for the receiver to execute at
+     * @summary The provides a convenient way for the receiver to execute at
      *     the 'top' of the event loop to allow for things like intermediate
      *     display to occur. If you want to pass arguments to the function
      *     itself, simply pass them as parameters to this method:
@@ -795,9 +795,9 @@ Function.Inst.defineMethod('fork',
 function(aDelay) {
 
     /**
-     * @name fork
-     * @synopsis Causes the receiver to be forked via a timeout or interval.
-     * @description Keep in mind that JS engines are NOT threaded, so the real
+     * @method fork
+     * @summary Causes the receiver to be forked via a timeout or interval.
+     * @summary Keep in mind that JS engines are NOT threaded, so the real
      *     value in this model is being able to chain routines so that gaps
      *     occur between processing cycles such that display can occur. The
      *     TIBET test harness, and boot system are examples of chaining that
@@ -847,8 +847,8 @@ Function.Inst.defineMethod('getArity',
 function() {
 
     /**
-     * @name getArity
-     * @synopsis Returns the arity (that is, the number of formally declared
+     * @method getArity
+     * @summary Returns the arity (that is, the number of formally declared
      *     parameters) to this function.
      * @returns {Number} The number of formally declared parameters to this
      *     function.
@@ -867,8 +867,8 @@ Function.Inst.defineMethod('getCommentLines',
 function() {
 
     /**
-     * @name getCommentLines
-     * @synopsis Parses the receiver's comment text and returns it as a set of
+     * @method getCommentLines
+     * @summary Parses the receiver's comment text and returns it as a set of
      *     lines, one per JSDoc tag found in the comment. The resulting lines
      *     can be individually parsed by tag-specific line parsers as part of a
      *     larger comment processing operation.
@@ -880,7 +880,7 @@ function() {
      *              line 5 back out
      *          line 6
      *          line 7
-     * @return {Array.<String>} The comment lines in order from the comment.
+     * @returns {Array.<String>} The comment lines in order from the comment.
      */
 
     var text,
@@ -1005,9 +1005,9 @@ Function.Inst.defineMethod('getCommentText',
 function() {
 
     /**
-     * @name getCommentText
-     * @synopsis Returns the JSDoc comment text for the receiver, if any.
-     * @return {String} The comment text.
+     * @method getCommentText
+     * @summary Returns the JSDoc comment text for the receiver, if any.
+     * @returns {String} The comment text.
      */
 
     var text,
@@ -1035,13 +1035,13 @@ Function.Inst.defineMethod('getMethodPatch',
 function(methodText) {
 
     /**
-     * @name getMethodPatch
-     * @synopsis Returns patch file content suitable for applying to the
+     * @method getMethodPatch
+     * @summary Returns patch file content suitable for applying to the
      *     receiver's source file. The JsDiff package must be loaded for this
      *     operation to work. The JsDiff package is typically loaded by the
      *     Sherpa config.
      * @param {String} methodText The new method text.
-     * @return {String} A string representing patch file content.
+     * @returns {String} A string representing patch file content.
      */
 
     var path,
@@ -1118,10 +1118,10 @@ Function.Inst.defineMethod('getMethodSourceHead',
 function() {
 
     /**
-     * @name getMethodSourceHead
-     * @synopsis Returns a String that is a representation of the 'source head'
+     * @method getMethodSourceHead
+     * @summary Returns a String that is a representation of the 'source head'
      *     of the canonical TIBET way of adding a method to the system.
-     * @description NOTE: this method produces a representation which *must* be
+     * @summary NOTE: this method produces a representation which *must* be
      *     followed with a Function statement (i.e. 'function() {...}') and a
      *     closing ')'.
      * @returns {String} A representation of the 'source method head' of the
@@ -1173,8 +1173,8 @@ Function.Inst.defineMethod('getParameterNames',
 function() {
 
     /**
-     * @name getParameterNames
-     * @synopsis Returns an Array of the formal parameter names of this
+     * @method getParameterNames
+     * @summary Returns an Array of the formal parameter names of this
      *     function.
      * @returns {Array} The formal parameter names to this function.
      */
@@ -1221,8 +1221,8 @@ Function.Inst.defineMethod('getSignature',
 function() {
 
     /**
-     * @name getSignature
-     * @synopsis Returns the "method signature" or function calling signature
+     * @method getSignature
+     * @summary Returns the "method signature" or function calling signature
      *     for the receiver.
      * @returns {String} The signature string.
      */
@@ -1300,8 +1300,8 @@ TP.defineMetaInstMethod('asType',
 function() {
 
     /**
-     * @name asType
-     * @synopsis Returns the receiver as a Type. If the receiver *is* a type
+     * @method asType
+     * @summary Returns the receiver as a Type. If the receiver *is* a type
      *     this returns the receiver. If the receiver is a String the string
      *     content is used as a typename and an attempt is made to return that
      *     type. If the receiver is an instance of anything other than String
@@ -1335,8 +1335,8 @@ TP.defineMetaInstMethod('getSubtypes',
 function(shouldDescend) {
 
     /**
-     * @name getSubtypes
-     * @synopsis Returns an array containing the subtypes of the receiver. When
+     * @method getSubtypes
+     * @summary Returns an array containing the subtypes of the receiver. When
      *     working with immediate children (no descent), you should consider
      *     this array private and avoid manipulating it directly.
      * @param {Boolean} shouldDescend A flag controlling whether the list
@@ -1405,8 +1405,8 @@ TP.defineMetaInstMethod('getSubtypeNames',
 function(shouldDescend) {
 
     /**
-     * @name getSubtypeNames
-     * @synopsis Returns an array containing the subtype names of the receiver.
+     * @method getSubtypeNames
+     * @summary Returns an array containing the subtype names of the receiver.
      *     The default list contains names of immediate subtypes.
      * @param {Boolean} shouldDescend A flag controlling whether the list
      *     includes all subtypes or only immediate children.
@@ -1466,8 +1466,8 @@ TP.defineMetaInstMethod('getSupertype',
 function() {
 
     /**
-     * @name getSupertype
-     * @synopsis Returns the supertype of the receiver.
+     * @method getSupertype
+     * @summary Returns the supertype of the receiver.
      * @returns {Object} The supertype of the receiver.
      */
 
@@ -1489,8 +1489,8 @@ TP.defineMetaInstMethod('getSupertypeName',
 function() {
 
     /**
-     * @name getSupertypeName
-     * @synopsis Returns the supertype name of the receiver.
+     * @method getSupertypeName
+     * @summary Returns the supertype name of the receiver.
      * @returns {String} The supertype name of the receiver.
      */
 
@@ -1513,8 +1513,8 @@ TP.defineMetaInstMethod('getSupertypes',
 function() {
 
     /**
-     * @name getSupertypes
-     * @synopsis Returns an array containing the supertypes of the receiver. If
+     * @method getSupertypes
+     * @summary Returns an array containing the supertypes of the receiver. If
      *     the receiver is an 'instance' then the supertypes of the receiver's
      *     types are returned. You should consider this array private and avoid
      *     manipulating it. The first element in this array is the immediate
@@ -1567,8 +1567,8 @@ TP.defineMetaInstMethod('getSupertypeNames',
 function() {
 
     /**
-     * @name getSupertypeNames
-     * @synopsis Returns an array containing the supertype names of the
+     * @method getSupertypeNames
+     * @summary Returns an array containing the supertype names of the
      *     receiver.
      * @returns {Array} An array containing the supertype names of the receiver.
      */
@@ -1618,11 +1618,11 @@ TP.defineMetaInstMethod('getSignalName',
 function() {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the 'signal name' of the receiver. If the receiver is
+     * @method getSignalName
+     * @summary Returns the 'signal name' of the receiver. If the receiver is
      *     an Object this is equivalent to the escaped type name. If the
      *     receiver is a String the content of the string is returned.
-     * @description This method allows Objects to function as Signals within the
+     * @summary This method allows Objects to function as Signals within the
      *     framework so that the individual signal types don't have to exist
      *     when the signal is thrown.
      * @returns {String} The signal name of the receiver.
@@ -1641,11 +1641,11 @@ Number.Inst.defineMethod('getSignalName',
 function() {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the 'signal name' of the receiver. If the receiver is
+     * @method getSignalName
+     * @summary Returns the 'signal name' of the receiver. If the receiver is
      *     an Object this is equivalent to getTypeName(). If the receiver is a
      *     String the content of the string is returned.
-     * @description This method allows Numbers to function as Signals within the
+     * @summary This method allows Numbers to function as Signals within the
      *     framework so that the individual signal types don't have to exist
      *     when the signal is thrown.
      * @returns {String} The signal name of the receiver.
@@ -1663,11 +1663,11 @@ String.Inst.defineMethod('getSignalName',
 function() {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the 'signal name' of the receiver. If the receiver is
+     * @method getSignalName
+     * @summary Returns the 'signal name' of the receiver. If the receiver is
      *     an Object this is equivalent to getTypeName(). If the receiver is a
      *     String the content of the string is returned.
-     * @description This method allows Strings to function as Signals within the
+     * @summary This method allows Strings to function as Signals within the
      *     framework so that the individual signal types don't have to exist
      *     when the signal is thrown.
      * @returns {String} The signal name of the receiver.
@@ -1696,8 +1696,8 @@ TP.definePrimitive('isMemberOf',
 function(anObject, aType) {
 
     /**
-     * @name isMemberOf
-     * @synopsis Returns true if anObject is a direct member of aType. The test
+     * @method isMemberOf
+     * @summary Returns true if anObject is a direct member of aType. The test
      *     performed is both on identity and name so that certain forms of 'type
      *     spoofing' can be done to get around not being able to create direct
      *     subtypes of native types in certain browsers.
@@ -1802,8 +1802,8 @@ TP.definePrimitive('isKindOf',
 function(anObject, aType) {
 
     /**
-     * @name isKindOf
-     * @synopsis Returns true if TP.isMemberOf(anObject, aType) is true or if
+     * @method isKindOf
+     * @summary Returns true if TP.isMemberOf(anObject, aType) is true or if
      *     TP.isMemberOf() returns true for any subtypes of aType.
      * @param {Object} anObject The object to test.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
@@ -1845,8 +1845,8 @@ TP.definePrimitive('isSubtypeOf',
 function(anObject, aType) {
 
     /**
-     * @name isSubtypeOf
-     * @synopsis Returns true if the receiver is a subtype of the type provided.
+     * @method isSubtypeOf
+     * @summary Returns true if the receiver is a subtype of the type provided.
      *     This is always false for 'instances', which an essential difference
      *     between this function and TP.isKindOf().
      * @param {Object} anObject The object to test.
@@ -1876,13 +1876,13 @@ TP.definePrimitive('isURI',
 function(anObject) {
 
     /**
-     * @name isURI
-     * @synopsis Returns true if the object provided is either a valid instance
+     * @method isURI
+     * @summary Returns true if the object provided is either a valid instance
      *     of TP.core.URI (or a subtype) or a String whose content appears
      *     likely to represent a URI. The test is performed using the
      *     TP.regex.URI_LIKELY regular expression, which is *not* a strict
      *     attempt to parse the URI.
-     * @description Scheme-specific differences inherent in URI definitions make
+     * @summary Scheme-specific differences inherent in URI definitions make
      *     it impossible to do a reasonable job without using subtypes specific
      *     to each scheme (which TIBET supports but which it does not leverage
      *     for this method).
@@ -1930,10 +1930,10 @@ TP.sys.defineMethod('trapRecursion',
 function(shouldNotify, shouldThrow, stackDepth) {
 
     /**
-     * @name trapRecursion
-     * @synopsis Terminates TIBET execution and optionally alerts the current
+     * @method trapRecursion
+     * @summary Terminates TIBET execution and optionally alerts the current
      *     TIBET call stack when recursion is detected.
-     * @description Nav4 in particular is 'unhappy' with recursion. In fact,
+     * @summary Nav4 in particular is 'unhappy' with recursion. In fact,
      *     it'll crash every time. Using a binary chop on your source can often
      *     locate the offending line but can't help you understand how the
      *     recursion is occuring. In an OO system like TIBET the recursion loop
@@ -1990,8 +1990,8 @@ function(shouldNotify, shouldThrow, stackDepth) {
 TP.sys.onerror = function(msg, url, line, column, errorObj) {
 
     /**
-     * @name onerror
-     * @synopsis Captures global errors and outputs them appropriately. This
+     * @method onerror
+     * @summary Captures global errors and outputs them appropriately. This
      *     hook allows TIBET to capture native JavaScript errors and avoid
      *     reporting them via the normal browser mechanism. This keeps users
      *     from being bombarded by messages about JS errors while allowing
@@ -2083,8 +2083,8 @@ TP.definePrimitive('queue',
 function(anOrigin, aSignal, aPayload, aPolicy, aType) {
 
     /**
-     * @name queue
-     * @synopsis Provides a way to queue a signal for processing. This method is
+     * @method queue
+     * @summary Provides a way to queue a signal for processing. This method is
      *     a convenience for signal handlers which don't want to cause signals
      *     they need to throw to be processed until they return. The various
      *     signal() calls check the queue prior to returning and handle any
@@ -2114,8 +2114,8 @@ TP.defineMetaInstMethod('queue',
 function(aSignal, aPayload, aPolicy, aType) {
 
     /**
-     * @name queue
-     * @synopsis Queues a set of signal parameters for processing at the end of
+     * @method queue
+     * @summary Queues a set of signal parameters for processing at the end of
      *     the current signal handling cycle.
      * @param {TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object.
@@ -2134,11 +2134,11 @@ TP.definePrimitive('signal',
 function(anOrigin, aSignal, aPayload, aPolicy, aType) {
 
     /**
-     * @name signal
-     * @synopsis Signals activity to registered observers. Any additional
+     * @method signal
+     * @summary Signals activity to registered observers. Any additional
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
-     * @description This bootstrap version of this method packages the signals
+     * @summary This bootstrap version of this method packages the signals
      *     into objects and queues them for processing by later implementations
      *     and logs the activity to the TIBET activity log. Once TIBET has
      *     loaded further a more robust version that performs the actual
@@ -2193,8 +2193,8 @@ TP.defineMetaInstMethod('signal',
 function(aSignal, aPayload, aPolicy, aType) {
 
     /**
-     * @name signal
-     * @synopsis Signals activity to registered observers using the receiver as
+     * @method signal
+     * @summary Signals activity to registered observers using the receiver as
      *     the origin of the signal.
      * @param {TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object.
@@ -2214,8 +2214,8 @@ TP.definePrimitive('ignore',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name ignore
-     * @synopsis Causes notifications to a particular handler to stop. If the
+     * @method ignore
+     * @summary Causes notifications to a particular handler to stop. If the
      *     handler is null all notifications from that origin/signal pair are
      *     removed regardless of the handler in question.
      * @param {Object|Array} anOrigin The originator(s) to be ignored.
@@ -2243,8 +2243,8 @@ TP.defineMetaInstMethod('ignore',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name ignore
-     * @synopsis Causes notifications to a particular handler to stop. If the
+     * @method ignore
+     * @summary Causes notifications to a particular handler to stop. If the
      *     handler is null all notifications from that origin/signal pair are
      *     removed regardless of the handler in question. If no handler is
      *     provided the receiver is assumed to be the handler.
@@ -2269,8 +2269,8 @@ TP.definePrimitive('observe',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name observe
-     * @synopsis Causes notifications to a particular handler to start. The
+     * @method observe
+     * @summary Causes notifications to a particular handler to start. The
      *     origin and signal combination define how this occurs. Using null for
      *     either value means "any" and sets up a generic observation. The
      *     policy is a "registration" policy that defines how the observation
@@ -2300,8 +2300,8 @@ TP.defineMetaInstMethod('observe',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
-     * @name observe
-     * @synopsis Causes notifications to a particular handler to start. The
+     * @method observe
+     * @summary Causes notifications to a particular handler to start. The
      *     origin and signal combination define how this occurs. Using null for
      *     either value means "any" and sets up a generic observation. The
      *     policy is a "registration" policy that defines how the observation
@@ -2328,8 +2328,8 @@ TP.definePrimitive('resume',
 function(anOrigin, aSignal) {
 
     /**
-     * @name resume
-     * @synopsis Causes notifications matching the criteria to resume. Undoes
+     * @method resume
+     * @summary Causes notifications matching the criteria to resume. Undoes
      *     the effect of having called TP.suspend().
      * @param {Object|Array} anOrigin The origin(s) for signals to resume.
      * @param {TP.sig.Signal|Array} aSignal The signal(s) to resume.
@@ -2352,8 +2352,8 @@ TP.defineMetaInstMethod('resume',
 function(aSignal) {
 
     /**
-     * @name resume
-     * @synopsis Causes notifications of the signal provided to resume. Undoes
+     * @method resume
+     * @summary Causes notifications of the signal provided to resume. Undoes
      *     the effect of having called suspend(). The origin being resumed is
      *     the receiver.
      * @param {TP.sig.Signal|Array} aSignal The signal(s) to resume.
@@ -2374,8 +2374,8 @@ TP.definePrimitive('suspend',
 function(anOrigin, aSignal) {
 
     /**
-     * @name suspend
-     * @synopsis Causes notifications matching the criteria to pause. No
+     * @method suspend
+     * @summary Causes notifications matching the criteria to pause. No
      *     registrations are removed but no signaling is performed until a
      *     TP.resume() is called.
      * @param {Object|Array} anOrigin The origin(s) to suspend.
@@ -2399,8 +2399,8 @@ TP.defineMetaInstMethod('suspend',
 function(aSignal) {
 
     /**
-     * @name suspend
-     * @synopsis Causes notifications of aSignal to pause from the receiver.
+     * @method suspend
+     * @summary Causes notifications of aSignal to pause from the receiver.
      *     Calling resume() with the same signal type will turn them back on.
      * @param {TP.sig.Signal|Array} aSignal The signal(s) to suspend.
      * @returns {Object} The registration.
@@ -2420,8 +2420,8 @@ TP.defineMetaInstMethod('defineHandler',
 function(aHandlerName, aHandler) {
 
     /**
-     * @name defineHandler
-     * @synopsis Defines a new event handler, essentially a method with a very
+     * @method defineHandler
+     * @summary Defines a new event handler, essentially a method with a very
      *     specific naming convention. Handler names are always defined in the
      *     format: handle{Signal}[From{Origin}][When{State] which allows the
      *     system to dispatch based on signal, source, and state. This method
@@ -2468,7 +2468,7 @@ function() {
     /**
      * Returns a hash containing any handlers defined on the receiver. Note that
      * handler definitions are local to the receiver and are not inherited.
-     * @return {TP.lang.Hash} The receiver's local handler dictionary.
+     * @returns {TP.lang.Hash} The receiver's local handler dictionary.
      */
 
     // TODO: work on reflection aspect to let us find inherited handlers.
@@ -2481,9 +2481,9 @@ TP.sys.defineMethod('fireNextSignal',
 function() {
 
     /**
-     * @name fireNextSignal
-     * @synopsis Activates (fires) the next signal in the signal queue.
-     * @description This method is called on kernel finalization and by the
+     * @method fireNextSignal
+     * @summary Activates (fires) the next signal in the signal queue.
+     * @summary This method is called on kernel finalization and by the
      *     signal call as it completes each signal, forming a kind of event loop
      *     which terminates when no pending signals exist.
      */
@@ -2518,8 +2518,8 @@ Array.Inst.defineMethod('isOriginSet',
 function(aFlag) {
 
     /**
-     * @name isOriginSet
-     * @synopsis Returns true if the receiver has been flagged as a signal
+     * @method isOriginSet
+     * @summary Returns true if the receiver has been flagged as a signal
      *     origin set. If aFlag is provided it will set this value.
      * @returns {Boolean} Whether or not the receiving Array has been set to be
      *     an origin set.
@@ -2549,9 +2549,9 @@ TP.defineMetaInstMethod('$getInstPropertyScope',
 function(aName) {
 
     /**
-     * @name $getInstPropertyScope
-     * @synopsis Returns the 'scope' of the named property.
-     * @description Note that this version of this method is invoked for
+     * @method $getInstPropertyScope
+     * @summary Returns the 'scope' of the named property.
+     * @summary Note that this version of this method is invoked for
      *     instances which are not types or prototypes, so this won't be used
      *     by TP.ObjectProto, TP.FunctionProto, or any of the prototypes created
      *     by TIBET.
@@ -2604,9 +2604,9 @@ TP.defineMetaInstMethod('$getPrototypePropertyScope',
 function(aName) {
 
     /**
-     * @name $getPrototypePropertyScope
-     * @synopsis Returns the 'scope' of the named property.
-     * @description Note that this version of this method is invoked for
+     * @method $getPrototypePropertyScope
+     * @summary Returns the 'scope' of the named property.
+     * @summary Note that this version of this method is invoked for
      *     objects which are used as prototypes.
      * @param {String} aName The property to check.
      * @returns {String} TP.INTRODUCED, TP.INHERITED, TP.OVERRIDDEN
@@ -2688,9 +2688,9 @@ TP.defineMetaTypeMethod('$getTypePropertyScope',
 function(aName) {
 
     /**
-     * @name $getTypePropertyScope
-     * @synopsis Returns the 'scope' of the named property.
-     * @description Note that this version of this method is invoked for
+     * @method $getTypePropertyScope
+     * @summary Returns the 'scope' of the named property.
+     * @summary Note that this version of this method is invoked for
      *     function instances which are native types, meaning they are types
      *     created via native JavaScript semantics. These are special in that
      *     they have a unique inheritance chain they all inherit from the same
@@ -2737,9 +2737,9 @@ TP.lang.RootObject.Type.defineMethod('$getTypePropertyScope',
 function(aName) {
 
     /**
-     * @name $getTypePropertyScope
-     * @synopsis Returns the 'scope' of the named property.
-     * @description Note that this version of this method is invoked for TIBET
+     * @method $getTypePropertyScope
+     * @summary Returns the 'scope' of the named property.
+     * @summary Note that this version of this method is invoked for TIBET
      *     type objects only; the native types will invoke the version on
      *     TP.FunctionProto. These objects are TIBET type objects, meaning they
      *     have the strange duality of being both a type and an instance in
@@ -2794,8 +2794,8 @@ TP.defineMetaInstMethod('getPropertyScope',
 function(aName, skipChecks) {
 
     /**
-     * @name getPropertyScope
-     * @synopsis Returns the 'scope' of the named property. The scope returned
+     * @method getPropertyScope
+     * @summary Returns the 'scope' of the named property. The scope returned
      *     will be one of the get*Interface() constants such as TP.DNU,
      *     TP.INTRODUCED, TP.INHERITED, TP.OVERRIDDEN, TP.LOCAL, TP.GLOBAL, or
      *     TP.NONE. Note that this method leverages a number of more primitive
@@ -2853,8 +2853,8 @@ TP.defineMetaInstMethod('$getInterface',
 function(aFilter) {
 
     /**
-     * @name $getInterface
-     * @synopsis Returns an array containing the keys of the receiver, filtered
+     * @method $getInterface
+     * @summary Returns an array containing the keys of the receiver, filtered
      *     according to a filtering specification. The valid filtering specs are
      *     listed with TP.SLOT_FILTERS, filtered to match the desired subset of
      *     keys.
@@ -3050,8 +3050,8 @@ TP.defineMetaInstMethod('getInterface',
 function(aFilter) {
 
     /**
-     * @name getInterface
-     * @synopsis Returns a list of the 'slots' on the receiver. This is what you
+     * @method getInterface
+     * @summary Returns a list of the 'slots' on the receiver. This is what you
      *     get if you use for/in on an array rather than for() -- the properties
      *     rather than the indexes of content. See $getInterface for more
      *     information.
@@ -3125,8 +3125,8 @@ TP.defineMetaInstMethod('getInstInterface',
 function(aFilter) {
 
     /**
-     * @name getInstInterface
-     * @synopsis Returns the slot names found on instances of the receiver which
+     * @method getInstInterface
+     * @summary Returns the slot names found on instances of the receiver which
      *     match the filter provided.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
@@ -3159,8 +3159,8 @@ TP.defineMetaInstMethod('getLocalInterface',
 function(aFilter) {
 
     /**
-     * @name getLocalInterface
-     * @synopsis Returns the slot names found directly on the receiver which
+     * @method getLocalInterface
+     * @summary Returns the slot names found directly on the receiver which
      *     match the filter provided.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
@@ -3176,8 +3176,8 @@ TP.defineMetaInstMethod('getTypeInterface',
 function(aFilter) {
 
     /**
-     * @name getTypeInterface
-     * @synopsis Returns the slot names found on the receiver's Type which match
+     * @method getTypeInterface
+     * @summary Returns the slot names found on the receiver's Type which match
      *     the filter provided.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
@@ -3210,8 +3210,8 @@ TP.defineMetaInstMethod('getKeys',
 function(aFilterName) {
 
     /**
-     * @name getKeys
-     * @synopsis Returns the set of keys requested for the receiver. The filter
+     * @method getKeys
+     * @summary Returns the set of keys requested for the receiver. The filter
      *     provided should be one of the String keys for get*Interface()
      *     filtering.
      * @param {String} aFilterName A get*Interface() filter spec.
@@ -3239,8 +3239,8 @@ Array.Inst.defineMethod('getKeys',
 function(aFilterName, includeUndefined) {
 
     /**
-     * @name getKeys
-     * @synopsis Top-level key-getter for Array instances. Returns the 'indexes'
+     * @method getKeys
+     * @summary Top-level key-getter for Array instances. Returns the 'indexes'
      *     or 'keys' of the array. This version returns all keys. An interesting
      *     alternative is only returning keys whose values are non-null (see
      *     TP.core.Mask.getMasks() for an example).
@@ -3274,8 +3274,8 @@ String.Inst.defineMethod('getKeys',
 function() {
 
     /**
-     * @name getKeys
-     * @synopsis Returns the set of keys which represent attribute values for
+     * @method getKeys
+     * @summary Returns the set of keys which represent attribute values for
      *     the receiver. This is supported on String to allow it to behave as a
      *     collection of characters.
      * @returns {Array} An array containing the keys of the receiver.
@@ -3298,8 +3298,8 @@ TP.defineMetaInstMethod('getSize',
 function(aFilterName) {
 
     /**
-     * @name getSize
-     * @synopsis Returns the size of the receiver. This is thought of as the
+     * @method getSize
+     * @summary Returns the size of the receiver. This is thought of as the
      *     number of attributes the receiver contains unless a different filter
      *     is provided.
      * @param {String} aFilterName A get*Interface() filter.
@@ -3321,8 +3321,8 @@ String.Inst.defineMethod('getSize',
 function() {
 
     /**
-     * @name getSize
-     * @synopsis Returns the size of the receiver. For simple strings this is
+     * @method getSize
+     * @summary Returns the size of the receiver. For simple strings this is
      *     the length.
      * @returns {Number} The receiver's size.
      */
@@ -3336,8 +3336,8 @@ TP.defineMetaInstMethod('getValues',
 function(aFilterName) {
 
     /**
-     * @name getValues
-     * @synopsis Returns an array containing the values for the objects'
+     * @method getValues
+     * @summary Returns an array containing the values for the objects'
      *     attributes. The filter provided determines which set of keys is used
      *     to acquire the values.
      * @param {String} aFilterName A get*Interface() filter.
@@ -3364,8 +3364,8 @@ Array.Inst.defineMethod('getValues',
 function() {
 
     /**
-     * @name getValues
-     * @synopsis Top-level value-getter. For Arrays the values are contained in
+     * @method getValues
+     * @summary Top-level value-getter. For Arrays the values are contained in
      *     the array itself.
      * @returns {Array} An array containing the receiver's values.
      */
@@ -3379,8 +3379,8 @@ String.Inst.defineMethod('getValues',
 function() {
 
     /**
-     * @name getValues
-     * @synopsis Returns an array containing the characters in the receiver.
+     * @method getValues
+     * @summary Returns an array containing the characters in the receiver.
      * @returns {Array} An array of characters.
      */
 
@@ -3393,8 +3393,8 @@ TP.defineMetaInstMethod('hasKey',
 function(aKey) {
 
     /**
-     * @name hasKey
-     * @synopsis Returns true if aKey has been defined for the receiver. This is
+     * @method hasKey
+     * @summary Returns true if aKey has been defined for the receiver. This is
      *     analagous to hasOwnProperty for most non-collection types but is
      *     overridden by collections.
      * @param {String} aKey The string key to test for.
@@ -3410,8 +3410,8 @@ Array.Inst.defineMethod('hasKey',
 function(aKey, includeUndefined) {
 
     /**
-     * @name hasKey
-     * @synopsis Returns true if aKey has been defined for the receiver. For an
+     * @method hasKey
+     * @summary Returns true if aKey has been defined for the receiver. For an
      *     array there are a couple of ways to look at this. First is whether
      *     the Array's length is greater than the key (which should be a
      *     number). Second is whether the value at that key (if < length) is
@@ -3447,8 +3447,8 @@ TP.defineMetaInstMethod('inherits',
 function(aName) {
 
     /**
-     * @name inherits
-     * @synopsis Returns true if the name represents an inherited property of
+     * @method inherits
+     * @summary Returns true if the name represents an inherited property of
      *     the receiver.
      * @param {String} aName The property name to check.
      * @returns {Boolean} Whether or not the property is an inherited property.
@@ -3463,8 +3463,8 @@ TP.defineMetaInstMethod('inheritsFromIntroducer',
 function(aName) {
 
     /**
-     * @name inheritsFromIntroducer
-     * @synopsis Returns true if the name represents an inherited property of
+     * @method inheritsFromIntroducer
+     * @summary Returns true if the name represents an inherited property of
      *     the receiver that isn't altered between the original introducer and
      *     the receiver.
      * @param {String} aName The property name to check.
@@ -3498,8 +3498,8 @@ TP.defineMetaInstMethod('introduces',
 function(aName) {
 
     /**
-     * @name introduces
-     * @synopsis Returns true if the name represents an introduced property of
+     * @method introduces
+     * @summary Returns true if the name represents an introduced property of
      *     the receiver.
      * @param {String} aName The property name to check.
      * @returns {Boolean} Whether or not the property was introduced by the
@@ -3515,9 +3515,9 @@ TP.defineMetaInstMethod('isEmpty',
 function(aFilterName) {
 
     /**
-     * @name isEmpty
-     * @synopsis Returns whether or not the receiver is considered 'empty'.
-     * @description At this level, this uses the number of attributes the
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
+     * @summary At this level, this uses the number of attributes the
      *     receiver contains unless a different filter is provided and compares
      *     the size of that to 0.
      * @param {String} aFilterName A get*Interface() filter.
@@ -3533,8 +3533,8 @@ Array.Inst.defineMethod('isEmpty',
 function() {
 
     /**
-     * @name isEmpty
-     * @synopsis Returns whether or not the receiver is considered 'empty'.
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
      * @returns {Boolean} Whether or not the receiver is empty.
      */
 
@@ -3547,8 +3547,8 @@ String.Inst.defineMethod('isEmpty',
 function() {
 
     /**
-     * @name isEmpty
-     * @synopsis Returns whether or not the receiver is considered 'empty'.
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
      * @returns {Boolean} Whether or not the receiver is empty.
      */
 
@@ -3561,8 +3561,8 @@ TP.defineMetaInstMethod('overrides',
 function(aName) {
 
     /**
-     * @name overrides
-     * @synopsis Returns true if the name represents an overridden property of
+     * @method overrides
+     * @summary Returns true if the name represents an overridden property of
      *     the receiver.
      * @param {String} aName The property name to check.
      * @returns {Boolean} Whether or not the property was overridden by the
@@ -3591,8 +3591,8 @@ TP.defineMetaInstMethod('$$isPair',
 function() {
 
     /**
-     * @name $$isPair
-     * @synopsis Returns true if the object is considered an ordered pair.
+     * @method $$isPair
+     * @summary Returns true if the object is considered an ordered pair.
      *     Objects (and TP.lang.Hashes) are never considered ordered pairs.
      * @returns {Boolean} Whether or not the receiver is considered to be an
      *     ordered pair.
@@ -3607,10 +3607,10 @@ Array.Inst.defineMethod('$$isPair',
 function() {
 
     /**
-     * @name $$isPair
-     * @synopsis Returns true if the receiver can be thought of as an ordered
+     * @method $$isPair
+     * @summary Returns true if the receiver can be thought of as an ordered
      *     pair.
-     * @description For arrays an ordered pair is a two-element array, however
+     * @summary For arrays an ordered pair is a two-element array, however
      *     an array whose 'key' i.e. the first() element is null will not be
      *     considered a valid pair.
      * @returns {Boolean} Whether or not the receiver is considered to be an
@@ -3626,10 +3626,10 @@ TP.defineCommonMethod('first',
 function(aNumber) {
 
     /**
-     * @name first
-     * @synopsis Returns the first N items from the receiver, where N defaults
+     * @method first
+     * @summary Returns the first N items from the receiver, where N defaults
      *     to 1.
-     * @description This method only returns consistent results on ordered
+     * @summary This method only returns consistent results on ordered
      *     collections, but it should always successfully return N items if
      *     they're available.
      * @param {Number} aNumber The number of items to return. When N is greater
@@ -3654,12 +3654,12 @@ Array.Inst.defineMethod('first',
 function(aNumber) {
 
     /**
-     * @name first
-     * @synopsis Returns the first N items of the receiver, where N defaults to
+     * @method first
+     * @summary Returns the first N items of the receiver, where N defaults to
      *     1.
      * @param {Number} aNumber The number of items to return. When N is greater
      *     than 1 the return value is a new array.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} The first N items in this array.
      */
 
@@ -3678,8 +3678,8 @@ String.Inst.defineMethod('first',
 function(aNumber) {
 
     /**
-     * @name first
-     * @synopsis Returns the first N characters of the receiver, where N
+     * @method first
+     * @summary Returns the first N characters of the receiver, where N
      *     defaults to 1.
      * @param {Number} aNumber The number of characters to return. When N is
      *     greater than 1 the return value is a string with that length (if
@@ -3700,10 +3700,10 @@ TP.defineCommonMethod('last',
 function(aNumber) {
 
     /**
-     * @name last
-     * @synopsis Returns the last N items from the receiver, where N defaults to
+     * @method last
+     * @summary Returns the last N items from the receiver, where N defaults to
      *     1.
-     * @description This method only returns consistent results on ordered
+     * @summary This method only returns consistent results on ordered
      *     collections, but it should always successfully return N items if
      *     they're available.
      * @param {Number} aNumber The number of items to return. When N is greater
@@ -3728,12 +3728,12 @@ Array.Inst.defineMethod('last',
 function(aNumber) {
 
     /**
-     * @name last
-     * @synopsis Returns the last N items of the receiver, where N defaults to
+     * @method last
+     * @summary Returns the last N items of the receiver, where N defaults to
      *     1.
      * @param {Number} aNumber The number of items to return. When N is greater
      *     than 1 the return value is a new array.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} The last N items in this array.
      */
 
@@ -3752,8 +3752,8 @@ String.Inst.defineMethod('last',
 function(aNumber) {
 
     /**
-     * @name last
-     * @synopsis Returns the last N characters of the receiver, where N defaults
+     * @method last
+     * @summary Returns the last N characters of the receiver, where N defaults
      *     to 1.
      * @param {Number} aNumber The number of characters to return. When N is
      *     greater than 1 the return value is a string with that length (if
@@ -3774,11 +3774,11 @@ TP.defineMetaInstMethod('getPairs',
 function(aSelectFunction) {
 
     /**
-     * @name getPairs
+     * @method getPairs
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
-     * @raises TP.sig.InvalidPairRequest
+     * @exception TP.sig.InvalidPairRequest
      * @returns {Array} The array of ordered pairs.
      * @asbstract Returns an array of ordered pairs generated from the receiver.
      *     The individual pairs are [key,value] arrays where the keys are
@@ -3800,14 +3800,14 @@ Array.Inst.defineMethod('getPairs',
 function(aSelectFunction) {
 
     /**
-     * @name getPairs
-     * @synopsis Returns the ordered pairs contained in the receiver, or implied
+     * @method getPairs
+     * @summary Returns the ordered pairs contained in the receiver, or implied
      *     by the receiver's key/value content. For example, an array of the
      *     form [['a',1], ['b',2]] will simply return its content wrapped in a
      *     new container, while an array of the form ['a','b','c'] will return
      *     [['a','b'],['c',null]]. This is the inverse operation a flatten would
      *     have had on the results of a getPairs on a TP.lang.Hash.
-     * @description To allow Arrays to serve as a form of interchange format
+     * @summary To allow Arrays to serve as a form of interchange format
      *     between collections of various types they have special behavior when
      *     it comes to managing "items" and "pairs". In particular, although the
      *     array's "keys" could be thought of as its numeric indexes the
@@ -3882,10 +3882,10 @@ String.Inst.defineMethod('getPairs',
 function() {
 
     /**
-     * @name getPairs
-     * @description For a String this is an invalid operation and an
+     * @method getPairs
+     * @summary For a String this is an invalid operation and an
      *     TP.sig.InvalidPairRequest exception will be raised.
-     * @raises TP.sig.InvalidPairRequest
+     * @exception TP.sig.InvalidPairRequest
      * @asbstract Returns an array of ordered pairs generated from the receiver.
      */
 
@@ -3898,11 +3898,11 @@ TP.defineMetaInstMethod('getKVPairs',
 function(aSelectFunction) {
 
     /**
-     * @name getKVPairs
+     * @method getKVPairs
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
-     * @raises TP.sig.InvalidPairRequest
+     * @exception TP.sig.InvalidPairRequest
      * @returns {Array} The array of ordered pairs.
      * @asbstract Returns an array of ordered pairs generated from the receiver.
      *     The individual pairs are [key,value] arrays where the keys are
@@ -3924,9 +3924,9 @@ Array.Inst.defineMethod('getKVPairs',
 function(aSelectFunction) {
 
     /**
-     * @name getKVPairs
-     * @synopsis Returns the key/value pairs contained in the receiver.
-     * @description For Arrays this returns an array of ordered pairs where each
+     * @method getKVPairs
+     * @summary Returns the key/value pairs contained in the receiver.
+     * @summary For Arrays this returns an array of ordered pairs where each
      *     ordered pair consists of a numerical index and the value at that
      *     index. This is a more "inspection string" format used specifically
      *     for dumping key/value data.
@@ -3976,8 +3976,8 @@ TP.defineMetaInstMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} The receiver's dump String representation.
      */
@@ -4048,8 +4048,8 @@ TP.defineMetaInstMethod('asInspectString',
 function() {
 
     /**
-     * @name asInspectString
-     * @synopsis Returns a string representation of the receiver which is
+     * @method asInspectString
+     * @summary Returns a string representation of the receiver which is
      *     suitable for use in inspecting the keys, values, and other relevant
      *     information of the receiver.
      * @returns {String}
@@ -4104,8 +4104,8 @@ TP.defineMetaInstMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} The receiver's 'pretty print' String representation.
      */
@@ -4180,8 +4180,8 @@ TP.defineMetaInstMethod('asRecursionString',
 function() {
 
     /**
-     * @name asRecursionString
-     * @synopsis Returns a string representation of the receiver which is used
+     * @method asRecursionString
+     * @summary Returns a string representation of the receiver which is used
      *     when the receiver is encountered in a circularly referenced manner
      *     during the production of some sort of formatted String
      *     representation.
@@ -4200,8 +4200,8 @@ TP.FunctionProto.defineMethod('asInspectString',
 function() {
 
     /**
-     * @name asInspectString
-     * @synopsis Returns a string representation of the receiver which is
+     * @method asInspectString
+     * @summary Returns a string representation of the receiver which is
      *     suitable for use in inspecting the keys, values, and other relevant
      *     information of the receiver.
      * @returns {String}
@@ -4230,10 +4230,10 @@ function() {
 TP.$changed = function(anAspect, anAction, aDescription) {
 
     /**
-     * @name $changed
-     * @synopsis Notifies observers that some aspect of the receiver has
+     * @method $changed
+     * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @description If 'anAspect' is provided then the signal fired will be
+     * @summary If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -4258,7 +4258,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
      * @param {TP.lang.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var sig,
@@ -4319,10 +4319,10 @@ TP.sys.$changed = TP.$changed;
 TP.changed = function(anAspect, anAction, aDescription) {
 
     /**
-     * @name changed
-     * @synopsis Notifies observers that some aspect of the receiver has
+     * @method changed
+     * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @description If 'anAspect' is provided then the signal fired will be
+     * @summary If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -4346,7 +4346,7 @@ TP.changed = function(anAspect, anAction, aDescription) {
      * @param {TP.lang.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
@@ -4368,10 +4368,10 @@ Array.Inst.defineMethod('changed',
 function(anAspect, anAction, aDescription) {
 
     /**
-     * @name changed
-     * @synopsis Notifies observers that some aspect of the receiver has
+     * @method changed
+     * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @description If 'anAspect' is provided then the signal fired will be
+     * @summary If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -4389,7 +4389,7 @@ function(anAspect, anAction, aDescription) {
      * @param {TP.lang.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
@@ -4411,8 +4411,8 @@ String.Inst.defineMethod('changed',
 function(anAspect, anAction, aDescription) {
 
     /**
-     * @name changed
-     * @synopsis Uses the receiving string as a ID and constructs an appropriate
+     * @method changed
+     * @summary Uses the receiving string as a ID and constructs an appropriate
      *     Change notification signal for that ID. See the discussion on
      *     TP.ObjectProto.changed for more info.
      * @param {String} anAspect The aspect of the receiver that changed. This is
@@ -4422,7 +4422,7 @@ function(anAspect, anAction, aDescription) {
      * @param {TP.lang.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {String} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var target,
@@ -4496,8 +4496,8 @@ Array.Inst.defineMethod('item',
 function(anIndex) {
 
     /**
-     * @name item
-     * @synopsis Returns the item at the index provided. This allows Array
+     * @method item
+     * @summary Returns the item at the index provided. This allows Array
      *     instances to function as valid NodeList instances.
      * @returns {Object} The object at the index in the receiver.
      */
@@ -4511,11 +4511,11 @@ TP.defineMetaInstMethod('getItems',
 function(aSelectFunction) {
 
     /**
-     * @name getItems
-     * @synopsis Returns a list of items from the collection, filtering them via
+     * @method getItems
+     * @summary Returns a list of items from the collection, filtering them via
      *     aSelectFunction if provided. Note that you can use the same semantics
      *     as select for this call.
-     * @description The term "items", as opposed to "keys", "values", or "pairs"
+     * @summary The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
      *     however for TP.lang.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
@@ -4540,11 +4540,11 @@ Array.Inst.defineMethod('getItems',
 function(aSelectFunction) {
 
     /**
-     * @name getItems
-     * @synopsis Returns a list of items from the collection, filtering them via
+     * @method getItems
+     * @summary Returns a list of items from the collection, filtering them via
      *     aSelectFunction if provided. Note that you can use the same semantics
      *     as select for this call.
-     * @description The term "items", as opposed to "keys", "values", or "pairs"
+     * @summary The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
      *     however for TP.lang.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
@@ -4572,11 +4572,11 @@ String.Inst.defineMethod('getItems',
 function(aSelectFunction) {
 
     /**
-     * @name getItems
-     * @synopsis Returns a list of items from the collection, filtering them via
+     * @method getItems
+     * @summary Returns a list of items from the collection, filtering them via
      *     aSelectFunction if provided. Note that you can use the same semantics
      *     as select for this call.
-     * @description The term "items", as opposed to "keys", "values", or "pairs"
+     * @summary The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
      *     however for TP.lang.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
@@ -4616,8 +4616,8 @@ TP.defineMetaInstMethod('asDisplayString',
 function(aHash, aLevel) {
 
     /**
-     * @name asDisplayString
-     * @synopsis Returns the receiver as a formatted string. This method is
+     * @method asDisplayString
+     * @summary Returns the receiver as a formatted string. This method is
      *     extremely powerful as it takes a number of parameters which allow it
      *     to format an object in a number of ways. The parameters should be
      *     provided in an anonymous object as in:
@@ -4843,8 +4843,8 @@ TP.defineMetaInstMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -4887,8 +4887,8 @@ TP.defineMetaInstMethod('asSource',
 function(aFilterName) {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @param {String} aFilterName Used to determine the keys that will be used
      *     to produce the recreatable form.
      * @returns {String} An appropriate form for recreating the receiver.
@@ -4957,8 +4957,8 @@ Array.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -5001,8 +5001,8 @@ Boolean.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a string in source form: true or false.
+     * @method asSource
+     * @summary Returns the receiver as a string in source form: true or false.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -5015,8 +5015,8 @@ Date.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns "TP.dc(this.getTime())" which if eval'd will construct
+     * @method asSource
+     * @summary Returns "TP.dc(this.getTime())" which if eval'd will construct
      *     a Date instance with the same value.
      * @returns {String} An appropriate form for recreating the receiver.
      */
@@ -5030,8 +5030,8 @@ Function.Inst.defineMethod('asSource',
 function(aFilterName, aLevel) {
 
     /**
-     * @name asSource
-     * @synopsis Returns a string capable of recreating the receiver. For a
+     * @method asSource
+     * @summary Returns a string capable of recreating the receiver. For a
      *     function this is a variation of the toString() results which include
      *     any owner/track information required to recreate the method. For a
      *     type it's the defineSubtype call in string form.
@@ -5098,8 +5098,8 @@ Number.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver in source code form i.e. as a number with
+     * @method asSource
+     * @summary Returns the receiver in source code form i.e. as a number with
      *     no quotes etc.
      * @returns {String} An appropriate form for recreating the receiver.
      */
@@ -5113,8 +5113,8 @@ RegExp.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver in TIBET source code form. The flags for
+     * @method asSource
+     * @summary Returns the receiver in TIBET source code form. The flags for
      *     global and case-sensitivity are included.
      * @returns {String} An appropriate form for recreating the receiver.
      */
@@ -5145,8 +5145,8 @@ String.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver in source code form. Embedded quotes are
+     * @method asSource
+     * @summary Returns the receiver in source code form. Embedded quotes are
      *     escaped as needed and single quotes are used for the external quoting
      *     so the string would function properly inside an XML attribute.
      * @returns {String} An appropriate form for recreating the receiver.
@@ -5175,8 +5175,8 @@ TP.defineMetaInstMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality
      *     for the receiver. The default is the receiver in "source code"
      *     format.
      * @returns {String} A value appropriate for use in equality comparisons.
@@ -5192,8 +5192,8 @@ TP.defineMetaInstMethod('$getIdentityValue',
 function() {
 
     /**
-     * @name $getIdentityValue
-     * @synopsis Returns the value which should be used for testing identity
+     * @method $getIdentityValue
+     * @summary Returns the value which should be used for testing identity
      *     for the receiver. The default is the receiver's OID.
      * @returns {String} A value appropriate for use in identity comparisons.
      */
@@ -5208,8 +5208,8 @@ Array.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver. For Arrays, we return the String representation of the
      *     Array.
      * @returns {String} A value appropriate for use in equality comparisons.
@@ -5224,8 +5224,8 @@ Boolean.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver. For Booleans, we return the object itself.
      * @returns {Boolean} A value appropriate for use in equality comparisons.
      */
@@ -5239,8 +5239,8 @@ Date.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver. For Dates, we return the numeric getTime() value.
      * @returns {Number} A value appropriate for use in equality comparisons.
      */
@@ -5254,8 +5254,8 @@ Function.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver. For Functions, we return the String representation of
      *     the Function.
      * @returns {String} A value appropriate for use in equality comparisons.
@@ -5270,8 +5270,8 @@ Number.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver. For Numbers, we return the object itself.
      * @returns {Number} A value appropriate for use in equality comparisons.
      */
@@ -5285,8 +5285,8 @@ String.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver. For Strings, we return the object itself.
      * @returns {String} A value appropriate for use in equality comparisons.
      */
@@ -5300,8 +5300,8 @@ RegExp.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used for testing equality for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality for
      *     the receiver. For RegExps, we return the String representation of the
      *     RegExp.
      * @returns {String} A value appropriate for use in equality comparisons.
@@ -5316,9 +5316,9 @@ TP.defineMetaInstMethod('equalTo',
 function(that) {
 
     /**
-     * @name equalTo
-     * @synopsis Compare for equality.
-     * @description TIBET's notion of equality is based on "equality of value"
+     * @method equalTo
+     * @summary Compare for equality.
+     * @summary TIBET's notion of equality is based on "equality of value"
      *     such that two objects with matching key/value data are equal. This
      *     isn't true for JS. TIBET therefore uses string value as the
      *     comparison of choice and of course allows individual subtypes to
@@ -5355,8 +5355,8 @@ Array.Inst.defineMethod('equalTo',
 function(that) {
 
     /**
-     * @name equalTo
-     * @synopsis Returns true if the two objects compare equally. TIBET's notion
+     * @method equalTo
+     * @summary Returns true if the two objects compare equally. TIBET's notion
      *     of equality is based on "equality of value" such that for TIBET the
      *     array [1,2,3] is equalTo() a second array [1,2,3]. Arrays of
      *     different length are likewise not equal.
@@ -5398,8 +5398,8 @@ Boolean.Inst.defineMethod('equalTo',
 function(that) {
 
     /**
-     * @name equalTo
-     * @synopsis Compare for equality. In TIBET equality means the values i.e.
+     * @method equalTo
+     * @summary Compare for equality. In TIBET equality means the values i.e.
      *     the content is equal.
      * @param {Object} that The object to test against.
      * @returns {Boolean} Whether or not the receiver is equal to the supplied
@@ -5420,8 +5420,8 @@ Date.Inst.defineMethod('equalTo',
 function(that) {
 
     /**
-     * @name equalTo
-     * @synopsis Compare for equality. In TIBET equality means the values i.e.
+     * @method equalTo
+     * @summary Compare for equality. In TIBET equality means the values i.e.
      *     the content is equal. Equality for dates is based on MS clock times.
      * @param {Object} that The object to test against.
      * @returns {Boolean} Whether or not the receiver is equal to the supplied
@@ -5443,8 +5443,8 @@ Function.Inst.defineMethod('equalTo',
 function(that) {
 
     /**
-     * @name equalTo
-     * @synopsis Compare for equality. In TIBET equality means the values i.e.
+     * @method equalTo
+     * @summary Compare for equality. In TIBET equality means the values i.e.
      *     the content is equal. Functions are equal if they have the same
      *     string value.
      * @param {Object} that The object to test against.
@@ -5466,8 +5466,8 @@ Number.Inst.defineMethod('equalTo',
 function(that) {
 
     /**
-     * @name equalTo
-     * @synopsis Compare for equality. In TIBET equality means the values i.e.
+     * @method equalTo
+     * @summary Compare for equality. In TIBET equality means the values i.e.
      *     the content is equal.
      * @param {Object} that The object to test against.
      * @returns {Boolean} Whether or not the receiver is equal to the supplied
@@ -5488,8 +5488,8 @@ String.Inst.defineMethod('equalTo',
 function(that) {
 
     /**
-     * @name equalTo
-     * @synopsis Compare for equality. In TIBET equality means the values i.e.
+     * @method equalTo
+     * @summary Compare for equality. In TIBET equality means the values i.e.
      *     the content is equal.
      * @param {Object} that The object to test against.
      * @returns {Boolean} Whether or not the receiver is equal to the supplied
@@ -5510,9 +5510,9 @@ TP.defineMetaInstMethod('identicalTo',
 function(that) {
 
     /**
-     * @name identicalTo
-     * @synopsis Compare for identity.
-     * @description The === symbol in JS isn't really defined as "identity"
+     * @method identicalTo
+     * @summary Compare for identity.
+     * @summary The === symbol in JS isn't really defined as "identity"
      *     it's defined as "strict equality" which apparently isn't the same in
      *     certain cases. For TIBET we follow the general form but rely on our
      *     own OIDs to test for identity.
@@ -5549,8 +5549,8 @@ String.Inst.defineMethod('identicalTo',
 function(that) {
 
     /**
-     * @name identicalTo
-     * @synopsis Compare for identity.
+     * @method identicalTo
+     * @summary Compare for identity.
      * @param {Object} that The object to test against.
      * @returns {Boolean} Whether or not the receiver is identical to the
      *     supplied object.
@@ -5570,8 +5570,8 @@ TP.definePrimitive('equal',
 function(objectA, objectB, aType) {
 
     /**
-     * @name equal
-     * @synopsis Returns true if the values of the two objects are 'equal'.
+     * @method equal
+     * @summary Returns true if the values of the two objects are 'equal'.
      *     Since null is a value that has to be set we consider two nulls to
      *     compare as equal. Undefined values do not.
      * @param {Object} objectA The first object to compare.
@@ -5629,8 +5629,8 @@ TP.definePrimitive('identical',
 function(objectA, objectB) {
 
     /**
-     * @name identical
-     * @synopsis Returns true if the values of the two objects are 'identical'.
+     * @method identical
+     * @summary Returns true if the values of the two objects are 'identical'.
      *     Neither nulls nor undefined values will compare identical with
      *     anything.
      * @param {Object} objectA The first object to compare.
@@ -5681,8 +5681,8 @@ TP.defineMetaInstMethod('$getComparisonValue',
 function() {
 
     /**
-     * @name $getComparisonValue
-     * @synopsis Returns the value which should be used for comparing
+     * @method $getComparisonValue
+     * @summary Returns the value which should be used for comparing
      *     "magnitudes" for purposes of sorting a set of objects. The default
      *     returns the result of calling getSize().
      * @returns {Number} The size of the object.
@@ -5697,8 +5697,8 @@ TP.defineMetaInstMethod('compareTo',
 function(that) {
 
     /**
-     * @name compareTo
-     * @synopsis Compare for "magnitude" to support sort operations.
+     * @method compareTo
+     * @summary Compare for "magnitude" to support sort operations.
      * @param {Object} that The object to compare the receiver against.
      * @returns {Number} -1 if receiver is "smaller" than the argument, 0 if
      *     they are "equal", and 1 if the receiver is "larger" than the
@@ -5736,8 +5736,8 @@ TP.definePrimitive('compare',
 function(objectA, objectB) {
 
     /**
-     * @name compare
-     * @synopsis Returns -1, 0, or 1 based on whether objectA is "larger" than
+     * @method compare
+     * @summary Returns -1, 0, or 1 based on whether objectA is "larger" than
      *     objectB as determined by their comparison values.
      * @param {Object} objectA The first object to compare.
      * @param {Object} objectB The second object to compare.
@@ -5763,8 +5763,8 @@ Function.Inst.defineMethod('test',
 function(anObject) {
 
     /**
-     * @name test
-     * @synopsis Mirrors the test call on RegExp instances so we can use a
+     * @method test
+     * @summary Mirrors the test call on RegExp instances so we can use a
      *     function instance as a "selector".
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the function finds the object acceptable.
@@ -5787,8 +5787,8 @@ String.Inst.defineMethod('test',
 function(aString) {
 
     /**
-     * @name test
-     * @synopsis Mirrors the test call on RegExp instances so we can use either
+     * @method test
+     * @summary Mirrors the test call on RegExp instances so we can use either
      *     a string or regular expression interchangeably.
      * @param {String} aString The string to test against. The value of the
      *     receiver is used as the regular expression.
@@ -5826,8 +5826,8 @@ TP.definePrimitive('match',
 function(aSelector, anObject) {
 
     /**
-     * @name match
-     * @synopsis Tests anObject using aSelector, to see if there's a match. This
+     * @method match
+     * @summary Tests anObject using aSelector, to see if there's a match. This
      *     method is a convenience wrapper intended to help make string, regular
      *     expression, and css selector testing more polymorphic.
      * @param {String|RegExp|Object} aSelector A string, regular expression, or
@@ -5869,8 +5869,8 @@ TP.sys.defineMethod('dnu',
 function() {
 
     /**
-     * @name dnu
-     * @synopsis The 'backstop' for TIBET inferencing. When inferencing is
+     * @method dnu
+     * @summary The 'backstop' for TIBET inferencing. When inferencing is
      *     enabled this method is the entry point.
      */
 
@@ -5885,8 +5885,8 @@ String.Inst.defineMethod('asCSSName',
 function() {
 
     /**
-     * @name asCSSName
-     * @synopsis Returns a new string converted into its equivalent CSS property
+     * @method asCSSName
+     * @summary Returns a new string converted into its equivalent CSS property
      *     name. For example, backgroundColor becomes 'background-color',
      *     'cssFloat' becomes 'float', etc. NOTE that strings which are not
      *     valid CSS keys return null.
@@ -5907,8 +5907,8 @@ String.Inst.defineMethod('asDOMName',
 function() {
 
     /**
-     * @name asDOMName
-     * @synopsis Returns a new string converted into its equivalent DOM property
+     * @method asDOMName
+     * @summary Returns a new string converted into its equivalent DOM property
      *     name. For example, background-color becomes backgroundColor, float
      *     becomes 'cssFloat', etc. NOTE that strings which are not valid CSS
      *     keys return null.
@@ -5929,10 +5929,10 @@ TP.defineCommonMethod('asStartUpper',
 function() {
 
     /**
-     * @name asStartUpper
-     * @synopsis Returns a new string with the initial character in upper case.
+     * @method asStartUpper
+     * @summary Returns a new string with the initial character in upper case.
      *     No other transformation is performed.
-     * @description Since all objects can actually be used as object indexes and
+     * @summary Since all objects can actually be used as object indexes and
      *     we attempt to convert things into proper message formatting for
      *     get()/set() calls we try to avoid overhead here from the inferencing
      *     engine on things like numerical indexing for arrays etc.
@@ -5948,8 +5948,8 @@ TP.defineMetaInstMethod('getProperty',
 function(attributeName) {
 
     /**
-     * @name getProperty
-     * @synopsis Returns the value, if any, for the attribute provided. This
+     * @method getProperty
+     * @summary Returns the value, if any, for the attribute provided. This
      *     method takes over when get() fails to find a specific getter or an
      *     aspect adapted getter.
      * @param {String} attributeName The name of the attribute to get.
@@ -5985,8 +5985,8 @@ TP.defineMetaInstMethod('getAccessPathAliases',
 function(aPath) {
 
     /**
-     * @name getAccessPathAliases
-     * @synopsis Returns an Array of 'access path aliases' - that is, the
+     * @method getAccessPathAliases
+     * @summary Returns an Array of 'access path aliases' - that is, the
      *     aliased names that the receiver uses for a particular path (i.e.
      *     '/person/lastName' might map to 'lastName').
      * @param {String} aPath The path to check for aliases.
@@ -6005,8 +6005,8 @@ TP.defineMetaInstMethod('getAccessPathFor',
 function(attributeName, facetName) {
 
     /**
-     * @name getAccessPathFor
-     * @synopsis Returns any access path facet value, if any, for the attribute
+     * @method getAccessPathFor
+     * @summary Returns any access path facet value, if any, for the attribute
      *     and facet provided. See the 'TP.sys.addMetadata()' call for more
      *     information about facets.
      * @param {String} attributeName The name of the attribute to get the access
@@ -6065,8 +6065,8 @@ TP.defineMetaInstMethod('getDescriptorFor',
 function(attributeName, includeSupertypes) {
 
     /**
-     * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the type
+     * @method getDescriptorFor
+     * @summary Returns the property descriptor, if any, for the type
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
@@ -6089,8 +6089,8 @@ TP.defineMetaInstMethod('getInstDescriptorFor',
 function(attributeName, includeSupertypes) {
 
     /**
-     * @name getInstDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the instance
+     * @method getInstDescriptorFor
+     * @summary Returns the property descriptor, if any, for the instance
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
@@ -6113,8 +6113,8 @@ TP.defineMetaInstMethod('getFacetSettingFor',
 function(attributeName, facetName) {
 
     /**
-     * @name getFacetSettingFor
-     * @synopsis Returns any facet setting, if any, for the type attribute and
+     * @method getFacetSettingFor
+     * @summary Returns any facet setting, if any, for the type attribute and
      *     facet provided. See the 'TP.sys.addMetadata()' call for more
      *     information about facets.
      * @param {String} attributeName The name of the attribute to get the facet
@@ -6143,8 +6143,8 @@ TP.defineMetaInstMethod('getInstFacetSettingFor',
 function(attributeName, facetName) {
 
     /**
-     * @name getInstFacetSettingFor
-     * @synopsis Returns any facet value, if any, for the instance attribute and
+     * @method getInstFacetSettingFor
+     * @summary Returns any facet value, if any, for the instance attribute and
      *     facet provided. See the 'TP.sys.addMetadata()' call for more
      *     information about facets.
      * @param {String} attributeName The name of the attribute to get the facet
@@ -6173,9 +6173,9 @@ TP.defineMetaInstMethod('get',
 function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value, if any, for the attribute provided.
-     * @description This method is a convenient wrapper that will automatically
+     * @method get
+     * @summary Returns the value, if any, for the attribute provided.
+     * @summary This method is a convenient wrapper that will automatically
      *     look for getAttributeName(), getattributeName(), .attribute, etc. to
      *     return the value. Using this method provides a way to fully
      *     encapsulate an attribute access whether the receiver has implemented
@@ -6252,8 +6252,8 @@ TP.defineCommonMethod('getPathSource',
 function() {
 
     /**
-     * @name getPathSource
-     * @synopsis Return the current source object being used by the executeGet()
+     * @method getPathSource
+     * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     receiver.
      * @returns {Object} The object used as the current path source object.
@@ -6268,8 +6268,8 @@ TP.defineCommonMethod('getPathParameters',
 function() {
 
     /**
-     * @name getPathParameters
-     * @synopsis Return the current set of path parameters being used by the
+     * @method getPathParameters
+     * @summary Return the current set of path parameters being used by the
      *     executeGet() and executeSet() methods to resolve path parameters for
      *     parameterized paths. At this level, this method returns null.
      * @returns {Object} The object used to resolve path references in
@@ -6286,8 +6286,8 @@ TP.defineCommonMethod('isAccessPath',
 function() {
 
     /**
-     * @name isAccessPath
-     * @synopsis Returns whether or not the receiver is an access path object.
+     * @method isAccessPath
+     * @summary Returns whether or not the receiver is an access path object.
      * @returns {Boolean} False - most receivers are not a path.
      */
 
@@ -6300,9 +6300,9 @@ TP.sys.defineMethod('get',
 function() {
 
     /**
-     * @name get
-     * @synopsis Returns the value, if any, for the attribute provided.
-     * @description For the TIBET object in particular we do a little extra
+     * @method get
+     * @summary Returns the value, if any, for the attribute provided.
+     * @summary For the TIBET object in particular we do a little extra
      *     processing here when the property in question is undefined. In that
      *     case we also check for a registered object using the property name as
      *     the key. This allows TP.sys.get() to act as a synonym for
@@ -6331,9 +6331,9 @@ Array.Inst.defineMethod('get',
 function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value, if any, for the attribute provided.
-     * @description This method is a convenient wrapper that will automatically
+     * @method get
+     * @summary Returns the value, if any, for the attribute provided.
+     * @summary This method is a convenient wrapper that will automatically
      *     look for getAttributeName(), getattributeName(), .attribute, etc. to
      *     return the value. Using this method provides a way to fully
      *     encapsulate an attribute access whether the receiver has implemented
@@ -6420,8 +6420,8 @@ String.Inst.defineMethod('get',
 function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value, if any, for the attribute provided.
+     * @method get
+     * @summary Returns the value, if any, for the attribute provided.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
@@ -6497,8 +6497,8 @@ TP.defineCommonMethod('getContent',
 function() {
 
     /**
-     * @name getContent
-     * @synopsis Returns the 'content' of the receiver. The default version is a
+     * @method getContent
+     * @summary Returns the 'content' of the receiver. The default version is a
      *     synonym for getValue.
      * @returns {Object} The value of the receiver.
      */
@@ -6512,8 +6512,8 @@ TP.defineCommonMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the 'value' of the receiver. This method follows a
+     * @method getValue
+     * @summary Returns the 'value' of the receiver. This method follows a
      *     search path looking for a slot named value, _value, $value, and
      *     finally this.
      * @returns {Object} The value of the receiver.
@@ -6544,8 +6544,8 @@ Boolean.Inst.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the primitive value of the receiver.
+     * @method getValue
+     * @summary Returns the primitive value of the receiver.
      * @returns {Boolean} The value of the receiver.
      */
 
@@ -6558,8 +6558,8 @@ Number.Inst.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the primitive value of the receiver.
+     * @method getValue
+     * @summary Returns the primitive value of the receiver.
      * @returns {Number} The value of the receiver.
      */
 
@@ -6572,8 +6572,8 @@ String.Inst.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the primitive value of the receiver.
+     * @method getValue
+     * @summary Returns the primitive value of the receiver.
      * @returns {String} The value of the receiver.
      */
 
@@ -6587,8 +6587,8 @@ TP.defineMetaInstMethod('setProperty',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name setProperty
-     * @synopsis Sets the value of the named property. The base version is a
+     * @method setProperty
+     * @summary Sets the value of the named property. The base version is a
      *     simple wrapper around $set however other types override this method
      *     to provide custom behavior.
      * @param {String} attributeName The attribute name to set.
@@ -6607,10 +6607,10 @@ TP.defineMetaInstMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided. If
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
-     * @description As with get('attr') this method is a convenient
+     * @summary As with get('attr') this method is a convenient
      *     encapsulation wrapper that will look for setAttribute, setattribute,
      *     and this.attribute to determine how to proceed. No notification is
      *     provided by this method if either function is found, however if the
@@ -6702,10 +6702,10 @@ Array.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided. If
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
-     * @description As with get('attr') this method is a convenient
+     * @summary As with get('attr') this method is a convenient
      *     encapsulation wrapper that will look for setAttribute, setattribute,
      *     and this.attribute to determine how to proceed. No notification is
      *     provided by this method if either function is found, however if the
@@ -6802,8 +6802,8 @@ TP.defineCommonMethod('setValue',
 function(aValue) {
 
     /**
-     * @name setValue
-     * @synopsis Sets the 'value' of the receiver. This method provides
+     * @method setValue
+     * @summary Sets the 'value' of the receiver. This method provides
      *     polymorphic behavior by allowing objects to serve as ValueHolders.
      *     The search for variable slots follows value, _value, and $value. This
      *     method calls changed if the value changes.
@@ -6822,8 +6822,8 @@ TP.sys.defineMethod('hasDebugger',
 function() {
 
     /**
-     * @name hasDebugger
-     * @synopsis Returns true if there's a TIBET implementation of a 'debugger'
+     * @method hasDebugger
+     * @summary Returns true if there's a TIBET implementation of a 'debugger'
      *     available. This might be the case when running in Mozilla and
      *     leveraging the Venkman API for example.
      * @returns {Boolean} Whether or not the environment has a debugger
@@ -6840,8 +6840,8 @@ TP.sys.defineMethod('runDebugger',
 function(callingContext) {
 
     /**
-     * @name runDebugger
-     * @synopsis If there's a TIBET implementation of a debugging tool this
+     * @method runDebugger
+     * @summary If there's a TIBET implementation of a debugging tool this
      *     function will run it if possible.
      * @param {Function|Arguments} callingContext The context to debug.
      */
@@ -6855,9 +6855,9 @@ TP.sys.defineMethod('$launchDebugger',
 function(callingContext) {
 
     /**
-     * @name $launchDebugger
-     * @synopsis Launches the TIBET debugger if one is installed.
-     * @description This method is invoked by TP.sys.dnu as a last resort. When
+     * @method $launchDebugger
+     * @summary Launches the TIBET debugger if one is installed.
+     * @summary This method is invoked by TP.sys.dnu as a last resort. When
      *     TP.sys.hasDebugger() is true whatever implementation of
      *     TP.sys.runDebugger() is in effect will be called. When TIBET doesn't
      *     have a debugger installed the native debugger trigger will be invoked
@@ -6905,8 +6905,8 @@ TP.defineCommonMethod('copy',
 function(aFilterNameOrKeys) {
 
     /**
-     * @name copy
-     * @synopsis Returns a shallow copy of the receiver. Adequate for dealing
+     * @method copy
+     * @summary Returns a shallow copy of the receiver. Adequate for dealing
      *     with reference type attribute problems. The filter defines which keys
      *     are used to select from the receiver.
      * @param {String|Array} aFilterNameOrKeys get*Interface() filter or key
@@ -6944,8 +6944,8 @@ Array.Inst.defineMethod('copy',
 function(aFilterNameOrKeys, contentOnly) {
 
     /**
-     * @name copy
-     * @synopsis Returns a shallow copy of the receiver. Adequate for dealing
+     * @method copy
+     * @summary Returns a shallow copy of the receiver. Adequate for dealing
      *     with reference type attribute problems. If contentOnly is true then
      *     an Array is returned contains only the content values [0, 1, ...N],
      *     and no 'special values' on the receiver are copied.
@@ -7002,8 +7002,8 @@ Boolean.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {Boolean} A copy of the receiver.
      */
@@ -7017,8 +7017,8 @@ Date.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {Date} A copy of the receiver.
      */
@@ -7032,8 +7032,8 @@ Function.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver. When copying a function
      *     the original is instrumented to know how many copies have been made
      *     and the new copy has the name of the original with an _n appended
@@ -7074,8 +7074,8 @@ Number.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {Number} A copy of the receiver.
      */
@@ -7089,8 +7089,8 @@ RegExp.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {RegExp} A copy of the receiver.
      */
@@ -7104,8 +7104,8 @@ String.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {String} A copy of the receiver.
      */
@@ -7140,10 +7140,10 @@ TP.defineCommonMethod('perform',
 function(aFunction, shouldReverse) {
 
     /**
-     * @name perform
-     * @synopsis Performs the function with each item of the receiver where an
+     * @method perform
+     * @summary Performs the function with each item of the receiver where an
      *     item is typically a key/value pair in array form.
-     * @description Perform can be used as an alternative to constructing for
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7204,11 +7204,11 @@ Array.Inst.defineMethod('perform',
 function(aFunction, shouldReverse) {
 
     /**
-     * @name perform
-     * @synopsis Performs the function with each element of the receiver. This
+     * @method perform
+     * @summary Performs the function with each element of the receiver. This
      *     is the core method in the iteration model, providing the basis for
      *     many of the other iteration aspects in TIBET.
-     * @description Perform can be used as an alternative to constructing for
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7270,11 +7270,11 @@ Number.Inst.defineMethod('perform',
 function(aFunction, shouldReverse) {
 
     /**
-     * @name perform
-     * @synopsis Performs the function from 0 to N times where N is the value of
+     * @method perform
+     * @summary Performs the function from 0 to N times where N is the value of
      *     the receiver. Note that negative numbers won't cause an iteration to
      *     occur.
-     * @description Perform can be used as an alternative to constructing for
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7328,11 +7328,11 @@ String.Inst.defineMethod('perform',
 function(aFunction, shouldReverse) {
 
     /**
-     * @name perform
-     * @synopsis Performs the function from 0 to N times where N is the length
+     * @method perform
+     * @summary Performs the function from 0 to N times where N is the length
      *     of the receiver. Each iteration receives one character from the
      *     string.
-     * @description Perform can be used as an alternative to constructing for
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7400,8 +7400,8 @@ TP.defineCommonMethod('collect',
 function(aFunction) {
 
     /**
-     * @name collect
-     * @synopsis Returns a new array which contains the elements of the receiver
+     * @method collect
+     * @summary Returns a new array which contains the elements of the receiver
      *     transformed by the function provided.
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
@@ -7426,8 +7426,8 @@ TP.defineCommonMethod('collectGet',
 function(propertyName) {
 
     /**
-     * @name collectGet
-     * @synopsis Collects the result of running a get() on each item in the
+     * @method collectGet
+     * @summary Collects the result of running a get() on each item in the
      *     receiver using the propertyName provided. This is a powerful way to
      *     "query" a set of objects for a particular property value. If an
      *     object doesn't implement get() a direct slot access is attempted.
@@ -7460,8 +7460,8 @@ TP.defineCommonMethod('collectInvoke',
 function(aMethodName) {
 
     /**
-     * @name collectInvoke
-     * @synopsis Collects the result of running the named method on each item in
+     * @method collectInvoke
+     * @summary Collects the result of running the named method on each item in
      *     the receiver, providing any remaining arguments as the arguments to
      *     the method. If any of the objects don't implement the named function
      *     then that object is simply skipped.
@@ -7492,8 +7492,8 @@ TP.defineCommonMethod('convert',
 function(aFunction) {
 
     /**
-     * @name convert
-     * @synopsis Alters each of the receivers elements by replacing them with
+     * @method convert
+     * @summary Alters each of the receivers elements by replacing them with
      *     the result returned by aFunction's transformation on that element.
      *     Similar to collect() but results replace originals rather than being
      *     returned in an array. Using convert with a consistent return value is
@@ -7501,7 +7501,7 @@ function(aFunction) {
      * @param {Function} aFunction The function to use to transform each element
      *     in the array.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var thisref;
@@ -7525,10 +7525,10 @@ TP.defineCommonMethod('detectInvoke',
 function(aMethodName) {
 
     /**
-     * @name detectInvoke
-     * @synopsis Executes the named method on each item in the receiver,
+     * @method detectInvoke
+     * @summary Executes the named method on each item in the receiver,
      *     providing any remaining arguments as the arguments to the method.
-     * @description The semantics of this call are subtly different from both
+     * @summary The semantics of this call are subtly different from both
      *     detect() and apply(). In this case the first invocation to return a
      *     non-null value is considered successful and the loop terminates,
      *     returning the value from the first successful invoke call. Note that
@@ -7564,8 +7564,8 @@ TP.defineCommonMethod('detectMax',
 function(aFunction) {
 
     /**
-     * @name detectMax
-     * @synopsis Returns the "maximum" or largest value returned by aFunction
+     * @method detectMax
+     * @summary Returns the "maximum" or largest value returned by aFunction
      *     when invoked successively on the receiver's items.
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed. when no function is
@@ -7603,8 +7603,8 @@ TP.defineCommonMethod('detectMin',
 function(aFunction) {
 
     /**
-     * @name detectMin
-     * @synopsis Returns the "minimum" or smallest value returned by aFunction
+     * @method detectMin
+     * @summary Returns the "minimum" or smallest value returned by aFunction
      *     when invoked successively on the receiver's items.
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed. when no function is
@@ -7642,8 +7642,8 @@ TP.defineCommonMethod('flatten',
 function() {
 
     /**
-     * @name flatten
-     * @synopsis Returns an array containing the receiver's key/value items in a
+     * @method flatten
+     * @summary Returns an array containing the receiver's key/value items in a
      *     flattened form. For example, TP.hc('a', 1, 'b', 2).flatten() returns
      *     the equivalent of TP.ac('a', 1, 'b', 2);
      * @returns {Array} A new array containing the elements of the receiver in
@@ -7659,11 +7659,11 @@ TP.defineCommonMethod('grep',
 function(aPattern, aFunction) {
 
     /**
-     * @name grep
-     * @synopsis Returns an array containing items (potentially transformed by
+     * @method grep
+     * @summary Returns an array containing items (potentially transformed by
      *     aFunction) whose TP.str(item) values matched the regular expression
      *     pattern provided.
-     * @description This method works on the values of the collection, so a call
+     * @summary This method works on the values of the collection, so a call
      *     to grep() on a Hash will not grep the keys, it will grep the values.
      *     Use grepKeys() to scan a collection by its keys/indexes.
      * @param {String|RegExp} aPattern A string or regular expression to test
@@ -7708,11 +7708,11 @@ TP.defineCommonMethod('grepKeys',
 function(aPattern, aFunction) {
 
     /**
-     * @name grepKeys
-     * @synopsis Returns an array containing items (potentially transformed by
+     * @method grepKeys
+     * @summary Returns an array containing items (potentially transformed by
      *     aFunction) whose TP.str(index) values matched the regular expression
      *     pattern provided.
-     * @description The value being tested is the index (0-N for Arrays, key
+     * @summary The value being tested is the index (0-N for Arrays, key
      *     value for Object/Hash).
      * @param {String|RegExp} aPattern A string or regular expression to test
      *     items with.
@@ -7749,8 +7749,8 @@ TP.defineCommonMethod('groupBy',
 function(keyCriteria, selectionCriteria) {
 
     /**
-     * @name groupBy
-     * @synopsis Returns a TP.lang.Hash whose keys are the return values
+     * @method groupBy
+     * @summary Returns a TP.lang.Hash whose keys are the return values
      *     produced by keyCriteria for each item, and whose values are arrays of
      *     the items matching that key OR an Array containing nested arrays of
      *     length N where N is the criteria you provided. To skip an element and
@@ -7851,11 +7851,11 @@ TP.defineCommonMethod('injectInto',
 function(anAccumulator, aFunction) {
 
     /**
-     * @name injectInto
-     * @synopsis Performs the function with each element of the receiver as the
+     * @method injectInto
+     * @summary Performs the function with each element of the receiver as the
      *     first argument and anAccumulator as the second argument. The current
      *     item index is provided as the third argument.
-     * @description injectInto allows you to pass an "accumulator" to the
+     * @summary injectInto allows you to pass an "accumulator" to the
      *     function along with each element of the receiver as it performs the
      *     function. This is useful when attempting to do an operation like
      *     summing all the values in an array where the added variable you pass
@@ -7894,8 +7894,8 @@ TP.defineCommonMethod('orderedBy',
 function(aFunction) {
 
     /**
-     * @name orderedBy
-     * @synopsis Sorts the receiver's data based on the return values of the
+     * @method orderedBy
+     * @summary Sorts the receiver's data based on the return values of the
      *     function provided. This method allows you to avoid some of the
      *     semantics involved in the native sort() routine so you can write sort
      *     functions that are more natural.
@@ -7920,8 +7920,8 @@ TP.defineCommonMethod('partition',
 function(aFunction) {
 
     /**
-     * @name partition
-     * @synopsis Tests each element against the function provided and returns a
+     * @method partition
+     * @summary Tests each element against the function provided and returns a
      *     new array containing the passed items in the first index and the
      *     failed items in the second index.
      * @param {Function} aFunction A function which should return true or false
@@ -7954,8 +7954,8 @@ TP.defineCommonMethod('performInvoke',
 function(aMethodName) {
 
     /**
-     * @name performInvoke
-     * @synopsis Executes the named method on each item in the receiver,
+     * @method performInvoke
+     * @summary Executes the named method on each item in the receiver,
      *     providing any remaining arguments as the arguments to the method. If
      *     any of the objects don't implement the named function then that
      *     object is simply skipped.
@@ -7984,8 +7984,8 @@ TP.defineCommonMethod('performOver',
 function(aFunction, aCollection) {
 
     /**
-     * @name performOver
-     * @synopsis Executes aFunction on the elements found at the indexes in
+     * @method performOver
+     * @summary Executes aFunction on the elements found at the indexes in
      *     aCollection. This allows you to iterate in a more sparse fashion. If
      *     no collection is provided this works just like perform.
      * @param {Function} aFunction The function to perform.
@@ -8015,8 +8015,8 @@ TP.defineCommonMethod('performSet',
 function(attributeName, attributeValue) {
 
     /**
-     * @name performSet
-     * @synopsis Executes a set() on each item in the receiver using the
+     * @method performSet
+     * @summary Executes a set() on each item in the receiver using the
      *     attributeName and attributeValue provided. This is a powerful way to
      *     "update" a set of objects with a particular property value. If an
      *     object doesn't implement set() a direct slot access is attempted.
@@ -8050,10 +8050,10 @@ TP.defineCommonMethod('performUntil',
 function(aFunction, terminateFunction) {
 
     /**
-     * @name performUntil
-     * @synopsis Performs the function with each element of the receiver until
+     * @method performUntil
+     * @summary Performs the function with each element of the receiver until
      *     terminateFunction returns true.
-     * @description performUntil can be used as an alternative to constructing
+     * @summary performUntil can be used as an alternative to constructing
      *     repeat loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
@@ -8082,10 +8082,10 @@ TP.defineCommonMethod('performWhile',
 function(aFunction, terminateFunction) {
 
     /**
-     * @name performWhile
-     * @synopsis Performs the function with each element of the receiver while
+     * @method performWhile
+     * @summary Performs the function with each element of the receiver while
      *     terminateFunction returns true.
-     * @description performWhile can be used as an alternative to constructing
+     * @summary performWhile can be used as an alternative to constructing
      *     while loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
@@ -8114,8 +8114,8 @@ TP.defineCommonMethod('performWith',
 function(aFunction, aCollection) {
 
     /**
-     * @name performWith
-     * @synopsis Executes a two-argument function (aFunction) with the first
+     * @method performWith
+     * @summary Executes a two-argument function (aFunction) with the first
      *     argument set to receiver[item] and second argument set to
      *     aCollection.at(index) for each element in the receiver. Note that
      *     once the items in the receiver have been exhausted this method will
@@ -8126,7 +8126,7 @@ function(aFunction, aCollection) {
      *     the current index in aCollection. 3) The current index.
      * @param {TP.api.CollectionAPI} aCollection The collection of elements to
      *     use for the second argument to aFunction.
-     * @raises TP.sig.InvalidCollection, CollectionSizeMismatch
+     * @exception TP.sig.InvalidCollection, CollectionSizeMismatch
      * @returns {Object} The receiver.
      */
 
@@ -8148,8 +8148,8 @@ TP.defineCommonMethod('reject',
 function(aFunction) {
 
     /**
-     * @name reject
-     * @synopsis Tests each element against the function provided and returns a
+     * @method reject
+     * @summary Tests each element against the function provided and returns a
      *     new array containing those elements which aren't rejected by the
      *     function. The function should return true for elements which are to
      *     be skipped.
@@ -8184,8 +8184,8 @@ TP.defineCommonMethod('select',
 function(aFunction) {
 
     /**
-     * @name select
-     * @synopsis Tests each element against the function provided and returns a
+     * @method select
+     * @summary Tests each element against the function provided and returns a
      *     new array containing those elements which are selected by the
      *     function. The function should return true for elements which are to
      *     be returned.
@@ -8228,11 +8228,11 @@ Array.Inst.defineMethod('choose',
 function() {
 
     /**
-     * @name choose
-     * @synopsis Runs the functions contained in the receiver using the argument
+     * @method choose
+     * @summary Runs the functions contained in the receiver using the argument
      *     list provided, returning the first successful Function's return
      *     value. Essentially an iteration-based try/catch using blocks.
-     * @description This is a function-specific operation, meaning that it's
+     * @summary This is a function-specific operation, meaning that it's
      *     appropriate for arrays containing alternative functions you want to
      *     run. In this case, the return value of the first function which
      *     doesn't throw an exception will be used.
@@ -8267,15 +8267,15 @@ Array.Inst.defineMethod('compact',
 function(aFilter) {
 
     /**
-     * @name compact
-     * @synopsis Returns the receiver with all filtered values removed. When a
+     * @method compact
+     * @summary Returns the receiver with all filtered values removed. When a
      *     filter is supplied that filter defines what values should be removed,
      *     i.e. the default filter is TP.notValid(). When invoked without a
      *     filter the standard TP.notValid() call is used so that nulls and
      *     undefined values are removed. NOTE that the receiver is always
      *     modified in place. Use select() or reject() to produce a new array
      *     without values and simply provide a suitable filtering function.
-     * @description In some sense using a filtering function seems like
+     * @summary In some sense using a filtering function seems like
      *     something that should be done via the remove() function but that
      *     would complicate the semantics when you want to remove function
      *     instances as values in an array. Hence we allow an optional filtering
@@ -8329,8 +8329,8 @@ Array.Inst.defineMethod('conform',
 function(anInterface, inline) {
 
     /**
-     * @name conform
-     * @synopsis Returns the receiver with all values which don't implement the
+     * @method conform
+     * @summary Returns the receiver with all values which don't implement the
      *     interface removed. The resulting collection's values will, on
      *     completion of this method, respond to the next iteration
      *     (collectInvoke perhaps) that you want to run.
@@ -8374,8 +8374,8 @@ Array.Inst.defineMethod('detect',
 function(aFunction, startIndex) {
 
     /**
-     * @name detect
-     * @synopsis Returns the first element in the receiver which matches the
+     * @method detect
+     * @summary Returns the first element in the receiver which matches the
      *     criteria provided or null if the element isn't found.
      * @param {Function} aFunction A function which should return true if the
      *     element it is passed passes the function's test, or false if it does
@@ -8416,10 +8416,10 @@ Array.Inst.defineMethod('detectInvoke',
 function(aMethodName) {
 
     /**
-     * @name detectInvoke
-     * @synopsis Executes the named method on each item in the receiver,
+     * @method detectInvoke
+     * @summary Executes the named method on each item in the receiver,
      *     providing any remaining arguments as the arguments to the method.
-     * @description The semantics of this call are subtly different from both
+     * @summary The semantics of this call are subtly different from both
      *     detect() and apply(). In this case the first invocation to return a
      *     non-null value is considered successful and the loop terminates,
      *     returning the value from the first successful invoke call. Note that
@@ -8455,11 +8455,11 @@ Array.Inst.defineMethod('invoke',
 function(aThis, anArgArray, whenError) {
 
     /**
-     * @name invoke
-     * @synopsis Runs the functions contained in the receiver using the argument
+     * @method invoke
+     * @summary Runs the functions contained in the receiver using the argument
      *     list provided. An easy way to run a list of functions as if they were
      *     a single function.
-     * @description This operation is used to allow a list of functions to
+     * @summary This operation is used to allow a list of functions to
      *     operate somewhat polymorphically with a single function for purposes
      *     of execution. Because of that semantic goal we return the value of
      *     the last function's invocation. This means an array of one function,
@@ -8498,8 +8498,8 @@ Array.Inst.defineMethod('invokeAsync',
 function(aThis, anArgArray, whenError, stopOnError) {
 
     /**
-     * @name invokeAsync
-     * @synopsis Runs the functions contained in the receiver asynchronously
+     * @method invokeAsync
+     * @summary Runs the functions contained in the receiver asynchronously
      *     using the argument list provided. An easy way to run a list of
      *     functions as if they were a series of synchronous operations when
      *     they need to run asynchronously (usually so they can flush output to
@@ -8574,8 +8574,8 @@ Number.Inst.defineMethod('by',
 function(aStep, aFunction) {
 
     /**
-     * @name by
-     * @synopsis Runs the function provided, much like perform(), for each index
+     * @method by
+     * @summary Runs the function provided, much like perform(), for each index
      *     which matches the step value. The indexing is zero-based. For
      *     example, (9).by(3) is equivalent to (0).to(9).by(3).perform() and the
      *     function will run at indexes 0, 2, 5, and 8.
@@ -8607,14 +8607,14 @@ RegExp.Inst.defineMethod('performWith',
 function(aFunction, anObject) {
 
     /**
-     * @name performWith
-     * @synopsis Performs the function from 0 to N times where N is the number
+     * @method performWith
+     * @summary Performs the function from 0 to N times where N is the number
      *     of times the receiver matches the string value of the object
      *     provided. Obviously for N to be greater than 1 you must be messaging
      *     a global regular expression, otherwise the replacement function will
      *     only be called once for the first match. Note that this iteration
      *     model cannot be reversed.
-     * @description A variation on String.replace where the function is used
+     * @summary A variation on String.replace where the function is used
      *     within an iterator so it can be controlled via normal TIBET iteration
      *     logic. As with String.replace the function will be passed at least 3
      *     arguments, the match string, the index of the match, and the string
@@ -8681,8 +8681,8 @@ String.Inst.defineMethod('convert',
 function(aFunction) {
 
     /**
-     * @name convert
-     * @synopsis Returns a new String whose content represents the converted
+     * @method convert
+     * @summary Returns a new String whose content represents the converted
      *     characters from aFunction.
      * @param {Function} aFunction The function to use to transform each
      *     character.
@@ -8707,10 +8707,10 @@ String.Inst.defineMethod('times',
 function(aNumber) {
 
     /**
-     * @name times
-     * @synopsis Returns the string repeated the specified number of times.
+     * @method times
+     * @summary Returns the string repeated the specified number of times.
      * @param {Number} aNumber The number of times to repeat string.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} The receiver repeated aNumber of times.
      */
 
@@ -8749,8 +8749,8 @@ TP.defineCommonMethod('containsKey',
 function(aKey) {
 
     /**
-     * @name containsKey
-     * @synopsis Returns true if the receiver contains the key provided.
+     * @method containsKey
+     * @summary Returns true if the receiver contains the key provided.
      * @param {Object} aKey The key to test.
      * @returns {Boolean} Whether or not the receiver contains the key provided.
      */
@@ -8768,8 +8768,8 @@ TP.defineCommonMethod('containsValue',
 function(aValue, aTest) {
 
     /**
-     * @name containsValue
-     * @synopsis Returns true if the receiver contains the value provided.
+     * @method containsValue
+     * @summary Returns true if the receiver contains the value provided.
      * @param {Object} aValue The value to test.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -8802,9 +8802,9 @@ TP.defineCommonMethod('contains',
 function(anItem, aTest) {
 
     /**
-     * @name contains
-     * @synopsis Returns true if the receiver contains the item provided.
-     * @description The test provided allows the caller to define whether
+     * @method contains
+     * @summary Returns true if the receiver contains the item provided.
+     * @summary The test provided allows the caller to define whether
      *     identity (===) or equality (==) are used for comparisons. NOTE: this
      *     method makes use of the TP.equal() function of TIBET for equality
      *     comparisons so that arrays, objects, dates, and functions with
@@ -8844,9 +8844,9 @@ Array.Inst.defineMethod('contains',
 function(aValue, aTest) {
 
     /**
-     * @name contains
-     * @synopsis Returns true if the receiver contains the value provided.
-     * @description The test provided allows the caller to define whether
+     * @method contains
+     * @summary Returns true if the receiver contains the value provided.
+     * @summary The test provided allows the caller to define whether
      *     identity (===) or equality (==) are used for comparisons. NOTE: this
      *     method makes use of the TP.equal() function of TIBET for equality
      *     comparisons so that arrays, objects, dates, and functions with
@@ -8889,8 +8889,8 @@ Array.Inst.defineMethod('containsString',
 function(aValue) {
 
     /**
-     * @name containsString
-     * @synopsis Returns true if the receiver contains the string provided. This
+     * @method containsString
+     * @summary Returns true if the receiver contains the string provided. This
      *     call is significantly faster for finding strings in potentially large
      *     arrays than a simple contains call.
      * @param {String} aValue The value that at least one element in the
@@ -8958,8 +8958,8 @@ TP.defineMetaInstMethod('asInterface',
 function() {
 
     /**
-     * @name asInterface
-     * @synopsis Returns the receiver as a method interface. This is an array of
+     * @method asInterface
+     * @summary Returns the receiver as a method interface. This is an array of
      *     method names useful for testing protocol conformance. For general
      *     objects this results in a list of the methods the receiver implements
      *     which could be quite large.
@@ -8975,8 +8975,8 @@ Array.Inst.defineMethod('asInterface',
 function() {
 
     /**
-     * @name asInterface
-     * @synopsis Returns the receiver as a method interface. For arrays this
+     * @method asInterface
+     * @summary Returns the receiver as a method interface. For arrays this
      *     method assumes the array already contains a list of strings.
      * @returns {Array} The receiver.
      */
@@ -8990,8 +8990,8 @@ String.Inst.defineMethod('asInterface',
 function() {
 
     /**
-     * @name asInterface
-     * @synopsis Returns the receiver as a method interface. For strings this
+     * @method asInterface
+     * @summary Returns the receiver as a method interface. For strings this
      *     returns an array containing the string suitable for testing as an
      *     interface.
      * @returns {Array} An array containing the receiver.
@@ -9013,8 +9013,8 @@ TP.FunctionProto.defineMethod('asDNU',
 function() {
 
     /**
-     * @name asDNU
-     * @synopsis Returns a doesNotUnderstand wrapper function which is capable
+     * @method asDNU
+     * @summary Returns a doesNotUnderstand wrapper function which is capable
      *     of providing information on which function name was not found along
      *     with the calling context.
      * @returns {Function} An appropriate wrapper function.
@@ -9056,8 +9056,8 @@ Function.Type.defineMethod('constructDNU',
 function(aName) {
 
     /**
-     * @name constructDNU
-     * @synopsis Returns a doesNotUnderstand wrapper function which is capable
+     * @method constructDNU
+     * @summary Returns a doesNotUnderstand wrapper function which is capable
      *     of providing information on which function name was not found along
      *     with the calling context.
      * @param {String} aName The name of the function this DNU stands in for.
@@ -9091,8 +9091,8 @@ Function.Type.defineMethod('constructNSM',
 function(aName) {
 
     /**
-     * @name constructNSM
-     * @synopsis Returns a "NoSuchMethod" wrapper function which is capable of
+     * @method constructNSM
+     * @summary Returns a "NoSuchMethod" wrapper function which is capable of
      *     deadening part of a global doesNotUnderstand hook.
      * @param {String} aName The name of the function this deadener stands in
      *     for.

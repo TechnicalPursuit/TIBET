@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.DELocale}
- * @synopsis TP.core.DELocale provides support for the German language and
+ * @summary TP.core.DELocale provides support for the German language and
  *     related localizations.
  */
 

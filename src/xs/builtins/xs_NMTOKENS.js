@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.NMTOKENS}
- * @synopsis A string containing one or more space-separated NMTOKEN values.
+ * @summary A string containing one or more space-separated NMTOKEN values.
  */
 
 //  ------------------------------------------------------------------------
@@ -32,8 +32,8 @@ TP.xs.NMTOKENS.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.NMTOKENS the return value is a string value containing one
      *     or more TP.xs.NMTOKEN values, each separated by a single space. Any
      *     individual elements in the object's string representation which
@@ -78,8 +78,8 @@ TP.xs.NMTOKENS.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided contains valid
+     * @method validate
+     * @summary Returns true if the object provided contains valid
      *     TP.xs.NMTOKEN entries separated by spaces.
      * @returns {Boolean}
      */

@@ -31,8 +31,8 @@ TP.definePrimitive('createDocument',
 function(aNamespace, aTagname) {
 
     /**
-     * @name createDocument
-     * @synopsis Creates an XML document. Note that if a tag name isn't
+     * @method createDocument
+     * @summary Creates an XML document. Note that if a tag name isn't
      *     supplied to this method, a documentElement will *not* be created
      *     for the returned document.
      * @param {String} aNamespace The namespace to use. Defaults to the null
@@ -130,8 +130,8 @@ TP.definePrimitive('documentCreateElement',
 function(aDocument, elementName, elementNS) {
 
     /**
-     * @name documentCreateElement
-     * @synopsis Creates a new element in the document and namespace provided.
+     * @method documentCreateElement
+     * @summary Creates a new element in the document and namespace provided.
      * @param {Document} aDocument The document that will contain the new
      *     element.
      * @param {String} elementName The element type.
@@ -195,8 +195,8 @@ TP.definePrimitive('documentFromNode',
 function(aNode) {
 
     /**
-     * @name documentFromNode
-     * @synopsis Wraps a copy of aNode in a new XML document or returns aNode if
+     * @method documentFromNode
+     * @summary Wraps a copy of aNode in a new XML document or returns aNode if
      *     its already an XML document.
      * @param {Node} aNode The Node to wrap.
      * @example Obtain a XML document from an XML document Node:
@@ -269,8 +269,8 @@ TP.definePrimitive('documentAddContent',
 function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name documentAddContent
-     * @synopsis Adds content from theContent onto the end of the child content
+     * @method documentAddContent
+     * @summary Adds content from theContent onto the end of the child content
      *     of the document element of the supplied document.
      * @param {Document} aDocument The document receiving content.
      * @param {Object} theContent The object to use as the source of the
@@ -279,7 +279,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just added. The default for an 'add' operation is false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -318,8 +318,8 @@ TP.definePrimitive('documentInsertContent',
 function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
-     * @name documentInsertContent
-     * @synopsis Inserts content from theContent into aDocument based on the
+     * @method documentInsertContent
+     * @summary Inserts content from theContent into aDocument based on the
      *     position given. NOTE that the position given is utilized relative to
      *     the documentElement so TP.BEFORE_BEGIN and TP.AFTER_END are invalid
      *     positions.
@@ -335,7 +335,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for an 'insert' operation is false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -379,8 +379,8 @@ TP.definePrimitive('documentPathContainsNode',
 function(aDocument, aNode, aPath, aPathType) {
 
     /**
-     * @name documentPathContainsNode
-     * @synopsis Evaluates the path provided, producing a set of nodes that
+     * @method documentPathContainsNode
+     * @summary Evaluates the path provided, producing a set of nodes that
      *     match the expression. If that result set contains aNode, then this
      *     method returns true, otherwise it returns false. There are several
      *     path types which might be used, but the most typical are XPaths,
@@ -445,8 +445,8 @@ TP.definePrimitive('documentSetContent',
 function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name documentSetContent
-     * @synopsis Inserts content from theContent into aDocument, replacing any
+     * @method documentSetContent
+     * @summary Inserts content from theContent into aDocument, replacing any
      *     current content.
      * @param {Document} aDocument The document receiving content.
      * @param {Object} theContent The object to use as the source of the
@@ -456,7 +456,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether aDocument has
      *     a Window object associated with it or not.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -525,8 +525,8 @@ TP.definePrimitive('xmlDocumentAddContent',
 function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name xmlDocumentAddContent
-     * @synopsis Adds content from theContent onto the end of the child content
+     * @method xmlDocumentAddContent
+     * @summary Adds content from theContent onto the end of the child content
      *     of the document element of the supplied document.
      * @param {Document} aDocument The document to receive the content.
      * @param {Node|String} theContent The object to use as the source of the
@@ -535,7 +535,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just added. The default for an 'add' operation is false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -555,8 +555,8 @@ TP.definePrimitive('xmlDocumentInsertContent',
 function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
-     * @name xmlDocumentInsertContent
-     * @synopsis Inserts content from theContent into/around the document
+     * @method xmlDocumentInsertContent
+     * @summary Inserts content from theContent into/around the document
      *     element of the supplied document based on the position given. The
      *     position should indicate whether the content should become the
      *     previous sibling, next sibling, first child or last child.
@@ -572,7 +572,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for an 'insert' operation is false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -593,10 +593,10 @@ TP.definePrimitive('xmlDocumentSetContent',
 function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name xmlDocumentSetContent
-     * @synopsis Sets the content of the supplied document, replacing the
+     * @method xmlDocumentSetContent
+     * @summary Sets the content of the supplied document, replacing the
      *     document's documentElement with the resulting content if valid.
-     * @description Content sent to a document must be suitable for replacing
+     * @summary Content sent to a document must be suitable for replacing
      *     the entire content of the document, i.e. it becomes the source of the
      *     new documentElement. This implies that the content must be able to
      *     provide a valid node containing a single root element of the same
@@ -854,8 +854,8 @@ TP.definePrimitive('attributeStringAsHash',
 function(aAttributeString) {
 
     /**
-     * @name attributeStringAsHash
-     * @synopsis Converts a properly formatted attribute string into the
+     * @method attributeStringAsHash
+     * @summary Converts a properly formatted attribute string into the
      *     equivalent TP.lang.Hash.
      * @param {String} aAttributeString A string of the form key="value"
      *     key="value".
@@ -875,8 +875,8 @@ TP.definePrimitive('attributeStringFromHash',
 function(aHash) {
 
     /**
-     * @name attributeStringFromHash
-     * @synopsis Returns the provided hash's key/value pairs as a valid XML
+     * @method attributeStringFromHash
+     * @summary Returns the provided hash's key/value pairs as a valid XML
      *     element attribute string.
      * @param {TP.lang.Hash} aHash A valid TP.lang.Hash containing keys suitable
      *     for a XML element.
@@ -916,11 +916,11 @@ TP.definePrimitive('attributeGetCanonicalName',
 function(anAttributeNode) {
 
     /**
-     * @name attributeGetCanonicalName
-     * @synopsis Returns the prefix:attrname form of the attribute's name, using
+     * @method attributeGetCanonicalName
+     * @summary Returns the prefix:attrname form of the attribute's name, using
      *     namespaceURI data and TIBET's XMLNS information to return the
      *     canonical prefix version.
-     * @description Note that, in XML documents, if an attribute doesn't have a
+     * @summary Note that, in XML documents, if an attribute doesn't have a
      *     prefix, then its not considered a part of any namespace and therefore
      *     it will just returns its name. In an HTML document (which knows
      *     nothing of namespaces), this routine will 'fake' a prefix for
@@ -1044,10 +1044,10 @@ TP.definePrimitive('attributeGetFullName',
 function(anAttributeNode) {
 
     /**
-     * @name attributeGetFullName
-     * @synopsis Returns the prefix:attrname form of the attribute's name, if
+     * @method attributeGetFullName
+     * @summary Returns the prefix:attrname form of the attribute's name, if
      *     available.
-     * @description Note that, in XML documents, if an attribute doesn't have a
+     * @summary Note that, in XML documents, if an attribute doesn't have a
      *     prefix, then its not considered a part of any namespace and therefore
      *     it will just returns its name. In an HTML document (which knows
      *     nothing of namespaces), this routine will 'fake' a prefix for
@@ -1138,8 +1138,8 @@ TP.definePrimitive('attributeGetLocalName',
 function(anAttributeNode) {
 
     /**
-     * @name attributeGetLocalName
-     * @synopsis Returns the local name (that is, the name without the prefix)
+     * @method attributeGetLocalName
+     * @summary Returns the local name (that is, the name without the prefix)
      *     of the supplied attribute node.
      * @param {Attribute} anAttributeNode The attribute node to retrieve the
      *     local name for.
@@ -1188,8 +1188,8 @@ TP.definePrimitive('elementAddAttributeValue',
 function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
     /**
-     * @name elementAddAttributeValue
-     * @synopsis Adds the value of the attribute provided to any existing values
+     * @method elementAddAttributeValue
+     * @summary Adds the value of the attribute provided to any existing values
      *     which might exist, or sets the attribute to that value. This is used
      *     for space-separated attribute value management.
      * @param {Element} anElement The element to set the attribute on.
@@ -1232,8 +1232,8 @@ TP.definePrimitive('elementAddContent',
 function(anElement, anObject, loadedFunction, shouldAwake) {
 
     /**
-     * @name elementAddContent
-     * @synopsis Adds content from anObject onto the end of the child content of
+     * @method elementAddContent
+     * @summary Adds content from anObject onto the end of the child content of
      *     anElement.
      * @param {Element} anElement The element receiving content.
      * @param {Object} anObject The object to use as the source of the content.
@@ -1241,7 +1241,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just added. The default for an 'add' operation is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -1276,8 +1276,8 @@ TP.definePrimitive('elementAddNamespace',
 function(anElement, aPrefix, aURI) {
 
     /**
-     * @name elementAddNamespace
-     * @synopsis Adds an 'xmlns:<aPrefix>' attribute to the element. Note that
+     * @method elementAddNamespace
+     * @summary Adds an 'xmlns:<aPrefix>' attribute to the element. Note that
      *     'aPrefix' *must* be valid (i.e. you cannot use this mechanism to
      *     change the default namespace - no current DOM environment supports
      *     that). Note also that namespaces can only be added to elements in an
@@ -1357,8 +1357,8 @@ TP.definePrimitive('elementBecome',
 function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
 
     /**
-     * @name elementBecome
-     * @synopsis Replaces the node with a new node of a different type, moving
+     * @method elementBecome
+     * @summary Replaces the node with a new node of a different type, moving
      *     all attributes and children of the original node onto the new node.
      *     This is the core "compiled tag" support method allowing custom XML
      *     tags to switch into HTML tags.
@@ -1588,8 +1588,8 @@ TP.definePrimitive('elementBubbleXMLNSAttributes',
 function(anElement) {
 
     /**
-     * @name elementBubbleXMLNSAttributes
-     * @synopsis 'Bubbles' xmlns attributes from the supplied element 'up' it's
+     * @method elementBubbleXMLNSAttributes
+     * @summary 'Bubbles' xmlns attributes from the supplied element 'up' it's
      *     ancestor chain in an attempt to 'de-clutter' the DOM tree. Note that
      *     care is taken to follow XML Namespaces rules (i.e. the namespace will
      *     only be redefined further up the chain if it has both the same prefix
@@ -1705,8 +1705,8 @@ TP.definePrimitive('elementCopyAttributes',
 function(fromElement, toElement) {
 
     /**
-     * @name elementCopyAttributes
-     * @synopsis Copies all attributes from fromElement to toElement.
+     * @method elementCopyAttributes
+     * @summary Copies all attributes from fromElement to toElement.
      * @param {Element} fromElement The source element.
      * @param {Element} toElement The target element.
      * @raise TP.sig.InvalidElement Raised when an invalid element is provided
@@ -1760,9 +1760,9 @@ TP.definePrimitive('elementCopyXMLNSAttributes',
 function(fromElement, toElement) {
 
     /**
-     * @name elementCopyXMLNSAttributes
-     * @synopsis Copies any 'xmlns:' attributes from fromElement to toElement.
-     * @description This method copies *only prefixed* namespaces. It will not
+     * @method elementCopyXMLNSAttributes
+     * @summary Copies any 'xmlns:' attributes from fromElement to toElement.
+     * @summary This method copies *only prefixed* namespaces. It will not
      *     copy the default namespace from fromElement. This method will also
      *     copy attributes between elements in different documents.
      * @param {Element} fromElement The source element.
@@ -1827,11 +1827,11 @@ TP.definePrimitive('elementFlagChange',
 function(anElement, locationPath, action, shouldOverwrite) {
 
     /**
-     * @name elementFlagChange
-     * @synopsis Flags the element with a tibet:crud attribute containing the
+     * @method elementFlagChange
+     * @summary Flags the element with a tibet:crud attribute containing the
      *     locationPath and action pair. Note that this attribute can hold
      *     multiple locationPath/action pair values.
-     * @description The supplied location path should take the form of:
+     * @summary The supplied location path should take the form of:
      *     TP.SELF                  ->  The action for the receiving element
      *                                  itself.
      *     TP.ATTR + attributeName  ->  The action for a named attribute
@@ -1904,9 +1904,9 @@ TP.definePrimitive('elementGetChangeAction',
 function(anElement, locationPath) {
 
     /**
-     * @name elementGetChangeAction
-     * @synopsis Returns any action for the supplied location path.
-     * @description The supplied location path should take the form of:
+     * @method elementGetChangeAction
+     * @summary Returns any action for the supplied location path.
+     * @summary The supplied location path should take the form of:
      *     TP.SELF                  ->  The action for the receiving element
      *                                  itself.
      *     TP.ATTR + attributeName  ->  The action for a named attribute
@@ -1960,8 +1960,8 @@ TP.definePrimitive('elementHasAttribute',
 function(anElement, attributeName, checkAttrNSURI) {
 
     /**
-     * @name elementHasAttribute
-     * @synopsis Returns true if the supplied element has the attribute
+     * @method elementHasAttribute
+     * @summary Returns true if the supplied element has the attribute
      *     matching the attribute name defined on it, even if the value of that
      *     is null.
      * @param {Element} anElement The element to test for the existence of the
@@ -2068,8 +2068,8 @@ TP.definePrimitive('elementGetLocalName',
 function(anElement) {
 
     /**
-     * @name elementGetLocalName
-     * @synopsis Returns the local name (that is, the name without the prefix)
+     * @method elementGetLocalName
+     * @summary Returns the local name (that is, the name without the prefix)
      *     of the supplied element node.
      * @param {Element} anElement The element node to retrieve the local name
      *     for.
@@ -2106,8 +2106,8 @@ TP.definePrimitive('elementGetXMLNSAttributes',
 function(anElement, includeDefault) {
 
     /**
-     * @name elementGetXMLNSAttributes
-     * @synopsis Returns all 'xmlns' attributes for the supplied element. Note
+     * @method elementGetXMLNSAttributes
+     * @summary Returns all 'xmlns' attributes for the supplied element. Note
      *     that this method will *not* return any 'default namespace' 'xmlns'
      *     attribute that is defined on the supplied element unless the
      *     includeDefault flag is true.
@@ -2160,13 +2160,13 @@ TP.definePrimitive('elementFromString',
 function(aString, defaultNS, shouldReport) {
 
     /**
-     * @name elementFromString
-     * @synopsis Parses aString and returns the XML element representing the
+     * @method elementFromString
+     * @summary Parses aString and returns the XML element representing the
      *     string's DOM representation. NOTE that only elements can be produced
      *     by this method, not document or text nodes for example. Use
      *     nodeFromString if you need more general parsing from text into node
      *     form.
-     * @description This is different from TP.documentFromString() in that the
+     * @summary This is different from TP.documentFromString() in that the
      *     node returned is the documentElement from that call and is,
      *     therefore, a Node not a Document.
      * @param {String} aString The source string to be parsed. Note that this
@@ -2224,11 +2224,11 @@ TP.definePrimitive('$elementGetAttribute',
 function(anElement, attributeName, checkAttrNSURI) {
 
     /**
-     * @name $elementGetAttribute
-     * @synopsis Returns the value of the attribute provided, optionally
+     * @method $elementGetAttribute
+     * @summary Returns the value of the attribute provided, optionally
      *     ensuring that a precise namespace URI match for prefixed attribute
      *     names is observed.
-     * @description This is a private method. See TP.elementGetAttribute() for
+     * @summary This is a private method. See TP.elementGetAttribute() for
      *     more information and examples on this functionality.
      * @param {Element} anElement The element to retrieve the attribute value
      *     from.
@@ -2333,9 +2333,9 @@ TP.definePrimitive('elementGetAttribute',
 function(anElement, attributeName, checkAttrNSURI) {
 
     /**
-     * @name elementGetAttribute
-     * @synopsis Returns the value of the attribute provided.
-     * @description This method provides some additional capabilities over the
+     * @method elementGetAttribute
+     * @summary Returns the value of the attribute provided.
+     * @summary This method provides some additional capabilities over the
      *     standard DOM '.getAttribute()' method: #1: If there is a method
      *     defined on the 'TP' object that follows a pattern of
      *     'TP.elementGet<attributeName>', then that method will be called as a
@@ -2413,12 +2413,12 @@ TP.definePrimitive('elementGetAttributes',
 function(anElement, attributeName, stripPrefixes) {
 
     /**
-     * @name elementGetAttributes
-     * @synopsis Returns a hash of zero to N attribute name/value pairs,
+     * @method elementGetAttributes
+     * @summary Returns a hash of zero to N attribute name/value pairs,
      *     potentially matching the attribute name provided.
-     * @description Note that this method will always process all attributes,
+     * @summary Note that this method will always process all attributes,
      *     whether they are in a particular namespace or not.
-     * @description The attributeName in this case is expected to be of the form
+     * @summary The attributeName in this case is expected to be of the form
      *     'wholename', '*:localname' or 'prefix:*', wildcarding either the
      *     prefix or the localname. If it is omitted, all attributes will be
      *     represented in the hash.
@@ -2519,10 +2519,10 @@ TP.definePrimitive('elementGetAttributeNames',
 function(anElement, stripPrefixes) {
 
     /**
-     * @name elementGetAttributeNames
-     * @synopsis Returns an Array of zero to N attribute names of attributes on
+     * @method elementGetAttributeNames
+     * @summary Returns an Array of zero to N attribute names of attributes on
      *     the provided element.
-     * @description Note that this method will always process all attributes,
+     * @summary Note that this method will always process all attributes,
      *     whether they are in a particular namespace or not.
      * @param {Element} anElement The element to retrieve the attribute names
      *     from.
@@ -2624,14 +2624,14 @@ TP.definePrimitive('elementGetAttributesAsNumbers',
 function(anElement, attributeName, stripPrefixes) {
 
     /**
-     * @name elementGetAttributesAsNumbers
-     * @synopsis Returns a hash of zero to N attribute name/value pairs,
+     * @method elementGetAttributesAsNumbers
+     * @summary Returns a hash of zero to N attribute name/value pairs,
      *     potentially matching the attribute name provided. This routine
      *     returns each value as a Number. If the value couldn't be converted to
      *     a Number, the value returned for that attribute will be NaN.
-     * @description Note that this method will always process all attributes,
+     * @summary Note that this method will always process all attributes,
      *     whether they are in a particular namespace or not.
-     * @description The attributeName in this case is expected to be of the form
+     * @summary The attributeName in this case is expected to be of the form
      *     'wholename', '*:localname' or 'prefix:*', wildcarding either the
      *     prefix or the localname. If it is omitted, all attributes will be
      *     represented in the hash.
@@ -2749,13 +2749,13 @@ TP.definePrimitive('elementGetAttributeNode',
 function(anElement, attributeName) {
 
     /**
-     * @name elementGetAttributeNode
-     * @synopsis Returns the first attribute node that matches the attribute
+     * @method elementGetAttributeNode
+     * @summary Returns the first attribute node that matches the attribute
      *     name provided.
-     * @description Note that this method will always retrieve the first
+     * @summary Note that this method will always retrieve the first
      *     matching attribute node, whether it is in a particular namespace or
      *     not.
-     * @description The attributeName in this case is expected to be of the form
+     * @summary The attributeName in this case is expected to be of the form
      *     'wholename', '*:localname' or 'prefix:*', wildcarding either the
      *     prefix or the localname.
      * @param {Element} anElement The element to retrieve the attribute value
@@ -2829,12 +2829,12 @@ TP.definePrimitive('elementGetAttributeNodes',
 function(anElement, attributeName) {
 
     /**
-     * @name elementGetAttributeNodes
-     * @synopsis Returns an array of zero to N attribute nodes that match the
+     * @method elementGetAttributeNodes
+     * @summary Returns an array of zero to N attribute nodes that match the
      *     attribute name provided.
-     * @description Note that this method will always retrieve all attribute
+     * @summary Note that this method will always retrieve all attribute
      *     nodes, whether they are in a particular namespace or not.
-     * @description The attributeName in this case is expected to be of the form
+     * @summary The attributeName in this case is expected to be of the form
      *     'wholename', '*:localname' or 'prefix:*', wildcarding either the
      *     prefix or the localname. If it is omitted, all attributes will be
      *     represented in the array.
@@ -2914,10 +2914,10 @@ TP.definePrimitive('elementGetAttributeNodesInNS',
 function(anElement, attributeName, attrNS) {
 
     /**
-     * @name elementGetAttributeNodesInNS
-     * @synopsis Returns an array of zero to N attribute nodes that match the
+     * @method elementGetAttributeNodesInNS
+     * @summary Returns an array of zero to N attribute nodes that match the
      *     attribute name provided and that exist in the attribute namespace.
-     * @description The attributeName in this case is expected to be of the form
+     * @summary The attributeName in this case is expected to be of the form
      *     'wholename', '*:localname' or 'prefix:*', wildcarding either the
      *     prefix or the localname. If it is omitted, all attributes will be
      *     represented in the hash.
@@ -2989,11 +2989,11 @@ TP.definePrimitive('elementGetCanonicalName',
 function(anElement, ignoreSourcetag) {
 
     /**
-     * @name elementGetCanonicalName
-     * @synopsis Returns the prefix:tagname form of the element's name, using
+     * @method elementGetCanonicalName
+     * @summary Returns the prefix:tagname form of the element's name, using
      *     namespaceURI data and TIBET's XMLNS information to return the
      *     canonical prefix version.
-     * @description In an HTML document (which knows nothing of namespaces),
+     * @summary In an HTML document (which knows nothing of namespaces),
      *     this routine will 'fake' a prefix for non-prefixed elements by
      *     prepending an 'html:' prefix onto them. This method, unlike
      *     TP.elementGetFullName(), ignores any prefix given by the author to an
@@ -3095,9 +3095,9 @@ TP.definePrimitive('elementGetDocumentIndex',
 function(anElement, joinChar) {
 
     /**
-     * @name elementGetDocumentIndex
-     * @synopsis Returns an index generated for the element within the document.
-     * @description This index is unique within the elements's document and can
+     * @method elementGetDocumentIndex
+     * @summary Returns an index generated for the element within the document.
+     * @summary This index is unique within the elements's document and can
      *     be used for positioning comparison purposes with other elements. The
      *     format used here is consistent with the format for the element()
      *     scheme from XPointer but this routine does not attempt to find an
@@ -3163,11 +3163,11 @@ TP.definePrimitive('elementGetFullName',
 function(anElement, ignoreSourcetag) {
 
     /**
-     * @name elementGetFullName
-     * @synopsis Returns the prefix:tagname form of the element's name without
+     * @method elementGetFullName
+     * @summary Returns the prefix:tagname form of the element's name without
      *     attempting to find a canonical prefix for any NS URI which might be
      *     present.
-     * @description In an HTML document (which knows nothing of namespaces),
+     * @summary In an HTML document (which knows nothing of namespaces),
      *     this routine will 'fake' a prefix for non-prefixed elements by
      *     prepending an 'html:' prefix onto them. This method, unlike
      *     TP.elementGetCanonicalName(), does not try to compute a canonical
@@ -3255,11 +3255,11 @@ TP.definePrimitive('$elementGetPrefixedAttributeNode',
 function(anElement, attributeName, checkAttrNSURI) {
 
     /**
-     * @name $elementGetPrefixedAttributeNode
-     * @synopsis Returns the attribute node for the name provided, optionally
+     * @method $elementGetPrefixedAttributeNode
+     * @summary Returns the attribute node for the name provided, optionally
      *     ensuring that a precise namespace URI match for prefixed attribute
      *     names is observed.
-     * @description This is a private method. See TP.elementGetAttribute() for
+     * @summary This is a private method. See TP.elementGetAttribute() for
      *     more information and examples on this functionality.
      * @param {Element} anElement The element to retrieve the attribute node
      *     from.
@@ -3426,8 +3426,8 @@ TP.definePrimitive('elementHasAttributeValue',
 function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
     /**
-     * @name elementHasAttributeValue
-     * @synopsis Matches the value of the attribute with the value to see if
+     * @method elementHasAttributeValue
+     * @summary Matches the value of the attribute with the value to see if
      *     they match.
      * @param {Element} anElement The element to match the attribute on.
      * @param {String} attributeName The attribute to match.
@@ -3481,8 +3481,8 @@ TP.definePrimitive('elementInsertContent',
 function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
-     * @name elementInsertContent
-     * @synopsis Inserts content from theContent into/around anElement based on
+     * @method elementInsertContent
+     * @summary Inserts content from theContent into/around anElement based on
      *     the position given. The position should indicate whether the content
      *     should become the previous sibling, next sibling, first child or last
      *     child.
@@ -3498,7 +3498,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for an 'insert' operation is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -3542,8 +3542,8 @@ TP.definePrimitive('elementMergeAttributes',
 function(fromElement, toElement, shouldOverlay, nameRegExp, useElementNS) {
 
     /**
-     * @name elementMergeAttributes
-     * @synopsis Merges the attributes across a pair of elements. Attributes
+     * @method elementMergeAttributes
+     * @summary Merges the attributes across a pair of elements. Attributes
      *     from the fromElement are merged into the toElement.
      * @param {Element} fromElement The source element.
      * @param {Element} toElement The target element.
@@ -3733,15 +3733,15 @@ TP.definePrimitive('elementReplaceWith',
 function(anElement, anObject, loadedFunction, shouldAwake) {
 
     /**
-     * @name elementReplaceWith
-     * @synopsis Replaces the element with the object content provided.
+     * @method elementReplaceWith
+     * @summary Replaces the element with the object content provided.
      * @param {Element} anElement The element receiving content.
      * @param {Object} anObject The object to use as the source of the content.
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just replaced. The default for this operation is true.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -3777,8 +3777,8 @@ TP.definePrimitive('elementRemoveAttribute',
 function(anElement, attributeName, checkAttrNSURI) {
 
     /**
-     * @name elementRemoveAttribute
-     * @synopsis Removes an attribute from the supplied element whose name
+     * @method elementRemoveAttribute
+     * @summary Removes an attribute from the supplied element whose name
      *     matches attributeName.
      * @param {Element} anElement The element to remove the attribute from.
      * @param {String} attributeName The name of the attribute to remove.
@@ -3948,8 +3948,8 @@ TP.definePrimitive('elementReplaceAttributeValue',
 function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
 
     /**
-     * @name elementReplaceAttributeValue
-     * @synopsis Replaces the value of the attribute provided with a new value
+     * @method elementReplaceAttributeValue
+     * @summary Replaces the value of the attribute provided with a new value
      *     if the old value is found. If the old value isn't found no change is
      *     made to the attribute's value.
      * @param {Element} anElement The element to set the attribute on.
@@ -4001,8 +4001,8 @@ TP.definePrimitive('elementRemoveNamespace',
 function(anElement, aPrefix) {
 
     /**
-     * @name elementRemoveNamespace
-     * @synopsis Removes an 'xmlns:<aPrefix>' attribute from the element. Note
+     * @method elementRemoveNamespace
+     * @summary Removes an 'xmlns:<aPrefix>' attribute from the element. Note
      *     that 'aPrefix' *must* be valid (i.e. you cannot use this
      *     mechanism to change the default namespace - no current DOM
      *     environment supports that). Note also that namespaces can only be
@@ -4071,9 +4071,9 @@ TP.definePrimitive('$elementSetAttribute',
 function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
     /**
-     * @name $elementSetAttribute
-     * @synopsis Sets the value of the attribute provided.
-     * @description This is a private method. See TP.elementSetAttribute() for
+     * @method $elementSetAttribute
+     * @summary Sets the value of the attribute provided.
+     * @summary This is a private method. See TP.elementSetAttribute() for
      *     more information and examples on this functionality.
      * @param {Element} anElement The element to set the attribute on.
      * @param {String} attributeName The attribute to set.
@@ -4169,9 +4169,9 @@ TP.definePrimitive('elementSetAttribute',
 function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
     /**
-     * @name elementSetAttribute
-     * @synopsis Sets the value of the attribute provided.
-     * @description This method provides some additional capabilities over the
+     * @method elementSetAttribute
+     * @summary Sets the value of the attribute provided.
+     * @summary This method provides some additional capabilities over the
      *     standard DOM '.setAttribute()' method: #1: If there is a method
      *     defined on the 'TP' object that follows a pattern of
      *     'TP.elementSet<attributeName>', then that method will be called as a
@@ -4277,8 +4277,8 @@ TP.definePrimitive('elementSetAttributes',
 function(anElement, attributeHash, checkAttrNSURI) {
 
     /**
-     * @name elementSetAttributes
-     * @synopsis Sets the value of the attributes provided using the supplied
+     * @method elementSetAttributes
+     * @summary Sets the value of the attributes provided using the supplied
      *     TP.lang.Hash.
      * @param {Element} anElement The element to set the attributes on.
      * @param {TP.lang.Hash} attributeHash The attributes to set.
@@ -4348,8 +4348,8 @@ TP.definePrimitive('elementSetContent',
 function(anElement, anObject, loadedFunction, shouldAwake) {
 
     /**
-     * @name elementSetContent
-     * @synopsis Inserts content from anObject into/around anElement based on
+     * @method elementSetContent
+     * @summary Inserts content from anObject into/around anElement based on
      *     the position given. The position should indicate whether the content
      *     should become the previous sibling, next sibling, first child or last
      *     child.
@@ -4360,7 +4360,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether anElement has
      *     a Window object associated with it or not.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -4399,8 +4399,8 @@ TP.definePrimitive('elementStripChangeFlags',
 function(anElement) {
 
     /**
-     * @name elementStripChangeFlags
-     * @synopsis Strips the element and any descendants of any change flags.
+     * @method elementStripChangeFlags
+     * @summary Strips the element and any descendants of any change flags.
      * @param {Element} anElement The topmost element to start stripping change
      *     flags from.
      * @returns {null}
@@ -4431,8 +4431,8 @@ TP.definePrimitive('xmlElementAddContent',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name xmlElementAddContent
-     * @synopsis Adds content from theContent onto the end of the child content
+     * @method xmlElementAddContent
+     * @summary Adds content from theContent onto the end of the child content
      *     of anElement.
      * @param {Element} anElement The element receiving content.
      * @param {Node|String} theContent The content to insert into the element.
@@ -4440,7 +4440,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just added. The default for an 'add' operation is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just added.
      */
 
@@ -4459,8 +4459,8 @@ TP.definePrimitive('xmlElementInsertContent',
 function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
-     * @name xmlElementInsertContent
-     * @synopsis Inserts content from theContent into/around anElement based on
+     * @method xmlElementInsertContent
+     * @summary Inserts content from theContent into/around anElement based on
      *     the position given. The position should indicate whether the content
      *     should become the previous sibling, next sibling, first child or last
      *     child.
@@ -4475,7 +4475,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for an 'insert' operation is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -4627,9 +4627,9 @@ TP.definePrimitive('xmlElementReplaceWith',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name xmlElementReplaceWith
-     * @synopsis Replaces anElement which should be an XML element.
-     * @description This method sets the 'outer content' of anElement to
+     * @method xmlElementReplaceWith
+     * @summary Replaces anElement which should be an XML element.
+     * @summary This method sets the 'outer content' of anElement to
      *     theContent which means that the entire element, including its start
      *     and end tags, will be replaced with theContent. NOTE: This method may
      *     replace anElement!!! To use this method safely, always capture its
@@ -4641,7 +4641,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just replaced. The default for this operation is true.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element|Text} The newly created Node (could be a Text node,
      *     depending on how the replacement happened).
      */
@@ -4736,10 +4736,10 @@ TP.definePrimitive('xmlElementSetContent',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @name xmlElementSetContent
-     * @synopsis Sets the 'content' of anElement, which should be an XML
+     * @method xmlElementSetContent
+     * @summary Sets the 'content' of anElement, which should be an XML
      *     element.
-     * @description This method sets the 'inner content' of anElement to
+     * @summary This method sets the 'inner content' of anElement to
      *     theContent which means that just the contents of the element, not
      *     including its start and end tags, will be replaced with theContent.
      * @param {XMLElement} anElement The element to set the 'inner content' of.
@@ -4750,7 +4750,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether anElement has
      *     a Window object associated with it or not.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Element|Text} The newly created Node (could be a Text node,
      *     depending on how the replacement happened).
      */
@@ -4846,8 +4846,8 @@ TP.definePrimitive('elementIsNested',
 function(anElement) {
 
     /**
-     * @name elementIsNested
-     * @synopsis Returns true if the element provided is nested within one or
+     * @method elementIsNested
+     * @summary Returns true if the element provided is nested within one or
      *     more parent elements with the same canonical name. This is often used
      *     in tag processing situations to avoid rework on nested elements which
      *     might otherwise occur.
@@ -4881,8 +4881,8 @@ TP.definePrimitive('fragmentFromString',
 function(aString, defaultNS, shouldReport) {
 
     /**
-     * @name fragmentFromString
-     * @synopsis Parses aString and returns a document fragment containing the
+     * @method fragmentFromString
+     * @summary Parses aString and returns a document fragment containing the
      *     XML node representing the string's DOM representation. If the string
      *     is empty a fragment containing an empty text node is returned, when
      *     an element is produced that element is returned. CDATA and other node
@@ -4957,10 +4957,10 @@ TP.definePrimitive('nodeListAsDocument',
 function(aNodeList, aTagname, aNamespace) {
 
     /**
-     * @name nodeListAsDocument
-     * @synopsis Returns a document object whose document element's child
+     * @method nodeListAsDocument
+     * @summary Returns a document object whose document element's child
      *     content consists of cloned versions of the nodeList items.
-     * @description The root element of the document defaults to a tag name of
+     * @summary The root element of the document defaults to a tag name of
      *     'instanceData', consistent with the XForms specification if no tag
      *     name is provided. Note also that, if a namespace is provided, it
      *     applies *only to the document element of the new document that is
@@ -5042,10 +5042,10 @@ TP.definePrimitive('nodeListAsFragment',
 function(aNodeList, aDocument, shouldClone) {
 
     /**
-     * @name nodeListAsFragment
-     * @synopsis Returns a document fragment whose child content consists of the
+     * @method nodeListAsFragment
+     * @summary Returns a document fragment whose child content consists of the
      *     nodeList items.
-     * @description The fragment is constructed relative to the document
+     * @summary The fragment is constructed relative to the document
      *     provided. If shouldClone is true then the content of the node list
      *     (or array) is cloned during the operation.
      * @param {NodeList} aNodeList The node list to convert.
@@ -5148,8 +5148,8 @@ TP.definePrimitive('nodeAddContent',
 function(aNode, anObject, loadedFunction, shouldAwake) {
 
     /**
-     * @name nodeAddContent
-     * @synopsis Adds content from anObject onto the end of the child content of
+     * @method nodeAddContent
+     * @summary Adds content from anObject onto the end of the child content of
      *     anObject.
      * @param {Node} aNode The node to add content for.
      * @param {Object} anObject The object to use as the source of the content.
@@ -5175,8 +5175,8 @@ TP.definePrimitive('nodeAppendChild',
 function(aNode, newNode, shouldAwake) {
 
     /**
-     * @name nodeAppendChild
-     * @synopsis Appends the new node to the supplied node and then 'awakens'
+     * @method nodeAppendChild
+     * @summary Appends the new node to the supplied node and then 'awakens'
      *     (initializes) the newly added content.
      * @param {Node} aNode The node to append the child node to.
      * @param {Node|String} newNode The node to append to aNode, or a valid
@@ -5184,7 +5184,7 @@ function(aNode, newNode, shouldAwake) {
      *     children) to append.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just appended. The default for this operation is false.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
      */
@@ -5317,8 +5317,8 @@ TP.definePrimitive('nodeContainsNode',
 function(aNode, aDescendant) {
 
     /**
-     * @name nodeContainsNode
-     * @synopsis Returns whether or not aNode is an ancestor (or the
+     * @method nodeContainsNode
+     * @summary Returns whether or not aNode is an ancestor (or the
      *     document for) aDescendant. If aNode is a Document node, this
      *     method will return true if aDescendant's document is aNode.
      * @param {Node} aNode The node to check to see if aDescendant is
@@ -5398,11 +5398,11 @@ TP.definePrimitive('nodeDetach',
 function(aNode) {
 
     /**
-     * @name nodeDetach
-     * @synopsis Removes the node from its parent. This is simple sugar for
+     * @method nodeDetach
+     * @summary Removes the node from its parent. This is simple sugar for
      *     TP.nodeRemoveChild().
      * @param {Node} aNode The node to detach.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The detached node.
      */
 
@@ -5420,10 +5420,10 @@ TP.definePrimitive('nodeEqualsNode',
 function(aNode, otherNode) {
 
     /**
-     * @name nodeEqualsNode
-     * @synopsis Normalizes adjacent Text nodes on the supplied Node and its
+     * @method nodeEqualsNode
+     * @summary Normalizes adjacent Text nodes on the supplied Node and its
      *     descendants.
-     * @description This method follows the DOM Level 3 standard for checking
+     * @summary This method follows the DOM Level 3 standard for checking
      *     Nodes for equality with each other. This specification states that
      *     two Nodes are equal if:
      *          -   The two nodes are of the same type
@@ -5472,8 +5472,8 @@ TP.definePrimitive('nodeGetAncestorPositions',
 function(aNode, includeNode, aPrefix, joinChar) {
 
     /**
-     * @name nodeGetAncestorPositions
-     * @synopsis Returns an array of position strings for the provided node's
+     * @method nodeGetAncestorPositions
+     * @summary Returns an array of position strings for the provided node's
      *     ancestors. If the includeNode flag is true then the list starts with
      *     aNode's position, otherwise the first entry represents aNode's
      *     parentNode position.
@@ -5548,8 +5548,8 @@ TP.definePrimitive('nodeGetControlElement',
 function(aNode) {
 
     /**
-     * @name nodeGetControlElement
-     * @synopsis Finds the control element for aNode and returns it. This is
+     * @method nodeGetControlElement
+     * @summary Finds the control element for aNode and returns it. This is
      *     typically invoked by pseudo-element children of the control during
      *     various processing which requires them to find the overall control
      *     (widget) element.
@@ -5573,8 +5573,8 @@ TP.definePrimitive('nodeGetControlId',
 function(aNode, assignIfAbsent) {
 
     /**
-     * @name nodeGetControlId
-     * @synopsis Finds the control element for aNode and returns it's ID. This
+     * @method nodeGetControlId
+     * @summary Finds the control element for aNode and returns it's ID. This
      *     is typically invoked by pseudo-element children of the control when
      *     building their local ID.
      * @param {Node} aNode The DOM node to operate on.
@@ -5603,8 +5603,8 @@ TP.definePrimitive('nodeGetDocumentPosition',
 function(aNode, joinChar) {
 
     /**
-     * @name nodeGetDocumentPosition
-     * @synopsis Returns a 0-indexed position generated for the node within the
+     * @method nodeGetDocumentPosition
+     * @summary Returns a 0-indexed position generated for the node within the
      *     document. This position is unique within the node's document and can
      *     be used for positioning comparison purposes with other nodes.
      * @param {Node} aNode The Node to operate on.
@@ -5670,8 +5670,8 @@ TP.definePrimitive('nodeGetIndexInParent',
 function(aNode, onlyElements) {
 
     /**
-     * @name nodeGetIndexInParent
-     * @synopsis Returns the index of the node provided in its parentNode's
+     * @method nodeGetIndexInParent
+     * @summary Returns the index of the node provided in its parentNode's
      *     childNodes array. If there is no parentNode for the node provided
      *     this method or aNode couldn't be found in the parent, this method
      *     returns TP.NOT_FOUND.
@@ -5738,8 +5738,8 @@ TP.definePrimitive('nodeInsertBefore',
 function(aNode, newNode, insertionPointNode, shouldAwake) {
 
     /**
-     * @name nodeInsertBefore
-     * @synopsis Inserts the new node into the child content of the supplied
+     * @method nodeInsertBefore
+     * @summary Inserts the new node into the child content of the supplied
      *     node before the supplied insertion point node and then 'awakens'
      *     (initializes) the newly added content. If insertionPointNode is null,
      *     then the new node is just appended to the child content of the
@@ -5750,7 +5750,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
      *     The new content will be inserted before this point.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for this operation is false.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
      */
@@ -5904,12 +5904,12 @@ TP.definePrimitive('nodeInsertContent',
 function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
-     * @name nodeInsertContent
-     * @synopsis Inserts content from anObject into/around aNode based on the
+     * @method nodeInsertContent
+     * @summary Inserts content from anObject into/around aNode based on the
      *     position or path given. The position or path should indicate whether
      *     the content should become the previous sibling, next sibling, first
      *     child or last child of aNode.
-     * @description Element nodes can accept content and position it in a
+     * @summary Element nodes can accept content and position it in a
      *     variety of ways subject to certain restrictions (such as you can't
      *     create a previous or next sibling to an element that is a
      *     documentElement). Other node types are even more restrictive and
@@ -5934,7 +5934,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just inserted. The default for this operation is false.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The first node of the content that was just inserted.
      */
 
@@ -6133,8 +6133,8 @@ TP.definePrimitive('nodeIsDetached',
 function(aNode, aRootNode) {
 
     /**
-     * @name nodeIsDetached
-     * @synopsis Returns true if the node's parent chain does not terminate at
+     * @method nodeIsDetached
+     * @summary Returns true if the node's parent chain does not terminate at
      *     the root node provided, or at a Document node when no specific root
      *     is given. The root node can be either an element node or a document
      *     node.
@@ -6208,8 +6208,8 @@ TP.definePrimitive('nodeNormalize',
 function(aNode) {
 
     /**
-     * @name nodeNormalize
-     * @synopsis Normalizes adjacent Text nodes on the supplied Node and its
+     * @method nodeNormalize
+     * @summary Normalizes adjacent Text nodes on the supplied Node and its
      *     descendants.
      * @param {Node} aNode The node to normalize.
      * @returns {Node} The node.
@@ -6254,15 +6254,15 @@ TP.definePrimitive('nodeReplaceChild',
 function(aNode, newNode, oldNode, shouldAwake) {
 
     /**
-     * @name nodeReplaceChild
-     * @synopsis Replaces the old node in the supplied node with the newNode and
+     * @method nodeReplaceChild
+     * @summary Replaces the old node in the supplied node with the newNode and
      *     then 'awakens' (initializes) the newly added content.
      * @param {Node} aNode The node to replace the child node in.
      * @param {Node} newNode The node to replace the old node with.
      * @param {Node} oldNode The node to be replaced with newNode.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just replaced. The default for this operation is false.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
      */
@@ -6415,11 +6415,11 @@ TP.definePrimitive('nodeRemoveChild',
 function(aNode, oldNode) {
 
     /**
-     * @name nodeRemoveChild
-     * @synopsis Removes the oldNode in supplied node.
+     * @method nodeRemoveChild
+     * @summary Removes the oldNode in supplied node.
      * @param {Node} aNode The node to remove the child node from.
      * @param {Node} oldNode The node to remove from aNode.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The old node.
      */
 
@@ -6442,8 +6442,8 @@ TP.definePrimitive('nodeFromString',
 function(aString, defaultNS, shouldReport) {
 
     /**
-     * @name nodeFromString
-     * @synopsis Parses aString and returns the XML node representing the
+     * @method nodeFromString
+     * @summary Parses aString and returns the XML node representing the
      *     string's DOM representation. If the string is empty an empty text
      *     node is returned, when an element is produced that element is
      *     returned. CDATA and other node types are also possible output from
@@ -6577,10 +6577,10 @@ TP.definePrimitive('nodeEvaluateBarename',
 function(aNode, aPath, autoCollapse, createAttr) {
 
     /**
-     * @name nodeEvaluateBarename
-     * @synopsis Traverses a barename and returns the node corresponding to the
+     * @method nodeEvaluateBarename
+     * @summary Traverses a barename and returns the node corresponding to the
      *     bare name.
-     * @description The XPointer standard includes a very simple scheme, the
+     * @summary The XPointer standard includes a very simple scheme, the
      *     barename scheme, which operates much like HTML anchors, except on
      *     IDs. This would take the form of 'http://www.foo.com#barElem'. TIBET
      *     supports this, but extends it so that an attribute of that element
@@ -6691,10 +6691,10 @@ TP.definePrimitive('nodeEvaluateElementScheme',
 function(aNode, aPath) {
 
     /**
-     * @name nodeEvaluateElementScheme
-     * @synopsis Traverses an element scheme path, returning the targeted
+     * @method nodeEvaluateElementScheme
+     * @summary Traverses an element scheme path, returning the targeted
      *     element if one exists.
-     * @description The XPointer standard includes several schemes, one of which
+     * @summary The XPointer standard includes several schemes, one of which
      *     is the element() scheme. In this scheme the fragment part of the URI
      *     is #element(path) where path is a forward-slash separated list of
      *     steps. The first step can be either a 1, signifying the root node of
@@ -6825,8 +6825,8 @@ TP.definePrimitive('nodeEvaluatePath',
 function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
 
     /**
-     * @name nodeEvaluatePath
-     * @synopsis Evaluates the path provided, parsing for common path syntax.
+     * @method nodeEvaluatePath
+     * @summary Evaluates the path provided, parsing for common path syntax.
      *     There are several path types which might be used, but the most
      *     typical are XPaths, XPointers (which include xpointer(), xpath1()
      *     and element() schemes), and CSS queries. The latter are rare since
@@ -6956,8 +6956,8 @@ TP.definePrimitive('nodeEvaluateXPath',
 function(aNode, anXPath, resultType, logErrors) {
 
     /**
-     * @name nodeEvaluateXPath
-     * @synopsis Returns the result of evaluating the XPath expression against
+     * @method nodeEvaluateXPath
+     * @summary Returns the result of evaluating the XPath expression against
      *     the node given.
      * @param {Node} aNode The context node to begin querying for Nodes from.
      * @param {String} anXPath The XPath expression to use to query the tree
@@ -7202,8 +7202,8 @@ TP.definePrimitive('nodeEvaluateXPointer',
 function(aNode, aPath, autoCollapse) {
 
     /**
-     * @name nodeEvaluateXPointer
-     * @synopsis Executes an XPointer, which may be one of a number of specific
+     * @method nodeEvaluateXPointer
+     * @summary Executes an XPointer, which may be one of a number of specific
      *     pointer schemes, returning the results. Samples include fragments of
      *     the form #barename, #xpointer(a_path), #xpath1(a_path),
      *     #element(a_path), etc.
@@ -7286,8 +7286,8 @@ TP.definePrimitive('nodeEvaluateXTension',
 function(aNode, aPath, autoCollapse) {
 
     /**
-     * @name nodeEvaluateXTension
-     * @synopsis Executes an extended XPointer scheme, typically css().
+     * @method nodeEvaluateXTension
+     * @summary Executes an extended XPointer scheme, typically css().
      * @param {Node} aNode The 'context node' for the evaluation.
      * @param {String} aPath An extended path/pointer scheme such as css(), etc.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
@@ -7332,10 +7332,10 @@ TP.definePrimitive('nodeGetAncestors',
 function(aNode) {
 
     /**
-     * @name nodeGetAncestors
-     * @synopsis Returns an Array containing ancestor nodes of the provided
+     * @method nodeGetAncestors
+     * @summary Returns an Array containing ancestor nodes of the provided
      *     node.
-     * @description This list ends with the top-level element node and does not
+     * @summary This list ends with the top-level element node and does not
      *     include the node's containing DOCUMENT_NODE. The list is ordered
      *     "outward" with the closest parent first.
      * @param {Node} aNode The DOM node to operate on.
@@ -7383,9 +7383,9 @@ TP.definePrimitive('nodeGetChildNodes',
 function(aNode) {
 
     /**
-     * @name nodeGetChildNodes
-     * @synopsis Returns an Array of the child nodes of the provided node.
-     * @description Note that the node is normalized before returning this list
+     * @method nodeGetChildNodes
+     * @summary Returns an Array of the child nodes of the provided node.
+     * @summary Note that the node is normalized before returning this list
      *     so that child text nodes are coalesced for consistency.
      * @param {Node} aNode The DOM node to operate on.
      * @example Get all of the child nodes of an XML element:
@@ -7428,8 +7428,8 @@ TP.definePrimitive('nodeGetChildElementAt',
 function(aNode, anIndex) {
 
     /**
-     * @name nodeGetChildElementAt
-     * @synopsis Returns the child element of aNode at the index provided, if
+     * @method nodeGetChildElementAt
+     * @summary Returns the child element of aNode at the index provided, if
      *     such a child exists. Note that the index provided is used relative to
      *     children which are Element nodes only.
      * @param {Node} aNode The DOM node to operate on.
@@ -7530,9 +7530,9 @@ TP.definePrimitive('nodeGetChildElements',
 function(aNode) {
 
     /**
-     * @name nodeGetChildElements
-     * @synopsis Returns an Array of the child elements of the provided node.
-     * @description No normalization of text node children is done in this
+     * @method nodeGetChildElements
+     * @summary Returns an Array of the child elements of the provided node.
+     * @summary No normalization of text node children is done in this
      *     process since we're only looking for element nodes.
      * @param {Node} aNode The DOM node to operate on.
      * @example Get all of the child *element* nodes of an XML element:
@@ -7602,10 +7602,10 @@ TP.definePrimitive('nodeGetDescendants',
 function(aNode, breadthFirst) {
 
     /**
-     * @name nodeGetDescendants
-     * @synopsis Returns an Array of the children, grandchildren, and so on of
+     * @method nodeGetDescendants
+     * @summary Returns an Array of the children, grandchildren, and so on of
      *     the node provided.
-     * @description Note that the nodes acquired as descendants are normalized
+     * @summary Note that the nodes acquired as descendants are normalized
      *     to coalesce text children as part of this method. Also note that for
      *     a variety of reasons the return values from this call are not likely
      *     to be identical across browsers due to differences in handling
@@ -7674,10 +7674,10 @@ TP.definePrimitive('nodeGetDescendantsByType',
 function(aNode, aType, breadthFirst) {
 
     /**
-     * @name nodeGetDescendantsByType
-     * @synopsis Returns an Array of all descendants of the provided node whose
+     * @method nodeGetDescendantsByType
+     * @summary Returns an Array of all descendants of the provided node whose
      *     node type matches the type provided.
-     * @description Note that node content is normalized before returning this
+     * @summary Note that node content is normalized before returning this
      *     list so that child text nodes are coalesced for consistency.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Number} aType The DOM node type constant to match against.
@@ -7765,8 +7765,8 @@ TP.definePrimitive('nodeGetDescendantElements',
 function(aNode, breadthFirst) {
 
     /**
-     * @name nodeGetDescendantElements
-     * @synopsis Returns an Array of the children, grandchildren, and so on of
+     * @method nodeGetDescendantElements
+     * @summary Returns an Array of the children, grandchildren, and so on of
      *     the node provided which are Element nodes.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
@@ -7812,11 +7812,11 @@ TP.definePrimitive('nodeGetDescendantElementsByAttribute',
 function(aNode, attrName, attrValue, breadthFirst) {
 
     /**
-     * @name nodeGetDescendantElementsByAttribute
-     * @synopsis Returns an Array containing descendants of the node provided
+     * @method nodeGetDescendantElementsByAttribute
+     * @summary Returns an Array containing descendants of the node provided
      *     which are Element nodes and which contain an attribute name/value
      *     matching the value provided.
-     * @description If the supplied attribute value is null, this method will
+     * @summary If the supplied attribute value is null, this method will
      *     return Element nodes that have any value for the named attribute, no
      *     matter its value.
      * @param {Node} aNode The DOM node to operate on.
@@ -7930,12 +7930,12 @@ TP.definePrimitive('nodeGetDescendantElementsByAttributePrefix',
 function(aNode, attrPrefix, attrValue, breadthFirst) {
 
     /**
-     * @name nodeGetDescendantElementsByAttributePrefix
-     * @synopsis Returns an Array of the children, grandchildren, and so on of
+     * @method nodeGetDescendantElementsByAttributePrefix
+     * @summary Returns an Array of the children, grandchildren, and so on of
      *     the node provided which are Element nodes and which contain at least
      *     one attribute whose name is prefixed with the supplied prefix and
      *     whose value matches the supplied value.
-     * @description If the supplied attribute value is null, this method will
+     * @summary If the supplied attribute value is null, this method will
      *     return Element nodes that have any value for the named attribute, no
      *     matter its value.
      * @param {Node} aNode The DOM node to operate on.
@@ -8033,10 +8033,10 @@ TP.definePrimitive('nodeGetDescendantElementsByIdOrName',
 function(aNode, anIdOrName) {
 
     /**
-     * @name nodeGetDescendantElementsByIdOrName
-     * @synopsis Returns any elements that can be found which have either the ID
+     * @method nodeGetDescendantElementsByIdOrName
+     * @summary Returns any elements that can be found which have either the ID
      *     or name provided.
-     * @description For HTML documents where radio buttons often use the 'name'
+     * @summary For HTML documents where radio buttons often use the 'name'
      *     attribute as an identifier rather than 'id' we need a way to query
      *     the document for elements matching an identifier which might be
      *     either a name or id value.
@@ -8116,11 +8116,11 @@ TP.definePrimitive('nodeGetDescendantElementsByName',
 function(aNode, aName) {
 
     /**
-     * @name nodeGetDescendantElementsByName
-     * @synopsis Returns an Array containing any descendants of the node
+     * @method nodeGetDescendantElementsByName
+     * @summary Returns an Array containing any descendants of the node
      *     provided which are Element nodes and whose name attributes match the
      *     name provided.
-     * @description When the supplied node is an HTML document this will use the
+     * @summary When the supplied node is an HTML document this will use the
      *     native call, otherwise it defers to using a manual search via the
      *     name attribute.
      * @param {Node} aNode The DOM node to operate on.
@@ -8174,8 +8174,8 @@ TP.definePrimitive('nodeGetDocument',
 function(aNode) {
 
     /**
-     * @name nodeGetDocument
-     * @synopsis Returns the document node containing the node provided. If the
+     * @method nodeGetDocument
+     * @summary Returns the document node containing the node provided. If the
      *     node provided is a Document node, this function will return the node
      *     provided.
      * @param {Node} aNode The DOM node to operate on.
@@ -8238,14 +8238,14 @@ TP.definePrimitive('nodeGetElementById',
 function(aNode, anID, retryWithPath) {
 
     /**
-     * @name nodeGetElementById
-     * @synopsis Returns the subelement of the node provided which has the ID
+     * @method nodeGetElementById
+     * @summary Returns the subelement of the node provided which has the ID
      *     given.
-     * @description This is a wrapper for ID retrieval using the standard
+     * @summary This is a wrapper for ID retrieval using the standard
      *     getElementById() call which deals with problems across XML and HTML
      *     DOM trees between W3C-compliant browsers and IE. Note that the ID
      *     will have ":" translated to "_" to support NS-qualified IDs.
-     * @description For HTML documents the standard getElementById call is often
+     * @summary For HTML documents the standard getElementById call is often
      *     sufficient, however XML documents will vary on W3C-compliant browsers
      *     based on the namespace and whether there's an internal DTD that
      *     defines IDREF attributes for that document. Many of TIBET's external
@@ -8364,12 +8364,12 @@ TP.definePrimitive('nodeGetElementsByTagName',
 function(aNode, aTagName, aNamespaceURI) {
 
     /**
-     * @name nodeGetElementsByTagName
-     * @synopsis Returns an Array containing any descendant elements of the
+     * @method nodeGetElementsByTagName
+     * @summary Returns an Array containing any descendant elements of the
      *     supplied node whose tag names match the name provided. Note that this
      *     function can deal properly with namespace-qualified tag names across
      *     platforms.
-     * @description This function can handle finding elements in the following
+     * @summary This function can handle finding elements in the following
      *     situations where the standard 'getElementsByTagName()' call fails: 1)
      *     When elements are in the default namespace in an XML document, the
      *     standard is to *not* return them, but to instead force the programmer
@@ -8598,11 +8598,11 @@ TP.definePrimitive('nodeGetFirstAncestorByAttribute',
 function(aNode, attrName, attrValue, checkAttrNSURI) {
 
     /**
-     * @name nodeGetFirstAncestorByAttribute
-     * @synopsis Returns the first element ancestor of aNode which has an
+     * @method nodeGetFirstAncestorByAttribute
+     * @summary Returns the first element ancestor of aNode which has an
      *     attribute matching attrName and whose value matches the optional
      *     attrValue provided.
-     * @description This is a commonly used method in widget construction where
+     * @summary This is a commonly used method in widget construction where
      *     an inner element is looking outward for its containing widget or
      *     control, often during event dispatch.
      * @param {Node} aNode The DOM node to operate on.
@@ -8678,10 +8678,10 @@ TP.definePrimitive('nodeGetFirstAncestorByTagName',
 function(aNode, aTagName, aNamespaceURI) {
 
     /**
-     * @name nodeGetFirstAncestorByTagName
-     * @synopsis Returns the first element ancestor of aNode which matches the
+     * @method nodeGetFirstAncestorByTagName
+     * @summary Returns the first element ancestor of aNode which matches the
      *     name and optional namespace URI provided.
-     * @description This is a commonly used method in widget construction where
+     * @summary This is a commonly used method in widget construction where
      *     an inner element is looking outward for its containing widget or
      *     control, often during event dispatch.
      * @param {Node} aNode The DOM node to operate on.
@@ -8730,8 +8730,8 @@ TP.definePrimitive('nodeGetFirstElementChildByAttribute',
 function(aNode, attrName, attrValue) {
 
     /**
-     * @name nodeGetFirstElementChildByAttribute
-     * @synopsis Returns the first element child of aNode which has an attribute
+     * @method nodeGetFirstElementChildByAttribute
+     * @summary Returns the first element child of aNode which has an attribute
      *     matching attrName and whose value matches the optional attrValue
      *     provided.
      * @param {Node} aNode The DOM node to operate on.
@@ -8839,8 +8839,8 @@ TP.definePrimitive('nodeGetFirstElementChildByTagName',
 function(aNode, aTagName, aNamespaceURI) {
 
     /**
-     * @name nodeGetFirstElementChildByTagName
-     * @synopsis Returns the first element descendant of aNode which matches the
+     * @method nodeGetFirstElementChildByTagName
+     * @summary Returns the first element descendant of aNode which matches the
      *     name and optional namespace URI provided. This is a commonly used
      *     method in widget construction where the outer widget is looking for
      *     specific parts of its content.
@@ -8927,8 +8927,8 @@ TP.definePrimitive('nodeGetFirstChildByType',
 function(aNode, aType) {
 
     /**
-     * @name nodeGetFirstChildByType
-     * @synopsis Returns the first child of aNode which has a nodeType matching
+     * @method nodeGetFirstChildByType
+     * @summary Returns the first child of aNode which has a nodeType matching
      *     the type provided.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Number} aType A Node.nodeType constant.
@@ -8983,8 +8983,8 @@ TP.definePrimitive('nodeGetFirstChildContentNode',
 function(aNode) {
 
     /**
-     * @name nodeGetFirstChildContentNode
-     * @synopsis Returns the first "content" child of aNode, the first text or
+     * @method nodeGetFirstChildContentNode
+     * @summary Returns the first "content" child of aNode, the first text or
      *     CDATA child node.
      * @param {Node} aNode The DOM node to operate on.
      * @example Get the first child text or cdata node of an XML element:
@@ -9033,10 +9033,10 @@ TP.definePrimitive('nodeGetFirstChildElement',
 function(aNode) {
 
     /**
-     * @name nodeGetFirstChildElement
-     * @synopsis Returns the first element child of aNode. If there is no first
+     * @method nodeGetFirstChildElement
+     * @summary Returns the first element child of aNode. If there is no first
      *     element child for the node provided this method returns null.
-     * @description This method is a common replacement for node.firstChild
+     * @summary This method is a common replacement for node.firstChild
      *     which ensures that text nodes, comment nodes, and other node types
      *     don't break your code when you're assuming element nodes.
      * @param {Node} aNode The DOM node to operate on.
@@ -9099,8 +9099,8 @@ TP.definePrimitive('nodeGetFirstDescendantByType',
 function(aNode, aType) {
 
     /**
-     * @name nodeGetFirstDescendantByType
-     * @synopsis Returns the first descendant of aNode which has a nodeType
+     * @method nodeGetFirstDescendantByType
+     * @summary Returns the first descendant of aNode which has a nodeType
      *     matching the type provided.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Number} aType A Node.nodeType constant.
@@ -9163,8 +9163,8 @@ TP.definePrimitive('nodeGetFirstElementByAttribute',
 function(aNode, attrName, attrValue) {
 
     /**
-     * @name nodeGetFirstElementByAttribute
-     * @synopsis Returns the first element descendant of aNode which has an
+     * @method nodeGetFirstElementByAttribute
+     * @summary Returns the first element descendant of aNode which has an
      *     attribute matching attrName and whose value matches the optional
      *     attrValue provided.
      * @param {Node} aNode The DOM node to operate on.
@@ -9272,10 +9272,10 @@ TP.definePrimitive('nodeGetFirstElementByTagName',
 function(aNode, aTagName, aNamespaceURI) {
 
     /**
-     * @name nodeGetFirstElementByTagName
-     * @synopsis Returns the first element descendant of aNode which matches the
+     * @method nodeGetFirstElementByTagName
+     * @summary Returns the first element descendant of aNode which matches the
      *     name and optional namespace URI provided.
-     * @description This is a commonly used method in widget construction where
+     * @summary This is a commonly used method in widget construction where
      *     the outer widget is looking for specific parts of its content.
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} aTagName The string tagname to search for.
@@ -9360,8 +9360,8 @@ TP.definePrimitive('nodeGetFirstSiblingElement',
 function(aNode, direction) {
 
     /**
-     * @name nodeGetFirstSiblingElement
-     * @synopsis Returns the next, or previous sibling of aNode which is an
+     * @method nodeGetFirstSiblingElement
+     * @summary Returns the next, or previous sibling of aNode which is an
      *     element. This is a useful operation when trying to iterate over only
      *     elements within a particular set of nodes.
      * @param {Node} aNode The node to start the search from.
@@ -9397,8 +9397,8 @@ TP.definePrimitive('nodeGetNextNonChild',
 function(aNode, nodeType) {
 
     /**
-     * @name nodeGetNextNonChild
-     * @synopsis Returns the next node in document order that isn't a child of
+     * @method nodeGetNextNonChild
+     * @summary Returns the next node in document order that isn't a child of
      *     the node provided. This will often be the node's nextSibling, but it
      *     may be a different node when aNode has no nextSibling. Note that the
      *     last node in document order won't return a valid node here.
@@ -9460,10 +9460,10 @@ TP.definePrimitive('nodeGetSiblings',
 function(aNode, aSubset) {
 
     /**
-     * @name nodeGetSiblings
-     * @synopsis Returns an Array containing the sibling nodes of the node
+     * @method nodeGetSiblings
+     * @summary Returns an Array containing the sibling nodes of the node
      *     provided.
-     * @description Order is from the parent's first child to the parent's last
+     * @summary Order is from the parent's first child to the parent's last
      *     child, with aNode removed from the list. Unlike other methods for
      *     node collections this method does *not* normalize content, so a text
      *     node's siblings will be found when multiple text nodes were created
@@ -9598,8 +9598,8 @@ TP.definePrimitive('nodeGetTopAncestor',
 function(aNode) {
 
     /**
-     * @name nodeGetTopAncestor
-     * @synopsis Returns the top-most node in aNode's ancestor chain. This is
+     * @method nodeGetTopAncestor
+     * @summary Returns the top-most node in aNode's ancestor chain. This is
      *     typically a Document node (#document) but will be an Element or the
      *     node itself if the node is in a detached tree branch.
      * @param {Node} aNode The DOM node to operate on.
@@ -9636,14 +9636,14 @@ TP.definePrimitive('nodeImportNode',
 function(aNode, otherNode) {
 
     /**
-     * @name nodeImportNode
-     * @synopsis Imports the other node into the document of the supplied node
+     * @method nodeImportNode
+     * @summary Imports the other node into the document of the supplied node
            if it doesn't already belong to that document.
      * @param {Node} aNode The node to obtain the document to import the
      *     otherNode to.
      * @param {Node} otherNode The node to import into the document of aNode
      *     if necessary.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The other node. This may be a different node than what
            was supplied to this routine, if it was imported.
      */
@@ -9725,8 +9725,8 @@ TP.definePrimitive('nodeSwapNode',
 function(firstNode, secondNode) {
 
     /**
-     * @name nodeSwapNode
-     * @synopsis Swaps the first node into the place where the second node is
+     * @method nodeSwapNode
+     * @summary Swaps the first node into the place where the second node is
      *     and vice versa. Note that both Nodes supplied to this method must be
      *     contained in the same overall Document.
      * @param {Node} firstNode The first node to swap.
@@ -9795,12 +9795,12 @@ TP.definePrimitive('nodeBreadthTraversal',
 function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
 
     /**
-     * @name nodeBreadthTraversal
-     * @synopsis Traverses a node in a breadth-first fashion invoking any enter,
+     * @method nodeBreadthTraversal
+     * @summary Traverses a node in a breadth-first fashion invoking any enter,
      *     exit, or content functions provided. The enter and pop functions are
      *     invoked for each structural (element) node while the content function
      *     is invoked for all non-element nodes regardless of their type.
-     * @description When traversing in a breadth-first manner the semantics of
+     * @summary When traversing in a breadth-first manner the semantics of
      *     the DOM are shifted slightly from the true structural nature of the
      *     tree. In particular, as each element is entered the enter function is
      *     invoked. The content function is then invoked for any non-element
@@ -10013,13 +10013,13 @@ TP.definePrimitive('nodeDepthTraversal',
 function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
 
     /**
-     * @name nodeDepthTraversal
-     * @synopsis Traverses a node in a depth-first, document order fashion
+     * @method nodeDepthTraversal
+     * @summary Traverses a node in a depth-first, document order fashion
      *     (without using recursion) and invokes any push, pop, or content
      *     function provided. The push and pop functions are invoked for each
      *     structural (element) node while the content function is invoked for
      *     all non-element nodes.
-     * @description To have an operation affect every node you'll need to supply
+     * @summary To have an operation affect every node you'll need to supply
      *     that function to the content function and one of the other two
      *     functions (push or pop) based on your traversal needs. NOTE that
      *     while all functions can return TP.BREAK to terminate the traversal,
@@ -10376,8 +10376,8 @@ TP.definePrimitive('nodeGetChildIndex',
 function(aNode, aChild) {
 
     /**
-     * @name nodeGetChildIndex
-     * @synopsis Returns the index in the childNodes array for the child
+     * @method nodeGetChildIndex
+     * @summary Returns the index in the childNodes array for the child
      *     provided. If aChild couldn't be found in the aNode, this method
      *     returns TP.NOT_FOUND.
      * @param {Node} aNode The DOM node to operate on.
@@ -10449,10 +10449,10 @@ TP.definePrimitive('nodeAncestorsPerform',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeAncestorsPerform
-     * @synopsis Executes aFunction with each ancestor of the node, working from
+     * @method nodeAncestorsPerform
+     * @summary Executes aFunction with each ancestor of the node, working from
      *     the node outward unless shouldReverse is true.
-     * @description Perform can be used as an alternative to constructing for
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -10562,9 +10562,9 @@ TP.definePrimitive('nodeChildElementsPerform',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeChildElementsPerform
-     * @synopsis Executes aFunction with each child element of the node.
-     * @description Perform can be used as an alternative to constructing for
+     * @method nodeChildElementsPerform
+     * @summary Executes aFunction with each child element of the node.
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -10699,11 +10699,11 @@ TP.definePrimitive('nodeChildNodesPerform',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeChildNodesPerform
-     * @synopsis Executes aFunction with each child node of the node. NOTE that
+     * @method nodeChildNodesPerform
+     * @summary Executes aFunction with each child node of the node. NOTE that
      *     as part of the processing here the node is normalized to coalesce
      *     adjacent text nodes.
-     * @description Perform can be used as an alternative to constructing for
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -10811,9 +10811,9 @@ TP.definePrimitive('nodeDescendantsPerform',
 function(aNode, aFunction, breadthFirst) {
 
     /**
-     * @name nodeDescendantsPerform
-     * @synopsis Executes aFunction with each descendant of the node.
-     * @description aFunction implementations can return TP.BREAK to terminate
+     * @method nodeDescendantsPerform
+     * @summary Executes aFunction with each descendant of the node.
+     * @summary aFunction implementations can return TP.BREAK to terminate
      *     the traversal, TP.CONTINUE to allow you to skip child content under
      *     an element and proceed to the next non-child element node for
      *     processing (only when the current item is an Element, not non-Element
@@ -10888,9 +10888,9 @@ TP.definePrimitive('nodeDescendantElementsPerform',
 function(aNode, aFunction, breadthFirst) {
 
     /**
-     * @name nodeDescendantElementsPerform
-     * @synopsis Executes aFunction with each element descendant of the node.
-     * @description aFunction implementations can return TP.BREAK to terminate
+     * @method nodeDescendantElementsPerform
+     * @summary Executes aFunction with each element descendant of the node.
+     * @summary aFunction implementations can return TP.BREAK to terminate
      *     the traversal, TP.CONTINUE to allow you to skip child content under
      *     an element and proceed to the next non-child element node for
      *     processing (only when the current item is an Element, not non-Element
@@ -10970,9 +10970,9 @@ TP.definePrimitive('nodeSiblingsPerform',
 function(aNode, aFunction, aSubset, shouldReverse) {
 
     /**
-     * @name nodeSiblingsPerform
-     * @synopsis Executes aFunction with each sibling of the node.
-     * @description Perform can be used as an alternative to constructing for
+     * @method nodeSiblingsPerform
+     * @summary Executes aFunction with each sibling of the node.
+     * @summary Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -11200,8 +11200,8 @@ TP.definePrimitive('nodeDetectAncestor',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeDetectAncestor
-     * @synopsis Returns the first ancestor of aNode for which aFunction returns
+     * @method nodeDetectAncestor
+     * @summary Returns the first ancestor of aNode for which aFunction returns
      *     true. The normal direction of this search is from the node "outward"
      *     toward the document root.
      * @param {Node} aNode The DOM node to operate on.
@@ -11289,8 +11289,8 @@ TP.definePrimitive('nodeDetectChildElement',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeDetectChildElement
-     * @synopsis Returns the first child element of aNode for which aFunction
+     * @method nodeDetectChildElement
+     * @summary Returns the first child element of aNode for which aFunction
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
@@ -11375,8 +11375,8 @@ TP.definePrimitive('nodeDetectChildNode',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeDetectChildNode
-     * @synopsis Returns the first child node of aNode for which aFunction
+     * @method nodeDetectChildNode
+     * @summary Returns the first child node of aNode for which aFunction
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
@@ -11462,10 +11462,10 @@ TP.definePrimitive('nodeDetectDescendant',
 function(aNode, aFunction, breadthFirst) {
 
     /**
-     * @name nodeDetectDescendant
-     * @synopsis Returns the first descendant of aNode for which aFunction
+     * @method nodeDetectDescendant
+     * @summary Returns the first descendant of aNode for which aFunction
      *     returns true. Search is typically downward in a depth-first fashion.
-     * @description If you need to reverse the iteration use
+     * @summary If you need to reverse the iteration use
      *     TP.nodeGetDescendants() to get the descendant list and then use
      *     Array's perform operation.
      * @param {Node} aNode The DOM node to operate on.
@@ -11564,11 +11564,11 @@ TP.definePrimitive('nodeDetectDescendantElement',
 function(aNode, aFunction, breadthFirst) {
 
     /**
-     * @name nodeDetectDescendantElement
-     * @synopsis Returns the first element descendant of aNode for which
+     * @method nodeDetectDescendantElement
+     * @summary Returns the first element descendant of aNode for which
      *     aFunction returns true. Search is typically downward in a depth-first
      *     fashion.
-     * @description If you need to reverse the iteration use
+     * @summary If you need to reverse the iteration use
      *     TP.nodeGetDescendantElements() to get the descendant list and then
      *     use Array's perform operation.
      * @param {Node} aNode The DOM node to operate on.
@@ -11668,8 +11668,8 @@ TP.definePrimitive('nodeDetectSibling',
 function(aNode, aFunction, aSubset, shouldReverse) {
 
     /**
-     * @name nodeDetectSibling
-     * @synopsis Returns the first sibling node (next, previous, or any) of
+     * @method nodeDetectSibling
+     * @summary Returns the first sibling node (next, previous, or any) of
      *     aNode for which aFunction returns true.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
@@ -11808,8 +11808,8 @@ TP.definePrimitive('nodeSelectAncestors',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeSelectAncestors
-     * @synopsis Returns an array of ancestors of aNode for which aFunction
+     * @method nodeSelectAncestors
+     * @summary Returns an array of ancestors of aNode for which aFunction
      *     returns true. The normal direction of this search is from the node
      *     "outward" toward the document root.
      * @param {Node} aNode The DOM node to operate on.
@@ -11903,8 +11903,8 @@ TP.definePrimitive('nodeSelectChain',
 function(aNode, aProperty) {
 
     /**
-     * @name nodeSelectChain
-     * @synopsis Returns an Array of objects that are obtained by recursively
+     * @method nodeSelectChain
+     * @summary Returns an Array of objects that are obtained by recursively
      *     obtaining the property on each object, starting with the supplied DOM
      *     node.
      * @param {Node} aNode The DOM node to operate on.
@@ -11966,8 +11966,8 @@ TP.definePrimitive('nodeSelectChildElements',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeSelectChildElements
-     * @synopsis Returns an Array of child elements of aNode for which aFunction
+     * @method nodeSelectChildElements
+     * @summary Returns an Array of child elements of aNode for which aFunction
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
@@ -12060,8 +12060,8 @@ TP.definePrimitive('nodeSelectChildNodes',
 function(aNode, aFunction, shouldReverse) {
 
     /**
-     * @name nodeSelectChildNodes
-     * @synopsis Returns an Array of children of aNode for which aFunction
+     * @method nodeSelectChildNodes
+     * @summary Returns an Array of children of aNode for which aFunction
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
@@ -12147,10 +12147,10 @@ TP.definePrimitive('nodeSelectDescendants',
 function(aNode, aFunction, breadthFirst) {
 
     /**
-     * @name nodeSelectDescendants
-     * @synopsis Returns an Array of descendants of aNode for which aFunction
+     * @method nodeSelectDescendants
+     * @summary Returns an Array of descendants of aNode for which aFunction
      *     returns true. Search is typically downward in a depth-first fashion.
-     * @description If you need to reverse the iteration use
+     * @summary If you need to reverse the iteration use
      *     TP.nodeGetDescendants() to get the descendant list and then use
      *     Array's perform operation.
      * @param {Node} aNode The DOM node to operate on.
@@ -12240,11 +12240,11 @@ TP.definePrimitive('nodeSelectDescendantElements',
 function(aNode, aFunction, breadthFirst) {
 
     /**
-     * @name nodeSelectDescendantElements
-     * @synopsis Returns an Array of descendant elements of aNode for which
+     * @method nodeSelectDescendantElements
+     * @summary Returns an Array of descendant elements of aNode for which
      *     aFunction returns true. Search is typically downward in a depth-first
      *     fashion.
-     * @description If you need to reverse the iteration use
+     * @summary If you need to reverse the iteration use
      *     TP.nodeGetDescendantElements() to get the descendant list and then
      *     use Array's perform operation.
      * @param {Node} aNode The DOM node to operate on.
@@ -12338,8 +12338,8 @@ TP.definePrimitive('nodeSelectSiblings',
 function(aNode, aFunction, aSubset, shouldReverse) {
 
     /**
-     * @name nodeSelectSiblings
-     * @synopsis Returns an array of siblings (next, previous, or any) of aNode
+     * @method nodeSelectSiblings
+     * @summary Returns an array of siblings (next, previous, or any) of aNode
      *     for which aFunction returns true.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
@@ -12478,10 +12478,10 @@ TP.definePrimitive('nodeGetNSPrefixes',
 function(aNode, aNamespaceURI, includeDescendants) {
 
     /**
-     * @name nodeGetNSPrefixes
-     * @synopsis Returns an Array of namespace prefixes for aNamespaceURI in the
+     * @method nodeGetNSPrefixes
+     * @summary Returns an Array of namespace prefixes for aNamespaceURI in the
      *     supplied node.
-     * @description The default call searches only the local attributes on the
+     * @summary The default call searches only the local attributes on the
      *     node. Passing true to includeDescendants will cause the entire node's
      *     content to be searched for prefixes.
      * @param {Node} aNode The XML node to retrieve the namespace prefixes for.
@@ -12627,8 +12627,8 @@ TP.definePrimitive('nodeGetNSURI',
 function(aNode) {
 
     /**
-     * @name nodeGetNSURI
-     * @synopsis Returns the namespaceURI of the node. This is typically found
+     * @method nodeGetNSURI
+     * @summary Returns the namespaceURI of the node. This is typically found
      *     in the namepaceURI but in certain circumstances you'll get an empty
      *     value there even when the xmlns attribute is in place.
      * @param {Node} aNode The XML node to retrieve the namespace URI for.
@@ -12684,8 +12684,8 @@ TP.definePrimitive('nodeGetNSURIs',
 function(aNode, includeDescendants) {
 
     /**
-     * @name nodeGetNSURIs
-     * @synopsis Returns an Array of unique namespace URIs in the supplied XML
+     * @method nodeGetNSURIs
+     * @summary Returns an Array of unique namespace URIs in the supplied XML
      *     Node.
      * @param {Node} aNode The XML node to retrieve the namespace URIs for.
      * @param {Boolean} includeDescendants Should the search run across the
@@ -12804,9 +12804,9 @@ TP.definePrimitive('nodeGetTextContent',
 function(aNode) {
 
     /**
-     * @name nodeGetTextContent
-     * @synopsis Returns the text value of the node provided.
-     * @description The actual behavior varies based on node type, but the
+     * @method nodeGetTextContent
+     * @summary Returns the text value of the node provided.
+     * @summary The actual behavior varies based on node type, but the
      *     result is the same, the content considered to be the text value of
      *     the receiving node is returned. For Element nodes, the text value of
      *     the *first Text node* (after normalization) will always be returned.
@@ -12914,8 +12914,8 @@ TP.definePrimitive('nodeGetChildTextContent',
 function(aNode, aTagName, aNamespaceURI) {
 
     /**
-     * @name nodeGetChildTextContent
-     * @synopsis Returns the normalized nodeValue of the node's first element
+     * @method nodeGetChildTextContent
+     * @summary Returns the normalized nodeValue of the node's first element
      *     with a node name of aTagName. This is a useful wrapper for pulling
      *     apart nodes which essentially represent lists.
      * @param {Node} aNode The DOM node to operate on.
@@ -12992,8 +12992,8 @@ TP.definePrimitive('nodeGetStartPhase',
 function(aNode, phaseList, outerElem) {
 
     /**
-     * @name nodeGetStartPhase
-     * @synopsis Returns the starting phase aNode should be processed with based
+     * @method nodeGetStartPhase
+     * @summary Returns the starting phase aNode should be processed with based
      *     on the phase data of itself and/or its ancestors. We don't want to
      *     process content multiple times since there's no guarantee that
      *     operations are idempotent.
@@ -13069,8 +13069,8 @@ TP.definePrimitive('nodeGetTargetPhase',
 function(aNode, phaseList, outerElem) {
 
     /**
-     * @name nodeGetTargetPhase
-     * @synopsis Returns the maximum phase aNode should be processed to based on
+     * @method nodeGetTargetPhase
+     * @summary Returns the maximum phase aNode should be processed to based on
      *     the phase data of its ancestors.
      * @param {Node} aNode The node to test.
      * @param {Array} phaseList An optional array in which to find the target
@@ -13144,8 +13144,8 @@ TP.definePrimitive('nodeHasReachedPhase',
 function(aNode, targetPhase, targetPhaseList, nodeOnly) {
 
     /**
-     * @name nodeHasReachedPhase
-     * @synopsis Returns true if the node provided appears to have been
+     * @method nodeHasReachedPhase
+     * @summary Returns true if the node provided appears to have been
      *     processed by the TIBET content processing subsystem. When a phase is
      *     specified it is checked against any optional list to see if
      *     processing has reached that phase.
@@ -13248,8 +13248,8 @@ TP.definePrimitive('nodeNormalizePhase',
 function(aNode) {
 
     /**
-     * @name nodeNormalizePhase
-     * @synopsis Normalizes, aka coalesces tibet:phase information on the node
+     * @method nodeNormalizePhase
+     * @summary Normalizes, aka coalesces tibet:phase information on the node
      *     by removing phase attributes which are superfluous.
      * @param {Node} aNode The node to normalize.
      * @returns {Node} The node.
@@ -13276,8 +13276,8 @@ TP.definePrimitive('nodeCopyChildNodesTo',
 function(fromNode, toNode, beforeNode, shouldAwake) {
 
     /**
-     * @name nodeCopyChildNodesTo
-     * @synopsis Copies children of the 'from' node to the 'to' node.
+     * @method nodeCopyChildNodesTo
+     * @summary Copies children of the 'from' node to the 'to' node.
      * @param {Node} fromNode The source node.
      * @param {Node} toNode The target node.
      * @param {Node} beforeNode Optional 'insertion point'.
@@ -13376,8 +13376,8 @@ TP.definePrimitive('nodeMoveChildNodesTo',
 function(fromNode, toNode, beforeNode, shouldAwake) {
 
     /**
-     * @name nodeMoveChildNodesTo
-     * @synopsis Moves children of the 'from' node to the 'to' node.
+     * @method nodeMoveChildNodesTo
+     * @summary Moves children of the 'from' node to the 'to' node.
      * @param {Node} fromNode The source node.
      * @param {Node} toNode The target node.
      * @param {Node} beforeNode Optional 'insertion point'.
@@ -13481,8 +13481,8 @@ TP.definePrimitive('nodeSetContent',
 function(aNode, anObject, loadedFunction, shouldAwake) {
 
     /**
-     * @name nodeSetContent
-     * @synopsis Sets the content of aNode to anObject, removing any current
+     * @method nodeSetContent
+     * @summary Sets the content of aNode to anObject, removing any current
      *     content. This method is a simple wrapper for empty/insert operations
      *     which specialize based on a variety of factors.
      * @param {Node} aNode The node to set the child content of.
@@ -13492,7 +13492,7 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether aNode has a
      *     Window object associated with it or not.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Node} The first node of the content that was just set, or the
      *     node itself depending on the node type.
      */
@@ -13600,9 +13600,9 @@ TP.definePrimitive('nodeSetTextContent',
 function(aNode, anObject) {
 
     /**
-     * @name nodeSetTextContent
-     * @synopsis Sets the text of the node provided to aString.
-     * @description The behavior here varies by node type. For element nodes, if
+     * @method nodeSetTextContent
+     * @summary Sets the text of the node provided to aString.
+     * @summary The behavior here varies by node type. For element nodes, if
      *     the node already has a text node child as the first child, it will be
      *     updated. If not, a new text node will be inserted as the first child.
      *     If a CDATA section existed then it's value will be updated,
@@ -13722,8 +13722,8 @@ TP.definePrimitive('nodeSetChildTextContent',
 function(aNode, aString, aTagName, aNamespaceURI) {
 
     /**
-     * @name nodeSetChildTextContent
-     * @synopsis Sets the text value of the node's first child element with a
+     * @method nodeSetChildTextContent
+     * @summary Sets the text value of the node's first child element with a
      *     tag name of aTagName. This is a useful wrapper for manipulating nodes
      *     which essentially represent lists.
      * @param {Node} aNode The DOM node to operate on.
@@ -13817,8 +13817,8 @@ TP.definePrimitive('canonical',
 function(anObject) {
 
     /**
-     * @name canonical
-     * @synopsis Returns the canonical name of the object provided. This method
+     * @method canonical
+     * @summary Returns the canonical name of the object provided. This method
      *     is typically used as a simple wrapper around the primitives for
      *     element/attribute canonical names. When any other object is provided
      *     this method returns the result of TP.name(anObject).
@@ -13847,8 +13847,8 @@ TP.definePrimitive('doc',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name doc
-     * @synopsis Returns a native DOM Document node based on a variety of input
+     * @method doc
+     * @summary Returns a native DOM Document node based on a variety of input
      *     object types including strings, nodes, or windows.
      * @param {Object} anObject A string, window, node, or other object which
      *     can provide a document or be used to construct one.
@@ -13948,8 +13948,8 @@ TP.definePrimitive('elem',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name elem
-     * @synopsis Returns the best DOM Element representation for the object
+     * @method elem
+     * @summary Returns the best DOM Element representation for the object
      *     provided. For example, a document will return the documentElement, an
      *     element node will return the element itself, other node types return
      *     their parentNode, etc.
@@ -14046,11 +14046,11 @@ TP.definePrimitive('frag',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name frag
-     * @synopsis Returns the best DOM DocumentFragment representation of
+     * @method frag
+     * @summary Returns the best DOM DocumentFragment representation of
      *     anObject. The various forms of input include strings, windows,
      *     documents, wrapper types, etc.
-     * @description This method is essentially a cover for
+     * @summary This method is essentially a cover for
      *     TP.fragmentFromString() and other fragment construction and
      *     extraction routines.
      * @param {Object} anObject A string, window, node, or other object which
@@ -14158,8 +14158,8 @@ TP.definePrimitive('lname',
 function(anObject) {
 
     /**
-     * @name lname
-     * @synopsis Returns the local name of the object provided. This method is
+     * @method lname
+     * @summary Returns the local name of the object provided. This method is
      *     typically used as a simple wrapper around the primitives for
      *     element/attribute local names. When any other object is provided this
      *     method returns the result of TP.name(anObject).
@@ -14182,11 +14182,11 @@ TP.definePrimitive('node',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name node
-     * @synopsis Returns the best DOM node representation of anObject. The
+     * @method node
+     * @summary Returns the best DOM node representation of anObject. The
      *     various forms of input include strings, windows, documents, wrapper
      *     types, etc.
-     * @description This method is essentially a cover for TP.nodeFromString()
+     * @summary This method is essentially a cover for TP.nodeFromString()
      *     and other node construction and extraction routines. NOTE that
      *     document objects are nodes, so you may receive a document node.
      * @param {Object} anObject A string, window, node, or other object which
@@ -14273,8 +14273,8 @@ TP.definePrimitive('prefix',
 function(anObject) {
 
     /**
-     * @name prefix
-     * @synopsis Returns the prefix, if any, of the object provided. The object
+     * @method prefix
+     * @summary Returns the prefix, if any, of the object provided. The object
      *     should be a Node of some form. Note that only element and attribute
      *     nodes will have a valid prefix. All other objects will return null.
      * @param {Object} anObject The object to interrogate.
@@ -14305,9 +14305,9 @@ TP.definePrimitive('qname',
 function(anObject) {
 
     /**
-     * @name qname
-     * @synopsis Returns the "qualified" or QName of the object provided.
-     * @description This method is typically used as a simple wrapper around the
+     * @method qname
+     * @summary Returns the "qualified" or QName of the object provided.
+     * @summary This method is typically used as a simple wrapper around the
      *     primitives for element/attribute "full names". When any other object
      *     is provided this method returns the result of TP.name(anObject). NOTE
      *     that an object's QName is not always its "canonical name". For
@@ -14340,8 +14340,8 @@ TP.definePrimitive('tpdoc',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name tpdoc
-     * @synopsis Returns the best TP.core.DocumentNode representation of
+     * @method tpdoc
+     * @summary Returns the best TP.core.DocumentNode representation of
      *     anObject based on a variety of input object types.
      * @param {Object} anObject A string, window, node, or other object which
      *     can provide a document or be used to construct one.
@@ -14430,8 +14430,8 @@ TP.definePrimitive('tpelem',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name tpelem
-     * @synopsis Returns the best TP.core.ElementNode representation of the
+     * @method tpelem
+     * @summary Returns the best TP.core.ElementNode representation of the
      *     object based on a variety of input formats.
      * @param {Object} anObject Typically a Node of some form, but a wrapper
      *     such as a TP.core.Node, TP.core.DocumentNode, or TP.core.Window is
@@ -14477,8 +14477,8 @@ TP.definePrimitive('tpfrag',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name tpfrag
-     * @synopsis Returns the TP.core.DocumentFragmentNode representation of the
+     * @method tpfrag
+     * @summary Returns the TP.core.DocumentFragmentNode representation of the
      *     object based on a variety of input formats.
      * @param {Object} anObject Typically a Node of some form, but a wrapper
      *     such as a TP.core.Node, TP.core.DocumentNode, or TP.core.Window is
@@ -14524,12 +14524,12 @@ TP.definePrimitive('tpnode',
 function(anObject, defaultNS, shouldReport) {
 
     /**
-     * @name tpnode
-     * @synopsis A general purpose routine that can return a TIBET node wrapper
+     * @method tpnode
+     * @summary A general purpose routine that can return a TIBET node wrapper
      *     based on a variety of input object types. NOTE that this method is
      *     less discriminating than TP.tpelem() in that it can return a wrapper
      *     for virtually any Node type.
-     * @description This method is essentially a cover for creation of a
+     * @summary This method is essentially a cover for creation of a
      *     TP.core.Node from TP.nodeFromString() and other node construction and
      *     extraction routines. NOTE that document objects are nodes, so you may
      *     receive a document node.

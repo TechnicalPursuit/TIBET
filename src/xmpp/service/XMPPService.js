@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.XMPPService}
- * @synopsis A subtype of TP.core.URIService that communicates with XMPP
+ * @summary A subtype of TP.core.URIService that communicates with XMPP
  *     servers.
  * @example If the TP.sig.XMPPRequest/TP.sig.XMPPResponse processing model is
  *     used, it is unnecessary to manually set up a TP.core.XMPPService. As part
@@ -175,8 +175,8 @@ TP.core.XMPPService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Returns an initialized instance of the receiver. If aRequest is
+     * @method init
+     * @summary Returns an initialized instance of the receiver. If aRequest is
      *     provided it can help define the service's operation by providing a
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
@@ -202,8 +202,8 @@ TP.core.XMPPService.Inst.defineMethod('clearAuthData',
 function() {
 
     /**
-     * @name clearAuthData
-     * @synopsis Clears any stored authentication from the receiver and any
+     * @method clearAuthData
+     * @summary Clears any stored authentication from the receiver and any
      *     backing store.
      * @returns {TP.core.Service} The receiver.
      */
@@ -224,8 +224,8 @@ TP.core.XMPPService.Inst.defineMethod('configureAuthData',
 function(aRequest) {
 
     /**
-     * @name configureAuthData
-     * @synopsis Configures authentication data for the receiver.
+     * @method configureAuthData
+     * @summary Configures authentication data for the receiver.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
@@ -305,13 +305,13 @@ TP.core.XMPPService.Inst.defineMethod('authenticateConnection',
 function(aJID, aPassword) {
 
     /**
-     * @name authenticateConnection
-     * @synopsis Authenticates the receiver's connection, which should already
+     * @method authenticateConnection
+     * @summary Authenticates the receiver's connection, which should already
      *     be open.
      * @param {TP.xmpp.JID} aJID The JID to attempt authentication as.
      * @param {String} aPassword The password to use in our authentication
      *     attempt.
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not we successfully authenticated our
      *     connection.
      */
@@ -387,8 +387,8 @@ TP.core.XMPPService.Inst.defineMethod('getConnectedJID',
 function() {
 
     /**
-     * @name getConnectedJID
-     * @synopsis Returns the JID representing the receiver's identity as
+     * @method getConnectedJID
+     * @summary Returns the JID representing the receiver's identity as
      *     currently logged in.
      * @returns {TP.core.XMPPService} The receiver.
      */
@@ -408,8 +408,8 @@ TP.core.XMPPService.Inst.defineMethod('getConnection',
 function() {
 
     /**
-     * @name getConnection
-     * @synopsis Returns the receiver's connection object. This method checks to
+     * @method getConnection
+     * @summary Returns the receiver's connection object. This method checks to
      *     make sure that the connection's URI and server name matches ours. If
      *     it doesn't, and the connection is 'open', this method closes it and
      *     returns null.
@@ -443,8 +443,8 @@ TP.core.XMPPService.Inst.defineMethod('hasAuthConnection',
 function() {
 
     /**
-     * @name hasAuthConnection
-     * @synopsis Returns whether or not the receiver's connection has been
+     * @method hasAuthConnection
+     * @summary Returns whether or not the receiver's connection has been
      *     authenticated using a particular JID.
      * @returns {Boolean} Whether or not the receiver's connection has been
      *     authenticated.
@@ -465,8 +465,8 @@ TP.core.XMPPService.Inst.defineMethod('hasOpenConnection',
 function() {
 
     /**
-     * @name hasOpenConnection
-     * @synopsis Returns whether or not the receiver's connection has been
+     * @method hasOpenConnection
+     * @summary Returns whether or not the receiver's connection has been
      *     opened with a particular server. Note that this doesn't necessarily
      *     mean that the connection has been authenticated, just opened.
      * @returns {Boolean} Whether or not the receiver has an open connection.
@@ -498,10 +498,10 @@ TP.core.XMPPService.Inst.defineMethod('openConnection',
 function() {
 
     /**
-     * @name openConnection
-     * @synopsis Opens a connection to the server based on the values in the
+     * @method openConnection
+     * @summary Opens a connection to the server based on the values in the
      *     receiver's 'serviceURI' and 'serverName' instance variables.
-     * @description An open connection isn't necessarily an authenticated
+     * @summary An open connection isn't necessarily an authenticated
      *     connection. Authentication is done in a separate step.
      * @returns {Boolean} Whether or not the receiver's connection is open.
      */
@@ -538,8 +538,8 @@ TP.core.XMPPService.Inst.defineMethod('setupCurrentUser',
 function() {
 
     /**
-     * @name setupCurrentUser
-     * @synopsis Announces our availability using the service's JID.
+     * @method setupCurrentUser
+     * @summary Announces our availability using the service's JID.
      * @returns {TP.core.XMPPService} The receiver.
      */
 
@@ -608,8 +608,8 @@ TP.core.XMPPService.Inst.defineMethod('shutdownConnection',
 function() {
 
     /**
-     * @name shutdownConnection
-     * @synopsis Shuts down the receiver's connection, if it is open.
+     * @method shutdownConnection
+     * @summary Shuts down the receiver's connection, if it is open.
      * @returns {TP.core.XMPPService} The receiver.
      */
 
@@ -654,10 +654,10 @@ TP.core.XMPPService.Inst.defineMethod('initiateRegistration',
 function() {
 
     /**
-     * @name initiateRegistration
-     * @synopsis Initiate the XMPP registration process with the server that the
+     * @method initiateRegistration
+     * @summary Initiate the XMPP registration process with the server that the
      *     receiver is connected to.
-     * @raises TP.sig.XMPPConnectionNotOpen
+     * @exception TP.sig.XMPPConnectionNotOpen
      * @returns {TP.xmpp.Packet} An TP.xmpp.Packet containing the initial
      *     registration form information, etc.
      */
@@ -700,12 +700,12 @@ TP.core.XMPPService.Inst.defineMethod('getRegistrationFieldsFrom',
 function(regNode) {
 
     /**
-     * @name getRegistrationFieldsFrom
-     * @synopsis Returns a TP.lang.Hash of 'registration fields' according to
+     * @method getRegistrationFieldsFrom
+     * @summary Returns a TP.lang.Hash of 'registration fields' according to
      *     XEP-77 of the XMPP protocol extensions.
      * @param {TP.xmpp.IqResult} regNode The element containing the
      *     TP.xmpp.IqRegister payload.
-     * @raises TP.sig.InvalidParameter,TP.sig.XMPPConnectionNotOpen
+     * @exception TP.sig.InvalidParameter,TP.sig.XMPPConnectionNotOpen
      * @returns {TP.lang.Hash} A hash of key/value pairs containing field names
      *     and (current) field values.
      */
@@ -752,11 +752,11 @@ TP.core.XMPPService.Inst.defineMethod('finalizeRegistration',
 function(registrationValues) {
 
     /**
-     * @name finalizeRegistration
-     * @synopsis Finalize the XMPP registration process with the server that the
+     * @method finalizeRegistration
+     * @summary Finalize the XMPP registration process with the server that the
      *     receiver is connected to.
-     * @raises TP.sig.XMPPConnectionNotOpen
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.XMPPConnectionNotOpen
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.Packet} An TP.xmpp.Packet containing either an
      *     acknowledgement that the registration worked or an error indicating
      *     why it didn't.
@@ -819,8 +819,8 @@ TP.core.XMPPService.Inst.defineMethod('addToRoster',
 function(stanzaID, toJID, aName, aGroup) {
 
     /**
-     * @name addToRoster
-     * @synopsis Adds the supplied JID to the receiver JID's roster.
+     * @method addToRoster
+     * @summary Adds the supplied JID to the receiver JID's roster.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
@@ -829,7 +829,7 @@ function(stanzaID, toJID, aName, aGroup) {
      *     have.
      * @param {String} aGroup The 'user-assigned' group that roster item will
      *     have.
-     * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -850,12 +850,12 @@ TP.core.XMPPService.Inst.defineMethod('fetchRoster',
 function(stanzaID) {
 
     /**
-     * @name fetchRoster
-     * @synopsis Fetches the roster for the receiver's currently configured JID.
+     * @method fetchRoster
+     * @summary Fetches the roster for the receiver's currently configured JID.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
-     * @raises TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -892,14 +892,14 @@ TP.core.XMPPService.Inst.defineMethod('removeFromRoster',
 function(stanzaID, toJID, aName) {
 
     /**
-     * @name removeFromRoster
-     * @synopsis Removes the supplied JID from the receiver JID's roster.
+     * @method removeFromRoster
+     * @summary Removes the supplied JID from the receiver JID's roster.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} toJID The JID to remove from the roster.
      * @param {String} aName The 'user-assigned' name that roster item has.
-     * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -920,8 +920,8 @@ TP.core.XMPPService.Inst.defineMethod('sendCommand',
 function(stanzaID, toJID, aCommandAction, aCommandElem) {
 
     /**
-     * @name sendCommand
-     * @synopsis Sends the supplied ad-hoc command to the supplied server JID.
+     * @method sendCommand
+     * @summary Sends the supplied ad-hoc command to the supplied server JID.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
@@ -930,7 +930,7 @@ function(stanzaID, toJID, aCommandAction, aCommandElem) {
      *     [cancel|complete| execute|next|prev]).
      * @param {Element} aCommandElem The XML element to send that represents the
      *     ad-hoc XMPP command.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidElement,
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
@@ -956,8 +956,8 @@ TP.core.XMPPService.Inst.defineMethod('sendMessage',
 function(stanzaID, toJID, aMessage, aSubject, aThreadID, aMessageType) {
 
     /**
-     * @name sendMessage
-     * @synopsis Sends the supplied message to the supplied JID.
+     * @method sendMessage
+     * @summary Sends the supplied message to the supplied JID.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
@@ -967,7 +967,7 @@ function(stanzaID, toJID, aMessage, aSubject, aThreadID, aMessageType) {
      * @param {String} aThreadID The thread ID of the message.
      * @param {String} aMessageType The type of the message (one of
      *     [normal|chat| groupchat|headline]).
-     * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1033,8 +1033,8 @@ TP.core.XMPPService.Inst.defineMethod('setPresence',
 function(stanzaID, presenceState, aStatus) {
 
     /**
-     * @name setPresence
-     * @synopsis Sets the presence of the receiver's JID to 'available' with an
+     * @method setPresence
+     * @summary Sets the presence of the receiver's JID to 'available' with an
      *     optional 'status' message.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
@@ -1045,7 +1045,7 @@ function(stanzaID, presenceState, aStatus) {
      *     TP.xmpp.XMLNS.EXTENDED_AWAY.
      * @param {String} aStatus An optional 'status' message to broadcast to
      *     other JID's subscribed to the receiver's JID's presence.
-     * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1100,14 +1100,14 @@ TP.core.XMPPService.Inst.defineMethod('subscribeTo',
 function(stanzaID, aJID) {
 
     /**
-     * @name subscribeTo
-     * @synopsis Sends a request from the receiver's JID to the supplied JID
+     * @method subscribeTo
+     * @summary Sends a request from the receiver's JID to the supplied JID
      *     asking to be subscribed to its presence.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} aJID The JID to request presence subscription from.
-     * @raises TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1151,15 +1151,15 @@ TP.core.XMPPService.Inst.defineMethod('unsubscribeFrom',
 function(stanzaID, aJID) {
 
     /**
-     * @name unsubscribeFrom
-     * @synopsis Sends a request from the receiver's JID to the supplied JID
+     * @method unsubscribeFrom
+     * @summary Sends a request from the receiver's JID to the supplied JID
      *     asking to be unsubscribed from its presence.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} aJID The JID to request presence unsubscription
      *     from.
-     * @raises TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1205,8 +1205,8 @@ TP.core.XMPPService.Inst.defineMethod('constructPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
 
     /**
-     * @name constructPubsubNode
-     * @synopsis Constructs a pubsub node at the specified 'nodeID' (which in
+     * @method constructPubsubNode
+     * @summary Constructs a pubsub node at the specified 'nodeID' (which in
      *     XMPP is usually represented as a 'topic map path'). The receiver's
      *     connected JID will be considered to be the owner of the new pubsub
      *     node.
@@ -1227,7 +1227,7 @@ function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
      *     TP.xmpp.Pubsub.OPEN TP.xmpp.Pubsub.PUBLISHERS
      *     TP.xmpp.Pubsub.SUBSCRIBERS If this parameter is not supplied, this
      *     defaults to TP.xmpp.Pubsub.OPEN.
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter,
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
@@ -1340,8 +1340,8 @@ TP.core.XMPPService.Inst.defineMethod('deletePubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID) {
 
     /**
-     * @name deletePubsubNode
-     * @synopsis Deletes the pubsub node at the specified 'nodeID' (which in
+     * @method deletePubsubNode
+     * @summary Deletes the pubsub node at the specified 'nodeID' (which in
      *     XMPP is usually represented as a 'topic map path'). The receiver's
      *     connected JID will be considered to be the owner of the new pubsub
      *     node and only the owner can delete this node.
@@ -1352,7 +1352,7 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      *     service'.
      * @param {String} nodeID The 'node ID' (usually a 'topic map path' like
      *     '/foo/bar/baz').
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter,
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
@@ -1416,8 +1416,8 @@ TP.core.XMPPService.Inst.defineMethod('publishToPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID, xmlContent, anAccessModel) {
 
     /**
-     * @name publishToPubsubNode
-     * @synopsis Publishes a pubsub node at the specified 'nodeID' (which in
+     * @method publishToPubsubNode
+     * @summary Publishes a pubsub node at the specified 'nodeID' (which in
      *     XMPP is usually represented as a 'topic map path'). If the server
      *     that the receiver is connected to supports 'auto-create' and the
      *     referenced node hasn't been created, then a creation attempt will be
@@ -1437,7 +1437,7 @@ function(stanzaID, pubsubServiceJID, nodeID, xmlContent, anAccessModel) {
      *     TP.xmpp.Pubsub.PRESENCE TP.xmpp.Pubsub.ROSTER
      *     TP.xmpp.Pubsub.AUTHORIZE TP.xmpp.Pubsub.WHITELIST If this parameter
      *     is not supplied, this defaults to TP.xmpp.Pubsub.OPEN.
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter, TP.sig.InvalidNode,
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter, TP.sig.InvalidNode,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
@@ -1554,8 +1554,8 @@ TP.core.XMPPService.Inst.defineMethod('retractFromPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID, itemID) {
 
     /**
-     * @name retractFromPubsubNode
-     * @synopsis Clears the pubsub node at the specified 'nodeID' (which in XMPP
+     * @method retractFromPubsubNode
+     * @summary Clears the pubsub node at the specified 'nodeID' (which in XMPP
      *     is usually represented as a 'topic map path') of all published items.
      *     The receiver's connected JID will be considered to be the owner of
      *     the new pubsub node and only the owner can clear this node.
@@ -1568,7 +1568,7 @@ function(stanzaID, pubsubServiceJID, nodeID, itemID) {
      *     '/foo/bar/baz').
      * @param {String} itemID The 'item ID' (usually a 'object identifer' like
      *     '4D62E20579F7C').
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter,
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
@@ -1637,8 +1637,8 @@ TP.core.XMPPService.Inst.defineMethod('retrievePubsubSubscriptions',
 function(stanzaID, pubsubServiceJID) {
 
     /**
-     * @name retrievePubsubSubscriptions
-     * @synopsis Creates a subscription to the pubsub node at the specified
+     * @method retrievePubsubSubscriptions
+     * @summary Creates a subscription to the pubsub node at the specified
      *     'nodeID' (which in XMPP is usually represented as a 'topic map path')
      *     using the receiver's connection JID as the subscribing JID.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
@@ -1646,7 +1646,7 @@ function(stanzaID, pubsubServiceJID) {
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} pubsubServiceJID The JID representing the 'pubsub
      *     service'.
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter,
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
@@ -1705,14 +1705,14 @@ TP.core.XMPPService.Inst.defineMethod('setPubsubName',
 function(aName) {
 
     /**
-     * @name setPubsubName
-     * @synopsis Sets the 'pubsub service name' (i.e. where the pubsub service
+     * @method setPubsubName
+     * @summary Sets the 'pubsub service name' (i.e. where the pubsub service
      *     can be found on the server). This, when combined with the receiver's
      *     'server name', forms the 'server JID' (i.e. if 'pubsub' is the
      *     service name and 'infohost.com' is the server, this method will
      *     generate a 'pubsub JID' of 'pubsub.infohost.com').
      * @param {String} aName The name of the 'pubsub service' on the server.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.XMPPService} The receiver.
      */
 
@@ -1739,8 +1739,8 @@ TP.core.XMPPService.Inst.defineMethod('subscribeToPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID) {
 
     /**
-     * @name subscribeToPubsubNode
-     * @synopsis Creates a subscription to the pubsub node at the specified
+     * @method subscribeToPubsubNode
+     * @summary Creates a subscription to the pubsub node at the specified
      *     'nodeID' (which in XMPP is usually represented as a 'topic map path')
      *     using the receiver's connection JID as the subscribing JID.
      * @param {String} stanzaID The ID to use on the stanza we're creating. If
@@ -1750,7 +1750,7 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      *     service'.
      * @param {String} nodeID The 'node ID' (usually a 'topic map path' like
      *     '/foo/bar/baz').
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter,
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
@@ -1816,8 +1816,8 @@ TP.core.XMPPService.Inst.defineMethod('unsubscribeFromPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID) {
 
     /**
-     * @name unsubscribeFromPubsubNode
-     * @synopsis Removes a current subscription to the pubsub node at the
+     * @method unsubscribeFromPubsubNode
+     * @summary Removes a current subscription to the pubsub node at the
      *     specified 'nodeID' (which in XMPP is usually represented as a 'topic
      *     map path') using the receiver's connection JID as the unsubscribing
      *     JID.
@@ -1828,7 +1828,7 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      *     service'.
      * @param {String} nodeID The 'node ID' (usually a 'topic map path' like
      *     '/foo/bar/baz').
-     * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter,
+     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
@@ -1896,8 +1896,8 @@ TP.core.XMPPService.Inst.defineMethod('openAndAuthConnectionFrom',
 function(aRequest) {
 
     /**
-     * @name openAndAuthConnectionFrom
-     * @synopsis Opens and authenticates a connection based on information found
+     * @method openAndAuthConnectionFrom
+     * @summary Opens and authenticates a connection based on information found
      *     under the 'connectionParams' key in the supplied request.
      * @param {TP.sig.XMPPRequest} aRequest The XMPP request to use to open and
      *     authenticate the connection.
@@ -1937,8 +1937,8 @@ TP.core.XMPPService.Inst.defineMethod('handleXMPPConnectionException',
 function(aSignal) {
 
     /**
-     * @name handleXMPPConnectionException
-     * @synopsis Handles when the receiver's connection is ready to send XMPP
+     * @method handleXMPPConnectionException
+     * @summary Handles when the receiver's connection is ready to send XMPP
      *     packets. Since XMPP servicing is asynchronous, observing this signal
      *     is the only way to know the connection is ready to send more stuff.
      * @param {TP.sig.XMPPConnectionException} aSignal The signal that the
@@ -1963,8 +1963,8 @@ TP.core.XMPPService.Inst.defineMethod('handleXMPPConnectionReady',
 function(aSignal) {
 
     /**
-     * @name handleXMPPConnectionReady
-     * @synopsis Handles when the receiver's connection is ready to send XMPP
+     * @method handleXMPPConnectionReady
+     * @summary Handles when the receiver's connection is ready to send XMPP
      *     packets. Since XMPP servicing is asynchronous, observing this signal
      *     is the only way to know the connection is ready to send more stuff.
      * @param {TP.sig.XMPPConnectionReady} aSignal The signal that the
@@ -1993,8 +1993,8 @@ TP.core.XMPPService.Inst.defineMethod('handleXMPPPubsubInput',
 function(aSignal) {
 
     /**
-     * @name handleXMPPPubsubInput
-     * @synopsis Handles when the receiver's connection has sent XMPP pubsub
+     * @method handleXMPPPubsubInput
+     * @summary Handles when the receiver's connection has sent XMPP pubsub
      *     packets. In this type we use this to track user subscriptions.
      * @param {TP.sig.XMPPPubsubInput} aSignal The signal that pubsub data is
      *     ready.
@@ -2060,8 +2060,8 @@ TP.core.XMPPService.Inst.defineMethod('handleXMPPRequest',
 function(aRequest) {
 
     /**
-     * @name handleXMPPRequest
-     * @synopsis Handles when an TP.sig.XMPPRequest is fired. Since this service
+     * @method handleXMPPRequest
+     * @summary Handles when an TP.sig.XMPPRequest is fired. Since this service
      *     will register itself as the default handler for these kinds of
      *     requests, the default instance of it will usually handle all of these
      *     kinds of requests.
@@ -2125,8 +2125,8 @@ TP.core.XMPPService.Inst.defineMethod('processTP_sig_XMPPRequest',
 function(aRequest) {
 
     /**
-     * @name processTP_sig_XMPPRequest
-     * @synopsis Processes the supplied request and calls the appropriate method
+     * @method processTP_sig_XMPPRequest
+     * @summary Processes the supplied request and calls the appropriate method
      *     on the receiver based on the 'action' supplied in the request.
      * @param {TP.sig.XMPPRequest} aRequest The XMPP request object to take the
      *     request parameters from.

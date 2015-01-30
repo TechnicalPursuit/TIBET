@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.UserOutputRequest}
- * @synopsis The primary type used to provide output to the user. In response to
+ * @summary The primary type used to provide output to the user. In response to
  *     requests of this type the console will look up a template and use it to
  *     format output for display.
  */
@@ -43,8 +43,8 @@ TP.sig.UserOutputRequest.Inst.defineMethod('getOutputNode',
 function() {
 
     /**
-     * @name getOutputNode
-     * @synopsis Returns the output node used to display output for this
+     * @method getOutputNode
+     * @summary Returns the output node used to display output for this
      *     request. Requestors can leverage this to get a handle to the actual
      *     output cell without having direct knowledge of the console used to
      *     perform the output itself.

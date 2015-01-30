@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XData}
- * @synopsis A wrapper for the X_DATA namespace'd payload element.
+ * @summary A wrapper for the X_DATA namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -42,8 +42,8 @@ TP.xmpp.XData.Inst.defineMethod('addFormItem',
 function(aNode) {
 
     /**
-     * @name addFormItem
-     * @synopsis Adds a form item to the receiver.
+     * @method addFormItem
+     * @summary Adds a form item to the receiver.
      * @param {TP.xmpp.XDataField} aNode A data field to add to this data
      *     packet.
      * @returns {TP.xmpp.XData} The receiver.
@@ -66,8 +66,8 @@ TP.xmpp.XData.Inst.defineMethod('setFormType',
 function(aFormType) {
 
     /**
-     * @name setFormType
-     * @synopsis Sets the form type of the data packet.
+     * @method setFormType
+     * @summary Sets the form type of the data packet.
      * @param {String} aFormType The form type of this data packet. This should
      *     be one of the following constant values: TP.xmpp.XData.FORM
      *     TP.xmpp.XData.SUBMIT TP.xmpp.XData.CANCEL TP.xmpp.XData.RESULT.

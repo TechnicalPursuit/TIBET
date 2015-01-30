@@ -10,9 +10,9 @@
 
 /**
  * @type {TP.core.TSH}
- * @synopsis TIBET's primary shell, used for content processing, script
+ * @summary TIBET's primary shell, used for content processing, script
  *     execution, and interactive development via the TIBET console.
- * @description When working in the client we found it invaluable to have an
+ * @summary When working in the client we found it invaluable to have an
  *     interactive tool we could use to support debugging and simple
  *     experimentation. A simple 'workspace' in Smalltalk terms. But simply
  *     eval'ing JS was pretty limiting so we started adding features like
@@ -313,8 +313,8 @@ TP.core.TSH.Type.defineMethod('handleActivationKeyUp',
 function(aSignal) {
 
     /**
-     * @name handleActivationKeyUp
-     * @synopsis Handles when our activation key is pressed.
+     * @method handleActivationKeyUp
+     * @summary Handles when our activation key is pressed.
      * @param {DOMKeySignal} aSignal The key signal that was mapped to
      *     activating us.
      */
@@ -371,8 +371,8 @@ TP.core.TSH.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {String} aResourceID A unique identifier for this instance.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing an optional "parentShell" key used to define a parent for
@@ -405,8 +405,8 @@ TP.core.TSH.Inst.defineMethod('isLoginShell',
 function(aRequest) {
 
     /**
-     * @name isLoginShell
-     * @synopsis Returns true if the receiver is a top-level login shell.
+     * @method isLoginShell
+     * @summary Returns true if the receiver is a top-level login shell.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {Boolean}
@@ -430,8 +430,8 @@ TP.core.TSH.Inst.defineMethod('login',
 function(aRequest) {
 
     /**
-     * @name login
-     * @synopsis Performs any login sequence necessary for the receiver. The
+     * @method login
+     * @summary Performs any login sequence necessary for the receiver. The
      *     TP.core.TSH relies on the current TP.sys.getEffectiveUser() value as
      *     the starting point for the login sequence. When that data is empty
      *     the current 'username' cookie for the application is used to define a
@@ -646,9 +646,9 @@ TP.core.TSH.Inst.defineMethod('handle',
 function(aRequest) {
 
     /**
-     * @name handle
-     * @synopsis The primary resource/request handling method.
-     * @description We override this here to enable privileges if we're on
+     * @method handle
+     * @summary The primary resource/request handling method.
+     * @summary We override this here to enable privileges if we're on
      *     Mozilla. This avoids a lot of issues when manipulating a window or
      *     contents of a window that come from another domain. The shell
      *     variable PRIVILEGED must be true for this feature to be enabled. It's
@@ -695,8 +695,8 @@ TP.core.TSH.Inst.defineMethod('handleShellRequest',
 function(aRequest) {
 
     /**
-     * @name handleShellRequest
-     * @synopsis Constructs a response to the request provided. This is the
+     * @method handleShellRequest
+     * @summary Constructs a response to the request provided. This is the
      *     entry point into the shell's input processing sequence.
      * @param {TP.sig.ShellRequest} aRequest The request to respond to.
      * @returns {TP.sig.ShellResponse} A response to the request.
@@ -716,8 +716,8 @@ TP.core.TSH.Inst.defineMethod('handleShellRequestCompleted',
 function(aSignal) {
 
     /**
-     * @name handleShellRequestCompleted
-     * @synopsis Processes notifications that a shell request the receiver
+     * @method handleShellRequestCompleted
+     * @summary Processes notifications that a shell request the receiver
      *     processed has been completed. We use that notification to set final
      *     execution times and perform other cleanup.
      * @param {TP.sig.ShellResponse} aSignal The response signal, masquerading
@@ -755,8 +755,8 @@ TP.core.TSH.Inst.defineMethod('shouldComputeCosts',
 function(aFlag) {
 
     /**
-     * @name shouldComputeCosts
-     * @synopsis Combined setter/getter for manipulating the shell's
+     * @method shouldComputeCosts
+     * @summary Combined setter/getter for manipulating the shell's
      *     COMPUTE_COSTS variable. When this variable is true the shell will
      *     compute execution time and object creation counts among other things.
      * @param {Boolean} aFlag The optional value to set.
@@ -776,8 +776,8 @@ TP.core.TSH.Inst.defineMethod('translateSymbol',
 function(aString) {
 
     /**
-     * @name translateSymbol
-     * @synopsis Translates the symbol provided into its text equivalent. This
+     * @method translateSymbol
+     * @summary Translates the symbol provided into its text equivalent. This
      *     method allows symbolic prefixes to be mapped into valid strings for
      *     help reporting and other purposes.
      * @param {String} aString The command prefix.
@@ -976,8 +976,8 @@ TP.core.TSH.Inst.defineMethod('execute',
 function(aRequest) {
 
     /**
-     * @name execute
-     * @synopsis The main command execution method, responsible for parsing and
+     * @method execute
+     * @summary The main command execution method, responsible for parsing and
      *     processing shell input in a fashion suitable for the specific
      *     requirements of each shell and for the specific content being
      *     processed.
@@ -1391,8 +1391,8 @@ TP.core.TSH.Inst.defineMethod('$runPhase',
 function(aRequest) {
 
     /**
-     * @name $runPhase
-     * @synopsis Runs a particular phase of request processing based on
+     * @method $runPhase
+     * @summary Runs a particular phase of request processing based on
      *     information found in the request. Important key/value pairs include
      *     cmdPhase and cmdNode which define the phase and the node to process
      *     respectively.
@@ -1820,8 +1820,8 @@ TP.core.TSH.Inst.defineMethod('executeLog',
 function(aRequest) {
 
     /**
-     * @name executeLog
-     * @synopsis Outputs a log's content to the current stdout pipeline.
+     * @method executeLog
+     * @summary Outputs a log's content to the current stdout pipeline.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
@@ -1838,7 +1838,7 @@ TP.core.TSH.Inst.defineMethod('executeLogin',
 function(aRequest) {
 
     /**
-     * @name executeLogin
+     * @method executeLogin
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
@@ -1864,7 +1864,7 @@ TP.core.TSH.Inst.defineMethod('executeLogout',
 function(aRequest) {
 
     /**
-     * @name executeLogout
+     * @method executeLogout
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
@@ -1992,8 +1992,8 @@ TP.core.TSH.Inst.defineMethod('executeAs',
 function(aRequest) {
 
     /**
-     * @name executeAs
-     * @synopsis Executes a formatting or template transformation operation on
+     * @method executeAs
+     * @summary Executes a formatting or template transformation operation on
      *     the current value of stdin.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
@@ -2535,8 +2535,8 @@ TP.core.TSH.Inst.defineMethod('executeExport',
 function(aRequest) {
 
     /**
-     * @name executeExport
-     * @synopsis Writes out the previous command buffer to the script file named
+     * @method executeExport
+     * @summary Writes out the previous command buffer to the script file named
      *     as the target url.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
@@ -2597,8 +2597,8 @@ TP.core.TSH.Inst.defineMethod('executeImport',
 function(aRequest) {
 
     /**
-     * @name executeImport
-     * @synopsis Imports the source file referenced if it can be found. The
+     * @method executeImport
+     * @summary Imports the source file referenced if it can be found. The
      *     primary value of this command is that it allows simple file patterns
      *     to be used to determine which file might be desired. For example,
      *     :import TIBETGlobals or simply Globals is enough for this command to
@@ -2744,8 +2744,8 @@ TP.core.TSH.Inst.defineMethod('executeSource',
 function(aRequest) {
 
     /**
-     * @name executeSource
-     * @synopsis Reloads the source file from which an object was loaded. The
+     * @method executeSource
+     * @summary Reloads the source file from which an object was loaded. The
      *     object specification should be provided as ref="obj".
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
@@ -2996,8 +2996,8 @@ TP.core.TSH.Inst.defineMethod('executeTypes',
 function(aRequest) {
 
     /**
-     * @name executeTypes
-     * @synopsis Returns an array of all of the types in the system. This will
+     * @method executeTypes
+     * @summary Returns an array of all of the types in the system. This will
      *     include native types if the 'includeNative' flag is supplied.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
@@ -3040,7 +3040,7 @@ TP.core.TSH.Inst.defineMethod('executeOpen',
 function(aRequest) {
 
     /**
-     * @synopsis Opens a URI in a window and completes when the onload handler
+     * @summary Opens a URI in a window and completes when the onload handler
      *     within that window has properly triggered. NOTE that this is only
      *     consistent when the tibet_hook.js file is included as part of the
      *     page being loaded. When the hook file isn't available the results may
@@ -3058,7 +3058,7 @@ TP.core.TSH.Inst.defineMethod('executeSleep',
 function(aRequest) {
 
     /**
-     * @synopsis Sleeps a specified number of milliseconds before continuing
+     * @summary Sleeps a specified number of milliseconds before continuing
      *     script processing. Note that sleeps in excess of 30 seconds can only
      *     be achieved by setting tsh.max_sleep higher. script processing. Note
      *     that sleeps in excess of 30 seconds can only be achieved by setting
@@ -3091,7 +3091,7 @@ TP.core.TSH.Inst.defineMethod('executeWait',
 function(aRequest) {
 
     /**
-     * @synopsis Effectively pauses execution until a signal is observed. The
+     * @summary Effectively pauses execution until a signal is observed. The
      *     signal can be tied to an origin, so this is effectively a way to tie
      *     shell execution timing to an $observe call.
      */
@@ -3385,7 +3385,7 @@ function() {
 
     /**
      * Returns the announcement string to use for the receiver.
-     * @return {String} The announcement string.
+     * @returns {String} The announcement string.
      */
 
     var str;

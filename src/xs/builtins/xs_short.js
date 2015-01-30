@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.short}
- * @synopsis A value whose range is limited by 16-bit storage limits.
+ * @summary A value whose range is limited by 16-bit storage limits.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.short.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided falls between -32768 and
+     * @method validate
+     * @summary Returns true if the object provided falls between -32768 and
      *     32767 inclusive.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

@@ -10,8 +10,8 @@
 
 /**
  * @type {TP.core.Browser}
- * @synopsis A type containing common data and functions for the browser.
- * @description TP.core.Browser is responsible for containing browser-specific
+ * @summary A type containing common data and functions for the browser.
+ * @summary TP.core.Browser is responsible for containing browser-specific
  *     features such as event registration and dispatch functions.
  *
  *     This type is also registered under the global 'browser' to make it
@@ -51,8 +51,8 @@ TP.core.Browser.Type.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -67,8 +67,8 @@ TP.core.Browser.Type.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. By
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
@@ -83,8 +83,8 @@ TP.core.Browser.Type.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -99,8 +99,8 @@ TP.core.Browser.Type.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the string representation of the receiver. The
+     * @method asString
+     * @summary Returns the string representation of the receiver. The
      *     TP.core.Browser type is special here, it returns the string
      *     'browser', which is intended to mirror 'window', 'document', and
      *     similar terms.
@@ -118,8 +118,8 @@ TP.core.Browser.Type.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. By
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. By
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
@@ -142,7 +142,7 @@ Signaling support types related to browser/window/document operations.
 
 /**
  * @type {TP.sig.DocumentSignal}
- * @synopsis The supertype of both TP.sig.DocumentLoaded and
+ * @summary The supertype of both TP.sig.DocumentLoaded and
  *     TP.sig.DocumentUnloaded which can provide the window's global ID that the
  *     document is being loaded into or unloaded from.
  */
@@ -157,8 +157,8 @@ TP.sig.DocumentSignal.Inst.defineMethod('getWindowName',
 function() {
 
     /**
-     * @name getWindowName
-     * @synopsis Returns the global ID of the window that the page was loaded
+     * @method getWindowName
+     * @summary Returns the global ID of the window that the page was loaded
      *     into or unloaded out of.
      * @returns {String} The global ID of the Window.
      */
@@ -190,7 +190,7 @@ TP.sig.DocumentVisibility.defineSubtype('DocumentInvisible');
 
 /**
  * @type {TP.sig.WindowSignal}
- * @synopsis A window-related signal type which provides the supertype for
+ * @summary A window-related signal type which provides the supertype for
  *     TP.sig.WindowClosed and other window events.
  */
 
@@ -204,8 +204,8 @@ TP.sig.WindowSignal.Inst.defineMethod('getWindowName',
 function() {
 
     /**
-     * @name getWindowName
-     * @synopsis Returns the global ID of the window involved in activity.
+     * @method getWindowName
+     * @summary Returns the global ID of the window involved in activity.
      * @returns {String} The global ID of the Window.
      */
 

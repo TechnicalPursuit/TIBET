@@ -40,7 +40,7 @@ TP.sherpa.hud.Inst.defineMethod('setup',
 function() {
 
     /**
-     * @name setup
+     * @method setup
      */
 
     return this;
@@ -52,7 +52,7 @@ TP.sherpa.hud.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setAttrHidden
+     * @method setAttrHidden
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -101,7 +101,7 @@ TP.sherpa.hud.Inst.defineMethod('hideAllHUDDrawers',
 function() {
 
     /**
-     * @name hideAllHUDDrawers
+     * @method hideAllHUDDrawers
      * @returns {TP.sherpa.hud} The receiver.
      * @abstract
      */
@@ -128,7 +128,7 @@ TP.sherpa.hud.Inst.defineMethod('showAllHUDDrawers',
 function() {
 
     /**
-     * @name showAllHUDDrawers
+     * @method showAllHUDDrawers
      * @returns {TP.sherpa.hud} The receiver.
      * @abstract
      */

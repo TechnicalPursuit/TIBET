@@ -30,8 +30,8 @@ TP.xctrls.chart.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
      * @param {TP.sig.Request} aRequest The shell request being processed.
@@ -65,10 +65,10 @@ TP.xctrls.chart.Type.defineMethod('getCompilationAttrs',
 function(aRequest) {
 
     /**
-     * @name getCompilationAttrs
-     * @synopsis Returns a TP.lang.Hash of any attributes to be added to what is
+     * @method getCompilationAttrs
+     * @summary Returns a TP.lang.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled.
-     * @description This type produces custom values for the 'tibet:ctrl'
+     * @summary This type produces custom values for the 'tibet:ctrl'
      *     attribute (matching the type of the map based on the 'type'
      *     attribute), thereby allowing instances of subtypes of this type to be
      *     created.
@@ -97,8 +97,8 @@ TP.xctrls.chart.Type.defineMethod('getResourceTypeName',
 function() {
 
     /**
-     * @name getResourceTypeName
-     * @synopsis Returns the resource type name for this type. The resource type
+     * @method getResourceTypeName
+     * @summary Returns the resource type name for this type. The resource type
      *     name is used when computing resource paths for this type. We override
      *     this here to provide our own type name for subtypes since the
      *     resources should be found under our name.
@@ -122,7 +122,7 @@ TP.xctrls.chart.Inst.defineMethod('configure',
 function() {
 
     /**
-     * @name configure
+     * @method configure
      * @returns {TP.xctrls.chart} The receiver.
      * @abstract
      */
@@ -142,8 +142,8 @@ TP.xctrls.chart.Inst.defineMethod('$getD3Inst',
 function() {
 
     /**
-     * @name $getD3Inst
-     * @synopsis Returns the internal d3 instance.
+     * @method $getD3Inst
+     * @summary Returns the internal d3 instance.
      * @returns {Object} The internal d3 instance.
      */
 
@@ -156,9 +156,9 @@ TP.xctrls.chart.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node.
-     * @description For this type, this is the value of the underlying data
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node.
+     * @summary For this type, this is the value of the underlying data
      *     being displayed by the chart.
      * @returns {Object} The visual value of the receiver's UI node.
      */
@@ -172,8 +172,8 @@ TP.xctrls.chart.Inst.defineMethod('refresh',
 function(aSignal) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specified a
      *     'deep' refresh then descendant elements are also updated.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
@@ -190,8 +190,8 @@ TP.xctrls.chart.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure

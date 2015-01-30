@@ -10,7 +10,7 @@
 
 /**
  * @type {svg:}
- * @synopsis This type represents the SVG namespace (http://www.w3.org/2000/svg)
+ * @summary This type represents the SVG namespace (http://www.w3.org/2000/svg)
  *     in the tag processing system.
  */
 

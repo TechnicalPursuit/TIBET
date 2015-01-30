@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.QName}
- * @synopsis A valid QName, a tuple (ordered pair) of the format: {TP.xs.anyURI,
+ * @summary A valid QName, a tuple (ordered pair) of the format: {TP.xs.anyURI,
  *     TP.xs.NCName}.
  */
 
@@ -26,8 +26,8 @@ TP.xs.QName.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible. A
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible. A
      *     QName pair (an Array) is returned when the inbound object represents
      *     a valid pair itself or can be used to acquire one.
      * @param {Object} anObject The object to use as source data.
@@ -73,8 +73,8 @@ TP.xs.QName.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a tuple (ordered pair in
+     * @method validate
+     * @summary Returns true if the object provided is a tuple (ordered pair in
      *     TIBET-speak) containing a valid TP.xs.anyURI and a valid
      *     TP.xs.NCName.
      * @param {String} anObject The object to validate.

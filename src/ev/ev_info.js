@@ -10,9 +10,9 @@
 
 /**
  * @type {ev:info}
- * @synopsis A wrapper for the XML Events ev:listener element, named for
+ * @summary A wrapper for the XML Events ev:listener element, named for
  *     consistency with other TIBET 'info' tags.
- * @description See ev:listener for details.
+ * @summary See ev:listener for details.
  */
 
 //  ------------------------------------------------------------------------

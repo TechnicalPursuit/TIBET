@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.LocalStorage}
- * @synopsis A subtype of TP.core.DeviceStorage for handling 'local storage'
+ * @summary A subtype of TP.core.DeviceStorage for handling 'local storage'
  *     persistence mechanisms.
  */
 
@@ -26,8 +26,8 @@ TP.core.LocalStorage.Type.defineMethod('canConstruct',
 function() {
 
     /**
-     * @name canConstruct
-     * @synopsis Returns true or false whether or not a storage object of this
+     * @method canConstruct
+     * @summary Returns true or false whether or not a storage object of this
      *     type can be constructed on the currently executing platform.
      * @returns {Boolean} Whether or not an instance can be constructed on this
      *     platform.
@@ -51,8 +51,8 @@ TP.core.LocalStorage.Inst.defineMethod('at',
 function(aKey) {
 
     /**
-     * @name at
-     * @synopsis Retrieves the value stored under the key in the receiver.
+     * @method at
+     * @summary Retrieves the value stored under the key in the receiver.
      * @param {String} aKey The key to find the data to be retrieved.
      * @returns {Object} The object stored under the key in the receiver.
      */
@@ -83,8 +83,8 @@ TP.core.LocalStorage.Inst.defineMethod('atPut',
 function(aKey, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Sets the value stored under the key in the receiver.
+     * @method atPut
+     * @summary Sets the value stored under the key in the receiver.
      * @param {String} aKey The key to use to set the data to be stored.
      * @param {String} aValue The data to store under the supplied key.
      * @returns {TP.core.LocalStorage} The receiver.
@@ -114,8 +114,8 @@ TP.core.LocalStorage.Inst.defineMethod('empty',
 function() {
 
     /**
-     * @name empty
-     * @synopsis Removes all of the values stored in the receiver.
+     * @method empty
+     * @summary Removes all of the values stored in the receiver.
      * @returns {TP.core.LocalStorage} The receiver.
      */
 
@@ -132,8 +132,8 @@ TP.core.LocalStorage.Inst.defineMethod('removeKey',
 function(aKey) {
 
     /**
-     * @name removeKey
-     * @synopsis Removes the value stored under the key in the receiver.
+     * @method removeKey
+     * @summary Removes the value stored under the key in the receiver.
      * @param {String} aKey The key to find the data to be removed.
      * @returns {TP.core.LocalStorage} The receiver.
      */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.label}
- * @synopsis Manages label XControls.
+ * @summary Manages label XControls.
  */
 
 //  ------------------------------------------------------------------------

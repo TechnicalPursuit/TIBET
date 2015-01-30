@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.normalizedString}
- * @synopsis An TP.xs.normalizedString is an TP.xs.string in which any tabs
+ * @summary An TP.xs.normalizedString is an TP.xs.string in which any tabs
  *     (\u0009), linefeeds (\u000A) and carriage returns (\u000D) have been
  *     replaced with spaces (\u0020).
  */
@@ -27,8 +27,8 @@ TP.xs.normalizedString.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.normalizedString the return value is the string value of
      *     the incoming object after calling replaceWhitespace() on it to remove
      *     tabs, CRs and LFs.
@@ -56,8 +56,8 @@ TP.xs.normalizedString.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a string containing
+     * @method validate
+     * @summary Returns true if the object provided is a string containing
      *     normalized whitespace, i.e. whitespace which has been converted to
      *     spaces rather than tabs, newlines, etc.
      * @param {Object} anObject The object to test.

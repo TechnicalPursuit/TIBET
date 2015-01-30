@@ -10,9 +10,9 @@
 
 /**
  * @type {TP.goog.GoogleService}
- * @synopsis A subtype of TP.core.HTTPService that communicates with a Google
+ * @summary A subtype of TP.core.HTTPService that communicates with a Google
  *     server.
- * @description This is an abstract supertype for all Google-related services.
+ * @summary This is an abstract supertype for all Google-related services.
  *     It knows how to authenticate the user using Google's 'ClientLogin'
  *     protocol. Subtypes add more functionality.
  */
@@ -54,8 +54,8 @@ TP.goog.GoogleService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Returns an initialized instance of the receiver. If aRequest is
+     * @method init
+     * @summary Returns an initialized instance of the receiver. If aRequest is
      *     provided it can help define the service's operation by providing a
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
@@ -117,8 +117,8 @@ TP.goog.GoogleService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
-     * @name finalizeRequest
-     * @synopsis Perform any final updates or processing on the request to make
+     * @method finalizeRequest
+     * @summary Perform any final updates or processing on the request to make
      *     sure it is ready to send to TP.httpCall() for processing.
      * @param {TP.sig.GoogleRequest} aRequest The request being finalized.
      * @returns {TP.sig.GoogleRequest} The request to send. NOTE that this may
@@ -157,8 +157,8 @@ TP.goog.GoogleService.Inst.defineMethod('handleRequestSucceeded',
 function(aSignal) {
 
     /**
-     * @name handleRequestSucceeded
-     * @synopsis Handles any signal being managed by this service that has
+     * @method handleRequestSucceeded
+     * @summary Handles any signal being managed by this service that has
      *     successfully completed.
      * @param {TP.sig.Response} aSignal The response masquerading as a
      *     "Succeeded" signal.
@@ -219,13 +219,13 @@ TP.goog.GoogleService.Inst.defineMethod('handleHTTPRequest',
 function(aRequest) {
 
     /**
-     * @name handleHTTPRequest
-     * @synopsis Constructs an appropriate response for the request provided,
+     * @method handleHTTPRequest
+     * @summary Constructs an appropriate response for the request provided,
      *     working to manage asynchronous calls in a manner consistent with the
      *     rest of the service/request/response model.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @raises TP.sig.InvalidRequest, TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest, TP.sig.InvalidURI
      * @returns {TP.sig.HTTPResponse} The service's response to the request.
      */
 
@@ -295,8 +295,8 @@ TP.goog.GoogleService.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestHeaders
-     * @synopsis Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @method rewriteRequestHeaders
+     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
      *     service.
      * @param {TP.sig.GoogleRequest} aRequest The request whose parameters
      *     define the HTTP request.
@@ -334,8 +334,8 @@ TP.goog.GoogleService.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestURI
-     * @synopsis Rewrites the request's URI.
+     * @method rewriteRequestURI
+     * @summary Rewrites the request's URI.
      * @param {TP.sig.GoogleRequest} aRequest The request to rewrite.
      * @returns {TP.goog.URI} The new/updated URI instance.
      */
@@ -363,8 +363,8 @@ TP.goog.GoogleService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestVerb
-     * @synopsis Returns the HTTP verb to use for the request. For Wave
+     * @method rewriteRequestVerb
+     * @summary Returns the HTTP verb to use for the request. For Wave
      *     requests, this varies depending on operation.
      * @param {TP.sig.GoogleRequest} aRequest The request whose parameters
      *     define the HTTP request.

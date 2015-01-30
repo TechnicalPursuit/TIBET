@@ -44,8 +44,8 @@ TP.sys.defineMethod('getLocale',
 function() {
 
     /**
-     * @name getLocale
-     * @synopsis Return the current locale type.
+     * @method getLocale
+     * @summary Return the current locale type.
      * @returns {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
      *     type object.
      */
@@ -67,8 +67,8 @@ TP.sys.defineMethod('setLocale',
 function(aLocale) {
 
     /**
-     * @name setLocale
-     * @synopsis Sets the current locale, which is used by numerous types to
+     * @method setLocale
+     * @summary Sets the current locale, which is used by numerous types to
      *     provide localization support.
      * @param {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
      *     type object.
@@ -114,8 +114,8 @@ TP.defineCommonMethod('localize',
 function(aLocale, sourceLocale, forceRefresh) {
 
     /**
-     * @name localize
-     * @synopsis Returns a localized string version of the receiver.
+     * @method localize
+     * @summary Returns a localized string version of the receiver.
      * @param {TP.core.Locale|String} aLocale The locale to use for resolution.
      * @param {TP.core.Locale|String} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in. Defaults
@@ -160,9 +160,9 @@ function(aLocale, sourceLocale, forceRefresh) {
 
 /**
  * @type {TP.core.Locale}
- * @synopsis TP.core.Locale is the supertype from which all locales inherit.
+ * @summary TP.core.Locale is the supertype from which all locales inherit.
  *     Locales are the control point for localization in TP.sys.
- * @description TP.core.Locales are the focal point of TIBET's
+ * @summary TP.core.Locales are the focal point of TIBET's
  *     internationalization system. Each locale is associated with a
  *     language/country code as specified in ISO 639. Therefore, the
  *     TP.core.Locale for U.S. English is registered under the key 'en-us'. If a
@@ -257,8 +257,8 @@ TP.core.Locale.Type.defineMethod('getISOKey',
 function() {
 
     /**
-     * @name getISOKey
-     * @synopsis Returns the receiver's ISO key, for a Locale the language code
+     * @method getISOKey
+     * @summary Returns the receiver's ISO key, for a Locale the language code
      *     plus country code if the country code isn't empty.
      * @returns {String} The receiver's language code.
      */
@@ -287,8 +287,8 @@ TP.core.Locale.Type.defineMethod('getLocaleById',
 function(aLocaleID) {
 
     /**
-     * @name getLocaleById
-     * @synopsis Returns the TP.core.Locale subtype registered under the
+     * @method getLocaleById
+     * @summary Returns the TP.core.Locale subtype registered under the
      *     language code provided. Note that the language code should be the
      *     full four-character language code, such as en-us or fr-ca when
      *     possible, to ensure proper resolution.
@@ -333,8 +333,8 @@ TP.core.Locale.Type.defineMethod('registerLocale',
 function(aLocale, aKey) {
 
     /**
-     * @name registerLocale
-     * @synopsis Registers the locale provided under the locale's language code,
+     * @method registerLocale
+     * @summary Registers the locale provided under the locale's language code,
      *     allowing it to be found quickly. Note that by using one or more calls
      *     and different keys you can map a particular locale as the handler for
      *     a number of language and country code combinations.
@@ -376,8 +376,8 @@ TP.core.Locale.Type.defineMethod('localize',
 function(anObject, sourceLocale, forceRefresh) {
 
     /**
-     * @name localize
-     * @synopsis Returns a localized version of the object provided. This method
+     * @method localize
+     * @summary Returns a localized version of the object provided. This method
      *     serves as a top-level dispatcher which routes the object to a proper
      *     handler function by type. NOTE that no localization is attempted by
      *     the TP.core.Locale type itself, so unless a locale is installed via
@@ -445,8 +445,8 @@ TP.core.Locale.Type.defineMethod('localizeBoolean',
 function(aBoolean, sourceLocale, forceRefresh) {
 
     /**
-     * @name localizeBoolean
-     * @synopsis Returns the translated string value of the boolean provided.
+     * @method localizeBoolean
+     * @summary Returns the translated string value of the boolean provided.
      * @param {Boolean} aBoolean The boolean to localize.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in. Defaults
@@ -471,8 +471,8 @@ TP.core.Locale.Type.defineMethod('getFalseStrings',
 function() {
 
     /**
-     * @name getFalseStrings
-     * @synopsis Returns the strings used for comparing to the 'false' value. In
+     * @method getFalseStrings
+     * @summary Returns the strings used for comparing to the 'false' value. In
      *     this type, this method does nothing. Subtypes should override to
      *     provide real functionality.
      * @returns {Array} The array of string values that is considered to be
@@ -488,8 +488,8 @@ TP.core.Locale.Type.defineMethod('getTrueStrings',
 function() {
 
     /**
-     * @name getTrueStrings
-     * @synopsis Returns the strings used for comparing to the 'true' value. In
+     * @method getTrueStrings
+     * @summary Returns the strings used for comparing to the 'true' value. In
      *     this type, this method does nothing. Subtypes should override to
      *     provide real functionality.
      * @returns {Array} The array of string values that is considered to be
@@ -507,8 +507,8 @@ TP.core.Locale.Type.defineMethod('localizeDate',
 function(aDate, sourceLocale, forceRefresh) {
 
     /**
-     * @name localizeDate
-     * @synopsis Returns the translated string value of the date provided.
+     * @method localizeDate
+     * @summary Returns the translated string value of the date provided.
      * @param {Date} aDate The date to localize.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in. Defaults
@@ -573,8 +573,8 @@ TP.core.Locale.Type.defineMethod('getDateFormat',
 function() {
 
     /**
-     * @name getDateFormat
-     * @synopsis Returns the substitution format ('%{m}%{d}%{y}') to use as the
+     * @method getDateFormat
+     * @summary Returns the substitution format ('%{m}%{d}%{y}') to use as the
      *     format for localized dates.
      * @returns {String} The formatting date string.
      */
@@ -588,8 +588,8 @@ TP.core.Locale.Type.defineMethod('getLongMonthNames',
 function() {
 
     /**
-     * @name getLongMonthNames
-     * @synopsis Returns an array of long month names with values that are
+     * @method getLongMonthNames
+     * @summary Returns an array of long month names with values that are
      *     similar to 'January' to 'December' in this locale corresponding to
      *     integers 0 - 11. In this type, this method does nothing. Subtypes
      *     should override to provide real functionality.
@@ -605,8 +605,8 @@ TP.core.Locale.Type.defineMethod('getLongWeekdayNames',
 function() {
 
     /**
-     * @name getLongWeekdayNames
-     * @synopsis Returns an array of long weekday names with values that are
+     * @method getLongWeekdayNames
+     * @summary Returns an array of long weekday names with values that are
      *     similar to 'Sunday' to 'Saturday' in this locale corresponding to
      *     integers 0 - 7. In this type, this method does nothing. Subtypes
      *     should override to provide real functionality.
@@ -622,8 +622,8 @@ TP.core.Locale.Type.defineMethod('getShortMonthNames',
 function() {
 
     /**
-     * @name getShortMonthNames
-     * @synopsis Returns an array of short month names with values that are
+     * @method getShortMonthNames
+     * @summary Returns an array of short month names with values that are
      *     similar to 'Jan' to 'Dec' in this locale corresponding to integers 0
      *     - 11. In this type, this method does nothing. Subtypes should
      *     override to provide real functionality.
@@ -639,8 +639,8 @@ TP.core.Locale.Type.defineMethod('getShortWeekdayNames',
 function() {
 
     /**
-     * @name getShortWeekdayNames
-     * @synopsis Returns an array of short weekday names with values that are
+     * @method getShortWeekdayNames
+     * @summary Returns an array of short weekday names with values that are
      *     similar to 'Sun' to 'Sat' in this locale corresponding to integers 0
      *     - 7. In this type, this method does nothing. Subtypes should override
      *     to provide real functionality.
@@ -658,8 +658,8 @@ TP.core.Locale.Type.defineMethod('localizeNumber',
 function(aNumber, sourceLocale, forceRefresh) {
 
     /**
-     * @name localizeNumber
-     * @synopsis Returns the translated string value of the number provided.
+     * @method localizeNumber
+     * @summary Returns the translated string value of the number provided.
      * @param {Number} aNumber The number to localize.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in. Defaults
@@ -686,8 +686,8 @@ TP.core.Locale.Type.defineMethod('getNumberFormat',
 function() {
 
     /**
-     * @name getNumberFormat
-     * @synopsis Returns the substitution format (i.e. '#{#,###}') to use as the
+     * @method getNumberFormat
+     * @summary Returns the substitution format (i.e. '#{#,###}') to use as the
      *     format for localized numbers.
      * @returns {String} The formatting string.
      */
@@ -701,8 +701,8 @@ TP.core.Locale.Type.defineMethod('getThousandsMatcher',
 function() {
 
     /**
-     * @name getThousandsMatcher
-     * @synopsis Returns a regex used when detecting thousands digits.
+     * @method getThousandsMatcher
+     * @summary Returns a regex used when detecting thousands digits.
      * @returns {String} The regular expression used to match thousands.
      */
 
@@ -715,8 +715,8 @@ TP.core.Locale.Type.defineMethod('getThousandsSeparator',
 function() {
 
     /**
-     * @name getThousandsSeparator
-     * @synopsis Returns the character used when separating thousands digits. In
+     * @method getThousandsSeparator
+     * @summary Returns the character used when separating thousands digits. In
      *     this type, this method does nothing. Subtypes should override to
      *     provide real functionality.
      * @returns {String} The character used to separate thousands.
@@ -731,8 +731,8 @@ TP.core.Locale.Type.defineMethod('getDecimalPoint',
 function() {
 
     /**
-     * @name getDecimalPoint
-     * @synopsis Returns the character used for a decimal point. In this type,
+     * @method getDecimalPoint
+     * @summary Returns the character used for a decimal point. In this type,
      *     this method does nothing. Subtypes should override to provide real
      *     functionality.
      * @returns {String} The character used for a decimal point.
@@ -747,8 +747,8 @@ TP.core.Locale.Type.defineMethod('getThousandsGroupSize',
 function() {
 
     /**
-     * @name getThousandsGroupSize
-     * @synopsis Returns the size of the thousands grouping. For most locales
+     * @method getThousandsGroupSize
+     * @summary Returns the size of the thousands grouping. For most locales
      *     this is 3, however Japan uses 4.
      * @returns {Number} The size of the thousands group.
      */
@@ -764,8 +764,8 @@ TP.core.Locale.Type.defineMethod('localizeString',
 function(aString, sourceLocale, forceRefresh) {
 
     /**
-     * @name localizeString
-     * @synopsis Returns the translated value of the string provided.
+     * @method localizeString
+     * @summary Returns the translated value of the string provided.
      * @param {String} aString The string to localize.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in. Defaults
@@ -897,8 +897,8 @@ TP.core.Locale.Type.defineMethod('$getStringXMLString',
 function(forceRefresh) {
 
     /**
-     * @name $getStringXMLString
-     * @synopsis Private method which returns the string table in string form.
+     * @method $getStringXMLString
+     * @summary Private method which returns the string table in string form.
      *     This offers a fast way to test for a string's value via regular
      *     expression matching rather than XPath.
      * @param {Boolean} forceRefresh True to force the string form to be built
@@ -932,8 +932,8 @@ TP.core.Locale.Type.defineMethod('getStringXML',
 function(forceRefresh) {
 
     /**
-     * @name getStringXML
-     * @synopsis Returns the XML document containing the locale's string
+     * @method getStringXML
+     * @summary Returns the XML document containing the locale's string
      *     mappings. The root file name for the file containing these strings is
      *     found in the TIBET boot property 'strings'.
      * @param {Boolean} forceRefresh True to force the string form to be built
@@ -1027,8 +1027,8 @@ TP.core.Locale.Type.defineMethod('parseBoolean',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseBoolean
-     * @synopsis Returns the Boolean value of the string provided, as localized
+     * @method parseBoolean
+     * @summary Returns the Boolean value of the string provided, as localized
      *     for the receiving locale.
      * @param {String} aString The input string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -1056,8 +1056,8 @@ TP.core.Locale.Type.defineMethod('parseDate',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseDate
-     * @synopsis Returns the Date value of the string provided, as localized for
+     * @method parseDate
+     * @summary Returns the Date value of the string provided, as localized for
      *     the receiving locale.
      * @param {String} aString The input string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -1088,8 +1088,8 @@ TP.core.Locale.Type.defineMethod('parseNumber',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseNumber
-     * @synopsis Returns the Number value of the string provided, as localized
+     * @method parseNumber
+     * @summary Returns the Number value of the string provided, as localized
      *     for the receiving locale.
      * @param {String} aString The input string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -1130,8 +1130,8 @@ TP.core.Locale.Type.defineMethod('parseString',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseString
-     * @synopsis Returns the String value of the string provided, as localized
+     * @method parseString
+     * @summary Returns the String value of the string provided, as localized
      *     for the receiving locale.
      * @param {String} aString The input string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or

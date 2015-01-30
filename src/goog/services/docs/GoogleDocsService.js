@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.goog.GoogleDocsService}
- * @synopsis A subtype of GoogleService that communicates with the Google-hosted
+ * @summary A subtype of GoogleService that communicates with the Google-hosted
  *     Google Docs server.
  * @example If the TP.sig.GoogleDocsRequest/TP.sig.GoogleDocsResponse processing
  *     model is used, it is unnecessary to manually set up an
@@ -81,8 +81,8 @@ TP.goog.GoogleDocsService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
-     * @name finalizeRequest
-     * @synopsis Perform any final updates or processing on the request to make
+     * @method finalizeRequest
+     * @summary Perform any final updates or processing on the request to make
      *     sure it is ready to send to TP.httpCall() for processing.
      * @param {TP.sig.GoogleDocsRequest} aRequest The request being finalized.
      * @returns {TP.sig.GoogleDocsRequest} The request to send. NOTE that this
@@ -122,8 +122,8 @@ TP.goog.GoogleDocsService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestBody
-     * @synopsis Encodes the request body for transmission. Processing in this
+     * @method rewriteRequestBody
+     * @summary Encodes the request body for transmission. Processing in this
      *     method makes use of keys in the request to drive a call to the
      *     TP.httpEncode() primitive. If you don't want this processing to occur
      *     you can put a key of 'noencode' with a value of true in the request.
@@ -181,8 +181,8 @@ TP.goog.GoogleDocsService.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestURI
-     * @synopsis Rewrites the request's URI.
+     * @method rewriteRequestURI
+     * @summary Rewrites the request's URI.
      * @param {TP.sig.GoogleDocsRequest} aRequest The request to rewrite.
      * @returns {TP.core.URI} The new/updated URI instance.
      */
@@ -207,8 +207,8 @@ TP.goog.GoogleDocsService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestVerb
-     * @synopsis Returns the HTTP verb to use for the request. For Docs
+     * @method rewriteRequestVerb
+     * @summary Returns the HTTP verb to use for the request. For Docs
      *     requests, this varies depending on operation.
      * @param {TP.sig.GoogleDocsRequest} aRequest The request whose parameters
      *     define the HTTP request.

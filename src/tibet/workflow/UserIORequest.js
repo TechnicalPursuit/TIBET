@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.UserIORequest}
- * @synopsis The common supertype used for all user IO requests. These requests
+ * @summary The common supertype used for all user IO requests. These requests
  *     are typically handled by the console, whose response is to provide the
  *     user with an input cell for entering a response.
  */

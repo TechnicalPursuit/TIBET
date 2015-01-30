@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.scrollbox}
- * @synopsis Manages scrollbox XControls.
+ * @summary Manages scrollbox XControls.
  */
 
 //  ------------------------------------------------------------------------

@@ -31,7 +31,7 @@ TP.xctrls.googlemap.Inst.defineMethod('addControl',
 function(aControlName) {
 
     /**
-     * @name $addControl
+     * @method $addControl
      * @param {undefined} aControlName
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -52,7 +52,7 @@ TP.xctrls.googlemap.Inst.defineMethod('$computeGoogleMapScriptSrc',
 function() {
 
     /**
-     * @name $computeGoogleMapScriptSrc
+     * @method $computeGoogleMapScriptSrc
      * @returns {String}
      * @abstract
      */
@@ -101,7 +101,7 @@ TP.xctrls.googlemap.Inst.defineMethod('$convertLatLongToGoogleLatLong',
 function(aLatLong) {
 
     /**
-     * @name $convertLatLongToGoogleLatLong
+     * @method $convertLatLongToGoogleLatLong
      * @param {TP.core.LatLong} aLatLong
      * @returns {Object} A Google LatLong object.
      * @abstract
@@ -118,7 +118,7 @@ TP.xctrls.googlemap.Inst.defineMethod('$convertMarkerToGoogleMarker',
 function(aMarker) {
 
     /**
-     * @name $convertMarkerToGoogleMarker
+     * @method $convertMarkerToGoogleMarker
      * @param {TPMarker} aMarker
      * @returns {Object} A Google marker object.
      * @abstract
@@ -161,8 +161,8 @@ TP.xctrls.googlemap.Inst.defineMethod('init',
 function(aNode, aURI) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized instance.
+     * @method init
+     * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
@@ -182,7 +182,7 @@ TP.xctrls.googlemap.Inst.defineMethod('addControls',
 function(hasPan, zoomType, hasOverview, hasScale, hasMapType) {
 
     /**
-     * @name addControls
+     * @method addControls
      * @param {undefined} hasPan
      * @param {undefined} zoomType
      * @param {undefined} hasOverview
@@ -222,7 +222,7 @@ TP.xctrls.googlemap.Inst.defineMethod('addLargeControls',
 function() {
 
     /**
-     * @name addLargeControls
+     * @method addLargeControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
      */
@@ -241,7 +241,7 @@ TP.xctrls.googlemap.Inst.defineMethod('addMapTypeControls',
 function() {
 
     /**
-     * @name addMapTypeControls
+     * @method addMapTypeControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
      */
@@ -257,7 +257,7 @@ TP.xctrls.googlemap.Inst.defineMethod('addMarker',
 function(aMarker) {
 
     /**
-     * @name addMarker
+     * @method addMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -296,7 +296,7 @@ TP.xctrls.googlemap.Inst.defineMethod('addSmallControls',
 function() {
 
     /**
-     * @name addSmallControls
+     * @method addSmallControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
      */
@@ -312,7 +312,7 @@ TP.xctrls.googlemap.Inst.defineMethod('configure',
 function() {
 
     /**
-     * @name configure
+     * @method configure
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
      */
@@ -369,7 +369,7 @@ TP.xctrls.googlemap.Inst.defineMethod('getBounds',
 function() {
 
     /**
-     * @name getBounds
+     * @method getBounds
      * @returns {TP.core.MapBounds}
      * @abstract
      */
@@ -399,7 +399,7 @@ TP.xctrls.googlemap.Inst.defineMethod('getCenter',
 function() {
 
     /**
-     * @name getCenter
+     * @method getCenter
      * @returns {TP.core.LatLong}
      * @abstract
      */
@@ -417,7 +417,7 @@ TP.xctrls.googlemap.Inst.defineMethod('getLatLongForAddress',
 function(anAddress) {
 
     /**
-     * @name getLatLongForAddress
+     * @method getLatLongForAddress
      * @param {String} anAddress The address to plot.
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -458,7 +458,7 @@ TP.xctrls.googlemap.Inst.defineMethod('getMapType',
 function() {
 
     /**
-     * @name getMapType
+     * @method getMapType
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
      */
@@ -504,7 +504,7 @@ TP.xctrls.googlemap.Inst.defineMethod('getZoom',
 function() {
 
     /**
-     * @name getZoom
+     * @method getZoom
      * @returns {Number}
      * @abstract
      */
@@ -518,7 +518,7 @@ TP.xctrls.googlemap.Inst.defineMethod('getZoomLevelForMapBounds',
 function(aMapBounds) {
 
     /**
-     * @name getZoomLevelForMapBounds
+     * @method getZoomLevelForMapBounds
      * @param {TP.core.MapBounds} aMapBounds
      * @returns {Number}
      * @abstract
@@ -550,8 +550,8 @@ TP.xctrls.googlemap.Inst.defineMethod('hideAllMarkers',
 function() {
 
     /**
-     * @name hideAllMarkers
-     * @synopsis Hides all of the markers without removing them from the marker
+     * @method hideAllMarkers
+     * @summary Hides all of the markers without removing them from the marker
      *     list.
      * @returns {TP.xctrls.googlemap} The receiver.
      */
@@ -567,7 +567,7 @@ TP.xctrls.googlemap.Inst.defineMethod('removeAllControls',
 function() {
 
     /**
-     * @name removeAllControls
+     * @method removeAllControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
      */
@@ -595,7 +595,7 @@ TP.xctrls.googlemap.Inst.defineMethod('removeMarker',
 function(aMarker) {
 
     /**
-     * @name removeMarker
+     * @method removeMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -616,7 +616,7 @@ TP.xctrls.googlemap.Inst.defineMethod('setBounds',
 function(aMapBounds) {
 
     /**
-     * @name setBounds
+     * @method setBounds
      * @param {undefined} aMapBounds
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -649,7 +649,7 @@ TP.xctrls.googlemap.Inst.defineMethod('setCenter',
 function(aLatLong) {
 
     /**
-     * @name setCenter
+     * @method setCenter
      * @param {undefined} aLatLong
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -692,7 +692,7 @@ TP.xctrls.googlemap.Inst.defineMethod('setCenterAndZoom',
 function(aLatLong, zoomLevel) {
 
     /**
-     * @name setCenterAndZoom
+     * @method setCenterAndZoom
      * @param {undefined} aLatLong
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.googlemap} The receiver.
@@ -716,7 +716,7 @@ TP.xctrls.googlemap.Inst.defineMethod('setIsDraggable',
 function(shouldBeDraggable) {
 
     /**
-     * @name setIsDraggable
+     * @method setIsDraggable
      * @param {undefined} shouldBeDraggable
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -737,7 +737,7 @@ TP.xctrls.googlemap.Inst.defineMethod('setMapType',
 function(aMapType) {
 
     /**
-     * @name setMapType
+     * @method setMapType
      * @param {undefined} aMapType
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -788,7 +788,7 @@ TP.xctrls.googlemap.Inst.defineMethod('setZoom',
 function(zoomLevel) {
 
     /**
-     * @name setZoom
+     * @method setZoom
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
@@ -807,8 +807,8 @@ TP.xctrls.googlemap.Inst.defineMethod('showAllMarkers',
 function() {
 
     /**
-     * @name showAllMarkers
-     * @synopsis Shows all of the markers from the marker list on the map.
+     * @method showAllMarkers
+     * @summary Shows all of the markers from the marker list on the map.
      * @returns {TP.xctrls.googlemap} The receiver.
      */
 
@@ -851,7 +851,7 @@ TP.xctrls.googlemap.Inst.defineMethod('sizeTo',
 function(width, height) {
 
     /**
-     * @name sizeTo
+     * @method sizeTo
      * @param {Number} width
      * @param {Number} height
      * @returns {TP.xctrls.googlemap} The receiver.
@@ -867,8 +867,8 @@ TP.xctrls.googlemap.Inst.defineMethod('startIFrameLoad',
 function() {
 
     /**
-     * @name startIFrameLoad
-     * @synopsis Begins the iframe loading of the receiver. This method loads
+     * @method startIFrameLoad
+     * @summary Begins the iframe loading of the receiver. This method loads
      *     the content from the 'frameFileURI' into the iframe constructed by
      *     this type and sets up a callback handler that will call this type's
      *     'configure' method when the content from the iframe is all loaded and
@@ -902,7 +902,7 @@ TP.xctrls.googlemap.Inst.defineMethod('swapMarker',
 function(aMarker) {
 
     /**
-     * @name swapMarker
+     * @method swapMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract

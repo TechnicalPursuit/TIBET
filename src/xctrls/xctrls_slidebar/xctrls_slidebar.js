@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.slidebar}
- * @synopsis Manages slidebar XControls.
+ * @summary Manages slidebar XControls.
  */
 
 //  ------------------------------------------------------------------------
@@ -67,8 +67,8 @@ TP.xctrls.slidebar.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -106,8 +106,8 @@ TP.xctrls.slidebar.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -134,8 +134,8 @@ TP.xctrls.slidebar.Inst.defineMethod('getThumbPosition',
 function() {
 
     /**
-     * @name getThumbPosition
-     * @synopsis Returns the slidebar's 'thumb position' in pixels (relative to
+     * @method getThumbPosition
+     * @summary Returns the slidebar's 'thumb position' in pixels (relative to
      *     the overall slidebar).
      * @returns {Number} The receiver's thumb position.
      */
@@ -155,8 +155,8 @@ TP.xctrls.slidebar.Inst.defineMethod('handleDOMClick',
 function(aSignal) {
 
     /**
-     * @name handleDOMClick
-     * @synopsis This method is invoked as the slidebar's buttons are clicked.
+     * @method handleDOMClick
+     * @summary This method is invoked as the slidebar's buttons are clicked.
      *     It notifies any observers that the slidebar's value has changed.
      * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
      *     trip.
@@ -190,8 +190,8 @@ TP.xctrls.slidebar.Inst.defineMethod('handleDOMDragMove',
 function(aSignal) {
 
     /**
-     * @name handleDOMDragMove
-     * @synopsis This method is invoked as the slidebar is dragged. It notifies
+     * @method handleDOMDragMove
+     * @summary This method is invoked as the slidebar is dragged. It notifies
      *     any observers that the slidebar's value has changed.
      * @param {TP.sig.DOMDragMove} aSignal The signal that caused this handler
      *     to trip.
@@ -210,7 +210,7 @@ TP.xctrls.slidebar.Inst.defineMethod('moveByIncrement',
 function(aSide, incrementValue) {
 
     /**
-     * @name moveByIncrement
+     * @method moveByIncrement
      * @param {undefined} aSide
      * @param {undefined} incrementValue
      * @returns {TP.xctrls.slidebar} The receiver.
@@ -240,8 +240,8 @@ TP.xctrls.slidebar.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure
@@ -273,8 +273,8 @@ TP.xctrls.slidebar.Inst.defineMethod('setThumbPosition',
 function(pixelValue) {
 
     /**
-     * @name setThumbPosition
-     * @synopsis Sets the slidebar's 'thumb position' in pixels (relative to the
+     * @method setThumbPosition
+     * @summary Sets the slidebar's 'thumb position' in pixels (relative to the
      *     overall slidebar).
      * @param {Number} pixelValue The value to set.
      * @returns {TP.xctrls.slidebar} The receiver.

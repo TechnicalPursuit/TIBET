@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.GoogleContactsResponse}
- * @synopsis A subtype of TP.sig.HTTPResponse that knows how to contain
+ * @summary A subtype of TP.sig.HTTPResponse that knows how to contain
  *     responses to data requests from the Google-hosted Google Contacts server.
  */
 

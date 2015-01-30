@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.FRLocale}
- * @synopsis TP.core.FRLocale provides support for the French language and
+ * @summary TP.core.FRLocale provides support for the French language and
  *     related localizations.
  */
 

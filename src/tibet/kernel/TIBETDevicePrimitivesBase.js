@@ -18,8 +18,8 @@ TP.definePrimitive('eventPreventDefault',
 function(anEvent) {
 
     /**
-     * @name eventPreventDefault
-     * @synopsis Prevents the event's default action from occurring.
+     * @method eventPreventDefault
+     * @summary Prevents the event's default action from occurring.
      * @param {Event} anEvent The native event object.
      * @returns {Event} The native event object.
      */
@@ -39,8 +39,8 @@ TP.definePrimitive('eventStopPropagation',
 function(anEvent) {
 
     /**
-     * @name eventStopPropagation
-     * @synopsis Stop an event from propagating any further.
+     * @method eventStopPropagation
+     * @summary Stop an event from propagating any further.
      * @param {Event} anEvent The native event object.
      * @returns {Event} The native event object.
      */

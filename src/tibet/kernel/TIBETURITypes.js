@@ -78,10 +78,10 @@ virtual URIs:
 
 /**
  * @type {TP.core.URI}
- * @synopsis An abstract type that models Uniform Resource Identifiers in the
+ * @summary An abstract type that models Uniform Resource Identifiers in the
  *     TIBET system. While abstract, this type's constructor should always be
  *     used directly or via the TP.uc() or TP.uri() functions.
- * @description The top-level URI type in the TIBET system is an abstract type.
+ * @summary The top-level URI type in the TIBET system is an abstract type.
  *     This follows the somewhat 'classical' view of the W3C spec, where URIs
  *     represent the overall Web addressing and naming scheme and various
  *     scheme-specific forms manage the concrete data. When you ask for an
@@ -166,8 +166,8 @@ TP.core.URI.Type.defineMethod('construct',
 function(aURI, $$vetted) {
 
     /**
-     * @name construct
-     * @synopsis Returns a new instance of URI by using the root URI and
+     * @method construct
+     * @summary Returns a new instance of URI by using the root URI and
      *     relative URI to determine the specific path being defined. Note that
      *     special precedence is given to ~ (tilde) prefixed URI resolution
      *     since a majority of URIs referenced in the typical application are of
@@ -300,8 +300,8 @@ TP.definePrimitive('uc',
 function(aURI) {
 
     /**
-     * @name uc
-     * @synopsis A shorthand method for TP.core.URI.construct().
+     * @method uc
+     * @summary A shorthand method for TP.core.URI.construct().
      * @param {String} aURI Typically an absolute path but possibly a path
      *     starting with '.','/','-', or '~' which is adjusted as needed.
      * @returns {TP.core.URI} The new instance.
@@ -316,8 +316,8 @@ TP.definePrimitive('uri',
 function(anObject) {
 
     /**
-     * @name uri
-     * @synopsis Returns the URI which identifies the object provided. When a
+     * @method uri
+     * @summary Returns the URI which identifies the object provided. When a
      *     String matching URI form is provided the result is the same as having
      *     called TP.uc() (which is preferable). In all other cases the
      *     resulting URI represents the objects "TIBET URL" or ID. This is often
@@ -367,8 +367,8 @@ TP.core.URI.Type.defineMethod('fromDocument',
 function(aDocument) {
 
     /**
-     * @name fromDocument
-     * @synopsis Constructs and returns a new instance by interrogating a
+     * @method fromDocument
+     * @summary Constructs and returns a new instance by interrogating a
      *     document for its location information.
      * @param {Document} aDocument The document to interrogate for location
      *     data.
@@ -403,8 +403,8 @@ TP.core.URI.Type.defineMethod('fromString',
 function(aURIString) {
 
     /**
-     * @name fromString
-     * @synopsis Constructs and returns a new TP.core.URI instance from a
+     * @method fromString
+     * @summary Constructs and returns a new TP.core.URI instance from a
      *     String.
      * @param {String} aURIString A String containing a proper URI.
      * @returns {TP.core.URI} A new instance.
@@ -419,8 +419,8 @@ TP.core.URI.Type.defineMethod('fromTP_core_URI',
 function(aURI) {
 
     /**
-     * @name fromTP_core_URI
-     * @synopsis Returns the URI provided to help ensure unique entries exist.
+     * @method fromTP_core_URI
+     * @summary Returns the URI provided to help ensure unique entries exist.
      * @param {TP.core.URI} aURI An existing URI.
      * @returns {TP.core.URI} A new instance.
      */
@@ -434,8 +434,8 @@ TP.core.URI.Type.defineMethod('fromWindow',
 function(aWindow) {
 
     /**
-     * @name fromWindow
-     * @synopsis Constructs and returns a new instance by interrogating a window
+     * @method fromWindow
+     * @summary Constructs and returns a new instance by interrogating a window
      *     for its location information.
      * @param {Window} aWindow The window to interrogate to make the URI from.
      * @returns {TP.core.URI} A new instance.
@@ -460,8 +460,8 @@ TP.core.URI.Type.defineMethod('getConcreteType',
 function(aPath) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the type to use for a particular URI path.
+     * @method getConcreteType
+     * @summary Returns the type to use for a particular URI path.
      * @param {String} aPath A URI string providing at least a scheme which can
      *     be looked up for a concrete type.
      * @returns {TP.lang.RootObject} A type object.
@@ -488,8 +488,8 @@ TP.core.URI.Type.defineMethod('registerForScheme',
 function(aScheme) {
 
     /**
-     * @name registerForScheme
-     * @synopsis Registers the receiving type for handling construction of URI
+     * @method registerForScheme
+     * @summary Registers the receiving type for handling construction of URI
      *     instances for a particular scheme.
      * @param {String} aScheme A URI scheme such as http, file, etc.
      * @raise TP.sig.InvalidParameter When the scheme isn't a string.
@@ -532,8 +532,8 @@ TP.core.URI.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
-     * @name getInstanceById
-     * @synopsis Returns the existing URI instance whose "ID" or path is the
+     * @method getInstanceById
+     * @summary Returns the existing URI instance whose "ID" or path is the
      *     path provided. This uses the TP.core.URI instance registry as the
      *     lookup location.
      * @param {String} anID A URI ID, which is typically the URI's
@@ -550,12 +550,12 @@ TP.core.URI.Type.defineMethod('registerInstance',
 function(anInstance) {
 
     /**
-     * @name registerInstance
-     * @synopsis Registers an instance under that instance's URI string.
+     * @method registerInstance
+     * @summary Registers an instance under that instance's URI string.
      *     Subsequent calls to construct an instance for that URI string will
      *     return the cached instance.
      * @param {TP.core.URI} anInstance The instance to register.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -579,10 +579,10 @@ TP.core.URI.Type.defineMethod('removeInstance',
 function(anInstance) {
 
     /**
-     * @name removeInstance
-     * @synopsis Removes an instance under that instance's URI string.
+     * @method removeInstance
+     * @summary Removes an instance under that instance's URI string.
      * @param {TP.core.URI} anInstance The instance to remove.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -637,8 +637,8 @@ TP.core.URI.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Returns the default handler for a URI and request pair. This is
+     * @method $getDefaultHandler
+     * @summary Returns the default handler for a URI and request pair. This is
      *     typically the type defined by TP.sys.cfg('uri.handler') which
      *     defaults to TP.core.URIHandler.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
@@ -679,10 +679,10 @@ TP.core.URI.Type.defineMethod('$getURICatalog',
 function(aURI, aCatalog, aFilter) {
 
     /**
-     * @name $getURICatalog
-     * @synopsis Returns the XML Catalog data for this application, converted
+     * @method $getURICatalog
+     * @summary Returns the XML Catalog data for this application, converted
      *     into rough hash form for processing by consumers.
-     * @description The actual XML for the URI catalog can be obtained using
+     * @summary The actual XML for the URI catalog can be obtained using
      *     TP.sys.getURIXML(). Passing aURI value will cause the specific
      *     catalog related to that URI to be returned (typically a nextCatalog
      *     or delegateURI entry).
@@ -905,9 +905,9 @@ TP.core.URI.Type.defineMethod('$getURIEntry',
 function(aURI) {
 
     /**
-     * @name $getURIEntry
-     * @synopsis Returns a catalog entry for the URI provided.
-     * @description The return value from this method is a URI entry is
+     * @method $getURIEntry
+     * @summary Returns a catalog entry for the URI provided.
+     * @summary The return value from this method is a URI entry is
      *     populated with all <uri>, <delegateURI>, and <rewriteURI> nodes which
      *     match at the URI level. Any items with delegateURI filters in place
      *     will be trimmed if they don't match the concrete URI to ensure that
@@ -1094,7 +1094,7 @@ TP.core.URI.Type.defineMethod('$getURIMapForKey',
 function(url, entry, key) {
 
     /**
-     * @name $getURIMapForKey
+     * @method $getURIMapForKey
      * @param {String} url
      * @param {Object} entry
      * @param {String} key
@@ -1224,11 +1224,11 @@ TP.core.URI.Type.defineMethod('$getURIProfile',
 function(forceRefresh) {
 
     /**
-     * @name $getURIProfile
-     * @synopsis Returns the current runtime environment profile, a hash of
+     * @method $getURIProfile
+     * @summary Returns the current runtime environment profile, a hash of
      *     key/value pairs defining the current runtime state that should be
      *     used when rewriting URIs.
-     * @description The 'key' entry in this hash provides a string
+     * @summary The 'key' entry in this hash provides a string
      *     representation of the current profile that is useful for testing URI
      *     mappings for matching rules. The return value is cached as
      *     TP.sys.cfg('tibet.uriprofile') to avoid having to rebuild this
@@ -1308,10 +1308,10 @@ TP.core.URI.Type.defineMethod('$getURIProfileKey',
 function(aProfile, useWildcards) {
 
     /**
-     * @name $getURIProfileKey
-     * @synopsis Returns the normalized (standard order) key string used when
+     * @method $getURIProfileKey
+     * @summary Returns the normalized (standard order) key string used when
      *     testing for URI map entries.
-     * @description The key is built using the data found in the profile
+     * @summary The key is built using the data found in the profile
      *     provided, which should include keys matching those available in
      *     TIBET's extended XML Catalog file format. The second parameter
      *     determines whether missing keys are defaulted to the values at the
@@ -1431,10 +1431,10 @@ TP.core.URI.Type.defineMethod('rewrite',
 function(aURI, aRequest) {
 
     /**
-     * @name rewrite
-     * @synopsis Rewrites the incoming URI as appropriate by invoking the
+     * @method rewrite
+     * @summary Rewrites the incoming URI as appropriate by invoking the
      *     current TP.sys.cfg('uri.rewriter') responsible for URI rewriting.
-     * @description The default is the TP.core.URIRewriter type, which leverages
+     * @summary The default is the TP.core.URIRewriter type, which leverages
      *     data in an XML Catalog file (typically uris.xml). This rewriting step
      *     is performed prior to any operations which require a URI handler such
      *     as load or save.
@@ -1470,10 +1470,10 @@ TP.core.URI.Type.defineMethod('route',
 function(aURI, aRequest) {
 
     /**
-     * @name route
-     * @synopsis Routes the operation implied by any data in aRequest to a
+     * @method route
+     * @summary Routes the operation implied by any data in aRequest to a
      *     viable handler for the URI and request.
-     * @description This typically results in the request being passed to a
+     * @summary This typically results in the request being passed to a
      *     TP.core.URIHandler type/subtype. Note that the URI is expected to
      *     have been rewritten as needed prior to this call so that the route is
      *     appropriate for the concrete URI being accessed.
@@ -1586,8 +1586,8 @@ TP.core.URI.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance. A key piece of the processing here is
+     * @method init
+     * @summary Initialize the instance. A key piece of the processing here is
      *     breaking the string into scheme and scheme-specific-part and then
      *     letting each subtype parse the URI components based on
      *     scheme-specific rules.
@@ -1632,8 +1632,8 @@ TP.core.URI.Inst.defineMethod('addResource',
 function(existingResource, newResource, aRequest) {
 
     /**
-     * @name addResource
-     * @synopsis Adds to the receiver's resource object, the object TIBET will
+     * @method addResource
+     * @summary Adds to the receiver's resource object, the object TIBET will
      *     treat as the resource for any subsequent processing.
      * @param {Object} existingResource The existing resource assigned to this
      *     object, if available.
@@ -1670,8 +1670,8 @@ TP.core.URI.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
-     * @name $initURIComponents
-     * @synopsis Performs any post-parsing initialization appropriate for the
+     * @method $initURIComponents
+     * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing. The
      *     default routine simply returns.
      * @param {TP.lang.Hash} parts The parsed URI components.
@@ -1687,8 +1687,8 @@ TP.core.URI.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver. The baseline version ensures
      *     that the primary/fragment portions are properly parsed and stored,
      *     all other processing of the primary href and/or fragment should be
@@ -1739,8 +1739,8 @@ TP.core.URI.Inst.defineMethod('constructRequest',
 function(aRequest) {
 
     /**
-     * @name constructRequest
-     * @synopsis Constructs a viable request for URI processing using any
+     * @method constructRequest
+     * @summary Constructs a viable request for URI processing using any
      *     optionally provided request as input. If the request provided is
      *     truly a TP.sig.Request then the original request is simply returned
      *     for use.
@@ -1759,10 +1759,10 @@ TP.core.URI.Inst.defineMethod('constructSubRequest',
 function(aRequest) {
 
     /**
-     * @name constructSubRequest
-     * @synopsis Constructs a subrequest for URI processing using any optionally
+     * @method constructSubRequest
+     * @summary Constructs a subrequest for URI processing using any optionally
      *     provided request as input.
-     * @description Subrequest creation differs from 'root' request creation in
+     * @summary Subrequest creation differs from 'root' request creation in
      *     that subrequests are always new request objects which simply use the
      *     original request payload (when available).
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object defining
@@ -1798,8 +1798,8 @@ TP.core.URI.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -1840,8 +1840,8 @@ TP.core.URI.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -1857,8 +1857,8 @@ TP.core.URI.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -1872,8 +1872,8 @@ TP.core.URI.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -1892,8 +1892,8 @@ TP.core.URI.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns a string representation of the receiver.
+     * @method asString
+     * @summary Returns a string representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.URI's String representation. This flag is ignored in
      *     this version of this method.
@@ -1909,8 +1909,8 @@ TP.core.URI.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -1923,8 +1923,8 @@ TP.core.URI.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -1939,8 +1939,8 @@ TP.core.URI.Inst.defineMethod('asTP_core_URI',
 function() {
 
     /**
-     * @name asTP_core_URI
-     * @synopsis Returns the receiver.
+     * @method asTP_core_URI
+     * @summary Returns the receiver.
      * @returns {TP.core.URI}
      */
 
@@ -1953,10 +1953,10 @@ TP.core.URI.Inst.defineMethod('$changed',
 function(anAspect, anAction, aDescription) {
 
     /**
-     * @name $changed
-     * @synopsis Notifies observers that some aspect of the receiver has
+     * @method $changed
+     * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @description See the supertype method for more information.
+     * @summary See the supertype method for more information.
      * @param {String} anAspect The aspect of the receiver that changed. This is
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
@@ -1964,7 +1964,7 @@ function(anAspect, anAction, aDescription) {
      * @param {TP.lang.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {TP.core.URI} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var desc,
@@ -2029,8 +2029,8 @@ TP.core.URI.Inst.defineMethod('clearCaches',
 function() {
 
     /**
-     * @name clearCaches
-     * @synopsis Clears any content caches related to the receiver, returning
+     * @method clearCaches
+     * @summary Clears any content caches related to the receiver, returning
      *     things to their pre-loaded state. For URIs with a separate resource
      *     URI this will also clear the resource URI's caches.
      * @returns {TP.core.URI} The receiver.
@@ -2055,8 +2055,8 @@ TP.core.URI.Inst.defineMethod('$clearCaches',
 function() {
 
     /**
-     * @name $clearCaches
-     * @synopsis Clears the internal caches of the receiver. This method is
+     * @method $clearCaches
+     * @summary Clears the internal caches of the receiver. This method is
      *     expected to be overridden by subtypes so they can clear any
      *     specialized cache data, but it should be invoked by any overriding
      *     method.
@@ -2095,8 +2095,8 @@ TP.core.URI.Inst.defineMethod('empty',
 function() {
 
     /**
-     * @name empty
-     * @synopsis Clears any stored content of the receiver, or of it's resource
+     * @method empty
+     * @summary Clears any stored content of the receiver, or of it's resource
      *     URI if it has one which stores its data. Note that only the data is
      *     cleared, not the remaining cache data such as headers etc. This
      *     operation dirties the receiver.
@@ -2127,8 +2127,8 @@ TP.core.URI.Inst.defineMethod('equalTo',
 function(aURI) {
 
     /**
-     * @name equalTo
-     * @synopsis Two URLs are considered equal if their locations are equal.
+     * @method equalTo
+     * @summary Two URLs are considered equal if their locations are equal.
      * @param {TP.core.URI|String} aURI The URI to compare.
      * @returns {Boolean} Whether or not the receiver is equal to the passed in
      *     parameter.
@@ -2156,8 +2156,8 @@ TP.core.URI.Inst.defineMethod('expire',
 function(aFlag) {
 
     /**
-     * @name expire
-     * @synopsis Sets the expiration flag for the receiver to true, forcing a
+     * @method expire
+     * @summary Sets the expiration flag for the receiver to true, forcing a
      *     one-time override of any computation-based expiration.
      * @param {Boolean} aFlag The value to set the expiration flag to. Defaults
      *     to true.
@@ -2182,8 +2182,8 @@ TP.core.URI.Inst.defineMethod('getContent',
 function(aRequest) {
 
     /**
-     * @name getContent
-     * @synopsis Returns the actual content of the resource referenced by the
+     * @method getContent
+     * @summary Returns the actual content of the resource referenced by the
      *     receiver. The basic approach is to invoke a getResource() operation
      *     to get the resource, then invoke getContent() on that resource to
      *     acquire its content.
@@ -2204,8 +2204,8 @@ TP.core.URI.Inst.defineMethod('getContentNode',
 function(aRequest) {
 
     /**
-     * @name getContentNode
-     * @synopsis Returns the content of the receiver's resource in native Node
+     * @method getContentNode
+     * @summary Returns the content of the receiver's resource in native Node
      *     form. Note that like all variants of getContent* this method can be
      *     asynchronous.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -2227,8 +2227,8 @@ TP.core.URI.Inst.defineMethod('getContentText',
 function(aRequest) {
 
     /**
-     * @name getContentText
-     * @synopsis Returns the content of the receiver's resource in text (String)
+     * @method getContentText
+     * @summary Returns the content of the receiver's resource in text (String)
      *     form. Note that like all variants of getContent* this method can be
      *     asynchronous.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -2250,8 +2250,8 @@ TP.core.URI.Inst.defineMethod('getController',
 function(aTypeName) {
 
     /**
-     * @name getController
-     * @synopsis Returns the URI controller associated with the receiver.
+     * @method getController
+     * @summary Returns the URI controller associated with the receiver.
      * @param {String} aTypeName The type name of the controller to use. This is
      *     an optional parameter and, if not supplied and the receiver is a
      *     'mapped' URI then this method will attempt to use the URI map to
@@ -2326,8 +2326,8 @@ TP.core.URI.Inst.defineMethod('$getDefaultHandler',
 function(aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Returns the default handler for a URI and request pair. This is
+     * @method $getDefaultHandler
+     * @summary Returns the default handler for a URI and request pair. This is
      *     typically the type defined by TP.sys.cfg('uri.handler'), which
      *     defaults to TP.core.URIHandler. The returned type must respond to the
      *     route method to be a valid handler.
@@ -2346,12 +2346,12 @@ TP.core.URI.Inst.defineMethod('$getFilteredResult',
 function(anObject, resultType, collapse) {
 
     /**
-     * @name $getFilteredResult
-     * @synopsis Processes a value to ensure it matches a request's stated
+     * @method $getFilteredResult
+     * @summary Processes a value to ensure it matches a request's stated
      *     resultType preferences. When the data doesn't match that preference a
      *     conversion is attempted and the return value of that conversion is
      *     returned.
-     * @description If the data can't be converted properly this method returns
+     * @summary If the data can't be converted properly this method returns
      *     undefined. If no resultType is specified then a "best fit" result is
      *     returned. The best fit result processing attempts to construct a
      *     valid TP.core.Node, then a viable JavaScript object by parsing for
@@ -2487,8 +2487,8 @@ TP.core.URI.Inst.defineMethod('getFragment',
 function() {
 
     /**
-     * @name getFragment
-     * @synopsis Returns the fragment portion of the receiver as a String.
+     * @method getFragment
+     * @summary Returns the fragment portion of the receiver as a String.
      * @returns {String} The fragment string.
      */
 
@@ -2503,8 +2503,8 @@ TP.core.URI.Inst.defineMethod('getFragmentText',
 function() {
 
     /**
-     * @name getFragmentText
-     * @synopsis Returns the fragment text of the receiver as a String without
+     * @method getFragmentText
+     * @summary Returns the fragment text of the receiver as a String without
      *     the fragment scheme portion.
      * @returns {String} The fragment string.
      */
@@ -2533,8 +2533,8 @@ TP.core.URI.Inst.defineMethod('getHeader',
 function(aHeaderName) {
 
     /**
-     * @name getHeader
-     * @synopsis Returns the value of the named header, or null if the header
+     * @method getHeader
+     * @summary Returns the value of the named header, or null if the header
      *     value isn't found.
      * @param {String} aHeaderName The name of the header to retrieve.
      * @returns {String} The value of the header named with the supplied name.
@@ -2556,8 +2556,8 @@ TP.core.URI.Inst.defineMethod('getID',
 function() {
 
     /**
-     * @name getID
-     * @synopsis Returns the ID of the receiver, which for URIs is their URI in
+     * @method getID
+     * @summary Returns the ID of the receiver, which for URIs is their URI in
      *     a fully-expanded format so minor variations in syntax are removed.
      * @returns {String}
      */
@@ -2582,8 +2582,8 @@ TP.core.URI.Inst.defineMethod('getLastUpdateDate',
 function() {
 
     /**
-     * @name getLastUpdateDate
-     * @synopsis Returns the last update time for the receiver as recorded in
+     * @method getLastUpdateDate
+     * @summary Returns the last update time for the receiver as recorded in
      *     the URI's header content -- specifically the Date header.
      * @returns {Date} The date the receiver was last updated.
      */
@@ -2623,10 +2623,10 @@ TP.core.URI.Inst.defineMethod('getLocalPath',
 function() {
 
     /**
-     * @name getLocalPath
-     * @synopsis Returns the locally-formatted absolute path to the URI's
+     * @method getLocalPath
+     * @summary Returns the locally-formatted absolute path to the URI's
      *     resource.
-     * @description Note that no rewriting is performed in the production of
+     * @summary Note that no rewriting is performed in the production of
      *     this value. The returned URI is simply adjusted for the current
      *     platform's semantics.
      * @returns {String} The receiver's local path.
@@ -2641,8 +2641,8 @@ TP.core.URI.Inst.defineMethod('getLocation',
 function() {
 
     /**
-     * @name getLocation
-     * @synopsis Returns the true location of the URI. For most URIs this value
+     * @method getLocation
+     * @summary Returns the true location of the URI. For most URIs this value
      *     is the same as the original URI, but for virtual URIs it represents
      *     the expanded URI value.
      * @returns {String} The receiver's location.
@@ -2664,8 +2664,8 @@ TP.core.URI.Inst.defineMethod('getName',
 function() {
 
     /**
-     * @name getName
-     * @synopsis An override of the getName() operation that returns the
+     * @method getName
+     * @summary An override of the getName() operation that returns the
      *     receiver's *OID* as the 'Name'. This is necessary because this type
      *     override's getID() (normally used by the getName() method) to return
      *     special IDs for URIs.
@@ -2681,8 +2681,8 @@ TP.core.URI.Inst.defineMethod('getNativeObject',
 function() {
 
     /**
-     * @name getNativeObject
-     * @synopsis Returns the native object that the receiver is wrapping. In the
+     * @method getNativeObject
+     * @summary Returns the native object that the receiver is wrapping. In the
      *     case of TP.core.URIs, this is the receiver's string instance.
      * @returns {String} The receiver's native object.
      */
@@ -2696,8 +2696,8 @@ TP.core.URI.Inst.defineMethod('getPrimaryHref',
 function() {
 
     /**
-     * @name getPrimaryHref
-     * @synopsis Returns the primary resource's href as a String. This is the
+     * @method getPrimaryHref
+     * @summary Returns the primary resource's href as a String. This is the
      *     portion of the URI which isn't qualified by a fragment, the portion
      *     you can send to a server without causing an error.
      * @returns {String} The primary href as a String.
@@ -2728,8 +2728,8 @@ TP.core.URI.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
-     * @name $getPrimaryResource
-     * @synopsis Returns a receiver-specific object representing the "primary"
+     * @method $getPrimaryResource
+     * @summary Returns a receiver-specific object representing the "primary"
      *     resource being accessed (i.e. the resource referenced by the base
      *     resource path without any fragment. This is the routine most subtypes
      *     override to perform their low-level data access. Fragment processing
@@ -2753,8 +2753,8 @@ TP.core.URI.Inst.defineMethod('getPrimaryURI',
 function() {
 
     /**
-     * @name getPrimaryURI
-     * @synopsis Returns the actual resource URI used for content access. This
+     * @method getPrimaryURI
+     * @summary Returns the actual resource URI used for content access. This
      *     may be the receiver or it may be the URI referencing the primary
      *     resource data for the receiver if the receiver has a fragment, or it
      *     may be an "embedded" URI in the case of schemes which support
@@ -2787,8 +2787,8 @@ TP.core.URI.Inst.defineMethod('getResource',
 function(aRequest) {
 
     /**
-     * @name getResource
-     * @synopsis Returns a receiver-specific object representing the "secondary"
+     * @method getResource
+     * @summary Returns a receiver-specific object representing the "secondary"
      *     resource being accessed (i.e. the resource referenced by the base
      *     resource path subset identified by any fragment portion. If there is
      *     no fragment this method returns the same value as
@@ -2820,8 +2820,8 @@ TP.core.URI.Inst.defineMethod('getResourceNode',
 function(aRequest) {
 
     /**
-     * @name getResourceNode
-     * @synopsis Returns the resource of the receiver in native Node form. Note
+     * @method getResourceNode
+     * @summary Returns the resource of the receiver in native Node form. Note
      *     that like all variants of getResource* this method can be
      *     asynchronous depending on the nature of the resource.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -2843,8 +2843,8 @@ TP.core.URI.Inst.defineMethod('getResourceText',
 function(aRequest) {
 
     /**
-     * @name getResourceText
-     * @synopsis Returns the resource of the receiver in text (String) form,
+     * @method getResourceText
+     * @summary Returns the resource of the receiver in text (String) form,
      *     provided that the resource is a String.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     defining control parameters.
@@ -2865,8 +2865,8 @@ TP.core.URI.Inst.defineMethod('$getResultContent',
 function(aRequest, aResult, aResource) {
 
     /**
-     * @name $getResultContent
-     * @synopsis Invoked as a "success body" function for the getContent call
+     * @method $getResultContent
+     * @summary Invoked as a "success body" function for the getContent call
      *     with the purpose of returning the content of the result object being
      *     provided.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -2899,8 +2899,8 @@ TP.core.URI.Inst.defineMethod('$getResultFragment',
 function(aRequest, aResult, aResource) {
 
     /**
-     * @name $getResultFragment
-     * @synopsis Invoked as a "success body" function for the getResource call
+     * @method $getResultFragment
+     * @summary Invoked as a "success body" function for the getResource call
      *     with the purpose of returning the secondary resource of the result
      *     object being provided.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -2962,8 +2962,8 @@ TP.core.URI.Inst.defineMethod('getScheme',
 function() {
 
     /**
-     * @name getScheme
-     * @synopsis Returns the scheme of the receiver, the string which starts off
+     * @method getScheme
+     * @summary Returns the scheme of the receiver, the string which starts off
      *     URIs of this type or for this particular instance.
      * @returns {String} The receiver's scheme.
      */
@@ -2977,8 +2977,8 @@ TP.core.URI.Inst.defineMethod('getSize',
 function() {
 
     /**
-     * @name getSize
-     * @synopsis Returns the size of the URI in string form. This is used for
+     * @method getSize
+     * @summary Returns the size of the URI in string form. This is used for
      *     testing whether the URI is empty when passed as a string.
      * @returns {Number} The size in bytes of the receiver as a String.
      */
@@ -2992,8 +2992,8 @@ TP.core.URI.Inst.defineMethod('getSubURIs',
 function() {
 
     /**
-     * @name getSubURIs
-     * @synopsis Returns an Array of the 'sub URIs' of the receiver. These are
+     * @method getSubURIs
+     * @summary Returns an Array of the 'sub URIs' of the receiver. These are
      *     URIs which point to the same primary resource as the receiver, but
      *     also have a secondary resource pointed to by a fragment. If the
      *     receiver has a secondary resource itself, it returns null.
@@ -3037,8 +3037,8 @@ TP.core.URI.Inst.defineMethod('getURI',
 function() {
 
     /**
-     * @name getURI
-     * @synopsis Returns a URI which can be used to acquire the receiver.
+     * @method getURI
+     * @summary Returns a URI which can be used to acquire the receiver.
      *     TP.core.URI differs slightly in that it returns itself.
      * @returns {TP.core.URI} The receiver.
      */
@@ -3052,9 +3052,9 @@ TP.core.URI.Inst.defineMethod('getWebPath',
 function() {
 
     /**
-     * @name getWebPath
-     * @synopsis Returns the web-formatted absolute path to the URI's source.
-     * @description Note that no rewriting is performed in the production of
+     * @method getWebPath
+     * @summary Returns the web-formatted absolute path to the URI's source.
+     * @summary Note that no rewriting is performed in the production of
      *     this value. The URI is simply converted to its equivalent web format
      *     (forward slashes rather than backslash etc.)
      * @returns {String} The receiver's uri value as a 'web formatted URI'.
@@ -3069,9 +3069,9 @@ TP.core.URI.Inst.defineMethod('handleChange',
 function(aSignal) {
 
     /**
-     * @name handleChange
-     * @synopsis Handles changes to the receiver's resource.
-     * @description URIs listen for changes to their resource and invoke this
+     * @method handleChange
+     * @summary Handles changes to the receiver's resource.
+     * @summary URIs listen for changes to their resource and invoke this
      *     method when it changes. The supplied signal could have a
      *     TP.CHANGE_PATHS property in its payload, which is an Array of path
      *     Strings that referenced the resource at some point. If this property
@@ -3160,8 +3160,8 @@ TP.core.URI.Inst.defineMethod('hasFragment',
 function() {
 
     /**
-     * @name hasFragment
-     * @synopsis Returns true if the path contains a fragment reference. This is
+     * @method hasFragment
+     * @summary Returns true if the path contains a fragment reference. This is
      *     typically associated with anchors, barenames, or XPointers.
      * @returns {Boolean} Whether or not the receiver contains a fragment
      *     reference.
@@ -3176,7 +3176,7 @@ TP.core.URI.Inst.defineMethod('$flag',
 function(aProperty, aFlag) {
 
     /**
-     * @name $flag
+     * @method $flag
      * @param {String} aProperty The name of the boolean property being tested
      *     and/or manipulated.
      * @param {Boolean} aFlag The new value to optionally set.
@@ -3202,8 +3202,8 @@ TP.core.URI.Inst.defineMethod('isDirty',
 function(aFlag) {
 
     /**
-     * @name isDirty
-     * @synopsis Returns true if the receiver's content has changed since it was
+     * @method isDirty
+     * @summary Returns true if the receiver's content has changed since it was
      *     last loaded from it's source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
@@ -3218,8 +3218,8 @@ TP.core.URI.Inst.defineMethod('isExpired',
 function(aFlag) {
 
     /**
-     * @name isExpired
-     * @synopsis Returns true if the receiver's content has been expired.
+     * @method isExpired
+     * @summary Returns true if the receiver's content has been expired.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is expired.
      */
@@ -3233,8 +3233,8 @@ TP.core.URI.Inst.defineMethod('isHTTPBased',
 function() {
 
     /**
-     * @name isHTTPBased
-     * @synopsis Returns true if the receiver's absolute path is HTTP based.
+     * @method isHTTPBased
+     * @summary Returns true if the receiver's absolute path is HTTP based.
      * @returns {Boolean} Whether or not the receiver is 'http'-based.
      */
 
@@ -3255,8 +3255,8 @@ TP.core.URI.Inst.defineMethod('isLoaded',
 function(aFlag) {
 
     /**
-     * @name isLoaded
-     * @synopsis Returns true if the receiver's content has been loaded either
+     * @method isLoaded
+     * @summary Returns true if the receiver's content has been loaded either
      *     manually via a setResource() or init(), or by loading the receiver's
      *     URI location.
      * @param {Boolean} aFlag The new value to optionally set.
@@ -3272,8 +3272,8 @@ TP.core.URI.Inst.defineMethod('isMappedURI',
 function(aFlag) {
 
     /**
-     * @name isMappedURI
-     * @synopsis Returns true if the receiver has a URI map entry. Note that
+     * @method isMappedURI
+     * @summary Returns true if the receiver has a URI map entry. Note that
      *     this value is set based on the first map lookup and won't be reset
      *     unless you clear the flag (make it non-boolean).
      * @returns {Boolean} Whether or not the receiver is a 'mapped' URI.
@@ -3294,8 +3294,8 @@ TP.core.URI.Inst.defineMethod('isPrimaryURI',
 function() {
 
     /**
-     * @name isPrimaryURI
-     * @synopsis Returns true if the receiver is a primary URI, meaning it has
+     * @method isPrimaryURI
+     * @summary Returns true if the receiver is a primary URI, meaning it has
      *     no fragment portion and can store data.
      * @returns {Boolean} True if the receiver is a primary URI.
      */
@@ -3309,8 +3309,8 @@ TP.core.URI.Inst.defineMethod('$requestContent',
 function(aRequest, contentFName, successFName, failureFName, aResource) {
 
     /**
-     * @name $requestContent
-     * @synopsis A generic sync/async content request processing routine used by
+     * @method $requestContent
+     * @summary A generic sync/async content request processing routine used by
      *     the various get/set calls dealing with content, resource, or primary
      *     resource access.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -3439,8 +3439,8 @@ TP.core.URI.Inst.defineMethod('rewrite',
 function(aRequest) {
 
     /**
-     * @name rewrite
-     * @synopsis Rewrites the receiver to its appropriate 'concrete' URI value
+     * @method rewrite
+     * @summary Rewrites the receiver to its appropriate 'concrete' URI value
      *     based on current runtime values and rewriting rules.
      * @param {TP.sig.Request} aRequest An optional request whose values may
      *     inform the rewrite.
@@ -3462,8 +3462,8 @@ TP.core.URI.Inst.defineMethod('route',
 function(aRequest) {
 
     /**
-     * @name route
-     * @synopsis Routes the operation implied by any data in aRequest to a
+     * @method route
+     * @summary Routes the operation implied by any data in aRequest to a
      *     viable handler for the URI. This typically results in the request
      *     being passed to a TP.core.URIHandler type/subtype. Note that the URI
      *     is expected to have been rewritten as needed prior to this call so
@@ -3487,8 +3487,8 @@ TP.core.URI.Inst.defineMethod('setContent',
 function(contentData, aRequest) {
 
     /**
-     * @name setContent
-     * @synopsis Sets the receiver's content to the object provided.
+     * @method setContent
+     * @summary Sets the receiver's content to the object provided.
      * @param {Object} contentData A new content object.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     optional parameters.
@@ -3510,8 +3510,8 @@ TP.core.URI.Inst.defineMethod('setLastUpdateDate',
 function(aDate) {
 
     /**
-     * @name setLastUpdateDate
-     * @synopsis Sets the update time for the receiver. This is the last time
+     * @method setLastUpdateDate
+     * @summary Sets the update time for the receiver. This is the last time
      *     the receiver's data was loaded from its source.
      * @param {Date} aDate The date to set the 'last updated' property of the
      *     receiver to.
@@ -3547,8 +3547,8 @@ TP.core.URI.Inst.defineMethod('$setPrimaryResource',
 function(aResource, aRequest) {
 
     /**
-     * @name $setPrimaryResource
-     * @synopsis Sets the receiver's resource object, the object TIBET will
+     * @method $setPrimaryResource
+     * @summary Sets the receiver's resource object, the object TIBET will
      *     treat as the primary resource for any subsequent processing.
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -3623,8 +3623,8 @@ TP.core.URI.Inst.defineMethod('setResource',
 function(aResource, aRequest) {
 
     /**
-     * @name setResource
-     * @synopsis Sets the receiver's resource object, the object TIBET will
+     * @method setResource
+     * @summary Sets the receiver's resource object, the object TIBET will
      *     treat as the resource for any subsequent processing.
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -3660,8 +3660,8 @@ TP.core.URI.Inst.defineMethod('$setResultContent',
 function(aRequest, aResult, aResource) {
 
     /**
-     * @name $setResultContent
-     * @synopsis Invoked as a "success body" function for the setContent call
+     * @method $setResultContent
+     * @summary Invoked as a "success body" function for the setContent call
      *     with the purpose of updating the content of the result object being
      *     provided.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -3702,8 +3702,8 @@ TP.core.URI.Inst.defineMethod('$setResultFragment',
 function(aRequest, aResult, aResource) {
 
     /**
-     * @name $setResultFragment
-     * @synopsis Invoked as a "success body" function for the setResource call
+     * @method $setResultFragment
+     * @summary Invoked as a "success body" function for the setResource call
      *     with the purpose of setting the secondary resource.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     defining control parameters.
@@ -3754,10 +3754,10 @@ TP.core.URI.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
     /**
-     * @name shouldSignalChange
-     * @synopsis Defines whether the receiver should actively signal change
+     * @method shouldSignalChange
+     * @summary Defines whether the receiver should actively signal change
      *     notifications.
-     * @description In general URI objects do not signal changes from their own
+     * @summary In general URI objects do not signal changes from their own
      *      properties, because they act as 'value holders' for their resources.
      *      They will signal Change when their resources do so, acting as a
      *      'forwarding' mechanism for their resources.
@@ -3775,12 +3775,12 @@ TP.core.URI.Inst.defineMethod('transform',
 function(aDataSource, aRequest) {
 
     /**
-     * @name transform
-     * @synopsis Uses the receiver's URI content as a template and performs a
+     * @method transform
+     * @summary Uses the receiver's URI content as a template and performs a
      *     transform operation. The data to transform is provided in aDataSource
      *     while parameters to the transformation operation should be placed in
      *     aRequest.
-     * @description Note that since this method calls getResource() the
+     * @summary Note that since this method calls getResource() the
      *     parameter list is provided to both getResource() and transform(),
      *     creating the potential for confusion if parameter names overlap. If
      *     this is possible you should invoke getResource() and transform
@@ -3882,8 +3882,8 @@ TP.core.URI.Inst.defineMethod('unregister',
 function() {
 
     /**
-     * @name unregister
-     * @synopsis Unregisters the receiver from the overall TP.core.URI registry.
+     * @method unregister
+     * @summary Unregisters the receiver from the overall TP.core.URI registry.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -3898,8 +3898,8 @@ TP.core.URI.Inst.defineMethod('updateHeaders',
 function(headerData) {
 
     /**
-     * @name updateHeaders
-     * @synopsis Updates the receiver's headers, usually from a set of HTTP
+     * @method updateHeaders
+     * @summary Updates the receiver's headers, usually from a set of HTTP
      *     headers returned from the last HTTP request used to load this URIs
      *     content.
      * @param {Object} headerData A string, hash, or request object containing
@@ -3985,11 +3985,11 @@ function(headerData) {
 
 /**
  * @type {TP.core.URN}
- * @synopsis A subtype of TP.core.URI that models Uniform Resource Names in the
+ * @summary A subtype of TP.core.URI that models Uniform Resource Names in the
  *     TIBET system. A URN identifies its resource by specifying a name. Each
  *     "namespace identifier" (NID) tends to have a custom subtype of
  *     TP.core.URN to handle namespace-specific processing needs.
- * @description Note that the spec requires this name to be globally unique and
+ * @summary Note that the spec requires this name to be globally unique and
  *     persistent, even after the resource it points to no longer exists or is
  *     reachable. This condition is not enforced. Also, this type does not limit
  *     the namespace ID to less than 32 characters, per the URN RFC 2141, nor
@@ -4040,8 +4040,8 @@ TP.core.URN.Type.defineMethod('getConcreteType',
 function(aPath) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the type to use for a particular URI path.
+     * @method getConcreteType
+     * @summary Returns the type to use for a particular URI path.
      * @param {String} aPath A URI string providing at least a scheme which can
      *     be looked up for a concrete type.
      * @returns {TP.lang.RootObject} A type object.
@@ -4073,8 +4073,8 @@ TP.core.URN.Type.defineMethod('registerForNID',
 function(aNID) {
 
     /**
-     * @name registerForNID
-     * @synopsis Registers the receiving type for handling construction of URN
+     * @method registerForNID
+     * @summary Registers the receiving type for handling construction of URN
      *     instances for a particular namespace ID (NID).
      * @param {String} aNID A URN namespace ID such as 'oid', or 'tibet'.
      * @param {TP.lang.RootObject} aHandler A type capable of handling requests
@@ -4117,8 +4117,8 @@ TP.core.URN.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
-     * @name $initURIComponents
-     * @synopsis Performs any post-parsing initialization appropriate for the
+     * @method $initURIComponents
+     * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.lang.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
@@ -4143,8 +4143,8 @@ TP.core.URN.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
@@ -4180,8 +4180,8 @@ TP.core.URN.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
-     * @name $getPrimaryResource
-     * @synopsis Returns the object registered under the receiver's "name".
+     * @method $getPrimaryResource
+     * @summary Returns the object registered under the receiver's "name".
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -4260,8 +4260,8 @@ TP.core.URN.Inst.defineMethod('getName',
 function() {
 
     /**
-     * @name getName
-     * @synopsis Returns the receiver's "name" as TIBET perceives it, which is
+     * @method getName
+     * @summary Returns the receiver's "name" as TIBET perceives it, which is
      *     effectively the NSS (Namespace Specific String) portion of the
      *     receiver's location string minus any fragment where the concept of
      *     fragment here is a TIBET extension.
@@ -4289,8 +4289,8 @@ TP.core.URN.Inst.defineMethod('$resolveName',
 function(aName) {
 
     /**
-     * @name $resolveName
-     * @synopsis Resolves the receiver's "name" or the name value provided,
+     * @method $resolveName
+     * @summary Resolves the receiver's "name" or the name value provided,
      *     returning the referenced resource. This method is invoked by the
      *     $getPrimaryResource call to perform type-specific name resolution
      *     logic.
@@ -4308,8 +4308,8 @@ TP.core.URN.Inst.defineMethod('load',
 function(aRequest) {
 
     /**
-     * @name load
-     * @synopsis For the most part, no-op for URNs.
+     * @method load
+     * @summary For the most part, no-op for URNs.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -4344,8 +4344,8 @@ TP.core.URN.Inst.defineMethod('nuke',
 function(aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis For the most part, a no-op for URNs.
+     * @method nuke
+     * @summary For the most part, a no-op for URNs.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -4380,8 +4380,8 @@ TP.core.URN.Inst.defineMethod('save',
 function(aRequest) {
 
     /**
-     * @name save
-     * @synopsis For the most part, a no-op for URNs.
+     * @method save
+     * @summary For the most part, a no-op for URNs.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -4416,8 +4416,8 @@ function(aRequest) {
 
 /**
  * @type {TP.core.TIBETURN}
- * @synopsis A subtype of TP.core.URN specific to the urn:tibet 'namespace'.
- * @description When creating URNs the portion after the scheme is what is known
+ * @summary A subtype of TP.core.URN specific to the urn:tibet 'namespace'.
+ * @summary When creating URNs the portion after the scheme is what is known
  *     as the "NIS" or Namespace Identification String". This is followed by the
  *     "NSS" or Namespace Specific String. To ensure proper parsing of the
  *     latter we use subtypes specific to each URN namespace, the most common of
@@ -4438,8 +4438,8 @@ TP.core.TIBETURN.Inst.defineMethod('$resolveName',
 function(aName) {
 
     /**
-     * @name $resolveName
-     * @synopsis Resolves the receiver's "name" or the name value provided,
+     * @method $resolveName
+     * @summary Resolves the receiver's "name" or the name value provided,
      *     returning the referenced resource. This method is invoked by the
      *     $getPrimaryResource call to perform type-specific name resolution
      *     logic.
@@ -4482,8 +4482,8 @@ TP.core.TIBETURN.Inst.defineMethod('$setPrimaryResource',
 function(aResource, aRequest) {
 
     /**
-     * @name $setPrimaryResource
-     * @synopsis Sets the receiver's resource object, the object TIBET will
+     * @method $setPrimaryResource
+     * @summary Sets the receiver's resource object, the object TIBET will
      *     treat as the primary resource for any subsequent processing.
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -4631,10 +4631,10 @@ function(aResource, aRequest) {
 
 /**
  * @type {TP.core.URL}
- * @synopsis A subtype of TP.core.URI that models Uniform Resource Locators in
+ * @summary A subtype of TP.core.URI that models Uniform Resource Locators in
  *     the TIBET system. A URL identifies its resource by specifying the network
  *     location.
- * @description The API of this object matches that of the Location object in
+ * @summary The API of this object matches that of the Location object in
  *     the browser, although one can have multiple instances of these objects to
  *     represent many URLs that would be encountered in a TIBET program.
  */
@@ -4674,8 +4674,8 @@ TP.core.URL.Inst.defineMethod('asURL',
 function() {
 
     /**
-     * @name asURL
-     * @synopsis Returns the receiver as a URL (this).
+     * @method asURL
+     * @summary Returns the receiver as a URL (this).
      * @returns {TP.core.URL} The receiver.
      */
 
@@ -4688,8 +4688,8 @@ TP.core.URL.Inst.defineMethod('getExtension',
 function(aSeparator) {
 
     /**
-     * @name getExtension
-     * @synopsis Returns any extension that the URI's path may have. NOTE that
+     * @method getExtension
+     * @summary Returns any extension that the URI's path may have. NOTE that
      *     no rewriting is performed in the production of this result.
      * @param {String} aSeparator The separator to use to find the extension.
      *     This defaults to the period (.).
@@ -4709,8 +4709,8 @@ TP.core.URL.Inst.defineMethod('getMIMEType',
 function() {
 
     /**
-     * @name getMIMEType
-     * @synopsis Returns the MIME type of the receiver, if available. See the
+     * @method getMIMEType
+     * @summary Returns the MIME type of the receiver, if available. See the
      *     TP.ietf.Mime.getMIMEType() method for more information about how
      *     TIBET tries to guess the MIME type based on file name and data
      *     content.
@@ -4787,8 +4787,8 @@ TP.core.URL.Inst.defineMethod('getNativeNode',
 function(aRequest) {
 
     /**
-     * @name getNativeNode
-     * @synopsis Returns the content node of the receiver without its normal
+     * @method getNativeNode
+     * @summary Returns the content node of the receiver without its normal
      *     TP.core.Node wrapper. This value may vary from the text value of the
      *     receiver if ACP-enhanced markup was provided to initialize the
      *     content.
@@ -4862,9 +4862,9 @@ TP.core.URL.Inst.defineMethod('getPath',
 function() {
 
     /**
-     * @name getPath
-     * @synopsis Returns the path portion of the receiver.
-     * @description The value returned from this method will vary between
+     * @method getPath
+     * @summary Returns the path portion of the receiver.
+     * @summary The value returned from this method will vary between
      *     subtypes. For 'file' urls it will be the file path which starts after
      *     the file:// portion while for 'http' urls it is the portion between
      *     the host:port and ?query specs. Note that on windows this will not
@@ -4898,8 +4898,8 @@ TP.core.URL.Inst.defineMethod('$getPath',
 function(url) {
 
     /**
-     * @name $getPath
-     * @synopsis Parses the url for the path portion as that concept is defined
+     * @method $getPath
+     * @summary Parses the url for the path portion as that concept is defined
      *     for the receiving type. Note that different URI types consider
      *     different parts of their HREF to be the 'path'.
      * @param {String} url The URI string to parse.
@@ -4923,12 +4923,12 @@ TP.core.URL.Inst.defineMethod('getRelativePath',
 function(secondPath, filePath) {
 
     /**
-     * @name getRelativePath
-     * @synopsis Returns the receiver's path converted to a relative path when
+     * @method getRelativePath
+     * @summary Returns the receiver's path converted to a relative path when
      *     compared to second path. If the secondPath contains a file reference
      *     then the filePath argument should be true so that the resulting
      *     relative path is always produced with respect to a directory target.
-     * @description Note that there is one special case to this process which
+     * @summary Note that there is one special case to this process which
      *     revolves around how to resolve against paths which end with a file
      *     reference. When dealing with ~lib/foo.xml relative to ~lib we can
      *     see it should be ./foo.xml, but what about when we have
@@ -4951,8 +4951,8 @@ TP.core.URL.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
-     * @name $getPrimaryResource
-     * @synopsis Returns the resource referenced by the receiver's primary href,
+     * @method $getPrimaryResource
+     * @summary Returns the resource referenced by the receiver's primary href,
      *     the portion prior to any #-delimited fragment for those schemes for
      *     which a fragment is valid.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -5096,8 +5096,8 @@ TP.core.URL.Inst.defineMethod('updateResourceCache',
 function(aRequest) {
 
     /**
-     * @name updateResourceCache
-     * @synopsis Refreshes the receiver's content caches using the result data
+     * @method updateResourceCache
+     * @summary Refreshes the receiver's content caches using the result data
      *     found in aRequest. This method is called from both the asynchronous
      *     and synchronous forks of the getResource call.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -5342,8 +5342,8 @@ TP.core.URL.Inst.defineMethod('hasReachedPhase',
 function(targetPhase, targetPhaseList) {
 
     /**
-     * @name hasReachedPhase
-     * @synopsis Returns true if the receiver's content has been processed to
+     * @method hasReachedPhase
+     * @summary Returns true if the receiver's content has been processed to
      *     the phase defined, relative to an optional phase list.
      * @param {Constant} targetPhase A TIBET content "process phase" string such
      *     as 'Compile'.
@@ -5377,8 +5377,8 @@ TP.core.URL.Inst.defineMethod('processTP_sig_Request',
 function(aRequest) {
 
     /**
-     * @name processTP_sig_Request
-     * @synopsis Processes the receiver's content, typically by dispatching to
+     * @method processTP_sig_Request
+     * @summary Processes the receiver's content, typically by dispatching to
      *     the receiver's content object itself.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or parameter
      *     hash with control parameters. The 'targetPhase' parameter is the most
@@ -5487,12 +5487,12 @@ TP.core.URL.Inst.defineMethod('load',
 function(aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads the content of the receiver from whatever is the
+     * @method load
+     * @summary Loads the content of the receiver from whatever is the
      *     currently routed storage location. This method relies on both
      *     rewriting and routing which ultimately hand off to a
      *     TP.core.URIHandler of some type to perform the actual load.
-     * @description This method is rarely called directly, it's typically
+     * @summary This method is rarely called directly, it's typically
      *     invoked by the get*Content() calls when the receiver has not yet been
      *     loaded, or when a refresh is being requested. Note that this is a
      *     "routed" action, meaning the URI undergoes rewriting and routing as
@@ -5539,10 +5539,10 @@ TP.core.URL.Inst.defineMethod('nuke',
 function(aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Destroys the target URL at the storage location. We'd have
+     * @method nuke
+     * @summary Destroys the target URL at the storage location. We'd have
      *     called this delete but that's a JS keyword.
-     * @description This method is a "routed" action, meaning the URI undergoes
+     * @summary This method is a "routed" action, meaning the URI undergoes
      *     rewriting and routing as part of the nuke process. This may, as you
      *     might expect, alter the physical location being targeted for
      *     destruction. You should probably verify these targets before invoking
@@ -5578,11 +5578,11 @@ TP.core.URL.Inst.defineMethod('save',
 function(aRequest) {
 
     /**
-     * @name save
-     * @synopsis Saves the receiver's content to its URI path. The request's
+     * @method save
+     * @summary Saves the receiver's content to its URI path. The request's
      *     fileMode key defaults to 'w' so that any existing content is replaced
      *     when operating on file URIs.
-     * @description This method is a "routed" action, meaning the URI undergoes
+     * @summary This method is a "routed" action, meaning the URI undergoes
      *     rewriting and routing as part of the save process. This may, as you
      *     might expect, alter the physical location in which the data is
      *     stored.
@@ -5619,7 +5619,7 @@ function(aRequest) {
 
 /**
  * @type {TP.core.ChromeExtURL}
- * @synopsis A subtype of TP.core.URL specific to the Chrome Extension scheme.
+ * @summary A subtype of TP.core.URL specific to the Chrome Extension scheme.
  */
 
 //  ------------------------------------------------------------------------
@@ -5642,8 +5642,8 @@ TP.core.ChromeExtURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Returns the default handler for a URI and request pair. For
+     * @method $getDefaultHandler
+     * @summary Returns the default handler for a URI and request pair. For
      *     non-mapped HTTP urls this is the TP.core.HTTPURLHandler type.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
      *     for.
@@ -5668,8 +5668,8 @@ TP.core.ChromeExtURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
@@ -5695,7 +5695,7 @@ function(schemeSpecificString) {
 
 /**
  * @type {TP.core.HTTPURL}
- * @synopsis A subtype of TP.core.URL specific to the HTTP scheme.
+ * @summary A subtype of TP.core.URL specific to the HTTP scheme.
  */
 
 //  ------------------------------------------------------------------------
@@ -5730,8 +5730,8 @@ TP.core.HTTPURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Returns the default handler for a URI and request pair. For
+     * @method $getDefaultHandler
+     * @summary Returns the default handler for a URI and request pair. For
      *     non-mapped HTTP urls this is the TP.core.HTTPURLHandler type.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
      *     for.
@@ -5768,8 +5768,8 @@ TP.core.HTTPURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
-     * @name $initURIComponents
-     * @synopsis Performs any post-parsing initialization appropriate for the
+     * @method $initURIComponents
+     * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.lang.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
@@ -5801,8 +5801,8 @@ TP.core.HTTPURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
@@ -5829,8 +5829,8 @@ TP.core.HTTPURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
     /**
-     * @name httpDelete
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP DELETE
+     * @method httpDelete
+     * @summary Uses the receiver as a target URI and invokes an HTTP DELETE
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -5846,8 +5846,8 @@ TP.core.HTTPURL.Inst.defineMethod('httpGet',
 function(aRequest) {
 
     /**
-     * @name httpGet
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP GET
+     * @method httpGet
+     * @summary Uses the receiver as a target URI and invokes an HTTP GET
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -5863,8 +5863,8 @@ TP.core.HTTPURL.Inst.defineMethod('httpHead',
 function(aRequest) {
 
     /**
-     * @name httpHead
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP HEAD
+     * @method httpHead
+     * @summary Uses the receiver as a target URI and invokes an HTTP HEAD
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -5880,8 +5880,8 @@ TP.core.HTTPURL.Inst.defineMethod('httpOptions',
 function(aRequest) {
 
     /**
-     * @name httpOptions
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP OPTIONS
+     * @method httpOptions
+     * @summary Uses the receiver as a target URI and invokes an HTTP OPTIONS
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -5897,8 +5897,8 @@ TP.core.HTTPURL.Inst.defineMethod('httpPost',
 function(aRequest) {
 
     /**
-     * @name httpPost
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP POST
+     * @method httpPost
+     * @summary Uses the receiver as a target URI and invokes an HTTP POST
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -5914,8 +5914,8 @@ TP.core.HTTPURL.Inst.defineMethod('httpPut',
 function(aRequest) {
 
     /**
-     * @name httpPut
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP PUT
+     * @method httpPut
+     * @summary Uses the receiver as a target URI and invokes an HTTP PUT
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -5931,8 +5931,8 @@ TP.core.HTTPURL.Inst.defineMethod('httpTrace',
 function(aRequest) {
 
     /**
-     * @name httpTrace
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP TRACE
+     * @method httpTrace
+     * @summary Uses the receiver as a target URI and invokes an HTTP TRACE
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -5948,7 +5948,7 @@ function(aRequest) {
 
 /**
  * @type {TP.core.FileURL}
- * @synopsis A URL specific to file references.
+ * @summary A URL specific to file references.
  */
 
 //  ------------------------------------------------------------------------
@@ -5981,8 +5981,8 @@ TP.core.FileURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Returns the default handler for a URI and request pair. For
+     * @method $getDefaultHandler
+     * @summary Returns the default handler for a URI and request pair. For
      *     non-mapped HTTP urls this is the TP.core.HTTPURLHandler type.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
      *     for.
@@ -6010,8 +6010,8 @@ TP.core.FileURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
-     * @name $initURIComponents
-     * @synopsis Performs any post-parsing initialization appropriate for the
+     * @method $initURIComponents
+     * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.lang.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
@@ -6045,8 +6045,8 @@ TP.core.FileURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
@@ -6071,8 +6071,8 @@ TP.core.FileURL.Inst.defineMethod('$getPath',
 function(url) {
 
     /**
-     * @name $getPath
-     * @synopsis Parses the url for the path portion as that concept is defined
+     * @method $getPath
+     * @summary Parses the url for the path portion as that concept is defined
      *     for the receiving type. Note that different URI types consider
      *     different parts of their HREF to be the 'path'.
      * @param {String} url The URI string to parse.
@@ -6097,7 +6097,7 @@ function(url) {
 
 /**
  * @type {TP.core.JSURI}
- * @synopsis A subtype of TP.core.URI that stores a 'javascript:' URI. These
+ * @summary A subtype of TP.core.URI that stores a 'javascript:' URI. These
  *     URIs are used in web browsers when a JavaScript expression needs to be
  *     executed upon traversal of the URI. This type is also used as the content
  *     object for text/javascript MIME content.
@@ -6143,8 +6143,8 @@ TP.core.JSURI.Type.defineMethod('constructContentObject',
 function(aURI, content) {
 
     /**
-     * @name constructContentObject
-     * @synopsis Returns a content object for the URI provided. This method is
+     * @method constructContentObject
+     * @summary Returns a content object for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs vended as
      *     text/javascript or a similar MIME type specifying that their content
      *     is JavaScript source code.
@@ -6162,8 +6162,8 @@ TP.core.JSURI.Inst.defineMethod('$getPath',
 function(url) {
 
     /**
-     * @name $getPath
-     * @synopsis Parses the url for the path portion as that concept is defined
+     * @method $getPath
+     * @summary Parses the url for the path portion as that concept is defined
      *     for the receiving type. Note that different URI types consider
      *     different parts of their HREF to be the 'path'.
      * @param {String} url The URI string to parse.
@@ -6180,8 +6180,8 @@ TP.core.JSURI.Type.defineMethod('validate',
 function(aString) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the string parameter is valid JavaScript. For
+     * @method validate
+     * @summary Returns true if the string parameter is valid JavaScript. For
      *     security reasons this method currently defaults to true rather than
      *     actually executing the string.
      * @param {String} aString A string to test.
@@ -6201,8 +6201,8 @@ TP.core.JSURI.Inst.defineMethod('isPrimaryURI',
 function() {
 
     /**
-     * @name isPrimaryURI
-     * @synopsis Returns true if the receiver is a primary URI, meaning it has
+     * @method isPrimaryURI
+     * @summary Returns true if the receiver is a primary URI, meaning it has
      *     no fragment portion and can store data. JavaScript URIs are always
      *     primary URIs, there is no concept of a fragment.
      * @returns {Boolean} True if the receiver is a primary URI.
@@ -6217,8 +6217,8 @@ TP.core.JSURI.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
@@ -6245,8 +6245,8 @@ TP.core.JSURI.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
-     * @name $getPrimaryResource
-     * @synopsis Returns the result of evaluating the JS expression represented
+     * @method $getPrimaryResource
+     * @summary Returns the result of evaluating the JS expression represented
      *     by the receiver. Note that while the async flag in aRequest is used
      *     to determine whether the return value is a TP.sig.Response object or
      *     the actual result there's no truly asynchronous processing occurring.
@@ -6316,8 +6316,8 @@ TP.core.JSURI.Inst.defineMethod('isDirty',
 function(aFlag) {
 
     /**
-     * @name isDirty
-     * @synopsis Returns true if the receiver's content has changed since it was
+     * @method isDirty
+     * @summary Returns true if the receiver's content has changed since it was
      *     last loaded from it's source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
@@ -6334,8 +6334,8 @@ TP.core.JSURI.Inst.defineMethod('isLoaded',
 function(aFlag) {
 
     /**
-     * @name isLoaded
-     * @synopsis Returns true if the receiver's content has been loaded either
+     * @method isLoaded
+     * @summary Returns true if the receiver's content has been loaded either
      *     manually via a setContent or init, or by loading the receiver's URI
      *     location.
      * @param {Boolean} aFlag The new value to optionally set.
@@ -6355,8 +6355,8 @@ TP.core.JSURI.Inst.defineMethod('load',
 function(aRequest) {
 
     /**
-     * @name load
-     * @synopsis For the most part, no-op for JSURIs.
+     * @method load
+     * @summary For the most part, no-op for JSURIs.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -6391,8 +6391,8 @@ TP.core.JSURI.Inst.defineMethod('nuke',
 function(aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis For the most part, a no-op for JSURIs.
+     * @method nuke
+     * @summary For the most part, a no-op for JSURIs.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -6427,8 +6427,8 @@ TP.core.JSURI.Inst.defineMethod('save',
 function(aRequest) {
 
     /**
-     * @name save
-     * @synopsis For the most part, a no-op for JSURIs.
+     * @method save
+     * @summary For the most part, a no-op for JSURIs.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -6463,7 +6463,7 @@ function(aRequest) {
 
 /**
  * @type {TP.core.WSURL}
- * @synopsis A subtype of TP.core.URL specific to the WebSocket scheme.
+ * @summary A subtype of TP.core.URL specific to the WebSocket scheme.
  */
 
 //  ------------------------------------------------------------------------
@@ -6509,8 +6509,8 @@ TP.core.WSURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
-     * @name $initURIComponents
-     * @synopsis Performs any post-parsing initialization appropriate for the
+     * @method $initURIComponents
+     * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.lang.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
@@ -6535,8 +6535,8 @@ TP.core.WSURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
@@ -6561,10 +6561,10 @@ function(schemeSpecificString) {
 
 /**
  * @type {TP.core.TIBETURL}
- * @synopsis A subtype of TP.core.URI that stores a 'tibet:' URI. These URIs
+ * @summary A subtype of TP.core.URI that stores a 'tibet:' URI. These URIs
  *     provide access to TIBET components, files, and other resources and are
  *     the preferred URI format for TIBET.
- * @description TIBET uses tibet: URIs as a way of referring to things which a
+ * @summary TIBET uses tibet: URIs as a way of referring to things which a
  *     standard URI such as a file: or http: URI can't reference. A common
  *     example is document references which require dynamic relative paths since
  *     file: and http: URIs don't have a way to handle dynamic values.
@@ -6771,8 +6771,8 @@ TP.core.TIBETURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance. Note that once an instance is
+     * @method init
+     * @summary Initialize the instance. Note that once an instance is
      *     constructed the individual parts of the URI can't be altered,
      *     although variable references (such as uicanvas) may allow it to
      *     resolve to different concrete elements during its life.
@@ -6804,8 +6804,8 @@ TP.core.TIBETURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
-     * @name $initURIComponents
-     * @synopsis Performs any post-parsing initialization appropriate for the
+     * @method $initURIComponents
+     * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing. Note
      *     that TP.core.URI's implementation ensures that the uri, scheme,
      *     primary, and fragment portions of a URI string will be set.
@@ -6828,8 +6828,8 @@ TP.core.TIBETURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
-     * @name $parseSchemeSpecificPart
-     * @synopsis Parses inbound URI string content in a fashion specific to the
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
@@ -6848,8 +6848,8 @@ TP.core.TIBETURL.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output. TIBET URLs containing valid resource URIs typically respond
      *     with that string for compatibility with their file/http counterparts.
      * @returns {String} A new String containing the dump string of the
@@ -6872,8 +6872,8 @@ TP.core.TIBETURL.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver. TIBET
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver. TIBET
      *     URLs containing valid resource URIs typically respond with that
      *     string for compatibility with their file/http counterparts.
      * @returns {String} The receiver in HTML string format
@@ -6895,8 +6895,8 @@ TP.core.TIBETURL.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -6916,8 +6916,8 @@ TP.core.TIBETURL.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Produces a pretty string representation of the receiver. TIBET
+     * @method asPrettyString
+     * @summary Produces a pretty string representation of the receiver. TIBET
      *     URLs containing valid resource URIs typically respond with that
      *     string for compatibility with their file/http counterparts.
      * @returns {String} The receiver in pretty string format
@@ -6939,8 +6939,8 @@ TP.core.TIBETURL.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns a string representation of the receiver. TIBET URLs
+     * @method asString
+     * @summary Returns a string representation of the receiver. TIBET URLs
      *     containing valid resource URIs typically respond with that string for
      *     compatibility with their file/http counterparts.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
@@ -6965,8 +6965,8 @@ TP.core.TIBETURL.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver. TIBET
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver. TIBET
      *     URLs containing valid resource URIs typically respond with that
      *     string for compatibility with their file/http counterparts.
      * @returns {String} The receiver in XML string format
@@ -6988,8 +6988,8 @@ TP.core.TIBETURL.Inst.defineMethod('getCanvas',
 function() {
 
     /**
-     * @name getCanvas
-     * @synopsis Returns the canvas (window, frame, iframe) this URI references
+     * @method getCanvas
+     * @summary Returns the canvas (window, frame, iframe) this URI references
      *     by traversing any optional 'paths' defined in our canvas name. If no
      *     canvas name is specified the canvas defaults to the current UI canvas
      *     for TIBET.
@@ -7014,8 +7014,8 @@ TP.core.TIBETURL.Inst.defineMethod('getCanvasName',
 function() {
 
     /**
-     * @name getCanvasName
-     * @synopsis Returns the name of the canvas this URI refers to.
+     * @method getCanvasName
+     * @summary Returns the name of the canvas this URI refers to.
      * @returns {String} The receiver's resource canvas name.
      */
 
@@ -7045,8 +7045,8 @@ TP.core.TIBETURL.Inst.defineMethod('getNestedURI',
 function(forceRefresh) {
 
     /**
-     * @name getNestedURI
-     * @synopsis Returns a concrete URI for the resource this URI references.
+     * @method getNestedURI
+     * @summary Returns a concrete URI for the resource this URI references.
      *     This is typically the file: or http: URI for the content the receiver
      *     references.
      * @param {Boolean} forceRefresh True will force any cached value for
@@ -7126,8 +7126,8 @@ TP.core.TIBETURL.Inst.defineMethod('getID',
 function() {
 
     /**
-     * @name getID
-     * @synopsis Returns the ID of the receiver, which for URIs is their unique
+     * @method getID
+     * @summary Returns the ID of the receiver, which for URIs is their unique
      *     URI value. In the case of TIBET URLs it is the fully-expanded version
      *     of the URI so all variants can be identified as the same instance.
      * @returns {String} The unique ID of the receiver.
@@ -7201,8 +7201,8 @@ TP.core.TIBETURL.Inst.defineMethod('getLocation',
 function() {
 
     /**
-     * @name getLocation
-     * @synopsis Returns the URIs location, adjusting for any virtual URI
+     * @method getLocation
+     * @summary Returns the URIs location, adjusting for any virtual URI
      *     components to return the actual resource URI value.
      * @returns {String} The receiver's location.
      */
@@ -7223,8 +7223,8 @@ TP.core.TIBETURL.Inst.defineMethod('getPath',
 function() {
 
     /**
-     * @name getPath
-     * @synopsis Returns the path portion of the receiver. For TIBET URLs this
+     * @method getPath
+     * @summary Returns the path portion of the receiver. For TIBET URLs this
      *     is the entire URI string.
      * @returns {String} A scheme-specific path string.
      */
@@ -7239,12 +7239,12 @@ TP.core.TIBETURL.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
-     * @name $getPrimaryResource
-     * @synopsis Returns the TIBET object referenced by the receiver. When the
+     * @method $getPrimaryResource
+     * @summary Returns the TIBET object referenced by the receiver. When the
      *     TIBET path resolves to another URI form (i.e. when a ~ is used for a
      *     "virtual" file or http URI) the resource (content) of that URI is
      *     returned.
-     * @description TIBET URLs are used to support a wide variety of access
+     * @summary TIBET URLs are used to support a wide variety of access
      *     paths to objects in the system. This is unfortunately necessary since
      *     the standard URI schemes don't allow for client-side object
      *     referencing in any real sense, nor do they support the kind of
@@ -7594,8 +7594,8 @@ TP.core.TIBETURL.Inst.defineMethod('getPrimaryHref',
 function() {
 
     /**
-     * @name getPrimaryHref
-     * @synopsis Returns the primary resource's href as a String. This is the
+     * @method getPrimaryHref
+     * @summary Returns the primary resource's href as a String. This is the
      *     portion of the URI which isn't qualified by a fragment, the portion
      *     you can send to a server without causing an error.
      * @returns {String} The primary href as a String.
@@ -7616,8 +7616,8 @@ TP.core.TIBETURL.Inst.defineMethod('getPrimaryURI',
 function() {
 
     /**
-     * @name getPrimaryURI
-     * @synopsis Returns the actual resource URI used for content access. This
+     * @method getPrimaryURI
+     * @summary Returns the actual resource URI used for content access. This
      *     may be the receiver or it may be the URI referencing the primary
      *     resource data for the receiver if the receiver has a fragment, or it
      *     may be an "embedded" URI in the case of schemes which support
@@ -7640,8 +7640,8 @@ TP.core.TIBETURL.Inst.defineMethod('$getResourceResult',
 function(request, result, async, filter) {
 
     /**
-     * @name $getResourceResult
-     * @synopsis Handles common result processing for sync/async results.
+     * @method $getResourceResult
+     * @summary Handles common result processing for sync/async results.
      * @param {TP.sig.Request} request The original request being processed.
      * @param {Object} result The result data for the request.
      * @param {Boolean} async Whether the request is aynchronous.
@@ -7690,7 +7690,7 @@ function() {
 
     /**
      * Returns the URI in split form.
-     * @return {Array.<String>} The split parts.
+     * @returns {Array.<String>} The split parts.
      */
 
     return this.$get('uri').match(TP.regex.TIBET_URL_SPLITTER);
@@ -7702,8 +7702,8 @@ TP.core.TIBETURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
     /**
-     * @name httpDelete
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP DELETE
+     * @method httpDelete
+     * @summary Uses the receiver as a target URI and invokes an HTTP DELETE
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -7723,8 +7723,8 @@ TP.core.TIBETURL.Inst.defineMethod('httpGet',
 function(aRequest) {
 
     /**
-     * @name httpGet
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP GET
+     * @method httpGet
+     * @summary Uses the receiver as a target URI and invokes an HTTP GET
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -7744,8 +7744,8 @@ TP.core.TIBETURL.Inst.defineMethod('httpHead',
 function(aRequest) {
 
     /**
-     * @name httpHead
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP HEAD
+     * @method httpHead
+     * @summary Uses the receiver as a target URI and invokes an HTTP HEAD
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -7765,8 +7765,8 @@ TP.core.TIBETURL.Inst.defineMethod('httpOptions',
 function(aRequest) {
 
     /**
-     * @name httpOptions
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP OPTIONS
+     * @method httpOptions
+     * @summary Uses the receiver as a target URI and invokes an HTTP OPTIONS
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -7786,8 +7786,8 @@ TP.core.TIBETURL.Inst.defineMethod('httpPost',
 function(aRequest) {
 
     /**
-     * @name httpPost
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP POST
+     * @method httpPost
+     * @summary Uses the receiver as a target URI and invokes an HTTP POST
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -7807,8 +7807,8 @@ TP.core.TIBETURL.Inst.defineMethod('httpPut',
 function(aRequest) {
 
     /**
-     * @name httpPut
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP PUT
+     * @method httpPut
+     * @summary Uses the receiver as a target URI and invokes an HTTP PUT
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -7828,8 +7828,8 @@ TP.core.TIBETURL.Inst.defineMethod('httpTrace',
 function(aRequest) {
 
     /**
-     * @name httpTrace
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP TRACE
+     * @method httpTrace
+     * @summary Uses the receiver as a target URI and invokes an HTTP TRACE
      *     with aRequest.
      * @param {TP.sig.Request} request The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
@@ -7849,8 +7849,8 @@ TP.core.TIBETURL.Inst.defineMethod('isDirty',
 function(aFlag) {
 
     /**
-     * @name isDirty
-     * @synopsis Returns true if the receiver's content has been dirtied since
+     * @method isDirty
+     * @summary Returns true if the receiver's content has been dirtied since
      *     it was last loaded/reset.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
@@ -7871,8 +7871,8 @@ TP.core.TIBETURL.Inst.defineMethod('isLoaded',
 function(aFlag) {
 
     /**
-     * @name isLoaded
-     * @synopsis Returns true if the receiver's content has been loaded either
+     * @method isLoaded
+     * @summary Returns true if the receiver's content has been loaded either
      *     manually via a setContent or init, or by loading the receiver's URI
      *     location.
      * @param {Boolean} aFlag The new value to optionally set.
@@ -7892,8 +7892,8 @@ TP.core.TIBETURL.Inst.defineMethod('isPrimaryURI',
 function() {
 
     /**
-     * @name isPrimaryURI
-     * @synopsis Returns true if the receiver is a primary URI, meaning it has
+     * @method isPrimaryURI
+     * @summary Returns true if the receiver is a primary URI, meaning it has
      *     no fragment portion and is responsible for data.
      * @returns {Boolean} True if the receiver is a primary URI.
      */
@@ -7917,8 +7917,8 @@ TP.core.TIBETURL.Inst.defineMethod('updateHeaders',
 function(headerData) {
 
     /**
-     * @name updateHeaders
-     * @synopsis TIBET URLs containing valid resource URIs respond to this
+     * @method updateHeaders
+     * @summary TIBET URLs containing valid resource URIs respond to this
      *     method by updating the headers for that URI.
      * @param {Object} headerData A string, hash, or request object containing
      *     header data.
@@ -7941,8 +7941,8 @@ TP.core.TIBETURL.Inst.defineMethod('updateResourceCache',
 function(aRequest) {
 
     /**
-     * @name updateResourceCache
-     * @synopsis TIBET URLs containing valid resource URIs respond to this
+     * @method updateResourceCache
+     * @summary TIBET URLs containing valid resource URIs respond to this
      *     method by updating the content cache for that URI.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -7970,9 +7970,9 @@ function(aRequest) {
 
 /**
  * @type {TP.core.URIHandler}
- * @synopsis TP.core.URIHandler provides a top-level supertype for URI-specific
+ * @summary TP.core.URIHandler provides a top-level supertype for URI-specific
  *     handler classes.
- * @description When TIBET attempts to operate on a URI for load or save
+ * @summary When TIBET attempts to operate on a URI for load or save
  *     operations it first rewrites the URI and then routes the URI/operation
  *     pair to a handler type. The handler types are responsible for managing
  *     the URI's data in a scheme-specific way that can also respect request and
@@ -7994,8 +7994,8 @@ TP.core.URIHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content, returning the TP.sig.Response object
+     * @method load
+     * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to load. Note that this call is
      *     typically made via the load call of a URI and so rewriting and
@@ -8021,8 +8021,8 @@ TP.core.URIHandler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes a URI entirely, returning the TP.sig.Response object
+     * @method nuke
+     * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to delete. Note that this call is
      *     typically made via the nuke call of a URI and so rewriting and
@@ -8059,10 +8059,10 @@ TP.core.URIHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
-     * @name save
-     * @synopsis Saves URI data content. This is the default data persistence
+     * @method save
+     * @summary Saves URI data content. This is the default data persistence
      *     method for most URI content.
-     * @description By creating alternative URI handlers and ensuring that URI
+     * @summary By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
      *     URI instances. See TP.core.URIRewriter and TP.core.URIRouter for more
      *     information. Important keys include 'append', 'body', and 'backup',
@@ -8100,8 +8100,8 @@ TP.core.URIHandler.Type.defineMethod('service',
 function(targetURI, aRequest) {
 
     /**
-     * @name service
-     * @synopsis Processes service requests, which are typically translations of
+     * @method service
+     * @summary Processes service requests, which are typically translations of
      *     tsh:service tags.
      * @param {String|TP.core.URI} targetURI A target URI.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
@@ -8186,8 +8186,8 @@ TP.core.URIHandler.Inst.defineMethod('deserialize',
 function(aSignal) {
 
     /**
-     * @name deserialize
-     * @synopsis Processes inbound data, handling any processing needed to put
+     * @method deserialize
+     * @summary Processes inbound data, handling any processing needed to put
      *     the data into the proper form and location. The default processing
      *     here is simply to handle the replace attribute's instructions as
      *     extended by any XControls attributes.
@@ -8378,8 +8378,8 @@ TP.core.URIHandler.Inst.defineMethod('serialize',
 function(aSignal) {
 
     /**
-     * @name serialize
-     * @synopsis Processes the content of the signal provided, preparing it for
+     * @method serialize
+     * @summary Processes the content of the signal provided, preparing it for
      *     transmission. Two properties are used for this process, the method
      *     and mimetype.
      * @param {TPXControlsSignal} aSignal The signal instance whose content is
@@ -8441,8 +8441,8 @@ TP.core.URIHandler.Inst.defineMethod('transmit',
 function(aSignal) {
 
     /**
-     * @name transmit
-     * @synopsis Transmits the data provided using the method and action data of
+     * @method transmit
+     * @summary Transmits the data provided using the method and action data of
      *     the receiver to guide the process.
      * @param {TPXControlsSignal} aSignal The signal instance whose content is
      *     being processed.
@@ -8539,7 +8539,7 @@ function(aSignal) {
 
 /**
  * @type {TP.core.URIRewriter}
- * @synopsis TP.core.URIRewriters process any rewrite rules that may be defined,
+ * @summary TP.core.URIRewriters process any rewrite rules that may be defined,
  *     allowing TIBET's URIs to work more like "keys" than "values". As a
  *     result, rewriting can be leveraged as part of a strategy to redirect URI
  *     references based on various runtime parameters including whether the
@@ -8563,10 +8563,10 @@ TP.core.URIRewriter.Type.defineMethod('rewrite',
 function(aURI, aRequest) {
 
     /**
-     * @name rewrite
-     * @synopsis Rewrites the receiver based on any XML Catalog data which
+     * @method rewrite
+     * @summary Rewrites the receiver based on any XML Catalog data which
      *     matches the current filtering parameter values and the URI.
-     * @description The rewrite routine allows TP.core.URI to alter the real URI
+     * @summary The rewrite routine allows TP.core.URI to alter the real URI
      *     used for various operations based on XML Catalog data enhanced for
      *     use with TIBET. This data is typically found in the file uris.xml in
      *     the application's data directory.
@@ -8788,7 +8788,7 @@ function(aURI, aRequest) {
 
 /**
  * @type {TP.core.URIRouter}
- * @synopsis TP.core.URIRouter types manage routing requests for URI operations
+ * @summary TP.core.URIRouter types manage routing requests for URI operations
  *     to appropriate handlers. This is somewhat analogous to server-side
  *     front-controllers which examine a URI and determine which class should be
  *     invoked to perform the actual processing. The actual action processing in
@@ -8813,8 +8813,8 @@ TP.core.URIRouter.Type.defineMethod('route',
 function(aURI, aRequest) {
 
     /**
-     * @name route
-     * @synopsis Locates and returns the proper TP.core.URIHandler type for the
+     * @method route
+     * @summary Locates and returns the proper TP.core.URIHandler type for the
      *     URI and request pair provided. The handler type defaults to the type
      *     returned by the uri's getDefaultHandler method.
      * @param {TP.core.URI} aURI The URI to route the request for.
@@ -8946,8 +8946,8 @@ TP.core.FileURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content, returning the TP.sig.Response object
+     * @method load
+     * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
@@ -9067,8 +9067,8 @@ TP.core.FileURLHandler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes a URI entirely, returning the TP.sig.Response object
+     * @method nuke
+     * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
@@ -9156,10 +9156,10 @@ TP.core.FileURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
-     * @name save
-     * @synopsis Saves URI data content. This is the default data persistence
+     * @method save
+     * @summary Saves URI data content. This is the default data persistence
      *     method for most URI content.
-     * @description By creating alternative URI handlers and ensuring that URI
+     * @summary By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
      *     URI instances. See TP.core.URIRewriter and TP.core.URIRouter for more
      *     information. Important keys include 'append', 'body', and 'backup',
@@ -9267,7 +9267,7 @@ function(targetURI, aRequest) {
 
 /**
  * @type {TP.core.HTTPURLHandler}
- * @synopsis Supports operations specific to loading/saving URI data for HTTP
+ * @summary Supports operations specific to loading/saving URI data for HTTP
  *     URIs.
  */
 
@@ -9283,8 +9283,8 @@ TP.core.HTTPURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
-     * @name load
-     * @synopsis Loads URI data content, returning the TP.sig.Response object
+     * @method load
+     * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
@@ -9348,8 +9348,8 @@ TP.core.HTTPURLHandler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
-     * @name nuke
-     * @synopsis Deletes a URI entirely, returning the TP.sig.Response object
+     * @method nuke
+     * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
@@ -9428,8 +9428,8 @@ TP.core.HTTPURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
-     * @name save
-     * @synopsis Saves URI data content. This is the default data persistence
+     * @method save
+     * @summary Saves URI data content. This is the default data persistence
      *     method for most URI content. Important request keys include 'verb',
      *     'crud', and 'body'. Verb will typically default to a POST unless
      *     TP.sys.cfg(http.use_webdav) is true and the crud parameter is set to

@@ -14,7 +14,7 @@
 
 /**
  * @type {html:base}
- * @synopsis 'base' tag. Document base URI.
+ * @summary 'base' tag. Document base URI.
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XOOB}
- * @synopsis A wrapper for the X_OOB namespace'd payload element.
+ * @summary A wrapper for the X_OOB namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

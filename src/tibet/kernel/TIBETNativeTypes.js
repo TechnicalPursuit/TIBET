@@ -30,8 +30,8 @@ TP.defineCommonMethod('asEscapedHTML',
 function() {
 
     /**
-     * @name asEscapedHTML
-     * @synopsis Converts the receiver into a String where any HTML entities
+     * @method asEscapedHTML
+     * @summary Converts the receiver into a String where any HTML entities
      *     have been converted into their escaped equivalent (i.e. have been
      *     "entitified")
      * @returns {String} The receiver with escaped HTML entities.
@@ -46,8 +46,8 @@ TP.defineCommonMethod('asEscapedXML',
 function() {
 
     /**
-     * @name asEscapedXML
-     * @synopsis Converts the receiver into a String where any XML entities have
+     * @method asEscapedXML
+     * @summary Converts the receiver into a String where any XML entities have
      *     been converted into their escaped equivalent (i.e. have been
      *     "entitified")
      * @returns {String} The receiver with escaped XML entities.
@@ -69,8 +69,8 @@ Boolean.Type.defineMethod('parseString',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseString
-     * @synopsis Returns the Boolean value of the string provided, as localized
+     * @method parseString
+     * @summary Returns the Boolean value of the string provided, as localized
      *     for the target locale.
      * @param {String} aString The input string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -86,8 +86,8 @@ function(aString, sourceLocale) {
 //  ========================================================================
 
 /**
- * @synopsis Extensions that make using Date a bit easier.
- * @description This file contains a number of conveniences for using a Date
+ * @summary Extensions that make using Date a bit easier.
+ * @summary This file contains a number of conveniences for using a Date
  *     object, including adding and subtracting days, determining whether a
  *     particular year is a leap year, getting the number of days in a
  *     particular month, etc.
@@ -523,12 +523,12 @@ Date.Type.defineMethod('addDurations',
 function(firstDuration, secondDuration) {
 
     /**
-     * @name addDurations
-     * @synopsis Returns a new xs:duration formatted string representing the two
+     * @method addDurations
+     * @summary Returns a new xs:duration formatted string representing the two
      *     durations added together.
      * @param {String} firstDuration An xs:duration formatted string.
      * @param {String} secondDuration An xs:duration formatted string.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} A new xs:duration formatted string value.
      */
 
@@ -558,8 +558,8 @@ Date.Type.defineMethod('normalizeDuration',
 function(aDuration) {
 
     /**
-     * @name normalizeDuration
-     * @synopsis Returns a "normalized" duration in which the values of all day,
+     * @method normalizeDuration
+     * @summary Returns a "normalized" duration in which the values of all day,
      *     hour, minute, and second values have been adjusted to their minimal
      *     values without altering the specified duration's length.
      * @param {String} aDuration The xs:duration formatted string to normalize.
@@ -607,9 +607,9 @@ Date.Type.defineMethod('constructAtEpoch',
 function() {
 
     /**
-     * @name constructAtEpoch
-     * @synopsis Returns a new Date at the beginning of the epoch.
-     * @description This method returns a new Date with all of its settings set
+     * @method constructAtEpoch
+     * @summary Returns a new Date at the beginning of the epoch.
+     * @summary This method returns a new Date with all of its settings set
      *     to 0. This gives a Date from the beginning of when Javascript can
      *     give a date (that is, January 1, 1970, UTC).
      * @returns {Date} A new Date set to the beginning of the epoch.
@@ -629,8 +629,8 @@ Date.Type.defineMethod('constructDayOne',
 function(aYear) {
 
     /**
-     * @name constructDayOne
-     * @synopsis Returns a date representing the first day (at exactly 00:00:00)
+     * @method constructDayOne
+     * @summary Returns a date representing the first day (at exactly 00:00:00)
      *     of the year provided.
      * @returns {Date} A Date object representing YYYY-01-01T00:00:00.
      */
@@ -644,8 +644,8 @@ Date.Type.defineMethod('constructUTCDayOne',
 function(aYear) {
 
     /**
-     * @name constructUTCDayOne
-     * @synopsis Returns a date representing the first day (at exactly 00:00:00)
+     * @method constructUTCDayOne
+     * @summary Returns a date representing the first day (at exactly 00:00:00)
      *     of the year provided in UTC.
      * @returns {Date} A Date object representing YYYY-01-01T00:00:00Z.
      */
@@ -659,11 +659,11 @@ Date.Type.defineMethod('daysInFebruary',
 function(aYear) {
 
     /**
-     * @name daysInFebruary
-     * @synopsis Return the number of days in February for the year provided.
+     * @method daysInFebruary
+     * @summary Return the number of days in February for the year provided.
      * @param {Number} aYear The year to return the number of days in February
      *     for.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The number of days in February for aYear.
      */
 
@@ -680,8 +680,8 @@ Date.Type.defineMethod('daysInMonth',
 function(aMonth, aYear) {
 
     /**
-     * @name daysInMonth
-     * @synopsis Return the number of days in the month/year provided.
+     * @method daysInMonth
+     * @summary Return the number of days in the month/year provided.
      * @param {Number} aMonth A month number, starting with 1 for January (note
      *     the difference from the getMonth() return value here. Use
      *     getISOMonth()). Defaults to the current month.
@@ -710,10 +710,10 @@ Date.Type.defineMethod('daysInYear',
 function(aYear) {
 
     /**
-     * @name daysInYear
-     * @synopsis Return the number of days in the year provided.
+     * @method daysInYear
+     * @summary Return the number of days in the year provided.
      * @param {Number} aYear The year to return the number of days in.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The number of days in the year provided.
      */
 
@@ -730,8 +730,8 @@ Date.Type.defineMethod('fromDate',
 function(aDate) {
 
     /**
-     * @name fromDate
-     * @synopsis Returns the Date provided.
+     * @method fromDate
+     * @summary Returns the Date provided.
      * @param {Date} aDate An existing Date object.
      * @returns {Date} The date provided.
      */
@@ -745,12 +745,12 @@ Date.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
-     * @synopsis Return the Date as parsed from the string passed in. This
+     * @method fromString
+     * @summary Return the Date as parsed from the string passed in. This
      *     routine will attempt to parse the incoming date string using the
      *     current Date parsing pipeline. The default format is ISO 8601:
      *     CCCC[-]MM[-]DDTHH[:]MM[:]SS[.ss][Z|[+-]th:tm].
-     * @description Date parsing from strings is a weak area in JavaScript, one
+     * @summary Date parsing from strings is a weak area in JavaScript, one
      *     that we've tried to address with TIBET. The first step in this
      *     process is to create an TP.iso.ISO8601 type which can parse and
      *     format date strings. The second is to allow you to add custom date
@@ -760,7 +760,7 @@ function(aString, sourceLocale) {
      * @param {String} aString The Date to be parsed.
      * @param {TP.core.Locale|String} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Date} A new Date object representing the Date encoded in the
      *     parameter.
      */
@@ -779,8 +779,8 @@ Date.Type.defineMethod('getDSTEndDate',
 function(aYear) {
 
     /**
-     * @name getDSTEndDate
-     * @synopsis Returns a new Date which is the Daylight Saving Time end date
+     * @method getDSTEndDate
+     * @summary Returns a new Date which is the Daylight Saving Time end date
      *     for the United States.
      * @param {Number} aYear The year to compute the Daylight Saving Time end
      *     date for.
@@ -822,8 +822,8 @@ Date.Type.defineMethod('getDSTStartDate',
 function(aYear) {
 
     /**
-     * @name getDSTStartDate
-     * @synopsis Returns a new Date which is the Daylight Saving Time start date
+     * @method getDSTStartDate
+     * @summary Returns a new Date which is the Daylight Saving Time start date
      *     for the United States.
      * @param {Number} aYear The year to compute the Daylight Saving Time start
      *     date for.
@@ -865,8 +865,8 @@ Date.Type.defineMethod('getMillisecondsInDuration',
 function(anObject) {
 
     /**
-     * @name getMillisecondsInDuration
-     * @synopsis Returns the number of milliseconds represented by the
+     * @method getMillisecondsInDuration
+     * @summary Returns the number of milliseconds represented by the
      *     xs:duration provided. Note that the implementation does not use
      *     information other than the D, H, M, and S time components.
      * @param {xs:duration} aDuration The duration to convert.
@@ -933,8 +933,8 @@ Date.Type.defineMethod('getMonthsInDuration',
 function(anObject) {
 
     /**
-     * @name getMonthsInDuration
-     * @synopsis Returns the number of months represented by the xs:duration
+     * @method getMonthsInDuration
+     * @summary Returns the number of months represented by the xs:duration
      *     provided. Note that the implementation does not use information other
      *     than the Y and M segments in the duration.
      * @param {xs:duration} aDuration The duration to convert.
@@ -987,8 +987,8 @@ Date.Type.defineMethod('getSecondsInDuration',
 function(anObject) {
 
     /**
-     * @name getSecondsInDuration
-     * @synopsis Returns the number of seconds represented by the xs:duration
+     * @method getSecondsInDuration
+     * @summary Returns the number of seconds represented by the xs:duration
      *     provided. Note that the implementation does not use information other
      *     than the D, H, M, and S time components.
      * @param {xs:duration} aDuration The duration to convert.
@@ -1051,10 +1051,10 @@ Date.Type.defineMethod('isLeapYear',
 function(aYear) {
 
     /**
-     * @name isLeapYear
-     * @synopsis Return true if the year provided is a leap year.
+     * @method isLeapYear
+     * @summary Return true if the year provided is a leap year.
      * @param {Number} aYear The year to test.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not the provided year is a leap year.
      */
 
@@ -1087,8 +1087,8 @@ Date.Type.defineMethod('today',
 function() {
 
     /**
-     * @name today
-     * @synopsis Returns a date representing the current day (at exactly
+     * @method today
+     * @summary Returns a date representing the current day (at exactly
      *     00:00:00).
      * @returns {Date} A Date object representing today.
      */
@@ -1110,8 +1110,8 @@ Date.Type.defineMethod('todayUTC',
 function() {
 
     /**
-     * @name todayUTC
-     * @synopsis Returns a date representing the current day (at exactly
+     * @method todayUTC
+     * @summary Returns a date representing the current day (at exactly
      *     00:00:00) UTC.
      * @returns {Date} A Date object representing today in UTC.
      */
@@ -1136,8 +1136,8 @@ Date.Inst.defineMethod('add',
 function(anObject) {
 
     /**
-     * @name add
-     * @synopsis Adds a number of milliseconds or duration to the receiver,
+     * @method add
+     * @summary Adds a number of milliseconds or duration to the receiver,
      *     returning the new date produced.
      * @param {Number|String} anObject A number or string value defining the
      *     quantity to be added to the receiver. Numbers and strings are treated
@@ -1161,12 +1161,12 @@ Date.Inst.defineMethod('addDuration',
 function(aDuration) {
 
     /**
-     * @name addDuration
-     * @synopsis Returns a new Date instance that is the specified duration
+     * @method addDuration
+     * @summary Returns a new Date instance that is the specified duration
      *     further into the future.
      * @param {String} aDuration An xs:duration formatted string defining the
      *     duration to add.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Date} A Date object set numDays more days than the receiver.
      */
 
@@ -1193,8 +1193,8 @@ Date.Inst.defineMethod('formatHTTPDate',
 function() {
 
     /**
-     * @name formatHTTPDate
-     * @synopsis Returns the 'HTTP Date' format of the receiver.
+     * @method formatHTTPDate
+     * @summary Returns the 'HTTP Date' format of the receiver.
      * @returns {String} The receiver formatted into HTTP Date format.
      */
 
@@ -1213,8 +1213,8 @@ Date.Inst.defineMethod('getDayName',
 function() {
 
     /**
-     * @name getDayName
-     * @synopsis Returns the localized long format name of the day computed from
+     * @method getDayName
+     * @summary Returns the localized long format name of the day computed from
      *     the receiver.
      * @returns {String} The long format name of the day.
      */
@@ -1229,8 +1229,8 @@ Date.Inst.defineMethod('getDayOfMonth',
 function() {
 
     /**
-     * @name getDayOfMonth
-     * @synopsis Returns the numeric day, for example 20 for the 20th of the
+     * @method getDayOfMonth
+     * @summary Returns the numeric day, for example 20 for the 20th of the
      *     month.
      * @returns {Number} The numerical day number, starting with 1.
      */
@@ -1244,8 +1244,8 @@ Date.Inst.defineMethod('getDayOfWeek',
 function() {
 
     /**
-     * @name getDayOfWeek
-     * @synopsis Returns the numeric day of the week using the JavaScript view
+     * @method getDayOfWeek
+     * @summary Returns the numeric day of the week using the JavaScript view
      *     of weeks so Sunday is day 0,and Saturday is day 6. Use getISODay to
      *     return ISO 8601 day of week numbers.
      * @returns {Number} The numerical day number, starting with 1.
@@ -1260,8 +1260,8 @@ Date.Inst.defineMethod('getDayOfYear',
 function() {
 
     /**
-     * @name getDayOfYear
-     * @synopsis Returns the numeric day of the year represented by the
+     * @method getDayOfYear
+     * @summary Returns the numeric day of the year represented by the
      *     receiver.
      * @returns {Number}
      */
@@ -1276,10 +1276,10 @@ Date.Inst.defineMethod('getDaysBetween',
 function(aDate) {
 
     /**
-     * @name getDaysBetween
-     * @synopsis Returns the number of days between the receiver and aDate.
+     * @method getDaysBetween
+     * @summary Returns the number of days between the receiver and aDate.
      * @param {Date} aDate The date to use as the other boundary.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Date} The number of days between the receiver and aDate.
      */
 
@@ -1297,8 +1297,8 @@ Date.Inst.defineMethod('getDaysExpired',
 function() {
 
     /**
-     * @name getDaysExpired
-     * @synopsis Returns the number of days that have expired so far in the
+     * @method getDaysExpired
+     * @summary Returns the number of days that have expired so far in the
      *     receiver's year.
      * @returns {Number} The number of days expired in the receiver's year.
      */
@@ -1327,8 +1327,8 @@ Date.Inst.defineMethod('getDaysLeft',
 function() {
 
     /**
-     * @name getDaysLeft
-     * @synopsis Returns the number of days that are left in the receiver's
+     * @method getDaysLeft
+     * @summary Returns the number of days that are left in the receiver's
      *     year.
      * @returns {Number} The number of days left in the receiver's year.
      */
@@ -1342,8 +1342,8 @@ Date.Inst.defineMethod('getDaysInYear',
 function() {
 
     /**
-     * @name getDaysInYear
-     * @synopsis Return the number of days in the receiver's year.
+     * @method getDaysInYear
+     * @summary Return the number of days in the receiver's year.
      * @returns {Number} The number of days in the year.
      */
 
@@ -1360,8 +1360,8 @@ Date.Inst.defineMethod('getDaysOfMonth',
 function() {
 
     /**
-     * @name getDaysOfMonth
-     * @synopsis Returns an array of Date instances for the days of the month
+     * @method getDaysOfMonth
+     * @summary Returns an array of Date instances for the days of the month
      *     for the receiver's month.
      * @returns {Array} An array containing instances of Date.
      */
@@ -1388,8 +1388,8 @@ Date.Inst.defineMethod('getDaysOfWeek',
 function() {
 
     /**
-     * @name getDaysOfWeek
-     * @synopsis Returns an array containing instances of Date for each day in
+     * @method getDaysOfWeek
+     * @summary Returns an array containing instances of Date for each day in
      *     the receiver's week.
      * @returns {Array} An array containing instances of Date.
      */
@@ -1432,9 +1432,9 @@ Date.Inst.defineMethod('getISODay',
 function() {
 
     /**
-     * @name getISODay
-     * @synopsis Returns the day number as defined by ISO 8601.
-     * @description The ISO 8601 standard defines Monday as day 1 through Sunday
+     * @method getISODay
+     * @summary Returns the day number as defined by ISO 8601.
+     * @summary The ISO 8601 standard defines Monday as day 1 through Sunday
      *     day 7. JavaScript also defines Monday as day 1, but treats Sunday as
      *     day 0, not day 7. This routine returns Sunday's day number as 7 as
      *     defined by ISO 8601.
@@ -1456,8 +1456,8 @@ Date.Inst.defineMethod('getISOMonth',
 function() {
 
     /**
-     * @name getISOMonth
-     * @synopsis Returns the month number as defined in ISO 8601, where months
+     * @method getISOMonth
+     * @summary Returns the month number as defined in ISO 8601, where months
      *     start with 1 for January rather than the 0 provided by native
      *     JavaScript.
      * @returns {Number} The calendar month number, starting with 1.
@@ -1472,8 +1472,8 @@ Date.Inst.defineMethod('getISOTime',
 function(aFormat) {
 
     /**
-     * @name getISOTime
-     * @synopsis Returns the ISO 8601 time string for the receiver in the format
+     * @method getISOTime
+     * @summary Returns the ISO 8601 time string for the receiver in the format
      *     provided.
      * @param {String} aFormat An TP.iso.ISO8601 time component FORMAT.
      * @returns {String} An ISO 8601 time string.
@@ -1504,10 +1504,10 @@ Date.Inst.defineMethod('getISOTimezone',
 function() {
 
     /**
-     * @name getISOTimezone
-     * @synopsis Returns the timezone the browser is currently executing in in
+     * @method getISOTimezone
+     * @summary Returns the timezone the browser is currently executing in in
      *     ISO standard notation (e.g. '-8:00').
-     * @description This method returns the timezone expressed in the ISO
+     * @summary This method returns the timezone expressed in the ISO
      *     standard notation. For 'Zulu' (UTC) time, this is the character 'Z'.
      *     For all other timezones, it is a plus or minus character ('+' or '-')
      *     followed by the hours offset, followed by a colon (':'), followed by
@@ -1557,9 +1557,9 @@ Date.Inst.defineMethod('getISOWeek',
 function() {
 
     /**
-     * @name getISOWeek
-     * @synopsis Returns the week number as defined by ISO 8601.
-     * @description Officially, week 1 of any year is the week that contains 4
+     * @method getISOWeek
+     * @summary Returns the week number as defined by ISO 8601.
+     * @summary Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -1597,8 +1597,8 @@ Date.Inst.defineMethod('getISOYear',
 function() {
 
     /**
-     * @name getISOYear
-     * @synopsis Returns the year number as defined in ISO 8601, also known in
+     * @method getISOYear
+     * @summary Returns the year number as defined in ISO 8601, also known in
      *     JavaScript as the "full year".
      * @returns {Number}
      */
@@ -1612,8 +1612,8 @@ Date.Inst.defineMethod('getJulianDay',
 function() {
 
     /**
-     * @name getJulianDay
-     * @synopsis Returns Julian day computed from the receiver.
+     * @method getJulianDay
+     * @summary Returns Julian day computed from the receiver.
      * @returns {Number} The number of the Julian day computed from the
      *     receiver.
      */
@@ -1659,8 +1659,8 @@ Date.Inst.defineMethod('getMonthName',
 function() {
 
     /**
-     * @name getMonthName
-     * @synopsis Returns the long format name of the month computed from the
+     * @method getMonthName
+     * @summary Returns the long format name of the month computed from the
      *     receiver.
      * @returns {String} The long format name of the month.
      */
@@ -1675,8 +1675,8 @@ Date.Inst.defineMethod('getShortDayName',
 function() {
 
     /**
-     * @name getShortDayName
-     * @synopsis Returns the short format name of the day computed from the
+     * @method getShortDayName
+     * @summary Returns the short format name of the day computed from the
      *     receiver.
      * @returns {String} The short format name of the day.
      */
@@ -1691,8 +1691,8 @@ Date.Inst.defineMethod('getShortMonthName',
 function() {
 
     /**
-     * @name getShortMonthName
-     * @synopsis Returns the short format name of the month computed from the
+     * @method getShortMonthName
+     * @summary Returns the short format name of the month computed from the
      *     receiver.
      * @returns {String} The short format name of the month.
      */
@@ -1707,8 +1707,8 @@ Date.Inst.defineMethod('getStartOfMonth',
 function() {
 
     /**
-     * @name getStartOfMonth
-     * @synopsis Returns the time in ms at which the current month started.
+     * @method getStartOfMonth
+     * @summary Returns the time in ms at which the current month started.
      * @returns {Number} The start of the current month in ms.
      */
 
@@ -1733,8 +1733,8 @@ Date.Inst.defineMethod('getStartOfWeek',
 function() {
 
     /**
-     * @name getStartOfWeek
-     * @synopsis Returns the time in ms at which the current week started
+     * @method getStartOfWeek
+     * @summary Returns the time in ms at which the current week started
      *     (assuming weeks start on Sunday at 00:00.00.000).
      * @returns {Number} The start of the current week in ms.
      */
@@ -1759,8 +1759,8 @@ Date.Inst.defineMethod('getUTCDayName',
 function() {
 
     /**
-     * @name getUTCDayName
-     * @synopsis Returns the localized long format name of the day computed from
+     * @method getUTCDayName
+     * @summary Returns the localized long format name of the day computed from
      *     the receiver's UTC day.
      * @returns {String} The long format name of the day.
      */
@@ -1775,8 +1775,8 @@ Date.Inst.defineMethod('getUTCDayOfMonth',
 function() {
 
     /**
-     * @name getUTCDayOfMonth
-     * @synopsis Returns the numeric day, for example 20 for the 20th of the
+     * @method getUTCDayOfMonth
+     * @summary Returns the numeric day, for example 20 for the 20th of the
      *     month for the receiver's UTC day.
      * @returns {Number} The numerical day number, starting with 1.
      */
@@ -1790,8 +1790,8 @@ Date.Inst.defineMethod('getUTCDayOfWeek',
 function() {
 
     /**
-     * @name getUTCDayOfWeek
-     * @synopsis Returns the numeric day of the week using the JavaScript view
+     * @method getUTCDayOfWeek
+     * @summary Returns the numeric day of the week using the JavaScript view
      *     of weeks so Sunday is day 0,and Saturday is day 6. Use getISODay to
      *     return ISO 8601 day of week numbers.
      * @returns {Number} The numerical day number, starting with 1.
@@ -1806,8 +1806,8 @@ Date.Inst.defineMethod('getUTCDayOfYear',
 function() {
 
     /**
-     * @name getUTCDayOfYear
-     * @synopsis Returns the numeric day of the year represented by the
+     * @method getUTCDayOfYear
+     * @summary Returns the numeric day of the year represented by the
      *     receiver.
      * @returns {Number}
      */
@@ -1822,8 +1822,8 @@ Date.Inst.defineMethod('getUTCDaysExpired',
 function() {
 
     /**
-     * @name getUTCDaysExpired
-     * @synopsis Returns the number of days that have expired so far in the
+     * @method getUTCDaysExpired
+     * @summary Returns the number of days that have expired so far in the
      *     receiver's year.
      * @returns {Number} The number of days expired in the receiver's year.
      */
@@ -1852,8 +1852,8 @@ Date.Inst.defineMethod('getUTCDaysLeft',
 function() {
 
     /**
-     * @name getUTCDaysLeft
-     * @synopsis Returns the number of days that are left in the receiver's
+     * @method getUTCDaysLeft
+     * @summary Returns the number of days that are left in the receiver's
      *     year.
      * @returns {Number} The number of days left in the receiver's year.
      */
@@ -1867,8 +1867,8 @@ Date.Inst.defineMethod('getUTCDaysInYear',
 function() {
 
     /**
-     * @name getUTCDaysInYear
-     * @synopsis Return the number of days in the receiver's year.
+     * @method getUTCDaysInYear
+     * @summary Return the number of days in the receiver's year.
      * @returns {Number} The number of days in the year.
      */
 
@@ -1885,8 +1885,8 @@ Date.Inst.defineMethod('getUTCDaysOfMonth',
 function() {
 
     /**
-     * @name getUTCDaysOfMonth
-     * @synopsis Returns an array of Date instances for the days of the
+     * @method getUTCDaysOfMonth
+     * @summary Returns an array of Date instances for the days of the
      *     receiver's month.
      * @returns {Array} An array containing instances of Date.
      */
@@ -1916,8 +1916,8 @@ Date.Inst.defineMethod('getUTCDaysOfWeek',
 function() {
 
     /**
-     * @name getUTCDaysOfWeek
-     * @synopsis Returns an array containing instances of Date for each day in
+     * @method getUTCDaysOfWeek
+     * @summary Returns an array containing instances of Date for each day in
      *     the receiver's week.
      * @returns {Array} An array containing instances of Date.
      */
@@ -1960,9 +1960,9 @@ Date.Inst.defineMethod('getUTCISODay',
 function() {
 
     /**
-     * @name getUTCISODay
-     * @synopsis Returns the day number as defined by ISO 8601.
-     * @description The ISO 8601 standard defines Monday as day 1 through Sunday
+     * @method getUTCISODay
+     * @summary Returns the day number as defined by ISO 8601.
+     * @summary The ISO 8601 standard defines Monday as day 1 through Sunday
      *     day 7. JavaScript also defines Monday as day 1, but treats Sunday as
      *     day 0, not day 7. This routine returns Sunday's day number as 7 as
      *     defined by ISO 8601.
@@ -1984,8 +1984,8 @@ Date.Inst.defineMethod('getUTCISOMonth',
 function() {
 
     /**
-     * @name getUTCISOMonth
-     * @synopsis Returns the month number as defined in ISO 8601, where months
+     * @method getUTCISOMonth
+     * @summary Returns the month number as defined in ISO 8601, where months
      *     start with 1 for January rather than the 0 provided by native
      *     JavaScript.
      * @returns {Number} The calendar month number, starting with 1.
@@ -2000,8 +2000,8 @@ Date.Inst.defineMethod('getUTCISOTime',
 function(aFormat) {
 
     /**
-     * @name getUCTISOTime
-     * @synopsis Returns the ISO 8601 time string for the receiver in the format
+     * @method getUCTISOTime
+     * @summary Returns the ISO 8601 time string for the receiver in the format
      *     provided.
      * @param {String} aFormat An ISO8601 time component FORMAT.
      * @returns {String} An ISO 8601 time string.
@@ -2034,8 +2034,8 @@ Date.Inst.defineMethod('getUTCISOTimezone',
 function() {
 
     /**
-     * @name getUTCISOTimezone
-     * @synopsis Returns the timezone the browser is currently executing in in
+     * @method getUTCISOTimezone
+     * @summary Returns the timezone the browser is currently executing in in
      *     ISO standard notation (e.g. '-8:00'). For UTC time this is always the
      *     constant value 'Z'.
      * @returns {String}
@@ -2050,9 +2050,9 @@ Date.Inst.defineMethod('getUTCISOWeek',
 function() {
 
     /**
-     * @name getUTCISOWeek
-     * @synopsis Returns the week number as defined by ISO 8601.
-     * @description Officially, week 1 of any year is the week that contains 4
+     * @method getUTCISOWeek
+     * @summary Returns the week number as defined by ISO 8601.
+     * @summary Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -2090,8 +2090,8 @@ Date.Inst.defineMethod('getUTCISOYear',
 function() {
 
     /**
-     * @name getUTCISOYear
-     * @synopsis Returns the year number as defined in ISO 8601, also known in
+     * @method getUTCISOYear
+     * @summary Returns the year number as defined in ISO 8601, also known in
      *     JavaScript as the "full year".
      * @returns {Number}
      */
@@ -2105,8 +2105,8 @@ Date.Inst.defineMethod('getUTCJulianDay',
 function() {
 
     /**
-     * @name getUTCJulianDay
-     * @synopsis Returns Julian day computed from the receiver.
+     * @method getUTCJulianDay
+     * @summary Returns Julian day computed from the receiver.
      * @returns {Number} The number of the Julian day computed from the
      *     receiver.
      */
@@ -2152,8 +2152,8 @@ Date.Inst.defineMethod('getUTCMonthName',
 function() {
 
     /**
-     * @name getUTCMonthName
-     * @synopsis Returns the long format name of the month computed from the
+     * @method getUTCMonthName
+     * @summary Returns the long format name of the month computed from the
      *     receiver.
      * @returns {String} The long format name of the month.
      */
@@ -2168,8 +2168,8 @@ Date.Inst.defineMethod('getUTCShortDayName',
 function() {
 
     /**
-     * @name getUTCShortDayName
-     * @synopsis Returns the short format name of the day computed from the
+     * @method getUTCShortDayName
+     * @summary Returns the short format name of the day computed from the
      *     receiver.
      * @returns {String} The short format name of the day.
      */
@@ -2184,8 +2184,8 @@ Date.Inst.defineMethod('getUTCShortMonthName',
 function() {
 
     /**
-     * @name getUTCShortMonthName
-     * @synopsis Returns the short format name of the month computed from the
+     * @method getUTCShortMonthName
+     * @summary Returns the short format name of the month computed from the
      *     receiver.
      * @returns {String} The short format name of the month.
      */
@@ -2200,8 +2200,8 @@ Date.Inst.defineMethod('getUTCStartOfMonth',
 function() {
 
     /**
-     * @name getUTCStartOfMonth
-     * @synopsis Returns the time in ms at which the current month started.
+     * @method getUTCStartOfMonth
+     * @summary Returns the time in ms at which the current month started.
      * @returns {Number} The start of the current month in ms.
      */
 
@@ -2226,8 +2226,8 @@ Date.Inst.defineMethod('getUTCStartOfWeek',
 function() {
 
     /**
-     * @name getUTCStartOfWeek
-     * @synopsis Returns the time in ms at which the current week started
+     * @method getUTCStartOfWeek
+     * @summary Returns the time in ms at which the current week started
      *     (assuming weeks start on Sunday at 00:00.00.000).
      * @returns {Number} The start of the current week in ms.
      */
@@ -2252,8 +2252,8 @@ Date.Inst.defineMethod('getUTCWeek',
 function() {
 
     /**
-     * @name getUTCWeek
-     * @synopsis Returns the week number as commonly defined in the U.S. where
+     * @method getUTCWeek
+     * @summary Returns the week number as commonly defined in the U.S. where
      *     week 1 is the week in which January 1 falls. Note that this value may
      *     differ from the ISO week number which defines week 1 as the first
      *     week with more days in January than in the previous December (i.e. at
@@ -2290,8 +2290,8 @@ Date.Inst.defineMethod('getWeek',
 function() {
 
     /**
-     * @name getWeek
-     * @synopsis Returns the week number as commonly defined in the U.S. where
+     * @method getWeek
+     * @summary Returns the week number as commonly defined in the U.S. where
      *     week 1 is the week in which January 1 falls. Note that this value may
      *     differ from the ISO week number which defines week 1 as the first
      *     week with more days in January than in the previous December (i.e. at
@@ -2328,8 +2328,8 @@ Date.Inst.defineMethod('isBefore',
 function(aDate) {
 
     /**
-     * @name before
-     * @synopsis Returns true if the receiver is a date/time which occurs before
+     * @method before
+     * @summary Returns true if the receiver is a date/time which occurs before
      *     the date/time provided.
      * @param {Date|String} aDate A date or date string.
      * @returns {Boolean}
@@ -2350,10 +2350,10 @@ Date.Inst.defineMethod('isDSTDate',
 function() {
 
     /**
-     * @name isDSTDate
-     * @synopsis Return true if the date is a daylight saving time (or "Summer
+     * @method isDSTDate
+     * @summary Return true if the date is a daylight saving time (or "Summer
      *     Time" in the EU) date.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not its a DST date.
      */
 
@@ -2422,10 +2422,10 @@ Date.Inst.defineMethod('isUTCDSTDate',
 function() {
 
     /**
-     * @name isUTCDSTDate
-     * @synopsis Return true if the date is a daylight saving time (or "Summer
+     * @method isUTCDSTDate
+     * @summary Return true if the date is a daylight saving time (or "Summer
      *     Time" in the EU) date.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not its a DST date.
      */
 
@@ -2494,11 +2494,11 @@ Date.Inst.defineMethod('isSameDay',
 function(aDate) {
 
     /**
-     * @name isSameDay
-     * @synopsis Returns true if the receiver is the same day as the date
+     * @method isSameDay
+     * @summary Returns true if the receiver is the same day as the date
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean}
      */
 
@@ -2517,11 +2517,11 @@ Date.Inst.defineMethod('isSameMonth',
 function(aDate) {
 
     /**
-     * @name isSameMonth
-     * @synopsis Returns true if the receiver is the same month as the date
+     * @method isSameMonth
+     * @summary Returns true if the receiver is the same month as the date
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean}
      */
 
@@ -2539,11 +2539,11 @@ Date.Inst.defineMethod('isSameWeek',
 function(aDate) {
 
     /**
-     * @name isSameWeek
-     * @synopsis Returns true if the receiver is the same week as the date
+     * @method isSameWeek
+     * @summary Returns true if the receiver is the same week as the date
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean}
      */
 
@@ -2562,11 +2562,11 @@ Date.Inst.defineMethod('isSameYear',
 function(aDate) {
 
     /**
-     * @name isSameYear
-     * @synopsis Returns true if the receiver is the same year as the date
+     * @method isSameYear
+     * @summary Returns true if the receiver is the same year as the date
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean}
      */
 
@@ -2583,8 +2583,8 @@ Date.Type.defineMethod('parseString',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseString
-     * @synopsis Returns the Date value of the string provided, as localized for
+     * @method parseString
+     * @summary Returns the Date value of the string provided, as localized for
      *     the target locale.
      * @param {String} aString The input string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -2601,10 +2601,10 @@ Date.Inst.defineMethod('setISOWeek',
 function(aWeekNumber) {
 
     /**
-     * @name setISOWeek
-     * @synopsis Sets the receiver to be the same day of the week and time, but
+     * @method setISOWeek
+     * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as defined by ISO 8601.
-     * @description Officially, week 1 of any year is the week that contains 4
+     * @summary Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -2656,10 +2656,10 @@ Date.Inst.defineMethod('setUTCISOWeek',
 function(aWeekNumber) {
 
     /**
-     * @name setUTCISOWeek
-     * @synopsis Sets the receiver to be the same day of the week and time, but
+     * @method setUTCISOWeek
+     * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as defined by ISO 8601.
-     * @description Officially, week 1 of any year is the week that contains 4
+     * @summary Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -2711,8 +2711,8 @@ Date.Inst.defineMethod('setUTCWeek',
 function(aWeekNumber) {
 
     /**
-     * @name setUTCWeek
-     * @synopsis Sets the receiver to be the same day of the week and time, but
+     * @method setUTCWeek
+     * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as commonly used in the U.S.
      * @param {The} Number number of the new week.
      * @returns {Date} The receiver.
@@ -2761,8 +2761,8 @@ Date.Inst.defineMethod('setWeek',
 function(aWeekNumber) {
 
     /**
-     * @name setWeek
-     * @synopsis Sets the receiver to be the same day of the week and time, but
+     * @method setWeek
+     * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as commonly used in the U.S.
      * @param {The} Number number of the new week.
      * @returns {Date} The receiver.
@@ -2811,13 +2811,13 @@ Date.Inst.defineMethod('subtract',
 function(anObject) {
 
     /**
-     * @name subtract
-     * @synopsis Subtracts a number of milliseconds or a duration from the
+     * @method subtract
+     * @summary Subtracts a number of milliseconds or a duration from the
      *     receiver, returning a new Date. To subtract Dates to produce
      *     durations of the difference in time use subtractDate.
      * @param {Number|String} anObject A number of milliseconds or a duration
      *     string.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Date} A new date.
      */
 
@@ -2836,11 +2836,11 @@ Date.Inst.defineMethod('subtractDate',
 function(aDate) {
 
     /**
-     * @name subtractDate
-     * @synopsis Returns a duration string representing the difference between
+     * @method subtractDate
+     * @summary Returns a duration string representing the difference between
      *     the two dates.
      * @param {Date} aDate The date to subtract from the receiver.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} An xs:duration formatted string containing the
      *     difference in the two date values.
      */
@@ -2854,11 +2854,11 @@ Date.Inst.defineMethod('subtractDuration',
 function(aDuration) {
 
     /**
-     * @name subtractDuration
-     * @synopsis Returns a new Date which represents the receiver adjusted by
+     * @method subtractDuration
+     * @summary Returns a new Date which represents the receiver adjusted by
      *     the duration string provided.
      * @param {String} aDuration An xs:duration formatted string.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Date} A Date object.
      */
 
@@ -2884,8 +2884,8 @@ function(aDuration) {
 //  ========================================================================
 
 /**
- * @synopsis Extensions that make using Number a bit easier.
- * @description This file contains functionality for the Number type that make
+ * @summary Extensions that make using Number a bit easier.
+ * @summary This file contains functionality for the Number type that make
  *     using Numbers easier, including convenience wrappers to cover
  *     interactions with the built-in Math object. Therefore, it is no longer
  *     necessary to pass Numbers into the Math object, one can simply send the
@@ -2926,8 +2926,8 @@ Number.Type.defineMethod('getDecimalPoint',
 function() {
 
     /**
-     * @name getDecimalPoint
-     * @synopsis Returns the character used as the decimal point.
+     * @method getDecimalPoint
+     * @summary Returns the character used as the decimal point.
      * @returns {String} The decimal point character.
      */
 
@@ -2940,8 +2940,8 @@ Number.Type.defineMethod('getThousandsGroupSize',
 function() {
 
     /**
-     * @name getThousandsGroupSize
-     * @synopsis Returns the size of the grouping for thousands. In most Western
+     * @method getThousandsGroupSize
+     * @summary Returns the size of the grouping for thousands. In most Western
      *     countries, this is 3.
      * @returns {Number} The thousands grouping size.
      */
@@ -2955,8 +2955,8 @@ Number.Type.defineMethod('getThousandsMatcher',
 function() {
 
     /**
-     * @name getThousandsMatcher
-     * @synopsis Returns the character used to separate thousands groupings.
+     * @method getThousandsMatcher
+     * @summary Returns the character used to separate thousands groupings.
      * @returns {String} The thousands separator.
      */
 
@@ -2969,8 +2969,8 @@ Number.Type.defineMethod('getThousandsSeparator',
 function() {
 
     /**
-     * @name getThousandsSeparator
-     * @synopsis Returns the character used to separate thousands groupings.
+     * @method getThousandsSeparator
+     * @summary Returns the character used to separate thousands groupings.
      * @returns {String} The thousands separator.
      */
 
@@ -2983,8 +2983,8 @@ Number.Type.defineMethod('random',
 function() {
 
     /**
-     * @name random
-     * @synopsis Returns a pseudo-random number between 0.0 and 1.0.
+     * @method random
+     * @summary Returns a pseudo-random number between 0.0 and 1.0.
      * @returns {Number} A number between 0.0 and 1.0.
      */
 
@@ -2997,12 +2997,12 @@ Number.Type.defineMethod('randomInt',
 function(min, max) {
 
     /**
-     * @name randomInt
-     * @synopsis Returns a pseudo-random integer between the supplied min and
+     * @method randomInt
+     * @summary Returns a pseudo-random integer between the supplied min and
      *     max bounds.
      * @param {Number} min The minimum bounds of the random integer.
      * @param {Number} max The maximum bounds of the random integer.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} An integer between min and max.
      */
 
@@ -3031,8 +3031,8 @@ Number.Type.defineMethod('validate',
 function(anObj) {
 
     /**
-     * @name validate
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validate
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of the receiver.
      * @param {Object} anObj The object to test.
      * @returns {Boolean} True if the object is 'valid'.
@@ -3049,8 +3049,8 @@ Number.Inst.defineMethod('abs',
 function() {
 
     /**
-     * @name abs
-     * @synopsis Returns the absolute value of the receiver.
+     * @method abs
+     * @summary Returns the absolute value of the receiver.
      * @returns {Number} The receiver's absolute value.
      */
 
@@ -3063,8 +3063,8 @@ Number.Inst.defineMethod('acos',
 function() {
 
     /**
-     * @name acos
-     * @synopsis Returns the arc cosine of the receiver.
+     * @method acos
+     * @summary Returns the arc cosine of the receiver.
      * @returns {Number} The receiver's arc cosine.
      */
 
@@ -3077,8 +3077,8 @@ Number.Inst.defineMethod('acosD',
 function() {
 
     /**
-     * @name acosD
-     * @synopsis Returns the arc cosine of the receiver in degrees.
+     * @method acosD
+     * @summary Returns the arc cosine of the receiver in degrees.
      * @returns {Number} The receiver's arc cosine in degrees.
      */
 
@@ -3091,8 +3091,8 @@ Number.Inst.defineMethod('almostEquals',
 function(aComparison, aTolerance) {
 
     /**
-     * @name almostEquals
-     * @synopsis Returns whether the receiver and the supplied comparison value
+     * @method almostEquals
+     * @summary Returns whether the receiver and the supplied comparison value
      *     are equal, within the supplied tolerance.
      * @param {Number} aComparison The number to compare the receiver to.
      * @param {Number} aTolerance The tolerance to use in the comparison.
@@ -3118,8 +3118,8 @@ Number.Inst.defineMethod('angleDifference',
 function(anAngle) {
 
     /**
-     * @name angleDifference
-     * @synopsis Returns the difference between the receiver (which should be an
+     * @method angleDifference
+     * @summary Returns the difference between the receiver (which should be an
      *     angle expressed in degrees) and the supplied angle (which should also
      *     be an angle expressed in degrees.
      * @param {Number} anAngle An angle to use expressed in degrees.
@@ -3146,8 +3146,8 @@ Number.Inst.defineMethod('angleDx',
 function(anAngle, aRadius) {
 
     /**
-     * @name angleDx
-     * @synopsis Returns the X part of the distance computed using the supplied
+     * @method angleDx
+     * @summary Returns the X part of the distance computed using the supplied
      *     angle and radius.
      * @param {Number} anAngle The angle to use expressed in degrees.
      * @param {Number} aRadius The radius to use.
@@ -3164,8 +3164,8 @@ Number.Inst.defineMethod('angleDy',
 function(anAngle, aRadius) {
 
     /**
-     * @name angleDy
-     * @synopsis Returns the Y part of the distance computed using the supplied
+     * @method angleDy
+     * @summary Returns the Y part of the distance computed using the supplied
      *     angle and radius.
      * @param {Number} anAngle The angle to use expressed in degrees.
      * @param {Number} aRadius The radius to use.
@@ -3182,8 +3182,8 @@ Number.Inst.defineMethod('asColor',
 function() {
 
     /**
-     * @name asColor
-     * @synopsis Returns the color value of the receiver (a 2 digit hex value
+     * @method asColor
+     * @summary Returns the color value of the receiver (a 2 digit hex value
      *     without the leading '0x').
      * @returns {String} The receiver's color value.
      */
@@ -3210,8 +3210,8 @@ Number.Inst.defineMethod('asDuration',
 function() {
 
     /**
-     * @name asDuration
-     * @synopsis Returns the 'xs:duration' value of the receiver. The receiver
+     * @method asDuration
+     * @summary Returns the 'xs:duration' value of the receiver. The receiver
      *     is assumed to be a number of millisecond count that will be
      *     translated into a duration with a fractional number of seconds.
      * @returns {String} The receiver's 'xs:duration' value.
@@ -3240,8 +3240,8 @@ Number.Inst.defineMethod('asHex',
 function() {
 
     /**
-     * @name asHex
-     * @synopsis Returns the hexadecimal value of the receiver.
+     * @method asHex
+     * @summary Returns the hexadecimal value of the receiver.
      * @returns {String} The receiver's hex value.
      */
 
@@ -3269,8 +3269,8 @@ Number.Inst.defineMethod('asin',
 function() {
 
     /**
-     * @name asin
-     * @synopsis Returns the arc sine of the receiver.
+     * @method asin
+     * @summary Returns the arc sine of the receiver.
      * @returns {Number} The receiver's arc sine.
      */
 
@@ -3283,8 +3283,8 @@ Number.Inst.defineMethod('asinD',
 function() {
 
     /**
-     * @name asinD
-     * @synopsis Returns the arc sine of the receiver in degrees.
+     * @method asinD
+     * @summary Returns the arc sine of the receiver in degrees.
      * @returns {Number} The receiver's arc sine in degrees.
      */
 
@@ -3297,8 +3297,8 @@ Number.Inst.defineMethod('atan',
 function() {
 
     /**
-     * @name atan
-     * @synopsis Returns the arc tangent of the receiver.
+     * @method atan
+     * @summary Returns the arc tangent of the receiver.
      * @returns {Number} The receiver's arc tangent.
      */
 
@@ -3311,8 +3311,8 @@ Number.Inst.defineMethod('atanD',
 function() {
 
     /**
-     * @name atanD
-     * @synopsis Returns the arc tangent of the receiver in degrees.
+     * @method atanD
+     * @summary Returns the arc tangent of the receiver in degrees.
      * @returns {Number} The receiver's arc tangent in degrees.
      */
 
@@ -3325,12 +3325,12 @@ Number.Inst.defineMethod('atan2',
 function(xSize) {
 
     /**
-     * @name atan2
-     * @synopsis Returns the counterclockwise angle using the positive X size
+     * @method atan2
+     * @summary Returns the counterclockwise angle using the positive X size
      *     and the receiver as a positive Y size.
      * @param {Number} xSize The X size to use with the receiver in computing
      *     the counterclockwise angle.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The counterclockwise angle using the receiver and
      *     xSize.
      */
@@ -3348,12 +3348,12 @@ Number.Inst.defineMethod('atan2D',
 function(xSize) {
 
     /**
-     * @name atan2D
-     * @synopsis Returns the counterclockwise angle, in degrees, using the
+     * @method atan2D
+     * @summary Returns the counterclockwise angle, in degrees, using the
      *     positive X size and the receiver as a positive Y size.
      * @param {Number} xSize The X size to use with the receiver in computing
      *     the counterclockwise angle.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The counterclockwise angle in degrees using the
      *     receiver and xSize.
      */
@@ -3371,8 +3371,8 @@ Number.Inst.defineMethod('ceil',
 function() {
 
     /**
-     * @name ceil
-     * @synopsis Returns the closest integer value that is greater than or equal
+     * @method ceil
+     * @summary Returns the closest integer value that is greater than or equal
      *     to the receiver.
      * @returns {Number} The closest integer greater than or equal to the
      *     receiver.
@@ -3388,8 +3388,8 @@ Number.Inst.defineMethod('cos',
 function() {
 
     /**
-     * @name cos
-     * @synopsis Returns the cosine of the receiver.
+     * @method cos
+     * @summary Returns the cosine of the receiver.
      * @returns {Number} The receiver's cosine.
      */
 
@@ -3402,8 +3402,8 @@ Number.Inst.defineMethod('cosD',
 function() {
 
     /**
-     * @name cosD
-     * @synopsis Returns the cosine of the receiver in degrees.
+     * @method cosD
+     * @summary Returns the cosine of the receiver in degrees.
      * @returns {Number} The receiver's cosine in degrees.
      */
 
@@ -3416,8 +3416,8 @@ Number.Inst.defineMethod('degreesToRadians',
 function() {
 
     /**
-     * @name degreesToRadians
-     * @synopsis Returns the receiver's value as radians, assuming that the
+     * @method degreesToRadians
+     * @summary Returns the receiver's value as radians, assuming that the
      *     receiver contains a number of degrees.
      * @returns {Number} The receiver's value in radians.
      */
@@ -3431,8 +3431,8 @@ Number.Inst.defineMethod('exp',
 function() {
 
     /**
-     * @name exp
-     * @synopsis Returns 'e' (natural log) to the power of the receiver.
+     * @method exp
+     * @summary Returns 'e' (natural log) to the power of the receiver.
      * @returns {Number} The natural log to the power of the receiver.
      */
 
@@ -3445,8 +3445,8 @@ Number.Inst.defineMethod('factorial',
 function() {
 
     /**
-     * @name factorial
-     * @synopsis Returns the factorial of the receiver.
+     * @method factorial
+     * @summary Returns the factorial of the receiver.
      * @returns {Number} The factorial of the receiver.
      */
 
@@ -3473,8 +3473,8 @@ Number.Inst.defineMethod('floor',
 function() {
 
     /**
-     * @name floor
-     * @synopsis Returns the closest integer value that is lesser than or equal
+     * @method floor
+     * @summary Returns the closest integer value that is lesser than or equal
      *     to the receiver.
      * @returns {Number} The closest integer lesser than or equal to the
      *     receiver.
@@ -3489,8 +3489,8 @@ Number.Inst.defineMethod('fraction',
 function(aCount) {
 
     /**
-     * @name fraction
-     * @synopsis Returns the fractional part of the receiver without doing any
+     * @method fraction
+     * @summary Returns the fractional part of the receiver without doing any
      *     rounding i.e. (123.456).fraction(2) returns 0.45.
      * @param {Number} aCount The number of decimal places.
      * @returns {Number}
@@ -3520,8 +3520,8 @@ Number.Inst.defineMethod('integer',
 function() {
 
     /**
-     * @name integer
-     * @synopsis Returns the integer portion of the receiver.
+     * @method integer
+     * @summary Returns the integer portion of the receiver.
      * @returns {Number}
      */
 
@@ -3538,14 +3538,14 @@ Number.Inst.defineMethod('isBetween',
 function(minValue, maxValue) {
 
     /**
-     * @name isBetween
-     * @synopsis Returns whether the receiver is between the minValue and
+     * @method isBetween
+     * @summary Returns whether the receiver is between the minValue and
      *     maxValue (not including the values themselves).
      * @param {Number} minValue The minimum value that the receiver has to be
      *     greater than.
      * @param {Number} maxValue The maximum value that the receiver has to be
      *     lesser than.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether the receiver is between minValue and maxValue.
      */
 
@@ -3562,14 +3562,14 @@ Number.Inst.defineMethod('isBetweenInclusive',
 function(minValue, maxValue) {
 
     /**
-     * @name isBetweenInclusive
-     * @synopsis Returns whether the receiver is between the minValue and
+     * @method isBetweenInclusive
+     * @summary Returns whether the receiver is between the minValue and
      *     maxValue (including the values themselves).
      * @param {Number} minValue The minimum value that the receiver has to be
      *     greater than or equal to.
      * @param {Number} maxValue The maximum value that the receiver has to be
      *     lesser than or equal to.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether the receiver is between minValue and maxValue
      *     inclusive.
      */
@@ -3587,8 +3587,8 @@ Number.Inst.defineMethod('isEven',
 function() {
 
     /**
-     * @name isEven
-     * @synopsis Returns whether the receiver is an even number.
+     * @method isEven
+     * @summary Returns whether the receiver is an even number.
      * @returns {Boolean} Whether or not the receiver is even.
      */
 
@@ -3601,8 +3601,8 @@ Number.Inst.defineMethod('isNegative',
 function() {
 
     /**
-     * @name isNegative
-     * @synopsis Returns whether the receiver is a negative number or not. A
+     * @method isNegative
+     * @summary Returns whether the receiver is a negative number or not. A
      *     negative number is defined as a number that is less than 0.
      * @returns {Boolean} Whether or not the receiver is negative.
      */
@@ -3616,8 +3616,8 @@ Number.Inst.defineMethod('isOdd',
 function() {
 
     /**
-     * @name isOdd
-     * @synopsis Returns whether the receiver is an odd number.
+     * @method isOdd
+     * @summary Returns whether the receiver is an odd number.
      * @returns {Boolean} Whether or not the receiver is odd.
      */
 
@@ -3630,8 +3630,8 @@ Number.Inst.defineMethod('isPositive',
 function() {
 
     /**
-     * @name isPositive
-     * @synopsis Returns whether the receiver is a positive number or not. A
+     * @method isPositive
+     * @summary Returns whether the receiver is a positive number or not. A
      *     positive number is defined as a number that is greater than or equal
      *     to 0.
      * @returns {Boolean} Whether or not the receiver is positive.
@@ -3646,8 +3646,8 @@ Number.Inst.defineMethod('log2',
 function() {
 
     /**
-     * @name log2
-     * @synopsis Returns the base-2 logarithm of the receiver.
+     * @method log2
+     * @summary Returns the base-2 logarithm of the receiver.
      * @returns {Number} The receiver's base-2 logarithm.
      */
 
@@ -3660,8 +3660,8 @@ Number.Inst.defineMethod('log10',
 function() {
 
     /**
-     * @name log10
-     * @synopsis Returns the base-10 logarithm of the receiver.
+     * @method log10
+     * @summary Returns the base-10 logarithm of the receiver.
      * @returns {Number} The receiver's base-10 logarithm.
      */
 
@@ -3674,8 +3674,8 @@ Number.Inst.defineMethod('log',
 function() {
 
     /**
-     * @name log
-     * @synopsis Returns the natural logarithm of the receiver.
+     * @method log
+     * @summary Returns the natural logarithm of the receiver.
      * @returns {Number} The receiver's natural logarithm.
      */
 
@@ -3688,12 +3688,12 @@ Number.Inst.defineMethod('max',
 function() {
 
     /**
-     * @name max
-     * @synopsis Returns the largest value from the receiver and arguments. Note
+     * @method max
+     * @summary Returns the largest value from the receiver and arguments. Note
      *     that you can pass multiple values to this call.
      * @param {Array} varargs A variable list of 0 to N elements to place in
      *     the array.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The largest value found.
      */
 
@@ -3722,11 +3722,11 @@ Number.Inst.defineMethod('min',
 function() {
 
     /**
-     * @name min
-     * @synopsis Returns the smallest value from the receiver and arguments.
+     * @method min
+     * @summary Returns the smallest value from the receiver and arguments.
      * @param {Array} varargs A variable list of 0 to N elements to place in
      *     the array.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The smallest value found.
      */
 
@@ -3755,13 +3755,13 @@ Number.Inst.defineMethod('minMax',
 function(minNum, maxNum) {
 
     /**
-     * @name minMax
-     * @synopsis Returns the receiver, if it is between the minNum and the
+     * @method minMax
+     * @summary Returns the receiver, if it is between the minNum and the
      *     maxNum, the minNum if the receiver is less than it is and the maxNum
      *     if the receiver is more than it is.
      * @param {Number} minNum The minimum number.
      * @param {Number} maxNum The maximum number.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The receiver or the minNum or the maxNum according to
      *     the method comment.
      */
@@ -3779,10 +3779,10 @@ Number.Inst.defineMethod('modulo',
 function(aDivisor) {
 
     /**
-     * @name modulo
-     * @synopsis Returns the modulus of dividing the receiver by the supplied
+     * @method modulo
+     * @summary Returns the modulus of dividing the receiver by the supplied
      *     divisor.
-     * @description JavaScript's modulo operator operates such that it will take
+     * @summary JavaScript's modulo operator operates such that it will take
      *     the same sign as the receiver (the dividend). Other languages operate
      *     in such a way that they will return a result that has the same sign
      *     as the supplied divisor. This routine supplies an implementation of
@@ -3805,8 +3805,8 @@ Number.Type.defineMethod('parseString',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseString
-     * @synopsis Returns the Number value of the string provided, as localized
+     * @method parseString
+     * @summary Returns the Number value of the string provided, as localized
      *     for the target locale.
      * @param {String} aString The input string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
@@ -3823,10 +3823,10 @@ Number.Inst.defineMethod('pow',
 function(power) {
 
     /**
-     * @name pow
-     * @synopsis Returns the receiver raised to the power of 'power'.
+     * @method pow
+     * @summary Returns the receiver raised to the power of 'power'.
      * @param {Number} power The power to raise the receiver to.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The receiver raised to 'power'.
      */
 
@@ -3843,8 +3843,8 @@ Number.Inst.defineMethod('radiansToDegrees',
 function() {
 
     /**
-     * @name radiansToDegrees
-     * @synopsis Returns the receiver's value as degrees, assuming that the
+     * @method radiansToDegrees
+     * @summary Returns the receiver's value as degrees, assuming that the
      *     receiver contains a number of radians.
      * @returns {Number} The receiver's value in degrees.
      */
@@ -3858,10 +3858,10 @@ Number.Inst.defineMethod('round',
 function(places) {
 
     /**
-     * @name round
-     * @synopsis Returns a rounding of the receiver up or down to the nearest
+     * @method round
+     * @summary Returns a rounding of the receiver up or down to the nearest
      *     integer.
-     * @description This function rounds .5 up. It also extends the standard
+     * @summary This function rounds .5 up. It also extends the standard
      *     'Math.round' method by taking a number of places that the receiver
      *     will be rounded to.
      * @param {Number} places The number of places to round the receiver to.
@@ -3884,8 +3884,8 @@ Number.Inst.defineMethod('sin',
 function() {
 
     /**
-     * @name sin
-     * @synopsis Returns the sine of the receiver.
+     * @method sin
+     * @summary Returns the sine of the receiver.
      * @returns {Number} The receiver's sine.
      */
 
@@ -3898,8 +3898,8 @@ Number.Inst.defineMethod('sinD',
 function() {
 
     /**
-     * @name sinD
-     * @synopsis Returns the sine of the receiver in degrees.
+     * @method sinD
+     * @summary Returns the sine of the receiver in degrees.
      * @returns {Number} The receiver's sine in degrees.
      */
 
@@ -3912,8 +3912,8 @@ Number.Inst.defineMethod('sqrt',
 function() {
 
     /**
-     * @name sqrt
-     * @synopsis Returns the square root of the receiver.
+     * @method sqrt
+     * @summary Returns the square root of the receiver.
      * @returns {Number} The receiver's square root.
      */
 
@@ -3926,8 +3926,8 @@ Number.Inst.defineMethod('standardizeAngle',
 function() {
 
     /**
-     * @name standardizeAngle
-     * @synopsis Returns the supplied angle 'standardized' to be an exact number
+     * @method standardizeAngle
+     * @summary Returns the supplied angle 'standardized' to be an exact number
      *     of degrees between 0 and 360.
      * @returns {Number} The receiver 'standardized' between 0 and 360.
      */
@@ -3941,8 +3941,8 @@ Number.Inst.defineMethod('tan',
 function() {
 
     /**
-     * @name tan
-     * @synopsis Returns the tangent of the receiver.
+     * @method tan
+     * @summary Returns the tangent of the receiver.
      * @returns {Number} The receiver's tangent.
      */
 
@@ -3955,8 +3955,8 @@ Number.Inst.defineMethod('tanD',
 function() {
 
     /**
-     * @name tanD
-     * @synopsis Returns the tangent of the receiver in degrees.
+     * @method tanD
+     * @summary Returns the tangent of the receiver in degrees.
      * @returns {Number} The receiver's tangent in degrees.
      */
 
@@ -3969,8 +3969,8 @@ Number.Inst.defineMethod('quoted',
 function(aQuoteChar) {
 
     /**
-     * @name quoted
-     * @synopsis Returns the receiver as a quoted string.
+     * @method quoted
+     * @summary Returns the receiver as a quoted string.
      * @param {String} aQuoteChar The quote char to use. Default is single
      *     quotes.
      * @returns {String}
@@ -3984,8 +3984,8 @@ function(aQuoteChar) {
 //  ========================================================================
 
 /**
- * @synopsis Extensions that make using RegExp a bit easier.
- * @description This file contains a set of premade constant RegExps that define
+ * @summary Extensions that make using RegExp a bit easier.
+ * @summary This file contains a set of premade constant RegExps that define
  *     common punctuation characters, numbers, etc.
  */
 
@@ -3997,8 +3997,8 @@ RegExp.Type.defineMethod('escapeMetachars',
 function(aString) {
 
     /**
-     * @name escapeMetachars
-     * @synopsis Escapes any RegExp metacharacters found in the supplied String.
+     * @method escapeMetachars
+     * @summary Escapes any RegExp metacharacters found in the supplied String.
      * @param {String} aString The String to escape any RegExp metacharacters
      *     in.
      * @returns {String} The supplied String with RegExp metacharacters escaped.
@@ -4015,8 +4015,8 @@ RegExp.Inst.defineMethod('match',
 function(anObject) {
 
     /**
-     * @name match
-     * @synopsis Returns the result of running the expression against the string
+     * @method match
+     * @summary Returns the result of running the expression against the string
      *     value of the object provided. This method is provided so that you can
      *     pass either a String or RegExp to methods that need to query based on
      *     string/regex content.
@@ -4040,7 +4040,7 @@ function(anObject) {
 //  ========================================================================
 
 /**
- * @synopsis Extensions that make using Strings a bit easier, and which add
+ * @summary Extensions that make using Strings a bit easier, and which add
  *     support for elements such as string substitutions for output formatting.
  * @description
  */
@@ -4059,10 +4059,10 @@ String.Type.defineMethod('getRegisteredSubstitutions',
 function() {
 
     /**
-     * @name getRegisteredSubstitutions
-     * @synopsis Returns a collection of registered string substitution
+     * @method getRegisteredSubstitutions
+     * @summary Returns a collection of registered string substitution
      *     functions.
-     * @description String substitutions are done using registered substitition
+     * @summary String substitutions are done using registered substitition
      *     functions. This method returns the current registrations.
      * @returns {Object}
      */
@@ -4080,8 +4080,8 @@ String.Type.defineMethod('getSubstitution',
 function(aSymbol) {
 
     /**
-     * @name getSubstitution
-     * @synopsis Returns a substitution registration or undefined.
+     * @method getSubstitution
+     * @summary Returns a substitution registration or undefined.
      * @param {String} aSymbol A single character symbol used to identify the
      *     substitution.
      * @returns {Object}
@@ -4096,8 +4096,8 @@ String.Type.defineMethod('parseString',
 function(aString, sourceLocale) {
 
     /**
-     * @name parseString
-     * @synopsis Returns the String value of the string provided, as localized
+     * @method parseString
+     * @summary Returns the String value of the string provided, as localized
      *     for the target locale. Obviously this seems a little strange, but the
      *     localization point is key here, not the type conversion aspect.
      * @param {String} aString The input string to parse.
@@ -4117,9 +4117,9 @@ String.Type.defineMethod('registerSubstitution',
 function(aSymbol, anExistenceTest, aDataSymbol, aRegExp, aHandler) {
 
     /**
-     * @name registerSubstitution
-     * @synopsis Registers a string substitution pattern and handler pair.
-     * @description String substitution uses a pattern String to contain
+     * @method registerSubstitution
+     * @summary Registers a string substitution pattern and handler pair.
+     * @summary String substitution uses a pattern String to contain
      *     patterns of characters that will be replaced by one or more
      *     'substitution' handlers. The substitution will take place if a regex
      *     that is built of all of the 'existence tests' for all of the
@@ -4189,8 +4189,8 @@ String.Inst.defineMethod('add',
 function(varargs) {
 
     /**
-     * @name add
-     * @synopsis Adds one or more items, usually strings, to the receiver.
+     * @method add
+     * @summary Adds one or more items, usually strings, to the receiver.
      * @param {Object} varargs One or more objects to concatentate to the
      *     receiver in string form.
      * @returns {String} A newly formed string.
@@ -4219,8 +4219,8 @@ String.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a TP.lang.Hash using parsers
+     * @method asHash
+     * @summary Returns the receiver as a TP.lang.Hash using parsers
      *     available for the TP.lang.Hash type. Strings conforming to query
      *     strings, CSS declarations, and other forms depend on TP.lang.Hash to
      *     parse them properly. If no parser can convert the string into a
@@ -4245,8 +4245,8 @@ String.Inst.defineMethod('asHashedNumber',
 function() {
 
     /**
-     * @name asHashedNumber
-     * @synopsis Returns the receiver as a hashed number using a one-way hashing
+     * @method asHashedNumber
+     * @summary Returns the receiver as a hashed number using a one-way hashing
      *     function.
      * @returns {Number} The receiver as a hashed number.
      */
@@ -4274,8 +4274,8 @@ String.Inst.defineMethod('asQueryString',
 function() {
 
     /**
-     * @name asQueryString
-     * @synopsis Converts the receiver into a String where any characters that
+     * @method asQueryString
+     * @summary Converts the receiver into a String where any characters that
      *     need to be escaped in a URI query string have been converted into
      *     their escaped equivalent.
      * @returns {String} The receiver with URI entities escaped.
@@ -4290,8 +4290,8 @@ String.Inst.defineMethod('asUnicodeLiteral',
 function() {
 
     /**
-     * @name asUnicodeLiteral
-     * @synopsis Returns a Unicode literal representation of the receiver. For
+     * @method asUnicodeLiteral
+     * @summary Returns a Unicode literal representation of the receiver. For
      *     instance, for a single character String of 'b', this method will
      *     return '\u0062'.
      * @returns {String} The Unicode literal String representation of the
@@ -4336,11 +4336,11 @@ String.Inst.defineMethod('charToLowerCase',
 function(index) {
 
     /**
-     * @name charToLowerCase
-     * @synopsis Returns the receiver with the character at position index in
+     * @method charToLowerCase
+     * @summary Returns the receiver with the character at position index in
      *     lowercase format.
      * @param {Number} index The index of the character to make lower case.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {String} The string with the character at index in lower case.
      */
 
@@ -4355,11 +4355,11 @@ String.Inst.defineMethod('charToUpperCase',
 function(index) {
 
     /**
-     * @name charToUpperCase
-     * @synopsis Returns the receiver with the character at position index in
+     * @method charToUpperCase
+     * @summary Returns the receiver with the character at position index in
      *     uppercase format.
      * @param {Number} index The index of the character to make upper case.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {String} The string with the character at index in upper case.
      */
 
@@ -4374,8 +4374,8 @@ String.Inst.defineMethod('chop',
 function(aTail) {
 
     /**
-     * @name chop
-     * @synopsis Returns the receiver with aTail removed provided the receiver
+     * @method chop
+     * @summary Returns the receiver with aTail removed provided the receiver
      *     ends with that character sequence.
      * @param {String} aTail The character(s) to remove if found.
      * @returns {String} A new string minus the tail.
@@ -4395,8 +4395,8 @@ String.Inst.defineMethod('chunkToWidth',
 function(aWidth) {
 
     /**
-     * @name chunkToWidth
-     * @synopsis Returns an array containing the pieces of the receiver after
+     * @method chunkToWidth
+     * @summary Returns an array containing the pieces of the receiver after
      *     splitting it into chunks no wider than aWidth. This is a more
      *     primitive method used by the splitToWidth method to break apart
      *     substrings without any whitespace.
@@ -4424,8 +4424,8 @@ String.Inst.defineMethod('collapseWhitespace',
 function() {
 
     /**
-     * @name collapseWhitespace
-     * @synopsis Returns the receiver with multiple occurrences of the space
+     * @method collapseWhitespace
+     * @summary Returns the receiver with multiple occurrences of the space
      *     character condensed to a single occurrence in accordance with the XML
      *     Schema rules for whitespace collapse. If you also want to convert
      *     newlines and tabs to spaces, call replaceWhitespace() first. Note
@@ -4455,8 +4455,8 @@ String.Inst.defineMethod('compact',
 function(aFilter) {
 
     /**
-     * @name compact
-     * @synopsis Returns a compact version of the receiver. In the case of
+     * @method compact
+     * @summary Returns a compact version of the receiver. In the case of
      *     string instances this is done by removing duplicate character
      *     sequences such as repeated spaces or tabs rather than by removing
      *     nulls as with other collection types.
@@ -4514,8 +4514,8 @@ String.Inst.defineMethod('endsWith',
 function(aSuffix) {
 
     /**
-     * @name endsWith
-     * @synopsis Returns true if the receiver ends with the suffix provided.
+     * @method endsWith
+     * @summary Returns true if the receiver ends with the suffix provided.
      * @param {String} aSuffix The string to check as a suffix.
      * @returns {Boolean}
      */
@@ -4539,8 +4539,8 @@ String.Inst.defineMethod('escapeWhitespace',
 function() {
 
     /**
-     * @name escapeWhitespace
-     * @synopsis Escapes any JavaScript constructs that have meaning to JS code
+     * @method escapeWhitespace
+     * @summary Escapes any JavaScript constructs that have meaning to JS code
      *     like newlines, returns and tabs.
      * @returns {String} The string with its JS code constructs escaped.
      */
@@ -4567,8 +4567,8 @@ String.Inst.defineMethod('getContent',
 function() {
 
     /**
-     * @name getContent
-     * @synopsis Returns the receiver. This method is used in content processing
+     * @method getContent
+     * @summary Returns the receiver. This method is used in content processing
      *     to support polymorphic access to String data.
      * @returns {String}
      */
@@ -4583,8 +4583,8 @@ String.Inst.defineMethod('getLocation',
 function() {
 
     /**
-     * @name getLocation
-     * @synopsis Returns the receiver. This method is used to conform to the
+     * @method getLocation
+     * @summary Returns the receiver. This method is used to conform to the
      *     TP.core.URI API.
      * @returns {String}
      */
@@ -4599,8 +4599,8 @@ String.Inst.defineMethod('isSourceString',
 function() {
 
     /**
-     * @name isSourceString
-     * @synopsis Returns true if the receiver can be thought of as a KeyValue
+     * @method isSourceString
+     * @summary Returns true if the receiver can be thought of as a KeyValue
      *     string, meaning that it begins and ends with []s or {}s and contains
      *     at least one comma ([]) or colon ({}) and has room for at least 1
      *     character for a key and value. Due to bugs in IE with trailing commas
@@ -4630,8 +4630,8 @@ String.Inst.defineMethod('hasFragment',
 function() {
 
     /**
-     * @name hasFragment
-     * @synopsis Returns true if the path contains a fragment reference. This is
+     * @method hasFragment
+     * @summary Returns true if the path contains a fragment reference. This is
      *     typically associated with anchors, barenames, or full XPointers.
      *     Provided for polymorphic API with TP.core.URI.
      * @returns {Boolean}
@@ -4646,11 +4646,11 @@ String.Inst.defineMethod('multiReplace',
 function(aHash) {
 
     /**
-     * @name multiReplace
-     * @synopsis Performs a 'multiple replace' on the receiver, with the
+     * @method multiReplace
+     * @summary Performs a 'multiple replace' on the receiver, with the
      *     supplied hash supplying the character sequences to look for and the
      *     replacements for those sequences as keys and values.
-     * @description This method replaces the String found as each key in the
+     * @summary This method replaces the String found as each key in the
      *     supplied hash with the corresponding value found there.
      * @param {TP.lang.Hash} aHash The replacements to perform on the receiver.
      * @returns {String} The receiver with any Strings found by matching each
@@ -4678,8 +4678,8 @@ String.Inst.defineMethod('overlayCharacters',
 function(aSource, aChar) {
 
     /**
-     * @name overlayCharacters
-     * @description Each char matching aChar (which defaults to @) in the
+     * @method overlayCharacters
+     * @summary Each char matching aChar (which defaults to @) in the
      *     receiver is replaced with a character from aSource as in:
      *
      *     "(@@@) @@@-@@@@".overlayCharacters(3035551212); ... (303) 555-1212
@@ -4745,11 +4745,11 @@ String.Inst.defineMethod('overlayFloat',
 function(aSource) {
 
     /**
-     * @name overlayFloat
-     * @synopsis Formats a floating point number according to the template
+     * @method overlayFloat
+     * @summary Formats a floating point number according to the template
      *     information in the receiver.
      * @param {Number} aSource A data source to format.
-     * @raises TP.sig.InvalidNumericTemplate
+     * @exception TP.sig.InvalidNumericTemplate
      * @returns {String} A formatted number string.
      */
 
@@ -4882,12 +4882,12 @@ String.Inst.defineMethod('overlayInteger',
 function(aSource, aSide) {
 
     /**
-     * @name overlayInteger
-     * @synopsis Formats an "integer" number (meaning a whole number), according
+     * @method overlayInteger
+     * @summary Formats an "integer" number (meaning a whole number), according
      *     to the format in the receiver. It has different rules depending on
      *     the 'side' of a possible overall 'real' number it is being formatted
      *     as a part of.
-     * @description This method does *NOT* deal with negative numbers. All
+     * @summary This method does *NOT* deal with negative numbers. All
      *     incoming sources are converted to Numbers and are then abs()ed. Users
      *     of this method must deal with marking up negative numbers in their
      *     own way.
@@ -5095,8 +5095,8 @@ String.Inst.defineMethod('overlayThousands',
 function() {
 
     /**
-     * @name overlayThousands
-     * @synopsis Replaces/inserts the properly localized "comma" from
+     * @method overlayThousands
+     * @summary Replaces/inserts the properly localized "comma" from
      *     Number.getThousandsSeparator() in the proper locations based on
      *     Number.getThousandsGroupSize().
      * @returns {String} The modified string.
@@ -5168,8 +5168,8 @@ String.Inst.defineMethod('processTP_sig_Request',
 function(aRequest) {
 
     /**
-     * @name processTP_sig_Request
-     * @synopsis Processes the receiver's content using the request to provide
+     * @method processTP_sig_Request
+     * @summary Processes the receiver's content using the request to provide
      *     control parameters. If the string can be converted into a valid XML
      *     node that node is processed, otherwise the processing is performed
      *     via the substitute method.
@@ -5203,8 +5203,8 @@ String.Inst.defineMethod('quoted',
 function(aQuoteChar) {
 
     /**
-     * @name quoted
-     * @synopsis Returns the receiver as a quoted string with embedded quotes
+     * @method quoted
+     * @summary Returns the receiver as a quoted string with embedded quotes
      *     escaped. The default quote character is a single quote in keeping
      *     with TIBET coding standards which use single quoted strings for
      *     JavaScript and double quoted strings for *ML.
@@ -5247,8 +5247,8 @@ String.Inst.defineMethod('replaceBetweenDelimiters',
 function(startDelim, endDelim, aFunction) {
 
     /**
-     * @name replaceBetweenDelimiters
-     * @synopsis This method finds chunks of text between two delimiters and
+     * @method replaceBetweenDelimiters
+     * @summary This method finds chunks of text between two delimiters and
      *     runs the standard String 'replace()' function on each chunk, using
      *     the supplied Function as the replacement Function.
      * @param {RegExp} startDelim The RegExp to match the starting position of
@@ -5332,8 +5332,8 @@ String.Inst.defineMethod('replaceWhitespace',
 function(aString) {
 
     /**
-     * @name replaceWhitespace
-     * @synopsis Returns a copy of the string with all tabs (#x9), linefeeds
+     * @method replaceWhitespace
+     * @summary Returns a copy of the string with all tabs (#x9), linefeeds
      *     (#xA), and carriage returns (#xD) replaced with spaces (#x20) per the
      *     XML Schema rules for whitespace replacement, or with aString if
      *     provided.
@@ -5356,8 +5356,8 @@ String.Inst.defineMethod('setDelimiter',
 function(aString) {
 
     /**
-     * @name setDelimiter
-     * @synopsis Sets the string used to split() the receiver.
+     * @method setDelimiter
+     * @summary Sets the string used to split() the receiver.
      * @param {String} aString The delimiter string. Defaults to '' to create
      *     character arrays.
      * @returns {String} The receiver.
@@ -5381,8 +5381,8 @@ String.Inst.defineMethod('sliceFrom',
 function(delimiter, inclusive, last) {
 
     /**
-     * @name sliceFrom
-     * @synopsis Slices the receiver up to the character or string provided.
+     * @method sliceFrom
+     * @summary Slices the receiver up to the character or string provided.
      * @param {String} delimiter The string to slice to.
      * @param {Boolean} inclusive True to include the delimiter in the returned
      *     string.
@@ -5415,8 +5415,8 @@ String.Inst.defineMethod('sliceTo',
 function(delimiter, inclusive, last) {
 
     /**
-     * @name sliceTo
-     * @synopsis Slices the receiver up to the character or string provided.
+     * @method sliceTo
+     * @summary Slices the receiver up to the character or string provided.
      * @param {String} delimiter The string to slice to.
      * @param {Boolean} inclusive True to include the delimiter in the returned
      *     string.
@@ -5447,12 +5447,12 @@ String.Inst.defineMethod('splitAtIndex',
 function(index) {
 
     /**
-     * @name splitAtIndex
-     * @synopsis Returns an array containing the pieces of the receiver after
+     * @method splitAtIndex
+     * @summary Returns an array containing the pieces of the receiver after
      *     splitting it at the index provided. The character at the specified
      *     index is placed in the second segment.
      * @param {Number} index The index to split the receiver at.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {String} The receiver split at the index provided.
      */
 
@@ -5471,8 +5471,8 @@ String.Inst.defineMethod('splitToWidth',
 function(aWidth, justified, forRendering, joinChar, splitMark) {
 
     /**
-     * @name splitToWidth
-     * @synopsis Takes a string and splits it into an array whose contents are
+     * @method splitToWidth
+     * @summary Takes a string and splits it into an array whose contents are
      *     the longest substrings possible. The break is done using whitespace
      *     whenever possible, but can also force a break in long strings so they
      *     won't cause horizontal scrolling. The resulting array is then joined
@@ -5632,8 +5632,8 @@ String.Inst.defineMethod('stripComments',
 function(stripSingle, stripMulti) {
 
     /**
-     * @name stripComments
-     * @synopsis Returns a copy of the string with all comments stripped.
+     * @method stripComments
+     * @summary Returns a copy of the string with all comments stripped.
      * @param {Boolean} stripSingle Should we strip single-line comments?
      *     Default is true.
      * @param {Boolean} stripMulti Should we strip multi-line comments? Default
@@ -5851,8 +5851,8 @@ String.Inst.defineMethod('stripEnclosingQuotes',
 function() {
 
     /**
-     * @name stripEnclosingQuotes
-     * @synopsis Strips enclosing quotes that are at the beginning and end of
+     * @method stripEnclosingQuotes
+     * @summary Strips enclosing quotes that are at the beginning and end of
      *     the receiver (they must be balanced quotes of the same type).
      * @returns {String} A new string with the contents of the receiver stripped
      *     of leading and trailing quotes.
@@ -5867,8 +5867,8 @@ String.Inst.defineMethod('stripExternalBodyContent',
 function() {
 
     /**
-     * @name stripExternalBodyContent
-     * @synopsis Returns a copy of the string with all 'external body content'
+     * @method stripExternalBodyContent
+     * @summary Returns a copy of the string with all 'external body content'
      *     (that is, img content) removed. This is part of 'sanitizing' inbound
      *     (X)HTML data.
      * @returns {String} A new string with the receiver's content but no
@@ -5891,8 +5891,8 @@ String.Inst.defineMethod('stripExternalHeadContent',
 function() {
 
     /**
-     * @name stripExternalHeadContent
-     * @synopsis Returns a copy of the string with all 'external head content'
+     * @method stripExternalHeadContent
+     * @summary Returns a copy of the string with all 'external head content'
      *     (that is, script, link to stylesheets and style content) removed.
      *     This is part of 'sanitizing' inbound (X)HTML data.
      * @returns {String} A new string with the receiver's content but no
@@ -5921,8 +5921,8 @@ String.Inst.defineMethod('stripTags',
 function() {
 
     /**
-     * @name stripTags
-     * @synopsis Returns a copy of the string with all tags (<blah>) stripped.
+     * @method stripTags
+     * @summary Returns a copy of the string with all tags (<blah>) stripped.
      * @returns {String} A new string with the receiver's content but no
      *     embedded tags.
      */
@@ -5936,8 +5936,8 @@ String.Inst.defineMethod('stripWhitespace',
 function() {
 
     /**
-     * @name stripWhitespace
-     * @synopsis Returns a copy of the string with all whitespace stripped.
+     * @method stripWhitespace
+     * @summary Returns a copy of the string with all whitespace stripped.
      * @returns {String} A new string with the receiver's content but no
      *     whitespace.
      */
@@ -5953,9 +5953,9 @@ String.Inst.defineMethod('substitute',
 function(aDataSource, aKeySource, aScope) {
 
     /**
-     * @name substitute
-     * @synopsis Formats aDataSource according to the template in the receiver.
-     * @description Strings support a substitution operation via substitutions
+     * @method substitute
+     * @summary Formats aDataSource according to the template in the receiver.
+     * @summary Strings support a substitution operation via substitutions
      *     registered on the type. This method is the 'top-level' method
      *     supporting this operation. The built-in substitution operations
      *     supplied with this type support a "formatting" operation via
@@ -6022,9 +6022,9 @@ String.Inst.defineMethod('substituteFor',
 function(aSymbol, aDataSource, aKeySource, aScope) {
 
     /**
-     * @name substituteFor
-     * @synopsis Substitutes for a single string substitution symbol.
-     * @description This method handles processing for a single string
+     * @method substituteFor
+     * @summary Substitutes for a single string substitution symbol.
+     * @summary This method handles processing for a single string
      *     substitution symbol. The substitute call passes control to this
      *     method to process each of the symbols found in the registration hash.
      * @param {String} aSymbol The symbol used to locate a substitution
@@ -6290,8 +6290,8 @@ String.Inst.defineMethod('tabsToSpaces',
 function(spaceCount) {
 
     /**
-     * @name tabsToSpaces
-     * @synopsis Returns a new string with any tab characters of the receiver
+     * @method tabsToSpaces
+     * @summary Returns a new string with any tab characters of the receiver
      *     converted to 'spaceCount' number of spaces. The default count is 4
      *     spaces per tab.
      * @param {Number} spaceCount A number of spaces per tab. Defaults to 4.
@@ -6315,8 +6315,8 @@ String.Inst.defineMethod('tokenizeWhitespace',
 function() {
 
     /**
-     * @name tokenizeWhitespace
-     * @synopsis Returns the receiver with whitespace trimmed from each end, all
+     * @method tokenizeWhitespace
+     * @summary Returns the receiver with whitespace trimmed from each end, all
      *     non-space whitespace converted to spaces, and all sets of multiple
      *     spaces collapsed to a single space. This matches the requirements of
      *     XML Schema for types other than xs:string and xs:normalizedString.
@@ -6333,8 +6333,8 @@ String.Inst.defineMethod('trimLeft',
 function(aChar) {
 
     /**
-     * @name trimLeft
-     * @synopsis Returns a new string with the contents of the receiver after
+     * @method trimLeft
+     * @summary Returns a new string with the contents of the receiver after
      *     having stripped of any characters up to and including the character
      *     provided.
      * @param {String} aChar The char to trim to.
@@ -6357,8 +6357,8 @@ String.Inst.defineMethod('trimRight',
 function(aChar) {
 
     /**
-     * @name trimRight
-     * @synopsis Returns a new string with the contents of the receiver after
+     * @method trimRight
+     * @summary Returns a new string with the contents of the receiver after
      *     having stripped of any characters trailing the last occurrence of
      *     aChar.
      * @param {String} aChar The character to trim behind.
@@ -6381,15 +6381,15 @@ String.Inst.defineMethod('truncate',
 function(aSize, aTail) {
 
     /**
-     * @name truncate
-     * @synopsis Returns a new string shortened to the size specified and ending
+     * @method truncate
+     * @summary Returns a new string shortened to the size specified and ending
      *     in the tail provided. If the string didn't have to be shortened it is
      *     returned directly without the tail.
      * @param {Number} aSize The size of the returned String including the
      *     length of the tail. Defaults to TP.DEFAULT_STRLEN.
      * @param {String} aTail A trailing set of characters to use to "finish" the
      *     string. Default is '...' (ellipsis).
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} The receiver shortened to aSize with a possible
      *     ellipsis.
      */
@@ -6414,8 +6414,8 @@ String.Inst.defineMethod('unicodeEscaped',
 function() {
 
     /**
-     * @name unicodeEscaped
-     * @synopsis Returns a new string with the contents of the receiver
+     * @method unicodeEscaped
+     * @summary Returns a new string with the contents of the receiver
      *     converted to escaped unicode.
      * @returns {String} A string having the contents of the receiver converted
      *     to escaped unicode.
@@ -6443,8 +6443,8 @@ String.Inst.defineMethod('unquoted',
 function(aQuoteChar) {
 
     /**
-     * @name unquoted
-     * @synopsis Returns the receiver with any enclosing quotes removed. Note
+     * @method unquoted
+     * @summary Returns the receiver with any enclosing quotes removed. Note
      *     that embedded quotes are unescaped by this process. This operation
      *     works on both single and double-quoted strings.
      * @param {String} aQuoteChar A quoting character to use. If not provided

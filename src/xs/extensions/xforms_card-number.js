@@ -10,7 +10,7 @@
 
 /**
  * @type {xforms:card_number}
- * @synopsis A simple ID card type based on the XForms 1.1 draft standard.
+ * @summary A simple ID card type based on the XForms 1.1 draft standard.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,10 +25,10 @@ TP.xforms.card_number.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided.
      * @param {Object} anObject The object to use as source data.
-     * @raises TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidOperation
      */
 
     var str;
@@ -56,8 +56,8 @@ TP.xforms.card_number.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a string containing a
+     * @method validate
+     * @summary Returns true if the object provided is a string containing a
      *     valid ID-card_number as defined by the XForms 1.1 draft
      *     specification's XML Schema for that data type.
      * @param {Object} anObject The object to test.

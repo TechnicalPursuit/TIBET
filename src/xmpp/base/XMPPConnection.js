@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Connection}
- * @synopsis Handles all communication between a specific JID in the client and
+ * @summary Handles all communication between a specific JID in the client and
  *     a particular Jabber server. The interface is modeled very loosely on the
  *     JDBC pattern of opening a connection and asking for a 'statement', in
  *     this case, a stanza of some form.
@@ -63,14 +63,14 @@ TP.xmpp.Connection.Type.defineMethod('open',
 function(aServerName, aConnectionInfo) {
 
     /**
-     * @name open
-     * @synopsis Opens a new connection to the serverName using the connection
+     * @method open
+     * @summary Opens a new connection to the serverName using the connection
      *     information provided.
      * @param {String} aServerName The actual server name to connect to. This
      *     can be altered by the server in certain circumstances.
      * @param {TP.lang.Hash} aConnectionInfo The hash containing 'connection
      *     information', such as 'httpServerURI' and 'connectionType'.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.Connection} A new instance.
      */
 
@@ -136,13 +136,13 @@ TP.xmpp.Connection.Inst.defineMethod('init',
 function(aServerName, aConnectionInfo) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {String} aServerName The actual server name to connect to. This
      *     can be altered by the server in certain circumstances.
      * @param {TP.lang.Hash} aConnectionInfo The hash containing 'connection
      *     information', such as 'httpServerURI' and 'connectionType'.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.Connection} A new instance.
      */
 
@@ -198,14 +198,14 @@ TP.xmpp.Connection.Inst.defineMethod('$auth',
 function(aJID, aPassword, aMethod) {
 
     /**
-     * @name $auth
-     * @synopsis Authenticates the connection using the JID, password, and
+     * @method $auth
+     * @summary Authenticates the connection using the JID, password, and
      *     method provided.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
      * @param {String} aPassword The password to use.
      * @param {String} aMethod An XMPP SASL authentication type: PLAINTEXT or
      *     DIGEST (the default).
-     * @raises TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
+     * @exception TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
      *     TP.sig.XMPPAuthException, TP.sig.InvalidParameter
      * @returns {Boolean} True on successful authentication.
      */
@@ -261,12 +261,12 @@ TP.xmpp.Connection.Inst.defineMethod('$authDigest',
 function(aJID, aPassword) {
 
     /**
-     * @name $authDigest
-     * @synopsis Authenticates the username and password provided using the
+     * @method $authDigest
+     * @summary Authenticates the username and password provided using the
      *     digest-MD5 model.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
      * @param {String} aPassword The password to use.
-     * @raises TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
+     * @exception TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
      *     TP.sig.XMPPAuthException
      * @returns {Boolean} True on successful authentication.
      */
@@ -551,12 +551,12 @@ TP.xmpp.Connection.Inst.defineMethod('$authPlainText',
 function(aJID, aPassword) {
 
     /**
-     * @name $authPlainText
-     * @synopsis Authenticates the username and password provided using the
+     * @method $authPlainText
+     * @summary Authenticates the username and password provided using the
      *     plaintext model.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
      * @param {String} aPassword The password to use.
-     * @raises TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
+     * @exception TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
      *     TP.sig.XMPPAuthException
      * @returns {Boolean} True on successful authentication.
      */
@@ -572,8 +572,8 @@ TP.xmpp.Connection.Inst.defineMethod('authenticate',
 function(aJID, aPassword) {
 
     /**
-     * @name authenticate
-     * @synopsis Authenticates the connection using the JID and password
+     * @method authenticate
+     * @summary Authenticates the connection using the JID and password
      *     provided.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID String.
      * @param {String} aPassword The password to use.
@@ -664,12 +664,12 @@ TP.xmpp.Connection.Inst.defineMethod('bindResource',
 function(aJID) {
 
     /**
-     * @name bindResource
-     * @synopsis Establishes an XMPP 1.0 'binding' for the resource that the
+     * @method bindResource
+     * @summary Establishes an XMPP 1.0 'binding' for the resource that the
      *     supplied JID is requesting. This step takes place after SASL
      *     authentication.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
-     * @raises TP.sig.InvalidXMPPResponse,
+     * @exception TP.sig.InvalidXMPPResponse,
      *     TP.sig.XMPPResourceAllocationException, TP.sig.InvalidParameter
      * @returns {Boolean} True on successful resource binding.
      */
@@ -746,8 +746,8 @@ TP.xmpp.Connection.Inst.defineMethod('close',
 function(serverClosed) {
 
     /**
-     * @name close
-     * @synopsis Closes the connection.
+     * @method close
+     * @summary Closes the connection.
      * @param {Boolean} serverClosed Pass true if you're closing because the
      *     server closed first.
      * @returns {Boolean} True if the connection is closed successfully.
@@ -785,15 +785,15 @@ TP.xmpp.Connection.Inst.defineMethod('constructStanza',
 function(aStanzaType, toJID, aPayload) {
 
     /**
-     * @name constructStanza
-     * @synopsis Constructs a new TP.xmpp.Stanza of the proper type and
+     * @method constructStanza
+     * @summary Constructs a new TP.xmpp.Stanza of the proper type and
      *     configured using the parameters provided. This is the preferred
      *     method for creating new stanzas which aren't responses to incoming
      *     stanzas.
      * @param {String} aStanzaType The stanza type to construct.
      * @param {String|JID} toJID The JID to target.
      * @param {TP.xmpp.Payload} aPayload A payload instance.
-     * @raises TP.sig.InvalidInstantiation, TP.sig.InvalidXMPPStanzaType
+     * @exception TP.sig.InvalidInstantiation, TP.sig.InvalidXMPPStanzaType
      * @returns {TP.xmpp.Stanza} A new stanza instance.
      */
 
@@ -833,12 +833,12 @@ TP.xmpp.Connection.Inst.defineMethod('establishSession',
 function(aJID) {
 
     /**
-     * @name establishSession
-     * @synopsis Establishes an XMPP 1.0 'session'. This step takes place after
+     * @method establishSession
+     * @summary Establishes an XMPP 1.0 'session'. This step takes place after
      *     SASL authentication and JID resource binding and is what allows the
      *     various IM status, chat, etc. stanzas to be processed by the server.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
-     * @raises TP.sig.InvalidXMPPResponse, TP.xmpp.SessionEstablishmentException
+     * @exception TP.sig.InvalidXMPPResponse, TP.xmpp.SessionEstablishmentException
      * @returns {Boolean} True on successful session establishment.
      */
 
@@ -891,8 +891,8 @@ TP.xmpp.Connection.Inst.defineMethod('getInputStream',
 function() {
 
     /**
-     * @name getInputStream
-     * @synopsis Returns the receiver's input stream.
+     * @method getInputStream
+     * @summary Returns the receiver's input stream.
      * @returns {TP.xmpp.InputStream} The input stream instance.
      */
 
@@ -905,8 +905,8 @@ TP.xmpp.Connection.Inst.defineMethod('getLastMessageID',
 function() {
 
     /**
-     * @name getLastMessageID
-     * @synopsis Returns the last generated message ID for this connection.
+     * @method getLastMessageID
+     * @summary Returns the last generated message ID for this connection.
      * @returns {String}
      */
 
@@ -919,8 +919,8 @@ TP.xmpp.Connection.Inst.defineMethod('getMessageCount',
 function() {
 
     /**
-     * @name getMessageCount
-     * @synopsis Returns the count of messages sent by this connection.
+     * @method getMessageCount
+     * @summary Returns the count of messages sent by this connection.
      * @returns {Number}
      */
 
@@ -933,8 +933,8 @@ TP.xmpp.Connection.Inst.defineMethod('getOutputStream',
 function() {
 
     /**
-     * @name getOutputStream
-     * @synopsis Returns the receiver's output stream.
+     * @method getOutputStream
+     * @summary Returns the receiver's output stream.
      * @returns {TP.xmpp.OutputStream} The output stream instance.
      */
 
@@ -947,12 +947,12 @@ TP.xmpp.Connection.Inst.defineMethod('handleXMPPDataAvailable',
 function(aSignal) {
 
     /**
-     * @name handleXMPPDataAvailable
-     * @synopsis Responds to notifications that data is available from the
+     * @method handleXMPPDataAvailable
+     * @summary Responds to notifications that data is available from the
      *     server. This implementation reads new data and signals the proper
      *     packet-level input signals.
      * @param {TP.sig.XMPPDataAvailable} aSignal The triggering signal.
-     * @raises TP.sig.XMPPQueueingException
+     * @exception TP.sig.XMPPQueueingException
      */
 
     var stream,
@@ -1071,8 +1071,8 @@ TP.xmpp.Connection.Inst.defineMethod('handleXMPPRosterInput',
 function(aSignal) {
 
     /**
-     * @name handleXMPPRosterInput
-     * @synopsis Responds to notifications of roster input.
+     * @method handleXMPPRosterInput
+     * @summary Responds to notifications of roster input.
      * @param {TP.sig.XMPPRosterInput} aSignal The triggering signal.
      */
 
@@ -1122,8 +1122,8 @@ TP.xmpp.Connection.Inst.defineMethod('handleXMPPTransportReady',
 function(aSignal) {
 
     /**
-     * @name handleXMPPTransportReady
-     * @synopsis Responds to notifications of the transport being ready to send
+     * @method handleXMPPTransportReady
+     * @summary Responds to notifications of the transport being ready to send
      *     or receive data.
      * @param {TP.sig.XMPPTransportReady} aSignal The triggering signal.
      */
@@ -1139,8 +1139,8 @@ TP.xmpp.Connection.Inst.defineMethod('handleXMPPTransportException',
 function(aSignal) {
 
     /**
-     * @name handleXMPPTransportException
-     * @synopsis Responds to notifications of the transport having some sort of
+     * @method handleXMPPTransportException
+     * @summary Responds to notifications of the transport having some sort of
      *     problem. This method closes the connection and signals an
      *     TP.sig.XMPPConnectionException.
      * @param {TP.sig.XMPPTransportException} aSignal The triggering signal.
@@ -1161,8 +1161,8 @@ TP.xmpp.Connection.Inst.defineMethod('isAuthenticated',
 function(aFlag) {
 
     /**
-     * @name isAuthenticated
-     * @synopsis Returns true if the receiver has authenticated successfully.
+     * @method isAuthenticated
+     * @summary Returns true if the receiver has authenticated successfully.
      * @param {Boolean} aFlag The new authenticatedness value, if any.
      * @returns {Boolean} The authenticatedness status, after optional set.
      */
@@ -1180,8 +1180,8 @@ TP.xmpp.Connection.Inst.defineMethod('isBusy',
 function() {
 
     /**
-     * @name isBusy
-     * @synopsis Whether or not the connection is 'busy' sending something.
+     * @method isBusy
+     * @summary Whether or not the connection is 'busy' sending something.
      * @returns {Boolean} Whether or not the connection is busy.
      */
 
@@ -1195,8 +1195,8 @@ TP.xmpp.Connection.Inst.defineMethod('isOpen',
 function(aFlag) {
 
     /**
-     * @name isOpen
-     * @synopsis Combined setter/getter for open status, returns true if the
+     * @method isOpen
+     * @summary Combined setter/getter for open status, returns true if the
      *     connection is open.
      * @param {Boolean} aFlag The new open/closed status if any.
      * @returns {Boolean} The connection open status, after optional set.
@@ -1215,8 +1215,8 @@ TP.xmpp.Connection.Inst.defineMethod('obtainSASLMechanisms',
 function(anElement) {
 
     /**
-     * @name obtainSASLMechanisms
-     * @synopsis Obtains the currently available SASL mechanisms from the
+     * @method obtainSASLMechanisms
+     * @summary Obtains the currently available SASL mechanisms from the
      *     supplied element.
      * @param {Element} anElement The element to use as a root to obtain the
      *     SASL mechanisms from.
@@ -1267,8 +1267,8 @@ TP.xmpp.Connection.Inst.defineMethod('obtainStreamFeatures',
 function(anElement) {
 
     /**
-     * @name obtainStreamFeatures
-     * @synopsis Obtains the currently available stream features from the
+     * @method obtainStreamFeatures
+     * @summary Obtains the currently available stream features from the
      *     supplied element.
      * @param {Element} anElement The element to use as a root to obtain the
      *     stream features from.
@@ -1327,9 +1327,9 @@ TP.xmpp.Connection.Inst.defineMethod('open',
 function() {
 
     /**
-     * @name open
-     * @synopsis Opens the receiver using its current server parameters.
-     * @raises TP.sig.InvalidOperation
+     * @method open
+     * @summary Opens the receiver using its current server parameters.
+     * @exception TP.sig.InvalidOperation
      * @returns {Boolean} True if the connection opens successfully.
      */
 
@@ -1366,10 +1366,10 @@ TP.xmpp.Connection.Inst.defineMethod('send',
 function(aStanza) {
 
     /**
-     * @name send
-     * @synopsis Sends the stanza provided.
+     * @method send
+     * @summary Sends the stanza provided.
      * @param {TP.xmpp.Stanza} aStanza The stanza to send.
-     * @raises TP.sig.XMPPConnectionNotReady,TP.sig.InvalidXMPPMessage
+     * @exception TP.sig.XMPPConnectionNotReady,TP.sig.InvalidXMPPMessage
      * @returns {String} The message ID used for the send.
      */
 
@@ -1414,10 +1414,10 @@ TP.xmpp.Connection.Inst.defineMethod('sendRaw',
 function(aStr) {
 
     /**
-     * @name sendRaw
-     * @synopsis Sends the raw data provided.
+     * @method sendRaw
+     * @summary Sends the raw data provided.
      * @param {String} aStr The raw data to be sent over the connection.
-     * @raises TP.sig.XMPPConnectionNotReady
+     * @exception TP.sig.XMPPConnectionNotReady
      */
 
     if (!this.isOpen() || !this.isAuthenticated()) {

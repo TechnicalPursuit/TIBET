@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tsh.template}
- * @synopsis A subtype of TP.core.ElementNode that knows how to define XML, XSLT
+ * @summary A subtype of TP.core.ElementNode that knows how to define XML, XSLT
  *     and JavaScript templates and register them with the system. The resulting
  *     templates can be leveraged by tsh:transform and TP.core.TemplatedNode in
  *     particular.
@@ -32,8 +32,8 @@ TP.tsh.template.Type.defineMethod('processJSTemplate',
 function(anElement, aName, aURI) {
 
     /**
-     * @name processJSTemplate
-     * @synopsis Sets up a JavaScript template using information given by the
+     * @method processJSTemplate
+     * @summary Sets up a JavaScript template using information given by the
      *     supplied Element. The template string can be found in an external
      *     file, or in child content (preferably in a CDATA). When an external
      *     file is used the root element is expected to contain the template
@@ -41,7 +41,7 @@ function(anElement, aName, aURI) {
      * @param {Element} anElement The request command node.
      * @param {String} aName The template's registered name.
      * @param {TP.core.URI} aURI The src URI, if any.
-     * @raises TP.sig.InvalidTemplate
+     * @exception TP.sig.InvalidTemplate
      * @returns {Function} The template function created, if any.
      */
 
@@ -113,14 +113,14 @@ TP.tsh.template.Type.defineMethod('processXMLTemplate',
 function(anElement, aName, aURI) {
 
     /**
-     * @name processXMLTemplate
-     * @synopsis Sets up an XML template using information given by the supplied
+     * @method processXMLTemplate
+     * @summary Sets up an XML template using information given by the supplied
      *     Element. When an external file is used the entire root node and all
      *     descendants are considered the template.
      * @param {Element} anElement The request command node.
      * @param {String} aName The template's registered name.
      * @param {TP.core.URI} aURI The src URI, if any.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Element|Array} The new element for tshCompile processing or an
      *     array with the new element and a processing constant such as
      *     TP.DESCEND.
@@ -218,8 +218,8 @@ TP.tsh.template.Type.defineMethod('processXSLTTemplate',
 function(anElement, aName, aURI) {
 
     /**
-     * @name processXSLTTemplate
-     * @synopsis Sets up an XSLT template using information given by the
+     * @method processXSLTTemplate
+     * @summary Sets up an XSLT template using information given by the
      *     supplied Element. When an external file is used it is expected to
      *     contain a properly formed XSLT document. When child nodes of the
      *     template are used they are spliced into the XSLT boilerplate document
@@ -228,7 +228,7 @@ function(anElement, aName, aURI) {
      * @param {Element} anElement The request command node.
      * @param {String} aName The template's registered name.
      * @param {TP.core.URI} aURI The src URI, if any.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Element|Array} The new element for tshCompile processing or an
      *     array with the new element and a processing constant such as
      *     TP.DESCEND.
@@ -323,8 +323,8 @@ TP.tsh.template.Type.defineMethod('getTemplateGenerator',
 function(anElement) {
 
     /**
-     * @name getTemplateGenerator
-     * @synopsis Returns the optional generator type for the template element.
+     * @method getTemplateGenerator
+     * @summary Returns the optional generator type for the template element.
      *     This value is only valid when the template has been dynamically
      *     created during tag processing to assist with content processing.
      * @param {Element} anElement The template element to query.
@@ -352,8 +352,8 @@ TP.tsh.template.Type.defineMethod('getTemplateResult',
 function(aTemplateName, aDataSource, formatParams) {
 
     /**
-     * @name getTemplateResult
-     * @synopsis Returns the result of processing the template using the data
+     * @method getTemplateResult
+     * @summary Returns the result of processing the template using the data
      *     source and parameters provided.
      * @param {String} aTemplateName The template name to look up and execute.
      * @param {Object} aDataSource The object serving as the primary data
@@ -468,13 +468,13 @@ TP.tsh.template.Type.defineMethod('getXSLTBoilerplate',
 function(anElement) {
 
     /**
-     * @name getXSLTBoilerplate
-     * @synopsis Returns the XSLT document used to 'wrap' XSLT template content.
+     * @method getXSLTBoilerplate
+     * @summary Returns the XSLT document used to 'wrap' XSLT template content.
      *     The boilerplace document is cloned and the raw template content is
      *     injected, creating a fully-formed XSLT template suitable for
      *     transforming input documents.
      * @param {Element} anElement The template element.
-     * @raises TP.sig.InvalidDocument, TP.sig.InvalidURI
+     * @exception TP.sig.InvalidDocument, TP.sig.InvalidURI
      * @returns {TP.core.XSLDocumentNode} The document to used as the XSLT
      *     boilerplate.
      */
@@ -507,8 +507,8 @@ TP.tsh.template.Type.defineMethod('wrapInTransformElement',
 function(transformElement, templatePrefix) {
 
     /**
-     * @name wrapInTransformElement
-     * @synopsis Returns a 'tsh:transform' element wrapped around the content of
+     * @method wrapInTransformElement
+     * @summary Returns a 'tsh:transform' element wrapped around the content of
      *     the supplied Element. Note that this returns a completely new Element
      *     under the transform, not the supplied Element.
      * @param {Element} transformElement The Element to wrap into a
@@ -577,8 +577,8 @@ TP.tsh.template.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tagCompile
-     * @synopsis Compiles templates defined with this element into TIBET
+     * @method tagCompile
+     * @summary Compiles templates defined with this element into TIBET
      *     representations for use in templating.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.

@@ -86,8 +86,8 @@ TP.tsh.service.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @name tshExecute
-     * @synopsis Runs the receiver, effectively invoking its action. For tsh:uri
+     * @method tshExecute
+     * @summary Runs the receiver, effectively invoking its action. For tsh:uri
      *     this method is responsible for dispatching all the variations of pipe
      *     methods which are suitable for use with a URI.
      * @param {TP.sig.Request} aRequest The request containing command input for
@@ -116,8 +116,8 @@ TP.tsh.service.Inst.defineMethod('execute',
 function(aRequest) {
 
     /**
-     * @name execute
-     * @synopsis Runs the receiver, effectively invoking its action.
+     * @method execute
+     * @summary Runs the receiver, effectively invoking its action.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -400,8 +400,8 @@ TP.tsh.service.Inst.defineMethod('isBoundElement',
 function() {
 
     /**
-     * @name isBoundElement
-     * @synopsis Returns true if the receiver is a bound element. Service
+     * @method isBoundElement
+     * @summary Returns true if the receiver is a bound element. Service
      *     elements are typically bound, to the default instance if not
      *     specified otherwise using a default ref value of "/".
      * @returns {Boolean} True if the receiver has binding attributes.
@@ -418,8 +418,8 @@ TP.tsh.service.Inst.defineMethod('isSingleValued',
 function() {
 
     /**
-     * @name isSingleValued
-     * @synopsis Returns true if the receiver binds to a single element. For
+     * @method isSingleValued
+     * @summary Returns true if the receiver binds to a single element. For
      *     TP.tsh.service this is always true since only a single element can be
      *     processed as valid content.
      * @returns {Boolean} True if the receiver has binding attributes.

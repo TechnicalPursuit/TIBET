@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.Unicode}
- * @synopsis Container type for Unicode character class information.
+ * @summary Container type for Unicode character class information.
  */
 
 //  ------------------------------------------------------------------------

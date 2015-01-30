@@ -10,7 +10,7 @@
 
 /**
  * @type {tibet:}
- * @synopsis This type represents the TIBET namespace
+ * @summary This type represents the TIBET namespace
  *     (http://www.technicalpursuit.com/1999/tibet) in the tag processing
  *     system.
  */

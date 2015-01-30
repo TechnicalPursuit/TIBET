@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.SOAPRequest}
- * @synopsis Signal/request type for SOAP messaging.
+ * @summary Signal/request type for SOAP messaging.
  */
 
 //  ------------------------------------------------------------------------
@@ -38,8 +38,8 @@ TP.sig.SOAPRequest.Inst.defineMethod('asSOAPBody',
 function(aRequest) {
 
     /**
-     * @name asSOAPBody
-     * @synopsis Formats the receiver as the body of a SOAP message. The
+     * @method asSOAPBody
+     * @summary Formats the receiver as the body of a SOAP message. The
      *     resulting data can then be injected into a viable SOAP Body container
      *     for transmission. NOTE that to avoid any issues with namespace URIs
      *     its preferable to produce only the content of the <soap:Body>, not
@@ -91,12 +91,12 @@ TP.sig.SOAPRequest.Inst.defineMethod('asSOAPMessage',
 function() {
 
     /**
-     * @name asSOAPMessage
-     * @synopsis Returns the request object in XML format appropriate for use as
+     * @method asSOAPMessage
+     * @summary Returns the request object in XML format appropriate for use as
      *     an SOAP payload. This method is useful for processing SOAP requests
      *     as well as in leveraging other communication pathways to tunnel SOAP
      *     payloads (or for debugging).
-     * @description Transforms the receiver into a viable SOAP message node. The
+     * @summary Transforms the receiver into a viable SOAP message node. The
      *     'usenil' key, if any, in the receiver's payload defines whether a
      *     non-standard <nil/> is used when a parameter value is null/undefined.
      * @returns {Node} A valid SOAP message payload.

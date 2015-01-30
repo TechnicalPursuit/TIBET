@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.link}
- * @synopsis 'link' tag.
+ * @summary 'link' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -48,8 +48,8 @@ TP.html.link.Type.defineMethod('tagPrecompile',
 function(aRequest) {
 
     /**
-     * @name tagPrecompile
-     * @synopsis Replaces the link element with a css:style element suitable for
+     * @method tagPrecompile
+     * @summary Replaces the link element with a css:style element suitable for
      *     compiling or otherwise processing the CSS.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.

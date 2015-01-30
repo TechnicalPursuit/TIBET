@@ -51,8 +51,8 @@ TP.xmpp.Transport.Type.defineMethod('shouldLogRecvs',
 function(aFlag) {
 
     /**
-     * @name shouldLogRecvs
-     * @synopsis Combined setter/getter for controlling whether the transport
+     * @method shouldLogRecvs
+     * @summary Combined setter/getter for controlling whether the transport
      *     should log received data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.
@@ -71,8 +71,8 @@ TP.xmpp.Transport.Type.defineMethod('shouldLogSends',
 function(aFlag) {
 
     /**
-     * @name shouldLogSends
-     * @synopsis Combined setter/getter for controlling whether the transport
+     * @method shouldLogSends
+     * @summary Combined setter/getter for controlling whether the transport
      *     should log sent data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.
@@ -93,12 +93,12 @@ TP.xmpp.Transport.Inst.defineMethod('init',
 function(aConnectionInfo) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {TP.lang.Hash} aConnectionInfo A hash of connection information.
      *     This hash should contain values for: 'serverName', 'inStream',
      *     'outStream'.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.Transport} A new instance.
      */
 
@@ -128,10 +128,10 @@ TP.xmpp.Transport.Inst.defineMethod('connect',
 function() {
 
     /**
-     * @name connect
-     * @synopsis Connects the receiver to the server it is configured to connect
+     * @method connect
+     * @summary Connects the receiver to the server it is configured to connect
      *     to.
-     * @raises TP.sig.XMPPTransportException
+     * @exception TP.sig.XMPPTransportException
      * @returns {Boolean} True if the transport connects successfully to the
      *     server.
      */
@@ -145,8 +145,8 @@ TP.xmpp.Transport.Inst.defineMethod('connectionDidAuthenticate',
 function() {
 
     /**
-     * @name connectionDidAuthenticate
-     * @synopsis A method that is called by the connection that owns this
+     * @method connectionDidAuthenticate
+     * @summary A method that is called by the connection that owns this
      *     transport letting the transport know that the connection did
      *     successfully authenticate with the server.
      * @returns {TP.xmpp.Transport} The receiver.
@@ -161,8 +161,8 @@ TP.xmpp.Transport.Inst.defineMethod('disconnect',
 function() {
 
     /**
-     * @name disconnect
-     * @synopsis Disconnects the receiver to the server it was configured to
+     * @method disconnect
+     * @summary Disconnects the receiver to the server it was configured to
      *     connect to.
      * @returns {Boolean} True if the transport discconnects successfully from
      *     the server.
@@ -177,8 +177,8 @@ TP.xmpp.Transport.Inst.defineMethod('$getNextMessageID',
 function() {
 
     /**
-     * @name $getNextMessageID
-     * @synopsis Returns a newly generated message ID for use.
+     * @method $getNextMessageID
+     * @summary Returns a newly generated message ID for use.
      * @returns {String} The message ID that will be used for the next message.
      */
 
@@ -191,8 +191,8 @@ TP.xmpp.Transport.Inst.defineMethod('isBusy',
 function() {
 
     /**
-     * @name isBusy
-     * @synopsis Whether or not the transport is 'busy' sending something.
+     * @method isBusy
+     * @summary Whether or not the transport is 'busy' sending something.
      * @returns {Boolean} Whether or not the transport is busy.
      */
 
@@ -205,8 +205,8 @@ TP.xmpp.Transport.Inst.defineMethod('receive',
 function() {
 
     /**
-     * @name receive
-     * @synopsis Receives any currently available XMPP data by reading data from
+     * @method receive
+     * @summary Receives any currently available XMPP data by reading data from
      *     the server.
      * @returns {TP.xmpp.Packet} The currently available XMPP packet read from
      *     the server.
@@ -221,10 +221,10 @@ TP.xmpp.Transport.Inst.defineMethod('transmit',
 function(aStr) {
 
     /**
-     * @name transmit
-     * @synopsis Sends the raw data provided to the server.
+     * @method transmit
+     * @summary Sends the raw data provided to the server.
      * @param {String} aStr The raw data to be sent over the transport.
-     * @raises TP.sig.XMPPTransportException
+     * @exception TP.sig.XMPPTransportException
      */
 
     return TP.override();
@@ -236,8 +236,8 @@ TP.xmpp.Transport.Inst.defineMethod('startReceiving',
 function() {
 
     /**
-     * @name startReceiving
-     * @synopsis Start the transport's 'receiving process'. For transports that
+     * @method startReceiving
+     * @summary Start the transport's 'receiving process'. For transports that
      *     operate over HTTP, this will typically start a polling or listening
      *     process.
      * @returns {TP.xmpp.Transport} The receiver.
@@ -254,8 +254,8 @@ TP.xmpp.Transport.Inst.defineMethod('stopReceiving',
 function() {
 
     /**
-     * @name stopReceiving
-     * @synopsis Stop the transport's 'receiving process'. For transports that
+     * @method stopReceiving
+     * @summary Stop the transport's 'receiving process'. For transports that
      *     operate over HTTP, this will typically stop a polling or listening
      *     process.
      * @returns {TP.xmpp.Transport} The receiver.
@@ -272,8 +272,8 @@ TP.xmpp.Transport.Inst.defineMethod('shouldLogRecvs',
 function(aFlag) {
 
     /**
-     * @name shouldLogRecvs
-     * @synopsis Combined setter/getter for controlling whether the transport
+     * @method shouldLogRecvs
+     * @summary Combined setter/getter for controlling whether the transport
      *     should log received data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.
@@ -292,8 +292,8 @@ TP.xmpp.Transport.Inst.defineMethod('shouldLogSends',
 function(aFlag) {
 
     /**
-     * @name shouldLogSends
-     * @synopsis Combined setter/getter for controlling whether the transport
+     * @method shouldLogSends
+     * @summary Combined setter/getter for controlling whether the transport
      *     should log sent data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.

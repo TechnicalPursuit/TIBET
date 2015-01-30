@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.XMLRPCRequest}
- * @synopsis Signal/request type for XMLRPC messaging. Noteable request keys
+ * @summary Signal/request type for XMLRPC messaging. Noteable request keys
  *     include 'method', 'usenil', 'filter', and 'bodyarray' which define the
  *     procedure to call, whether a non-standard <nil/> should be used to
  *     represent null, which keys from an object represent parameters, and
@@ -36,8 +36,8 @@ TP.sig.XMLRPCRequest.Type.defineMethod('formatParameter',
 function(anObject, aRequest) {
 
     /**
-     * @name formatParameter
-     * @synopsis Returns a string representing the object in XMLRPC parameter
+     * @method formatParameter
+     * @summary Returns a string representing the object in XMLRPC parameter
      *     form. The overall string will always contain an enclosing pair of
      *     <param><value> elements containing the object value in XMLRPC form.
      * @param {TP.sig.XMLRPCRequest} aRequest The request to format for.
@@ -91,8 +91,8 @@ TP.sig.XMLRPCRequest.Inst.defineMethod('asXMLRPCBody',
 function(aRequest) {
 
     /**
-     * @name asXMLRPCBody
-     * @synopsis Formats the receiver as the body (<params>) of an XMLRPC
+     * @method asXMLRPCBody
+     * @summary Formats the receiver as the body (<params>) of an XMLRPC
      *     message. The resulting data can then be injected into a viable XMLRPC
      *     methodCall container for transmission.
      * @param {TP.sig.Request} aRequest The request to format for.
@@ -133,12 +133,12 @@ TP.sig.XMLRPCRequest.Inst.defineMethod('asXMLRPCMessage',
 function() {
 
     /**
-     * @name asXMLRPCMessage
-     * @synopsis Returns the request object in XML format appropriate for use as
+     * @method asXMLRPCMessage
+     * @summary Returns the request object in XML format appropriate for use as
      *     an XMLRPC payload. This method is useful for processing XMLRPC
      *     requests as well as in leveraging other communication pathways to
      *     tunnel XMLRPC payloads (or for debugging).
-     * @description Transforms the receiver into a viable XMLRPC message node.
+     * @summary Transforms the receiver into a viable XMLRPC message node.
      *     The 'usenil' key, if any, in the receiver's payload defines whether a
      *     non-standard <nil/> is used when a parameter value is null/undefined.
      * @returns {Node} A valid XMLRPC message payload.
@@ -177,8 +177,8 @@ Array.Inst.defineMethod('asXMLRPCBody',
 function(aRequest) {
 
     /**
-     * @name asXMLRPCBody
-     * @synopsis Formats the receiver as the body (<params>) of an XMLRPC
+     * @method asXMLRPCBody
+     * @summary Formats the receiver as the body (<params>) of an XMLRPC
      *     message. The resulting data can then be injected into a viable XMLRPC
      *     methodCall container for transmission. IFF the request includes a key
      *     of 'bodyarray' with a value of 'list' then the array is treated as a

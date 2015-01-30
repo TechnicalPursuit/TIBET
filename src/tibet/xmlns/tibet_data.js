@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tibet.data}
- * @synopsis A subtype of TP.core.ElementNode that implements 'dataing'
+ * @summary A subtype of TP.core.ElementNode that implements 'dataing'
  *     behavior for UI elements.
  */
 
@@ -30,8 +30,8 @@ TP.tibet.data.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -136,8 +136,8 @@ TP.tibet.data.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
-     * @name tagDetachDOM
-     * @synopsis Tears down runtime machinery for the element in aRequest.
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -185,8 +185,8 @@ TP.tibet.data.Inst.defineMethod('getResultType',
 function(resultData, resultURI) {
 
     /**
-     * @name getResultType
-     * @synopsis Returns a result type object for the supplied result data and
+     * @method getResultType
+     * @summary Returns a result type object for the supplied result data and
      *     URI.
      * @param {Object} resultData The result data to try to obtain a result type
      *     for.
@@ -244,8 +244,8 @@ TP.tibet.data.Inst.defineMethod('load',
 function() {
 
     /**
-     * @name load
-     * @synopsis (Re)loads the remote resource defined on the receiver into the
+     * @method load
+     * @summary (Re)loads the remote resource defined on the receiver into the
      *     local resource.
      * @returns {TP.tibet.data} The receiver.
      */
@@ -354,7 +354,7 @@ TP.tibet.data.Inst.defineMethod('save',
 function() {
 
     /**
-     * @name save
+     * @method save
      * @returns {TP.tibet.data} The receiver.
      */
 

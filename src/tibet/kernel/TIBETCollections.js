@@ -46,7 +46,7 @@ handle negative indexes in a fashion consistent with the rest of JavaScript.
 
 /**
  * @type {TP.api.CollectionAPI}
- * @synopsis The TP.api.CollectionAPI, which defines the core methods we
+ * @summary The TP.api.CollectionAPI, which defines the core methods we
  *     consider appropriate for a rich set of collections.
  */
 
@@ -119,7 +119,7 @@ TP.api.CollectionAPI =
 
 /**
  * @type {TP.api.IndexedCollectionAPI}
- * @synopsis The TP.api.IndexedCollection API, which adds support for accessing
+ * @summary The TP.api.IndexedCollection API, which adds support for accessing
  *     elements of a collection by index and for working with the indexes
  *     themselves.
  */
@@ -162,7 +162,7 @@ TP.api.IndexedCollectionAPI =
 
 /**
  * @type {TP.api.OrderedCollectionAPI}
- * @synopsis The TP.api.OrderedCollection API, which adds methods which deal
+ * @summary The TP.api.OrderedCollection API, which adds methods which deal
  *     with ordered element access.
  */
 
@@ -197,8 +197,8 @@ TP.api.OrderedCollectionAPI =
 
 /**
  * @type {TP.api.OrderedPairAPI}
- * @synopsis The API required of objects which act as ordered pairs.
- * @description TP.api.OrderedPairAPI is an interface which can be implemented
+ * @summary The API required of objects which act as ordered pairs.
+ * @summary TP.api.OrderedPairAPI is an interface which can be implemented
  *     by any object which may be used to hold key/value pairs. Objects in the
  *     core which implement this API include Array, Object, and TP.lang.Hash.
  */
@@ -209,17 +209,17 @@ TP.api.OrderedPairAPI =
     TP.ac(
 
         /**
-         * @name getPair
-         * @synopsis Returns an array containing the key and value of the
+         * @method getPair
+         * @summary Returns an array containing the key and value of the
          *     receiver.
-         * @description This method expects the receiver to have only a single
+         * @summary This method expects the receiver to have only a single
          *     key/value pair. Objects can be used as ordered pairs as in:
          *
          *     {'a':1}
          *
          *     but it it MUCH more efficient to use Arrays instead. This method
          *     is here primarily for flexibility and polymorphism.
-         * @raises TP.sig.InvalidPairRequest
+         * @exception TP.sig.InvalidPairRequest
          * @returns {TPOrderedPair} The key/value pair.
          */
 
@@ -228,7 +228,7 @@ TP.api.OrderedPairAPI =
         //  ---
 
         /**
-         * @name first
+         * @method first
          * @returns {Object} An Object.
          * @asbstract Returns the first element of the ordered pair.
          */
@@ -238,8 +238,8 @@ TP.api.OrderedPairAPI =
         //  ---
 
         /**
-         * @name last
-         * @synopsis Returns the second (last) element of the ordered pair.
+         * @method last
+         * @summary Returns the second (last) element of the ordered pair.
          * @returns {Object} An Object.
          */
 
@@ -252,8 +252,8 @@ TP.api.OrderedPairAPI =
 
 /**
  * @type {TP.api.SortedCollectionAPI}
- * @synopsis The API required of objects which act as sorted collections.
- * @description TP.api.SortedCollectionAPI is an interface which various
+ * @summary The API required of objects which act as sorted collections.
+ * @summary TP.api.SortedCollectionAPI is an interface which various
  *     collections may implement as needed. Array is the only type in the system
  *     which has native sorting capability so the interface is typically
  *     implemented by types which use an array to manage either their internal
@@ -266,8 +266,8 @@ TP.sys.SortedCollectionAPI =
     TP.ac(
 
         /**
-         * @name getSortFunction
-         * @synopsis Returns the sort function, if any, which has been assigned
+         * @method getSortFunction
+         * @summary Returns the sort function, if any, which has been assigned
          *     to handle sorting discrimination. Array takes a sort function
          *     which will allow control over how contents are sorted. This
          *     method returns whatever function has been assigned. If no
@@ -281,15 +281,15 @@ TP.sys.SortedCollectionAPI =
         //  ---
 
         /**
-         * @name setSortFunction
-         * @synopsis Sets the sort function which will be used to determine the
+         * @method setSortFunction
+         * @summary Sets the sort function which will be used to determine the
          *     ordering of items in the collection. The value can be null if the
          *     desired sort is an ALPHA sort.
          * @param {Function} aFunction A function or null. If a function is
          *     passed it should take two parameters for testing and return -1 if
          *     the first is "less than" the second, +1 if the first is "greater
          *     than" the second and 0 if the two are "equal" in value.
-         * @raises TP.sig.InvalidFunction
+         * @exception TP.sig.InvalidFunction
          */
 
         'setSortFunction',
@@ -297,8 +297,8 @@ TP.sys.SortedCollectionAPI =
         //  ---
 
         /**
-         * @name sort
-         * @synopsis Performs a sort on the underlying collection.
+         * @method sort
+         * @summary Performs a sort on the underlying collection.
          * @returns {Collection} The receiver.
          */
 
@@ -311,8 +311,8 @@ TP.sys.SortedCollectionAPI =
 
 /**
  * @type {TP.api.IterationAPI}
- * @synopsis The API required of objects which can support a TP.core.Iterator.
- * @description The TP.api.IterationAPI is an interface definition for the
+ * @summary The API required of objects which can support a TP.core.Iterator.
+ * @summary The TP.api.IterationAPI is an interface definition for the
  *     methods required by a collection to support TP.core.Iterator management
  *     of the collection. TIBET interfaces are essentially just collections of
  *     method names in the current version. The ability to do multiple
@@ -327,10 +327,10 @@ TP.api.IterationAPI =
     TP.ac(
 
         /**
-         * @name at
-         * @synopsis Returns the value at the index provided.
+         * @method at
+         * @summary Returns the value at the index provided.
          * @param {Number} anIndex
-         * @raises TP.sig.InvalidIndex
+         * @exception TP.sig.InvalidIndex
          * @returns {Object} The item at the index provided or undefined.
          */
 
@@ -339,12 +339,12 @@ TP.api.IterationAPI =
         //  ---
 
         /**
-         * @name atAll
-         * @synopsis Returns a new collection containing the items in the
+         * @method atAll
+         * @summary Returns a new collection containing the items in the
          *     receiver at the various indexes contained in the collection
          *     provided.
          * @param {TPCollection} anIndexCollection
-         * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
+         * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
          * @returns {Array} An array of zero or more items.
          */
 
@@ -353,8 +353,8 @@ TP.api.IterationAPI =
         //  ---
 
         /**
-         * @name getKeys
-         * @synopsis Returns an array of keys for the underlying collection. In
+         * @method getKeys
+         * @summary Returns an array of keys for the underlying collection. In
          *     the case of an object with an Array for a data structure this
          *     results in an array containing the indices whose contents are not
          *     undefined. For Object data stores the result is the set of unique
@@ -367,8 +367,8 @@ TP.api.IterationAPI =
         //  ---
 
         /**
-         * @name getSize
-         * @synopsis Returns a count of the items in the receiving collection.
+         * @method getSize
+         * @summary Returns a count of the items in the receiving collection.
          * @returns {Number}
          */
 
@@ -382,8 +382,8 @@ TP.api.IterationAPI =
 
 /**
  * @type {Array}
- * @synopsis Collection-oriented API's for Array base class.
- * @description The vast majority of functional support for the collection
+ * @summary Collection-oriented API's for Array base class.
+ * @summary The vast majority of functional support for the collection
  *     module. Most other collection classes rely on Array for their internal
  *     storage needs either for data, keys, or both. Array implements all of the
  *     TPCollection, TPIndexedCollection, and TPOrderedCollection APIs as well
@@ -400,8 +400,8 @@ Array.Inst.defineMethod('equalAs',
 function(aType) {
 
     /**
-     * @name equalAs
-     * @synopsis Performs an equality test on the receiver's elements Example
+     * @method equalAs
+     * @summary Performs an equality test on the receiver's elements Example
      *     [a,b].equalAs(Bag) would test a and b for equality when in the form
      *     of a Bag. This method is typically targeted at instances that
      *     represent an ordered pair, but no check for that is performed here.
@@ -483,8 +483,8 @@ Array.Inst.defineMethod('$$isCollection',
 function() {
 
     /**
-     * @name $$isCollection
-     * @synopsis Returns true if the receiver is a collection instance.
+     * @method $$isCollection
+     * @summary Returns true if the receiver is a collection instance.
      * @returns {Boolean} True if the receiver is a collection.
      */
 
@@ -499,10 +499,10 @@ Array.Inst.defineMethod('vslice',
 function(startIndexOrSpec, endIndex, aStep) {
 
     /**
-     * @name vslice
-     * @synopsis Returns a 'virtual slice' as a TP.core.Range that allows
+     * @method vslice
+     * @summary Returns a 'virtual slice' as a TP.core.Range that allows
      *     iteration over contents of the receiver.
-     * @description This method can take a 'range spec' as the first argument.
+     * @summary This method can take a 'range spec' as the first argument.
      *     This range spec follows the Python syntax for 'slicing' (which has
      *     also been proposed for JavaScript):
      *     [1:3]    -> slice items 1 and 2
@@ -667,14 +667,14 @@ Array.Inst.defineMethod('truncate',
 function(aSize) {
 
     /**
-     * @name truncate
-     * @synopsis Reduces the size of the receiver to the size specified.
-     * @description If the size provided is larger than the receiver the
+     * @method truncate
+     * @summary Reduces the size of the receiver to the size specified.
+     * @summary If the size provided is larger than the receiver the
      *     receiver is unaltered. If the size provided is negative the receiver
      *     is emptied. If no size is provided this method does nothing.
      * @param {Number} aSize The new size (if smaller than current).
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var size,
@@ -709,11 +709,11 @@ Array.Inst.defineMethod('add',
 function(varargs) {
 
     /**
-     * @name add
-     * @synopsis Adds (appends) the argument(s) provided.
+     * @method add
+     * @summary Adds (appends) the argument(s) provided.
      * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var len;
@@ -781,11 +781,11 @@ Array.Inst.defineMethod('addAllIfAbsent',
 function(aCollection) {
 
     /**
-     * @name addAllIfAbsent
+     * @method addAllIfAbsent
      * @param {TPCollection} aCollection
      * @abstract
      * @return
-     * @signals Change
+     * @fires Change
      */
 
     return TP.todo();
@@ -797,10 +797,10 @@ Array.Inst.defineMethod('addIfAbsent',
 function(anObject, aTest) {
 
     /**
-     * @name addIfAbsent
-     * @synopsis Adds an object to the receiver if it isn't already in the
+     * @method addIfAbsent
+     * @summary Adds an object to the receiver if it isn't already in the
      *     collection.
-     * @description Note that the semantics of this call are slightly different
+     * @summary Note that the semantics of this call are slightly different
      *     between Array and Hash. In the case of Array the object is added if
      *     it isn't contained in the Array, meaning the test is against the
      *     _value_. In the case of a Hash the object (a pair) is added if the
@@ -810,7 +810,7 @@ function(anObject, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     if (this.contains(anObject, aTest)) {
@@ -826,16 +826,16 @@ Array.Inst.defineMethod('addItem',
 function(anItem) {
 
     /**
-     * @name addItem
-     * @synopsis Adds a single item to the receiver.
-     * @description As mentioned in other contexts an item may have different
+     * @method addItem
+     * @summary Adds a single item to the receiver.
+     * @summary As mentioned in other contexts an item may have different
      *     properties. For an array an item is a value unless that value happens
      *     to be an ordered pair whose first element is a number. In that case
      *     the receiver works like a numerically-indexed hash and adds the
      *     last() element of anItem at the index defined by the first() element.
      * @param {Object|Pair} anItem The item to add.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     //  a numerically-indexed pair is considered special to this method, a
@@ -855,13 +855,13 @@ Array.Inst.defineMethod('addWithCount',
 function(anObject, aCount) {
 
     /**
-     * @name addWithCount
-     * @synopsis Adds the object N times, where N defaults to 0. NOTE that in
+     * @method addWithCount
+     * @summary Adds the object N times, where N defaults to 0. NOTE that in
      *     the absence of a valid count the object is not added.
      * @param {Object} anObject The object to add.
      * @param {Number} aCount A number of times to add the object. Default is 0.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var i,
@@ -900,8 +900,8 @@ Array.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver in Array form. For an Array instance this
+     * @method asArray
+     * @summary Returns the receiver in Array form. For an Array instance this
      *     method simply returns the array.
      * @returns {Array} The receiver.
      */
@@ -915,11 +915,11 @@ Array.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns a hash containing the key/value pairs of the array. The
+     * @method asHash
+     * @summary Returns a hash containing the key/value pairs of the array. The
      *     indexes of this hash are the numerical indices of the receiver for
      *     which the value TP.isDefined().
-     * @description The resulting hash's keys are the indices of the array from
+     * @summary The resulting hash's keys are the indices of the array from
      *     0 to array.length. Note that if the receiver is an ordered pair the
      *     result is a hash containing the key/value data from the single
      *     ordered pair.
@@ -952,8 +952,8 @@ Array.Inst.defineMethod('asIterator',
 function(aStep) {
 
     /**
-     * @name asIterator
-     * @synopsis Returns a new iterator on the receiver.
+     * @method asIterator
+     * @summary Returns a new iterator on the receiver.
      * @param {Number} aStep Defines the increment size the iteration should
      *     use. The default value is 1.
      * @returns {TP.core.Iterator} The new iterator.
@@ -971,9 +971,9 @@ Array.Inst.defineMethod('asRange',
 function() {
 
     /**
-     * @name asRange
-     * @synopsis Returns a new TP.core.Range based on the size of the receiver.
-     * @raises TP.sig.TypeNotFound
+     * @method asRange
+     * @summary Returns a new TP.core.Range based on the size of the receiver.
+     * @exception TP.sig.TypeNotFound
      * @returns {TP.core.Range} The receiver as a range.
      */
 
@@ -996,8 +996,8 @@ Array.Inst.defineMethod('collapse',
 function() {
 
     /**
-     * @name collapse
-     * @synopsis Returns the "simplest" form of the receiver possible, meaning
+     * @method collapse
+     * @summary Returns the "simplest" form of the receiver possible, meaning
      *     that when the receiver has only one item that item is returned,
      *     otherwise the receiver is returned.
      * @returns {Array|Object} The receiver, or its single item.
@@ -1028,15 +1028,15 @@ Array.Inst.defineMethod('containsAll',
 function(aCollection, aTest) {
 
     /**
-     * @name containsAll
-     * @synopsis Returns true if all the values in the collection provided are
+     * @method containsAll
+     * @summary Returns true if all the values in the collection provided are
      *     found in the receiver.
      * @param {TPCollection} aCollection The collection of elements all of which
      *     must be equal to at least one element in the receiver for this method
      *     to return true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains all of the values
      *     in the collection provided.
      */
@@ -1091,15 +1091,15 @@ Array.Inst.defineMethod('containsAny',
 function(aCollection, aTest) {
 
     /**
-     * @name containsAny
-     * @synopsis Returns true if any of the values in the collection provided
+     * @method containsAny
+     * @summary Returns true if any of the values in the collection provided
      *     are found in the receiver.
      * @param {TPCollection} aCollection The collection of elements any of which
      *     must be equal to any element in the receiver for this method to be
      *     true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains any of the values
      *     in the collection provided.
      */
@@ -1158,8 +1158,8 @@ Array.Inst.defineMethod('countOf',
 function(anItem, aTest) {
 
     /**
-     * @name countOf
-     * @synopsis Returns a count of the number of times anItem is found in the
+     * @method countOf
+     * @summary Returns a count of the number of times anItem is found in the
      *     array.
      * @param {Object} anItem The element whose value is checked against.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -1196,17 +1196,17 @@ Array.Inst.defineMethod('difference',
 function(aCollection, aTest) {
 
     /**
-     * @name difference
-     * @synopsis Returns the elements contained in the receiver which are not in
+     * @method difference
+     * @summary Returns the elements contained in the receiver which are not in
      *     the collection provided.
-     * @description This method can be thought of as subtracting all elements
+     * @summary This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
      * @param {TPCollection} aCollection The collection to difference against
      *     the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} The difference between aCollection and the receiver.
      */
 
@@ -1231,10 +1231,10 @@ Array.Inst.defineMethod('disjunction',
 function(aCollection, aTest) {
 
     /**
-     * @name disjunction
-     * @synopsis Returns the 'symmetric difference' or those elements which are
+     * @method disjunction
+     * @summary Returns the 'symmetric difference' or those elements which are
      *     disjunct between the two collections.
-     * @description This method returns a new array containing the disjunction
+     * @summary This method returns a new array containing the disjunction
      *     between the receiver and aCollection. This means that only those
      *     elements which occur in one of the collections but not the other are
      *     returned.
@@ -1275,10 +1275,10 @@ Array.Inst.defineMethod('empty',
 function() {
 
     /**
-     * @name empty
-     * @synopsis Empties the receiver.
+     * @method empty
+     * @summary Empties the receiver.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var len;
@@ -1298,8 +1298,8 @@ Array.Inst.defineMethod('flatten',
 function() {
 
     /**
-     * @name flatten
-     * @synopsis Extracts embedded elements which may exist and flattens them.
+     * @method flatten
+     * @summary Extracts embedded elements which may exist and flattens them.
      * @returns {Array} A new array containing the elements of the receiver in
      *     flattened form.
      */
@@ -1332,8 +1332,8 @@ Array.Inst.defineMethod('getIterator',
 function() {
 
     /**
-     * @name getIterator
-     * @synopsis Returns the receiver's internal iterator. If no iterator exists
+     * @method getIterator
+     * @summary Returns the receiver's internal iterator. If no iterator exists
      *     a new one is constructed and assigned. You shouldn't count on the
      *     iterator being at the start() when you receive it. If you need
      *     multiple iterators use asIterator().
@@ -1353,8 +1353,8 @@ Array.Inst.defineMethod('getIteratorType',
 function() {
 
     /**
-     * @name getIteratorType
-     * @synopsis Returns the type of iterator used for the receiver.
+     * @method getIteratorType
+     * @summary Returns the type of iterator used for the receiver.
      * @returns {TP.core.Iterator} The type of the iterator.
      */
 
@@ -1383,15 +1383,15 @@ Array.Inst.defineMethod('intersection',
 function(aCollection, aTest) {
 
     /**
-     * @name intersection
-     * @synopsis Returns the intersection of the two collections.
-     * @description This method returns a collection of those elements which
+     * @method intersection
+     * @summary Returns the intersection of the two collections.
+     * @summary This method returns a collection of those elements which
      *     occur in BOTH the receiver and in aCollection.
      * @param {TPCollection} aCollection The collection to intersect the
      *     receiver with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} An array of elements occurring in both.
      */
 
@@ -1412,11 +1412,11 @@ Array.Inst.defineMethod('isSortedCollection',
 function() {
 
     /**
-     * @name isSortedCollection
-     * @synopsis Returns true if the receiver is behaving as a sorted
+     * @method isSortedCollection
+     * @summary Returns true if the receiver is behaving as a sorted
      *     collection. Effectively true any time the receiver has a valid sort
      *     function assigned.
-     * @description Arrays can maintain their content in a sorted fashion so
+     * @summary Arrays can maintain their content in a sorted fashion so
      *     that any access of the underlying data will be against a sorted data
      *     set. This method returns true if the receiver is operating in that
      *     fashion.
@@ -1432,8 +1432,8 @@ Array.Inst.defineMethod('merge',
 function() {
 
     /**
-     * @name merge
-     * @synopsis Merge the receiver's elements with elements from one or more
+     * @method merge
+     * @summary Merge the receiver's elements with elements from one or more
      *     collections. In some sense the reverse of partition, using an
      *     optional function to determine which elements of a set of collections
      *     should be grouped into pairs/triplets/quads etc.
@@ -1488,9 +1488,9 @@ Array.Inst.defineMethod('remove',
 function(anItem, aTest) {
 
     /**
-     * @name remove
-     * @synopsis Removes a value from the receiver.
-     * @description In this method, all instances of the value are removed. To
+     * @method remove
+     * @summary Removes a value from the receiver.
+     * @summary In this method, all instances of the value are removed. To
      *     remove only the first instance use 'removeFirst()'. The array is
      *     updated in place. NOTE that this method won't remove nulls so
      *     remove(null) or remove() won't work. You have to use compact so TIBET
@@ -1500,7 +1500,7 @@ function(anItem, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Number} The number of elements removed.
-     * @signals Change
+     * @fires Change
      */
 
     var i,
@@ -1557,16 +1557,16 @@ Array.Inst.defineMethod('removeAll',
 function(aCollection, aTest) {
 
     /**
-     * @name removeAll
-     * @synopsis Removes the values contained in the collection from the
+     * @method removeAll
+     * @summary Removes the values contained in the collection from the
      *     receiver.
      * @param {TPCollection} aCollection The collection of elements that removed
      *     elements need to be equal to.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Number} The number of elements removed.
-     * @signals Change
+     * @fires Change
      */
 
     var arr,
@@ -1626,15 +1626,15 @@ Array.Inst.defineMethod('replace',
 function(oldValue, newValue, aTest) {
 
     /**
-     * @name replace
-     * @synopsis Replaces the element having the value oldValue with an element
+     * @method replace
+     * @summary Replaces the element having the value oldValue with an element
      *     having the value newValue whereever it occurs in the receiver.
      * @param {Object} oldValue The old value to look for.
      * @param {Object} newValue The new value to replace the old value with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var shouldSignal,
@@ -1697,17 +1697,17 @@ Array.Inst.defineMethod('replaceAll',
 function(aCollection, newValue, aTest) {
 
     /**
-     * @name replaceAll
-     * @synopsis Replaces all values in aCollection with a newValue using the
+     * @method replaceAll
+     * @summary Replaces all values in aCollection with a newValue using the
      *     test provided to determine a match. The default test is TP.EQUALITY.
      * @param {TPCollection} aCollection A collection containing the elements to
      *     replace.
      * @param {Object} newValue A new value to replace objects with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var arr,
@@ -1769,13 +1769,13 @@ Array.Inst.defineMethod('union',
 function(aCollection) {
 
     /**
-     * @name union
-     * @synopsis Returns a new array containing the members of both arrays.
-     * @description This method computes a new array of elements, placing into
+     * @method union
+     * @summary Returns a new array containing the members of both arrays.
+     * @summary This method computes a new array of elements, placing into
      *     it all elements from this array and all elements from aCollection.
      * @param {TPCollection} aCollection The other collection to union this
      *     array against.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} The new array containing elements from both arrays.
      */
 
@@ -1809,14 +1809,14 @@ Array.Inst.defineMethod('addAt',
 function(anItem, anIndex) {
 
     /**
-     * @name addAt
-     * @synopsis Adds the value provided at anIndex. Note that this does not
+     * @method addAt
+     * @summary Adds the value provided at anIndex. Note that this does not
      *     replace the item at that location, it splices the new value into
      *     place hence the 'add' terminology. To replace use atPut() or set().
      * @param {Object} anItem The element to add at anIndex.
      * @param {Number} anIndex The index to add anItem at.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var index,
@@ -1853,14 +1853,14 @@ Array.Inst.defineMethod('addAllAt',
 function(aCollection, anIndex) {
 
     /**
-     * @name addAllAt
-     * @synopsis Adds all the elements of aCollection beginning at the index
+     * @method addAllAt
+     * @summary Adds all the elements of aCollection beginning at the index
      *     provided.
      * @param {TPCollection} aCollection The collection to add elements from.
      * @param {Number} anIndex The index to begin adding elements.
-     * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var arr,
@@ -1917,11 +1917,11 @@ Array.Inst.defineMethod('atAll',
 function(aCollection) {
 
     /**
-     * @name atAll
-     * @synopsis Returns an array containing the values at each of the indices
+     * @method atAll
+     * @summary Returns an array containing the values at each of the indices
      *     provided.
      * @param {TPCollection} aCollection The collection of indexes.
-     * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array} A new array containing the values collected.
      */
 
@@ -1960,9 +1960,9 @@ Array.Inst.defineMethod('atAllIfAbsent',
 function(aCollection) {
 
     /**
-     * @name atAllIfAbsent
+     * @method atAllIfAbsent
      * @param {TPCollection} aCollection
-     * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array}
      * @abstract
      */
@@ -1976,18 +1976,18 @@ Array.Inst.defineMethod('atAllPut',
 function(aCollection, anItem) {
 
     /**
-     * @name atAllPut
-     * @synopsis Inserts anItem at a set of locations.
-     * @description Places anItem at each location in the receiver. If the
+     * @method atAllPut
+     * @summary Inserts anItem at a set of locations.
+     * @summary Places anItem at each location in the receiver. If the
      *     optional collection is provided the indices listed in the collection
      *     are updated rather than the entire array.
      * @param {TPCollection} aCollection An optional collection specifying
      *     indexes which should be altered to contain anItem.
      * @param {Object} anItem The element to put at all the locations in this
      *     array (unless aCollection of indexes is provided).
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var arr,
@@ -2037,10 +2037,10 @@ Array.Inst.defineMethod('atIfInvalid',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfInvalid
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfInvalid
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns an invalid value.
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -2067,10 +2067,10 @@ Array.Inst.defineMethod('atIfNull',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfNull
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfNull
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns null (and not undefined).
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -2097,10 +2097,10 @@ Array.Inst.defineMethod('atIfUndefined',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfUndefined
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfUndefined
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns undefined.
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -2129,17 +2129,17 @@ Array.Inst.defineMethod('atPutIfAbsent',
 function(aKey, aValue) {
 
     /**
-     * @name atPutIfAbsent
-     * @synopsis Add the key and value if the key doesn't already exist. NOTE
+     * @method atPutIfAbsent
+     * @summary Add the key and value if the key doesn't already exist. NOTE
      *     that the value isn't relevant in this test, the value may be null, or
      *     undefined, and as long at the key has been defined at some point this
      *     method will not update the value.
      * @param {Object} aKey The key to test and optionally add to the receiver.
      * @param {Object} aValue Optional value to store when the first argument is
      *     a string.
-     * @raises InvalidPair
+     * @exception InvalidPair
      * @returns {Object} The key's value after processing.
-     * @signals Change
+     * @fires Change
      */
 
     if (!TP.isNumber(aKey)) {
@@ -2163,8 +2163,8 @@ Array.Inst.defineMethod('detectKeyAt',
 function(aKey, anIndex) {
 
     /**
-     * @name detectKeyAt
-     * @synopsis Searches for the first nested element whose value at(anIndex)
+     * @method detectKeyAt
+     * @summary Searches for the first nested element whose value at(anIndex)
      *     matches aKey. This can be a useful detection for finding data in an
      *     ordered collection (array, sorted hash, or node) by the value at a
      *     particular index or attribute location.
@@ -2201,8 +2201,8 @@ Array.Inst.defineMethod('getPosition',
 function(anItem, startIndex, aTest) {
 
     /**
-     * @name getPosition
-     * @synopsis Returns the first index of anItem in the receiver.
+     * @method getPosition
+     * @summary Returns the first index of anItem in the receiver.
      * @param {Object} anItem The element to search for.
      * @param {Number} startIndex The index to start looking for anItem.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -2249,8 +2249,8 @@ Array.Inst.defineMethod('getPositions',
 function(anItem, startIndex, aTest) {
 
     /**
-     * @name getPositions
-     * @synopsis Returns an array containing all indexes where anItem exists.
+     * @method getPositions
+     * @summary Returns an array containing all indexes where anItem exists.
      * @param {Object} anItem The value to search for.
      * @param {Number} startIndex The index to start looking for anItem.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -2304,12 +2304,12 @@ Array.Inst.defineMethod('removeAt',
 function(anIndex) {
 
     /**
-     * @name removeAt
-     * @synopsis Removes the element at the index provided.
+     * @method removeAt
+     * @summary Removes the element at the index provided.
      * @param {Number} anIndex The index at which to remove the element.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var index,
@@ -2340,14 +2340,14 @@ Array.Inst.defineMethod('removeAtAll',
 function(aCollection) {
 
     /**
-     * @name removeAtAll
-     * @synopsis Removes the elements at the indexes (keys) contained in the
+     * @method removeAtAll
+     * @summary Removes the elements at the indexes (keys) contained in the
      *     collection provided. Upon completion the remaining elements are
      *     shifted into new positions.
      * @param {TPCollection} aCollection The collection of indexes. TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var arr,
@@ -2404,8 +2404,8 @@ Array.Inst.defineMethod('transpose',
 function() {
 
     /**
-     * @name transpose
-     * @synopsis Transposes the rows and columns of an array whose elements are
+     * @method transpose
+     * @summary Transposes the rows and columns of an array whose elements are
      *     other arrays. For example, [[1,2],[3,4],[5,6]] becomes an array
      *     containing [[1,3,5],[2,4,6]].
      * @returns {Array} An array containing ordered pairs (or triplets, quads,
@@ -2434,15 +2434,15 @@ Array.Inst.defineMethod('addAfter',
 function(aValue, anItem, aTest) {
 
     /**
-     * @name addAfter
-     * @synopsis Adds the value provided after the element provided.
+     * @method addAfter
+     * @summary Adds the value provided after the element provided.
      * @param {Object} aValue The value to add after anItem.
      * @param {Object} anItem The item located to define the index.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises NotFound
+     * @exception NotFound
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var ind;
@@ -2461,17 +2461,17 @@ Array.Inst.defineMethod('addAllAfter',
 function(aCollection, anItem, aTest) {
 
     /**
-     * @name addAllAfter
-     * @synopsis Adds the collection of elements after the element provided.
+     * @method addAllAfter
+     * @summary Adds the collection of elements after the element provided.
      * @param {TPCollection} aCollection The collection containing the elements
      *     to add after aValue.
      * @param {Object} anItem The element used to locate the index for the
      *     addition.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises NotFound
+     * @exception NotFound
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var ind;
@@ -2490,17 +2490,17 @@ Array.Inst.defineMethod('addAllBefore',
 function(aCollection, anItem, aTest) {
 
     /**
-     * @name addAllBefore
-     * @synopsis Adds the collection of elements before the element equal to the
+     * @method addAllBefore
+     * @summary Adds the collection of elements before the element equal to the
      *     value provided.
      * @param {TPCollection} aCollection The collection containing the elements
      *     to add before aValue.
      * @param {Object} anItem The element used to locate the insertion index.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises NotFound
+     * @exception NotFound
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var ind;
@@ -2519,12 +2519,12 @@ Array.Inst.defineMethod('addAllFirst',
 function(aCollection) {
 
     /**
-     * @name addAllFirst
-     * @synopsis Adds the elements of the collection at the start of the array.
+     * @method addAllFirst
+     * @summary Adds the elements of the collection at the start of the array.
      * @param {TPCollection} aCollection The collection containing the elements
      *     to prepend.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     return this.addAllAt(aCollection, 0);
@@ -2536,12 +2536,12 @@ Array.Inst.defineMethod('addAllLast',
 function(aCollection) {
 
     /**
-     * @name addAllLast
-     * @synopsis Appends the elements of the collection to the receiver.
+     * @method addAllLast
+     * @summary Appends the elements of the collection to the receiver.
      * @param {TPCollection} aCollection The collection containing the elements
      *     to append.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     return this.addAllAt(aCollection, this.length);
@@ -2553,15 +2553,15 @@ Array.Inst.defineMethod('addBefore',
 function(aValue, anItem, aTest) {
 
     /**
-     * @name addBefore
-     * @synopsis Adds aValue prior to the first occurrence of anItem
+     * @method addBefore
+     * @summary Adds aValue prior to the first occurrence of anItem
      * @param {Object} aValue The value to add before the search element.
      * @param {Object} anItem The element used to locate the insertion point.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises NotFound
+     * @exception NotFound
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var ind;
@@ -2580,11 +2580,11 @@ Array.Inst.defineMethod('addFirst',
 function(aValue) {
 
     /**
-     * @name addFirst
-     * @synopsis Adds the values provided to the start of the receiver.
+     * @method addFirst
+     * @summary Adds the values provided to the start of the receiver.
      * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var len;
@@ -2606,11 +2606,11 @@ Array.Inst.defineMethod('addLast',
 function(aValue) {
 
     /**
-     * @name addLast
-     * @synopsis Appends the values provided to the end of the receiver.
+     * @method addLast
+     * @summary Appends the values provided to the end of the receiver.
      * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var len;
@@ -2633,12 +2633,12 @@ Array.Inst.defineMethod('after',
 function(anItem, aTest, noRaise) {
 
     /**
-     * @name after
-     * @synopsis Returns the element, if any, after the element provided.
+     * @method after
+     * @summary Returns the element, if any, after the element provided.
      * @param {Object} anItem The item to search for.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises NotFound
+     * @exception NotFound
      * @returns {Object} An object or undefined.
      */
 
@@ -2658,12 +2658,12 @@ Array.Inst.defineMethod('before',
 function(anItem, aTest, noRaise) {
 
     /**
-     * @name before
-     * @synopsis Returns the element, if any, before the element provided.
+     * @method before
+     * @summary Returns the element, if any, before the element provided.
      * @param {Object} anItem The item to search for.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises NotFound
+     * @exception NotFound
      * @returns {Object} An object or undefined.
      */
 
@@ -2685,8 +2685,8 @@ Array.Inst.defineMethod('getLastPosition',
 function(anItem, startIndex, aTest) {
 
     /**
-     * @name getLastPosition
-     * @synopsis Returns the last index of anItem in the receiver.
+     * @method getLastPosition
+     * @summary Returns the last index of anItem in the receiver.
      * @param {Object} anItem The item to search for.
      * @param {Number} startIndex What index should search "start" from keeping
      *     in mind that we're working backwards so this will be the "last" index
@@ -2739,13 +2739,13 @@ Array.Inst.defineMethod('removeFirst',
 function(anItem, aTest) {
 
     /**
-     * @name removeFirst
-     * @synopsis Removes the first occurrence of anItem in the receiver.
+     * @method removeFirst
+     * @summary Removes the first occurrence of anItem in the receiver.
      * @param {Object} anItem The item to remove.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var ind,
@@ -2772,14 +2772,14 @@ Array.Inst.defineMethod('removeLast',
 function(anItem, aTest) {
 
     /**
-     * @name removeLast
-     * @synopsis Removes the last occurrence of anItem in the receiver, or the
+     * @method removeLast
+     * @summary Removes the last occurrence of anItem in the receiver, or the
      *     last element if no specific element is provided.
      * @param {Object} anItem The item to remove.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var len,
@@ -2813,15 +2813,15 @@ Array.Inst.defineMethod('replaceFirst',
 function(oldValue, newValue, aTest) {
 
     /**
-     * @name replaceFirst
-     * @synopsis Replaces the first element having the value oldValue with an
+     * @method replaceFirst
+     * @summary Replaces the first element having the value oldValue with an
      *     element having the value newValue.
      * @param {Object} oldValue The old value to look for.
      * @param {Object} newValue The new value to replace the old value with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var index;
@@ -2842,15 +2842,15 @@ Array.Inst.defineMethod('replaceLast',
 function(oldValue, newValue, aTest) {
 
     /**
-     * @name replaceLast
-     * @synopsis Replaces the last element having the value oldValue with an
+     * @method replaceLast
+     * @summary Replaces the last element having the value oldValue with an
      *     element having the value newValue.
      * @param {Object} oldValue The old value to look for.
      * @param {Object} newValue The new value to replace the old value with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var index;
@@ -2877,8 +2877,8 @@ Array.Inst.defineMethod('getSortFunction',
 function() {
 
     /**
-     * @name getSortFunction
-     * @synopsis Returns the current sort function or null.
+     * @method getSortFunction
+     * @summary Returns the current sort function or null.
      * @returns {Function} This array's sort function.
      */
 
@@ -2891,8 +2891,8 @@ Array.Inst.defineMethod('isSorted',
 function() {
 
     /**
-     * @name isSorted
-     * @synopsis Returns true if the receiver is sorted.
+     * @method isSorted
+     * @summary Returns true if the receiver is sorted.
      * @returns {Boolean}
      */
 
@@ -2905,17 +2905,17 @@ Array.Inst.defineMethod('setSortFunction',
 function(aFunction) {
 
     /**
-     * @name setSortFunction
-     * @synopsis Sets the receiver's internal sort function.
-     * @description This function will be called any time the receiver has been
+     * @method setSortFunction
+     * @summary Sets the receiver's internal sort function.
+     * @summary This function will be called any time the receiver has been
      *     updated without being sorted and a request for a value is made. This
      *     method will flag the receiver so that a re-sort will occur on the
      *     next data access call.
      * @param {Function} aFunction The function to set this array's sort
      *     function to.
-     * @raises TP.sig.InvalidFunction
+     * @exception TP.sig.InvalidFunction
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     //  no change? don't waste time
@@ -2944,8 +2944,8 @@ Array.Inst.defineMethod('avg',
 function() {
 
     /**
-     * @name avg
-     * @synopsis Returns the average value from an array of numbers. This is
+     * @method avg
+     * @summary Returns the average value from an array of numbers. This is
      *     equivalent to sum()/getSize();
      * @returns {Number} The average of numeric values in the receiver.
      */
@@ -2959,8 +2959,8 @@ Array.Inst.defineMethod('max',
 function() {
 
     /**
-     * @name max
-     * @synopsis Returns the numerical maximum value from the receiver.
+     * @method max
+     * @summary Returns the numerical maximum value from the receiver.
      * @returns {Number} The highest value number in the receiver.
      */
 
@@ -2973,8 +2973,8 @@ Array.Inst.defineMethod('min',
 function() {
 
     /**
-     * @name min
-     * @synopsis Returns the numerical minimum value from the receiver.
+     * @method min
+     * @summary Returns the numerical minimum value from the receiver.
      * @returns {Number} The lowest value number in the receiver.
      */
 
@@ -2987,8 +2987,8 @@ Array.Inst.defineMethod('sum',
 function() {
 
     /**
-     * @name sum
-     * @synopsis Adds the numeric values in the receiver to produce a sum.
+     * @method sum
+     * @summary Adds the numeric values in the receiver to produce a sum.
      * @returns {Number} The sum of all numeric values in the receiver.
      */
 
@@ -3018,8 +3018,8 @@ Array.Inst.defineMethod('times',
 function(aCount, inline) {
 
     /**
-     * @name times
-     * @synopsis Expands the receiver's content multiple times. For example, an
+     * @method times
+     * @summary Expands the receiver's content multiple times. For example, an
      *     array containing 1,2,3 * 3 becomes 1,2,3,1,2,3,1,2,3.
      * @param {Number} aCount The number of times to duplicate the receiver's
      *     content.
@@ -3058,8 +3058,8 @@ function(aCount, inline) {
 
 /**
  * @type {Object}
- * @synopsis Collection API extensions for Object.
- * @description Because of the problems associated with keeping a clear
+ * @summary Collection API extensions for Object.
+ * @summary Because of the problems associated with keeping a clear
  *     distinction between keys which are "content" and keys which are
  *     "properties" we _STRONGLY_ discourage using Objects as hashes. But for
  *     polymorphic reasons we add a few methods in the kernel so if you get an
@@ -3076,9 +3076,9 @@ TP.defineCommonMethod('collapse',
 function() {
 
     /**
-     * @name collapse
-     * @synopsis Returns the receiver.
-     * @description This method is defined purely for polymorphic reasons so
+     * @method collapse
+     * @summary Returns the receiver.
+     * @summary This method is defined purely for polymorphic reasons so
      *     that the system can just send 'collapse' to any object. For Arrays
      *     and other collections, the first item is returned.
      * @returns {Object} The receiver.
@@ -3093,8 +3093,8 @@ TP.defineCommonMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a suitable hash.
+     * @method asHash
+     * @summary Returns the receiver as a suitable hash.
      * @returns {TP.lang.Hash} The receiver as a TP.lang.Hash.
      */
 
@@ -3117,13 +3117,13 @@ TP.defineCommonMethod('removeKey',
 function(aKey) {
 
     /**
-     * @name removeKey
-     * @synopsis Removes the key provided if the collection contains it. Note
+     * @method removeKey
+     * @summary Removes the key provided if the collection contains it. Note
      *     that this won't remove a key if the key references a method.
      * @param {Object} aKey The key value to remove.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var k;
@@ -3155,13 +3155,13 @@ TP.defineCommonMethod('removeKeys',
 function(aKeyArray) {
 
     /**
-     * @name removeKeys
-     * @synopsis Removes the keys provided if the collection contains them. Note
+     * @method removeKeys
+     * @summary Removes the keys provided if the collection contains them. Note
      *     that this won't remove a key if the key references a method.
      * @param {Array} aKeyArray The key values to remove.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var changed,
@@ -3209,7 +3209,7 @@ function(aKeyArray) {
 
 /**
  * @type {Number}
- * @synopsis Extensions to Number for collection-related behavior.
+ * @summary Extensions to Number for collection-related behavior.
  */
 
 //  ------------------------------------------------------------------------
@@ -3228,8 +3228,8 @@ Number.Inst.defineMethod('asRange',
 function(startIndex, aStep) {
 
     /**
-     * @name asRange
-     * @synopsis Returns a TP.core.Range from startIndex to the receiver by
+     * @method asRange
+     * @summary Returns a TP.core.Range from startIndex to the receiver by
      *     step.
      * @param {Number} startIndex What index should begin the range. The default
      *     is 0.
@@ -3252,8 +3252,8 @@ Number.Inst.defineMethod('getItems',
 function() {
 
     /**
-     * @name getItems
-     * @synopsis Returns the "values" of the receiver, in this case a
+     * @method getItems
+     * @summary Returns the "values" of the receiver, in this case a
      *     TP.core.Range representing those values suitable for iteration.
      * @returns {TP.core.Range} A range from 0 to N where N is the value of the
      *     receiver.
@@ -3268,10 +3268,10 @@ Number.Inst.defineMethod('getPosition',
 function(aValue) {
 
     /**
-     * @name getPosition
-     * @synopsis Returns the first index of the element provided or undefined if
+     * @method getPosition
+     * @summary Returns the first index of the element provided or undefined if
      *     the element isn't found.
-     * @description For numbers this is a bit of a strange concept but it tends
+     * @summary For numbers this is a bit of a strange concept but it tends
      *     to get invoked when dealing with numerical keys in hashes.
      * @param {Object} aValue What to search for.
      * @returns {Number} The index of the value or undefined.
@@ -3286,10 +3286,10 @@ Number.Inst.defineMethod('times',
 function(anObject) {
 
     /**
-     * @name times
-     * @synopsis Performs an operation the number of times defined by the
+     * @method times
+     * @summary Performs an operation the number of times defined by the
      *     receiver, for example (10).times(x) will process 'x' ten times.
-     * @description The return value of this method will vary based on what type
+     * @summary The return value of this method will vary based on what type
      *     of object was provided. When a string is passed the return value is
      *     that string's value concatenated that number of times. When a
      *     function is passed this method works like perform() to run the
@@ -3330,10 +3330,10 @@ Number.Inst.defineMethod('to',
 function(endIndex) {
 
     /**
-     * @name to
-     * @synopsis Constructs a range from the receiver to the number provided.
+     * @method to
+     * @summary Constructs a range from the receiver to the number provided.
      * @param {Number} endIndex A numerical index for the end of the range.
-     * @raises TP.sig.TypeNotFound
+     * @exception TP.sig.TypeNotFound
      * @returns {TP.core.Range} A newly constructed TP.core.Range.
      */
 
@@ -3352,7 +3352,7 @@ function(endIndex) {
 
 /**
  * @type {String}
- * @synopsis Extensions allowing strings to perform more powerful operations.
+ * @summary Extensions allowing strings to perform more powerful operations.
  *     NOTE that we don't implement any of the mutation methods since native
  *     String types aren't mutable.
  * @subject Collection Extensions
@@ -3364,8 +3364,8 @@ String.Inst.defineMethod('$$isPair',
 function() {
 
     /**
-     * @name $$isPair
-     * @synopsis Returns true if the receiver can be thought of as an ordered
+     * @method $$isPair
+     * @summary Returns true if the receiver can be thought of as an ordered
      *     pair. Strings are never considered ordered pairs.
      * @returns {Boolean} Whether or not the receiver is considered to be an
      *     ordered pair. For Strings, this is always false.
@@ -3398,8 +3398,8 @@ String.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a TP.lang.Hash.
+     * @method asHash
+     * @summary Returns the receiver as a TP.lang.Hash.
      * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
      */
 
@@ -3413,8 +3413,8 @@ String.Inst.defineMethod('asIterator',
 function(aStep) {
 
     /**
-     * @name asIterator
-     * @synopsis Returns a new iterator on the receiver.
+     * @method asIterator
+     * @summary Returns a new iterator on the receiver.
      * @param {Number} aStep Defines the increment size the iteration should
      *     use. The default value is 1.
      * @returns {TP.core.Iterator} The new iterator.
@@ -3429,9 +3429,9 @@ String.Inst.defineMethod('asRange',
 function() {
 
     /**
-     * @name asRange
-     * @synopsis Returns a new TP.core.Range based on the size of the receiver.
-     * @raises TP.sig.TypeNotFound
+     * @method asRange
+     * @summary Returns a new TP.core.Range based on the size of the receiver.
+     * @exception TP.sig.TypeNotFound
      * @returns {TP.core.Range} The receiver as a range.
      */
 
@@ -3446,8 +3446,8 @@ String.Inst.defineMethod('collapse',
 function() {
 
     /**
-     * @name collapse
-     * @synopsis Returns the "simplest" form of the receiver possible, meaning
+     * @method collapse
+     * @summary Returns the "simplest" form of the receiver possible, meaning
      *     that when the receiver has only one item that item is returned,
      *     otherwise the receiver is returned.
      * @returns {String|Object} The receiver, or its single item.
@@ -3476,8 +3476,8 @@ String.Inst.defineMethod('contains',
 function(aValue) {
 
     /**
-     * @name contains
-     * @synopsis Returns true if the receiver contains the value.
+     * @method contains
+     * @summary Returns true if the receiver contains the value.
      * @param {String} aValue The value that at least one element in the
      *     receiver should be equal to for this method to return true.
      * @returns {Boolean} Whether or not the receiver contains the value
@@ -3493,13 +3493,13 @@ String.Inst.defineMethod('containsAll',
 function(aCollection) {
 
     /**
-     * @name containsAll
-     * @synopsis Returns true if all the values in the collection provided are
+     * @method containsAll
+     * @summary Returns true if all the values in the collection provided are
      *     found in the receiver.
      * @param {TPCollection} aCollection The collection of elements all of which
      *     must be equal to at least one element in the receiver for this method
      *     to return true.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains all of the values
      *     in the collection provided.
      */
@@ -3540,13 +3540,13 @@ String.Inst.defineMethod('containsAny',
 function(aCollection) {
 
     /**
-     * @name containsAny
-     * @synopsis Returns true if any of the values in the collection provided
+     * @method containsAny
+     * @summary Returns true if any of the values in the collection provided
      *     are found in the receiver.
      * @param {TPCollection} aCollection The collection of elements any of which
      *     must be equal to any element in the receiver for this method to be
      *     true.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains any of the values
      *     in the collection provided.
      */
@@ -3586,8 +3586,8 @@ String.Inst.defineMethod('containsString',
 function(aValue) {
 
     /**
-     * @name containsString
-     * @synopsis Returns true if the receiver contains the string provided.
+     * @method containsString
+     * @summary Returns true if the receiver contains the string provided.
      * @param {String} aValue The value that at least one element in the
      *     receiver should be equal to for this method to return true.
      * @returns {Boolean} Whether or not the receiver contains the String
@@ -3605,8 +3605,8 @@ String.Inst.defineMethod('countOf',
 function(aValue, aTest) {
 
     /**
-     * @name countOf
-     * @synopsis Returns a count of the number of times aValue is found in the
+     * @method countOf
+     * @summary Returns a count of the number of times aValue is found in the
      *     string.
      * @param {String} aValue The value that elements in the string must be
      *     equal to to be counted.
@@ -3624,8 +3624,8 @@ String.Inst.defineMethod('detect',
 function(aFunction, startIndex) {
 
     /**
-     * @name detect
-     * @synopsis Returns the first element in the receiver which matches the
+     * @method detect
+     * @summary Returns the first element in the receiver which matches the
      *     criteria provided or null if the element isn't found.
      * @param {Function} aFunction A function which should return true if the
      *     element it is passed passes the function's test, or false if it does
@@ -3670,17 +3670,17 @@ String.Inst.defineMethod('difference',
 function(aCollection, aTest) {
 
     /**
-     * @name difference
-     * @synopsis Returns the elements contained in the receiver which are not in
+     * @method difference
+     * @summary Returns the elements contained in the receiver which are not in
      *     the collection provided.
-     * @description This method can be thought of as subtracting all elements
+     * @summary This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
      * @param {TPCollection} aCollection The collection to difference against
      *     the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {String} The difference between aCollection and the receiver.
      */
 
@@ -3693,10 +3693,10 @@ String.Inst.defineMethod('disjunction',
 function(aCollection, aTest) {
 
     /**
-     * @name disjunction
-     * @synopsis Returns the 'symmetric difference' or those elements which are
+     * @method disjunction
+     * @summary Returns the 'symmetric difference' or those elements which are
      *     disjunct between the two collections.
-     * @description This method returns a new string containing the disjunction
+     * @summary This method returns a new string containing the disjunction
      *     between the receiver and aCollection. This means that only those
      *     characters which occur in one of the collections but not the other
      *     are returned.
@@ -3720,8 +3720,8 @@ String.Inst.defineMethod('getIterator',
 function() {
 
     /**
-     * @name getIterator
-     * @synopsis Returns the receiver's internal iterator. If no iterator exists
+     * @method getIterator
+     * @summary Returns the receiver's internal iterator. If no iterator exists
      *     a new one is constructed and assigned. You shouldn't count on the
      *     iterator being at the start() when you receive it. If you need
      *     multiple iterators use asIterator().
@@ -3741,8 +3741,8 @@ String.Inst.defineMethod('getIteratorType',
 function() {
 
     /**
-     * @name getIteratorType
-     * @synopsis Returns the type of iterator used for the receiver.
+     * @method getIteratorType
+     * @summary Returns the type of iterator used for the receiver.
      * @returns {TP.core.Iterator} The type of the iterator.
      */
 
@@ -3771,13 +3771,13 @@ String.Inst.defineMethod('intersection',
 function(aCollection) {
 
     /**
-     * @name intersection
-     * @synopsis Returns the intersection of the two collections.
-     * @description This method returns a collection of those elements which
+     * @method intersection
+     * @summary Returns the intersection of the two collections.
+     * @summary This method returns a collection of those elements which
      *     occur in BOTH the receiver and in aCollection.
      * @param {TPCollection} aCollection The collection to intersect the
      *     receiver with.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} An array of elements occurring in both.
      */
 
@@ -3798,8 +3798,8 @@ String.Inst.defineMethod('isSortedCollection',
 function() {
 
     /**
-     * @name isSortedCollection
-     * @synopsis Returns true if the receiver is a sorted collection. String
+     * @method isSortedCollection
+     * @summary Returns true if the receiver is a sorted collection. String
      *     subtypes are NOT sorted.
      * @returns {Boolean} Always false.
      */
@@ -3841,14 +3841,14 @@ String.Inst.defineMethod('union',
 function(aCollection) {
 
     /**
-     * @name union
-     * @synopsis Returns a new string containing the members of both strings.
-     * @description This method computes a new string of characters, placing
+     * @method union
+     * @summary Returns a new string containing the members of both strings.
+     * @summary This method computes a new string of characters, placing
      *     into it all characters from this string and all elements from
      *     aCollection.
      * @param {TPCollection} aCollection The other collection to union this
      *     string against.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} The new string containing elements from both
      *     collections.
      */
@@ -3876,12 +3876,12 @@ String.Inst.defineMethod('atAll',
 function(aCollection) {
 
     /**
-     * @name atAll
-     * @synopsis Returns a new collection containing the characters in the
+     * @method atAll
+     * @summary Returns a new collection containing the characters in the
      *     receiver at the various indexes contained in the collection provided.
      * @param {TPCollection} aCollection The collection of numeric indices to
      *     use.
-     * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
      * @returns {Array} An array of zero or more items.
      */
 
@@ -3894,9 +3894,9 @@ String.Inst.defineMethod('atAllIfAbsent',
 function(aCollection) {
 
     /**
-     * @name atAllIfAbsent
+     * @method atAllIfAbsent
      * @param {TPCollection} aCollection The collection of indexes.
-     * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @abstract
      * @return
      */
@@ -3912,10 +3912,10 @@ String.Inst.defineMethod('atIfInvalid',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfInvalid
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfInvalid
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns an invalid value.
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -3942,10 +3942,10 @@ String.Inst.defineMethod('atIfNull',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfNull
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfNull
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns null (and not undefined).
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -3972,10 +3972,10 @@ String.Inst.defineMethod('atIfUndefined',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfUndefined
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfUndefined
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns undefined.
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -4010,8 +4010,8 @@ String.Inst.defineMethod('detectKeyAt',
 function(aKey, anIndex) {
 
     /**
-     * @name detectKeyAt
-     * @synopsis Searches for the first nested element whose value at(anIndex)
+     * @method detectKeyAt
+     * @summary Searches for the first nested element whose value at(anIndex)
      *     matches aKey. This can be a useful detection for finding data in an
      *     ordered collection (array, sorted hash, or node) by the value at a
      *     particular index or attribute location.
@@ -4048,8 +4048,8 @@ String.Inst.defineMethod('getPosition',
 function(anItem, startIndex) {
 
     /**
-     * @name getPosition
-     * @synopsis Returns the first index of anItem in the receiver.
+     * @method getPosition
+     * @summary Returns the first index of anItem in the receiver.
      * @param {Object} anItem The element to search for.
      * @param {Number} startIndex The index to start looking for anItem.
      * @returns {Number} The first index of an element equal to anItem.
@@ -4064,8 +4064,8 @@ String.Inst.defineMethod('getPositions',
 function(aValue, startIndex) {
 
     /**
-     * @name getPositions
-     * @synopsis Returns a collection of all indexes where the value is found.
+     * @method getPositions
+     * @summary Returns a collection of all indexes where the value is found.
      * @param {String} aValue The character to look for.
      * @param {Number} startIndex The index to start looking for aValue.
      * @returns {Array} An array containing indexes for the value provided. May
@@ -4128,8 +4128,8 @@ String.Inst.defineMethod('after',
 function(substring) {
 
     /**
-     * @name after
-     * @synopsis Returns the portion of the receiver after the substring
+     * @method after
+     * @summary Returns the portion of the receiver after the substring
      *     provided.
      * @param {String} substring The substring to search for.
      * @returns {String} The next element or undefined.
@@ -4151,8 +4151,8 @@ String.Inst.defineMethod('before',
 function(substring) {
 
     /**
-     * @name before
-     * @synopsis Returns the portion of the receiver preceding the substring
+     * @method before
+     * @summary Returns the portion of the receiver preceding the substring
      *     provided.
      * @param {String} substring The substring to search for.
      * @returns {String} The previous substring.
@@ -4176,8 +4176,8 @@ String.Inst.defineMethod('getLastPosition',
 function(anItem, startIndex, aTest) {
 
     /**
-     * @name getLastPosition
-     * @synopsis Returns the last index of anItem in the receiver.
+     * @method getLastPosition
+     * @summary Returns the last index of anItem in the receiver.
      * @param {Object} anItem The element to search for.
      * @param {Number} startIndex The index to start looking for anItem.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY.
@@ -4210,8 +4210,8 @@ function(anItem, startIndex, aTest) {
 
 /**
  * @type {TP.lang.Hash}
- * @synopsis Collection-oriented API's for TP.lang.Hash base class.
- * @description TIBET's hash (dictionary, associative array) type. You should
+ * @summary Collection-oriented API's for TP.lang.Hash base class.
+ * @summary TIBET's hash (dictionary, associative array) type. You should
  *     always use a TP.lang.Hash (available via TP.hc()) when dealing with data
  *     in key/value form. In TIBET it's a dangerous, and potentially slow
  *     practice to use a regular object ({}) as a hash. We recommend you never
@@ -4236,9 +4236,9 @@ TP.lang.Hash.Type.defineConstant('STYLE_STRING_PARSER',
 function(aString) {
 
     /**
-     * @name STYLE_STRING_PARSER
-     * @synopsis A parse function specific to CSS style strings.
-     * @description The input is checked for conformance to key:value; syntax
+     * @method STYLE_STRING_PARSER
+     * @summary A parse function specific to CSS style strings.
+     * @summary The input is checked for conformance to key:value; syntax
      *     and parsed into a valid hash if it matches. In addition the keys are
      *     converted into their proper DOM equivalents so that 'float' in CSS
      *     becomes 'cssFloat' in the hash.
@@ -4278,9 +4278,9 @@ TP.lang.Hash.Type.defineConstant('ATTRIBUTE_STRING_PARSER',
 function(aString) {
 
     /**
-     * @name ATTRIBUTE_STRING_PARSER
-     * @synopsis A parse function specific to XML attribute strings.
-     * @description The input is checked for conformance to key="value" syntax
+     * @method ATTRIBUTE_STRING_PARSER
+     * @summary A parse function specific to XML attribute strings.
+     * @summary The input is checked for conformance to key="value" syntax
      *     and parsed into a valid hash if it matches.
      * @param {String} aString A valid XML attribute string.
      * @returns {TP.lang.Hash} A new instance.
@@ -4317,8 +4317,8 @@ TP.lang.Hash.Type.defineConstant('URI_STRING_PARSER',
 function(aString) {
 
     /**
-     * @name URI_STRING_PARSER
-     * @synopsis A parse function specific to URI strings.
+     * @method URI_STRING_PARSER
+     * @summary A parse function specific to URI strings.
      * @param {String} aString A valid URI string.
      * @returns {TP.lang.Hash} A new instance.
      */
@@ -4388,9 +4388,9 @@ TP.lang.Hash.Type.defineConstant('QUERY_STRING_PARSER',
 function(aString) {
 
     /**
-     * @name QUERY_STRING_PARSER
-     * @synopsis A parse function specific to URI query strings.
-     * @description The input is checked for conformance to key=value[&|;]...
+     * @method QUERY_STRING_PARSER
+     * @summary A parse function specific to URI query strings.
+     * @summary The input is checked for conformance to key=value[&|;]...
      *     syntax and parsed into a valid hash if it matches. NOTE that a
      *     leading ? is allowed, and discarded by this routine (and in fact the
      *     entire URI can be passed to this routine if necessary). This method
@@ -4435,10 +4435,10 @@ TP.definePrimitive('hc',
 function() {
 
     /**
-     * @name hc
-     * @synopsis Construct and return a new hash, populating it with initial
+     * @method hc
+     * @summary Construct and return a new hash, populating it with initial
      *     data based on the argument list.
-     * @description Input data can be provided in a variety of formats including
+     * @summary Input data can be provided in a variety of formats including
      *     an array of ordered pairs, an array of key, value sequences, an
      *     Object (not recommended for speed reasons), a hash of key/value
      *     pairs, or a simple argument list of key, value sequences.
@@ -4532,8 +4532,8 @@ TP.lang.Hash.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Constructs a new hash from the object(s) provided as arguments.
+     * @method fromObject
+     * @summary Constructs a new hash from the object(s) provided as arguments.
      * @param {Object} anObject The source object.
      * @returns {TP.lang.Hash} A new instance.
      */
@@ -4551,8 +4551,8 @@ TP.lang.Hash.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @returns {TP.lang.Hash} The receiver.
      */
 
@@ -4641,16 +4641,16 @@ TP.lang.Hash.Inst.defineMethod('addAllKeys',
 function(aCollection) {
 
     /**
-     * @name addAllKeys
-     * @synopsis Adds all the keys contained in aCollection.
-     * @description This is a fast way to get a simple lookup table from an
+     * @method addAllKeys
+     * @summary Adds all the keys contained in aCollection.
+     * @summary This is a fast way to get a simple lookup table from an
      *     array. The values are initialized to their index, effectively
      *     inverting the array into the hash. You can use the resulting hash to
      *     do containment checking against a hash key instead of scanning the
      *     original array by using hash.containsKey().
      * @param {TPCollection} aCollection A collection of one or more keys.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var keys,
@@ -4696,8 +4696,8 @@ TP.lang.Hash.Inst.defineMethod('asAttributeString',
 function() {
 
     /**
-     * @name asAttributeString
-     * @synopsis Returns the receiver in an XML attribute string format, meaning
+     * @method asAttributeString
+     * @summary Returns the receiver in an XML attribute string format, meaning
      *     each key/value pair becomes key="value" and each pair is separated by
      *     a single space. The resulting string is suitable for inclusion in
      *     strings used to construct nodes.
@@ -4713,8 +4713,8 @@ TP.lang.Hash.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -4783,8 +4783,8 @@ TP.lang.Hash.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -4841,8 +4841,8 @@ TP.lang.Hash.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -4897,8 +4897,8 @@ TP.lang.Hash.Inst.defineMethod('asObject',
 function() {
 
     /**
-     * @name asObject
-     * @synopsis Returns the receiver as an array of key/value pairs. For
+     * @method asObject
+     * @summary Returns the receiver as an array of key/value pairs. For
      *     example TP.hc('a',1,'b',2).asObject() returns the equivalent of {a:
      *     1, b: 2}.
      * @returns {Object} The receiver as an Object.
@@ -4945,8 +4945,8 @@ TP.lang.Hash.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -5011,11 +5011,11 @@ TP.lang.Hash.Inst.defineMethod('asQueryString',
 function(aSeparator) {
 
     /**
-     * @name asQueryString
-     * @synopsis Returns the receiver in URI query string form, meaning each
+     * @method asQueryString
+     * @summary Returns the receiver in URI query string form, meaning each
      *     key/value pair becomes key=value and each pair is separated by a
      *     single & or separator as provided.
-     * @description This method automatically encodes query values by calling
+     * @summary This method automatically encodes query values by calling
      *     encodeURIComponent() on them.
      * @param {String} aSeparator The default is '&'.
      * @returns {String} The receiver as a valid query string.
@@ -5049,8 +5049,8 @@ TP.lang.Hash.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -5098,8 +5098,8 @@ TP.lang.Hash.Inst.defineMethod('asStyleString',
 function() {
 
     /**
-     * @name asStyleString
-     * @synopsis Returns the receiver in CSS style attribute string form,
+     * @method asStyleString
+     * @summary Returns the receiver in CSS style attribute string form,
      *     meaning each key/value pair becomes key:value and each pair is
      *     separated by a single
      * @returns {String} The receiver as a String.
@@ -5114,8 +5114,8 @@ TP.lang.Hash.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -5172,12 +5172,12 @@ TP.lang.Hash.Inst.defineMethod('atAllPutKeys',
 function() {
 
     /**
-     * @name atAllPutKeys
-     * @synopsis Assigns the value in each location in the collection to be
+     * @method atAllPutKeys
+     * @summary Assigns the value in each location in the collection to be
      *     equal to the key at that location. This works as an initializer for
      *     certain operations.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     this.convert(function(it, ind) {return it.first();});
@@ -5191,8 +5191,8 @@ TP.lang.Hash.Inst.defineMethod('copy',
 function(aFilterNameOrKeys, contentOnly) {
 
     /**
-     * @name copy
-     * @synopsis Returns a shallow copy of the receiver. Adequate for dealing
+     * @method copy
+     * @summary Returns a shallow copy of the receiver. Adequate for dealing
      *     with reference type attribute problems. If contentOnly is true then a
      *     TP.lang.Hash is returned contains only the content values (key, val,
      *     key, val ...), and no 'special values' on the receiver are copied.
@@ -5258,9 +5258,9 @@ TP.lang.Hash.Inst.defineMethod('get',
 function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value of attributeName from the receiver.
-     * @description Note that get() operates on the object's methods first and
+     * @method get
+     * @summary Returns the value of attributeName from the receiver.
+     * @summary Note that get() operates on the object's methods first and
      *     then searches its content and properties. In other words, if the
      *     receiver has both a method named 'foo' and a key/value pair under the
      *     key 'foo' you won't get the value back, you'll get the result of
@@ -5345,8 +5345,8 @@ TP.lang.Hash.Inst.defineMethod('getContent',
 function() {
 
     /**
-     * @name getContent
-     * @synopsis Overrides from supertype to check to see if our internal
+     * @method getContent
+     * @summary Overrides from supertype to check to see if our internal
      *     content has a slot named 'content'. If so, that is returned.
      *     Otherwise, a standard 'getValue()' is performed.
      * @returns The value of our 'content' slot if we have one.
@@ -5366,8 +5366,8 @@ TP.lang.Hash.Inst.defineMethod('getParameters',
 function() {
 
     /**
-     * @name getParameters
-     * @synopsis Returns the receiver's parameters. For a TP.lang.Hash this
+     * @method getParameters
+     * @summary Returns the receiver's parameters. For a TP.lang.Hash this
      *     returns the hash itself.
      * @returns {Object} A TP.lang.Hash or TP.sig.Request containing parameter
      *     data (typically).
@@ -5382,8 +5382,8 @@ TP.lang.Hash.Inst.defineMethod('hasKey',
 function(aKey) {
 
     /**
-     * @name hasKey
-     * @synopsis Returns true if aKey has been defined for the receiver.
+     * @method hasKey
+     * @summary Returns true if aKey has been defined for the receiver.
      * @param {String} aKey The string key to test for.
      * @returns {Boolean} True if the key is defined.
      */
@@ -5400,8 +5400,8 @@ TP.lang.Hash.Inst.defineMethod('$$isPair',
 function() {
 
     /**
-     * @name $$isPair
-     * @synopsis This method always returns false for TP.lang.Hash.
+     * @method $$isPair
+     * @summary This method always returns false for TP.lang.Hash.
      * @returns {Boolean} False as TP.lang.Hash is never an ordered pair.
      */
 
@@ -5414,8 +5414,8 @@ TP.lang.Hash.Inst.defineMethod('populate',
 function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
 
     /**
-     * @name populate
-     * @synopsis Populates the keys listed in the propertyHash by prompting the
+     * @method populate
+     * @summary Populates the keys listed in the propertyHash by prompting the
      *     user. Information in the propertyHash provides the keys to populate,
      *     the prompts to use, and optionally the aspects to use when querying
      *     the defaultSource for values.
@@ -5435,7 +5435,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
      *                          'password', 'Enter password');
      *
      *
-     * @signals Change
+     * @fires Change
      */
 
     var keys,
@@ -5491,8 +5491,8 @@ TP.lang.Hash.Inst.defineMethod('$removeInternalKey',
 function(aKey) {
 
     /**
-     * @name $removeInternalKey
-     * @synopsis A private method that removes a key from our private, internal
+     * @method $removeInternalKey
+     * @summary A private method that removes a key from our private, internal
      *     hash.
      * @param {Object} aKey The key value to remove.
      * @returns {TP.lang.Hash} The receiver.
@@ -5518,15 +5518,15 @@ TP.lang.Hash.Inst.defineMethod('removeValue',
 function(aValue, aTest) {
 
     /**
-     * @name removeValue
-     * @synopsis Removes the value provided if the collection contains it. This
+     * @method removeValue
+     * @summary Removes the value provided if the collection contains it. This
      *     removes all keys which contain the value.
      * @param {Object} aValue The value to remove.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var tmparr,
@@ -5562,13 +5562,13 @@ TP.lang.Hash.Inst.defineMethod('replaceKey',
 function(oldKey, newKey) {
 
     /**
-     * @name replaceKey
-     * @synopsis Replaces the key/value pair oldKey/value with newKey/value.
+     * @method replaceKey
+     * @summary Replaces the key/value pair oldKey/value with newKey/value.
      * @param {String} oldKey The old key to find the value with.
      * @param {String} newKey The new key to register the value under.
-     * @raises TP.sig.InvalidKey
+     * @exception TP.sig.InvalidKey
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var val,
@@ -5610,14 +5610,14 @@ TP.lang.Hash.Inst.defineMethod('replaceValue',
 function(oldValue, newValue, aTest) {
 
     /**
-     * @name replaceValue
-     * @synopsis Replaces all occurrences of oldValue with newValue.
+     * @method replaceValue
+     * @summary Replaces all occurrences of oldValue with newValue.
      * @param {Object} oldValue The value to replace.
      * @param {Object} newValue The new value to update with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var replaced,
@@ -5679,8 +5679,8 @@ TP.lang.Hash.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided. If
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to set.
@@ -5688,7 +5688,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var path,
@@ -5784,8 +5784,8 @@ TP.lang.Hash.Inst.defineMethod('setDelimiter',
 function(aString) {
 
     /**
-     * @name setDelimiter
-     * @synopsis Sets the join delimiter to use when converting the hash to and
+     * @method setDelimiter
+     * @summary Sets the join delimiter to use when converting the hash to and
      *     from a string.
      * @param {String} aString The string used to join() the array.
      * @returns {TP.lang.Hash} The receiver.
@@ -5808,13 +5808,13 @@ TP.lang.Hash.Inst.defineMethod('shift',
 function() {
 
     /**
-     * @name shift
-     * @synopsis Removes and returns the first element in the hash, as if the
+     * @method shift
+     * @summary Removes and returns the first element in the hash, as if the
      *     hash had been turned into an array and the shift had been performed
      *     on that collection.
      * @returns {Array} An ordered pair containing the first item in the hash
      *     based on the current sort function.
-     * @signals Change
+     * @fires Change
      */
 
     var item;
@@ -5833,8 +5833,8 @@ TP.lang.Hash.Inst.defineMethod('add',
 function() {
 
     /**
-     * @name add
-     * @synopsis Adds one or more key/value pairs to the receiver. The input can
+     * @method add
+     * @summary Adds one or more key/value pairs to the receiver. The input can
      *     be provided in a variety of formats including an array of ordered
      *     pairs, an array of key, value sequences, an Object (not recommended
      *     for speed reasons), a hash of key/value pairs, or a simple argument
@@ -5842,7 +5842,7 @@ function() {
      * @param {Array} varargs Variable-length argument list of ordered
      *     pairs.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var count,
@@ -5925,15 +5925,15 @@ TP.lang.Hash.Inst.defineMethod('addAll',
 function(aCollection, aFunction) {
 
     /**
-     * @name addAll
-     * @synopsis Adds all the ordered pairs contained in the collection to the
+     * @method addAll
+     * @summary Adds all the ordered pairs contained in the collection to the
      *     receiver. The optional function can be used to decide which value
      *     will be used when a duplicate key is found.
      * @param {TPCollection} aCollection A collection of ordered pairs to add.
      * @param {Function} aFunction A function accepting a key and two values
      *     (key, old, new) which returns the value to use for the key.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var thisref,
@@ -5995,12 +5995,12 @@ TP.lang.Hash.Inst.defineMethod('addAllIfAbsent',
 function(aCollection) {
 
     /**
-     * @name addAllIfAbsent
-     * @synopsis Adds all the ordered pairs contained in the collection to the
+     * @method addAllIfAbsent
+     * @summary Adds all the ordered pairs contained in the collection to the
      *     receiver where the keys are not already in the target collection.
      * @param {TPCollection} aCollection A collection of ordered pairs to add.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var thisref;
@@ -6024,8 +6024,8 @@ TP.lang.Hash.Inst.defineMethod('addIfAbsent',
 function(anItemOrKey, aValue, varargs) {
 
     /**
-     * @name addIfAbsent
-     * @synopsis Using the key/value pair provided assign the value to the key
+     * @method addIfAbsent
+     * @summary Using the key/value pair provided assign the value to the key
      *     in the receiver if the key doesn't already exist. Additional
      *     key/value pairs can be provided just as with the TP.lang.Hash
      *     constructor to avoid having to call this routine multiple times with
@@ -6038,9 +6038,9 @@ function(anItemOrKey, aValue, varargs) {
      *     pairs are available. When this is defined the routine will loop
      *     across all input arguments and attempt to add all valid key/value
      *     pairings that can be found.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The key's value after processing.
-     * @signals Change
+     * @fires Change
      */
 
     var i,
@@ -6089,12 +6089,12 @@ TP.lang.Hash.Inst.defineMethod('addItem',
 function(anItem) {
 
     /**
-     * @name addItem
-     * @synopsis Adds a single item to the receiver. If the key already exists
+     * @method addItem
+     * @summary Adds a single item to the receiver. If the key already exists
      *     the new value is inserted.
      * @param {The} anItem item to add.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     if (!TP.isPair(anItem)) {
@@ -6112,15 +6112,15 @@ TP.lang.Hash.Inst.defineMethod('addWithCount',
 function(anObject, aCount) {
 
     /**
-     * @name addWithCount
-     * @synopsis Adds the object N times, where N defaults to 0. NOTE that in
+     * @method addWithCount
+     * @summary Adds the object N times, where N defaults to 0. NOTE that in
      *     the absence of a valid count the object is not added. For a Hash the
      *     outcome is either no addition, or one new item since the key/value
      *     can only occupy on location in the Hash.
      * @param {Object} anObject The object to add.
      * @param {Number} aCount A number of times to add the object. Default is 0.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var count;
@@ -6151,8 +6151,8 @@ TP.lang.Hash.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver as an array of key/value pairs. For
+     * @method asArray
+     * @summary Returns the receiver as an array of key/value pairs. For
      *     example TP.hc('a',1,'b',2).asArray() returns the equivalent of [['a',
      *     1], ['b', 2]].
      * @returns {Array} The receiver as an Array.
@@ -6167,8 +6167,8 @@ TP.lang.Hash.Inst.defineMethod('asHash',
 function() {
 
     /**
-     * @name asHash
-     * @synopsis Returns the receiver as a suitable hash. In this type this
+     * @method asHash
+     * @summary Returns the receiver as a suitable hash. In this type this
      *     method returns the receiver.
      * @returns {TP.lang.Hash} The receiver as a TP.lang.Hash.
      */
@@ -6182,8 +6182,8 @@ TP.lang.Hash.Inst.defineMethod('asIterator',
 function(aStep) {
 
     /**
-     * @name asIterator
-     * @synopsis Returns a newly initialized interator on the receiver.
+     * @method asIterator
+     * @summary Returns a newly initialized interator on the receiver.
      * @param {Number} aStep The step size for iteration over the receiver.
      * @returns {TP.core.Iterator} An iterator on the receiver.
      */
@@ -6197,7 +6197,7 @@ TP.lang.Hash.Inst.defineMethod('asRange',
 function() {
 
     /**
-     * @name asRange
+     * @method asRange
      */
 
     return TP.todo();
@@ -6209,9 +6209,9 @@ TP.lang.Hash.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the hash as a string.
-     * @description Constructs a new string from the hash.
+     * @method asString
+     * @summary Returns the hash as a string.
+     * @summary Constructs a new string from the hash.
      *     The join is done using the receiver's current 'delimiter' value,
      *     normally ', '. Set the 'delimiter' value on the receiver to use a
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
@@ -6289,9 +6289,9 @@ TP.lang.Hash.Inst.defineMethod('collapse',
 function() {
 
     /**
-     * @name collapse
-     * @synopsis Returns the receiver.
-     * @description This method is defined purely for polymorphic reasons so
+     * @method collapse
+     * @summary Returns the receiver.
+     * @summary This method is defined purely for polymorphic reasons so
      *     that the system can just send 'collapse' to any object. For Arrays
      *     and other collections, the first item is returned.
      * @returns {Object} The receiver.
@@ -6312,8 +6312,8 @@ TP.lang.Hash.Inst.defineMethod('compact',
 function(aFilter) {
 
     /**
-     * @name compact
-     * @synopsis Returns the receiver with all null/undefined values removed,
+     * @method compact
+     * @summary Returns the receiver with all null/undefined values removed,
      *     meaning any keys whose values are null/undefined will be removed. If
      *     a filtering function is provided then items for which the function
      *     returns true will be removed and all other values will be retained.
@@ -6322,7 +6322,7 @@ function(aFilter) {
      * @param {Function} aFilter The filtering function. This should return true
      *     for values to remove from the collection.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var items,
@@ -6373,8 +6373,8 @@ TP.lang.Hash.Inst.defineMethod('conform',
 function(anInterface, inline) {
 
     /**
-     * @name conform
-     * @synopsis Returns the receiver with all values which don't implement the
+     * @method conform
+     * @summary Returns the receiver with all values which don't implement the
      *     interface removed. The resulting collection's values will, on
      *     completion of this method, respond to the next iteration
      *     (collectInvoke perhaps) that you want to run.
@@ -6383,7 +6383,7 @@ function(anInterface, inline) {
      * @param {Boolean} inline False to return a new array instead of collapsing
      *     inline. Default is true.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var thisref;
@@ -6422,15 +6422,15 @@ TP.lang.Hash.Inst.defineMethod('contains',
 function(anItem, aTest) {
 
     /**
-     * @name contains
-     * @synopsis Returns true if the item (anItem) provided is found in the
+     * @method contains
+     * @summary Returns true if the item (anItem) provided is found in the
      *     receiver. So that hash and array containers can be used for common
      *     operations if anItem is a simple string this method returns true if
      *     that string is a key in the receiver.
      * @param {TPOrderedPair} anItem The item to find in the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises InvalidPair
+     * @exception InvalidPair
      * @returns {Boolean} Whether or not the receiver contains the value
      *     provided.
      */
@@ -6469,15 +6469,15 @@ TP.lang.Hash.Inst.defineMethod('containsAll',
 function(aCollection, aTest) {
 
     /**
-     * @name containsAll
-     * @synopsis Returns true if all the values in the collection provided are
+     * @method containsAll
+     * @summary Returns true if all the values in the collection provided are
      *     found in the receiver.
      * @param {TPCollection} aCollection The collection of elements all of which
      *     must be equal to at least one element in the receiver for this method
      *     to return true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains all of the values
      *     in the collection provided.
      */
@@ -6522,15 +6522,15 @@ TP.lang.Hash.Inst.defineMethod('containsAny',
 function(aCollection, aTest) {
 
     /**
-     * @name containsAny
-     * @synopsis Returns true if any of the values in the collection provided
+     * @method containsAny
+     * @summary Returns true if any of the values in the collection provided
      *     are found in the receiver.
      * @param {TPCollection} aCollection The collection of elements any of which
      *     must be equal to any element in the receiver for this method to be
      *     true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains any of the values
      *     in the collection provided.
      */
@@ -6574,8 +6574,8 @@ TP.lang.Hash.Inst.defineMethod('containsString',
 function(aString) {
 
     /**
-     * @name containsString
-     * @synopsis Returns true if the receiver contains the string provided.
+     * @method containsString
+     * @summary Returns true if the receiver contains the string provided.
      * @param {String} aValue The value that at least one element in the
      *     receiver should be equal to for this method to return true.
      * @returns {Boolean}
@@ -6590,8 +6590,8 @@ TP.lang.Hash.Inst.defineMethod('convert',
 function(aFunction) {
 
     /**
-     * @name convert
-     * @synopsis Converts the values of the receiver in place, altering the
+     * @method convert
+     * @summary Converts the values of the receiver in place, altering the
      *     receiver such that the return value of aFunction is used as the new
      *     value for each key/value pair in the receiver.
      * @param {Function} aFunction A function which should return the new value
@@ -6629,8 +6629,8 @@ TP.lang.Hash.Inst.defineMethod('countOf',
 function(anItem, aTest) {
 
     /**
-     * @name countOf
-     * @synopsis Returns a count of the number of times anItem is found in the
+     * @method countOf
+     * @summary Returns a count of the number of times anItem is found in the
      *     hash.
      * @param {TPOrderedPair} anItem The item/pair whose value is checked
      *     against.
@@ -6649,8 +6649,8 @@ TP.lang.Hash.Inst.defineMethod('detect',
 function(aFunction) {
 
     /**
-     * @name detect
-     * @synopsis Returns the first element in the receiver which matches the
+     * @method detect
+     * @summary Returns the first element in the receiver which matches the
      *     criteria provided or null if the element isn't found. NOTE that for a
      *     hash the ordering is arbitrary, so this is more like a simple "find"
      *     that's useful when trying to find based on the value rather than key.
@@ -6686,17 +6686,17 @@ TP.lang.Hash.Inst.defineMethod('difference',
 function(aCollection, aTest) {
 
     /**
-     * @name difference
-     * @synopsis Returns the elements contained in the receiver which are not in
+     * @method difference
+     * @summary Returns the elements contained in the receiver which are not in
      *     the collection provided.
-     * @description This method can be thought of as subtracting all elements
+     * @summary This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
      * @param {TPCollection} aCollection The collection to difference against
      *     the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} An array containing the key/value pairs that differ.
      *     Since keys might have different values in different hashes we don't
      *     attempt to turn the list back into a hash.
@@ -6723,14 +6723,14 @@ TP.lang.Hash.Inst.defineMethod('disjunction',
 function(aCollection, aTest) {
 
     /**
-     * @name disjunction
-     * @synopsis Returns the 'symmetric difference' or those elements which are
+     * @method disjunction
+     * @summary Returns the 'symmetric difference' or those elements which are
      *     disjunct between the two collections. NOTE: this method does not
      *     return a new hash since there may have been key overlaps that would
      *     cause data to be missing from the resulting hash. The array of
      *     ordered pairs returned from this method doesn't suffer from that
      *     problem.
-     * @description This method returns a new array containing the disjunction
+     * @summary This method returns a new array containing the disjunction
      *     between the receiver and aCollection. This means that only those
      *     elements which occur in one of the collections but not the other are
      *     returned.
@@ -6738,7 +6738,7 @@ function(aCollection, aTest) {
      *     receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} An array containing the key/value pairs that differ.
      *     Since keys might have different values in different hashes we don't
      *     attempt to turn the list back into a hash.
@@ -6765,10 +6765,10 @@ TP.lang.Hash.Inst.defineMethod('empty',
 function() {
 
     /**
-     * @name empty
-     * @synopsis Empties the receiver.
+     * @method empty
+     * @summary Empties the receiver.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var hash,
@@ -6802,8 +6802,8 @@ TP.lang.Hash.Inst.defineMethod('getIterator',
 function() {
 
     /**
-     * @name getIterator
-     * @synopsis Returns the iterator used for the receiver. You shouldn't count
+     * @method getIterator
+     * @summary Returns the iterator used for the receiver. You shouldn't count
      *     on this being set at the start or in having any particular ordering.
      *     See the TP.core.Iterator type for information on how to order the
      *     iteration.
@@ -6823,8 +6823,8 @@ TP.lang.Hash.Inst.defineMethod('getIteratorType',
 function() {
 
     /**
-     * @name getIteratorType
-     * @synopsis Returns the type of iterator used for the receiver.
+     * @method getIteratorType
+     * @summary Returns the type of iterator used for the receiver.
      * @returns {TP.core.Iterator} The type of the iterator.
      */
 
@@ -6843,8 +6843,8 @@ TP.lang.Hash.Inst.defineMethod('getSize',
 function() {
 
     /**
-     * @name getSize
-     * @synopsis Returns the size of the receiver.
+     * @method getSize
+     * @summary Returns the size of the receiver.
      * @returns {Number} The size.
      */
 
@@ -6857,8 +6857,8 @@ TP.lang.Hash.Inst.defineMethod('getValues',
 function() {
 
     /**
-     * @name getValues
-     * @synopsis Returns an array containing the values for the objects'
+     * @method getValues
+     * @summary Returns an array containing the values for the objects'
      *     attributes.
      * @returns {Array} An array of the values for the receiver's keys.
      */
@@ -6893,17 +6893,17 @@ TP.lang.Hash.Inst.defineMethod('intersection',
 function(aCollection, aTest) {
 
     /**
-     * @name intersection
-     * @synopsis Returns the intersection of the two collections as a new
+     * @method intersection
+     * @summary Returns the intersection of the two collections as a new
      *     TP.lang.Hash.
-     * @description This method returns a hash of those elements which occur in
+     * @summary This method returns a hash of those elements which occur in
      *     BOTH the receiver and in aCollection. NOTE that both the keys and the
      *     values are used in testing.
      * @param {TPCollection} aCollection The collection to intersect the
      *     receiver with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {TP.lang.Hash} A hash containing the elements in the
      *     intersection of the two collections.
      */
@@ -6929,8 +6929,8 @@ TP.lang.Hash.Inst.defineMethod('$$isCollection',
 function() {
 
     /**
-     * @name $$isCollection
-     * @synopsis Returns true if the receiver is a collection instance.
+     * @method $$isCollection
+     * @summary Returns true if the receiver is a collection instance.
      * @returns {Boolean} True if the receiver is a collection.
      */
 
@@ -6943,11 +6943,11 @@ TP.lang.Hash.Inst.defineMethod('isSortedCollection',
 function() {
 
     /**
-     * @name isSortedCollection
-     * @synopsis Returns true if the receiver is behaving as a sorted
+     * @method isSortedCollection
+     * @summary Returns true if the receiver is behaving as a sorted
      *     collection. Effectively true any time the receiver has a valid sort
      *     function assigned.
-     * @description Objects cannot maintain their content in a sorted fashion
+     * @summary Objects cannot maintain their content in a sorted fashion
      *     although their keys may be sorted if a sort function has been
      *     defined. In that case this method returns true.
      * @returns {Boolean} Whether this hash is a sorted collection or not.
@@ -6962,8 +6962,8 @@ TP.lang.Hash.Inst.defineMethod('merge',
 function(shouldForce) {
 
     /**
-     * @name merge
-     * @synopsis Merge the receiver's elements with elements from one or more
+     * @method merge
+     * @summary Merge the receiver's elements with elements from one or more
      *     collections.
      * @param {Array} varargs Variable-length argument list of other
      *     collections
@@ -7026,18 +7026,18 @@ TP.lang.Hash.Inst.defineMethod('remove',
 function(anItem, aTest) {
 
     /**
-     * @name remove
-     * @synopsis Removes an item from the receiver.
-     * @description In this method, all instances of the item are removed. The
+     * @method remove
+     * @summary Removes an item from the receiver.
+     * @summary In this method, all instances of the item are removed. The
      *     key and value must match for the item to be removed. If you want to
      *     remove the key without concern for whether the value matches use
      *     removeKey or removeAt.
      * @param {TPOrderedPair} anItem The item to be removed.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises InvalidItem, InvalidPair
+     * @exception InvalidItem, InvalidPair
      * @returns {Number} The count of items removed.
-     * @signals Change
+     * @fires Change
      */
 
     var count;
@@ -7058,15 +7058,15 @@ TP.lang.Hash.Inst.defineMethod('removeAll',
 function(aCollection, aTest) {
 
     /**
-     * @name removeAll
-     * @synopsis Removes the items contained in the collection from the
+     * @method removeAll
+     * @summary Removes the items contained in the collection from the
      *     receiver.
      * @param {TPCollection} aCollection The collection of items to remove.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
      * @returns {Number} The count of items removed.
-     * @signals Change
+     * @fires Change
      */
 
     var arr,
@@ -7125,16 +7125,16 @@ TP.lang.Hash.Inst.defineMethod('replace',
 function(oldItem, newItem, aTest) {
 
     /**
-     * @name replace
-     * @synopsis Replaces the item having the value oldItem with an item having
+     * @method replace
+     * @summary Replaces the item having the value oldItem with an item having
      *     the value newItem.
      * @param {TPOrderedPair} oldItem The old item to look for.
      * @param {TPOrderedPair} newItem The new item to replace the old item with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidParameter, InvalidPair
+     * @exception TP.sig.InvalidParameter, InvalidPair
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var shouldSignal;
@@ -7174,17 +7174,17 @@ TP.lang.Hash.Inst.defineMethod('replaceAll',
 function(aCollection, newItem, aTest) {
 
     /**
-     * @name replaceAll
-     * @synopsis Replaces all the items in aCollection with the newItem.
+     * @method replaceAll
+     * @summary Replaces all the items in aCollection with the newItem.
      * @param {TPCollection} aCollection A collection of old items to replace.
      * @param {TPOrderedPair} newItem The new item to replace the old items
      *     with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @raises TP.sig.InvalidCollection,TP.sig.InvalidPair,
+     * @exception TP.sig.InvalidCollection,TP.sig.InvalidPair,
      *     TP.sig.InvalidParameter
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var arr,
@@ -7239,10 +7239,10 @@ TP.lang.Hash.Inst.defineMethod('transpose',
 function() {
 
     /**
-     * @name transpose
-     * @synopsis Transposes the keys and values of the receiver, creating a
+     * @method transpose
+     * @summary Transposes the keys and values of the receiver, creating a
      *     reverse-lookup version of the receiver.
-     * @description Note that the sort order (if any) of the keys determines how
+     * @summary Note that the sort order (if any) of the keys determines how
      *     duplicate values will ultimately be handled (ie. which key 'wins'
      *     when there are multiple values whose keys will collide).
      * @returns {TP.lang.Hash} A new instance with the values and keys reversed.
@@ -7272,8 +7272,8 @@ TP.lang.Hash.Inst.defineMethod('union',
 function(aCollection, aFunction) {
 
     /**
-     * @name union
-     * @synopsis Returns a new Hash containing the items combining the keys and
+     * @method union
+     * @summary Returns a new Hash containing the items combining the keys and
      *     values of both objects. When aFunction is provided it is used to
      *     produce a return value for duplicate keys, otherwise the incoming
      *     collection's values will replace the receiver's values.
@@ -7331,8 +7331,8 @@ TP.lang.Hash.Inst.defineMethod('unique',
 function(aTest) {
 
     /**
-     * @name unique
-     * @synopsis Collapses the receiver to contain only 1 of each unique value.
+     * @method unique
+     * @summary Collapses the receiver to contain only 1 of each unique value.
      *     For a hash this is a no-op since each item is inherently a unique
      *     key/value combination.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -7351,13 +7351,13 @@ TP.lang.Hash.Inst.defineMethod('addAt',
 function(aValue, anIndex) {
 
     /**
-     * @name addAt
-     * @synopsis Adds the value provided at anIndex.
+     * @method addAt
+     * @summary Adds the value provided at anIndex.
      * @param {Object} aValue The value to add at anIndex.
      * @param {Number} anIndex The index to add aValue at.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     if (TP.notValid(anIndex)) {
@@ -7373,14 +7373,14 @@ TP.lang.Hash.Inst.defineMethod('addAllAt',
 function(aCollection, anIndex) {
 
     /**
-     * @name addAllAt
-     * @synopsis Adds aCollection at the index provided. NOTE that the entire
+     * @method addAllAt
+     * @summary Adds aCollection at the index provided. NOTE that the entire
      *     collection becomes the value for the key provided.
      * @param {TPCollection} aCollection The collection to add.
      * @param {Number} anIndex The index to add elements.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     return this.addAt(aCollection, anIndex);
@@ -7392,8 +7392,8 @@ TP.lang.Hash.Inst.defineMethod('at',
 function(anIndex) {
 
     /**
-     * @name at
-     * @synopsis Returns the value at the index provided.
+     * @method at
+     * @summary Returns the value at the index provided.
      * @param {Object} anIndex The index to use for locating the value. Note
      *     that this is usually a string, but could be any object. This method
      *     is designed to protect against returning any of the receiver's
@@ -7420,11 +7420,11 @@ TP.lang.Hash.Inst.defineMethod('atAll',
 function(aCollection) {
 
     /**
-     * @name atAll
-     * @synopsis Returns an array containing the values at each of the indices
+     * @method atAll
+     * @summary Returns an array containing the values at each of the indices
      *     provided.
      * @param {TPCollection} aCollection The collection of indexes.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} A new array containing the values collected.
      */
 
@@ -7457,9 +7457,9 @@ TP.lang.Hash.Inst.defineMethod('atAllIfAbsent',
 function(aCollection) {
 
     /**
-     * @name atAllIfAbsent
+     * @method atAllIfAbsent
      * @param {TPCollection} aCollection The collection of indexes.
-     * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array}
      * @abstract
      */
@@ -7473,18 +7473,18 @@ TP.lang.Hash.Inst.defineMethod('atAllPut',
 function(aCollection, aValue) {
 
     /**
-     * @name atAllPut
-     * @synopsis Inserts aValue at a set of locations.
-     * @description Places aValue at each location in the receiver. If the
+     * @method atAllPut
+     * @summary Inserts aValue at a set of locations.
+     * @summary Places aValue at each location in the receiver. If the
      *     optional collection is provided the indices listed in the collection
      *     are updated rather than the entire collection.
      * @param {TPCollection} aCollection An optional collection specifying
      *     indexes which should be altered to contain aValue.
      * @param {Object} aValue The element to put at all the locations in this
      *     collection (unless aCollection of indexes is provided).
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var count,
@@ -7523,10 +7523,10 @@ TP.lang.Hash.Inst.defineMethod('atIfInvalid',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfInvalid
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfInvalid
+     * @summary Returns the value at the index provided or the default value if
      *     the key doesn't exist.
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -7552,10 +7552,10 @@ TP.lang.Hash.Inst.defineMethod('atIfNull',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfNull
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfNull
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns a value of null (not undefined).
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -7581,10 +7581,10 @@ TP.lang.Hash.Inst.defineMethod('atIfUndefined',
 function(anIndex, aDefault) {
 
     /**
-     * @name atIfUndefined
-     * @synopsis Returns the value at the index provided or the default value if
+     * @method atIfUndefined
+     * @summary Returns the value at the index provided or the default value if
      *     the key returns undefined.
-     * @description If a Function is supplied as the default value to this
+     * @summary If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -7610,8 +7610,8 @@ TP.lang.Hash.Inst.defineMethod('atPath',
 function(anIndex) {
 
     /**
-     * @name atPath
-     * @synopsis Retrieves the value at the 'end' of set of TP.lang.Hashes that
+     * @method atPath
+     * @summary Retrieves the value at the 'end' of set of TP.lang.Hashes that
      *     should each match an entry in the dot-separated index.
      * @param {String} anIndex The 'dot separated' path to retrieve the value
      *     from.
@@ -7667,8 +7667,8 @@ TP.lang.Hash.Inst.defineMethod('atPathPut',
 function(anIndex, aValue) {
 
     /**
-     * @name atPathPut
-     * @synopsis Places the supplied value at the 'end' of set of TP.lang.Hashes
+     * @method atPathPut
+     * @summary Places the supplied value at the 'end' of set of TP.lang.Hashes
      *     that should each match an entry in the dot-separated index. If a
      *     TP.lang.Hash isn't found at that entry in the hash at the current
      *     entry point, one is created.
@@ -7683,7 +7683,7 @@ function(anIndex, aValue) {
      *          <samp>TP.hc('foo', TP.hc('bar', TP.hc('baz', 'moo')))</samp>
      *     </code>
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var entry,
@@ -7773,12 +7773,12 @@ TP.lang.Hash.Inst.defineMethod('atPut',
 function(anIndex, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Replaces the value at anIndex with aValue.
+     * @method atPut
+     * @summary Replaces the value at anIndex with aValue.
      * @param {Object} anIndex The index to put aValue into.
      * @param {Object} aValue The value to place at anIndex.
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var hash,
@@ -7861,17 +7861,17 @@ TP.lang.Hash.Inst.defineMethod('atPutIfAbsent',
 function(aKey, aValue) {
 
     /**
-     * @name atPutIfAbsent
-     * @synopsis Add the key and value if the key doesn't already exist. NOTE
+     * @method atPutIfAbsent
+     * @summary Add the key and value if the key doesn't already exist. NOTE
      *     that the value isn't relevant in this test, the value may be null, or
      *     undefined, and as long at the key has been defined at some point this
      *     method will not update the value.
      * @param {Object} aKey The key to test and optionally add to the receiver.
      * @param {Object} aValue Optional value to store when the first argument is
      *     a string.
-     * @raises InvalidPair
+     * @exception InvalidPair
      * @returns {Object} The key's value after processing.
-     * @signals Change
+     * @fires Change
      */
 
     return this.addIfAbsent(aKey, aValue);
@@ -7883,8 +7883,8 @@ TP.lang.Hash.Inst.defineMethod('containsKey',
 function(aKey) {
 
     /**
-     * @name containsKey
-     * @synopsis Returns true if the receiver contains the key provided.
+     * @method containsKey
+     * @summary Returns true if the receiver contains the key provided.
      * @param {Object} aKey The key to test.
      * @returns {Boolean}
      */
@@ -7900,7 +7900,7 @@ TP.lang.Hash.Inst.defineMethod('detectKeyAt',
 function(aKey, anIndex) {
 
     /**
-     * @name detectKeyAt
+     * @method detectKeyAt
      * @param {String|RegExp} aKey The string or regular expression selector to
      *     match with.
      * @param {Number} anIndex
@@ -7917,9 +7917,9 @@ TP.lang.Hash.Inst.defineMethod('getKeys',
 function(aFilterName) {
 
     /**
-     * @name getKeys
-     * @synopsis Returns the unique keys of the receiver.
-     * @description If the receiver has a sort function defined the keys are
+     * @method getKeys
+     * @summary Returns the unique keys of the receiver.
+     * @summary If the receiver has a sort function defined the keys are
      *     sorted. The result is that all methods which use the key array as a
      *     focal point for iteration effectively work to produce output sorted
      *     by the ordering of the keys.
@@ -7950,8 +7950,8 @@ TP.lang.Hash.Inst.defineMethod('getPosition',
 function(aValue, aTest) {
 
     /**
-     * @name getPosition
-     * @synopsis Returns the first index of the element provided or undefined if
+     * @method getPosition
+     * @summary Returns the first index of the element provided or undefined if
      *     the element isn't found. For hashes with a sort function the ordering
      *     will be relevant, otherwise it will be random and the results will be
      *     unpredictable.
@@ -7992,8 +7992,8 @@ TP.lang.Hash.Inst.defineMethod('getPositions',
 function(aValue, aTest) {
 
     /**
-     * @name getPositions
-     * @synopsis Returns an array containing all indexes where aValue exists. No
+     * @method getPositions
+     * @summary Returns an array containing all indexes where aValue exists. No
      *     particular order is implied however sorted hashes will return the
      *     indexes in the order defined by their sort function.
      * @param {Object} aValue The value to search for.
@@ -8034,11 +8034,11 @@ TP.lang.Hash.Inst.defineMethod('removeAt',
 function(anIndex) {
 
     /**
-     * @name removeAt
-     * @synopsis Removes the element at the index provided.
+     * @method removeAt
+     * @summary Removes the element at the index provided.
      * @param {Object} anIndex The index at which to remove the element.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     return this.removeKey(anIndex);
@@ -8050,13 +8050,13 @@ TP.lang.Hash.Inst.defineMethod('removeAtAll',
 function(aCollection) {
 
     /**
-     * @name removeAtAll
-     * @synopsis Provides a way to remove a collection of keys (and their
+     * @method removeAtAll
+     * @summary Provides a way to remove a collection of keys (and their
      *     values) from the collection.
      * @param {TPCollection} aCollection A collection of keys.
-     * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var count,
@@ -8110,13 +8110,13 @@ TP.lang.Hash.Inst.defineMethod('removeKey',
 function(aKey) {
 
     /**
-     * @name removeKey
-     * @synopsis Removes the key provided if the collection contains it. Note
+     * @method removeKey
+     * @summary Removes the key provided if the collection contains it. Note
      *     that this won't remove a key if the key references a method.
      * @param {Object} aKey The key value to remove.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     if (TP.isEmpty(aKey)) {
@@ -8140,13 +8140,13 @@ TP.lang.Hash.Inst.defineMethod('removeKeys',
 function(aKeyArray) {
 
     /**
-     * @name removeKeys
-     * @synopsis Removes the keys provided if the collection contains them. Note
+     * @method removeKeys
+     * @summary Removes the keys provided if the collection contains them. Note
      *     that this won't remove a key if the key references a method.
      * @param {Array} aKeyArray The key values to remove.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var changed,
@@ -8182,7 +8182,7 @@ TP.lang.Hash.Inst.defineMethod('transpose',
 function() {
 
     /**
-     * @name transpose
+     * @method transpose
      * @returns {TP.core.Hash}
      * @abstract
      */
@@ -8208,8 +8208,8 @@ TP.lang.Hash.Inst.defineMethod('getSortFunction',
 function() {
 
     /**
-     * @name getSortFunction
-     * @synopsis Returns the current sort function or null.
+     * @method getSortFunction
+     * @summary Returns the current sort function or null.
      * @returns {Function} This array's sort function.
      */
 
@@ -8222,17 +8222,17 @@ TP.lang.Hash.Inst.defineMethod('setSortFunction',
 function(aFunction) {
 
     /**
-     * @name setSortFunction
-     * @synopsis Sets the receiver's internal sort function.
-     * @description This function will be called any time the receiver has been
+     * @method setSortFunction
+     * @summary Sets the receiver's internal sort function.
+     * @summary This function will be called any time the receiver has been
      *     updated without being sorted and a request for a value is made. This
      *     method will flag the receiver so that a re-sort will occur on the
      *     next data access call.
      * @param {Function} aFunction The function to set this array's sort
      *     function to.
-     * @raises TP.sig.InvalidFunction
+     * @exception TP.sig.InvalidFunction
      * @returns {TP.lang.Hash} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     //  no change? don't waste time
@@ -8254,8 +8254,8 @@ TP.lang.Hash.Inst.defineMethod('sort',
 function(aSortFunction) {
 
     /**
-     * @name sort
-     * @synopsis Sorts the receiver's keys, possibly reordering the items in the
+     * @method sort
+     * @summary Sorts the receiver's keys, possibly reordering the items in the
      *     receiver. NOTE that if no function is supplied here and the receiver
      *     doesn't have a sort function installed via setSortFunction(), the
      *     results are sorted alphabetically by key string values.
@@ -8288,8 +8288,8 @@ TP.lang.Hash.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name canResolveDNU
-     * @synopsis Provides an instance that has triggered the DNU machinery with
+     * @method canResolveDNU
+     * @summary Provides an instance that has triggered the DNU machinery with
      *     an opportunity to handle the problem itself. For TP.lang.Hash
      *     instances this results in a test to see if the method is a getter and
      *     whether the receiver has a key fitting a pattern such that at() would
@@ -8327,8 +8327,8 @@ TP.lang.Hash.Inst.defineMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name resolveDNU
-     * @synopsis Invoked by the main DNU machinery when the instance has
+     * @method resolveDNU
+     * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given. For a
      *     hash this means returning the key in question based on the "getter"
      *     prefix being removed.
@@ -8355,7 +8355,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
 /**
  * @type {TP.core.Range}
- * @synopsis TP.core.Range provides a simple interface to a range of numbers.
+ * @summary TP.core.Range provides a simple interface to a range of numbers.
  *     This allows for interesting iteration possibilities such as:
  *
  *     (1).to(10).perform(function (ind) {alert('index is: ' + ind)});
@@ -8384,8 +8384,8 @@ TP.core.Range.Inst.defineMethod('init',
 function(startIndex, endIndex, aStep) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance
+     * @method init
+     * @summary Initializes a new instance
      * @param {Number} startIndex The beginning index of the range.
      * @param {Number} endIndex The end index of the range.
      * @param {Number} aStep The range increment for interation. When the start
@@ -8427,8 +8427,8 @@ TP.core.Range.Inst.defineMethod('asArray',
 function() {
 
     /**
-     * @name asArray
-     * @synopsis Returns the receiver in array form (as an Array of its keys).
+     * @method asArray
+     * @summary Returns the receiver in array form (as an Array of its keys).
      * @returns {Array} The receiver as an Array.
      */
 
@@ -8450,8 +8450,8 @@ TP.core.Range.Inst.defineMethod('at',
 function(anIndex) {
 
     /**
-     * @name at
-     * @synopsis Returns the range key at the index provided.
+     * @method at
+     * @summary Returns the range key at the index provided.
      * @param {Number} anIndex The index to access.
      * @returns {Object} The object at the index provided.
      */
@@ -8471,8 +8471,8 @@ TP.core.Range.Inst.defineMethod('by',
 function(aStep) {
 
     /**
-     * @name by
-     * @synopsis Sets the range iteration step size.
+     * @method by
+     * @summary Sets the range iteration step size.
      * @param {Number} aStep The numerical step size.
      * @returns {TP.core.Range} The receiver.
      */
@@ -8496,8 +8496,8 @@ TP.core.Range.Inst.defineMethod('empty',
 function(anIndex) {
 
     /**
-     * @name empty
-     * @synopsis Clears the range's internal index cache, if it exists.
+     * @method empty
+     * @summary Clears the range's internal index cache, if it exists.
      * @returns {TP.core.Range} The receiver.
      */
 
@@ -8512,8 +8512,8 @@ TP.core.Range.Inst.defineMethod('getKeys',
 function() {
 
     /**
-     * @name getKeys
-     * @synopsis Returns an array containing the keys of the receiver.
+     * @method getKeys
+     * @summary Returns an array containing the keys of the receiver.
      * @returns {Array} The receiver as an array of key values.
      */
 
@@ -8555,8 +8555,8 @@ TP.core.Range.Inst.defineMethod('perform',
 function(aFunction) {
 
     /**
-     * @name perform
-     * @synopsis Iterates over the range and invokes aFunction on each
+     * @method perform
+     * @summary Iterates over the range and invokes aFunction on each
      *     iteration.
      * @param {Function} aFunction The function to invoke on each iteration.
      *     This function should accept the loop count as its only parameter.
@@ -8627,10 +8627,10 @@ TP.core.Range.Inst.defineMethod('performUntil',
 function(aFunction, terminateFunction) {
 
     /**
-     * @name performUntil
-     * @synopsis Performs the function on each iteration of the receiver until
+     * @method performUntil
+     * @summary Performs the function on each iteration of the receiver until
      *     terminateFunction returns true.
-     * @description performUntil can be used as an alternative to constructing
+     * @summary performUntil can be used as an alternative to constructing
      *     repeat loops to iterate over a range.
      * @param {Function} aFunction A function which performs some action with
      *     each iteration.
@@ -8718,10 +8718,10 @@ TP.core.Range.Inst.defineMethod('performWhile',
 function(aFunction, terminateFunction) {
 
     /**
-     * @name performWhile
-     * @synopsis Performs the function on each iteration of the receiver while
+     * @method performWhile
+     * @summary Performs the function on each iteration of the receiver while
      *     terminateFunction returns true.
-     * @description performUntil can be used as an alternative to constructing
+     * @summary performUntil can be used as an alternative to constructing
      *     while loops to iterate over a range
      * @param {Function} aFunction A function which performs some action with
      *     each iteration index.

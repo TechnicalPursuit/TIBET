@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tsh.lint}
- * @synopsis A command tag capable of running a "lint" operation on one or more
+ * @summary A command tag capable of running a "lint" operation on one or more
  *     objects/functions.
  */
 
@@ -32,7 +32,7 @@ TP.tsh.lint.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
+     * @method cmdRunContent
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object}

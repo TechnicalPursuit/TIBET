@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.SOAPResponse}
- * @synopsis Provides a general purpose SOAP response wrapper.
+ * @summary Provides a general purpose SOAP response wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.sig.SOAPResponse.Inst.defineMethod('getFaultActor',
 function() {
 
     /**
-     * @name getFaultActor
-     * @synopsis Returns the SOAP fault actor, a SOAP-specific identifier of the
+     * @method getFaultActor
+     * @summary Returns the SOAP fault actor, a SOAP-specific identifier of the
      *     service/action which failed.
      * @returns {String} A fault actor name.
      */
@@ -53,8 +53,8 @@ TP.sig.SOAPResponse.Inst.defineMethod('getFaultCode',
 function() {
 
     /**
-     * @name getFaultCode
-     * @synopsis Returns the SOAP fault code if any.
+     * @method getFaultCode
+     * @summary Returns the SOAP fault code if any.
      * @returns {String} A fault code.
      */
 
@@ -80,8 +80,8 @@ TP.sig.SOAPResponse.Inst.defineMethod('getFaultDetails',
 function() {
 
     /**
-     * @name getFaultDetails
-     * @synopsis Returns and SOAP fault details, a SOAP-specific long-text
+     * @method getFaultDetails
+     * @summary Returns and SOAP fault details, a SOAP-specific long-text
      *     description of what went wrong.
      * @returns {String} Fault details.
      */
@@ -108,8 +108,8 @@ TP.sig.SOAPResponse.Inst.defineMethod('getFaultText',
 function() {
 
     /**
-     * @name getFaultText
-     * @synopsis Returns the SOAPfault message string if any.
+     * @method getFaultText
+     * @summary Returns the SOAPfault message string if any.
      * @returns {String} A fault message string.
      */
 

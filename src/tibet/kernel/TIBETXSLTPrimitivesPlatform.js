@@ -151,10 +151,10 @@ TP.hc(
     function(aDocument, tagNameArray) {
 
         /**
-         * @name $documentEscapeContent
-         * @synopsis Escapes the content under the all of the tags named in the
+         * @method $documentEscapeContent
+         * @summary Escapes the content under the all of the tags named in the
          *     tags array in the supplied document with CDATA sections.
-         * @description This works around a bug in the Mozilla XSLT engine,
+         * @summary This works around a bug in the Mozilla XSLT engine,
          *     Transformiix, that assumes that escaping content is the same as
          *     placing it in CDATA sections, which its not - especially if its
          *     the output of (X)HTML 'style' or 'script'.
@@ -215,10 +215,10 @@ TP.hc(
     function(aDocument, tagNameArray) {
 
         /**
-         * @name $documentEscapeContent
-         * @synopsis Escapes the content under the all of the tags named in the
+         * @method $documentEscapeContent
+         * @summary Escapes the content under the all of the tags named in the
          *     tags array in the supplied document with CDATA sections.
-         * @description This works around a bug in the Mozilla XSLT engine,
+         * @summary This works around a bug in the Mozilla XSLT engine,
          *     Transformiix, that assumes that escaping content is the same as
          *     placing it in CDATA sections, which its not - especially if its
          *     the output of (X)HTML 'style' or 'script'. TODO: It is unknown
@@ -280,11 +280,11 @@ TP.hc(
     function(inputNode) {
 
         /**
-         * @name $fixupNamespacedAttributesPre
-         * @synopsis Encodes namespace attributes from their original form to a
+         * @method $fixupNamespacedAttributesPre
+         * @summary Encodes namespace attributes from their original form to a
          *     form that will survive Mozilla's XSLT transformation. They will
          *     be restored to their original form by the 'post' routine below.
-         * @description Unfortunately, Mozilla's XSLT processor does not
+         * @summary Unfortunately, Mozilla's XSLT processor does not
          *     currently support namespace nodes. Even worse, it actually
          *     removes 'xmlns' attributes from transformed Nodes (instead of
          *     just leaving them alone).
@@ -348,11 +348,11 @@ TP.hc(
     function(inputNode) {
 
         /**
-         * @name $fixupNamespacedAttributesPre
-         * @synopsis Encodes namespace attributes from their original form to a
+         * @method $fixupNamespacedAttributesPre
+         * @summary Encodes namespace attributes from their original form to a
          *     form that will survive Mozilla's XSLT transformation. They will
          *     be restored to their original form by the 'post' routine below.
-         * @description Unfortunately, Mozilla's XSLT processor does not
+         * @summary Unfortunately, Mozilla's XSLT processor does not
          *     currently support namespace nodes. Even worse, it actually
          *     removes 'xmlns' attributes from transformed Nodes (instead of
          *     just leaving them alone). TODO: It is unknown whether Webkit
@@ -419,8 +419,8 @@ TP.hc(
     function(inputNode, resultDoc) {
 
         /**
-         * @name $fixupNamespacedAttributesPost
-         * @synopsis Restores namespace attributes to their original form from
+         * @method $fixupNamespacedAttributesPost
+         * @summary Restores namespace attributes to their original form from
          *     having been processed by the 'pre' routine above.
          * @param {Node} inputNode The input data element.
          * @param {XMLDocument} resultDoc The result XML document after
@@ -514,10 +514,10 @@ TP.hc(
     function(inputNode, resultDoc) {
 
         /**
-         * @name $fixupNamespacedAttributesPost
-         * @synopsis Restores namespace attributes to their original form from
+         * @method $fixupNamespacedAttributesPost
+         * @summary Restores namespace attributes to their original form from
          *     having been processed by the 'pre' routine above.
-         * @description TODO: It is unknown whether Webkit actually needs to do
+         * @summary TODO: It is unknown whether Webkit actually needs to do
          *     this - it needs testing.
          * @param {Node} inputNode The input data element.
          * @param {XMLDocument} resultDoc The result XML document after
@@ -613,15 +613,15 @@ TP.hc(
     function(styleDoc, inputNode, paramHash) {
 
         /**
-         * @name documentTransformNode
-         * @synopsis Transforms the inputNode using the XSLT style sheet node
+         * @method documentTransformNode
+         * @summary Transforms the inputNode using the XSLT style sheet node
          *     provided, returning a node with the result data.
          * @param {XMLDocument} styleDoc The XSLT style document.
          * @param {Node} inputNode The input data element.
          * @param {TP.lang.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
-         * @raises TP.sig.XSLTException, TP.sig.InvalidXMLDocument
+         * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
          */
 
@@ -1259,15 +1259,15 @@ TP.hc(
     function(styleDoc, inputNode, paramHash) {
 
         /**
-         * @name documentTransformNode
-         * @synopsis Transforms the inputNode using the XSLT style sheet node
+         * @method documentTransformNode
+         * @summary Transforms the inputNode using the XSLT style sheet node
          *     provided, returning a node with the result data.
          * @param {XMLDocument} styleDoc The XSLT style document.
          * @param {Node} inputNode The input data element.
          * @param {TP.lang.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
-         * @raises TP.sig.XSLTException, TP.sig.InvalidXMLDocument
+         * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
          */
 

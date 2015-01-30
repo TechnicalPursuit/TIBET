@@ -10,7 +10,7 @@
 
 /**
  * @type {html:Element}
- * @synopsis The html:Element type is the top-level type in the xhtml node
+ * @summary The html:Element type is the top-level type in the xhtml node
  *     hierarchy. Note that we use the prefix html here since that is the
  *     defined canonical prefix for XHTML as well as HTML.
  */
@@ -39,10 +39,10 @@ TP.html.Element.Inst.defineMethod('addCSSClass',
 function(aCSSClass, atEnd) {
 
     /**
-     * @name addCSSClass
-     * @synopsis Adds the CSS class whose name is equal to aCSSClass to this
+     * @method addCSSClass
+     * @summary Adds the CSS class whose name is equal to aCSSClass to this
      *     object's CSS class name list.
-     * @description Note that if the 'atEnd' argument is set to 'true', this
+     * @summary Note that if the 'atEnd' argument is set to 'true', this
      *     causes aCSSClass to be appended to the end of the list of CSS class
      *     names. Since the order of CSS class names is important when
      *     specifying multiple names in the same 'className' attribute for the
@@ -65,8 +65,8 @@ TP.html.Element.Inst.defineMethod('getClass',
 function() {
 
     /**
-     * @name getClass
-     * @synopsis Gets the CSS class of the receiver.
+     * @method getClass
+     * @summary Gets the CSS class of the receiver.
      * @returns {String} A string containing the current class name.
      */
 
@@ -79,8 +79,8 @@ TP.html.Element.Inst.defineMethod('getStyle',
 function() {
 
     /**
-     * @name getStyle
-     * @synopsis Gets the style of this component.
+     * @method getStyle
+     * @summary Gets the style of this component.
      * @returns {String} A string containing the current inline style of this
      *     element.
      */
@@ -94,8 +94,8 @@ TP.html.Element.Inst.defineMethod('removeCSSClass',
 function(aCSSClass) {
 
     /**
-     * @name removeCSSClass
-     * @synopsis Removes the CSS class whose name is equal to aCSSClass from
+     * @method removeCSSClass
+     * @summary Removes the CSS class whose name is equal to aCSSClass from
      *     this object's CSS class name list.
      * @param {String} aCSSClass The name of the CSS class to remove.
      * @returns {html:Element} The receiver.
@@ -112,8 +112,8 @@ TP.html.Element.Inst.defineMethod('replaceCSSClass',
 function(oldCSSClass, newCSSClass) {
 
     /**
-     * @name replaceCSSClass
-     * @synopsis Replaces the CSS class whose name is equal to oldCSSClass with
+     * @method replaceCSSClass
+     * @summary Replaces the CSS class whose name is equal to oldCSSClass with
      *     the CSS class named newCSSClass. this object's CSS class name list.
      * @param {String} oldCSSClass The name of the CSS class to replace.
      * @param {String} newCSSClass The name of the CSS class to replace it with.
@@ -133,8 +133,8 @@ TP.html.Element.Inst.defineMethod('setClass',
 function(aClassName) {
 
     /**
-     * @name setClass
-     * @synopsis An optimized method to set the native element's CSS class name
+     * @method setClass
+     * @summary An optimized method to set the native element's CSS class name
      *     to aClassName.
      * @param {String} aClassName The CSS class name to set the native element's
      *     class name to.
@@ -152,8 +152,8 @@ TP.html.Element.Inst.defineMethod('setStyle',
 function(aStyle) {
 
     /**
-     * @name setStyle
-     * @synopsis Sets the style of this component to the style parameters given
+     * @method setStyle
+     * @summary Sets the style of this component to the style parameters given
      *     in aStyleString.
      * @param {String|TP.lang.Hash} aStyle The description of the style in CSS
      *     format, or a hash of style strings.
@@ -198,8 +198,8 @@ TP.html.Element.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the receiver's "value" whatever that means for this
+     * @method getDisplayValue
+     * @summary Returns the receiver's "value" whatever that means for this
      *     type. The default operations here check for a non-empty value
      *     attribute, a value slot, and finally the text value.
      * @returns {Object} The value of the receiver.
@@ -233,8 +233,8 @@ TP.html.Element.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the receiver's "value" whatever that means for this type.
+     * @method setDisplayValue
+     * @summary Sets the receiver's "value" whatever that means for this type.
      *     The two default operations here are to set a 'value' attribute and a
      *     'value' slot if possible.
      * @param {String} aValue The new value to set.

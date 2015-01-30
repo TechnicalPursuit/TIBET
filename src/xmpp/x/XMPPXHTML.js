@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XHTML}
- * @synopsis A wrapper for the XHTML content type.
+ * @summary A wrapper for the XHTML content type.
  */
 
 //  ------------------------------------------------------------------------

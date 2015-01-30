@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.decimal}
- * @synopsis A decimal number containing an optional decimal point and leading +
+ * @summary A decimal number containing an optional decimal point and leading +
  *     or - sign descriptor.
  */
 
@@ -34,8 +34,8 @@ TP.xs.decimal.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Constructs a new instance from the object provided, if
+     * @method fromObject
+     * @summary Constructs a new instance from the object provided, if
      *     possible. For TP.xs.decimal this method will attempt to construct a
      *     decimal string representation of the incoming object.
      * @param {Object} anObject The object to use as source data.
@@ -72,8 +72,8 @@ TP.xs.decimal.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided either is a decimal string,
+     * @method validate
+     * @summary Returns true if the object provided either is a decimal string,
      *     or a number with a valid decimal string representation.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}
@@ -104,8 +104,8 @@ TP.xs.decimal.Type.defineMethod('validateFacetEnumeration',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetEnumeration
-     * @synopsis Tests the incoming value against a specific enumeration value
+     * @method validateFacetEnumeration
+     * @summary Tests the incoming value against a specific enumeration value
      *     found in the facet provided.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -127,8 +127,8 @@ TP.xs.decimal.Type.defineMethod('validateFacetFractionDigits',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetFractionDigits
-     * @synopsis Tests to make sure the inbound value has no more than the
+     * @method validateFacetFractionDigits
+     * @summary Tests to make sure the inbound value has no more than the
      *     specified number of fractional digits.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -158,8 +158,8 @@ TP.xs.decimal.Type.defineMethod('validateFacetMaxExclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxExclusive
-     * @synopsis Tests the incoming value to see if its value is less than the
+     * @method validateFacetMaxExclusive
+     * @summary Tests the incoming value to see if its value is less than the
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -186,8 +186,8 @@ TP.xs.decimal.Type.defineMethod('validateFacetMaxInclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxInclusive
-     * @synopsis Tests the incoming value to see if it is less than or equal to
+     * @method validateFacetMaxInclusive
+     * @summary Tests the incoming value to see if it is less than or equal to
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -214,8 +214,8 @@ TP.xs.decimal.Type.defineMethod('validateFacetMinExclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMinExclusive
-     * @synopsis Tests the incoming value to verify that it is larger than the
+     * @method validateFacetMinExclusive
+     * @summary Tests the incoming value to verify that it is larger than the
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -242,8 +242,8 @@ TP.xs.decimal.Type.defineMethod('validateFacetMinInclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMinInclusive
-     * @synopsis Tests the incoming value to make sure its value is at least the
+     * @method validateFacetMinInclusive
+     * @summary Tests the incoming value to make sure its value is at least the
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -270,8 +270,8 @@ TP.xs.decimal.Type.defineMethod('validateFacetTotalDigits',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetTotalDigits
-     * @synopsis Tests the incoming value to see if has no more than the maximum
+     * @method validateFacetTotalDigits
+     * @summary Tests the incoming value to see if has no more than the maximum
      *     number of decimal digits specified in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.

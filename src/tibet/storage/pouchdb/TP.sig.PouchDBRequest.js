@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.PouchDBRequest}
- * @synopsis A subtype of TP.sig.Request that is used in conjunction with the
+ * @summary A subtype of TP.sig.Request that is used in conjunction with the
  *     TP.core.PouchDBService type to communicate to PouchDB data stores.
  * @example Communicating with a PouchDB data store from TIBET consists of:
  *

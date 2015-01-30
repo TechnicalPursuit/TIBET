@@ -62,7 +62,7 @@
 
 /**
  * @type {TP.html.fieldset}
- * @synopsis 'fieldset' tag. Group form fields.
+ * @summary 'fieldset' tag. Group form fields.
  */
 
 //  ------------------------------------------------------------------------
@@ -77,7 +77,7 @@ TP.html.fieldset.Type.set('booleanAttrs', TP.ac('disabled', 'willValidate'));
 
 /**
  * @type {TP.html.textUtilities}
- * @synopsis A utility type that is mixed into elements that can manipulate
+ * @summary A utility type that is mixed into elements that can manipulate
  *     their text value.
  */
 
@@ -105,8 +105,8 @@ TP.html.textUtilities.Inst.defineMethod('clearValue',
 function() {
 
     /**
-     * @name clearValue
-     * @synopsis Clears the entire value of the receiver.
+     * @method clearValue
+     * @summary Clears the entire value of the receiver.
      * @returns {TP.html.textUtilities} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -134,8 +134,8 @@ TP.html.textUtilities.Inst.defineMethod('clearSelection',
 function() {
 
     /**
-     * @name clearSelection
-     * @synopsis Clears the currently selected text.
+     * @method clearSelection
+     * @summary Clears the currently selected text.
      * @returns {TP.html.textUtilities} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -163,8 +163,8 @@ TP.html.textUtilities.Inst.defineMethod('collapseSelection',
 function(toStart) {
 
     /**
-     * @name collapseSelection
-     * @synopsis Collapse the current selection to one end or the other.
+     * @method collapseSelection
+     * @summary Collapse the current selection to one end or the other.
      * @param {Boolean} toStart Whether or not to collapse the selection to the
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
@@ -199,8 +199,8 @@ TP.html.textUtilities.Inst.defineMethod('getSelection',
 function() {
 
     /**
-     * @name getSelection
-     * @synopsis Returns the currently selected text.
+     * @method getSelection
+     * @summary Returns the currently selected text.
      * @returns {String} The currently selected text.
      * @raise TP.sig.InvalidNode
      */
@@ -229,8 +229,8 @@ TP.html.textUtilities.Inst.defineMethod('getSelectionEnd',
 function() {
 
     /**
-     * @name getSelectionEnd
-     * @synopsis Returns the ending index of the currently selected text.
+     * @method getSelectionEnd
+     * @summary Returns the ending index of the currently selected text.
      * @returns {Number} The ending index of the current selection.
      * @raise TP.sig.InvalidNode
      */
@@ -266,8 +266,8 @@ TP.html.textUtilities.Inst.defineMethod('getSelectionStart',
 function() {
 
     /**
-     * @name getSelectionStart
-     * @synopsis Returns the starting index of the currently selected text.
+     * @method getSelectionStart
+     * @summary Returns the starting index of the currently selected text.
      * @returns {Number} The starting index of the current selection.
      * @raise TP.sig.InvalidNode
      */
@@ -301,8 +301,8 @@ TP.html.textUtilities.Inst.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the value of the receiver. This is a synonym for
+     * @method getValue
+     * @summary Returns the value of the receiver. This is a synonym for
      *     returning the current display value. If the receiver is a bound
      *     element that value should be in sync (other than differences due to
      *     formatters) with the bound value.
@@ -318,8 +318,8 @@ TP.html.textUtilities.Inst.defineMethod('insertAfterSelection',
 function(aText) {
 
     /**
-     * @name insertAfterSelection
-     * @synopsis Inserts the supplied text after the current selection.
+     * @method insertAfterSelection
+     * @summary Inserts the supplied text after the current selection.
      * @param {String} aText The text to insert after the current selection.
      * @returns {TP.html.textUtilities} The receiver.
      */
@@ -345,8 +345,8 @@ TP.html.textUtilities.Inst.defineMethod('insertBeforeSelection',
 function(aText) {
 
     /**
-     * @name insertBeforeSelection
-     * @synopsis Inserts the supplied text before the current selection.
+     * @method insertBeforeSelection
+     * @summary Inserts the supplied text before the current selection.
      * @param {String} aText The text to insert before the current selection.
      * @returns {TP.html.textUtilities} The receiver.
      */
@@ -372,8 +372,8 @@ TP.html.textUtilities.Inst.defineMethod('replaceSelection',
 function(aText) {
 
     /**
-     * @name replaceSelection
-     * @synopsis Replaces the current selection with the supplied text.
+     * @method replaceSelection
+     * @summary Replaces the current selection with the supplied text.
      * @param {String} aText The text to replace the current selection with.
      * @returns {TP.html.textUtilities} The receiver.
      * @raise TP.sig.InvalidNode
@@ -406,8 +406,8 @@ TP.html.textUtilities.Inst.defineMethod('selectFromTo',
 function(aStartIndex, anEndIndex) {
 
     /**
-     * @name selectFromTo
-     * @synopsis Selects the contents of the receiver from the supplied starting
+     * @method selectFromTo
+     * @summary Selects the contents of the receiver from the supplied starting
      *     index to the supplied ending index.
      * @param {Number} aStartIndex The starting index.
      * @param {Number} aEndIndex The ending index.
@@ -443,8 +443,8 @@ TP.html.textUtilities.Inst.defineMethod('setCursorPosition',
 function(aPosition) {
 
     /**
-     * @name setCursorPosition
-     * @synopsis Sets the cursor to the supplied position.
+     * @method setCursorPosition
+     * @summary Sets the cursor to the supplied position.
      * @param {Number} aPosition The desired cursor position.
      * @returns {TP.html.textUtilities} The receiver.
      */
@@ -473,8 +473,8 @@ TP.html.textUtilities.Inst.defineMethod('setCursorToEnd',
 function() {
 
     /**
-     * @name setCursorToEnd
-     * @synopsis Sets the cursor to the end position of the receiver.
+     * @method setCursorToEnd
+     * @summary Sets the cursor to the end position of the receiver.
      * @returns {TP.html.textUtilities} The receiver.
      */
 
@@ -500,8 +500,8 @@ TP.html.textUtilities.Inst.defineMethod('setCursorToStart',
 function() {
 
     /**
-     * @name setCursorToStart
-     * @synopsis Sets the cursor to the start position of the receiver.
+     * @method setCursorToStart
+     * @summary Sets the cursor to the start position of the receiver.
      * @returns {TP.html.textUtilities} The receiver.
      */
 
@@ -527,8 +527,8 @@ TP.html.textUtilities.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
-     * @name setValue
-     * @synopsis Sets the value of the receiver's node. For a UI element this
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For a UI element this
      *     method will ensure any display formatters are invoked. NOTE that this
      *     method does not update the receiver's bound value if it's a bound
      *     control. In fact, this method is used in response to a change in the
@@ -583,8 +583,8 @@ TP.html.textUtilities.Inst.defineMethod('setSelection',
 function(aText) {
 
     /**
-     * @name setSelection
-     * @synopsis Sets the current selection to the supplied text.
+     * @method setSelection
+     * @summary Sets the current selection to the supplied text.
      * @param {String} aText The text to set the selection to.
      * @returns {TP.html.textUtilities} The receiver.
      */
@@ -601,8 +601,8 @@ TP.html.textUtilities.Inst.defineMethod('wrapSelection',
 function(beforeText, afterText) {
 
     /**
-     * @name wrapSelection
-     * @synopsis Wraps the current selection with the beforeText and afterText.
+     * @method wrapSelection
+     * @summary Wraps the current selection with the beforeText and afterText.
      * @param {String} beforeText The text to insert before the selection.
      * @param {String} afterText The text to insert after the selection.
      * @returns {TP.html.textUtilities} The receiver.
@@ -619,8 +619,8 @@ function(beforeText, afterText) {
 
 /**
  * @type {TP.html.input}
- * @synopsis INPUT tag. Generic input control.
- * @description NOTE: for TIBET's purposes this particular node type serves as
+ * @summary INPUT tag. Generic input control.
+ * @summary NOTE: for TIBET's purposes this particular node type serves as
  *     an abstract supertype from which a number of specialized types descend to
  *     allow custom behavior to be inherited.
  *
@@ -669,8 +669,8 @@ TP.html.input.Type.defineMethod('fromArray',
 function(anObject, aRequest) {
 
     /**
-     * @name fromArray
-     * @synopsis Returns a formatted XML String with the supplied Boolean object
+     * @method fromArray
+     * @summary Returns a formatted XML String with the supplied Boolean object
      *     as the content.
      * @param {Boolean} anObject The Object to wrap in the elements.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -687,8 +687,8 @@ TP.html.input.Type.defineMethod('fromBoolean',
 function(anObject, aRequest) {
 
     /**
-     * @name fromBoolean
-     * @synopsis Returns a formatted XML String with the supplied Boolean object
+     * @method fromBoolean
+     * @summary Returns a formatted XML String with the supplied Boolean object
      *     as the content.
      * @param {Boolean} anObject The Object to wrap in the elements.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -714,10 +714,10 @@ TP.html.input.Type.defineMethod('fromDate',
 function(anObject, aRequest) {
 
     /**
-     * @name fromDate
-     * @synopsis Returns a formatted XML String with the supplied Date object as
+     * @method fromDate
+     * @summary Returns a formatted XML String with the supplied Date object as
      *     the content.
-     * @description The supplied request can contain the following keys and
+     * @summary The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -749,8 +749,8 @@ TP.html.input.Type.defineMethod('fromNumber',
 function(anObject, aRequest) {
 
     /**
-     * @name fromNumber
-     * @synopsis Returns a formatted XML String with the supplied Number object
+     * @method fromNumber
+     * @summary Returns a formatted XML String with the supplied Number object
      *     as the content.
      * @param {Boolean} anObject The Object to wrap in the elements.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
@@ -779,10 +779,10 @@ TP.html.input.Type.defineMethod('fromString',
 function(anObject, aRequest) {
 
     /**
-     * @name fromString
-     * @synopsis Returns a formatted XML String with the supplied String object
+     * @method fromString
+     * @summary Returns a formatted XML String with the supplied String object
      *     as the content.
-     * @description The supplied request can contain the following keys and
+     * @summary The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -815,8 +815,8 @@ TP.html.input.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
 
     /**
-     * @name generateMarkup
-     * @synopsis Generates markup for the supplied Object using the other
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
      *     parameters supplied.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {String} attrStr The String containing either the literal
@@ -875,8 +875,8 @@ TP.html.input.Type.defineMethod('getConcreteType',
 function(aNodeOrId) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the subtype to use for the node provided. Note that for
+     * @method getConcreteType
+     * @summary Returns the subtype to use for the node provided. Note that for
      *     TP.html.input elements the specific type returned is based on the
      *     value of the type attribute.
      * @param {Node|String} aNodeOrId The native node to wrap or an ID used to
@@ -911,11 +911,11 @@ TP.html.input.Type.defineMethod('onchange',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onchange
+     * @method onchange
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.html.input} The receiver.
      * @abstract
      */
@@ -935,8 +935,8 @@ TP.html.input.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing
@@ -959,9 +959,9 @@ TP.html.input.Inst.defineMethod('isSingleValued',
 function() {
 
     /**
-     * @name isSingleValued
-     * @synopsis Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @summary See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -975,9 +975,9 @@ TP.html.input.Inst.defineMethod('isScalarValued',
 function() {
 
     /**
-     * @name isScalarValued
-     * @synopsis Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @summary See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -997,7 +997,7 @@ TP.html.input.finalizeTraits();
 
 /**
  * @type {TP.html.inputVisible}
- * @synopsis Common functionality for those input nodes which have a visible
+ * @summary Common functionality for those input nodes which have a visible
  *     representation.
  */
 
@@ -1015,7 +1015,7 @@ TP.html.inputVisible.isAbstract(true);
 
 /**
  * @type {TP.html.inputClickable}
- * @synopsis Common supertype for nodes that can be clicked with the mouse. This
+ * @summary Common supertype for nodes that can be clicked with the mouse. This
  *     includes buttons, checkboxes, radio items, etc.
  */
 
@@ -1035,8 +1035,8 @@ TP.html.inputClickable.Inst.defineMethod('disable',
 function() {
 
     /**
-     * @name disable
-     * @synopsis Disables the control using the standard disabled attribute.
+     * @method disable
+     * @summary Disables the control using the standard disabled attribute.
      * @returns {TP.html.inputClickable} The receiver.
      */
 
@@ -1051,8 +1051,8 @@ TP.html.inputClickable.Inst.defineMethod('enable',
 function() {
 
     /**
-     * @name enable
-     * @synopsis Enables the control by removing any disabled attribute.
+     * @method enable
+     * @summary Enables the control by removing any disabled attribute.
      * @returns {TP.html.inputClickable} The receiver.
      */
 
@@ -1067,7 +1067,7 @@ function() {
 
 /**
  * @type {TP.html.inputCheckable}
- * @synopsis Represents input nodes that can be 'checked' in some form. This
+ * @summary Represents input nodes that can be 'checked' in some form. This
  *     includes checkboxes and radio items.
  */
 
@@ -1089,8 +1089,8 @@ TP.html.inputCheckable.Inst.defineMethod('allowsMultiples',
 function() {
 
     /**
-     * @name allowsMultiples
-     * @synopsis Returns false since radio buttons, by their very nature, don't
+     * @method allowsMultiples
+     * @summary Returns false since radio buttons, by their very nature, don't
      *     allow multiple selection.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
      * @raise TP.sig.InvalidNode
@@ -1105,12 +1105,12 @@ TP.html.inputCheckable.Inst.defineMethod('addSelection',
 function(aValue, elementProperty) {
 
     /**
-     * @name addSelection
-     * @synopsis Adds a selection to the grouping of elements that the receiver
+     * @method addSelection
+     * @summary Adds a selection to the grouping of elements that the receiver
      *     is a part of (as matched by their 'name' attribute) matching the
      *     criteria if found. Note that this method does not clear existing
      *     selections when processing the value(s) provided.
-     * @description Note that the aspect can be one of the following, which will
+     * @summary Note that the aspect can be one of the following, which will
      *      be the property used with each grouped element to determine which of
      *      them will be selected.
      *          'value'     ->  The value of the element (the default)
@@ -1220,8 +1220,8 @@ TP.html.inputCheckable.Inst.defineMethod('deselect',
 function(aValue) {
 
     /**
-     * @name deselect
-     * @synopsis De-selects (clears) the option with the value provided.
+     * @method deselect
+     * @summary De-selects (clears) the option with the value provided.
      * @param {Object} aValue The value to de-select. Note that this can be an
      *     array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
@@ -1288,8 +1288,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName, transformationFunc) {
 
     /**
-     * @name defineBinding
-     * @synopsis Adds a binding to the instance receiver.
+     * @method defineBinding
+     * @summary Adds a binding to the instance receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -1354,8 +1354,8 @@ TP.html.inputCheckable.Inst.defineMethod('deselectAll',
 function() {
 
     /**
-     * @name deselectAll
-     * @synopsis Clears any current selection(s).
+     * @method deselectAll
+     * @summary Clears any current selection(s).
      * @raise TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
      */
@@ -1394,8 +1394,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName) {
 
     /**
-     * @name destroyBinding
-     * @synopsis Removes a binding from the instance receiver.
+     * @method destroyBinding
+     * @summary Removes a binding from the instance receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -1457,8 +1457,8 @@ TP.html.inputCheckable.Inst.defineMethod('$generateSelectionHashFrom',
 function(aValue) {
 
     /**
-     * @name $generateSelectionHashFrom
-     * @synopsis Returns a Hash that is driven off of the supplied value which
+     * @method $generateSelectionHashFrom
+     * @summary Returns a Hash that is driven off of the supplied value which
      *     can then be used to set the receiver's selection.
      * @returns {TP.lang.Hash} A Hash that is populated with data from the
      *     supplied value that can be used for manipulating the receiver's
@@ -1507,8 +1507,8 @@ TP.html.inputCheckable.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the selected value of the select list. This corresponds
+     * @method getDisplayValue
+     * @summary Returns the selected value of the select list. This corresponds
      *     to the value of the currently selected item or items.
      * @returns {String|Array} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
@@ -1554,8 +1554,8 @@ TP.html.inputCheckable.Inst.defineMethod('getElementArray',
 function() {
 
     /**
-     * @name getElementArray
-     * @synopsis Returns the Array of native elements. In the case of a
+     * @method getElementArray
+     * @summary Returns the Array of native elements. In the case of a
      *     checkable item, this is the list of elements that share the same name
      *     as the receiver.
      * @returns {Array} The array of native items.
@@ -1585,8 +1585,8 @@ TP.html.inputCheckable.Inst.defineMethod('getSubmitName',
 function() {
 
     /**
-     * @name getSubmitName
-     * @synopsis Returns the name under which the receiver would be submitted
+     * @method getSubmitName
+     * @summary Returns the name under which the receiver would be submitted
      *     when used in a forms context.
      * @returns {TP.html.inputRadio} The receiver.
      * @raise TP.sig.InvalidNode
@@ -1613,8 +1613,8 @@ TP.html.inputCheckable.Inst.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the value of the receiver. This is a synonym for
+     * @method getValue
+     * @summary Returns the value of the receiver. This is a synonym for
      *     returning the current display value. If the receiver is a bound
      *     element that value should be in sync (other than differences due to
      *     formatters) with the bound value.
@@ -1630,9 +1630,9 @@ TP.html.inputCheckable.Inst.defineMethod('isScalarValued',
 function() {
 
     /**
-     * @name isScalarValued
-     * @synopsis Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @summary See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -1646,8 +1646,8 @@ TP.html.inputCheckable.Inst.defineMethod('isSelected',
 function() {
 
     /**
-     * @name isSelected
-     * @synopsis Returns true if the receiver is selected.
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
      * @returns {Boolean} Whether or not the receiver is selected.
      * @raise TP.sig.InvalidNode
      */
@@ -1667,8 +1667,8 @@ TP.html.inputCheckable.Inst.defineMethod('on',
 function() {
 
     /**
-     * @name on
-     * @synopsis Sets the receiver's checked state to 'true'.
+     * @method on
+     * @summary Sets the receiver's checked state to 'true'.
      * @returns {TP.html.inputCheckable} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -1691,8 +1691,8 @@ TP.html.inputCheckable.Inst.defineMethod('off',
 function() {
 
     /**
-     * @name off
-     * @synopsis Sets the receiver's checked state to 'false'.
+     * @method off
+     * @summary Sets the receiver's checked state to 'false'.
      * @returns {TP.html.inputCheckable} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -1715,12 +1715,12 @@ TP.html.inputCheckable.Inst.defineMethod('removeSelection',
 function(aValue, elementProperty) {
 
     /**
-     * @name removeSelection
-     * @synopsis Removes a selection from the grouping of elements that the
+     * @method removeSelection
+     * @summary Removes a selection from the grouping of elements that the
      *     receiver is a part of (as matched by their 'name' attribute) matching
      *     the criteria if found. Note that this method does not clear existing
      *     selections when processing the value(s) provided.
-     * @description Note that the aspect can be one of the following, which will
+     * @summary Note that the aspect can be one of the following, which will
      *      be the property used with each grouped element to determine which of
      *      them will be deselected.
      *          'value'     ->  The value of the element (the default)
@@ -1831,8 +1831,8 @@ TP.html.inputCheckable.Inst.defineMethod('select',
 function(aValue) {
 
     /**
-     * @name select
-     * @synopsis Selects the option with the value provided if found. Note that
+     * @method select
+     * @summary Selects the option with the value provided if found. Note that
      *     this method is roughly identical to setDisplayValue with the
      *     exception that this method does not clear existing selections when
      *     processing the value(s) provided. When no specific values are
@@ -1906,8 +1906,8 @@ TP.html.inputCheckable.Inst.defineMethod('selectAll',
 function() {
 
     /**
-     * @name selectAll
-     * @synopsis Selects all elements with the same 'name' attribute as the
+     * @method selectAll
+     * @summary Selects all elements with the same 'name' attribute as the
      *     receiver. Note that for groupings of controls that don't allow
      *     multiple selections (such as radiobuttons), this will raise an
      *     'InvalidOperation' exception.
@@ -1955,8 +1955,8 @@ TP.html.inputCheckable.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the receivers' value to the value provided (if it matches
+     * @method setDisplayValue
+     * @summary Sets the receivers' value to the value provided (if it matches
      *     the value of an item in the group). Note that any selected items not
      *     provided in aValue are cleared, which is different than the behavior
      *     of selectValue() which simply adds the new selected items to the
@@ -2036,8 +2036,8 @@ TP.html.inputCheckable.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
-     * @name setValue
-     * @synopsis Sets the value of the receiver's node. For a UI element this
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For a UI element this
      *     method will ensure any display formatters are invoked. NOTE that this
      *     method does not update the receiver's bound value if it's a bound
      *     control. In fact, this method is used in response to a change in the
@@ -2108,7 +2108,7 @@ TP.backstop(TP.ac('select'), TP.html.inputSelectable.getInstPrototype());
 
 /**
  * @type {TP.html.form}
- * @synopsis 'form' tag. An input form. The TP.html.form object acts as a group
+ * @summary 'form' tag. An input form. The TP.html.form object acts as a group
  *     control for individual node component objects representing the form's
  *     items as well as a wrapper for the form operations themselves.
  */
@@ -2168,8 +2168,8 @@ TP.html.form.Type.defineMethod('getItemTagName',
 function() {
 
     /**
-     * @name getItemTagName
-     * @synopsis Returns the 'default item tag name' for use it the
+     * @method getItemTagName
+     * @summary Returns the 'default item tag name' for use it the
      *     fromArray()/fromObject() methods.
      * @returns {String} The item tag name.
      */
@@ -2183,8 +2183,8 @@ TP.html.form.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing
@@ -2207,8 +2207,8 @@ TP.html.form.Inst.defineMethod('getElementArray',
 function() {
 
     /**
-     * @name getElementArray
-     * @synopsis Returns the Array of native elements. In the case of a form
+     * @method getElementArray
+     * @summary Returns the Array of native elements. In the case of a form
      *     object this is the elements[] Array.
      * @returns {Array} The array of native items.
      * @raise TP.sig.InvalidNode
@@ -2229,8 +2229,8 @@ TP.html.form.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver. When targeting a form the
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver. When targeting a form the
      *     returned value is the set of key/value pairs for each form control in
      *     the form.
      * @returns {TP.lang.Hash} A hash containing keys and values which represent
@@ -2274,8 +2274,8 @@ TP.html.form.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver. When targeting a form the input
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver. When targeting a form the input
      *     is a set of key/value pairs containing the new data for the form
      *     controls.
      * @param {TP.lang.Hash} aValue Hash containing key/value pairs where the
@@ -2324,8 +2324,8 @@ TP.html.form.Inst.defineMethod('reset',
 function() {
 
     /**
-     * @name reset
-     * @synopsis Resets the form. As a node component, however, this method
+     * @method reset
+     * @summary Resets the form. As a node component, however, this method
      *     provides the opportunity for custom reset pre/post processing.
      * @raise TP.sig.InvalidNode
      */
@@ -2348,8 +2348,8 @@ TP.html.form.Inst.defineMethod('submit',
 function() {
 
     /**
-     * @name submit
-     * @synopsis Submits the form. As a node component, however, this method
+     * @method submit
+     * @summary Submits the form. As a node component, however, this method
      *     provides the opportunity for custom submit pre/post processing.
      * @raise TP.sig.InvalidNode
      */
@@ -2371,7 +2371,7 @@ function() {
 
 /**
  * @type {TP.html.inputButton}
- * @synopsis <input type="button"> tag.
+ * @summary <input type="button"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2384,7 +2384,7 @@ TP.html.inputClickable.defineSubtype('inputButton');
 
 /**
  * @type {TP.html.inputColor}
- * @synopsis <input type="color"> tag.
+ * @summary <input type="color"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2397,7 +2397,7 @@ TP.html.inputClickable.defineSubtype('inputColor');
 
 /**
  * @type {TP.html.inputDate}
- * @synopsis <input type="date"> tag.
+ * @summary <input type="date"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2410,7 +2410,7 @@ TP.html.inputClickable.defineSubtype('inputDate');
 
 /**
  * @type {TP.html.inputDateTime}
- * @synopsis <input type="datetime"> tag.
+ * @summary <input type="datetime"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2423,7 +2423,7 @@ TP.html.inputClickable.defineSubtype('inputDateTime');
 
 /**
  * @type {TP.html.inputDateTimeLocal
- * @synopsis <input type="datetime-local"> tag.
+ * @summary <input type="datetime-local"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2436,7 +2436,7 @@ TP.html.inputClickable.defineSubtype('inputDateTimeLocal');
 
 /**
  * @type {TP.html.inputMonth
- * @synopsis <input type="month"> tag.
+ * @summary <input type="month"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2449,7 +2449,7 @@ TP.html.inputClickable.defineSubtype('inputMonth');
 
 /**
  * @type {TP.html.inputRange}
- * @synopsis <input type="range"> tag.
+ * @summary <input type="range"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2462,7 +2462,7 @@ TP.html.inputClickable.defineSubtype('inputRange');
 
 /**
  * @type {TP.html.inputCheckbox}
- * @synopsis <input type="checkbox"> tag.
+ * @summary <input type="checkbox"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2475,9 +2475,9 @@ TP.html.inputCheckbox.Inst.defineMethod('isSingleValued',
 function() {
 
     /**
-     * @name isSingleValued
-     * @synopsis Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @summary See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -2492,7 +2492,7 @@ function() {
 
 /**
  * @type {TP.html.inputEmail}
- * @synopsis <input type="email"> tag.
+ * @summary <input type="email"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2509,8 +2509,8 @@ TP.html.inputEmail.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
      * @raise TP.sig.InvalidNode
      */
@@ -2530,8 +2530,8 @@ TP.html.inputEmail.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.inputEmail} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -2553,7 +2553,7 @@ function(aValue) {
 
 /**
  * @type {TP.html.inputFile}
- * @synopsis <input type="file"> tag.
+ * @summary <input type="file"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2566,7 +2566,7 @@ TP.html.inputSelectable.defineSubtype('inputFile');
 
 /**
  * @type {TP.html.inputHidden}
- * @synopsis <input type="hidden"> tag.
+ * @summary <input type="hidden"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2579,7 +2579,7 @@ TP.html.input.defineSubtype('inputHidden');
 
 /**
  * @type {TP.html.inputNumber}
- * @synopsis <input type="number"> tag.
+ * @summary <input type="number"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2596,8 +2596,8 @@ TP.html.inputNumber.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
      * @raise TP.sig.InvalidNode
      */
@@ -2617,8 +2617,8 @@ TP.html.inputNumber.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.inputNumber} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -2640,7 +2640,7 @@ function(aValue) {
 
 /**
  * @type {TP.html.inputImage}
- * @synopsis <input type="image"> tag.
+ * @summary <input type="image"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2653,7 +2653,7 @@ TP.html.input.defineSubtype('inputImage');
 
 /**
  * @type {TP.html.inputPassword}
- * @synopsis <input type="password"> tag.
+ * @summary <input type="password"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2670,8 +2670,8 @@ TP.html.inputPassword.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
      * @raise TP.sig.InvalidNode
      */
@@ -2691,8 +2691,8 @@ TP.html.inputPassword.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.inputPassword} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -2714,7 +2714,7 @@ function(aValue) {
 
 /**
  * @type {TP.html.inputSearch}
- * @synopsis <input type="search"> tag.
+ * @summary <input type="search"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2731,8 +2731,8 @@ TP.html.inputSearch.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
      * @raise TP.sig.InvalidNode
      */
@@ -2752,8 +2752,8 @@ TP.html.inputSearch.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.inputSearch} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -2775,7 +2775,7 @@ function(aValue) {
 
 /**
  * @type {TP.html.inputRadio}
- * @synopsis <input type="radio">. This type is a wrapper for a radio group
+ * @summary <input type="radio">. This type is a wrapper for a radio group
  *     items, allowing you to set/get their value easily.
  */
 
@@ -2791,8 +2791,8 @@ TP.html.inputRadio.Inst.defineMethod('allowsMultiples',
 function() {
 
     /**
-     * @name allowsMultiples
-     * @synopsis Returns false since radio buttons, by their very nature, don't
+     * @method allowsMultiples
+     * @summary Returns false since radio buttons, by their very nature, don't
      *     allow multiple selection.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
      * @raise TP.sig.InvalidNode
@@ -2807,7 +2807,7 @@ function() {
 
 /**
  * @type {TP.html.inputReset}
- * @synopsis <input type="reset"> tag.
+ * @summary <input type="reset"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2820,7 +2820,7 @@ TP.html.inputClickable.defineSubtype('inputReset');
 
 /**
  * @type {TP.html.inputSubmit}
- * @synopsis <input type="submit"> tag.
+ * @summary <input type="submit"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2833,7 +2833,7 @@ TP.html.inputClickable.defineSubtype('inputSubmit');
 
 /**
  * @type {TP.html.inputTel}
- * @synopsis <input type="tel"> tag.
+ * @summary <input type="tel"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2850,8 +2850,8 @@ TP.html.inputTel.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
      * @raise TP.sig.InvalidNode
      */
@@ -2871,8 +2871,8 @@ TP.html.inputTel.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.inputTel} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -2894,7 +2894,7 @@ function(aValue) {
 
 /**
  * @type {TP.html.inputText}
- * @synopsis <input type="text"> tag.
+ * @summary <input type="text"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2932,8 +2932,8 @@ TP.html.inputText.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
      * @raise TP.sig.InvalidNode
      */
@@ -2953,8 +2953,8 @@ TP.html.inputText.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.inputText} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -2976,7 +2976,7 @@ function(aValue) {
 
 /**
  * @type {TP.html.inputTime}
- * @synopsis <input type="time"> tag.
+ * @summary <input type="time"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -2989,7 +2989,7 @@ TP.html.inputClickable.defineSubtype('inputTime');
 
 /**
  * @type {TP.html.inputWeek}
- * @synopsis <input type="week"> tag.
+ * @summary <input type="week"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -3002,7 +3002,7 @@ TP.html.inputClickable.defineSubtype('inputWeek');
 
 /**
  * @type {TP.html.inputUrl}
- * @synopsis <input type="url"> tag.
+ * @summary <input type="url"> tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -3040,8 +3040,8 @@ TP.html.inputUrl.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
      * @raise TP.sig.InvalidNode
      */
@@ -3061,8 +3061,8 @@ TP.html.inputUrl.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.inputUrl} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -3084,7 +3084,7 @@ function(aValue) {
 
 /**
  * @type {TP.html.label}
- * @synopsis 'label' tag.
+ * @summary 'label' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -3097,7 +3097,7 @@ TP.html.Attrs.defineSubtype('label');
 
 /**
  * @type {TP.html.legend}
- * @synopsis 'legend' tag. Fieldset label.
+ * @summary 'legend' tag. Fieldset label.
  */
 
 //  ------------------------------------------------------------------------
@@ -3110,7 +3110,7 @@ TP.html.Aligned.defineSubtype('legend');
 
 /**
  * @type {TP.html.optgroup}
- * @synopsis 'optgroup' tag.
+ * @summary 'optgroup' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -3125,7 +3125,7 @@ TP.html.optgroup.Type.set('booleanAttrs', TP.ac('disabled'));
 
 /**
  * @type {TP.html.option}
- * @synopsis 'option' tag. A 'select' tag option. This type acts in the "item"
+ * @summary 'option' tag. A 'select' tag option. This type acts in the "item"
  *     role relative to an TP.html.Select object. Most methods of interest are
  *     on the TP.html.Select type.
  */
@@ -3145,8 +3145,8 @@ TP.html.option.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
 
     /**
-     * @name generateMarkup
-     * @synopsis Generates markup for the supplied Object using the other
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
      *     parameters supplied.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {String} attrStr The String containing either the literal
@@ -3218,8 +3218,8 @@ TP.html.option.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing
@@ -3242,8 +3242,8 @@ TP.html.option.Inst.defineMethod('isSelected',
 function() {
 
     /**
-     * @name isSelected
-     * @synopsis Returns true if the receiver is selected.
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
      * @returns {Boolean} Whether or not the receiver is selected.
      * @raise TP.sig.InvalidNode
      */
@@ -3263,8 +3263,8 @@ TP.html.option.Inst.defineMethod('on',
 function() {
 
     /**
-     * @name on
-     * @synopsis Sets the receiver's selected state to 'true'.
+     * @method on
+     * @summary Sets the receiver's selected state to 'true'.
      * @returns {TP.html.option} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -3287,8 +3287,8 @@ TP.html.option.Inst.defineMethod('off',
 function() {
 
     /**
-     * @name off
-     * @synopsis Sets the receiver's selected state to 'false'.
+     * @method off
+     * @summary Sets the receiver's selected state to 'false'.
      * @returns {TP.html.option} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -3311,7 +3311,7 @@ function() {
 
 /**
  * @type {TP.html.select}
- * @synopsis 'select' tag. Single or multiple selection control.
+ * @summary 'select' tag. Single or multiple selection control.
  */
 
 //  ------------------------------------------------------------------------
@@ -3335,8 +3335,8 @@ TP.html.select.Type.defineMethod('getItemTagName',
 function() {
 
     /**
-     * @name getItemTagName
-     * @synopsis Returns the 'default item tag name' for use it the
+     * @method getItemTagName
+     * @summary Returns the 'default item tag name' for use it the
      *     fromArray()/fromObject() methods.
      * @returns {String} The ID of the observer.
      */
@@ -3350,8 +3350,8 @@ TP.html.select.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
      * @param {TP.lang.Hash} formatArgs An optional object containing
@@ -3374,11 +3374,11 @@ TP.html.select.Inst.defineMethod('addSelection',
 function(aValue, optionProperty) {
 
     /**
-     * @name addSelection
-     * @synopsis Adds the selection matching the criteria if found. Note that
+     * @method addSelection
+     * @summary Adds the selection matching the criteria if found. Note that
      *     this method does not clear existing selections when processing the
      *     value(s) provided.
-     * @description Note that the aspect can be one of the following, which will
+     * @summary Note that the aspect can be one of the following, which will
      *      be the property used with each 'option' element to determine which
      *      of them will be selected.
      *          'value'     ->  The value of the option (the default)
@@ -3479,8 +3479,8 @@ TP.html.select.Inst.defineMethod('allowsMultiples',
 function() {
 
     /**
-     * @name allowsMultiples
-     * @synopsis Returns true if the receiver is configured for multiple
+     * @method allowsMultiples
+     * @summary Returns true if the receiver is configured for multiple
      *     selection.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
      * @raise TP.sig.InvalidNode
@@ -3502,8 +3502,8 @@ TP.html.select.Inst.defineMethod('deselect',
 function(aValue) {
 
     /**
-     * @name deselect
-     * @synopsis De-selects (clears) the option with the value provided.
+     * @method deselect
+     * @summary De-selects (clears) the option with the value provided.
      * @param {Object} aValue The value to de-select. Note that this can be an
      *     array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
@@ -3569,8 +3569,8 @@ TP.html.select.Inst.defineMethod('deselectAll',
 function() {
 
     /**
-     * @name deselectAll
-     * @synopsis Clears any current selection(s).
+     * @method deselectAll
+     * @summary Clears any current selection(s).
      * @raise TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
@@ -3613,11 +3613,11 @@ TP.html.select.Type.defineMethod('onchange',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onchange
+     * @method onchange
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.html.select} The receiver.
      * @abstract
      */
@@ -3636,8 +3636,8 @@ TP.html.select.Inst.defineMethod('$generateSelectionHashFrom',
 function(aValue) {
 
     /**
-     * @name $generateSelectionHashFrom
-     * @synopsis Returns a Hash that is driven off of the supplied value which
+     * @method $generateSelectionHashFrom
+     * @summary Returns a Hash that is driven off of the supplied value which
      *     can then be used to set the receiver's selection.
      * @returns {TP.lang.Hash} A Hash that is populated with data from the
      *     supplied value that can be used for manipulating the receiver's
@@ -3686,8 +3686,8 @@ TP.html.select.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the selected value of the select list. This corresponds
+     * @method getDisplayValue
+     * @summary Returns the selected value of the select list. This corresponds
      *     to the value of the currently selected item or items.
      * @returns {String|Array} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
@@ -3741,8 +3741,8 @@ TP.html.select.Inst.defineMethod('getElementArray',
 function() {
 
     /**
-     * @name getElementArray
-     * @synopsis Returns the Array of native elements. In the case of a select
+     * @method getElementArray
+     * @summary Returns the Array of native elements. In the case of a select
      *     list this is the options[] Array.
      * @returns {Array} The array of native items.
      * @raise TP.sig.InvalidNode
@@ -3767,8 +3767,8 @@ TP.html.select.Inst.defineMethod('getValue',
 function() {
 
     /**
-     * @name getValue
-     * @synopsis Returns the value of the receiver. This is a synonym for
+     * @method getValue
+     * @summary Returns the value of the receiver. This is a synonym for
      *     returning the current display value. If the receiver is a bound
      *     element that value should be in sync (other than differences due to
      *     formatters) with the bound value.
@@ -3784,9 +3784,9 @@ TP.html.select.Inst.defineMethod('isScalarValued',
 function() {
 
     /**
-     * @name isScalarValued
-     * @synopsis Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @summary See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -3800,12 +3800,12 @@ TP.html.select.Inst.defineMethod('refreshItems',
 function(aSignal, anItemset) {
 
     /**
-     * @name refreshItems
-     * @synopsis Updates the receiver's option list by processing the itemset
+     * @method refreshItems
+     * @summary Updates the receiver's option list by processing the itemset
      *     provided (or one found in the receiver's content model). NOTE that
      *     this requires the select to have an option below it with a
      *     tibet:tag="xctrls:itemset" value.
-     * @description The itemset tag is an XForms tag intended for use with truly
+     * @summary The itemset tag is an XForms tag intended for use with truly
      *     dynamic list content. It's not the best choice for a set of data that
      *     won't change actively while the page is visible so it's not really
      *     the best choice for most select controls. Still, it's possible that
@@ -3937,8 +3937,8 @@ TP.html.select.Inst.defineMethod('refreshRepeatContent',
 function(aSignal) {
 
     /**
-     * @name refreshRepeatContent
-     * @synopsis Updates the receiver when it presumably has a single option
+     * @method refreshRepeatContent
+     * @summary Updates the receiver when it presumably has a single option
      *     element under it representing a prototype option whose value and
      *     content can be set using the data found in the receiver's repeat
      *     content. For this to work as you'd like the option element should be
@@ -4017,11 +4017,11 @@ TP.html.select.Inst.defineMethod('removeSelection',
 function(aValue, optionProperty) {
 
     /**
-     * @name removeSelection
-     * @synopsis Removes the selection matching the criteria if found. Note that
+     * @method removeSelection
+     * @summary Removes the selection matching the criteria if found. Note that
      *     this method does not clear existing selections when processing the
      *     value(s) provided.
-     * @description Note that the aspect can be one of the following, which will
+     * @summary Note that the aspect can be one of the following, which will
      *      be the property used with each 'option' element to determine which
      *      of them will be deselected.
      *          'value'     ->  The value of the option (the default)
@@ -4133,8 +4133,8 @@ TP.html.select.Inst.defineMethod('select',
 function(aValue) {
 
     /**
-     * @name select
-     * @synopsis Selects the option with the value provided if found. Note that
+     * @method select
+     * @summary Selects the option with the value provided if found. Note that
      *     this method is roughly identical to setDisplayValue with the
      *     exception that this method does not clear existing selections when
      *     processing the value(s) provided. When no specific values are
@@ -4208,8 +4208,8 @@ TP.html.select.Inst.defineMethod('selectAll',
 function() {
 
     /**
-     * @name selectAll
-     * @synopsis Selects all options.
+     * @method selectAll
+     * @summary Selects all options.
      * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
@@ -4254,8 +4254,8 @@ TP.html.select.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the receivers' value to the value provided (if it matches
+     * @method setDisplayValue
+     * @summary Sets the receivers' value to the value provided (if it matches
      *     the value of an item in the group). Note that any selected items not
      *     provided in aValue are cleared, which is different than the behavior
      *     of selectValue() which simply adds the new selected items to the
@@ -4342,8 +4342,8 @@ TP.html.select.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
-     * @name setValue
-     * @synopsis Sets the value of the receiver's node. For a UI element this
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For a UI element this
      *     method will ensure any display formatters are invoked. NOTE that this
      *     method does not update the receiver's bound value if it's a bound
      *     control. In fact, this method is used in response to a change in the
@@ -4392,7 +4392,7 @@ function(aValue, shouldSignal) {
 
 /**
  * @type {TP.html.textarea}
- * @synopsis 'textarea' tag. Multiline text input.
+ * @summary 'textarea' tag. Multiline text input.
  */
 
 //  ------------------------------------------------------------------------
@@ -4426,8 +4426,8 @@ TP.html.textarea.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the receiver.
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
      * @raise TP.sig.InvalidNode
      */
@@ -4447,11 +4447,11 @@ TP.html.textarea.Type.defineMethod('onchange',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onchange
+     * @method onchange
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.html.textarea} The receiver.
      * @abstract
      */
@@ -4470,9 +4470,9 @@ TP.html.textarea.Inst.defineMethod('isSingleValued',
 function() {
 
     /**
-     * @name isSingleValued
-     * @synopsis Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @summary See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -4486,9 +4486,9 @@ TP.html.textarea.Inst.defineMethod('isScalarValued',
 function() {
 
     /**
-     * @name isScalarValued
-     * @synopsis Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @summary See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -4502,8 +4502,8 @@ TP.html.textarea.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the value of the receiver.
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
      * @returns {TP.html.textarea} The receiver.
      * @raise TP.sig.InvalidNode
      */
@@ -4525,8 +4525,8 @@ function(aValue) {
 
 /**
  * @type {TP.html.button}
- * @synopsis 'button' tag.
- * @description NOT the same as <input type="button"> due largely to rendering
+ * @summary 'button' tag.
+ * @summary NOT the same as <input type="button"> due largely to rendering
  *     differences. The attributes and behavior are largely similar, however.
  *     This tag type supports content between the opening/closing button tags
  *     unlike the input form of this control which has no closing tag and hence

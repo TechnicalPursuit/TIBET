@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.SyncAsync}
- * @synopsis An abstract type designed to be mixed in to other types which
+ * @summary An abstract type designed to be mixed in to other types which
  *     require support for synchronous and asynchronous mode control. Examples
  *     are TP.core.Resource and TP.core.URI and their subtypes.
  */
@@ -55,8 +55,8 @@ TP.core.SyncAsync.Type.defineMethod('isAsyncOnly',
 function() {
 
     /**
-     * @name isAsyncOnly
-     * @synopsis Returns true if the receiver can't process synchronously.
+     * @method isAsyncOnly
+     * @summary Returns true if the receiver can't process synchronously.
      * @returns {Boolean}
      */
 
@@ -69,8 +69,8 @@ TP.core.SyncAsync.Type.defineMethod('isDualMode',
 function() {
 
     /**
-     * @name isSyncOnly
-     * @synopsis Returns true if the receiver can process body synchronously and
+     * @method isSyncOnly
+     * @summary Returns true if the receiver can process body synchronously and
      *     asynchronously.
      * @returns {Boolean}
      */
@@ -84,8 +84,8 @@ TP.core.SyncAsync.Type.defineMethod('isSyncOnly',
 function() {
 
     /**
-     * @name isSyncOnly
-     * @synopsis Returns true if the receiver can't process asynchronously.
+     * @method isSyncOnly
+     * @summary Returns true if the receiver can't process asynchronously.
      * @returns {Boolean}
      */
 
@@ -98,8 +98,8 @@ TP.core.SyncAsync.Type.defineMethod('setMode',
 function(aProcessMode) {
 
     /**
-     * @name setMode
-     * @synopsis Sets the default processing mode (sync or async) for the
+     * @method setMode
+     * @summary Sets the default processing mode (sync or async) for the
      *     receiving type. The mode must be one of those supported for the type
      *     based on the value of supportedModes.
      * @param {String} aProcessMode A TP.core.SyncAsync constant.
@@ -138,8 +138,8 @@ TP.core.SyncAsync.Inst.defineMethod('getMode',
 function() {
 
     /**
-     * @name getMode
-     * @synopsis Returns the current default processinng mode, sync or async,
+     * @method getMode
+     * @summary Returns the current default processinng mode, sync or async,
      *     for the resource. If there is an instance value that is returned,
      *     otherwise any value specified for the type will be used.
      * @returns {Constant} A TP.core.Resource processing mode constant.
@@ -154,8 +154,8 @@ TP.core.SyncAsync.Inst.defineMethod('isSynchronous',
 function() {
 
     /**
-     * @name isSynchronous
-     * @synopsis Returns true if the receiver can support synchronous operation.
+     * @method isSynchronous
+     * @summary Returns true if the receiver can support synchronous operation.
      * @returns {Boolean}
      */
 
@@ -168,14 +168,14 @@ TP.core.SyncAsync.Inst.defineMethod('rewriteRequestMode',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestMode
-     * @synopsis Returns the request mode which should be used for the request.
+     * @method rewriteRequestMode
+     * @summary Returns the request mode which should be used for the request.
      *     In most cases this is the value provided in the request by in some
      *     cases it's possible to have an exception thrown when the request
      *     specifies a mode that the service can't support (for example asking
      *     an async-only service to process a synchronous request.
      * @param {TP.sig.Request} aRequest The request to rewrite.
-     * @raises TP.sig.InvalidProcessMode
+     * @exception TP.sig.InvalidProcessMode
      * @returns {Boolean} True for asynchronous (for use in the 'async'
      *     parameter).
      */

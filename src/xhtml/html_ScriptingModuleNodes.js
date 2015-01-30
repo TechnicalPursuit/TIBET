@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.command}
- * @synopsis 'command' tag. Represents a command the user can invoke.
+ * @summary 'command' tag. Represents a command the user can invoke.
  */
 
 //  ------------------------------------------------------------------------
@@ -27,7 +27,7 @@ TP.html.Attrs.defineSubtype('command');
 
 /**
  * @type {TP.html.keygen}
- * @synopsis 'keygen' tag. Key pair generation.
+ * @summary 'keygen' tag. Key pair generation.
  */
 
 //  ------------------------------------------------------------------------
@@ -43,7 +43,7 @@ TP.html.keygen.Type.set('booleanAttrs',
 
 /**
  * @type {TP.html.noscript}
- * @synopsis 'noscript' tag. When client-side scripts disabled/unsupported.
+ * @summary 'noscript' tag. When client-side scripts disabled/unsupported.
  */
 
 //  ------------------------------------------------------------------------
@@ -56,7 +56,7 @@ TP.html.Attrs.defineSubtype('noscript');
 
 /**
  * @type {TP.html.script}
- * @synopsis 'script' tag. Embedded programming -- hmmm sounds familiar ;)
+ * @summary 'script' tag. Embedded programming -- hmmm sounds familiar ;)
  */
 
 //  ------------------------------------------------------------------------

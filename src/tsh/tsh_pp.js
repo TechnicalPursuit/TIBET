@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tsh.pp}
- * @synopsis The default "pretty-print" formatter for the TIBET Shell. Since
+ * @summary The default "pretty-print" formatter for the TIBET Shell. Since
  *     this type is a formatter at heart most of the methods are built to
  *     support decent output for common JavaScript data types.
  */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.UIElementNode}
- * @synopsis TP.core.UIElementNode is the common supertype for all UI node
+ * @summary TP.core.UIElementNode is the common supertype for all UI node
  *     types. In particular, this includes the entire html: tree and most of
  *     the xctrls: namespace, which constitute the majority of UI nodes in
  *     TIBET.
@@ -52,8 +52,8 @@ TP.core.UIElementNode.Type.defineMethod('addStylesheetTo',
 function(aDocument) {
 
     /**
-     * @name addStylesheetTo
-     * @synopsis Adds the element node's stylesheet to the supplied document. If
+     * @method addStylesheetTo
+     * @summary Adds the element node's stylesheet to the supplied document. If
      *     the stylesheet is already present, this method will *not* add another
      *     instance.
      * @param {The} aDocument document to add the stylesheet to.
@@ -159,8 +159,8 @@ TP.core.UIElementNode.Type.defineMethod('getCompilationAttrs',
 function(aRequest) {
 
     /**
-     * @name getCompilationAttrs
-     * @synopsis Returns a TP.lang.Hash of any attributes to be added to what is
+     * @method getCompilationAttrs
+     * @summary Returns a TP.lang.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled. The default is to compute
      *     an XHTML class name from this type's typename and supply it under the
      *     'class' key.
@@ -188,10 +188,10 @@ TP.core.UIElementNode.Type.defineMethod('getKeyBindingsMap',
 function() {
 
     /**
-     * @name getKeyBindingsMap
-     * @synopsis Returns this type's 'key bindings' map or it's supertype's
+     * @method getKeyBindingsMap
+     * @summary Returns this type's 'key bindings' map or it's supertype's
      *     if this type does not have a map.
-     * @description This method returns a map that maps keynames (as
+     * @summary This method returns a map that maps keynames (as
      *     computed by the standard TIBET keyname computation) to signal names.
      *     If a matching signal name is found in the map, that signal is fired
      *     with the currently focused element as the target.
@@ -234,8 +234,8 @@ TP.core.UIElementNode.Type.defineMethod('getStyleURI',
 function(mimeType) {
 
     /**
-     * @name getStyleURI
-     * @synopsis Returns a stylesheet URI for the receiver.
+     * @method getStyleURI
+     * @summary Returns a stylesheet URI for the receiver.
      * @param {String} mimeType The mimeType for the resource being looked up.
      * @returns {TP.core.URI} The computed resource URI.
      */
@@ -265,10 +265,10 @@ TP.core.UIElementNode.Type.defineMethod('getThemeURI',
 function(mimeType) {
 
     /**
-     * @name getThemeURI
-     * @synopsis Returns a 'theme' URI for the receiving type, given its load
+     * @method getThemeURI
+     * @summary Returns a 'theme' URI for the receiving type, given its load
      *     path, the supplied mimeType and the current application theme.
-     * @description This method computes a theme URI for the receiver by using
+     * @summary This method computes a theme URI for the receiver by using
      *     the 'load path' of this type and appending the type name
      *     (transforming ':' to '_') and the supplied theme name and extension
      *     onto the end of it.
@@ -325,13 +325,13 @@ TP.core.UIElementNode.Type.defineMethod('onblur',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onblur
-     * @synopsis Handles a 'blur' native event that was dispatched against the
+     * @method onblur
+     * @summary Handles a 'blur' native event that was dispatched against the
      *     supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -365,13 +365,13 @@ TP.core.UIElementNode.Type.defineMethod('onfocus',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onfocus
-     * @synopsis Handles a 'focus' native event that was dispatched against the
+     * @method onfocus
+     * @summary Handles a 'focus' native event that was dispatched against the
      *     supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -405,13 +405,13 @@ TP.core.UIElementNode.Type.defineMethod('onkeydown',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onkeydown
-     * @synopsis Handles a 'keydown' native event that was dispatched against
+     * @method onkeydown
+     * @summary Handles a 'keydown' native event that was dispatched against
      *     the supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -509,13 +509,13 @@ TP.core.UIElementNode.Type.defineMethod('onkeyup',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onkeyup
-     * @synopsis Handles a 'keyup' native event that was dispatched against the
+     * @method onkeyup
+     * @summary Handles a 'keyup' native event that was dispatched against the
      *     supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -560,13 +560,13 @@ TP.core.UIElementNode.Type.defineMethod('onmousedown',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onmousedown
-     * @synopsis Handles a 'mousedown' native event that was dispatched against
+     * @method onmousedown
+     * @summary Handles a 'mousedown' native event that was dispatched against
      *     the supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -605,13 +605,13 @@ TP.core.UIElementNode.Type.defineMethod('onmouseup',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name onmouseup
-     * @synopsis Handles a 'mouseup' native event that was dispatched against
+     * @method onmouseup
+     * @summary Handles a 'mouseup' native event that was dispatched against
      *     the supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -643,10 +643,10 @@ TP.core.UIElementNode.Type.defineMethod('mutationAddedNodes',
 function(aTargetElem, nodesAdded) {
 
     /**
-     * @name mutationAddedNodes
-     * @synopsis Handles a 'nodes added' synthetic 'event' that was dispatched
+     * @method mutationAddedNodes
+     * @summary Handles a 'nodes added' synthetic 'event' that was dispatched
      *     against the supplied native element.
-     * @description This method is usually activated as the result of a 'DOM
+     * @summary This method is usually activated as the result of a 'DOM
      *     Mutation' of this node whereby a descendant is being added. Note that
      *     the 'nodesAdded' parameter here contains a list of *roots* that will
      *     have been added to the receiver. Any descendants of these roots will
@@ -654,7 +654,7 @@ function(aTargetElem, nodesAdded) {
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Array} nodesAdded The nodes added to the receiver.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -716,10 +716,10 @@ TP.core.UIElementNode.Type.defineMethod('mutationRemovedNodes',
 function(aTargetElem, nodesRemoved) {
 
     /**
-     * @name mutationRemovedNodes
-     * @synopsis Handles a 'nodes removed' synthetic 'event' that was dispatched
+     * @method mutationRemovedNodes
+     * @summary Handles a 'nodes removed' synthetic 'event' that was dispatched
      *     against the supplied native element.
-     * @description This method is usually activated as the result of a 'DOM
+     * @summary This method is usually activated as the result of a 'DOM
      *     Mutation' of this node whereby a descendant is being removed. Note
      *     that the 'nodesRemoved' parameter here contains a list of *roots*
      *     that will have been removed from the receiver. Any descendants of
@@ -727,7 +727,7 @@ function(aTargetElem, nodesRemoved) {
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Array} nodesRemoved  The nodes removed from the receiver.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -820,8 +820,8 @@ TP.core.UIElementNode.Type.defineMethod('loadKeyBindings',
 function() {
 
     /**
-     * @name loadKeyBindings
-     * @synopsis Loads the XML keyboard bindings for this type.
+     * @method loadKeyBindings
+     * @summary Loads the XML keyboard bindings for this type.
      * @raise TP.sig.InvalidKeymap When the XML key bindings file can't be
      *     loaded.
      * @returns {TP.core.UIElementNode} The receiver.
@@ -860,10 +860,10 @@ TP.core.UIElementNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tagCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @description This method operates differently depending on a variety of
+     * @summary This method operates differently depending on a variety of
      *     factors:
      *          - If the current node has a 'tibet:ctrl', but not a
      *              'tibet:tag', and its operating in a native namespace,
@@ -934,8 +934,8 @@ TP.core.UIElementNode.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Runs the receiver, effectively invoking its action. This method
+     * @method cmdRunContent
+     * @summary Runs the receiver, effectively invoking its action. This method
      *     is invoked any time a tag is being run as part of the processing of
      *     an enclosing tsh:script, which happens most often when the tag is
      *     being run interactively.
@@ -980,8 +980,8 @@ TP.core.UIElementNode.Inst.defineMethod('act',
 function(aSignal) {
 
     /**
-     * @name act
-     * @synopsis Runs the receiver as if it were an action tag. For UI tags this
+     * @method act
+     * @summary Runs the receiver as if it were an action tag. For UI tags this
      *     is a noop.
      * @param {TP.sig.Signal} aSignal The signal (typically a request) which
      *     triggered this activity.
@@ -997,8 +997,8 @@ TP.core.UIElementNode.Inst.defineMethod('acceptFocusedResponder',
 function() {
 
     /**
-     * @name acceptFocusedResponder
-     * @synopsis Asks the receiver to accept its role as 'focused responder'.
+     * @method acceptFocusedResponder
+     * @summary Asks the receiver to accept its role as 'focused responder'.
      * @returns {Boolean} Whether or not the receiver should accept focused
      *     responder status.
      */
@@ -1029,8 +1029,8 @@ TP.core.UIElementNode.Inst.defineMethod('becomeFocusedResponder',
 function() {
 
     /**
-     * @name becomeFocusedResponder
-     * @synopsis Tells the receiver that it is now the 'focused responder'.
+     * @method becomeFocusedResponder
+     * @summary Tells the receiver that it is now the 'focused responder'.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -1047,8 +1047,8 @@ TP.core.UIElementNode.Inst.defineMethod('canFocus',
 function() {
 
     /**
-     * @name canFocus
-     * @synopsis Whether or not the receiver can be focused. In TIBET, this
+     * @method canFocus
+     * @summary Whether or not the receiver can be focused. In TIBET, this
      *     means that it would have some sort of 'tabindex' attribute, since we
      *     require that for GUI elements that want focus.
      * @returns {Boolean} Whether or not the receiver can be focused.
@@ -1063,8 +1063,8 @@ TP.core.UIElementNode.Inst.defineMethod('canHandleKey',
 function(anEvent) {
 
     /**
-     * @name canHandleKey
-     * @synopsis Whether or not the receiver can be handle the key that
+     * @method canHandleKey
+     * @summary Whether or not the receiver can be handle the key that
      *     generated the supplied event.
      * @param {Event} anEvent The native event containing the key information.
      * @returns {Boolean} Whether or not the receiver can handle the key.
@@ -1116,8 +1116,8 @@ TP.core.UIElementNode.Inst.defineMethod('computeSuccessorFocusElement',
 function(focusedTPElem, moveAction) {
 
     /**
-     * @name computeSuccessorFocusElement
-     * @synopsis Computes the 'successor' focus element using the currently
+     * @method computeSuccessorFocusElement
+     * @summary Computes the 'successor' focus element using the currently
      *     focused element (if there is one) and the move action.
      * @param {TP.core.ElementNode} focusedTPElem The currently focused element.
      *     This may be null if no element is currently focused.
@@ -1682,8 +1682,8 @@ TP.core.UIElementNode.Inst.defineMethod('findFocusableElements',
 function(includesGroups) {
 
     /**
-     * @name findFocusableElements
-     * @synopsis Finds focusable elements under the receiver and returns an
+     * @method findFocusableElements
+     * @summary Finds focusable elements under the receiver and returns an
      *     Array of TP.core.ElementNodes of them.
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
      *     elements as 'focusable' elements under the receiver. The default is
@@ -1739,8 +1739,8 @@ TP.core.UIElementNode.Inst.defineMethod('getComputedStyleProperty',
 function(aProperty) {
 
     /**
-     * @name getComputedStyleProperty
-     * @synopsis Returns the receiver's *computed* style property named by the
+     * @method getComputedStyleProperty
+     * @summary Returns the receiver's *computed* style property named by the
      *     supplied property name.
      * @param {String} aProperty The name of the style property to retrieve.
      * @returns {Object} The current computed value of the style property named
@@ -1756,8 +1756,8 @@ TP.core.UIElementNode.Inst.defineMethod('getDisplayValue',
 function(anAttribute) {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -1772,8 +1772,8 @@ TP.core.UIElementNode.Inst.defineMethod('getFocusContextElement',
 function() {
 
     /**
-     * @name getFocusContextElement
-     * @synopsis Returns the TP.core.UIElementNode that forms the receiver's
+     * @method getFocusContextElement
+     * @summary Returns the TP.core.UIElementNode that forms the receiver's
      *     'focus context'. This is normally the document's 'body' element, but
      *     it can be any ancestor element with the 'tibet:focuscontext'
      *     attribute.
@@ -1797,14 +1797,14 @@ TP.core.UIElementNode.Inst.defineMethod('getFocusedElement',
 function(includeBody) {
 
     /**
-     * @name getFocusedElement
-     * @synopsis Returns the TP.core.UIElementNode representing the element in
+     * @method getFocusedElement
+     * @summary Returns the TP.core.UIElementNode representing the element in
      *     the document that currently has focus.
      * @param {Boolean} includeBody Whether or not to include the 'body' element
      *     if another element can't be found. HTML5 says that the 'body' will
      *     be the 'active' element if another element can't be found, but
      *     sometimes callers don't want that. This defaults to true.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {TP.core.UIElementNode} The TP.core.UIElementNode that currently
      *     has focus in the document.
      */
@@ -1839,8 +1839,8 @@ TP.core.UIElementNode.Inst.defineMethod('getHeight',
 function() {
 
     /**
-     * @name getHeight
-     * @synopsis Returns the receiver's height in pixels.
+     * @method getHeight
+     * @summary Returns the receiver's height in pixels.
      * @returns {Number} The receiver's height in pixels.
      */
 
@@ -1853,8 +1853,8 @@ TP.core.UIElementNode.Inst.defineMethod('getGlobalPoint',
 function(wantsTransformed) {
 
     /**
-     * @name getGlobalPoint
-     * @synopsis Returns the receiver's global position as a TP.core.Point. The
+     * @method getGlobalPoint
+     * @summary Returns the receiver's global position as a TP.core.Point. The
      *     global position is the element's position relative to its overall
      *     *top level* window.
      * @param {Boolean} wantsTransformed An optional parameter that determines
@@ -1878,8 +1878,8 @@ TP.core.UIElementNode.Inst.defineMethod('getGlobalRect',
 function(wantsTransformed) {
 
     /**
-     * @name getGlobalRect
-     * @synopsis Returns the receiver's global position and size as a
+     * @method getGlobalRect
+     * @summary Returns the receiver's global position and size as a
      *     TP.core.Rect. The global position is the element's position relative
      *     to its overall *top level* window.
      * @param {Boolean} wantsTransformed An optional parameter that determines
@@ -1903,8 +1903,8 @@ TP.core.UIElementNode.Inst.defineMethod('getGroupChainNames',
 function() {
 
     /**
-     * @name getGroupChainNames
-     * @synopsis Returns an Array of the 'tibet:group' element names that the
+     * @method getGroupChainNames
+     * @summary Returns an Array of the 'tibet:group' element names that the
      *     receiver is a member of, from the most specific group to the least
      *     specific group (i.e. up the group hierarchy).
      * @returns {Array} The Array of 'tibet:group' names that the receiver is a
@@ -1952,8 +1952,8 @@ TP.core.UIElementNode.Inst.defineMethod('getGroupName',
 function() {
 
     /**
-     * @name getGroupName
-     * @synopsis Returns the 'tibet:group' element name that the receiver is a
+     * @method getGroupName
+     * @summary Returns the 'tibet:group' element name that the receiver is a
      *     member of.
      * @returns {String} The 'tibet:group' name that the receiver is a member of
      *     or null.
@@ -1973,8 +1973,8 @@ TP.core.UIElementNode.Inst.defineMethod('getNextGroupName',
 function(startGroupName, alwaysWrap, wantsNested) {
 
     /**
-     * @name getNextGroupName
-     * @synopsis Returns the 'next' group name. If a starting group name is
+     * @method getNextGroupName
+     * @summary Returns the 'next' group name. If a starting group name is
      *     supplied, it is used as the starting point. Otherwise, the group name
      *     of the receiver is used as the starting point.
      * @param {String} startGroupName The group name to start the search for the
@@ -2088,9 +2088,9 @@ TP.core.UIElementNode.Inst.defineMethod('getNextResponder',
 function(aSignal, isCapturing) {
 
     /**
-     * @name getNextResponder
-     * @synopsis Returns the next responder as computed by the receiver.
-     * @description The default implementation of this method is to get the
+     * @method getNextResponder
+     * @summary Returns the next responder as computed by the receiver.
+     * @summary The default implementation of this method is to get the
      *     receiver's 'next closest ancestor control element' (i.e. not itself,
      *     but its closest ancestor that has either a 'tibet:tag' or
      *     'tibet:ctrl' attribute) and TP.wrap() it.
@@ -2151,8 +2151,8 @@ TP.core.UIElementNode.Inst.defineMethod('getOffsetParent',
 function() {
 
     /**
-     * @name getOffsetParent
-     * @synopsis Returns the receiver's 'offset parent'.
+     * @method getOffsetParent
+     * @summary Returns the receiver's 'offset parent'.
      * @returns {TP.core.UIElementNode} The receiver's 'offset parent' in the
      *     DOM.
      */
@@ -2166,8 +2166,8 @@ TP.core.UIElementNode.Inst.defineMethod('getOffsetPoint',
 function(wantsTransformed) {
 
     /**
-     * @name getOffsetPoint
-     * @synopsis Returns the receiver's offset position as a TP.core.Point. The
+     * @method getOffsetPoint
+     * @summary Returns the receiver's offset position as a TP.core.Point. The
      *     offset position is the element's position relative to its offset
      *     parent.
      * @param {Boolean} wantsTransformed An optional parameter that determines
@@ -2191,8 +2191,8 @@ TP.core.UIElementNode.Inst.defineMethod('getOffsetRect',
 function(wantsTransformed) {
 
     /**
-     * @name getOffsetRect
-     * @synopsis Returns the receiver's offset position and size as a
+     * @method getOffsetRect
+     * @summary Returns the receiver's offset position and size as a
      *     TP.core.Rect. The offset position is the element's position relative
      *     to its offset parent
      * @param {Boolean} wantsTransformed An optional parameter that determines
@@ -2216,8 +2216,8 @@ TP.core.UIElementNode.Inst.defineMethod('getPagePoint',
 function(wantsTransformed) {
 
     /**
-     * @name getPagePoint
-     * @synopsis Returns the receiver's page position as a TP.core.Point. The
+     * @method getPagePoint
+     * @summary Returns the receiver's page position as a TP.core.Point. The
      *     page position is the element's position relative to its overall page.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
@@ -2241,8 +2241,8 @@ TP.core.UIElementNode.Inst.defineMethod('getPageRect',
 function(wantsTransformed) {
 
     /**
-     * @name getPageRect
-     * @synopsis Returns the receiver's page position and size as a
+     * @method getPageRect
+     * @summary Returns the receiver's page position and size as a
      *     TP.core.Rect. The page position is the element's position relative to
      *     its overall page.
      * @param {Boolean} wantsTransformed An optional parameter that determines
@@ -2267,8 +2267,8 @@ TP.core.UIElementNode.Inst.defineMethod('getParentGroupName',
 function(startGroupName) {
 
     /**
-     * @name getParentGroupName
-     * @synopsis Returns the 'next' group name. If a starting group name is
+     * @method getParentGroupName
+     * @summary Returns the 'next' group name. If a starting group name is
      *     supplied, it is used as the starting point. Otherwise, the group name
      *     of the receiver is used as the starting point.
      * @param {String} startGroupName The group name to start the search for the
@@ -2309,8 +2309,8 @@ TP.core.UIElementNode.Inst.defineMethod('getPreviousGroupName',
 function(startGroupName, alwaysWrap, wantsNested) {
 
     /**
-     * @name getPreviousGroupName
-     * @synopsis Returns the 'previous' group name. If a starting group name is
+     * @method getPreviousGroupName
+     * @summary Returns the 'previous' group name. If a starting group name is
      *     supplied, it is used as the starting point. Otherwise, the group name
      *     of the receiver is used as the starting point.
      * @param {String} startGroupName The group name to start the search for the
@@ -2425,8 +2425,8 @@ TP.core.UIElementNode.Inst.defineMethod('getSubmitName',
 function() {
 
     /**
-     * @name getSubmitName
-     * @synopsis Returns the name under which the receiver would be submitted
+     * @method getSubmitName
+     * @summary Returns the name under which the receiver would be submitted
      *     when used in a forms context. This defaults to the value of the id
      *     attribute, followed by the name attribute.
      * @returns {String} The receiver's submission name.
@@ -2447,8 +2447,8 @@ TP.core.UIElementNode.Inst.defineMethod('getWidth',
 function() {
 
     /**
-     * @name getWidth
-     * @synopsis Returns the receiver's width in pixels.
+     * @method getWidth
+     * @summary Returns the receiver's width in pixels.
      * @returns {Number} The receiver's width in pixels.
      */
 
@@ -2461,8 +2461,8 @@ TP.core.UIElementNode.Inst.defineMethod('getWidthAndHeight',
 function() {
 
     /**
-     * @name getWidthAndHeight
-     * @synopsis Returns the receiver's width and height as an Array of pixels.
+     * @method getWidthAndHeight
+     * @summary Returns the receiver's width and height as an Array of pixels.
      * @returns {Array} An Array of the receiver's width and height in pixels.
      */
 
@@ -2476,8 +2476,8 @@ TP.core.UIElementNode.Inst.defineMethod('hide',
 function() {
 
     /**
-     * @name hide
-     * @synopsis Hides the receiver's node.
+     * @method hide
+     * @summary Hides the receiver's node.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -2492,10 +2492,10 @@ TP.core.UIElementNode.Inst.defineMethod('isVisible',
 function() {
 
     /**
-     * @name isVisible
-     * @synopsis Returns whether or not anElement is *really* visible to the
+     * @method isVisible
+     * @summary Returns whether or not anElement is *really* visible to the
            user, no matter what its CSS setting is.
-     * @description In addition to the standard CSS properties of 'display' and
+     * @summary In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any
            CSS transformation that has been applied to the element.
      * @returns {Boolean} Whether or not anElement is visible.
@@ -2510,8 +2510,8 @@ TP.core.UIElementNode.Inst.defineMethod('isResponderFor',
 function(aSignal, isCapturing) {
 
     /**
-     * @name isResponderFor
-     * @synopsis Whether or not the receiver is a responder for the supplied
+     * @method isResponderFor
+     * @summary Whether or not the receiver is a responder for the supplied
      *     signal and capturing mode.
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
@@ -2554,8 +2554,8 @@ TP.core.UIElementNode.Inst.defineMethod('moveFocus',
 function(moveAction) {
 
     /**
-     * @name moveFocus
-     * @synopsis Moves the focus to a 'successor' element based on the
+     * @method moveFocus
+     * @summary Moves the focus to a 'successor' element based on the
      *     information contained in the supplied event and on the move action.
      * @param {Constant} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
@@ -2620,8 +2620,8 @@ TP.core.UIElementNode.Inst.defineMethod('removeAttribute',
 function(attributeName) {
 
     /**
-     * @name removeAttribute
-     * @synopsis Removes the named attribute. This version overrides the one
+     * @method removeAttribute
+     * @summary Removes the named attribute. This version overrides the one
      *     inherited from TP.core.ElementNode to not bother with snapshotting
      *     changes to a transactionally consistent DOM, since this object's
      *     native node is an on-screen control.
@@ -2643,8 +2643,8 @@ TP.core.UIElementNode.Inst.defineMethod('resignFocusedResponder',
 function() {
 
     /**
-     * @name resignFocusedResponder
-     * @synopsis Tells the receiver that it is no longer the 'focused
+     * @method resignFocusedResponder
+     * @summary Tells the receiver that it is no longer the 'focused
      *     responder'.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -2752,8 +2752,8 @@ TP.core.UIElementNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name $setAttribute
-     * @synopsis Sets the value of the named attribute. This version overrides
+     * @method $setAttribute
+     * @summary Sets the value of the named attribute. This version overrides
      *     the one inherited from TP.core.ElementNode to not bother with
      *     snapshotting changes to a transactionally consistent DOM, since this
      *     object's native node is an on-screen control.
@@ -2839,8 +2839,8 @@ TP.core.UIElementNode.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure
@@ -2858,12 +2858,12 @@ TP.core.UIElementNode.Inst.defineMethod('setGroupElement',
 function(aTPElem) {
 
     /**
-     * @name setGroupElement
-     * @synopsis Sets the supplied tibet:group element as a grouping element for
+     * @method setGroupElement
+     * @summary Sets the supplied tibet:group element as a grouping element for
      *     the receiver.
      * @param {tibet:group} aTPElem The element to use as the grouping element
      *     for the receiver.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -2882,9 +2882,9 @@ TP.core.UIElementNode.Inst.defineMethod('setHeight',
 function(aHeight) {
 
     /**
-     * @name setHeight
-     * @synopsis Sets the receiver's height.
-     * @description If a Number is supplied to aHeight a default unit of 'px' is
+     * @method setHeight
+     * @summary Sets the receiver's height.
+     * @summary If a Number is supplied to aHeight a default unit of 'px' is
      *     assumed.
      * @param {Number|String} aHeight The height dimension to set the receiver's
      *     height to.
@@ -2899,8 +2899,8 @@ TP.core.UIElementNode.Inst.defineMethod('setPagePosition',
 function(aPointOrObject) {
 
     /**
-     * @name setPagePosition
-     * @synopsis Sets the position of the receiver by manipulating its top, and
+     * @method setPagePosition
+     * @summary Sets the position of the receiver by manipulating its top, and
      *     left style properties. This method assumes the receiver is positioned
      *     in some fashion.
      * @param {TP.core.Point|TP.lang.Hash|Array} aPointOrObject A TP.core.Point
@@ -2936,8 +2936,8 @@ TP.core.UIElementNode.Inst.defineMethod('setPagePositionAndSize',
 function(aRectOrObject) {
 
     /**
-     * @name setPagePositionAndSize
-     * @synopsis Sets the position of the receiver by manipulating its top,
+     * @method setPagePositionAndSize
+     * @summary Sets the position of the receiver by manipulating its top,
      *     right, bottom and left style properties. This method assumes the
      *     receiver is positioned in some fashion.
      * @param {TP.core.Rect|TP.lang.Hash|Array} aRectOrObject A TP.core.Rect to
@@ -2982,8 +2982,8 @@ TP.core.UIElementNode.Inst.defineMethod('setTransform',
 function(aTransformStr) {
 
     /**
-     * @name setTransform
-     * @synopsis Sets the CSS transform of the receiver using the supplied
+     * @method setTransform
+     * @summary Sets the CSS transform of the receiver using the supplied
      *     String (which should conform to one of the values specified in the
      *     CSS Transform specification).
      * @param {String} aTransformStr The value to set on the receiver as its CSS
@@ -3002,9 +3002,9 @@ TP.core.UIElementNode.Inst.defineMethod('setWidth',
 function(aWidth) {
 
     /**
-     * @name setWidth
-     * @synopsis Sets the receiver's width.
-     * @description If a Number is supplied to aWidth a default unit of 'px' is
+     * @method setWidth
+     * @summary Sets the receiver's width.
+     * @summary If a Number is supplied to aWidth a default unit of 'px' is
      *     assumed.
      * @param {Number|String} aWidth The width dimension to set the receiver's
      *     width to.
@@ -3019,8 +3019,8 @@ TP.core.UIElementNode.Inst.defineMethod('show',
 function() {
 
     /**
-     * @name show
-     * @synopsis Show's the receiver's node.
+     * @method show
+     * @summary Show's the receiver's node.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -3035,9 +3035,9 @@ TP.core.UIElementNode.Inst.defineMethod('yieldFocusedResponder',
 function(focusingElement) {
 
     /**
-     * @name yieldFocusedResponder
-     * @synopsis Asks the receiver to yield its role as 'focused responder'.
-     * @description At this level, this type just returns true, but subtypes may
+     * @method yieldFocusedResponder
+     * @summary Asks the receiver to yield its role as 'focused responder'.
+     * @summary At this level, this type just returns true, but subtypes may
      *     run various checks for valid values, etc. and return false if those
      *     checks don't pass.
      * @param {TP.core.UIElementNode} focusingElement The element that the focus
@@ -3056,8 +3056,8 @@ TP.core.UIElementNode.Inst.defineMethod('toggleDisplay',
 function() {
 
     /**
-     * @name toggleDisplay
-     * @synopsis Toggles the 'display' of the receiver from 'node' to it's
+     * @method toggleDisplay
+     * @summary Toggles the 'display' of the receiver from 'node' to it's
      *     default display state or vice-versa, depending on the current
      *     visibility state.
      * @returns {TP.core.UIElementNode} The receiver.
@@ -3082,10 +3082,10 @@ TP.core.UIElementNode.Inst.defineMethod('toggleVisibility',
 function() {
 
     /**
-     * @name toggleVisibility
-     * @synopsis Toggles the 'visibility' of the receiver from 'hidden' to
+     * @method toggleVisibility
+     * @summary Toggles the 'visibility' of the receiver from 'hidden' to
      *     'visible' or vice-versa, depending on the current visibility state.
-     * @raises TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyle
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -3116,8 +3116,8 @@ TP.core.UIElementNode.Inst.defineMethod('addLocalTransform',
 function(transformType, varargs) {
 
     /**
-     * @name addLocalTransform
-     * @synopsis Adds a "local" transform to the receiver. This will be a CSS3
+     * @method addLocalTransform
+     * @summary Adds a "local" transform to the receiver. This will be a CSS3
      *     transform that will affect just the receiver by using it's local
      *     '.style' attribute.
      * @param {String} transformType The type of transformation to add to the
@@ -3162,15 +3162,15 @@ TP.core.UIElementNode.Inst.defineMethod('generateCSSValueFromTransformRecord',
 function(aTransformRecord) {
 
     /**
-     * @name generateCSSValueFromTransformRecord
-     * @synopsis Generates a CSS value from the supplied transform 'record'.
-     * @description A transform record consists of a TP.lang.Hash that has two
+     * @method generateCSSValueFromTransformRecord
+     * @summary Generates a CSS value from the supplied transform 'record'.
+     * @summary A transform record consists of a TP.lang.Hash that has two
      *     keys: the transform 'type' that should consist of one of the
      *     following values: TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE and the
      *     transform 'args', which are arguments to the transformation.
      * @param {TP.lang.Hash} aTransformRecord The transformation record to use
      *     to generate the CSS value.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} The generated CSS value String.
      */
 
@@ -3227,8 +3227,8 @@ TP.core.UIElementNode.Inst.defineMethod('getLocalTransformValue',
 function(transformType, transformIndex) {
 
     /**
-     * @name getLocalTransformValue
-     * @synopsis Returns the values of a particular local transform that has
+     * @method getLocalTransformValue
+     * @summary Returns the values of a particular local transform that has
      *     been added to the receiver as a CSS value.
      * @param {String} transformType The type of transformation to return the
      *     CSS value of. This should be one of the following:
@@ -3297,8 +3297,8 @@ TP.core.UIElementNode.Inst.defineMethod('removeAllLocalTransforms',
 function() {
 
     /**
-     * @name removeAllLocalTransforms
-     * @synopsis Removes all of the local transforms from the receiver.
+     * @method removeAllLocalTransforms
+     * @summary Removes all of the local transforms from the receiver.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -3311,8 +3311,8 @@ TP.core.UIElementNode.Inst.defineMethod('removeLocalTransform',
 function(transformType, transformIndex) {
 
     /**
-     * @name removeLocalTransform
-     * @synopsis Removes a particular local transform from the receiver.
+     * @method removeLocalTransform
+     * @summary Removes a particular local transform from the receiver.
      * @param {String} transformType The type of transformation to remove.
      *     This should be one of the following:
      *     TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE, TP.ANY.
@@ -3392,8 +3392,8 @@ TP.core.UIElementNode.Inst.defineMethod('rotate',
 function(degrees) {
 
     /**
-     * @name rotate
-     * @synopsis Rotates the receiver by the amount indicated by using a 'local
+     * @method rotate
+     * @summary Rotates the receiver by the amount indicated by using a 'local
      *     transformation'.
      * @param {Number} degrees The amount in degrees to rotate the receiver
      *     by.
@@ -3411,8 +3411,8 @@ TP.core.UIElementNode.Inst.defineMethod('scale',
 function(x, y) {
 
     /**
-     * @name scale
-     * @synopsis Scales the receiver by the amount indicated by using a 'local
+     * @method scale
+     * @summary Scales the receiver by the amount indicated by using a 'local
      *     transformation'. Note that, if the 'y' value isn't supplied, it is
      *     defaulted to the 'x' value.
      * @param {Number} x The amount to scale the receiver along the X axis.
@@ -3436,8 +3436,8 @@ TP.core.UIElementNode.Inst.defineMethod('setLocalTransform',
 function(transformType, transformIndex, varargs) {
 
     /**
-     * @name setLocalTransform
-     * @synopsis Sets the values of a particular local transform that has been
+     * @method setLocalTransform
+     * @summary Sets the values of a particular local transform that has been
      *     added for the receiver.
      * @param {String} transformType The type of transformation to set the
      *     values of. This should be one of the following:
@@ -3516,8 +3516,8 @@ TP.core.UIElementNode.Inst.defineMethod('setTransformFromLocalTransforms',
 function() {
 
     /**
-     * @name setTransformFromLocalTransforms
-     * @synopsis Sets the receiver's CSS3 'transforms' style property to the
+     * @method setTransformFromLocalTransforms
+     * @summary Sets the receiver's CSS3 'transforms' style property to the
      *     local transforms that have been populated on the receiver by adding
      *     them.
      * @returns {TP.core.UIElementNode} The receiver.
@@ -3565,8 +3565,8 @@ TP.core.UIElementNode.Inst.defineMethod('skew',
 function(x, y) {
 
     /**
-     * @name skew
-     * @synopsis Skews the receiver by the amount indicated by using a 'local
+     * @method skew
+     * @summary Skews the receiver by the amount indicated by using a 'local
      *     transformation'. Note that, if the 'y' value isn't supplied, it is
      *     defaulted to the 'x' value.
      * @param {Number} x The amount in degrees to skew the receiver along the X
@@ -3592,8 +3592,8 @@ TP.core.UIElementNode.Inst.defineMethod('translate',
 function(x, y) {
 
     /**
-     * @name translate
-     * @synopsis Translates the receiver by the amount indicated by using a
+     * @method translate
+     * @summary Translates the receiver by the amount indicated by using a
      *     'local transformation'. Note that, if the 'y' value isn't supplied,
      *     it is defaulted to the 'x' value.
      * @param {Number} x The amount in pixels to translate the receiver along
@@ -3632,8 +3632,8 @@ TP.core.UIElementNode.Inst.defineMethod('$isInState',
 function(stateAttribute, stateFlag) {
 
     /**
-     * @name $isInState
-     * @synopsis A combined setter/getter for manipulating a particular Boolean
+     * @method $isInState
+     * @summary A combined setter/getter for manipulating a particular Boolean
      *     state attribute on the receiver.
      * @param {String} stateAttribute The name of the attribute which maintains
      *     this state.
@@ -3664,8 +3664,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrActive',
 function() {
 
     /**
-     * @name getAttrActive
-     * @synopsis The getter for the receiver's active state.
+     * @method getAttrActive
+     * @summary The getter for the receiver's active state.
      * @returns {Boolean} Whether the receiver's state is active.
      */
 
@@ -3678,8 +3678,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrBusy',
 function() {
 
     /**
-     * @name getAttrBusy
-     * @synopsis The getter for the receiver's busy state.
+     * @method getAttrBusy
+     * @summary The getter for the receiver's busy state.
      * @returns {Boolean} Whether the receiver's state is busy.
      */
 
@@ -3692,8 +3692,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrDisabled',
 function() {
 
     /**
-     * @name getAttrDisabled
-     * @synopsis The getter for the receiver's disabled state.
+     * @method getAttrDisabled
+     * @summary The getter for the receiver's disabled state.
      * @returns {Boolean} Whether the receiver's state is disabled.
      */
 
@@ -3706,8 +3706,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrFocused',
 function() {
 
     /**
-     * @name getAttrFocused
-     * @synopsis The getter for the receiver's focus state.
+     * @method getAttrFocused
+     * @summary The getter for the receiver's focus state.
      * @returns {Boolean} Whether the receiver's state is focus.
      */
 
@@ -3720,8 +3720,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrHidden',
 function() {
 
     /**
-     * @name getAttrHidden
-     * @synopsis The getter for the receiver's hidden state.
+     * @method getAttrHidden
+     * @summary The getter for the receiver's hidden state.
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
@@ -3734,8 +3734,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrInvalid',
 function() {
 
     /**
-     * @name getAttrInvalid
-     * @synopsis The getter for the receiver's invalid state.
+     * @method getAttrInvalid
+     * @summary The getter for the receiver's invalid state.
      * @returns {Boolean} Whether the receiver's state is invalid.
      */
 
@@ -3748,8 +3748,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrOpen',
 function() {
 
     /**
-     * @name getAttrOpen
-     * @synopsis The getter for the receiver's open state.
+     * @method getAttrOpen
+     * @summary The getter for the receiver's open state.
      * @returns {Boolean} Whether the receiver's state is open.
      */
 
@@ -3762,8 +3762,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrOutOfRange',
 function() {
 
     /**
-     * @name getAttrOutOfRange
-     * @synopsis The getter for the receiver's out-of-range state.
+     * @method getAttrOutOfRange
+     * @summary The getter for the receiver's out-of-range state.
      * @returns {Boolean} Whether the receiver's state is out-of-range.
      */
 
@@ -3776,8 +3776,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrReadonly',
 function() {
 
     /**
-     * @name getAttrReadonly
-     * @synopsis The getter for the receiver's readonly state.
+     * @method getAttrReadonly
+     * @summary The getter for the receiver's readonly state.
      * @returns {Boolean} Whether the receiver's state is readonly.
      */
 
@@ -3790,8 +3790,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrRequired',
 function() {
 
     /**
-     * @name getAttrRequired
-     * @synopsis The getter for the receiver's required state.
+     * @method getAttrRequired
+     * @summary The getter for the receiver's required state.
      * @returns {Boolean} Whether the receiver's state is required.
      */
 
@@ -3804,8 +3804,8 @@ TP.core.UIElementNode.Inst.defineMethod('getAttrSelected',
 function() {
 
     /**
-     * @name getAttrSelected
-     * @synopsis The getter for the receiver's selected state.
+     * @method getAttrSelected
+     * @summary The getter for the receiver's selected state.
      * @returns {Boolean} Whether the receiver's state is selected.
      */
 
@@ -3818,8 +3818,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrActive',
 function(beActive) {
 
     /**
-     * @name setAttrActive
-     * @synopsis The setter for the receiver's active state.
+     * @method setAttrActive
+     * @summary The setter for the receiver's active state.
      * @param {Boolean} beActive Whether or not the receiver is in an active
      *     state.
      * @returns {Boolean} Whether the receiver's state is active.
@@ -3841,8 +3841,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrBusy',
 function(beBusy, busyMsg) {
 
     /**
-     * @name setAttrBusy
-     * @synopsis The setter for the receiver's busy state.
+     * @method setAttrBusy
+     * @summary The setter for the receiver's busy state.
      * @param {Boolean} beBusy Whether or not the receiver is in a busy state.
      * @param {String} busyMsg The message to display while busy.
      * @returns {Boolean} Whether the receiver's state is busy.
@@ -3868,8 +3868,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrClosed',
 function(beClosed) {
 
     /**
-     * @name setAttrClosed
-     * @synopsis The setter for the receiver's closed state.
+     * @method setAttrClosed
+     * @summary The setter for the receiver's closed state.
      * @param {Boolean} beClosed Whether or not the receiver is in a closed
      *     state.
      * @returns {Boolean} Whether the receiver's state is closed.
@@ -3891,8 +3891,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrCollapsed',
 function(beCollapsed) {
 
     /**
-     * @name setAttrCollapsed
-     * @synopsis The setter for the receiver's collapsed state.
+     * @method setAttrCollapsed
+     * @summary The setter for the receiver's collapsed state.
      * @param {Boolean} beCollapsed Whether or not the receiver is in a
      *     collapsed state.
      * @returns {Boolean} Whether the receiver's state is collapsed.
@@ -3914,8 +3914,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrDisabled',
 function(beDisabled) {
 
     /**
-     * @name setAttrDisabled
-     * @synopsis The setter for the receiver's disabled state.
+     * @method setAttrDisabled
+     * @summary The setter for the receiver's disabled state.
      * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
      *     state.
      * @returns {Boolean} Whether the receiver's state is disabled.
@@ -3953,8 +3953,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrFocused',
 function(beFocused) {
 
     /**
-     * @name setAttrFocused
-     * @synopsis The setter for the receiver's focus state.
+     * @method setAttrFocused
+     * @summary The setter for the receiver's focus state.
      * @param {Boolean} beFocused Whether or not the receiver is in a focus
      *     state.
      * @returns {Boolean} Whether the receiver's state is focused.
@@ -3969,8 +3969,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setAttrHidden
-     * @synopsis The setter for the receiver's hidden state.
+     * @method setAttrHidden
+     * @summary The setter for the receiver's hidden state.
      * @param {Boolean} beHidden Whether or not the receiver is in a hidden
      *     state.
      * @returns {Boolean} Whether the receiver's state is hidden.
@@ -3992,8 +3992,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrInvalid',
 function(beInvalid) {
 
     /**
-     * @name setAttrInvalid
-     * @synopsis The setter for the receiver's invalid state.
+     * @method setAttrInvalid
+     * @summary The setter for the receiver's invalid state.
      * @param {Boolean} beInvalid Whether or not the receiver is in a invalid
      *     state.
      * @returns {Boolean} Whether the receiver's state is invalid.
@@ -4008,8 +4008,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrOfOutRange',
 function(beOutOfRange) {
 
     /**
-     * @name setAttrOfOutRange
-     * @synopsis The setter for the receiver's out-of-range state.
+     * @method setAttrOfOutRange
+     * @summary The setter for the receiver's out-of-range state.
      * @param {Boolean} beOutOfRange Whether or not the receiver is in a
      *     out-of-range state.
      * @returns {Boolean} Whether the receiver's state is out-of-range.
@@ -4024,8 +4024,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrReadonly',
 function(beReadonly) {
 
     /**
-     * @name setAttrReadonly
-     * @synopsis The setter for the receiver's readonly state.
+     * @method setAttrReadonly
+     * @summary The setter for the receiver's readonly state.
      * @param {Boolean} beReadonly Whether or not the receiver is in a readonly
      *     state.
      * @returns {Boolean} Whether the receiver's state is readonly.
@@ -4040,8 +4040,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrRequired',
 function(beRequired) {
 
     /**
-     * @name setAttrRequired
-     * @synopsis The setter for the receiver's required state.
+     * @method setAttrRequired
+     * @summary The setter for the receiver's required state.
      * @param {Boolean} beRequired Whether or not the receiver is in a required
      *     state.
      * @returns {Boolean} Whether the receiver's state is required.
@@ -4056,8 +4056,8 @@ TP.core.UIElementNode.Inst.defineMethod('setAttrSelected',
 function(beSelected) {
 
     /**
-     * @name setAttrSelected
-     * @synopsis The setter for the receiver's selected state.
+     * @method setAttrSelected
+     * @summary The setter for the receiver's selected state.
      * @param {Boolean} beSelected Whether or not the receiver is in a selected
      *     state.
      * @returns {Boolean} Whether the receiver's state is selected.
@@ -4072,8 +4072,8 @@ TP.core.UIElementNode.Inst.defineMethod('toggle',
 function(stateName) {
 
     /**
-     * @name toggle
-     * @synopsis Toggles the value for a particular piece of the receiver's
+     * @method toggle
+     * @summary Toggles the value for a particular piece of the receiver's
            state.
      * @param {String} stateName The name of the piece of state to toggle.
      * @returns {Boolean} The value of the piece of state after toggling it.
@@ -4096,8 +4096,8 @@ TP.core.UIElementNode.Inst.defineMethod('blur',
 function() {
 
     /**
-     * @name blur
-     * @synopsis Blurs the receiver for keyboard input.
+     * @method blur
+     * @summary Blurs the receiver for keyboard input.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -4125,8 +4125,8 @@ TP.core.UIElementNode.Inst.defineMethod('focus',
 function(moveAction) {
 
     /**
-     * @name focus
-     * @synopsis Focuses the receiver for keyboard input.
+     * @method focus
+     * @summary Focuses the receiver for keyboard input.
      * @param {Constant} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *          TP.FIRST
@@ -4166,8 +4166,8 @@ TP.core.UIElementNode.Inst.defineMethod('select',
 function() {
 
     /**
-     * @name select
-     * @synopsis Selects the receiver for keyboard input (this also focuses the
+     * @method select
+     * @summary Selects the receiver for keyboard input (this also focuses the
      *     receiver).
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4198,12 +4198,12 @@ TP.core.UIElementNode.Inst.defineMethod('toggleSelectedItem',
 function(oldItem, newItem) {
 
     /**
-     * @name toggleSelectedItem
-     * @synopsis Sets the old item to be deselected and the new item to be
+     * @method toggleSelectedItem
+     * @summary Sets the old item to be deselected and the new item to be
      *     selected.
      * @param {Element} oldItem The old element to deselect.
      * @param {Element} newItem The new element to select.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -4236,8 +4236,8 @@ TP.core.UIElementNode.Inst.defineMethod('displayAlert',
 function(content) {
 
     /**
-     * @name displayAlert
-     * @synopsis Displays alert content for the receiver, if any.
+     * @method displayAlert
+     * @summary Displays alert content for the receiver, if any.
      * @param {String} content The alert content to be displayed.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4254,8 +4254,8 @@ TP.core.UIElementNode.Inst.defineMethod('displayBusy',
 function(content) {
 
     /**
-     * @name displayBusy
-     * @synopsis Displays busy content for the receiver, if any.
+     * @method displayBusy
+     * @summary Displays busy content for the receiver, if any.
      * @param {String} content The busy content to be displayed.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4271,8 +4271,8 @@ TP.core.UIElementNode.Inst.defineMethod('displayHelp',
 function(content) {
 
     /**
-     * @name displayHelp
-     * @synopsis Displays help content for the receiver, if any.
+     * @method displayHelp
+     * @summary Displays help content for the receiver, if any.
      * @param {String} content The help content to be displayed.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4289,8 +4289,8 @@ TP.core.UIElementNode.Inst.defineMethod('displayHint',
 function(content) {
 
     /**
-     * @name displayHint
-     * @synopsis Displays hint content for the receiver, if any.
+     * @method displayHint
+     * @summary Displays hint content for the receiver, if any.
      * @param {String} content The hint content to be displayed.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4307,8 +4307,8 @@ TP.core.UIElementNode.Inst.defineMethod('hideAlert',
 function() {
 
     /**
-     * @name hideAlert
-     * @synopsis Hides alert content for the receiver, if any.
+     * @method hideAlert
+     * @summary Hides alert content for the receiver, if any.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -4323,8 +4323,8 @@ TP.core.UIElementNode.Inst.defineMethod('hideBusy',
 function() {
 
     /**
-     * @name hideBusy
-     * @synopsis Hides busy content for the receiver, if any.
+     * @method hideBusy
+     * @summary Hides busy content for the receiver, if any.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -4339,8 +4339,8 @@ TP.core.UIElementNode.Inst.defineMethod('hideHelp',
 function() {
 
     /**
-     * @name hideHelp
-     * @synopsis Hides help content for the receiver, if any.
+     * @method hideHelp
+     * @summary Hides help content for the receiver, if any.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -4355,8 +4355,8 @@ TP.core.UIElementNode.Inst.defineMethod('hideHint',
 function() {
 
     /**
-     * @name hideHint
-     * @synopsis Hides hint content for the receiver, if any.
+     * @method hideHint
+     * @summary Hides hint content for the receiver, if any.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -4373,7 +4373,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirst',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusFirst
+     * @method handleUIFocusFirst
      * @synopsis
      * @param {TP.sig.UIFocusFirst} aSignal The signal that caused this handler
      *     trip.
@@ -4390,7 +4390,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusLast',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusLast
+     * @method handleUIFocusLast
      * @synopsis
      * @param {TP.sig.UIFocusLast} aSignal The signal that caused this handler
      *     trip.
@@ -4407,7 +4407,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusNext',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusNext
+     * @method handleUIFocusNext
      * @synopsis
      * @param {TP.sig.UIFocusNext} aSignal The signal that caused this handler
      *     trip.
@@ -4424,7 +4424,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusPrevious',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusPrevious
+     * @method handleUIFocusPrevious
      * @synopsis
      * @param {TP.sig.UIFocusPrevious} aSignal The signal that caused this
      *     handler trip.
@@ -4441,7 +4441,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFollowing',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusFollowing
+     * @method handleUIFocusFollowing
      * @synopsis
      * @param {TP.sig.UIFocusFollowing} aSignal The signal that caused this
      *     handler trip.
@@ -4458,7 +4458,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusPreceding',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusPreceding
+     * @method handleUIFocusPreceding
      * @synopsis
      * @param {TP.sig.UIFocusPreceding} aSignal The signal that caused this
      *     handler trip.
@@ -4475,7 +4475,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirstInGroup',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusFirstInGroup
+     * @method handleUIFocusFirstInGroup
      * @synopsis
      * @param {TP.sig.UIFocusFirstInGroup} aSignal The signal that caused this
      *     handler trip.
@@ -4492,7 +4492,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusLastInGroup',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusLastInGroup
+     * @method handleUIFocusLastInGroup
      * @synopsis
      * @param {TP.sig.UIFocusLastInGroup} aSignal The signal that caused this
      *     handler trip.
@@ -4509,7 +4509,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirstInPreviousGroup',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusFirstInPreviousGroup
+     * @method handleUIFocusFirstInPreviousGroup
      * @synopsis
      * @param {TP.sig.UIFocusFirstInPreviousGroup} aSignal The signal that
      *     caused this handler trip.
@@ -4526,7 +4526,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirstInNextGroup',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusFirstInNextGroup
+     * @method handleUIFocusFirstInNextGroup
      * @synopsis
      * @param {TP.sig.UIFocusFirstInNextGroup} aSignal The signal that
      *     caused this handler trip.
@@ -4545,7 +4545,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIActivate',
 function(aSignal) {
 
     /**
-     * @name handleUIActivate
+     * @method handleUIActivate
      * @param {TP.sig.UIActivate} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4563,8 +4563,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIAlert',
 function(aSignal) {
 
     /**
-     * @name handleUIAlert
-     * @synopsis Causes alert content to be displayed for the receiver. The
+     * @method handleUIAlert
+     * @summary Causes alert content to be displayed for the receiver. The
      *     alert content should be encoded into the signal payload.
      * @param {TP.sig.UIAlert} aSignal The signal that caused this handler to
      *     trip.
@@ -4585,8 +4585,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIBlur',
 function(aSignal) {
 
     /**
-     * @name handleUIBlur
-     * @synopsis Blurs the receiver's native control. For some controls this has
+     * @method handleUIBlur
+     * @summary Blurs the receiver's native control. For some controls this has
      *     the side-effect of deselecting any selections in the control.
      * @param {TP.sig.UIBlur} aSignal The signal that caused this handler to
      *     trip.
@@ -4627,8 +4627,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIBusy',
 function(aSignal) {
 
     /**
-     * @name handleUIBusy
-     * @synopsis Causes the receiver to be put into its 'busy state'. Content to
+     * @method handleUIBusy
+     * @summary Causes the receiver to be put into its 'busy state'. Content to
      *     be displayed as part of being busy should be encoded into the signal
      *     payload.
      * @param {TP.sig.UIBusy} aSignal The signal that caused this handler to
@@ -4648,8 +4648,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIClose',
 function(aSignal) {
 
     /**
-     * @name handleUIClose
-     * @synopsis Causes the receiver to be put into its 'closed state'.
+     * @method handleUIClose
+     * @summary Causes the receiver to be put into its 'closed state'.
      * @param {TP.sig.UIClose} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4667,8 +4667,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUICollapse',
 function(aSignal) {
 
     /**
-     * @name handleUICollapse
-     * @synopsis Collapses the receiver, if that's an appropriate action.
+     * @method handleUICollapse
+     * @summary Collapses the receiver, if that's an appropriate action.
      * @param {TP.sig.UICollapse} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4686,7 +4686,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDeactivate',
 function(aSignal) {
 
     /**
-     * @name handleUIDeactivate
+     * @method handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
      */
@@ -4704,7 +4704,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDelete',
 function(aSignal) {
 
     /**
-     * @name handleUIDelete
+     * @method handleUIDelete
      * @param {TP.sig.UIDelete} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4718,8 +4718,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDeselect',
 function(aSignal) {
 
     /**
-     * @name handleUIDeselect
-     * @synopsis Deselects the receiver's native data.
+     * @method handleUIDeselect
+     * @summary Deselects the receiver's native data.
      * @param {TP.sig.UIDeselect} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4750,7 +4750,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDidBlur',
 function(aSignal) {
 
     /**
-     * @name handleUIDidBlur
+     * @method handleUIDidBlur
      * @param {TP.sig.UIDidBlur} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4769,7 +4769,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDidFocus',
 function(aSignal) {
 
     /**
-     * @name handleUIDidFocus
+     * @method handleUIDidFocus
      * @param {TP.sig.UIDidFocus} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4788,7 +4788,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDidPopFocus',
 function(aSignal) {
 
     /**
-     * @name handleUIDidPopFocus
+     * @method handleUIDidPopFocus
      * @param {TP.sig.UIDidPopFocus} aSignal The signal that caused this
      *     handler to trip.
      */
@@ -4814,7 +4814,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDidPushFocus',
 function(aSignal) {
 
     /**
-     * @name handleUIDidPushFocus
+     * @method handleUIDidPushFocus
      * @param {TP.sig.UIDidPushFocus} aSignal The signal that caused this
      *     handler to trip.
      */
@@ -4840,8 +4840,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDisabled',
 function(aSignal) {
 
     /**
-     * @name handleUIDisabled
-     * @synopsis Causes the receiver to be put into its 'disabled state'.
+     * @method handleUIDisabled
+     * @summary Causes the receiver to be put into its 'disabled state'.
      * @param {TP.sig.UIDisabled} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4859,7 +4859,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIDuplicate',
 function(aSignal) {
 
     /**
-     * @name handleUIDuplicate
+     * @method handleUIDuplicate
      * @param {TP.sig.UIDuplicate} aSignal The signal that caused this handler
      *     to trip.
      */
@@ -4873,8 +4873,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIEnabled',
 function(aSignal) {
 
     /**
-     * @name handleUIEnabled
-     * @synopsis Causes the receiver to be put into its 'enabled state'.
+     * @method handleUIEnabled
+     * @summary Causes the receiver to be put into its 'enabled state'.
      * @param {TP.sig.UIEnabled} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4892,8 +4892,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIExpand',
 function(aSignal) {
 
     /**
-     * @name handleUIExpand
-     * @synopsis Expands the receiver, if that's an appropriate action.
+     * @method handleUIExpand
+     * @summary Expands the receiver, if that's an appropriate action.
      * @param {TP.sig.UIExpand} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4911,8 +4911,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocus',
 function(aSignal) {
 
     /**
-     * @name handleUIFocus
-     * @synopsis Focuses the receiver's native control.
+     * @method handleUIFocus
+     * @summary Focuses the receiver's native control.
      * @param {TP.sig.UIFocus} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -4942,8 +4942,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIFocusAndSelect',
 function(aSignal) {
 
     /**
-     * @name handleUIFocusAndSelect
-     * @synopsis Focuses the receiver, and selects its active content.
+     * @method handleUIFocusAndSelect
+     * @summary Focuses the receiver, and selects its active content.
      * @param {TP.sig.UIFocusAndSelect} aSignal The signal that caused this
      *     handler to trip.
      */
@@ -4967,8 +4967,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIHelp',
 function(aSignal) {
 
     /**
-     * @name handleUIHelp
-     * @synopsis Causes help content to be displayed for the receiver. The help
+     * @method handleUIHelp
+     * @summary Causes help content to be displayed for the receiver. The help
      *     content should be encoded into the signal payload.
      * @param {TP.sig.UIHelp} aSignal The signal that caused this handler to
      *     trip.
@@ -4989,8 +4989,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIHide',
 function(aSignal) {
 
     /**
-     * @name handleUIHide
-     * @synopsis Hides the receiver, if that's an appropriate action.
+     * @method handleUIHide
+     * @summary Hides the receiver, if that's an appropriate action.
      * @param {TP.sig.UIHide} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5008,8 +5008,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIHint',
 function(aSignal) {
 
     /**
-     * @name handleUIHint
-     * @synopsis Causes hint content to be displayed for the receiver. The hint
+     * @method handleUIHint
+     * @summary Causes hint content to be displayed for the receiver. The hint
      *     content should be encoded into the signal payload.
      * @param {TP.sig.UIHint} aSignal The signal that caused this handler to
      *     trip.
@@ -5030,8 +5030,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIIdle',
 function(aSignal) {
 
     /**
-     * @name handleUIIdle
-     * @synopsis Causes the receiver to be put into its 'idle state'.
+     * @method handleUIIdle
+     * @summary Causes the receiver to be put into its 'idle state'.
      * @param {TP.sig.UIIdle} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5049,8 +5049,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIInRange',
 function(aSignal) {
 
     /**
-     * @name handleUIInRange
-     * @synopsis Causes the receiver to be put into its 'in range state'.
+     * @method handleUIInRange
+     * @summary Causes the receiver to be put into its 'in range state'.
      * @param {TP.sig.UIInRange} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5068,7 +5068,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIInsert',
 function(aSignal) {
 
     /**
-     * @name handleUIInsert
+     * @method handleUIInsert
      * @param {TP.sig.UIInsert} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5082,8 +5082,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIInvalid',
 function(aSignal) {
 
     /**
-     * @name handleUIInvalid
-     * @synopsis Causes the receiver to be put into its 'invalid state'.
+     * @method handleUIInvalid
+     * @summary Causes the receiver to be put into its 'invalid state'.
      * @param {TP.sig.UIInvalid} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5101,8 +5101,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIOpen',
 function(aSignal) {
 
     /**
-     * @name handleUIOpen
-     * @synopsis Causes the receiver to be put into its 'open state'.
+     * @method handleUIOpen
+     * @summary Causes the receiver to be put into its 'open state'.
      * @param {TP.sig.UIOpen} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5120,8 +5120,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIOptional',
 function(aSignal) {
 
     /**
-     * @name handleUIOptional
-     * @synopsis Causes the receiver to be put into its 'optional state'.
+     * @method handleUIOptional
+     * @summary Causes the receiver to be put into its 'optional state'.
      * @param {TP.sig.UIOptional} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5139,8 +5139,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIOutOfRange',
 function(aSignal) {
 
     /**
-     * @name handleUIOutOfRange
-     * @synopsis Causes the receiver to be put into its 'out of range state'.
+     * @method handleUIOutOfRange
+     * @summary Causes the receiver to be put into its 'out of range state'.
      * @param {TP.sig.UIOutOfRange} aSignal The signal that caused this handler
      *     to trip.
      */
@@ -5158,8 +5158,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIReadonly',
 function(aSignal) {
 
     /**
-     * @name handleUIReadonly
-     * @synopsis Causes the receiver to be put into its 'read only state'.
+     * @method handleUIReadonly
+     * @summary Causes the receiver to be put into its 'read only state'.
      * @param {TP.sig.UIReadonly} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5177,8 +5177,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIReadwrite',
 function(aSignal) {
 
     /**
-     * @name handleUIReadwrite
-     * @synopsis Causes the receiver to be put into its 'read write state'.
+     * @method handleUIReadwrite
+     * @summary Causes the receiver to be put into its 'read write state'.
      * @param {TP.sig.UIReadwrite} aSignal The signal that caused this handler
      *     to trip.
      */
@@ -5196,8 +5196,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIRequired',
 function(aSignal) {
 
     /**
-     * @name handleUIRequired
-     * @synopsis Causes the receiver to be put into its 'required state'.
+     * @method handleUIRequired
+     * @summary Causes the receiver to be put into its 'required state'.
      * @param {TP.sig.UIRequired} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5215,7 +5215,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIScroll',
 function(aSignal) {
 
     /**
-     * @name handleUIScroll
+     * @method handleUIScroll
      * @param {TP.sig.UIScroll} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5229,8 +5229,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUISelect',
 function(aSignal) {
 
     /**
-     * @name handleUISelect
-     * @synopsis Deselects the receiver's native data.
+     * @method handleUISelect
+     * @summary Deselects the receiver's native data.
      * @param {TP.sig.UISelect} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5261,8 +5261,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIShow',
 function(aSignal) {
 
     /**
-     * @name handleUIShow
-     * @synopsis Shows the receiver, if that's an appropriate action.
+     * @method handleUIShow
+     * @summary Shows the receiver, if that's an appropriate action.
      * @param {TP.sig.UIShow} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5280,8 +5280,8 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIValid',
 function(aSignal) {
 
     /**
-     * @name handleUIValid
-     * @synopsis Causes the receiver to be put into its 'valid state'.
+     * @method handleUIValid
+     * @summary Causes the receiver to be put into its 'valid state'.
      * @param {TP.sig.UIValid} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -5299,7 +5299,7 @@ TP.core.UIElementNode.Inst.defineMethod('handleUIValueChanged',
 function(aSignal) {
 
     /**
-     * @name handleUIValueChanged
+     * @method handleUIValueChanged
      * @param {TP.sig.UIValueChanged} aSignal The signal that caused this
      *     handler to trip.
      */
@@ -5315,8 +5315,8 @@ TP.core.UIElementNode.Inst.defineMethod('configureSignalFromAttributes',
 function(aSignal) {
 
     /**
-     * @name configureSignalFromAttributes
-     * @synopsis Configures the supplied signal according to any 'ev:'
+     * @method configureSignalFromAttributes
+     * @summary Configures the supplied signal according to any 'ev:'
      *     attributes present on the receiver. These might include attributes to
      *     stop propagation of the signal, prevent the receiver from performing
      *     its default action for that kind of signal or configure the receiver
@@ -5344,8 +5344,8 @@ TP.core.UIElementNode.Inst.defineMethod('shouldCaptureSignal',
 function(aSignal) {
 
     /**
-     * @name shouldCaptureSignal
-     * @synopsis Returns whether or not the signal should be processed as a
+     * @method shouldCaptureSignal
+     * @summary Returns whether or not the signal should be processed as a
      *     capturing signal based on whether the receiver has an 'ev:event'
      *     attribute that contains the supplied signal's name and an 'ev:phase'
      *     of 'capture'.
@@ -5380,8 +5380,8 @@ TP.core.UIElementNode.Inst.defineMethod('shouldPerformUIHandler',
 function(aSignal) {
 
     /**
-     * @name shouldPerformUIHandler
-     * @synopsis Returns whether or not the receiver should perform its UI
+     * @method shouldPerformUIHandler
+     * @summary Returns whether or not the receiver should perform its UI
      *     handler. This method configures the signal from any 'ev:' attributes
      *     on the receiver and then returns true if the signal is *not*
      *     configured to prevent its default action.
@@ -5402,8 +5402,8 @@ TP.core.UIElementNode.Inst.defineMethod('shouldPreventSignal',
 function(aSignal) {
 
     /**
-     * @name shouldPreventSignal
-     * @synopsis Returns whether or not the signal should be prevented from
+     * @method shouldPreventSignal
+     * @summary Returns whether or not the signal should be prevented from
      *     performing its default action based on whether the receiver has an
      *     'ev:event' attribute that contains the supplied signal's name and an
      *     'ev:defaultAction' of 'cancel'.
@@ -5437,8 +5437,8 @@ TP.core.UIElementNode.Inst.defineMethod('shouldStopSignal',
 function(aSignal) {
 
     /**
-     * @name shouldStopSignal
-     * @synopsis Returns whether or not the signal should be stopped from
+     * @method shouldStopSignal
+     * @summary Returns whether or not the signal should be stopped from
      *     propagating based on whether the receiver has an 'ev:event' attribute
      *     that contains the supplied signal's name and an 'ev:propagate' of
      *     'stop'.
@@ -5473,8 +5473,8 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable,
 isBubbling) {
 
     /**
-     * @name signal
-     * @synopsis Signals activity to registered observers. Any additional
+     * @method signal
+     * @summary Signals activity to registered observers. Any additional
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
@@ -5509,8 +5509,8 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable,
 isBubbling) {
 
     /**
-     * @name signalAfterUnwind
-     * @synopsis Signals activity to registered observers, but does so after the
+     * @method signalAfterUnwind
+     * @summary Signals activity to registered observers, but does so after the
      *     stack is unwound. This is useful when the signaler doesn't care about
      *     the possibility that the signal could be cancelled and wants the UI
      *     to update before the signal is fired.
@@ -5548,7 +5548,7 @@ isBubbling) {
 
 /**
  * @type {TP.core.NonNativeUIElementNode}
- * @synopsis A type that represents 'non-native' (to a User Agent) element nodes
+ * @summary A type that represents 'non-native' (to a User Agent) element nodes
  *     that need various things like stylesheets to be attached to a hosting DOM
  *     so that they can be rendered properly. This type is normally 'traited in'
  *     to other types.
@@ -5564,8 +5564,8 @@ TP.core.NonNativeUIElementNode.Type.defineMethod('tagAttachStyle',
 function(aRequest) {
 
     /**
-     * @name tagAttachStyle
-     * @synopsis Sets up runtime style for the element in aRequest.
+     * @method tagAttachStyle
+     * @summary Sets up runtime style for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */

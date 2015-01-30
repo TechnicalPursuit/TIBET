@@ -32,9 +32,9 @@ TP.definePrimitive('elementGetAttribute',
 function(anElement, attributeName, checkAttrNSURI) {
 
     /**
-     * @name elementGetAttribute
-     * @synopsis Returns the value of the attribute provided.
-     * @description See discussion in main DOM primitives file.
+     * @method elementGetAttribute
+     * @summary Returns the value of the attribute provided.
+     * @summary See discussion in main DOM primitives file.
      * @param {Element} anElement The element to retrieve the attribute value
      *     from.
      * @param {String} attributeName The attribute to find.
@@ -115,9 +115,9 @@ TP.definePrimitive('elementSetAttribute',
 function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
     /**
-     * @name elementSetAttribute
-     * @synopsis Sets the value of the attribute provided.
-     * @description See discussion in main DOM primitives file.
+     * @method elementSetAttribute
+     * @summary Sets the value of the attribute provided.
+     * @summary See discussion in main DOM primitives file.
      * @param {Element} anElement The element to set the attribute on.
      * @param {String} attributeName The attribute to set.
      * @param {String} attributeValue The attribute value.
@@ -201,8 +201,8 @@ TP.definePrimitive('documentAddCSSElement',
 function(targetDoc, cssHref, inlineRuleText) {
 
     /**
-     * @name documentAddCSSElement
-     * @synopsis Adds the appropriate CSS element to the document based on
+     * @method documentAddCSSElement
+     * @summary Adds the appropriate CSS element to the document based on
      *     whether the inlineRuleText parameter is 'true' or not. If it is, the
      *     style text will be retrieved from the cssHref and will be 'inlined'
      *     with an HTML 'style' element in the head of the document.
@@ -211,7 +211,7 @@ function(targetDoc, cssHref, inlineRuleText) {
      * @param {String} cssHref The href to use on the newly added CSS element.
      * @param {Boolean} inlineRuleText Whether or not the rule text should be
      *     'inlined' into the document. Defaults to false.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link or style element that was added.
      */
 
@@ -250,15 +250,15 @@ TP.definePrimitive('documentAddLinkElement',
 function(targetDoc, linkHref, beforeNode) {
 
     /**
-     * @name documentAddLinkElement
-     * @synopsis Adds a 'link' element to the target document with the provided
+     * @method documentAddLinkElement
+     * @summary Adds a 'link' element to the target document with the provided
      *     href as the link's href.
      * @param {Document} targetDoc The document to which the new link element
      *     should be added.
      * @param {String} linkHref The href to use on the newly added 'link'
      *     element.
      * @param {Node} beforeNode Optional 'insertion point'.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link element that was added.
      */
 
@@ -303,15 +303,15 @@ TP.definePrimitive('documentAddStyleElement',
 function(targetDoc, styleText, beforeNode) {
 
     /**
-     * @name documentAddStyleElement
-     * @synopsis Adds a 'style' element to the target document with the
+     * @method documentAddStyleElement
+     * @summary Adds a 'style' element to the target document with the
      *     optionally provided styleText as the rule text.
      * @param {Document} targetDoc The document to which the new style element
      *     should be added.
      * @param {String} styleText The optional rule text to use in the newly
      *     created style element.
      * @param {Node} beforeNode Optional 'insertion point'.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new style element that was added.
      */
 
@@ -358,8 +358,8 @@ TP.definePrimitive('documentCopyCSSElements',
 function(cssElements, targetDoc) {
 
     /**
-     * @name documentCopyCSSElements
-     * @synopsis Copies style information from the 'link' and 'style' elements
+     * @method documentCopyCSSElements
+     * @summary Copies style information from the 'link' and 'style' elements
      *     supplied in the element array and creates new 'link' and 'style'
      *     elements with that information in the target document.
      * @param {Array} cssElements The Array of 'style' and 'link' elements that
@@ -367,7 +367,7 @@ function(cssElements, targetDoc) {
      *     document.
      * @param {Document} targetDoc The document whose style nodes should be
      *     updated.
-     * @raises TP.sig.InvalidDocument,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidDocument,TP.sig.InvalidArray
      */
 
     var i,
@@ -404,8 +404,8 @@ TP.definePrimitive('documentCopyCSSLinkElement',
 function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
 
     /**
-     * @name documentCopyCSSLinkElement
-     * @synopsis Copies style information from the supplied 'link' element and
+     * @method documentCopyCSSLinkElement
+     * @summary Copies style information from the supplied 'link' element and
      *     creates a new 'link' element with that information in the target
      *     document. NB: The caller *must* supply a 'link' element here, with a
      *     'rel' attribute of 'stylesheet', or an TP.sig.InvalidElement
@@ -418,7 +418,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
      *     'inlined' into the document. Defaults to false.
      * @param {Boolean} onlyIfAbsent Whether or not the style element/link
      *     should be added only if it doesn't already exist. Defaults to false.
-     * @raises TP.sig.InvalidDocument,TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument,TP.sig.InvalidElement
      */
 
     var shouldOnlyIfAbsent,
@@ -526,8 +526,8 @@ TP.definePrimitive('documentCopyCSSStyleElement',
 function(anElement, targetDoc) {
 
     /**
-     * @name documentCopyCSSStyleElement
-     * @synopsis Copies style information from the supplied 'style' element and
+     * @method documentCopyCSSStyleElement
+     * @summary Copies style information from the supplied 'style' element and
      *     creates a new 'style' element with that information in the target
      *     document. NB: The caller *must* supply a 'style' element here, or an
      *     'TP.sig.InvalidElement' exception will be thrown.
@@ -535,7 +535,7 @@ function(anElement, targetDoc) {
      *     into the target document.
      * @param {Document} targetDoc The document to which the CSS text should be
      *     added.
-     * @raises TP.sig.InvalidDocument,TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument,TP.sig.InvalidElement
      * @returns {HTMLElement|null} The newly added 'style' element if the style
      *     was *not* processed by the CSS processor or null if it was.
      */
@@ -600,14 +600,14 @@ TP.definePrimitive('documentGetNativeCSSElements',
 function(aDocument) {
 
     /**
-     * @name documentGetNativeCSSElements
-     * @synopsis Returns the supplied document's style sheet elements, if any.
+     * @method documentGetNativeCSSElements
+     * @summary Returns the supplied document's style sheet elements, if any.
      *     Note that this returns both 'style' elements and 'link' elements that
      *     have a 'rel' attribute with a value of 'stylesheet'. If the document
      *     has no head element or style elements, this method returns an empty
      *     Array.
      * @param {Document} aDocument The document to use.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Array} An Array of either the 'link' or 'style' elements in the
      *     supplied document.
      */
@@ -658,14 +658,14 @@ TP.definePrimitive('documentGetNativeStyleRules',
 function(aDocument) {
 
     /**
-     * @name documentGetNativeStyleRules
-     * @synopsis Returns all of the CSS style rules for the supplied document.
+     * @method documentGetNativeStyleRules
+     * @summary Returns all of the CSS style rules for the supplied document.
      *     Because this routine uses the TP.styleSheetGetStyleRules() function,
      *     it will also return any rules found in embedded @import statements in
      *     CSS.
      * @param {HTMLDocument} aDocument The document to retrieve all style rules
      *     for.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Array} The list of CSS rules for the supplied document.
      */
 
@@ -699,9 +699,9 @@ TP.definePrimitive('documentGetStyleRules',
 function(aDocument) {
 
     /**
-     * @name documentGetStyleRules
-     * @synopsis Returns all of the CSS style rules for the supplied document.
-     * @description If the TP.sys.shouldProcessCSS() flag is 'true' (the
+     * @method documentGetStyleRules
+     * @summary Returns all of the CSS style rules for the supplied document.
+     * @summary If the TP.sys.shouldProcessCSS() flag is 'true' (the
      *     default) this call will return an Array of TP.lang.Hashes that
      *     represent all of the rules in this document. If it is false, this
      *     method will return the result of calling
@@ -709,7 +709,7 @@ function(aDocument) {
      *     native 'rule' objects for this browser.
      * @param {HTMLDocument} aDocument The document to retrieve all style rules
      *     for.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Array} An Array of either TP.lang.Hashes or native browser
      *     'rule' objects representing the CSS rules for the supplied document.
      */
@@ -723,19 +723,19 @@ TP.definePrimitive('$documentRefreshAppliedRulesCaches',
 function(aDocument) {
 
     /**
-     * @name $documentRefreshAppliedRulesCaches
-     * @synopsis Refreshes all style rules for every element in the document.
+     * @method $documentRefreshAppliedRulesCaches
+     * @summary Refreshes all style rules for every element in the document.
      *     The end result of running this function is that every element in the
      *     document will have a '.appliedRules' property that contains an Array
      *     of CSS style rules that apply to it.
-     * @description As this function iterates over every CSS rule in the
+     * @summary As this function iterates over every CSS rule in the
      *     document, querying the document for matching elements and then adding
      *     to that element's '.appliedRules' property with that rule. Therefore,
      *     this can be a time consuming process. A 50 rule document with 50
      *     elements takes about 500ms on a 2.2Ghz Pentium 4 class machine.
      * @param {HTMLDocument} aDocument The document to refresh all of the
      *     elements of.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var docRules,
@@ -787,13 +787,13 @@ TP.definePrimitive('documentStyleHrefReload',
 function(aDocument, anHref) {
 
     /**
-     * @name documentStyleHrefReload
-     * @synopsis Reloads any style 'link' element pointing to the supplied
+     * @method documentStyleHrefReload
+     * @summary Reloads any style 'link' element pointing to the supplied
      *     href, if it can be found in the supplied Document.
      * @param {Document} aDocument The document to look for 'link' elements
      *     in.
      * @param {String} anHref The href to try to find to reload.
-     * @raises TP.sig.InvalidDocument,TP.sig.InvalidString
+     * @exception TP.sig.InvalidDocument,TP.sig.InvalidString
      */
 
     var currentTopLevelLinkElems,
@@ -914,10 +914,10 @@ TP.definePrimitive('elementConvertUnitLengthToPixels',
 function(anElement, aValue, targetProperty, wantsTransformed) {
 
     /**
-     * @name elementConvertUnitLengthToPixels
-     * @synopsis A routine that computes a number of pixels from the supplied
+     * @method elementConvertUnitLengthToPixels
+     * @summary A routine that computes a number of pixels from the supplied
      *     CSS unit value.
-     * @description Note that the supplied value here must be a 'CSS unit value'
+     * @summary Note that the supplied value here must be a 'CSS unit value'
      *     (i.e. '3em' or '27%'). It cannot be a CSS value such as 'normal' or
      *     'inherit'.
      * @param {HTMLElement} anElement The element to use to compute the pixel
@@ -929,7 +929,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
      *     TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element.
@@ -1021,12 +1021,12 @@ TP.definePrimitive('elementGetComputedStyleObj',
 function(anElement) {
 
     /**
-     * @name elementGetComputedStyleObj
-     * @synopsis Returns the computed (resolved) style of the element. The
+     * @method elementGetComputedStyleObj
+     * @summary Returns the computed (resolved) style of the element. The
      *     result of intersecting the various inputs on style which affect the
      *     element in question.
      * @param {Element} anElement The element to inspect.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidDocument
      * @returns {Object} An object whose getPropertyValue function can be used
      *     to get individual style data values.
      */
@@ -1050,8 +1050,8 @@ TP.definePrimitive('elementGetPixelValue',
 function(anElement, aValue, targetProperty, wantsTransformed) {
 
     /**
-     * @name elementGetPixelValue
-     * @synopsis A handy routine that returns pixel values regardless of what
+     * @method elementGetPixelValue
+     * @summary A handy routine that returns pixel values regardless of what
      *     the CSS units were. This means that web developers can mix and match
      *     measurement units in their style sheets. it is not uncommon to
      *     express something like padding in "em" units while border thickness
@@ -1065,7 +1065,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element. Note that this routine can also
      *     return NaN, if it cannot compute a numeric value.
@@ -1257,13 +1257,13 @@ TP.definePrimitive('elementGetPseudoInlineStyleObj',
 function(anElement) {
 
     /**
-     * @name elementGetPseudoInlineStyleObj
-     * @synopsis Returns a 'pseudo inline' style object. This is really the
+     * @method elementGetPseudoInlineStyleObj
+     * @summary Returns a 'pseudo inline' style object. This is really the
      *     style object from a created CSS rule, since non-(X)HTML elements
      *     don't support the inline '.style' property / the 'style' attribute.
      * @param {HTMLElement} anElement The element to use to compute the pixel
      *     value from.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Object} The inline CSS style object of the supplied element.
      */
 
@@ -1377,8 +1377,8 @@ TP.definePrimitive('elementTransformCSSPixelValue',
 function(anElement, pixelValue, aPropertyName) {
 
     /**
-     * @name elementTransformCSSPixelValue
-     * @synopsis Transforms a pixel value from the given value to a value that
+     * @method elementTransformCSSPixelValue
+     * @summary Transforms a pixel value from the given value to a value that
      *     takes into account any CSS transformations that have been applied to
      *     the element.
      * @param {HTMLElement} anElement The element to transform the pixel value
@@ -1388,7 +1388,7 @@ function(anElement, pixelValue, aPropertyName) {
      *     value came from. This name needs to have one of the following words
      *     in it in order for the value to convert properly: "top", "right",
      *     "bottom", "left".
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidNumber,
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber,
      *         TP.sig.InvalidParameter
      * @returns {Number} The transformed pixel value.
      */
@@ -1426,15 +1426,15 @@ TP.definePrimitive('styleElementFlattenImports',
 function(anElement) {
 
     /**
-     * @name styleElementFlattenImports
-     * @synopsis 'Flatten's any @import statements in the supplied 'link'
+     * @method styleElementFlattenImports
+     * @summary 'Flatten's any @import statements in the supplied 'link'
      *     element's out into 'link' elements in the supplied element's
      *     document. Note that this method will *not* overwrite any existing
      *     'link' elements that have the same 'href' as the @import'ed
      *     stylesheet.
      * @param {Element} anElement The 'link' element to flatten the CSS @imports
      *     under.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var doc,
@@ -1526,13 +1526,13 @@ TP.definePrimitive('styleElementGetContent',
 function(anElement) {
 
     /**
-     * @name styleElementGetContent
-     * @synopsis Returns the all of the CSS text under anElement, which should
+     * @method styleElementGetContent
+     * @summary Returns the all of the CSS text under anElement, which should
      *     be a 'style' element. NB: The caller *must* supply a 'style' element
      *     here, or an 'TP.sig.InvalidElement' exception will be thrown.
      * @param {Element} anElement The 'style' element to retrieve the CSS text
      *     for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} The CSS text under anElement.
      */
 
@@ -1554,14 +1554,14 @@ TP.definePrimitive('styleElementSetContent',
 function(anElement, styleText) {
 
     /**
-     * @name styleElementSetContent
-     * @synopsis Sets the all of the CSS text under anElement, which should be a
+     * @method styleElementSetContent
+     * @summary Sets the all of the CSS text under anElement, which should be a
      *     'style' element. NB: The caller *must* supply a 'style' element here,
      *     or an 'TP.sig.InvalidElement' exception will be thrown.
      * @param {Element} anElement The 'style' element to set the CSS text for.
      * @param {String} styleText The CSS text to use as the rule text for the
      *     style element.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var styleTextNode;
@@ -1591,12 +1591,12 @@ TP.definePrimitive('styleRuleGetStyleSheet',
 function(aStyleRule) {
 
     /**
-     * @name styleRuleGetStyleSheet
-     * @synopsis Returns the native style sheet object associated with the
+     * @method styleRuleGetStyleSheet
+     * @summary Returns the native style sheet object associated with the
      *     supplied style rule.
      * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
      *     stylesheet of.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {CSSStyleSheet} The stylesheet object containing the rule.
      */
 
@@ -1616,8 +1616,8 @@ TP.definePrimitive('styleSheetGetImportSheets',
 function(aStylesheet, expandImports) {
 
     /**
-     * @name styleSheetGetImportSheets
-     * @synopsis Retrieves the rules from the supplied stylesheet. Note that
+     * @method styleSheetGetImportSheets
+     * @summary Retrieves the rules from the supplied stylesheet. Note that
      *     this function also recursively descends through CSS @import
      *     statements to retrieve any imported style rules.
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
@@ -1625,7 +1625,7 @@ function(aStylesheet, expandImports) {
      * @param {Boolean} expandImports Whether or not @import statements should
      *     be recursively 'expanded' and the rules gathered from them from. This
      *     defaults to true.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Array} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
      *     @import statement.
@@ -1678,8 +1678,8 @@ TP.definePrimitive('styleSheetGetStyleRules',
 function(aStylesheet, expandImports) {
 
     /**
-     * @name styleSheetGetStyleRules
-     * @synopsis Retrieves the rules from the supplied stylesheet. Note that
+     * @method styleSheetGetStyleRules
+     * @summary Retrieves the rules from the supplied stylesheet. Note that
      *     this function also recursively descends through CSS @import
      *     statements to retrieve any imported style rules.
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
@@ -1687,7 +1687,7 @@ function(aStylesheet, expandImports) {
      * @param {Boolean} expandImports Whether or not @import statements should
      *     be recursively 'expanded' and the rules gathered from them from. This
      *     defaults to true.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Array} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
      *     @import statement.
@@ -1735,15 +1735,15 @@ TP.definePrimitive('styleSheetGetStyleRulesMatching',
 function(aStylesheet, selectorText) {
 
     /**
-     * @name styleSheetGetStyleRulesMatching
-     * @synopsis Retrieves the rules from the supplied stylesheet whose selector
+     * @method styleSheetGetStyleRulesMatching
+     * @summary Retrieves the rules from the supplied stylesheet whose selector
      *     matches the supplied selector text. Note that this function also
      *     recursively descends through CSS @import statements to retrieve any
      *     imported style rules.
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
      *     from.
      * @param {String} selectorText The text of the selector to match.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidString
      * @returns {Array} A list of CSS rules in the supplied style sheet,
      *     including those that may have been imported using an. @import
      *     statement, whose selector match the supplied selector text.
@@ -1793,8 +1793,8 @@ TP.definePrimitive('styleSheetInsertRule',
 function(aStylesheet, selectorText, ruleText, ruleIndex) {
 
     /**
-     * @name styleSheetInsertRule
-     * @synopsis Inserts a rule into the stylesheet specified at the specified
+     * @method styleSheetInsertRule
+     * @summary Inserts a rule into the stylesheet specified at the specified
      *     rule index. Note that the rule text should *not* have the leading and
      *     trailing brackets.
      * @param {CSSStyleSheet} aStylesheet The style sheet to add the rule to.
@@ -1803,7 +1803,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
      * @param {String} ruleText The style text of the rule.
      * @param {Number} ruleIndex The index to insert the style rule at. If not
      *     supplied, the rule will be inserted at the end.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidString
      * @returns {Number} The index of the newly created rule within the
      *     stylesheet element's rule set. This is important in case the rule
      *     needs to be deleted later. If the index was supplied to this method,
@@ -1839,14 +1839,14 @@ TP.definePrimitive('styleSheetRemoveRule',
 function(aStylesheet, ruleIndex) {
 
     /**
-     * @name styleSheetRemoveRule
-     * @synopsis Removes the stylesheet rule at the rule index of the stylesheet
+     * @method styleSheetRemoveRule
+     * @summary Removes the stylesheet rule at the rule index of the stylesheet
      *     element specified.
      * @param {CSSStyleSheet} aStylesheet The style sheet to remove the rule
      *     from.
      * @param {Number} ruleIndex The index of the rule within the stylesheet to
      *     remove.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      */
 
     if (TP.notValid(aStylesheet)) {
@@ -1867,14 +1867,14 @@ TP.definePrimitive('cssElementGetStyleSheet',
 function(anElement) {
 
     /**
-     * @name cssElementGetStyleSheet
-     * @synopsis Returns the CSS style sheet object belonging to anElement,
+     * @method cssElementGetStyleSheet
+     * @summary Returns the CSS style sheet object belonging to anElement,
      *     which must be either a 'link' or a 'style' element. NB: The caller
      *     *must* supply a 'link' or 'style' element here, or an
      *     'TP.sig.InvalidElement' exception will be thrown.
      * @param {Element} anElement The element to retrieve the CSS style sheet
      *     object for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {CSSStyleSheet} The style sheet object.
      */
 

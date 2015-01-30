@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.del}
- * @synopsis 'del' tag. Denotes deleted content.
+ * @summary 'del' tag. Denotes deleted content.
  */
 
 //  ------------------------------------------------------------------------
@@ -29,7 +29,7 @@ TP.html.del.Type.set('uriAttrs', TP.ac('cite'));
 
 /**
  * @type {TP.html.ins}
- * @synopsis 'ins' tag. Insertion tag.
+ * @summary 'ins' tag. Insertion tag.
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.SASLChallenge}
- * @synopsis A wrapper for the SASL challenge element
+ * @summary A wrapper for the SASL challenge element
  */
 
 //  ------------------------------------------------------------------------

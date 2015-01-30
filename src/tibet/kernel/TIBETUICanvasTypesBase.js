@@ -20,8 +20,8 @@ TP.core.Window.Type.defineMethod('installDocumentExtensions',
 function(aWindow) {
 
     /**
-     * @name installDocumentExtensions
-     * @synopsis Instruments the document belonging to aWindow with TIBET
+     * @method installDocumentExtensions
+     * @summary Instruments the document belonging to aWindow with TIBET
      *     specific functions.
      * @param {Window} aWindow The window of the document to install the
      *     functions on.
@@ -37,8 +37,8 @@ TP.core.Window.Type.defineMethod('installLoadUnloadHooks',
 function(aWindow) {
 
     /**
-     * @name installLoadUnloadHooks
-     * @synopsis This method installs the TIBET load/unload hooks onto the
+     * @method installLoadUnloadHooks
+     * @summary This method installs the TIBET load/unload hooks onto the
      *     supplied native window so that load/unload events on that window can
      *     be caught by TIBET and rebroadcast into the system as signals.
      * @param {Window} aWindow The Window to install the load/unload hooks onto.
@@ -156,8 +156,8 @@ TP.core.Window.Type.defineMethod('installWindowExtensions',
 function(aWindow) {
 
     /**
-     * @name installWindowExtensions
-     * @synopsis Installs a set of common functions onto aWindow to enhance that
+     * @method installWindowExtensions
+     * @summary Installs a set of common functions onto aWindow to enhance that
      *     window's capability within the TIBET framework.
      * @param {Window} aWindow The window to install the functions on.
      * @returns {TP.core.Window} The receiver.

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.InputStream}
- * @synopsis Stream subtype specific to input acquired from the server. The
+ * @summary Stream subtype specific to input acquired from the server. The
  *     input stream for a connection is an important component of the TIBET XMPP
  *     implementation. New packets arriving from the server are written into the
  *     input stream by the polling machinery, causing notification via an
@@ -37,8 +37,8 @@ TP.xmpp.InputStream.Inst.defineMethod('atStart',
 function() {
 
     /**
-     * @name atStart
-     * @synopsis Returns true if there are no packets in the stream.
+     * @method atStart
+     * @summary Returns true if there are no packets in the stream.
      * @returns {Boolean}
      */
 
@@ -51,8 +51,8 @@ TP.xmpp.InputStream.Inst.defineMethod('atEnd',
 function() {
 
     /**
-     * @name atEnd
-     * @synopsis Returns true if there are no unread packets in the stream.
+     * @method atEnd
+     * @summary Returns true if there are no unread packets in the stream.
      * @returns {Boolean}
      */
 
@@ -70,8 +70,8 @@ TP.xmpp.InputStream.Inst.defineMethod('close',
 function() {
 
     /**
-     * @name close
-     * @synopsis Closes the input stream so no additional reads can be done.
+     * @method close
+     * @summary Closes the input stream so no additional reads can be done.
      * @returns {Boolean} True if the stream closes, false otherwise.
      */
 
@@ -87,8 +87,8 @@ TP.xmpp.InputStream.Inst.defineMethod('empty',
 function() {
 
     /**
-     * @name empty
-     * @synopsis Removes all content nodes (child nodes) from the receiver's
+     * @method empty
+     * @summary Removes all content nodes (child nodes) from the receiver's
      *     native node, effectively emptying the node.
      * @returns {TP.xmpp.InputStream} The receiver.
      */
@@ -105,8 +105,8 @@ TP.xmpp.InputStream.Inst.defineMethod('getIndex',
 function() {
 
     /**
-     * @name getIndex
-     * @synopsis Returns the current index location of the stream
+     * @method getIndex
+     * @summary Returns the current index location of the stream
      * @returns {Boolean}
      */
 
@@ -119,14 +119,14 @@ TP.xmpp.InputStream.Inst.defineMethod('read',
 function(anIndex) {
 
     /**
-     * @name read
-     * @synopsis Reads the next available stanza from the stream and returns it
+     * @method read
+     * @summary Reads the next available stanza from the stream and returns it
      *     in an appropriate wrapper. Normally you call this without any
      *     parameters, but you can use an index (such as -1) to read a
      *     particular packet from the stream.
      * @param {Number} anIndex A numerical index specifying a particular packet
      *     to read.
-     * @raises TP.sig.XMPPConnectionNotOpen, TP.sig.XMPPReadException
+     * @exception TP.sig.XMPPConnectionNotOpen, TP.sig.XMPPReadException
      * @returns {TP.xmpp.Node} A new packet in the proper wrapper.
      */
 
@@ -183,8 +183,8 @@ TP.xmpp.InputStream.Inst.defineMethod('rewind',
 function() {
 
     /**
-     * @name rewind
-     * @synopsis Repositions the stream index to the first location.
+     * @method rewind
+     * @summary Repositions the stream index to the first location.
      * @returns {TP.xmpp.InputStream} The receiver.
      */
 
@@ -199,8 +199,8 @@ TP.xmpp.InputStream.Inst.defineMethod('seek',
 function(anIndex) {
 
     /**
-     * @name seek
-     * @synopsis Positions the stream at the index provided. If no index is
+     * @method seek
+     * @summary Positions the stream at the index provided. If no index is
      *     provided the stream is positioned at the end. If the index is
      *     negative the stream is positioned that many positions from the end
      *     (standard JS behavior for negative indices). If the index is past the
@@ -220,15 +220,15 @@ TP.xmpp.InputStream.Inst.defineMethod('write',
 function(content, response) {
 
     /**
-     * @name write
-     * @synopsis Takes raw input, usually as a result of a polling process on
+     * @method write
+     * @summary Takes raw input, usually as a result of a polling process on
      *     the connection, and makes it available for reading in appropriate
      *     chunks via the read() call.
      * @param {String|TP.xmpp.Stanza} content The content to make available.
      * @param {The} response response object.
-     * @raises TP.sig.DOMParseException, TP.sig.InvalidParameter
+     * @exception TP.sig.DOMParseException, TP.sig.InvalidParameter
      * @returns {TP.xmpp.InputStream} The receiver.
-     * @signals TP.sig.XMPPDataAvailable
+     * @fires TP.sig.XMPPDataAvailable
      */
 
     var i,

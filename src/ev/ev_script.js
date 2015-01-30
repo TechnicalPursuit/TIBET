@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.ev.script}
- * @synopsis Provides a mechanism for supporting script blocks that conform to
+ * @summary Provides a mechanism for supporting script blocks that conform to
  *     those found in the XML Events 2 examples (and hence some XForms examples)
  *     in which script blocks are targeted as handlers. Note however that in
  *     TIBET the default type for an TP.ev.script block is TIBET Shell, not
@@ -30,9 +30,9 @@ TP.ev.script.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @name tshExecute
-     * @synopsis Runs the receiver, effectively invoking its action.
-     * @description For this type, this method invokes the script content of the
+     * @method tshExecute
+     * @summary Runs the receiver, effectively invoking its action.
+     * @summary For this type, this method invokes the script content of the
      *     receiver. The content should have been encapsulated in a CDATA block
      *     to avoid potential problems with entity encoding.
      * @param {TP.sig.Request} aRequest The TP.sig.TSHRunRequest or other shell

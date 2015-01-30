@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.WebDAVService}
- * @synopsis A subtype of TP.core.HTTPService that communicates with
+ * @summary A subtype of TP.core.HTTPService that communicates with
  *     WebDAV-capable servers.
  * @example If the TP.core.WebDAVRequest/TP.core.WebDAVResponse processing model
  *     is used, it is unnecessary to manually set up an TP.core.WebDAVService.
@@ -92,13 +92,13 @@ TP.core.WebDAVService.Inst.defineMethod('performHTTPCall',
 function(aRequest) {
 
     /**
-     * @name performHTTPCall
-     * @synopsis Performs the HTTP call. This is the method that actually does
+     * @method performHTTPCall
+     * @summary Performs the HTTP call. This is the method that actually does
      *     the work and can be overridden in subtypes of this type that have
      *     special types of HTTP calling semantics.
      * @param {TP.core.WebDAVRequest} aRequest The request whose parameters
      *     define the HTTP request.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {TP.core.WebDAVRequest} The supplied request.
      */
 

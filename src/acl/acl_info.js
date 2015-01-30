@@ -10,7 +10,7 @@
 
 /**
  * @type {acl:info}
- * @synopsis A wrapper element for access control list (acl) information.
+ * @summary A wrapper element for access control list (acl) information.
  */
 
 //  ------------------------------------------------------------------------

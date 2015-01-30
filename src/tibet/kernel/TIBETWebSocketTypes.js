@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.sig.WebSocketRequest}
- * @synopsis Top-level request type for WebSocket-based services.
+ * @summary Top-level request type for WebSocket-based services.
  */
 
 //  ------------------------------------------------------------------------
@@ -36,8 +36,8 @@ TP.sig.WebSocketRequest.Inst.defineMethod('failJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
-     * @name failJob
-     * @synopsis Fails the WebSocket request, aborting any underlying native
+     * @method failJob
+     * @summary Fails the WebSocket request, aborting any underlying native
      *     WebSocket object as well.
      * @param {String} aFaultString A text description of the reason for the
      *     failure.
@@ -92,8 +92,8 @@ TP.sig.WebSocketRequest.Inst.defineMethod('cancelJob',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancelJob
-     * @synopsis Cancels an WebSocket request, aborting any underlying native
+     * @method cancelJob
+     * @summary Cancels an WebSocket request, aborting any underlying native
      *     WebSocket object as well.
      * @param {String} aFaultString A text description of the reason for the
      *     cancellation.
@@ -145,8 +145,8 @@ TP.sig.WebSocketRequest.Inst.defineMethod('completeJob',
 function(aResult) {
 
     /**
-     * @name completeJob
-     * @synopsis Completes the request, peforming any wrapup that might be
+     * @method completeJob
+     * @summary Completes the request, peforming any wrapup that might be
      *     necessary to ensure proper capture of the result data.
      *     TP.sig.URIRequests will attempt to update their target URI instance
      *     with any result data in response to this call.
@@ -187,8 +187,8 @@ TP.sig.WebSocketRequest.Inst.defineMethod('handleIOFailed',
 function(aSignal) {
 
     /**
-     * @name handleIOFailed
-     * @synopsis Handles notification that the underlying IO operation failed
+     * @method handleIOFailed
+     * @summary Handles notification that the underlying IO operation failed
      *     for some reason. The reason for the failure should be recorded in the
      *     response's faultCode/faultText content.
      * @param {TP.sig.IOFailed} aSignal A response object containing the native
@@ -236,8 +236,8 @@ TP.sig.WebSocketRequest.Inst.defineMethod('handleIOSucceeded',
 function(aSignal) {
 
     /**
-     * @name handleIOSucceeded
-     * @synopsis A handler which is invoked when the request's low-level IO has
+     * @method handleIOSucceeded
+     * @summary A handler which is invoked when the request's low-level IO has
      *     completed successfully.
      * @param {TP.sig.IOSucceeded} aSignal The signal, whose payload is includes
      *     the low-level request object itself as wsObj.
@@ -274,7 +274,7 @@ function(aSignal) {
 
 /**
  * @type {TP.sig.WebSocketResponse}
- * @synopsis Provides a general purpose WebSocket response wrapper.
+ * @summary Provides a general purpose WebSocket response wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -298,8 +298,8 @@ TP.sig.WebSocketResponse.Inst.defineMethod('getNativeObject',
 function() {
 
     /**
-     * @name getNativeObject
-     * @synopsis Returns the native WebSocket object which serves as the
+     * @method getNativeObject
+     * @summary Returns the native WebSocket object which serves as the
      *     container for the response data managed by this type. This method is
      *     consistent with the requirements of TP.unwrap() so that
      *     TP.unwrap()ing a TP.sig.WebSocketResponse will return you the native
@@ -317,8 +317,8 @@ TP.sig.WebSocketResponse.Inst.defineMethod('getResponseStatusCode',
 function() {
 
     /**
-     * @name getResponseStatusCode
-     * @synopsis Returns the status code of the response.
+     * @method getResponseStatusCode
+     * @summary Returns the status code of the response.
      * @returns {String}
      */
 
@@ -331,8 +331,8 @@ TP.sig.WebSocketResponse.Inst.defineMethod('getResponseStatusText',
 function() {
 
     /**
-     * @name getResponseStatusText
-     * @synopsis Returns the status message (text) of the response.
+     * @method getResponseStatusText
+     * @summary Returns the status message (text) of the response.
      * @returns {String}
      */
 
@@ -345,8 +345,8 @@ TP.sig.WebSocketResponse.Inst.defineMethod('getResponseText',
 function() {
 
     /**
-     * @name getResponseText
-     * @synopsis Returns the response text.
+     * @method getResponseText
+     * @summary Returns the response text.
      * @returns {String}
      */
 
@@ -365,8 +365,8 @@ TP.sig.WebSocketResponse.Inst.defineMethod('getResponseXML',
 function() {
 
     /**
-     * @name getResponseXML
-     * @synopsis Returns the DOM Node containing the response in XML form.
+     * @method getResponseXML
+     * @summary Returns the DOM Node containing the response in XML form.
      * @returns {XMLDocument}
      */
 
@@ -402,8 +402,8 @@ TP.sig.WebSocketResponse.Inst.defineMethod('getResult',
 function(aFormat) {
 
     /**
-     * @name getResult
-     * @synopsis Returns the request result. By default it tries to return the
+     * @method getResult
+     * @summary Returns the request result. By default it tries to return the
      *     XML representation, followed by the text representation if the XML
      *     can't be formed from the response. An explicit return type can be
      *     forced by supplying a format constant.
@@ -438,7 +438,7 @@ function(aFormat) {
 
 /**
  * @type {TP.core.WebSocketService}
- * @synopsis The top-level service for all services which use WebSocket-based
+ * @summary The top-level service for all services which use WebSocket-based
  *     primitives for their transport layer. This service is capable of
  *     performing all the basic requirements of making WebSocket calls while
  *     offering several template methods that subtypes can override to perform
@@ -467,8 +467,8 @@ TP.core.WebSocketService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
-     * @name finalizeRequest
-     * @synopsis Perform any final updates or processing on the request to make
+     * @method finalizeRequest
+     * @summary Perform any final updates or processing on the request to make
      *     sure it is ready to send to TP.webSocketCall() for processing.
      * @param {TP.sig.Request} aRequest The request being finalized.
      * @returns {TP.sig.WebSocketRequest} The request to send. NOTE that this
@@ -486,13 +486,13 @@ TP.core.WebSocketService.Inst.defineMethod('handleWebSocketRequest',
 function(aRequest) {
 
     /**
-     * @name handleWebSocketRequest
-     * @synopsis Constructs an appropriate response for the request provided,
+     * @method handleWebSocketRequest
+     * @summary Constructs an appropriate response for the request provided,
      *     working to manage asynchronous calls in a manner consistent with the
      *     rest of the service/request/response model.
      * @param {TP.sig.WebSocketRequest} aRequest The request whose parameters
      *     define the WebSocket request.
-     * @raises TP.sig.InvalidRequest,TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest,TP.sig.InvalidURI
      * @returns {TP.sig.WebSocketResponse} The service's response to the
      *     request.
      */
@@ -552,13 +552,13 @@ TP.core.WebSocketService.Inst.defineMethod('performWebSocketCall',
 function(aRequest) {
 
     /**
-     * @name performWebSocketCall
-     * @synopsis Performs the WebSocket call. This is the method that actually
+     * @method performWebSocketCall
+     * @summary Performs the WebSocket call. This is the method that actually
      *     does the work and can be overridden in subtypes of this type that
      *     have special types of WebSocket calling semantics.
      * @param {TP.sig.WebSocketRequest} aRequest The request whose parameters
      *     define the WebSocket request.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {TP.sig.WebSocketRequest} The supplied request.
      */
 
@@ -609,8 +609,8 @@ TP.core.WebSocketService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestBody
-     * @synopsis Encodes the request body for transmission. If you don't want
+     * @method rewriteRequestBody
+     * @summary Encodes the request body for transmission. If you don't want
      *     this processing to occur you can put a key of 'noencode' with a value
      *     of true in the request.
      * @param {TP.sig.WebSocketRequest} aRequest The request whose parameters

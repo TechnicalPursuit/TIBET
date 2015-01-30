@@ -822,9 +822,9 @@ TP.boot.$uriSchemes = {
 TP.boot.$isArgumentArray = function(value) {
 
     /**
-     * @name $isArgumentArray
+     * @method $isArgumentArray
      * @summary Returns true if the value is an arguments array.
-     * @return {Boolean} True if the value is an arguments array.
+     * @returns {Boolean} True if the value is an arguments array.
      */
 
     return value !== null && value !== undefined &&
@@ -840,7 +840,7 @@ TP.boot.$isElement = function(value) {
      * is not exhaustive but is sufficient for purposes of filtering out invalid
      * or NOT_FOUND values returned by boot UI element searches.
      * @param {Object} value The object to test.
-     * @return {Boolean} True if the object is an element.
+     * @returns {Boolean} True if the object is an element.
      */
 
     return TP.boot.$isValid(value) && value.nodeType === 1;
@@ -851,9 +851,9 @@ TP.boot.$isElement = function(value) {
 TP.boot.$isEmpty = function(value) {
 
     /**
-     * @name $isEmpty
+     * @method $isEmpty
      * @summary Returns true if the value is either invalid or empty.
-     * @return {Boolean} True if the value is invalid or empty.
+     * @returns {Boolean} True if the value is invalid or empty.
      */
 
     // Inadequate for real work but good enough for boot code.
@@ -865,9 +865,9 @@ TP.boot.$isEmpty = function(value) {
 TP.boot.$isNumber = function(value) {
 
     /**
-     * @name $isNumber
+     * @method $isNumber
      * @summary Returns true if the value is a true number (not NaN etc).
-     * @return {Boolean} True if the value is a number.
+     * @returns {Boolean} True if the value is a number.
      */
 
     // Sadly, some edge case things might not pass this, but they don't tend to
@@ -880,9 +880,9 @@ TP.boot.$isNumber = function(value) {
 TP.boot.$isString = function(value) {
 
     /**
-     * @name $isString
+     * @method $isString
      * @summary Returns true if the value is a valid string.
-     * @return {Boolean} True if the value is a string.
+     * @returns {Boolean} True if the value is a string.
      */
 
     return typeof value === 'string' || value.constructor === String;
@@ -893,9 +893,9 @@ TP.boot.$isString = function(value) {
 TP.boot.$isValid = function(value) {
 
     /**
-     * @name $isValid
+     * @method $isValid
      * @summary Returns true if the value is neither null nor undefined.
-     * @return {Boolean} True if the value is 'valid'.
+     * @returns {Boolean} True if the value is 'valid'.
      */
 
     return value !== null && value !== undefined;
@@ -906,9 +906,9 @@ TP.boot.$isValid = function(value) {
 TP.boot.$isVisible = function(anElement) {
 
     /**
-     * @name $isVisible
+     * @method $isVisible
      * @summary Returns true if the element appears to be visible to the user.
-     * @return {Boolean} True if the element is visible.
+     * @returns {Boolean} True if the element is visible.
      */
 
     var elem;
@@ -934,9 +934,9 @@ TP.boot.$isVisible = function(anElement) {
 TP.boot.$notEmpty = function(value) {
 
     /**
-     * @name $notEmpty
+     * @method $notEmpty
      * @summary Returns true if the value is either invalid or empty.
-     * @return {Boolean} True if the value is invalid or empty.
+     * @returns {Boolean} True if the value is invalid or empty.
      */
 
     // Inadequate for real work but good enough for boot code.
@@ -949,9 +949,9 @@ TP.boot.$notEmpty = function(value) {
 TP.boot.$notValid = function(value) {
 
     /**
-     * @name $notValid
+     * @method $notValid
      * @summary Returns true if the value is either null or undefined.
-     * @return {Boolean} True if the value is 'invalid'.
+     * @returns {Boolean} True if the value is 'invalid'.
      */
 
     return value === null || value === undefined;
@@ -962,7 +962,7 @@ TP.boot.$notValid = function(value) {
 TP.sys.defineGlobal = function(aName, aValue, force) {
 
     /**
-     * @name defineGlobal
+     * @method defineGlobal
      * @summary Defines a global variable and adds it to TIBET's list of
      *     globals. This list is used to support symbol exports. Note that while
      *     this does have the effect of setting a global value there is no
@@ -972,7 +972,7 @@ TP.sys.defineGlobal = function(aName, aValue, force) {
      * @param {Object} aValue The value to set for the global.
      * @param {Boolean} force True means an existing value will be forcefully
      *     replaced with the new value. The default is false.
-     * @return {Object} The value after setting.
+     * @returns {Object} The value after setting.
      */
 
     var wasUndefined;
@@ -1022,13 +1022,13 @@ TP.sys.initialized = false;
 TP.sys.hasInitialized = function(aFlag) {
 
     /**
-     * @name hasInitialized
+     * @method hasInitialized
      * @summary Combined setter/getter defining whether TIBET's initialization
      *     sequence has completed and the system is in a usable state. Note that
      *     initialized is not the same as started. Initialized simply means we
      *     can try to start the application's top-level entry point now.
      * @param {Boolean} aFlag True to signify the system is initialized.
-     * @return {Boolean} The current state.
+     * @returns {Boolean} The current state.
      */
 
     if (aFlag !== undefined) {
@@ -1046,13 +1046,13 @@ TP.sys.kernel = false;
 TP.sys.hasKernel = function(aFlag) {
 
     /**
-     * @name hasKernel
+     * @method hasKernel
      * @summary Combined setter/getter defining whether the TIBET kernel has
      *     been loaded. This can be helpful when you want to leverage
      *     functionality in the kernel during startup but need to be sure the
      *     kernel has successfully loaded.
      * @param {Boolean} aFlag True to signify kernel is available.
-     * @return {Boolean} The current state.
+     * @returns {Boolean} The current state.
      */
 
     if (aFlag !== undefined) {
@@ -1070,13 +1070,13 @@ TP.sys.loaded = false;
 TP.sys.hasLoaded = function(aFlag) {
 
     /**
-     * @name hasLoaded
+     * @method hasLoaded
      * @summary Combined setter/getter defining whether TIBET's load process
      *     has completed. This isn't meant to imply that TIBET is in a useable
      *     state, you should use TP.sys.hasInitialized() and or
      *     TP.sys.hasStarted() to check for a specific 'live' state.
      * @param {Boolean} aFlag True to signify load completion.
-     * @return {Boolean} The current state.
+     * @returns {Boolean} The current state.
      */
 
     if (aFlag !== undefined) {
@@ -1094,12 +1094,12 @@ TP.sys.started = false;
 TP.sys.hasStarted = function(aFlag) {
 
     /**
-     * @name hasStarted
+     * @method hasStarted
      * @summary Combined setter/getter defining whether TIBET's application
      *     startup sequence has completed and a TP.core.Application instance is
      *     now acting as the application controller.
      * @param {Boolean} aFlag True to signify the system has started.
-     * @return {Boolean} The current state.
+     * @returns {Boolean} The current state.
      */
 
     if (aFlag !== undefined) {
@@ -1135,7 +1135,7 @@ TP.boot.shouldStop = function(aReason) {
 TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
 
     /**
-     * @name $$getprop
+     * @method $$getprop
      * @summary Returns the value of the named property from the hash provided.
      *     NOTE that keys are expected to have at least one '.' (period)
      *     separating their 'category' from their name as in tibet.uipath or
@@ -1148,7 +1148,7 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
      *     isn't defined.
      * @param {String} aPrefix The default prefix to use for unprefixed key
      *     values.
-     * @return {Object} The value of the property.
+     * @returns {Object} The value of the property.
      */
 
     var prefix,
@@ -1237,7 +1237,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
                              override) {
 
     /**
-     * @name $$setprop
+     * @method $$setprop
      * @summary Sets the value of the named property to the value provided.
      *     Note that properties set in this fashion are NOT persistent. To make
      *     a property persistent you must add it to the tibet.xml file or a
@@ -1253,7 +1253,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling.
      * @param {Boolean} override True to force an override property change.
-     * @return {Object} The value of the named property.
+     * @returns {Object} The value of the named property.
      */
 
     var key,
@@ -1346,7 +1346,7 @@ TP.sys.overrides = {};
 TP.sys.getcfg = function(aKey, aDefault) {
 
     /**
-     * @name getcfg
+     * @method getcfg
      * @summary Returns the value of the named configuration property, or the
      *     default value when the property is undefined. Values with no '.' are
      *     considered to be prefixes and will return the list of all
@@ -1355,7 +1355,7 @@ TP.sys.getcfg = function(aKey, aDefault) {
      * @param {String} aKey The property name to retrieve.
      * @param {String} aDefault The default value to use when the named property
      *     isn't defined.
-     * @return {Object} The value of the named property.
+     * @returns {Object} The value of the named property.
      */
 
     var val;
@@ -1387,7 +1387,7 @@ TP.sys.cfg = TP.sys.getcfg;
 TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
 
     /**
-     * @name setcfg
+     * @method setcfg
      * @summary Sets the value of the named configuration parameter. Note that
      *     properties set in this fashion are NOT persistent. To make a property
      *     persistent you must add it to the proper 'rc' file in your app's
@@ -1399,7 +1399,7 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling.
      * @param {Boolean} override True to force an override property change.
-     * @return {Object} The value of the named property.
+     * @returns {Object} The value of the named property.
      */
 
     return TP.boot.$$setprop(TP.sys.configuration, aKey, aValue, 'cfg',
@@ -1443,7 +1443,7 @@ if (Object.defineProperty) {
 TP.boot.$getenv = function(aKey, aDefault) {
 
     /**
-     * @name $getenv
+     * @method $getenv
      * @summary Returns the value of the named environment setting. These
      *     values are defined primarily by the browser detection logic in the
      *     boot script and shouldn't normally be altered. Values with no '.' are
@@ -1453,7 +1453,7 @@ TP.boot.$getenv = function(aKey, aDefault) {
      * @param {String} aKey The property name to retrieve.
      * @param {String} aDefault The default value to use when the named property
      *     isn't defined.
-     * @return {Object} The value of the named property.
+     * @returns {Object} The value of the named property.
      */
 
     if (!aKey) {
@@ -1473,7 +1473,7 @@ TP.sys.env = TP.boot.$getenv;
 TP.boot.$$setenv = function(aKey, aValue) {
 
     /**
-     * @name $$setenv
+     * @method $$setenv
      * @summary An internal setter for defining the initial values of the
      *     various environment properties TIBET may use. NOTE the $$ prefix
      *     implying you shouldn't call this yourself unless you're confident of
@@ -1481,7 +1481,7 @@ TP.boot.$$setenv = function(aKey, aValue) {
      * @param {Object} aHash The object dictionary to update.
      * @param {String} aKey The property name to set.
      * @param {Object} aValue The value to assign.
-     * @return {Object} The value of the named property.
+     * @returns {Object} The value of the named property.
      */
 
     return TP.boot.$$setprop(TP.sys.environment, aKey, aValue, 'env');

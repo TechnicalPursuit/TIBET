@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.style}
- * @synopsis 'style' tag.
+ * @summary 'style' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -35,8 +35,8 @@ TP.html.style.Type.defineMethod('tagPrecompile',
 function(aRequest) {
 
     /**
-     * @name tagPrecompile
-     * @synopsis Replaces the style element with a css:style element suitable for
+     * @method tagPrecompile
+     * @summary Replaces the style element with a css:style element suitable for
      *     compiling or otherwise processing the CSS.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.

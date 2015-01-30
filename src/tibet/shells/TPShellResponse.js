@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.ShellResponse}
- * @synopsis The common response type for TP.sig.ShellRequest instances. These
+ * @summary The common response type for TP.sig.ShellRequest instances. These
  *     responses provide the shell's response to incoming requests and are the
  *     common response mechanism between a shell requestor and the shell.
  */
@@ -34,8 +34,8 @@ TP.sig.ShellResponse.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. The default is true for most signals, but this type of
      *     signal checks the 'shouldLogTSHSignals' TIBET configuration flags to
      *     see if it can currently be logged.
@@ -53,8 +53,8 @@ TP.sig.ShellResponse.Inst.defineMethod('init',
 function(aRequest, aResult) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new instance. The request should be the original
+     * @method init
+     * @summary Initialize a new instance. The request should be the original
      *     TP.sig.Request instance while the optional result is whatever data
      *     should be assigned to the request as the result.
      * @param {TP.sig.Request} aRequest A request object. In the case of
@@ -83,8 +83,8 @@ TP.sig.ShellResponse.Inst.defineMethod('getMessageType',
 function() {
 
     /**
-     * @name getMessageType
-     * @synopsis Returns the message type, one of a number of values which map
+     * @method getMessageType
+     * @summary Returns the message type, one of a number of values which map
      *     directly to CSS entries and node templates used to provided
      *     theme-able output.
      * @returns {String}

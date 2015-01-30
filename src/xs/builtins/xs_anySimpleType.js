@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.anySimpleType}
- * @synopsis Root type for all XML Schema built-in and simple types. Note that
+ * @summary Root type for all XML Schema built-in and simple types. Note that
  *     as with TP.xs.anyType there is no real validation at this level.
  */
 

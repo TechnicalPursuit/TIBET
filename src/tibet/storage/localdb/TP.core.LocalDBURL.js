@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.LocalDBURL}
- * @synopsis A subtype of TP.core.URL specific to the 'local:' scheme.
+ * @summary A subtype of TP.core.URL specific to the 'local:' scheme.
  * @description
 
     'local://' URLs behave in a very RESTy way and are modeled on those used in
@@ -172,8 +172,8 @@ TP.core.LocalDBURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Return the default URI handler type for this URI type. The
+     * @method $getDefaultHandler
+     * @summary Return the default URI handler type for this URI type. The
      *     returned type must respond to the route() method to be a valid
      *     handler.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
@@ -195,8 +195,8 @@ TP.core.LocalDBURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
      * @returns {TP.core.LocalDBURL} A new instance.
      */
@@ -250,8 +250,8 @@ TP.core.LocalDBURL.Inst.defineMethod('addResource',
 function(existingResource, newResource, aRequest) {
 
     /**
-     * @name addResource
-     * @synopsis Adds to the receiver's resource object, the object TIBET will
+     * @method addResource
+     * @summary Adds to the receiver's resource object, the object TIBET will
      *     treat as the resource for any subsequent processing.
      * @param {Object} existingResource The existing resource assigned to this
      *     object, if available.
@@ -275,10 +275,10 @@ TP.core.LocalDBURL.Inst.defineMethod('getContent',
 function(aRequest) {
 
     /**
-     * @name getContent
-     * @synopsis Fetches the receiver's content, returns a content-specific
+     * @method getContent
+     * @summary Fetches the receiver's content, returns a content-specific
      *     object or a TP.sig.Response when the request is asynchronous.
-     * @description For localdb: URLs, this method defaults the 'refresh'
+     * @summary For localdb: URLs, this method defaults the 'refresh'
      *     parameter to true, which is inverted from the base URI type's value
      *     of 'false'. This is because most of the time the requestor won't want
      *     the cached value of the URI, but will want to query the database.

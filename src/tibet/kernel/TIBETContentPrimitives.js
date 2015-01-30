@@ -57,9 +57,9 @@ TP.definePrimitive('getJSONPIFrame',
 function() {
 
     /**
-     * @name getJSONPIFrame
-     * @synopsis Retrieves the iframe used to fetch and/or parse JSON results.
-     * @description The iframe returned by this routine is created (once) if it
+     * @method getJSONPIFrame
+     * @summary Retrieves the iframe used to fetch and/or parse JSON results.
+     * @summary The iframe returned by this routine is created (once) if it
      *     doesn't exist. It is used by the jsonpCall() to load the actual
      *     results and then scrub it through a serialize/parse cycle to try to
      *     avoid malformed/malicious JSON data.
@@ -97,8 +97,8 @@ TP.definePrimitive('isJSONString',
 function(aString) {
 
     /**
-     * @name isJSONString
-     * @synopsis Returns whether or not the supplied String can be parsed into a
+     * @method isJSONString
+     * @summary Returns whether or not the supplied String can be parsed into a
      *     JSON string.
      * @param {String} aString A JSON-formatted string.
      * @returns {Boolean} Whether or not the supplied String is a JSON-formatted
@@ -131,10 +131,10 @@ TP.definePrimitive('json2js',
 function(aString, smartConversion, shouldReport) {
 
     /**
-     * @name json2js
-     * @synopsis Transforms a JSON-formatted string into the equivalent
+     * @method json2js
+     * @summary Transforms a JSON-formatted string into the equivalent
      *     JavaScript objects.
-     * @description The TIBET version of this process extends the standard JSON
+     * @summary The TIBET version of this process extends the standard JSON
      *     processing to allow strings in ISO8601 format
      *     (YYYY-MM-DDTHH:MM:SS[Z|+/-HH:MM]) to be reconstituted as Date
      *     instances. For more information on the JSON format see:
@@ -243,9 +243,9 @@ TP.definePrimitive('js2json',
 function(anObject) {
 
     /**
-     * @name js2json
-     * @synopsis Transforms an object into a representation in a JSON string.
-     * @description Since JSON is a limited subset of JavaScript this
+     * @method js2json
+     * @summary Transforms an object into a representation in a JSON string.
+     * @summary Since JSON is a limited subset of JavaScript this
      *     representation may not be a complete copy of the object (in
      *     particular, since these primitives use the open source JSON
      *     serializer found at: http://www.json.org, Function objects will not
@@ -315,8 +315,8 @@ TP.definePrimitive('js2xml',
 function(anObject, aFilterName) {
 
     /**
-     * @name js2xml
-     * @synopsis Transforms a JavaScript object into roughly equivalent XML
+     * @method js2xml
+     * @summary Transforms a JavaScript object into roughly equivalent XML
      *     using the rules from JSONML.
      * @param {Object} anObject The object to transform.
      * @param {String} aFilterName A get*Interface() filter spec.
@@ -342,10 +342,10 @@ TP.definePrimitive('xml2js',
 function(aNode) {
 
     /**
-     * @name xml2js
-     * @synopsis Transforms an XML node into a roughly equivalent JavaScript
+     * @method xml2js
+     * @summary Transforms an XML node into a roughly equivalent JavaScript
      *     object.
-     * @description If the XML is in XMLRPC format this call attempts to
+     * @summary If the XML is in XMLRPC format this call attempts to
      *      reconstitute an Object from that, otherwise the node is processed
      *      into JsonML.
      * @param {Node} aNode An XML node.
@@ -395,9 +395,9 @@ TP.definePrimitive('json2xml',
 function(aString) {
 
     /**
-     * @name json2xml
-     * @synopsis Transforms a JSON-formatted string into roughly equivalent XML.
-     * @description The transformation is in two steps, first to JS and then
+     * @method json2xml
+     * @summary Transforms a JSON-formatted string into roughly equivalent XML.
+     * @summary The transformation is in two steps, first to JS and then
      *     into simple XML where keys are element names and values are content
      *     text nodes.
      * @param {String} aString A JSON-formatted string.
@@ -425,9 +425,9 @@ TP.definePrimitive('xml2json',
 function(aNode) {
 
     /**
-     * @name xml2json
-     * @synopsis Transforms an XML node into a roughly equivalent JSON string.
-     * @description If the XML is in XMLRPC format this transformation is very
+     * @method xml2json
+     * @summary Transforms an XML node into a roughly equivalent JSON string.
+     * @summary If the XML is in XMLRPC format this transformation is very
      *     close to lossless, otherwise the node is processed according to the
      *     rules found in XForms which focus on non-empty element nodes and
      *     their text content.
@@ -454,8 +454,8 @@ TP.definePrimitive('jsonml2xml',
 function(anObject, shouldReport) {
 
     /**
-     * @name jsonml2xml
-     * @synopsis Transforms an object structured according to the 'JSONML spec'
+     * @method jsonml2xml
+     * @summary Transforms an object structured according to the 'JSONML spec'
      *     into an equivalent XML node.
      * @param {Object} anObject The object to transform.
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
@@ -486,8 +486,8 @@ TP.definePrimitive('xml2jsonml',
 function(aNode) {
 
     /**
-     * @name xml2jsonml
-     * @synopsis Transforms an XML node into an equivalent JSONML object.
+     * @method xml2jsonml
+     * @summary Transforms an XML node into an equivalent JSONML object.
      * @param {Node} aNode An XML node.
      * @returns {Object} A JavaScript Object according to the 'JSONML spec'.
      */
@@ -517,8 +517,8 @@ TP.definePrimitive('js2xmlrpc',
 function(anObject) {
 
     /**
-     * @name js2xmlrpc
-     * @synopsis Transforms a JavaScript object into roughly equivalent XMLRPC
+     * @method js2xmlrpc
+     * @summary Transforms a JavaScript object into roughly equivalent XMLRPC
      *     node.
      * @param {Object} anObject The object to transform.
      * @returns {Node} An XMLRPC node representing the same data structures
@@ -563,9 +563,9 @@ TP.definePrimitive('json2xmlrpc',
 function(aString, tab) {
 
     /**
-     * @name json2xmlrpc
-     * @synopsis Transforms a JSON-formatted string into roughly equivalent XML.
-     * @description The transformation is in two steps, first to JS and then
+     * @method json2xmlrpc
+     * @summary Transforms a JSON-formatted string into roughly equivalent XML.
+     * @summary The transformation is in two steps, first to JS and then
      *     into simple XML where keys are element names and values are content
      *     text nodes.
      * @param {String} aString A JSON-formatted string.
@@ -589,15 +589,15 @@ function(aURI, aCallback, aCallbackFuncName, aCallbackParamName, aDocument,
 shouldRaise) {
 
     /**
-     * @name jsonpCall
-     * @synopsis Uses the JSON-associated mechanism of creating a dynamic script
+     * @method jsonpCall
+     * @summary Uses the JSON-associated mechanism of creating a dynamic script
      *     node to access the data at the target URI, then cleans up the script
      *     node to avoid clutter. The resulting data can be found on the
      *     document provided. If no document is provided then the document of
      *     the TIBET frame is used.
      *
      *
-     * @description !!!USE THIS CALL ONLY WITH SITES YOU CAN EXPLICITLY TRUST!!!
+     * @summary !!!USE THIS CALL ONLY WITH SITES YOU CAN EXPLICITLY TRUST!!!
      *
      *     The code in script files referenced in this fashion is run
      *     automatically by the browser without any checking for cross-domain
@@ -833,7 +833,7 @@ TP.extern.JsonML = JsonML;
      *
      * @private
      * @param {*} val the object being tested
-     * @return {boolean}
+     * @returns {boolean}
      */
     var isArray = Array.isArray || function(val) {
         return (val instanceof Array);
@@ -844,7 +844,7 @@ TP.extern.JsonML = JsonML;
      *
      * @private
      * @param {string} tag The element's tag name
-     * @return {Node}
+     * @returns {Node}
      */
     var createElement = function(tag) {
         if (!tag) {
@@ -868,7 +868,7 @@ TP.extern.JsonML = JsonML;
      * @private
      * @param {Node} elem The element
      * @param {Object} attr Attributes object
-     * @return {Node}
+     * @returns {Node}
      */
     var addAttributes = function(elem, attr) {
         // for each attributeName
@@ -904,7 +904,7 @@ TP.extern.JsonML = JsonML;
     /**
      * Default error handler
      * @param {Error} ex
-     * @return {Node}
+     * @returns {Node}
      */
     var onError = function (ex) {
         return document.createTextNode('['+ex+']');
@@ -917,7 +917,7 @@ TP.extern.JsonML = JsonML;
      * @param {Node} elem
      * @param {*} jml
      * @param {function} filter
-     * @return {Node}
+     * @returns {Node}
      */
     var patch = function(elem, jml, filter) {
 
@@ -939,7 +939,7 @@ TP.extern.JsonML = JsonML;
      * Main builder entry point
      * @param {string|array} jml
      * @param {function} filter
-     * @return {Node}
+     * @returns {Node}
      */
     var toXML = JsonML.toXML = function(jml, filter) {
         try {
@@ -987,7 +987,7 @@ TP.extern.JsonML = JsonML;
      * Converts JsonML to XML text
      * @param {string|array} jml
      * @param {function} filter
-     * @return {array} JsonML
+     * @returns {array} JsonML
      */
     JsonML.toXMLText = function(jml, filter) {
         return renderXML( toXML(jml, filter) );
@@ -1012,7 +1012,7 @@ TP.extern.JsonML = JsonML;
     /**
      * @param {Node} elem
      * @param {function} filter
-     * @return {string|array} JsonML
+     * @returns {string|array} JsonML
      */
     var fromXML = JsonML.fromXML = function(elem, filter) {
         if (!elem || !elem.nodeType) {
@@ -1114,7 +1114,7 @@ TP.extern.JsonML = JsonML;
      * https://developer.mozilla.org/en-US/docs/Parsing_and_serializing_XML
      * https://gist.github.com/553364
      * @param {string} xmlText
-     * @return {Node} xml node
+     * @returns {Node} xml node
      */
     var parseXML = JsonML.parseXML = function(xmlText) {
         if (!xmlText || typeof xmlText !== 'string') {
@@ -1152,7 +1152,7 @@ TP.extern.JsonML = JsonML;
      * Converts XML text nodes to JsonML
      * @param {string} xmlText
      * @param {function} filter
-     * @return {string|array} JsonML
+     * @returns {string|array} JsonML
      */
     JsonML.fromXMLText = function(xmlText, filter) {
         var elem = parseXML(xmlText);
@@ -1165,7 +1165,7 @@ TP.extern.JsonML = JsonML;
      * Converts XML DOM nodes to XML text
      * https://developer.mozilla.org/en-US/docs/Parsing_and_serializing_XML
      * @param {string} xmlText
-     * @return {string|array} JsonML
+     * @returns {string|array} JsonML
      */
     var renderXML = JsonML.renderXML = function(elem) {
         if (!elem) {

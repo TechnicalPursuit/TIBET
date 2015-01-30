@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.gYear}
- * @synopsis A year specification with optional time zone data in the form
+ * @summary A year specification with optional time zone data in the form
  *     [-]YYYY with optional additional year digits to handle larger years (this
  *     is true for all XML Schema year representations).
  */
@@ -39,8 +39,8 @@ TP.xs.gYear.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided represents a valid year
+     * @method validate
+     * @summary Returns true if the object provided represents a valid year
      *     with optional timezone data.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

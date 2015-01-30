@@ -61,7 +61,7 @@ TP.sherpa.console.Inst.defineMethod('setup',
 function() {
 
     /**
-     * @name setup
+     * @method setup
      */
 
     var consoleInputTPElem,
@@ -149,7 +149,7 @@ TP.sherpa.console.Inst.defineMethod('getCurrentEvalMarker',
 function() {
 
     /**
-     * @name getCurrentEvalMarker
+     * @method getCurrentEvalMarker
      * @synopsis
      * @returns
      */
@@ -176,7 +176,7 @@ TP.sherpa.console.Inst.defineMethod('getCurrentInputMarker',
 function() {
 
     /**
-     * @name getCurrentInputMarker
+     * @method getCurrentInputMarker
      * @synopsis
      * @returns
      */
@@ -203,7 +203,7 @@ TP.sherpa.console.Inst.defineMethod('getCurrentPromptMarker',
 function() {
 
     /**
-     * @name getCurrentPromptMarker
+     * @method getCurrentPromptMarker
      * @synopsis
      * @returns
      */
@@ -245,7 +245,7 @@ TP.sherpa.console.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
 function(aSignal) {
 
     /**
-     * @name handleHiddenChange
+     * @method handleHiddenChange
      */
 
     var isHidden;
@@ -265,7 +265,7 @@ TP.sherpa.console.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setAttrHidden
+     * @method setAttrHidden
      * @abstract
      * @param
      * @returns {TP.sherpa.hud} The receiver.
@@ -371,8 +371,8 @@ TP.sherpa.console.Inst.defineMethod('clearAllContent',
 function() {
 
     /**
-     * @name clearAllContent
-     * @synopsis Clears the input cell.
+     * @method clearAllContent
+     * @summary Clears the input cell.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -403,7 +403,7 @@ TP.sherpa.console.Inst.defineMethod('toggleOutputMode',
 function(aMode) {
 
     /**
-     * @name toggleOutputMode
+     * @method toggleOutputMode
      * @synopsis
      * @returns {TP.sherpa.console} The receiver.
      */
@@ -474,7 +474,7 @@ TP.sherpa.console.Inst.defineMethod('getPrompt',
 function() {
 
     /**
-     * @name getPrompt
+     * @method getPrompt
      * @synopsis
      * @returns {String}
      */
@@ -488,7 +488,7 @@ TP.sherpa.console.Inst.defineMethod('generatePromptMarkAt',
 function(range, cssClass, promptText) {
 
     /**
-     * @name generatePromptMarkAt
+     * @method generatePromptMarkAt
      * @synopsis
      * @param
      * @param
@@ -537,7 +537,7 @@ TP.sherpa.console.Inst.defineMethod('movePromptMarkToCursor',
 function() {
 
     /**
-     * @name movePromptMarkToCursor
+     * @method movePromptMarkToCursor
      * @synopsis
      * @returns
      */
@@ -591,8 +591,8 @@ TP.sherpa.console.Inst.defineMethod('setPrompt',
 function(aPrompt, aCSSClass) {
 
     /**
-     * @name setPrompt
-     * @synopsis Sets the text prompt used for the input cell.
+     * @method setPrompt
+     * @summary Sets the text prompt used for the input cell.
      * @param {String} aPrompt The prompt to define.
      * @param {String} aCSSClass An optional CSS class name to use for display
      *     of the prompt string.
@@ -657,8 +657,8 @@ TP.sherpa.console.Inst.defineMethod('clearStatus',
 function() {
 
     /**
-     * @name clearStatus
-     * @synopsis Clears any status information such as window.status and/or any
+     * @method clearStatus
+     * @summary Clears any status information such as window.status and/or any
      *     status bar content, resetting it to the default state.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
@@ -676,8 +676,8 @@ TP.sherpa.console.Inst.defineMethod('updateStatus',
 function(aSignal) {
 
     /**
-     * @name updateStatus
-     * @synopsis Updates the status bar with information which is drawn from the
+     * @method updateStatus
+     * @summary Updates the status bar with information which is drawn from the
      *     current environment and the signal provided. The signal is typically
      *     a TP.sig.UserIOResponse containing information about the processing
      *     which just occurred.
@@ -759,7 +759,7 @@ TP.sherpa.console.Inst.defineMethod('activateInputEditor',
 function() {
 
     /**
-     * @name activateInputEditor
+     * @method activateInputEditor
      * @returns {TP.sherpa.console} The receiver.
      * @abstract
      */
@@ -779,8 +779,8 @@ TP.sherpa.console.Inst.defineMethod('adjustInputSize',
 function() {
 
     /**
-     * @name adjustInputSize
-     * @synopsis Adjust the height of the input cell based on its contents.
+     * @method adjustInputSize
+     * @summary Adjust the height of the input cell based on its contents.
      */
 
     var consoleInput,
@@ -824,8 +824,8 @@ TP.sherpa.console.Inst.defineMethod('clearInput',
 function() {
 
     /**
-     * @name clearInput
-     * @synopsis Clears the input cell.
+     * @method clearInput
+     * @summary Clears the input cell.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -854,7 +854,7 @@ TP.sherpa.console.Inst.defineMethod('deactivateInputEditor',
 function() {
 
     /**
-     * @name deactivateInputEditor
+     * @method deactivateInputEditor
      * @returns {TP.sherpa.console} The receiver.
      * @abstract
      */
@@ -874,7 +874,7 @@ TP.sherpa.console.Inst.defineMethod('eventIsInInput',
 function(anEvent) {
 
     /**
-     * @name eventInInput
+     * @method eventInInput
      */
 
     return TP.eventGetWindow(anEvent).document ===
@@ -887,7 +887,7 @@ TP.sherpa.console.Inst.defineMethod('focusInput',
 function(select) {
 
     /**
-     * @name focusInput
+     * @method focusInput
      * @synopsis
      * @param {Boolean} select True to select in addition.
      * @returns {TP.sherpa.console} The receiver.
@@ -915,8 +915,8 @@ TP.sherpa.console.Inst.defineMethod('setInputCursorToEnd',
 function() {
 
     /**
-     * @name setInputCursorToEnd
-     * @synopsis Moves the cursor to the end.
+     * @method setInputCursorToEnd
+     * @summary Moves the cursor to the end.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -931,10 +931,10 @@ TP.sherpa.console.Inst.defineMethod('setInputContent',
 function(anObject, shouldAppend) {
 
     /**
-     * @name setInputContent
-     * @synopsis Sets the value of the input cell, essentially 'pre-filling' the
+     * @method setInputContent
+     * @summary Sets the value of the input cell, essentially 'pre-filling' the
      *     input area with content.
-     * @description If shouldAppend is true, and the input cell already has
+     * @summary If shouldAppend is true, and the input cell already has
      *     content, a '.;\n' is appended to the front of the content.
      * @param {Object} anObject The object defining the input.
      * @param {Boolean} shouldAppend Whether or not to append the value of
@@ -1013,7 +1013,7 @@ TP.sherpa.console.Inst.defineMethod('teardownInputMark',
 function() {
 
     /**
-     * @name teardownInputMark
+     * @method teardownInputMark
      */
 
     if (TP.isValid(this.get('currentInputMarker'))) {
@@ -1030,7 +1030,7 @@ TP.sherpa.console.Inst.defineMethod('generateInputMarkAt',
 function(aRange) {
 
     /**
-     * @name generateInputMarkAt
+     * @method generateInputMarkAt
      */
 
     var marker;
@@ -1057,8 +1057,8 @@ TP.sherpa.console.Inst.defineMethod('shouldConcealInput',
 function(aFlag) {
 
     /**
-     * @name shouldConcealInput
-     * @synopsis Returns false for now.
+     * @method shouldConcealInput
+     * @summary Returns false for now.
      * @param {Boolean} aFlag The new value to set.
      * @returns {Boolean}
      */
@@ -1074,7 +1074,7 @@ TP.sherpa.console.Inst.defineMethod('getInputStats',
 function(aSignal) {
 
     /**
-     * @name getInputStats
+     * @method getInputStats
      * @synopsis
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
@@ -1110,7 +1110,7 @@ TP.sherpa.console.Inst.defineMethod('getOutputTypeInfo',
 function(aSignal) {
 
     /**
-     * @name getOutputTypeInfo
+     * @method getOutputTypeInfo
      * @synopsis
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
@@ -1196,7 +1196,7 @@ TP.sherpa.console.Inst.defineMethod('createOutputEntry',
 function(uniqueID, dataRecord) {
 
     /**
-     * @name createOutputEntry
+     * @method createOutputEntry
      * @synopsis
      * @param
      * @param
@@ -1274,7 +1274,7 @@ TP.sherpa.console.Inst.defineMethod('updateOutputEntry',
 function(uniqueID, dataRecord) {
 
     /**
-     * @name updateOutputEntry
+     * @method updateOutputEntry
      * @synopsis
      * @param
      * @param
@@ -1396,7 +1396,7 @@ TP.sherpa.console.Inst.defineMethod('generateOutputElement',
 function(uniqueID) {
 
     /**
-     * @name generateOutputElement
+     * @method generateOutputElement
      * @synopsis
      * @param
      * @returns
@@ -1420,8 +1420,8 @@ TP.sherpa.console.Inst.defineMethod('scrollOutputToEnd',
 function() {
 
     /**
-     * @name scrollOutputToEnd
-     * @synopsis Adjust the height of the input cell based on its contents.
+     * @method scrollOutputToEnd
+     * @summary Adjust the height of the input cell based on its contents.
      */
 
     var consoleOutputElem;
@@ -1440,7 +1440,7 @@ TP.sherpa.console.Inst.defineMethod('setupEvalMark',
 function() {
 
     /**
-     * @name setupEvalMark
+     * @method setupEvalMark
      * @synopsis
      * @returns {TP.sherpa.console} The receiver.
      */
@@ -1483,7 +1483,7 @@ TP.sherpa.console.Inst.defineMethod('showingEvalMark',
 function() {
 
     /**
-     * @name showingEvalMark
+     * @method showingEvalMark
      */
 
     return TP.isValid(this.get('currentEvalMarker'));
@@ -1495,7 +1495,7 @@ TP.sherpa.console.Inst.defineMethod('shiftEvalMark',
 function(direction, endPoint) {
 
     /**
-     * @name shiftEvalMark
+     * @method shiftEvalMark
      * @synopsis
      * @param
      * @param
@@ -1640,7 +1640,7 @@ TP.sherpa.console.Inst.defineMethod('teardownEvalMark',
 function() {
 
     /**
-     * @name teardownEvalMark
+     * @method teardownEvalMark
      * @synopsis
      * @returns {TP.sherpa.console} The receiver.
      */
@@ -1659,8 +1659,8 @@ TP.sherpa.console.Inst.defineMethod('getEvalValue',
 function() {
 
     /**
-     * @name getEvalValue
-     * @synopsis Returns the value currently considered the 'input value'
+     * @method getEvalValue
+     * @summary Returns the value currently considered the 'input value'
      * @returns {String} The user's input.
      */
 
@@ -1696,7 +1696,7 @@ TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeAnchor',
 function() {
 
     /**
-     * @name computeEvalMarkRangeAnchor
+     * @method computeEvalMarkRangeAnchor
      * @synopsis
      * @returns
      */
@@ -1778,7 +1778,7 @@ TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeHead',
 function() {
 
     /**
-     * @name computeEvalMarkRangeHead
+     * @method computeEvalMarkRangeHead
      * @synopsis
      * @returns
      */
@@ -1830,7 +1830,7 @@ TP.sherpa.console.Inst.defineMethod('computeEvalMarkRange',
 function() {
 
     /**
-     * @name computeEvalMarkRange
+     * @method computeEvalMarkRange
      * @synopsis
      * @returns
      */
@@ -1860,7 +1860,7 @@ TP.sherpa.console.Inst.defineMethod('generateEvalMarkAt',
 function(range) {
 
     /**
-     * @name generateEvalMarkAt
+     * @method generateEvalMarkAt
      * @synopsis
      * @returns
      */

@@ -9,7 +9,6 @@
 //  ========================================================================
 
 /**
- * @file TIBETSignalTypes.js
  */
 
 //  ========================================================================
@@ -18,10 +17,10 @@
 
 /**
  * @type {TP.core.Monitor}
- * @synopsis A TP.core.Monitor is an object whose responsibility is to
+ * @summary A TP.core.Monitor is an object whose responsibility is to
  *     essentially poll one or more target objects, testing them for some
  *     condition and reporting via signal when the condition is true.
- * @description There are a variety of things in a browser which we'd like to be
+ * @summary There are a variety of things in a browser which we'd like to be
  *     able to monitor such as style changes or similar aspects which don't have
  *     native events associated with them (yet). In these cases you can use a
  *     TP.core.Monitor to observe the object(s) and test them for a condition.
@@ -70,8 +69,8 @@ TP.core.Monitor.Type.defineMethod('getDefaultSignal',
 function() {
 
     /**
-     * @name getDefaultSignal
-     * @synopsis Returns the default signal type to signal.
+     * @method getDefaultSignal
+     * @summary Returns the default signal type to signal.
      * @returns {String|TP.sig.Signal} The signal type or signal type name.
      */
 
@@ -84,8 +83,8 @@ TP.core.Monitor.Type.defineMethod('getDefaultTest',
 function() {
 
     /**
-     * @name getDefaultTest
-     * @synopsis Returns the default test function used to detect monitor
+     * @method getDefaultTest
+     * @summary Returns the default test function used to detect monitor
      *     events.
      * @returns {Function} The default test function.
      */
@@ -117,8 +116,8 @@ TP.core.Monitor.Inst.defineMethod('init',
 function(aTarget, aTest, aSignal) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance of monitor.
+     * @method init
+     * @summary Initializes a new instance of monitor.
      * @param {Object} aTarget An object or object ID which identifies the
      *     object being monitored. When an ID is used it should be a valid
      *     TP.core.URI or a String which can be resolved via the
@@ -180,8 +179,8 @@ TP.core.Monitor.Inst.defineMethod('addTarget',
 function(aTarget) {
 
     /**
-     * @name addTarget
-     * @synopsis Adds a new target to the list of objects to monitor.
+     * @method addTarget
+     * @summary Adds a new target to the list of objects to monitor.
      * @param {String|TP.core.URI|Function} aTarget A target specification in
      *     one of a variety of forms: TP.core.URI, string ID, or acquisition
      *     function (or an array of them).
@@ -225,8 +224,8 @@ TP.core.Monitor.Inst.defineMethod('constructJob',
 function(controlParameters) {
 
     /**
-     * @name constructJob
-     * @synopsis Constructs the job instance used to manage the work of the
+     * @method constructJob
+     * @summary Constructs the job instance used to manage the work of the
      *     monitor in terms of scheduling etc.
      * @param {TP.lang.Hash} controlParameters The job's control parameters, set
      *     when the job is first constructed.
@@ -249,8 +248,8 @@ TP.core.Monitor.Inst.defineMethod('constructStepFunction',
 function() {
 
     /**
-     * @name constructStepFunction
-     * @synopsis Builds a step function specific to the requirements of this
+     * @method constructStepFunction
+     * @summary Builds a step function specific to the requirements of this
      *     monitor instance. The overall logic of this function is to run
      *     through each target, invoking the test function and signaling the
      *     target signal whenever the test function returns true.
@@ -326,8 +325,8 @@ TP.core.Monitor.Inst.defineMethod('removeTarget',
 function(aTarget) {
 
     /**
-     * @name removeTarget
-     * @synopsis Removes a target from the list of objects to monitor.
+     * @method removeTarget
+     * @summary Removes a target from the list of objects to monitor.
      * @param {String|TP.core.URI|Function} aTarget A target specification in
      *     one of a variety of forms: TP.core.URI, string ID, or acquisition
      *     function (or an array of them).
@@ -373,8 +372,8 @@ TP.core.Monitor.Inst.defineMethod('getControlParameters',
 function(controlParameters) {
 
     /**
-     * @name getControlParameters
-     * @synopsis Returns a hash of control parameters for the receiver's
+     * @method getControlParameters
+     * @summary Returns a hash of control parameters for the receiver's
      *     underlying job instance. The return value is a merged copy of the
      *     receiving type's default parameters and any parameter information
      *     passed in.
@@ -401,8 +400,8 @@ TP.core.Monitor.Inst.defineMethod('getJob',
 function() {
 
     /**
-     * @name getJob
-     * @synopsis Returns the job instance used by this monitor.
+     * @method getJob
+     * @summary Returns the job instance used by this monitor.
      * @returns {TP.core.Job} The receiver's internal job instance.
      */
 
@@ -415,8 +414,8 @@ TP.core.Monitor.Inst.defineMethod('getStepParameters',
 function(stepParameters) {
 
     /**
-     * @name getStepParameters
-     * @synopsis Returns a hash of step parameters for the receiver's underlying
+     * @method getStepParameters
+     * @summary Returns a hash of step parameters for the receiver's underlying
      *     job instance. The return value is a merged copy of the receiving
      *     type's default parameters and any parameter information passed in.
      * @param {TP.lang.Hash} stepParameters An optional set of parameters used
@@ -442,8 +441,8 @@ TP.core.Monitor.Inst.defineMethod('cancel',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancel
-     * @synopsis Cancels the monitor, stopping all monitoring.
+     * @method cancel
+     * @summary Cancels the monitor, stopping all monitoring.
      * @param {String} aFaultString A string description of the cancellation.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
@@ -461,8 +460,8 @@ TP.core.Monitor.Inst.defineMethod('complete',
 function(aResult) {
 
     /**
-     * @name complete
-     * @synopsis Completes (ends with success) the monitor, stopping it.
+     * @method complete
+     * @summary Completes (ends with success) the monitor, stopping it.
      * @param {Object} aResult An optional result object associated with the
      *     job.
      * @returns {TP.core.Monitor} The receiver.
@@ -479,8 +478,8 @@ TP.core.Monitor.Inst.defineMethod('fail',
 function(aFaultString, aFaultCode, anException) {
 
     /**
-     * @name fail
-     * @synopsis Terminates the monitor, stopping all monitoring.
+     * @method fail
+     * @summary Terminates the monitor, stopping all monitoring.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
@@ -500,8 +499,8 @@ TP.core.Monitor.Inst.defineMethod('start',
 function(stepParameters) {
 
     /**
-     * @name start
-     * @synopsis Starts the monitor, causing it to begin monitoring its targets
+     * @method start
+     * @summary Starts the monitor, causing it to begin monitoring its targets
      *     for monitor events.
      * @param {TP.lang.Hash} stepParameters An optional set of parameters used
      *     to control job steps.
@@ -519,7 +518,7 @@ function(stepParameters) {
 
 /**
  * @type {TP.core.ResizeMonitor}
- * @synopsis A TP.core.Monitor specific to monitoring elements for size changes
+ * @summary A TP.core.Monitor specific to monitoring elements for size changes
  *     which might be triggered via CSS shifts or other activity which won't
  *     normally trigger a native event.
  */
@@ -795,8 +794,8 @@ TP.sig.DOMLoaded.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMLoaded' signals.
      * @returns {Boolean}
@@ -859,8 +858,8 @@ TP.sig.DOMErrorIndicationSignal.Inst.defineMethod('getLevel',
 function() {
 
     /**
-     * @name getLevel
-     * @synopsis Returns the error level for the receiving signal.
+     * @method getLevel
+     * @summary Returns the error level for the receiving signal.
      * @returns {Number}
      */
 
@@ -902,9 +901,9 @@ TP.sig.DOMErrorIndicationSignal.defineSubtype('DOMServiceError');
 
 /**
  * @type {TP.sig.DOMUISignal}
- * @synopsis TP.sig.DOMUISignal is the supertype for all DOM-related UI signals
+ * @summary TP.sig.DOMUISignal is the supertype for all DOM-related UI signals
  *     in the TIBET framework.
- * @description TP.sig.DOMUISignal and its subtypes handle UI signals thrown
+ * @summary TP.sig.DOMUISignal and its subtypes handle UI signals thrown
  *     from pages and are basically types that map a browser's native events
  *     into TIBET signal types.
  *
@@ -956,8 +955,8 @@ TP.sig.DOMUISignal.Type.defineMethod('arm',
 function(anOrigin, aHandler, aPolicy, windowContext) {
 
     /**
-     * @name arm
-     * @synopsis Arms one or more origins to ensure they trigger signals of the
+     * @method arm
+     * @summary Arms one or more origins to ensure they trigger signals of the
      *     receiver's type.
      * @param {Array|Object|String} anOrigin The origin or origins to arm.
      * @param {Function} aHandler An (optional) parameter that defines a native
@@ -1004,8 +1003,8 @@ TP.sig.DOMUISignal.Type.defineMethod('disarm',
 function(anOrigin, aHandler, windowContext) {
 
     /**
-     * @name disarm
-     * @synopsis Disarms an origin so it no longer triggers events of the
+     * @method disarm
+     * @summary Disarms an origin so it no longer triggers events of the
      *     receiver's type. NOTE that this doesn't always work if there have
      *     been additional low-level listeners installed.
      * @param {Array|Object|String} anOrigin The origin or origins to disarm.
@@ -1047,8 +1046,8 @@ TP.sig.DOMUISignal.Type.defineMethod('requiresArming',
 function(aFlag) {
 
     /**
-     * @name requiresArming
-     * @synopsis Combined setter/getter for the receiver's arming control flag.
+     * @method requiresArming
+     * @summary Combined setter/getter for the receiver's arming control flag.
      *     When a signal observation is made the signal is queried to determine
      *     if arming for the origin is required for that type of signal. Most
      *     signal types return false.
@@ -1072,9 +1071,9 @@ TP.sig.DOMUISignal.Inst.defineMethod('init',
 function(aPayload, noEvent) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
-     * @description For a TP.sig.DOMUISignal the typical payload is a native
+     * @method init
+     * @summary Initialize the instance.
+     * @summary For a TP.sig.DOMUISignal the typical payload is a native
      *     event object or an array whose first item is the native event. You
      *     can also provide a TP.lang.Hash as the payload and it will be treated
      *     as a container for the event properties normally associated with an
@@ -1125,8 +1124,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('copy',
 function() {
 
     /**
-     * @name copy
-     * @synopsis Returns a 'copy' of the receiver. Actually, a new instance
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
      * @returns {TP.sig.DOMUISignal} A shallow copy of the receiver.
      */
@@ -1147,8 +1146,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('$fabricateEvent',
 function(aPayload) {
 
     /**
-     * @name $fabricateEvent
-     * @synopsis Constructs a normalized event object suitable for the payload
+     * @method $fabricateEvent
+     * @summary Constructs a normalized event object suitable for the payload
      *     provided. This is typically only invoked via the init function and
      *     only when a native Event isn't provided.
      * @param {Object} aPayload The signal's payload object.
@@ -1214,8 +1213,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getAltKey',
 function() {
 
     /**
-     * @name getAltKey
-     * @synopsis Returns the alt key setting at the time of the event.
+     * @method getAltKey
+     * @summary Returns the alt key setting at the time of the event.
      * @returns {Boolean} Returns true if the alt key was pressed, false if it
      *     wasn't.
      */
@@ -1229,8 +1228,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getCtrlKey',
 function() {
 
     /**
-     * @name getCtrlKey
-     * @synopsis Returns the ctrl key setting at the time of the event.
+     * @method getCtrlKey
+     * @summary Returns the ctrl key setting at the time of the event.
      * @returns {Boolean} Returns true if the ctrl key was pressed, false if it
      *     wasn't.
      */
@@ -1244,9 +1243,9 @@ TP.sig.DOMUISignal.Inst.defineMethod('getMetaKey',
 function() {
 
     /**
-     * @name getMetaKey
-     * @synopsis Returns the meta key setting at the time of the event.
-     * @description Internet Explorer does not support a 'meta key' setting,
+     * @method getMetaKey
+     * @summary Returns the meta key setting at the time of the event.
+     * @summary Internet Explorer does not support a 'meta key' setting,
      *     therefore this method will always return false in that browser.
      * @returns {Boolean} Returns true if the meta key was pressed, false if it
      *     wasn't.
@@ -1261,8 +1260,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getShiftKey',
 function() {
 
     /**
-     * @name getShiftKey
-     * @synopsis Returns the shift key setting at the time of the event.
+     * @method getShiftKey
+     * @summary Returns the shift key setting at the time of the event.
      * @returns {Boolean} Returns true if the shift key was pressed, false if it
      *     wasn't.
      */
@@ -1276,8 +1275,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getEvent',
 function() {
 
     /**
-     * @name getEvent
-     * @synopsis Returns the event object containing event information for this
+     * @method getEvent
+     * @summary Returns the event object containing event information for this
      *     signal.
      * @returns {Object} The event object for this signal.
      */
@@ -1291,8 +1290,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getEventType',
 function() {
 
     /**
-     * @name getEventType
-     * @synopsis Returns the event type of the native event.
+     * @method getEventType
+     * @summary Returns the event type of the native event.
      * @returns {String} The event type.
      */
 
@@ -1305,8 +1304,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getWindow',
 function() {
 
     /**
-     * @name getWindow
-     * @synopsis Returns the window object that the native event occurred in.
+     * @method getWindow
+     * @summary Returns the window object that the native event occurred in.
      * @returns {Window} The window containing the source element that generated
      *     the event.
      */
@@ -1320,8 +1319,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getNativeObject',
 function() {
 
     /**
-     * @name getNativeObject
-     * @synopsis Returns the native object that the receiver is wrapping. In the
+     * @method getNativeObject
+     * @summary Returns the native object that the receiver is wrapping. In the
      *     case of TP.sig.DOMUISignals, this is the receiver's native Event
      *     object that it contains
      * @returns {Event} The receiver's native Event object.
@@ -1336,8 +1335,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getResolvedTarget',
 function() {
 
     /**
-     * @name getResolvedTarget
-     * @synopsis Returns the 'resolved target', the element that was resolved
+     * @method getResolvedTarget
+     * @summary Returns the 'resolved target', the element that was resolved
      *     using the 'resolvedTarget' getter instrumented onto Event.prototype
      *     in the hook file. That getter method uses TP.eventResolveTarget().
      *     See that method for more information.
@@ -1353,8 +1352,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('getTarget',
 function() {
 
     /**
-     * @name getTarget
-     * @synopsis Returns the target of the receiver's event.
+     * @method getTarget
+     * @summary Returns the target of the receiver's event.
      * @returns {Node} The target of event/signal.
      */
 
@@ -1367,8 +1366,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('setEvent',
 function(normalizedEvent) {
 
     /**
-     * @name setEvent
-     * @synopsis Sets the native event which this signal instance represents.
+     * @method setEvent
+     * @summary Sets the native event which this signal instance represents.
      * @param {Event} normalizedEvent The native event containing the signal's
      *     raw data.
      * @returns {TP.sig.DOMUISignal} The receiver.
@@ -1385,8 +1384,8 @@ TP.sig.DOMUISignal.Inst.defineMethod('shouldPrevent',
 function(aFlag) {
 
     /**
-     * @name shouldPrevent
-     * @synopsis Returns true if the signal handler(s) should not perform the
+     * @method shouldPrevent
+     * @summary Returns true if the signal handler(s) should not perform the
      *     default action. If a flag is provided this flag is used to set the
      *     prevent status.
      * @param {Boolean} aFlag Whether or not the signal should perform the
@@ -1434,8 +1433,8 @@ TP.sig.DOMBlur.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
      * @returns {Boolean}
@@ -1476,8 +1475,8 @@ TP.sig.DOMFocus.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
      * @returns {Boolean}
@@ -1549,8 +1548,8 @@ TP.sig.DOMFocusIn.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
      * @returns {Boolean}
@@ -1580,8 +1579,8 @@ TP.sig.DOMFocusOut.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
      * @returns {Boolean}
@@ -1604,8 +1603,8 @@ TP.sig.DOMMouseSignal.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
-     * @name getSignalOwner
-     * @synopsis Returns the Object or Type responsible for signals of this
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
      *     type.
      * @returns {Object|TP.lang.RootObject} The signal type's owner.
      */
@@ -1621,8 +1620,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getButton',
 function() {
 
     /**
-     * @name getButton
-     * @synopsis Returns a TIBET constant signifying which mouse button was
+     * @method getButton
+     * @summary Returns a TIBET constant signifying which mouse button was
      *     pressed in the native event that generated this signal.
      * @returns {String} The TIBET constant signifying which button was pressed.
      *     This can be TP.LEFT, TP.MIDDLE, TP.RIGHT.
@@ -1637,8 +1636,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getClientX',
 function() {
 
     /**
-     * @name getClientX
-     * @synopsis Returns the X coordinate of the signal relative to the window
+     * @method getClientX
+     * @summary Returns the X coordinate of the signal relative to the window
      *     containing the source element.
      * @returns {Number} The X coordinate of the signal relative to its window.
      */
@@ -1656,8 +1655,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getClientY',
 function() {
 
     /**
-     * @name getClientY
-     * @synopsis Returns the Y coordinate of the signal relative to the window
+     * @method getClientY
+     * @summary Returns the Y coordinate of the signal relative to the window
      *     containing the source element.
      * @returns {Number} The Y coordinate of the signal relative to its window.
      */
@@ -1675,8 +1674,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getClientPoint',
 function() {
 
     /**
-     * @name getClientPoint
-     * @synopsis Returns the X/Y TP.core.Point of the signal relative to the
+     * @method getClientPoint
+     * @summary Returns the X/Y TP.core.Point of the signal relative to the
      *     window containing the source element.
      * @returns {TP.core.Point} The X/Y point of the signal relative to its
      *     window.
@@ -1701,8 +1700,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetX',
 function() {
 
     /**
-     * @name getOffsetX
-     * @synopsis Returns the X coordinate of the signal relative to the
+     * @method getOffsetX
+     * @summary Returns the X coordinate of the signal relative to the
      *     containing source element.
      * @returns {Number} The X coordinate of the signal relative to its
      *     containing element.
@@ -1721,8 +1720,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetY',
 function() {
 
     /**
-     * @name getOffsetY
-     * @synopsis Returns the Y coordinate of the signal relative to the
+     * @method getOffsetY
+     * @summary Returns the Y coordinate of the signal relative to the
      *     containing source element.
      * @returns {Number} The Y coordinate of the signal relative to its
      *     containing element.
@@ -1741,8 +1740,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetPoint',
 function() {
 
     /**
-     * @name getOffsetPoint
-     * @synopsis Returns the X/Y TP.core.Point of the signal relative to the
+     * @method getOffsetPoint
+     * @summary Returns the X/Y TP.core.Point of the signal relative to the
      *     containing source element.
      * @returns {TP.core.Point} The X/Y point of the signal relative to its
      *     containing element.
@@ -1767,8 +1766,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getPageX',
 function() {
 
     /**
-     * @name getPageX
-     * @synopsis Returns the X coordinate of the signal relative to the page
+     * @method getPageX
+     * @summary Returns the X coordinate of the signal relative to the page
      *     containing the source element.
      * @returns {Number} The X coordinate of the signal relative to the overall
      *     page.
@@ -1787,8 +1786,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getPageY',
 function() {
 
     /**
-     * @name getPageY
-     * @synopsis Returns the Y coordinate of the signal relative to the page
+     * @method getPageY
+     * @summary Returns the Y coordinate of the signal relative to the page
      *     containing the source element.
      * @returns {Number} The Y coordinate of the signal relative to the overall
      *     page.
@@ -1807,8 +1806,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getPagePoint',
 function() {
 
     /**
-     * @name getPagePoint
-     * @synopsis Returns the X/Y TP.core.Point of the signal relative to the
+     * @method getPagePoint
+     * @summary Returns the X/Y TP.core.Point of the signal relative to the
      *     page containing the source element.
      * @returns {TP.core.Point} The X/Y point of the signal relative to its
      *     overall page.
@@ -1833,8 +1832,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getScreenX',
 function() {
 
     /**
-     * @name getScreenX
-     * @synopsis Returns the X coordinate of the signal relative to the video
+     * @method getScreenX
+     * @summary Returns the X coordinate of the signal relative to the video
      *     screen.
      * @returns {Number} The X coordinate of the signal relative to the video
      *     screen.
@@ -1853,8 +1852,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getScreenY',
 function() {
 
     /**
-     * @name getScreenY
-     * @synopsis Returns the Y coordinate of the signal relative to the video
+     * @method getScreenY
+     * @summary Returns the Y coordinate of the signal relative to the video
      *     screen.
      * @returns {Number} The Y coordinate of the signal relative to the video
      *     screen.
@@ -1873,8 +1872,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getScreenPoint',
 function() {
 
     /**
-     * @name getScreenPoint
-     * @synopsis Returns the X/Y TP.core.Point of the signal relative to the
+     * @method getScreenPoint
+     * @summary Returns the X/Y TP.core.Point of the signal relative to the
      *     video screen
      * @returns {TP.core.Point} The X/Y point of the signal relative to its
      *     video screen.
@@ -1899,8 +1898,8 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getTransformedPoint',
 function() {
 
     /**
-     * @name getTransformedPoint
-     * @synopsis Returns the X/Y TP.core.Point of the signal relative to the
+     * @method getTransformedPoint
+     * @summary Returns the X/Y TP.core.Point of the signal relative to the
      *     target element while taking into account any CSS transformations to
      *     that element.
      * @returns {TP.core.Point} The X/Y point of the signal relative to its
@@ -1948,8 +1947,8 @@ TP.sig.DOMMouseEnter.Inst.defineMethod('getRelatedTarget',
 function() {
 
     /**
-     * @name getRelatedTarget
-     * @synopsis Returns the related target, the element the mouse is over now,
+     * @method getRelatedTarget
+     * @summary Returns the related target, the element the mouse is over now,
      *     having just left the current event's target.
      * @returns {Element} The element the mouse is now over.
      */
@@ -1972,8 +1971,8 @@ TP.sig.DOMMouseLeave.Inst.defineMethod('getRelatedTarget',
 function() {
 
     /**
-     * @name getRelatedTarget
-     * @synopsis Returns the related target, the element the mouse is over now,
+     * @method getRelatedTarget
+     * @summary Returns the related target, the element the mouse is over now,
      *     having just left the current event's target.
      * @returns {Element} The element the mouse is now over.
      */
@@ -2021,8 +2020,8 @@ TP.sig.DOMMouseOut.Inst.defineMethod('getRelatedTarget',
 function() {
 
     /**
-     * @name getRelatedTarget
-     * @synopsis Returns the related target, the element the mouse is over now,
+     * @method getRelatedTarget
+     * @summary Returns the related target, the element the mouse is over now,
      *     having just left the current event's target.
      * @returns {Element} The element the mouse is now over.
      */
@@ -2043,8 +2042,8 @@ TP.sig.DOMMouseOver.Inst.defineMethod('getRelatedTarget',
 function() {
 
     /**
-     * @name getRelatedTarget
-     * @synopsis Returns the related target, the element the mouse was just over
+     * @method getRelatedTarget
+     * @summary Returns the related target, the element the mouse was just over
      *     prior to the current event.
      * @returns {Element} The element the mouse was over.
      */
@@ -2058,8 +2057,8 @@ TP.sig.DOMMouseOver.Inst.defineMethod('shouldPrevent',
 function(aFlag) {
 
     /**
-     * @name shouldPrevent
-     * @synopsis Returns true if the signal handler(s) should not perform the
+     * @method shouldPrevent
+     * @summary Returns true if the signal handler(s) should not perform the
      *     default action. If a flag is provided this flag is used to set the
      *     prevent status.
      * @param {Boolean} aFlag yes or no?
@@ -2108,8 +2107,8 @@ TP.sig.DOMMouseWheel.Type.defineMethod('shouldLog',
 function() {
 
     /**
-     * @name shouldLog
-     * @synopsis Returns true when the signal can be logged during signal
+     * @method shouldLog
+     * @summary Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns false.
      * @returns {Boolean}
      */
@@ -2125,8 +2124,8 @@ TP.sig.DOMMouseWheel.Inst.defineMethod('getDirection',
 function() {
 
     /**
-     * @name getDirection
-     * @synopsis Returns the mouse wheel direction as either TP.UP or TP.DOWN
+     * @method getDirection
+     * @summary Returns the mouse wheel direction as either TP.UP or TP.DOWN
      *     depending on the specific delta direction.
      * @returns {TP.UP|TP.DOWN}
      */
@@ -2140,8 +2139,8 @@ TP.sig.DOMMouseWheel.Inst.defineMethod('getWheelDelta',
 function() {
 
     /**
-     * @name getWheelDelta
-     * @synopsis Returns the mouse wheel delta value from a mouse wheel event.
+     * @method getWheelDelta
+     * @summary Returns the mouse wheel delta value from a mouse wheel event.
      * @returns {Number} The delta. Positive is down, negative is up.
      */
 
@@ -2160,8 +2159,8 @@ TP.sig.DOMMouseHover.Inst.defineMethod('setEvent',
 function(normalizedEvent) {
 
     /**
-     * @name setEvent
-     * @synopsis Sets the 'native event' of the signal.
+     * @method setEvent
+     * @summary Sets the 'native event' of the signal.
      * @param {Event} normalizedEvent The native event containing the signal's
      *     raw data.
      * @returns {TP.sig.DOMMouseHover} The receiver.
@@ -2196,8 +2195,8 @@ TP.sig.DOMKeySignal.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
-     * @name getSignalOwner
-     * @synopsis Returns the Object or Type responsible for signals of this
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
      *     type.
      * @returns {Object|TP.lang.RootObject} The signal type's owner.
      */
@@ -2213,8 +2212,8 @@ TP.sig.DOMKeySignal.Inst.defineMethod('computeSignalName',
 function() {
 
     /**
-     * @name computeSignalName
-     * @synopsis Computes the signal name. For key signals, the 'default' signal
+     * @method computeSignalName
+     * @summary Computes the signal name. For key signals, the 'default' signal
      *     name is 'TP.sig.' followed by whatever the TP.core.Keyboard type
      *     reports as the 'DOM signal name' for the event that this signal
      *     represents. This would be something like
@@ -2236,8 +2235,8 @@ TP.sig.DOMKeySignal.Inst.defineMethod('getKeyCode',
 function() {
 
     /**
-     * @name getKeyCode
-     * @synopsis Returns the code of the key that was pressed to generate this
+     * @method getKeyCode
+     * @summary Returns the code of the key that was pressed to generate this
      *     key signal.
      * @returns {Number} The key code of the key that was pressed.
      */
@@ -2251,10 +2250,10 @@ TP.sig.DOMKeySignal.Inst.defineMethod('getSignalNames',
 function() {
 
     /**
-     * @name getSignalNames
-     * @synopsis Returns the 'signal names' to use when dispatching signals of
+     * @method getSignalNames
+     * @summary Returns the 'signal names' to use when dispatching signals of
      *     this type.
-     * @description TP.sig.DOMKeySignals have a bit of complexity when providing
+     * @summary TP.sig.DOMKeySignals have a bit of complexity when providing
      * their signal names. First, there is the 'virtual key' signal name (i.e.
      *     'TP.sig.DOM_b_Up', which is the default value. Next, there is
      *     (sometimes) a 'Unicode literal' signal name (i.e.
@@ -2280,8 +2279,8 @@ TP.sig.DOMKeySignal.Inst.defineMethod('getUnicodeSignalName',
 function() {
 
     /**
-     * @name getUnicodeSignalName
-     * @synopsis Returns the 'Unicode literal' signal name of the receiver.
+     * @method getUnicodeSignalName
+     * @summary Returns the 'Unicode literal' signal name of the receiver.
      *     This would be something like 'TP.sig.DOM_U0062_Up'.
      * @returns {String} The 'Unicode literal' signal name of the receiver.
      */
@@ -2316,10 +2315,10 @@ TP.sig.DOMKeySignal.Inst.defineMethod('getVirtualKey',
 function() {
 
     /**
-     * @name getVirtualKey
-     * @synopsis Returns the normalized virtual key name for the receiver's
+     * @method getVirtualKey
+     * @summary Returns the normalized virtual key name for the receiver's
      *     event.
-     * @description For example, a TP.sig.DOMKeySignal with a keyCode of 13 will
+     * @summary For example, a TP.sig.DOMKeySignal with a keyCode of 13 will
      *     produce the identifier 'Enter'.
      * @returns {String} The virtual key name, such as 'Enter'.
      */
@@ -2360,10 +2359,10 @@ TP.sig.DOMModifierKeyChange.Inst.defineMethod('getSignalNames',
 function() {
 
     /**
-     * @name getSignalNames
-     * @synopsis Returns the 'signal names' to use when dispatching signals of
+     * @method getSignalNames
+     * @summary Returns the 'signal names' to use when dispatching signals of
      *     this type.
-     * @description Normally, DOMKeySignals return an Array of signal names that
+     * @summary Normally, DOMKeySignals return an Array of signal names that
      *     include both their signal name (which will correspond to a particular
      *     key) and the type name. But we want DOMKeyModifierChange signals to
      *     only return their type name so that observers have to observe this
@@ -2383,8 +2382,8 @@ TP.sig.DOMModifierKeyChange.Inst.defineMethod('setEvent',
 function(normalizedEvent) {
 
     /**
-     * @name setEvent
-     * @synopsis Sets the native event which this signal instance represents.
+     * @method setEvent
+     * @summary Sets the native event which this signal instance represents.
      * @param {Event} normalizedEvent The native event containing the signal's
      *     raw data.
      * @returns {TP.sig.DOMModifierKeyChange} The receiver.
@@ -2446,8 +2445,8 @@ TP.sig.GeoLocationChanged.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
-     * @name getSignalOwner
-     * @synopsis Returns the Object or Type responsible for signals of this
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
      *     type.
      * @returns {Object|TP.lang.RootObject} The signal type's owner.
      */
@@ -2471,8 +2470,8 @@ TP.sig.CSSMediaChanged.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
-     * @name getSignalOwner
-     * @synopsis Returns the Object or Type responsible for signals of this
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
      *     type.
      * @returns {Object|TP.lang.RootObject} The signal type's owner.
      */

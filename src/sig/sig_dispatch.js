@@ -10,9 +10,9 @@
 
 /**
  * @type {TP.sig.dispatch}
- * @synopsis An action which manages signal dispatching for TP.sig.dispatch
+ * @summary An action which manages signal dispatching for TP.sig.dispatch
  *     elements found in the markup.
- * @description The TIBET implementation of this action has extended capability
+ * @summary The TIBET implementation of this action has extended capability
  *     over XML Events v2 (draft) specification - namely the ability to dispatch
  *     using a target="*" syntax to simulate TIBET's TP.ANY origin behavior and
  *     the ability to specify signal arguments using binding attributes.
@@ -30,8 +30,8 @@ TP.sig.dispatch.Type.defineMethod('shouldFailOnEmptyInput',
 function() {
 
     /**
-     * @name shouldFailOnEmptyInput
-     * @synopsis Returns true when the receiver's type will typically fail() any
+     * @method shouldFailOnEmptyInput
+     * @summary Returns true when the receiver's type will typically fail() any
      *     request which can't provide viable input data. The default is true.
      * @returns {Boolean} Whether processing should stop if input data is null
      *     or undefined.
@@ -46,10 +46,10 @@ TP.sig.dispatch.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @name tshExecute
-     * @synopsis Dispatches a signal as specified by the receiver's content node
+     * @method tshExecute
+     * @summary Dispatches a signal as specified by the receiver's content node
      *     attributes.
-     * @description The XForms dispatch action, with extensions. In particular
+     * @summary The XForms dispatch action, with extensions. In particular
      *     TIBET allows dispatch to reference a payload which allows it to
      *     integrate seamlessly with TIBET's signaling system's concept of
      *     payload. The payload is defined by standard binding attributes on the

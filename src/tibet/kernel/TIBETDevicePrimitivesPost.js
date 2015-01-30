@@ -21,12 +21,12 @@ TP.definePrimitive('eventNameNativeValue',
 function(eventName) {
 
     /**
-     * @name eventNameNativeValue
-     * @synopsis Returns the name of the native event that maps to the TIBET
+     * @method eventNameNativeValue
+     * @summary Returns the name of the native event that maps to the TIBET
      *     event name provided.
      * @param {String} eventName An event name such as F12_Up or
      *     TP.sig.DOMKeyPress.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String} The name of the native event.
      */
 
@@ -64,8 +64,8 @@ TP.definePrimitive('eventGetPropertyKeys',
 function(anEvent) {
 
     /**
-     * @name eventGetPropertyKeys
-     * @synopsis Returns an Array containing all of the 'key names' of the
+     * @method eventGetPropertyKeys
+     * @summary Returns an Array containing all of the 'key names' of the
      *     supplied Event object.
      * @param {Event} anEvent The event object to return the property keys
      *     for.
@@ -165,8 +165,8 @@ TP.definePrimitive('eventGetTarget',
 function(anEvent) {
 
     /**
-     * @name eventGetTarget
-     * @synopsis Returns the object targeted by the event.
+     * @method eventGetTarget
+     * @summary Returns the object targeted by the event.
      * @param {Event} anEvent The native event.
      * @returns {Object} The targeted object, usually an element node.
      */
@@ -185,8 +185,8 @@ TP.definePrimitive('eventGetTargetDocument',
 function(anEvent) {
 
     /**
-     * @name eventGetTargetDocument
-     * @synopsis Returns the document targeted by the event (if the target is an
+     * @method eventGetTargetDocument
+     * @summary Returns the document targeted by the event (if the target is an
      *     element).
      * @param {Event} anEvent The native event.
      * @returns {Document} The document of the targeted element.
@@ -207,8 +207,8 @@ TP.definePrimitive('eventGetTime',
 function(anEvent) {
 
     /**
-     * @name eventGetTime
-     * @synopsis Returns the event time (the time the event was created in
+     * @method eventGetTime
+     * @summary Returns the event time (the time the event was created in
      *     milliseconds).
      * @param {Event} anEvent The native event.
      * @returns {Number} The creation time for the event (in milliseconds since
@@ -236,8 +236,8 @@ TP.definePrimitive('eventGetType',
 function(anEvent) {
 
     /**
-     * @name eventGetType
-     * @synopsis Returns the event type (keydown, mouseover, etc) for the event.
+     * @method eventGetType
+     * @summary Returns the event type (keydown, mouseover, etc) for the event.
      * @param {Event} anEvent The native event.
      * @returns {String} The standard event type name for the event.
      */
@@ -256,8 +256,8 @@ TP.definePrimitive('eventGetWindow',
 function(anEvent) {
 
     /**
-     * @name eventGetWindow
-     * @synopsis Returns the window object targeted by the event.
+     * @method eventGetWindow
+     * @summary Returns the window object targeted by the event.
      * @param {Event} anEvent The native event.
      * @returns {Window} The native window the event targeted.
      */
@@ -276,8 +276,8 @@ TP.definePrimitive('eventResolveTarget',
 function(anEvent) {
 
     /**
-     * @name eventResolveTarget
-     * @synopsis Returns a 'proper target' for the supplied Event object.
+     * @method eventResolveTarget
+     * @summary Returns a 'proper target' for the supplied Event object.
      *     discussion This method takes a number of factors into account when
      *     computing the target element for the supplied Event: - Whether the
      *     native target is a Document - Whether the native target or any of its
@@ -286,7 +286,7 @@ function(anEvent) {
      *     capture a particular signal and therefore designates them as the
      *     'proper target'.
      * @param {Event} anEvent The event to resolve the target of.
-     * @raises TP.sig.InvalidEvent
+     * @exception TP.sig.InvalidEvent
      * @returns {The} proper target for the supplied Event object.
      */
 
@@ -382,8 +382,8 @@ TP.definePrimitive('eventGetAltKey',
 function(anEvent) {
 
     /**
-     * @name eventGetAltKey
-     * @synopsis Returns true if the event included the Alt key or has had the
+     * @method eventGetAltKey
+     * @summary Returns true if the event included the Alt key or has had the
      *     Alt key simulated.
      * @param {Event} anEvent The native event.
      * @returns {Boolean} True if the event included the Alt key.
@@ -403,11 +403,11 @@ TP.definePrimitive('eventGetKeyCode',
 function(anEvent) {
 
     /**
-     * @name eventGetKeyCode
-     * @synopsis Returns the key code for the event after ensuring that it has
+     * @method eventGetKeyCode
+     * @summary Returns the key code for the event after ensuring that it has
      *     been adjusted for cross-browser issues (generally, TIBET normalizes
      *     to the key code sent on 'key down').
-     * @description In general, you should not use key codes, but instead use
+     * @summary In general, you should not use key codes, but instead use
      *     the 'getEventVirtualKey()' method of the TP.core.Keyboard type and
      *     test the result of that method against one of the key identifier
      *     names defined by the W3C (i.e. 'Enter' or 'Spacebar').
@@ -430,8 +430,8 @@ TP.definePrimitive('eventGetCtrlKey',
 function(anEvent) {
 
     /**
-     * @name eventGetCtrlKey
-     * @synopsis Returns true if the event included the Ctrl key or has had the
+     * @method eventGetCtrlKey
+     * @summary Returns true if the event included the Ctrl key or has had the
      *     Ctrl key simulated.
      * @param {Event} anEvent The native event.
      * @returns {Boolean} True if the event included the Ctrl key.
@@ -451,8 +451,8 @@ TP.definePrimitive('eventGetMetaKey',
 function(anEvent) {
 
     /**
-     * @name eventGetMetaKey
-     * @synopsis Returns true if the event included the Meta key or has had the
+     * @method eventGetMetaKey
+     * @summary Returns true if the event included the Meta key or has had the
      *     Meta key simulated.
      * @param {Event} anEvent The native event.
      * @returns {Boolean} True if the event included the Meta key.
@@ -472,8 +472,8 @@ TP.definePrimitive('eventGetShiftKey',
 function(anEvent) {
 
     /**
-     * @name eventGetShiftKey
-     * @synopsis Returns true if the event included the Shift key or has had the
+     * @method eventGetShiftKey
+     * @summary Returns true if the event included the Shift key or has had the
      *     Shift key simulated.
      * @param {Event} anEvent The native event.
      * @returns {Boolean} True if the event included the Shift key.
@@ -493,9 +493,9 @@ TP.definePrimitive('eventGetUnicodeCharCode',
 function(anEvent) {
 
     /**
-     * @name eventGetUnicodeCharCode
-     * @synopsis Returns the Unicode character code for the supplied event.
-     * @description In general, you should not use Unicode character codes, but
+     * @method eventGetUnicodeCharCode
+     * @summary Returns the Unicode character code for the supplied event.
+     * @summary In general, you should not use Unicode character codes, but
      *     instead use the 'getEventVirtualKey()' method of the TP.core.Keyboard
      *     type and test the result of that method against one of the key
      *     identifier names defined by the W3C (i.e. 'Enter' or 'Spacebar').
@@ -535,8 +535,8 @@ TP.definePrimitive('eventGetButton',
 function(anEvent) {
 
     /**
-     * @name eventGetButton
-     * @synopsis Returns the button code for the supplied event, which is one of
+     * @method eventGetButton
+     * @summary Returns the button code for the supplied event, which is one of
      *     the following constants: TP.LEFT, TP.MIDDLE, or TP.RIGHT.
      * @param {Event} anEvent The event object to extract the button code from.
      * @returns {String} The button code extracted from the supplied Event
@@ -590,8 +590,8 @@ TP.definePrimitive('eventGetClientXY',
 function(anEvent) {
 
     /**
-     * @name eventGetClientXY
-     * @synopsis Returns the window X,Y coordinate pair for the event.
+     * @method eventGetClientXY
+     * @summary Returns the window X,Y coordinate pair for the event.
      * @param {Event} anEvent The native event.
      * @returns {Array} An array of (window X, window Y).
      */
@@ -614,8 +614,8 @@ TP.definePrimitive('eventGetOffsetXY',
 function(anEvent) {
 
     /**
-     * @name eventGetOffsetXY
-     * @synopsis Returns the containing element X,Y coordinate pair for the
+     * @method eventGetOffsetXY
+     * @summary Returns the containing element X,Y coordinate pair for the
      *     event.
      * @param {Event} anEvent The native event.
      * @returns {Array} An array of (containing element X, containing element
@@ -640,8 +640,8 @@ TP.definePrimitive('eventGetPageXY',
 function(anEvent) {
 
     /**
-     * @name eventGetPageXY
-     * @synopsis Returns the document X,Y coordinate pair for the event. This
+     * @method eventGetPageXY
+     * @summary Returns the document X,Y coordinate pair for the event. This
      *     allows all events to be tracked relative to a common origin.
      * @param {Event} anEvent The native event.
      * @returns {Array} An array of (document X, document Y).
@@ -665,8 +665,8 @@ TP.definePrimitive('eventGetRelatedTarget',
 function(anEvent) {
 
     /**
-     * @name eventGetRelatedTarget
-     * @synopsis Returns the 'related target', the last element the event was
+     * @method eventGetRelatedTarget
+     * @summary Returns the 'related target', the last element the event was
      *     over. NOTE that this is typically only relevant for the mouse events
      *     mouseover and mouseout.
      * @param {Event} anEvent The native event to query.
@@ -687,8 +687,8 @@ TP.definePrimitive('eventGetResolvedTarget',
 function(anEvent) {
 
     /**
-     * @name eventGetResolvedTarget
-     * @synopsis Returns the 'resolved target', the element that was resolved
+     * @method eventGetResolvedTarget
+     * @summary Returns the 'resolved target', the element that was resolved
      *     using the 'resolvedTarget' getter instrumented onto Event.prototype
      *     in the hook file. That getter method uses TP.eventResolveTarget().
      *     See that method for more information.
@@ -710,8 +710,8 @@ TP.definePrimitive('eventGetWheelDelta',
 function(anEvent) {
 
     /**
-     * @name eventGetWheelDelta
-     * @synopsis Returns the wheel delta value from the event provided. The
+     * @method eventGetWheelDelta
+     * @summary Returns the wheel delta value from the event provided. The
      *     event should have been either a DOMMouseScroll or mousewheel event
      *     depending on the platform in question.
      * @param {Event} anEvent The native mouse event.
@@ -732,8 +732,8 @@ TP.definePrimitive('eventSetType',
 function(anEvent, aType) {
 
     /**
-     * @name eventSetType
-     * @synopsis Sets the 'event type'. This allows the underlying event type to
+     * @method eventSetType
+     * @summary Sets the 'event type'. This allows the underlying event type to
      *     be set to one of TIBET's 'fake event' types.
      * @param {Event} anEvent The native event.
      * @param {String} aType An event type.
@@ -755,8 +755,8 @@ TP.definePrimitive('eventIsDuplicate',
 function(eventOne, eventTwo) {
 
     /**
-     * @name eventIsDuplicate
-     * @synopsis Returns true if the two events appear to be duplicates. This
+     * @method eventIsDuplicate
+     * @summary Returns true if the two events appear to be duplicates. This
      *     test takes into account not only the native event slots but any slots
      *     which TIBET may have placed on the event.
      * @param {Event} eventOne The first event to compare.
@@ -852,8 +852,8 @@ function(anOrigin, aSignal, anElement, anEventOrHash, aPolicy, isCancelable,
 isBubbling) {
 
     /**
-     * @name dispatch
-     * @synopsis Signals an event, typically one originating from a UI or DOM
+     * @method dispatch
+     * @summary Signals an event, typically one originating from a UI or DOM
      *     element.
      * @param {Object|String} anOrigin An origin or ID to signal from. Often
      *     null in the UI which means the context or event data will be used to
@@ -1051,11 +1051,11 @@ TP.definePrimitive('$dispatchEventToTIBET',
 function(nativeEvt) {
 
     /**
-     * @name $dispatchEventToTIBET
-     * @synopsis The handler that all elements instrumented to fire events are
+     * @method $dispatchEventToTIBET
+     * @summary The handler that all elements instrumented to fire events are
      *     instrumented with. NOTE that you typically don't need to arm
      *     elements, TIBET handles most things automatically.
-     * @description This handler performs the following steps: 1) Processes the
+     * @summary This handler performs the following steps: 1) Processes the
      *     native event data into an object hash, registering it under commonly
      *     known keys that TIBET is expecting. 2) Computes the parent ID array
      *     for the element, if it isn't already available on the element and
@@ -1069,7 +1069,7 @@ function(nativeEvt) {
      *     event.
      * @param {The} nativeEvt 'native' event that just got fired from the
      *     browser.
-     * @raises TP.sig.InvalidEvent
+     * @exception TP.sig.InvalidEvent
      */
 
     //  used for defining the event name and default supertype,
@@ -1217,8 +1217,8 @@ TP.definePrimitive('$$handleFocus',
 function(anEvent) {
 
     /**
-     * @name $$handleFocus
-     * @synopsis Document-level focus handler, installed by tibet_hook and
+     * @method $$handleFocus
+     * @summary Document-level focus handler, installed by tibet_hook and
      *     leveraged by IE event wrapper code to ensure capture semantics are
      *     preserved even on IE.
      * @param {Event} anEvent The native event object.
@@ -1233,8 +1233,8 @@ TP.definePrimitive('$$handleBlur',
 function(anEvent) {
 
     /**
-     * @name $$handleBlur
-     * @synopsis Document-level blur handler, installed by tibet_hook and
+     * @method $$handleBlur
+     * @summary Document-level blur handler, installed by tibet_hook and
      *     leveraged by IE event wrapper code to ensure capture semantics are
      *     preserved even on IE.
      * @param {Event} anEvent The native event object.
@@ -1249,8 +1249,8 @@ TP.definePrimitive('$$handleChange',
 function(anEvent) {
 
     /**
-     * @name $$handleChange
-     * @synopsis Document-level change handler, installed by tibet_hook and
+     * @method $$handleChange
+     * @summary Document-level change handler, installed by tibet_hook and
      *     leveraged by IE event wrapper code to ensure capture semantics are
      *     preserved even on IE.
      * @param {Event} anEvent The native event object.
@@ -1265,8 +1265,8 @@ TP.definePrimitive('$$handleCut',
 function(anEvent) {
 
     /**
-     * @name $$handleCut
-     * @synopsis Document-level cut handler, installed by tibet_hook and
+     * @method $$handleCut
+     * @summary Document-level cut handler, installed by tibet_hook and
      *     leveraged by IE event wrapper code to ensure capture semantics are
      *     preserved even on IE.
      * @param {Event} anEvent The native event object.
@@ -1281,8 +1281,8 @@ TP.definePrimitive('$$handleCopy',
 function(anEvent) {
 
     /**
-     * @name $$handleCopy
-     * @synopsis Document-level copy handler, installed by tibet_hook and
+     * @method $$handleCopy
+     * @summary Document-level copy handler, installed by tibet_hook and
      *     leveraged by IE event wrapper code to ensure capture semantics are
      *     preserved even on IE.
      * @param {Event} anEvent The native event object.
@@ -1297,8 +1297,8 @@ TP.definePrimitive('$$handlePaste',
 function(anEvent) {
 
     /**
-     * @name $$handlePaste
-     * @synopsis Document-level paste handler, installed by tibet_hook and
+     * @method $$handlePaste
+     * @summary Document-level paste handler, installed by tibet_hook and
      *     leveraged by IE event wrapper code to ensure capture semantics are
      *     preserved even on IE.
      * @param {Event} anEvent The native event object.
@@ -1313,8 +1313,8 @@ TP.definePrimitive('$$handleNonKeyOrMouseEvent',
 function(anEvent) {
 
     /**
-     * @name $$handleNonKeyOrMouseEvent
-     * @synopsis Handles a 'non keyboard or mouse' native event by signaling it
+     * @method $$handleNonKeyOrMouseEvent
+     * @summary Handles a 'non keyboard or mouse' native event by signaling it
      *     both along the responder chain for UI* signals and dispatching it
      *     along the DOM 'V' for DOM* signals.
      * @param {Event} anEvent The native event object.
@@ -1371,8 +1371,8 @@ TP.definePrimitive('$$handleTransitionEnd',
 function(anEvent) {
 
     /**
-     * @name $$handleTransitionEnd
-     * @synopsis Document-level transitionend handler, installed by tibet_hook
+     * @method $$handleTransitionEnd
+     * @summary Document-level transitionend handler, installed by tibet_hook
      *     and leveraged by IE event wrapper code to ensure capture semantics
      *     are preserved even on IE.
      * @param {Event} anEvent The native event object.
@@ -1387,8 +1387,8 @@ TP.definePrimitive('elementGetEventIds',
 function(anElement, invalidateIdCache) {
 
     /**
-     * @name elementGetEventIds
-     * @synopsis Returns the event ids (signal origins used to signal DOM
+     * @method elementGetEventIds
+     * @summary Returns the event ids (signal origins used to signal DOM
      *     events) for anElement. The event ids are computed by walking up the
      *     DOM tree, appending each element's global ID to the list of event
      *     ids. A global ID is the dot-separated name of the element from
@@ -1396,7 +1396,7 @@ function(anElement, invalidateIdCache) {
      * @param {Element} anElement The Element node to get the event ids for.
      * @param {Boolean} invalidateIdCache Whether or not to invalidate any
      *     'cached' ids that were computed previously.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} An array containing the event ids of the element.
      */
 
@@ -1497,12 +1497,12 @@ TP.definePrimitive('elementGetEventOrigins',
 function(anElement, anEvent) {
 
     /**
-     * @name elementGetEventOrigins
-     * @synopsis Returns the elements which comprise signal origins used to
+     * @method elementGetEventOrigins
+     * @summary Returns the elements which comprise signal origins used to
      *     signal DOM events for anElement. The origins are computed by walking
      *     up the DOM tree, appending each element to the list of origins.
      * @param {Element} anElement The Element node to get the origin list for.
-     * @raises TP.sig.InvalidElement, TP.sig.InvalidEvent
+     * @exception TP.sig.InvalidElement, TP.sig.InvalidEvent
      * @returns {Array.<Object>} An array of elements and objects.
      */
 
@@ -1605,13 +1605,13 @@ TP.definePrimitive('windowArmListeners',
 function(aWindow, aDocumentNode) {
 
     /**
-     * @name windowArmListeners
-     * @synopsis Arms all the elements associated with listener elements in the
+     * @method windowArmListeners
+     * @summary Arms all the elements associated with listener elements in the
      *     node provided. Note that we only need to arm listeners that have 'UI'
      *     signal types.
      * @param {Window} aWindow The window that should do the arming.
      * @param {XMLDocument} aDocumentNode The node containing listener elements.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
      * @returns {Number} The count of listeners armed.
      */
 
@@ -1671,8 +1671,8 @@ TP.definePrimitive('windowArmNode',
 function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
 
     /**
-     * @name windowArmNode
-     * @synopsis Arm the node, or list of nodes, so they will fire the events
+     * @method windowArmNode
+     * @summary Arm the node, or list of nodes, so they will fire the events
      *     specified in the supplied set of event names.
      * @param {Window} aWindow The window that should do the arming.
      * @param {Node|String} aNodeOrList The node or list of nodes to arm with
@@ -1685,7 +1685,7 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
      *     signaling system.
      * @param {Function} aPolicy An (optional) parameter that defines the
      *     "firing" policy.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidParameter
      */
 
     var i,
@@ -1790,8 +1790,8 @@ TP.definePrimitive('$windowArmNodeForEvents',
 function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
 
     /**
-     * @name $windowArmNodeForEvents
-     * @synopsis Arms the node to fire the events named in eventNameArray.
+     * @method $windowArmNodeForEvents
+     * @summary Arms the node to fire the events named in eventNameArray.
      * @param {Window} aWindow The window to process.
      * @param {Node} aNode The node to arm.
      * @param {Array} eventNameArray The array of event names to instrument
@@ -1801,7 +1801,7 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
      *     signaling system.
      * @param {Function} aPolicy An (optional) parameter that defines the
      *     "firing" policy.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
      */
 
     var targetElement,
@@ -1910,8 +1910,8 @@ TP.definePrimitive('windowDisarmNode',
 function(aWindow, aNodeOrList, eventNames, aHandler) {
 
     /**
-     * @name windowDisarmNode
-     * @synopsis Disarm element anElement from firing the events specified in
+     * @method windowDisarmNode
+     * @summary Disarm element anElement from firing the events specified in
      *     the supplied array.
      * @param {Window} aWindow The window whose nodes should be disarmed.
      * @param {Node|String} aNodeOrList The node or list to disarm with the
@@ -1922,7 +1922,7 @@ function(aWindow, aNodeOrList, eventNames, aHandler) {
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of sending the event into the TIBET
      *     signaling system.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidParameter
      */
 
     var i,
@@ -2005,8 +2005,8 @@ TP.definePrimitive('$windowDisarmNodeForEvents',
 function(aWindow, aNode, eventNameArray, aHandler) {
 
     /**
-     * @name $windowDisarmNodeForEvents
-     * @synopsis Disarms the node so it will no longer fire the events named in
+     * @method $windowDisarmNodeForEvents
+     * @summary Disarms the node so it will no longer fire the events named in
      *     eventNameArray.
      * @param {Window} aWindow The window to process.
      * @param {Node} aNode A document or element to disarm.
@@ -2014,7 +2014,7 @@ function(aWindow, aNode, eventNameArray, aHandler) {
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of sending the event into the TIBET
      *     signaling system.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
      */
 
     var i,

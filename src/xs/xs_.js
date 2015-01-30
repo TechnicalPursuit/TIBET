@@ -10,7 +10,7 @@
 
 /**
  * @type {xs:}
- * @synopsis The XML Schema namespace type, which serves as an entry point for
+ * @summary The XML Schema namespace type, which serves as an entry point for
  *     all XML Schema validation and support methods which don't start directly
  *     from an XML Schema data type.
  */
@@ -27,8 +27,8 @@ TP.xs.XMLNS.Type.defineMethod('validate',
 function(aValue, aNode) {
 
     /**
-     * @name validate
-     * @synopsis Validates a string as having a proper value for the element
+     * @method validate
+     * @summary Validates a string as having a proper value for the element
      *     provided. The element is checked for various XML Schema attachments
      *     including xsi:type attributes, xsi:schemaLocation parent references,
      *     etc.

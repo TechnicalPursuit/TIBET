@@ -22,15 +22,15 @@ TP.definePrimitive('uriTransformFile',
 function(styleUrl, inputUrl, paramHash) {
 
     /**
-     * @name uriTransformFile
-     * @synopsis Loads the two URLs and transforms the input using the style
+     * @method uriTransformFile
+     * @summary Loads the two URLs and transforms the input using the style
      *     sheet provided.
      * @param {String} styleUrl The URL of the style sheet.
      * @param {String} inputUrl The URL of the input data file.
      * @param {TP.lang.Hash} paramHash A hash of optional parameters to be
      *     passed to the style sheet. A key of 'xmlns:fixup' set to true will
      *     repair xmlns attributes.
-     * @raises TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
+     * @exception TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
      *     URINotFound
      * @returns {Document} A document object containing the results.
      */
@@ -66,15 +66,15 @@ TP.definePrimitive('uriTransformNode',
 function(styleUrl, inputNode, paramHash) {
 
     /**
-     * @name uriTransformNode
-     * @synopsis Loads the style sheet URL provided and applies the resulting
+     * @method uriTransformNode
+     * @summary Loads the style sheet URL provided and applies the resulting
      *     style to the input node.
      * @param {String} styleUrl The URL of the style sheet.
      * @param {Node} inputNode The input data element.
      * @param {TP.lang.Hash} paramHash A hash of optional parameters to be
      *     passed to the style sheet. A key of 'xmlns:fixup' set to true will
      *     repair xmlns attributes.
-     * @raises TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
+     * @exception TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
      *     URINotFound
      * @returns {Document} A document object containing the results.
      */
@@ -99,15 +99,15 @@ TP.definePrimitive('documentTransformFile',
 function(styleNode, inputUrl, paramHash) {
 
     /**
-     * @name documentTransformFile
-     * @synopsis Loads the input URL and transforms the data using the style
+     * @method documentTransformFile
+     * @summary Loads the input URL and transforms the data using the style
      *     sheet node provided.
      * @param {Node} styleNode The XSLT style document or fragment.
      * @param {String} inputUrl The URL of the input data file.
      * @param {TP.lang.Hash} paramHash A hash of optional parameters to be
      *     passed to the style sheet. A key of 'xmlns:fixup' set to true will
      *     repair xmlns attributes.
-     * @raises TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
+     * @exception TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
      *     URINotFound
      * @returns {Document} A document object containing the results.
      */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.accordionbox}
- * @synopsis Manages accordionbox XControls.
+ * @summary Manages accordionbox XControls.
  */
 
 //  ------------------------------------------------------------------------
@@ -64,8 +64,8 @@ TP.xctrls.accordionbox.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -80,8 +80,8 @@ TP.xctrls.accordionbox.Inst.defineMethod('handleValueChange',
 function(aSignal) {
 
     /**
-     * @name handleValueChange
-     * @synopsis This method is invoked as the value of the tabbar is changed.
+     * @method handleValueChange
+     * @summary This method is invoked as the value of the tabbar is changed.
      *     This is due to a handler set up in our generated markup.
      * @param {ValueChange} aSignal The signal that caused this handler to trip.
      */
@@ -101,8 +101,8 @@ TP.xctrls.accordionbox.Inst.defineMethod('handleDOMClick',
 function(aSignal) {
 
     /**
-     * @name handleDOMClick
-     * @synopsis This method is invoked as each tabitem is clicked.
+     * @method handleDOMClick
+     * @summary This method is invoked as each tabitem is clicked.
      * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -150,8 +150,8 @@ TP.xctrls.accordionbox.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure

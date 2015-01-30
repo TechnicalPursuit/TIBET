@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Query}
- * @synopsis A convenience wrapper for query tags, typically used with IQ
+ * @summary A convenience wrapper for query tags, typically used with IQ
  *     packets to facilitate operating on their query payloads.
  */
 
@@ -34,8 +34,8 @@ TP.xmpp.Query.Inst.defineMethod('init',
 function(aNode, aNamespace) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {Node} aNode A native node, or null to use the type's default
      *     template.
      * @param {String} aNamespace The namespace to qualify the receiver with.

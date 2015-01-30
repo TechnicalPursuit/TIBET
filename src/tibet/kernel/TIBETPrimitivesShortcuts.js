@@ -34,8 +34,8 @@ TP.definePrimitive('context',
 function(varargs) {
 
     /**
-     * @name context
-     * @synopsis Returns a useful context for constraining a search for one or
+     * @method context
+     * @summary Returns a useful context for constraining a search for one or
      *     more elements. This operation is used during the various TP.by* and
      *     TP.$() calls to try to optimize lookup times. Typical arguments
      *     include windows, documents, or elements which might be used to root a
@@ -97,8 +97,8 @@ TP.definePrimitive('idcall',
 function(aMethodName, elemOrId, nodeContext, varargs) {
 
     /**
-     * @name idcall
-     * @synopsis Messages the element in question, if possible. The element is
+     * @method idcall
+     * @summary Messages the element in question, if possible. The element is
      *     acquired and wrapped, and then the resulting wrapper's method is
      *     invoked if possible, otherwise the method is attempted on the
      *     unwrapped element directly.
@@ -172,8 +172,8 @@ TP.definePrimitive('tpcall',
 function(aMethodName, elemOrId, nodeContext, varargs) {
 
     /**
-     * @name tpcall
-     * @synopsis A common wrapper for calling a TP primitive with an optional
+     * @method tpcall
+     * @summary A common wrapper for calling a TP primitive with an optional
      *     root element, an optional canvas context, and one or more optional
      *     arguments to forward to the method being invoked.
      * @param {String} aMethodName The name of a method on the TP object (i.e.
@@ -244,12 +244,12 @@ TP.definePrimitive('$',
 function(anObject, nodeContext, collapse) {
 
     /**
-     * @name $
-     * @synopsis Performs a variety of operations depending on the parameters
+     * @method $
+     * @summary Performs a variety of operations depending on the parameters
      *     supplied. These include TP.wrap()ping non-String objects, generating
      *     elements from markup, selecting objects based on aspect, CSS and
      *     XPath queries and obtaining the content of URI objects.
-     * @description The parameters to this method vary greatly depending on what
+     * @summary The parameters to this method vary greatly depending on what
      *     the caller is trying to do with it: - If anObject is any Object other
      *     than a String, then it is TP.wrap()'d and returned. - If
      *     anObject is a URI, then a TP.core.URI is constructed from it and that
@@ -270,7 +270,7 @@ function(anObject, nodeContext, collapse) {
      *     See the discussion for more information.
      * @param {Object} collapse Should result lists be autocollapsed
      *     (essentially sugaring for results.first()) or not. Default is true.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The result as detailed in this function's discussion.
      */
 
@@ -335,8 +335,8 @@ TP.definePrimitive('byCSS',
 function(cssExpr, nodeContext, autoCollapse) {
 
     /**
-     * @name byCSS
-     * @synopsis Returns the result of running a TP.nodeEvaluateCSS() call using
+     * @method byCSS
+     * @summary Returns the result of running a TP.nodeEvaluateCSS() call using
      *     the context provided, or the current window's document.
      * @param {String} cssExpr The CSS expression to use for the query.
      * @param {Object} nodeContext A context in which to resolve the CSS
@@ -344,7 +344,7 @@ function(cssExpr, nodeContext, autoCollapse) {
      *     Default is the current canvas.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {Element|Array} The Array of matched Elements or a single
      *     Element if single-item Arrays are being collapsed.
      */
@@ -367,13 +367,13 @@ TP.definePrimitive('byId',
 function(anID, nodeContext) {
 
     /**
-     * @name byId
-     * @synopsis Returns the result of running a TP.nodeGetElementById() call
+     * @method byId
+     * @summary Returns the result of running a TP.nodeGetElementById() call
      *     using the context provided, or the current window's document.
      * @param {String} anID The ID to search for.
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @raises TP.sig.InvalidID
+     * @exception TP.sig.InvalidID
      * @returns {Element|Array} The element, if found, or an array when more
      *     than one ID was provided.
      */
@@ -450,8 +450,8 @@ TP.definePrimitive('byOID',
 function(anID, nodeContext) {
 
     /**
-     * @name byOID
-     * @synopsis A convenience wrapper for the TP.sys.getObjectById() call.
+     * @method byOID
+     * @summary A convenience wrapper for the TP.sys.getObjectById() call.
      *     NOTE: unlike the other TP.by* calls this function begins its search
      *     with the TIBET object registry and proceeds to check the UI
      *     canvas/context only after registrations and other sources have been
@@ -498,8 +498,8 @@ TP.definePrimitive('byPath',
 function(pathExpr, nodeContext, autoCollapse) {
 
     /**
-     * @name byPath
-     * @synopsis Returns the result of running a TP.nodeEvaluatePath() call
+     * @method byPath
+     * @summary Returns the result of running a TP.nodeEvaluatePath() call
      *     using the context provided, or the current window's document.
      * @param {String} pathExpr The path expression to use for the query.
      * @param {Object} nodeContext A context in which to resolve the path
@@ -507,7 +507,7 @@ function(pathExpr, nodeContext, autoCollapse) {
      *     Default is the current canvas.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {Element|Array} The Array of matched Elements or a single
      *     Element if single-item Arrays are being collapsed.
      */
@@ -532,8 +532,8 @@ TP.definePrimitive('addAttr',
 function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
 
     /**
-     * @name addAttr
-     * @synopsis A convenience wrapper for TP.elementAddAttributeValue. The
+     * @method addAttr
+     * @summary A convenience wrapper for TP.elementAddAttributeValue. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -560,8 +560,8 @@ TP.definePrimitive('getAttr',
 function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
 
     /**
-     * @name getAttr
-     * @synopsis A convenience wrapper for TP.elementGetAttribute. The element
+     * @method getAttr
+     * @summary A convenience wrapper for TP.elementGetAttribute. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -587,8 +587,8 @@ TP.definePrimitive('hasAttr',
 function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
 
     /**
-     * @name hasAttr
-     * @synopsis A convenience wrapper for TP.elementHasAttribute. The element
+     * @method hasAttr
+     * @summary A convenience wrapper for TP.elementHasAttribute. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -614,8 +614,8 @@ TP.definePrimitive('removeAttr',
 function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
 
     /**
-     * @name removeAttr
-     * @synopsis A convenience wrapper for TP.elementRemoveAttribute. The
+     * @method removeAttr
+     * @summary A convenience wrapper for TP.elementRemoveAttribute. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -640,8 +640,8 @@ TP.definePrimitive('replaceAttr',
 function(elemOrId, attrName, oldValue, newValue, checkAttrNSURI, nodeContext) {
 
     /**
-     * @name replaceAttr
-     * @synopsis A convenience wrapper for TP.elementReplaceAttributeValue. The
+     * @method replaceAttr
+     * @summary A convenience wrapper for TP.elementReplaceAttributeValue. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -669,8 +669,8 @@ TP.definePrimitive('setAttr',
 function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
 
     /**
-     * @name setAttr
-     * @synopsis A convenience wrapper for TP.elementSetAttribute. The element
+     * @method setAttr
+     * @summary A convenience wrapper for TP.elementSetAttribute. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -697,8 +697,8 @@ TP.definePrimitive('toggleAttr',
 function(elemOrId, attrName, nodeContext) {
 
     /**
-     * @name toggleAttr
-     * @synopsis A convenience wrapper which will toggle a Boolean attribute,
+     * @method toggleAttr
+     * @summary A convenience wrapper which will toggle a Boolean attribute,
      *     meaning that if the attribute is currently set to 'true' it will be
      *     toggled to 'false' and vice versa. If the attribute is not present
      *     the value is considered to be 'false' and a new attribute is added
@@ -734,8 +734,8 @@ TP.definePrimitive('addClass',
 function(elemOrId, className, nodeContext) {
 
     /**
-     * @name addClass
-     * @synopsis A convenience wrapper for TP.elementAddClass. The element
+     * @method addClass
+     * @summary A convenience wrapper for TP.elementAddClass. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -756,8 +756,8 @@ TP.definePrimitive('getClass',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name getClass
-     * @synopsis A convenience wrapper for TP.elementGetClass. The element
+     * @method getClass
+     * @summary A convenience wrapper for TP.elementGetClass. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -777,8 +777,8 @@ TP.definePrimitive('hasClass',
 function(elemOrId, className, nodeContext) {
 
     /**
-     * @name hasClass
-     * @synopsis A convenience wrapper for TP.elementHasClass. The element
+     * @method hasClass
+     * @summary A convenience wrapper for TP.elementHasClass. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -799,8 +799,8 @@ TP.definePrimitive('removeClass',
 function(elemOrId, className, nodeContext) {
 
     /**
-     * @name removeClass
-     * @synopsis A convenience wrapper for TP.elementRemoveClass. The element
+     * @method removeClass
+     * @summary A convenience wrapper for TP.elementRemoveClass. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -821,8 +821,8 @@ TP.definePrimitive('replaceClass',
 function(elemOrId, oldClass, newClass, nodeContext) {
 
     /**
-     * @name replaceClass
-     * @synopsis A convenience wrapper for TP.elementReplaceClass. The element
+     * @method replaceClass
+     * @summary A convenience wrapper for TP.elementReplaceClass. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -844,8 +844,8 @@ TP.definePrimitive('setClass',
 function(elemOrId, className, nodeContext) {
 
     /**
-     * @name setClass
-     * @synopsis A convenience wrapper for TP.elementSetClass. The element
+     * @method setClass
+     * @summary A convenience wrapper for TP.elementSetClass. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -866,8 +866,8 @@ TP.definePrimitive('toggleClass',
 function(elemOrId, className, nodeContext) {
 
     /**
-     * @name toggleClass
-     * @synopsis A convenience wrapper which will toggle a class, meaning that
+     * @method toggleClass
+     * @summary A convenience wrapper which will toggle a class, meaning that
      *     if the class is present it is removed, and if it's not present it
      *     will be added. The element definition is resolved via TP.byId(). The
      *     resulting element(s) are then used as roots for the operation.
@@ -896,8 +896,8 @@ TP.definePrimitive('addContent',
 function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
-     * @name addContent
-     * @synopsis A convenience wrapper for TP.core.Node's addContent call. The
+     * @method addContent
+     * @summary A convenience wrapper for TP.core.Node's addContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -920,8 +920,8 @@ TP.definePrimitive('getContent',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name getContent
-     * @synopsis A convenience wrapper for TP.core.Node's getContent call. The
+     * @method getContent
+     * @summary A convenience wrapper for TP.core.Node's getContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -940,8 +940,8 @@ TP.definePrimitive('insertContent',
 function(elemOrId, newContent, aLocation, aRequest, nodeContext) {
 
     /**
-     * @name insertContent
-     * @synopsis A convenience wrapper for TP.core.Node's insertContent call.
+     * @method insertContent
+     * @summary A convenience wrapper for TP.core.Node's insertContent call.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -967,8 +967,8 @@ TP.definePrimitive('removeContent',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name removeContent
-     * @synopsis A convenience wrapper for TP.core.CollectionNode's empty call.
+     * @method removeContent
+     * @summary A convenience wrapper for TP.core.CollectionNode's empty call.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -987,8 +987,8 @@ TP.definePrimitive('setContent',
 function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
-     * @name setContent
-     * @synopsis A convenience wrapper for TP.core.Node's setContent call. The
+     * @method setContent
+     * @summary A convenience wrapper for TP.core.Node's setContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1013,8 +1013,8 @@ TP.definePrimitive('removeElem',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name removeElem
-     * @synopsis Removes an element from the DOM. This method operates by
+     * @method removeElem
+     * @summary Removes an element from the DOM. This method operates by
      *     locating the element's parentNode and asking it to remove the child.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
@@ -1054,8 +1054,8 @@ TP.definePrimitive('replaceElem',
 function(oldElemOrId, newElemOrId, nodeContext) {
 
     /**
-     * @name replaceElem
-     * @synopsis Removes an element from the DOM. This method operates by
+     * @method replaceElem
+     * @summary Removes an element from the DOM. This method operates by
      *     locating the element's parentNode and asking it to remove the child.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
@@ -1117,8 +1117,8 @@ TP.definePrimitive('addStyle',
 function(elemOrId, aProperty, aValue, nodeContext) {
 
     /**
-     * @name addStyle
-     * @synopsis A convenience wrapper for TP.elementAddStyle. The element
+     * @method addStyle
+     * @summary A convenience wrapper for TP.elementAddStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1140,8 +1140,8 @@ TP.definePrimitive('getStyle',
 function(elemOrId, aProperty, nodeContext) {
 
     /**
-     * @name getStyle
-     * @synopsis A convenience wrapper for TP.elementGetStyle. The element
+     * @method getStyle
+     * @summary A convenience wrapper for TP.elementGetStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1162,8 +1162,8 @@ TP.definePrimitive('hasStyle',
 function(elemOrId, aProperty, nodeContext) {
 
     /**
-     * @name hasStyle
-     * @synopsis A convenience wrapper for TP.elementHasStyle. The element
+     * @method hasStyle
+     * @summary A convenience wrapper for TP.elementHasStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1185,8 +1185,8 @@ TP.definePrimitive('preserveStyle',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name preserveStyle
-     * @synopsis A convenience wrapper for TP.elementPreserveStyle. The element
+     * @method preserveStyle
+     * @summary A convenience wrapper for TP.elementPreserveStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1205,8 +1205,8 @@ TP.definePrimitive('removeStyle',
 function(elemOrId, aProperty, nodeContext) {
 
     /**
-     * @name removeStyle
-     * @synopsis A convenience wrapper for TP.elementRemoveStyle. The element
+     * @method removeStyle
+     * @summary A convenience wrapper for TP.elementRemoveStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1226,8 +1226,8 @@ TP.definePrimitive('replaceStyle',
 function(elemOrId, aProperty, oldStyle, newStyle, nodeContext) {
 
     /**
-     * @name replaceStyle
-     * @synopsis A convenience wrapper for TP.elementReplaceStyle. The element
+     * @method replaceStyle
+     * @summary A convenience wrapper for TP.elementReplaceStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1250,8 +1250,8 @@ TP.definePrimitive('restoreStyle',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name restoreStyle
-     * @synopsis A convenience wrapper for TP.elementRestoreStyle. The element
+     * @method restoreStyle
+     * @summary A convenience wrapper for TP.elementRestoreStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1270,8 +1270,8 @@ TP.definePrimitive('setStyle',
 function(elemOrId, aProperty, aValue, nodeContext) {
 
     /**
-     * @name setStyle
-     * @synopsis A convenience wrapper for TP.elementSetStyle. The element
+     * @method setStyle
+     * @summary A convenience wrapper for TP.elementSetStyle. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1295,8 +1295,8 @@ TP.definePrimitive('animate',
 function(anElement, propertyName, animationParams, nodeContext) {
 
     /**
-     * @name animate
-     * @synopsis A convenience wrapper for invoking a
+     * @method animate
+     * @summary A convenience wrapper for invoking a
      *     TP.core.CSSPropertyTransition. The element definition is resolved via
      *     TP.byId(). The resulting element(s) are then used as the targets of
      *     the transition.
@@ -1338,11 +1338,11 @@ TP.definePrimitive('effect',
 function(anElement, effectName, effectParams, nodeContext) {
 
     /**
-     * @name effect
-     * @synopsis A convenience wrapper for invoking a subtype of TP.core.Effect.
+     * @method effect
+     * @summary A convenience wrapper for invoking a subtype of TP.core.Effect.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as the targets of the effect.
-     * @description The name of the effect type to use to run the supplied
+     * @summary The name of the effect type to use to run the supplied
      *     effect name is computed by taking the supplied effect name,
      *     capitalizing the first letter and then prefixing it with 'TP.core.'
      *     and suffixing it with 'Effect'. E.g. 'puff' becomes
@@ -1568,7 +1568,7 @@ TP.definePrimitive('arm',
 function(aNodeOrList, eventNames, aHandler, aPolicy, nodeContext) {
 
     /**
-     * @name Arms a node or list of them with the event or events given.
+     * @method Arms a node or list of them with the event or events given.
      * @param {Node|String} aNodeOrList The node or list of nodes to arm with
      *     the event(s) specified. This can also be the TP.ANY constant,
      *     indicating that the event is to be observed coming from any node.
@@ -1633,8 +1633,8 @@ TP.definePrimitive('button',
 function(anEvent) {
 
     /**
-     * @name button
-     * @synopsis Returns the button code for the supplied event, which is one of
+     * @method button
+     * @summary Returns the button code for the supplied event, which is one of
      *     the following constants: TP.LEFT, TP.MIDDLE, or TP.RIGHT.
      * @param {Event} anEvent The event object to extract the button code from.
      * @returns {String} The button code extracted from the supplied Event
@@ -1650,8 +1650,8 @@ TP.definePrimitive('coord',
 function(anObject, nodeContext) {
 
     /**
-     * @name coord
-     * @synopsis Returns the 'document-level' X and Y for the supplied event or
+     * @method coord
+     * @summary Returns the 'document-level' X and Y for the supplied event or
      *     element object.
      * @param {Event|String|} anObject An event object or an
      *     Element|TP.lang.Hash| element specification, Array|TP.core.Point or
@@ -1697,7 +1697,7 @@ TP.definePrimitive('disarm',
 function(aNodeOrList, eventNames, aHandler, nodeContext) {
 
     /**
-     * @name Disarms a node or list of them for the event or events.
+     * @method Disarms a node or list of them for the event or events.
      * @param {Node|String} aNodeOrList The node or list of nodes to disarm with
      *     the event(s) specified. This can also be the TP.ANY constant.
      * @param {String|Array} eventNames The names or types of the events to
@@ -1759,8 +1759,8 @@ TP.definePrimitive('event',
 function(anEvent) {
 
     /**
-     * @name event
-     * @synopsis Returns a normalized event, meaning a native event that has
+     * @method event
+     * @summary Returns a normalized event, meaning a native event that has
      *     been instrumented to conform to the W3C standard and to have properly
      *     adjusted values for key, shift, alt, meta, etc.
      * @param {Event} anEvent The native event to normalize. Default is
@@ -1777,8 +1777,8 @@ TP.definePrimitive('keyname',
 function(anEvent) {
 
     /**
-     * @name keyname
-     * @synopsis Returns the properly adjusted key name for the event. This
+     * @method keyname
+     * @summary Returns the properly adjusted key name for the event. This
      *     should be correct provided that the event was acquired from a
      *     DOMKeySignal rather than prior to TP.core.Keyboard handling.
      * @param {Event} anEvent The event object to extract the key name from.
@@ -1794,8 +1794,8 @@ TP.definePrimitive('domkeysigname',
 function(anEvent) {
 
     /**
-     * @name domkeysigname
-     * @synopsis Returns the properly adjusted DOM signal name for the DOM. This
+     * @method domkeysigname
+     * @summary Returns the properly adjusted DOM signal name for the DOM. This
      *     should be correct provided that the event was acquired from a
      *     TP.sig.DOMKeySignal rather than prior to TP.core.Keyboard handling.
      * @param {Event} anEvent The event object to extract the signal name from.
@@ -1811,8 +1811,8 @@ TP.definePrimitive('wheel',
 function(anEvent) {
 
     /**
-     * @name wheel
-     * @synopsis Returns the wheel delta value from the event provided. The
+     * @method wheel
+     * @summary Returns the wheel delta value from the event provided. The
      *     event should have been either a DOMMouseScroll or mousewheel event
      *     depending on the platform in question.
      * @param {Event} anEvent The native mouse event.
@@ -1830,8 +1830,8 @@ TP.definePrimitive('compact',
 function(anObject, aFilter) {
 
     /**
-     * @name compact
-     * @synopsis Returns a compacted version of the object. For arrays this
+     * @method compact
+     * @summary Returns a compacted version of the object. For arrays this
      *     removes nulls, for Strings it removes consecutive sequences of
      *     whitespace (and trims the string). Other objects may have their own
      *     approach to this, for example, a TP.lang.Hash will remove keys whose
@@ -1857,8 +1857,8 @@ TP.definePrimitive('elemget',
 function(elemOrId, anAspect, nodeContext) {
 
     /**
-     * @name elemget
-     * @synopsis Returns the element(s) response to a get(anAspect), or a direct
+     * @method elemget
+     * @summary Returns the element(s) response to a get(anAspect), or a direct
      *     property access when necessary. The aspect defaults to 'value', so
      *     TP.elemget(id) is essentially equivalent to TP.val(TP.byId(id)), but
      *     TP.elemget() supports lists of objects. The element definition is
@@ -1905,8 +1905,8 @@ TP.definePrimitive('elemset',
 function(elemOrId, anAspect, aValue, nodeContext) {
 
     /**
-     * @name elemset
-     * @synopsis Sets the value of the element(s) anAspect slot to aValue. The
+     * @method elemset
+     * @summary Sets the value of the element(s) anAspect slot to aValue. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1984,8 +1984,8 @@ TP.definePrimitive('focus',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name focus
-     * @synopsis Focuses the element in question, if possible. The element is
+     * @method focus
+     * @summary Focuses the element in question, if possible. The element is
      *     acquired and wrapped, and then the resulting wrapper's focus() method
      *     is invoked if possible, otherwise a focus is attempted on the
      *     unwrapped element directly.
@@ -2005,8 +2005,8 @@ TP.definePrimitive('reset',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name reset
-     * @synopsis Resets the element in question, if possible. The element is
+     * @method reset
+     * @summary Resets the element in question, if possible. The element is
      *     acquired and wrapped, and then the resulting wrapper's reset() method
      *     is invoked if possible, otherwise a reset is attempted on the
      *     unwrapped element directly.
@@ -2026,8 +2026,8 @@ TP.definePrimitive('select',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name select
-     * @synopsis Selects the element in question, if possible. The element is
+     * @method select
+     * @summary Selects the element in question, if possible. The element is
      *     acquired and wrapped, and then the resulting wrapper's select()
      *     method is invoked if possible, otherwise a select is attempted on the
      *     unwrapped element directly.
@@ -2047,8 +2047,8 @@ TP.definePrimitive('submit',
 function(elemOrId, nodeContext) {
 
     /**
-     * @name submit
-     * @synopsis Submits the element in question, if possible. The element is
+     * @method submit
+     * @summary Submits the element in question, if possible. The element is
      *     acquired and wrapped, and then the resulting wrapper's submit()
      *     method is invoked if possible, otherwise a submit is attempted on the
      *     unwrapped element directly.
@@ -2070,8 +2070,8 @@ TP.definePrimitive('dump',
 function(anObject) {
 
     /**
-     * @name dump
-     * @synopsis Returns the key/value pairs of the object formatted in a
+     * @method dump
+     * @summary Returns the key/value pairs of the object formatted in a
      *     non-markup string.
      * @param {The} anObject object whose properties and simple dump/logging
      *     string should be returned.
@@ -2198,8 +2198,8 @@ TP.definePrimitive('inspect',
 function(anObject) {
 
     /**
-     * @name inspect
-     * @synopsis Returns the key/value pairs of the object formatted in a
+     * @method inspect
+     * @summary Returns the key/value pairs of the object formatted in a
      *     renderable markup string. Optional editing capability can be
      *     supported by the resulting markup.
      * @param {The} anObject object whose properties and simple inspection
@@ -2230,8 +2230,8 @@ TP.definePrimitive('interface',
 function(anObject, aFilter, aDiscriminator) {
 
     /**
-     * @name interface
-     * @synopsis Returns the interface of anObject, optionally filtered by the
+     * @method interface
+     * @summary Returns the interface of anObject, optionally filtered by the
      *     discriminator provided.
      * @param {Object} anObject The object to reflect upon.
      * @param {Object|String} aFilter An object containing getInterface filter
@@ -2283,8 +2283,8 @@ TP.definePrimitive('link',
 function(anObject, aMessage, aTitle, aCommand) {
 
     /**
-     * @name link
-     * @synopsis Constructs and returns an HTML link in text form for the
+     * @method link
+     * @summary Constructs and returns an HTML link in text form for the
      *     object. The message portion of the link is either the message
      *     provided or the object's ID. The command is the shell command, if
      *     any, desired. The default command is :edit since most links generated
@@ -2338,8 +2338,8 @@ TP.definePrimitive('pretty',
 function(anObject) {
 
     /**
-     * @name pretty
-     * @synopsis Returns the content of the object in a "best looking" form of
+     * @method pretty
+     * @summary Returns the content of the object in a "best looking" form of
      *     markup. For example, a function body would be returned in syntax
      *     colored markup. The largest consumer of this method is the TIBET
      *     console which takes the return value from this method and uses it as
@@ -2535,8 +2535,8 @@ TP.definePrimitive('print',
 function(anObject) {
 
     /**
-     * @name print
-     * @synopsis Returns the content of the object in a standard markup display
+     * @method print
+     * @summary Returns the content of the object in a standard markup display
      *     form. This is a "simple markup" representation of the content.
      * @param {The} anObject object whose properties and simple print string
      *     should be returned.
@@ -2565,8 +2565,8 @@ TP.definePrimitive('recursion',
 function(anObject) {
 
     /**
-     * @name recursion
-     * @synopsis Returns a string representation of the object which is used
+     * @method recursion
+     * @summary Returns a string representation of the object which is used
      *     when the object is encountered in a circularly referenced manner
      *     during the production of some sort of formatted String
      *     representation.
@@ -2600,8 +2600,8 @@ TP.definePrimitive('contains',
 function(anObject, aValue) {
 
     /**
-     * @name contains
-     * @synopsis Returns true if the object can be shown to clearly contain the
+     * @method contains
+     * @summary Returns true if the object can be shown to clearly contain the
      *     value provided. Indeterminate cases (where the object can't be tested
      *     effectively) return false.
      * @param {Object} anObject The object to test.
@@ -2629,8 +2629,8 @@ TP.definePrimitive('chain',
 function(anObject, aProperty) {
 
     /**
-     * @name chain
-     * @synopsis Returns an Array of objects acquired by recursively invoking
+     * @method chain
+     * @summary Returns an Array of objects acquired by recursively invoking
      *     get(aProperty) on anObject. When the object is a node the property is
      *     typically something such as parentNode which provides a list of all
      *     the node's ancestors.
@@ -2676,15 +2676,15 @@ TP.definePrimitive('go2',
 function(aURI, aRequest, nodeContext) {
 
     /**
-     * @name go2
-     * @synopsis Sets the window's location to the URI provided. The value of
+     * @method go2
+     * @summary Sets the window's location to the URI provided. The value of
      *     this method is that it tracks history and link access which isn't
      *     done by a typical href or location= invocation.
      * @param {TP.core.URI|String} aURI The URI to focus on.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      * @param {Object} nodeContext The window to adjust. Defaults to the
      *     $$context placed on this function.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      */
 
@@ -2724,8 +2724,8 @@ TP.definePrimitive('handle',
 function(anObject, aSignal, aHandlerName, ignoreMisses) {
 
     /**
-     * @name handle
-     * @synopsis Directly invokes a signal handler, ensuring that any signal
+     * @method handle
+     * @summary Directly invokes a signal handler, ensuring that any signal
      *     stack manipulation necessary to keep the overall signaling system in
      *     sync is performed. This is the preferred method of invoking a handler
      *     directly from within your code.
@@ -2793,8 +2793,8 @@ TP.definePrimitive('xhr',
 function(varargs) {
 
     /**
-     * @name xhr
-     * @synopsis Constructs a viable TP.sig.RESTRequest for making
+     * @method xhr
+     * @summary Constructs a viable TP.sig.RESTRequest for making
      *     XMLHttpRequest calls to a server. The returned instance can be
      *     locally programmed via defineMethod to add callbacks as needed.
      * @param {Array} varargs A variable argument list much like

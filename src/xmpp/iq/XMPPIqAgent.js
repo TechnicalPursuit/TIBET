@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqAgent}
- * @synopsis A wrapper for the IQ_AGENT namespace'd payload element.
+ * @summary A wrapper for the IQ_AGENT namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -36,8 +36,8 @@ TP.xmpp.IqAgent.Inst.defineMethod('getJID',
 function() {
 
     /**
-     * @name getJID
-     * @synopsis Returns the string value of the receiver's jid attribute.
+     * @method getJID
+     * @summary Returns the string value of the receiver's jid attribute.
      * @returns {String}
      */
 

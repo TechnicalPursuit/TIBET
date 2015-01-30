@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqSearch}
- * @synopsis A wrapper for the IQ_SEARCH namespace'd payload element.
+ * @summary A wrapper for the IQ_SEARCH namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.anyType}
- * @synopsis A top-level, non-descriptive type container. Simple and complex XML
+ * @summary A top-level, non-descriptive type container. Simple and complex XML
  *     Schema types are rooted here.
  */
 
@@ -26,8 +26,8 @@ TP.xs.anyType.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     This method is often used with schema types as part of the processing
      *     which allows the schema types to act both as validators and
      *     formatters.
@@ -47,10 +47,10 @@ TP.xs.anyType.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validate
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of 'anyType'.
-     * @description The XML Schema specification has no canonical definition for
+     * @summary The XML Schema specification has no canonical definition for
      *     this type's value space but to support usage for type validation we
      *     define it to exclude null and undefined.
      * @param {Object} anObject The object to test.
@@ -67,8 +67,8 @@ TP.xs.anyType.Type.defineMethod('validateFacet',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacet
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validateFacet
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of the receiver when restricted by the facet given.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -103,8 +103,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetEnumeration',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetEnumeration
-     * @synopsis Tests the incoming value against a specific enumeration value
+     * @method validateFacetEnumeration
+     * @summary Tests the incoming value against a specific enumeration value
      *     found in the facet provided.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -128,8 +128,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetFractionDigits',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetFractionDigits
-     * @synopsis Tests to make sure the inbound value has no more than the
+     * @method validateFacetFractionDigits
+     * @summary Tests to make sure the inbound value has no more than the
      *     specified number of fractional digits. This facet is only supported
      *     for the TP.xs.decimal type.
      * @param {Object} aValue The object to test.
@@ -150,8 +150,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetLength',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetLength
-     * @synopsis Tests the incoming value to make sure it is the specified
+     * @method validateFacetLength
+     * @summary Tests the incoming value to make sure it is the specified
      *     length, as length is computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -171,8 +171,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetMaxExclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxExclusive
-     * @synopsis Tests the incoming value to see if its value is less than the
+     * @method validateFacetMaxExclusive
+     * @summary Tests the incoming value to see if its value is less than the
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -192,8 +192,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetMaxInclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxInclusive
-     * @synopsis Tests the incoming value to see if it is less than or equal to
+     * @method validateFacetMaxInclusive
+     * @summary Tests the incoming value to see if it is less than or equal to
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -213,8 +213,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetMaxLength',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxLength
-     * @synopsis Tests the incoming value to ensure its total length (as
+     * @method validateFacetMaxLength
+     * @summary Tests the incoming value to ensure its total length (as
      *     computed by the type itself) is less than or equal to the size
      *     defined in the facet.
      * @param {Object} aValue The object to test.
@@ -235,8 +235,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetMinExclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMinExclusive
-     * @synopsis Tests the incoming value to verify that it is larger than the
+     * @method validateFacetMinExclusive
+     * @summary Tests the incoming value to verify that it is larger than the
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -256,8 +256,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetMinInclusive',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMinInclusive
-     * @synopsis Tests the incoming value to make sure its value is at least the
+     * @method validateFacetMinInclusive
+     * @summary Tests the incoming value to make sure its value is at least the
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -277,8 +277,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetMinLength',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMinLength
-     * @synopsis Tests the incoming value to make sure it is as least the length
+     * @method validateFacetMinLength
+     * @summary Tests the incoming value to make sure it is as least the length
      *     provided in the facet node (as length is computed for the receiving
      *     type). instance of the receiver when restricted by the facet given.
      * @param {Object} aValue The object to test.
@@ -299,8 +299,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetPattern',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetPattern
-     * @synopsis Tests the incoming value against the regular expression
+     * @method validateFacetPattern
+     * @summary Tests the incoming value against the regular expression
      *     provided in the facet. Note that pattern facets are "or'd" when more
      *     than one exists in a restriction. This method tests individual values
      *     and patterns and the looping logic is handled by the TP.xs.simpleType
@@ -327,8 +327,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetTotalDigits',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetTotalDigits
-     * @synopsis Tests the incoming value to make sure it has no more than the
+     * @method validateFacetTotalDigits
+     * @summary Tests the incoming value to make sure it has no more than the
      *     total number of decimal digits specified in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -348,8 +348,8 @@ TP.xs.anyType.Type.defineMethod('validateFacetWhiteSpace',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetWhiteSpace
-     * @synopsis Processes whitespace in the value to meet certain criteria
+     * @method validateFacetWhiteSpace
+     * @summary Processes whitespace in the value to meet certain criteria
      *     prior to other facets being applied. Note that processing of this
      *     facet is handled by the type, not an instance, and that it is run via
      *     TP.xs.simpleType.

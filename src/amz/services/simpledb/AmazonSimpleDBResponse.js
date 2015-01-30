@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.AmazonSimpleDBResponse}
- * @synopsis A subtype of TP.sig.RESTResponse that is used in conjunction with
+ * @summary A subtype of TP.sig.RESTResponse that is used in conjunction with
  *     the TP.amz.AmazonSimpleDBService type to communicate to the Amazon
  *     SimpleDB service.
  */

@@ -10,7 +10,7 @@
 
 /**
  * @type {bind:}
- * @synopsis This type represents the TIBET bind namespace
+ * @summary This type represents the TIBET bind namespace
  *     (http://www.technicalpursuit.com/2005/binding) in the tag processing
  *     system.
  */
@@ -27,7 +27,7 @@ TP.bind.XMLNS.Type.defineMethod('setup',
 function(anElement) {
 
     /**
-     * @name setup
+     * @method setup
      * @synopsis
      * @param {Element} anElement The element to set up.
      * @returns {null}
@@ -59,7 +59,7 @@ TP.bind.XMLNS.Type.defineMethod('teardown',
 function(anElement) {
 
     /**
-     * @name teardown
+     * @method teardown
      * @synopsis
      * @param {Element} anElement The element to tear down.
      * @returns {null}

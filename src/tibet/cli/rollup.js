@@ -117,7 +117,7 @@ Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
  * least provide a package name (since the platform doesn't keep its tibet.xml
  * in the typical application location under TIBET-INF).
  * @param {Array.<Node>} list An array of package asset nodes.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
     var pkg,

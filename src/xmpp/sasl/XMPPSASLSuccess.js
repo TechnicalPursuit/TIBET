@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.SASLSuccess}
- * @synopsis A wrapper for the SASL success element
+ * @summary A wrapper for the SASL success element
  */
 
 //  ------------------------------------------------------------------------

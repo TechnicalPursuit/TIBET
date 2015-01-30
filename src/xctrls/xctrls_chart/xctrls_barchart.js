@@ -23,8 +23,8 @@ TP.xctrls.barchart.Inst.defineMethod('refresh',
 function(aSignal) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specified a
      *     'deep' refresh then descendant elements are also updated.
      * @param {DOMRefresh} aSignal An optional signal which triggered this

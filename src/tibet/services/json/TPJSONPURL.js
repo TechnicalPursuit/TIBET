@@ -10,8 +10,8 @@
 
 /**
  * @type {TP.core.JSONPURL}
- * @synopsis A subtype of TP.core.URL specific to the 'jsonp://' scheme.
- * @description The overall format of a jsonp URI is:
+ * @summary A subtype of TP.core.URL specific to the 'jsonp://' scheme.
+ * @summary The overall format of a jsonp URI is:
  *
  *     jsonp://[domain]/[path]/[entity]?[query]
  *
@@ -71,8 +71,8 @@ TP.core.JSONPURL.Type.defineMethod('$getDefaultHandler',
 function(targetURI, aRequest) {
 
     /**
-     * @name $getDefaultHandler
-     * @synopsis Return the default URI handler type for this URI type. The
+     * @method $getDefaultHandler
+     * @summary Return the default URI handler type for this URI type. The
      *     returned type must respond to the route() method to be a valid
      *     handler.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
@@ -108,8 +108,8 @@ TP.core.JSONPURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
      * @returns {TP.core.JSONPURL} A new instance.
      */

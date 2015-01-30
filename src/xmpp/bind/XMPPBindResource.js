@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.BindResource}
- * @synopsis A wrapper for the XMPP resource binding element
+ * @summary A wrapper for the XMPP resource binding element
  */
 
 //  ------------------------------------------------------------------------
@@ -33,10 +33,10 @@ TP.xmpp.BindResource.Inst.defineMethod('addResource',
 function(resourceName) {
 
     /**
-     * @name addResource
-     * @synopsis Adds a resource node to the receiver.
+     * @method addResource
+     * @summary Adds a resource node to the receiver.
      * @param {String} resourceName A resource name.
-     * @raises TP.sig.InvalidResourceName
+     * @exception TP.sig.InvalidResourceName
      * @returns {TP.xmpp.BindResource} The receiver.
      */
 

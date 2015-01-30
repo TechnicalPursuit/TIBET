@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.amz.AmazonSimpleDBService}
- * @synopsis A subtype of TP.core.RESTService that communicates with the Amazon
+ * @summary A subtype of TP.core.RESTService that communicates with the Amazon
  *     TP.amz.SimpleDB service.
  * @example If the TP.sig.AmazonSimpleDBRequest / TP.sig.AmazonSimpleDBResponse
  *     processing model is used, it is unnecessary to manually set up an
@@ -101,8 +101,8 @@ TP.amz.AmazonSimpleDBService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Returns an initialized instance of the receiver. If aRequest is
+     * @method init
+     * @summary Returns an initialized instance of the receiver. If aRequest is
      *     provided it can help define the service's operation by providing a
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
@@ -126,8 +126,8 @@ TP.amz.AmazonSimpleDBService.Inst.defineMethod('clearAuthData',
 function() {
 
     /**
-     * @name clearAuthData
-     * @synopsis Clears any stored authentication from the receiver and any
+     * @method clearAuthData
+     * @summary Clears any stored authentication from the receiver and any
      *     backing store.
      * @returns {TP.core.Service} The receiver.
      */
@@ -146,8 +146,8 @@ TP.amz.AmazonSimpleDBService.Inst.defineMethod('configureAuthData',
 function(aRequest) {
 
     /**
-     * @name configureAuthData
-     * @synopsis Configures authentication data for the receiver.
+     * @method configureAuthData
+     * @summary Configures authentication data for the receiver.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
@@ -221,8 +221,8 @@ TP.amz.AmazonSimpleDBService.Inst.defineMethod('encodeURIParam',
 function(uriParam) {
 
     /**
-     * @name encodeURIParam
-     * @synopsis Encodes the supplied URI parameter using the standard Amazon
+     * @method encodeURIParam
+     * @summary Encodes the supplied URI parameter using the standard Amazon
      *     encoding, as per the SimpleDB scratchpad code example.
      * @param {String} uriParam The value to encode.
      * @returns {String} The supplied parameter encoded.
@@ -243,8 +243,8 @@ TP.amz.AmazonSimpleDBService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
-     * @name finalizeRequest
-     * @synopsis Perform any final updates or processing on the request to make
+     * @method finalizeRequest
+     * @summary Perform any final updates or processing on the request to make
      *     sure it is ready to send to TP.httpCall() for processing. For the
      *     Amazon SimpleDB service, this is the key routine that computes an
      *     authentication 'signature' using the 'uriparams' in the request, plus
@@ -380,8 +380,8 @@ TP.amz.AmazonSimpleDBService.Inst.defineMethod('repackageAttributes',
 function(aRequest) {
 
     /**
-     * @name repackageAttributes
-     * @synopsis Repackages any 'attribute' names, values, replaces, etc. as per
+     * @method repackageAttributes
+     * @summary Repackages any 'attribute' names, values, replaces, etc. as per
      *     the Amazon SimpleDB specification.
      * @param {TP.sig.AmazonSimpleDBRequest} aRequest The request the attributes
      *     are being rewritten for.
@@ -539,8 +539,8 @@ TP.amz.AmazonSimpleDBService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestVerb
-     * @synopsis Returns the HTTP verb to use for the request. For the Amazon
+     * @method rewriteRequestVerb
+     * @summary Returns the HTTP verb to use for the request. For the Amazon
      *     SimpleDB service the verb used is always TP.HTTP_GET.
      * @param {TP.sig.AmazonSimpleDBRequest} aRequest The request whose
      *     parameters define the HTTP request.

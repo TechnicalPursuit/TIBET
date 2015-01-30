@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubRetract}
- * @synopsis A wrapper for the PubSub retract node type.
+ * @summary A wrapper for the PubSub retract node type.
  */
 
 //  ------------------------------------------------------------------------
@@ -36,11 +36,11 @@ TP.xmpp.PubsubRetract.Inst.defineMethod('addItem',
 function(itemID) {
 
     /**
-     * @name addItem
-     * @synopsis Adds an item to the receiver's item payload.
+     * @method addItem
+     * @summary Adds an item to the receiver's item payload.
      * @param {String} itemID The item ID that is being retracted. This is not
      *     optional.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.PubsubRetract} The receiver.
      */
 
@@ -67,8 +67,8 @@ TP.xmpp.PubsubRetract.Inst.defineMethod('setNodeID',
 function(anID) {
 
     /**
-     * @name setNodeID
-     * @synopsis Sets the node ID that the receiver is retracting.
+     * @method setNodeID
+     * @summary Sets the node ID that the receiver is retracting.
      * @param {String} anID The node ID that is being retracted.
      * @returns {TP.xmpp.PubsubRetract} The receiver.
      */

@@ -64,7 +64,7 @@ Cmd.prototype.USAGE = 'tibet sample [args]';
 
 /**
  * Perform the actual command processing logic.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
     if (this.options) {

@@ -35,8 +35,8 @@ TP.lang.Proxy.Inst.defineMethod('$$fault',
 function() {
 
     /**
-     * @name $$fault
-     * @synopsis Faults in the real type for the receiver. This method has to
+     * @method $$fault
+     * @summary Faults in the real type for the receiver. This method has to
      *     take care not to create recursions while ensuring that once the fault
      *     operation has completed the new type is in place and registered as a
      *     global and a custom type.
@@ -75,8 +75,8 @@ TP.lang.Proxy.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type. This internal method is implemented on specific
      *     objects to allow them to respond more quickly to an isMemberOf query.
      *     It can also be used to "spoof" type membership (as is the case with
@@ -98,8 +98,8 @@ TP.lang.Proxy.Inst.defineMethod('defineSubtype',
 function(name) {
 
     /**
-     * @name defineSubtype
-     * @synopsis Adds a new subtype to the type represented by the receiving
+     * @method defineSubtype
+     * @summary Adds a new subtype to the type represented by the receiving
      *     string.
      * @param {String} name The name of the new subtype to add.
      * @returns {TP.lang.RootObject} A new type object.
@@ -122,8 +122,8 @@ TP.lang.Proxy.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver in proper source code form.
+     * @method asSource
+     * @summary Returns the receiver in proper source code form.
      * @returns {String}
      */
 
@@ -136,8 +136,8 @@ TP.lang.Proxy.Inst.defineMethod('canConstruct',
 function() {
 
     /**
-     * @name canConstruct
-     * @synopsis Returns true if the receiver can construct a valid instance
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
      * @returns {Boolean}
      */
@@ -159,8 +159,8 @@ TP.lang.Proxy.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name canResolveDNU
-     * @synopsis Provides an instance that has triggered the DNU machinery with
+     * @method canResolveDNU
+     * @summary Provides an instance that has triggered the DNU machinery with
      *     an opportunity to handle the problem itself. This is a useful option
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
@@ -181,8 +181,8 @@ TP.lang.Proxy.Inst.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
-     * @synopsis Constructs a new instance. Note however that this is defined as
+     * @method construct
+     * @summary Constructs a new instance. Note however that this is defined as
      *     an _instance_ method, meaning the object being messaged is actually
      *     an instance of TP.lang.Proxy that is ready to fault in the type it is
      *     proxying for and then to construct the instance via that type.
@@ -210,8 +210,8 @@ TP.lang.Proxy.Inst.defineMethod('from',
 function() {
 
     /**
-     * @name from
-     * @synopsis Returns a new instance of the receiver's true type, initialized
+     * @method from
+     * @summary Returns a new instance of the receiver's true type, initialized
      *     from the parameter data.
      * @returns {TP.lang.Object} A new instance.
      */
@@ -236,8 +236,8 @@ TP.lang.Proxy.Inst.defineMethod('init',
 function(aTypename) {
 
     /**
-     * @name init
-     * @synopsis Returns a new instance of the receiver, ready to replace itself
+     * @method init
+     * @summary Returns a new instance of the receiver, ready to replace itself
      *     as the type in question when invoked via construct(). Note that if
      *     the type already exists this method will return that type. If the
      *     type doesn't exist this method will register the receiver under that
@@ -295,8 +295,8 @@ TP.lang.Proxy.Inst.defineMethod('isInitialized',
 function() {
 
     /**
-     * @name isInitialized
-     * @synopsis Returns true if the receiver has been initialized properly.
+     * @method isInitialized
+     * @summary Returns true if the receiver has been initialized properly.
      * @returns {Boolean} Returns true for a proxy.
      */
 
@@ -311,8 +311,8 @@ TP.lang.Proxy.Inst.defineMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
-     * @name resolveDNU
-     * @synopsis Invoked by the main DNU machinery when the instance has
+     * @method resolveDNU
+     * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
@@ -341,8 +341,8 @@ TP.sys.defineMethod('initializeTypeProxies',
 function() {
 
     /**
-     * @name initializeTypeProxies
-     * @synopsis Initializes a new instance of TP.lang.Proxy for each unloaded
+     * @method initializeTypeProxies
+     * @summary Initializes a new instance of TP.lang.Proxy for each unloaded
      *     type found in the XML metadata for the app. These proxy instances
      *     will fault in their associated types on demand when construct() is
      *     invoked on them.

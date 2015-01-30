@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.listbox}
- * @synopsis Manages listbox XControls.
+ * @summary Manages listbox XControls.
  */
 
 //  ------------------------------------------------------------------------
@@ -73,8 +73,8 @@ TP.xctrls.listbox.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -95,8 +95,8 @@ TP.xctrls.listbox.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -111,8 +111,8 @@ TP.xctrls.listbox.Inst.defineMethod('handleValueChange',
 function(aSignal) {
 
     /**
-     * @name handleValueChange
-     * @synopsis This method is invoked as the value of the tabbar is changed.
+     * @method handleValueChange
+     * @summary This method is invoked as the value of the tabbar is changed.
      *     This is due to a handler set up in our generated markup.
      * @param {ValueChange} aSignal The signal that caused this handler to trip.
      */
@@ -132,8 +132,8 @@ TP.xctrls.listbox.Inst.defineMethod('handleDOMClick',
 function(aSignal) {
 
     /**
-     * @name handleDOMClick
-     * @synopsis This method is invoked as each tabitem is clicked.
+     * @method handleDOMClick
+     * @summary This method is invoked as each tabitem is clicked.
      * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
      *     trip.
      */
@@ -181,8 +181,8 @@ TP.xctrls.listbox.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.UserIOSignal}
- * @synopsis A common MIXIN used for TP.sig.UserIORequest and
+ * @summary A common MIXIN used for TP.sig.UserIORequest and
  *     TP.sig.UserIOResponse types so they can inherit directly from
  *     Request/Response as needed while sharing common UserIO functionality.
  */
@@ -46,8 +46,8 @@ TP.sig.UserIOSignal.Inst.defineMethod('getMessageType',
 function() {
 
     /**
-     * @name getMessageType
-     * @synopsis Returns the message type, one of a number of values which map
+     * @method getMessageType
+     * @summary Returns the message type, one of a number of values which map
      *     directly to CSS entries and node templates used to provided
      *     theme-able output.
      * @returns {String}
@@ -68,8 +68,8 @@ TP.sig.UserIOSignal.Inst.defineMethod('isError',
 function(aFlag) {
 
     /**
-     * @name isError
-     * @synopsis Combined setter/getter for whether the receiver represents an
+     * @method isError
+     * @summary Combined setter/getter for whether the receiver represents an
      *     error response request.
      * @param {Boolean} aFlag True will signify the receiver holds an error
      *     message to respond to.

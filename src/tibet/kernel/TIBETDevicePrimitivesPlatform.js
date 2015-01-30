@@ -22,8 +22,8 @@ TP.hc(
     function(anEvent, currentTarget) {
 
         /**
-         * @name eventNormalize
-         * @synopsis Converts the supplied object into a 'W3C plus' event
+         * @method eventNormalize
+         * @summary Converts the supplied object into a 'W3C plus' event
          *     object, with the attendant W3C-compliant properties, etc. along
          *     with some additional properties, such as 'offsetX / offset Y' and
          *     'wheelDelta' for mousewheel events that are not currently defined
@@ -33,7 +33,7 @@ TP.hc(
          * @param {HTMLElement} currentTarget The object to make the
          *     currentTarget on the Event object. If absent or null,
          *     currentTarget on the Event object defaults to the srcElement.
-         * @raises TP.sig.InvalidEvent
+         * @exception TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
          */
@@ -100,8 +100,8 @@ TP.hc(
     function(anEvent, currentTarget) {
 
         /**
-         * @name eventNormalize
-         * @synopsis Converts the supplied object into a 'W3C plus' event
+         * @method eventNormalize
+         * @summary Converts the supplied object into a 'W3C plus' event
          *     object, with the attendant W3C-compliant properties, etc. along
          *     with some additional properties, such as 'offsetX / offset Y' and
          *     'wheelDelta' for mousewheel events that are not currently defined
@@ -111,7 +111,7 @@ TP.hc(
          * @param {HTMLElement} currentTarget The object to make the
          *     currentTarget on the Event object. If absent or null,
          *     currentTarget on the Event object defaults to the srcElement.
-         * @raises TP.sig.InvalidEvent
+         * @exception TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
          */
@@ -167,8 +167,8 @@ TP.hc(
     function(anEvent, currentTarget) {
 
         /**
-         * @name eventNormalize
-         * @synopsis Converts the supplied object into a 'W3C plus' event
+         * @method eventNormalize
+         * @summary Converts the supplied object into a 'W3C plus' event
          *     object, with the attendant W3C-compliant properties, etc. along
          *     with some additional properties, such as 'offsetX / offset Y' and
          *     'wheelDelta' for mousewheel events that are not currently defined
@@ -178,7 +178,7 @@ TP.hc(
          * @param {HTMLElement} currentTarget The object to make the
          *     currentTarget on the Event object. If absent or null,
          *     currentTarget on the Event object defaults to the srcElement.
-         * @raises TP.sig.InvalidEvent
+         * @exception TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
          */
@@ -243,7 +243,7 @@ function(anEvent, currentTarget) {
      * @param {HTMLElement} currentTarget The object to make the
      *     currentTarget on the Event object. If absent or null,
      *     currentTarget on the Event object defaults to the srcElement.
-     * @return Window The native window associated with the event.
+     * @returns Window The native window associated with the event.
      */
 
     if (TP.isValid(anEvent.$$view)) {

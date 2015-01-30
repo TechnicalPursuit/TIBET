@@ -21,8 +21,8 @@ TP.lang.Object.Type.defineMethod('constructContentObject',
 function(aURI, content) {
 
     /**
-     * @name constructContentObject
-     * @synopsis Returns a content handler for the URI provided. This method is
+     * @method constructContentObject
+     * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {TP.core.URI} aURI The URI containing the content.
      * @param {Object} content The content to set into the content object.
@@ -52,8 +52,8 @@ TP.core.CSSStyleSheet.Type.defineMethod('constructContentObject',
 function(aURI, content) {
 
     /**
-     * @name constructContentObject
-     * @synopsis Returns a content handler for the URI provided. This method is
+     * @method constructContentObject
+     * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {TP.core.URI} aURI The URI containing the content.
      * @param {String} content The string content to process.
@@ -84,8 +84,8 @@ TP.core.CSSStyleSheet.Inst.defineMethod('init',
 function(aURI, content) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {TP.core.URI|String} aURI A TP.core.URI or String containing a
      *     proper URI.
      * @param {String} content The string content to process.
@@ -106,7 +106,7 @@ function(aURI, content) {
 
 /**
  * @type {TP.core.Content}
- * @synopsis A content handler specific to the TP.core.Content format.
+ * @summary A content handler specific to the TP.core.Content format.
  */
 
 //  ------------------------------------------------------------------------
@@ -121,8 +121,8 @@ TP.core.Content.Type.defineMethod('constructContentObject',
 function(aURI, content) {
 
     /**
-     * @name constructContentObject
-     * @synopsis Returns a content handler for the URI provided. This method is
+     * @method constructContentObject
+     * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {TP.core.URI} aURI The URI containing the content.
      * @param {String} content The string content to process.
@@ -147,8 +147,8 @@ TP.core.Content.Inst.defineMethod('init',
 function(data) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly constructed Object from inbound JSON content.
+     * @method init
+     * @summary Returns a newly constructed Object from inbound JSON content.
      * @param {Object} data The string to use for data.
      * @returns {TP.core.Content} A new instance.
      */
@@ -166,8 +166,8 @@ TP.core.Content.Inst.defineMethod('getData',
 function() {
 
     /**
-     * @name getData
-     * @synopsis Returns the underlying data object.
+     * @method getData
+     * @summary Returns the underlying data object.
      * @returns {Object} The receiver's underlying data object.
      */
 
@@ -180,8 +180,8 @@ TP.core.Content.Inst.defineMethod('getPathSource',
 function() {
 
     /**
-     * @name getPathSource
-     * @synopsis Return the current source object being used by the executeGet()
+     * @method getPathSource
+     * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     underlying data object.
      * @returns {Object} The object used as the current path source object.
@@ -196,9 +196,9 @@ TP.core.Content.Inst.defineMethod('handleChange',
 function(aSignal) {
 
     /**
-     * @name handleChange
-     * @synopsis Handles changes to the receiver's resource.
-     * @description URIs listen for changes to their resource and invoke this
+     * @method handleChange
+     * @summary Handles changes to the receiver's resource.
+     * @summary URIs listen for changes to their resource and invoke this
      *     method when it changes. The supplied signal could have a
      *     TP.CHANGE_PATHS property in its payload, which is an Array of path
      *     Strings that referenced the resource at some point. If this property
@@ -291,10 +291,10 @@ TP.core.Content.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided. If
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
-     * @description This is overridden from its supertype to automatically check
+     * @summary This is overridden from its supertype to automatically check
      *     facets after the value is set.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to set.
@@ -319,8 +319,8 @@ TP.core.Content.Inst.defineMethod('setData',
 function(aDataObject) {
 
     /**
-     * @name setData
-     * @synopsis Sets the receiver's data object to the supplied object.
+     * @method setData
+     * @summary Sets the receiver's data object to the supplied object.
      * @param {Object} aDataObject The object to set the receiver's internal
      *     data to.
      * @returns {TP.core.Content} The receiver.
@@ -345,10 +345,10 @@ TP.core.Content.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
     /**
-     * @name shouldSignalChange
-     * @synopsis Defines whether the receiver should actively signal change
+     * @method shouldSignalChange
+     * @summary Defines whether the receiver should actively signal change
      *     notifications.
-     * @description In general objects do not signal changes when no observers
+     * @summary In general objects do not signal changes when no observers
      *     exist. This flag is triggered by observe where the signal being
      *     observed is a form of Change signal to "arm" the object for change
      *     notification. You can also manipulate it during multi-step
@@ -371,7 +371,7 @@ function(aFlag) {
 
 /**
  * @type {TP.core.JSONContent}
- * @synopsis A content handler specific to the TP.core.JSONContent format.
+ * @summary A content handler specific to the TP.core.JSONContent format.
  */
 
 //  ------------------------------------------------------------------------
@@ -386,8 +386,8 @@ TP.core.JSONContent.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the string parameter is valid
+     * @method validate
+     * @summary Returns true if the string parameter is valid
      *     TP.core.JSONContent.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object can be validated.
@@ -419,8 +419,8 @@ TP.core.JSONContent.Inst.defineMethod('init',
 function(data) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly constructed Object from inbound JSON content.
+     * @method init
+     * @summary Returns a newly constructed Object from inbound JSON content.
      * @param {Object} data The string to use for data.
      * @returns {TP.core.JSONContent} A new instance.
      */
@@ -448,8 +448,8 @@ TP.core.JSONContent.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -464,8 +464,8 @@ TP.core.JSONContent.Inst.defineMethod('asString',
 function() {
 
     /**
-     * @name asString
-     * @synopsis Returns the common string representation of the receiver.
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
      * @returns {String} The content object in string form.
      */
 
@@ -478,8 +478,8 @@ TP.core.JSONContent.Inst.defineMethod('defineTypes',
 function() {
 
     /**
-     * @name defineTypes
-     * @synopsis Defines any JSON Schema types defined by the data of the
+     * @method defineTypes
+     * @summary Defines any JSON Schema types defined by the data of the
      *     receiver.
      * @returns {TP.core.JSONContent} The receiver.
      */
@@ -538,7 +538,7 @@ function() {
 
 /**
  * @type {TP.core.XMLContent}
- * @synopsis A content handler specific to the TP.core.XMLContent format.
+ * @summary A content handler specific to the TP.core.XMLContent format.
  */
 
 //  ------------------------------------------------------------------------
@@ -553,8 +553,8 @@ TP.core.XMLContent.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the string parameter is valid
+     * @method validate
+     * @summary Returns true if the string parameter is valid
      *     TP.core.XMLContent.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object can be validated.
@@ -586,8 +586,8 @@ TP.core.XMLContent.Inst.defineMethod('init',
 function(data) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly constructed Object from inbound JSON content.
+     * @method init
+     * @summary Returns a newly constructed Object from inbound JSON content.
      * @param {Object} data The string to use for data.
      * @returns {Object} A new instance.
      */
@@ -617,8 +617,8 @@ TP.core.XMLContent.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Returns an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Returns an XML string representation of the receiver.
      * @returns {String} An XML-formatted string.
      */
 
@@ -633,8 +633,8 @@ TP.core.XMLContent.Inst.defineMethod('asString',
 function() {
 
     /**
-     * @name asString
-     * @synopsis Returns the common string representation of the receiver.
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
      * @returns {String} The content object in string form.
      */
 
@@ -647,7 +647,7 @@ function() {
 
 /**
  * @type {TP.core.AccessPath}
- * @synopsis A common supertype for access paths, which can get used in TIBET
+ * @summary A common supertype for access paths, which can get used in TIBET
  *     get() and set() calls to provide sophisticated data access. Common
  *     subtypes include types to access TIBETan JS objects, 'plain' JSON data
  *     objects and XML data objects.
@@ -667,8 +667,8 @@ TP.definePrimitive('apc',
 function(aPath, shouldCollapse) {
 
     /**
-     * @name apc
-     * @synopsis Returns a newly initialized access path instance.
+     * @method apc
+     * @summary Returns a newly initialized access path instance.
      * @param {String} aPath The path as a String.
      * @param {Boolean} shouldCollapse Whether or not this path should
      *     'collapse' its results - i.e. if its a collection with only one
@@ -697,8 +697,8 @@ TP.core.AccessPath.Type.defineMethod('construct',
 function(aPath, shouldCollapse) {
 
     /**
-     * @name construct
-     * @synopsis Returns a new instance of an access path or aPath if it is
+     * @method construct
+     * @summary Returns a new instance of an access path or aPath if it is
      *     already a path.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
@@ -721,8 +721,8 @@ TP.core.AccessPath.Type.defineMethod('getConcreteType',
 function(aPath) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the type to use for a particular access path.
+     * @method getConcreteType
+     * @summary Returns the type to use for a particular access path.
      * @param {String} aPath A path string from which the subtype will be
      *     determined.
      * @returns {TP.lang.RootObject.<TP.core.AccessPath>} A TP.core.AccessPath
@@ -842,8 +842,8 @@ TP.core.AccessPath.Type.defineMethod('$getExecutedPaths',
 function() {
 
     /**
-     * @name $getExecutedPaths
-     * @synopsis Returns the hash to use to register executed paths. This
+     * @method $getExecutedPaths
+     * @summary Returns the hash to use to register executed paths. This
      *     method is supplied to avoid problems with this hash not being
      *     initialized when TIBET is starting up.
      * @returns {TP.lang.Hash} The executed paths hash.
@@ -865,8 +865,8 @@ TP.core.AccessPath.Type.defineMethod('$getChangedAddresses',
 function() {
 
     /**
-     * @name $getChangedAddresses
-     * @synopsis Returns the Array to use to register changed addresses. This
+     * @method $getChangedAddresses
+     * @summary Returns the Array to use to register changed addresses. This
      *     method is supplied to avoid problems with this hash not being
      *     initialized when TIBET is starting up.
      * @returns {Array} The changed addresses array.
@@ -888,8 +888,8 @@ TP.core.AccessPath.Type.defineMethod('$getObservedAddresses',
 function() {
 
     /**
-     * @name $getObservedAddresses
-     * @synopsis Returns the hash to use to register observed addresses. This
+     * @method $getObservedAddresses
+     * @summary Returns the hash to use to register observed addresses. This
      *     method is supplied to avoid problems with this hash not being
      *     initialized when TIBET is starting up.
      * @returns {TP.lang.Hash} The observed addresses hash.
@@ -911,8 +911,8 @@ TP.core.AccessPath.Type.defineMethod('registerChangedAddress',
 function(anAddress, anAction) {
 
     /**
-     * @name registerChangedAddress
-     * @synopsis Registers a 'data address' (i.e. a unique location in the
+     * @method registerChangedAddress
+     * @summary Registers a 'data address' (i.e. a unique location in the
      *     source object that is currently being processed by the receiver) as
      *     a 'changed' address (i.e. a location where the data has been
      *     changed).
@@ -938,8 +938,8 @@ TP.core.AccessPath.Type.defineMethod('registerObservedAddress',
 function(anAddress, sourceObjectID, interestedPath) {
 
     /**
-     * @name registerObservedAddress
-     * @synopsis Registers a 'data address' (i.e. a unique location in the
+     * @method registerObservedAddress
+     * @summary Registers a 'data address' (i.e. a unique location in the
      *     source object that is currently being processed by the receiver) as
      *     an 'observed' address (i.e. a location where the data has been
      *     retrieved and observers might be interested in changes there).
@@ -1017,8 +1017,8 @@ TP.core.AccessPath.Inst.defineMethod('init',
 function(aPath, shouldCollapse) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
      *     'collapse' its results - i.e. if its a collection with only one
@@ -1044,8 +1044,8 @@ TP.core.AccessPath.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -1072,8 +1072,8 @@ TP.core.AccessPath.Inst.defineMethod('asDumpString',
 function() {
 
     /**
-     * @name asDumpString
-     * @synopsis Returns the receiver as a string suitable for use in log
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
@@ -1099,8 +1099,8 @@ TP.core.AccessPath.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
-     * @name asHTMLString
-     * @synopsis Produces an HTML string representation of the receiver.
+     * @method asHTMLString
+     * @summary Produces an HTML string representation of the receiver.
      * @returns {String} The receiver in HTML string format.
      */
 
@@ -1116,8 +1116,8 @@ TP.core.AccessPath.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
-     * @name asJSONSource
-     * @synopsis Returns a JSON string representation of the receiver.
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
      * @returns {String} A JSON-formatted string.
      */
 
@@ -1139,8 +1139,8 @@ TP.core.AccessPath.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
-     * @name asPrettyString
-     * @synopsis Returns the receiver as a string suitable for use in 'pretty
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
      *     print' output.
      * @returns {String} A new String containing the 'pretty print' string of
      *     the receiver.
@@ -1164,8 +1164,8 @@ TP.core.AccessPath.Inst.defineMethod('asString',
 function() {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver.
+     * @method asString
+     * @summary Returns the String representation of the receiver.
      * @returns {String} The String representation of the receiver.
      */
 
@@ -1178,8 +1178,8 @@ TP.core.AccessPath.Inst.defineMethod('asXMLString',
 function() {
 
     /**
-     * @name asXMLString
-     * @synopsis Produces an XML string representation of the receiver.
+     * @method asXMLString
+     * @summary Produces an XML string representation of the receiver.
      * @returns {String} The receiver in XML string format.
      */
 
@@ -1193,8 +1193,8 @@ TP.core.AccessPath.Inst.defineMethod('isAccessPath',
 function() {
 
     /**
-     * @name isAccessPath
-     * @synopsis Returns whether or not the receiver is an access path object.
+     * @method isAccessPath
+     * @summary Returns whether or not the receiver is an access path object.
      * @returns {Boolean} True - the receiver is an access path.
      */
 
@@ -1207,8 +1207,8 @@ TP.core.AccessPath.Inst.defineMethod('isEmpty',
 function() {
 
     /**
-     * @name isEmpty
-     * @synopsis Returns whether or not the receiver is an 'empty object',
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is an 'empty object',
      *     according to a collection API. This type returns false.
      * @returns {Boolean} Whether or not the receiver is empty. Always false
      *     for this type.
@@ -1223,8 +1223,8 @@ TP.core.AccessPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
-     * @name executeGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion -
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
      *     i.e. with the intent of retrieving data from the supplied target
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
@@ -1246,8 +1246,8 @@ TP.core.AccessPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
-     * @name executeSet
-     * @synopsis Executes the path in a 'set' fashion - i.e. with the intent of
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
@@ -1270,8 +1270,8 @@ TP.core.AccessPath.Inst.defineMethod('getFirstSimplePath',
 function() {
 
     /**
-     * @name getFirstSimplePath
-     * @synopsis Returns the first 'simple path' of the receiver. For instance,
+     * @method getFirstSimplePath
+     * @summary Returns the first 'simple path' of the receiver. For instance,
      *     in a simple path such as '1.2.3', this method will return '1'.
      * @returns {String} The first simple path of the receiver.
      */
@@ -1285,10 +1285,10 @@ TP.core.AccessPath.Inst.defineMethod('processFinalValue',
 function(aReturnValue, targetObj) {
 
     /**
-     * @name processFinalValue
-     * @synopsis Processes the final value before it is returned from the
+     * @method processFinalValue
+     * @summary Processes the final value before it is returned from the
      *     receiver
-     * @description This method postprocesses the final value before it is
+     * @summary This method postprocesses the final value before it is
      *     returned from the receiver. This postprocessing includes the
      *     following steps, if they are configured on the receiver:
      *          1.  Collapsing any single-valued Collection results
@@ -1367,8 +1367,8 @@ TP.core.AccessPath.Inst.defineMethod('updateRegistrationsAfterSignaling',
 function(targetObj) {
 
     /**
-     * @name updateRegistrationsAfterSignaling
-     * @synopsis Updates any path registrations and their attendant address
+     * @method updateRegistrationsAfterSignaling
+     * @summary Updates any path registrations and their attendant address
      *     information after signaling a change. This method is called to
      *     provide any 'cleanup' for paths that reference data that no longer
      *     exist and to reset them to data that might now exist at the same
@@ -1428,8 +1428,8 @@ TP.core.AccessPath.Inst.defineMethod('updateRegistrationsBeforeSignaling',
 function(targetObj) {
 
     /**
-     * @name updateRegistrationsBeforeSignaling
-     * @synopsis Updates any path registrations and their attendant address
+     * @method updateRegistrationsBeforeSignaling
+     * @summary Updates any path registrations and their attendant address
      *     information before signaling a change. This method is called to
      *     mark any paths that match addresses that reference data that might
      *     be being deleted or whose structure is changing. This information is
@@ -1518,8 +1518,8 @@ TP.core.AccessPath.Inst.defineMethod('sendChangedSignal',
 function(targetObj) {
 
     /**
-     * @name sendChangedSignal
-     * @synopsis Sends a signal using the supplied target object as the origin
+     * @method sendChangedSignal
+     * @summary Sends a signal using the supplied target object as the origin
      *     to let observers know that we have changed.
      * @param {targetObj} Object The object to send the 'changed signal' from.
      * @returns {TP.core.AccessPath} The receiver.
@@ -1762,8 +1762,8 @@ TP.core.CompositePath.Inst.defineMethod('init',
 function(aPath, shouldCollapse) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
      *     'collapse' its results - i.e. if its a collection with only one
@@ -1810,8 +1810,8 @@ TP.core.CompositePath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
-     * @name executeGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion -
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
      *     i.e. with the intent of retrieving data from the supplied target
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
@@ -1820,7 +1820,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -1864,8 +1864,8 @@ TP.core.CompositePath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
-     * @name executeSet
-     * @synopsis Executes the path in a 'set' fashion - i.e. with the intent of
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
@@ -1875,7 +1875,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -1948,8 +1948,8 @@ TP.core.SimpleTIBETPath.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     this.Type.set('$traversalLevel', 0);
@@ -1964,7 +1964,7 @@ TP.core.SimpleTIBETPath.Type.defineMethod('endChangedAddress',
 function() {
 
     /**
-     * @name endChangedAddress
+     * @method endChangedAddress
      * @synopsis
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -1980,7 +1980,7 @@ TP.core.SimpleTIBETPath.Type.defineMethod('endObservedAddress',
 function() {
 
     /**
-     * @name endObservedAddress
+     * @method endObservedAddress
      * @synopsis
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -1996,7 +1996,7 @@ TP.core.SimpleTIBETPath.Type.defineMethod('getChangedAddress',
 function() {
 
     /**
-     * @name getChangedAddress
+     * @method getChangedAddress
      * @synopsis
      * @returns {String}
      */
@@ -2010,7 +2010,7 @@ TP.core.SimpleTIBETPath.Type.defineMethod('startChangedAddress',
 function(addressPart) {
 
     /**
-     * @name startChangedAddress
+     * @method startChangedAddress
      * @synopsis
      * @param {String} addressPart
      * @returns {TP.core.SimpleTIBETPath} The receiver.
@@ -2031,7 +2031,7 @@ TP.core.SimpleTIBETPath.Type.defineMethod('startObservedAddress',
 function(addressPart) {
 
     /**
-     * @name startObservedAddress
+     * @method startObservedAddress
      * @synopsis
      * @param {String} addressPart
      * @returns {TP.core.SimpleTIBETPath} The receiver.
@@ -2064,8 +2064,8 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('init',
 function(aPath, shouldCollapse) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
      *     'collapse' its results - i.e. if its a collection with only one
@@ -2093,8 +2093,8 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
-     * @name executeGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion -
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
      *     i.e. with the intent of retrieving data from the supplied target
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
@@ -2103,7 +2103,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -2164,8 +2164,8 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
-     * @name executeSet
-     * @synopsis Executes the path in a 'set' fashion - i.e. with the intent of
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
@@ -2175,7 +2175,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -2304,8 +2304,8 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('getFirstSimplePath',
 function() {
 
     /**
-     * @name getFirstSimplePath
-     * @synopsis Returns the first 'simple path' of the receiver. For instance,
+     * @method getFirstSimplePath
+     * @summary Returns the first 'simple path' of the receiver. For instance,
      *     in a simple path such as '1.2.3', this method will return '1'.
      * @returns {String} The first simple path of the receiver.
      */
@@ -2320,7 +2320,7 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('preGetAccess',
 function(targetObj) {
 
     /**
-     * @name preGetAccess
+     * @method preGetAccess
      * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
@@ -2356,7 +2356,7 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('preSetAccess',
 function(targetObj) {
 
     /**
-     * @name preSetAccess
+     * @method preSetAccess
      * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
@@ -2375,7 +2375,7 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('postGetAccess',
 function(targetObj) {
 
     /**
-     * @name postGetAccess
+     * @method postGetAccess
      * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
@@ -2401,7 +2401,7 @@ TP.core.SimpleTIBETPath.Inst.defineMethod('postSetAccess',
 function(targetObj) {
 
     /**
-     * @name postSetAccess
+     * @method postSetAccess
      * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
@@ -2436,8 +2436,8 @@ TP.definePrimitive('tpc',
 function(aPath, shouldCollapse) {
 
     /**
-     * @name tpc
-     * @synopsis Returns a newly initialized TIBETSimplePath or
+     * @method tpc
+     * @summary Returns a newly initialized TIBETSimplePath or
      *     TIBETComplexPath instance.
      * @param {String} aPath The path as a String.
      * @param {Boolean} shouldCollapse Whether or not this path should
@@ -2489,11 +2489,11 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('checkValueEquality',
 function(objectA, objectB) {
 
     /**
-     * @name checkValueEquality.
-     * @synopsis Checks to see if the two supplied parameters 'lead to' equal
+     * @method checkValueEquality.
+     * @summary Checks to see if the two supplied parameters 'lead to' equal
      *     values. This is used when trying to determine whether or not to
      *     proceed with a 'set' operation (and broadcast changes).
-     * @description This method takes into account the kind of data that this
+     * @summary This method takes into account the kind of data that this
      *     path manages when doing it's comparison.
      * @param {objectA} Object The first object to compare.
      * @param {objectB} Object The second object to compare.
@@ -2517,8 +2517,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
-     * @name executeGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion -
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
      *     i.e. with the intent of retrieving data from the supplied target
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
@@ -2527,7 +2527,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -2581,8 +2581,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
-     * @name executeSet
-     * @synopsis Executes the path in a 'set' fashion - i.e. with the intent of
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
@@ -2592,7 +2592,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter, TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -2739,8 +2739,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('$executeArrayGet',
 function(targetObj) {
 
     /**
-     * @name $executeArrayGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion
+     * @method $executeArrayGet
+     * @summary Returns the result of executing the path in a 'get' fashion
      *     against an object of type 'Array'.
      * @param {targetObj} Array The object to execute the receiver against to
      *     retrieve data.
@@ -2892,8 +2892,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('$executeObjectGet',
 function(targetObj) {
 
     /**
-     * @name $executeObjectGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion
+     * @method $executeObjectGet
+     * @summary Returns the result of executing the path in a 'get' fashion
      *     against an object of type 'Object'.
      * @param {targetObj} Object The object to execute the receiver against to
      *     retrieve data.
@@ -2998,8 +2998,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('$executeStringGet',
 function(targetObj) {
 
     /**
-     * @name $executeStringGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion
+     * @method $executeStringGet
+     * @summary Returns the result of executing the path in a 'get' fashion
      *     against an object of type 'String'.
      * @param {targetObj} String The object to execute the receiver against to
      *     retrieve data.
@@ -3083,8 +3083,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('$executeArraySet',
 function(targetObj, attributeValue, shouldSignal) {
 
     /**
-     * @name $executeArraySet
-     * @synopsis Executes the path in a 'set' fashion against an object of type
+     * @method $executeArraySet
+     * @summary Executes the path in a 'set' fashion against an object of type
      *     'Array'.
      * @param {targetObj} Array The object to execute the receiver against to
      *     set data.
@@ -3386,8 +3386,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('$executeObjectSet',
 function(targetObj, attributeValue, shouldSignal) {
 
     /**
-     * @name $executeObjectSet
-     * @synopsis Executes the path in a 'set' fashion against an object of type
+     * @method $executeObjectSet
+     * @summary Executes the path in a 'set' fashion against an object of type
      *     'Object'.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
@@ -3581,8 +3581,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('$extractPathHeadAndTail',
 function(aPath) {
 
     /**
-     * @name $extractPathHeadAndTail
-     * @synopsis Returns the head and tail of the supplied path.
+     * @method $extractPathHeadAndTail
+     * @summary Returns the head and tail of the supplied path.
      * @param {String} aPath The path to extract the head and tail from.
      * @returns {Array} A pair of the [head, tail].
      */
@@ -3625,8 +3625,8 @@ TP.core.ComplexTIBETPath.Inst.defineMethod('getFirstSimplePath',
 function() {
 
     /**
-     * @name getFirstSimplePath
-     * @synopsis Returns the first 'simple path' of the receiver. For instance,
+     * @method getFirstSimplePath
+     * @summary Returns the first 'simple path' of the receiver. For instance,
      *     in a simple path such as '1.2.3', this method will return '1'.
      * @returns {String} The first simple path of the receiver.
      */
@@ -3691,8 +3691,8 @@ TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
 function(aNode) {
 
     /**
-     * @name $addChangedAddressFromNode
-     * @synopsis Adds the supplied node's address and action to
+     * @method $addChangedAddressFromNode
+     * @summary Adds the supplied node's address and action to
      *     TP.core.AccessPath's 'changed address list'.
      * @param {Node} aNode The Node to extract the address and action from.
      * @returns {TP.core.XMLPath} The receiver.
@@ -3754,11 +3754,11 @@ TP.core.XMLPath.Inst.defineMethod('checkValueEquality',
 function(objectA, objectB) {
 
     /**
-     * @name checkValueEquality.
-     * @synopsis Checks to see if the two supplied parameters 'lead to' equal
+     * @method checkValueEquality.
+     * @summary Checks to see if the two supplied parameters 'lead to' equal
      *     values. This is used when trying to determine whether or not to
      *     proceed with a 'set' operation (and broadcast changes).
-     * @description This method takes into account the kind of data that this
+     * @summary This method takes into account the kind of data that this
      *     path manages when doing it's comparison.
      * @param {objectA} Object The first object to compare.
      * @param {objectB} Object The second object to compare.
@@ -3790,8 +3790,8 @@ TP.core.XMLPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
-     * @name executeGet
-     * @synopsis Returns the result of executing the path in a 'get' fashion -
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
      *     i.e. with the intent of retrieving data from the supplied target
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
@@ -3800,7 +3800,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter, TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter, TP.sig.InvalidNode
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -3927,8 +3927,8 @@ TP.core.XMLPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
-     * @name executeSet
-     * @synopsis Executes the path in a 'set' fashion - i.e. with the intent of
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
@@ -3938,7 +3938,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter, TP.sig.InvalidPath
      * @returns {TP.core.XPathPath} The receiver.
      */
 
@@ -4317,8 +4317,8 @@ TP.core.XMLPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
-     * @name $$getContentForSetOperation
-     * @synopsis Creates any content that is required in order to perform a
+     * @method $$getContentForSetOperation
+     * @summary Creates any content that is required in order to perform a
      *     'set' operation.
      * @param {aNode} Node The node to use as the common ancestor to build out
      *     any content that is required for a 'set' operation.
@@ -4336,8 +4336,8 @@ TP.core.XMLPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
-     * @name getPathType
-     * @synopsis Returns the receiver's 'path type', which should be one of
+     * @method getPathType
+     * @summary Returns the receiver's 'path type', which should be one of
      *     these constants:
      *          TP.XPOINTER_PATH_TYPE
      *          TP.XTENSION_POINTER_PATH_TYPE
@@ -4363,8 +4363,8 @@ TP.core.SimpleXMLPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
-     * @name $$getContentForSetOperation
-     * @synopsis Creates any content that is required in order to perform a
+     * @method $$getContentForSetOperation
+     * @summary Creates any content that is required in order to perform a
      *     'set' operation.
      * @param {aNode} Node The node to use as the common ancestor to build out
      *     any content that is required for a 'set' operation.
@@ -4410,8 +4410,8 @@ TP.core.ElementPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
-     * @name $$getContentForSetOperation
-     * @synopsis Creates any content that is required in order to perform a
+     * @method $$getContentForSetOperation
+     * @summary Creates any content that is required in order to perform a
      *     'set' operation.
      * @param {aNode} Node The node to use as the common ancestor to build out
      *     any content that is required for a 'set' operation.
@@ -4461,8 +4461,8 @@ TP.core.XTensionPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
-     * @name $$getContentForSetOperation
-     * @synopsis Creates any content that is required in order to perform a
+     * @method $$getContentForSetOperation
+     * @summary Creates any content that is required in order to perform a
      *     'set' operation.
      * @param {aNode} Node The node to use as the common ancestor to build out
      *     any content that is required for a 'set' operation.
@@ -4506,8 +4506,8 @@ TP.definePrimitive('cpc',
 function() {
 
     /**
-     * @name cpc
-     * @synopsis Returns a newly initialized CSSPath instance.
+     * @method cpc
+     * @summary Returns a newly initialized CSSPath instance.
      * @param {String} aPath The CSS path as a String.
      * @returns {TP.core.CSSPath} The new instance.
      */
@@ -4523,8 +4523,8 @@ TP.core.CSSPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
-     * @name getPathType
-     * @synopsis Returns the receiver's 'path type', which should be one of
+     * @method getPathType
+     * @summary Returns the receiver's 'path type', which should be one of
      *     these constants:
      *          TP.XPOINTER_PATH_TYPE
      *          TP.XTENSION_POINTER_PATH_TYPE
@@ -4549,8 +4549,8 @@ TP.core.BarenamePath.Inst.defineMethod('init',
 function(aPath, shouldCollapse) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
      *     'collapse' its results - i.e. if its a collection with only one
@@ -4574,8 +4574,8 @@ TP.core.BarenamePath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
-     * @name $$getContentForSetOperation
-     * @synopsis Creates any content that is required in order to perform a
+     * @method $$getContentForSetOperation
+     * @summary Creates any content that is required in order to perform a
      *     'set' operation.
      * @param {aNode} Node The node to use as the common ancestor to build out
      *     any content that is required for a 'set' operation.
@@ -4617,8 +4617,8 @@ TP.core.BarenamePath.Inst.defineMethod('getPathType',
 function() {
 
     /**
-     * @name getPathType
-     * @synopsis Returns the receiver's 'path type', which should be one of
+     * @method getPathType
+     * @summary Returns the receiver's 'path type', which should be one of
      *     these constants:
      *          TP.XPOINTER_PATH_TYPE
      *          TP.XTENSION_POINTER_PATH_TYPE
@@ -4687,8 +4687,8 @@ TP.definePrimitive('xpc',
 function() {
 
     /**
-     * @name xpc
-     * @synopsis Returns a newly initialized XPathPath instance. Note that if
+     * @method xpc
+     * @summary Returns a newly initialized XPathPath instance. Note that if
      *     you specify a non native path, the external XPath parser will be
      *     loaded. The default is a native path, unless namespace-qualified
      *     extension functions are found.
@@ -4741,8 +4741,8 @@ TP.core.XPathPath.Type.defineMethod('canonicalizePath',
 function(aPath) {
 
     /**
-     * @name canonicalizePath
-     * @synopsis Returns the 'canonical' version of the supplied path. The
+     * @method canonicalizePath
+     * @summary Returns the 'canonical' version of the supplied path. The
      *     canonical version is one where all shortcuts have been expanded.
      *     Note that this call will force loading of the non-native XPath
      *     parser to provide the canonical path expansion.
@@ -4766,8 +4766,8 @@ TP.core.XPathPath.Type.defineMethod('getFunctionResolver',
 function() {
 
     /**
-     * @name getFunctionResolver
-     * @synopsis Returns the function resolver instance, a single instance used
+     * @method getFunctionResolver
+     * @summary Returns the function resolver instance, a single instance used
      *     by the type to resolve XPaths with extension functions.
      * @returns {TP.extern.XPathFunctionResolver} A function resolver instance.
      */
@@ -4823,8 +4823,8 @@ TP.core.XPathPath.Type.defineMethod('getNSResolver',
 function() {
 
     /**
-     * @name getNSResolver
-     * @synopsis Returns the namespace resolver instance, a single instance
+     * @method getNSResolver
+     * @summary Returns the namespace resolver instance, a single instance
      *     used by the type to resolve namespace-related XPaths.
      * @returns {TP.extern.XPathNamespaceResolver} A namespace resolver
      *     instance.
@@ -4874,8 +4874,8 @@ TP.core.XPathPath.Type.defineMethod('getParser',
 function() {
 
     /**
-     * @name getParser
-     * @synopsis Returns the receiver's non-native XPath parser instance.
+     * @method getParser
+     * @summary Returns the receiver's non-native XPath parser instance.
      * @returns {TP.extern.XPathParser} A function resolver instance.
      */
 
@@ -4901,8 +4901,8 @@ TP.core.XPathPath.Type.defineMethod('getVariableResolver',
 function() {
 
     /**
-     * @name getVariableResolver
-     * @synopsis Returns the variable resolver instance, a single instance used
+     * @method getVariableResolver
+     * @summary Returns the variable resolver instance, a single instance used
      *     by the type to resolve XPaths with variables.
      * @returns {TP.extern.XPathVariableResolver} A variable resolver instance.
      */
@@ -4978,8 +4978,8 @@ TP.core.XPathPath.Inst.defineMethod('init',
 function(aPath, shouldCollapse, forceNative) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized instance. Note that if you specify
+     * @method init
+     * @summary Returns a newly initialized instance. Note that if you specify
      *     a non native path the external XPath parser will be loaded. The
      *     default is a native path, unless namespace-qualified extension
      *     functions are found.
@@ -5027,10 +5027,10 @@ TP.core.XPathPath.Inst.defineMethod('asReplacedString',
 function(replacementFunction) {
 
     /**
-     * @name asReplacedString
-     * @synopsis Returns a String representation of the receiver after
+     * @method asReplacedString
+     * @summary Returns a String representation of the receiver after
      *     substitutions have taken place at each location step.
-     * @description For a non-native path substitutions will be performed by
+     * @summary For a non-native path substitutions will be performed by
      *     the supplied Function which should take a single argument, that of
      *     the location step that the parser is currently at. For a native
      *     path no alteration occurs and the path's string value is returned
@@ -5055,8 +5055,8 @@ TP.core.XPathPath.Inst.defineMethod('asSource',
 function() {
 
     /**
-     * @name asSource
-     * @synopsis Returns the receiver as a TIBET source code string.
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -5084,8 +5084,8 @@ TP.core.XPathPath.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the String representation of the receiver. For
+     * @method asString
+     * @summary Returns the String representation of the receiver. For
      *     non-native paths this is the string representation of the parsed
      *     expression (which is canonicalized).
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
@@ -5116,10 +5116,10 @@ TP.core.XPathPath.Inst.defineMethod('$$createNodesForPath',
 function(aNode, flagChanges) {
 
     /**
-     * @name $$createNodesForPath
-     * @synopsis Builds a set of nodes into the receiver's native node using
+     * @method $$createNodesForPath
+     * @summary Builds a set of nodes into the receiver's native node using
      *     the supplied path expression.
-     * @description This method traverses up the given path expression, looking
+     * @summary This method traverses up the given path expression, looking
      *     for matching nodes. If it finds them, it then works back down the
      *     expression, building out the nodes necessary for the expression to
      *     be able to work against a real tree.
@@ -5164,8 +5164,8 @@ TP.core.XPathPath.Inst.defineMethod('$createNonNativeParserContext',
 function(aPath) {
 
     /**
-     * @name $createNonNativeParserContext
-     * @synopsis Sets up the context information for the non-native XPath
+     * @method $createNonNativeParserContext
+     * @summary Sets up the context information for the non-native XPath
      *     parser for the receiver.
      * @param {String} aPath The XPath as a String. Defaults to the receiver's
      *     current path.
@@ -5214,8 +5214,8 @@ TP.core.XPathPath.Inst.defineMethod('exec',
 function(aTPNode, resultType, logErrors, flagChanges) {
 
     /**
-     * @name exec
-     * @synopsis 'Executes' the XPath by evaluating it against the supplied
+     * @method exec
+     * @summary 'Executes' the XPath by evaluating it against the supplied
      *     TP.core.Node.
      * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
      *     against.
@@ -5245,8 +5245,8 @@ TP.core.XPathPath.Inst.defineMethod('execOnNative',
 function(aNode, resultType, logErrors, flagChanges) {
 
     /**
-     * @name execOnNative
-     * @synopsis 'Executes' the XPath by evaluating it against the supplied
+     * @method execOnNative
+     * @summary 'Executes' the XPath by evaluating it against the supplied
      *     Node.
      * @param {Node} aNode The Node to execute the receiver against.
      * @param {Number} resultType The type of result desired, either TP.NODESET
@@ -5344,8 +5344,8 @@ TP.core.XPathPath.Inst.defineMethod('execRemove',
 function(aTPNode) {
 
     /**
-     * @name execRemove
-     * @synopsis Removes all nodes under the receiver which match the XPath
+     * @method execRemove
+     * @summary Removes all nodes under the receiver which match the XPath
      *     provided. This method is typically called via remove when an XPath
      *     is provided as the attributeName.
      * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
@@ -5440,8 +5440,8 @@ TP.core.XPathPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
-     * @name $$getContentForSetOperation
-     * @synopsis Creates any content that is required in order to perform a
+     * @method $$getContentForSetOperation
+     * @summary Creates any content that is required in order to perform a
      *     'set' operation.
      * @param {aNode} Node The node to use as the common ancestor to build out
      *     any content that is required for a 'set' operation.
@@ -5555,8 +5555,8 @@ TP.core.XPathPath.Inst.defineMethod('getShouldMake',
 function() {
 
     /**
-     * @name getShouldMake
-     * @synopsis Returns whether the receiver is currently configured to create
+     * @method getShouldMake
+     * @summary Returns whether the receiver is currently configured to create
      *     Nodes as it is executed against a particular context node.
      * @returns {Boolean} Whether the receiver is configured to create nodes as
      *     it executes.
@@ -5580,8 +5580,8 @@ TP.core.XPathPath.Inst.defineMethod('getReferencedNodes',
 function(aNode) {
 
     /**
-     * @name getReferencedNodes
-     * @synopsis Returns an Array of the Nodes that are referenced by this
+     * @method getReferencedNodes
+     * @summary Returns an Array of the Nodes that are referenced by this
      *     path, using aNode as the 'context node' (e.g. starting point).
      * @param {Node|TP.core.Node} aNode The Node to execute the receiver
      *     against.
@@ -5651,8 +5651,8 @@ TP.core.XPathPath.Inst.defineMethod('getReferencedLocationSteps',
 function() {
 
     /**
-     * @name getReferencedLocationSteps
-     * @synopsis Returns an Array of the location steps that are used by this
+     * @method getReferencedLocationSteps
+     * @summary Returns an Array of the location steps that are used by this
      *     path any place in its expression.
      * @returns {Array} The array of Strings that represent location steps
      *     referenced by expression in the receiver.
@@ -5682,8 +5682,8 @@ TP.core.XPathPath.Inst.defineMethod('isAbsolute',
 function() {
 
     /**
-     * @name isAbsolute
-     * @synopsis Returns whether or not the receiver contains an 'absolute'
+     * @method isAbsolute
+     * @summary Returns whether or not the receiver contains an 'absolute'
      *     XPath (that is, one that starts with a '/').
      * @returns {Boolean} Whether or not the receiver contains an 'absolute'
      *     XPath.
@@ -5706,8 +5706,8 @@ TP.core.XPathPath.Inst.defineMethod('isNativePath',
 function(aFlag) {
 
     /**
-     * @name isNativePath
-     * @synopsis Returns true if the receiver can execute using the browser's
+     * @method isNativePath
+     * @summary Returns true if the receiver can execute using the browser's
      *     native XPath parser. The default for most paths is true, however if
      *     you've requested special processing such as node creation or
      *     extension function handling this will return false.
@@ -5751,8 +5751,8 @@ TP.core.XPathPath.Inst.defineMethod('setShouldMake',
 function(shouldMakeStruct) {
 
     /**
-     * @name setShouldMake
-     * @synopsis Sets whether the receiver is currently configured to create
+     * @method setShouldMake
+     * @summary Sets whether the receiver is currently configured to create
      *     Nodes as it is executed against a particular context node.
      * @param {shouldMakeStruct} Boolean the receiver should be configured to
      *     create nodes as it executes.
@@ -5785,8 +5785,8 @@ TP.core.XPathPath.Inst.defineMethod('setPath',
 function(aPath, forceNative) {
 
     /**
-     * @name setPath
-     * @synopsis Sets the XPath expression for the receiver to the supplied
+     * @method setPath
+     * @summary Sets the XPath expression for the receiver to the supplied
      *     path. The caller can also force the path type to be of a particular
      *     type, but if the path contains namespace-qualified extension
      *     functions it will force the path to be a non native path.
@@ -5842,10 +5842,10 @@ function(aPath, forceNative) {
 
 /**
  * @type {TP.w3.DTDInfo}
- * @synopsis This type of JSONContent provides convenience routines for
+ * @summary This type of JSONContent provides convenience routines for
  *     accessing and validating DTD data as processed by the scripts located
  *     here: https://github.com/dominicmarks/html4-dtd-json
- * @description This type accesses data that has a structure that could contain
+ * @summary This type accesses data that has a structure that could contain
  *     items such as these. Note that this is not a complete description of the
  *     data schema. See the data file itself for more structural elements:
  *
@@ -5869,8 +5869,8 @@ TP.w3.DTDInfo.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var dtdInfoURI,
@@ -5920,8 +5920,8 @@ TP.w3.DTDInfo.Inst.defineMethod('elementIsValidChildOf',
 function(childElementName, parentElementName) {
 
     /**
-     * @name elementIsValidChildOf
-     * @synopsis Returns whether or not the child element is a valid child of
+     * @method elementIsValidChildOf
+     * @summary Returns whether or not the child element is a valid child of
      *     the parent element given the information in the contained schema.
      * @param {String} childElementName The name of the child element.
      * @param {String} parentElementName The name of the parent element.

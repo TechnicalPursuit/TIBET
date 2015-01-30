@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XDelay}
- * @synopsis A wrapper for the X_DELAY namespace'd payload element.
+ * @summary A wrapper for the X_DELAY namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

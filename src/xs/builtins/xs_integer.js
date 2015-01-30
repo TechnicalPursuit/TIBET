@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.integer}
- * @synopsis An integer value with no restriction on digit length.
+ * @summary An integer value with no restriction on digit length.
  */
 
 //  ------------------------------------------------------------------------
@@ -33,8 +33,8 @@ TP.xs.integer.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided represents an integer with
+     * @method validate
+     * @summary Returns true if the object provided represents an integer with
      *     optional leading + or - sign.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}
@@ -57,13 +57,13 @@ TP.xs.integer.Type.defineMethod('validateFacetFractionDigits',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetFractionDigits
-     * @synopsis Tests to make sure the inbound value has no more than the
+     * @method validateFacetFractionDigits
+     * @summary Tests to make sure the inbound value has no more than the
      *     specified number of fractional digits. For TP.xs.integer this will
      *     raise an TP.sig.InvalidOperation signal.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @raises TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidOperation
      * @returns {Boolean}
      */
 
@@ -79,8 +79,8 @@ TP.xs.integer.Type.defineMethod('validateFacetTotalDigits',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetTotalDigits
-     * @synopsis Tests to make sure the inbound value has no more than the
+     * @method validateFacetTotalDigits
+     * @summary Tests to make sure the inbound value has no more than the
      *     specified number of total digits.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.

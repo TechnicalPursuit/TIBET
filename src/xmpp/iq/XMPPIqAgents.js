@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqAgents}
- * @synopsis A wrapper for the IQ_AGENTS namespace'd payload element.
+ * @summary A wrapper for the IQ_AGENTS namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -33,8 +33,8 @@ TP.xmpp.IqAgents.Inst.defineMethod('getAgents',
 function() {
 
     /**
-     * @name getAgents
-     * @synopsis Returns an Array of TP.xmpp.IqAgent nodes from the receiver.
+     * @method getAgents
+     * @summary Returns an Array of TP.xmpp.IqAgent nodes from the receiver.
      * @returns {Array}
      */
 

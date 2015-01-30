@@ -1,6 +1,6 @@
 /**
  * @type {Namespace}
- * @synopsis Defines namespace-level objects and functionality for the project.
+ * @summary Defines namespace-level objects and functionality for the project.
  */
 
 /**

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.schema}
- * @synopsis XMLSchema schema processing node.
+ * @summary XMLSchema schema processing node.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,10 +25,10 @@ TP.xs.schema.Inst.defineMethod('defineTypes',
 function() {
 
     /**
-     * @name defineTypes
-     * @synopsis Define the types in TIBET that have their XML Schema markup
+     * @method defineTypes
+     * @summary Define the types in TIBET that have their XML Schema markup
      *     under the receiver.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {'TP.xs.schema'} The receiver.
      */
 

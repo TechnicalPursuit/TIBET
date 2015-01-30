@@ -44,8 +44,8 @@ TP.xctrls.Element.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tagCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -86,8 +86,8 @@ TP.xctrls.Element.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Invoked by the TIBET Shell when the tag is being "run" as part
+     * @method cmdRunContent
+     * @summary Invoked by the TIBET Shell when the tag is being "run" as part
      *     of a pipe or command sequence. For a UI element like an HTML element
      *     this effectively means to render itself onto the standard output
      *     stream.

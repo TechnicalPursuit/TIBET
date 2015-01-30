@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.amz.AmazonS3Service}
- * @synopsis A subtype of TP.core.RESTService that communicates with the Amazon
+ * @summary A subtype of TP.core.RESTService that communicates with the Amazon
  *     S3 service.
  * @example If the TP.sig.AmazonS3Request/TP.sig.AmazonS3Response processing
  *     model is used, it is unnecessary to manually set up an
@@ -97,8 +97,8 @@ TP.amz.AmazonS3Service.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Returns an initialized instance of the receiver. If aRequest is
+     * @method init
+     * @summary Returns an initialized instance of the receiver. If aRequest is
      *     provided it can help define the service's operation by providing a
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
@@ -122,8 +122,8 @@ TP.amz.AmazonS3Service.Inst.defineMethod('clearAuthData',
 function() {
 
     /**
-     * @name clearAuthData
-     * @synopsis Clears any stored authentication from the receiver and any
+     * @method clearAuthData
+     * @summary Clears any stored authentication from the receiver and any
      *     backing store.
      * @returns {TP.core.Service} The receiver.
      */
@@ -142,8 +142,8 @@ TP.amz.AmazonS3Service.Inst.defineMethod('configureAuthData',
 function(aRequest) {
 
     /**
-     * @name configureAuthData
-     * @synopsis Configures authentication data for the receiver.
+     * @method configureAuthData
+     * @summary Configures authentication data for the receiver.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
@@ -227,8 +227,8 @@ TP.amz.AmazonS3Service.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestVerb
-     * @synopsis Returns the HTTP verb to use for the request. For the Amazon S3
+     * @method rewriteRequestVerb
+     * @summary Returns the HTTP verb to use for the request. For the Amazon S3
      *     service the verb used depends on the 'action' that the request is
      *     configured for.
      * @param {TP.sig.AmazonS3Request} aRequest The request whose parameters
@@ -273,8 +273,8 @@ TP.amz.AmazonS3Service.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestURI
-     * @synopsis Rewrites the request's URI. For the Amazon S3 service, this
+     * @method rewriteRequestURI
+     * @summary Rewrites the request's URI. For the Amazon S3 service, this
      *     means computing the bucket and item name from the request and
      *     generating a URI from it.
      * @param {TP.sig.AmazonS3Request} aRequest The request to rewrite.
@@ -319,8 +319,8 @@ TP.amz.AmazonS3Service.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestHeaders
-     * @synopsis Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @method rewriteRequestHeaders
+     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
      *     service. Typical headers include an X-Request-Id for the request ID
      *     to help identify "conversations" related to a particular request.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define

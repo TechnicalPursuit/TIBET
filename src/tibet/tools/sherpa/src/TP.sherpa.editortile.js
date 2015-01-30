@@ -46,7 +46,7 @@ TP.sherpa.editortile.Inst.defineMethod('setup',
 function() {
 
     /**
-     * @name setup
+     * @method setup
      */
 
     this.observe(this, 'TP.sig.DOMClick');

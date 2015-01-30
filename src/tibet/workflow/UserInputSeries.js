@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.UserInputSeries}
- * @synopsis A request type specifically intended to query the user for a series
+ * @summary A request type specifically intended to query the user for a series
  *     of data elements, validating each one before proceeding. This type can
  *     also be used to construct simple query sequences or console 'wizards' to
  *     prompt the user for information in a sequence.
@@ -116,8 +116,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('init',
 function() {
 
     /**
-     * @name init
-     * @synopsis Initializes a new request object and returns it.
+     * @method init
+     * @summary Initializes a new request object and returns it.
      * @returns {TP.sig.UserInputSeries} A new instance.
      */
 
@@ -138,8 +138,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('failJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
-     * @name failJob
-     * @synopsis Tells the request/response to fail, meaning the receiver should
+     * @method failJob
+     * @summary Tells the request/response to fail, meaning the receiver should
      *     do whatever finalization is necessary to reach the TP.FAILED state.
      *     If the receiver has specific behavior to implement it can be added
      *     via addFailureHook() calls. Note that the status is TP.FAILING during
@@ -190,8 +190,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('addCancelHook',
 function(aFunction) {
 
     /**
-     * @name addCancelHook
-     * @synopsis Adds a function to run at cancellation. There can be multiple
+     * @method addCancelHook
+     * @summary Adds a function to run at cancellation. There can be multiple
      *     functions added via this method, and they will be executed in the
      *     order they were added.
      * @param {Function} aFunction A function to run if the request is
@@ -221,8 +221,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('addFailureHook',
 function(aFunction) {
 
     /**
-     * @name addFailureHook
-     * @synopsis Adds a function to run on failure. There can be multiple
+     * @method addFailureHook
+     * @summary Adds a function to run on failure. There can be multiple
      *     functions added via this method, and they will be executed in the
      *     order they were added.
      * @param {Function} aFunction A function to run if the request ends in
@@ -252,8 +252,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('addQuery',
 function(aParamHash) {
 
     /**
-     * @name addQuery
-     * @synopsis Adds a query, optional default value, and optional validator to
+     * @method addQuery
+     * @summary Adds a query, optional default value, and optional validator to
      *     the list of queries this request should manage.
      * @param {TP.lang.Hash} aParamHash A hash containing optional parameter
      *     keys including: 'query': A string or function which can generate a
@@ -298,8 +298,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('addSuccessHook',
 function(aFunction) {
 
     /**
-     * @name addSuccessHook
-     * @synopsis Adds a function to run on success. There can be multiple
+     * @method addSuccessHook
+     * @summary Adds a function to run on success. There can be multiple
      *     functions added via this method, and they will be executed in the
      *     order they were added.
      * @param {Function} aFunction A function to run if the request completes
@@ -329,8 +329,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('cancelJob',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancelJob
-     * @synopsis Tells the request/response to cancel, meaning the request is
+     * @method cancelJob
+     * @summary Tells the request/response to cancel, meaning the request is
      *     being rescinded by the user or calling process. If the receiver has
      *     specific behavior to implement it can be added via addCancelHook()
      *     calls. Note that the status is TP.CANCELLING during any processing
@@ -382,8 +382,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('completeJob',
 function(aResult) {
 
     /**
-     * @name completeJob
-     * @synopsis Tells the request/response to complete, meaning the receiver
+     * @method completeJob
+     * @summary Tells the request/response to complete, meaning the receiver
      *     should do whatever finalization is necessary to reach the
      *     TP.SUCCEEDED state. If the receiver has specific behavior to
      *     implement it can be added via addSuccessHook() calls. Note that the
@@ -429,8 +429,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
     /**
-     * @name fire
-     * @synopsis Starts the request processing sequence, resetting the query
+     * @method fire
+     * @summary Starts the request processing sequence, resetting the query
      *     index of the receiver to the beginning of the series.
      * @param {Object} anOrigin An optional firing origin for this activation.
      * @param {Object} aPayload Optional signal arguments.
@@ -514,8 +514,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('getLastReply',
 function() {
 
     /**
-     * @name getLastReply
-     * @synopsis Returns the last response string acquired by the receiver.
+     * @method getLastReply
+     * @summary Returns the last response string acquired by the receiver.
      * @returns {String} The last user response.
      */
 
@@ -528,8 +528,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('getReplies',
 function() {
 
     /**
-     * @name getReplies
-     * @synopsis Returns the array of current replies to the receiver's queries.
+     * @method getReplies
+     * @summary Returns the array of current replies to the receiver's queries.
      * @returns {Array} The list of response strings acquired so far.
      */
 
@@ -542,8 +542,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('getUor',
 function() {
 
     /**
-     * @name getUor
-     * @synopsis Returns a shared TP.sig.UserOutputRequest instance which can be
+     * @method getUor
+     * @summary Returns a shared TP.sig.UserOutputRequest instance which can be
      *     used to provide output such as error messages during user input
      *     processing of the series.
      * @returns {TP.sig.UserOutputRequest} An instance of an output request.
@@ -566,8 +566,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('handleUserInput',
 function(aSignal) {
 
     /**
-     * @name handleUserInput
-     * @synopsis Responds to TP.sig.UserInput signals, which are sent in
+     * @method handleUserInput
+     * @summary Responds to TP.sig.UserInput signals, which are sent in
      *     response to the receiver (a TP.sig.UserInputRequest). By managing
      *     completion status here the request can continue to remain active, or
      *     it can complete.
@@ -733,8 +733,8 @@ TP.sig.UserInputSeries.Inst.defineMethod('reset',
 function() {
 
     /**
-     * @name reset
-     * @synopsis Prepares the receiver to be re-fired, leaving certain values in
+     * @method reset
+     * @summary Prepares the receiver to be re-fired, leaving certain values in
      *     place to retain continuity.
      */
 

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.Name}
- * @synopsis A valid XML 1.0 Second Edition Name value.
+ * @summary A valid XML 1.0 Second Edition Name value.
  */
 
 //  ------------------------------------------------------------------------
@@ -35,8 +35,8 @@ TP.xs.Name.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.Name the return value is a string that must meet the
      *     TP.xs.Name validation rules meaning it must start with a Unicode
      *     Letter, an underscore, or a colon. Remaining character values may be
@@ -77,8 +77,8 @@ TP.xs.Name.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided contains a valid Name in
+     * @method validate
+     * @summary Returns true if the object provided contains a valid Name in
      *     conformance to the XML 1.0 Second Edition spec.
      * @returns {Boolean}
      */

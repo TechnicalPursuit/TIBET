@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @description This file contains the definitions for the various XHTML 1.0
+ * @summary This file contains the definitions for the various XHTML 1.0
  *     node subtypes that were not categorized by the W3C into modules in XHTML
  *     1.1. This is mostly because these tags are formatting tags that have been
  *     deprecated by the W3C in favor of using style sheets or they are
@@ -24,7 +24,7 @@
 
 /**
  * @type {TP.html.applet}
- * @synopsis 'applet' tag. An applet.
+ * @summary 'applet' tag. An applet.
  */
 
 //  ------------------------------------------------------------------------
@@ -39,7 +39,7 @@ TP.html.applet.Type.set('uriAttrs', TP.ac('src'));
 
 /**
  * @type {TP.html.basefont}
- * @synopsis 'basefont' tag. Base font size.
+ * @summary 'basefont' tag. Base font size.
  */
 
 //  ------------------------------------------------------------------------
@@ -52,7 +52,7 @@ TP.html.CoreAttrs.defineSubtype('basefont');
 
 /**
  * @type {TP.html.center}
- * @synopsis 'center' tag. Center content.
+ * @summary 'center' tag. Center content.
  */
 
 //  ------------------------------------------------------------------------
@@ -65,7 +65,7 @@ TP.html.Attrs.defineSubtype('center');
 
 /**
  * @type {TP.html.dir}
- * @synopsis 'dir' tag. Multiple column list. (Deprecated)
+ * @summary 'dir' tag. Multiple column list. (Deprecated)
  */
 
 //  ------------------------------------------------------------------------
@@ -80,7 +80,7 @@ TP.html.dir.Type.set('booleanAttrs', TP.ac('compact'));
 
 /**
  * @type {TP.html.font}
- * @synopsis 'font' tag. Local font change.
+ * @summary 'font' tag. Local font change.
  */
 
 //  ------------------------------------------------------------------------
@@ -93,7 +93,7 @@ TP.html.CoreAttrs.defineSubtype('font');
 
 /**
  * @type {TP.html.frame}
- * @synopsis 'frame' tag. An individual frame.
+ * @summary 'frame' tag. An individual frame.
  */
 
 //  ------------------------------------------------------------------------
@@ -108,7 +108,7 @@ TP.html.frame.Type.set('booleanAttrs', TP.ac('noResize'));
 
 /**
  * @type {TP.html.frameset}
- * @synopsis 'frameset' tag.
+ * @summary 'frameset' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -121,7 +121,7 @@ TP.html.CoreAttrs.defineSubtype('frameset');
 
 /**
  * @type {TP.html.iframe}
- * @synopsis 'iframe' tag. Inline frame (subwindow). Note that this type mixes
+ * @summary 'iframe' tag. Inline frame (subwindow). Note that this type mixes
  *     in TP.core.UICanvas which allows iframe elements to work as UICanvas
  *     elements.
  */
@@ -174,8 +174,8 @@ TP.html.iframe.Inst.defineMethod('setContentFromSource',
 function() {
 
     /**
-     * @name setContentFromSource
-     * @synopsis Sets the content of the receiver to the content pointed to by
+     * @method setContentFromSource
+     * @summary Sets the content of the receiver to the content pointed to by
      *     it's 'src' attribute, running it through the content processor first.
      * @returns {TP.html.iframe} The receiver.
      */
@@ -195,11 +195,11 @@ TP.html.iframe.Inst.defineMethod('setContentUsingRelativePath',
 function(aPath) {
 
     /**
-     * @name setContentUsingRelativePath
-     * @synopsis Sets the content of the receiver to the content pointed to by
+     * @method setContentUsingRelativePath
+     * @summary Sets the content of the receiver to the content pointed to by
      *     the supplied attribute, running it through the content processor
      *     first.
-     * @description Note that the supplied path can be a relative URI, as the
+     * @summary Note that the supplied path can be a relative URI, as the
      *     receiver will be asked to resolve it to an absolute URI. This is
      *     usually done by resolving it against the receiver's XML Base value or
      *     it's document baseURI if an XML Base value cannot be computed.
@@ -243,8 +243,8 @@ TP.html.iframe.Inst.defineMethod('getCanvasID',
 function() {
 
     /**
-     * @name getCanvasID
-     * @synopsis Returns the canvas ID for the receiver. For an IFRAME this is
+     * @method getCanvasID
+     * @summary Returns the canvas ID for the receiver. For an IFRAME this is
      *     computed differently than normal so that IFRAME elements appear to
      *     have canvas IDs similar to true frames.
      * @returns {String} The canvas's global ID.
@@ -259,8 +259,8 @@ TP.html.iframe.Inst.defineMethod('getGlobalID',
 function() {
 
     /**
-     * @name getGlobalID
-     * @synopsis Returns the global ID for the receiver.
+     * @method getGlobalID
+     * @summary Returns the global ID for the receiver.
      * @returns {String} The canvas's global ID.
      */
 
@@ -275,8 +275,8 @@ TP.html.iframe.Inst.defineMethod('getLocalID',
 function() {
 
     /**
-     * @name getLocalID
-     * @synopsis Returns the local ID for the receiver.
+     * @method getLocalID
+     * @summary Returns the local ID for the receiver.
      * @returns {String} The canvas's local ID.
      */
 
@@ -291,8 +291,8 @@ TP.html.iframe.Inst.defineMethod('getNativeContentDocument',
 function() {
 
     /**
-     * @name getNativeContentDocument
-     * @synopsis Returns the content document (that is the contained 'document')
+     * @method getNativeContentDocument
+     * @summary Returns the content document (that is the contained 'document')
      *     of the receiver in a TP.core.Document wrapper.
      * @returns {Document} The Document object contained by the receiver.
      */
@@ -312,8 +312,8 @@ TP.html.iframe.Inst.defineMethod('getNativeContentWindow',
 function() {
 
     /**
-     * @name getNativeContentWindow
-     * @synopsis Returns the content window (that is the 'contained window') of
+     * @method getNativeContentWindow
+     * @summary Returns the content window (that is the 'contained window') of
      *     the receiver.
      * @returns {Window} The Window object contained by the receiver.
      */
@@ -335,8 +335,8 @@ TP.html.iframe.Inst.defineMethod('$get',
 function(attributeName) {
 
     /**
-     * @name $get
-     * @synopsis Primitive $get() hook. Allows instances of this type to look up
+     * @method $get
+     * @summary Primitive $get() hook. Allows instances of this type to look up
      *     globals on their content window if a value for the attribute cannot
      *     be found on the receiver itself.
      * @param {String} attributeName The name/key of the attribute to return.
@@ -366,9 +366,9 @@ TP.html.iframe.Inst.defineMethod('constructObject',
 function(constructorName) {
 
     /**
-     * @name constructObject
-     * @synopsis Constructs an object in the receiver's content window.
-     * @description Note that all parameters to this method are passed along in
+     * @method constructObject
+     * @summary Constructs an object in the receiver's content window.
+     * @summary Note that all parameters to this method are passed along in
      *     the object creation process. Therefore, arguments to the 'new', if
      *     you will, should be passed after the constructorName. Note that this
      *     type's implementation of this method is different from
@@ -409,7 +409,7 @@ TP.html.iframe.Inst.resolveTrait('setContent', TP.core.UICanvas);
 
 /**
  * @type {TP.html.isindex}
- * @synopsis 'isindex' tag. (Deprecated)
+ * @summary 'isindex' tag. (Deprecated)
  */
 
 //  ------------------------------------------------------------------------
@@ -422,7 +422,7 @@ TP.html.CoreAttrs.defineSubtype('isindex');
 
 /**
  * @type {TP.html.listing}
- * @synopsis 'listing' tag.
+ * @summary 'listing' tag.
  */
 
 //  ------------------------------------------------------------------------
@@ -435,7 +435,7 @@ TP.html.Attrs.defineSubtype('listing');
 
 /**
  * @type {TP.html.menu}
- * @synopsis 'menu' tag. Single column list. (Deprecated)
+ * @summary 'menu' tag. Single column list. (Deprecated)
  */
 
 //  ------------------------------------------------------------------------
@@ -450,7 +450,7 @@ TP.html.menu.Type.set('booleanAttrs', TP.ac('compact'));
 
 /**
  * @type {TP.html.noframes}
- * @synopsis 'noframes' tag. When frames are unsupported.
+ * @summary 'noframes' tag. When frames are unsupported.
  */
 
 //  ------------------------------------------------------------------------
@@ -463,7 +463,7 @@ TP.html.Attrs.defineSubtype('noframes');
 
 /**
  * @type {TP.html.s}
- * @synopsis 's' tag. Strike-through.
+ * @summary 's' tag. Strike-through.
  */
 
 //  ------------------------------------------------------------------------
@@ -476,7 +476,7 @@ TP.html.Attrs.defineSubtype('s');
 
 /**
  * @type {TP.html.strike}
- * @synopsis 'strike' tag. Strike-through.
+ * @summary 'strike' tag. Strike-through.
  */
 
 //  ------------------------------------------------------------------------
@@ -489,7 +489,7 @@ TP.html.Attrs.defineSubtype('strike');
 
 /**
  * @type {TP.html.u}
- * @synopsis 'u' tag. Underline.
+ * @summary 'u' tag. Underline.
  */
 
 //  ------------------------------------------------------------------------

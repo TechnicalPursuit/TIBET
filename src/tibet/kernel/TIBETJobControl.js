@@ -21,9 +21,9 @@
 
 /**
  * @type {TP.core.JobStatus}
- * @synopsis An abstract type, designed specifically to be mixed in to other
+ * @summary An abstract type, designed specifically to be mixed in to other
  *     types which want to use common process/job status functionality.
- * @description The most prevalent consumers of TP.core.JobStatus are
+ * @summary The most prevalent consumers of TP.core.JobStatus are
  *     TP.core.Job, TP.core.JobGroup, and TP.core.WorkflowSignal (which provides
  *     the common supertype for TP.core.Requests and TP.core.Responses). By
  *     traiting in this type those types are able to work with a common set of
@@ -55,13 +55,13 @@ TP.core.JobStatus.Inst.defineMethod('checkFaultArguments',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name checkFaultArguments
-     * @synopsis Checks the arguments and returns a hash containing updated and
+     * @method checkFaultArguments
+     * @summary Checks the arguments and returns a hash containing updated and
      *     properly defaulted fault code and fault string values.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @return {TP.lang.Hash} A hash containing 'code' and 'text' keys.
+     * @returns {TP.lang.Hash} A hash containing 'code' and 'text' keys.
      */
 
     var hash;
@@ -101,8 +101,8 @@ TP.core.JobStatus.Inst.defineMethod('didCancel',
 function() {
 
     /**
-     * @name didCancel
-     * @synopsis Returns true if the receiver's status code is TP.CANCELLED.
+     * @method didCancel
+     * @summary Returns true if the receiver's status code is TP.CANCELLED.
      * @returns {Boolean} Whether or not the job cancelled.
      */
 
@@ -115,8 +115,8 @@ TP.core.JobStatus.Inst.defineMethod('didComplete',
 function() {
 
     /**
-     * @name didComplete
-     * @synopsis Returns true if the receiver is done processing, regardless of
+     * @method didComplete
+     * @summary Returns true if the receiver is done processing, regardless of
      *     whether that's due to success or failure. You can use the didFail
      *     and/or didSucceed methods to check the final status.
      * @returns {Boolean} Whether or not the job completed.
@@ -146,8 +146,8 @@ TP.core.JobStatus.Inst.defineMethod('didError',
 function() {
 
     /**
-     * @name didError
-     * @synopsis Returns true if the receiver's status code represents an error
+     * @method didError
+     * @summary Returns true if the receiver's status code represents an error
      *     status. Error and failure differ in that Error implies the job did
      *     not run correctly while failure implied correct execution but a
      *     failed outcome.
@@ -163,8 +163,8 @@ TP.core.JobStatus.Inst.defineMethod('didFail',
 function() {
 
     /**
-     * @name didFail
-     * @synopsis Returns true if the receiver's status code represents a failure
+     * @method didFail
+     * @summary Returns true if the receiver's status code represents a failure
      *     status.
      * @returns {Boolean} Whether or not the job failed.
      */
@@ -178,8 +178,8 @@ TP.core.JobStatus.Inst.defineMethod('didSkip',
 function() {
 
     /**
-     * @name didSkip
-     * @synopsis Returns true if the receiver's fault code represents a skipped
+     * @method didSkip
+     * @summary Returns true if the receiver's fault code represents a skipped
      *     job status meaning it was never really run.
      * @returns {Boolean} Whether or not the job was skipped.
      */
@@ -193,8 +193,8 @@ TP.core.JobStatus.Inst.defineMethod('didSucceed',
 function() {
 
     /**
-     * @name didSucceed
-     * @synopsis Returns true if the receiver's status code reflects a
+     * @method didSucceed
+     * @summary Returns true if the receiver's status code reflects a
      *     successful completion without incurring any failures.
      * @returns {Boolean} Whether or not the job succeeded.
      */
@@ -212,8 +212,8 @@ TP.core.JobStatus.Inst.defineMethod('didTimeOut',
 function() {
 
     /**
-     * @name didTimeOut
-     * @synopsis Returns true if the receiver's fault code represents a
+     * @method didTimeOut
+     * @summary Returns true if the receiver's fault code represents a
      *     timed-out status.
      * @returns {Boolean} Whether or not the job timed out.
      */
@@ -227,10 +227,10 @@ TP.core.JobStatus.Inst.defineMethod('isActive',
 function(aFlag) {
 
     /**
-     * @name isActive
-     * @synopsis Returns true if the receiver is still running in a TP.ACTIVE
+     * @method isActive
+     * @summary Returns true if the receiver is still running in a TP.ACTIVE
      *     state.
-     * @description Paused receivers and receivers that are waiting at TP.READY
+     * @summary Paused receivers and receivers that are waiting at TP.READY
      *     are not considered "active" by this test. Use isRunnable() to check
      *     for general runnability.
      * @param {Boolean} aFlag True to place the receiver into an active state.
@@ -250,8 +250,8 @@ TP.core.JobStatus.Inst.defineMethod('isCancelling',
 function() {
 
     /**
-     * @name isCancelling
-     * @synopsis Returns true if the receiver is in the process of being
+     * @method isCancelling
+     * @summary Returns true if the receiver is in the process of being
      *     cancelled.
      * @returns {Boolean} The current activity status.
      */
@@ -265,8 +265,8 @@ TP.core.JobStatus.Inst.defineMethod('isCompleting',
 function() {
 
     /**
-     * @name isCompleting
-     * @synopsis Returns true if the receiver is in the process of being
+     * @method isCompleting
+     * @summary Returns true if the receiver is in the process of being
      *     completed. This may be due to either fail, cancel, or success
      *     processing.
      * @returns {Boolean} The current activity status.
@@ -294,9 +294,9 @@ TP.core.JobStatus.Inst.defineMethod('isCompleted',
 function() {
 
     /**
-     * @name isCompleted
-     * @synopsis Returns true if the receiver is done processing.
-     * @description A true value doesn't mean success, just that the processing
+     * @method isCompleted
+     * @summary Returns true if the receiver is done processing.
+     * @summary A true value doesn't mean success, just that the processing
      *     is finished. It may have been cancelled, failed, or completed
      *     properly. You can use the 'did*' methods to check the final status.
      * @returns {Boolean} Whether or not the job is done processing.
@@ -311,8 +311,8 @@ TP.core.JobStatus.Inst.defineMethod('isErroring',
 function() {
 
     /**
-     * @name isErroring
-     * @synopsis Returns true if the receiver is in the process of being errored
+     * @method isErroring
+     * @summary Returns true if the receiver is in the process of being errored
      *     out due to an explicit error/exception.
      * @returns {Boolean} The current activity status.
      */
@@ -326,8 +326,8 @@ TP.core.JobStatus.Inst.defineMethod('isFailing',
 function() {
 
     /**
-     * @name isFailing
-     * @synopsis Returns true if the receiver is in the process of being failed
+     * @method isFailing
+     * @summary Returns true if the receiver is in the process of being failed
      *     due to an explicit error/exception.
      * @returns {Boolean} The current activity status.
      */
@@ -341,8 +341,8 @@ TP.core.JobStatus.Inst.defineMethod('isPaused',
 function(aFlag) {
 
     /**
-     * @name isPaused
-     * @synopsis Combined setter/getter for whether the receiver is paused.
+     * @method isPaused
+     * @summary Combined setter/getter for whether the receiver is paused.
      *     Passing aFlag of true will set the receiver's state to TP.PAUSED.
      *     Passing false will return the state to TP.ACTIVE.
      * @param {Boolean} aFlag True to place the receiver into an active state.
@@ -362,8 +362,8 @@ TP.core.JobStatus.Inst.defineMethod('isRunnable',
 function() {
 
     /**
-     * @name isRunnable
-     * @synopsis Returns true if the receiver is in a state that would allow it
+     * @method isRunnable
+     * @summary Returns true if the receiver is in a state that would allow it
      *     to run, or to resume running. These states are TP.READY, TP.ACTIVE,
      *     and TP.PAUSED.
      * @returns {Boolean} Whether or not the job could be run.
@@ -390,8 +390,8 @@ TP.core.JobStatus.Inst.defineMethod('cancel',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancel
-     * @synopsis Tells the receiver to cancel, meaning it is being rescinded by
+     * @method cancel
+     * @summary Tells the receiver to cancel, meaning it is being rescinded by
      *     the user or calling process. If the receiver has specific behavior to
      *     implement it should override the cancelJob() method invoked as part
      *     of this method's operation.
@@ -443,8 +443,8 @@ TP.core.JobStatus.Inst.defineMethod('cancelJob',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancelJob
-     * @synopsis Template method for processing to cancel a job/request.
+     * @method cancelJob
+     * @summary Template method for processing to cancel a job/request.
      *     Override this method to provide custom job cancellation logic.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
@@ -461,8 +461,8 @@ TP.core.JobStatus.Inst.defineMethod('complete',
 function(aResult) {
 
     /**
-     * @name complete
-     * @synopsis Tells the receiver to complete, meaning the receiver should do
+     * @method complete
+     * @summary Tells the receiver to complete, meaning the receiver should do
      *     whatever finalization is necessary to reach the TP.SUCCEEDED state.
      *     If the receiver has specific behavior to implement it should override
      *     the completeJob() method invoked as part of this method's operation.
@@ -515,8 +515,8 @@ TP.core.JobStatus.Inst.defineMethod('completeJob',
 function(aResult) {
 
     /**
-     * @name completeJob
-     * @synopsis Template method for processing to complete a job/request.
+     * @method completeJob
+     * @summary Template method for processing to complete a job/request.
      *     Override this method to provide custom job completion logic.
      * @param {Object} aResult An optional object to set as the result for the
      *     job/request.
@@ -532,8 +532,8 @@ TP.core.JobStatus.Inst.defineMethod('error',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name error
-     * @synopsis Tells the receiver there was an error in job processing.
+     * @method error
+     * @summary Tells the receiver there was an error in job processing.
      * @param {String} aFaultString A string description of the error.
      * @param {Object} aFaultCode A code providing additional information on
      *     specific nature of the error. Often an exception or Error object.
@@ -584,8 +584,8 @@ TP.core.JobStatus.Inst.defineMethod('errorJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
-     * @name errorJob
-     * @synopsis Template method for job/request error processing. Override
+     * @method errorJob
+     * @summary Template method for job/request error processing. Override
      *     this method to provide custom job error logic.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
@@ -605,8 +605,8 @@ TP.core.JobStatus.Inst.defineMethod('fail',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name fail
-     * @synopsis Tells the receiver to fail, meaning it failed due to some form
+     * @method fail
+     * @summary Tells the receiver to fail, meaning it failed due to some form
      *     of exception. If the receiver has specific behavior to implement it
      *     should override the failJob() method invoked as part of this method's
      *     operation.
@@ -671,8 +671,8 @@ TP.core.JobStatus.Inst.defineMethod('failJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
-     * @name failJob
-     * @synopsis Template method for job/request failure processing. Override
+     * @method failJob
+     * @summary Template method for job/request failure processing. Override
      *     this method to provide custom job failure logic.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
@@ -692,8 +692,8 @@ TP.core.JobStatus.Inst.defineMethod('getFaultCode',
 function() {
 
     /**
-     * @name getFaultCode
-     * @synopsis Returns the fault code of the receiver.
+     * @method getFaultCode
+     * @summary Returns the fault code of the receiver.
      * @returns {Number} A TIBET fault code constant.
      */
 
@@ -711,8 +711,8 @@ TP.core.JobStatus.Inst.defineMethod('getFaultStack',
 function() {
 
     /**
-     * @name getFaultStack
-     * @synopsis Returns the fault stack of the receiver.
+     * @method getFaultStack
+     * @summary Returns the fault stack of the receiver.
      * @returns {Array} An Array of Arrays that contain information derived
      *     from the JavaScript stack when the fault occurred.
      */
@@ -731,8 +731,8 @@ TP.core.JobStatus.Inst.defineMethod('getFaultText',
 function() {
 
     /**
-     * @name getFaultText
-     * @synopsis Returns the fault string (description) of the receiver.
+     * @method getFaultText
+     * @summary Returns the fault string (description) of the receiver.
      * @returns {String} A text description of the fault.
      */
 
@@ -750,8 +750,8 @@ TP.core.JobStatus.Inst.defineMethod('getStatusCode',
 function() {
 
     /**
-     * @name getStatusCode
-     * @synopsis Returns the job status code of the receiver.
+     * @method getStatusCode
+     * @summary Returns the job status code of the receiver.
      * @returns {Number} A TIBET status code constant.
      */
 
@@ -769,8 +769,8 @@ TP.core.JobStatus.Inst.defineMethod('getStatusText',
 function() {
 
     /**
-     * @name getStatusText
-     * @synopsis Returns the job status of the receiver in text form.
+     * @method getStatusText
+     * @summary Returns the job status of the receiver in text form.
      * @returns {String} The current status in text form.
      */
 
@@ -788,10 +788,10 @@ TP.core.JobStatus.Inst.defineMethod('pause',
 function() {
 
     /**
-     * @name pause
-     * @synopsis Pauses the receiver if that operation is supportable by the
+     * @method pause
+     * @summary Pauses the receiver if that operation is supportable by the
      *     particular type.
-     * @description Not all receivers of the pause operation are able to pause
+     * @summary Not all receivers of the pause operation are able to pause
      *     effectively (XMLHttpRequest for example), but the job does enter the
      *     TP.PAUSED state as a result of this method.
      * @returns {TP.core.JobStatus} The receiver.
@@ -810,8 +810,8 @@ TP.core.JobStatus.Inst.defineMethod('reset',
 function() {
 
     /**
-     * @name reset
-     * @synopsis Resets the receiver, returning it to its initial state.
+     * @method reset
+     * @summary Resets the receiver, returning it to its initial state.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
@@ -831,9 +831,9 @@ TP.core.JobStatus.Inst.defineMethod('resume',
 function() {
 
     /**
-     * @name resume
-     * @synopsis Resumes a paused receiver, if it was actually paused.
-     * @description Not all receivers can pause effectively and may ignore this
+     * @method resume
+     * @summary Resumes a paused receiver, if it was actually paused.
+     * @summary Not all receivers can pause effectively and may ignore this
      *     call along with the pause() call itself. If the job was in a
      *     TP.PAUSED state however, this call will return it to the TP.ACTIVE
      *     state.
@@ -854,8 +854,8 @@ TP.core.JobStatus.Inst.defineMethod('start',
 function(parameters) {
 
     /**
-     * @name start
-     * @synopsis Starts the receiver in "job control" terms. This is the
+     * @method start
+     * @summary Starts the receiver in "job control" terms. This is the
      *     standard entry point method for activating a receiver relative to the
      *     job control subsystem. One specific effect of this call is that the
      *     job will enter the TP.ACTIVE state.
@@ -875,11 +875,11 @@ function(parameters) {
 
 /**
  * @type {TP.core.Job}
- * @synopsis TP.core.Job provides support for operations consisting of a
+ * @summary TP.core.Job provides support for operations consisting of a
  *     sequence of asynchronous calls which follow a scheduling algorithm. In
  *     addition, TP.core.Job instances are tracked by TIBET so you can view and
  *     manage them from a central "process list".
- * @description Job instances are essentially scheduling/control objects that
+ * @summary Job instances are essentially scheduling/control objects that
  *     help you run one or more "work functions" in a particular way. The
  *     primary goal of TP.core.Job is to provide you with a way to run these
  *     work functions with optional pre/post functions and to manage their
@@ -939,8 +939,8 @@ TP.core.Job.Type.defineConstant('ITERATION_INDEX_COMPUTE',
 function(job, params) {
 
     /**
-     * @name TP.core.Job.ITERATION_INDEX_COMPUTE
-     * @synopsis Returns the proper value from a collection based on the current
+     * @method TP.core.Job.ITERATION_INDEX_COMPUTE
+     * @summary Returns the proper value from a collection based on the current
      *     job iteration number. The values are assumed to be in a step
      *     parameter set under the key 'values'.
      * @param {TP.core.Job} job The job instance.
@@ -963,8 +963,8 @@ TP.core.Job.Type.defineConstant('PERCENTAGE_INDEX_COMPUTE',
 function(job, params) {
 
     /**
-     * @name TP.core.Job.PERCENTAGE_INDEX_COMPUTE
-     * @synopsis Returns the proper value from a collection based on the current
+     * @method TP.core.Job.PERCENTAGE_INDEX_COMPUTE
+     * @summary Returns the proper value from a collection based on the current
      *     percentage of job completion. The values are assumed to be in a step
      *     parameter set under the key 'values'.
      * @param {TP.core.Job} job The job instance.
@@ -994,8 +994,8 @@ TP.core.Job.Type.defineConstant('LINEAR_COMPUTE',
 function(job, params) {
 
     /**
-     * @name TP.core.Job.LINEAR_COMPUTE
-     * @synopsis Returns the proper value between two values ('from' and 'to')
+     * @method TP.core.Job.LINEAR_COMPUTE
+     * @summary Returns the proper value between two values ('from' and 'to')
      *     based on current percentage of job completion as computed by a simple
      *     linear algorithm.
      * @param {TP.core.Job} job The job instance.
@@ -1031,8 +1031,8 @@ TP.core.Job.Type.defineConstant('DOUBLE_DECAY',
 function(aJob) {
 
     /**
-     * @name DOUBLE_DECAY
-     * @synopsis Returns a value which doubles the last delay time with each
+     * @method DOUBLE_DECAY
+     * @summary Returns a value which doubles the last delay time with each
      *     invocation. This will cause delays to increase quickly.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
      *     to feed the computation of a new delay time.
@@ -1048,8 +1048,8 @@ TP.core.Job.Type.defineConstant('DOUBLE_ON_FAILURE',
 function(aJob) {
 
     /**
-     * @name DOUBLE_ON_FAILURE
-     * @synopsis Returns a value which doubles the last delay time with each
+     * @method DOUBLE_ON_FAILURE
+     * @summary Returns a value which doubles the last delay time with each
      *     unsuccessful invocation. On success it will set the job back to the
      *     firstInterval value.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
@@ -1070,8 +1070,8 @@ TP.core.Job.Type.defineConstant('SIMPLE_DECAY',
 function(aJob) {
 
     /**
-     * @name SIMPLE_DECAY
-     * @synopsis Returns a value which grows slowly over time by adding 1 second
+     * @method SIMPLE_DECAY
+     * @summary Returns a value which grows slowly over time by adding 1 second
      *     to the delay with each iteration.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
      *     to feed the computation of a new delay time.
@@ -1087,8 +1087,8 @@ TP.core.Job.Type.defineConstant('SIMPLE_ON_FAILURE',
 function(aJob) {
 
     /**
-     * @name SIMPLE_ON_FAILURE
-     * @synopsis Returns a value which grows slowly over time by adding 1 second
+     * @method SIMPLE_ON_FAILURE
+     * @summary Returns a value which grows slowly over time by adding 1 second
      *     to the delay with each unsuccessful invocation. On success it will
      *     set the job back to the firstInterval value.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
@@ -1109,8 +1109,8 @@ TP.core.Job.Type.defineConstant('ZERO_DECAY',
 function(aJob) {
 
     /**
-     * @name ZERO_DECAY
-     * @synopsis Returns a value which doesn't vary from the job's current delay
+     * @method ZERO_DECAY
+     * @summary Returns a value which doesn't vary from the job's current delay
      *     times.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
      *     to feed the computation of a new delay time.
@@ -1134,8 +1134,8 @@ TP.core.Job.Type.defineConstant('ONCE',
 function(aJob) {
 
     /**
-     * @name ONCE
-     * @synopsis Returns true if the job 'isLimited' and should stop. For the
+     * @method ONCE
+     * @summary Returns true if the job 'isLimited' and should stop. For the
      *     ONCE model this test checks the job's iteration count.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
      *     to feed the computation.
@@ -1153,8 +1153,8 @@ TP.core.Job.Type.defineConstant('UNTIL_FAILURE',
 function(aJob) {
 
     /**
-     * @name UNTIL_FAILURE
-     * @synopsis Returns true if the job 'isLimited' and should stop. For
+     * @method UNTIL_FAILURE
+     * @summary Returns true if the job 'isLimited' and should stop. For
      *     UNTIL_FAILURE this returns true when the job's wasSuccessful flag is
      *     false.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
@@ -1171,8 +1171,8 @@ TP.core.Job.Type.defineConstant('UNTIL_SUCCESS',
 function(aJob) {
 
     /**
-     * @name UNTIL_SUCCESS
-     * @synopsis Returns true if the job 'isLimited' and should stop. For
+     * @method UNTIL_SUCCESS
+     * @summary Returns true if the job 'isLimited' and should stop. For
      *     UNTIL_SUCCESS this returns true when the job's wasSuccessful flag is
      *     true.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
@@ -1202,8 +1202,8 @@ TP.core.Job.Type.defineConstant('LOG_STEP_PARAMS',
 function(aJob, params) {
 
     /**
-     * @name LOG_STEP_PARAMS
-     * @synopsis Logs the current step parameters for the job. This is a useful
+     * @method LOG_STEP_PARAMS
+     * @summary Logs the current step parameters for the job. This is a useful
      *     debugging step to add to your job when experiencing problems getting
      *     a task to run.
      * @param {TP.core.Job} aJob An instance whose processing data may be used
@@ -1220,8 +1220,8 @@ TP.core.Job.Type.defineConstant('LOG_STEP_VALUE',
 function(aJob) {
 
     /**
-     * @name LOG_STEP_VALUE
-     * @synopsis Logs the current step value for the job. This is a useful
+     * @method LOG_STEP_VALUE
+     * @summary Logs the current step value for the job. This is a useful
      *     debugging job that is the default when no function is provided. You
      *     can also add this to a list of step functions to get the overall job
      *     to log the value at each step.
@@ -1239,8 +1239,8 @@ TP.core.Job.Type.defineConstant('PUSH_STEP_VALUE',
 function(aJob) {
 
     /**
-     * @name PUSH_STEP_VALUE
-     * @synopsis Pushes the current step value for the job into the job's $steps
+     * @method PUSH_STEP_VALUE
+     * @summary Pushes the current step value for the job into the job's $steps
      *     array. This is a useful debugging job that is the default when no
      *     function is provided. You can also add this to a list of step
      *     functions to get the overall job to log the value at each step.
@@ -1270,8 +1270,8 @@ TP.core.Job.Type.defineMethod('construct',
 function(controlParams) {
 
     /**
-     * @name construct
-     * @synopsis Constructs and returns a new instance of the receiver. For a
+     * @method construct
+     * @summary Constructs and returns a new instance of the receiver. For a
      *     TP.core.Job this method also ensures that each new instance gets a
      *     unique PID and that it's properly registered with TIBET.
      * @param {TP.lang.Hash|TP.sig.Request} controlParams An object which
@@ -1302,8 +1302,8 @@ TP.core.Job.Type.defineMethod('getPID',
 function() {
 
     /**
-     * @name getPID
-     * @synopsis Returns the next PID to use for an instance.
+     * @method getPID
+     * @summary Returns the next PID to use for an instance.
      * @returns {Number} A new PID.
      */
 
@@ -1321,8 +1321,8 @@ TP.core.Job.Type.defineMethod('scheduleInvokerJob',
 function(anObjectArray, aMethodArray, aParamArray) {
 
     /**
-     * @name scheduleInvokerJob
-     * @synopsis Schedules a job with the system that invokes each of the
+     * @method scheduleInvokerJob
+     * @summary Schedules a job with the system that invokes each of the
      *     supplied methods on the supplied objects using parameters given in
      *     the parameters Array.
      * @param {Array} anObjectArray The Array of target objects to invoke the
@@ -1423,11 +1423,11 @@ TP.core.Job.Type.defineMethod('splitParams',
 function(allParams) {
 
     /**
-     * @name splitParams
-     * @synopsis Splits the supplied params into two TP.lang.Hashes, one
+     * @method splitParams
+     * @summary Splits the supplied params into two TP.lang.Hashes, one
      *     containing the control parameters and the other containing the step
      *     parameters.
-     * @description This method takes all entries from the supplied params hash
+     * @summary This method takes all entries from the supplied params hash
      *     that have keys matching those listed in CONTROL_PARAM_KEYS and places
      *     those in the control parameters hash. All remaining parameters will
      *     be in the step parameters hash (including those not strictly listed
@@ -1551,9 +1551,9 @@ TP.core.Job.Inst.defineMethod('init',
 function(controlParams) {
 
     /**
-     * @name init
-     * @synopsis Initializes new job instances and returns them for use.
-     * @description The resulting job can be run multiple times with different
+     * @method init
+     * @summary Initializes new job instances and returns them for use.
+     * @summary The resulting job can be run multiple times with different
      *     execution data by passing a set of step parameters to the start()
      *     function. The jobs control parameters are fixed by this call, but can
      *     be adjusted using standard set methods on the job instance before
@@ -1678,8 +1678,8 @@ TP.core.Job.Inst.defineMethod('$clearScheduler',
 function() {
 
     /**
-     * @name $clearScheduler
-     * @synopsis Clears the internal timer and/or heartbeat scheduling used by
+     * @method $clearScheduler
+     * @summary Clears the internal timer and/or heartbeat scheduling used by
      *     this job. Normally invoked by the public methods for pausing/stopping
      *     job execution.
      */
@@ -1717,8 +1717,8 @@ TP.core.Job.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
-     * @name $getEqualityValue
-     * @synopsis Returns the value which should be used when testing for
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used when testing for
      *     equality between two instances. For job instances this is the PID.
      * @returns {String} A value appropriate for use in equality comparisons.
      */
@@ -1732,9 +1732,9 @@ TP.core.Job.Inst.defineMethod('complete',
 function(aResult) {
 
     /**
-     * @name complete
-     * @synopsis Tells the receiver to complete the current run.
-     * @description For a job with a repeat count this method may invoke the
+     * @method complete
+     * @summary Tells the receiver to complete the current run.
+     * @summary For a job with a repeat count this method may invoke the
      *     next run if one exists and that will continue until the job is truly
      *     complete. Use shutdown to end processing and close out the job with a
      *     successful status code without running any additional runs which
@@ -1793,11 +1793,11 @@ TP.core.Job.Inst.defineMethod('getActiveTime',
 function() {
 
     /**
-     * @name getActiveTime
-     * @synopsis Returns the total time (minus any paused time) that the job has
+     * @method getActiveTime
+     * @summary Returns the total time (minus any paused time) that the job has
      *     been active. This is the amount of time the job has been "executing"
      *     by being in an active state.
-     * @description The active time does not include initial delay time, so a
+     * @summary The active time does not include initial delay time, so a
      *     job queued 10 seconds ago to start in 5 seconds will show an elapsed
      *     time of 10 seconds, but an active time of 5 seconds. The same job, if
      *     paused for 2 seconds during that period, will still show 10 seconds
@@ -1831,10 +1831,10 @@ TP.core.Job.Inst.defineMethod('getElapsedTime',
 function() {
 
     /**
-     * @name getElapsedTime
-     * @synopsis Returns the total elapsed time (including paused time) that the
+     * @method getElapsedTime
+     * @summary Returns the total elapsed time (including paused time) that the
      *     job has been active as computed from the runstart time.
-     * @description The elapsed time does not include initial delay time, so a
+     * @summary The elapsed time does not include initial delay time, so a
      *     job queued 10 seconds ago to start in 5 seconds will show an elapsed
      *     time of 10 seconds, but an active time of 5 seconds. The same job, if
      *     paused for 2 seconds during that period, will still show 10 seconds
@@ -1862,8 +1862,8 @@ TP.core.Job.Inst.defineMethod('getPauseTime',
 function() {
 
     /**
-     * @name getPauseTime
-     * @synopsis Returns the total pause time for the job.
+     * @method getPauseTime
+     * @summary Returns the total pause time for the job.
      * @returns {Number} Milliseconds of pause time.
      */
 
@@ -1876,9 +1876,9 @@ TP.core.Job.Inst.defineMethod('getPercentComplete',
 function() {
 
     /**
-     * @name getPercentComplete
-     * @synopsis Returns the computed percentage complete for the current job.
-     * @description For time-limited jobs this is the relative percentage
+     * @method getPercentComplete
+     * @summary Returns the computed percentage complete for the current job.
+     * @summary For time-limited jobs this is the relative percentage
      *     between active and total time, but for iteration limited jobs it is
      *     the relative percentage of iterations to total iteration count. Jobs
      *     using a limit function have no value for this function.
@@ -1923,8 +1923,8 @@ TP.core.Job.Inst.defineMethod('getPID',
 function() {
 
     /**
-     * @name getPID
-     * @synopsis Returns the unique PID or "job ID" for the receiver.
+     * @method getPID
+     * @summary Returns the unique PID or "job ID" for the receiver.
      * @returns {String}
      */
 
@@ -1937,10 +1937,10 @@ TP.core.Job.Inst.defineMethod('getProjectedTime',
 function() {
 
     /**
-     * @name getProjectedTime
-     * @synopsis Returns the total time the job is expected to run based on the
+     * @method getProjectedTime
+     * @summary Returns the total time the job is expected to run based on the
      *     limit and interval data supplied.
-     * @description The initial delay time is not included in this computation,
+     * @summary The initial delay time is not included in this computation,
      *     making this equivalent to "job duration". The one thing to keep in
      *     mind is that unless limit was provided as a duration this value is
      *     purely an estimate and not a limiting factor.
@@ -1975,15 +1975,15 @@ TP.core.Job.Inst.defineMethod('getStepValue',
 function(stepParams) {
 
     /**
-     * @name getStepValue
-     * @synopsis Computes a value for the current step using the function found
+     * @method getStepValue
+     * @summary Computes a value for the current step using the function found
      *     in the job parameters under the key 'compute'.
-     * @description If no function is found but 'values' exist then the standard
+     * @summary If no function is found but 'values' exist then the standard
      *     value indexing compute function is used, if a 'from' and 'to' pair
      *     are found a standard linear from/to computation is used. If all else
      *     fails but a 'value' key exists in the parameter data that value is
      *     used (to allow steps to pass a value).
-     * @description The 'stepParams' hash can contain keys that are used by the
+     * @summary The 'stepParams' hash can contain keys that are used by the
      *     job to perform its task. It can contain the following keys:
      *
      *     'from' The 'from value' to start the job counting at. 'to' The 'to
@@ -2034,8 +2034,8 @@ TP.core.Job.Inst.defineMethod('isLimited',
 function() {
 
     /**
-     * @name isLimited
-     * @synopsis Returns true if the job can no longer run due to limit settings
+     * @method isLimited
+     * @summary Returns true if the job can no longer run due to limit settings
      *     and job state. This method is invoked during each iteration to see if
      *     the job should continue to run or not.
      * @returns {Boolean} True if the job should stop running (has hit its
@@ -2080,10 +2080,10 @@ TP.core.Job.Inst.defineMethod('kill',
 function(silently) {
 
     /**
-     * @name kill
-     * @synopsis Performs an immediate shutdown of the job, setting its status
+     * @method kill
+     * @summary Performs an immediate shutdown of the job, setting its status
      *     to TP.CANCELLED and ceasing any future processing.
-     * @description This not only cancels any interval-based iterations but it
+     * @summary This not only cancels any interval-based iterations but it
      *     will also cancel any repeat-count processing that might have
      *     otherwise occurred. No job post-processing functions will be run
      *     either.
@@ -2116,8 +2116,8 @@ TP.core.Job.Inst.defineMethod('pause',
 function() {
 
     /**
-     * @name pause
-     * @synopsis Pauses the job. Not all job functions can pause effectively so
+     * @method pause
+     * @summary Pauses the job. Not all job functions can pause effectively so
      *     this may not work consistently based on the exact nature of the pre,
      *     work, and post functions being executed.
      * @returns {TP.core.Job} The receiver.
@@ -2144,8 +2144,8 @@ TP.core.Job.Inst.defineMethod('resume',
 function() {
 
     /**
-     * @name resume
-     * @synopsis Resumes processing for a paused job. The job is run from the
+     * @method resume
+     * @summary Resumes processing for a paused job. The job is run from the
      *     current state which includes computations to deal with time in the
      *     paused state.
      * @returns {TP.core.Job} The receiver.
@@ -2175,8 +2175,8 @@ TP.core.Job.Inst.defineMethod('schedule',
 function() {
 
     /**
-     * @name schedule
-     * @synopsis Schedules the first work iteration for the job. This method is
+     * @method schedule
+     * @summary Schedules the first work iteration for the job. This method is
      *     called by the start method to handle delay processing so that the
      *     iterate call can focus purely on interval-based scheduling.
      * @returns {TP.core.Job} The receiver.
@@ -2257,8 +2257,8 @@ TP.core.Job.Inst.defineMethod('setDelay',
 function(aDelay) {
 
     /**
-     * @name setDelay
-     * @synopsis Sets the delay in milliseconds using a Number, String, or
+     * @method setDelay
+     * @summary Sets the delay in milliseconds using a Number, String, or
      *     Duration string value, or a function to compute the delay at runtime.
      * @param {Number|String|Duration} aDelay A number of milliseconds in one of
      *     three formats.
@@ -2312,8 +2312,8 @@ TP.core.Job.Inst.defineMethod('setInterval',
 function(anInterval) {
 
     /**
-     * @name setInterval
-     * @synopsis Sets the queuing interval in milliseconds using a Number,
+     * @method setInterval
+     * @summary Sets the queuing interval in milliseconds using a Number,
      *     String, or Duration string value or a function to compute that value
      *     at runtime.
      * @param {Number|String|Duration} aDelay A number of milliseconds in one of
@@ -2375,11 +2375,11 @@ TP.core.Job.Inst.defineMethod('setLimit',
 function(aLimit) {
 
     /**
-     * @name setLimit
-     * @synopsis Sets the limit using a Number or String, or Duration string
+     * @method setLimit
+     * @summary Sets the limit using a Number or String, or Duration string
      *     value. A limit can also be a function which computes this value based
      *     on current job parameters.
-     * @description This control parameter is used differently based on the type
+     * @summary This control parameter is used differently based on the type
      *     of argument supplied here: String Either a number of milliseconds as
      *     a String or an xs:Duration. Number The maximum number of times the
      *     step function(s) will be invoked per execution of the job. Function A
@@ -2438,10 +2438,10 @@ TP.core.Job.Inst.defineMethod('setWork',
 function(work) {
 
     /**
-     * @name setWork
-     * @synopsis Sets the work function, the function the job actually uses to
+     * @method setWork
+     * @summary Sets the work function, the function the job actually uses to
      *     perform the steps.
-     * @description When the work parameter here is empty this method will build
+     * @summary When the work parameter here is empty this method will build
      *     a default work function from the current step content. The default
      *     function is used primarly to ensure that the work is properly
      *     enclosed in a try/catch to cleanup the job if any errors occur.
@@ -2484,8 +2484,8 @@ TP.core.Job.Inst.defineMethod('restart',
 function() {
 
     /**
-     * @name restart
-     * @synopsis Restarts the job. Any current timers are cleared, the current
+     * @method restart
+     * @summary Restarts the job. Any current timers are cleared, the current
      *     run is torn down, and a new run is begun. Note that restart does not
      *     increment the overall run count, it restarts the current run.
      * @returns {TP.core.Job} The receiver.
@@ -2509,11 +2509,11 @@ TP.core.Job.Inst.defineMethod('shutdown',
 function(now) {
 
     /**
-     * @name shutdown
-     * @synopsis Performs a clean shutdown of the job so it doesn't appear to
+     * @method shutdown
+     * @summary Performs a clean shutdown of the job so it doesn't appear to
      *     have been terminated with an error or killed. This includes running
      *     the job's teardown/post-processing logic.
-     * @description If "now" is true then any pending steps or job cycles (based
+     * @summary If "now" is true then any pending steps or job cycles (based
      *     on repeat count) are terminated before the teardown step.
      * @param {Boolean} now True to stop iterations and terminate now.
      * @returns {TP.core.Job} The receiver.
@@ -2547,12 +2547,12 @@ TP.core.Job.Inst.defineMethod('start',
 function(stepParams) {
 
     /**
-     * @name start
-     * @synopsis Starts a job, running it from its initial state. This is the
+     * @method start
+     * @summary Starts a job, running it from its initial state. This is the
      *     public interface to initiating a job. As a result of this call the
      *     job's parameters will be set and its iterate method will be invoked
      *     to start the job scheduling process.
-     * @description The 'stepParams' hash can contain keys that are used by the
+     * @summary The 'stepParams' hash can contain keys that are used by the
      *     job to perform its task. It can contain the following keys:
      *
      *     'from' The 'from value' to start the job counting at. 'to' The 'to
@@ -2610,8 +2610,8 @@ TP.core.Job.Inst.defineMethod('$configure',
 function() {
 
     /**
-     * @name $configure
-     * @synopsis Sets the job's default parameters by running any 'config'
+     * @method $configure
+     * @summary Sets the job's default parameters by running any 'config'
      *     function provided and computing missing values.
      * @returns {TP.core.Job} The receiver.
      */
@@ -2651,8 +2651,8 @@ TP.core.Job.Inst.defineMethod('$iterate',
 function() {
 
     /**
-     * @name $iterate
-     * @synopsis Handles scheduling the next iteration of the job when using a
+     * @method $iterate
+     * @summary Handles scheduling the next iteration of the job when using a
      *     non-heartbeat scheduling model. This method is invoked once any
      *     initial delay has been dealt with via the schedule call so it works
      *     only with repeat interval and latency to try to schedule the work for
@@ -2801,8 +2801,8 @@ TP.core.Job.Inst.defineMethod('reset',
 function() {
 
     /**
-     * @name reset
-     * @synopsis Resets the job, returning it to its initial state. Upon
+     * @method reset
+     * @summary Resets the job, returning it to its initial state. Upon
      *     completion of this method a start() call will start the job running
      *     again as if for the first time (other than any side effects from the
      *     pre, work, and post functions themselves).
@@ -2858,8 +2858,8 @@ TP.core.Job.Inst.defineMethod('$startrun',
 function() {
 
     /**
-     * @name $startrun
-     * @synopsis Starts a job's next run. This is a convenience wrapper for
+     * @method $startrun
+     * @summary Starts a job's next run. This is a convenience wrapper for
      *     reset()/start() which preserves the current job parameters before the
      *     reset.
      * @returns {TP.core.Job} The receiver.
@@ -2910,8 +2910,8 @@ TP.core.Job.Inst.defineMethod('$setup',
 function() {
 
     /**
-     * @name $setup
-     * @synopsis Executes the receiver's pre-processing function(s) if any. This
+     * @method $setup
+     * @summary Executes the receiver's pre-processing function(s) if any. This
      *     operation is invoked automatically at the start of each job run
      *     (which might be multiple times for a job with a repeat count).
      * @returns {TP.core.Job} The receiver.
@@ -2945,8 +2945,8 @@ TP.core.Job.Inst.defineMethod('$teardown',
 function() {
 
     /**
-     * @name $teardown
-     * @synopsis Executes the receiver's post-processing function(s) if any.
+     * @method $teardown
+     * @summary Executes the receiver's post-processing function(s) if any.
      *     This operation is invoked automatically at the end of each job run
      *     (which might be multiple times for a job with a repeat count).
      * @returns {TP.core.Job} The receiver.
@@ -2980,8 +2980,8 @@ TP.core.Job.Inst.defineMethod('$$updateMissingParamsAndState',
 function() {
 
     /**
-     * @name $$updateMissingParamsAndState
-     * @synopsis Sets missing job's parameters and instance state based on
+     * @method $$updateMissingParamsAndState
+     * @summary Sets missing job's parameters and instance state based on
      *     available information. This is the last step in $configure before a
      *     job is considered ready to run.
      * @returns {TP.core.Job} The receiver.
@@ -3083,8 +3083,8 @@ TP.core.Job.Inst.defineMethod('$$updateTimingFromStepParameters',
 function() {
 
     /**
-     * @name $$updateTimingFromStepParameters
-     * @synopsis Called internally to update the job's timing configuration from
+     * @method $$updateTimingFromStepParameters
+     * @summary Called internally to update the job's timing configuration from
      *     the current step parameters. This allows an individual start()
      *     invocation to make minor alterations to the job (but not any that
      *     change the actual pre/step/work functions).
@@ -3136,8 +3136,8 @@ TP.core.Job.Inst.defineMethod('$work',
 function() {
 
     /**
-     * @name $work
-     * @synopsis Executes the receiver's work function and determines if the
+     * @method $work
+     * @summary Executes the receiver's work function and determines if the
      *     work needs to be rescheduled to deal with interval repeats.
      * @returns {TP.core.Job} The receiver.
      */
@@ -3258,8 +3258,8 @@ TP.sys.defineMethod('addJob',
 function(aJob) {
 
     /**
-     * @name addJob
-     * @synopsis Adds a job entry to the list of current jobs.
+     * @method addJob
+     * @summary Adds a job entry to the list of current jobs.
      * @param {TP.core.Job} aJob The job to add.
      * @returns {TIBET} The receiver.
      */
@@ -3275,8 +3275,8 @@ TP.sys.defineMethod('getJob',
 function(aPID) {
 
     /**
-     * @name getJob
-     * @synopsis Returns the job whose PID matches the one provided.
+     * @method getJob
+     * @summary Returns the job whose PID matches the one provided.
      * @param {Number} aPID The PID to search for.
      * @returns {TP.core.Job} A TP.core.Job instance.
      */
@@ -3298,8 +3298,8 @@ TP.sys.defineMethod('getJobs',
 function() {
 
     /**
-     * @name getJobs
-     * @synopsis Returns the list of current jobs.
+     * @method getJobs
+     * @summary Returns the list of current jobs.
      * @returns {Array} The TIBET job list.
      */
 
@@ -3317,8 +3317,8 @@ TP.sys.defineMethod('removeJob',
 function(aJob) {
 
     /**
-     * @name removeJob
-     * @synopsis Removes a job entry from the list of current jobs.
+     * @method removeJob
+     * @summary Removes a job entry from the list of current jobs.
      * @param {TP.core.Job} aJob The job to remove.
      * @returns {TP.sys}
      */
@@ -3336,8 +3336,8 @@ TP.definePrimitive('job',
 function(aPID) {
 
     /**
-     * @name job
-     * @synopsis Returns the job with the PID provided.
+     * @method job
+     * @summary Returns the job with the PID provided.
      * @param {Number|String} aPID The PID to query for.
      * @returns {TP.core.Job} The named job instance.
      */
@@ -3351,8 +3351,8 @@ TP.definePrimitive('kill',
 function(aJob) {
 
     /**
-     * @name kill
-     * @synopsis Kills a particular TP.core.Job, by reference or by ID.
+     * @method kill
+     * @summary Kills a particular TP.core.Job, by reference or by ID.
      * @param {Number|TP.core.Job} aJob The PID, or Job to kill.
      * @returns {aJob} The "dead" job.
      */
@@ -3382,10 +3382,10 @@ TP.definePrimitive('schedule',
 function(controlParams, stepParams) {
 
     /**
-     * @name schedule
-     * @synopsis Replaces setTimeout() and setInterval() calls, allowing you to
+     * @method schedule
+     * @summary Replaces setTimeout() and setInterval() calls, allowing you to
      *     manage long-running processes more effectively.
-     * @description The 'controlParams' hash can contain keys that control the
+     * @summary The 'controlParams' hash can contain keys that control the
      *     job. It can have the following keys:
      *
      *     'config' A function to run to do any final job setup such as setting
@@ -3456,7 +3456,7 @@ function(controlParams, stepParams) {
 
 /**
  * @type {TP.core.JobGroup}
- * @synopsis TP.core.Job provides support for grouping objects that implement
+ * @summary TP.core.Job provides support for grouping objects that implement
  *     the TP.core.JobStatus trait (which could be TP.core.Job objects or other
  *     TP.core.JobGroups) and controlling them as a complete group. A common
  *     example is animations/effects which are combined into sets so that they
@@ -3483,8 +3483,8 @@ TP.core.JobGroup.Inst.defineMethod('$performOverChildren',
 function(aMethodName, anArgument) {
 
     /**
-     * @name $performOverChildren
-     * @synopsis Runs a particular method against all children in the job group.
+     * @method $performOverChildren
+     * @summary Runs a particular method against all children in the job group.
      *     This is used internally to process most of the public interface
      *     methods of this type. Since the methods typically invoked take 0 or 1
      *     argument we make it easy to pass one argument to the function.
@@ -3514,8 +3514,8 @@ TP.core.JobGroup.Inst.defineMethod('addChild',
 function(aChild) {
 
     /**
-     * @name addChild
-     * @synopsis Adds a child object implementing the TP.core.JobStatus
+     * @method addChild
+     * @summary Adds a child object implementing the TP.core.JobStatus
      *     implementation to the receiving job group.
      * @param {TP.core.JobStatus} aChild The child TP.core.JobStatus to add to
      *     this group.
@@ -3536,10 +3536,10 @@ TP.core.JobGroup.Inst.defineMethod('cancel',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name cancel
-     * @synopsis Tells the receiver to cancel, meaning it is being rescinded by
+     * @method cancel
+     * @summary Tells the receiver to cancel, meaning it is being rescinded by
      *     the user or calling process.
-     * @description If the receiver has specific behavior to implement it should
+     * @summary If the receiver has specific behavior to implement it should
      *     override this method, but be sure to set the status to TP.CANCELLING
      *     during any processing and TP.CANCELLED after processing is complete.
      *     The default implementation simply sets the status to TP.CANCELLED.
@@ -3572,10 +3572,10 @@ TP.core.JobGroup.Inst.defineMethod('complete',
 function(aResult) {
 
     /**
-     * @name complete
-     * @synopsis Tells the receiver to complete, meaning the receiver should do
+     * @method complete
+     * @summary Tells the receiver to complete, meaning the receiver should do
      *     whatever finalization is necessary to reach the TP.SUCCEEDED state.
-     * @description If the receiver has specific behavior to implement it should
+     * @summary If the receiver has specific behavior to implement it should
      *     override this method, but be sure to set the status to TP.COMPLETING
      *     during any processing and TP.SUCCEEDED after processing is complete.
      *     The default implementation simply sets the status to TP.SUCCEEDED.
@@ -3601,8 +3601,8 @@ TP.core.JobGroup.Inst.defineMethod('fail',
 function(aFaultString, aFaultCode) {
 
     /**
-     * @name fail
-     * @synopsis Tells the receiver to fail, meaning it failed due to some form
+     * @method fail
+     * @summary Tells the receiver to fail, meaning it failed due to some form
      *     of exception. If the receiver has specific behavior to implement it
      *     should override this method, but be sure to set the status to
      *     TP.FAILING during any processing and TP.FAILED after processing is
@@ -3637,8 +3637,8 @@ TP.core.JobGroup.Inst.defineMethod('getChildren',
 function() {
 
     /**
-     * @name getChildren
-     * @synopsis Returns the child job list.
+     * @method getChildren
+     * @summary Returns the child job list.
      * @returns {TP.core.JobGroup} The receiver.
      */
 
@@ -3657,8 +3657,8 @@ TP.core.JobGroup.Inst.defineMethod('pause',
 function() {
 
     /**
-     * @name pause
-     * @synopsis Pauses the receiver if that operation is supportable by the
+     * @method pause
+     * @summary Pauses the receiver if that operation is supportable by the
      *     particular type. Not all receivers of the pause operation are able to
      *     pause effectively (XMLHttpRequest for example).
      * @returns {TP.core.JobGroup} The receiver.
@@ -3673,8 +3673,8 @@ TP.core.JobGroup.Inst.defineMethod('removeChild',
 function(aChild) {
 
     /**
-     * @name removeChild
-     * @synopsis Removes a child object implementing the TP.core.JobStatus
+     * @method removeChild
+     * @summary Removes a child object implementing the TP.core.JobStatus
      *     implementation from the receiving job group.
      * @param {TP.core.JobStatus} aChild The child TP.core.JobStatus to remove
      *     from this group.
@@ -3695,8 +3695,8 @@ TP.core.JobGroup.Inst.defineMethod('reset',
 function() {
 
     /**
-     * @name reset
-     * @synopsis Resets the receiver, returning it to its initial state.
+     * @method reset
+     * @summary Resets the receiver, returning it to its initial state.
      * @returns {TP.core.JobGroup} The receiver.
      */
 
@@ -3709,8 +3709,8 @@ TP.core.JobGroup.Inst.defineMethod('resume',
 function() {
 
     /**
-     * @name resume
-     * @synopsis Resumes a paused receiver, if it was actually paused. Note that
+     * @method resume
+     * @summary Resumes a paused receiver, if it was actually paused. Note that
      *     not all receivers can pause effectively and may ignore this call
      *     along with the pause() call itself.
      * @returns {TP.core.JobGroup} The receiver.
@@ -3725,8 +3725,8 @@ TP.core.JobGroup.Inst.defineMethod('start',
 function(parameters) {
 
     /**
-     * @name start
-     * @synopsis Starts the receiver in "job control" terms. This is the
+     * @method start
+     * @summary Starts the receiver in "job control" terms. This is the
      *     standard entry point method for activating a receiver relative to the
      *     job control subsystem.
      * @param {TP.lang.Hash} parameters A hash of parameters the job function(s)
@@ -3743,11 +3743,11 @@ TP.core.JobGroup.Inst.defineMethod('shutdown',
 function(now) {
 
     /**
-     * @name shutdown
-     * @synopsis Performs a clean shutdown of the receiver so it doesn't appear
+     * @method shutdown
+     * @summary Performs a clean shutdown of the receiver so it doesn't appear
      *     to have been terminated with an error or killed. This includes
      *     running the receiver's teardown/post-processing logic.
-     * @description If "now" is true then any pending steps or job cycles (based
+     * @summary If "now" is true then any pending steps or job cycles (based
      *     on repeat count) are terminated before the teardown step.
      * @param {Boolean} now True to stop iterations and terminate now.
      * @returns {TP.core.JobGroup} The receiver.

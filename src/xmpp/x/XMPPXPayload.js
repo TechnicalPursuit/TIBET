@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XPayload}
- * @synopsis A wrapper for payload objects which use the X namespaces.
+ * @summary A wrapper for payload objects which use the X namespaces.
  */
 
 //  ------------------------------------------------------------------------

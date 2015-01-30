@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqOOB}
- * @synopsis A wrapper for the IQ_OOB namespace'd payload element.
+ * @summary A wrapper for the IQ_OOB namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

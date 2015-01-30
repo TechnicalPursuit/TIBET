@@ -38,7 +38,7 @@ TP.sherpa.halo.Inst.defineMethod('setup',
 function() {
 
     /**
-     * @name setup
+     * @method setup
      */
 
     /* eslint-disable no-wrap-func */
@@ -74,7 +74,7 @@ TP.sherpa.halo.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setAttrHidden
+     * @method setAttrHidden
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -106,7 +106,7 @@ TP.sherpa.halo.Inst.defineMethod('blur',
 function() {
 
     /**
-     * @name blur
+     * @method blur
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
      */
@@ -130,7 +130,7 @@ TP.sherpa.halo.Inst.defineMethod('focusOn',
 function(target) {
 
     /**
-     * @name focusOn
+     * @method focusOn
      * @param {TP.core.Node} target
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
@@ -158,7 +158,7 @@ TP.sherpa.halo.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
 function(aSignal) {
 
     /**
-     * @name handleHiddenChange
+     * @method handleHiddenChange
      */
 
     this.setAttribute('hidden', true);
@@ -175,8 +175,8 @@ TP.sherpa.halo.Inst.defineMethod('handleDOMClick',
 function(aSignal) {
 
     /**
-     * @name handleDOMClick
-     * @synopsis Handles notifications of mouse click events.
+     * @method handleDOMClick
+     * @summary Handles notifications of mouse click events.
      * @param {DOMClick} aSignal The TIBET signal which triggered this method.
      */
 
@@ -243,7 +243,7 @@ TP.sherpa.halo.Inst.defineMethod('handleDOMMouseMove',
 function(aSignal) {
 
     /**
-     * @name handleDOMMouseMove
+     * @method handleDOMMouseMove
      * @param {TP.sig.DOMMouseMove} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
@@ -260,7 +260,7 @@ TP.sherpa.halo.Inst.defineMethod('handleDOMMouseOver',
 function(aSignal) {
 
     /**
-     * @name handleDOMMouseOver
+     * @method handleDOMMouseOver
      * @param {TP.sig.DOMMouseOver} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
@@ -277,7 +277,7 @@ TP.sherpa.halo.Inst.defineMethod('handleDOMMouseOut',
 function(aSignal) {
 
     /**
-     * @name handleDOMMouseOut
+     * @method handleDOMMouseOut
      * @param {TP.sig.DOMMouseOut} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
@@ -294,7 +294,7 @@ TP.sherpa.halo.Inst.defineMethod('handleDOMMouseWheel',
 function(aSignal) {
 
     /**
-     * @name handleDOMMouseWheel
+     * @method handleDOMMouseWheel
      * @param {TP.sig.DOMMouseWheel} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
@@ -357,7 +357,7 @@ TP.sherpa.halo.Inst.defineMethod('moveAndSizeToTarget',
 function(aTarget) {
 
     /**
-     * @name moveAndSizeToTarget
+     * @method moveAndSizeToTarget
      * @param {undefined} aTarget
 
      * @returns {TP.sherpa.halo} The receiver.
@@ -409,7 +409,7 @@ TP.sherpa.halo.Inst.defineMethod('showHaloCorner',
 function(aSignal) {
 
     /**
-     * @name showHaloCorner
+     * @method showHaloCorner
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
      */
@@ -463,7 +463,7 @@ TP.sherpa.halo.Inst.defineMethod('changeHaloFocus',
 function(aSignal) {
 
     /**
-     * @name changeHaloFocus
+     * @method changeHaloFocus
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
 

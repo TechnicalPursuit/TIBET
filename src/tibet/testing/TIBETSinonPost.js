@@ -36,14 +36,14 @@ TP.FunctionProto.defineMethod('asSpy',
 function() {
 
     /**
-     * @name asSpy
-     * @synopsis Creates a Sinon.JS 'spy' from the receiver.
-     * @description If the receiver is a method on an object, then this method
+     * @method asSpy
+     * @summary Creates a Sinon.JS 'spy' from the receiver.
+     * @summary If the receiver is a method on an object, then this method
      *     will replace that method with a spy. If the receiver is not a method,
      *     but just an unbound Function, this method will wrap it with a spy.
      *     In both cases, it returns the spying Function.
      * @returns {Function} The spying Function object.
-     * @raises TP.sig.InvalidFunction
+     * @exception TP.sig.InvalidFunction
      */
 
     var spy;
@@ -76,14 +76,14 @@ TP.FunctionProto.defineMethod('asStub',
 function(altValue) {
 
     /**
-     * @name asStub
-     * @synopsis Creates a Sinon.JS 'stub' from the receiver.
-     * @description If the receiver is a method on an object, then this method
+     * @method asStub
+     * @summary Creates a Sinon.JS 'stub' from the receiver.
+     * @summary If the receiver is a method on an object, then this method
      *     will replace that method with a stub. If the receiver is not a
      *     method, this method will raise a TP.sig.InvalidMethod exception.
      * @param {Object} altValue The alternative method value (aka method 'body').
      * @returns {Function} The stubbing Function object.
-     * @raises TP.sig.InvalidParameter,TP.sig.InvalidFunction
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidFunction
      */
 
     var stub;
@@ -116,8 +116,8 @@ TP.FunctionProto.defineMethod('restore',
 function() {
 
     /**
-     * @name restore
-     * @synopsis Restores a method or Function that has had a Sinon.JS spy or
+     * @method restore
+     * @summary Restores a method or Function that has had a Sinon.JS spy or
      *     stub installed on it.
      * @returns {Function} The original Function object that was spied or
      *     stubbed.
@@ -149,15 +149,15 @@ TP.defineMetaInstMethod('restoreMethod',
 function(methodName) {
 
     /**
-     * @name restoreMethod
-     * @synopsis Restores the original method from a Sinon.JS 'spy' or 'stub'
+     * @method restoreMethod
+     * @summary Restores the original method from a Sinon.JS 'spy' or 'stub'
      *     that was placed on the receiver in place of the method named by the
      *     supplied name.
      * @param {String} methodName The name of the method that was spied or
      *     stubbed
      * @returns {Function} The original Function object that was spied or
      *     stubbed.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      */
 
     var methodInfo,
@@ -180,12 +180,12 @@ TP.defineMetaInstMethod('spyOn',
 function(methodName) {
 
     /**
-     * @name spyOn
-     * @synopsis Creates a Sinon.JS 'spy' on the receiver in place of the method
+     * @method spyOn
+     * @summary Creates a Sinon.JS 'spy' on the receiver in place of the method
      *     named by the supplied name.
      * @param {String} methodName The name of the method to install a spy on.
      * @returns {Function} The spying Function object.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      */
 
     var methodInfo,
@@ -208,13 +208,13 @@ TP.defineMetaInstMethod('stubOn',
 function(methodName, altValue) {
 
     /**
-     * @name stubOn
-     * @synopsis Creates a Sinon.JS 'stub' on the receiver in place of the method
+     * @method stubOn
+     * @summary Creates a Sinon.JS 'stub' on the receiver in place of the method
      *     named by the supplied name.
      * @param {String} methodName The name of the method to install a stub on.
      * @param {Object} altValue The alternative method value (aka method 'body').
      * @returns {Function} The stubbing Function object.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      */
 
     var methodInfo,

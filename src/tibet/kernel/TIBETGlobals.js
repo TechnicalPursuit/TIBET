@@ -84,8 +84,8 @@ TP.TYPE_LOCAL_TRACK = 'TypeLocal';
 TP.constructOrphanObject = function() {
 
     /**
-     * @name constructOrphanObject
-     * @synopsis Constructs an 'orphan' object - that is, one that isn't hooked
+     * @method constructOrphanObject
+     * @summary Constructs an 'orphan' object - that is, one that isn't hooked
      *     up to any prototype chain. This is very useful in situations such as
      *     JSON reconstruction where an 'initially keyless' Object is desired.
      *     NOTE: If an 'orphan' Object cannot be constructed on the currently
@@ -138,10 +138,10 @@ TP.PROPERTY_READONLY.enumerable = false;
 TP.defineNamespace = function(namespaceName, root) {
 
     /**
-     * @name defineNamespace
-     * @synopsis Defines a namespace named by the supplied name, defined as a
+     * @method defineNamespace
+     * @summary Defines a namespace named by the supplied name, defined as a
      *     'namespace' on the root provided.
-     * @description The name supplied to this method defines a namespace list
+     * @summary The name supplied to this method defines a namespace list
      *     from the root object to the last name at the end of the supplied
      *     namespace name.
      * @param {String} namespaceName A String of 1 or more period-separated
@@ -229,8 +229,8 @@ TP.defineNamespace[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.isNamespace = function(namespaceObj) {
 
     /**
-     * @name isNamespace
-     * @synopsis Tests the supplied object to see if it is a TIBET 'namespace'
+     * @method isNamespace
+     * @summary Tests the supplied object to see if it is a TIBET 'namespace'
      *     object.
      * @param {The} namespaceObj object to test to see if it is a TIBET
      *     'namespace' object.
@@ -271,8 +271,8 @@ TP.sys.$globals = TP.sys.$globals || [];
 TP.sys.getGlobals = function(params, windowContext) {
 
     /**
-     * @name getGlobals
-     * @synopsis Returns an array containing the names of registered globals in
+     * @method getGlobals
+     * @summary Returns an array containing the names of registered globals in
      *     the system. A global is registered using the defineGlobal call of the
      *     TP.sys object. NOTE that this list isn't guaranteed to be uniqued. If
      *     that is required you'll want to invoke the unique method on the list

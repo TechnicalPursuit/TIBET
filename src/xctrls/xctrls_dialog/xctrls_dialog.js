@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.dialog}
- * @synopsis Manages dialog XControls.
+ * @summary Manages dialog XControls.
  */
 
 //  ------------------------------------------------------------------------
@@ -68,8 +68,8 @@ TP.xctrls.dialog.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
-     * @name getDisplayValue
-     * @synopsis Gets the display, or visual, value of the receiver's node. This
+     * @method getDisplayValue
+     * @summary Gets the display, or visual, value of the receiver's node. This
      *     is the value the HTML, or other UI tag, is actually displaying to the
      *     user at the moment.
      * @returns {Object} The visual value of the receiver's UI node.
@@ -84,8 +84,8 @@ TP.xctrls.dialog.Inst.defineMethod('setAttrClosed',
 function(beClosed) {
 
     /**
-     * @name setAttrClosed
-     * @synopsis The setter for the receiver's closed state.
+     * @method setAttrClosed
+     * @summary The setter for the receiver's closed state.
      * @param {Boolean} beClosed Whether or not the receiver is in a closed
      *     state.
      * @returns {Boolean} Whether the receiver's state is closed.
@@ -108,8 +108,8 @@ TP.xctrls.dialog.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
-     * @name setDisplayValue
-     * @synopsis Sets the display, or visual, value of the receiver's node. The
+     * @method setDisplayValue
+     * @summary Sets the display, or visual, value of the receiver's node. The
      *     value provided to this method is typically already formatted using
      *     the receiver's display formatters (if any). You don't normally call
      *     this method directly, instead call setValue() and it will ensure

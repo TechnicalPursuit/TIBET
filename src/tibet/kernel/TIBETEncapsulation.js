@@ -36,10 +36,10 @@ TP.FunctionProto.defineMethod('$getNeeds',
 function() {
 
     /**
-     * @name $getNeeds
-     * @synopsis Returns a list of 'needs' or functions that the receiver will
+     * @method $getNeeds
+     * @summary Returns a list of 'needs' or functions that the receiver will
      *     attempt to invoke on any internal 'this' references.
-     * @description This is useful for the inferencer since it can decide to
+     * @summary This is useful for the inferencer since it can decide to
      *     rank order its options by how well the function in question matches
      *     the needs. It's also useful for collecting information on 'senders'.
      *     The add*Method calls already track 'implementers' but by invoking
@@ -78,8 +78,8 @@ TP.FunctionProto.defineMethod('$hasThis',
 function() {
 
     /**
-     * @name $hasThis
-     * @synopsis Returns true if the receiver has any 'this' references, either
+     * @method $hasThis
+     * @summary Returns true if the receiver has any 'this' references, either
      *     as method/attribute access (this.blah) or by associating 'this' with
      *     a variable for closure purposes as in var thisArg = this;. The result
      *     of this check is cached for future lookup to help support faster
@@ -107,8 +107,8 @@ Array.Inst.defineMethod('unique',
 function(aFilter, undefNotNull) {
 
     /**
-     * @name unique
-     * @synopsis Collapses the array to contain only 1 of each unique value
+     * @method unique
+     * @summary Collapses the array to contain only 1 of each unique value
      *     based on a filtering function, or on unique object ID. One special
      *     consideration is whether invalid values (null and undefined) should
      *     be considered "equal" for purposes of this uniquing process.
@@ -117,7 +117,7 @@ function(aFilter, undefNotNull) {
      * @param {Boolean} undefNotNull True to have undefined values compare
      *     differently than nulls for uniquing purposes.
      * @returns {Array} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var func,
@@ -191,8 +191,8 @@ TP.definePrimitive('stripPropertyPrefix',
 function(anObject) {
 
     /**
-     * @name stripPropertyPrefix
-     * @synopsis Removes any leading attribute prefix from the property name,
+     * @method stripPropertyPrefix
+     * @summary Removes any leading attribute prefix from the property name,
      *     typically in order to produce a change signal.
      * @param {String|Number} anObject An attribute name or index (sometimes
      *     numerical) that may require adjustment for lookup via get() or set().
@@ -250,8 +250,8 @@ Array.Inst.defineMethod('$sortIfNeeded',
 function() {
 
     /**
-     * @name $sortIfNeeded
-     * @synopsis Sorts the receiver if it is both acting as a sorted collection
+     * @method $sortIfNeeded
+     * @summary Sorts the receiver if it is both acting as a sorted collection
      *     and is currently in need of sorting (it's changed since the last
      *     sort).
      * @returns {Array} The receiver.
@@ -285,8 +285,8 @@ Array.Inst.defineMethod('$get',
 function(attributeName) {
 
     /**
-     * @name $get
-     * @synopsis Returns the value, if any, for the attribute provided. In the
+     * @method $get
+     * @summary Returns the value, if any, for the attribute provided. In the
      *     case of Array we deal with the fact that there are numeric indexes as
      *     well as the 'object keys' normally found on objects. See $get on
      *     Object for more information.
@@ -325,8 +325,8 @@ TP.defineMetaInstMethod('$set',
 function(attributeName, attributeValue, shouldSignal, allowUndef) {
 
     /**
-     * @name $set
-     * @synopsis Sets the value of the named slot to the value provided and
+     * @method $set
+     * @summary Sets the value of the named slot to the value provided and
      *     signals changes if appropriate. No attempt is made to manage aspects,
      *     or to lookup setters. This is the default primitive slot setter.
      * @param {String} attributeName The name of the attribute.
@@ -432,8 +432,8 @@ Array.Inst.defineMethod('$set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name $set
-     * @synopsis Sets the value of the named/numbered slot to the value provided
+     * @method $set
+     * @summary Sets the value of the named/numbered slot to the value provided
      *     and signals changes if appropriate. No attempt is made to manage
      *     aspects, or to lookup setters. This is *the* primitive slot setter.
      * @param {String|Number} attributeName The name or # of the attribute.
@@ -507,8 +507,8 @@ TP.defineCommonMethod('normalizeIndex',
 function(anIndex) {
 
     /**
-     * @name normalizeIndex
-     * @synopsis Adapts negative indexes to indexed collection sizes. When using
+     * @method normalizeIndex
+     * @summary Adapts negative indexes to indexed collection sizes. When using
      *     any of the at*(), or *At() methods in TIBET the indexes can be
      *     negative. This method adjusts the negative indexes using a common
      *     algorithm which wraps negative values repeatedly until they settle
@@ -552,8 +552,8 @@ TP.defineMetaInstMethod('at',
 function(anIndex) {
 
     /**
-     * @name at
-     * @synopsis Returns the value at the index provided. DNU slots are ignored
+     * @method at
+     * @summary Returns the value at the index provided. DNU slots are ignored
      *     and no prefix translation is performed. If the receiver implements
      *     get() this method defers to that call.
      * @param {Object} anIndex The index of the value to return.
@@ -573,12 +573,12 @@ TP.defineMetaInstMethod('atPut',
 function(anIndex, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Replaces the value at anIndex with aValue.
+     * @method atPut
+     * @summary Replaces the value at anIndex with aValue.
      * @param {Object} anIndex The index to put aValue into.
      * @param {Object} aValue The value to place at anIndex.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     var index;
@@ -597,11 +597,11 @@ Array.Inst.defineMethod('at',
 function(anIndex, varargs) {
 
     /**
-     * @name at
-     * @synopsis Returns the value found at an index. Provides polymorphic
+     * @method at
+     * @summary Returns the value found at an index. Provides polymorphic
      *     access to indexed collection data, which isn't possible with literal
      *     bracket syntax (you can't use []'s on strings etc).
-     * @description To support multi-dimensional access this method will allow
+     * @summary To support multi-dimensional access this method will allow
      *     more than one index parameter as in arr.at(1, 1) so that, in reality,
      *     the value is acquired from a nested child of the receiver. For
      *     example, arr.at(1, 1) returns the value 3 when used on the array
@@ -664,13 +664,13 @@ Array.Inst.defineMethod('atPut',
 function(anIndex, varargs, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Sets the value found at anIndex. Provides polymorphic access to
+     * @method atPut
+     * @summary Sets the value found at anIndex. Provides polymorphic access to
      *     updating indexed collection data, which isn't possible with literal
      *     bracket syntax. This version does not provide change notification.
      *     NOTE that this initial version does not support vararg values or
      *     negative indices.
-     * @description To support multi-dimensional access this method will allow
+     * @summary To support multi-dimensional access this method will allow
      *     more than one index parameter as in arr.atPut(1, 2, 'foo') so that,
      *     in reality, aValue is defined by the last argument and is placed in
      *     the location found by traversing to the last index (arguments.length
@@ -783,8 +783,8 @@ String.Inst.defineMethod('at',
 function(anIndex) {
 
     /**
-     * @name at
-     * @synopsis Returns the value at the index provided. See charAt().
+     * @method at
+     * @summary Returns the value at the index provided. See charAt().
      * @param {Number} anIndex The index to use for locating the character.
      * @returns {String} The item at the index provided or undefined.
      */
@@ -802,15 +802,15 @@ String.Inst.defineMethod('atPut',
 function(anIndex, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Replaces the value at anIndex with aValue. NOTE that because
+     * @method atPut
+     * @summary Replaces the value at anIndex with aValue. NOTE that because
      *     strings are not mutable objects and aren't strictly collections in
      *     JavaScript this method returns a new string instance rather than
      *     updating the string in place.
      * @param {Object} anIndex The index to put aValue into.
      * @param {Object} aValue The value to place at anIndex.
      * @returns {Object} A new string with the adjusted value.
-     * @signals Change
+     * @fires Change
      */
 
     var index;
@@ -842,8 +842,8 @@ TP.sys.defineMethod('getCustomTypeNames',
 function() {
 
     /**
-     * @name getCustomTypeNames
-     * @synopsis Returns a list of all known custom (TIBET) types in the system,
+     * @method getCustomTypeNames
+     * @summary Returns a list of all known custom (TIBET) types in the system,
      *     or available to it via dyna-loading. This list is typically populated
      *     by combining pre-existing metadata with runtime information to
      *     construct a complete list.
@@ -859,8 +859,8 @@ TP.sys.defineMethod('getMethodIds',
 function() {
 
     /**
-     * @name getMethodIds
-     * @synopsis Returns a list of all the methods available in the system or
+     * @method getMethodIds
+     * @summary Returns a list of all the methods available in the system or
      *     available to it via dyna-loading. Each method ID is a composite of
      *     the Type.Track.MethodName separated with periods. This information is
      *     used by both the canResolveDNU and method linting routines in TIBET.
@@ -876,8 +876,8 @@ TP.sys.defineMethod('getMethodNames',
 function() {
 
     /**
-     * @name getMethodNames
-     * @synopsis Returns a list of all the methods available in the system or
+     * @method getMethodNames
+     * @summary Returns a list of all the methods available in the system or
      *     available to it via dyna-loading. This list is typically populated by
      *     combining pre-existing metadata with runtime information to construct
      *     a complete picture of the methods which are available.
@@ -914,8 +914,8 @@ TP.sys.defineMethod('getMethodOwners',
 function(aFunction, namesOnly) {
 
     /**
-     * @name getMethodOwners
-     * @synopsis Returns the list of method/function owners for the given
+     * @method getMethodOwners
+     * @summary Returns the list of method/function owners for the given
      *     function/fname. This information is tracked via metadata.
      * @param {Function|String} aFunction The function being tracked.
      * @param {Boolean} namesOnly True means return the list of owner names
@@ -968,8 +968,8 @@ TP.sys.defineMethod('getMetadata',
 function(kind) {
 
     /**
-     * @name getMetadata
-     * @synopsis Returns the TIBET metadata hash, a hash containing information
+     * @method getMetadata
+     * @summary Returns the TIBET metadata hash, a hash containing information
      *     on the types, methods, etc. in the current system and/or available to
      *     it via autoloading. This data isn't exhaustive, its primary goal is
      *     to support proxies and autoloading, not reflection. You can use
@@ -1012,8 +1012,8 @@ TP.sys.defineMethod('$buildArgString',
 function(startIndex, endIndex, arrayPrefix) {
 
     /**
-     * @name $buildArgString
-     * @synopsis Constructs and returns a string representation of the arguments
+     * @method $buildArgString
+     * @summary Constructs and returns a string representation of the arguments
      *     array found in the standard 'arguments' array. This is used in
      *     locations where the arguments array needs to be eval'd as part of a
      *     larger operation. The arguments found between start and start + end
@@ -1066,8 +1066,8 @@ Array.Type.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
-     * @description The arguments provided are treated as elements of the array
+     * @method construct
+     * @summary The arguments provided are treated as elements of the array
      *     with three exceptions. When an arguments object, node list, or named
      *     node map is passed as the single argument to this call the new
      *     instance's data is the result of converting those objects into native
@@ -1110,7 +1110,7 @@ Boolean.Type.defineMethod('construct',
 function(anObject) {
 
     /**
-     * @name construct
+     * @method construct
      * @param {Object} anObject An optional object to return in Boolean form.
      * @returns {Boolean} A new instance.
      * @abtract Constructs and returns a new instance of Boolean. Booleans are
@@ -1158,8 +1158,8 @@ Date.Type.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
-     * @description Date parsing is a key element of usability. TIBET's approach
+     * @method construct
+     * @summary Date parsing is a key element of usability. TIBET's approach
      *     is to attempt to use the standard Date constructor, followed by the
      *     Date.fromString() method when the input is a string. The fromString
      *     method looks for any parsers which may have been registered via prior
@@ -1254,7 +1254,7 @@ Function.Type.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
+     * @method construct
      * @returns {Function} A new instance.
      * @abtract Constructs and returns a new instance of the receiver.
      */
@@ -1334,8 +1334,8 @@ Number.Type.defineMethod('construct',
 function(anObject) {
 
     /**
-     * @name construct
-     * @description Number parsing is a key element of usability. TIBET's
+     * @method construct
+     * @summary Number parsing is a key element of usability. TIBET's
      *     approach is to attempt to use the Number.fromString() method when the
      *     input is a string. The fromString method looks for any parsers which
      *     may have been registered via addParser. If those parsers are
@@ -1385,7 +1385,7 @@ Object.Type.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
+     * @method construct
      * @returns {Object} A new instance.
      * @abtract Constructs and returns a new instance of the receiver. Arguments
      *     are treated as alternating keys and values to match the semantics of
@@ -1427,7 +1427,7 @@ RegExp.Type.defineMethod('construct',
 function(pattern, flags) {
 
     /**
-     * @name construct
+     * @method construct
      * @param {String} pattern The regular expression pattern.
      * @param {String} flags A concatenated set of flags to control the RegExp
      *     object. These are: 'g' match globally 'i' ignore case 'm' match over
@@ -1472,7 +1472,7 @@ String.Type.defineMethod('construct',
 function() {
 
     /**
-     * @name construct
+     * @method construct
      * @param {Array} varargs A variable list of 0 to N values to build the
      *     String from.
      * @returns {String} A new instance.
@@ -1528,8 +1528,8 @@ Array.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the
@@ -1547,8 +1547,8 @@ Boolean.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the
@@ -1566,8 +1566,8 @@ Date.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the
@@ -1585,8 +1585,8 @@ Function.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the
@@ -1604,8 +1604,8 @@ Number.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the
@@ -1623,8 +1623,8 @@ TP.defineMetaInstMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the
@@ -1649,8 +1649,8 @@ RegExp.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the
@@ -1668,8 +1668,8 @@ String.Inst.defineMethod('$$isMemberOf',
 function(aType) {
 
     /**
-     * @name $$isMemberOf
-     * @synopsis Returns true if the receiver is a direct member (instance) of
+     * @method $$isMemberOf
+     * @summary Returns true if the receiver is a direct member (instance) of
      *     the named type.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the receiver is a direct member of the

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.long}
- * @synopsis A value whose range is limited by 64-bit storage limits.
+ * @summary A value whose range is limited by 64-bit storage limits.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.long.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is between
+     * @method validate
+     * @summary Returns true if the object provided is between
      *     -9223372036854775808 and 9223372036854775807 inclusive.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

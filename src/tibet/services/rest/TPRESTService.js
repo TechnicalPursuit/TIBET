@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.RESTService}
- * @synopsis A service supporting simple REST calls with minimal encoding and
+ * @summary A service supporting simple REST calls with minimal encoding and
  *     serialization logic.
  * @examples
  // To construct the service, provide a resourceID to // identify

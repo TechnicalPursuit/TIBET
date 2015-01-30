@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.complexType}
- * @synopsis XMLSchema complex node wrapper.
+ * @summary XMLSchema complex node wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.complexType.Inst.defineMethod('defineType',
 function() {
 
     /**
-     * @name defineType
-     * @synopsis Defines a TIBET type from the XML Schema data found in the
+     * @method defineType
+     * @summary Defines a TIBET type from the XML Schema data found in the
      *     receiver's schema node.
      * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaComplexCompositeType>} The
      *     newly defined type (or the existing type if it already exists).
@@ -67,8 +67,8 @@ TP.xs.complexType.Inst.defineMethod('getRepresentedType',
 function() {
 
     /**
-     * @name getRepresentedType
-     * @synopsis Returns a type that this object might be 'representing'. This
+     * @method getRepresentedType
+     * @summary Returns a type that this object might be 'representing'. This
      *     is used in here to return the type that the receiver is describing to
      *     the system.
      * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaComplexCompositeType>} The

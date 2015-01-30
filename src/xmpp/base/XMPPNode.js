@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Node}
- * @synopsis The main supertype for XMPP nodes. There are various subtypes of
+ * @summary The main supertype for XMPP nodes. There are various subtypes of
  *     this type that are specialized for their particular content formats,
  *     making it easy to interact with message, presence, and iq nodes and their
  *     children.
@@ -42,8 +42,8 @@ TP.xmpp.Node.Type.defineMethod('constructNativeNode',
 function() {
 
     /**
-     * @name constructNativeNode
-     * @synopsis Returns a node suitable for use as an instance of the receiver.
+     * @method constructNativeNode
+     * @summary Returns a node suitable for use as an instance of the receiver.
      * @returns {TP.xmpp.Node} A new native node, cloned from the receiver's
      *     template.
      */
@@ -98,10 +98,10 @@ TP.xmpp.Node.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the subtype to use for the node provided.
+     * @method getConcreteType
+     * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.lang.RootObject.<TP.xmpp.Node>} A TP.xmpp.Node subtype type
      *     object.
      */
@@ -157,8 +157,8 @@ TP.xmpp.Node.Type.defineMethod('register',
 function() {
 
     /**
-     * @name register
-     * @synopsis Registers the type's information, particularly the tag name,
+     * @method register
+     * @summary Registers the type's information, particularly the tag name,
      *     template, and namespace information which drives the lookup processes
      *     for getConcreteType().
      */
@@ -184,8 +184,8 @@ TP.xmpp.Node.Inst.defineMethod('getAttribute',
 function(attributeName) {
 
     /**
-     * @name getAttribute
-     * @synopsis Returns the value of the named attribute. If the attribute
+     * @method getAttribute
+     * @summary Returns the value of the named attribute. If the attribute
      *     doesn't exist an empty string is returned.
      * @param {String} attributeName The attribute to retrieve.
      * @returns {String}
@@ -207,8 +207,8 @@ TP.xmpp.Node.Inst.defineMethod('getErrorElement',
 function() {
 
     /**
-     * @name getErrorElement
-     * @synopsis Returns either the native node of the receiver (if it is an
+     * @method getErrorElement
+     * @summary Returns either the native node of the receiver (if it is an
      *     'error' element) or the descendant that is an error element.
      * @returns {TP.core.ElementNode} The error element.
      */
@@ -229,8 +229,8 @@ TP.xmpp.Node.Inst.defineMethod('getNamespaceURI',
 function() {
 
     /**
-     * @name getNamespaceURI
-     * @synopsis Returns the receiver's namespace. This is based on the value of
+     * @method getNamespaceURI
+     * @summary Returns the receiver's namespace. This is based on the value of
      *     the native's node namespace if present, otherwise it returns the
      *     namespace mapped for the receiver's type.
      * @returns {String}
@@ -251,14 +251,14 @@ TP.xmpp.Node.Inst.defineMethod('getNamedDescendant',
 function(aName, createIfAbsent) {
 
     /**
-     * @name getNamedDescendant
-     * @synopsis Returns the descendant Element (unwrapped) with the name
+     * @method getNamedDescendant
+     * @summary Returns the descendant Element (unwrapped) with the name
      *     provided. This is a useful utility method for accessing packet
      *     content.
      * @param {String} aName The tag name of the descendant to retrieve.
      * @param {Boolean} createIfAbsent Whether or not to create the descendant
      *     element if its not present.
-     * @raises TP.sig.XMPPNodeCorruption
+     * @exception TP.sig.XMPPNodeCorruption
      * @returns {Element} The DOM Element node representing the named
      *     descendant.
      */
@@ -298,8 +298,8 @@ TP.xmpp.Node.Inst.defineMethod('getSignalName',
 function(aStanza) {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name to use when signaling arrival of
+     * @method getSignalName
+     * @summary Returns the signal name to use when signaling arrival of
      *     packets of this type. The default is XMPP*Input where the asterisk is
      *     replaced by the current tag/type string, for example
      *     XMPPMessageInput.
@@ -341,8 +341,8 @@ TP.xmpp.Node.Inst.defineMethod('getTagName',
 function() {
 
     /**
-     * @name getTagName
-     * @synopsis Returns the tag's nodeName.
+     * @method getTagName
+     * @summary Returns the tag's nodeName.
      * @returns {String}
      */
 
@@ -361,8 +361,8 @@ TP.xmpp.Node.Inst.defineMethod('getTagType',
 function() {
 
     /**
-     * @name getTagType
-     * @synopsis Returns the value of any 'type' attribute on the receiver.
+     * @method getTagType
+     * @summary Returns the value of any 'type' attribute on the receiver.
      *     Examples are 'get','set','normal','chat', etc.
      * @returns {String}
      */
@@ -382,8 +382,8 @@ TP.xmpp.Node.Inst.defineMethod('isError',
 function() {
 
     /**
-     * @name isError
-     * @synopsis Returns true if the receiver contains an error packet, or is
+     * @method isError
+     * @summary Returns true if the receiver contains an error packet, or is
      *     otherwise of type 'error'.
      * @returns {Boolean}
      */
@@ -408,8 +408,8 @@ TP.xmpp.Node.Inst.defineMethod('isSignal',
 function() {
 
     /**
-     * @name isSignal
-     * @synopsis Returns true if the receiver represents a TIBET Signal in
+     * @method isSignal
+     * @summary Returns true if the receiver represents a TIBET Signal in
      *     encoded form.
      * @returns {Boolean}
      */
@@ -423,8 +423,8 @@ TP.xmpp.Node.Inst.defineMethod('setAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name setAttribute
-     * @synopsis Sets the value of the named attribute on the receiver. This is
+     * @method setAttribute
+     * @summary Sets the value of the named attribute on the receiver. This is
      *     a wrapper for the standard DOM setAttribute call.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
@@ -447,8 +447,8 @@ TP.xmpp.Node.Inst.defineMethod('setTagType',
 function(aTagType) {
 
     /**
-     * @name setTagType
-     * @synopsis Sets the value of any 'type' attribute on the receiver.
+     * @method setTagType
+     * @summary Sets the value of any 'type' attribute on the receiver.
      *     Examples are 'get', 'set', 'normal', 'chat', etc.
      * @param {String} aTagType The tag type to use for the receiver.
      * @returns {String}
@@ -478,8 +478,8 @@ TP.xmpp.Node.Inst.defineMethod('handleArrival',
 function(aSignal) {
 
     /**
-     * @name handleArrival
-     * @synopsis Responds to inbound arrival of a new packet of the receiver's
+     * @method handleArrival
+     * @summary Responds to inbound arrival of a new packet of the receiver's
      *     type. For most packet types this requires no action but certain
      *     packets such as subscription requests require a response.
      * @param {TP.sig.Signal} aSignal The original inbound signal which

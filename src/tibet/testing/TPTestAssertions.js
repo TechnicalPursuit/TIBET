@@ -41,8 +41,8 @@ TP.test.TestMethodCollection.Inst.defineMethod('$assert',
 function(aCondition, aComment, aFaultString) {
 
     /**
-     * @name $assert
-     * @synopsis Checks the supplied Boolean value and fails the test case as
+     * @method $assert
+     * @summary Checks the supplied Boolean value and fails the test case as
      *     needed when the assertion fails.
      * @param {Boolean} aCondition Whether or not the test succeeded.
      * @param {String} aComment A human-readable comment String.
@@ -71,8 +71,8 @@ TP.test.TestMethodCollection.Inst.defineMethod('assertMinArguments',
 function(anArgArray, aCount, aComment) {
 
     /**
-     * @name assertMinArguments
-     * @synopsis Asserts that the supplied argument Array has a minimum number
+     * @method assertMinArguments
+     * @summary Asserts that the supplied argument Array has a minimum number
      *     of items in it.
      * @param {Array} anArgArray The argument Array to check.
      * @param {Number} aCount The minimum number of arguments that the supplied
@@ -108,8 +108,8 @@ TP.test.TestMethodCollection.Inst.defineMethod('assert',
 function(aCondition, aComment, aFaultString) {
 
     /**
-     * @name assert
-     * @synopsis Asserts that the supplied condition passes (i.e. returns true).
+     * @method assert
+     * @summary Asserts that the supplied condition passes (i.e. returns true).
      * @param {Boolean} aCondition Whether or not the test succeeded.
      * @param {String} aComment A human-readable comment String.
      * @param {String} aFaultString A String detailing the fault. This will be
@@ -144,8 +144,8 @@ TP.test.TestMethodCollection.Type.defineMethod('defineAssertion',
 function(methodName, methodBody) {
 
     /**
-     * @name defineAssertion
-     * @synopsis Builds an assertion try...catch around the supplied method body
+     * @method defineAssertion
+     * @summary Builds an assertion try...catch around the supplied method body
      *     and registers it as an instance method on this type.
      * @param {String} methodName The name of the new assertion method.
      * @param {Function} methodBody The actual assertion method implementation.
@@ -2417,8 +2417,8 @@ function(anObject, aProperty, aValue, aComment) {
 
 /**
  * @type {TP.test.Expect}
- * @synopsis A type that can a 'chain' of test expectation methods.
- * @description This type works by operating a 'method chain'. Each member of
+ * @summary A type that can a 'chain' of test expectation methods.
+ * @summary This type works by operating a 'method chain'. Each member of
  *     the chain is responsible for executing a piece of logic and then setting
  *     the result of the chain. This result is a Boolean. If any one of the
  *     members of a chain sets the result to false, that result 'sticks' no
@@ -2440,8 +2440,8 @@ TP.test.Expect.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var chainMethodNames,
@@ -2551,8 +2551,8 @@ TP.test.Expect.Inst.defineMethod('init',
 function(anObject, testCase) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {Object} anObject The object to put under test.
      * @param {TP.test.Case} testCase The test case associated with this
      *     expectation. If the expectation fails, this is the test case that
@@ -2575,8 +2575,8 @@ TP.test.Expect.Inst.defineMethod('reset',
 function(obj) {
 
     /**
-     * @name reset
-     * @synopsis Reset the instance and use the supplied object as the new
+     * @method reset
+     * @summary Reset the instance and use the supplied object as the new
      *     object under test.
      * @param {Object} anObject The object to put under test.
      * @returns {TP.test.Expect} The receiver.
@@ -2607,8 +2607,8 @@ TP.test.Expect.Inst.defineMethod('executeChain',
 function() {
 
     /**
-     * @name executeChain
-     * @synopsis Executes the 'chain' of statements constituting the
+     * @method executeChain
+     * @summary Executes the 'chain' of statements constituting the
      *     expectation. Some of these will be real instance methods on this
      *     object and some of them are just part of the 'chain' to make the
      *     expectation easier to read.
@@ -2658,8 +2658,8 @@ TP.test.Expect.Inst.defineMethod('isProcessingChain',
 function() {
 
     /**
-     * @name isProcessingChain
-     * @synopsis Whether or not we're in the middle of processing the chain.
+     * @method isProcessingChain
+     * @summary Whether or not we're in the middle of processing the chain.
      * @returns {Boolean} Whether or not we're processing the chain.
      */
 
@@ -2672,8 +2672,8 @@ TP.test.Expect.Inst.defineMethod('setResult',
 function(aValue) {
 
     /**
-     * @name setResult
-     * @synopsis Sets the result of the expection to the supplied value. Note
+     * @method setResult
+     * @summary Sets the result of the expection to the supplied value. Note
      *     that if the expectation has been negated somewhere in its chain, this
      *     method is where the value inversion is performed.
      * @param {Boolean} aValue The Boolean result value.

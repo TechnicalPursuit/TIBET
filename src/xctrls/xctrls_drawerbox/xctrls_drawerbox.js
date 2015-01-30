@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.drawerbox}
- * @synopsis Manages drawerbox XControls.
+ * @summary Manages drawerbox XControls.
  */
 
 //  ------------------------------------------------------------------------

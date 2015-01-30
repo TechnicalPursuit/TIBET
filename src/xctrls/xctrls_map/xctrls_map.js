@@ -10,9 +10,9 @@
 
 /**
  * @type {TP.xctrls.map}
- * @synopsis A common supertype for various DHTML map controls, such as those
+ * @summary A common supertype for various DHTML map controls, such as those
  *     provided by Google and Yahoo! and Microsoft.
- * @description This API largely based on mapstraction -
+ * @summary This API largely based on mapstraction -
  *     http://www.mapstraction.com. Copyright (C) 2006, Tom Carden and Steve
  *     Coast
  */
@@ -57,10 +57,10 @@ TP.xctrls.map.Type.defineMethod('getCompilationAttrs',
 function(aRequest) {
 
     /**
-     * @name getCompilationAttrs
-     * @synopsis Returns a TP.lang.Hash of any attributes to be added to what is
+     * @method getCompilationAttrs
+     * @summary Returns a TP.lang.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled.
-     * @description This type produces custom values for the 'tibet:ctrl'
+     * @summary This type produces custom values for the 'tibet:ctrl'
      *     attribute (matching the type of the map based on the 'type'
      *     attribute), thereby allowing instances of subtypes of this type to be
      *     created.
@@ -89,8 +89,8 @@ TP.xctrls.map.Type.defineMethod('getResourceTypeName',
 function() {
 
     /**
-     * @name getResourceTypeName
-     * @synopsis Returns the resource type name for this type. The resource type
+     * @method getResourceTypeName
+     * @summary Returns the resource type name for this type. The resource type
      *     name is used when computing resource paths for this type. We override
      *     this here to provide our own type name for subtypes since the
      *     resources should be found under our name.
@@ -115,8 +115,8 @@ TP.xctrls.map.Inst.defineMethod('init',
 function(aNode, aURI) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized instance.
+     * @method init
+     * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
@@ -136,7 +136,7 @@ TP.xctrls.map.Inst.defineMethod('addControls',
 function(hasPan, zoomType, hasOverview, hasScale, hasMapType) {
 
     /**
-     * @name addControls
+     * @method addControls
      * @param {undefined} hasPan
      * @param {undefined} zoomType
      * @param {undefined} hasOverview
@@ -155,7 +155,7 @@ TP.xctrls.map.Inst.defineMethod('addLargeControls',
 function() {
 
     /**
-     * @name addLargeControls
+     * @method addLargeControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -169,7 +169,7 @@ TP.xctrls.map.Inst.defineMethod('addMapTypeControls',
 function() {
 
     /**
-     * @name addMapTypeControls
+     * @method addMapTypeControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -183,7 +183,7 @@ TP.xctrls.map.Inst.defineMethod('addMarker',
 function(aMarker) {
 
     /**
-     * @name addMarker
+     * @method addMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -198,7 +198,7 @@ TP.xctrls.map.Inst.defineMethod('addSmallControls',
 function() {
 
     /**
-     * @name addSmallControls
+     * @method addSmallControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -212,7 +212,7 @@ TP.xctrls.map.Inst.defineMethod('autoCenterAndZoom',
 function() {
 
     /**
-     * @name autoCenterAndZoom
+     * @method autoCenterAndZoom
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -256,7 +256,7 @@ TP.xctrls.map.Inst.defineMethod('getBounds',
 function() {
 
     /**
-     * @name getBounds
+     * @method getBounds
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -270,7 +270,7 @@ TP.xctrls.map.Inst.defineMethod('getCenter',
 function() {
 
     /**
-     * @name getCenter
+     * @method getCenter
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -284,7 +284,7 @@ TP.xctrls.map.Inst.defineMethod('getLatLongForAddress',
 function(anAddress) {
 
     /**
-     * @name getLatLongForAddress
+     * @method getLatLongForAddress
      * @param {String} anAddress The address to plot.
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -299,7 +299,7 @@ TP.xctrls.map.Inst.defineMethod('getMapType',
 function() {
 
     /**
-     * @name getMapType
+     * @method getMapType
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -313,7 +313,7 @@ TP.xctrls.map.Inst.defineMethod('getZoom',
 function() {
 
     /**
-     * @name getZoom
+     * @method getZoom
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -327,7 +327,7 @@ TP.xctrls.map.Inst.defineMethod('getZoomLevelForMapBounds',
 function(aMapBounds) {
 
     /**
-     * @name getZoomLevelForMapBounds
+     * @method getZoomLevelForMapBounds
      * @param {TP.core.MapBounds} aMapBounds
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -342,8 +342,8 @@ TP.xctrls.map.Inst.defineMethod('hideAllMarkers',
 function() {
 
     /**
-     * @name hideAllMarkers
-     * @synopsis Hides all of the markers without removing them from the marker
+     * @method hideAllMarkers
+     * @summary Hides all of the markers without removing them from the marker
      *     list.
      * @returns {TP.xctrls.map} The receiver.
      */
@@ -357,8 +357,8 @@ TP.xctrls.map.Inst.defineMethod('refresh',
 function(aSignal) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specified a
      *     'deep' refresh then descendant elements are also updated.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
@@ -390,7 +390,7 @@ TP.xctrls.map.Inst.defineMethod('removeAllMarkers',
 function() {
 
     /**
-     * @name removeAllMarkers
+     * @method removeAllMarkers
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -410,7 +410,7 @@ TP.xctrls.map.Inst.defineMethod('removeAllControls',
 function() {
 
     /**
-     * @name removeAllControls
+     * @method removeAllControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
      */
@@ -424,7 +424,7 @@ TP.xctrls.map.Inst.defineMethod('removeMarker',
 function(aMarker) {
 
     /**
-     * @name removeMarker
+     * @method removeMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -439,7 +439,7 @@ TP.xctrls.map.Inst.defineMethod('setBounds',
 function(aMapBounds) {
 
     /**
-     * @name setBounds
+     * @method setBounds
      * @param {undefined} aMapBounds
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -454,7 +454,7 @@ TP.xctrls.map.Inst.defineMethod('setCenter',
 function(aLatLong) {
 
     /**
-     * @name setCenter
+     * @method setCenter
      * @param {undefined} aLatLong
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -469,7 +469,7 @@ TP.xctrls.map.Inst.defineMethod('setLat',
 function(aLat) {
 
     /**
-     * @name setLat
+     * @method setLat
      * @param {undefined} aLat
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -498,7 +498,7 @@ TP.xctrls.map.Inst.defineMethod('setLong',
 function(aLong) {
 
     /**
-     * @name setLong
+     * @method setLong
      * @param {undefined} aLong
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -527,7 +527,7 @@ TP.xctrls.map.Inst.defineMethod('setCenterAndZoom',
 function(aLatLong, zoomLevel) {
 
     /**
-     * @name setCenterAndZoom
+     * @method setCenterAndZoom
      * @param {undefined} aLatLong
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.map} The receiver.
@@ -543,7 +543,7 @@ TP.xctrls.map.Inst.defineMethod('setIsDraggable',
 function(shouldBeDraggable) {
 
     /**
-     * @name setIsDraggable
+     * @method setIsDraggable
      * @param {undefined} shouldBeDraggable
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -558,7 +558,7 @@ TP.xctrls.map.Inst.defineMethod('setMapType',
 function(aMapType) {
 
     /**
-     * @name setMapType
+     * @method setMapType
      * @param {undefined} aMapType
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -573,7 +573,7 @@ TP.xctrls.map.Inst.defineMethod('setZoom',
 function(zoomLevel) {
 
     /**
-     * @name setZoom
+     * @method setZoom
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
@@ -588,8 +588,8 @@ TP.xctrls.map.Inst.defineMethod('showAllMarkers',
 function() {
 
     /**
-     * @name showAllMarkers
-     * @synopsis Shows all of the markers from the marker list on the map.
+     * @method showAllMarkers
+     * @summary Shows all of the markers from the marker list on the map.
      * @returns {TP.xctrls.map} The receiver.
      */
 
@@ -602,7 +602,7 @@ TP.xctrls.map.Inst.defineMethod('sizeTo',
 function(width, height) {
 
     /**
-     * @name sizeTo
+     * @method sizeTo
      * @param {undefined} width
      * @param {undefined} height
      * @returns {TP.xctrls.map} The receiver.
@@ -618,7 +618,7 @@ TP.xctrls.map.Inst.defineMethod('swapMarker',
 function(aMarker) {
 
     /**
-     * @name swapMarker
+     * @method swapMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.map} The receiver.
      * @abstract

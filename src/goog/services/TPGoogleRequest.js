@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.GoogleRequest}
- * @synopsis A subtype of TP.sig.HTTPRequest that knows how to request data from
+ * @summary A subtype of TP.sig.HTTPRequest that knows how to request data from
  *     the Google server. Note that this core set of types (TP.sig.GoogleRequest
  *     / TP.sig.GoogleResponse / TP.goog.GoogleService) knows how to
  *     authenticate with Google via the 'ClientLogin' protocol. These types

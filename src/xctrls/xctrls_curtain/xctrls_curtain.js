@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.curtain}
- * @synopsis Manages curtain XControls.
+ * @summary Manages curtain XControls.
  */
 
 //  ------------------------------------------------------------------------

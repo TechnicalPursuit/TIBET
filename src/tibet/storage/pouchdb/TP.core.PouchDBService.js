@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.PouchDBService}
- * @synopsis A subtype of TP.core.Service that communicates with in-browser
+ * @summary A subtype of TP.core.Service that communicates with in-browser
  *     PouchDB data stores.
  * @example If the TP.sig.PouchDBRequest/TP.sig.PouchDBResponse processing model
  *     is used, it is unnecessary to manually set up a TP.core.PouchDBService.
@@ -73,8 +73,8 @@ TP.core.PouchDBService.Inst.defineMethod('handlePouchDBRequest',
 function(aRequest) {
 
     /**
-     * @name handlePouchDBRequest
-     * @synopsis Handles when an TP.sig.PouchDBRequest is fired. Since
+     * @method handlePouchDBRequest
+     * @summary Handles when an TP.sig.PouchDBRequest is fired. Since
      *     this service will register itself as the default handler for these
      *     kinds of requests, the default instance of it will usually handle all
      *     of these kinds of requests.

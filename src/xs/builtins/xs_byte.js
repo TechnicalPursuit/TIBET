@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.byte}
- * @synopsis A value whose range is limited by 8-bit storage limits.
+ * @summary A value whose range is limited by 8-bit storage limits.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.byte.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is in the range between
+     * @method validate
+     * @summary Returns true if the object provided is in the range between
      *     -128 and 127.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.XMPPRequest}
- * @synopsis A subtype of TP.sig.URIRequest that is used in conjunction with the
+ * @summary A subtype of TP.sig.URIRequest that is used in conjunction with the
  *     TP.core.XMPPService type to communicate to XMPP servers.
  * @example Communicating with an XMPP server from TIBET consists of:
  *

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.SASLResponse}
- * @synopsis A wrapper for the SASL authentication element
+ * @summary A wrapper for the SASL authentication element
  */
 
 //  ------------------------------------------------------------------------

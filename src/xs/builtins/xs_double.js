@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.double}
- * @synopsis An IEEE-754 double value (a 64-bit double precision value).
+ * @summary An IEEE-754 double value (a 64-bit double precision value).
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.double.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided meets the criteria for a
+     * @method validate
+     * @summary Returns true if the object provided meets the criteria for a
      *     valid TP.xs.double, a number defined in optional scientific notation
      *     representing a 64-bit floating point number.
      * @param {String} anObject The object to validate.

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.ENTITY}
- * @synopsis An TP.xs.NCName-formatted string which refers to an unparsed entity
+ * @summary An TP.xs.NCName-formatted string which refers to an unparsed entity
  *     in a document DTD. Note that this second constraint is not currently
  *     validated.
  */

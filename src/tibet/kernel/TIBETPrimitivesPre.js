@@ -149,8 +149,8 @@ APP.getName = function () {return APP[TP.NAME];};
 TP.isCallable = function(anObj) {
 
     /**
-     * @name isCallable
-     * @synopsis Returns true if the object provided is a function which is not
+     * @method isCallable
+     * @summary Returns true if the object provided is a function which is not
      *     marked as a DNU. No owner or track testing is performed which is what
      *     disinguishes this call from TP.isMethod(). Methods, unlike more
      *     generic "callables", have an owner and track.
@@ -192,12 +192,12 @@ TP.isCallable[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.canInvoke = function(anObj, anInterface) {
 
     /**
-     * @name canInvoke
-     * @synopsis Returns true if the object provided implements the method or
+     * @method canInvoke
+     * @summary Returns true if the object provided implements the method or
      *     methods in the interface provided. The interface can be defined as
      *     either a single method name or an array of names which constitute the
      *     list of methods to check.
-     * @description The Smalltalk method 'respondsTo' is replaced in TIBET with
+     * @summary The Smalltalk method 'respondsTo' is replaced in TIBET with
      *     this method, which allows you to check a method name against a
      *     potentially null/undefined parameter or return value.
      * @param {Object} anObj The object to check.
@@ -252,8 +252,8 @@ TP.canInvoke[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.isValid = function(aValue) {
 
     /**
-     * @name isValid
-     * @synopsis Return true if the receiver is not undefined and not null,
+     * @method isValid
+     * @summary Return true if the receiver is not undefined and not null,
      *     meaning it has some value (empty/false or otherwise).
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is valid:
@@ -279,8 +279,8 @@ TP.isValid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.notValid = function(aValue) {
 
     /**
-     * @name notValid
-     * @synopsis Returns true if the value provided is either null or undefined.
+     * @method notValid
+     * @summary Returns true if the value provided is either null or undefined.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not valid:
      *     <code>
@@ -305,8 +305,8 @@ TP.notValid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.ifInvalid = function(aSuspectValue, aDefaultValue) {
 
     /**
-     * @name ifInvalid
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     * @method ifInvalid
+     * @summary Returns either aSuspectValue or aDefaultValue based on the
      *     state of aSuspectValue. If aSuspectValue is TP.notValid()
      *     aDefaultValue is returned.
      * @param {Object} aSuspectValue The value to test.
@@ -334,12 +334,12 @@ TP.ifInvalid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.isDNU = function(anObj) {
 
     /**
-     * @name isDNU
-     * @synopsis Returns true if the object provided is a TIBET DNU
+     * @method isDNU
+     * @summary Returns true if the object provided is a TIBET DNU
      *     (DoesNotUnderstand) function. These functions are installed by TIBET
      *     to provide support for delegation, inferencing, and other method
      *     resolution strategies.
-     * @description TIBET's support for "missing" methods is driven largely by
+     * @summary TIBET's support for "missing" methods is driven largely by
      *     the DNU concept, which provides the hooks found in Ruby's missing
      *     methods, Smalltalk/Self's "doesNotUnderstand", etc.
      * @param {Object} anObj The Object to test.
@@ -367,12 +367,12 @@ TP.$$isDNU = TP.isDNU;
 TP.isFunction = function(anObj) {
 
     /**
-     * @name isFunction
-     * @synopsis Returns true if the object provided is a function instance. No
+     * @method isFunction
+     * @summary Returns true if the object provided is a function instance. No
      *     attempt is made to determine whether that function is a DNU, or
      *     method (an owned function). Use TP.isCallable(), or TP.isMethod() to
      *     test for those cases.
-     * @description Perhaps the most glaring example of why we've encapsulated
+     * @summary Perhaps the most glaring example of why we've encapsulated
      *     so heavily in TIBET. Most libraries use typeof == 'function' and call
      *     it a day. Unfortunately many of IE's DOM-associated functions don't
      *     return 'function' in response to a typeof call and Mozilla is
@@ -418,8 +418,8 @@ TP.isFunction[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.isString = function(anObj) {
 
     /**
-     * @name isString
-     * @synopsis Returns true if the object provided is a string primitive or a
+     * @method isString
+     * @summary Returns true if the object provided is a string primitive or a
      *     String object. This method also allows us to play a few tricks with
      *     "mutable strings" or what a Java developer would think of as a
      *     "string buffer" by returning true if the object can behave like a
@@ -456,8 +456,8 @@ TP.isString[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.owns = function(anObject, aName) {
 
     /**
-     * @name owns
-     * @synopsis Returns true if the object hasOwnProperty() aName. This wrapper
+     * @method owns
+     * @summary Returns true if the object hasOwnProperty() aName. This wrapper
      *     exists because numerous objects which should respond to that method
      *     don't, and will throw errors if you try to use it.
      * @param {Object} anObject The object to test.
@@ -483,8 +483,8 @@ TP.owns[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.objectGetLoadNode = function(anObject) {
 
     /**
-     * @name objectGetLoadNode
-     * @synopsis Returns the script node responsible for loading the object.
+     * @method objectGetLoadNode
+     * @summary Returns the script node responsible for loading the object.
      * @param {Object} anObject The object to query.
      * @returns {Node} The script node that loaded the object.
      */
@@ -517,8 +517,8 @@ TP.objectGetLoadNode[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.objectSetLoadNode = function(anObject, aNode) {
 
     /**
-     * @name objectSetLoadNode
-     * @synopsis Sets the script node responsible for loading the object.
+     * @method objectSetLoadNode
+     * @summary Sets the script node responsible for loading the object.
      * @param {Object} anObject The object to update.
      * @param {Node} aNode A script node, presumably the one responsible for
      *     loading the object.
@@ -541,10 +541,10 @@ TP.objectSetLoadNode[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.FunctionProto.asMethod = function(owner, name, track, display) {
 
     /**
-     * @name asMethod
-     * @synopsis Returns the receiver as a method. In most cases this simply
+     * @method asMethod
+     * @summary Returns the receiver as a method. In most cases this simply
      *     returns the function.
-     * @description In certain special cases this function can be overridden to
+     * @summary In certain special cases this function can be overridden to
      *     provide advanced behavior which significantly enhances the
      *     functionality of the system. The various as*Method functions are all
      *     controlled from this root method. The asMethod call is triggered in
@@ -621,8 +621,8 @@ TP.FunctionProto.asMethod[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.StringProto.strip = function(aRegExp) {
 
     /**
-     * @name strip
-     * @synopsis Returns a new string with the contents of the receiver after
+     * @method strip
+     * @summary Returns a new string with the contents of the receiver after
      *     having removed any characters matching the RegExp passed in.
      * @param {RegExp} aRegexp The pattern to strip from receiver.
      * @returns {String} A new string with the contents of the receiver except
@@ -650,13 +650,13 @@ if (!TP.sys.constructOID) {
     TP.sys.constructOID = function(aPrefix) {
 
         /**
-         * @name constructOID
-         * @synopsis Generates an OID value, optionally prefixing it with
+         * @method constructOID
+         * @summary Generates an OID value, optionally prefixing it with
          *     aPrefix if that prefix is non-empty. Note that OIDs always begin
          *     with an _, $, or alpha character regardless of the prefix to
          *     ensure unprefixed OIDs are valid IDREF values and legal JS
          *     identifiers.
-         * @description A TIBET OID value is a random identifier which has no
+         * @summary A TIBET OID value is a random identifier which has no
          *     long-term uniqueness properties but is sufficient for managing
          *     unique references during a particular application invocation
          *     cycle.
@@ -719,8 +719,8 @@ Function.$$getNameRegex = /function\s*(.*?)\(/;
 TP.getFunctionName = function(aFunction) {
 
     /**
-     * @name getFunctionName
-     * @synopsis Returns the name of the supplied function or the value
+     * @method getFunctionName
+     * @summary Returns the name of the supplied function or the value
      * TP.ANONYMOUS_FUNCTION_NAME if function doesn't have a name.
      * @param {Function} aFunction The Function to retrieve the name of.
      * @returns {String} The name of the Function or TP.ANONYMOUS_FUNCTION_NAME
@@ -753,8 +753,8 @@ TP.getFunctionName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.FunctionProto.$getName = function() {
 
     /**
-     * @name $getName
-     * @synopsis Returns the name of the receiving function or its ID if the
+     * @method $getName
+     * @summary Returns the name of the receiving function or its ID if the
      *     function doesn't have a name. As a general rule our methods for
      *     adding methods set the function name but functions declared outside
      *     of an add*Method() should have a name set to properly register them
@@ -814,12 +814,12 @@ TP.StringProto.getName = TP.FunctionProto.$getName;
 TP.ArrayProto.at = function(anIndex) {
 
     /**
-     * @name at
-     * @synopsis Returns the value found at an index. Provides polymorphic
+     * @method at
+     * @summary Returns the value found at an index. Provides polymorphic
      *     access to indexed collection data, which isn't possible with literal
      *     bracket syntax (you can't use []'s on strings etc). NOTE that this
      *     initial version doesn't support varargs or negative indices.
-     * @description To support multi-dimensional access this method will allow
+     * @summary To support multi-dimensional access this method will allow
      *     more than one index parameter as in arr.at(1, 1) so that, in reality,
      *     the value is acquired from a nested child of the receiver. For
      *     example, arr.at(1, 1) returns the value 3 when used on the array
@@ -843,13 +843,13 @@ TP.ArrayProto.at = function(anIndex) {
 TP.ArrayProto.atPut = function(anIndex, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Sets the value found at anIndex. Provides polymorphic access to
+     * @method atPut
+     * @summary Sets the value found at anIndex. Provides polymorphic access to
      *     updating indexed collection data, which isn't possible with literal
      *     bracket syntax. This version does not provide change notification.
      *     NOTE that this initial version does not support vararg values or
      *     negative indices.
-     * @description To support multi-dimensional access expanded versions allow
+     * @summary To support multi-dimensional access expanded versions allow
      *     more than one index parameter as in arr.atPut(1, 2, 'foo') so that,
      *     in reality, aValue is defined by the last argument and is placed in
      *     the location found by traversing to the last index (arguments.length
@@ -924,8 +924,8 @@ TP.PHash = function() {
     this.isAccessPath = function() {
 
         /**
-         * @name isAccessPath
-         * @synopsis Returns whether or not the receiver is an access path
+         * @method isAccessPath
+         * @summary Returns whether or not the receiver is an access path
          *     object.
          * @returns {Boolean} False - most receivers are not a path.
          */
@@ -947,8 +947,8 @@ TP.PHash = function() {
     this.$$isCollection = function() {
 
         /**
-         * @name $$isCollection
-         * @synopsis Returns true if the receiver is a collection instance. True
+         * @method $$isCollection
+         * @summary Returns true if the receiver is a collection instance. True
          *     for TP.lang.Hash instances. NOTE that this method is invoked via
          *     the TP.isCollection() method on objects which implement it, you
          *     shouldn't invoke it directly.
@@ -972,8 +972,8 @@ TP.PHash = function() {
     this.$$isMemberOf = function(aType) {
 
         /**
-         * @name $$isMemberOf
-         * @synopsis Returns true if the receiver is a direct instance of the
+         * @method $$isMemberOf
+         * @summary Returns true if the receiver is a direct instance of the
          *     type provided.
          * @param {TP.lang.RootObject|String} aType A Type object, or type name.
          * @returns {Boolean} True if the receiver is an instance of the type or
@@ -997,8 +997,8 @@ TP.PHash = function() {
     this.as = function(aType) {
 
         /**
-         * @name as
-         * @synopsis Returns the receiver as an instance of aType. This
+         * @method as
+         * @summary Returns the receiver as an instance of aType. This
          *     implementation is capable only of converting into a TP.lang.Hash
          *     and potentially converting that hash into something else. The
          *     more powerful TP.lang.Hash type may have more efficient or
@@ -1029,8 +1029,8 @@ TP.PHash = function() {
     this.asString = function() {
 
         /**
-         * @name asString
-         * @synopsis Returns a usable string representation of the hash. The
+         * @method asString
+         * @summary Returns a usable string representation of the hash. The
          *     standard form here uses TIBET syntax, meaning that a hash with a
          *     key of 'a' and a value of 1 appears in string form as
          *     TP.hc('a',1).
@@ -1073,8 +1073,8 @@ TP.PHash = function() {
     this.asJSONSource = function() {
 
         /**
-         * @name asJSONSource
-         * @synopsis Returns a usable JSON representation of the hash, meaning
+         * @method asJSONSource
+         * @summary Returns a usable JSON representation of the hash, meaning
          *     that a hash with a key of 'a' and a value of 1 appears in string
          *     form as '{"a": 1}'.
          * @returns {String} The receiver in string form.
@@ -1097,8 +1097,8 @@ TP.PHash = function() {
     this.asSource = function() {
 
         /**
-         * @name asSource
-         * @synopsis Returns a usable source representation of the hash. The
+         * @method asSource
+         * @summary Returns a usable source representation of the hash. The
          *     standard form here uses TIBET syntax, meaning that a hash with a
          *     key of 'a' and a value of 1 appears in string form as
          *     TP.hc('a',1).
@@ -1122,8 +1122,8 @@ TP.PHash = function() {
     this.asTP_lang_Hash = function() {
 
         /**
-         * @name asTP_lang_Hash
-         * @synopsis Converts the receiver to a full TP.lang.Hash type. The
+         * @method asTP_lang_Hash
+         * @summary Converts the receiver to a full TP.lang.Hash type. The
          *     internal hash data structures are migrated to the new instance so
          *     on completion of this method you should release any references
          *     you may have to the older primitive hash instance.
@@ -1150,8 +1150,8 @@ TP.PHash = function() {
     this.at = function(aKey) {
 
         /**
-         * @name at
-         * @synopsis Returns the value at the key/index provided.
+         * @method at
+         * @summary Returns the value at the key/index provided.
          * @param {Object} aKey The index to use for locating the value. Note
          *     that this is usually a string, but could be any object supporting
          *     a valid toString method. This method is designed to protect
@@ -1181,8 +1181,8 @@ TP.PHash = function() {
     this.atPut = function(aKey, aValue) {
 
         /**
-         * @name atPut
-         * @synopsis Sets the value at aKey to aValue.
+         * @method atPut
+         * @summary Sets the value at aKey to aValue.
          * @param {Object} aKey The key/index to put aValue into.
          * @param {Object} aValue The value to register under aKey.
          * @returns {TP.PHash} The receiver.
@@ -1207,8 +1207,8 @@ TP.PHash = function() {
     this.$get = function(attributeName) {
 
         /**
-         * @name $get
-         * @synopsis Returns the property with the given name, adjusted for
+         * @method $get
+         * @summary Returns the property with the given name, adjusted for
          *     standard TIBET attribute prefixing rules as needed.
          * @param {String} attributeName The name of the property to get.
          * @returns {Object} The value of the named property.
@@ -1231,8 +1231,8 @@ TP.PHash = function() {
     this.get = function(attributeName) {
 
         /**
-         * @name get
-         * @synopsis Returns the value of attributeName from the receiver. NOTE
+         * @method get
+         * @summary Returns the value of attributeName from the receiver. NOTE
          *     that get() operates on the object's methods first and then
          *     searches its content and properties. In other words, if the
          *     receiver has both a method named 'getFoo' and a key/value pair
@@ -1299,8 +1299,8 @@ TP.PHash = function() {
     this.getName = function() {
 
         /**
-         * @name getName
-         * @synopsis Returns the TP.NAME property of the receiver.
+         * @method getName
+         * @summary Returns the TP.NAME property of the receiver.
          * @returns {String} The value of the TP.NAME property.
          */
 
@@ -1321,8 +1321,8 @@ TP.PHash = function() {
     this.getItems = function() {
 
         /**
-         * @name getItems
-         * @synopsis Returns the items [key,value] of the receiver.
+         * @method getItems
+         * @summary Returns the items [key,value] of the receiver.
          * @returns {Array} An array containing the receiver's items.
          */
 
@@ -1357,8 +1357,8 @@ TP.PHash = function() {
     this.getKeys = function() {
 
         /**
-         * @name getKeys
-         * @synopsis Returns the unique keys of the receiver. NOTE for
+         * @method getKeys
+         * @summary Returns the unique keys of the receiver. NOTE for
          *     consistency with other getKeys() calls you should treat the
          *     returned array as a read-only object.
          * @returns {Array} An array containing the receiver's keys.
@@ -1381,8 +1381,8 @@ TP.PHash = function() {
     this.getParameters = function() {
 
         /**
-         * @name getParameters
-         * @synopsis Returns the receiver's parameters. For a TP.lang.Hash this
+         * @method getParameters
+         * @summary Returns the receiver's parameters. For a TP.lang.Hash this
          *     returns the hash itself since a TP.lang.Hash is a valid parameter
          *     block in TIBET.
          * @returns {Object} A TP.lang.Hash, TP.sig.Request, or Object
@@ -1406,8 +1406,8 @@ TP.PHash = function() {
     this.getSize = function() {
 
         /**
-         * @name getSize
-         * @synopsis Returns the size of the receiver, which is the count of the
+         * @method getSize
+         * @summary Returns the size of the receiver, which is the count of the
          *     keys stored in the hash.
          * @returns {Number} The size.
          */
@@ -1429,8 +1429,8 @@ TP.PHash = function() {
     this.getTypeName = function() {
 
         /**
-         * @name getTypeName
-         * @synopsis Returns the type name of the receiver.
+         * @method getTypeName
+         * @summary Returns the type name of the receiver.
          * @returns {String}
          */
 
@@ -1452,8 +1452,8 @@ TP.PHash = function() {
     this.getValues = function() {
 
         /**
-         * @name getValues
-         * @synopsis Returns an array containing the values of the receiver.
+         * @method getValues
+         * @summary Returns an array containing the values of the receiver.
          * @returns {Array} An array containing the receiver's values.
          */
 
@@ -1488,8 +1488,8 @@ TP.PHash = function() {
     this.hasKey = function(aKey) {
 
         /**
-         * @name hasKey
-         * @synopsis Returns true if the receiver has a defined value for the
+         * @method hasKey
+         * @summary Returns true if the receiver has a defined value for the
          *     key provided.
          * @param {String} aKey The key to test for.
          * @returns {Boolean} True if the key is defined.
@@ -1513,9 +1513,9 @@ TP.PHash = function() {
     this.perform = function(aFunction) {
 
         /**
-         * @name perform
-         * @synopsis Performs the function with each item of the receiver.
-         * @description Perform can be used as an alternative to constructing
+         * @method perform
+         * @summary Performs the function with each item of the receiver.
+         * @summary Perform can be used as an alternative to constructing
          *     for loops to iterate over a collection.
          * @param {Function} aFunction A function which performs some action
          *     with each item.
@@ -1563,8 +1563,8 @@ TP.PHash = function() {
     this.removeKey = function(aKey) {
 
         /**
-         * @name removeKey
-         * @synopsis Removes the key specified (and its related value).
+         * @method removeKey
+         * @summary Removes the key specified (and its related value).
          * @param {Object} aKey The key to use for locating the value. Note this
          *     is usually a String, but could be any object with a valid
          *     toString method.
@@ -1602,8 +1602,8 @@ TP.PHash = function() {
     this.$set = function(attributeName, attributeValue) {
 
         /**
-         * @name $set
-         * @synopsis Sets the property with the given name, adjusted for
+         * @method $set
+         * @summary Sets the property with the given name, adjusted for
          *     standard TIBET attribute prefixing rules as needed.
          * @param {String} attributeName The attribute name to set.
          * @param {Object} attributeValue The value to set.
@@ -1652,8 +1652,8 @@ TP.PHash = function() {
     this.set = function(attributeName, attributeValue) {
 
         /**
-         * @name set
-         * @synopsis Sets the value of the named attribute to the value
+         * @method set
+         * @summary Sets the value of the named attribute to the value
          *     provided. NOTE that this operates on the hash instance's
          *     properties, not its content. Use atPut for content.
          * @param {String} attributeName The attribute name to set.
@@ -1684,8 +1684,8 @@ TP.PHash.prototype.$$prototype = TP.PHash.prototype;
 TP.hc = function() {
 
     /**
-     * @name hc
-     * @synopsis Constructs a simple hash (i.e. "dictionary"), which can be used
+     * @method hc
+     * @summary Constructs a simple hash (i.e. "dictionary"), which can be used
      *     to contain key/value pairs. This primitive version is limited to
      *     simple key, value, key, value vararg lists.
      * @param {Array} varargs A variable list of 0 to N elements to place in
@@ -1807,13 +1807,13 @@ TP.objectGetMetadataName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
     /**
-     * @name addMetadata
-     * @synopsis Stores metadata about an object, typically a type or method,
+     * @method addMetadata
+     * @summary Stores metadata about an object, typically a type or method,
      *     which is necessary to drive certain operations. The metadata is
      *     dynamic, keeping track of all operations affecting types and methods
      *     within the system so that runtime reflection data is accurate and
      *     available for storage/reuse.
-     * @description TIBET provides a number of functions that are "unusual",
+     * @summary TIBET provides a number of functions that are "unusual",
      *     shall we say, when it comes to JavaScript. Examples are dynamic
      *     autoloading (without require statements or other programmer
      *     intervention) and on-the-fly method inferencing.
@@ -1998,8 +1998,8 @@ TP.sys.addMetadata[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.defineSlot = function(target, name, value, type, track, desc) {
 
     /**
-     * @name defineSlot
-     * @synopsis Defines a slot, which may be an attribute, method, etc.
+     * @method defineSlot
+     * @summary Defines a slot, which may be an attribute, method, etc.
      * @param {Object} target The object receiving the slot.
      * @param {String} name The slot name.
      * @param {Object} value The slot value.
@@ -2076,8 +2076,8 @@ TP.defineMethodSlot =
 function(target, name, value, track, desc, display, owner) {
 
     /**
-     * @name defineMethodSlot
-     * @synopsis Defines a method, tracking all necessary metadata.
+     * @method defineMethodSlot
+     * @summary Defines a method, tracking all necessary metadata.
      * @param {Object} target The target object.
      * @param {String} name The method name.
      * @param {Object} value The method value (aka method 'body').
@@ -2261,10 +2261,10 @@ TP.defineMethodSlot(TP, 'definePrimitive',
 function(name, bodyOrConditionals, desc, display, owner) {
 
     /**
-     * @name definePrimitive
-     * @synopsis Adds the method supplied as a 'primitive' to the 'TP' object
+     * @method definePrimitive
+     * @summary Adds the method supplied as a 'primitive' to the 'TP' object
      *     under the name given.
-     * @description Note that this method can take a variety of arguments in
+     * @summary Note that this method can take a variety of arguments in
      *     the 'methodBodyOrTests' parameter. If no sophisticated 'feature
      *     testing' is required, it can just take a Function in that parameter.
      *     Otherwise, it can take a hash of tests and the matching Functions
@@ -2342,8 +2342,8 @@ TP.definePrimitive('isDefined',
 function(aValue) {
 
     /**
-     * @name isDefined
-     * @synopsis Returns false if the value passed in is undefined as opposed to
+     * @method isDefined
+     * @summary Returns false if the value passed in is undefined as opposed to
      *     null or valid. In other words, aValue is 'defined' if its got a
      *     value...even if that value is 'null'.
      * @param {Object} aValue The value to test.
@@ -2363,9 +2363,9 @@ TP.definePrimitive('isNaN',
 function(aValue) {
 
     /**
-     * @name isNaN
-     * @synopsis Returns true if the value provided is NaN.
-     * @description The ECMAScript-supplied isNaN lies:
+     * @method isNaN
+     * @summary Returns true if the value provided is NaN.
+     * @summary The ECMAScript-supplied isNaN lies:
             isNaN({}) => true.
             Welcome to JavaScript. Oh...but it gets better. If you run isNaN
             on the wrong thing it'll throw an exception about being unable to
@@ -2398,8 +2398,8 @@ TP.definePrimitive('isNull',
 function(aValue) {
 
     /**
-     * @name isNull
-     * @synopsis Returns true if aValue is truly 'null' (ie. === null) rather
+     * @method isNull
+     * @summary Returns true if aValue is truly 'null' (ie. === null) rather
      *     than undefined or a non-null value.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is null:
@@ -2418,8 +2418,8 @@ TP.definePrimitive('notDefined',
 function(aValue) {
 
     /**
-     * @name notDefined
-     * @synopsis Returns true if the value provided is undefined.
+     * @method notDefined
+     * @summary Returns true if the value provided is undefined.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not defined:
      *     <code>
@@ -2437,8 +2437,8 @@ TP.definePrimitive('notNaN',
 function(aValue) {
 
     /**
-     * @name notNaN
-     * @synopsis Returns true if the value provided is not NaN.
+     * @method notNaN
+     * @summary Returns true if the value provided is not NaN.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not NaN:
      *     <code>
@@ -2456,8 +2456,8 @@ TP.definePrimitive('notNull',
 function(aValue) {
 
     /**
-     * @name notNull
-     * @synopsis Returns true if the value provided is not null. Be aware, the
+     * @method notNull
+     * @summary Returns true if the value provided is not null. Be aware, the
      *     value could be undefined and this method will return true. In cases
      *     where you want to test both you should use the *Valid variations.
      * @param {Object} aValue The value to test.
@@ -2479,8 +2479,8 @@ TP.definePrimitive('ifNull',
 function(aSuspectValue, aDefaultValue) {
 
     /**
-     * @name ifNull
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     * @method ifNull
+     * @summary Returns either aSuspectValue or aDefaultValue based on the
      *     state of aSuspectValue. If aSuspectValue is TP.isNull() aDefaultValue
      *     is returned.
      * @param {Object} aSuspectValue The value to test.
@@ -2502,8 +2502,8 @@ TP.definePrimitive('ifUndefined',
 function(aSuspectValue, aDefaultValue) {
 
     /**
-     * @name ifUndefined
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     * @method ifUndefined
+     * @summary Returns either aSuspectValue or aDefaultValue based on the
      *     state of aSuspectValue. If aSuspectValue is TP.notDefined()
      *     aDefaultValue is returned.
      * @param {Object} aSuspectValue The value to test.
@@ -2527,8 +2527,8 @@ TP.definePrimitive('isNode',
 function(anObj) {
 
     /**
-     * @name isNode
-     * @synopsis Returns true if the object provided is a DOM node, regardless
+     * @method isNode
+     * @summary Returns true if the object provided is a DOM node, regardless
      *     of whether it's in an HTML or XML DOM. This is a simple test for a
      *     valid nodeType property.
      * @param {Object} anObj The Object to test.
@@ -2556,8 +2556,8 @@ TP.definePrimitive('isNonFunctionConstructor',
 function(anObj) {
 
     /**
-     * @name isNonFunctionConstructor
-     * @synopsis Returns whether or not the supplied object is a 'non Function'
+     * @method isNonFunctionConstructor
+     * @summary Returns whether or not the supplied object is a 'non Function'
      *     constructor. Host environments have constructors that are not
      *     Functions, but are faked by the platform.
      * @param {Object} anObj The Object to test.
@@ -2574,8 +2574,8 @@ TP.definePrimitive('getNonFunctionConstructorName',
 function(anObj) {
 
     /**
-     * @name getNonFunctionConstructorName
-     * @synopsis Returns a name for a 'non Function' constructor. Host
+     * @method getNonFunctionConstructorName
+     * @summary Returns a name for a 'non Function' constructor. Host
      *     environments have constructors that are not Functions, but are faked
      *     by the platform. This function will return an appropriate name for
      *     them.
@@ -2681,8 +2681,8 @@ TP.definePrimitive('isPlainObject',
 function(anObj) {
 
     /**
-     * @name isPlainObject
-     * @synopsis Returns true if the object provided is a 'plain JavaScript
+     * @method isPlainObject
+     * @summary Returns true if the object provided is a 'plain JavaScript
      *     Object' - that is, created via 'new Object()' or '{}'.
      * @param {Object} anObj The Object to test.
      * @example Test what's a type and what's not:
@@ -2737,8 +2737,8 @@ TP.definePrimitive('isType',
 function(anObj) {
 
     /**
-     * @name isType
-     * @synopsis Returns true if the object provided acts as a Type/Class. To
+     * @method isType
+     * @summary Returns true if the object provided acts as a Type/Class. To
      *     properly respond the object must have a META hash reference which
      *     TIBET adds for any object used as a type.
      * @param {Object} anObj The Object to test.
@@ -2810,10 +2810,10 @@ TP.definePrimitive('isNativeType',
 function(anObj) {
 
     /**
-     * @name isNativeType
-     * @synopsis Returns true if the object provided is a native type for the
+     * @method isNativeType
+     * @summary Returns true if the object provided is a native type for the
      *     current browser.
-     * @description Because the browsers don't have a common set of types the
+     * @summary Because the browsers don't have a common set of types the
      *     results of this method may vary based on the browser in question.
      *     The results are consistent for the "big 8" and the major types which
      *     extend those 8 such as Event, but most HTML/DOM types will vary
@@ -2841,8 +2841,8 @@ TP.definePrimitive('isWindow',
 function(anObj) {
 
     /**
-     * @name isWindow
-     * @synopsis Returns true if the object to be tested is a window.
+     * @method isWindow
+     * @summary Returns true if the object to be tested is a window.
      * @param {Object} anObj The Object to test.
      * @example Test what's a window and what's not:
      *     <code>
@@ -2884,8 +2884,8 @@ TP.definePrimitive('isPrototype',
 function(anObject) {
 
     /**
-     * @name isPrototype
-     * @synopsis Returns true if the object is being used as a prototypical
+     * @method isPrototype
+     * @summary Returns true if the object is being used as a prototypical
      *     instance within the constructor.prototype chain or within TIBET's
      *     inheritance mechanism.
      * @returns {Boolean}
@@ -2922,13 +2922,13 @@ TP.definePrimitive('isMutable',
 function(anObj) {
 
     /**
-     * @name isMutable
-     * @synopsis Returns true if the object provided is mutable. NOTE that when
+     * @method isMutable
+     * @summary Returns true if the object provided is mutable. NOTE that when
      *     testing the inverse (not mutable) you will get true values back for
      *     null/undefined so don't assume that a return value of true means it's
      *     a primitive string/number/boolean, it might also be a null/undefined
      *     value.
-     * @description JavaScript has a number of non-mutable types, particularly
+     * @summary JavaScript has a number of non-mutable types, particularly
      *     Boolean, Number, and String (at least value-wise). This is important
      *     when trying to make decisions about whether a slot modification will
      *     succeed or fail.
@@ -2987,9 +2987,9 @@ TP.definePrimitive('isReferenceType',
 function(anObj) {
 
     /**
-     * @name isReferenceType
-     * @synopsis Returns true if the type provided is a reference type.
-     * @description Reference types don't support copy-on-write semantics within
+     * @method isReferenceType
+     * @summary Returns true if the type provided is a reference type.
+     * @summary Reference types don't support copy-on-write semantics within
      *     the JS prototype system. This means certain operations need to "do
      *     the right thing" and make a copy when necessary. This is particularly
      *     apparent when working with TIBET attributes -- reference type
@@ -3053,9 +3053,9 @@ TP.definePrimitive('genUUID',
 function () {
 
     /**
-     * @name genUUID
-     * @synopsis Generates an RFC4122 version 4 UUID.
-     * @description This solution courtesy of 'broofa' at:
+     * @method genUUID
+     * @summary Generates an RFC4122 version 4 UUID.
+     * @summary This solution courtesy of 'broofa' at:
      *      http://stackoverflow.com/questions/105034/
      *          how-to-create-a-guid-uuid-in-javascript
      * @returns {String} An RFC4122 version 4 compliant UUID
@@ -3098,8 +3098,8 @@ TP.definePrimitive('isMethod',
 function(anObj) {
 
     /**
-     * @name isMethod
-     * @synopsis Returns true if the object provided is a method on some object.
+     * @method isMethod
+     * @summary Returns true if the object provided is a method on some object.
      * @param {Object} anObject The Object to test.
      * @returns {Boolean} Whether or not the supplied object is a method.
      */
@@ -3127,9 +3127,9 @@ TP.defineMethodSlot(TP.sys, 'shouldLogCodeChanges',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogCodeChanges
-     * @synopsis Controls and returns the state of the 'log changes' flag.
-     * @description This flag determines whether changes which are logged for
+     * @method shouldLogCodeChanges
+     * @summary Controls and returns the state of the 'log changes' flag.
+     * @summary This flag determines whether changes which are logged for
      *     altering TIBET code are stored. This flag is central to the IDE and
      *     inferencer processing which can generate code to upgrade your
      *     application and save it for later use.
@@ -3157,9 +3157,9 @@ TP.defineMethodSlot(TP.sys, '$$shouldConstructDNUs',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name $$shouldConstructDNUs
-     * @synopsis Controls and returns the state of the 'construct DNU' flag.
-     * @description This flag determines whether TIBET generates top-level
+     * @method $$shouldConstructDNUs
+     * @summary Controls and returns the state of the 'construct DNU' flag.
+     * @summary This flag determines whether TIBET generates top-level
      *     DoesNotUnderstand catch methods. This flag is not intended for public
      *     use. It's off during early kernel loading and turned on near the end
      *     of kernel load. It should be left on during your application
@@ -3207,8 +3207,8 @@ NativeTypeStub.prototype.get =
     function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value, if any, for the attribute provided.
+     * @method get
+     * @summary Returns the value, if any, for the attribute provided.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
@@ -3223,8 +3223,8 @@ NativeTypeStub.prototype.defineAttribute =
     function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds the attribute with name and value provided as a type
+     * @method defineAttribute
+     * @summary Adds the attribute with name and value provided as a type
      *     attribute.
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
@@ -3243,8 +3243,8 @@ NativeTypeStub.prototype.defineConstant =
     function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds/defines a new type constant for the receiver.
+     * @method defineConstant
+     * @summary Adds/defines a new type constant for the receiver.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
      *     object.
@@ -3262,8 +3262,8 @@ NativeTypeStub.prototype.defineMethod =
     function(methodName, methodBody, desc) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the function with name and body provided as a type method.
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as a type method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
@@ -3283,8 +3283,8 @@ NativeTypeStub.prototype.set =
     function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided. If
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to set.
@@ -3305,8 +3305,8 @@ NativeTypeStub.prototype.getMethod =
     function(aName, aTrack) {
 
     /**
-     * @name getMethod
-     * @synopsis Returns the named method, if it exists.
+     * @method getMethod
+     * @summary Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
      * @param {String} aTrack The track to locate the method on. This is an
      *     optional parameter.
@@ -3322,8 +3322,8 @@ NativeTypeStub.prototype.getMethods =
     function(aTrack) {
 
     /**
-     * @name getMethods
-     * @synopsis Returns an Array of methods for the receiver.
+     * @method getMethods
+     * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -3338,10 +3338,10 @@ NativeTypeStub.prototype.getMethodInfoFor =
     function(methodName) {
 
     /**
-     * @name getMethodInfoFor
-     * @synopsis Returns information for the method with the supplied name on
+     * @method getMethodInfoFor
+     * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @summary This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -3369,8 +3369,8 @@ NativeTypeStub.prototype.describe =
     function(suiteName, suiteFunc) {
 
     /**
-     * @name describe
-     * @synopsis Adds a new test suite definition to an object. When the suite
+     * @method describe
+     * @summary Adds a new test suite definition to an object. When the suite
      *     name matches a method name that suite is automatically associated
      *     with the specific method.
      * @param {String} suiteName The name of the new test suite. Should be
@@ -3393,7 +3393,7 @@ NativeTypeStub.prototype.getTestFixture =
      * Creates and returns test fixture data suitable for the receiver. This
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
-     * @return {Object} A test fixture for the receiver.
+     * @returns {Object} A test fixture for the receiver.
      */
 
     return this.$$target;
@@ -3407,7 +3407,7 @@ NativeTypeStub.prototype.getTestSuites =
     /**
      * Returns the dictionary containing test suites for the receiver.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -3422,7 +3422,7 @@ NativeTypeStub.prototype.runTestSuites =
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     return TP.test.Suite.runTargetSuites(this.$$target, options);
@@ -3481,8 +3481,8 @@ NativeInstStub.prototype.get =
     function(attributeName) {
 
     /**
-     * @name get
-     * @synopsis Returns the value, if any, for the attribute provided.
+     * @method get
+     * @summary Returns the value, if any, for the attribute provided.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
@@ -3497,8 +3497,8 @@ NativeInstStub.prototype.defineAttribute =
     function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds the attribute with name and value provided as an instance
+     * @method defineAttribute
+     * @summary Adds the attribute with name and value provided as an instance
      *     attribute.
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
@@ -3517,8 +3517,8 @@ NativeInstStub.prototype.defineConstant =
     function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds/defines a new type constant for the receiver.
+     * @method defineConstant
+     * @summary Adds/defines a new type constant for the receiver.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
      *     object.
@@ -3536,8 +3536,8 @@ NativeInstStub.prototype.defineMethod =
     function(methodName, methodBody, desc) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the function with name and body provided as an instance
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as an instance
      *     method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
@@ -3558,8 +3558,8 @@ NativeInstStub.prototype.set =
     function(attributeName, attributeValue, shouldSignal) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided. If
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to set.
@@ -3580,8 +3580,8 @@ NativeInstStub.prototype.getMethod =
     function(aName, aTrack) {
 
     /**
-     * @name getMethod
-     * @synopsis Returns the named method, if it exists.
+     * @method getMethod
+     * @summary Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
      * @param {String} aTrack The track to locate the method on. This is an
      *     optional parameter.
@@ -3597,8 +3597,8 @@ NativeInstStub.prototype.getMethods =
     function(aTrack) {
 
     /**
-     * @name getMethods
-     * @synopsis Returns an Array of methods for the receiver.
+     * @method getMethods
+     * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -3613,10 +3613,10 @@ NativeInstStub.prototype.getMethodInfoFor =
     function(methodName) {
 
     /**
-     * @name getMethodInfoFor
-     * @synopsis Returns information for the method with the supplied name on
+     * @method getMethodInfoFor
+     * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @summary This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -3644,8 +3644,8 @@ NativeInstStub.prototype.describe =
     function(suiteName, suiteFunc) {
 
     /**
-     * @name describe
-     * @synopsis Adds a new test suite definition to an object. When the suite
+     * @method describe
+     * @summary Adds a new test suite definition to an object. When the suite
      *     name matches a method name that suite is automatically associated
      *     with the specific method.
      * @param {String} suiteName The name of the new test suite. Should be
@@ -3668,7 +3668,7 @@ NativeInstStub.prototype.getTestFixture =
      * Creates and returns test fixture data suitable for the receiver. This
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
-     * @return {Object} A test fixture for the receiver.
+     * @returns {Object} A test fixture for the receiver.
      */
 
     return this.$$target;
@@ -3682,7 +3682,7 @@ NativeInstStub.prototype.getTestSuites =
     /**
      * Returns the dictionary containing test suites for the receiver.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -3697,7 +3697,7 @@ NativeInstStub.prototype.runTestSuites =
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     return TP.test.Suite.runTargetSuites(this.$$target, options);
@@ -3756,10 +3756,10 @@ TP.defineMethodSlot(TP.FunctionProto, '$constructPrototype',
 function() {
 
     /**
-     * @name $constructPrototype
-     * @synopsis Returns a new prototype constructed by invoking the receiver as
+     * @method $constructPrototype
+     * @summary Returns a new prototype constructed by invoking the receiver as
      *     a constructor.
-     * @description This method is used exclusively to construct prototype
+     * @summary This method is used exclusively to construct prototype
      *     instances which are used to fill in the inheritance tree. You don't
      *     normally need to override this method since the add*Method() and
      *     add*Attribute() methods configure the prototypes properly for the
@@ -3873,10 +3873,10 @@ TP.definePrimitive('defineGlobalMethod',
 function(methodName, methodBody) {
 
     /**
-     * @name defineGlobalMethod
-     * @synopsis Adds the method with name and body provided as a global
+     * @method defineGlobalMethod
+     * @summary Adds the method with name and body provided as a global
      *     method.
-     * @description Global methods are methods on the "Global" object, which
+     * @summary Global methods are methods on the "Global" object, which
      *     means they overlap with Window methods. For that reason there are
      *     some sanity checks that can be performed to help avoid issues when
      *     overriding a Window method.
@@ -3903,10 +3903,10 @@ TP.definePrimitive('defineMetaTypeMethod',
 function(methodName, methodBody) {
 
     /**
-     * @name defineMetaTypeMethod
-     * @synopsis Adds the method with name and body provided as a 'meta type'
+     * @method defineMetaTypeMethod
+     * @summary Adds the method with name and body provided as a 'meta type'
      *     method.
-     * @description Meta type methods are methods on the native constructor
+     * @summary Meta type methods are methods on the native constructor
      *     Functions objects which provide polymorphic behavior system-wide.
      *     Rather than place these methods on Function.prototype, we place them
      *     on the other 'core' system constructor objects (as listed in the
@@ -3956,10 +3956,10 @@ TP.definePrimitive('defineMetaInstMethod',
 function(methodName, methodBody) {
 
     /**
-     * @name defineMetaInstMethod
-     * @synopsis Adds the method with name and body provided as a 'meta
+     * @method defineMetaInstMethod
+     * @summary Adds the method with name and body provided as a 'meta
      *     instance' method.
-     * @description Meta instance methods are methods on a set of objects that
+     * @summary Meta instance methods are methods on a set of objects that
      *     provide polymorphic behavior system-wide. Rather than place these
      *     methods on Object.prototype (which is considered bad form), we place
      *     them on the other 'core' system '.prototype' objects (as listed in
@@ -4058,10 +4058,10 @@ TP.definePrimitive('defineCommonMethod',
 function(methodName, methodBody) {
 
     /**
-     * @name defineCommonMethod
-     * @synopsis Adds the method with name and body provided as a 'common'
+     * @method defineCommonMethod
+     * @summary Adds the method with name and body provided as a 'common'
      *     method.
-     * @description Common methods are methods on a set of objects that provide
+     * @summary Common methods are methods on a set of objects that provide
      *     polymorphic behavior system-wide. Like 'meta instance methods' above,
      *     rather than place these methods on Object.prototype (which is
      *     considered bad form), we place them on the other 'core' system
@@ -4132,9 +4132,9 @@ TP.definePrimitive('defineAttributeSlot',
 function(target, name, value, track, owner) {
 
     /**
-     * @name defineAttributeSlot
-     * @synopsis Defines an attribute, tracking all necessary metadata.
-     * @description Note that the 'value' property can either take an initial
+     * @method defineAttributeSlot
+     * @summary Defines an attribute, tracking all necessary metadata.
+     * @summary Note that the 'value' property can either take an initial
      *     object value or a property descriptor. That property descriptor can
      *     any fields, but here are the ones that TIBET standardizes:
      *
@@ -4209,8 +4209,8 @@ TP.definePrimitive('defineConstantSlot',
 function(target, name, value, track, owner) {
 
     /**
-     * @name defineConstantSlot
-     * @synopsis Defines a constant , tracking all necessary metadata.
+     * @method defineConstantSlot
+     * @summary Defines a constant , tracking all necessary metadata.
      * @param {Object} target The target object.
      * @param {String} name The constant name.
      * @param {Object} value The constant value or a property descriptor object.
@@ -4275,10 +4275,10 @@ TP.definePrimitive('runConditionalFunction',
 function(functionBodyOrTests) {
 
     /**
-     * @name runConditionalFunction
-     * @synopsis Runs the function supplied, usually supplied as part of a set
+     * @method runConditionalFunction
+     * @summary Runs the function supplied, usually supplied as part of a set
      *     of tests.
-     * @description Note that this method can take a variety of arguments in
+     * @summary Note that this method can take a variety of arguments in
      *     the 'functionBodyOrTests' parameter. If no sophisticated 'feature
      *     testing' is required, it just executes the Function in that
      *     parameter. Otherwise, it can take a hash of tests and the matching
@@ -4363,9 +4363,9 @@ TP.definePrimitive('defineMethodAlias',
 function(target, methodName, methodBody) {
 
     /**
-     * @name defineMethodAlias
-     * @synopsis Defines an alias to a previously defined method.
-     * @description This method will alias an existing method over to the slot
+     * @method defineMethodAlias
+     * @summary Defines an alias to a previously defined method.
+     * @summary This method will alias an existing method over to the slot
      *     on the target object *without resetting it's track and owner
      *     information*.
      * @param {Object} target The target object.
@@ -4394,8 +4394,8 @@ TP.defineMetaInstMethod('getConstructor',
 function() {
 
     /**
-     * @name getConstructor
-     * @synopsis Returns the receiver's constructor function. For simple objects
+     * @method getConstructor
+     * @summary Returns the receiver's constructor function. For simple objects
      *     this is a simple wrapper around returning the constructor property.
      * @returns {Object} The receiver's constructor function.
      */
@@ -4409,8 +4409,8 @@ TP.defineMetaInstMethod('getPrototype',
 function() {
 
     /**
-     * @name getPrototype
-     * @synopsis Returns the receiver's prototype instance. The prototype
+     * @method getPrototype
+     * @summary Returns the receiver's prototype instance. The prototype
      *     instance is the object from which behavior is inherited.
      * @returns {Object} The receiver's prototype instance.
      */
@@ -4424,8 +4424,8 @@ TP.defineMetaInstMethod('getInstPrototype',
 function() {
 
     /**
-     * @name getInstPrototype
-     * @synopsis Returns the receiver's instance prototype -- the object
+     * @method getInstPrototype
+     * @summary Returns the receiver's instance prototype -- the object
      *     responsible for inherited behavior for instances of the receivers'
      *     type. Type objects respond differently, returning the prototype for
      *     their instances rather than the prototype they inherit from.
@@ -4445,8 +4445,8 @@ TP.defineMetaInstMethod('getType',
 function() {
 
     /**
-     * @name getType
-     * @synopsis Returns the type of the receiver. For top-level objects which
+     * @method getType
+     * @summary Returns the type of the receiver. For top-level objects which
      *     descend from native constructors like Object, Array, etc. this is
      *     equal to asking for the constructor. For constructors themselves this
      *     is Function. For Objects you'll get the instance of TP.FunctionProto
@@ -4467,8 +4467,8 @@ TP.defineMetaInstMethod('getTypeName',
 function() {
 
     /**
-     * @name getTypeName
-     * @synopsis Returns the type name of the receiver. This method is a synonym
+     * @method getTypeName
+     * @summary Returns the type name of the receiver. This method is a synonym
      *     for getName() for type instances. For instances it returns the name
      *     of their type object.
      * @returns {String} The type name of the receiver.
@@ -4522,8 +4522,8 @@ TP.defineMetaInstMethod('$getName',
 function() {
 
     /**
-     * @name $getName
-     * @synopsis Default implementation of the $getName operation. Returns the
+     * @method $getName
+     * @summary Default implementation of the $getName operation. Returns the
      *     receiver's ID as the 'Name'.
      * @returns {String}
      */
@@ -4541,8 +4541,8 @@ TP.defineMetaInstMethod('getName',
 function() {
 
     /**
-     * @name getName
-     * @synopsis Default implementation of the $getName operation. Returns the
+     * @method getName
+     * @summary Default implementation of the $getName operation. Returns the
      *     receiver's ID as the 'Name'.
      * @returns {String}
      */
@@ -4562,8 +4562,8 @@ TP.defineMetaInstMethod('$getOID',
 function(aPrefix) {
 
     /**
-     * @name $getOID
-     * @synopsis Returns the unique object ID for the receiver. This can be
+     * @method $getOID
+     * @summary Returns the unique object ID for the receiver. This can be
      *     thought of as the objects' primary key (sans versioning data) from a
      *     TIBET perspective. Normally you would not call this method directly,
      *     you'd call getID() instead.
@@ -4652,12 +4652,12 @@ TP.defineMetaInstMethod('getID',
 function(aPrefix) {
 
     /**
-     * @name getID
-     * @synopsis Returns the public ID of the receiver. If the receiving object
+     * @method getID
+     * @summary Returns the public ID of the receiver. If the receiving object
      *     doesn't have an ID set, the objects' OID is returned instead. See
      *     $getOID for more info. Note that non-mutable JavaScript objects (i.e.
      *     String, Number and Boolean) will return themselves as their ID.
-     * @description Using a two-layer ID scheme allows the system to maintain an
+     * @summary Using a two-layer ID scheme allows the system to maintain an
      *     internal identifier in the form of OID values and at the same time
      *     allow developers to register certain objects under explicitly defined
      *     identifiers. This is an important feature for developing cross-frame
@@ -4712,9 +4712,9 @@ TP.defineMetaInstMethod('setID',
 function(anID) {
 
     /**
-     * @name setID
-     * @synopsis Sets the public ID of the receiver.
-     * @description Public IDs are useful as handles for acquiring objects from
+     * @method setID
+     * @summary Sets the public ID of the receiver.
+     * @summary Public IDs are useful as handles for acquiring objects from
      *     the TIBET instance hashes. See the comment for getID(). Note that the
      *     object is un-registered under its old ID by this operation.
      * @param {String} anID The value to use as a public ID.
@@ -4757,8 +4757,8 @@ TP.defineMethodSlot(TP, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds/defines a new local attribute for the receiver. The
+     * @method defineAttribute
+     * @summary Adds/defines a new local attribute for the receiver. The
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
@@ -4777,8 +4777,8 @@ TP.defineMethodSlot(TP, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as a 'local'
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
@@ -4796,8 +4796,8 @@ TP.defineMethodSlot(TP, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the method with name and body provided as a local method.
+     * @method defineMethod
+     * @summary Adds the method with name and body provided as a local method.
      *     Local methods are directly methods on the receiving instance. These
      *     methods differ from 'instance' methods in that the behavior is NOT
      *     inherited unless the owner object happens to serve as a prototype.
@@ -4821,8 +4821,8 @@ TP.defineMethod('describe',
 function(suiteName, suiteFunc) {
 
     /**
-     * @name describe
-     * @synopsis Adds a new test suite definition to an object. When the suite
+     * @method describe
+     * @summary Adds a new test suite definition to an object. When the suite
      *     name matches a method name that suite is automatically associated
      *     with the specific method.
      * @param {String} suiteName The name of the new test suite. Should be
@@ -4846,7 +4846,7 @@ function() {
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Object} A test fixture for the receiver.
+     * @returns {Object} A test fixture for the receiver.
      */
 
     return this;
@@ -4860,7 +4860,7 @@ function(options) {
     /**
      * Returns the dictionary containing test suites for the receiver.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this, options);
@@ -4875,7 +4875,7 @@ function(options) {
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @return {Promise} A Promise to be used as necessary.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     return TP.test.Suite.runTargetSuites(this, options);
@@ -4889,8 +4889,8 @@ TP.defineMethodSlot(TP.sys, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds/defines a new local attribute for the receiver. The
+     * @method defineAttribute
+     * @summary Adds/defines a new local attribute for the receiver. The
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
@@ -4909,8 +4909,8 @@ TP.defineMethodSlot(TP.sys, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as a 'local'
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
@@ -4928,8 +4928,8 @@ TP.defineMethodSlot(TP.sys, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the method with name and body provided as a local method.
+     * @method defineMethod
+     * @summary Adds the method with name and body provided as a local method.
      *     Local methods are directly methods on the receiving instance. These
      *     methods differ from 'instance' methods in that the behavior is NOT
      *     inherited unless the owner object happens to serve as a prototype.
@@ -4955,8 +4955,8 @@ TP.defineMethodSlot(TP.boot, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds/defines a new local attribute for the receiver. The
+     * @method defineAttribute
+     * @summary Adds/defines a new local attribute for the receiver. The
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
@@ -4975,8 +4975,8 @@ TP.defineMethodSlot(TP.boot, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as a 'local'
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
@@ -4994,8 +4994,8 @@ TP.defineMethodSlot(TP.boot, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the method with name and body provided as a local method.
+     * @method defineMethod
+     * @summary Adds the method with name and body provided as a local method.
      *     Local methods are directly methods on the receiving instance. These
      *     methods differ from 'instance' methods in that the behavior is NOT
      *     inherited unless the owner object happens to serve as a prototype.
@@ -5021,8 +5021,8 @@ TP.defineMethodSlot(APP, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds/defines a new local attribute for the receiver. The
+     * @method defineAttribute
+     * @summary Adds/defines a new local attribute for the receiver. The
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
@@ -5041,8 +5041,8 @@ TP.defineMethodSlot(APP, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as a 'local'
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
@@ -5060,8 +5060,8 @@ TP.defineMethodSlot(APP, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the method with name and body provided as a local method.
+     * @method defineMethod
+     * @summary Adds the method with name and body provided as a local method.
      *     Local methods are directly methods on the receiving instance. These
      *     methods differ from 'instance' methods in that the behavior is NOT
      *     inherited unless the owner object happens to serve as a prototype.
@@ -5096,8 +5096,8 @@ TP.defineMetaTypeMethod('ownsMethod',
 function(aName) {
 
     /**
-     * @name ownsMethod
-     * @synopsis Returns true if the name represents a unique method on the
+     * @method ownsMethod
+     * @summary Returns true if the name represents a unique method on the
      *     receiver, one that is either introduced or overridden so that the
      *     method is "owned" by the receiver.
      * @param {String} aName The method name to check.
@@ -5121,8 +5121,8 @@ TP.defineMetaInstMethod('defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds the attribute with name and value provided as a 'local'
+     * @method defineAttribute
+     * @summary Adds the attribute with name and value provided as a 'local'
      *     attribute. This is the root method that all objects that are
      *     instrumented with meta instance methods will get.
      * @param {String} attributeName The attribute name.
@@ -5141,8 +5141,8 @@ TP.defineMetaInstMethod('defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as a 'local'
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as a 'local'
      *     constant. This is the root method that all objects that are
      *     instrumented with meta instance methods will get.
      * @param {String} constantName The constant name.
@@ -5161,8 +5161,8 @@ TP.defineMetaInstMethod('defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the function with name and body provided as a 'local'
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as a 'local'
      *     method. This is the root method that all objects that are
      *     instrumented with meta instance methods will get.
      * @param {String} methodName The name of the new method.
@@ -5183,8 +5183,8 @@ TP.defineMethodSlot(TP.FunctionProto, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds the attribute with name and value provided as an instance,
+     * @method defineAttribute
+     * @summary Adds the attribute with name and value provided as an instance,
      *     'type local' or 'local' attribute. This is 'overridden' from the
      *     meta-method version because TP.FunctionProto plays so many different
      *     roles.
@@ -5229,8 +5229,8 @@ TP.defineMethodSlot(TP.FunctionProto, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as an instance,
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as an instance,
      *     'type local' or 'local' constant. This is 'overridden' from the
      *     meta-method version because TP.FunctionProto plays so many different
      *     roles.
@@ -5275,8 +5275,8 @@ TP.defineMethodSlot(TP.FunctionProto, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the function with name and body provided as an instance,
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as an instance,
      *     'type local' or 'local' method. This is 'overridden' from the
      *     meta-method version because TP.FunctionProto plays so many different
      *     roles.
@@ -5325,8 +5325,8 @@ TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds the attribute with name and value provided as a type or
+     * @method defineAttribute
+     * @summary Adds the attribute with name and value provided as a type or
      *     'type local' attribute.
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
@@ -5355,8 +5355,8 @@ TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as a type or
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as a type or
      *     'type local' constant.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
@@ -5385,8 +5385,8 @@ TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the function with name and body provided as a type or
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as a type or
      *     'type local' method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
@@ -5421,8 +5421,8 @@ TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name defineAttribute
-     * @synopsis Adds the attribute with name and value provided as an instance
+     * @method defineAttribute
+     * @summary Adds the attribute with name and value provided as an instance
      *     or 'local' attribute.
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
@@ -5451,8 +5451,8 @@ TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
-     * @name defineConstant
-     * @synopsis Adds the constant with name and value provided as an instance
+     * @method defineConstant
+     * @summary Adds the constant with name and value provided as an instance
      *     or 'local' constant.
      * @param {String} constantName The constant name.
      * @param {Object} constantValue The constant value or a property descriptor
@@ -5481,8 +5481,8 @@ TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the function with name and body provided as an instance or
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as an instance or
      *     'local' method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
@@ -5521,8 +5521,8 @@ function(methodName, methodBody, desc) {
 Window.getName = function () {
 
     /**
-     * @name getName
-     * @synopsis Returns the name of the Window constructor which is,
+     * @method getName
+     * @summary Returns the name of the Window constructor which is,
      *     appropriately, 'Window'.
      * @returns {String}
      */
@@ -5535,8 +5535,8 @@ Window.getName = function () {
 Window.Type.defineMethod = function(methodName, methodBody, desc) {
 
     /**
-     * @name defineMethod
-     * @synopsis Adds the function with name and body provided as a type method.
+     * @method defineMethod
+     * @summary Adds the function with name and body provided as a type method.
      *     This is the root method since all other methods can be declared using
      *     this one.
      * @param {String} methodName The name of the new method.
@@ -5573,8 +5573,8 @@ Window.Inst.defineMethod('$getName',
 function () {
 
     /**
-     * @name $getName
-     * @synopsis Allows the top level to act as a function 'owner'. Function
+     * @method $getName
+     * @summary Allows the top level to act as a function 'owner'. Function
      *     owners are often asked for their name as part of building change log
      *     entries. In standard JS there is no way to ask a function which
      *     object it belongs to for purposes of reflection or logging. TIBET
@@ -5592,8 +5592,8 @@ Window.Inst.defineMethod('getName',
 function () {
 
     /**
-     * @name getName
-     * @synopsis Allows the top level to act as a function 'owner'. Function
+     * @method getName
+     * @summary Allows the top level to act as a function 'owner'. Function
      *     owners are often asked for their name as part of building change log
      *     entries. In standard JS there is no way to ask a function which
      *     object it belongs to for purposes of reflection or logging. TIBET
@@ -5611,8 +5611,8 @@ Window.Inst.defineMethod('$getOID',
 function (aPrefix) {
 
     /**
-     * @name $getOID
-     * @synopsis Returns the unique object ID for the receiver. This can be
+     * @method $getOID
+     * @summary Returns the unique object ID for the receiver. This can be
      *     thought of as the objects' primary key (sans versioning data) from a
      *     TIBET perspective.
      * @param {String} aPrefix An optional prefix which will be prepended to any
@@ -5638,12 +5638,12 @@ Window.Inst.defineMethod('getID',
 function (aPrefix) {
 
     /**
-     * @name getID
-     * @synopsis Returns the public ID of the receiver. If the receiving object
+     * @method getID
+     * @summary Returns the public ID of the receiver. If the receiving object
      *     doesn't have an ID set the objects' OID is returned instead. See
      *     $getOID for more info. For UI elements in the DOM this method will
      *     return the attribute id='val' value.
-     * @description Using a two-layer ID scheme allows the system to maintain an
+     * @summary Using a two-layer ID scheme allows the system to maintain an
      *     internal identifier in the form of OID values and at the same time
      *     allow developers to register certain objects under explicitly defined
      *     identifiers. This is an important feature for developing cross-frame
@@ -5668,8 +5668,8 @@ Window.Inst.defineMethod('setID',
 function (anID) {
 
     /**
-     * @name setID
-     * @synopsis Sets the public ID of the receiver. Public IDs are useful as
+     * @method setID
+     * @summary Sets the public ID of the receiver. Public IDs are useful as
      *     handles for acquiring objects from the TIBET instance hashes. See the
      *     comment for getID(). Note that the object is un-registered under its
      *     old ID by this operation.
@@ -5709,8 +5709,8 @@ TP.defineMetaInstMethod('getLocalName',
 function() {
 
     /**
-     * @name getLocalName
-     * @synopsis Returns the local (aka short) name of the receiver without any
+     * @method getLocalName
+     * @summary Returns the local (aka short) name of the receiver without any
      *     namespace prefix. At this level, this returns the receiver's type
      *     name.
      * @returns {String} The receiver's local name.
@@ -5725,8 +5725,8 @@ TP.defineMetaInstMethod('getNamespacePrefix',
 function() {
 
     /**
-     * @name getNamespacePrefix
-     * @synopsis Returns the namespace (in TIBET terms) of the receiver. For
+     * @method getNamespacePrefix
+     * @summary Returns the namespace (in TIBET terms) of the receiver. For
      *     example, the namespace of the TP.sig.Signal type is 'sig'. At this
      *     level, this returns the empty String.
      * @returns {String} The receiver's namespace.
@@ -5743,8 +5743,8 @@ TP.definePrimitive('sc',
 function() {
 
     /**
-     * @name sc
-     * @synopsis String.construct shortcut, later replaced by a full-featured
+     * @method sc
+     * @summary String.construct shortcut, later replaced by a full-featured
      *     version that ensures the incoming string gets a chance at being
      *     localized. All arguments used in constructing Strings using TP.sc()
      *     are subject to localization based on the current source and target
@@ -5770,8 +5770,8 @@ TP.definePrimitive('alert',
 function(aMessage) {
 
     /**
-     * @name alert
-     * @synopsis Displays a message to the user. Advanced versions of this
+     * @method alert
+     * @summary Displays a message to the user. Advanced versions of this
      *     function make use of DHTML controls and a "curtain" to display the
      *     message in a modal fashion, or act in a non-modal fashion, offering
      *     usability improvements.
@@ -5797,8 +5797,8 @@ TP.definePrimitive('confirm',
 function(anAction) {
 
     /**
-     * @name confirm
-     * @synopsis Displays a prompt to the user asking for confirmation of an
+     * @method confirm
+     * @summary Displays a prompt to the user asking for confirmation of an
      *     action. Advanced versions of this function make use of DHTML controls
      *     and a "curtain" to display the prompt in a modal fashion, or act in a
      *     non-modal fashion, offering usability improvements over the native
@@ -5827,8 +5827,8 @@ TP.definePrimitive('prompt',
 function(aQuestion, aDefaultAnswer) {
 
     /**
-     * @name prompt
-     * @synopsis Displays a prompt to the user asking for data. Advanced
+     * @method prompt
+     * @summary Displays a prompt to the user asking for data. Advanced
      *     versions of this function make use of DHTML controls and a "curtain"
      *     to display the prompt. NOTE that the prompt can be non-modal in more
      *     advanced versions. The initial version is a simple wrapper around the
@@ -5859,8 +5859,8 @@ TP.definePrimitive('status',
 function(aMessage, aTarget) {
 
     /**
-     * @name status
-     * @synopsis Displays a message to the user in a window's status bar, or in
+     * @method status
+     * @summary Displays a message to the user in a window's status bar, or in
      *     a targeted status "zone" such as those found in the standard TIBET
      *     Application Platform (TAP) interface.
      * @param {String} aMessage The message for the user.
@@ -5913,8 +5913,8 @@ TP.definePrimitive('stop',
 function(aFlagOrParam) {
 
     /**
-     * @name debug
-     * @synopsis A stand-in for the debugger keyword that won't cause Safari to
+     * @method debug
+     * @summary A stand-in for the debugger keyword that won't cause Safari to
      *     complain about syntax errors. Also a convenient way to provide if
      *     (some condition) debugger; logic. By providing either a Boolean or a
      *     configuration parameter name to this function you can simplify coding
@@ -5986,13 +5986,13 @@ TP.definePrimitive('ac',
 function() {
 
     /**
-     * @name ac
-     * @synopsis The standard array construction method in TIBET. Constructs and
+     * @method ac
+     * @summary The standard array construction method in TIBET. Constructs and
      *     returns a new array instance from the argument list. NOTE that unlike
      *     'new Array' this call does not use the first argument as a count when
      *     only one argument is provided. All arguments are treated as array
      *     elements.
-     * @description One of TIBET's standard "shorthand constructors" which
+     * @summary One of TIBET's standard "shorthand constructors" which
      *     follow the pattern $[firstInitialOfType]c(), for example TP.ac() for
      *     Array.construct, TP.dc() for Date.construct, TP.rc() for
      *     RegExp.construct. While some of these don't appear to offer much
@@ -6039,8 +6039,8 @@ TP.definePrimitive('args',
 function(anArgArray, aStart, anEnd) {
 
     /**
-     * @name args
-     * @synopsis Constructs and returns an Array containing the values from
+     * @method args
+     * @summary Constructs and returns an Array containing the values from
      *     anArgArray from aStart to anEnd. By default the entire arguments
      *     object is copied into the array.
      * @param {Arguments} anArgArray A native arguments object.
@@ -6086,8 +6086,8 @@ TP.definePrimitive('join',
 function() {
 
     /**
-     * @name join
-     * @synopsis Constructs and returns a new string instance by joining the
+     * @method join
+     * @summary Constructs and returns a new string instance by joining the
      *     arguments via an Array.
      * @example Construct a new joined string of markup without using +=:
      *     <code>
@@ -6119,8 +6119,8 @@ Array.Inst.defineMethod('add',
 function() {
 
     /**
-     * @name add
-     * @synopsis Appends one or more objects to the receiver. This primitive
+     * @method add
+     * @summary Appends one or more objects to the receiver. This primitive
      *     version does not provide change notification so it's equivalent to
      *     the native Array push call, but instead of returning a count like
      *     push(), it returns the receiver for easier method chaining.
@@ -6152,8 +6152,8 @@ Array.Inst.defineMethod('getSize',
 function() {
 
     /**
-     * @name getSize
-     * @synopsis Returns the size of the receiver. For simple arrays this is the
+     * @method getSize
+     * @summary Returns the size of the receiver. For simple arrays this is the
      *     length.
      * @returns {Number} The size.
      */
@@ -6167,8 +6167,8 @@ Array.Inst.defineMethod('item',
 function(anIndex) {
 
     /**
-     * @name item
-     * @synopsis Returns the value found at anIndex. NOTE that using item() is
+     * @method item
+     * @summary Returns the value found at anIndex. NOTE that using item() is
      *     actually a deprecated practice in TIBET, you should use at() instead
      *     and convert nodelists to arrays using TP.ac().
      * @param {Number} anIndex The index to use for lookup.
@@ -6237,8 +6237,8 @@ TP.definePrimitive('objectGetLoadPackage',
 function(anObject) {
 
     /**
-     * @name objectGetLoadPackage
-     * @synopsis Returns the package name from which the script defining the
+     * @method objectGetLoadPackage
+     * @summary Returns the package name from which the script defining the
      *     object's node was loaded.
      * @param {Object} anObject The object to query.
      * @returns {String} The module name for the object's node.
@@ -6259,8 +6259,8 @@ TP.definePrimitive('objectGetLoadCollectionPath',
 function(anObject) {
 
     /**
-     * @name objectGetLoadCollectionPath
-     * @synopsis Returns the 'collection' path to the file responsible for the
+     * @method objectGetLoadCollectionPath
+     * @summary Returns the 'collection' path to the file responsible for the
      *     object (that is, the path minus the most specific part).
      * @param {Object} anObject The object to query.
      * @returns {String} The load collection path where the receiver can be
@@ -6282,8 +6282,8 @@ TP.definePrimitive('objectGetLoadPath',
 function(anObject) {
 
     /**
-     * @name objectGetLoadPath
-     * @synopsis Returns the path to the file responsible for the object.
+     * @method objectGetLoadPath
+     * @summary Returns the path to the file responsible for the object.
      * @param {Object} anObject The object to query.
      * @returns {String} The load path where the receiver can be found.
      */
@@ -6301,8 +6301,8 @@ TP.definePrimitive('objectGetLoadConfig',
 function(anObject) {
 
     /**
-     * @name objectGetLoadConfig
-     * @synopsis Returns the module target from which the object's node was
+     * @method objectGetLoadConfig
+     * @summary Returns the module target from which the object's node was
      *     loaded.
      * @param {Object} anObject The object to query.
      * @returns {String} The module target for the object's node.
@@ -6323,8 +6323,8 @@ TP.definePrimitive('objectGetMetadata',
 function(anObject) {
 
     /**
-     * @name objectGetMetadata
-     * @synopsis Returns any metadata the system may have for the object. At the
+     * @method objectGetMetadata
+     * @summary Returns any metadata the system may have for the object. At the
      *     present time this only works for types and methods.
      * @param {Object} anObject The object to query.
      * @returns {Object} The metadata structure, if any.
@@ -6352,8 +6352,8 @@ TP.definePrimitive('objectGetSourceCollectionPath',
 function(anObject) {
 
     /**
-     * @name objectGetSourceCollectionPath
-     * @synopsis Returns the 'collection' path to the original source file,
+     * @method objectGetSourceCollectionPath
+     * @summary Returns the 'collection' path to the original source file,
      *     before any bundling or rollup processing, where the object resides
      *     (that is, the path minus the most specific part).
      * @param {Object} anObject The object to query.
@@ -6376,8 +6376,8 @@ TP.definePrimitive('objectGetSourcePath',
 function(anObject) {
 
     /**
-     * @name objectGetSourcePath
-     * @synopsis Returns the path to the original source file, before any
+     * @method objectGetSourcePath
+     * @summary Returns the path to the original source file, before any
      *     bundling or rollup processing, where the object resides.
      * @param {Object} anObject The object to query.
      * @returns {String} The load path where the receiver can be found.
@@ -6396,8 +6396,8 @@ TP.definePrimitive('uriGetLoadPackage',
 function(aPath) {
 
     /**
-     * @name uriGetLoadPackage
-     * @synopsis Returns the package path responsible for loading the file.
+     * @method uriGetLoadPackage
+     * @summary Returns the package path responsible for loading the file.
      * @param {String} aPath A filename, typically without any root information.
      * @returns {String} The package file path responsible for including the
      *     path in the load.
@@ -6418,8 +6418,8 @@ TP.definePrimitive('uriGetLoadNode',
 function(aPath) {
 
     /**
-     * @name uriGetLoadNode
-     * @synopsis Returns the script node responsible for loading the file. The
+     * @method uriGetLoadNode
+     * @summary Returns the script node responsible for loading the file. The
      *     resulting script node can then be assigned as the "load node" for
      *     various system objects, allowing them to be related back to their
      *     original source file.
@@ -6460,8 +6460,8 @@ TP.definePrimitive('uriGetLoadConfig',
 function(aPath) {
 
     /**
-     * @name uriGetLoadConfig
-     * @synopsis Returns the package config responsible for loading the file.
+     * @method uriGetLoadConfig
+     * @summary Returns the package config responsible for loading the file.
      * @param {String} aPath A filename, typically without any root information.
      * @returns {String} The package config name responsible for including the
      *     path in the load.
@@ -6494,8 +6494,8 @@ TP.sys.defineMethod('getUICanvas',
 function(unwrapped) {
 
     /**
-     * @name getUICanvas
-     * @synopsis Returns the currently active UI canvas object as a TIBET
+     * @method getUICanvas
+     * @summary Returns the currently active UI canvas object as a TIBET
      *     window/frame wrapper.
      * @param {Boolean} unwrapped True to return the native window or iframe.
      * @example Grab the current UI canvas (which is a TP.core.Window):
@@ -6537,8 +6537,8 @@ TP.sys.defineMethod('uidoc',
 function(unwrapped) {
 
     /**
-     * @name uidoc
-     * @synopsis Returns the current UI document in either wrapped or unwrapped
+     * @method uidoc
+     * @summary Returns the current UI document in either wrapped or unwrapped
      *     form. The default is wrapped.
      * @param {Boolean} unwrapped True to unwrap the document.
      * @returns {TP.core.Document|Document}
@@ -6564,8 +6564,8 @@ TP.sys.defineMethod('getUICanvasName',
 function() {
 
     /**
-     * @name getUICanvasName
-     * @synopsis Returns the currently active UI canvas object's name.
+     * @method getUICanvasName
+     * @summary Returns the currently active UI canvas object's name.
      * @returns {String} The name of the active UI canvas.
      */
 
@@ -6586,8 +6586,8 @@ TP.sys.defineMethod('getUICanvasPath',
 function() {
 
     /**
-     * @name getUICanvasPath
-     * @synopsis Returns the currently active UI canvas object's "path", which
+     * @method getUICanvasPath
+     * @summary Returns the currently active UI canvas object's "path", which
      *     for TIBET means returning the TIBET URI string which can be used to
      *     identify/acquire the UI canvas. This will be a string of the form
      *     'tibet://.../' where the remaining elements of the URI represent a
@@ -6604,8 +6604,8 @@ TP.sys.defineMethod('getUIRoot',
 function(unwrapped) {
 
     /**
-     * @name getUIRoot
-     * @synopsis Returns the current root UI canvas as a TIBET window/frame
+     * @method getUIRoot
+     * @summary Returns the current root UI canvas as a TIBET window/frame
      *     wrapper.
      * @param {Boolean} unwrapped True to return the native window or iframe.
      * @returns {TP.core.Window} The TP.core.Window wrapping the root UI canvas.
@@ -6624,8 +6624,8 @@ TP.sys.defineMethod('getUIRootName',
 function() {
 
     /**
-     * @name getUIRootName
-     * @synopsis Returns the root UI canvas object's name. Defaults on initial
+     * @method getUIRootName
+     * @summary Returns the root UI canvas object's name. Defaults on initial
      *     invocation to the UI canvas name.
      * @returns {String} The name of the top UI canvas.
      */
@@ -6649,8 +6649,8 @@ TP.sys.defineMethod('setUICanvas',
 function(aCanvas) {
 
     /**
-     * @name setUICanvas
-     * @synopsis Defines the currently active UI canvas for later reference.
+     * @method setUICanvas
+     * @summary Defines the currently active UI canvas for later reference.
      *     Setting the UI canvas will cause certain display routines to start
      *     using the new canvas for their output.
      * @param {String|TP.core.Window} aCanvas The global ID of the
@@ -6690,8 +6690,8 @@ TP.sys.defineMethod('setUIRoot',
 function(aCanvas) {
 
     /**
-     * @name setUIRoot
-     * @synopsis Defines the root UI canvas for later reference. This is
+     * @method setUIRoot
+     * @summary Defines the root UI canvas for later reference. This is
      *     normally set only once, during application startup, to define a
      *     consistent UI anchor point for the application.
      * @param {String|TP.core.Window} aCanvas The global ID of the
@@ -6736,8 +6736,8 @@ TP.definePrimitive('signal',
 function(anOrigin, aSignal, aPayload) {
 
     /**
-     * @name signal
-     * @synopsis Pre-signaling TP.signal() stub. This version gets overlaid with
+     * @method signal
+     * @summary Pre-signaling TP.signal() stub. This version gets overlaid with
      *     a more powerful version later in the load process. This avoids load
      *     dependency problems and uses TP.stdout() or TP.boot.$stdout() rather
      *     than actually triggering a signal.
@@ -6775,8 +6775,8 @@ TP.definePrimitive('raise',
 function(anOrigin, anExceptionType, aPayload) {
 
     /**
-     * @name raise
-     * @synopsis Pre-signaling TP.raise() stub. This version gets overlaid with
+     * @method raise
+     * @summary Pre-signaling TP.raise() stub. This version gets overlaid with
      *     a more powerful version later in the load process.
      * @param {Object} anOrigin The object serving as the exception's origin.
      * @param {TP.sig.Exception} anExceptionType The type of exception to fire.
@@ -6794,8 +6794,8 @@ TP.defineMetaInstMethod('raise',
 function(anExceptionType, aPayload) {
 
     /**
-     * @name raise
-     * @synopsis Default error handling call, i.e. this.raise('Something'); The
+     * @method raise
+     * @summary Default error handling call, i.e. this.raise('Something'); The
      *     receiver is used as the origin in a subsequent call to TP.raise()
      *     which provides the functional implementation.
      * @param {TP.sig.Exception} anExceptionType The type of exception to fire.
@@ -6812,8 +6812,8 @@ TP.sys.defineMethod('raise',
 function(anExceptionType, aPayload) {
 
     /**
-     * @name raise
-     * @synopsis Default error handling call, i.e. this.raise('Something'); The
+     * @method raise
+     * @summary Default error handling call, i.e. this.raise('Something'); The
      *     receiver is used as the origin in a subsequent call to TP.raise()
      *     which provides the functional implementation.
      * @param {TP.sig.Exception} anExceptionType The type of exception to fire.
@@ -6865,8 +6865,8 @@ TP.definePrimitive('ifKeyInvalid',
 function(anObject, aKey, aDefault) {
 
     /**
-     * @name ifKeyInvalid
-     * @synopsis Returns aDefault value when anObject is either invalid, or the
+     * @method ifKeyInvalid
+     * @summary Returns aDefault value when anObject is either invalid, or the
      *     property value is. When the object implements atIfInvalid as a method
      *     this wrapper will invoke that call with the default to allow the
      *     object to manage the semantics of this call itself. This call is used
@@ -6922,8 +6922,8 @@ TP.definePrimitive('ifKeyNull',
 function(anObject, aKey, aDefault) {
 
     /**
-     * @name ifKeyNull
-     * @synopsis Returns aDefault value when anObject is either specifically
+     * @method ifKeyNull
+     * @summary Returns aDefault value when anObject is either specifically
      *     null, or the property value is. When the object implements atIfNull
      *     as a method this wrapper will invoke that call with the default to
      *     allow the object to manage the semantics of this call itself.
@@ -6975,8 +6975,8 @@ TP.definePrimitive('ifKeyUndefined',
 function(anObject, aKey, aDefault) {
 
     /**
-     * @name ifKeyUndefined
-     * @synopsis Returns aDefault value when anObject is specifically undefined,
+     * @method ifKeyUndefined
+     * @summary Returns aDefault value when anObject is specifically undefined,
      *     or the property value is. When the object implements atIfUndefined as
      *     a method this wrapper will invoke that call with the default to allow
      *     the object to manage the semantics of this call itself.
@@ -7030,8 +7030,8 @@ TP.definePrimitive('isFalse',
 function(aValue) {
 
     /**
-     * @name isFalse
-     * @synopsis Return true if the argument is the Boolean 'false'. This is a
+     * @method isFalse
+     * @summary Return true if the argument is the Boolean 'false'. This is a
      *     more explicit test than 'if (!anObj)' since that test will often lead
      *     your code astray due to bizarre type conversions.
      * @param {Object} aValue The value to test.
@@ -7061,8 +7061,8 @@ TP.definePrimitive('isFalsey',
 function(aValue) {
 
     /**
-     * @name isFalsey
-     * @synopsis Return true if the argument is considered to be 'falsey',
+     * @method isFalsey
+     * @summary Return true if the argument is considered to be 'falsey',
      *     according to JavaScript rules.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is falsey:
@@ -7091,8 +7091,8 @@ TP.definePrimitive('isTrue',
 function(aValue) {
 
     /**
-     * @name isTrue
-     * @synopsis Return true if the argument is the Boolean 'true'. This is a
+     * @method isTrue
+     * @summary Return true if the argument is the Boolean 'true'. This is a
      *     more explicit test than 'if (anObj)' since that test will often lead
      *     your code astray due to bizarre type conversions.
      * @param {Object} aValue The value to test.
@@ -7122,8 +7122,8 @@ TP.definePrimitive('isTruthy',
 function(aValue) {
 
     /**
-     * @name isTruthy
-     * @synopsis Return true if the argument is considered to be 'truthy',
+     * @method isTruthy
+     * @summary Return true if the argument is considered to be 'truthy',
      *     according to JavaScript rules.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is truthy:
@@ -7142,8 +7142,8 @@ TP.definePrimitive('notFalse',
 function(aValue) {
 
     /**
-     * @name notFalse
-     * @synopsis Return true if the argument is not the Boolean 'false'. This is
+     * @method notFalse
+     * @summary Return true if the argument is not the Boolean 'false'. This is
      *     a more explicit test than 'if (anObj)' since that test will often
      *     lead your code astray due to bizarre type conversions.
      * @param {Object} aValue The value to test.
@@ -7171,8 +7171,8 @@ TP.definePrimitive('notTrue',
 function(aValue) {
 
     /**
-     * @name notTrue
-     * @synopsis Return true if the argument is not the Boolean 'true'. This is
+     * @method notTrue
+     * @summary Return true if the argument is not the Boolean 'true'. This is
      *     a more explicit test than 'if (!anObj)' since that test will often
      *     lead your code astray due to bizarre type conversions.
      * @param {Object} aValue The value to test.
@@ -7226,8 +7226,8 @@ TP.definePrimitive('isArgArray',
 function(anObj) {
 
     /**
-     * @name isArgArray
-     * @synopsis Returns true if the object provided is an 'arguments' array, a
+     * @method isArgArray
+     * @summary Returns true if the object provided is an 'arguments' array, a
      *     very special object in JavaScript which isn't an Array.
      * @param {Object} anObj The Object to test.
      * @example Test to see if 'arguments' is an arg Array:
@@ -7249,8 +7249,8 @@ TP.definePrimitive('isArray',
 function(anObj) {
 
     /**
-     * @name isArray
-     * @synopsis Returns true if the object provided is a JavaScript Array.
+     * @method isArray
+     * @summary Returns true if the object provided is a JavaScript Array.
      * @param {Object} anObj The Object to test.
      * @example Test to see if 'anObj' is an Array:
      *     <code>
@@ -7272,8 +7272,8 @@ TP.definePrimitive('isBoolean',
 function(anObj) {
 
     /**
-     * @name isBoolean
-     * @synopsis Returns true if the object provided is a boolean primitive or
+     * @method isBoolean
+     * @summary Returns true if the object provided is a boolean primitive or
      *     wrapper object.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is a boolean.
@@ -7302,8 +7302,8 @@ TP.definePrimitive('isDate',
 function(anObj) {
 
     /**
-     * @name isDate
-     * @synopsis Returns true if the object provided is a date value.
+     * @method isDate
+     * @summary Returns true if the object provided is a date value.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean}
      */
@@ -7338,13 +7338,13 @@ TP.definePrimitive('isNumber',
 function(anObj) {
 
     /**
-     * @name isNumber
-     * @synopsis Returns true if the object provided is a numeric value. We do
+     * @method isNumber
+     * @summary Returns true if the object provided is a numeric value. We do
      *     not consider NaN (NotANumber) to be a number for purposes of this
      *     test since our semantic usage of isNumber is based on testing
      *     parseInt results to see if a user has entered a valid numeric value
      *     or if data from a service is numeric.
-     * @description The obvious question is why not use typeof anObj ==
+     * @summary The obvious question is why not use typeof anObj ==
      *     "number"? Well, because typeof NaN == "number" will return true and,
      *     in our minds anyway, NaN is explicitly by name Not A Number. At the
      *     very least you won't want to do math with it or try to save it to a
@@ -7391,8 +7391,8 @@ TP.definePrimitive('isRegExp',
 function(anObj) {
 
     /**
-     * @name isRegExp
-     * @synopsis Returns true if the object provided is a regular expression
+     * @method isRegExp
+     * @summary Returns true if the object provided is a regular expression
      *     instance.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is a RegExp.
@@ -7416,8 +7416,8 @@ TP.definePrimitive('isInvalidDate',
 function(anObj) {
 
     /**
-     * @name isInvalidDate
-     * @synopsis Returns true if the object is a Date object, but has an invalid
+     * @method isInvalidDate
+     * @summary Returns true if the object is a Date object, but has an invalid
      *     Date value.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean}
@@ -7446,10 +7446,10 @@ TP.definePrimitive('isCollection',
 function(anObj) {
 
     /**
-     * @name isCollection
-     * @synopsis Returns true if the value passed in is an instance of a
+     * @method isCollection
+     * @summary Returns true if the value passed in is an instance of a
      *     Collection type such as Array or TP.lang.Hash.
-     * @description While String instances can be thought of as collections of
+     * @summary While String instances can be thought of as collections of
      *     characters this routine will not return true for Strings. Likewise,
      *     although documents and elements can be thought of as collections of
      *     subelements this routine will return false for Node types.
@@ -7477,8 +7477,8 @@ TP.definePrimitive('isEnhanced',
 function(anObj) {
 
     /**
-     * @name isEnhanced
-     * @synopsis Returns true if the object appears to be an enhanced object,
+     * @method isEnhanced
+     * @summary Returns true if the object appears to be an enhanced object,
      *     one that TIBET has been able to augment.
      * @param {Object} anObj The object to interrogate.
      * @returns {Boolean} True if the object can respond to common TIBET
@@ -7494,8 +7494,8 @@ TP.definePrimitive('isGlobal',
 function(anObj, includeScannedGlobals) {
 
     /**
-     * @name isGlobal
-     * @synopsis Returns true if the name/object provided is a global reference,
+     * @method isGlobal
+     * @summary Returns true if the name/object provided is a global reference,
      *     variable, or value. By default this method will return things that
      *     are considered global and will return false for objects/keys that are
      *     "natural properties" of a window. Since browser-based JS blends the
@@ -7503,7 +7503,7 @@ function(anObj, includeScannedGlobals) {
      *     discriminate between the two. Passing true for the window slot
      *     parameter will cause this method to return true for things like
      *     'opener' and other window properties.
-     * @description In the absense of other flags, anObj is considered to be a
+     * @summary In the absense of other flags, anObj is considered to be a
      *     'global' if it meets one of the following criteria:
      *
      *     1) It is an instance of Boolean or Number. 2) It is a String that is
@@ -7578,8 +7578,8 @@ TP.definePrimitive('isPair',
 function(anObj) {
 
     /**
-     * @name isPair
-     * @synopsis Returns true if the object provided is an ordered pair,
+     * @method isPair
+     * @summary Returns true if the object provided is an ordered pair,
      *     normally expressed as a two-slot array.
      * @param {Object} anObj The value to test.
      * @returns {Boolean} Whether or not the supplied object is a pair.
@@ -7605,9 +7605,9 @@ TP.definePrimitive('$$isTypeProxy',
 function(anObj) {
 
     /**
-     * @name $$isTypeProxy
-     * @synopsis Returns true if the object provided is a type proxy.
-     * @description TIBET supports using proxy objects for types such that when
+     * @method $$isTypeProxy
+     * @summary Returns true if the object provided is a type proxy.
+     * @summary TIBET supports using proxy objects for types such that when
      *     the proxy is first messaged the named type will automatically be
      *     loaded and the message will be sent to the type. This allows TIBET to
      *     support autoloading of code with no programmer intervention or
@@ -7627,8 +7627,8 @@ TP.definePrimitive('isProperty',
 function(anObj, propName) {
 
     /**
-     * @name isProperty
-     * @synopsis Returns true if the object provided is a valid property. A
+     * @method isProperty
+     * @summary Returns true if the object provided is a valid property. A
      *     valid property is a property which is defined but not a DNU
      *     (DoesNotUnderstand) method. Note the syntax is typically
      *     TP.isProperty(someObj, 'someProperty') so what we typically get here
@@ -7659,8 +7659,8 @@ TP.definePrimitive('isOwnProperty',
 function(anObj, propName) {
 
     /**
-     * @name isOwnProperty
-     * @synopsis Returns true if the object provided is a valid property *and
+     * @method isOwnProperty
+     * @summary Returns true if the object provided is a valid property *and
      *     which the supplied object owns* (i.e. has a local value). See
      *     TP.isProperty() for more on what constitutes a valid property.
      * @param {Object} anObj The Object to test.
@@ -7678,8 +7678,8 @@ TP.definePrimitive('isTypeName',
 function(anObj) {
 
     /**
-     * @name isTypeName
-     * @synopsis Returns true if the object is a string that represents what
+     * @method isTypeName
+     * @summary Returns true if the object is a string that represents what
      *     could be a valid type name. This is a syntactic check, no test is
      *     performed to see if the identifier resolves to an actual type.
      * @param {Object} anObj The object to test.
@@ -7711,8 +7711,8 @@ TP.definePrimitive('isAttributeNode',
 function(anObj) {
 
     /**
-     * @name isAttributeNode
-     * @synopsis Returns true if the object provided is an XML or HTML attribute
+     * @method isAttributeNode
+     * @summary Returns true if the object provided is an XML or HTML attribute
      *     node (Node.ATTRIBUTE_NODE). NOTE that this is quite different from
      *     the TP.isProperty() call, which tests validity of a slot value.
      * @param {Object} anObj The Object to test.
@@ -7736,8 +7736,8 @@ TP.definePrimitive('isCDATASectionNode',
 function(anObj) {
 
     /**
-     * @name isCDATASectionNode
-     * @synopsis Returns true if the object provided is an XML or HTML CDATA
+     * @method isCDATASectionNode
+     * @summary Returns true if the object provided is an XML or HTML CDATA
      *     section node (Node.CDATA_SECTION_NODE).
      * @param {Object} anObj The Object to test.
      * @example Test what's a CDATA section node and what's not:
@@ -7758,8 +7758,8 @@ TP.definePrimitive('isCollectionNode',
 function(anObj) {
 
     /**
-     * @name isCollectionNode
-     * @synopsis Returns true if the object provided is an XML or HTML element
+     * @method isCollectionNode
+     * @summary Returns true if the object provided is an XML or HTML element
      *     (Node.ELEMENT_NODE), document (Node.DOCUMENT_NODE), or document
      *     fragment (Node.DOCUMENT_FRAGMENT_NODE).
      * @param {Object} anObj The Object to test.
@@ -7788,8 +7788,8 @@ TP.definePrimitive('isCommentNode',
 function(anObj) {
 
     /**
-     * @name isCommentNode
-     * @synopsis Returns true if the object provided is an XML or HTML Comment
+     * @method isCommentNode
+     * @summary Returns true if the object provided is an XML or HTML Comment
      *     node (Node.COMMENT_NODE).
      * @param {Object} anObj The Object to test.
      * @example Test what's a comment node and what's not:
@@ -7809,8 +7809,8 @@ TP.definePrimitive('isDocument',
 function(anObj) {
 
     /**
-     * @name isDocument
-     * @synopsis Returns true if the object provided TP.isHTMLDocument() or
+     * @method isDocument
+     * @summary Returns true if the object provided TP.isHTMLDocument() or
      *     TP.isXMLDocument().
      * @param {Object} anObj The Object to test.
      * @example Test what's a document and what's not:
@@ -7835,8 +7835,8 @@ TP.definePrimitive('isElement',
 function(anObj) {
 
     /**
-     * @name isElement
-     * @synopsis Returns true if the object provided is an XML or HTML element
+     * @method isElement
+     * @summary Returns true if the object provided is an XML or HTML element
      *     node (Node.ELEMENT_NODE).
      * @param {Object} anObj The Object to test.
      * @example Test what's an element and what's not:
@@ -7860,8 +7860,8 @@ TP.definePrimitive('isEvent',
 function(anObj) {
 
     /**
-     * @name isEvent
-     * @synopsis Returns true if the object provided is an Event object.
+     * @method isEvent
+     * @summary Returns true if the object provided is an Event object.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is an Event object.
      */
@@ -7877,8 +7877,8 @@ TP.definePrimitive('isFragment',
 function(anObj) {
 
     /**
-     * @name isFragment
-     * @synopsis Returns true if the object provided is an XML or HTML document
+     * @method isFragment
+     * @summary Returns true if the object provided is an XML or HTML document
      *     fragment node (Node.DOCUMENT_FRAGMENT_NODE).
      * @param {Object} anObj The Object to test.
      * @example TODO
@@ -7896,8 +7896,8 @@ TP.definePrimitive('isHTMLDocument',
 function(anObj) {
 
     /**
-     * @name isHTMLDocument
-     * @synopsis Returns true if the object contains 'open' and 'applets'
+     * @method isHTMLDocument
+     * @summary Returns true if the object contains 'open' and 'applets'
      *     references which seems sufficient to determine whether it is a true
      *     HTML document, a general object, or 'self'.
      * @param {Object} anObj The Object to test.
@@ -7966,8 +7966,8 @@ TP.definePrimitive('isHTMLNode',
 function(anObj) {
 
     /**
-     * @name isHTMLNode
-     * @synopsis Returns true if the object provided is an HTML node.
+     * @method isHTMLNode
+     * @summary Returns true if the object provided is an HTML node.
      * @param {Object} anObj The Object to test.
      * @example Test what's an html node and what's not:
      *     <code>
@@ -8013,8 +8013,8 @@ TP.definePrimitive('isIFrameWindow',
 function(anObj) {
 
     /**
-     * @name isIFrameWindow
-     * @synopsis Returns whether or not the object is the content window of an
+     * @method isIFrameWindow
+     * @summary Returns whether or not the object is the content window of an
      *     'iframe' element. NOTE: This will *not* return true for 'frame'
      *     windows, just 'iframe' windows.
      * @param {Object} anObj The object to check.
@@ -8065,7 +8065,7 @@ TP.definePrimitive('isMediaQueryList',
 function(anObj) {
 
     /**
-     * @name isMediaQueryList
+     * @method isMediaQueryList
      * @param {Object} anObj The Object to test.
      * @example Test what's a media query list and what's not:
      *     <code>
@@ -8093,8 +8093,8 @@ TP.definePrimitive('isNamedNodeMap',
 function(anObj) {
 
     /**
-     * @name isNamedNodeMap
-     * @synopsis Returns true if the object provided is a DOM named node map.
+     * @method isNamedNodeMap
+     * @summary Returns true if the object provided is a DOM named node map.
      * @param {Object} anObj The Object to test.
      * @example Test what's a named node map and what's not:
      *     <code>
@@ -8118,10 +8118,10 @@ TP.definePrimitive('isNodeList',
 function(anObj) {
 
     /**
-     * @name isNodeList
-     * @synopsis Returns true if the object provided is a DOM node list (or an
+     * @method isNodeList
+     * @summary Returns true if the object provided is a DOM node list (or an
      *     Array acting like one).
-     * @description We need to supply a special version of this for IE because
+     * @summary We need to supply a special version of this for IE because
      *     node lists returned from the XML DOM are different from those
      *     returned from the HTML DOM.
      * @param {Object} anObj The Object to test.
@@ -8172,8 +8172,8 @@ TP.definePrimitive('isPINode',
 function(anObj) {
 
     /**
-     * @name isPINode
-     * @synopsis Returns true if the object provided is an XML or HTML
+     * @method isPINode
+     * @summary Returns true if the object provided is an XML or HTML
      *     processing instruction node (Node.PROCESSING_INSTRUCTION_NODE).
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is a processing
@@ -8190,8 +8190,8 @@ TP.definePrimitive('isStyleDeclaration',
 function(anObj) {
 
     /**
-     * @name isStyleDeclaration
-     * @synopsis Returns true if the object provided is a 'style' object you'd
+     * @method isStyleDeclaration
+     * @summary Returns true if the object provided is a 'style' object you'd
      *     find on a rendered DOM node or as a declaration in a CSS style rule.
      * @param {Object} anObj The Object to test.
      * @example Test what's a style object and what's not:
@@ -8219,8 +8219,8 @@ TP.definePrimitive('isStyleRule',
 function(anObj) {
 
     /**
-     * @name isStyleRule
-     * @synopsis Returns true if the object provided is a 'style rule' object
+     * @method isStyleRule
+     * @summary Returns true if the object provided is a 'style rule' object
      *     you'd find attached to a stylesheet.
      * @param {Object} anObj The Object to test.
      * @example Test what's a style rule object and what's not:
@@ -8249,8 +8249,8 @@ TP.definePrimitive('isStyleSheet',
 function(anObj) {
 
     /**
-     * @name isStyleSheet
-     * @synopsis Returns true if the object provided is a 'stylesheet' object
+     * @method isStyleSheet
+     * @summary Returns true if the object provided is a 'stylesheet' object
      *     you'd find attached to a document.
      * @param {Object} anObj The Object to test.
      * @example Test what's a style sheet object and what's not:
@@ -8278,8 +8278,8 @@ TP.definePrimitive('isSVGNode',
 function(anObj) {
 
     /**
-     * @name isSVGNode
-     * @synopsis Returns true if the object provided is an SVG node.
+     * @method isSVGNode
+     * @summary Returns true if the object provided is an SVG node.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is an SVG node.
      */
@@ -8309,8 +8309,8 @@ TP.definePrimitive('isTextNode',
 function(anObj) {
 
     /**
-     * @name isTextNode
-     * @synopsis Returns true if the object provided is an XML or HTML Text node
+     * @method isTextNode
+     * @summary Returns true if the object provided is an XML or HTML Text node
      *     (Node.TEXT_NODE).
      * @param {Object} anObj The Object to test.
      * @example Test what's a text node and what's not:
@@ -8330,8 +8330,8 @@ TP.definePrimitive('isXHTMLDocument',
 function(anObj) {
 
     /**
-     * @name isXHTMLDocument
-     * @synopsis Returns true if the object provided is an XHTML document.
+     * @method isXHTMLDocument
+     * @summary Returns true if the object provided is an XHTML document.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is an XHTML
      *     document.
@@ -8391,8 +8391,8 @@ TP.definePrimitive('isXHTMLNode',
 function(anObj) {
 
     /**
-     * @name isXHTMLNode
-     * @synopsis Returns true if the object provided is an XHTML node.
+     * @method isXHTMLNode
+     * @summary Returns true if the object provided is an XHTML node.
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is an XHTML node.
      */
@@ -8431,8 +8431,8 @@ TP.definePrimitive('isXMLDocument',
 function(anObj) {
 
     /**
-     * @name isXMLDocument
-     * @synopsis Returns true if the object provided is an XML document.
+     * @method isXMLDocument
+     * @summary Returns true if the object provided is an XML document.
      * @param {Object} anObj The Object to test.
      * @example Test what's an xml document and what's not:
      *     <code>
@@ -8459,8 +8459,8 @@ TP.definePrimitive('isXMLNode',
 function(anObj) {
 
     /**
-     * @name isXMLNode
-     * @synopsis Returns true if the object provided is an XML node.
+     * @method isXMLNode
+     * @summary Returns true if the object provided is an XML node.
      * @param {Object} anObj The Object to test.
      * @example Test what's an xml element and what's not:
      *     <code>
@@ -8508,8 +8508,8 @@ TP.definePrimitive('isXHR',
 function(anObj) {
 
     /**
-     * @name isXHR
-     * @synopsis Returns true if the object appears to be an XMLHttpRequest
+     * @method isXHR
+     * @summary Returns true if the object appears to be an XMLHttpRequest
      *     instance. These are tricky little suckers that will throw exceptions
      *     if you don't treat them nicely so this is a good check to use when
      *     you suspect you might have an XHR.
@@ -8553,11 +8553,11 @@ TP.definePrimitive('isEmpty',
 function(anObj) {
 
     /**
-     * @name isEmpty
-     * @synopsis Returns true if the object provided is 'empty' meaning it may
+     * @method isEmpty
+     * @summary Returns true if the object provided is 'empty' meaning it may
      *     be 'invalid' or have a size, length, or empty attribute which defines
      *     it as having zero-length content.
-     * @description A common error is using TP.isEmpty() to test a return value
+     * @summary A common error is using TP.isEmpty() to test a return value
      *     which is a Node. This will return varying results depending on how
      *     many childNodes the Node has. Use TP.isValid() to test whether a node
      *     exists, then use TP.isEmpty() to test for children.
@@ -8693,8 +8693,8 @@ TP.definePrimitive('ifEmpty',
 function(aSuspectValue, aDefaultValue) {
 
     /**
-     * @name ifEmpty
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     * @method ifEmpty
+     * @summary Returns either aSuspectValue or aDefaultValue based on the
      *     state of aSuspectValue. If aSuspectValue TP.isEmpty() aDefaultValue
      *     is returned.
      * @param {Object} aSuspectValue The value to test.
@@ -8715,11 +8715,11 @@ TP.definePrimitive('notEmpty',
 function(anObj) {
 
     /**
-     * @name notEmpty
-     * @synopsis Returns true if the object provided is not 'empty' meaning it
+     * @method notEmpty
+     * @summary Returns true if the object provided is not 'empty' meaning it
      *     must be a valid object with a size, length, or empty attribute which
      *     defines it as having content.
-     * @description A common error is using TP.notEmpty() to test a return value
+     * @summary A common error is using TP.notEmpty() to test a return value
      *     which is a Node. This will return varying results depending on how
      *     many childNodes the Node has. Use TP.isValid() to test whether a node
      *     exists, then use TP.notEmpty() to test for children.
@@ -8737,8 +8737,8 @@ TP.definePrimitive('ifNaN',
 function(aSuspectValue, aDefaultValue) {
 
     /**
-     * @name ifNaN
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     * @method ifNaN
+     * @summary Returns either aSuspectValue or aDefaultValue based on the
      *     state of aSuspectValue. If aSuspectValue is NaN, aDefaultValue is
      *     returned.
      * @param {Object} aSuspectValue The value to test.
@@ -8762,8 +8762,8 @@ TP.definePrimitive('ifBlank',
 function(aSuspectValue, aDefaultValue) {
 
     /**
-     * @name ifBlank
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     * @method ifBlank
+     * @summary Returns either aSuspectValue or aDefaultValue based on the
      *     state of aSuspectValue. If aSuspectValue TP.isBlank() aDefaultValue
      *     is returned.
      * @param {Object} aSuspectValue The value to test.
@@ -8784,8 +8784,8 @@ TP.definePrimitive('isBlank',
 function(anObj) {
 
     /**
-     * @name isBlank
-     * @synopsis Returns true if the object is blank. Typically this method is
+     * @method isBlank
+     * @summary Returns true if the object is blank. Typically this method is
      *     applied to strings to test whether they are empty or have only
      *     whitespace as content. All other objects return the same result as
      *     testing them with isEmpty. NOTE that for nodes this also will return
@@ -8812,8 +8812,8 @@ TP.definePrimitive('notBlank',
 function(anObj) {
 
     /**
-     * @name notBlank
-     * @synopsis Returns true if the object provided is not blank meaning it
+     * @method notBlank
+     * @summary Returns true if the object provided is not blank meaning it
      *     must be a String containing at least one non-whitespace character or
      *     an object which is notEmpty.
      * @param {Object} anObj The Object to test.
@@ -8829,8 +8829,8 @@ TP.definePrimitive('isClosed',
 function(anObj) {
 
     /**
-     * @name isClosed
-     * @synopsis Returns true if the object provided is a window (or control)
+     * @method isClosed
+     * @summary Returns true if the object provided is a window (or control)
      *     that is closed, or resides in one. This is only relevant for window
      *     and DOM objects.
      * @returns {Boolean} True when the object provided lives in a closed
@@ -8971,8 +8971,8 @@ TP.definePrimitive('$getOwnKeys',
 function(anObject) {
 
     /**
-     * @name $getOwnKeys
-     * @synopsis Returns an Array of the 'own keys' for the supplied object.
+     * @method $getOwnKeys
+     * @summary Returns an Array of the 'own keys' for the supplied object.
      *     These are keys for which the object has a unique value.
      * @param {Object} anObject The object to obtain the keys for.
      * @returns {Array} An Array of the supplied Object's own keys.
@@ -9078,13 +9078,13 @@ TP.defineMetaInstMethod('asString',
 function(verbose) {
 
     /**
-     * @name asString
-     * @synopsis Returns the receiver as a human-readable string. This is the
+     * @method asString
+     * @summary Returns the receiver as a human-readable string. This is the
      *     preferred low-level method to use on TIBET to acquire a presentable
      *     string representation of an object. The default output from toString
      *     in TIBET is the object's OID so that objects can properly be used in
      *     Object keys etc.
-     * @description The typical implementation of asString is to return the same
+     * @summary The typical implementation of asString is to return the same
      *     value as toString() for objects which can respond, however a number
      *     of types override asString to provide a more human-readable string.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
@@ -9195,8 +9195,8 @@ String.Inst.defineMethod('pad',
 function(aSize, aChar, aSide) {
 
     /**
-     * @name pad
-     * @synopsis Right or left pads the string with the character provided to
+     * @method pad
+     * @summary Right or left pads the string with the character provided to
      *     the size specified. Typically used to pad numbers with 0's for
      *     logging etc.
      * @param {Number} aSize The desired result size.
@@ -9271,8 +9271,8 @@ String.Inst.defineMethod('startsWith',
 function(aPrefix) {
 
     /**
-     * @name startsWith
-     * @synopsis Returns true if the receiver begins with the prefix provided.
+     * @method startsWith
+     * @summary Returns true if the receiver begins with the prefix provided.
      * @param {String} aPrefix A String containing the characters to test.
      * @returns {Boolean}
      */
@@ -9286,8 +9286,8 @@ String.Inst.defineMethod('asCamelCase',
 function() {
 
     /**
-     * @name asCamelCase
-     * @synopsis Returns a new string with the initial character of each word,
+     * @method asCamelCase
+     * @summary Returns a new string with the initial character of each word,
      *     as separated by spaces, hyphens, or underscores in upper case, and
      *     with those characters removed. The first letter of the resulting
      *     string is lower case, so a string starting out as 'background-color'
@@ -9319,8 +9319,8 @@ String.Inst.defineMethod('asHyphenated',
 function() {
 
     /**
-     * @name asHyphenated
-     * @synopsis Returns a new string with each uppercase character in lower
+     * @method asHyphenated
+     * @summary Returns a new string with each uppercase character in lower
      *     case and a hyphen separating the "words" formerly set off by title
      *     case. This is effectively the inverse of asCamelCase for things like
      *     CSS strings or XForms event names. NOTE that you shouldn't rely on
@@ -9338,8 +9338,8 @@ String.Inst.defineMethod('asStartLower',
 function() {
 
     /**
-     * @name asStartLower
-     * @synopsis Returns a new string with the initial character in lower case.
+     * @method asStartLower
+     * @summary Returns a new string with the initial character in lower case.
      *     No other transformation is performed.
      * @returns {String}
      */
@@ -9353,8 +9353,8 @@ String.Inst.defineMethod('asStartUpper',
 function() {
 
     /**
-     * @name asStartUpper
-     * @synopsis Returns a new string with the initial character in upper case.
+     * @method asStartUpper
+     * @summary Returns a new string with the initial character in upper case.
      *     No other transformation is performed.
      * @returns {String}
      */
@@ -9368,8 +9368,8 @@ String.Inst.defineMethod('asTitleCase',
 function() {
 
     /**
-     * @name asTitleCase
-     * @synopsis Returns a new string with the initial character of each word,
+     * @method asTitleCase
+     * @summary Returns a new string with the initial character of each word,
      *     as separated by spaces (' '), underscores ('_') or hyphens ('-')
      *     in upper case. No other transformation is performed. Note that this
      *     method *will always* upper case the first character.
@@ -9399,8 +9399,8 @@ String.Inst.defineMethod('asUnderscored',
 function() {
 
     /**
-     * @name asUnderscored
-     * @synopsis Returns a new string with each uppercase character in lower
+     * @method asUnderscored
+     * @summary Returns a new string with each uppercase character in lower
      *     case and an underscore separating the "words" formerly set off by
      *     title case. This is effectively the inverse of asCamelCase, but using
      *     underscore rather than hyphen, which effectively "Rubyizes" strings,
@@ -9421,8 +9421,8 @@ TP.definePrimitive('trim',
 function(aString) {
 
     /**
-     * @name trim
-     * @synopsis Returns a new string with the contents of the receiver after
+     * @method trim
+     * @summary Returns a new string with the contents of the receiver after
      *     having stripped leading and trailing whitespace.
      * @returns {String} A string having the contents of the receiver with
      *     leading and trailing whitespace removed.
@@ -9448,8 +9448,8 @@ Date.Inst.defineMethod('asTimestamp',
 function(includeDate, includeMillis, includeNonNum) {
 
     /**
-     * @name asTimestamp
-     * @synopsis Returns the date as a timestamp. A string of the form
+     * @method asTimestamp
+     * @summary Returns the date as a timestamp. A string of the form
      *     [CCYYMMDDT]hh:mm:ss[.mmm] which is suitable for sorting timestamped
      *     output etc. The default form is essentially an ISO8601 format with
      *     milliseconds.
@@ -9534,10 +9534,10 @@ TP.defineMetaInstMethod('changed',
 function () {
 
     /**
-     * @name changed
-     * @synopsis Notifies observers that some aspect of the receiver has
+     * @method changed
+     * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @description If 'anAspect' is provided then the signal fired will be
+     * @summary If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -9561,7 +9561,7 @@ function () {
      * @param {TP.lang.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
-     * @signals Change
+     * @fires Change
      */
 
     //  This early version does nothing.
@@ -9574,10 +9574,10 @@ function () {
     var func = function(aFlag) {
 
         /**
-         * @name shouldSignalChange
-         * @synopsis Defines whether the receiver should actively signal change
+         * @method shouldSignalChange
+         * @summary Defines whether the receiver should actively signal change
          *     notifications.
-         * @description In general objects do not signal changes when no
+         * @summary In general objects do not signal changes when no
          *     observers exist. This flag is triggered by observe where the
          *     signal being observed is a form of Change signal to "arm" the
          *     object for change notification. You can also manipulate it during
@@ -9639,11 +9639,11 @@ TP.sys.defineMethod('expireContentCaches',
 function(aFlag) {
 
     /**
-     * @name expireContentCaches
-     * @synopsis When true, TIBET will invalidate all caches used during content
+     * @method expireContentCaches
+     * @summary When true, TIBET will invalidate all caches used during content
      *     processing. This will cause new calls to get content data to rebuild
      *     their file caches lazily.
-     * @description This method has a similar interface to the should* calls
+     * @summary This method has a similar interface to the should* calls
      *     however since it acts only at the time it's called we use a little
      *     different naming convention to help clarify that it's different from
      *     the control flag methods.
@@ -9693,8 +9693,8 @@ function(aFlag) {
     var func = function(attributeName) {
 
         /**
-         * @name $get
-         * @synopsis The most primitive wrapper for attribute retrieval. This
+         * @method $get
+         * @summary The most primitive wrapper for attribute retrieval. This
          *     method is supplied to allow overriding of the primitive operation
          *     aspects of 'get' and to provide true getters with a way to access
          *     the low-level slot without any recursion. As with other accessors
@@ -9729,8 +9729,8 @@ function(aFlag) {
     var func = function(attributeName, attributeValue) {
 
         /**
-         * @name $set
-         * @synopsis Assigns the value attributeValue to the storage location
+         * @method $set
+         * @summary Assigns the value attributeValue to the storage location
          *     for attributeName. Later in the kernel a version of $set is
          *     installed that manages change notification etc. We stub in to
          *     cover the case where a config method may be called prior to that
@@ -9766,8 +9766,8 @@ TP.sys.defineMethod('shouldAllowDuplicateInterests',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldAllowDuplicateInterests
-     * @synopsis Controls and returns the state of TIBET's interest duplicate
+     * @method shouldAllowDuplicateInterests
+     * @summary Controls and returns the state of TIBET's interest duplicate
      *     check flag. When set to true TIBET will allow multiple registrations
      *     of the same handler ID for the same origin and signal type pair. When
      *     false TIBET will log this condition with a warning. The default is
@@ -9797,8 +9797,8 @@ TP.sys.defineMethod('$$shouldCacheDeepSubtypes',
 function(aFlag) {
 
     /**
-     * @name $$shouldCacheDeepSubtypes
-     * @synopsis Controls and returns the state of the 'deep subtype cache'
+     * @method $$shouldCacheDeepSubtypes
+     * @summary Controls and returns the state of the 'deep subtype cache'
      *     flag. When true TIBET will cache the values build from getting deep
      *     lists of subtypes. Normally true.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -9823,9 +9823,9 @@ TP.sys.defineMethod('shouldCaptureErrors',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldCaptureErrors
-     * @synopsis Controls and returns the value of the error forwarding flag.
-     * @description This flag determines whether errors caught by TIBET should
+     * @method shouldCaptureErrors
+     * @summary Controls and returns the value of the error forwarding flag.
+     * @summary This flag determines whether errors caught by TIBET should
      *     be forwarded to the native JS error handling system. If so, the
      *     browser's native handling will execute. Note that certain
      *     browser/debugger tools ignore this so this flag may have no effect.
@@ -9854,9 +9854,9 @@ TP.sys.defineMethod('shouldEmbedProgress',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldEmbedProgress
-     * @synopsis Controls and returns the value of the progress format flag.
-     * @description This flag determines whether progress messages will be
+     * @method shouldEmbedProgress
+     * @summary Controls and returns the value of the progress format flag.
+     * @summary This flag determines whether progress messages will be
      *     embedded in the page or via TIBET's notify call. Default is true.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -9882,9 +9882,9 @@ TP.sys.defineMethod('shouldIgnoreViaFlag',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldIgnoreViaFlag
-     * @synopsis Controls and returns TIBET's signal interest removal flag.
-     * @description When this flag is true, signal interests are removed from
+     * @method shouldIgnoreViaFlag
+     * @summary Controls and returns TIBET's signal interest removal flag.
+     * @summary When this flag is true, signal interests are removed from
      *     the signal map by simply flagging them. When this flag is false the
      *     interest is removed completely. Useful for debugging and tuning
      *     performance.
@@ -9914,10 +9914,10 @@ TP.sys.defineMethod('$$shouldInvokeInferences',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name $$shouldInvokeInferences
-     * @synopsis Controls and returns the state of TIBET's 'invoke inferences'
+     * @method $$shouldInvokeInferences
+     * @summary Controls and returns the state of TIBET's 'invoke inferences'
      *     flag.
-     * @description This flag tells TIBET whether inferences made should be
+     * @summary This flag tells TIBET whether inferences made should be
      *     actually executed. This can potentially be turned off so you see what
      *     TIBET would have done, without actually doing it, but in practice
      *     it's normally left on.
@@ -9946,9 +9946,9 @@ TP.sys.defineMethod('shouldLogActivities',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogActivities
-     * @synopsis Controls and returns the state of the 'log activity' flag.
-     * @description This flag determines whether calls to log actually log. Note
+     * @method shouldLogActivities
+     * @summary Controls and returns the state of the 'log activity' flag.
+     * @summary This flag determines whether calls to log actually log. Note
      *     that turning on other log status flags won't automatically turn on
      *     the log activity flag. The activity log is the 'meta log' capturing
      *     log data from all the other TIBET logs and providing support for
@@ -9979,10 +9979,10 @@ TP.sys.defineMethod('shouldLogConsoleSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogConsoleSignals
-     * @synopsis Controls and returns the state of TIBET's 'log console signals'
+     * @method shouldLogConsoleSignals
+     * @summary Controls and returns the state of TIBET's 'log console signals'
      *     flag.
-     * @description When true, and when TP.sys.shouldLogSignals() is true, this
+     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log console signals such as
      *     TP.sig.UserInput/OutputRequests, TP.sig.ConsoleRequest/Response, etc.
      *     which can be obtrusive when running the TIBET console. The default
@@ -10011,9 +10011,9 @@ TP.sys.defineMethod('shouldLogCSS',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogCSS
-     * @synopsis Controls and returns the state of the CSS logging flag.
-     * @description When true TIBET will output CSS debugging data.
+     * @method shouldLogCSS
+     * @summary Controls and returns the state of the CSS logging flag.
+     * @summary When true TIBET will output CSS debugging data.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.
@@ -10038,9 +10038,9 @@ TP.sys.defineMethod('shouldLogDOMFocusSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogDOMFocusSignals
-     * @synopsis Controls and returns the state of the DOM focus logging flag.
-     * @description When true, and when TP.sys.shouldLogSignals() is true, this
+     * @method shouldLogDOMFocusSignals
+     * @summary Controls and returns the state of the DOM focus logging flag.
+     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log DOMFocus, DOMBlur, DOMFocusIn and
      *     DOMFocusOut events. Since these happen with most operations this
      *     value is false by default.
@@ -10068,9 +10068,9 @@ TP.sys.defineMethod('shouldLogDOMLoadedSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogDOMLoadedSignals
-     * @synopsis Controls and returns the state of the DOMLoaded logging flag.
-     * @description When true, and when TP.sys.shouldLogSignals() is true, this
+     * @method shouldLogDOMLoadedSignals
+     * @summary Controls and returns the state of the DOMLoaded logging flag.
+     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log element-level DOMLoaded events. Since
      *     these happen with most operations this value is false by default.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10097,9 +10097,9 @@ TP.sys.defineMethod('shouldLogErrors',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogErrors
-     * @synopsis Controls and returns the value of the error log flag.
-     * @description This flag determines whether calls to log warnings and
+     * @method shouldLogErrors
+     * @summary Controls and returns the value of the error log flag.
+     * @summary This flag determines whether calls to log warnings and
      *     errors of any level of severity actually write entries to the error
      *     log. Note that the logging level may also affect output.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10126,10 +10126,10 @@ TP.sys.defineMethod('shouldLogInferences',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogInferences
-     * @synopsis Controls and returns the state of TIBET's 'log inferences'
+     * @method shouldLogInferences
+     * @summary Controls and returns the state of TIBET's 'log inferences'
      *     flag.
-     * @description This tells TIBET whether inferences made should be logged.
+     * @summary This tells TIBET whether inferences made should be logged.
      *     Turning this flag on can help you tune TIBET for better runtime
      *     performance by showing you which methods might benefit from a
      *     concrete implementation rather than being inferred. It should be off
@@ -10158,9 +10158,9 @@ TP.sys.defineMethod('shouldLogIO',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogIO
-     * @synopsis Controls and returns the state of the IO logging flag.
-     * @description This flag tells TIBET whether to log calls to the IO
+     * @method shouldLogIO
+     * @summary Controls and returns the state of the IO logging flag.
+     * @summary This flag tells TIBET whether to log calls to the IO
      *     subsystem. When the uri and http primitives operate they can log
      *     their activity to TIBET's IO log.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10187,9 +10187,9 @@ TP.sys.defineMethod('shouldLogJobs',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogJobs
-     * @synopsis Controls and returns the state of the job logging flag.
-     * @description When this flag is true and the job system runs a job it will
+     * @method shouldLogJobs
+     * @summary Controls and returns the state of the job logging flag.
+     * @summary When this flag is true and the job system runs a job it will
      *     log start, step, and stop times for review.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10215,9 +10215,9 @@ TP.sys.defineMethod('shouldLogKeys',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogKeys
-     * @synopsis Controls and returns the state of TIBET's key logging flag.
-     * @description When this flag is true any keyboard event handlers armed
+     * @method shouldLogKeys
+     * @summary Controls and returns the state of TIBET's key logging flag.
+     * @summary When this flag is true any keyboard event handlers armed
      *     with the standard TIBET event handler will log key events. This is
      *     useful for gathering keycode information from a keyboard.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10244,9 +10244,9 @@ TP.sys.defineMethod('shouldLogLinks',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogLinks
-     * @synopsis Controls and returns the state of TIBET's link logging flag.
-     * @description This flag controls whether instrumented links will log their
+     * @method shouldLogLinks
+     * @summary Controls and returns the state of TIBET's link logging flag.
+     * @summary This flag controls whether instrumented links will log their
      *     activation to the TIBET log.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10273,10 +10273,10 @@ TP.sys.defineMethod('shouldLogLoadSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogLoadSignals
-     * @synopsis Controls and returns the state of TIBET's 'log load signals'
+     * @method shouldLogLoadSignals
+     * @summary Controls and returns the state of TIBET's 'log load signals'
      *     flag.
-     * @description This flags tells TIBET whether, when the signaling machinery
+     * @summary This flags tells TIBET whether, when the signaling machinery
      *     is invoked prior to installation of the full signaling system, TIBET
      *     should log such signals.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10303,11 +10303,11 @@ TP.sys.defineMethod('shouldLogNullNamespaces',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogNullNamespaces
-     * @synopsis Controls and returns the state of TIBET's null namespace
+     * @method shouldLogNullNamespaces
+     * @summary Controls and returns the state of TIBET's null namespace
      *     logging. Normally used during development to help detect when a
      *     namespace declaration may be missing.
-     * @description Mozilla will, at least in older versions, move elements
+     * @summary Mozilla will, at least in older versions, move elements
      *     whose prefixes don't match declared namespaces, to the null
      *     namespace. This flag controls whether TIBET checks for that and logs
      *     any element names found that match.
@@ -10336,9 +10336,9 @@ TP.sys.defineMethod('shouldLogRaise',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogRaise
-     * @synopsis Controls and returns the value of the raise log flag.
-     * @description This flag determines whether calls to raise should invoke
+     * @method shouldLogRaise
+     * @summary Controls and returns the value of the raise log flag.
+     * @summary This flag determines whether calls to raise should invoke
      *     log*() based on the incoming exception type. Usually you want this
      *     set to true.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10366,10 +10366,10 @@ TP.sys.defineMethod('shouldLogRequestSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogRequestSignals
-     * @synopsis Controls and returns the state of TIBET's 'log request signals'
+     * @method shouldLogRequestSignals
+     * @summary Controls and returns the state of TIBET's 'log request signals'
      *     flag.
-     * @description When true, and when TP.sys.shouldLogSignals() is true, this
+     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log request signals such as RequestCompleted
      *     which can be obtrusive when running the TIBET console. The default
      *     value is false.
@@ -10397,9 +10397,9 @@ TP.sys.defineMethod('shouldLogSecurity',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogSecurity
-     * @synopsis Controls and returns the state of TIBET's 'log security' flag.
-     * @description This flag tells TIBET whether permission requests and other
+     * @method shouldLogSecurity
+     * @summary Controls and returns the state of TIBET's 'log security' flag.
+     * @summary This flag tells TIBET whether permission requests and other
      *     aspects of security-related information should be logged. The default
      *     is true.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10426,11 +10426,11 @@ TP.sys.defineMethod('shouldLogSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogSignals
-     * @synopsis Controls and returns the state of TIBET's 'log signals' flag.
-     * @description This flag tells TIBET whether, when the signaling machinery
+     * @method shouldLogSignals
+     * @summary Controls and returns the state of TIBET's 'log signals' flag.
+     * @summary This flag tells TIBET whether, when the signaling machinery
      *     is invoked, it should log signals.
-     * @description Given TIBET's heavy use of signaling this can generate a LOT
+     * @summary Given TIBET's heavy use of signaling this can generate a LOT
      *     of output. At the same time, it can be a critical debugging aid,
      *     particularly with respect to workflow and UI event tracing.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10457,10 +10457,10 @@ TP.sys.defineMethod('shouldLogSignalStack',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogSignalStack
-     * @synopsis Controls and returns the state of TIBET's 'log signal stack'
+     * @method shouldLogSignalStack
+     * @summary Controls and returns the state of TIBET's 'log signal stack'
      *     flag.
-     * @description This flag tells TIBET whether, when the signaling machinery
+     * @summary This flag tells TIBET whether, when the signaling machinery
      *     is invoked, it should log signal stack traces, which helps identify
      *     where a signal has originated from.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10488,9 +10488,9 @@ TP.sys.defineMethod('shouldLogStack',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogStack
-     * @synopsis Controls and returns the value of the error log stack flag.
-     * @description This flag determines whether the call stack should be
+     * @method shouldLogStack
+     * @summary Controls and returns the value of the error log stack flag.
+     * @summary This flag determines whether the call stack should be
      *     written when logging errors. This generates a LOT of output,
      *     particularly if signal logging is also on. Be prepared :).
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10518,12 +10518,12 @@ TP.sys.defineMethod('shouldLogStackFileInfo',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogStackFileInfo
-     * @synopsis Controls and returns the value of the file information stack
+     * @method shouldLogStackFileInfo
+     * @summary Controls and returns the value of the file information stack
      *     flag. When this flag is true TIBET will try to log file information
      *     including name and line number for the functions being logged from
      *     the call stack.
-     * @description This flag determines whether the call stack should be
+     * @summary This flag determines whether the call stack should be
      *     written when logging errors. This generates a LOT of output,
      *     particularly if signal logging is also on. Be prepared :).
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10551,10 +10551,10 @@ TP.sys.defineMethod('shouldLogTransforms',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogTransforms
-     * @synopsis Controls and returns the value of the content transform logging
+     * @method shouldLogTransforms
+     * @summary Controls and returns the value of the content transform logging
      *     flag.
-     * @description This flag determines whether the content processing system
+     * @summary This flag determines whether the content processing system
      *     should log tranformation steps. The logging of this data occurs at
      *     DEBUG level so TP.setLogLevel() must be used to set the proper logger
      *     to DEBUG to capture the output in the logs.
@@ -10583,9 +10583,9 @@ TP.sys.defineMethod('shouldLogTSHSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogTSHSignals
-     * @synopsis Controls and returns the state of the TSH signal logging flag.
-     * @description This flag tells TIBET whether to log signals related to TSH
+     * @method shouldLogTSHSignals
+     * @summary Controls and returns the state of the TSH signal logging flag.
+     * @summary This flag tells TIBET whether to log signals related to TSH
      *     processing.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10612,9 +10612,9 @@ TP.sys.defineMethod('shouldLogUserIOSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogUserIOSignals
-     * @synopsis Controls and returns the state of the User IO logging flag.
-     * @description This flag tells TIBET whether to log calls to the User IO
+     * @method shouldLogUserIOSignals
+     * @summary Controls and returns the state of the User IO logging flag.
+     * @summary This flag tells TIBET whether to log calls to the User IO
      *     subsystem.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10643,9 +10643,9 @@ TP.sys.defineMethod('shouldLogXPaths',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldLogXPaths
-     * @synopsis Controls and returns the value of the XPath query logging flag.
-     * @description This flag determines whether XPaths should be output to the
+     * @method shouldLogXPaths
+     * @summary Controls and returns the value of the XPath query logging flag.
+     * @summary This flag determines whether XPaths should be output to the
      *     activity log, which can help with performance tuning. The logging of
      *     this data occurs at DEBUG level so TP.setLogLevel() must be used to
      *     set the proper logger to DEBUG to capture the output in the logs.
@@ -10674,9 +10674,9 @@ TP.sys.defineMethod('shouldQueueLoadSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldQueueLoadSignals
-     * @synopsis Controls and returns the value of the queue load signal flag.
-     * @description This flag defines whether TIBET should queue signals fired
+     * @method shouldQueueLoadSignals
+     * @summary Controls and returns the value of the queue load signal flag.
+     * @summary This flag defines whether TIBET should queue signals fired
      *     prior to full signaling installation for later processing. This
      *     allows you to see any signals which may have fired during kernel
      *     load.
@@ -10706,9 +10706,9 @@ TP.sys.defineMethod('shouldProcessCSS',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldProcessCSS
-     * @synopsis Controls and returns TIBET's CSS Processor.
-     * @description When this flag is on, TIBET will translate selectors and
+     * @method shouldProcessCSS
+     * @summary Controls and returns TIBET's CSS Processor.
+     * @summary When this flag is on, TIBET will translate selectors and
      *     create runtime data structures to repair most common CSS selector
      *     limitations.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10735,9 +10735,9 @@ TP.sys.defineMethod('shouldRegisterLoggers',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldRegisterLoggers
-     * @synopsis Controls and returns TIBET's registration policy flag.
-     * @description If this flag is true, TIBET will register objects which log
+     * @method shouldRegisterLoggers
+     * @summary Controls and returns TIBET's registration policy flag.
+     * @summary If this flag is true, TIBET will register objects which log
      *     errors. This allows developers to access the objects which have
      *     written to the error log via their OIDs.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10765,9 +10765,9 @@ TP.sys.defineMethod('shouldReportParseErrors',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldReportParseErrors
-     * @synopsis Controls and returns TIBET's DOM parsing report flag.
-     * @description When this flag is true, TIBET forces DOM parse errors to be
+     * @method shouldReportParseErrors
+     * @summary Controls and returns TIBET's DOM parsing report flag.
+     * @summary When this flag is true, TIBET forces DOM parse errors to be
      *     reported. This is useful primarily for debugging so the default is
      *     false.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10795,8 +10795,8 @@ TP.sys.defineMethod('shouldRequestPrivileges',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldRequestPrivileges
-     * @synopsis Controls and returns TIBET's privilege request flag, which is
+     * @method shouldRequestPrivileges
+     * @summary Controls and returns TIBET's privilege request flag, which is
      *     used for Mozilla PrivilegeManager access.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10823,9 +10823,9 @@ TP.sys.defineMethod('shouldSignalDOMLoaded',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldSignalDOMLoaded
-     * @synopsis Controls and returns TIBET's DOMLoaded signal flag.
-     * @description If true, TIBET will signal DOMLoaded from page elements
+     * @method shouldSignalDOMLoaded
+     * @summary Controls and returns TIBET's DOMLoaded signal flag.
+     * @summary If true, TIBET will signal DOMLoaded from page elements
      *     which are having their content updated. NOTE that this flag will have
      *     no effect on DOMLoaded signals thrown from the document level so that
      *     in-page content load listeners will always function.
@@ -10854,8 +10854,8 @@ TP.sys.defineMethod('shouldSignalDOMFocusSignals',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldSignalDOMFocusSignals
-     * @synopsis Controls and returns the state of the DOM focus signaling flag.
+     * @method shouldSignalDOMFocusSignals
+     * @summary Controls and returns the state of the DOM focus signaling flag.
      *     By turning off DOM focus/blur signaling you have a way to debug other
      *     debug DOM events more effectively.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10882,10 +10882,10 @@ TP.sys.defineMethod('shouldThrowEvaluations',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldThrowEvaluations
-     * @synopsis Controls and returns the state of TIBET's flag for shell
+     * @method shouldThrowEvaluations
+     * @summary Controls and returns the state of TIBET's flag for shell
      *     evaluations.
-     * @description When true TIBET will throw native JavaScript errors that
+     * @summary When true TIBET will throw native JavaScript errors that
      *     occur in evaluations done in the shell.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10913,10 +10913,10 @@ TP.sys.defineMethod('shouldThrowExceptions',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldThrowExceptions
-     * @synopsis Controls and returns the state of TIBET's flag for exception
+     * @method shouldThrowExceptions
+     * @summary Controls and returns the state of TIBET's flag for exception
      *     handling behavior.
-     * @description When this flag is true, TIBET will throw native JS Error
+     * @summary When this flag is true, TIBET will throw native JS Error
      *     objects in response to exception raise calls whose exception
      *     instances aren't handled by an observer. By controlling this flag
      *     effectively TIBET allows you to have an integrated error handling
@@ -10948,10 +10948,10 @@ TP.sys.defineMethod('shouldThrowHandlers',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldThrowHandlers
-     * @synopsis Controls and returns the state of TIBET's flag for handler
+     * @method shouldThrowHandlers
+     * @summary Controls and returns the state of TIBET's flag for handler
      *     invocation try/catch behavior.
-     * @description When this flag is true the system will run event handlers
+     * @summary When this flag is true the system will run event handlers
      *     without a try/catch block.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10979,10 +10979,10 @@ TP.sys.defineMethod('shouldTrackJobStats',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldTrackJobStats
-     * @synopsis Controls and returns the state of TIBET's job statistics
+     * @method shouldTrackJobStats
+     * @summary Controls and returns the state of TIBET's job statistics
      *     gathering.
-     * @description When this flag is true (and not overridden by a specific job
+     * @summary When this flag is true (and not overridden by a specific job
      *     instance) jobs will track step and timing information for review.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -11008,8 +11008,8 @@ TP.sys.defineMethod('shouldTrackSignalStats',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldTrackSignalStats
-     * @synopsis Controls and returns the state of TIBET's signaling statistics
+     * @method shouldTrackSignalStats
+     * @summary Controls and returns the state of TIBET's signaling statistics
      *     flag. When true TIBET will keep timing data on each signal handler
      *     invocation to help with tuning.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -11037,10 +11037,10 @@ TP.sys.defineMethod('shouldTrapRecursion',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldTrapRecursion
-     * @synopsis Controls and returns the flag defining whether TIBET should
+     * @method shouldTrapRecursion
+     * @summary Controls and returns the flag defining whether TIBET should
      *     enforce its recursion trapping method.
-     * @description The TIBET recursion-trapping method, trapRecursion() is
+     * @summary The TIBET recursion-trapping method, trapRecursion() is
      *     installed in a few locations to help with recursion debugging. While
      *     Mozilla will report endless recursion, it won't show the stack :(.
      *     Using this method helps provide a little more control although
@@ -11070,9 +11070,9 @@ TP.sys.defineMethod('shouldUniqueTypes',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldUniqueTypes
-     * @synopsis Controls and returns the state of TIBET's type uniquing flag.
-     * @description When true TIBET will not recreate types in the defineSubtype
+     * @method shouldUniqueTypes
+     * @summary Controls and returns the state of TIBET's type uniquing flag.
+     * @summary When true TIBET will not recreate types in the defineSubtype
      *     call. The default is true, meaning that when a type is ':source'd in
      *     using the TAP/TDC the original type is not replaced. This can help
      *     with maintaining type attribute state across iterative reloads if the
@@ -11103,9 +11103,9 @@ TP.sys.defineMethod('$$shouldUseBackstop',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name $$shouldUseBackstop
-     * @synopsis Controls and returns the state of TIBET's backstop.
-     * @description If this flag is true, TIBET will cause the
+     * @method $$shouldUseBackstop
+     * @summary Controls and returns the state of TIBET's backstop.
+     * @summary If this flag is true, TIBET will cause the
      *     'doesNotUnderstand' backstop to be invoked by get() calls which fail
      *     to find a value. The TIBET backstop provides support for 'Proxies',
      *     and the TIBET inferencer so this should normally be true.
@@ -11132,10 +11132,10 @@ TP.sys.defineMethod('shouldUseContentCheckpoints',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldUseContentCheckpoints
-     * @synopsis Controls and returns the state of TIBET's content checkpointing
+     * @method shouldUseContentCheckpoints
+     * @summary Controls and returns the state of TIBET's content checkpointing
      *     flag.
-     * @description If this flag is true then TIBET's content processing methods
+     * @summary If this flag is true then TIBET's content processing methods
      *     will checkpoint when possible to assist with debugging content
      *     transformations which occur. This allows you to review the content at
      *     each processing phase to see how the transformations are effecting
@@ -11164,9 +11164,9 @@ TP.sys.defineMethod('shouldUseContentCaches',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldUseContentCaches
-     * @synopsis Controls and returns the state of the content file cache flag.
-     * @description Turning this off will cause content processing to skip using
+     * @method shouldUseContentCaches
+     * @summary Controls and returns the state of the content file cache flag.
+     * @summary Turning this off will cause content processing to skip using
      *     file-based caches without affecting how they may choose to leverage
      *     memory caching. During development it's often useful to run with
      *     caches off so you work primarily with memory-based caches to avoid
@@ -11195,9 +11195,9 @@ TP.sys.defineMethod('shouldUseDebugger',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name shouldUseDebugger
-     * @synopsis Controls and returns the state of TIBET's 'debugger' flag.
-     * @description This flag tells TIBET whether, when an exception is raised,
+     * @method shouldUseDebugger
+     * @summary Controls and returns the state of TIBET's 'debugger' flag.
+     * @summary This flag tells TIBET whether, when an exception is raised,
      *     the debugger hook should be invoked. The default hook will cause
      *     TIBET to stop in any currently running debugger by invoking the
      *     ECMA-defined 'debugger;' keyword. Future versions of TIBET on
@@ -11229,8 +11229,8 @@ TP.sys.defineMethod('$$shouldUseInferencing',
 function(aFlag, shouldSignal) {
 
     /**
-     * @name $$shouldUseInferencing
-     * @synopsis Controls and returns the state of TIBET's 'inferencing' flag.
+     * @method $$shouldUseInferencing
+     * @summary Controls and returns the state of TIBET's 'inferencing' flag.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.
@@ -11269,11 +11269,11 @@ TP.sys.defineMethod('checkLibVersion',
 function() {
 
     /**
-     * @name checkLibVersion
-     * @synopsis Checks whether the current kernel version is the latest
+     * @method checkLibVersion
+     * @summary Checks whether the current kernel version is the latest
      *     available version by comparing current version data against a
      *     published TIBET release reference.
-     * @description This method expects to find a file at the location pointed
+     * @summary This method expects to find a file at the location pointed
      *     to by '~lib_version_file' with the following content:
      *
      *      release({
@@ -11369,8 +11369,8 @@ TP.sys.defineMethod('getLibVersion',
 function(release, meta) {
 
     /**
-     * @name getLibVersion
-     * @synopsis Returns the value of the version identification data as a
+     * @method getLibVersion
+     * @summary Returns the value of the version identification data as a
      *     string. If release data is provided the string for that data is
      *     returned, otherwise the string for the current kernel is returned.
      *     NOTE that the string returned is intended to conform to the semver
@@ -11472,8 +11472,8 @@ TP.sys.defineMethod('getRuntimeInfo',
 function() {
 
     /**
-     * @name getRuntimeInfo
-     * @synopsis Returns an object containing current environmental data
+     * @method getRuntimeInfo
+     * @summary Returns an object containing current environmental data
      *     regarding the browser and TIBET.
      * @example Retrieve information about the environment that TIBET is
      *     currently executing in:
@@ -11507,8 +11507,8 @@ TP.sys.defineMethod('getSTATUS',
 function() {
 
     /**
-     * @name getSTATUS
-     * @synopsis Returns the global $STATUS flag setting. This method provides a
+     * @method getSTATUS
+     * @summary Returns the global $STATUS flag setting. This method provides a
      *     get() accessible interface to that global.
      * @returns {Number} A status code, typically from job control status codes.
      */
@@ -11522,8 +11522,8 @@ TP.sys.defineMethod('setSTATUS',
 function(aStatusCode) {
 
     /**
-     * @name setSTATUS
-     * @synopsis Controls the global $STATUS flag setting. This method provides
+     * @method setSTATUS
+     * @summary Controls the global $STATUS flag setting. This method provides
      *     a set() accessible interface to that global.
      * @param {Number} aStatusCode The value to set the $STATUS code.
      * @returns {Boolean} The value of the global $STATUS flag.
@@ -11578,8 +11578,8 @@ TP.sys.defineMethod('isHTTPBased',
 function() {
 
     /**
-     * @name isHTTPBased
-     * @synopsis Returns true if the TIBET codebase was loaded via HTTP.
+     * @method isHTTPBased
+     * @summary Returns true if the TIBET codebase was loaded via HTTP.
      * @returns {Boolean} Whether or not the TIBET codebase was loaded over
      *     HTTP.
      */
@@ -11593,8 +11593,8 @@ TP.sys.defineMethod('getLaunchRoot',
 function() {
 
     /**
-     * @name getLaunchRoot
-     * @synopsis Returns the "launch root", either the web server's root or the
+     * @method getLaunchRoot
+     * @summary Returns the "launch root", either the web server's root or the
      *     root of the file system from which the current app was launched.
      * @example Retrieve TIBET's launch root (in this case, TIBET was launched
      *     from disk on a Unix-based OS):
@@ -11648,8 +11648,8 @@ TP.sys.defineMethod('getHost',
 function() {
 
     /**
-     * @name getHost
-     * @synopsis Returns the hostname from which TIBET was loaded.
+     * @method getHost
+     * @summary Returns the hostname from which TIBET was loaded.
      * @returns {String} The host from which TIBET was loaded.
      */
 
@@ -11662,8 +11662,8 @@ TP.sys.defineMethod('getPathname',
 function() {
 
     /**
-     * @name getPathname
-     * @synopsis Returns the pathname from which TIBET was loaded.
+     * @method getPathname
+     * @summary Returns the pathname from which TIBET was loaded.
      * @returns {String} The pathname from which TIBET was loaded.
      */
 
@@ -11676,8 +11676,8 @@ TP.sys.defineMethod('getPort',
 function() {
 
     /**
-     * @name getPort
-     * @synopsis Returns the port number string from which TIBET was loaded. If
+     * @method getPort
+     * @summary Returns the port number string from which TIBET was loaded. If
      *     no port number was specified in the load URL this string is empty.
      * @returns {Number} The port number from which TIBET was loaded.
      */
@@ -11691,8 +11691,8 @@ TP.sys.defineMethod('getScheme',
 function() {
 
     /**
-     * @name getScheme
-     * @synopsis Returns the scheme used when TIBET was loaded. This is
+     * @method getScheme
+     * @summary Returns the scheme used when TIBET was loaded. This is
      *     typically http or https which allows TIBET to determine if a secure
      *     connection is required as the default for future connections to the
      *     server.
@@ -11722,10 +11722,10 @@ TP.sys.defineMethod('getSourceLanguage',
 function() {
 
     /**
-     * @name getSourceLanguage
-     * @synopsis Returns the current source 'lang', the language most source
+     * @method getSourceLanguage
+     * @summary Returns the current source 'lang', the language most source
      *     strings will be in.
-     * @description This value is typically en-us, but can be changed to adapt
+     * @summary This value is typically en-us, but can be changed to adapt
      *     to local coding preferences. The source language is used as the key
      *     during localization lookups.
      * @example Get TIBET's current 'source language':
@@ -11747,10 +11747,10 @@ TP.sys.defineMethod('getTargetLanguage',
 function() {
 
     /**
-     * @name getTargetLanguage
-     * @synopsis Returns the target 'lang', the user's targeted language
+     * @method getTargetLanguage
+     * @summary Returns the target 'lang', the user's targeted language
      *     setting.
-     * @description This method leverages TP.core.Locale data whenever possible,
+     * @summary This method leverages TP.core.Locale data whenever possible,
      *     otherwise the boot property for userlang is used. When translations
      *     are performed this is the language being targeted using the current
      *     source language as the key.
@@ -11778,10 +11778,10 @@ TP.sys.defineMethod('setSourceLanguage',
 function(aLangCode) {
 
     /**
-     * @name getSourceLanguage
-     * @synopsis Returns the current source 'lang', the language most source
+     * @method getSourceLanguage
+     * @summary Returns the current source 'lang', the language most source
      *     strings will be in.
-     * @description This is typically en-us, but can be changed to adapt to
+     * @summary This is typically en-us, but can be changed to adapt to
      *     local coding preferences. The source language is used as the key
      *     during localization lookups.
      * @example Set TIBET's current 'source language':
@@ -11815,8 +11815,8 @@ TP.sys.defineMethod('getProfile',
 function() {
 
     /**
-     * @name getProfile
-     * @synopsis Returns the current boot profile, such as 'development',
+     * @method getProfile
+     * @summary Returns the current boot profile, such as 'development',
      *     'test', or 'production'. This is effectively a readonly property
      *     since it's set at boot time and defines how the boot process loads.
      *     Trying to change this value at runtime is not supported.
@@ -11832,8 +11832,8 @@ TP.sys.defineMethod('getState',
 function() {
 
     /**
-     * @name getState
-     * @synopsis Returns the current state, which is an application-specific
+     * @method getState
+     * @summary Returns the current state, which is an application-specific
      *     string representing the current operation or "state" of the
      *     application (editing, viewing, printing, etc).
      * @returns {String} The current value for application state.
@@ -11848,8 +11848,8 @@ TP.sys.defineMethod('isExiting',
 function(aFlag) {
 
     /**
-     * @name isExiting
-     * @synopsis Controls and returns the state of the exiting flag, which is
+     * @method isExiting
+     * @summary Controls and returns the state of the exiting flag, which is
      *     set when a valid "logout" sequence has been initiated by the current
      *     application. This allows certain teardown operations to function
      *     properly.
@@ -11882,13 +11882,13 @@ TP.sys.defineMethod('isOffline',
 function(aFlag) {
 
     /**
-     * @name isOffline
-     * @synopsis Controls and returns the state of the online/offline flag.
-     * @description This is set automatically to false when the launch was from
+     * @method isOffline
+     * @summary Controls and returns the state of the online/offline flag.
+     * @summary This is set automatically to false when the launch was from
      *     a file:// url. You can still force it back to true if you start
      *     accessing HTTP urls later in your session. Note that the HTML5
      *     'online/offline' events have been wired to set this flag as well.
-     * @description This flag determines which key is used when performing URI
+     * @summary This flag determines which key is used when performing URI
      *     resolution.
      * @param {Boolean} aFlag True means we're "offline".
      * @returns {Boolean} Whether or not TIBET is currently running in "offline"
@@ -11939,8 +11939,8 @@ TP.sys.defineMethod('getEffectiveUser',
 function() {
 
     /**
-     * @name getEffectiveUser
-     * @synopsis Returns the effective user, the user instance for which all
+     * @method getEffectiveUser
+     * @summary Returns the effective user, the user instance for which all
      *     operations are being filtered at the time of this call.
      * @example Get TIBET's current 'effective user':
      *     <code>
@@ -11966,8 +11966,8 @@ TP.sys.defineMethod('getRealUser',
 function() {
 
     /**
-     * @name getRealUser
-     * @synopsis Returns the "real" user, the user instance that was the initial
+     * @method getRealUser
+     * @summary Returns the "real" user, the user instance that was the initial
      *     instance constructed during login/session creation.
      * @example Get TIBET's current 'real user':
      *     <code>

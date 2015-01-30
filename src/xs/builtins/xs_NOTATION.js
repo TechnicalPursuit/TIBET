@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.NOTATION}
- * @synopsis A valid NOTATION attribute as defined in XML 1.0. Currently not
+ * @summary A valid NOTATION attribute as defined in XML 1.0. Currently not
  *     supported in any form.
  */
 
@@ -26,8 +26,8 @@ TP.xs.NOTATION.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Constructs a new instance from the object provided, if
+     * @method fromObject
+     * @summary Constructs a new instance from the object provided, if
      *     possible. For TP.xs.NOTATION this method raises an exception since
      *     you can't construct a NOTATION in this fashion.
      * @param {Object} anObject The object to use as source data.
@@ -43,8 +43,8 @@ TP.xs.NOTATION.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a valid TP.xs.NOTATION.
+     * @method validate
+     * @summary Returns true if the object provided is a valid TP.xs.NOTATION.
      *     This check is currently unimplemented and always returns false.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

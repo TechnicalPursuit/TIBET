@@ -11,7 +11,7 @@
 
 /**
  * @type {TP.core.JSONSchemaType}
- * @synopsis The common supertype for all JSON Schema-defined data types.
+ * @summary The common supertype for all JSON Schema-defined data types.
  */
 
 //  ------------------------------------------------------------------------
@@ -28,10 +28,10 @@ TP.json.JSONSchemaType.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
-     * @synopsis Returns a new instance from the string provided by processing
+     * @method fromString
+     * @summary Returns a new instance from the string provided by processing
      *     the String into another type.
-     * @description For XML Schema data types, we have no 'parsers' - but the
+     * @summary For XML Schema data types, we have no 'parsers' - but the
      *     types themselves take a String and convert it into an instance by
      *     calling fromObject(). Therefore we override this method and just call
      *     fromObject().
@@ -55,8 +55,8 @@ TP.json.JSONSchemaType.Type.defineMethod('validate',
 function(aValue) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided it meets all of the
+     * @method validate
+     * @summary Returns true if the object provided it meets all of the
      *     criteria supplied in this type.
      * @param {Object} aValue The object to validate.
      * @returns {Boolean} True if the object validates against the receiver.
@@ -125,8 +125,8 @@ TP.core.Content.Type.defineMethod('setSchema',
 function(aSchema) {
 
     /**
-     * @name setSchema
-     * @synopsis Sets the receiver's schema to the supplied hash.
+     * @method setSchema
+     * @summary Sets the receiver's schema to the supplied hash.
      * @param {TP.lang.Hash} aSchema The schema to use for the receiver.
      * @returns {TP.json.JSONSchemaType} The receiver.
      */

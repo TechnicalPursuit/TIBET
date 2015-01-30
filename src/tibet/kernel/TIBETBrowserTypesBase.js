@@ -18,8 +18,8 @@ TP.core.Browser.Type.defineMethod('installNativeNamespaces',
 function() {
 
     /**
-     * @name installNativeNamespaces
-     * @synopsis Installs namespace support for tag processing for namespaces
+     * @method installNativeNamespaces
+     * @summary Installs namespace support for tag processing for namespaces
      *     that are natively supported on this browser.
      * @returns {TP.core.Browser} The receiver.
      */
@@ -51,8 +51,8 @@ TP.core.Browser.Type.defineMethod('installNonNativeNamespaces',
 function() {
 
     /**
-     * @name installNonNativeNamespaces
-     * @synopsis Installs namespace support for tag processing for namespaces
+     * @method installNonNativeNamespaces
+     * @summary Installs namespace support for tag processing for namespaces
      *     that are not natively supported on this browser.
      * @returns {TP.core.Browser} The receiver.
      */

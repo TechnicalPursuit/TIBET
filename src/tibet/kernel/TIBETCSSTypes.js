@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.core.CSSPropertyTransition}
- * @synopsis A subtype (abstract) of TP.core.ObjectPropertyTransition that
+ * @summary A subtype (abstract) of TP.core.ObjectPropertyTransition that
  *     supplies some common methods for animating CSS properties. This type can
  *     also capture the property name, a property prefix and a property suffix
  *     as instance variables.
@@ -35,8 +35,8 @@ TP.core.CSSPropertyTransition.Type.defineMethod('getConcreteType',
 function(params) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the type to use for a particular transition.
+     * @method getConcreteType
+     * @summary Returns the type to use for a particular transition.
      * @param {TP.lang.Hash} params A TP.lang.Hash of the following job control
      *     parameters: delay, interval, limit, count, compute, freeze.
      * @returns {TP.lang.RootObject.<TP.core.CSSProperty>} A TP.core.CSSProperty
@@ -79,9 +79,9 @@ TP.core.CSSPropertyTransition.Inst.defineMethod('init',
 function(controlParams, stepParams) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @method init
+     * @summary Initialize the instance.
+     * @summary Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -114,8 +114,8 @@ TP.core.CSSPropertyTransition.Inst.defineMethod('clearValues',
 function(params) {
 
     /**
-     * @name clearValues
-     * @synopsis Clears the values for the targets given the property name.
+     * @method clearValues
+     * @summary Clears the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -159,8 +159,8 @@ TP.core.CSSPropertyTransition.Inst.defineMethod('constructWorkFunction',
 function(transitionJob) {
 
     /**
-     * @name constructWorkFunction
-     * @synopsis Sets up a 'specialized' work function for transitions, since on
+     * @method constructWorkFunction
+     * @summary Sets up a 'specialized' work function for transitions, since on
      *     some browsers its necessary to tweak the body's offsetHeight in order
      *     to get the transition to redraw.
      * @param {TP.core.Job} transitionJob The transition job that the work
@@ -215,10 +215,10 @@ TP.core.CSSPropertyTransition.Inst.defineMethod('constructJob',
 function(controlParams, stepParams) {
 
     /**
-     * @name constructJob
-     * @synopsis Constructs a TP.core.Job to execute the receiving transition
+     * @method constructJob
+     * @summary Constructs a TP.core.Job to execute the receiving transition
      *     type.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @summary Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -257,8 +257,8 @@ TP.core.CSSPropertyTransition.Inst.defineMethod('getComputeFunction',
 function() {
 
     /**
-     * @name getComputeFunction
-     * @synopsis Returns the default compute Function for the receiving
+     * @method getComputeFunction
+     * @summary Returns the default compute Function for the receiving
      *     transition type.
      * @returns {Function} The default compute Function for this type.
      */
@@ -276,8 +276,8 @@ TP.core.CSSPropertyTransition.Inst.defineMethod('preserveValues',
 function(params) {
 
     /**
-     * @name preserveValues
-     * @synopsis Preserves the values for the targets given the property name.
+     * @method preserveValues
+     * @summary Preserves the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -320,8 +320,8 @@ TP.core.CSSPropertyTransition.Inst.defineMethod('restoreValues',
 function(params) {
 
     /**
-     * @name restoreValues
-     * @synopsis Restores the values for the targets given the property name.
+     * @method restoreValues
+     * @summary Restores the values for the targets given the property name.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
@@ -376,7 +376,7 @@ function(params) {
 
 /**
  * @type {TP.core.CSSValueTransition}
- * @synopsis A subtype of TP.core.CSSPropertyTransition that knows how to
+ * @summary A subtype of TP.core.CSSPropertyTransition that knows how to
  *     animate CSS values. It doesn't take into account unit lengths, but is
  *     good for non-unit values like opacity. A subtype of this type,
  *     TP.core.CSSLengthTransition, should be used for CSS values that have unit
@@ -395,16 +395,16 @@ TP.core.CSSValueTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
-     * @name configure
-     * @synopsis Configures the transition, based on what this particular type
+     * @method configure
+     * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
-     * @raises TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -521,10 +521,10 @@ TP.core.CSSValueTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
-     * @name step
-     * @synopsis Changes some aspect of the target element given when this
+     * @method step
+     * @summary Changes some aspect of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -601,7 +601,7 @@ function(job, params) {
 
 /**
  * @type {TP.core.CSSLengthTransition}
- * @synopsis A subtype of TP.core.CSSValueTransition that knows how to animate
+ * @summary A subtype of TP.core.CSSValueTransition that knows how to animate
  *     CSS values with unit lengths, such as top, left, width, height, etc.
  */
 
@@ -617,16 +617,16 @@ TP.core.CSSLengthTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
-     * @name configure
-     * @synopsis Configures the transition, based on what this particular type
+     * @method configure
+     * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
-     * @raises TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -747,7 +747,7 @@ function(job, params) {
 
 /**
  * @type {TP.core.CSSColorTransition}
- * @synopsis A subtype of TP.core.CSSValueTransition that knows how to animate
+ * @summary A subtype of TP.core.CSSValueTransition that knows how to animate
  *     CSS colors values, such as color, backgroundColor, etc.
  */
 
@@ -763,16 +763,16 @@ TP.core.CSSColorTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
-     * @name configure
-     * @synopsis Configures the transition, based on what this particular type
+     * @method configure
+     * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
-     * @raises TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -910,10 +910,10 @@ TP.core.CSSColorTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
-     * @name step
-     * @synopsis Changes some aspect of the target element given when this
+     * @method step
+     * @summary Changes some aspect of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @description Note that the 'job' parameter supplied here points to the
+     * @summary Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this

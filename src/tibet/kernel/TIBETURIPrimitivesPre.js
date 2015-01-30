@@ -31,8 +31,8 @@ TP.definePrimitive('uriCollapsePath',
 function(aPath) {
 
     /**
-     * @name uriCollapsePath
-     * @synopsis Normalizes a URI path to remove any embedded . or .. segments
+     * @method uriCollapsePath
+     * @summary Normalizes a URI path to remove any embedded . or .. segments
      *     which may exist by adjusting the path segments properly to resolve
      *     the relative portions.
      *
@@ -44,7 +44,7 @@ function(aPath) {
      *     will be further corrupted as a result of this routine
      *     (file:\\\c:\a\b\c).
      * @param {String} aPath The path to normalize.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String}
      */
 
@@ -99,11 +99,11 @@ TP.definePrimitive('uriCollectionPath',
 function(aPath) {
 
     /**
-     * @name uriCollectionPath
-     * @synopsis Returns the 'collection path' for the URI, i.e. the entire path
+     * @method uriCollectionPath
+     * @summary Returns the 'collection path' for the URI, i.e. the entire path
      *     minus any file-specific portion.
      * @param {String} aPath The URI to slice to access the collection href.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} The uri's collection path.
      */
 
@@ -142,12 +142,12 @@ TP.definePrimitive('uriExpandPath',
 function(aPath) {
 
     /**
-     * @name uriExpandPath
-     * @synopsis Returns the expanded form of the TIBET '~' (tilde) path
+     * @method uriExpandPath
+     * @summary Returns the expanded form of the TIBET '~' (tilde) path
      *     provided. This method is used extensively to help low-level URI
      *     primitives operate effectively with TIBET paths.
      * @param {String} aPath The TIBET path to expand.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} A newly constructed path string.
      */
 
@@ -247,8 +247,8 @@ TP.definePrimitive('uriGetXPointerData',
 function(aURI, aNode, shouldClone) {
 
     /**
-     * @name getXPointerData
-     * @synopsis Returns the XML data defined by the XPointer relative to the
+     * @method getXPointerData
+     * @summary Returns the XML data defined by the XPointer relative to the
      *     node provided. The node is presumed to be the content node from the
      *     URI's document href.
      * @param {String} aURI A uri String defining an XPointer fragment.
@@ -256,7 +256,7 @@ function(aURI, aNode, shouldClone) {
      *     the URI provided.
      * @param {Boolean} shouldClone True will cause the nodes found to be cloned
      *     rather than returned as is. The default is true.
-     * @raises TP.sig.InvalidURI,TP.sig.InvalidNode
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidNode
      * @returns {Array} An array containing zero or more Nodes.
      */
 
@@ -405,8 +405,8 @@ TP.definePrimitive('uriInLocalFormat',
 function(aPath) {
 
     /**
-     * @name uriInLocalFormat
-     * @synopsis Returns the path used by the local operating system to access a
+     * @method uriInLocalFormat
+     * @summary Returns the path used by the local operating system to access a
      *     particular path's resource. On Windows this will return a path of the
      *     form [drive]:\segment\segment while on *NIX platforms it will be a
      *     path of the form /segment/segment
@@ -416,7 +416,7 @@ function(aPath) {
      *     spaces since the majority of lower-level browser calls will fail on
      *     quoted input.
      * @param {String} aPath The path to repair.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String}
      */
 
@@ -475,8 +475,8 @@ TP.definePrimitive('uriInWebFormat',
 function(aPath, aRoot) {
 
     /**
-     * @name uriInWebFormat
-     * @synopsis Returns the path with proper adjustments made to represent a
+     * @method uriInWebFormat
+     * @summary Returns the path with proper adjustments made to represent a
      *     proper URI (forward slashes, scheme prefixing, etc). NOTE that the
      *     response is _not_ escape()'d so it will be in the form expected by
      *     the rest of TIBET's functions and in the form more readable/typical
@@ -523,8 +523,8 @@ TP.definePrimitive('uriIsAbsolute',
 function(aPath) {
 
     /**
-     * @name uriIsAbsolute
-     * @synopsis Returns true if the path provided is an absolute path.
+     * @method uriIsAbsolute
+     * @summary Returns true if the path provided is an absolute path.
      * @param {String} aPath The path to test.
      * @returns {Boolean} True if the path is absolute rather than relative to
      *     some root.
@@ -564,7 +564,7 @@ function(aPath) {
     /**
      * Returns true if the path provided appears to be a virtual path.
      * @param {string} aPath The path to be tested.
-     * @return {Boolean} True if the path is virtual.
+     * @returns {Boolean} True if the path is virtual.
      */
 
     if (TP.isEmpty(aPath)) {
@@ -582,13 +582,13 @@ TP.definePrimitive('uriJoinFragments',
 function(aPath, aFragment) {
 
     /**
-     * @name uriJoinFragment
-     * @synopsis Joins a URI and a pointer fragment.
+     * @method uriJoinFragment
+     * @summary Joins a URI and a pointer fragment.
      * @param {String} aPath The URI string used as the prefix.
      * @param {String} aFragment The pointer fragment. Note that this may contain
      *     an XPointer and, if the path contains one as well and they don't
      *     match, the path will be returned unchanged.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} A properly joined URI/Query string.
      */
 
@@ -732,8 +732,8 @@ TP.definePrimitive('uriJoinPaths',
 function(firstPath, secondPath) {
 
     /**
-     * @name uriJoinPaths
-     * @synopsis Returns the two path components joined appropriately. Note that
+     * @method uriJoinPaths
+     * @summary Returns the two path components joined appropriately. Note that
      *     the second path has precedence, meaning that if the second path
      *     appears to be an absolute path the first path isn't used.
      * @param {String} firstPath The 'root' path.
@@ -867,13 +867,13 @@ TP.definePrimitive('uriJoinQuery',
 function(aPath, aQuery) {
 
     /**
-     * @name uriJoinQuery
-     * @synopsis Joins a URI and query fragment, ensuring the proper join
+     * @method uriJoinQuery
+     * @summary Joins a URI and query fragment, ensuring the proper join
      *     character is used. The path is a String, while the query can be a
      *     string or hash of key/value pairs.
      * @param {String} aPath The URI string used as the prefix.
      * @param {String} aQuery The query fragment.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} A properly joined URI/Query string.
      */
 
@@ -921,11 +921,11 @@ TP.definePrimitive('uriMinusFileScheme',
 function(aPath) {
 
     /**
-     * @name uriMinusFileScheme
-     * @synopsis Returns the filename trimmed of any leading file://[/] chars.
+     * @method uriMinusFileScheme
+     * @summary Returns the filename trimmed of any leading file://[/] chars.
      *     This is often necessary for proper use based on host platform.
      * @param {String} aPath The path to trim.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} The path with any leading file:// portion trimmed off.
      */
 
@@ -957,12 +957,12 @@ TP.definePrimitive('uriNeedsPrivileges',
 function(aPath) {
 
     /**
-     * @name uriNeedsPrivileges
-     * @synopsis Returns true if accessing the supplied path requires special
+     * @method uriNeedsPrivileges
+     * @summary Returns true if accessing the supplied path requires special
      *     browser security privileges to be accessed, based on where TIBET got
      *     launched from.
      * @param {String} aPath The path to test.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {Boolean} True if the path requires special privileges to
      *     access.
      */
@@ -982,11 +982,11 @@ TP.definePrimitive('uriPlusFileScheme',
 function(aPath) {
 
     /**
-     * @name uriPlusFileScheme
-     * @synopsis Returns the filename padded with leading file://[/] characters
+     * @method uriPlusFileScheme
+     * @summary Returns the filename padded with leading file://[/] characters
      *     appropriate for the current operating system platform.
      * @param {String} aPath The path to pad.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String}
      */
 
@@ -1024,11 +1024,11 @@ TP.definePrimitive('uriRelativeToPath',
 function(firstPath, secondPath, filePath) {
 
     /**
-     * @name uriRelativeToPath
-     * @synopsis Returns a "relativized" version of the firstPath at it relates
+     * @method uriRelativeToPath
+     * @summary Returns a "relativized" version of the firstPath at it relates
      *     to the second path. In essence, what path would you have to append to
      *     the secondPath to acquire the resource defined by the first path.
-     * @description This method is a core method for helping stored files remain
+     * @summary This method is a core method for helping stored files remain
      *     "relocatable". When storing TIBET metadata or compiled pages their
      *     internal references are automatically adjusted to relative paths
      *     using this routine. For example, given a path of ~lib_cfg/tibet.xml
@@ -1284,8 +1284,8 @@ TP.definePrimitive('uriResolvePaths',
 function(aRootPath, aRelativePath, filePath) {
 
     /**
-     * @name uriResolvePaths
-     * @synopsis Returns an absolute path to the second referenced resource when
+     * @method uriResolvePaths
+     * @summary Returns an absolute path to the second referenced resource when
      *     resolved relative to the leading path. This method is often called to
      *     resolve HREF or SRC paths within a document. NOTE that this method is
      *     similar in form to the methods which create relative paths, but that
@@ -1296,7 +1296,7 @@ function(aRootPath, aRelativePath, filePath) {
      * @param {Boolean} filePath True if the absolute path includes a file
      *     reference. This is important since the offset is relative to
      *     directories, not files.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String}
      */
 
@@ -1449,13 +1449,13 @@ TP.definePrimitive('uriResolveVirtualPath',
 function(aPath, resourceOnly) {
 
     /**
-     * @name uriResolveVirtualPath
-     * @synopsis Returns a string with the URI path provided fully resolved to
+     * @method uriResolveVirtualPath
+     * @summary Returns a string with the URI path provided fully resolved to
      *     an absolute path of some form.
      * @param {String} aPath The TIBET URI string to resolve.
      * @param {Boolean} resourceOnly Strip off any prefixing canvas? Default is
      *     false.
-     * @raises TP.sig.InvalidURI,TP.sig.InvalidCanvas
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidCanvas
      * @returns {String} The fully resolved path.
      */
 
@@ -1608,8 +1608,8 @@ TP.definePrimitive('uriResult',
 function(text, type, report) {
 
     /**
-     * @name uriResult
-     * @synopsis Returns the proper result format given the result text and
+     * @method uriResult
+     * @summary Returns the proper result format given the result text and
      *     result type, typically from an XMLHttpRequest's responseText.
      * @param {String} text The response text to process.
      * @param {TP.DOM|TP.TEXT|TP.BEST|null} type The result type desired. The
@@ -1670,14 +1670,14 @@ TP.definePrimitive('uriResultType',
 function(targetUrl, resultType) {
 
     /**
-     * @name $uriResultType
-     * @synopsis Returns a reasonable result type, TP.TEXT or TP.DOM, based on
+     * @method $uriResultType
+     * @summary Returns a reasonable result type, TP.TEXT or TP.DOM, based on
      *     examination of the targetUrl's extension. If that check isn't
      *     definitive then the original resultType is returned (which may mean a
      *     null result type is returned).
      * @param {String} targetUrl A url to define a result type for.
      * @param {TP.TEXT|TP.DOM|null} resultType A result type constant.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {Object} TP.TEXT|TP.DOM|null.
      */
 
@@ -1722,11 +1722,11 @@ TP.definePrimitive('uriExtension',
 function(aPath, aSeparator) {
 
     /**
-     * @name uriExtension
-     * @synopsis Returns the file extension for the file path provided.
+     * @method uriExtension
+     * @summary Returns the file extension for the file path provided.
      * @param {String} aPath The path to the file.
      * @param {String} aSeparator A single character. Default is '.'.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String}
      */
 
@@ -1759,10 +1759,10 @@ TP.definePrimitive('uriName',
 function(aPath) {
 
     /**
-     * @name uriName
-     * @synopsis Returns the file name, minus any path information.
+     * @method uriName
+     * @summary Returns the file name, minus any path information.
      * @param {String} aPath The path to the file.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String}
      */
 
@@ -1806,8 +1806,8 @@ TP.sys.defineMethod('getAppHead',
 function() {
 
     /**
-     * @name getAppHead
-     * @synopsis Returns the path to the head portion of index.html or whichever
+     * @method getAppHead
+     * @summary Returns the path to the head portion of index.html or whichever
      * file trigged TIBET to launch.
      * @returns {String}
      */
@@ -1821,8 +1821,8 @@ TP.sys.defineMethod('getAppRoot',
 function() {
 
     /**
-     * @name getAppRoot
-     * @synopsis Returns the path to the application. This is the directory just
+     * @method getAppRoot
+     * @summary Returns the path to the application. This is the directory just
      *     above the boot directory tree in the bootfile parameter value. That
      *     value is set by the boot system on startup.
      * @returns {String}
@@ -1837,8 +1837,8 @@ TP.sys.defineMethod('getLibRoot',
 function() {
 
     /**
-     * @name getLibRoot
-     * @synopsis Returns the root path from which TIBET can be found (i.e. where
+     * @method getLibRoot
+     * @summary Returns the root path from which TIBET can be found (i.e. where
      *     'tibet/..' was loaded from). This information can be used to allow
      *     developers to use relative paths in their application constructed
      *     from the root path. Note that the path returned always includes a
@@ -1855,13 +1855,13 @@ TP.definePrimitive('uriWithRoot',
 function(targetUrl, aRoot) {
 
     /**
-     * @name uriWithRoot
-     * @synopsis Returns the filename provided with any additional root
+     * @method uriWithRoot
+     * @summary Returns the filename provided with any additional root
      *     information which is necessary to create a full path name.
      * @param {String} targetUrl A url to expand as needed.
      * @param {String} aRoot Optional root (libroot or approot usually) to root
      *     from.
-     * @raises TP.sig.InvalidURI
+     * @exception TP.sig.InvalidURI
      * @returns {String} The url, after ensuring a root exists.
      */
 
@@ -1894,8 +1894,8 @@ TP.definePrimitive('uriTempFileName',
 function(targetUrl, filePrefix, fileSuffix) {
 
     /**
-     * @name uriTempFileName
-     * @synopsis Returns a generated file name which can be used in building a
+     * @method uriTempFileName
+     * @summary Returns a generated file name which can be used in building a
      *     temporary file. The targetUrl is used as the root directory for the
      *     temp file while the prefix and suffix will be used to create more
      *     "regular" names that are groupable.

@@ -12,14 +12,14 @@ TP.definePrimitive('decryptStorageValue',
 function(aValue, aPassword) {
 
     /**
-     * @name decryptStorageValue
-     * @synopsis Decrypts the supplied value with the supplied password.
-     * @description Note that this method expects the value to be in a specific
+     * @method decryptStorageValue
+     * @summary Decrypts the supplied value with the supplied password.
+     * @summary Note that this method expects the value to be in a specific
      *      format, such as that produced by 'encryptStorageValue'.
      * @param {String} aValue The data to decrypt using the supplied key.
      * @param {String} aPassword The password to use to decrypt the supplied
      *      data.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String} The decrypted value.
      */
 
@@ -70,12 +70,12 @@ TP.definePrimitive('encryptStorageValue',
 function(aValue, aPassword) {
 
     /**
-     * @name encryptStorageValue
-     * @synopsis Encrypts the supplied value with the supplied password.
+     * @method encryptStorageValue
+     * @summary Encrypts the supplied value with the supplied password.
      * @param {String} aValue The data to encrypt using the supplied key.
      * @param {String} aPassword The password to use to encrypt the supplied
      *      data.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String} The encrypted value and attendant crypto information as
      *     a JSON-ified String.
      */
@@ -121,14 +121,14 @@ TP.definePrimitive('hash',
 function(anObject, aHashMode, aHashFormat) {
 
     /**
-     * @name hash
-     * @synopsis Hashes the string representation of the Object provided.
+     * @method hash
+     * @summary Hashes the string representation of the Object provided.
      * @param {Object} anObject The object to acquire a hash code for.
      * @param {Number} aHashMode TP.HASH_MD5 or TP.HASH_SHA1. The default is
      *     SHA-1 since MD5 has been cracked.
      * @param {Number} aHashFormat TP.HASH_HEX, TP.HASH_B64, or TP.HASH_LATIN1.
      *     The default is TP.HASH_HEX.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} The hashed string result.
      */
 
@@ -186,8 +186,8 @@ TP.definePrimitive('hmac',
 function(anObject, aKey, aHashMode, aHashFormat) {
 
     /**
-     * @name hmac
-     * @synopsis Generates an HMAC (hashed message authentication code)
+     * @method hmac
+     * @summary Generates an HMAC (hashed message authentication code)
      *     representation of the Object provided.
      * @param {Object} anObject The object to acquire a HMAC code for.
      * @param {String} aKey A string used as the key.
@@ -195,7 +195,7 @@ function(anObject, aKey, aHashMode, aHashFormat) {
      *     SHA-1 since MD5 has been cracked.
      * @param {Number} aHashFormat TP.HASH_HEX, TP.HASH_B64, or TP.HASH_LATIN1.
      *     The default is TP.HASH_HEX.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {String} The hashed message authentication code.
      */
 
@@ -255,11 +255,11 @@ TP.definePrimitive('generateRandomValue',
 function(numberOfBytes) {
 
     /**
-     * @name generateRandomValue
-     * @synopsis Generates a reasonably secure random value given the
+     * @method generateRandomValue
+     * @summary Generates a reasonably secure random value given the
      *     supplied number of bytes.
      * @param {Number} numberOfBytes The number of bytes to generate.
-     * @raises TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidNumber
      * @returns {String} A String representing a random number of bytes.
      */
 
@@ -276,15 +276,15 @@ String.Inst.defineMethod('computeEncryptionKey',
 function(aSalt, params) {
 
     /**
-     * @name computeEncryptionKey
-     * @synopsis Computes an encryption key using the receiver as the 'password'
+     * @method computeEncryptionKey
+     * @summary Computes an encryption key using the receiver as the 'password'
      *     and the supplied 'salt'. This method uses the PBKDF2 algorithm.
      * @param {String} aSalt The salt value to supply to the PBKDF2 algorithm.
      * @param {TP.lang.Hash} params Various optional parameters to use to
      *     compute the encryption key. These include 'keySize', which defaults
      *     to TP.PBKDF2_KEYSIZE and 'iterationCount' which defaults to
      *     TP.PBKDF2_ITERATION_COUNT.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String} The computed encryption key.
      */
 
@@ -325,13 +325,13 @@ String.Inst.defineMethod('decrypt',
 function(aKey, params) {
 
     /**
-     * @name decrypt
-     * @synopsis Performs an AES decryption on the receiver, returning the
+     * @method decrypt
+     * @summary Performs an AES decryption on the receiver, returning the
      *     plaintext value.
      * @param {String} aKey A string used as the key.
      * @param {TP.lang.Hash} params Various optional parameters to the
      *     decryption method. These include 'iv', which is the AES IV size.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String} The decrypted result string.
      */
 
@@ -375,13 +375,13 @@ TP.defineCommonMethod('encrypt',
 function(aKey, params) {
 
     /**
-     * @name encrypt
-     * @synopsis Performs an AES encryption on the receiver's string
+     * @method encrypt
+     * @summary Performs an AES encryption on the receiver's string
      *     representation. The key must be a string.
      * @param {String} aKey A string used as the key.
      * @param {TP.lang.Hash} params Various parameters to the encryption method.
      *     These include 'iv', which is the AES 'iv' value and is required.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String} The encrypted result string.
      */
 

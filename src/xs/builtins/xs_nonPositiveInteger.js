@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.nonPositiveInteger}
- * @synopsis An integer value which cannot be larger than 0.
+ * @summary An integer value which cannot be larger than 0.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.nonPositiveInteger.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is an integer equal to or
+     * @method validate
+     * @summary Returns true if the object provided is an integer equal to or
      *     less than 0.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XSXPM}
- * @synopsis A wrapper for the X_SXPM namespace'd payload element.
+ * @summary A wrapper for the X_SXPM namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.language}
- * @synopsis An XML Schema language code. The values for this type are not
+ * @summary An XML Schema language code. The values for this type are not
  *     currently validated, however the lexical format of an RFC3066 string is
  *     checked.
  */
@@ -27,14 +27,14 @@ TP.xs.language.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.language an attempt is made to acquire the string value of
      *     the object which is then checked for conformance to the
      *     TP.xs.language format rules. If the value would appear to be a valid
      *     TP.xs.language string it is returned.
      * @param {Object} anObject The object to use as source data.
-     * @raises TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidOperation
      */
 
     var str;
@@ -62,8 +62,8 @@ TP.xs.language.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a string containing a
+     * @method validate
+     * @summary Returns true if the object provided is a string containing a
      *     valid RFC 3066 language code formatted string. Note that no specific
      *     checks are currently done to confirm that the value exists as a
      *     registered language code.

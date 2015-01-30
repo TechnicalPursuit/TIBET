@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.StanzaError}
- * @synopsis A wrapper type for error packets in the TP.xmpp.XMLNS.CLIENT
+ * @summary A wrapper type for error packets in the TP.xmpp.XMLNS.CLIENT
  *     namespace.
  */
 
@@ -34,8 +34,8 @@ TP.xmpp.StanzaError.Inst.defineMethod('getErrorCondition',
 function() {
 
     /**
-     * @name getErrorCondition
-     * @synopsis Returns an element containing the error condition that
+     * @method getErrorCondition
+     * @summary Returns an element containing the error condition that
      *     occurred.
      * @returns {TP.core.ElementNode} The element denoting the error condition
      *     as per the XMPP 1.0 specification.
@@ -66,8 +66,8 @@ TP.xmpp.StanzaError.Inst.defineMethod('getErrorException',
 function() {
 
     /**
-     * @name getErrorException
-     * @synopsis Returns the name of the exception that should be raised when
+     * @method getErrorException
+     * @summary Returns the name of the exception that should be raised when
      *     this error occurs.
      * @returns {String} The type name of the exception.
      */

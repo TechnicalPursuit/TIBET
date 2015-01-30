@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.NMTOKEN}
- * @synopsis Represents a NMTOKEN from the XML 1.0 Second Edition spec. Roughly
+ * @summary Represents a NMTOKEN from the XML 1.0 Second Edition spec. Roughly
  *     speaking this is a string with no commas or quotes allowed although the
  *     actual spec is based on Unicode 2.0 character classes. See the
  *     TP.core.Unicode type for more information.
@@ -36,8 +36,8 @@ TP.xs.NMTOKEN.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.NMTOKEN the return value is the string value of the
      *     incoming object after calling replace() on it to remove characters
      *     not in the Unicode NameChar spec.
@@ -64,8 +64,8 @@ TP.xs.NMTOKEN.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a string matching the
+     * @method validate
+     * @summary Returns true if the object provided is a string matching the
      *     NMTOKEN construction rules for XML 1.0 Second Edition.
      * @returns {Boolean}
      */

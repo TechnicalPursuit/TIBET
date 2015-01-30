@@ -25,8 +25,8 @@ TP.xs.XMLSchemaComplexCompositeType.Type.defineMethod('validate',
 function(aValue) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided it meets all of the
+     * @method validate
+     * @summary Returns true if the object provided it meets all of the
      *     criteria supplied in this type.
      * @param {Object} aValue The object to validate.
      * @returns {Boolean} True if the object validates against the receiver.
@@ -60,8 +60,8 @@ TP.xs.XMLSchemaComplexCompositeType.Type.defineMethod('validateChoice',
 function(aValue, choiceElem) {
 
     /**
-     * @name validateChoice
-     * @synopsis Returns true if only one value provided meet the requirements
+     * @method validateChoice
+     * @summary Returns true if only one value provided meet the requirements
      *     of the TP.xs.choice specification provided.
      * @param {Object} aValue The object to validate.
      * @param {TP.xs.choice} choiceElem The element containing the information
@@ -117,8 +117,8 @@ TP.xs.XMLSchemaComplexCompositeType.Type.defineMethod('validateCompositors',
 function(aValue, anElem) {
 
     /**
-     * @name validateCompositors
-     * @synopsis Tests the value against all of the compositor elements
+     * @method validateCompositors
+     * @summary Tests the value against all of the compositor elements
      *     (TP.xs.sequence or TP.xs.choice) in the supplied Node.
      * @param {Object} aValue The object to validate.
      * @param {Element} anElem The element containing the compositors to validate
@@ -182,8 +182,8 @@ TP.xs.XMLSchemaComplexCompositeType.Type.defineMethod('validateElements',
 function(aValue, anElem) {
 
     /**
-     * @name validateElements
-     * @synopsis Returns true if all values provided meet the requirements of
+     * @method validateElements
+     * @summary Returns true if all values provided meet the requirements of
      *     the TP.xs.element elements under the supplied element.
      * @param {Object} aValue The object to validate.
      * @param {TP.xs.choice|TP.xs.sequence} anElem The element containing the
@@ -299,8 +299,8 @@ TP.xs.XMLSchemaComplexCompositeType.Type.defineMethod('validateSequence',
 function(aValue, sequenceElem) {
 
     /**
-     * @name validateSequence
-     * @synopsis Returns true if all values provided meet the requirements of
+     * @method validateSequence
+     * @summary Returns true if all values provided meet the requirements of
      *     the TP.xs.sequence specification provided.
      * @param {Object} aValue The object to validate.
      * @param {TP.xs.sequence} unionElem The element containing the information

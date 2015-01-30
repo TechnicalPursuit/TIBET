@@ -34,10 +34,10 @@ TP.hc(
     function(aDocument, forcedMIMEType, iframeID) {
 
         /**
-         * @name documentCreateIFrameElement
-         * @synopsis Creates an (X)HTML 'iframe' element in the document and
+         * @method documentCreateIFrameElement
+         * @summary Creates an (X)HTML 'iframe' element in the document and
          *     'initializes' it to make sure its set up for manipulation.
-         * @description In order for the frame element produced by this routine
+         * @summary In order for the frame element produced by this routine
          *     to have been properly set up, it will be appended to the supplied
          *     document and will be returned that way. If a forced MIME type
          *     isn't supplied, then the supplied Document will be queried to
@@ -56,7 +56,7 @@ TP.hc(
          *     document to create in the iframe is XHTML, this routine will
          *     properly register this ID with the 'frames' array of aDocument's
          *     window.
-         * @raises TP.sig.InvalidDocument
+         * @exception TP.sig.InvalidDocument
          * @returns {HTMLElement} The 'iframe' (or 'object' if XHTML) element
          *     created in the supplied document.
          */
@@ -165,10 +165,10 @@ TP.hc(
     function(aDocument, forcedMIMEType, iframeID) {
 
         /**
-         * @name documentCreateIFrameElement
-         * @synopsis Creates an (X)HTML 'iframe' element in the document and
+         * @method documentCreateIFrameElement
+         * @summary Creates an (X)HTML 'iframe' element in the document and
          *     'initializes' it to make sure its set up for manipulation.
-         * @description In order for the frame element produced by this routine
+         * @summary In order for the frame element produced by this routine
          *     to have been properly set up, it will be appended to the supplied
          *     document and will be returned that way. If a forced MIME type
          *     isn't supplied, then the supplied Document will be queried to
@@ -187,7 +187,7 @@ TP.hc(
          *     document to create in the iframe is XHTML, this routine will
          *     properly register this ID with the 'frames' array of aDocument's
          *     window.
-         * @raises TP.sig.InvalidDocument
+         * @exception TP.sig.InvalidDocument
          * @returns {HTMLElement} The 'iframe' (or 'object' if XHTML) element
          *     created in the supplied document.
          */
@@ -290,8 +290,8 @@ TP.hc(
     function(aDocument, anEventSpec) {
 
         /**
-         * @name documentCreateEvent
-         * @synopsis Creates a native Event object, populating it with the event
+         * @method documentCreateEvent
+         * @summary Creates a native Event object, populating it with the event
          *     spec data provided. The spec must exist, and must contain a
          *     'type' key to construct a valid Event. NOTE that the keys in the
          *     event spec must match those expected for the particular event,
@@ -522,8 +522,8 @@ TP.hc(
     function(aDocument, anEventSpec) {
 
         /**
-         * @name documentCreateEvent
-         * @synopsis Creates a native Event object, populating it with the event
+         * @method documentCreateEvent
+         * @summary Creates a native Event object, populating it with the event
          *     spec data provided. The spec must exist, and must contain a
          *     'type' key to construct a valid Event. NOTE that the keys in the
          *     event spec must match those expected for the particular event,
@@ -743,8 +743,8 @@ TP.hc(
     function(aDocument, anEventSpec) {
 
         /**
-         * @name documentCreateEvent
-         * @synopsis Creates a native Event object, populating it with the event
+         * @method documentCreateEvent
+         * @summary Creates a native Event object, populating it with the event
          *     spec data provided. The spec must exist, and must contain a
          *     'type' key to construct a valid Event. NOTE that the keys in the
          *     event spec must match those expected for the particular event,
@@ -963,10 +963,10 @@ TP.hc(
     function(elemTagName, elemDoc, aContent, innerOnly) {
 
         /**
-         * @name $$buildTableDOM
-         * @synopsis Builds a DOM consisting of a 'table', based on the supplied
+         * @method $$buildTableDOM
+         * @summary Builds a DOM consisting of a 'table', based on the supplied
          *     element tag name and using the supplied content.
-         * @description This is an 'internal only' method used by the Trident
+         * @summary This is an 'internal only' method used by the Trident
          *     rendering engine to generate 'table DOMs' for use in content
          *     setting and insertion. This mechanism is used because of IE's
          *     limitations around using the innerHTML, outerHTML and
@@ -1101,11 +1101,11 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementDisableUserSelect
-         * @synopsis Disables the element's ability to be selected by the user.
+         * @method elementDisableUserSelect
+         * @summary Disables the element's ability to be selected by the user.
          * @param {Element} anElement The element to disable the selectability
          *     of.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -1120,11 +1120,11 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementDisableUserSelect
-         * @synopsis Disables the element's ability to be selected by the user.
+         * @method elementDisableUserSelect
+         * @summary Disables the element's ability to be selected by the user.
          * @param {Element} anElement The element to disable the selectability
          *     of.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -1139,11 +1139,11 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementDisableUserSelect
-         * @synopsis Disables the element's ability to be selected by the user.
+         * @method elementDisableUserSelect
+         * @summary Disables the element's ability to be selected by the user.
          * @param {Element} anElement The element to disable the selectability
          *     of.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -1166,11 +1166,11 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementEnableUserSelect
-         * @synopsis Enables the element's ability to be selected by the user.
+         * @method elementEnableUserSelect
+         * @summary Enables the element's ability to be selected by the user.
          * @param {Element} anElement The element to enable the selectability
          *     of.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -1185,11 +1185,11 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementEnableUserSelect
-         * @synopsis Enables the element's ability to be selected by the user.
+         * @method elementEnableUserSelect
+         * @summary Enables the element's ability to be selected by the user.
          * @param {Element} anElement The element to enable the selectability
          *     of.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -1204,11 +1204,11 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementEnableUserSelect
-         * @synopsis Enables the element's ability to be selected by the user.
+         * @method elementEnableUserSelect
+         * @summary Enables the element's ability to be selected by the user.
          * @param {Element} anElement The element to enable the selectability
          *     of.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -1231,8 +1231,8 @@ TP.hc(
     function(anElement, aSide, wantsTransformed) {
 
         /**
-         * @name elementGetBorderInPixels
-         * @synopsis Returns the element's border in pixels. 'aSide' is an
+         * @method elementGetBorderInPixels
+         * @summary Returns the element's border in pixels. 'aSide' is an
          *     optional argument - if not supplied, an Array of pixel numbers is
          *     returned with all of the border widths for each side of the
          *     supplied element.
@@ -1246,7 +1246,7 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
          * @returns {Number|Array} The element's border in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
@@ -1319,8 +1319,8 @@ TP.hc(
     function(anElement, aSide, wantsTransformed) {
 
         /**
-         * @name elementGetBorderInPixels
-         * @synopsis Returns the element's border in pixels. 'aSide' is an
+         * @method elementGetBorderInPixels
+         * @summary Returns the element's border in pixels. 'aSide' is an
          *     optional argument - if not supplied, an Array of pixel numbers is
          *     returned with all of the border widths for each side of the
          *     supplied element.
@@ -1334,7 +1334,7 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Number|Array} The element's border in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
@@ -1435,8 +1435,8 @@ TP.hc(
     function(anElement, aSide, wantsTransformed) {
 
         /**
-         * @name elementGetMarginInPixels
-         * @synopsis Returns the element's margin in pixels.
+         * @method elementGetMarginInPixels
+         * @summary Returns the element's margin in pixels.
          * @param {HTMLElement} anElement The element to retrieve the margin in
          *     pixels for.
          * @param {String} aSide The side the margin should be computed from.
@@ -1447,7 +1447,7 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
          * @returns {Number|Array} The element's margin in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's margins. The numbers are
@@ -1523,8 +1523,8 @@ TP.hc(
     function(anElement, aSide, wantsTransformed) {
 
         /**
-         * @name elementGetMarginInPixels
-         * @synopsis Returns the element's margin in pixels.
+         * @method elementGetMarginInPixels
+         * @summary Returns the element's margin in pixels.
          * @param {HTMLElement} anElement The element to retrieve the margin in
          *     pixels for.
          * @param {String} aSide The side the margin should be computed from.
@@ -1535,7 +1535,7 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,
          *         TP.sig.InvalidStyle
          * @returns {Number|Array} The element's margin in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
@@ -1642,10 +1642,10 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementGetOffsetParent
-         * @synopsis Returns the element's offset parent.
+         * @method elementGetOffsetParent
+         * @summary Returns the element's offset parent.
          * @param {HTMLElement} anElement The element to get the offset parent.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Element} The element's offset parent.
          */
 
@@ -1657,14 +1657,14 @@ TP.hc(
     function(anElement) {
 
         /**
-         * @name elementGetOffsetParent
-         * @synopsis Returns the element's offset parent.
-         * @description In non-IE browsers the '.offsetParent' property will
+         * @method elementGetOffsetParent
+         * @summary Returns the element's offset parent.
+         * @summary In non-IE browsers the '.offsetParent' property will
          *     only properly return the offset parent if it's positioned
          *     absolute, relative or fixed, but not if it's a statically-placed
          *     element that has scrolled. We compensate for that here.
          * @param {HTMLElement} anElement The element to get the offset parent.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Element} The element's offset parent.
          */
 
@@ -1744,8 +1744,8 @@ TP.hc(
     function(anElement, aSide, wantsTransformed) {
 
         /**
-         * @name elementGetPaddingInPixels
-         * @synopsis Returns the element's padding in pixels.
+         * @method elementGetPaddingInPixels
+         * @summary Returns the element's padding in pixels.
          * @param {HTMLElement} anElement The element to retrieve the padding in
          *     pixels for.
          * @param {String} aSide The side the padding should be computed from.
@@ -1756,7 +1756,7 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
          * @returns {Number|Array} The element's padding in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's paddings. The numbers are
@@ -1833,8 +1833,8 @@ TP.hc(
     function(anElement, aSide, wantsTransformed) {
 
         /**
-         * @name elementGetPaddingInPixels
-         * @synopsis Returns the element's padding in pixels.
+         * @method elementGetPaddingInPixels
+         * @summary Returns the element's padding in pixels.
          * @param {HTMLElement} anElement The element to retrieve the padding in
          *     pixels for.
          * @param {String} aSide The side the padding should be computed from.
@@ -1845,7 +1845,7 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,
          *         TP.sig.InvalidStyle
          * @returns {Number|Array} The element's padding in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
@@ -1950,9 +1950,9 @@ TP.hc(
     'gecko',
     function(anElement, wants2DMatrix) {
         /**
-         * @name elementGetTransformMatrix
-         * @synopsis Gets the transformation matrix of the element specified.
-         * @description Note that this method will, by default, return a 4x4
+         * @method elementGetTransformMatrix
+         * @summary Gets the transformation matrix of the element specified.
+         * @summary Note that this method will, by default, return a 4x4
          *     matrix suitable for use with CSS 3D transforms. By passing true
          *     to wants2DMatrix, a 3x2 matrix suitable for use by CSS 2D
          *     transforms will be returned.
@@ -1961,7 +1961,7 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -1990,9 +1990,9 @@ TP.hc(
     'trident',
     function(anElement, wants2DMatrix) {
         /**
-         * @name elementGetTransformMatrix
-         * @synopsis Gets the transformation matrix of the element specified.
-         * @description Note that this method will, by default, return a 4x4
+         * @method elementGetTransformMatrix
+         * @summary Gets the transformation matrix of the element specified.
+         * @summary Note that this method will, by default, return a 4x4
          *     matrix suitable for use with CSS 3D transforms. By passing true
          *     to wants2DMatrix, a 3x2 matrix suitable for use by CSS 2D
          *     transforms will be returned.
@@ -2001,7 +2001,7 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -2030,9 +2030,9 @@ TP.hc(
     'webkit',
     function(anElement, wants2DMatrix) {
         /**
-         * @name elementGetTransformMatrix
-         * @synopsis Gets the transformation matrix of the element specified.
-         * @description Note that this method will, by default, return a 4x4
+         * @method elementGetTransformMatrix
+         * @summary Gets the transformation matrix of the element specified.
+         * @summary Note that this method will, by default, return a 4x4
          *     matrix suitable for use with CSS 3D transforms. By passing true
          *     to wants2DMatrix, a 3x2 matrix suitable for use by CSS 2D
          *     transforms will be returned.
@@ -2041,7 +2041,7 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -2079,8 +2079,8 @@ TP.hc(
     function(anElement, x, y) {
 
         /**
-         * @name elementGlobalToLocalXY
-         * @synopsis Returns the 'element local' point taking into account any
+         * @method elementGlobalToLocalXY
+         * @summary Returns the 'element local' point taking into account any
          *     CSS transform of the element specified.
          * @param {Element} anElement The element to use the transformation
          *     from.
@@ -2088,7 +2088,7 @@ TP.hc(
          *     should be specified in 'page' coordinates.
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'page' coordinates.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Array} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
@@ -2111,8 +2111,8 @@ TP.hc(
     function(anElement, x, y) {
 
         /**
-         * @name elementGlobalToLocalXY
-         * @synopsis Returns the 'element local' point taking into account any
+         * @method elementGlobalToLocalXY
+         * @summary Returns the 'element local' point taking into account any
          *     CSS transform of the element specified.
          * @param {Element} anElement The element to use the transformation
          *     from.
@@ -2120,7 +2120,7 @@ TP.hc(
          *     should be specified in 'page' coordinates.
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'page' coordinates.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Array} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
@@ -2172,8 +2172,8 @@ TP.hc(
     function(anElement, x, y) {
 
         /**
-         * @name elementLocalToGlobalXY
-         * @synopsis Returns the 'page' point taking into account any CSS
+         * @method elementLocalToGlobalXY
+         * @summary Returns the 'page' point taking into account any CSS
          *     transform of the element specified.
          * @param {Element} anElement The element to use the transformation
          *     from.
@@ -2181,7 +2181,7 @@ TP.hc(
          *     should be specified in 'element local' coordinates.
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'element local' coordinates.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Array} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
@@ -2204,8 +2204,8 @@ TP.hc(
     function(anElement, x, y) {
 
         /**
-         * @name elementLocalToGlobalXY
-         * @synopsis Returns the 'page' point taking into account any CSS
+         * @method elementLocalToGlobalXY
+         * @summary Returns the 'page' point taking into account any CSS
          *     transform of the element specified.
          * @param {Element} anElement The element to use the transformation
          *     from.
@@ -2213,7 +2213,7 @@ TP.hc(
          *     should be specified in 'element local' coordinates.
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'element local' coordinates.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          * @returns {Array} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
@@ -2234,14 +2234,14 @@ TP.hc(
     function(anElement, aTransformStr) {
 
         /**
-         * @name elementSetTransform
-         * @synopsis Sets the CSS transform of the element specified using the
+         * @method elementSetTransform
+         * @summary Sets the CSS transform of the element specified using the
          *     supplied String (which should conform to one of the values
          *     specified in the CSS Transform specification).
          * @param {Element} anElement The element to set the transformation on.
          * @param {String} aTransformStr The value to set on the supplied
          *     Element as its CSS Transform.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -2256,14 +2256,14 @@ TP.hc(
     function(anElement, aTransformStr) {
 
         /**
-         * @name elementSetTransform
-         * @synopsis Sets the CSS transform of the element specified using the
+         * @method elementSetTransform
+         * @summary Sets the CSS transform of the element specified using the
          *     supplied String (which should conform to one of the values
          *     specified in the CSS Transform specification).
          * @param {Element} anElement The element to set the transformation on.
          * @param {String} aTransformStr The value to set on the supplied
          *     Element as its CSS Transform.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -2278,14 +2278,14 @@ TP.hc(
     function(anElement, aTransformStr) {
 
         /**
-         * @name elementSetTransform
-         * @synopsis Sets the CSS transform of the element specified using the
+         * @method elementSetTransform
+         * @summary Sets the CSS transform of the element specified using the
          *     supplied String (which should conform to one of the values
          *     specified in the CSS Transform specification).
          * @param {Element} anElement The element to set the transformation on.
          * @param {String} aTransformStr The value to set on the supplied
          *     Element as its CSS Transform.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         if (!TP.isElement(anElement)) {
@@ -2308,10 +2308,10 @@ TP.hc(
     function(anElement, xValue, yValue) {
 
         /**
-         * @name elementSetTransformOrigin
-         * @synopsis Sets the transformation origin of the element specified
+         * @method elementSetTransformOrigin
+         * @summary Sets the transformation origin of the element specified
          *     using the supplied X and Y values.
-         * @description The X and Y values supplied to this method can be any
+         * @summary The X and Y values supplied to this method can be any
          *     CSS 'length' value (i.e. a number with a unit or a percentage).
          *     If a Number is supplied, 'px' is assumed.
          * @param {Element} anElement The element to set the transformation
@@ -2320,7 +2320,7 @@ TP.hc(
          *     origin to.
          * @param {Number|String} yValue The 'Y value' to set the transformation
          *     origin to.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         var xVal,
@@ -2342,10 +2342,10 @@ TP.hc(
     function(anElement, xValue, yValue) {
 
         /**
-         * @name elementSetTransformOrigin
-         * @synopsis Sets the transformation origin of the element specified
+         * @method elementSetTransformOrigin
+         * @summary Sets the transformation origin of the element specified
          *     using the supplied X and Y values.
-         * @description The X and Y values supplied to this method can be any
+         * @summary The X and Y values supplied to this method can be any
          *     CSS 'length' value (i.e. a number with a unit or a percentage).
          *     If a Number is supplied, 'px' is assumed.
          * @param {Element} anElement The element to set the transformation
@@ -2354,7 +2354,7 @@ TP.hc(
          *     origin to.
          * @param {Number|String} yValue The 'Y value' to set the transformation
          *     origin to.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         var xVal,
@@ -2376,10 +2376,10 @@ TP.hc(
     function(anElement, xValue, yValue) {
 
         /**
-         * @name elementSetTransformOrigin
-         * @synopsis Sets the transformation origin of the element specified
+         * @method elementSetTransformOrigin
+         * @summary Sets the transformation origin of the element specified
          *     using the supplied X and Y values.
-         * @description The X and Y values supplied to this method can be any
+         * @summary The X and Y values supplied to this method can be any
          *     CSS 'length' value (i.e. a number with a unit or a percentage).
          *     If a Number is supplied, 'px' is assumed.
          * @param {Element} anElement The element to set the transformation
@@ -2388,7 +2388,7 @@ TP.hc(
          *     origin to.
          * @param {Number|String} yValue The 'Y value' to set the transformation
          *     origin to.
-         * @raises TP.sig.InvalidElement
+         * @exception TP.sig.InvalidElement
          */
 
         var xVal,
@@ -2420,19 +2420,19 @@ TP.hc(
     function(aWindow, aFunction) {
 
         /**
-         * @name windowBuildFunctionFor
-         * @synopsis Builds a 'wrapper' function for the supplied Function in
+         * @method windowBuildFunctionFor
+         * @summary Builds a 'wrapper' function for the supplied Function in
          *     the context of the supplied Window. This is normally used when
          *     installing callback Functions into code that TIBET has no control
          *     over and that is executing in another window or frame.
-         * @description Trident requires this to avoid throwing exceptions on
+         * @summary Trident requires this to avoid throwing exceptions on
          *     Functions that are built in the TIBET code frame and then vended
          *     to another window and then has either 'call' or 'apply' called on
          *     it. Trident will throw an exception in this case. Gecko/Webkit
          *     does not and this function does nothing on those browsers.
          * @param {Window} aWindow The window to create the function in.
          * @param {Function} aFunction The function to build a wrapper for.
-         * @raises TP.sig.InvalidWindow,TP.sig.InvalidFunction
+         * @exception TP.sig.InvalidWindow,TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
          */
@@ -2444,19 +2444,19 @@ TP.hc(
     function(aWindow, aFunction) {
 
         /**
-         * @name windowBuildFunctionFor
-         * @synopsis Builds a 'wrapper' function for the supplied Function in
+         * @method windowBuildFunctionFor
+         * @summary Builds a 'wrapper' function for the supplied Function in
          *     the context of the supplied Window. This is normally used when
          *     installing callback Functions into code that TIBET has no control
          *     over and that is executing in another window or frame.
-         * @description Trident requires this to avoid throwing exceptions on
+         * @summary Trident requires this to avoid throwing exceptions on
          *     Functions that are built in the TIBET code frame and then vended
          *     to another window and then has either 'call' or 'apply' called on
          *     it. Trident will throw an exception in this case. Gecko/Webkit
          *     does not and this function does nothing on those browsers.
          * @param {Window} aWindow The window to create the function in.
          * @param {Function} aFunction The function to build a wrapper for.
-         * @raises TP.sig.InvalidWindow,TP.sig.InvalidFunction
+         * @exception TP.sig.InvalidWindow,TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
          */
@@ -2487,19 +2487,19 @@ TP.hc(
     function(aWindow, aFunction) {
 
         /**
-         * @name windowBuildFunctionFor
-         * @synopsis Builds a 'wrapper' function for the supplied Function in
+         * @method windowBuildFunctionFor
+         * @summary Builds a 'wrapper' function for the supplied Function in
          *     the context of the supplied Window. This is normally used when
          *     installing callback Functions into code that TIBET has no control
          *     over and that is executing in another window or frame.
-         * @description Trident requires this to avoid throwing exceptions on
+         * @summary Trident requires this to avoid throwing exceptions on
          *     Functions that are built in the TIBET code frame and then vended
          *     to another window and then has either 'call' or 'apply' called on
          *     it. Trident will throw an exception in this case. Gecko/Webkit
          *     does not and this function does nothing on those browsers.
          * @param {Window} aWindow The window to create the function in.
          * @param {Function} aFunction The function to build a wrapper for.
-         * @raises TP.sig.InvalidWindow,TP.sig.InvalidFunction
+         * @exception TP.sig.InvalidWindow,TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
          */
@@ -2519,15 +2519,15 @@ TP.hc(
     function(aWindow, objectName) {
 
         /**
-         * @name windowConstructObject
-         * @synopsis Constructs an object in another Window, using that the
+         * @method windowConstructObject
+         * @summary Constructs an object in another Window, using that the
          *     named object as the constructor *in the target Window* to create
          *     the object. Note that this function also passes along any
          *     additional arguments to this function to the constructor.
          * @param {Window} aWindow The window to create the object in.
          * @param {String} objectName The 'type name' of the object to
          *     construct.
-         * @raises TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidWindow
          * @returns {Object}
          */
 
@@ -2586,15 +2586,15 @@ TP.hc(
     function(aWindow, objectName) {
 
         /**
-         * @name windowConstructObject
-         * @synopsis Constructs an object in another Window, using that the
+         * @method windowConstructObject
+         * @summary Constructs an object in another Window, using that the
          *     named object as the constructor *in the target Window* to create
          *     the object. Note that this function also passes along any
          *     additional arguments to this function to the constructor.
          * @param {Window} aWindow The window to create the object in.
          * @param {String} objectName The 'type name' of the object to
          *     construct.
-         * @raises TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidWindow
          * @returns {Object}
          */
 
@@ -2670,14 +2670,14 @@ TP.hc(
     function(aWindow, aFunction) {
 
         /**
-         * @name windowInstallOnBeforeUnloadHook
-         * @synopsis Installs the 'onbeforeunload' hook onto the supplied
+         * @method windowInstallOnBeforeUnloadHook
+         * @summary Installs the 'onbeforeunload' hook onto the supplied
          *     Window. This is an event handling function that manages whether
          *     or not the user can close or unload a window without being
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
-         * @raises TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidWindow
          */
 
         if (!TP.isWindow(aWindow)) {
@@ -2728,14 +2728,14 @@ TP.hc(
     function(aWindow, aFunction) {
 
         /**
-         * @name windowInstallOnBeforeUnloadHook
-         * @synopsis Installs the 'onbeforeunload' hook onto the supplied
+         * @method windowInstallOnBeforeUnloadHook
+         * @summary Installs the 'onbeforeunload' hook onto the supplied
          *     Window. This is an event handling function that manages whether
          *     or not the user can close or unload a window without being
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
-         * @raises TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidWindow
          */
 
         if (!TP.isWindow(aWindow)) {
@@ -2790,14 +2790,14 @@ TP.hc(
     function(aWindow, aFunction) {
 
         /**
-         * @name windowInstallOnBeforeUnloadHook
-         * @synopsis Installs the 'onbeforeunload' hook onto the supplied
+         * @method windowInstallOnBeforeUnloadHook
+         * @summary Installs the 'onbeforeunload' hook onto the supplied
          *     Window. This is an event handling function that manages whether
          *     or not the user can close or unload a window without being
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
-         * @raises TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidWindow
          */
 
         if (!TP.isWindow(aWindow)) {
@@ -2865,12 +2865,12 @@ TP.hc(
     function(aWindow) {
 
         /**
-         * @name windowStopLoading
-         * @synopsis Stops the window from continuing to load content. Usually
+         * @method windowStopLoading
+         * @summary Stops the window from continuing to load content. Usually
          *     called when the window is currently loading via a
          *     'window.location' change.
          * @param {Window} aWindow The window to stop loading content.
-         * @raises TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidWindow
          */
 
         if (!TP.isWindow(aWindow)) {
@@ -2883,12 +2883,12 @@ TP.hc(
     function(aWindow) {
 
         /**
-         * @name windowStopLoading
-         * @synopsis Stops the window from continuing to load content. Usually
+         * @method windowStopLoading
+         * @summary Stops the window from continuing to load content. Usually
          *     called when the window is currently loading via a
          *     'window.location' change.
          * @param {Window} aWindow The window to stop loading content.
-         * @raises TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidWindow
          */
 
         if (!TP.isWindow(aWindow)) {

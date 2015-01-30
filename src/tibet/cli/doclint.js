@@ -90,7 +90,7 @@ Cmd.prototype.USAGE =
 
 /**
  * Computes and returns the TIBET Shell script command line to be run.
- * @return {String} The TIBET Shell script command to execute.
+ * @returns {String} The TIBET Shell script command to execute.
  */
 Cmd.prototype.getScript = function() {
 

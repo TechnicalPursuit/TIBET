@@ -117,7 +117,7 @@ Cmd.prototype.announce = function() {
 /**
  * Performs any final processing of the argument list prior to execution.
  * @param {Array.<String>} arglist The argument list to finalize.
- * @return {Array.<String>} The finalized argument list.
+ * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizePhantomArglist = function(arglist) {
 
@@ -132,7 +132,7 @@ Cmd.prototype.finalizePhantomArglist = function(arglist) {
 
 /**
  * Computes and returns the proper profile to boot in support of the TSH.
- * @return {String} The profile to boot.
+ * @returns {String} The profile to boot.
  */
 Cmd.prototype.getProfile = function() {
 
@@ -160,7 +160,7 @@ Cmd.prototype.getProfile = function() {
 
 /**
  * Computes and returns the TIBET Shell script command line to be run.
- * @return {String} The TIBET Shell script command to execute.
+ * @returns {String} The TIBET Shell script command to execute.
  */
 Cmd.prototype.getScript = function() {
 

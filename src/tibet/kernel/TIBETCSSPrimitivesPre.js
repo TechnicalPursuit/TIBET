@@ -118,8 +118,8 @@ TP.definePrimitive('$escapeCSSConstructs',
 function(aString) {
 
     /**
-     * @name $escapeCSSConstructs
-     * @synopsis This method escapes any HTML 'link' elements pointing to
+     * @method $escapeCSSConstructs
+     * @summary This method escapes any HTML 'link' elements pointing to
      *     stylesheets and any @import style rules so that they don't cause
      *     problems with premature loading while being processed in various
      *     parts of the TIBET content processing system. Failure to do this will
@@ -139,12 +139,12 @@ TP.definePrimitive('$unescapeCSSConstructs',
 function(srcText) {
 
     /**
-     * @name $unescapeCSSConstructs
-     * @synopsis Reverses the work done by the $escapeCSSConstructs() method.
+     * @method $unescapeCSSConstructs
+     * @summary Reverses the work done by the $escapeCSSConstructs() method.
      *     See that method's description for more details.
      * @param {String} srcText The source text to find the constructs to
      *     unescape.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {String} The source text with the HTML 'style', HTML 'link'
      *     elements and. @import style rules escaped.
      */
@@ -159,8 +159,8 @@ TP.definePrimitive('$nodeEscapeCSSConstructs',
 function(aNode) {
 
     /**
-     * @name $nodeEscapeCSSConstructs
-     * @synopsis This method escapes any HTML 'link' elements pointing to
+     * @method $nodeEscapeCSSConstructs
+     * @summary This method escapes any HTML 'link' elements pointing to
      *     stylesheets and any @import style rules so that they don't cause
      *     problems with premature loading while being processed in various
      *     parts of the TIBET content processing system. Failure to do this will
@@ -249,8 +249,8 @@ TP.definePrimitive('$elementProcessCSSAttributeChange',
 function(anElement, attrName, newValue, changeFunction) {
 
     /**
-     * @name $elementProcessCSSAttributeChange
-     * @synopsis Processes an attribute change on the supplied element that may
+     * @method $elementProcessCSSAttributeChange
+     * @summary Processes an attribute change on the supplied element that may
      *     affect the CSS layout for the element or other elements in the
      *     element's document.
      * @param {HTMLElement} anElement The element currently having the attribute
@@ -259,7 +259,7 @@ function(anElement, attrName, newValue, changeFunction) {
      * @param {String} newValue The new value that the attribute was set to.
      * @param {Function} changeFunction A Function that will cause the attribute
      *     change to happen.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      */
 
     //  Just exec the change function and return
@@ -276,13 +276,13 @@ TP.definePrimitive('$elementCSSFlush',
 function(anElement) {
 
     /**
-     * @name $elementCSSFlush
-     * @synopsis Jiggers the element to flush out any CSS changes. IE should do
+     * @method $elementCSSFlush
+     * @summary Jiggers the element to flush out any CSS changes. IE should do
      *     this automatically, but won't sometimes, especially for 'custom'
      *     attributes.
      * @param {Element} anElement The element to flush the CSS style changes
      *     for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     return;
@@ -294,11 +294,11 @@ TP.definePrimitive('matrixAs2DMatrix',
 function(aMatrix) {
 
     /**
-     * @name matrixAs2DMatrix
-     * @synopsis Returns a 3X2 matrix suitable for use with CSS 2D transforms.
+     * @method matrixAs2DMatrix
+     * @summary Returns a 3X2 matrix suitable for use with CSS 2D transforms.
      *     If a 3X2 matrix is already supplied, then it is returned. Otherwise,
      *     a 4X4 matrix will be converted into a 3X2 matrix.
-     * @description This code derived from:
+     * @summary This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @returns {Array} An Array of Arrays representing the converted matrix.
      */
@@ -323,12 +323,12 @@ TP.definePrimitive('matrixAs3DMatrix',
 function(aMatrix) {
 
     /**
-     * @name matrixAs3DMatrix
-     * @synopsis Returns a 4X4 matrix suitable for use with CSS 3D transforms.
+     * @method matrixAs3DMatrix
+     * @summary Returns a 4X4 matrix suitable for use with CSS 3D transforms.
      *     If a 4X4 matrix is already supplied, then it is returned. Otherwise,
      *     a 3X2 matrix will be converted into a 4X4 matrix (with identity
      *     values for the missing spots).
-     * @description This code derived from:
+     * @summary This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @returns {Array} An Array of Arrays representing the converted matrix.
      */
@@ -355,9 +355,9 @@ TP.definePrimitive('matrixFromCSSString',
 function(cssStr, wants2DMatrix) {
 
     /**
-     * @name matrixFromCSSString
-     * @synopsis Extracts a matrix from the supplied CSS string.
-     * @description Note that this method will return a 4X4 matrix suitable for
+     * @method matrixFromCSSString
+     * @summary Extracts a matrix from the supplied CSS string.
+     * @summary Note that this method will return a 4X4 matrix suitable for
      *     use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @param {String} cssStr A CSS string representing a matrix used in CSS
@@ -412,9 +412,9 @@ TP.definePrimitive('multiplyMatrix',
 function(a, b) {
 
     /**
-     * @name multiplyMatrix
-     * @synopsis Multiplies the supplied matrices.
-     * @description This code derived from: https://gist.github.com/1145197
+     * @method multiplyMatrix
+     * @summary Multiplies the supplied matrices.
+     * @summary This code derived from: https://gist.github.com/1145197
      *     Note that this method assumes it is operating on a 4X4 matrix suitable
      *     for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
@@ -448,9 +448,9 @@ TP.definePrimitive('translateMatrix',
 function(m/*, tx, ty, tz*/) {
 
     /**
-     * @name translateMatrix
-     * @synopsis Translates the supplied matrix.
-     * @description This code derived from: https://gist.github.com/1145197
+     * @method translateMatrix
+     * @summary Translates the supplied matrix.
+     * @summary This code derived from: https://gist.github.com/1145197
      *     Note that this method assumes it is operating on a 4X4 matrix suitable
      *     for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
@@ -478,8 +478,8 @@ TP.definePrimitive('matrixTransformPoint',
 function(aMatrix, x, y) {
 
     /**
-     * @name matrixTransformPoint
-     * @synopsis Transforms the supplied point values with the supplied matrix.
+     * @method matrixTransformPoint
+     * @summary Transforms the supplied point values with the supplied matrix.
      * @param {Array} aMatrix An Array of Arrays representing the matrix to be
      *     used in transforming the point.
      * @param {Number} x The X coordinate of the point to transform.
@@ -508,8 +508,8 @@ TP.definePrimitive('matrixTransformRect',
 function(aMatrix, x, y, width, height) {
 
     /**
-     * @name matrixTransformRect
-     * @synopsis Transforms the supplied rectangle values with the supplied
+     * @method matrixTransformRect
+     * @summary Transforms the supplied rectangle values with the supplied
            matrix.
      * @param {Array} aMatrix An Array of Arrays representing the matrix to be
      *     used in transforming the rectangle.

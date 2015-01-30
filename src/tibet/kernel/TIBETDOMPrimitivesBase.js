@@ -22,10 +22,10 @@ TP.definePrimitive('elementComputeXMLBaseFrom',
 function(anElement, expandVirtuals) {
 
     /**
-     * @name elementComputeXMLBaseFrom
-     * @synopsis Computes the XML Base path from anElement out to the root
+     * @method elementComputeXMLBaseFrom
+     * @summary Computes the XML Base path from anElement out to the root
      *     element of the element's owner document.
-     * @description XML Base entries are cumulative. Suppose elementA is a
+     * @summary XML Base entries are cumulative. Suppose elementA is a
      *     parent of anElement and has an base entry of 'foo/bar/'. elementB is
      *     a parent of elementA and has an XML Base entry of '/baz'. The XML
      *     Base path for anElement, then, is computed to be '/baz/foo/bar/'.
@@ -39,7 +39,7 @@ function(anElement, expandVirtuals) {
      *     'virtual URIs' in XML Base entries that we encounter along the way
      *     when computing the XML Base for the supplied Element. This defaults
      *     to true.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} The XML Base path as computed from anElement up the
      *     document hierarchy.
      */
@@ -111,10 +111,10 @@ TP.definePrimitive('elementGetURIController',
 function(anElement) {
 
     /**
-     * @name elementGetURIController
-     * @synopsis Returns the URI controller that is acting as the main
+     * @method elementGetURIController
+     * @summary Returns the URI controller that is acting as the main
      *     controller for the document containing the supplied element.
-     * @description This method looks for a 'tibet:src' attribute on the
+     * @summary This method looks for a 'tibet:src' attribute on the
      *     document element of the document of the supplied element. If it can
      *     find one, it uses that to look up a URI controller that matches that
      *     URI.
@@ -165,8 +165,8 @@ TP.definePrimitive('elementResolveXMLBase',
 function(anElement, uriAttrNames, aPrefix, aSuffix) {
 
     /**
-     * @name elementResolveXMLBase
-     * @synopsis Loops over the supplied list of attribute names and resolves
+     * @method elementResolveXMLBase
+     * @summary Loops over the supplied list of attribute names and resolves
      *     their values on the supplied element with respect to XML Base. If the
      *     URI is not absolute and needs an XML Base value, this is obtained and
      *     the attribute value is rewritten with that value..
@@ -296,11 +296,11 @@ TP.definePrimitive('nodeComparePosition',
 function(aNode, otherNode, aPosition) {
 
     /**
-     * @name nodeComparePosition
-     * @synopsis Returns one of 5 values that can be used to determine the
+     * @method nodeComparePosition
+     * @summary Returns one of 5 values that can be used to determine the
      *     position of otherNode relative to aNode. Note that this comparison is
      *     *always* made from otherNode to aNode.
-     * @description The aPosition parameter of this method has the following
+     * @summary The aPosition parameter of this method has the following
      *     behavior, according to the defined 'TP' constants:
      *          TP.SAME_NODE            aNode and otherNode are the same Node
      *          TP.PRECEDING_NODE       otherNode precedes aNode in the document
@@ -377,9 +377,9 @@ TP.definePrimitive('nodeGetBestNode',
 function(aNode) {
 
     /**
-     * @name nodeGetBestNode
-     * @synopsis Returns the 'best' node for the node provided.
-     * @description The 'best node' for a node is the node that best represents
+     * @method nodeGetBestNode
+     * @summary Returns the 'best' node for the node provided.
+     * @summary The 'best node' for a node is the node that best represents
      *     it for things like 'content type tasting' to determine MIME types,
      *     etc. Often, when trying to determine content types by 'tasting',
      *     you want to make sure to get the document element of the supplied

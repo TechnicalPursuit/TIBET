@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.string}
- * @synopsis Root type for all string values. The TP.xs.string type does not
+ * @summary Root type for all string values. The TP.xs.string type does not
  *     constrain the value space of characters in any way.
  */
 
@@ -26,8 +26,8 @@ TP.xs.string.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
-     * @name fromObject
-     * @synopsis Creates a new instance from the object provided, if possible.
+     * @method fromObject
+     * @summary Creates a new instance from the object provided, if possible.
      *     For TP.xs.string the return value is simply the string value of the
      *     incoming object.
      * @param {Object} anObject The object to use as source data.
@@ -60,8 +60,8 @@ TP.xs.string.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a string. Note that
+     * @method validate
+     * @summary Returns true if the object provided is a string. Note that
      *     since XML Schema defines string as simply any sequence of characters
      *     we choose to validate only true JavaScript string objects here.
      * @param {Object} anObject The object to test.
@@ -77,8 +77,8 @@ TP.xs.string.Type.defineMethod('validateFacetLength',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetLength
-     * @synopsis Tests the incoming value to make sure it is the specified
+     * @method validateFacetLength
+     * @summary Tests the incoming value to make sure it is the specified
      *     length, as length is computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -106,8 +106,8 @@ TP.xs.string.Type.defineMethod('validateFacetMaxLength',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxLength
-     * @synopsis Tests the incoming value to make sure it is less than the
+     * @method validateFacetMaxLength
+     * @summary Tests the incoming value to make sure it is less than the
      *     specified length, as computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
@@ -135,8 +135,8 @@ TP.xs.string.Type.defineMethod('validateFacetMinLength',
 function(aValue, aFacet) {
 
     /**
-     * @name validateFacetMaxLength
-     * @synopsis Tests the incoming value to make sure it is at least the
+     * @method validateFacetMaxLength
+     * @summary Tests the incoming value to make sure it is at least the
      *     specified length, as computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.

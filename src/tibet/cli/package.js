@@ -151,7 +151,7 @@ Cmd.prototype.pkgOpts = null;
  * Process inbound configuration flags and provide for adjustment via the
  * finalizePackageOptions call. On completion of this routine the receiver's
  * package options are fully configured.
- * @return {Object} The package options after being fully configured.
+ * @returns {Object} The package options after being fully configured.
  */
 Cmd.prototype.configurePackageOptions = function(options) {
 
@@ -207,7 +207,7 @@ Cmd.prototype.configurePackageOptions = function(options) {
  * Top-level processing of the package to produce an asset list. For this type
  * and subtypes of the package command you should look to the "executeForEach"
  * method for the actual node-by-node processing logic.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 
@@ -230,7 +230,7 @@ Cmd.prototype.execute = function() {
  * produced by the 'execute' method. The default behavior is to simply output
  * the node text to the log.
  * @param {Array.<Node>} list An array of package nodes.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
     var cmd,
@@ -316,7 +316,7 @@ Cmd.prototype.finalizePackageOptions = function() {
  * Return the list of assets for the receiver based on its current package
  * options. The package options are determined by configurePackageOptions and
  * the finalizePackageOptions call it invokes.
- * @return {Array} The package options.
+ * @returns {Array} The package options.
  */
 Cmd.prototype.getPackageAssetList = function() {
 

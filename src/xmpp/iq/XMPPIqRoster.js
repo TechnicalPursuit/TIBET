@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqRoster}
- * @synopsis A wrapper for the IQ_ROSTER namespace'd payload element.
+ * @summary A wrapper for the IQ_ROSTER namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------
@@ -33,11 +33,11 @@ TP.xmpp.IqRoster.Inst.defineMethod('getGroupItems',
 function(aGroupName) {
 
     /**
-     * @name getGroupItems
-     * @synopsis Returns an Array of TP.xmpp.IqRosterItem instances for the
+     * @method getGroupItems
+     * @summary Returns an Array of TP.xmpp.IqRosterItem instances for the
      *     items which belong to the named group provided.
      * @param {String} aGroupName The group to filter by.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Array}
      */
 
@@ -73,8 +73,8 @@ TP.xmpp.IqRoster.Inst.defineMethod('getGroupNames',
 function() {
 
     /**
-     * @name getGroupNames
-     * @synopsis Returns an Array of group names in the roster.
+     * @method getGroupNames
+     * @summary Returns an Array of group names in the roster.
      * @returns {Array}
      */
 
@@ -96,8 +96,8 @@ TP.xmpp.IqRoster.Inst.defineMethod('getItems',
 function() {
 
     /**
-     * @name getItems
-     * @synopsis Returns an Array of TP.xmpp.IqRosterItem instances for this
+     * @method getItems
+     * @summary Returns an Array of TP.xmpp.IqRosterItem instances for this
      *     roster.
      * @returns {Array}
      */
@@ -111,8 +111,8 @@ TP.xmpp.IqRoster.Inst.defineMethod('getSignalName',
 function(aStanza) {
 
     /**
-     * @name getSignalName
-     * @synopsis Returns the signal name to use when signaling arrival of
+     * @method getSignalName
+     * @summary Returns the signal name to use when signaling arrival of
      *     packets of this type. The default is XMPP*Input where the asterisk is
      *     replaced by the current tag/type string, for example
      *     TP.sig.XMPPMessageInput.

@@ -11,7 +11,7 @@
 
 /**
  * @type {TP.core.XMLSchemaCompositeType}
- * @synopsis The common supertype for 'composite' XML Schema-defined data types.
+ * @summary The common supertype for 'composite' XML Schema-defined data types.
  */
 
 //  ------------------------------------------------------------------------

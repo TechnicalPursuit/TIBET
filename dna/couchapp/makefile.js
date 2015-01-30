@@ -22,7 +22,7 @@ helpers = require('tibet/src/tibet/cli/_make_helpers');
  * parameters. The make parameter should be provided to grant access to the
  * currently running task object.
  * @param {Object} make The make command instance.
- * @return {Object} An object containing db_url and db_name keys.
+ * @returns {Object} An object containing db_url and db_name keys.
  */
 getDatabaseParameters = function(make) {
     var db_url,

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.DeviceStorage}
- * @synopsis A common supertype for all objects handling client-side storage
+ * @summary A common supertype for all objects handling client-side storage
  *      mechanisms in TIBET.
  */
 
@@ -29,8 +29,8 @@ TP.core.DeviceStorage.Inst.defineMethod('at',
 function(aKey) {
 
     /**
-     * @name at
-     * @synopsis Retrieves the value stored under the key in the receiver.
+     * @method at
+     * @summary Retrieves the value stored under the key in the receiver.
      * @param {String} aKey The key to find the data to be retrieved.
      * @returns {Object} The object stored under the key in the receiver.
      */
@@ -44,12 +44,12 @@ TP.core.DeviceStorage.Inst.defineMethod('atEncrypted',
 function(aKey, aPassword) {
 
     /**
-     * @name atEncrypted
-     * @synopsis Retrieves the value stored under the key in the receiver.
+     * @method atEncrypted
+     * @summary Retrieves the value stored under the key in the receiver.
      * @param {String} aKey The key to find the data to be retrieved.
      * @param {String} aPassword The password to use to decrypt the data that
      *     was retrieved.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {Object} The object stored under the key in the receiver.
      */
 
@@ -78,8 +78,8 @@ TP.core.DeviceStorage.Inst.defineMethod('atPut',
 function(aKey, aValue) {
 
     /**
-     * @name atPut
-     * @synopsis Sets the value stored under the key in the receiver.
+     * @method atPut
+     * @summary Sets the value stored under the key in the receiver.
      * @param {String} aKey The key to use to set the data to be stored.
      * @param {String} aValue The data to store under the supplied key.
      * @returns {TP.core.DeviceStorage} The receiver.
@@ -94,13 +94,13 @@ TP.core.DeviceStorage.Inst.defineMethod('atPutEncrypted',
 function(aKey, aValue, aPassword) {
 
     /**
-     * @name atPutEncrypted
-     * @synopsis Sets the value stored under the key in the receiver.
+     * @method atPutEncrypted
+     * @summary Sets the value stored under the key in the receiver.
      * @param {String} aKey The key to use to set the data to be stored.
      * @param {String} aValue The data to store under the supplied key.
      * @param {String} aPassword The password to use to encrypt the data that
      *     is being stored.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {TP.core.DeviceStorage} The receiver.
      */
 
@@ -124,8 +124,8 @@ TP.core.DeviceStorage.Inst.defineMethod('empty',
 function() {
 
     /**
-     * @name empty
-     * @synopsis Removes all of the values stored in the receiver.
+     * @method empty
+     * @summary Removes all of the values stored in the receiver.
      * @returns {TP.core.DeviceStorage} The receiver.
      */
 
@@ -138,8 +138,8 @@ TP.core.DeviceStorage.Inst.defineMethod('removeKey',
 function(aKey) {
 
     /**
-     * @name removeKey
-     * @synopsis Removes the value stored under the key in the receiver.
+     * @method removeKey
+     * @summary Removes the value stored under the key in the receiver.
      * @param {String} aKey The key to find the data to be removed.
      * @returns {Boolean} True if the value was successfully removed, false
      *     otherwise.

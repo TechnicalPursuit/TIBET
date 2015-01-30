@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.LatLong}
- * @synopsis A type used to capture and compute latitude / longitude
+ * @summary A type used to capture and compute latitude / longitude
  *     coordinates.
  */
 
@@ -41,8 +41,8 @@ TP.core.LatLong.Inst.defineMethod('init',
 function(lat, lng) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized TP.core.LatLong object.
+     * @method init
+     * @summary Returns a newly initialized TP.core.LatLong object.
      * @param {Number} lat
      * @param {Number} lng
      * @returns {TP.core.LatLong} A new instance.
@@ -61,8 +61,8 @@ TP.core.LatLong.Inst.defineMethod('getLat',
 function() {
 
     /**
-     * @name getLat
-     * @synopsis Returns the latitude as a Number.
+     * @method getLat
+     * @summary Returns the latitude as a Number.
      * @returns {Number} The latitude as a Number.
      */
 
@@ -75,8 +75,8 @@ TP.core.LatLong.Inst.defineMethod('getLong',
 function() {
 
     /**
-     * @name getLong
-     * @synopsis Returns the longitude as a Number.
+     * @method getLong
+     * @summary Returns the longitude as a Number.
      * @returns {Number} The longitude as a Number.
      */
 
@@ -89,7 +89,7 @@ TP.core.LatLong.Inst.defineMethod('distance',
 function(aLatLong) {
 
     /**
-     * @name distance
+     * @method distance
      * @returns {Number}
      * @abstract
      */
@@ -132,8 +132,8 @@ TP.core.MapBounds.Inst.defineMethod('init',
 function(swlat, swlong, nelat, nelong) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized TP.core.MapBounds object.
+     * @method init
+     * @summary Returns a newly initialized TP.core.MapBounds object.
      * @param {Number} swlat
      * @param {Number} swlong
      * @param {Number} nelat
@@ -179,8 +179,8 @@ TP.core.MapMarker.Inst.defineMethod('init',
 function(aLatLong) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized TP.core.LatLong object.
+     * @method init
+     * @summary Returns a newly initialized TP.core.LatLong object.
      * @param {TP.core.LatLong} aLatLong
      * @returns {TPMarker} A new instance.
      */

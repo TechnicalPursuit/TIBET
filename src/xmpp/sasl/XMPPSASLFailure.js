@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.SASLFailure}
- * @synopsis A wrapper for the SASL failure element
+ * @summary A wrapper for the SASL failure element
  */
 
 //  ------------------------------------------------------------------------
@@ -32,8 +32,8 @@ TP.xmpp.SASLFailure.Inst.defineMethod('getErrorCondition',
 function() {
 
     /**
-     * @name getErrorCondition
-     * @synopsis Returns an element containing the error condition that
+     * @method getErrorCondition
+     * @summary Returns an element containing the error condition that
      *     occurred.
      * @returns {TP.core.ElementNode} The element denoting the error condition
      *     as per the XMPP 1.0 specification.
@@ -55,8 +55,8 @@ TP.xmpp.SASLFailure.Inst.defineMethod('getErrorText',
 function() {
 
     /**
-     * @name getErrorText
-     * @synopsis Returns a String containing the error message of the error that
+     * @method getErrorText
+     * @summary Returns a String containing the error message of the error that
      *     occurred. Note that error texts are completely optional as per the
      *     XMPP 1.0 specification.
      * @returns {String} The error text for the current error condition.

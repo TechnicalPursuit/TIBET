@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XAutoupdate}
- * @synopsis A wrapper for the X_AUTOUPDATE namespace'd payload element.
+ * @summary A wrapper for the X_AUTOUPDATE namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

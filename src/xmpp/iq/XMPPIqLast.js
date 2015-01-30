@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.IqLast}
- * @synopsis A wrapper for the IQ_LAST namespace'd payload element.
+ * @summary A wrapper for the IQ_LAST namespace'd payload element.
  */
 
 //  ------------------------------------------------------------------------

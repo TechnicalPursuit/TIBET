@@ -163,7 +163,7 @@ Cmd.prototype.USAGE = 'tibet release [--major|--minor|--patch]' +
 
 /**
  * Build a release candidate build, commit it, tag it, push it, etc. Simple.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
     // There are three phases due to two async breaks in the process. Kick off
@@ -178,7 +178,7 @@ Cmd.prototype.execute = function() {
  * on the TPI web site and the TIBETVersion[Template].js file(s) in the kernel.
  * @param {Object} data The release data as built from git describe and npm
  *     version information.
- * @return {String} The semver-compliant version string.
+ * @returns {String} The semver-compliant version string.
  */
 Cmd.prototype.getLibVersion = function(data) {
 
@@ -243,7 +243,7 @@ Cmd.prototype.getLibVersion = function(data) {
  * actually trimmed out so the eventual version string won't have a
  * "pre-release" portion.
  * @param {String} suffix The suffix to check and process.
- * @return {String} The processed suffix value.
+ * @returns {String} The processed suffix value.
  */
 Cmd.prototype.getSuffix = function(suffix) {
 
@@ -274,7 +274,7 @@ Cmd.prototype.getSuffix = function(suffix) {
  * Computes and returns the content to be used for the 'latest.js' file we keep
  * on the TPI web site for version update checks.
  * @param {Object} meta Data including latest.js 'content' and 'source' data.
- * @return {String} The latest.js file content string.
+ * @returns {String} The latest.js file content string.
  */
 Cmd.prototype.latest = function(meta) {
 

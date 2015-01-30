@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.FramedElement}
- * @synopsis A common supertype for various DHTML controls that require a
+ * @summary A common supertype for various DHTML controls that require a
  *     'frame' to wrap around them.
  */
 
@@ -38,8 +38,8 @@ TP.xctrls.FramedElement.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tagCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -82,8 +82,8 @@ TP.xctrls.FramedElement.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -124,8 +124,8 @@ TP.xctrls.FramedElement.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Invoked by the TIBET Shell when the tag is being "run" as part
+     * @method cmdRunContent
+     * @summary Invoked by the TIBET Shell when the tag is being "run" as part
      *     of a pipe or command sequence. For a UI element like an HTML element
      *     this effectively means to render itself onto the standard output
      *     stream.
@@ -163,8 +163,8 @@ TP.xctrls.FramedElement.Inst.defineMethod('init',
 function(aNode, aURI) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized instance.
+     * @method init
+     * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
@@ -192,13 +192,13 @@ TP.xctrls.FramedElement.Inst.defineMethod('configure',
 function() {
 
     /**
-     * @name configure
-     * @synopsis Configure the custom element as part of the startup process.
+     * @method configure
+     * @summary Configure the custom element as part of the startup process.
      *     This is called from the iframe's 'onload' hook and provides a
      *     mechanism for further processing after the content in the iframe has
      *     been completely loaded and initialized.
      * @returns {TP.xctrls.FramedElement} The receiver.
-     * @signals TP.sig.DOMReady
+     * @fires TP.sig.DOMReady
      */
 
     //  Signal that we're ready
@@ -213,8 +213,8 @@ TP.xctrls.FramedElement.Inst.defineMethod('getNativeContentDocument',
 function() {
 
     /**
-     * @name getNativeContentDocument
-     * @synopsis Returns the content document (that is the contained 'document')
+     * @method getNativeContentDocument
+     * @summary Returns the content document (that is the contained 'document')
      *     of the receiver in a TP.core.Document wrapper.
      * @returns {Document} The Document object contained by the receiver.
      */
@@ -228,8 +228,8 @@ TP.xctrls.FramedElement.Inst.defineMethod('getNativeContentWindow',
 function() {
 
     /**
-     * @name getNativeContentWindow
-     * @synopsis Returns the content window (that is the 'contained window') of
+     * @method getNativeContentWindow
+     * @summary Returns the content window (that is the 'contained window') of
      *     the receiver.
      * @returns {Window} The Window object contained by the receiver.
      */
@@ -243,8 +243,8 @@ TP.xctrls.FramedElement.Inst.defineMethod('startIFrameLoad',
 function(stubURI) {
 
     /**
-     * @name startIFrameLoad
-     * @synopsis Begins the iframe loading of the receiver. This method loads
+     * @method startIFrameLoad
+     * @summary Begins the iframe loading of the receiver. This method loads
      *     the content from the supplied URI into the iframe constructed by this
      *     type and sets up a callback handler that will call this type's
      *     'configure' method when the content from the iframe is all loaded and

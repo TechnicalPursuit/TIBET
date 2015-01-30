@@ -40,13 +40,13 @@ TP.sys.defineMethod('getObjectById',
 function(anID, regOnly, nodeContext) {
 
     /**
-     * @name getObjectById
-     * @synopsis Returns a reference to the object with the ID provided. The
+     * @method getObjectById
+     * @summary Returns a reference to the object with the ID provided. The
      *     'id' in this method can be anything from a uri to a typename, from a
      *     generated ID to an "access path". Logic within this routine and the
      *     various URI types is used to do most of the traversal when the ID
      *     appears to be a path.
-     * @description This is a core method for TIBET which is used to locate
+     * @summary This is a core method for TIBET which is used to locate
      *     elements, event handlers, and other objects in a variety of cases.
      *     It's a fairly complex method since it tries to make the lookup
      *     process thorough, but as quick as possible. The search starts with
@@ -358,8 +358,8 @@ TP.sys.defineMethod('hasRegistered',
 function(anObj, anID) {
 
     /**
-     * @name hasRegistered
-     * @synopsis Checks for the object in the public registry under its ID.
+     * @method hasRegistered
+     * @summary Checks for the object in the public registry under its ID.
      * @param {Object} anObj The object to check on. When null the test is
      *     simply whether any object is registered under the ID, otherwise the
      *     test is whether that particular object is registered under the ID
@@ -398,8 +398,8 @@ TP.sys.defineMethod('registerObject',
 function(anObj, anID, forceRegistration, observeResource) {
 
     /**
-     * @name registerObject
-     * @synopsis Places the object into the public registry under its ID.
+     * @method registerObject
+     * @summary Places the object into the public registry under its ID.
      * @param {Object} anObj The object to register.
      * @param {String} anID An optional ID to use instead of the object's
      *     internal ID.
@@ -489,8 +489,8 @@ TP.sys.defineMethod('unregisterObject',
 function(anObj, anID) {
 
     /**
-     * @name unregisterObject
-     * @synopsis Removes public registration for the object provided. This
+     * @method unregisterObject
+     * @summary Removes public registration for the object provided. This
      *     operation should be called RELIGIOUSLY to avoid memory leaks if
      *     objects are registered.
      * @param {Object} anObj The object to un-register.

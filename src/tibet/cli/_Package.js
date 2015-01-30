@@ -433,7 +433,7 @@ Package.prototype.dump = function(anObject) {
  * get a full list of all resources relative to a particular application. As a
  * result the resource list can help drive TIBET's command line tools.
  * @param {String} aPath The path to the package manifest file to be processed.
- * @return {Document} An xml document containing the expanded configuration.
+ * @returns {Document} An xml document containing the expanded configuration.
  */
 Package.prototype.expandAll = function(aPath) {
 
@@ -775,7 +775,7 @@ Package.prototype.expandOptions = function() {
  * @param {String} aPath The path to the package manifest file to be processed.
  * @param {String} aConfig The config ID within the package to be expanded.
  * @param {Element} anElement The optional package element being processed.
- * @return {Document} An xml document containing the expanded configuration.
+ * @returns {Document} An xml document containing the expanded configuration.
  */
 Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
 
@@ -888,7 +888,7 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
 /**
  * Expands a TIBET virtual path to its equivalent non-virtual path.
  * @param {String} aPath The path to be expanded.
- * @return {String} The fully-expanded path value.
+ * @returns {String} The fully-expanded path value.
  */
 Package.prototype.expandPath = function(aPath) {
     var path,
@@ -961,7 +961,7 @@ Package.prototype.expandPath = function(aPath) {
  * TIBET's setcfg/getcfg operations. For command-line processing the values
  * should be provided to the instance when it is created.
  * @param {String} aRef A potential property value reference to expand.
- * @return {String} The expanded value, or the original string value.
+ * @returns {String} The expanded value, or the original string value.
  */
 Package.prototype.expandReference = function(aRef) {
 
@@ -985,7 +985,7 @@ Package.prototype.expandReference = function(aRef) {
  * is the location where the tibet.json and/or package.json files are found
  * for the current context. This value is always computed and never set via
  * property values. The virtual path for this root is '~' or '~/'.
- * @return {String} The application's 'head' location.
+ * @returns {String} The application's 'head' location.
  */
 Package.prototype.getAppHead = function() {
     var cwd,
@@ -1041,7 +1041,7 @@ Package.prototype.getAppHead = function() {
  * line options that value is used. When not provided app_root typically
  * defaults to app_head since the majority of application structures don't
  * separate the two (TIBET's couchapp dna is an exception).
- * @return {String} The application root.
+ * @returns {String} The application root.
  */
 Package.prototype.getAppRoot = function() {
 
@@ -1075,7 +1075,7 @@ Package.prototype.getAppRoot = function() {
  * found. The search is a bit complex because we want to give precedence to
  * option settings and application-specific settings rather than simply working
  * from the assumption that we're using the library containing the current CLI.
- * @return {String} The library root.
+ * @returns {String} The library root.
  */
 Package.prototype.getLibRoot = function() {
     var app_root,
@@ -1215,7 +1215,7 @@ Package.prototype.getLibRoot = function() {
  * process property tag values during expansion so we end up invoking setcfg
  * with the right kind of value.
  * @param {String} value The value to convert.
- * @return {Object} The converted value.
+ * @returns {Object} The converted value.
  */
 Package.prototype.getArgumentPrimitive = function(value) {
     if (notValid(value)) {
@@ -1246,7 +1246,7 @@ Package.prototype.getArgumentPrimitive = function(value) {
  * in TIBET. This version will look in command line options followed by any
  * loaded TIBET configuration data for the property in question.
  * @param {string} property The name of the property to look up.
- * @return {Object} The property value.
+ * @returns {Object} The property value.
  */
 Package.prototype.getcfg = function(property) {
     var name,
@@ -1312,7 +1312,7 @@ Package.prototype.getcfg = function(property) {
 
 /**
  * Returns the file name of the currently processing package.
- * @return {string} The package file name.
+ * @returns {string} The package file name.
  */
 Package.prototype.getCurrentPackage = function() {
     return this.packageStack[0];
@@ -1322,7 +1322,7 @@ Package.prototype.getCurrentPackage = function() {
 /**
  * Returns the default configuration from the package document provided.
  * @param {Document} aPackageDoc The XML package document to use for defaulting.
- * @return {String} The configuration ID which is the default.
+ * @returns {String} The configuration ID which is the default.
  */
 Package.prototype.getDefaultConfig = function(aPackageDoc) {
 
@@ -1345,7 +1345,7 @@ Package.prototype.getDefaultConfig = function(aPackageDoc) {
  * blending it with any virtual or relative path information from aPath.
  * @param {Element} anElement The element from which to begin basedir lookups.
  * @param {String} aPath The path to resolve into a full path.
- * @return {string} The fully-expanded path.
+ * @returns {string} The fully-expanded path.
  */
 Package.prototype.getFullPath = function(anElement, aPath) {
 
@@ -1377,7 +1377,7 @@ Package.prototype.getFullPath = function(anElement, aPath) {
 
 /**
  * Returns the package configuration data from the NPM_FILE.
- * @return {Object} Returns the npm package.json content.
+ * @returns {Object} Returns the npm package.json content.
  */
 Package.prototype.getPackageConfig = function() {
     return this.npm;
@@ -1386,7 +1386,7 @@ Package.prototype.getPackageConfig = function() {
 
 /**
  * Returns the project configuration data from the PROJECT_FILE.
- * @return {Object} Returns the tibet.json content.
+ * @returns {Object} Returns the tibet.json content.
  */
 Package.prototype.getProjectConfig = function() {
     return this.tibet;
@@ -1399,7 +1399,7 @@ Package.prototype.getProjectConfig = function() {
  * string values are returned with quotes and appropriate escaping of any
  * embedded quotes.
  * @param {String} value The value to convert.
- * @return {Object} The converted value.
+ * @returns {Object} The converted value.
  */
 Package.prototype.getArgumentSource = function(value) {
     if (notValid(value)) {
@@ -1427,7 +1427,7 @@ Package.prototype.getArgumentSource = function(value) {
 /**
  * Returns a TIBET virtual path from its equivalent non-virtual path.
  * @param {String} aPath The path to be virtualized.
- * @return {String} The virtualized path value.
+ * @returns {String} The virtualized path value.
  */
 Package.prototype.getVirtualPath = function(aPath) {
 
@@ -1513,7 +1513,7 @@ Package.prototype.ifUnlessPassed = function(anElement) {
      * Tests if and unless conditions on the node, returning true if the node
      * passes and should be retained based on those conditions.
      * @param {Node} anElement The element to test.
-     * @return {Boolean} True if the element passes the filtering tests.
+     * @returns {Boolean} True if the element passes the filtering tests.
      */
 
     var i,
@@ -1575,7 +1575,7 @@ Package.prototype.ifUnlessPassed = function(anElement) {
 
 /**
  * Returns true if the current context is the TIBET library.
- * @return {Boolean} True if the current context is inside the TIBET library.
+ * @returns {Boolean} True if the current context is inside the TIBET library.
  */
 Package.prototype.inLibrary = function() {
     var dir,
@@ -1606,7 +1606,7 @@ Package.prototype.inLibrary = function() {
  * is based on loading the TIBET project file and checking for specific content
  * (or the lack thereof).
  * @param {Boolean} silent True to turn off warnings about certain errors.
- * @return {Boolean} True if the current context is inside a TIBET project.
+ * @returns {Boolean} True if the current context is inside a TIBET project.
  */
 Package.prototype.inProject = function(silent) {
     var cwd,        // Where are we being run?
@@ -1669,7 +1669,7 @@ Package.prototype.inProject = function(silent) {
 /**
  * Returns true if the current context is within a TIBET project (inProject)
  * and that project has been initialized (has node_modules/tibet or similar).
- * @return {Boolean} True if the package context is initialized.
+ * @returns {Boolean} True if the package context is initialized.
  */
 Package.prototype.isInitialized = function() {
     if (!this.initialized || !this.inProject()) {
@@ -1696,7 +1696,7 @@ Package.prototype.isInitialized = function() {
  * this will return true for TIBET virtual paths since they are absolute paths
  * when expanded.
  * @param {string} aPath The path to be tested.
- * @return {Boolean} True if the path is absolute.
+ * @returns {Boolean} True if the path is absolute.
  */
 Package.prototype.isAbsolutePath = function(aPath) {
     if (aPath.indexOf('~') === 0) {
@@ -1718,7 +1718,7 @@ Package.prototype.isAbsolutePath = function(aPath) {
 /**
  * Returns true if the path provided appears to be a virtual path.
  * @param {string} aPath The path to be tested.
- * @return {Boolean} True if the path is virtual.
+ * @returns {Boolean} True if the path is virtual.
  */
 Package.prototype.isVirtualPath = function(aPath) {
     return aPath.indexOf('~') === 0;
@@ -1731,7 +1731,7 @@ Package.prototype.isVirtualPath = function(aPath) {
  * this routine to build up the list).
  * @param {string} aPath The path to the package manifest to list.
  * @param {Array.<>} aList The array of asset descriptions to expand upon.
- * @return {Array.<>} The asset array.
+ * @returns {Array.<>} The asset array.
  */
 Package.prototype.listAllAssets = function(aPath, aList) {
 
@@ -1797,7 +1797,7 @@ Package.prototype.listAllAssets = function(aPath, aList) {
  * @param {Element} anElement The config element to begin listing from.
  * @param {Array.<>} aList The array of asset descriptions to expand upon.
  * @param {Boolean} listAll True to cause full listing of nested packages.
- * @return {Array.<>} The asset array.
+ * @returns {Array.<>} The asset array.
  */
 Package.prototype.listConfigAssets = function(anElement, aList, listAll) {
 
@@ -1961,7 +1961,7 @@ Package.prototype.listConfigAssets = function(anElement, aList, listAll) {
  * @param {string} aPath The path to the package manifest to list.
  * @param {string} aConfig The ID of the config in the package to list.
  * @param {Array.<>} aList The array of asset descriptions to expand upon.
- * @return {Array.<>} The asset array.
+ * @returns {Array.<>} The asset array.
  */
 Package.prototype.listPackageAssets = function(aPath, aConfig, aList) {
 

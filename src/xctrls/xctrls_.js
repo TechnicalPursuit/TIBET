@@ -10,7 +10,7 @@
 
 /**
  * @type {xctrls:}
- * @synopsis This type represents the XControls namespace
+ * @summary This type represents the XControls namespace
  *     (http://www.technicalpursuit.com/2005/xcontrols) in the tag processing
  *     system.
  */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.XMLRPCResponse}
- * @synopsis Provides a general purpose XMLRPC response wrapper.
+ * @summary Provides a general purpose XMLRPC response wrapper.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.sig.XMLRPCResponse.Inst.defineMethod('getFaultCode',
 function() {
 
     /**
-     * @name getFaultCode
-     * @synopsis Returns the XML-RPC fault code if any.
+     * @method getFaultCode
+     * @summary Returns the XML-RPC fault code if any.
      * @returns {Number} A fault code.
      */
 
@@ -55,8 +55,8 @@ TP.sig.XMLRPCResponse.Inst.defineMethod('getFaultText',
 function() {
 
     /**
-     * @name getFaultText
-     * @synopsis Returns the XML-RPC fault message string if any.
+     * @method getFaultText
+     * @summary Returns the XML-RPC fault message string if any.
      * @returns {String} A fault message string.
      */
 
@@ -85,8 +85,8 @@ TP.sig.XMLRPCResponse.Inst.defineMethod('getResultObject',
 function() {
 
     /**
-     * @name getResultObject
-     * @synopsis Returns the response content in JavaScript object form. If the
+     * @method getResultObject
+     * @summary Returns the response content in JavaScript object form. If the
      *     receiver represents a failed request then the content of the fault
      *     object is returned.
      * @returns {Object}

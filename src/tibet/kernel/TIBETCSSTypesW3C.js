@@ -20,8 +20,8 @@ TP.core.Gradient.Inst.defineMethod('asCanvasGradientOn',
 function(aCanvas) {
 
     /**
-     * @name asCanvasGradientOn
-     * @synopsis Converts the receiver into a gradient that can be used by the
+     * @method asCanvasGradientOn
+     * @summary Converts the receiver into a gradient that can be used by the
      *     supplied HTML Canvas element.
      * @param {HTMLCanvas} aCanvas The HTML Canvas element to produce the
      *     gradient for.
@@ -38,8 +38,8 @@ TP.core.Gradient.Inst.defineMethod('asSVGGradientOn',
 function(anElement, idValue) {
 
     /**
-     * @name asSVGGradientOn
-     * @synopsis Sets up an SVG 'linear gradient' element, given information in
+     * @method asSVGGradientOn
+     * @summary Sets up an SVG 'linear gradient' element, given information in
      *     the receiver.
      * @param {Element} anElement The element to set the gradient up for.
      * @param {String} idValue The ID value for the gradient. If a gradient has
@@ -57,8 +57,8 @@ TP.core.Gradient.Inst.defineMethod('$setupSVGGradientElement',
 function(anElement, idValue, gradientTagName) {
 
     /**
-     * @name $setupSVGGradientElement
-     * @synopsis Sets up a gradient element for the supplied element. This
+     * @method $setupSVGGradientElement
+     * @summary Sets up a gradient element for the supplied element. This
      *     manages all of the setup of the gradient element in the proper place
      *     in the SVG element hierarchy.
      * @param {SVGElement} anElement The element to set the gradient up for.
@@ -189,12 +189,12 @@ TP.core.LinearGradient.Inst.defineMethod('asCanvasGradientOn',
 function(aCanvas) {
 
     /**
-     * @name asCanvasGradientOn
-     * @synopsis Converts the receiver into a gradient that can be used by the
+     * @method asCanvasGradientOn
+     * @summary Converts the receiver into a gradient that can be used by the
      *     supplied HTML Canvas element.
      * @param {HTMLCanvas} aCanvas The HTML Canvas element to produce the
      *     gradient for.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidContext
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidContext
      * @returns {Object} An HTML Canvas gradient object suitable for use with
      *     the supplied HTML Canvas.
      */
@@ -273,8 +273,8 @@ TP.core.LinearGradient.Inst.defineMethod('asSVGGradientOn',
 function(anElement, idValue) {
 
     /**
-     * @name asSVGGradientOn
-     * @synopsis Sets up an SVG 'linear gradient' element, given information in
+     * @method asSVGGradientOn
+     * @summary Sets up an SVG 'linear gradient' element, given information in
      *     the receiver.
      * @param {SVGElement} anElement The element to set the gradient up for.
      * @param {String} idValue The ID value for the gradient. If a gradient has
@@ -323,12 +323,12 @@ TP.core.RadialGradient.Inst.defineMethod('asCanvasGradientOn',
 function(aCanvas) {
 
     /**
-     * @name asCanvasGradientOn
-     * @synopsis Converts the receiver into a gradient that can be used by the
+     * @method asCanvasGradientOn
+     * @summary Converts the receiver into a gradient that can be used by the
      *     supplied HTML Canvas element.
      * @param {HTMLCanvas} aCanvas The HTML Canvas element to produce the
      *     gradient for.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidContext
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidContext
      * @returns {Object} An HTML Canvas gradient object suitable for use with
      *     the supplied HTML Canvas.
      */
@@ -411,8 +411,8 @@ TP.core.RadialGradient.Inst.defineMethod('asSVGGradientOn',
 function(anElement, idValue) {
 
     /**
-     * @name asSVGGradientOn
-     * @synopsis Sets up an SVG 'radial gradient' element, given information in
+     * @method asSVGGradientOn
+     * @summary Sets up an SVG 'radial gradient' element, given information in
      *     the receiver.
      * @param {Element} anElement The element to set the gradient up for.
      * @param {String} idValue The ID value for the gradient. If a gradient has
@@ -464,8 +464,8 @@ TP.core.Pattern.Inst.defineMethod('asCanvasPatternOn',
 function(aCanvas) {
 
     /**
-     * @name asCanvasPatternOn
-     * @synopsis Converts the receiver into a pattern that can be used by the
+     * @method asCanvasPatternOn
+     * @summary Converts the receiver into a pattern that can be used by the
      *     supplied HTML Canvas element.
      * @param {HTMLCanvas} aCanvas The HTML Canvas element to produce the
      *     pattern for.
@@ -482,8 +482,8 @@ TP.core.Pattern.Inst.defineMethod('asSVGPatternOn',
 function(anElement, idValue) {
 
     /**
-     * @name asSVGPatternOn
-     * @synopsis Sets up an SVG 'radial gradient' element, given information in
+     * @method asSVGPatternOn
+     * @summary Sets up an SVG 'radial gradient' element, given information in
      *     the receiver.
      * @param {Element} anElement The element to set the pattern up for.
      * @param {String} idValue The ID value for the pattern. If a pattern has

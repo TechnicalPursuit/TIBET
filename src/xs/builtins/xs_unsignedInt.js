@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.unsignedInt}
- * @synopsis A value whose range is limited by unsigned 32-bit storage limits.
+ * @summary A value whose range is limited by unsigned 32-bit storage limits.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.unsignedInt.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided falls between 0 and
+     * @method validate
+     * @summary Returns true if the object provided falls between 0 and
      *     4294967295 inclusive.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

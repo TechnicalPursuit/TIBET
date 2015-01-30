@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Stanza}
- * @synopsis The XMPP protocol consists of 3 main 'packet' types: message, iq,
+ * @summary The XMPP protocol consists of 3 main 'packet' types: message, iq,
  *     and presence. This type provides a common root for this subtree, while
  *     the TP.xmpp.Payload type provides a root for the various namespace
  *     fragments which provide optional content for the packet types.
@@ -39,8 +39,8 @@ TP.xmpp.Stanza.Type.defineMethod('register',
 function() {
 
     /**
-     * @name register
-     * @synopsis Registers the type's information, particularly the tag name,
+     * @method register
+     * @summary Registers the type's information, particularly the tag name,
      *     template, and namespace information which drives the lookup processes
      *     for getConcreteType().
      */
@@ -78,8 +78,8 @@ TP.xmpp.Stanza.Inst.defineMethod('init',
 function(aNode, aType, toJID) {
 
     /**
-     * @name init
-     * @synopsis Initializes a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {A} aNode native node, or null to use the type's default template.
      * @param {String} aType The stanza type (get, set, etc) for the new
      *     instance.
@@ -114,11 +114,11 @@ TP.xmpp.Stanza.Inst.defineMethod('addPayload',
 function(aNode) {
 
     /**
-     * @name addPayload
-     * @synopsis Adds a payload node to the receiver. There can be multiple
+     * @method addPayload
+     * @summary Adds a payload node to the receiver. There can be multiple
      *     payload elements, however a single payload is more typical.
      * @param {A} TP.xmpp.Payload payload node.
-     * @raises TP.sig.InvalidXMPPPayload
+     * @exception TP.sig.InvalidXMPPPayload
      * @returns {TP.xmpp.Stanza} The receiver.
      */
 
@@ -139,10 +139,10 @@ TP.xmpp.Stanza.Inst.defineMethod('constructResponse',
 function() {
 
     /**
-     * @name constructResponse
-     * @synopsis Creates an appropriate response object based on the current
+     * @method constructResponse
+     * @summary Creates an appropriate response object based on the current
      *     packet.
-     * @raises SubtypeResponsibility
+     * @exception SubtypeResponsibility
      * @returns {TP.xmpp.Stanza}
      */
 
@@ -155,8 +155,8 @@ TP.xmpp.Stanza.Inst.defineMethod('expectsResponse',
 function(aFlag) {
 
     /**
-     * @name expectsResponse
-     * @synopsis A combined setter/getter for the 'response expected' flag. This
+     * @method expectsResponse
+     * @summary A combined setter/getter for the 'response expected' flag. This
      *     flag defines whether the receiver will attempt to observe its message
      *     ID for result signals.
      * @param {Boolean} aFlag The new value for the flag, if used as a setter.
@@ -176,8 +176,8 @@ TP.xmpp.Stanza.Inst.defineMethod('getDefaultType',
 function() {
 
     /**
-     * @name getDefaultType
-     * @synopsis Returns the default stanza type for the receiver.
+     * @method getDefaultType
+     * @summary Returns the default stanza type for the receiver.
      * @returns {String}
      */
 
@@ -190,8 +190,8 @@ TP.xmpp.Stanza.Inst.defineMethod('getFrom',
 function() {
 
     /**
-     * @name getFrom
-     * @synopsis Returns the 'from' address for the packet. This is a string
+     * @method getFrom
+     * @summary Returns the 'from' address for the packet. This is a string
      *     representing a JID.
      * @returns {String}
      */
@@ -205,8 +205,8 @@ TP.xmpp.Stanza.Inst.defineMethod('getMsgID',
 function() {
 
     /**
-     * @name getMsgID
-     * @synopsis Returns the message ID for the receiver. Each packet is
+     * @method getMsgID
+     * @summary Returns the message ID for the receiver. Each packet is
      *     assigned a unique ID which can be used to correlate request/response
      *     pairs and other results.
      * @returns {String}
@@ -222,8 +222,8 @@ TP.xmpp.Stanza.Inst.defineMethod('getPayload',
 function(aTagName, aNamespace) {
 
     /**
-     * @name getPayload
-     * @synopsis Returns an array containing any packets matching the tagname
+     * @method getPayload
+     * @summary Returns an array containing any packets matching the tagname
      *     and namespace provided. The returned packets are valid XMPP node
      *     types. Both parameters are optional, allowing for easy filtering of
      *     payload results.
@@ -288,11 +288,11 @@ TP.xmpp.Stanza.Inst.defineMethod('getSignalOrigin',
 function(aStanza) {
 
     /**
-     * @name getSignalOrigin
-     * @synopsis Returns the signal origin to use when signaling arrival of
+     * @method getSignalOrigin
+     * @summary Returns the signal origin to use when signaling arrival of
      *     packets of this type. The default is the 'msgID' or this stanza's
      *     'ID' if the msgID doesn't exist.
-     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalOrigin() calls as the stanza. This method should return
      *     TP.NONE if it does not want the XMPP connection to send a signal on
@@ -310,8 +310,8 @@ TP.xmpp.Stanza.Inst.defineMethod('getResponse',
 function() {
 
     /**
-     * @name getResponse
-     * @synopsis Returns the last response to the current packet, if any.
+     * @method getResponse
+     * @summary Returns the last response to the current packet, if any.
      * @returns {TP.xmpp.Node} A response node.
      */
 
@@ -324,8 +324,8 @@ TP.xmpp.Stanza.Inst.defineMethod('getTagType',
 function() {
 
     /**
-     * @name getTagType
-     * @synopsis Returns the value of the receiver's 'type' attribute, if any.
+     * @method getTagType
+     * @summary Returns the value of the receiver's 'type' attribute, if any.
      *     If the type had no value it is set to the default type as a result of
      *     this call and the default type is returned.
      * @returns {String}
@@ -347,8 +347,8 @@ TP.xmpp.Stanza.Inst.defineMethod('getTo',
 function() {
 
     /**
-     * @name getTo
-     * @synopsis Returns the receiver's 'to' address. This is the target JID.
+     * @method getTo
+     * @summary Returns the receiver's 'to' address. This is the target JID.
      * @returns {String}
      */
 
@@ -361,8 +361,8 @@ TP.xmpp.Stanza.Inst.defineMethod('handleXMPPInput',
 function(aSignal) {
 
     /**
-     * @name handleXMPPInput
-     * @synopsis Responds to notification of TP.sig.XMPPInput, typically due to
+     * @method handleXMPPInput
+     * @summary Responds to notification of TP.sig.XMPPInput, typically due to
      *     an observation of the receiver's message ID. In this handler the
      *     response node is saved as the receiver's last response.
      */
@@ -400,12 +400,12 @@ TP.xmpp.Stanza.Inst.defineMethod('send',
 function(aConnection) {
 
     /**
-     * @name send
-     * @synopsis Sends the receiver using its connection, or the connection
+     * @method send
+     * @summary Sends the receiver using its connection, or the connection
      *     provided.
      * @param {TP.xmpp.Connection} aConnection The connection instance to send
      *     with. Defaults to the receiver's connection.
-     * @raises TP.sig.InvalidXMPPConnection
+     * @exception TP.sig.InvalidXMPPConnection
      * @returns {String} The message ID used for the send.
      */
 
@@ -428,8 +428,8 @@ TP.xmpp.Stanza.Inst.defineMethod('setFrom',
 function(aJIDString) {
 
     /**
-     * @name setFrom
-     * @synopsis Sets the originating address for the packet. Note that the
+     * @method setFrom
+     * @summary Sets the originating address for the packet. Note that the
      *     jabber server typically ignores these and rewrites them with the JID
      *     of the connection. You can stil use this to assist with documentation
      *     within the TIBET send logs however.
@@ -448,11 +448,11 @@ TP.xmpp.Stanza.Inst.defineMethod('setStanzaType',
 function(aStanzaType) {
 
     /**
-     * @name setStanzaType
-     * @synopsis Sets the receiver's stanza type attribute. The type must be
+     * @method setStanzaType
+     * @summary Sets the receiver's stanza type attribute. The type must be
      *     mapped in the type's stanzaTypes array to be valid.
      * @param {String} aStanzaType The stanza type string to set.
-     * @raises TP.sig.InvalidXMPPStanzaType
+     * @exception TP.sig.InvalidXMPPStanzaType
      * @returns {TP.xmpp.Stanza} The receiver.
      */
 
@@ -478,8 +478,8 @@ TP.xmpp.Stanza.Inst.defineMethod('setMsgID',
 function(aValue) {
 
     /**
-     * @name setMsgID
-     * @synopsis Defines the unique message ID for the receiver. You don't
+     * @method setMsgID
+     * @summary Defines the unique message ID for the receiver. You don't
      *     normally call this publicly.
      * @param {String} aValue The message ID.
      * @returns {TP.xmpp.Stanza} The receiver.
@@ -496,8 +496,8 @@ TP.xmpp.Stanza.Inst.defineMethod('setTo',
 function(aJIDString) {
 
     /**
-     * @name setTo
-     * @synopsis Sets the receiver's 'to' address. This is the target JID for
+     * @method setTo
+     * @summary Sets the receiver's 'to' address. This is the target JID for
      *     the packet.
      * @param {String} aJIDString The JId being targeted.
      * @returns {TP.xmpp.Stanza} The receiver.

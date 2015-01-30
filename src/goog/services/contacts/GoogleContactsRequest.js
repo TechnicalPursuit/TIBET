@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.GoogleContactsRequest}
- * @synopsis A subtype of TP.sig.HTTPRequest that knows how to manage data from
+ * @summary A subtype of TP.sig.HTTPRequest that knows how to manage data from
  *     the Google-hosted Google Contacts server.
  * @example Using the Google Contacts server from TIBET consists of:
  *

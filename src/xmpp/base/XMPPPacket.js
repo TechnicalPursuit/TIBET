@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Packet}
- * @synopsis The XMPP protocol consists of 'streams' and 'stanzas' which are XML
+ * @summary The XMPP protocol consists of 'streams' and 'stanzas' which are XML
  *     elements conforming to specific requirements. This type provides a common
  *     supertype for these entities which have a connection.
  */
@@ -37,8 +37,8 @@ TP.xmpp.Packet.Inst.defineMethod('getConnection',
 function() {
 
     /**
-     * @name getConnection
-     * @synopsis Returns the connection instance which owns the receiver.
+     * @method getConnection
+     * @summary Returns the connection instance which owns the receiver.
      * @returns {TP.xmpp.Connection}
      */
 
@@ -51,8 +51,8 @@ TP.xmpp.Packet.Inst.defineMethod('setConnection',
 function(aConnection) {
 
     /**
-     * @name setConnection
-     * @synopsis Sets the receiver's connection. This is the connection that
+     * @method setConnection
+     * @summary Sets the receiver's connection. This is the connection that
      *     will be used for send() processing and similar operations.
      * @param {TP.xmpp.Connection} aConnection The connection to define.
      * @returns {TP.xmpp.Packet} The receiver.

@@ -20,10 +20,10 @@ TP.defineMetaInstMethod('transform',
 function(aDataSource, transformParams) {
 
     /**
-     * @name transform
-     * @synopsis Performs a transformation on the supplied data source object
+     * @method transform
+     * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @description At this level, this method merely calls transform<Type>
+     * @summary At this level, this method merely calls transform<Type>
      *     where <type> is the type of the data source. If that type has no
      *     transform method, transformObject() will be called as the default.
      * @param {Object} aDataSource The object supplying the data to use in the
@@ -52,10 +52,10 @@ TP.defineCommonMethod('transformObject',
 function(aDataSource, transformParams) {
 
     /**
-     * @name transformObject
-     * @synopsis Performs a transformation on the supplied data source object
+     * @method transformObject
+     * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @description At this level, this method is providing the 'fallback' for
+     * @summary At this level, this method is providing the 'fallback' for
      *     the 'transform()' method. It provides no functionality.
      * @param {Object} aDataSource The object supplying the data to use in the
      *     transformation.
@@ -78,8 +78,8 @@ String.Inst.defineMethod('compile',
 function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
 
     /**
-     * @name compile
-     * @synopsis Compiles the receiver string template and registers it under
+     * @method compile
+     * @summary Compiles the receiver string template and registers it under
      *     the key provided. If no template name is provided all cache and
      *     registration flags are effectively ignored.
      * @param {String} templateName The template's lookup ID.
@@ -180,8 +180,8 @@ String.Inst.defineMethod('$compileTemplateTokens',
 function(tokenList, templateName, sourceVarNames) {
 
     /**
-     * @name $compileTemplateTokens
-     * @synopsis Compiles the supplied template tokens into a JavaScript
+     * @method $compileTemplateTokens
+     * @summary Compiles the supplied template tokens into a JavaScript
      *     Function object.
      * @param {Array} tokenList The list of tokens representing the template.
      * @param {String} templateName The template's lookup ID. In this method,
@@ -659,10 +659,10 @@ String.Inst.defineMethod('transform',
 function(aDataSource, transformParams) {
 
     /**
-     * @name transform
-     * @synopsis Performs a transformation on the supplied data source object
+     * @method transform
+     * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @description At this level, this method performs a TIBET-specific string
+     * @summary At this level, this method performs a TIBET-specific string
      *     interpolation (a fancy word for substitutions) of a particular form.
      *     In TIBET we support the {{varname}} for performing interpolation. See
      *     Function's version of 'transform' for more information on how
@@ -781,10 +781,10 @@ Function.Inst.defineMethod('transform',
 function(aDataSource, transformParams) {
 
     /**
-     * @name transform
-     * @synopsis Performs a transformation on the supplied data source object
+     * @method transform
+     * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @description At this level, this method performs a TIBET-specific string
+     * @summary At this level, this method performs a TIBET-specific string
      *     interpolation (a fancy word for substitutions) of a particular form.
      *     In TIBET we support the {{varname}} for performing interpolation.
      *     In TIBET you can think of both the 'xpath' and 'varname' portions as

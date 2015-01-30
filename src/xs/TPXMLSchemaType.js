@@ -11,7 +11,7 @@
 
 /**
  * @type {TP.core.XMLSchemaType}
- * @synopsis The common supertype for all XML Schema-defined data types.
+ * @summary The common supertype for all XML Schema-defined data types.
  */
 
 //  ------------------------------------------------------------------------
@@ -24,10 +24,10 @@ TP.xs.XMLSchemaType.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
-     * @synopsis Returns a new instance from the string provided by processing
+     * @method fromString
+     * @summary Returns a new instance from the string provided by processing
      *     the String into another type.
-     * @description For XML Schema data types, we have no 'parsers' - but the
+     * @summary For XML Schema data types, we have no 'parsers' - but the
      *     types themselves take a String and convert it into an instance by
      *     calling fromObject(). Therefore we override this method and just call
      *     fromObject().

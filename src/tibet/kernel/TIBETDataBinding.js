@@ -601,8 +601,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName, transformationFunc) {
 
     /**
-     * @name defineBinding
-     * @synopsis Adds a binding to the supplied target object.
+     * @method defineBinding
+     * @summary Adds a binding to the supplied target object.
      * @param {Object} target The target object to define the binding on.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
@@ -811,8 +811,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName, transformationFunc) {
 
     /**
-     * @name defineBinding
-     * @synopsis Adds a binding to the receiver.
+     * @method defineBinding
+     * @summary Adds a binding to the receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -838,8 +838,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName, transformationFunc) {
 
     /**
-     * @name defineBinding
-     * @synopsis Adds a binding to the type receiver.
+     * @method defineBinding
+     * @summary Adds a binding to the type receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -865,8 +865,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName, transformationFunc) {
 
     /**
-     * @name defineBinding
-     * @synopsis Adds a binding to the instance receiver.
+     * @method defineBinding
+     * @summary Adds a binding to the instance receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -892,8 +892,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName) {
 
     /**
-     * @name destroyBinding
-     * @synopsis Adds a binding to the supplied target object.
+     * @method destroyBinding
+     * @summary Adds a binding to the supplied target object.
      * @param {Object} target The target object to define the binding on.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
@@ -1013,8 +1013,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName) {
 
     /**
-     * @name destroyBinding
-     * @synopsis Removes a binding from the receiver.
+     * @method destroyBinding
+     * @summary Removes a binding from the receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -1036,8 +1036,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName) {
 
     /**
-     * @name destroyBinding
-     * @synopsis Removes a binding from the type receiver.
+     * @method destroyBinding
+     * @summary Removes a binding from the type receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -1059,8 +1059,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName) {
 
     /**
-     * @name destroyBinding
-     * @synopsis Removes a binding from the instance receiver.
+     * @method destroyBinding
+     * @summary Removes a binding from the instance receiver.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
@@ -1081,8 +1081,8 @@ TP.defineMetaInstMethod('refresh',
 function(aSignalOrHash) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have.
      * @param {TP.sig.Signal|TP.lang.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash. If this is a signal, this
@@ -1132,8 +1132,8 @@ TP.core.URI.Inst.defineMethod('refresh',
 function(aSignalOrHash) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have.
      * @param {TP.sig.Signal|TP.lang.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash. If this is a signal, this
@@ -1192,8 +1192,8 @@ TP.core.DocumentNode.Inst.defineMethod('handleDOMRefresh',
 function(aSignal) {
 
     /**
-     * @name handleDOMRefresh
-     * @synopsis Refreshes the receiver's bound data.
+     * @method handleDOMRefresh
+     * @summary Refreshes the receiver's bound data.
      * @param {TP.sig.DOMRefresh} aSignal The signal instance which triggered
      *     this handler.
      */
@@ -1209,8 +1209,8 @@ TP.core.DocumentNode.Inst.defineMethod('refresh',
 function(aSignalOrHash) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver's content by refreshing all bound elements
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound elements
      *     in the document. For an HTML document this will refresh content under
      *     the body, while in an XML document all elements including the
      *     documentElement are refreshed.
@@ -1269,8 +1269,8 @@ TP.core.ElementNode.Inst.defineMethod('defineSugaredBindings',
 function() {
 
     /**
-     * @name defineSugaredBindings
-     * @synopsis Defines any bindings coming from the receivers's 'sugared
+     * @method defineSugaredBindings
+     * @summary Defines any bindings coming from the receivers's 'sugared
      *     binding' expressions. These are normally registered by the 'bind:'
      *     namespace when it processes the markup.
      * @returns {TP.core.ElementNode} The receiver.
@@ -1375,8 +1375,8 @@ TP.core.ElementNode.Inst.defineMethod('destroySugaredBindings',
 function() {
 
     /**
-     * @name destroySugaredBindings
-     * @synopsis Destroys any bindings coming from the receivers's 'sugared
+     * @method destroySugaredBindings
+     * @summary Destroys any bindings coming from the receivers's 'sugared
      *     binding' expressions. These are normally registered by the 'bind:'
      *     namespace when it processes the markup.
      * @returns {TP.core.ElementNode} The receiver.
@@ -1467,8 +1467,8 @@ TP.core.ElementNode.Inst.defineMethod('handleDOMRebuild',
 function(aSignal) {
 
     /**
-     * @name handleDOMRebuild
-     * @synopsis Rebuilds the receiver's binding expressions.
+     * @method handleDOMRebuild
+     * @summary Rebuilds the receiver's binding expressions.
      * @param {TP.sig.DOMRebuild} aSignal The signal instance which triggered
      *     this handler.
      */
@@ -1484,8 +1484,8 @@ TP.core.ElementNode.Inst.defineMethod('handleDOMRefresh',
 function(aSignal) {
 
     /**
-     * @name handleDOMRefresh
-     * @synopsis Refreshes the receiver's bound data.
+     * @method handleDOMRefresh
+     * @summary Refreshes the receiver's bound data.
      * @param {TP.sig.DOMRefresh} aSignal The signal instance which triggered
      *     this handler.
      */
@@ -1501,8 +1501,8 @@ TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
 function(attributeName) {
 
     /**
-     * @name getBindingInfoFrom
-     * @synopsis Gets binding information from the attribute named by the
+     * @method getBindingInfoFrom
+     * @summary Gets binding information from the attribute named by the
      *     supplied attribute name on the receiver.
      * @param {String} attributeName The *local* name of the attribute to obtain
      *     the binding information from.
@@ -1603,8 +1603,8 @@ TP.core.ElementNode.Inst.defineMethod('getBindingScopeValues',
 function() {
 
     /**
-     * @name getBindingScopeValues
-     * @synopsis Returns the binding scope values by starting at the receiver
+     * @method getBindingScopeValues
+     * @summary Returns the binding scope values by starting at the receiver
      *      and traversing the DOM tree up to the #document node, gathering
      *      'bind:scope' attribute values along the way. This will be used to
      *      qualify binding expressions on the receiver.
@@ -1675,8 +1675,8 @@ TP.core.ElementNode.Inst.defineMethod('isBoundElement',
 function() {
 
     /**
-     * @name isBoundElement
-     * @synopsis Whether or not the receiver is a bound element.
+     * @method isBoundElement
+     * @summary Whether or not the receiver is a bound element.
      * @returns {Boolean} Whether or not the receiver is bound.
      */
 
@@ -1697,8 +1697,8 @@ TP.core.ElementNode.Inst.defineMethod('isRepeatElement',
 function() {
 
     /**
-     * @name isRepeatElement
-     * @synopsis Whether or not the receiver is a repeat element for binding.
+     * @method isRepeatElement
+     * @summary Whether or not the receiver is a repeat element for binding.
      * @returns {Boolean} Whether or not the receiver is a repeat element
      */
 
@@ -1719,8 +1719,8 @@ TP.core.ElementNode.Inst.defineMethod('rebuild',
 function(aSignalOrHash) {
 
     /**
-     * @name rebuild
-     * @synopsis Rebuilds any bindings for the receiver.
+     * @method rebuild
+     * @summary Rebuilds any bindings for the receiver.
      * @param {TP.sig.DOMRebuild|TP.lang.Hash} aSignalOrHash An optional signal
      *     which triggered this action or hash supplied by the caller. This
      *     object should include the following keys:
@@ -1985,8 +1985,8 @@ TP.core.ElementNode.Inst.defineMethod('rebuildRepeat',
 function(aSignalOrHash) {
 
     /**
-     * @name rebuildRepeat
-     * @synopsis Rebuilds any bindings for the receiver's descendant content
+     * @method rebuildRepeat
+     * @summary Rebuilds any bindings for the receiver's descendant content
      *     that is bound.
      * @param {TP.sig.DOMRebuild|TP.lang.Hash} aSignalOrHash An optional signal
      *     which triggered this action or hash supplied by the caller. This
@@ -2130,8 +2130,8 @@ TP.core.ElementNode.Inst.defineMethod('refreshRepeat',
 function(aResource) {
 
     /**
-     * @name refreshRepeat
-     * @synopsis Refreshes the repeat and it's children content from the
+     * @method refreshRepeat
+     * @summary Refreshes the repeat and it's children content from the
      *     supplied resource.
      * @param {Object} aResource The object that will be used as the repeat
      *     value. This object should be a collection.
@@ -2443,7 +2443,7 @@ TP.core.ElementNode.Inst.defineMethod('$refreshRepeatingTextNodes',
 function(aNode, aResource, pathValues) {
 
     /**
-     * @name $refreshRepeatingTextNodes
+     * @method $refreshRepeatingTextNodes
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -2510,12 +2510,12 @@ TP.core.ElementNode.Inst.defineMethod('refresh',
 function(aSignalOrHash) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
+     * @method refresh
+     * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal or hash payload specifies a
      *     'deep' refresh then descendant elements that are bound are also
      *     updated.
-     * @description For bound elements there are really two "values", the
+     * @summary For bound elements there are really two "values", the
      *     element's internal value such as its text value (what we call its
      *     "display" value) and the element's bound value which is the value
      *     found by evaluating its binding aspect against its source. This
@@ -2562,8 +2562,8 @@ TP.core.ElementNode.Inst.defineMethod('registerSugaredExpression',
 function(aName, aValue) {
 
     /**
-     * @name registerSugaredExpression
-     * @synopsis Registers a 'sugared binding expression' for processing by the
+     * @method registerSugaredExpression
+     * @summary Registers a 'sugared binding expression' for processing by the
      *     binding engine.
      * @param {String} aName The name to register the expression under. This
      *     should be the name of the aspect that will be set on the target
@@ -2589,8 +2589,8 @@ TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatindex',
 function(index) {
 
     /**
-     * @name setAttrBindRepeatindex
-     * @synopsis Sets the repeat index that the receiver will use to start
+     * @method setAttrBindRepeatindex
+     * @summary Sets the repeat index that the receiver will use to start
      *     repeating from.
      * @param {Number} index The index to start repeating from.
      */
@@ -2609,8 +2609,8 @@ TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatsize',
 function(size) {
 
     /**
-     * @name setAttrBindRepeatsize
-     * @synopsis Sets the repeat size that the receiver will use to display
+     * @method setAttrBindRepeatsize
+     * @summary Sets the repeat size that the receiver will use to display
      *     'pages' of repeating data.
      * @param {Number} size The size of the data 'page'.
      */
@@ -2629,8 +2629,8 @@ TP.core.ElementNode.Inst.defineMethod('setRepeatValue',
 function(aResource) {
 
     /**
-     * @name setRepeatValue
-     * @synopsis Sets the repeat value (the collection) for the receiver (if
+     * @method setRepeatValue
+     * @summary Sets the repeat value (the collection) for the receiver (if
      *     it's an element that has a 'bind:repeat' on it).
      * @param {Object} aResource The object that will be used as the repeat
      *     value. This object should be a collection.

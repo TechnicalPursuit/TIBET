@@ -39,8 +39,8 @@ TP.gui.Driver.Type.defineMethod('initialize',
 function() {
 
     /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var newKeymap,
@@ -259,11 +259,11 @@ TP.gui.Driver.Inst.defineMethod('init',
 function(windowContext) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {TP.core.Window} windowContext The initial window context to use
      *     to resolve GUI element references, etc.
-     * @return {TP.gui.Driver} A new instance.
+     * @returns {TP.gui.Driver} A new instance.
      */
 
     this.callNextMethod();
@@ -279,12 +279,12 @@ TP.gui.Driver.Inst.defineMethod('fetchResource',
 function(aURI, resultType) {
 
     /**
-     * @name fetchResource
-     * @synopsis Fetches the resource at the end of the URI. The result will be
+     * @method fetchResource
+     * @summary Fetches the resource at the end of the URI. The result will be
      *     available as the value of the returned promise.
      * @param {TP.core.URI} The URI to fetch the resource for.
-     * @raises TP.sig.InvalidURI
-     * @return {TP.gui.Driver} The receiver.
+     * @exception TP.sig.InvalidURI
+     * @returns {TP.gui.Driver} The receiver.
      */
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
@@ -335,10 +335,10 @@ TP.gui.Driver.Inst.defineMethod('getCurrentNativeDocument',
 function() {
 
     /**
-     * @name getCurrentNativeDocument
-     * @synopsis Returns the native Document object associated with the current
+     * @method getCurrentNativeDocument
+     * @summary Returns the native Document object associated with the current
      *     window context.
-     * @return {Document} The Document of the current window context.
+     * @returns {Document} The Document of the current window context.
      */
 
     var context;
@@ -354,10 +354,10 @@ TP.gui.Driver.Inst.defineMethod('getFocusedElement',
 function() {
 
     /**
-     * @name getFocusedElement
-     * @synopsis Returns the Element that currently has focus in the current
+     * @method getFocusedElement
+     * @summary Returns the Element that currently has focus in the current
      *     window context.
-     * @return {Element} The focused Element in the current window context.
+     * @returns {Element} The focused Element in the current window context.
      */
 
     var context;
@@ -373,14 +373,14 @@ TP.gui.Driver.Inst.defineMethod('setBodyContent',
 function(aURI, aWindow) {
 
     /**
-     * @name setBodyContent
-     * @synopsis Sets the 'body' content of the (X)HTML document in the supplied
+     * @method setBodyContent
+     * @summary Sets the 'body' content of the (X)HTML document in the supplied
      *     Window to the content found at the end of the URI.
      * @param {TP.core.URI} The URI to fetch content from.
      * @param {TP.core.Window} The Window to use the body of to load the content
      *     into. This will default to the current UI canvas.
-     * @raises TP.sig.InvalidURI
-     * @return {TP.gui.Driver} The receiver.
+     * @exception TP.sig.InvalidURI
+     * @returns {TP.gui.Driver} The receiver.
      */
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
@@ -417,14 +417,14 @@ TP.gui.Driver.Inst.defineMethod('setLocation',
 function(aURI, aWindow) {
 
     /**
-     * @name setLocation
-     * @synopsis Sets the location of the supplied Window to the content found
+     * @method setLocation
+     * @summary Sets the location of the supplied Window to the content found
      *     at the end of the URI.
      * @param {TP.core.URI} The URI to fetch content from.
      * @param {TP.core.Window} The Window to load the content into. This will
      *     default to the current UI canvas.
-     * @raises TP.sig.InvalidURI
-     * @return {TP.gui.Driver} The receiver.
+     * @exception TP.sig.InvalidURI
+     * @returns {TP.gui.Driver} The receiver.
      */
 
     var provider;
@@ -495,10 +495,10 @@ TP.gui.Driver.Inst.defineMethod('showTestGUI',
 function() {
 
     /**
-     * @name showTestGUI
-     * @synopsis Shows the 'test GUI'. The process by which it does this is
+     * @method showTestGUI
+     * @summary Shows the 'test GUI'. The process by which it does this is
      *     environment dependent (i.e. what tool we're running in, etc).
-     * @return {TP.gui.Driver} The receiver.
+     * @returns {TP.gui.Driver} The receiver.
      */
 
     if (TP.sys.cfg('tibet.tdc') === true) {
@@ -518,10 +518,10 @@ TP.gui.Driver.Inst.defineMethod('showTestLog',
 function() {
 
     /**
-     * @name showTestLog
-     * @synopsis Shows the 'test log'. The process by which it does this is
+     * @method showTestLog
+     * @summary Shows the 'test log'. The process by which it does this is
      *     environment dependent (i.e. what tool we're running in, etc).
-     * @return {TP.gui.Driver} The receiver.
+     * @returns {TP.gui.Driver} The receiver.
      */
 
     if (TP.sys.cfg('tibet.tdc') === true) {
@@ -541,9 +541,9 @@ TP.gui.Driver.Inst.defineMethod('startSequence',
 function() {
 
     /**
-     * @name startSequence
-     * @synopsis Returns a new GUI sequence used to script actions.
-     * @return {TP.gui.Sequence} A new GUI sequence.
+     * @method startSequence
+     * @summary Returns a new GUI sequence used to script actions.
+     * @returns {TP.gui.Sequence} A new GUI sequence.
      */
 
     //  If Syn isn't loaded, then throw a TP.sig.UnsupportedOperation exception.
@@ -561,11 +561,11 @@ TP.gui.Driver.Inst.defineMethod('takeScreenshotOf',
 function(aNode) {
 
     /**
-     * @name takeScreenshotOf
-     * @synopsis Take a screenshot of either the whole window of the currently
+     * @method takeScreenshotOf
+     * @summary Take a screenshot of either the whole window of the currently
      *     executing window context or some portion thereof as determined by the
      *     supplied Node.
-     * @description If a Document node is supplied to this method, the whole
+     * @summary If a Document node is supplied to this method, the whole
      *     Document will be snapshotted. If an Element is supplied, only that
      *     Element will be snapshotted. Note also that this method currently
      *     only works when this code is being executed in the PhantomJS
@@ -573,7 +573,7 @@ function(aNode) {
      * @param {Node} aNode The Node used to determine which portion of the
      *     screen to take a snapshot of. Note that if this is not supplied, the
      *     whole window of the currently executing window context will be used.
-     * @return {TP.gui.Driver} The receiver.
+     * @returns {TP.gui.Driver} The receiver.
      */
 
     if (TP.sys.cfg('boot.context') !== 'phantomjs') {
@@ -604,11 +604,11 @@ TP.gui.Sequence.Inst.defineMethod('init',
 function(driver) {
 
     /**
-     * @name init
-     * @synopsis Initialize the instance.
+     * @method init
+     * @summary Initialize the instance.
      * @param {TP.gui.Driver} driver The GUI driver which created this sequence
      *     and is being used in conjunction with it to drive the GUI.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.callNextMethod();
@@ -625,13 +625,13 @@ TP.gui.Sequence.Inst.defineMethod('altKeyDown',
 function(aPath) {
 
     /**
-     * @name altKeyDown
-     * @synopsis Simulate the act of pressing the 'Alt' key down.
+     * @method altKeyDown
+     * @summary Simulate the act of pressing the 'Alt' key down.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Alt' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Alt', aPath);
@@ -645,13 +645,13 @@ TP.gui.Sequence.Inst.defineMethod('altKeyUp',
 function(aPath) {
 
     /**
-     * @name altKeyUp
-     * @synopsis Simulate the act of releasing the 'Alt' key up.
+     * @method altKeyUp
+     * @summary Simulate the act of releasing the 'Alt' key up.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Alt' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Alt', aPath);
@@ -665,9 +665,9 @@ TP.gui.Sequence.Inst.defineMethod('click',
 function(mouseLocation, mouseButton) {
 
     /**
-     * @name click
-     * @synopsis Simulates the act of clicking the mouse button.
-     * @description Note that this method has a notion of a 'currently focused'
+     * @method click
+     * @summary Simulates the act of clicking the mouse button.
+     * @summary Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -682,7 +682,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -759,13 +759,13 @@ TP.gui.Sequence.Inst.defineMethod('ctrlKeyDown',
 function(aPath) {
 
     /**
-     * @name ctrlKeyDown
-     * @synopsis Simulate the act of pressing the 'Control' key down.
+     * @method ctrlKeyDown
+     * @summary Simulate the act of pressing the 'Control' key down.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Control' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Control', aPath);
@@ -779,13 +779,13 @@ TP.gui.Sequence.Inst.defineMethod('ctrlKeyUp',
 function(aPath) {
 
     /**
-     * @name ctrlKeyUp
-     * @synopsis Simulate the act of releasing the 'Control' key up.
+     * @method ctrlKeyUp
+     * @summary Simulate the act of releasing the 'Control' key up.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Control' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Control', aPath);
@@ -799,9 +799,9 @@ TP.gui.Sequence.Inst.defineMethod('doubleClick',
 function(mouseLocation, mouseButton) {
 
     /**
-     * @name doubleClick
-     * @synopsis Simulates the act of double clicking the mouse button.
-     * @description Note that this method has a notion of a 'currently focused'
+     * @method doubleClick
+     * @summary Simulates the act of double clicking the mouse button.
+     * @summary Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -816,7 +816,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -898,10 +898,10 @@ TP.gui.Sequence.Inst.defineMethod('exec',
 function(aFunction) {
 
     /**
-     * @name exec
-     * @synopsis Executes the supplied Function as a step in the sequence.
+     * @method exec
+     * @summary Executes the supplied Function as a step in the sequence.
      * @param {Function} aFunction The Function to execute.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     if (TP.isCallable(aFunction)) {
@@ -917,13 +917,13 @@ TP.gui.Sequence.Inst.defineMethod('$expandSequenceEntries',
 function(entries) {
 
     /**
-     * @name $expandSequenceEntries
-     * @synopsis Expands the supplied Array of sequence entries into a set
+     * @method $expandSequenceEntries
+     * @summary Expands the supplied Array of sequence entries into a set
      *     where, if an entry's 'target' reference expands into more than one
      *     target element, an individual entry is made for each one of those
      *     targets.
      * @param {Array} entries The initial set of sequence entries.
-     * @return {Array} The fully expanded Array of sequence entries.
+     * @returns {Array} The fully expanded Array of sequence entries.
      */
 
     var driver,
@@ -980,14 +980,14 @@ TP.gui.Sequence.Inst.defineMethod('keyDown',
 function(aKey, aPath) {
 
     /**
-     * @name keyDown
-     * @synopsis Simulate the act of pressing the supplied key down.
+     * @method keyDown
+     * @summary Simulate the act of pressing the supplied key down.
      * @param {String} aKey The key to simulate pressing down.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the keys pressed down over. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -1005,14 +1005,14 @@ TP.gui.Sequence.Inst.defineMethod('keyUp',
 function(aKey, aPath) {
 
     /**
-     * @name keyUp
-     * @synopsis Simulate the act of releasing the supplied key up.
+     * @method keyUp
+     * @summary Simulate the act of releasing the supplied key up.
      * @param {String} aKey The key to simulate releasing up.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the keys released up over. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -1030,13 +1030,13 @@ TP.gui.Sequence.Inst.defineMethod('metaKeyDown',
 function(aPath) {
 
     /**
-     * @name metaKeyDown
-     * @synopsis Simulate the act of pressing the 'Meta' key down.
+     * @method metaKeyDown
+     * @summary Simulate the act of pressing the 'Meta' key down.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Meta' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Meta', aPath);
@@ -1050,13 +1050,13 @@ TP.gui.Sequence.Inst.defineMethod('metaKeyUp',
 function(aPath) {
 
     /**
-     * @name metaKeyUp
-     * @synopsis Simulate the act of releasing the 'Meta' key up.
+     * @method metaKeyUp
+     * @summary Simulate the act of releasing the 'Meta' key up.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Meta' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Meta', aPath);
@@ -1070,9 +1070,9 @@ TP.gui.Sequence.Inst.defineMethod('mouseDown',
 function(mouseLocation, mouseButton) {
 
     /**
-     * @name mouseDown
-     * @synopsis Simulates the act of pressing the mouse button down.
-     * @description Note that this method has a notion of a 'currently focused'
+     * @method mouseDown
+     * @summary Simulates the act of pressing the mouse button down.
+     * @summary Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -1087,7 +1087,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -1169,9 +1169,9 @@ TP.gui.Sequence.Inst.defineMethod('mouseUp',
 function(mouseLocation, mouseButton) {
 
     /**
-     * @name mouseUp
-     * @synopsis Simulates the act of releasing the mouse button up.
-     * @description Note that this method has a notion of a 'currently focused'
+     * @method mouseUp
+     * @summary Simulates the act of releasing the mouse button up.
+     * @summary Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -1186,7 +1186,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -1268,9 +1268,9 @@ TP.gui.Sequence.Inst.defineMethod('perform',
 function() {
 
     /**
-     * @name perform
-     * @synopsis Executes the sequence.
-     * @description Note that the steps that comprise the sequence are all
+     * @method perform
+     * @summary Executes the sequence.
+     * @summary Note that the steps that comprise the sequence are all
      *     executed in a 'chained' manner, so that if there are asynchronous
      *     delays in certain actions, they will all be executed in the proper
      *     order. Also note that this method generates a Promise, which is then
@@ -1278,7 +1278,7 @@ function() {
      *     if there are other asynchronous actions that are using Promises from
      *     the receiver's driver's Promise supplier, this method will respect
      *     that.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var provider,
@@ -1395,8 +1395,8 @@ TP.gui.Sequence.Inst.defineMethod('$performGUISequenceStep',
 function(target, type, args, callback, currentElement) {
 
     /**
-     * @name $performGUISequenceStep
-     * @synopsis Actually performs the sequence step, firing an event at the
+     * @method $performGUISequenceStep
+     * @summary Actually performs the sequence step, firing an event at the
      *     supplied target element.
      * @param {Element} target The element to target the event at.
      * @param {String} type The type of event to generate.
@@ -1405,7 +1405,7 @@ function(target, type, args, callback, currentElement) {
      * @param {Function} callback The callback function to execute when the
      *     event dispatch is complete.
      * @param {Element} currentElement The currently focused Element.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var sequenceEntries,
@@ -1595,8 +1595,8 @@ TP.gui.Sequence.Inst.defineMethod('sendEvent',
 function(eventInfo, aPath) {
 
     /**
-     * @name sendEvent
-     * @synopsis Sends the event as described in the supplied eventInfo. See the
+     * @method sendEvent
+     * @summary Sends the event as described in the supplied eventInfo. See the
      *     TP.documentCreateEvent() call for more information on the fields
      *     recognized ere.
      * @param {TP.lang.Hash|Object} eventInfo The event information used to
@@ -1605,7 +1605,7 @@ function(eventInfo, aPath) {
      *     that should be the target of the event. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -1623,11 +1623,11 @@ TP.gui.Sequence.Inst.defineMethod('sendKeys',
 function(aString, aPath) {
 
     /**
-     * @name sendKeys
-     * @synopsis Simulate the act of pressing and releasing the sequence of keys
+     * @method sendKeys
+     * @summary Simulate the act of pressing and releasing the sequence of keys
      *     necessary to reproduce the effect of the user typing what is
      *     specified in the String.
-     * @description Note that it is possible to supply W3C-defined control
+     * @summary Note that it is possible to supply W3C-defined control
      *     keys surrounded with brackets ('[' and ']') in this String for ease
      *     of sending these control characters to the GUI:
      *          'ABC[Left][Backspace]D[Right]E'
@@ -1647,7 +1647,7 @@ function(aString, aPath) {
      *     isn't supplied, the currently focused element in the receiver's
      *     owning driver's window context will be used as the target for this
      *     event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -1665,13 +1665,13 @@ TP.gui.Sequence.Inst.defineMethod('shiftKeyDown',
 function(aPath) {
 
     /**
-     * @name shiftKeyDown
-     * @synopsis Simulate the act of pressing the 'Shift' key down.
+     * @method shiftKeyDown
+     * @summary Simulate the act of pressing the 'Shift' key down.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Shift' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Shift', aPath);
@@ -1685,13 +1685,13 @@ TP.gui.Sequence.Inst.defineMethod('shiftKeyUp',
 function(aPath) {
 
     /**
-     * @name shiftKeyUp
-     * @synopsis Simulate the act of releasing the 'Shift' key up.
+     * @method shiftKeyUp
+     * @summary Simulate the act of releasing the 'Shift' key up.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should have the 'Shift' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Sequence} The receiver.
+     * @returns {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Shift', aPath);

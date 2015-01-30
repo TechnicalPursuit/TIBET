@@ -19,7 +19,7 @@ for RSS as a lightweight data-feed content format for form-based workflow.
 
 /**
  * @type {TP.core.RSSFeed}
- * @synopsis Represents a single RSS feed. This type is an abstract type
+ * @summary Represents a single RSS feed. This type is an abstract type
  *     intended to support construction of version-specific subtypes.
  */
 
@@ -35,8 +35,8 @@ TP.core.RSSFeed.Inst.defineMethod('init',
 function(aNode, aURI) {
 
     /**
-     * @name init
-     * @synopsis Returns a newly initialized instance.
+     * @method init
+     * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
@@ -67,8 +67,8 @@ TP.core.RSSFeed.Inst.defineMethod('getChannelElement',
 function() {
 
     /**
-     * @name getChannelElement
-     * @synopsis Returns the element containing the data associated with this
+     * @method getChannelElement
+     * @summary Returns the element containing the data associated with this
      *     channel.
      * @returns {TP.core.RSSChannel} The channel element.
      */
@@ -98,8 +98,8 @@ TP.core.RSSElement.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the subtype to use for the node provided.
+     * @method getConcreteType
+     * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
      * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
      *     object.
@@ -139,7 +139,7 @@ function(aNode) {
 
 /**
  * @type {TP.core.RSSChannel}
- * @synopsis Represents a single RSS channel. This type is an abstract type
+ * @summary Represents a single RSS channel. This type is an abstract type
  *     intended to support construction of version-specific subtypes.
  */
 
@@ -164,8 +164,8 @@ TP.core.RSSChannel.Type.defineMethod('canConstruct',
 function(aChannelElement) {
 
     /**
-     * @name canConstruct
-     * @synopsis Returns true or false whether or not a channel can be created
+     * @method canConstruct
+     * @summary Returns true or false whether or not a channel can be created
      *     from the underlying XML. Note that since this type is abstract,
      *     subtypes will inherit this method and they have real channel version
      *     numbers so this method will mean something to them ;-).
@@ -201,8 +201,8 @@ TP.core.RSSChannel.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the subtype to use for the node provided.
+     * @method getConcreteType
+     * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
      * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
      *     object.
@@ -223,8 +223,8 @@ TP.core.RSSChannel.Inst.defineMethod('getVersion',
 function() {
 
     /**
-     * @name getVersion
-     * @synopsis Returns the version of an RSS channel that we are.
+     * @method getVersion
+     * @summary Returns the version of an RSS channel that we are.
      * @returns {Number} The version of an RSS channel that we are.
      */
 
@@ -237,8 +237,8 @@ TP.core.RSSChannel.Inst.defineMethod('getItems',
 function() {
 
     /**
-     * @name getItems
-     * @synopsis Returns an Array of TP.core.RSSItems. Defined this way because
+     * @method getItems
+     * @summary Returns an Array of TP.core.RSSItems. Defined this way because
      *     'getItems' is already defined as a method on TP.core.CollectionNode
      *     and therefore a getter built from a type schema entry won't be built.
      * @returns {Array} An Array of TP.core.RSSItems.
@@ -253,7 +253,7 @@ function() {
 
 /**
  * @type {TP.core.RSS091Channel}
- * @synopsis A subtype of TP.core.RSSChannel that represents a Version 0.91 RSS
+ * @summary A subtype of TP.core.RSSChannel that represents a Version 0.91 RSS
  *     Channel.
  */
 
@@ -356,7 +356,7 @@ TP.core.RSS091Channel.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSS092Channel}
- * @synopsis A subtype of a Version 0.91 RSS Channel that represents a Version
+ * @summary A subtype of a Version 0.91 RSS Channel that represents a Version
  *     0.92 RSS Channel.
  */
 
@@ -384,7 +384,7 @@ TP.core.RSS092Channel.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSS20Channel}
- * @synopsis A subtype of a Version 0.92 RSS Channel that represents a Version
+ * @summary A subtype of a Version 0.92 RSS Channel that represents a Version
  *     2.0 RSS Channel.
  */
 
@@ -426,7 +426,7 @@ TP.core.RSS20Channel.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSChannelSubelement}
- * @synopsis Represents a sub-element of an RSS channel element.
+ * @summary Represents a sub-element of an RSS channel element.
  */
 
 //  ------------------------------------------------------------------------
@@ -441,8 +441,8 @@ TP.core.RSSChannelSubelement.Inst.defineMethod('getChannel',
 function() {
 
     /**
-     * @name getChannel
-     * @synopsis Returns the channel we are associated with.
+     * @method getChannel
+     * @summary Returns the channel we are associated with.
      * @returns {TP.core.RSSChannel} The channel we are associated with.
      */
 
@@ -455,7 +455,7 @@ function() {
 
 /**
  * @type {TP.core.RSSChannelCategory}
- * @synopsis Represents an RSS 0.92 / 2.0 item category element embedded in a
+ * @summary Represents an RSS 0.92 / 2.0 item category element embedded in a
  *     channel element.
  */
 
@@ -469,7 +469,7 @@ TP.core.RSSChannelSubelement.defineSubtype('RSSChannelCategory');
 
 /**
  * @type {TP.core.RSSCloud}
- * @synopsis Represents an RSS cloud node. RSS cloud nodes are a new element in
+ * @summary Represents an RSS cloud node. RSS cloud nodes are a new element in
  *     RSS 0.92 that define a Web service that can be used to be notified about
  *     updates to the channel.
  */
@@ -513,7 +513,7 @@ TP.core.RSSCloud.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSImage}
- * @synopsis Represents an RSS image element (that is, the icon representing the
+ * @summary Represents an RSS image element (that is, the icon representing the
  *     channel).
  */
 
@@ -564,7 +564,7 @@ TP.core.RSSImage.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSItem}
- * @synopsis Represents an RSS item in an abstract form. Specific subtypes are
+ * @summary Represents an RSS item in an abstract form. Specific subtypes are
  *     used to manage the differences between RSS versions.
  */
 
@@ -588,8 +588,8 @@ TP.core.RSSItem.Type.defineMethod('canConstruct',
 function(anItemElement) {
 
     /**
-     * @name canConstruct
-     * @synopsis Returns true or false whether or not an item can be created
+     * @method canConstruct
+     * @summary Returns true or false whether or not an item can be created
      *     from the underlying XML. Note that since this type is abstract,
      *     subtypes will inherit this method and they have real channel version
      *     numbers so this method will mean something to them ;-).
@@ -624,8 +624,8 @@ TP.core.RSSItem.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the subtype to use for the node provided.
+     * @method getConcreteType
+     * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
      * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
      *     object.
@@ -646,8 +646,8 @@ TP.core.RSSItem.Inst.defineMethod('getVersion',
 function() {
 
     /**
-     * @name getVersion
-     * @synopsis Returns the version of an RSS item that we are.
+     * @method getVersion
+     * @summary Returns the version of an RSS item that we are.
      * @returns {Number} The version of an RSS item that we are.
      */
 
@@ -660,7 +660,7 @@ function() {
 
 /**
  * @type {TP.core.RSS091Item}
- * @synopsis A subtype of TP.core.RSSItem that represents a version 0.91 RSS
+ * @summary A subtype of TP.core.RSSItem that represents a version 0.91 RSS
  *     item. It provides getter properties for the standard 3 properties of a
  *     0.91 item - title, link and description.
  */
@@ -699,7 +699,7 @@ TP.core.RSS091Item.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSS092Item}
- * @synopsis A subtype of a Version 0.91 RSS Item that represents a Version 0.92
+ * @summary A subtype of a Version 0.91 RSS Item that represents a Version 0.92
  *     RSS Item. It provides getter properties for the additional 3 properties
  *     of a 0.92 item - category, enclosure and source.
  */
@@ -738,7 +738,7 @@ TP.core.RSS092Item.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSS20Item}
- * @synopsis A subtype of RSS Item that represents a Version 2.0 RSS Item. It
+ * @summary A subtype of RSS Item that represents a Version 2.0 RSS Item. It
  *     provides getter functionality for the additional properties of a 2.0
  *     item: comments, author, pubDate, and guid.
  */
@@ -782,7 +782,7 @@ TP.core.RSS20Item.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSTextInput}
- * @synopsis Represents an RSS textinput element. This element is usually
+ * @summary Represents an RSS textinput element. This element is usually
  *     ignored by user agents.
  */
 
@@ -827,7 +827,7 @@ TP.core.RSSTextInput.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSItemSubelement}
- * @synopsis Represents a sub-element of an RSS item element.
+ * @summary Represents a sub-element of an RSS item element.
  */
 
 //  ------------------------------------------------------------------------
@@ -840,7 +840,7 @@ TP.core.RSSElement.defineSubtype('RSSItemSubelement');
 
 /**
  * @type {TP.core.RSSEnclosure}
- * @synopsis Represents an RSS 0.92 / 2.0 enclosure element. An enclosure is a
+ * @summary Represents an RSS 0.92 / 2.0 enclosure element. An enclosure is a
  *     new element in RSS 0.92 that defines a url, length and type for
  *     out-of-band data that goes with the item, such as some sort of binary
  *     file.
@@ -875,7 +875,7 @@ TP.core.RSSEnclosure.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSGUID}
- * @synopsis Represents an RSS 2.0 GUID element. A GUID is a new element in RSS
+ * @summary Represents an RSS 2.0 GUID element. A GUID is a new element in RSS
  *     2.0 that is a globally unique identifier for the item.
  */
 
@@ -898,7 +898,7 @@ TP.core.RSSGUID.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSItemCategory}
- * @synopsis Represents an RSS 0.92 / 2.0 item category element embedded in an
+ * @summary Represents an RSS 0.92 / 2.0 item category element embedded in an
  *     item element.
  */
 
@@ -921,7 +921,7 @@ TP.core.RSSItemCategory.Inst.defineAttribute(
 
 /**
  * @type {TP.core.RSSSource}
- * @synopsis Represents an RSS 0.92 / 2.0 source element. A source is a new
+ * @summary Represents an RSS 0.92 / 2.0 source element. A source is a new
  *     element in RSS 0.92 that defines a url for RSS channel that the item came
  *     from as derived from its title.
  */

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.AndJoin}
- * @synopsis An 'and-join' is a coalescer which notifies when a specific
+ * @summary An 'and-join' is a coalescer which notifies when a specific
  *     combination of triggers has been witnessed. The order of the triggers can
  *     matter, as can the count. Spoilers seen before the entire triggering
  *     sequence has been observed will typically reset the coalescer so it
@@ -42,8 +42,8 @@ TP.sig.AndJoin.Inst.defineMethod('hasCoalesced',
 function(anItem) {
 
     /**
-     * @name hasCoalesced
-     * @synopsis Returns true if the receiver has reached a coalescing point. If
+     * @method hasCoalesced
+     * @summary Returns true if the receiver has reached a coalescing point. If
      *     true the handleSignal method will perform notification.
      * @param {Array} anItem A 'trigger' array. Used primarily to optimize for
      *     Or-Join scenarios.
@@ -144,8 +144,8 @@ TP.sig.AndJoin.Inst.defineMethod('shouldAllowOverflow',
 function(aFlag) {
 
     /**
-     * @name shouldAllowOverflow
-     * @synopsis Sets/gets the value for the allow-overflow flag. If this flag
+     * @method shouldAllowOverflow
+     * @summary Sets/gets the value for the allow-overflow flag. If this flag
      *     is true the receiver will allow extra notifications to occur.
      * @param {Boolean} aFlag
      * @returns {Boolean}
@@ -166,8 +166,8 @@ TP.sig.AndJoin.Inst.defineMethod('shouldOrderMatter',
 function(aFlag) {
 
     /**
-     * @name shouldOrderMatter
-     * @synopsis Sets/gets the value for the order-matters flag. If this flag is
+     * @method shouldOrderMatter
+     * @summary Sets/gets the value for the order-matters flag. If this flag is
      *     true the receiver will require notifications to happen in the same
      *     order they are registered.
      * @param {Boolean} aFlag

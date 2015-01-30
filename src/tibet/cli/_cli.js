@@ -293,7 +293,7 @@ CLI.isFalse = function(aReference) {
  * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
  * hash of keys.
  * @param {Object} obj The object to test.
- * @return {Boolean} True if the object is an Object.
+ * @returns {Boolean} True if the object is an Object.
  */
 CLI.isObject = function(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
@@ -398,7 +398,7 @@ CLI.blend = function (target, source) {
  * only useful within a project, some must be outside a project, and some can be
  * run from any location.
  * @param {Object} CmdType The command type to check.
- * @return {Boolean} True if the command is runnable.
+ * @returns {Boolean} True if the command is runnable.
  */
 CLI.canRun = function(CmdType) {
 
@@ -427,7 +427,7 @@ CLI.canRun = function(CmdType) {
 /**
  * Expands a TIBET virtual path to its equivalent non-virtual path.
  * @param {String} aPath The path to be expanded.
- * @return {String} The fully-expanded path value.
+ * @returns {String} The fully-expanded path value.
  */
 CLI.expandPath = function(aPath) {
     this.initPackage();
@@ -440,7 +440,7 @@ CLI.expandPath = function(aPath) {
  * Returns the application root directory, the path where the PROJECT_FILE is
  * found. This path is then used by many commands as a "root" for relative path
  * computations.
- * @return {string} The application root directory.
+ * @returns {string} The application root directory.
  */
 CLI.getAppRoot = function() {
     this.initPackage();
@@ -467,7 +467,7 @@ CLI.getAppHead = function() {
  * Returns the library root directory, the path where the TIBET library is
  * found. In combination with the application root this path is one of the
  * critical paths for proper operation.
- * @return {string} The library root directory.
+ * @returns {string} The library root directory.
  */
 CLI.getLibRoot = function() {
     this.initPackage();
@@ -481,7 +481,7 @@ CLI.getLibRoot = function() {
  * If no property is provided the entire set of configuration values is
  * returned.
  * @param {string} property A specific property value to check.
- * @return {Object} The property value, or the entire configuration object.
+ * @returns {Object} The property value, or the entire configuration object.
  */
 CLI.getcfg = function(property) {
     this.initPackage();
@@ -494,7 +494,7 @@ CLI.getcfg = function(property) {
  * Searches a set of paths including ~app_cmd and ~lib_cmd for an implementation
  * file for the named command.
  * @param {string} command The command to find, such as 'start'.
- * @return {?string} The path to the command, if found.
+ * @returns {?string} The path to the command, if found.
  */
 CLI.getCommandPath = function(command) {
 
@@ -541,7 +541,7 @@ CLI.getCommandPath = function(command) {
 /**
  * Returns the targets exported from any CLI.MAKE_FILE in the application. If
  * the file isn't loaded yet this call will attempt to load it.
- * @return {boolean} True if the target is found.
+ * @returns {boolean} True if the target is found.
  */
 CLI.getMakeTargets = function() {
     var fullpath;
@@ -569,7 +569,7 @@ CLI.getMakeTargets = function() {
 
 /**
  * Returns the name of the current project as defined in the Package.NPM_FILE.
- * @return {String} The project name.
+ * @returns {String} The project name.
  */
 CLI.getProjectName = function() {
     return this.config.npm.name;
@@ -580,7 +580,7 @@ CLI.getProjectName = function() {
  * Checks for a CLI.MAKE_FILE in the application root directory and, if found,
  * checks it for a matching target.
  * @param {string} target The target to search for.
- * @return {boolean} True if the target is found.
+ * @returns {boolean} True if the target is found.
  */
 CLI.hasMakeTarget = function(target) {
     var targets;
@@ -598,7 +598,7 @@ CLI.hasMakeTarget = function(target) {
  * original value. Useful for defaulting optional parameters.
  * @param {Object} suspectValue The value to test.
  * @param {Object} defaultValue The value to default to when suspect is undef.
- * @return {Object} The suspect or default value.
+ * @returns {Object} The suspect or default value.
  */
 CLI.ifUndefined = function(suspectValue, defaultValue) {
 
@@ -612,7 +612,7 @@ CLI.ifUndefined = function(suspectValue, defaultValue) {
 
 /**
  * Returns true if the project appears to be using Grunt as a build tool.
- * @return {Boolean} true if a CLI.GRUNT_FILE and Grunt binary are found.
+ * @returns {Boolean} true if a CLI.GRUNT_FILE and Grunt binary are found.
  */
 CLI.inGruntProject = function() {
 
@@ -630,7 +630,7 @@ CLI.inGruntProject = function() {
 
 /**
  * Returns true if the project appears to be using Gulp as a build tool.
- * @return {Boolean} true if a CLI.GULP_FILE and gulp binary are found.
+ * @returns {Boolean} true if a CLI.GULP_FILE and gulp binary are found.
  */
 CLI.inGulpProject = function() {
 
@@ -666,7 +666,7 @@ CLI.initPackage = function() {
 /**
  * Returns true if the command context is the TIBET library.
  * @param {Object} CmdType The command type currently being processed.
- * @return {Boolean} True if the current context is inside the TIBET library.
+ * @returns {Boolean} True if the current context is inside the TIBET library.
  */
 CLI.inLibrary = function(CmdType) {
     this.initPackage();
@@ -681,7 +681,7 @@ CLI.inLibrary = function(CmdType) {
  * operate differently when they are invoked outside vs. inside of a project
  * directory. Some commands are only valid outside. Some are only valid inside.
  * @param {Object} CmdType The command type currently being processed.
- * @return {Boolean} True if the current context is inside a TIBET project.
+ * @returns {Boolean} True if the current context is inside a TIBET project.
  */
 CLI.inProject = function(CmdType) {
     var silent;
@@ -696,7 +696,7 @@ CLI.inProject = function(CmdType) {
 /**
  * Returns true if the current operation is happening in a project (inProject)
  * and that project has been initialized (has node_modules etc).
- * @return {Boolean} True if the current context is in an initialized project.
+ * @returns {Boolean} True if the current context is in an initialized project.
  */
 CLI.isInitialized = function() {
     if (!this.inProject()) {
@@ -743,7 +743,7 @@ CLI.logItems = function(aList) {
  *     representation with.
  * @param {String} padChar The pad character to use to pad the String
  *     representation.
- * @return {String}
+ * @returns {String}
  */
 CLI.lpad = function(obj, length, padChar) {
 
@@ -768,7 +768,7 @@ CLI.lpad = function(obj, length, padChar) {
  *     representation with.
  * @param {String} padChar The pad character to use to pad the String
  *     representation.
- * @return {String}
+ * @returns {String}
  */
 CLI.rpad = function(obj, length, padChar) {
 

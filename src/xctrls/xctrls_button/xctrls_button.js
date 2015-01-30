@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.button}
- * @synopsis Manages button XControls.
+ * @summary Manages button XControls.
  */
 
 //  ------------------------------------------------------------------------

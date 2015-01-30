@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.SOAPService}
- * @synopsis A TP.core.Service specific to making SOAP requests. This particular
+ * @summary A TP.core.Service specific to making SOAP requests. This particular
  *     service is only available to browsers which support an XMLHttpRequest API
  *     such as IE or Mozilla.
  * @examples
@@ -67,8 +67,8 @@ TP.core.SOAPService.Inst.defineMethod('rewriteRequestMIMEType',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestMIMEType
-     * @synopsis Returns the MIME type the request should be using. For a SOAP
+     * @method rewriteRequestMIMEType
+     * @summary Returns the MIME type the request should be using. For a SOAP
      *     service this is always TP.XML_ENCODED.
      * @param {TP.sig.Request} aRequest The request being encoded.
      * @returns {Constant} A constant suitable for TP.httpEncode.
@@ -83,8 +83,8 @@ TP.core.SOAPService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestBody
-     * @synopsis Encodes the request body for transmission. Processing in this
+     * @method rewriteRequestBody
+     * @summary Encodes the request body for transmission. Processing in this
      *     method makes use of any 'mimetype' key in the request to determine an
      *     encoding to use. Supported encodings can be found in the
      *     TP.httpEncode primitive.
@@ -102,8 +102,8 @@ TP.core.SOAPService.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestHeaders
-     * @synopsis Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @method rewriteRequestHeaders
+     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
      *     service. SOAP requires a specific Content-Type and a SOAPAction
      *     header for older versions of the specification.
      * @param {TP.sig.SOAPRequest} aRequest The request whose parameters define
@@ -131,8 +131,8 @@ TP.core.SOAPService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
-     * @name rewriteRequestVerb
-     * @synopsis Returns the HTTP verb to use for the request. For SOAP this
+     * @method rewriteRequestVerb
+     * @summary Returns the HTTP verb to use for the request. For SOAP this
      *     always returns TP.HTTP_POST per the specification.
      * @param {TP.sig.SOAPRequest} aRequest The request whose parameters define
      *     the HTTP request.

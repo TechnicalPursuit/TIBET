@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.tsh.uri}
- * @synopsis Provides support for the TIBET Shell (TSH) processing of URIs for
+ * @summary Provides support for the TIBET Shell (TSH) processing of URIs for
  *     input and output redirection and piping.
  */
 
@@ -28,11 +28,11 @@ TP.tsh.uri.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @name cmdAddContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdAddContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -46,11 +46,11 @@ TP.tsh.uri.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
-     * @name cmdFilterInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdFilterInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -64,10 +64,10 @@ TP.tsh.uri.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @name cmdGetContent
-     * @synopsis Invoked by the TSH when the receiver is the data source for a
+     * @method cmdGetContent
+     * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -81,8 +81,8 @@ TP.tsh.uri.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
-     * @name cmdRunContent
-     * @synopsis Runs the receiver, effectively invoking its action. For
+     * @method cmdRunContent
+     * @summary Runs the receiver, effectively invoking its action. For
      *     TP.tsh.uri this method is responsible for dispatching all the
      *     variations of pipe methods which are suitable for use with a URI.
      * @param {TP.sig.Request} aRequest The request containing command input for
@@ -264,11 +264,11 @@ TP.tsh.uri.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @name cmdSetContent
-     * @synopsis Invoked by the TSH when the receiver is the data sink for a
+     * @method cmdSetContent
+     * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -282,11 +282,11 @@ TP.tsh.uri.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @name cmdTransformInput
-     * @synopsis Invoked by the TSH when the receiver is a segment in a pipe
+     * @method cmdTransformInput
+     * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description On this type, this method merely invokes 'cmdRunContent'
+     * @summary On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -300,8 +300,8 @@ TP.tsh.uri.Type.defineMethod('tshCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     * @method tshCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.

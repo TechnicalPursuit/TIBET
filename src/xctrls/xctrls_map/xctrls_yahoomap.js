@@ -27,7 +27,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('$computeYahooMapScriptSrc',
 function() {
 
     /**
-     * @name $computeYahooMapScriptSrc
+     * @method $computeYahooMapScriptSrc
      * @returns {String}
      * @abstract
      */
@@ -50,7 +50,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('$convertLatLongToYahooLatLong',
 function(aLatLong) {
 
     /**
-     * @name $convertLatLongToYahooLatLong
+     * @method $convertLatLongToYahooLatLong
      * @param {TP.core.LatLong} aLatLong
      * @returns {Object} A Yahoo LatLong object.
      * @abstract
@@ -67,7 +67,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('$convertMarkerToYahooMarker',
 function(aMarker) {
 
     /**
-     * @name $convertMarkerToYahooMarker
+     * @method $convertMarkerToYahooMarker
      * @param {TPMarker} aMarker
      * @returns {Object} A Yahoo marker object.
      * @abstract
@@ -105,7 +105,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('addControls',
 function(hasPan, zoomType, hasOverview, hasScale, hasMapType) {
 
     /**
-     * @name addControls
+     * @method addControls
      * @param {undefined} hasPan
      * @param {String|null} zoomType One of the following values: 'small',
      *     'large' or null (for no zoom capability).
@@ -146,7 +146,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('addLargeControls',
 function() {
 
     /**
-     * @name addLargeControls
+     * @method addLargeControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
      */
@@ -163,7 +163,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('addMapTypeControls',
 function() {
 
     /**
-     * @name addMapTypeControls
+     * @method addMapTypeControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
      */
@@ -179,7 +179,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('addMarker',
 function(aMarker) {
 
     /**
-     * @name addMarker
+     * @method addMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -216,7 +216,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('addSmallControls',
 function() {
 
     /**
-     * @name addSmallControls
+     * @method addSmallControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
      */
@@ -233,7 +233,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('configure',
 function() {
 
     /**
-     * @name configure
+     * @method configure
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
      */
@@ -309,7 +309,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('getBounds',
 function() {
 
     /**
-     * @name getBounds
+     * @method getBounds
      * @returns {TP.core.MapBounds}
      * @abstract
      */
@@ -334,7 +334,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('getCenter',
 function() {
 
     /**
-     * @name getCenter
+     * @method getCenter
      * @returns {undefined}
      * @abstract
      */
@@ -352,7 +352,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('getLatLongForAddress',
 function(anAddress) {
 
     /**
-     * @name getLatLongForAddress
+     * @method getLatLongForAddress
      * @param {String} anAddress The address to plot.
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -397,7 +397,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('getMapType',
 function() {
 
     /**
-     * @name getMapType
+     * @method getMapType
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
      */
@@ -443,7 +443,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('getZoom',
 function() {
 
     /**
-     * @name getZoom
+     * @method getZoom
      * @returns {undefined}
      * @abstract
      */
@@ -458,7 +458,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('getZoomLevelForMapBounds',
 function(aMapBounds) {
 
     /**
-     * @name getZoomLevelForMapBounds
+     * @method getZoomLevelForMapBounds
      * @param {TP.core.MapBounds} aMapBounds
      * @returns {undefined}
      * @abstract
@@ -486,8 +486,8 @@ TP.xctrls.yahoomap.Inst.defineMethod('hideAllMarkers',
 function() {
 
     /**
-     * @name hideAllMarkers
-     * @synopsis Hides all of the markers without removing them from the marker
+     * @method hideAllMarkers
+     * @summary Hides all of the markers without removing them from the marker
      *     list.
      * @returns {TP.xctrls.yahoomap} The receiver.
      */
@@ -505,7 +505,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('removeAllControls',
 function() {
 
     /**
-     * @name removeAllControls
+     * @method removeAllControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
      */
@@ -528,7 +528,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('removeMarker',
 function(aMarker) {
 
     /**
-     * @name removeMarker
+     * @method removeMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -549,7 +549,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('setBounds',
 function(aMapBounds) {
 
     /**
-     * @name setBounds
+     * @method setBounds
      * @param {undefined} aMapBounds
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -617,7 +617,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('setCenter',
 function(aLatLong) {
 
     /**
-     * @name setCenter
+     * @method setCenter
      * @param {undefined} aLatLong
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -662,7 +662,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('setCenterAndZoom',
 function(aLatLong, zoomLevel) {
 
     /**
-     * @name setCenterAndZoom
+     * @method setCenterAndZoom
      * @param {undefined} aLatLong
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.yahoomap} The receiver.
@@ -690,7 +690,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('setIsDraggable',
 function(shouldBeDraggable) {
 
     /**
-     * @name setIsDraggable
+     * @method setIsDraggable
      * @param {undefined} shouldBeDraggable
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -711,7 +711,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('setMapType',
 function(aMapType) {
 
     /**
-     * @name setMapType
+     * @method setMapType
      * @param {undefined} aMapType
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -762,7 +762,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('setZoom',
 function(zoomLevel) {
 
     /**
-     * @name setZoom
+     * @method setZoom
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
@@ -781,8 +781,8 @@ TP.xctrls.yahoomap.Inst.defineMethod('showAllMarkers',
 function() {
 
     /**
-     * @name showAllMarkers
-     * @synopsis Shows all of the markers from the marker list on the map.
+     * @method showAllMarkers
+     * @summary Shows all of the markers from the marker list on the map.
      * @returns {TP.xctrls.yahoomap} The receiver.
      */
 
@@ -821,7 +821,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('sizeTo',
 function(width, height) {
 
     /**
-     * @name sizeTo
+     * @method sizeTo
      * @param {undefined} width
      * @param {undefined} height
      * @returns {TP.xctrls.yahoomap} The receiver.
@@ -837,8 +837,8 @@ TP.xctrls.yahoomap.Inst.defineMethod('startIFrameLoad',
 function() {
 
     /**
-     * @name startIFrameLoad
-     * @synopsis Begins the iframe loading of the receiver. This method loads
+     * @method startIFrameLoad
+     * @summary Begins the iframe loading of the receiver. This method loads
      *     the content from the 'frameFileURI' into the iframe constructed by
      *     this type and sets up a callback handler that will call this type's
      *     'configure' method when the content from the iframe is all loaded and
@@ -872,7 +872,7 @@ TP.xctrls.yahoomap.Inst.defineMethod('swapMarker',
 function(aMarker) {
 
     /**
-     * @name swapMarker
+     * @method swapMarker
      * @param {undefined} aMarker
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract

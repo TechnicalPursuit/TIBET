@@ -71,10 +71,10 @@ TP.definePrimitive('objectGetXY',
 function(anObject) {
 
     /**
-     * @name objectGetXY
-     * @synopsis Returns the 'global' (according to the supplied object) X and Y
+     * @method objectGetXY
+     * @summary Returns the 'global' (according to the supplied object) X and Y
      *     as extracted from the supplied object.
-     * @description A variety of different objects can be supplied to this
+     * @summary A variety of different objects can be supplied to this
      *     method to extract X and Y values from. Depending on the type of that
      *     object, here is how the X and Y are computed:
      *
@@ -89,7 +89,7 @@ function(anObject) {
      *
      *
      * @param {Object} anObject The object to extract the X and Y for.
-     * @raises TP.sig.InvalidObject
+     * @exception TP.sig.InvalidObject
      * @returns {Array} An ordered pair where the first item is the X coordinate
      *     and the second item is the Y coordinate.
      */
@@ -130,11 +130,11 @@ TP.definePrimitive('documentCreateScriptElement',
 function(aDocument, aURL, aContent, aLoadedFunction) {
 
     /**
-     * @name documentCreateScriptElement
-     * @synopsis Creates an (X)HTML 'script' element in the document, using
+     * @method documentCreateScriptElement
+     * @summary Creates an (X)HTML 'script' element in the document, using
      *     the URL provided and configures it to call the supplied loaded
      *     function when it completes loading.
-     * @description In order for the script element produced by this routine
+     * @summary In order for the script element produced by this routine
      *     to actually load its content, it needs to be appended to an
      *     (X)HTML document, preferable to the 'head'.
      * @param {Document} aDocument The document to create the 'script'
@@ -144,7 +144,7 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
      *     the script. This will only be used if there is no value for aURL.
      * @param {Function} aLoadedFunction The function to execute when the
      *     script has completed loading its content.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The script element created in the supplied
      *     document.
      */
@@ -185,10 +185,10 @@ TP.definePrimitive('documentGetHeight',
 function(aDocument) {
 
     /**
-     * @name documentGetHeight
-     * @synopsis Returns the document's height.
+     * @method documentGetHeight
+     * @summary Returns the document's height.
      * @param {Document} aDocument The document to get the height of.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The document's height in pixels.
      */
 
@@ -205,11 +205,11 @@ TP.definePrimitive('documentGetScrollX',
 function(aDocument) {
 
     /**
-     * @name documentGetScrollX
-     * @synopsis Returns the document's X scrolling position with its window
+     * @method documentGetScrollX
+     * @summary Returns the document's X scrolling position with its window
      *     frame.
      * @param {Document} aDocument The document to get the X scroll position of.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The document's X scroll position in pixels.
      */
 
@@ -230,11 +230,11 @@ TP.definePrimitive('documentGetScrollY',
 function(aDocument) {
 
     /**
-     * @name documentGetScrollY
-     * @synopsis Returns the document's Y scrolling position with its window
+     * @method documentGetScrollY
+     * @summary Returns the document's Y scrolling position with its window
      *     frame.
      * @param {Document} aDocument The document to get the Y scroll position of.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The document's Y scroll position in pixels.
      */
 
@@ -255,12 +255,12 @@ TP.definePrimitive('documentGetViewableHeight',
 function(aDocument) {
 
     /**
-     * @name documentGetViewableHeight
-     * @synopsis Returns the document's 'viewable' height (that is, the height
+     * @method documentGetViewableHeight
+     * @summary Returns the document's 'viewable' height (that is, the height
      *     that can currently be seen and has not scrolled offscreen).
      * @param {HTMLDocument} aDocument The document to compute the viewable
      *     height for.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The document's viewable height in pixels.
      */
 
@@ -277,12 +277,12 @@ TP.definePrimitive('documentGetViewableWidth',
 function(aDocument) {
 
     /**
-     * @name documentGetViewableWidth
-     * @synopsis Returns the document's 'viewable' width (that is, the width
+     * @method documentGetViewableWidth
+     * @summary Returns the document's 'viewable' width (that is, the width
      *     that can currently be seen and has not scrolled offscreen).
      * @param {HTMLDocument} aDocument The document to compute the viewable
      *     width for.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The document's viewable width in pixels.
      */
 
@@ -299,12 +299,12 @@ TP.definePrimitive('documentGetVisibility',
 function(aDocument) {
 
     /**
-     * @name documentGetVisibility
-     * @synopsis Returns the supplied document's 'visibility state'. This
+     * @method documentGetVisibility
+     * @summary Returns the supplied document's 'visibility state'. This
      *     leverages the HTML5 'document.visibilityState' property.
      * @param {Document} aDocument The document to obtain the visibility state
      *     of.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The supplied document's visibility state. This will be
      *     one of: TP.VISIBLE, TP.HIDDEN or TP.PRERENDER.
      */
@@ -334,10 +334,10 @@ TP.definePrimitive('documentGetWidth',
 function(aDocument) {
 
     /**
-     * @name documentGetWidth
-     * @synopsis Returns the document's width.
+     * @method documentGetWidth
+     * @summary Returns the document's width.
      * @param {Document} aDocument The document to get the width of.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The document's width in pixels.
      */
 
@@ -354,11 +354,11 @@ TP.definePrimitive('documentIsVisible',
 function(aDocument) {
 
     /**
-     * @name documentIsVisible
-     * @synopsis Returns whether or not the supplied document is visible to the
+     * @method documentIsVisible
+     * @summary Returns whether or not the supplied document is visible to the
      *     user. This leverages the HTML5 'document.hidden' property.
      * @param {Document} aDocument The document to test to see if its visible.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Boolean} Whether or not the supplied document's is currently
      *     visible.
      */
@@ -396,11 +396,11 @@ TP.definePrimitive('documentClearSelection',
 function(aDocument) {
 
     /**
-     * @name documentClearSelection
-     * @synopsis Clears any selection the user might have made in the supplied
+     * @method documentClearSelection
+     * @summary Clears any selection the user might have made in the supplied
      *     document.
      * @param {Document} aDocument The document to clear the selection in.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var theSelection;
@@ -425,14 +425,14 @@ TP.definePrimitive('documentCollapseSelection',
 function(aDocument, toStart) {
 
     /**
-     * @name documentCollapseSelection
-     * @synopsis 'Collapse's any selection the user might have made in the
+     * @method documentCollapseSelection
+     * @summary 'Collapse's any selection the user might have made in the
      *     supplied document to either the start or the end of itself.
      * @param {Document} aDocument The document to collapse the selection in.
      * @param {Boolean} toStart Whether or not to collapse the selection to the
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var theSelection;
@@ -472,12 +472,12 @@ TP.definePrimitive('documentCreateSelectionMarker',
 function(aDocument) {
 
     /**
-     * @name documentCreateSelectionMarker
-     * @synopsis Returns an object that can be used in conjunction with
+     * @method documentCreateSelectionMarker
+     * @summary Returns an object that can be used in conjunction with
      *     TP.documentMoveSelectionToMarker() to move around in the document.
      * @param {Document} aDocument The document to create the selection marker
      *     in.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Object} The object representing a selection marker.
      */
 
@@ -516,13 +516,13 @@ TP.definePrimitive('documentInsertAfterSelection',
 function(aDocument, newContent) {
 
     /**
-     * @name documentInsertAfterSelection
-     * @synopsis Appends the newContent after any current selection in the
+     * @method documentInsertAfterSelection
+     * @summary Appends the newContent after any current selection in the
      *     document. If there is no selection this method does nothing.
      * @param {Document} aDocument The document whose selection should be
      *     appended to.
      * @param {String} newContent A new string of content.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var theSelection,
@@ -562,13 +562,13 @@ TP.definePrimitive('documentInsertBeforeSelection',
 function(aDocument, newContent) {
 
     /**
-     * @name documentInsertBeforeSelection
-     * @synopsis Inserts the newContent before any current selection in the
+     * @method documentInsertBeforeSelection
+     * @summary Inserts the newContent before any current selection in the
      *     document. If there is no selection this method does nothing.
      * @param {Document} aDocument The document whose selection should be
      *     inserted before.
      * @param {String} newContent A new string of content.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var theSelection,
@@ -608,12 +608,12 @@ TP.definePrimitive('documentIsSelectionCollapsed',
 function(aDocument) {
 
     /**
-     * @name documentIsSelectionCollapsed
-     * @synopsis Returns whether or not the supplied document's current
+     * @method documentIsSelectionCollapsed
+     * @summary Returns whether or not the supplied document's current
      *     selection is collapsed (whether or not its empty).
      * @param {Document} aDocument The document to test the current selection of
      *     to see if its collapsed.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {Boolean} Whether or not the supplied document's current
      *     selection is collapsed.
      */
@@ -642,13 +642,13 @@ TP.definePrimitive('documentGetSelectionElement',
 function(aDocument) {
 
     /**
-     * @name documentGetSelectionElement
-     * @synopsis Returns any single HTML element that is currently selected.
+     * @method documentGetSelectionElement
+     * @summary Returns any single HTML element that is currently selected.
      *     Note that this method will only return real results if only a single
      *     element is selected. Otherwise it will return null.
      * @param {Document} aDocument The document to obtain the selected element
      *     for.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The single element that was selected in the
      *     supplied document.
      */
@@ -693,12 +693,12 @@ TP.definePrimitive('documentGetSelectionParent',
 function(aDocument) {
 
     /**
-     * @name documentGetSelectionParent
-     * @synopsis Returns the parent (element) of the supplied document's current
+     * @method documentGetSelectionParent
+     * @summary Returns the parent (element) of the supplied document's current
      *     selection.
      * @param {Document} aDocument The document to obtain the selection's parent
      *     node in.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The selection's parent node.
      */
 
@@ -757,12 +757,12 @@ TP.definePrimitive('documentGetSelectionText',
 function(aDocument) {
 
     /**
-     * @name documentGetSelectionText
-     * @synopsis Returns any plain text (no markup) that is currently selected.
+     * @method documentGetSelectionText
+     * @summary Returns any plain text (no markup) that is currently selected.
      *     Note that this method will only return real results if text is
      *     selected. Otherwise it will return null.
      * @param {Document} aDocument The document to obtain the selected text for.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} The text that was selected in the supplied document.
      */
 
@@ -799,8 +799,8 @@ TP.definePrimitive('documentGetSelectionType',
 function(aDocument) {
 
     /**
-     * @name documentGetSelectionType
-     * @synopsis Returns the current selection 'type'. This is one of the
+     * @method documentGetSelectionType
+     * @summary Returns the current selection 'type'. This is one of the
      *     following constants:
      *
      *     TP.SELECTION_NONE - no selection TP.SELECTION_TEXT - text (or a
@@ -809,7 +809,7 @@ function(aDocument) {
      *
      *
      * @param {Document} aDocument The document to obtain the selected type for.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      * @returns {String} A constant, detailed above, that indicates which type
      *     the current selection is.
      */
@@ -858,12 +858,12 @@ TP.definePrimitive('documentMoveSelectionToMarker',
 function(aDocument, aSelectionMarker) {
 
     /**
-     * @name documentMoveSelectionToMarker
-     * @synopsis Moves the selection to the supplied marker object.
+     * @method documentMoveSelectionToMarker
+     * @summary Moves the selection to the supplied marker object.
      * @param {Document} aDocument The document to move the selection of.
      * @param {Object} aSelectionMarker The object to use as the selection
      *     marker.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var theSelection;
@@ -891,10 +891,10 @@ TP.definePrimitive('documentRemoveSelection',
 function(aDocument) {
 
     /**
-     * @name documentRemoveSelection
-     * @synopsis Deletes the supplied document's selection.
+     * @method documentRemoveSelection
+     * @summary Deletes the supplied document's selection.
      * @param {Document} aDocument The document to delete the selection of.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
@@ -915,12 +915,12 @@ TP.definePrimitive('documentReplaceSelection',
 function(aDocument, newContent) {
 
     /**
-     * @name documentReplaceSelection
-     * @synopsis Replaces the supplied document's selection with newContent.
+     * @method documentReplaceSelection
+     * @summary Replaces the supplied document's selection with newContent.
      * @param {Document} aDocument The document whose selection should be
      *     replaced.
      * @param {String} newContent The new content to use.
-     * @raises TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidDocument
      */
 
     var theSelection,
@@ -967,11 +967,11 @@ TP.definePrimitive('elementContentIsScrolled',
 function(anElement) {
 
     /**
-     * @name elementContentIsScrolled
-     * @synopsis Whether or not the element is scrolling its content.
+     * @method elementContentIsScrolled
+     * @summary Whether or not the element is scrolling its content.
      * @param {HTMLElement} anElement The element to check to see if its
      *     scrolling its content.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not the element is scrolling its content.
      */
 
@@ -989,16 +989,16 @@ TP.definePrimitive('elementGetElementAtPoint',
 function(anElement, x, y) {
 
     /**
-     * @name elementGetElementAtPoint
-     * @synopsis Returns the 'most nested' child element at the x and y
+     * @method elementGetElementAtPoint
+     * @summary Returns the 'most nested' child element at the x and y
      *     coordinates given.
-     * @description Note that the coordinates should be given in 'document'
+     * @summary Note that the coordinates should be given in 'document'
      *     coordinates.
      * @param {HTMLElement} anElement The element to begin searching for the
      *     element at x and y.
      * @param {Number} x The X coordinate to use to look for the child element.
      * @param {Number} y The Y coordinate to use to look for the child element.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
      * @returns {Element} The 'most nested' child element found at x and y
      *     coordinates given.
      */
@@ -1020,15 +1020,15 @@ TP.definePrimitive('elementIsTransformed',
 function(anElement) {
 
     /**
-     * @name elementIsTransformed
-     * @synopsis Returns whether or not the supplied element has been
+     * @method elementIsTransformed
+     * @summary Returns whether or not the supplied element has been
      *     transformed with a CSS transformation.
-     * @description This method takes into account any CSS transformations that
+     * @summary This method takes into account any CSS transformations that
      *     are applying to the element because a parent of the element has had a
      *     CSS transformation applied to it.
      * @param {HTMLElement} anElement The element to check to see if it has been
      *     transformed.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not the element has been transformed using
      *     CSS transforms.
      */
@@ -1086,13 +1086,13 @@ TP.definePrimitive('elementGetIFrameDocument',
 function(anElement) {
 
     /**
-     * @name elementGetIFrameDocument
-     * @synopsis Returns the document of the iframe element supplied. NB: The
+     * @method elementGetIFrameDocument
+     * @summary Returns the document of the iframe element supplied. NB: The
      *     caller *must* supply an 'iframe' element here, or an
      *     'TP.sig.InvalidElement' exception will be thrown.
      * @param {Element} anElement The 'iframe' element to retrieve the document
      *     for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Document} The document of the iframe supplied.
      */
 
@@ -1111,15 +1111,15 @@ TP.definePrimitive('elementGetIFrameWindow',
 function(anElement) {
 
     /**
-     * @name elementGetIFrameWindow
-     * @synopsis Returns the window of the iframe element supplied. If the
+     * @method elementGetIFrameWindow
+     * @summary Returns the window of the iframe element supplied. If the
      *     iframe's content window doesn't have a name and the iframe element
      *     has an id, the content window's name will be set to that id. NB: The
      *     caller *must* supply an 'iframe' element here, or an
      *     'TP.sig.InvalidElement' exception will be thrown.
      * @param {Element} anElement The 'iframe' element to retrieve the window
      *     for.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Window} The window of the iframe supplied.
      */
 
@@ -1155,13 +1155,13 @@ TP.definePrimitive('elementGetOpacity',
 function(anElement) {
 
     /**
-     * @name elementGetOpacity
-     * @synopsis Gets the element's opacity level. The level should be a
+     * @method elementGetOpacity
+     * @summary Gets the element's opacity level. The level should be a
      *     fractional number between 0 and 1 that will represent the percentage
      *     of opacity the element is set to (e.g. it will be '.5' if the element
      *     is set to 50% opacity).
      * @param {HTMLElement} anElement The element to set the opacity of.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Number} The element's opacity level.
      */
 
@@ -1191,13 +1191,13 @@ TP.definePrimitive('elementGetOuterContent',
 function(anElement) {
 
     /**
-     * @name elementGetOuterContent
-     * @synopsis Gets the 'outer content' of anElement.
-     * @description This method gets the 'outer content' of anElement which
+     * @method elementGetOuterContent
+     * @summary Gets the 'outer content' of anElement.
+     * @summary This method gets the 'outer content' of anElement which
      *     means that the entire element, including its start and end tags, will
      *     be returned.
      * @param {HTMLElement} anElement The element to get the 'outer content' of.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {String} The 'outer content' of the Element.
      */
 
@@ -1214,8 +1214,8 @@ TP.definePrimitive('elementGetStyleValueInPixels',
 function(anElement, styleProperty, wantsTransformed) {
 
     /**
-     * @name elementGetStyleValueInPixels
-     * @synopsis Gets the computed style value of the property on the element in
+     * @method elementGetStyleValueInPixels
+     * @summary Gets the computed style value of the property on the element in
      *     pixels. This routine can return NaN if a Number couldn't be computed.
      * @param {HTMLElement} anElement The element to get the numeric property
      *     value of.
@@ -1224,7 +1224,7 @@ function(anElement, styleProperty, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {Number} The supplied property as a pixel value.
      */
 
@@ -1255,8 +1255,8 @@ TP.definePrimitive('elementGetStyleValuesInPixels',
 function(anElement, styleProperties, wantsTransformed) {
 
     /**
-     * @name elementGetStyleValueInPixels
-     * @synopsis Gets the computed style values of the properties on the element
+     * @method elementGetStyleValueInPixels
+     * @summary Gets the computed style values of the properties on the element
      *     in pixels. This routine can produce NaNs in the output if a Number
      *     couldn't be computed for that property.
      * @param {HTMLElement} anElement The element to get the numeric property
@@ -1266,7 +1266,7 @@ function(anElement, styleProperties, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {TP.lang.Hash} A TP.lang.Hash of Numbers containing the supplied
      *     properties as a pixel value.
      */
@@ -1312,10 +1312,10 @@ TP.definePrimitive('elementGetComputedTransformMatrix',
 function(anElement, wants2DMatrix) {
 
     /**
-     * @name elementGetComputedTransformMatrix
-     * @synopsis Returns the current transformation matrix of the supplied
+     * @method elementGetComputedTransformMatrix
+     * @summary Returns the current transformation matrix of the supplied
      *     element.
-     * @description This method computes the current transformation matrix of
+     * @summary This method computes the current transformation matrix of
      *     the supplied element by obtaining any transformation matrix of the
      *     element itself and then walking the parent tree and integrating each
      *     transformation matrix of that element to the computed matrix. This
@@ -1327,7 +1327,7 @@ function(anElement, wants2DMatrix) {
      * @param {Boolean} wants2DMatrix An optional parameter that tells the
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
      *     transforms. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Array} An Array of Arrays representing the current
      *     transformation matrix.
      */
@@ -1417,12 +1417,12 @@ TP.definePrimitive('elementGetTransformValues',
 function(anElement) {
 
     /**
-     * @name elementGetTransformValues
-     * @synopsis Returns the values of any CSS3 transforms of the given Element.
-     * @description This code derived from: https://gist.github.com/2329465.
+     * @method elementGetTransformValues
+     * @summary Returns the values of any CSS3 transforms of the given Element.
+     * @summary This code derived from: https://gist.github.com/2329465.
      * @param {Element} anElement The element to retrive the transform
      *     values from.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {TP.lang.Hash} A hash of values, keyed by the following keys:
      *     TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE
      */
@@ -1541,15 +1541,15 @@ TP.definePrimitive('elementSelectContent',
 function(anElement, includeElement) {
 
     /**
-     * @name elementSelectContent
-     * @synopsis Selects the content of the supplied Element. If the Element is
+     * @method elementSelectContent
+     * @summary Selects the content of the supplied Element. If the Element is
      *     an 'input element' of some sort (i.e. an 'input' or 'textarea'
      *     element), this method selects its text content.
      * @param {HTMLElement} anElement The element to select the content of.
      * @param {Boolean} includeElement Whether or not the element itself should
      *     be included in the selection. Note that this setting has no meaning
      *     if the element is a sort of 'input element'. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     var elementName,
@@ -1605,14 +1605,14 @@ TP.definePrimitive('elementSetClass',
 function(anElement, aClassName) {
 
     /**
-     * @name elementSetClass
-     * @synopsis Sets the element's CSS class name(s) to the supplied CSS class
+     * @method elementSetClass
+     * @summary Sets the element's CSS class name(s) to the supplied CSS class
      *     name(s). Note that if the class name is null, the 'class' attribute
      *     will be removed from the element.
      * @param {Element} anElement The element to set the CSS class name for.
      * @param {String} aClassName Class name(s) to use as the CSS class names
      *     for the element.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -1636,8 +1636,8 @@ TP.definePrimitive('elementSetOpacity',
 function(anElement, opacityLevel) {
 
     /**
-     * @name elementSetOpacity
-     * @synopsis Sets the element's opacity level. The level should be a
+     * @method elementSetOpacity
+     * @summary Sets the element's opacity level. The level should be a
      *     fractional number between 0 and 1 that will represent the percentage
      *     of opacity the element should be set to (e.g. it should be '.5' to
      *     set the element to 50% opacity).
@@ -1645,7 +1645,7 @@ function(anElement, opacityLevel) {
      * @param {Number|String} opacityLevel The fractional number to set the
      *     opacity to or the empty String ('') to clear the element's opacity
      *     value.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      */
 
     if (!TP.isElement(anElement)) {
@@ -1663,16 +1663,16 @@ TP.definePrimitive('$elementTransformBoundingClientRect',
 function(anElement, transformationMatrix) {
 
     /**
-     * @name $elementTransformBoundingClientRect
-     * @synopsis Transforms the bounding client rect of the supplied element
+     * @method $elementTransformBoundingClientRect
+     * @summary Transforms the bounding client rect of the supplied element
      *     using the supplied transformation matrix
-     * @description This code derived from:
+     * @summary This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @param {Element} anElement The element to compute the bounding client
      *     rect for.
      * @param {Array} transformationMatrix An Array of Arrays representing the
      *     transformation matrix.
-     * @raises TP.sig.InvalidElement
+     * @exception TP.sig.InvalidElement
      * @returns {Object} An Object with left, top, right and bottom properties
      *     representing the bounding client rect.
      */
@@ -1707,16 +1707,16 @@ TP.definePrimitive('textElementInsertContent',
 function(anElement, aContent) {
 
     /**
-     * @name textElementInsertContent
-     * @synopsis Inserts the supplied content at the element's insertion point.
-     * @description Note that this method focuses the text element in question.
+     * @method textElementInsertContent
+     * @summary Inserts the supplied content at the element's insertion point.
+     * @summary Note that this method focuses the text element in question.
      *     It also ensures that the supplied element is a 'textarea' or an
      *     'input' with 'type="text"' and will raise an TP.sig.InvalidElement
      *     exception if its not.
      * @param {Element} anElement The 'input type="text"' or 'textarea' element
      *     to insert content into.
      * @param {String} aContent The content to insert.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      */
 
     var elementName,
@@ -1767,17 +1767,17 @@ TP.definePrimitive('textElementReplaceSelection',
 function(anElement, aContent) {
 
     /**
-     * @name textElementReplaceSelection
-     * @synopsis Replaces the element's current selection (could be empty) with
+     * @method textElementReplaceSelection
+     * @summary Replaces the element's current selection (could be empty) with
      *     the supplied content.
-     * @description Note that this method focuses the text element in question.
+     * @summary Note that this method focuses the text element in question.
      *     It also ensures that the supplied element is a 'textarea' or an
      *     'input' with 'type="text"' and will raise an TP.sig.InvalidElement
      *     exception if its not.
      * @param {Element} anElement The 'input type="text"' or 'textarea' element
      *     to replace the selection of.
      * @param {String} aContent The content to use as the replacement.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      */
 
     var elementName,
@@ -1826,10 +1826,10 @@ TP.definePrimitive('nodeGetWindow',
 function(aNode) {
 
     /**
-     * @name nodeGetWindow
-     * @synopsis Returns the node's window.
+     * @method nodeGetWindow
+     * @summary Returns the node's window.
      * @param {Node} aNode The node to use.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {Window}
      */
 
@@ -1860,8 +1860,8 @@ TP.definePrimitive('nodeHasWindow',
 function(aNode) {
 
     /**
-     * @name nodeHasWindow
-     * @synopsis Returns true if the node provided appears to be in a document
+     * @method nodeHasWindow
+     * @summary Returns true if the node provided appears to be in a document
      *     that is situated within a Window.
      * @param {Node} aNode The DOM node to operate on.
      * @returns {Boolean} True if the node is in a document that is in a window.
@@ -1884,14 +1884,14 @@ TP.definePrimitive('windowArmEvents',
 function(aWindow, eventNameArray, aHandler) {
 
     /**
-     * @name windowArmEvents
-     * @synopsis Arms all elements in the window's document to fire the events
+     * @method windowArmEvents
+     * @summary Arms all elements in the window's document to fire the events
      *     named in eventNameArray.
      * @param {Array} eventNameArray The array of event names to instrument all
      *     elements in the document to fire.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of the default handler.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidArray
      */
 
     var i,
@@ -1932,14 +1932,14 @@ TP.definePrimitive('windowConstructObject',
 function(aWindow, objectName) {
 
     /**
-     * @name windowConstructObject
-     * @synopsis Constructs an object in another Window, using that the named
+     * @method windowConstructObject
+     * @summary Constructs an object in another Window, using that the named
      *     object as the constructor *in the target Window* to construct the
      *     object. Note that this function also passes along any additional
      *     arguments to this function to the constructor.
      * @param {Window} aWindow The window to construct the object in.
      * @param {String} objectName The 'type name' of the object to construct.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Object}
      */
 
@@ -2013,14 +2013,14 @@ TP.definePrimitive('windowDisarmEvents',
 function(aWindow, eventNameArray, aHandler) {
 
     /**
-     * @name windowDisarmEvents
-     * @synopsis Disarms all elements in the window's document for the events
+     * @method windowDisarmEvents
+     * @summary Disarms all elements in the window's document for the events
      *     named in eventNameArray.
      * @param {Window} aWindow The window whose element(s) should be disarmed.
      * @param {Array} eventNameArray The array of event names to disarm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of the default handler for TIBET.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidArray
      */
 
     var i,
@@ -2058,11 +2058,11 @@ TP.definePrimitive('windowGetInnerHeight',
 function(aWindow) {
 
     /**
-     * @name windowGetInnerHeight
-     * @synopsis Returns the window's inner height (the height not including
+     * @method windowGetInnerHeight
+     * @summary Returns the window's inner height (the height not including
      *     scrollbars, button bars, etc.).
      * @param {Window} aWindow The window to get the inner height of.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The window's inner height.
      */
 
@@ -2079,11 +2079,11 @@ TP.definePrimitive('windowGetInnerWidth',
 function(aWindow) {
 
     /**
-     * @name windowGetInnerWidth
-     * @synopsis Returns the window's inner width (the width not including
+     * @method windowGetInnerWidth
+     * @summary Returns the window's inner width (the width not including
      *     scrollbars, button bars, etc.).
      * @param {Window} aWindow The window to get the inner width of.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The window's inner width.
      */
 
@@ -2100,11 +2100,11 @@ TP.definePrimitive('windowGetOuterHeight',
 function(aWindow) {
 
     /**
-     * @name windowGetOuterHeight
-     * @synopsis Returns the window's outer height (the height including
+     * @method windowGetOuterHeight
+     * @summary Returns the window's outer height (the height including
      *     scrollbars, button bars, etc.).
      * @param {Window} aWindow The window to get the outer height of.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The window's outer height.
      */
 
@@ -2121,11 +2121,11 @@ TP.definePrimitive('windowGetOuterWidth',
 function(aWindow) {
 
     /**
-     * @name windowGetOuterWidth
-     * @synopsis Returns the window's outer width (the width including
+     * @method windowGetOuterWidth
+     * @summary Returns the window's outer width (the width including
      *     scrollbars, button bars, etc.).
      * @param {Window} aWindow The window to get the outer width of.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The window's outer width.
      */
 
@@ -2142,10 +2142,10 @@ TP.definePrimitive('windowGetX',
 function(aWindow) {
 
     /**
-     * @name windowGetX
-     * @synopsis Returns the window's X position on the overall screen.
+     * @method windowGetX
+     * @summary Returns the window's X position on the overall screen.
      * @param {Window} aWindow The window to get the X position of.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The window's X position on the screen in pixels.
      */
 
@@ -2162,10 +2162,10 @@ TP.definePrimitive('windowGetY',
 function(aWindow) {
 
     /**
-     * @name windowGetY
-     * @synopsis Returns the window's Y position on the overall screen.
+     * @method windowGetY
+     * @summary Returns the window's Y position on the overall screen.
      * @param {Window} aWindow The window to get the Y position of.
-     * @raises TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The window's Y position on the screen in pixels.
      */
 
@@ -2182,12 +2182,12 @@ TP.definePrimitive('windowInstallOnlineOfflineHook',
 function(aWindow) {
 
     /**
-     * @name windowInstallOnlineOfflineHook
-     * @synopsis Installs event handlers for online / offline events which then
+     * @method windowInstallOnlineOfflineHook
+     * @summary Installs event handlers for online / offline events which then
      *     rebroadcasts those events as 'AppOnline' / 'AppOffline' signals.
      * @param {Window} aWindow The window to install the online/offline event
      *     hooks onto.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidElement
      */
 
     var bodyElem;
@@ -2227,13 +2227,13 @@ TP.definePrimitive('windowInstallDocumentVisibilityHook',
 function(aWindow) {
 
     /**
-     * @name windowInstallDocumentVisibilityHook
-     * @synopsis Installs event handlers for the 'visibility change' event
+     * @method windowInstallDocumentVisibilityHook
+     * @summary Installs event handlers for the 'visibility change' event
      *     which then rebroadcasts that event as 'DocumentVisible' /
      *     'DocumentInvisible' events.
      * @param {Window} aWindow The window to install the document visibility
      *     change event hooks onto.
-     * @raises TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
      */
 
     var doc,

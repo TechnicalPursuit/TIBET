@@ -20,8 +20,8 @@ TP.definePrimitive('webdavGetACL',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetACL
-     * @synopsis Gets the ACL information for the versioned controlled WebDAV
+     * @method webdavGetACL
+     * @summary Gets the ACL information for the versioned controlled WebDAV
      *     resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -45,8 +45,8 @@ TP.definePrimitive('webdavGetACLPrincipalPropSetReport',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetACLPrincipalPropSetReport
-     * @synopsis Reports on all set properties for the principals involved with
+     * @method webdavGetACLPrincipalPropSetReport
+     * @summary Reports on all set properties for the principals involved with
      *     the versioned controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -92,8 +92,8 @@ TP.definePrimitive('webdavGetAllProperties',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetAllProperties
-     * @synopsis Gets all properties defined on the resource at the target URL.
+     * @method webdavGetAllProperties
+     * @summary Gets all properties defined on the resource at the target URL.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
@@ -125,8 +125,8 @@ TP.definePrimitive('webdavGetAllIncludedProperties',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetAllIncludedProperties
-     * @synopsis Gets all of the live, dead and 2 live properties defined in RFC
+     * @method webdavGetAllIncludedProperties
+     * @summary Gets all of the live, dead and 2 live properties defined in RFC
      *     3253 for the versioned controlled WebDAV resource at the target URL
      *     specified.
      * @param {String} targetUrl The request's target URL.
@@ -157,8 +157,8 @@ TP.definePrimitive('webdavGetCurrentUserPrivilegeSet',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetCurrentUserPrivilegeSet
-     * @synopsis Gets the exact set of privileges granted to the current HTTP
+     * @method webdavGetCurrentUserPrivilegeSet
+     * @summary Gets the exact set of privileges granted to the current HTTP
      *     user for the versioned controlled WebDAV resource at the target URL
      *     specified.
      * @param {String} targetUrl The request's target URL.
@@ -183,17 +183,17 @@ TP.definePrimitive('webdavGetDAVPropertyValues',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetDAVPropertyValues
-     * @synopsis Gets all 'WebDAV' properties (and only WebDAV properties - no
+     * @method webdavGetDAVPropertyValues
+     * @summary Gets all 'WebDAV' properties (and only WebDAV properties - no
      *     custom properties) defined on the resource at the target URL.
-     * @description This call expects an additional parameter in the request
+     * @summary This call expects an additional parameter in the request
      *     called 'propertyNames' that contains an Array with the names of the
      *     properties to retrieve values for.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request additional
      *     parameters. For this method, this includes an additional parameter of
      *     'propertyNames'.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -236,8 +236,8 @@ TP.definePrimitive('webdavGetExpandPropertyReport',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetExpandPropertyReport
-     * @synopsis Reports in one request all properties linked using 'href's for
+     * @method webdavGetExpandPropertyReport
+     * @summary Reports in one request all properties linked using 'href's for
      *     the versioned controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -278,8 +278,8 @@ TP.definePrimitive('webdavGetPrincipalMatchReport',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetPrincipalMatchReport
-     * @synopsis Reports on all principals that match the current user for the
+     * @method webdavGetPrincipalMatchReport
+     * @summary Reports on all principals that match the current user for the
      *     versioned controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -325,8 +325,8 @@ TP.definePrimitive('webdavGetPrincipalSearchPropertySetReport',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetPrincipalSearchPropertySetReport
-     * @synopsis Reports on the set of searchable properties for the versioned
+     * @method webdavGetPrincipalSearchPropertySetReport
+     * @summary Reports on the set of searchable properties for the versioned
      *     controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -368,10 +368,10 @@ TP.definePrimitive('webdavGetProperty',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetProperty
-     * @synopsis Gets the supplied property(s) of a versioned controlled WebDAV
+     * @method webdavGetProperty
+     * @summary Gets the supplied property(s) of a versioned controlled WebDAV
      *     resource at the target URL specified.
-     * @description This call expects an additional parameter in the request
+     * @summary This call expects an additional parameter in the request
      *     called 'property' that contains a TP.lang.Hash with the following
      *     format:
      *
@@ -393,7 +393,7 @@ function(targetUrl, aRequest) {
      *     TP.hc('property', TP.hc('name', 'creationdate')));
      *
      *     result is an XHR object whose 'status' should be 207.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -438,8 +438,8 @@ TP.definePrimitive('webdavGetPropertyNames',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetPropertyNames
-     * @synopsis Returns all of the property names for the resource.
+     * @method webdavGetPropertyNames
+     * @summary Returns all of the property names for the resource.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
@@ -462,8 +462,8 @@ TP.definePrimitive('webdavGetVersionTreeReport',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavGetVersionTreeReport
-     * @synopsis Reports on the version tree of a versioned controlled WebDAV
+     * @method webdavGetVersionTreeReport
+     * @summary Reports on the version tree of a versioned controlled WebDAV
      *     resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -500,10 +500,10 @@ TP.definePrimitive('webdavRemoveProperty',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavRemoveProperty
-     * @synopsis Removes the supplied property(s) from a versioned controlled
+     * @method webdavRemoveProperty
+     * @summary Removes the supplied property(s) from a versioned controlled
      *     WebDAV resource at the target URL specified.
-     * @description This call expects an additional parameter in the request
+     * @summary This call expects an additional parameter in the request
      *     called 'property' that contains a TP.lang.Hash with the following
      *     format:
      *
@@ -515,7 +515,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -547,10 +547,10 @@ TP.definePrimitive('webdavSetProperty',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavSetProperty
-     * @synopsis Sets the supplied property(s) of a versioned controlled WebDAV
+     * @method webdavSetProperty
+     * @summary Sets the supplied property(s) of a versioned controlled WebDAV
      *     resource at the target URL specified.
-     * @description This call expects an additional parameter in the request
+     * @summary This call expects an additional parameter in the request
      *     called 'property' that contains a TP.lang.Hash with the following
      *     format:
      *
@@ -573,7 +573,7 @@ function(targetUrl, aRequest) {
      *     TP.dc().as('TP.iso.ISO8601'))));
      *
      *     result is an XHR object whose 'status' should be 200.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -607,8 +607,8 @@ TP.definePrimitive('webdavCall',
 function(targetUrl, aRequest, useQuery) {
 
     /**
-     * @name webdavCall
-     * @synopsis Makes a WebDAV call to the server. This method abstracts common
+     * @method webdavCall
+     * @summary Makes a WebDAV call to the server. This method abstracts common
      *     functionality used when making all WebDAV calls, such as setting
      *     common headers, etc.
      * @param {String} targetUrl The request's target URL.
@@ -617,7 +617,7 @@ function(targetUrl, aRequest, useQuery) {
      *     normal HTTP parameters for headers, timeout, username, and password.
      * @param {Boolean} useQuery Whether or not to use a TP.$httpQuery() call or
      *     a TP.$httpSend() call (the default).
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -667,8 +667,8 @@ TP.definePrimitive('webdavCheckin',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavCheckin
-     * @synopsis Checks in a versioned controlled WebDAV resource at the target
+     * @method webdavCheckin
+     * @summary Checks in a versioned controlled WebDAV resource at the target
      *     URL specified to produce a new version.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -695,8 +695,8 @@ TP.definePrimitive('webdavCheckout',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavCheckout
-     * @synopsis Checks out a versioned controlled WebDAV resource at the target
+     * @method webdavCheckout
+     * @summary Checks out a versioned controlled WebDAV resource at the target
      *     URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -723,8 +723,8 @@ TP.definePrimitive('webdavCopy',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavCopy
-     * @synopsis Copies a resource from the source path (given in the target
+     * @method webdavCopy
+     * @summary Copies a resource from the source path (given in the target
      *     URL) to the destination path.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
@@ -742,7 +742,7 @@ function(targetUrl, aRequest) {
      *     'overwrite', true));
      *
      *     result is an XHR object whose 'status' should be 201.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -799,11 +799,11 @@ TP.definePrimitive('webdavLock',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavLock
-     * @synopsis Sets a lock on the resource at the target URL. The returning
+     * @method webdavLock
+     * @summary Sets a lock on the resource at the target URL. The returning
      *     XMLHttpRequest object will have the unique lock token used to unlock
      *     the resource as part of its response data.
-     * @description The supplied request object has three parameters that are
+     * @summary The supplied request object has three parameters that are
      *     used when setting the lock. These should be one of the TP.WEBDAV_*
      *     constants as follows:
      *
@@ -900,9 +900,9 @@ TP.definePrimitive('webdavMkCol',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavMkCol
-     * @synopsis Creates a new WebDAV 'collection' at the target URL specified.
-     * @description When executed against a 'file system' WebDAV resource, this
+     * @method webdavMkCol
+     * @summary Creates a new WebDAV 'collection' at the target URL specified.
+     * @summary When executed against a 'file system' WebDAV resource, this
      *     function creates a directory at the specified target. Note that the
      *     specification states that *all* ancestors (i.e. parent directories)
      *     must exist in order for this call to succeed.
@@ -940,8 +940,8 @@ TP.definePrimitive('webdavMove',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavMove
-     * @synopsis Moves a resource from the source path (given in the target URL)
+     * @method webdavMove
+     * @summary Moves a resource from the source path (given in the target URL)
      *     to the destination path provided in the request's 'destination' URL
      *     value.
      * @param {String} targetUrl The request's target URL.
@@ -961,7 +961,7 @@ function(targetUrl, aRequest) {
      *     true));
      *
      *     result is an XHR object whose 'status' should be 201.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -1018,9 +1018,9 @@ TP.definePrimitive('webdavPropFind',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavPropFind
-     * @synopsis Gets properties defined on the resource at the target URL.
-     * @description This call takes an optional parameter containing XML that
+     * @method webdavPropFind
+     * @summary Gets properties defined on the resource at the target URL.
+     * @summary This call takes an optional parameter containing XML that
      *     defines the names of the properties to retrieve values for. This XML
      *     must start and end with 'prop' tags. It can assume that the 'D' XML
      *     namespace prefix has been defined as the 'DAV:' namespace, as per the
@@ -1085,10 +1085,10 @@ TP.definePrimitive('webdavPropPatch',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavPropPatch
-     * @synopsis Sets or removes properties defined on the resource at the
+     * @method webdavPropPatch
+     * @summary Sets or removes properties defined on the resource at the
      *     target URL.
-     * @description This call uses the 'setList' and 'removeList' parameters of
+     * @summary This call uses the 'setList' and 'removeList' parameters of
      *     the supplied request. Each parameter should contain an Array with the
      *     following format:
      *
@@ -1177,8 +1177,8 @@ TP.definePrimitive('webdavReport',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavReport
-     * @synopsis Reports on the WebDAV resource at the target URL specified.
+     * @method webdavReport
+     * @summary Reports on the WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
@@ -1204,8 +1204,8 @@ TP.definePrimitive('webdavUnlock',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavUnlock
-     * @synopsis Removes a lock on the resource at the target URL. The lock is
+     * @method webdavUnlock
+     * @summary Removes a lock on the resource at the target URL. The lock is
      *     identified by the supplied unique lock token. The token is typically
      *     acquired via a previous webdavLock request.
      * @param {String} targetUrl The request's target URL.
@@ -1224,7 +1224,7 @@ function(targetUrl, aRequest) {
      *     '<opaquelocktoken:a515cfa4-5da4-22e1-f5b5-00a0451e6bf7>'));
      *
      *     result is an XHR object whose 'status' should be 204.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -1264,8 +1264,8 @@ TP.definePrimitive('webdavVersionControl',
 function(targetUrl, aRequest) {
 
     /**
-     * @name webdavVersionControl
-     * @synopsis Creates a versioned controlled WebDAV resource at the target
+     * @method webdavVersionControl
+     * @summary Creates a versioned controlled WebDAV resource at the target
      *     URL specified.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing

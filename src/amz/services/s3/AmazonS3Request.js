@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.AmazonS3Request}
- * @synopsis A subtype of TP.sig.RESTRequest that is used in conjunction with
+ * @summary A subtype of TP.sig.RESTRequest that is used in conjunction with
  *     the TP.amz.AmazonS3Service type to communicate to the Amazon S3 service.
  * @example Accessing Amazon S3 from TIBET consists of:
  *
@@ -120,9 +120,9 @@ TP.sig.AmazonS3Request.Inst.defineMethod('init',
 function(aRequest, aResourceID, aThreadID) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new request.
-     * @description Each request is composed of a request payload (usually a
+     * @method init
+     * @summary Initialize a new request.
+     * @summary Each request is composed of a request payload (usually a
      *     TP.lang.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
@@ -197,9 +197,9 @@ TP.sig.AmazonS3GetItemRequest.Inst.defineMethod('init',
 function(aRequest, aResourceID, aThreadID) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new request.
-     * @description Each request is composed of a request payload (usually a
+     * @method init
+     * @summary Initialize a new request.
+     * @summary Each request is composed of a request payload (usually a
      *     TP.lang.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
@@ -233,9 +233,9 @@ TP.sig.AmazonS3PutItemRequest.Inst.defineMethod('init',
 function(aRequest, aResourceID, aThreadID) {
 
     /**
-     * @name init
-     * @synopsis Initialize a new request.
-     * @description Each request is composed of a request payload (usually a
+     * @method init
+     * @summary Initialize a new request.
+     * @summary Each request is composed of a request payload (usually a
      *     TP.lang.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
@@ -263,7 +263,7 @@ TP.sig.AmazonS3PutItemRequest.Inst.defineMethod('handle404',
 function(aResponse) {
 
     /**
-     * @name handle404
+     * @method handle404
      * @param {TP.lang.Hash} aRequest An object containing specific request
      *     parameters which will by used by the request's responder to process
      *     the request. NOTE that this takes the same parameter slot as the root

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Pubsub}
- * @synopsis An abstract type for all of the XMPP PubSub element types.
+ * @summary An abstract type for all of the XMPP PubSub element types.
  */
 
 //  ------------------------------------------------------------------------
@@ -55,10 +55,10 @@ TP.xmpp.Pubsub.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
-     * @name getConcreteType
-     * @synopsis Returns the subtype to use for the node provided.
+     * @method getConcreteType
+     * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @raises TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      * @returns {TP.lang.RootObject.<TP.xmpp.Pubsub>} A TP.xmpp.Pubsub subtype
      *     type object.
      */
@@ -101,8 +101,8 @@ TP.xmpp.Pubsub.Type.defineMethod('registerPubsubType',
 function(aNamespace, xPathExpr, aType) {
 
     /**
-     * @name registerPubsubType
-     * @synopsis Registers a PubSub node type with this type for use in node
+     * @method registerPubsubType
+     * @summary Registers a PubSub node type with this type for use in node
      *     type resolution.
      * @param {String} aNamespace The namespace belonging to the type being
      *     registered.

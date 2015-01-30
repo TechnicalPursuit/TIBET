@@ -93,7 +93,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, CLI.PARSE_OPTIONS);
  * If no property is provided the entire set of configuration values is
  * returned.
  * @param {string} property A specific property value to check.
- * @return {Object} The property value, or the entire configuration object.
+ * @returns {Object} The property value, or the entire configuration object.
  */
 Cmd.prototype.getcfg = function(property) {
     return CLI.getcfg(property);
@@ -121,7 +121,7 @@ Cmd.prototype.help = function() {
  * attribute. Note that the options from the CLI as well as any command-specific
  * options in the CLI.PROJECT_FILE are used in constructing the final arglist.
  * @param {Array.<string>} args Processed arguments from the command line.
- * @return {Object} An object in minimist argument format.
+ * @returns {Object} An object in minimist argument format.
  */
 Cmd.prototype.parse = function(options) {
     var command,
@@ -180,7 +180,7 @@ Cmd.prototype.parse = function(options) {
 
 /**
  * Perform the actual command processing. Typically you want to override this.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
     return 0;
@@ -191,7 +191,7 @@ Cmd.prototype.execute = function() {
  * Verify any command prerequisites are in place (such as necessary binaries
  * etc). If the execution should stop this method will return a non-zero result
  * code.
- * @return {Number} A return code. Non-zero indicates an error.
+ * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.prereqs = function() {
     return 0;
@@ -243,7 +243,7 @@ Cmd.prototype.run = function(options) {
  * A synchronous call to shelljs's exec utility which standardizes silent flag
  * and error handling to simplify usage for command subtypes.
  * @param {String} cmd The command string to run.
- * @return {Object} A shelljs return value containing a 'code' and 'output'.
+ * @returns {Object} A shelljs return value containing a 'code' and 'output'.
  */
 Cmd.prototype.shexec = function(cmd) {
 

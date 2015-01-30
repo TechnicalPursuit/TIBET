@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.notifier}
- * @synopsis Manages notifier XControls.
+ * @summary Manages notifier XControls.
  */
 
 //  ------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @synopsis Types supporting various date, time, timezone, and calendar
+ * @summary Types supporting various date, time, timezone, and calendar
  *     functionality.
  */
 
@@ -19,7 +19,7 @@
 
 /**
  * @type {TP.iso.ISO8601}
- * @synopsis A type which can produce a representation of a Date in a valid ISO
+ * @summary A type which can produce a representation of a Date in a valid ISO
  *     8601 format or parse a string in a valid 8601 format into a native
  *     JavaScript Date object.
  */
@@ -170,10 +170,10 @@ TP.iso.ISO8601.Type.defineMethod('fromDate',
 function(aDate, aFormat) {
 
     /**
-     * @name fromDate
-     * @synopsis Returns an instance of String that encodes aDate in the format
+     * @method fromDate
+     * @summary Returns an instance of String that encodes aDate in the format
      *     according to the format string provided.
-     * @description This method is used as the standard output method for most
+     * @summary This method is used as the standard output method for most
      *     date strings. It attempts to produce a valid ISO 8601 string from the
      *     date provided according to the instructions found in the format
      *     string.
@@ -232,8 +232,8 @@ TP.iso.ISO8601.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
-     * @name fromString
-     * @synopsis Attempts to parse the string provided into a Date, then convert
+     * @method fromString
+     * @summary Attempts to parse the string provided into a Date, then convert
      *     that Date into a valid TP.iso.ISO8601 formatted string. If successful
      *     the ISO string is returned.
      * @param {String} aString The potential date string.
@@ -261,9 +261,9 @@ TP.iso.ISO8601.Type.defineMethod('parse',
 function(aString) {
 
     /**
-     * @name parse
-     * @synopsis Return the Date defined by the string provided.
-     * @description This routine is invoked by the Date type when running its
+     * @method parse
+     * @summary Return the Date defined by the string provided.
+     * @summary This routine is invoked by the Date type when running its
      *     list of registered Date parsers in an attempt to parse an input
      *     string.
      *
@@ -299,7 +299,7 @@ function(aString) {
      *     time, all other values define an offset from UFC either + or - in
      *     HH:MM terms.
      * @param {String} aString An TP.iso.ISO8601 string.
-     * @raises TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Date} A new Date object representing the Date encoded in the
      *     parameter.
      */
@@ -487,8 +487,8 @@ TP.iso.ISO8601.Type.defineMethod('validate',
 function(anObj) {
 
     /**
-     * @name validate
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validate
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of the receiver.
      * @param {Object} anObj The object to test.
      * @returns {Boolean} True if the object is 'valid'.
@@ -504,7 +504,7 @@ function(anObj) {
 
 /**
  * @type {TP.core.TimeZone}
- * @synopsis A helper class for xs:time, xs:date, and similar XMLSchema types
+ * @summary A helper class for xs:time, xs:date, and similar XMLSchema types
  *     which require timezone formatting/validation assistance.
  */
 
@@ -532,8 +532,8 @@ TP.core.TimeZone.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided it meets the criteria for a
+     * @method validate
+     * @summary Returns true if the object provided it meets the criteria for a
      *     valid time string with optional time zone data.
      * @returns {Boolean} True if the object is 'valid'.
      */

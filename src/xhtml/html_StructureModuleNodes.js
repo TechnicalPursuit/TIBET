@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.article}
- * @synopsis 'article' tag. Blog entry or newspaper article.
+ * @summary 'article' tag. Blog entry or newspaper article.
  */
 
 //  ------------------------------------------------------------------------
@@ -27,7 +27,7 @@ TP.html.Attrs.defineSubtype('article');
 
 /**
  * @type {TP.html.aside}
- * @synopsis 'aside' tag. Content that is slightly related to the rest of the
+ * @summary 'aside' tag. Content that is slightly related to the rest of the
  *     page.
  */
 
@@ -41,7 +41,7 @@ TP.html.Attrs.defineSubtype('aside');
 
 /**
  * @type {TP.html.body}
- * @synopsis 'body' tag. Document body.
+ * @summary 'body' tag. Document body.
  */
 
 //  ------------------------------------------------------------------------
@@ -56,7 +56,7 @@ TP.html.body.Type.set('uriAttrs', TP.ac('background'));
 
 /**
  * @type {TP.html.figcaption}
- * @synopsis 'figcaption' tag. A figure caption.
+ * @summary 'figcaption' tag. A figure caption.
  */
 
 //  ------------------------------------------------------------------------
@@ -69,7 +69,7 @@ TP.html.Attrs.defineSubtype('figcaption');
 
 /**
  * @type {TP.html.figure}
- * @synopsis 'figure' tag. A piece of self-contained flow content.
+ * @summary 'figure' tag. A piece of self-contained flow content.
  */
 
 //  ------------------------------------------------------------------------
@@ -82,7 +82,7 @@ TP.html.Attrs.defineSubtype('figure');
 
 /**
  * @type {TP.html.footer}
- * @synopsis 'footer' tag. A footer for a section.
+ * @summary 'footer' tag. A footer for a section.
  */
 
 //  ------------------------------------------------------------------------
@@ -95,7 +95,7 @@ TP.html.Attrs.defineSubtype('footer');
 
 /**
  * @type {TP.html.head}
- * @synopsis 'head' tag. Document head.
+ * @summary 'head' tag. Document head.
  */
 
 //  ------------------------------------------------------------------------
@@ -110,8 +110,8 @@ TP.html.head.Type.defineMethod('tagTidy',
 function(aRequest) {
 
     /**
-     * @name tagTidy
-     * @synopsis Coalesce and rewrite head content such as css:sheet nodes to
+     * @method tagTidy
+     * @summary Coalesce and rewrite head content such as css:sheet nodes to
      *     ensure we have them ready for css:* processing later on.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -132,7 +132,7 @@ function(aRequest) {
 
 /**
  * @type {TP.html.header}
- * @synopsis 'header' tag. A header for a section.
+ * @summary 'header' tag. A header for a section.
  */
 
 //  ------------------------------------------------------------------------
@@ -145,7 +145,7 @@ TP.html.Attrs.defineSubtype('header');
 
 /**
  * @type {TP.html.hgroup}
- * @synopsis 'hgroup' tag. The header of a 'section'.
+ * @summary 'hgroup' tag. The header of a 'section'.
  */
 
 //  ------------------------------------------------------------------------
@@ -158,7 +158,7 @@ TP.html.Attrs.defineSubtype('hgroup');
 
 /**
  * @type {TP.html.html}
- * @synopsis 'html' tag. Document root.
+ * @summary 'html' tag. Document root.
  */
 
 //  ------------------------------------------------------------------------
@@ -188,8 +188,8 @@ TP.html.html.Type.defineMethod('tagTidy',
 function(aRequest) {
 
     /**
-     * @name tagTidy
-     * @synopsis Updates the document so that it remains valid and ready for
+     * @method tagTidy
+     * @summary Updates the document so that it remains valid and ready for
      *     storage. The primary responsibility here is moving any expanded
      *     content from the head to the body so the browser stays happy.
      * @param {TP.sig.Request} aRequest A request containing processing
@@ -256,7 +256,7 @@ function(aRequest) {
 
 /**
  * @type {TP.html.nav}
- * @synopsis 'nav' tag. Section of the document intended for navigation.
+ * @summary 'nav' tag. Section of the document intended for navigation.
  */
 
 //  ------------------------------------------------------------------------
@@ -269,7 +269,7 @@ TP.html.Attrs.defineSubtype('nav');
 
 /**
  * @type {TP.html.section}
- * @synopsis 'section' tag. Document section.
+ * @summary 'section' tag. Document section.
  */
 
 //  ------------------------------------------------------------------------
@@ -282,7 +282,7 @@ TP.html.Attrs.defineSubtype('section');
 
 /**
  * @type {TP.html.title}
- * @synopsis 'title' tag. Document title.
+ * @summary 'title' tag. Document title.
  */
 
 //  ------------------------------------------------------------------------

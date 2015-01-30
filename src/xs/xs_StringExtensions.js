@@ -16,10 +16,10 @@ String.Inst.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Tests the incoming value to see if it represents a valid
+     * @method validate
+     * @summary Tests the incoming value to see if it represents a valid
      *     instance of 'anyType'.
-     * @description The XML Schema specification has no canonical definition for
+     * @summary The XML Schema specification has no canonical definition for
      *     this type's value space but to support usage for type validation we
      *     define it to exclude null and undefined.
      * @param {Object} anObject The object to test.

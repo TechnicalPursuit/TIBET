@@ -33,7 +33,7 @@ TP.sherpa.logview.Inst.defineMethod('setup',
 function() {
 
     /**
-     * @name setup
+     * @method setup
      */
 
     this.setProcessedContent('<ul id="entryList"></ul>');
@@ -72,8 +72,8 @@ TP.sherpa.logview.Inst.defineMethod('setProcessedContent',
 function(newContent, aRequest) {
 
     /**
-     * @name setProcessedContent
-     * @synopsis Sets the content of the receiver to the content provided
+     * @method setProcessedContent
+     * @summary Sets the content of the receiver to the content provided
      *     without performing any content processing on it.
      * @param {Object} newContent The content to write into the receiver. This
      *     can be a String, a Node, or an Object capable of being converted into

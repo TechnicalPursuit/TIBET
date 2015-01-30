@@ -53,7 +53,7 @@ TP.sherpa.quickbar.Inst.defineMethod('setup',
 function() {
 
     /**
-     * @name setup
+     * @method setup
      */
 
     var textInput,
@@ -149,7 +149,7 @@ TP.sherpa.quickbar.Inst.defineMethod('drawSearchResults',
 function(inputText) {
 
     /**
-     * @name drawSearchResults
+     * @method drawSearchResults
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -214,7 +214,7 @@ TP.sherpa.quickbar.Inst.defineMethod('setSearchMode',
 function(aMode) {
 
     /**
-     * @name setSearchMode
+     * @method setSearchMode
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -249,7 +249,7 @@ TP.sherpa.quickbar.Inst.defineMethod('selectSearchResult',
 function(aCell) {
 
     /**
-     * @name selectSearchResult
+     * @method selectSearchResult
      * @abstract
      * @param
      * @returns {TP.sherpa.hud} The receiver.
@@ -264,7 +264,7 @@ TP.sherpa.quickbar.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setAttrHidden
+     * @method setAttrHidden
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -301,7 +301,7 @@ TP.sherpa.quickbar.Inst.defineMethod('toggleSearchMode',
 function() {
 
     /**
-     * @name toggleSearchMode
+     * @method toggleSearchMode
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -321,7 +321,7 @@ TP.sherpa.quickbar.Inst.defineMethod('updateResultDetail',
 function() {
 
     /**
-     * @name updateResultDetail
+     * @method updateResultDetail
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -360,7 +360,7 @@ TP.sherpa.quickbar.Inst.defineMethod('activateInputEditor',
 function() {
 
     /**
-     * @name activateInputEditor
+     * @method activateInputEditor
      * @returns {TP.sherpa.quickbar} The receiver.
      * @abstract
      */
@@ -380,7 +380,7 @@ TP.sherpa.quickbar.Inst.defineMethod('deactivateInputEditor',
 function() {
 
     /**
-     * @name deactivateInputEditor
+     * @method deactivateInputEditor
      * @returns {TP.sherpa.quickbar} The receiver.
      * @abstract
      */
@@ -400,7 +400,7 @@ TP.sherpa.quickbar.Inst.defineMethod('installHandlers',
 function() {
 
     /**
-     * @name installHandlers
+     * @method installHandlers
      * @synopsis
      * @returns {TP.sherpa.quickbar} The receiver.
      */
@@ -422,7 +422,7 @@ TP.sherpa.quickbar.Inst.defineMethod('removeHandlers',
 function() {
 
     /**
-     * @name removeHandlers
+     * @method removeHandlers
      * @synopsis
      * @returns {TP.sherpa.quickbar} The receiver.
      */
@@ -446,8 +446,8 @@ TP.sherpa.quickbar.Inst.defineMethod('handleDOMKeyDown',
 function(aSignal) {
 
     /**
-     * @name handleDOMKeyDown
-     * @synopsis Handles notifications of keydown events. If the key is one the
+     * @method handleDOMKeyDown
+     * @summary Handles notifications of keydown events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyDown} aSignal The TIBET signal which triggered this method.
      */
@@ -479,8 +479,8 @@ TP.sherpa.quickbar.Inst.defineMethod('handleDOMKeyPress',
 function(aSignal) {
 
     /**
-     * @name handleDOMKeyPress
-     * @synopsis Handles notifications of keypress events. If the key is one the
+     * @method handleDOMKeyPress
+     * @summary Handles notifications of keypress events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyPress} aSignal The TIBET signal which triggered this
      *     method.
@@ -513,8 +513,8 @@ TP.sherpa.quickbar.Inst.defineMethod('handleDOMKeyUp',
 function(aSignal) {
 
     /**
-     * @name handleDOMKeyUp
-     * @synopsis Handles notifications of keyup events. If the key is one we
+     * @method handleDOMKeyUp
+     * @summary Handles notifications of keyup events. If the key is one we
      *     care about then we forward the event to the shell for processing.
      * @param {DOMKeyUp} aSignal The TIBET signal which triggered this handler.
      * @returns {null.}
@@ -551,8 +551,8 @@ TP.sherpa.quickbar.Inst.defineMethod('isSpecialKeyEvent',
 function(anEvent) {
 
     /**
-     * @name isSpecialKeyEvent
-     * @synopsis Returns true if the event represents a key binding used to
+     * @method isSpecialKeyEvent
+     * @summary Returns true if the event represents a key binding used to
      *     trigger command processing of some kind for the console.
      * @param {Event} anEvent The native event that fired.
      */
@@ -585,8 +585,8 @@ TP.sherpa.quickbar.Inst.defineMethod('handleSpecialKeyEvent',
 function(anEvent) {
 
     /**
-     * @name handleSpecialKeyEvent
-     * @synopsis Processes incoming events from the view.
+     * @method handleSpecialKeyEvent
+     * @summary Processes incoming events from the view.
      * @param {Event} anEvent The native event that fired.
      */
 
@@ -626,8 +626,8 @@ TP.sherpa.quickbar.Inst.defineMethod('clearInput',
 function() {
 
     /**
-     * @name clearInput
-     * @synopsis Clears the input cell.
+     * @method clearInput
+     * @summary Clears the input cell.
      * @returns {TP.sherpa.quickbar} The receiver.
      */
 
@@ -642,8 +642,8 @@ TP.sherpa.quickbar.Inst.defineMethod('focusInputCell',
 function(select) {
 
     /**
-     * @name focusInputCell
-     * @synopsis Focuses the input cell so the cursor is visible/blinking.
+     * @method focusInputCell
+     * @summary Focuses the input cell so the cursor is visible/blinking.
      * @param {Boolean} select True to select in addition.
      * @returns {TP.sherpa.quickbar} The receiver.
      */
@@ -670,8 +670,8 @@ TP.sherpa.quickbar.Inst.defineMethod('getInputValue',
 function() {
 
     /**
-     * @name getInputValue
-     * @synopsis Returns the value of the current input cell.
+     * @method getInputValue
+     * @summary Returns the value of the current input cell.
      * @returns {String} The user's input.
      */
 
@@ -691,8 +691,8 @@ TP.sherpa.quickbar.Inst.defineMethod('insertInputContent',
 function(anObject) {
 
     /**
-     * @name insertInputContent
-     * @synopsis Inserts to the value of the input cell.
+     * @method insertInputContent
+     * @summary Inserts to the value of the input cell.
      * @param {Object} anObject The object defining the additional input.
      * @returns {TP.sherpa.quickbar} The receiver.
      */
@@ -711,8 +711,8 @@ TP.sherpa.quickbar.Inst.defineMethod('setCursorToEnd',
 function() {
 
     /**
-     * @name setCursorToEnd
-     * @synopsis Moves the cursor to the end of the current input data.
+     * @method setCursorToEnd
+     * @summary Moves the cursor to the end of the current input data.
      * @returns {TP.sherpa.quickbar} The receiver.
      */
 
@@ -727,10 +727,10 @@ TP.sherpa.quickbar.Inst.defineMethod('setInputContent',
 function(anObject, shouldAppend) {
 
     /**
-     * @name setInputContent
-     * @synopsis Sets the value of the input cell, essentially 'pre-filling' the
+     * @method setInputContent
+     * @summary Sets the value of the input cell, essentially 'pre-filling' the
      *     input area with content.
-     * @description If shouldAppend is true, and the input cell already has
+     * @summary If shouldAppend is true, and the input cell already has
      *     content, a '.;\n' is appended to the front of the content.
      * @param {Object} anObject The object defining the input.
      * @param {Boolean} shouldAppend Whether or not to append the value of
@@ -773,8 +773,8 @@ TP.sherpa.quickbar.Inst.defineMethod('formatInput',
 function(plainText) {
 
     /**
-     * @name formatInput
-     * @synopsis Converts text intended for the input cell so it's properly
+     * @method formatInput
+     * @summary Converts text intended for the input cell so it's properly
      *     displayed.
      * @param {String} plainText The string to convert.
      * @returns {String}

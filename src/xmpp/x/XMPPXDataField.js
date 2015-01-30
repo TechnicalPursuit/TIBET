@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.XDataField}
- * @synopsis A wrapper for field elements that are children of X_DATA
+ * @summary A wrapper for field elements that are children of X_DATA
  *     namespace'd payload element.
  */
 
@@ -51,8 +51,8 @@ TP.xmpp.XDataField.Inst.defineMethod('addValue',
 function(aValue) {
 
     /**
-     * @name addValue
-     * @synopsis Adds a form value to the receiver.
+     * @method addValue
+     * @summary Adds a form value to the receiver.
      * @param {String} aValue The data value to add to the receiver.
      * @returns {TP.xmpp.XDataField} The receiver.
      */
@@ -78,8 +78,8 @@ TP.xmpp.XDataField.Inst.defineMethod('addOption',
 function(anOptionValue) {
 
     /**
-     * @name addOption
-     * @synopsis Adds a form option to the receiver.
+     * @method addOption
+     * @summary Adds a form option to the receiver.
      * @param {String} anOptionValue The form option value to add to the
      *     receiver.
      * @returns {TP.xmpp.XDataField} The receiver.
@@ -106,8 +106,8 @@ TP.xmpp.XDataField.Inst.defineMethod('setLabel',
 function(aLabel) {
 
     /**
-     * @name setLabel
-     * @synopsis Sets the field label of the data field.
+     * @method setLabel
+     * @summary Sets the field label of the data field.
      * @param {String} aLabel The field label of the data field.
      * @returns {TP.xmpp.XDataField} The receiver.
      */
@@ -123,8 +123,8 @@ TP.xmpp.XDataField.Inst.defineMethod('setName',
 function(aName) {
 
     /**
-     * @name setName
-     * @synopsis Sets the field name of the data field.
+     * @method setName
+     * @summary Sets the field name of the data field.
      * @param {String} aName The field name of the data field.
      * @returns {TP.xmpp.XDataField} The receiver.
      */
@@ -140,8 +140,8 @@ TP.xmpp.XDataField.Inst.defineMethod('setRequired',
 function(isRequired) {
 
     /**
-     * @name setRequired
-     * @synopsis Sets whether or not the receiver is a required field.
+     * @method setRequired
+     * @summary Sets whether or not the receiver is a required field.
      * @param {Boolean} isRequired Whether or not the receiver is required.
      * @returns {TP.xmpp.XDataField} The receiver.
      */
@@ -175,8 +175,8 @@ TP.xmpp.XDataField.Inst.defineMethod('setType',
 function(aType) {
 
     /**
-     * @name setType
-     * @synopsis Sets the field type of the data packet.
+     * @method setType
+     * @summary Sets the field type of the data packet.
      * @param {String} aType The field type of the data field. This should be
      *     one of the following constant values:.
      *

@@ -10,7 +10,7 @@
 
 /**
  * @type {tsh:Element}
- * @synopsis The root type for all tsh: action tags and command elements.
+ * @summary The root type for all tsh: action tags and command elements.
  */
 
 //  ------------------------------------------------------------------------

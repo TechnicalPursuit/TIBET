@@ -42,8 +42,8 @@ TP.sys.defineMethod('defineGlobal',
 function(aName, aValue, force) {
 
     /**
-     * @name defineGlobal
-     * @synopsis Defines a global variable and adds it to TIBET's list of
+     * @method defineGlobal
+     * @summary Defines a global variable and adds it to TIBET's list of
      *     globals. This list is used to support symbol exports. Note that while
      *     this does have the effect of setting a global value there is no
      *     change notification associated with this operation. Use set() to
@@ -100,9 +100,9 @@ TP.sys.defineMethod('activate',
 function() {
 
     /**
-     * @name activate
-     * @synopsis Activates the entire TIBET 'system'.
-     * @description TP.sys's 'activate()' method is called from $initialize
+     * @method activate
+     * @summary Activates the entire TIBET 'system'.
+     * @summary TP.sys's 'activate()' method is called from $initialize
      *     in the boot system once the blank page has been loaded and the UI
      *     canvas is read to display initialization messages. The handler here
      *     is responsible for performing all code initialization, activating the
@@ -349,8 +349,8 @@ TP.sys.defineMethod('loadUIRoot',
 function() {
 
     /**
-     * @name loadUIRoot
-     * @synopsis Loads the 'ui root' window with the initial content.
+     * @method loadUIRoot
+     * @summary Loads the 'ui root' window with the initial content.
      */
 
     var rootLoc,
@@ -550,12 +550,12 @@ TP.sys.defineMethod('terminate',
 function(aURI) {
 
     /**
-     * @name terminate
-     * @synopsis Terminates the application by removing the protective
+     * @method terminate
+     * @summary Terminates the application by removing the protective
      *     onbeforeunload hooks that TIBET installs and navigating to the
      *     supplied URI. If a URI is not supplied the value from
      *     TP.sys.cfg('tibet.blankpage') is used.
-     * @description This function should be called by applications *only after
+     * @summary This function should be called by applications *only after
      *     all 'quit' logic (e.g. saving data to the server, etc.) has been
      *     executed by the application*.
      * @param {String} aURI The URI to navigate to in order to terminate the

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.JSONRequest}
- * @synopsis A subtype of TP.sig.Request that is used in conjunction with the
+ * @summary A subtype of TP.sig.Request that is used in conjunction with the
  *     TP.core.JSONService type to communicate to JSON / JSONP services
  * @example Communicating with a JSON data source from TIBET consists of:
  *

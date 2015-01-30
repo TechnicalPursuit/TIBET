@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.positiveInteger}
- * @synopsis An integer whose value is greater than zero.
+ * @summary An integer whose value is greater than zero.
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.xs.positiveInteger.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a number greater than
+     * @method validate
+     * @summary Returns true if the object provided is a number greater than
      *     zero.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

@@ -10,7 +10,7 @@
 
 /**
  * @type {ev:}
- * @synopsis This type represents the XML Events namespace
+ * @summary This type represents the XML Events namespace
  *     (http://www.w3.org/2001/xml-events) in the tag processing system.
  */
 
@@ -26,8 +26,8 @@ TP.ev.XMLNS.Type.defineMethod('$generateHandlerEntriesFor',
 function(anElement, aSignalName, anObserver, aTarget, aHandler) {
 
     /**
-     * @name $generateHandlerEntriesFor
-     * @synopsis Generates handler entries for the supplied element and other
+     * @method $generateHandlerEntriesFor
+     * @summary Generates handler entries for the supplied element and other
      *     parameters.
      * @param {Element} anElement The element containing the XML Events
      *     information.
@@ -357,8 +357,8 @@ TP.ev.XMLNS.Type.defineMethod('$manageEventEntries',
 function(anElement, shouldRegister) {
 
     /**
-     * @name $manageEventEntries
-     * @synopsis Manages the registration or unregistration of event entries in
+     * @method $manageEventEntries
+     * @summary Manages the registration or unregistration of event entries in
      *     TIBET's notification system.
      * @param {Element} anElement The element to manage entries for.
      * @param {Boolean} shouldRegister Whether to register or remove the
@@ -585,8 +585,8 @@ TP.ev.XMLNS.Type.defineMethod('setup',
 function(anElement) {
 
     /**
-     * @name setup
-     * @synopsis Sets up anElement in the event notification system. This method
+     * @method setup
+     * @summary Sets up anElement in the event notification system. This method
      *     is a key element of how TIBET supports XML Events. The various
      *     ev:listeners and elements containing ev: prefixed attributes are
      *     configured during this process so that the proper elements are armed
@@ -606,8 +606,8 @@ TP.ev.XMLNS.Type.defineMethod('teardown',
 function(anElement) {
 
     /**
-     * @name teardown
-     * @synopsis Tears down anElement from the event notification system.
+     * @method teardown
+     * @summary Tears down anElement from the event notification system.
      *     Basically this method does the inverse of the 'setup' method above.
      * @param {Element} anElement The element to tear down.
      * @returns {null}

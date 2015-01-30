@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.html.a}
- * @synopsis A tag. An anchor or hypertext link.
+ * @summary A tag. An anchor or hypertext link.
  */
 
 //  ------------------------------------------------------------------------

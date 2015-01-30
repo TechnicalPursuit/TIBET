@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xs.gMonthDay}
- * @synopsis An XML Schema month/day specification in the form --MM-DD with
+ * @summary An XML Schema month/day specification in the form --MM-DD with
  *     optional time zone data.
  */
 
@@ -38,8 +38,8 @@ TP.xs.gMonthDay.Type.defineMethod('validate',
 function(anObject) {
 
     /**
-     * @name validate
-     * @synopsis Returns true if the object provided is a valid XML Schema
+     * @method validate
+     * @summary Returns true if the object provided is a valid XML Schema
      *     month/day specification in the form --MM-DD[timezone].
      * @param {String} anObject The object to validate.
      * @returns {Boolean}

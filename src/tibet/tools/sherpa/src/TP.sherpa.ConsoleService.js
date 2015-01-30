@@ -64,9 +64,9 @@ TP.sherpa.ConsoleService.Type.defineMethod('construct',
 function(aResourceID, aRequest) {
 
     /**
-     * @name construct
-     * @synopsis Constructs a new console service instance.
-     * @description The primary purpose of this custom constructor is to provide
+     * @method construct
+     * @summary Constructs a new console service instance.
+     * @summary The primary purpose of this custom constructor is to provide
      *     defaulting for the resource ID so we can ensure that a default
      *     SystemConsole instance can be constructed. By leaving the resource ID
      *     null when creating console instances you can ensure that the first
@@ -104,8 +104,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
-     * @name init
-     * @synopsis Constructor for new instances.
+     * @method init
+     * @summary Constructor for new instances.
      * @param {String} aResourceID The unique resource ID for this resource
      *     instance.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request object or hash
@@ -183,8 +183,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('configureSTDIO',
 function() {
 
     /**
-     * @name configureSTDIO
-     * @synopsis Configures TIBET's stdio hooks to look at the receiver. This
+     * @method configureSTDIO
+     * @summary Configures TIBET's stdio hooks to look at the receiver. This
      *     method can be run to cause the receiver to 'own' stdio from the TIBET
      *     system and is usually invoked for system consoles.
      * @returns {TP.sherpa.ConsoleService} The receiver.
@@ -215,8 +215,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('isAwaitingInput',
 function(aFlag) {
 
     /**
-     * @name isAwaitingInput
-     * @synopsis Combined setter/getter for whether the receiver is waiting for
+     * @method isAwaitingInput
+     * @summary Combined setter/getter for whether the receiver is waiting for
      *     input. This method will interrogate the input cell as part of the
      *     process.
      * @param {Boolean} aFlag An optional new setting.
@@ -240,8 +240,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('shouldConcealInput',
 function(aFlag) {
 
     /**
-     * @name shouldConcealInput
-     * @synopsis Returns false for now.
+     * @method shouldConcealInput
+     * @summary Returns false for now.
      * @param {Boolean} aFlag The new value to set.
      * @returns {Boolean}
      */
@@ -257,8 +257,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('formatInput',
 function(plainText) {
 
     /**
-     * @name formatInput
-     * @synopsis Converts text intended for the input cell so it's properly
+     * @method formatInput
+     * @summary Converts text intended for the input cell so it's properly
      *     displayed.
      * @param {String} plainText The string to convert.
      * @returns {String}
@@ -276,8 +276,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('isCommandEvent',
 function(anEvent) {
 
     /**
-     * @name isCommandEvent
-     * @synopsis Returns true if the event represents a key binding used to
+     * @method isCommandEvent
+     * @summary Returns true if the event represents a key binding used to
      *     trigger command processing of some kind for the console.
      * @param {Event} anEvent The native event that fired.
      */
@@ -333,8 +333,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleCommandEvent',
 function(anEvent) {
 
     /**
-     * @name handleCommandEvent
-     * @synopsis Processes incoming events from the view.
+     * @method handleCommandEvent
+     * @summary Processes incoming events from the view.
      * @param {Event} anEvent The native event that fired.
      */
 
@@ -426,7 +426,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod(
         'handleHiddenChangeFromSherpaConsole', function(aSignal) {
 
     /**
-     * @name handleHiddenChange
+     * @method handleHiddenChange
      */
 
     var isHidden;
@@ -478,7 +478,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod('installHandlers',
 function() {
 
     /**
-     * @name installHandlers
+     * @method installHandlers
      * @synopsis
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
@@ -502,7 +502,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod('removeHandlers',
 function() {
 
     /**
-     * @name removeHandlers
+     * @method removeHandlers
      * @synopsis
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
@@ -526,8 +526,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyDown',
 function(aSignal) {
 
     /**
-     * @name handleDOMKeyDown
-     * @synopsis Handles notifications of keydown events. If the key is one the
+     * @method handleDOMKeyDown
+     * @summary Handles notifications of keydown events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyDown} aSignal The TIBET signal which triggered this method.
      */
@@ -575,8 +575,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyPress',
 function(aSignal) {
 
     /**
-     * @name handleDOMKeyPress
-     * @synopsis Handles notifications of keypress events. If the key is one the
+     * @method handleDOMKeyPress
+     * @summary Handles notifications of keypress events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyPress} aSignal The TIBET signal which triggered this
      *     method.
@@ -605,8 +605,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyUp',
 function(aSignal) {
 
     /**
-     * @name handleDOMKeyUp
-     * @synopsis Handles notifications of keyup events. If the key is one we
+     * @method handleDOMKeyUp
+     * @summary Handles notifications of keyup events. If the key is one we
      *     care about then we forward the event to the shell for processing.
      * @param {DOMKeyUp} aSignal The TIBET signal which triggered this handler.
      */
@@ -671,7 +671,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMModifierKeyChange',
 function(aSignal) {
 
     /**
-     * @name handleDOMModifierKeyChange
+     * @method handleDOMModifierKeyChange
      * @param {TP.sig.DOMModifierKeyChange} aSignal The TIBET signal which
      *     triggered this handler.
      */
@@ -689,8 +689,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('cancelUserInputRequest',
 function(aRequest) {
 
     /**
-     * @name cancelUserInputRequest
-     * @synopsis Cancels a pending user input request, returning control to the
+     * @method cancelUserInputRequest
+     * @summary Cancels a pending user input request, returning control to the
      *     console. The next pending queued request is processed if any are
      *     queued. If no request is provided the last input request is
      *     cancelled.
@@ -746,8 +746,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleConsoleRequest',
 function(aRequest) {
 
     /**
-     * @name handleConsoleRequest
-     * @synopsis Responds to a request for special console processing. These
+     * @method handleConsoleRequest
+     * @summary Responds to a request for special console processing. These
      *     requests are used by models to request behavior from the view, if
      *     any, without having to hold a view reference. A good example of a
      *     console request is the ':clear' command.
@@ -794,8 +794,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleNoMoreRequests',
 function(aRequest) {
 
     /**
-     * @name handleNoMoreRequests
-     * @synopsis Performs any processing required when all queued requests have
+     * @method handleNoMoreRequests
+     * @summary Performs any processing required when all queued requests have
      *     been processed. For the console the proper response is typically to
      *     clear the input cell to ensure it's ready for input.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
@@ -820,8 +820,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleRequestCompleted',
 function(aSignal) {
 
     /**
-     * @name handleRequestCompleted
-     * @synopsis Responds to notifications that a request is complete, most
+     * @method handleRequestCompleted
+     * @summary Responds to notifications that a request is complete, most
      *     often when the receiver was the requestor for the signal.
      * @param {TP.sig.RequestCompleted} aSignal The signal instance that
      *     triggered this call.
@@ -878,8 +878,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleRequestModified',
 function(aSignal) {
 
     /**
-     * @name handleRequestModified
-     * @synopsis Responds to notifications that a request has been altered or
+     * @method handleRequestModified
+     * @summary Responds to notifications that a request has been altered or
      *     updated. These are typically fired by TP.sig.UserInputRequests such
      *     as the TP.sig.UserInputSeries subtype during intermediate stages of
      *     data capture.
@@ -900,8 +900,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleShellRequestCompleted',
 function(aSignal) {
 
     /**
-     * @name handleShellRequestCompleted
-     * @synopsis Responds to notifications that a shell request is complete. The
+     * @method handleShellRequestCompleted
+     * @summary Responds to notifications that a shell request is complete. The
      *     typical response is to output the response via the view.
      * @param {TP.sig.ShellResponse} aSignal
      */
@@ -918,8 +918,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleUserInputRequest',
 function(aSignal) {
 
     /**
-     * @name handleUserInputRequest
-     * @synopsis Responds to user input requests by either passing control of
+     * @method handleUserInputRequest
+     * @summary Responds to user input requests by either passing control of
      *     the input cell content to the request, or by queueing the request if
      *     the input cell is already spoken for.
      * @param {TP.sig.UserInputRequest} aSignal The signal instance which
@@ -984,8 +984,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleUserInputSeries',
 function(aSignal) {
 
     /**
-     * @name handleUserInputSeries
-     * @synopsis Responds to user input series by either passing control of the
+     * @method handleUserInputSeries
+     * @summary Responds to user input series by either passing control of the
      *     input cell content to the request, or by queueing the request if the
      *     input cell is already spoken for.
      * @param {TP.sig.UserInputSeries} aSignal The signal instance which
@@ -1001,8 +1001,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleUserOutputRequest',
 function(aRequest) {
 
     /**
-     * @name handleUserOutputRequest
-     * @synopsis Responds to user output requests by either displaying the
+     * @method handleUserOutputRequest
+     * @summary Responds to user output requests by either displaying the
      *     output or queuing the request if necessary.
      * @param {TP.sig.UserOutputRequest} aRequest The signal instance which
      *     triggered this call.
@@ -1040,8 +1040,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('refreshFromRequest',
 function(aRequest) {
 
     /**
-     * @name refreshFromRequest
-     * @synopsis Refreshes the input cell, along with optional prompt and
+     * @method refreshFromRequest
+     * @summary Refreshes the input cell, along with optional prompt and
      *     default data.
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions.
@@ -1077,8 +1077,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleCancel',
 function(anEvent) {
 
     /**
-     * @name handleCancel
-     * @synopsis Processes requests to cancel the current job and return control
+     * @method handleCancel
+     * @summary Processes requests to cancel the current job and return control
      *     of the input cell to the shell.
      * @param {Event} anEvent A JS/DOM Event object.
      */
@@ -1101,8 +1101,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleChange',
 function(aSignal) {
 
     /**
-     * @name handleChange
-     * @synopsis Responds to signals the the model has changed state. This is
+     * @method handleChange
+     * @summary Responds to signals the the model has changed state. This is
      *     typically reflected in the tool/status bar.
      * @param {Change} aSignal The change signal which triggered this method.
      */
@@ -1122,8 +1122,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleClearInput',
 function(anEvent) {
 
     /**
-     * @name handleClearInput
-     * @synopsis Processes requests to clear the input cell completely.
+     * @method handleClearInput
+     * @summary Processes requests to clear the input cell completely.
      * @param {Event} anEvent A JS/DOM Event object.
      */
 
@@ -1139,8 +1139,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleHistoryNext',
 function(anEvent) {
 
     /**
-     * @name handleHistoryNext
-     * @synopsis Processes requests to move the history index forward one
+     * @method handleHistoryNext
+     * @summary Processes requests to move the history index forward one
      *     position. Note that this operates on the current responder so that
      *     each responder can maintain its own history list.
      * @param {Event} anEvent A JS/DOM Event object.
@@ -1174,8 +1174,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleHistoryPrev',
 function(anEvent) {
 
     /**
-     * @name handleHistoryPrev
-     * @synopsis Processes requests to move the history index back one position.
+     * @method handleHistoryPrev
+     * @summary Processes requests to move the history index back one position.
      *     Note that this operates on the current responder so that each
      *     responder can maintain its own history list.
      * @param {Event} anEvent A JS/DOM Event object.
@@ -1209,8 +1209,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleRawInput',
 function(anEvent) {
 
     /**
-     * @name handleRawInput
-     * @synopsis Handles raw input and converts it into an appropriate input
+     * @method handleRawInput
+     * @summary Handles raw input and converts it into an appropriate input
      *     response. Some console input is in response to some input request so
      *     we try to bind the result to the request where possible. If no
      *     request appears to be current then we assume a new shell request is
@@ -1250,8 +1250,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('clearConsole',
 function() {
 
     /**
-     * @name clearConsole
-     * @synopsis Clears the receiver's content, removing all HTML elements and
+     * @method clearConsole
+     * @summary Clears the receiver's content, removing all HTML elements and
      *     resetting the console to an empty input field.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
@@ -1277,7 +1277,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod('execRawInput',
 function(rawInput) {
 
     /**
-     * @name execRawInput
+     * @method execRawInput
      * @synopsis
      * @param {String} rawInput A String of raw input
      */
@@ -1338,8 +1338,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('getModel',
 function() {
 
     /**
-     * @name getModel
-     * @synopsis Returns the model which this view is displaying IO for.
+     * @method getModel
+     * @summary Returns the model which this view is displaying IO for.
      * @returns {TP.core.Shell} The shell instance serving out output.
      */
 
@@ -1352,8 +1352,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('getWidth',
 function() {
 
     /**
-     * @name getWidth
-     * @synopsis Returns the maximum width of unbroken strings in the console.
+     * @method getWidth
+     * @summary Returns the maximum width of unbroken strings in the console.
      *     This value will default to the WIDTH variable setting.
      * @returns {Number}
      */
@@ -1385,8 +1385,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('isSystemConsole',
 function(aFlag) {
 
     /**
-     * @name isSystemConsole
-     * @synopsis Returns true if the receiver is a system console. The system
+     * @method isSystemConsole
+     * @summary Returns true if the receiver is a system console. The system
      *     console 'owns' the TIBET stdio hooks allowing it to display log
      *     output etc.
      * @param {Boolean} aFlag An optional flag to set as the new system console
@@ -1408,8 +1408,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('setModel',
 function(aModel) {
 
     /**
-     * @name setModel
-     * @synopsis Sets the model (shell) the console is interacting with.
+     * @method setModel
+     * @summary Sets the model (shell) the console is interacting with.
      * @param {TP.core.Shell} aModel The model instance.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
@@ -1444,8 +1444,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('setWidth',
 function(aWidth) {
 
     /**
-     * @name setWidth
-     * @synopsis Sets the maximum width of unbroken strings in the console. Note
+     * @method setWidth
+     * @summary Sets the maximum width of unbroken strings in the console. Note
      *     that this only affects newly constructed cells, older cells are not
      *     reflowed.
      * @param {Number} aWidth The character count to use.
@@ -1472,8 +1472,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('notify',
 function(anObject, aRequest) {
 
     /**
-     * @name notify
-     * @synopsis Updates the console notice bar using data from the object. A
+     * @method notify
+     * @summary Updates the console notice bar using data from the object. A
      *     few common object types are handled specifically including
      *     TP.sig.Requests, Error/Exceptions, and Strings. Other objects are
      *     converted as well as possible and use the optional level parameter
@@ -1492,8 +1492,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('stderr',
 function(anError, aRequest) {
 
     /**
-     * @name stderr
-     * @synopsis Outputs the error provided using any parameters in the request
+     * @method stderr
+     * @summary Outputs the error provided using any parameters in the request
      *     to assist with formatting etc. Parameters include messageType,
      *     messageLevel, cmdAsIs, etc.
      * @param {String} anError The error to output.
@@ -1552,8 +1552,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('stdin',
 function(anObject, aDefault, aRequest) {
 
     /**
-     * @name stdin
-     * @synopsis Displays the input cell, along with optional prompt and default
+     * @method stdin
+     * @summary Displays the input cell, along with optional prompt and default
      *     data. This method must be called at least once to provide an input
      *     cell for the user.
      * @param {String} aQuery An optional query string to format as a question
@@ -1583,8 +1583,8 @@ TP.sherpa.ConsoleService.Inst.defineMethod('stdout',
 function(anObject, aRequest) {
 
     /**
-     * @name stdout
-     * @synopsis Outputs the object provided using any parameters in the request
+     * @method stdout
+     * @summary Outputs the object provided using any parameters in the request
      *     to assist with formatting etc. Parameters include messageType,
      *     cmdAsIs, etc.
      * @param {Object} anObject The object to output in string form.
@@ -1677,7 +1677,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod('writeInputContent',
 function(aRequest) {
 
     /**
-     * @name writeInputContent
+     * @method writeInputContent
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.tsh.ConsoleOutputCell} The receiver.
@@ -1760,7 +1760,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod('writeOutputContent',
 function(anObject, aRequest) {
 
     /**
-     * @name writeOutputContent
+     * @method writeOutputContent
      * @param {Object} anObject The object to output in string form.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
@@ -1886,7 +1886,7 @@ function(anObject, aRequest) {
 
 /**
  * @type {TP.sig.ConsoleRequest}
- * @synopsis Request type specific to asking the console to perform some
+ * @summary Request type specific to asking the console to perform some
  *     activity. Requests are used to avoid hard linkages between various
  *     requestors and the console itself. These requests can be made by shells
  *     when they can't be sure there even _is_ a console that's listening.

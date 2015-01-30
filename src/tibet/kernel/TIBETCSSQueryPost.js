@@ -12,15 +12,15 @@ TP.definePrimitive('elementMatchesCSS',
 function(anElement, aSelector) {
 
     /**
-     * @name elementMatchesCSS
-     * @synopsis Returns true if the selector provided would locate the element
+     * @method elementMatchesCSS
+     * @summary Returns true if the selector provided would locate the element
      *     in a result set. This is roughly equivalent to running the query and
      *     checking the result set as to whether it contains the supplied
      *     Element. Note that all queries in this method use the supplied
      *     element's document as their context.
      * @param {HTMLElement} anElement The element to test.
      * @param {String} aSelector A valid CSS selector.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Boolean} True if the element would be found by the selector.
      */
 
@@ -83,10 +83,10 @@ TP.definePrimitive('nodeEvaluateCSS',
 function(aNode, aSelector, autoCollapse) {
 
     /**
-     * @name nodeEvaluateCSS
-     * @synopsis Returns any elements matching the selector given in the
+     * @method nodeEvaluateCSS
+     * @summary Returns any elements matching the selector given in the
      *     supplied selector String.
-     * @description Note that if an 'ID' selector query (where the first
+     * @summary Note that if an 'ID' selector query (where the first
      *     character is '#') is handed to this method, it will automatically
      *     collapse the results whether the autoCollapse flag is set or not.
      * @param {Node|Window} aNode The 'context node' for the evaluation (or a
@@ -94,7 +94,7 @@ function(aNode, aSelector, autoCollapse) {
      * @param {String} aSelector A valid CSS selector.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
-     * @raises TP.sig.InvalidNode,TP.sig.InvalidString
+     * @exception TP.sig.InvalidNode,TP.sig.InvalidString
      * @returns {Array|Node} A collection of zero or more result nodes or a
      *     single node if we're autoCollapsing.
      */
@@ -186,17 +186,17 @@ TP.definePrimitive('selectorIsNative',
 function(aSelector) {
 
     /**
-     * @name selectorIsNative
-     * @synopsis Returns true if the selector provided is 'native' (i.e.
+     * @method selectorIsNative
+     * @summary Returns true if the selector provided is 'native' (i.e.
      *     supported in a built-in fashion) in the currently executing browser
      *     environment.
-     * @description Note that this method will return true as long as the
+     * @summary Note that this method will return true as long as the
      *     selector is a natively supported selector in the current browser
      *     environment. This means that selectors that are only supported for
      *     the current browser (i.e. those prefixed with -moz/-ms/-webkit) will
      *     return true.
      * @param {String} aSelector A valid CSS selector.
-     * @raises TP.sig.InvalidString
+     * @exception TP.sig.InvalidString
      * @returns {Boolean} True if the selector is native.
      */
 
@@ -230,15 +230,15 @@ TP.definePrimitive('windowMatchesCSSMedia',
 function(aWindow, queryStr) {
 
     /**
-     * @name windowMatchesCSSMedia
-     * @synopsis Returns true if the supplied 'CSS media query' matches the
+     * @method windowMatchesCSSMedia
+     * @summary Returns true if the supplied 'CSS media query' matches the
      *     supplied Window's CSS environment.
-     * @description Note that this method will return null if the CSSOM
+     * @summary Note that this method will return null if the CSSOM
      *     'matchMedia' call is not supported or it doesn't return a valid
      *     result for the supplied query.
      * @param {Window} aWindow The window to execute the media query against.
      * @param {String} queryStr A valid 'CSS media query'.
-     * @raises TP.sig.InvalidWindow,TP.sig.UnsupportedFeature,
+     * @exception TP.sig.InvalidWindow,TP.sig.UnsupportedFeature,
      *     TP.sig.InvalidString
      * @returns {Boolean} True if the media query matches.
      */
@@ -273,10 +273,10 @@ TP.definePrimitive('windowQueryCSSMedia',
 function(aWindow, queryStr, watchFunction) {
 
     /**
-     * @name windowQueryCSSMedia
-     * @synopsis Returns a valid media query list if the supplied 'CSS media
+     * @method windowQueryCSSMedia
+     * @summary Returns a valid media query list if the supplied 'CSS media
      *     query' matches the supplied Window's CSS environment.
-     * @description Note that this method will return null if the CSSOM
+     * @summary Note that this method will return null if the CSSOM
      *     'matchMedia' call is not supported or it doesn't return a valid
      *     result for the supplied query.
      * @param {Window} aWindow The window to execute the media query against.
@@ -284,7 +284,7 @@ function(aWindow, queryStr, watchFunction) {
      * @param {Function} watchFunction A Function that will be installed to
      *     watch for changes to the CSS environment such that the supplied query
      *     will come into or out of force.
-     * @raises TP.sig.InvalidWindow,TP.sig.UnsupportedFeature,
+     * @exception TP.sig.InvalidWindow,TP.sig.UnsupportedFeature,
      *     TP.sig.InvalidString
      * @returns {MediaQueryList} The object returned by a 'matchMedia' call.
      *     This can be used to 'unwatch' the supplied query by using it's

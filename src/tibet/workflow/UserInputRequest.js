@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sig.UserInputRequest}
- * @synopsis The common type used to get direct input from the user. In response
+ * @summary The common type used to get direct input from the user. In response
  *     to TP.sig.UserInputRequests the console will give control over the input
  *     cell content to the request, skipping any parsing of content.
  */

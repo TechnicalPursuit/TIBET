@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.PubsubPublish}
- * @synopsis A wrapper for the PubSub publish node type.
+ * @summary A wrapper for the PubSub publish node type.
  */
 
 //  ------------------------------------------------------------------------
@@ -36,8 +36,8 @@ TP.xmpp.PubsubPublish.Inst.defineMethod('addItem',
 function(anItemXML, itemID) {
 
     /**
-     * @name addItem
-     * @synopsis Adds an item to the receiver's item payload.
+     * @method addItem
+     * @summary Adds an item to the receiver's item payload.
      * @param {Node} anItemXML An XML node containing the content of the new
      *     item.
      * @param {String} itemID The item ID that is being published. This may be
@@ -68,8 +68,8 @@ TP.xmpp.PubsubPublish.Inst.defineMethod('setConfigure',
 function(aNode) {
 
     /**
-     * @name setConfigure
-     * @synopsis Sets the configuration to the supplied TP.xmpp.XData node.
+     * @method setConfigure
+     * @summary Sets the configuration to the supplied TP.xmpp.XData node.
      * @param {TP.xmpp.XData} aNode The configuration node.
      * @returns {TP.xmpp.PubsubCreate} The receiver.
      */
@@ -95,8 +95,8 @@ TP.xmpp.PubsubPublish.Inst.defineMethod('setNodeID',
 function(anID) {
 
     /**
-     * @name setNodeID
-     * @synopsis Sets the node ID that the receiver is publishing.
+     * @method setNodeID
+     * @summary Sets the node ID that the receiver is publishing.
      * @param {String} anID The node ID that is being published.
      * @returns {TP.xmpp.PubsubPublish} The receiver.
      */
