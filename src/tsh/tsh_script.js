@@ -314,7 +314,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @summary On this type, this method merely invokes 'tshExecute'
+     * @description On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -334,7 +334,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @summary On this type, this method merely invokes 'tshExecute'
+     * @description On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -353,7 +353,7 @@ function(aRequest) {
      * @method cmdGetContent
      * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
-     * @summary On this type, this method merely invokes 'tshExecute'
+     * @description On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -371,7 +371,7 @@ function(aRequest) {
     /**
      * @method cmdRunContent
      * @summary Runs the receiver, effectively invoking its action.
-     * @summary This method is invoked any time a tag is being run as part
+     * @description This method is invoked any time a tag is being run as part
      *     of the processing of an enclosing tsh:script, which happens most
      *     often when the tag is being run interactively. The default defers to
      *     the tshExecute method of their type. On this type, this method merely
@@ -395,7 +395,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
-     * @summary On this type, this method merely invokes 'tshExecute'
+     * @description On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -415,7 +415,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @summary On this type, this method merely invokes 'tshExecute'
+     * @description On this type, this method merely invokes 'tshExecute'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -435,7 +435,7 @@ function(source, shell, sibling, request) {
      * @summary Converts TSH syntax sugaring, particularly XML sugaring, into
      *     its verbose equivalent so the returned string can be turned in to
      *     valid XML nodes.
-     * @summary The primary purpose of this method is to convert sugared TSH
+     * @description The primary purpose of this method is to convert sugared TSH
      *     input into a viable XML string. This means finding any TSH pipe or
      *     redirection operators as well as any other sugared tag syntax. TSH
      *     sugaring is intended to eliminate the need for entering brackets or

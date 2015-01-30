@@ -906,7 +906,7 @@ function(aSignal) {
      * @method handleStateInput
      * @summary Responds to notifications of new input which didn't cause a
      *     state transition to occur.
-     * @summary The default implementation passes this data along to the
+     * @description The default implementation passes this data along to the
      *     invokeStateAction() method for TP.INPUT unless a method specific to
      *     the input data can be found. The lookup in this case is based on the
      *     signal and any embedded 'trigger' signal or data it may have for type
@@ -988,7 +988,7 @@ function(aSignal) {
      * @method handleStateTransition
      * @summary Responds to notifications of state transitions from the
      *     receiver's internal StateMachine object.
-     * @summary When a transition occurs the receiver attempts to run any
+     * @description When a transition occurs the receiver attempts to run any
      *     TP.EXIT functions for the old state followed by any TP.ENTER
      *     functions for the new state, and finally any TP.TRANSITION functions
      *     for the new state completing the transition.

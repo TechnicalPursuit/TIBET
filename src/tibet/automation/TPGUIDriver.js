@@ -565,7 +565,7 @@ function(aNode) {
      * @summary Take a screenshot of either the whole window of the currently
      *     executing window context or some portion thereof as determined by the
      *     supplied Node.
-     * @summary If a Document node is supplied to this method, the whole
+     * @description If a Document node is supplied to this method, the whole
      *     Document will be snapshotted. If an Element is supplied, only that
      *     Element will be snapshotted. Note also that this method currently
      *     only works when this code is being executed in the PhantomJS
@@ -667,7 +667,7 @@ function(mouseLocation, mouseButton) {
     /**
      * @method click
      * @summary Simulates the act of clicking the mouse button.
-     * @summary Note that this method has a notion of a 'currently focused'
+     * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -801,7 +801,7 @@ function(mouseLocation, mouseButton) {
     /**
      * @method doubleClick
      * @summary Simulates the act of double clicking the mouse button.
-     * @summary Note that this method has a notion of a 'currently focused'
+     * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -1072,7 +1072,7 @@ function(mouseLocation, mouseButton) {
     /**
      * @method mouseDown
      * @summary Simulates the act of pressing the mouse button down.
-     * @summary Note that this method has a notion of a 'currently focused'
+     * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -1171,7 +1171,7 @@ function(mouseLocation, mouseButton) {
     /**
      * @method mouseUp
      * @summary Simulates the act of releasing the mouse button up.
-     * @summary Note that this method has a notion of a 'currently focused'
+     * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'perform()' method is
@@ -1270,7 +1270,7 @@ function() {
     /**
      * @method perform
      * @summary Executes the sequence.
-     * @summary Note that the steps that comprise the sequence are all
+     * @description Note that the steps that comprise the sequence are all
      *     executed in a 'chained' manner, so that if there are asynchronous
      *     delays in certain actions, they will all be executed in the proper
      *     order. Also note that this method generates a Promise, which is then
@@ -1627,7 +1627,7 @@ function(aString, aPath) {
      * @summary Simulate the act of pressing and releasing the sequence of keys
      *     necessary to reproduce the effect of the user typing what is
      *     specified in the String.
-     * @summary Note that it is possible to supply W3C-defined control
+     * @description Note that it is possible to supply W3C-defined control
      *     keys surrounded with brackets ('[' and ']') in this String for ease
      *     of sending these control characters to the GUI:
      *          'ABC[Left][Backspace]D[Right]E'

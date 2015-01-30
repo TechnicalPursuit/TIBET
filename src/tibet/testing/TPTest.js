@@ -2947,7 +2947,7 @@ function(methodInfoDict) {
     /**
      * @method setupMethodChains
      * @summary Sets up method chains per the supplied dictionary.
-     * @summary The supplied dictionary should supply the 'end name' as a
+     * @description The supplied dictionary should supply the 'end name' as a
      *     key with an Array of the 'valid steps' that can be taken to get to
      *     that 'end'.
      *     E.g. An info dict of:

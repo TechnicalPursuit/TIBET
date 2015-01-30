@@ -141,7 +141,7 @@ TP.defineNamespace = function(namespaceName, root) {
      * @method defineNamespace
      * @summary Defines a namespace named by the supplied name, defined as a
      *     'namespace' on the root provided.
-     * @summary The name supplied to this method defines a namespace list
+     * @description The name supplied to this method defines a namespace list
      *     from the root object to the last name at the end of the supplied
      *     namespace name.
      * @param {String} namespaceName A String of 1 or more period-separated

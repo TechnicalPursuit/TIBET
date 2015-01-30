@@ -595,7 +595,7 @@ function(aPoint, t) {
      * @method interpolate
      * @summary Computes an interpolated point between the receiver and the
      *     supplied point.
-     * @summary The interpolation factor determines how much a 'weight'
+     * @description The interpolation factor determines how much a 'weight'
      *     towards the supplied point will be used. It should be a Number
      *     between 0 and 1. To weight the computed point towards the receiver,
      *     use a value approaching 0. To weight it towards the supplied point,
@@ -1525,7 +1525,7 @@ function(aRect) {
      * @summary Returns an Array of rectangles that contain the remaining
      *     regions of the receiver after the supplied rectangle has been
      *     subtracted.
-     * @summary This routine is adapted from Google's Closure library.
+     * @description This routine is adapted from Google's Closure library.
      * @param {TP.core.Rect} aRect The rectangle to test.
      * @returns {Array} An Array of TP.core.Rectangles containing the remaining
      *     regions.
@@ -1662,7 +1662,7 @@ function(aPoint) {
     /**
      * @method getCompassCorner
      * @summary Returns the 'compass corner' of the receiver.
-     * @summary This method returns the 'compass corner' that the supplied
+     * @description This method returns the 'compass corner' that the supplied
      *     point occupies within the receiver. Note that this routine clamps its
      *     value to the 'common 8' compass values matching these constants:
      *
@@ -1814,7 +1814,7 @@ function(aRect, t) {
      * @method interpolate
      * @summary Computes an interpolated rectangle between the receiver and the
      *     supplied rectangle.
-     * @summary The interpolation factor determines how much a 'weight'
+     * @description The interpolation factor determines how much a 'weight'
      *     towards the supplied rectangle will be used. It should be a Number
      *     between 0 and 1. To weight the computed rectangle towards the
      *     receiver, use a value approaching 0. To weight it towards the
@@ -2497,7 +2497,7 @@ function(aString) {
      * @method STYLE_DECLVALUE_PARSER
      * @summary Converts a String containing a matrix description to a
      *     TP.core.Matrix object.
-     * @summary The supplied String can be in one of seven formats:
+     * @description The supplied String can be in one of seven formats:
      *     translate(xCoord, yCoord) translate(xAndYCoord) scale(xFactor,
      *     yFactor) scale(xAndYFactor) rotate(rotationAngle) skewX(skewAngle)
      *     skewY(skewAngle) matrix(xx, yx, xy, yy, dx, dy)
@@ -3000,7 +3000,7 @@ function(aString) {
      * @method fromString
      * @summary Converts a String containing a CSS matrix represenation to a
      *     TP.core.Matrix object.
-     * @summary The supplied String can be in either the 3X2 'matrix()'
+     * @description The supplied String can be in either the 3X2 'matrix()'
      *     format for CSS 2D transforms or the 4X4 'matrix3d()' format for CSS
      *     3D transforms. Since this type only supports 3X2 matrices, however,
      *     3D 4X4 matrices will be converted to 3X2 matrices.
@@ -3024,7 +3024,7 @@ function(anObj) {
      * @summary Returns an instance of this type as extracted from anObj, which
      *     should be an Array. This Array should be in the format of:
      *     [[xx, xy, dx], [yx, yy, dy]]
-     * @summary This type only supports 3X2 matrices, so this method will
+     * @description This type only supports 3X2 matrices, so this method will
      *     only take a 3X2 set of Arrays representing that. 4X4 3D matrices have
      *     to be converted to a 3X2 matrix first.
      * @param {Array} anObj The Array that an instance of this type will be
@@ -3216,7 +3216,7 @@ function(matrixData) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @summary The argument to this method may be either a literal Object
+     * @description The argument to this method may be either a literal Object
      *     that contains matrix data to initialize the new instance with, a
      *     TP.core.Matrix or an Array of either of these type of objects. If the
      *     objects are literal Objects, they should have the following keys /
@@ -3676,7 +3676,7 @@ function() {
      * @method multiply
      * @summary Multiplies the supplied 1 or more TP.core.Matrix objects
      *     against the receiver, beginning with the receiver.
-     * @summary This method accepts 1 or more TP.core.Matrix objects as
+     * @description This method accepts 1 or more TP.core.Matrix objects as
      *     arguments and therefore has no named parameters.
      * @returns {TP.core.Matrix} The receiver.
      */
@@ -3959,7 +3959,7 @@ function() {
 /**
  * @summary A type that can manage color values. These values contain red,
  *     green, blue and alpha information.
- * @summary This type can be produced by a String having one of the
+ * @description This type can be produced by a String having one of the
  *     following nine formats: FFFFFF #FFFFFF FFF #FFF rgb(255, 255, 255)
  *     rgba(255, 255, 255, .5) hsl(120, 50%, 50%) hsla(120, 50%, 50%, .5)
  *     <aColorName>
@@ -3990,7 +3990,7 @@ function(aString) {
     /**
      * @method fromString
      * @summary Converts a String containing a color to a TP.core.Color object.
-     * @summary The supplied String can be in one of nine formats: FFFFFF
+     * @description The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @returns {TP.core.Color} A TP.core.Color having this color value
@@ -4607,7 +4607,7 @@ function(aString) {
      * @method STYLE_DECLVALUE_PARSER
      * @summary Converts a String containing a gradient description to a
      *     TP.core.Gradient object.
-     * @summary The supplied String can be in one of two formats:
+     * @description The supplied String can be in one of two formats:
      *     gradient-linear(angle, color stop, ...) gradient-radial(center-x
      *     center-y, color stop, ...)
      * @param {The} aString String definition to use to build a TP.core.Gradient
@@ -5412,7 +5412,7 @@ function(anAngle) {
     /**
      * @method setAngle
      * @summary Sets the angle of the receiver.
-     * @summary For now, only the following discrete values are supported as
+     * @description For now, only the following discrete values are supported as
      *     the angle: 0, 45, 90, 135, 180, 225, 270, 315
      * @param {Number} anAngle The angle of the gradient.
      * @exception TP.sig.InvalidNumber
@@ -5942,7 +5942,7 @@ function(aString) {
      * @method STYLE_DECLVALUE_PARSER
      * @summary Converts a String containing a matrix description to a
      *     TP.core.Pattern object.
-     * @summary The supplied String can be in the following format:
+     * @description The supplied String can be in the following format:
      *     pattern(url(...), rect(...))
      * @param {The} aString String definition to use to build a TP.core.Pattern
      *     object from.
@@ -7312,7 +7312,7 @@ function(controlParams, stepParams) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @summary Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -7368,7 +7368,7 @@ function(job, params) {
      * @method configure
      * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -7392,7 +7392,7 @@ function(controlParams, stepParams) {
      * @method constructJob
      * @summary Constructs a TP.core.Job to execute the receiving transition
      *     type.
-     * @summary Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -7741,7 +7741,7 @@ function(job, params) {
      * @method step
      * @summary Changes some aspect of the target given when this transition
      *     was executed via the 'start()' method.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -7784,7 +7784,7 @@ function(controlParams, stepParams) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @summary Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -7887,7 +7887,7 @@ function(job, params) {
      * @method configure
      * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8031,7 +8031,7 @@ function(job, params) {
      * @method step
      * @summary Changes the clipping rect of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8374,7 +8374,7 @@ function(job, params) {
      * @method configure
      * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8474,7 +8474,7 @@ function(job, params) {
      * @method step
      * @summary Changes the attribute of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8555,7 +8555,7 @@ function(job, params) {
      * @method configure
      * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -8653,7 +8653,7 @@ function(job, params) {
      * @method step
      * @summary Changes the attribute of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this

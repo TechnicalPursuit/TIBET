@@ -52,7 +52,7 @@ function(aStanza) {
      *     packets of this type. The default is XMPP*Input where the asterisk is
      *     replaced by the current tag/type string, for example
      *     TP.sig.XMPPMessageInput.
-     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.

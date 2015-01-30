@@ -11,7 +11,7 @@
 /**
  * @type {TP.core.JSONPURL}
  * @summary A subtype of TP.core.URL specific to the 'jsonp://' scheme.
- * @summary The overall format of a jsonp URI is:
+ * @description The overall format of a jsonp URI is:
  *
  *     jsonp://[domain]/[path]/[entity]?[query]
  *

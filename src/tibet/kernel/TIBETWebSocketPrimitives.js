@@ -393,7 +393,7 @@ function(targetUrl, aSignal, aRequest) {
      * @summary Low-level error handler for WebSocket processing. This function
      *     will cause both the IO log and Error log to be updated to reflect the
      *     error condition.
-     * @summary aRequest could contain 1 or more of the following keys:
+     * @description aRequest could contain 1 or more of the following keys:
      *
      *     'uri' - the targetUrl 'uriparams' - URI query parameters 'body' -
      *     string content 'wsObj' - websocket object 'response' -

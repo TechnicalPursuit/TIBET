@@ -209,7 +209,7 @@ function(aValue, restrictionElem) {
      * @method validateRestriction
      * @summary Returns true if the value provided meets the requirements of
      *     the various restriction facets.
-     * @summary Restriction-based type checking is the most common form of
+     * @description Restriction-based type checking is the most common form of
      *     user-defined datatyping, however there are several special case
      *     treatments that have to be handled for proper results. For example,
      *     the TP.xs.whiteSpace facet actually has to be used to alter the

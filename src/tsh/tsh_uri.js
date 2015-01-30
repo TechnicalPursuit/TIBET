@@ -32,7 +32,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -50,7 +50,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -67,7 +67,7 @@ function(aRequest) {
      * @method cmdGetContent
      * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -268,7 +268,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -286,7 +286,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */

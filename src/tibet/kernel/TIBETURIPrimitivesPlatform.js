@@ -1692,7 +1692,7 @@ TP.hc(
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @summary The best way to think about this command is to imagine
+         * @description The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
@@ -2234,7 +2234,7 @@ TP.hc(
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @summary The best way to think about this command is to imagine
+         * @description The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
@@ -2643,7 +2643,7 @@ TP.hc(
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @summary The best way to think about this command is to imagine
+         * @description The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
@@ -2695,7 +2695,7 @@ TP.hc(
          *     platform), passing it any command arguments provided. The command
          *     is executed by the shell provided where that shell is being
          *     invoked with any flags given by shellFlags.
-         * @summary The best way to think about this command is to imagine
+         * @description The best way to think about this command is to imagine
          *     that you had a batch file or shell script on the local platform
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you

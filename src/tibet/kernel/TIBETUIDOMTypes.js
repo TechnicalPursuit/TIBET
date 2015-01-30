@@ -191,7 +191,7 @@ function() {
      * @method getKeyBindingsMap
      * @summary Returns this type's 'key bindings' map or it's supertype's
      *     if this type does not have a map.
-     * @summary This method returns a map that maps keynames (as
+     * @description This method returns a map that maps keynames (as
      *     computed by the standard TIBET keyname computation) to signal names.
      *     If a matching signal name is found in the map, that signal is fired
      *     with the currently focused element as the target.
@@ -268,7 +268,7 @@ function(mimeType) {
      * @method getThemeURI
      * @summary Returns a 'theme' URI for the receiving type, given its load
      *     path, the supplied mimeType and the current application theme.
-     * @summary This method computes a theme URI for the receiver by using
+     * @description This method computes a theme URI for the receiver by using
      *     the 'load path' of this type and appending the type name
      *     (transforming ':' to '_') and the supplied theme name and extension
      *     onto the end of it.
@@ -646,7 +646,7 @@ function(aTargetElem, nodesAdded) {
      * @method mutationAddedNodes
      * @summary Handles a 'nodes added' synthetic 'event' that was dispatched
      *     against the supplied native element.
-     * @summary This method is usually activated as the result of a 'DOM
+     * @description This method is usually activated as the result of a 'DOM
      *     Mutation' of this node whereby a descendant is being added. Note that
      *     the 'nodesAdded' parameter here contains a list of *roots* that will
      *     have been added to the receiver. Any descendants of these roots will
@@ -719,7 +719,7 @@ function(aTargetElem, nodesRemoved) {
      * @method mutationRemovedNodes
      * @summary Handles a 'nodes removed' synthetic 'event' that was dispatched
      *     against the supplied native element.
-     * @summary This method is usually activated as the result of a 'DOM
+     * @description This method is usually activated as the result of a 'DOM
      *     Mutation' of this node whereby a descendant is being removed. Note
      *     that the 'nodesRemoved' parameter here contains a list of *roots*
      *     that will have been removed from the receiver. Any descendants of
@@ -863,7 +863,7 @@ function(aRequest) {
      * @method tagCompile
      * @summary Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @summary This method operates differently depending on a variety of
+     * @description This method operates differently depending on a variety of
      *     factors:
      *          - If the current node has a 'tibet:ctrl', but not a
      *              'tibet:tag', and its operating in a native namespace,
@@ -2090,7 +2090,7 @@ function(aSignal, isCapturing) {
     /**
      * @method getNextResponder
      * @summary Returns the next responder as computed by the receiver.
-     * @summary The default implementation of this method is to get the
+     * @description The default implementation of this method is to get the
      *     receiver's 'next closest ancestor control element' (i.e. not itself,
      *     but its closest ancestor that has either a 'tibet:tag' or
      *     'tibet:ctrl' attribute) and TP.wrap() it.
@@ -2495,7 +2495,7 @@ function() {
      * @method isVisible
      * @summary Returns whether or not anElement is *really* visible to the
            user, no matter what its CSS setting is.
-     * @summary In addition to the standard CSS properties of 'display' and
+     * @description In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any
            CSS transformation that has been applied to the element.
      * @returns {Boolean} Whether or not anElement is visible.
@@ -2884,7 +2884,7 @@ function(aHeight) {
     /**
      * @method setHeight
      * @summary Sets the receiver's height.
-     * @summary If a Number is supplied to aHeight a default unit of 'px' is
+     * @description If a Number is supplied to aHeight a default unit of 'px' is
      *     assumed.
      * @param {Number|String} aHeight The height dimension to set the receiver's
      *     height to.
@@ -3004,7 +3004,7 @@ function(aWidth) {
     /**
      * @method setWidth
      * @summary Sets the receiver's width.
-     * @summary If a Number is supplied to aWidth a default unit of 'px' is
+     * @description If a Number is supplied to aWidth a default unit of 'px' is
      *     assumed.
      * @param {Number|String} aWidth The width dimension to set the receiver's
      *     width to.
@@ -3037,7 +3037,7 @@ function(focusingElement) {
     /**
      * @method yieldFocusedResponder
      * @summary Asks the receiver to yield its role as 'focused responder'.
-     * @summary At this level, this type just returns true, but subtypes may
+     * @description At this level, this type just returns true, but subtypes may
      *     run various checks for valid values, etc. and return false if those
      *     checks don't pass.
      * @param {TP.core.UIElementNode} focusingElement The element that the focus
@@ -3164,7 +3164,7 @@ function(aTransformRecord) {
     /**
      * @method generateCSSValueFromTransformRecord
      * @summary Generates a CSS value from the supplied transform 'record'.
-     * @summary A transform record consists of a TP.lang.Hash that has two
+     * @description A transform record consists of a TP.lang.Hash that has two
      *     keys: the transform 'type' that should consist of one of the
      *     following values: TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE and the
      *     transform 'args', which are arguments to the transformation.

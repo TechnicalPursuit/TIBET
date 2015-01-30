@@ -249,7 +249,7 @@ function(anObject, nodeContext, collapse) {
      *     supplied. These include TP.wrap()ping non-String objects, generating
      *     elements from markup, selecting objects based on aspect, CSS and
      *     XPath queries and obtaining the content of URI objects.
-     * @summary The parameters to this method vary greatly depending on what
+     * @description The parameters to this method vary greatly depending on what
      *     the caller is trying to do with it: - If anObject is any Object other
      *     than a String, then it is TP.wrap()'d and returned. - If
      *     anObject is a URI, then a TP.core.URI is constructed from it and that
@@ -1342,7 +1342,7 @@ function(anElement, effectName, effectParams, nodeContext) {
      * @summary A convenience wrapper for invoking a subtype of TP.core.Effect.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as the targets of the effect.
-     * @summary The name of the effect type to use to run the supplied
+     * @description The name of the effect type to use to run the supplied
      *     effect name is computed by taking the supplied effect name,
      *     capitalizing the first letter and then prefixing it with 'TP.core.'
      *     and suffixing it with 'Effect'. E.g. 'puff' becomes

@@ -87,7 +87,7 @@ function(aString, sourceLocale) {
 
 /**
  * @summary Extensions that make using Date a bit easier.
- * @summary This file contains a number of conveniences for using a Date
+ * @description This file contains a number of conveniences for using a Date
  *     object, including adding and subtracting days, determining whether a
  *     particular year is a leap year, getting the number of days in a
  *     particular month, etc.
@@ -609,7 +609,7 @@ function() {
     /**
      * @method constructAtEpoch
      * @summary Returns a new Date at the beginning of the epoch.
-     * @summary This method returns a new Date with all of its settings set
+     * @description This method returns a new Date with all of its settings set
      *     to 0. This gives a Date from the beginning of when Javascript can
      *     give a date (that is, January 1, 1970, UTC).
      * @returns {Date} A new Date set to the beginning of the epoch.
@@ -750,7 +750,7 @@ function(aString, sourceLocale) {
      *     routine will attempt to parse the incoming date string using the
      *     current Date parsing pipeline. The default format is ISO 8601:
      *     CCCC[-]MM[-]DDTHH[:]MM[:]SS[.ss][Z|[+-]th:tm].
-     * @summary Date parsing from strings is a weak area in JavaScript, one
+     * @description Date parsing from strings is a weak area in JavaScript, one
      *     that we've tried to address with TIBET. The first step in this
      *     process is to create an TP.iso.ISO8601 type which can parse and
      *     format date strings. The second is to allow you to add custom date
@@ -1434,7 +1434,7 @@ function() {
     /**
      * @method getISODay
      * @summary Returns the day number as defined by ISO 8601.
-     * @summary The ISO 8601 standard defines Monday as day 1 through Sunday
+     * @description The ISO 8601 standard defines Monday as day 1 through Sunday
      *     day 7. JavaScript also defines Monday as day 1, but treats Sunday as
      *     day 0, not day 7. This routine returns Sunday's day number as 7 as
      *     defined by ISO 8601.
@@ -1507,7 +1507,7 @@ function() {
      * @method getISOTimezone
      * @summary Returns the timezone the browser is currently executing in in
      *     ISO standard notation (e.g. '-8:00').
-     * @summary This method returns the timezone expressed in the ISO
+     * @description This method returns the timezone expressed in the ISO
      *     standard notation. For 'Zulu' (UTC) time, this is the character 'Z'.
      *     For all other timezones, it is a plus or minus character ('+' or '-')
      *     followed by the hours offset, followed by a colon (':'), followed by
@@ -1559,7 +1559,7 @@ function() {
     /**
      * @method getISOWeek
      * @summary Returns the week number as defined by ISO 8601.
-     * @summary Officially, week 1 of any year is the week that contains 4
+     * @description Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -1962,7 +1962,7 @@ function() {
     /**
      * @method getUTCISODay
      * @summary Returns the day number as defined by ISO 8601.
-     * @summary The ISO 8601 standard defines Monday as day 1 through Sunday
+     * @description The ISO 8601 standard defines Monday as day 1 through Sunday
      *     day 7. JavaScript also defines Monday as day 1, but treats Sunday as
      *     day 0, not day 7. This routine returns Sunday's day number as 7 as
      *     defined by ISO 8601.
@@ -2052,7 +2052,7 @@ function() {
     /**
      * @method getUTCISOWeek
      * @summary Returns the week number as defined by ISO 8601.
-     * @summary Officially, week 1 of any year is the week that contains 4
+     * @description Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -2604,7 +2604,7 @@ function(aWeekNumber) {
      * @method setISOWeek
      * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as defined by ISO 8601.
-     * @summary Officially, week 1 of any year is the week that contains 4
+     * @description Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -2659,7 +2659,7 @@ function(aWeekNumber) {
      * @method setUTCISOWeek
      * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as defined by ISO 8601.
-     * @summary Officially, week 1 of any year is the week that contains 4
+     * @description Officially, week 1 of any year is the week that contains 4
      *     January (that is, the week that contains the first Thursday in
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
@@ -2885,7 +2885,7 @@ function(aDuration) {
 
 /**
  * @summary Extensions that make using Number a bit easier.
- * @summary This file contains functionality for the Number type that make
+ * @description This file contains functionality for the Number type that make
  *     using Numbers easier, including convenience wrappers to cover
  *     interactions with the built-in Math object. Therefore, it is no longer
  *     necessary to pass Numbers into the Math object, one can simply send the
@@ -3782,7 +3782,7 @@ function(aDivisor) {
      * @method modulo
      * @summary Returns the modulus of dividing the receiver by the supplied
      *     divisor.
-     * @summary JavaScript's modulo operator operates such that it will take
+     * @description JavaScript's modulo operator operates such that it will take
      *     the same sign as the receiver (the dividend). Other languages operate
      *     in such a way that they will return a result that has the same sign
      *     as the supplied divisor. This routine supplies an implementation of
@@ -3861,7 +3861,7 @@ function(places) {
      * @method round
      * @summary Returns a rounding of the receiver up or down to the nearest
      *     integer.
-     * @summary This function rounds .5 up. It also extends the standard
+     * @description This function rounds .5 up. It also extends the standard
      *     'Math.round' method by taking a number of places that the receiver
      *     will be rounded to.
      * @param {Number} places The number of places to round the receiver to.
@@ -3985,7 +3985,7 @@ function(aQuoteChar) {
 
 /**
  * @summary Extensions that make using RegExp a bit easier.
- * @summary This file contains a set of premade constant RegExps that define
+ * @description This file contains a set of premade constant RegExps that define
  *     common punctuation characters, numbers, etc.
  */
 
@@ -4062,7 +4062,7 @@ function() {
      * @method getRegisteredSubstitutions
      * @summary Returns a collection of registered string substitution
      *     functions.
-     * @summary String substitutions are done using registered substitition
+     * @description String substitutions are done using registered substitition
      *     functions. This method returns the current registrations.
      * @returns {Object}
      */
@@ -4119,7 +4119,7 @@ function(aSymbol, anExistenceTest, aDataSymbol, aRegExp, aHandler) {
     /**
      * @method registerSubstitution
      * @summary Registers a string substitution pattern and handler pair.
-     * @summary String substitution uses a pattern String to contain
+     * @description String substitution uses a pattern String to contain
      *     patterns of characters that will be replaced by one or more
      *     'substitution' handlers. The substitution will take place if a regex
      *     that is built of all of the 'existence tests' for all of the
@@ -4650,7 +4650,7 @@ function(aHash) {
      * @summary Performs a 'multiple replace' on the receiver, with the
      *     supplied hash supplying the character sequences to look for and the
      *     replacements for those sequences as keys and values.
-     * @summary This method replaces the String found as each key in the
+     * @description This method replaces the String found as each key in the
      *     supplied hash with the corresponding value found there.
      * @param {TP.lang.Hash} aHash The replacements to perform on the receiver.
      * @returns {String} The receiver with any Strings found by matching each
@@ -4887,7 +4887,7 @@ function(aSource, aSide) {
      *     to the format in the receiver. It has different rules depending on
      *     the 'side' of a possible overall 'real' number it is being formatted
      *     as a part of.
-     * @summary This method does *NOT* deal with negative numbers. All
+     * @description This method does *NOT* deal with negative numbers. All
      *     incoming sources are converted to Numbers and are then abs()ed. Users
      *     of this method must deal with marking up negative numbers in their
      *     own way.
@@ -5955,7 +5955,7 @@ function(aDataSource, aKeySource, aScope) {
     /**
      * @method substitute
      * @summary Formats aDataSource according to the template in the receiver.
-     * @summary Strings support a substitution operation via substitutions
+     * @description Strings support a substitution operation via substitutions
      *     registered on the type. This method is the 'top-level' method
      *     supporting this operation. The built-in substitution operations
      *     supplied with this type support a "formatting" operation via
@@ -6024,7 +6024,7 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
     /**
      * @method substituteFor
      * @summary Substitutes for a single string substitution symbol.
-     * @summary This method handles processing for a single string
+     * @description This method handles processing for a single string
      *     substitution symbol. The substitute call passes control to this
      *     method to process each of the symbols found in the registration hash.
      * @param {String} aSymbol The symbol used to locate a substitution

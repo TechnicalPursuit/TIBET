@@ -2515,7 +2515,7 @@ function(aSignalOrHash) {
      *     binding it may have. If the signal or hash payload specifies a
      *     'deep' refresh then descendant elements that are bound are also
      *     updated.
-     * @summary For bound elements there are really two "values", the
+     * @description For bound elements there are really two "values", the
      *     element's internal value such as its text value (what we call its
      *     "display" value) and the element's bound value which is the value
      *     found by evaluating its binding aspect against its source. This

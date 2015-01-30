@@ -198,7 +198,7 @@ function(aSignal) {
     /**
      * @method handleChange
      * @summary Handles changes to the receiver's resource.
-     * @summary URIs listen for changes to their resource and invoke this
+     * @description URIs listen for changes to their resource and invoke this
      *     method when it changes. The supplied signal could have a
      *     TP.CHANGE_PATHS property in its payload, which is an Array of path
      *     Strings that referenced the resource at some point. If this property
@@ -294,7 +294,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @method set
      * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
-     * @summary This is overridden from its supertype to automatically check
+     * @description This is overridden from its supertype to automatically check
      *     facets after the value is set.
      * @param {String|TP.core.AccessPath} attributeName The name of the
      *     attribute to set.
@@ -348,7 +348,7 @@ function(aFlag) {
      * @method shouldSignalChange
      * @summary Defines whether the receiver should actively signal change
      *     notifications.
-     * @summary In general objects do not signal changes when no observers
+     * @description In general objects do not signal changes when no observers
      *     exist. This flag is triggered by observe where the signal being
      *     observed is a form of Change signal to "arm" the object for change
      *     notification. You can also manipulate it during multi-step
@@ -1288,7 +1288,7 @@ function(aReturnValue, targetObj) {
      * @method processFinalValue
      * @summary Processes the final value before it is returned from the
      *     receiver
-     * @summary This method postprocesses the final value before it is
+     * @description This method postprocesses the final value before it is
      *     returned from the receiver. This postprocessing includes the
      *     following steps, if they are configured on the receiver:
      *          1.  Collapsing any single-valued Collection results
@@ -2493,7 +2493,7 @@ function(objectA, objectB) {
      * @summary Checks to see if the two supplied parameters 'lead to' equal
      *     values. This is used when trying to determine whether or not to
      *     proceed with a 'set' operation (and broadcast changes).
-     * @summary This method takes into account the kind of data that this
+     * @description This method takes into account the kind of data that this
      *     path manages when doing it's comparison.
      * @param {objectA} Object The first object to compare.
      * @param {objectB} Object The second object to compare.
@@ -3758,7 +3758,7 @@ function(objectA, objectB) {
      * @summary Checks to see if the two supplied parameters 'lead to' equal
      *     values. This is used when trying to determine whether or not to
      *     proceed with a 'set' operation (and broadcast changes).
-     * @summary This method takes into account the kind of data that this
+     * @description This method takes into account the kind of data that this
      *     path manages when doing it's comparison.
      * @param {objectA} Object The first object to compare.
      * @param {objectB} Object The second object to compare.
@@ -5030,7 +5030,7 @@ function(replacementFunction) {
      * @method asReplacedString
      * @summary Returns a String representation of the receiver after
      *     substitutions have taken place at each location step.
-     * @summary For a non-native path substitutions will be performed by
+     * @description For a non-native path substitutions will be performed by
      *     the supplied Function which should take a single argument, that of
      *     the location step that the parser is currently at. For a native
      *     path no alteration occurs and the path's string value is returned
@@ -5119,7 +5119,7 @@ function(aNode, flagChanges) {
      * @method $$createNodesForPath
      * @summary Builds a set of nodes into the receiver's native node using
      *     the supplied path expression.
-     * @summary This method traverses up the given path expression, looking
+     * @description This method traverses up the given path expression, looking
      *     for matching nodes. If it finds them, it then works back down the
      *     expression, building out the nodes necessary for the expression to
      *     be able to work against a real tree.
@@ -5845,7 +5845,7 @@ function(aPath, forceNative) {
  * @summary This type of JSONContent provides convenience routines for
  *     accessing and validating DTD data as processed by the scripts located
  *     here: https://github.com/dominicmarks/html4-dtd-json
- * @summary This type accesses data that has a structure that could contain
+ * @description This type accesses data that has a structure that could contain
  *     items such as these. Note that this is not a complete description of the
  *     data schema. See the data file itself for more structural elements:
  *

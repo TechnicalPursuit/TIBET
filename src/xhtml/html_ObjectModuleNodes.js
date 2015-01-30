@@ -185,7 +185,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @method resolveDNU
      * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
-     * @summary Handles resolution of methods which have triggered the
+     * @description Handles resolution of methods which have triggered the
      *     inferencer. For TP.core.Window the resolution process is used in
      *     conjunction with method aspects to allow the receiver to translate
      *     method calls.

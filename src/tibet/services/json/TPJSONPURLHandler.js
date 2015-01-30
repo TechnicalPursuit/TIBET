@@ -29,7 +29,7 @@ function(targetURI, aRequest) {
     /**
      * @method load
      * @summary Loads URI data content and returns it on request.
-     * @summary This method performs the actual work of querying a JSONP URL
+     * @description This method performs the actual work of querying a JSONP URL
      *     for its content. Two notable parameters from the request are passed
      *     on to the JSON call:
      *

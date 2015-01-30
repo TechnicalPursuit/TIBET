@@ -38,7 +38,7 @@ function() {
     /**
      * @method asSpy
      * @summary Creates a Sinon.JS 'spy' from the receiver.
-     * @summary If the receiver is a method on an object, then this method
+     * @description If the receiver is a method on an object, then this method
      *     will replace that method with a spy. If the receiver is not a method,
      *     but just an unbound Function, this method will wrap it with a spy.
      *     In both cases, it returns the spying Function.
@@ -78,7 +78,7 @@ function(altValue) {
     /**
      * @method asStub
      * @summary Creates a Sinon.JS 'stub' from the receiver.
-     * @summary If the receiver is a method on an object, then this method
+     * @description If the receiver is a method on an object, then this method
      *     will replace that method with a stub. If the receiver is not a
      *     method, this method will raise a TP.sig.InvalidMethod exception.
      * @param {Object} altValue The alternative method value (aka method 'body').

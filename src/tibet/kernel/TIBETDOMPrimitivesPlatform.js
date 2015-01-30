@@ -502,7 +502,7 @@ TP.hc(
          * @method $$elementPreserveIFrameContent
          * @summary Preserves iframe content for browser platforms which need
          *     it.
-         * @summary This patch is required for DOM modification calls (such
+         * @description This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Gecko, do not
@@ -566,7 +566,7 @@ TP.hc(
          * @method $$elementPreserveIFrameContent
          * @summary Preserves iframe content for browser platforms which need
          *     it.
-         * @summary This patch is only required for certain browser
+         * @description This patch is only required for certain browser
          *     platforms. See the versions of this method in those
          *     browser-specific files for more information. As of this writing,
          *     Trident does not require this method to do anything, but Gecko
@@ -588,7 +588,7 @@ TP.hc(
          * @method $$elementPreserveIFrameContent
          * @summary Preserves iframe content for browser platforms which need
          *     it.
-         * @summary This patch is required for DOM modification calls (such
+         * @description This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Webkit-based
@@ -660,7 +660,7 @@ TP.hc(
          * @method $$elementRestoreIFrameContent
          * @summary Restores previously preserved iframe content for browser
          *     platforms which need it.
-         * @summary This patch is required for DOM modification calls (such
+         * @description This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Gecko, do not
@@ -727,7 +727,7 @@ TP.hc(
          * @summary Restores previously preserved iframe content for browser
          *     platforms which need it. This version of this method just
          *     returns.
-         * @summary This patch is only required for certain browser
+         * @description This patch is only required for certain browser
          *     platforms. See the versions of this method in those
          *     browser-specific files for more information. As of this writing,
          *     Trident does not require this method to do anything, but Gecko
@@ -749,7 +749,7 @@ TP.hc(
          * @method $$elementRestoreIFrameContent
          * @summary Restores previously preserved iframe content for browser
          *     platforms which need it.
-         * @summary This patch is required for DOM modification calls (such
+         * @description This patch is required for DOM modification calls (such
          *     as TP.nodeAppendChild()) that may be moving 'iframe' elements
          *     (either directly or as descendants of an element being moved).
          *     This is because some browser platforms, such as Webkit-based
@@ -825,7 +825,7 @@ TP.hc(
          *     provided. Note that the desired prefix should be provided as part
          *     of the attribute name. Note also that the attribute value can be
          *     the empty string ('') but not null or undefined.
-         * @summary If the supplied element's document is an HTML document,
+         * @description If the supplied element's document is an HTML document,
          *     this method will perform a simple 'setAttribute()' call, but will
          *     use the 'whole name' (i.e. with a colon-separated name) as the
          *     name of the attribute.
@@ -886,7 +886,7 @@ TP.hc(
          *     provided. Note that the desired prefix should be provided as part
          *     of the attribute name. Note also that the attribute value can be
          *     the empty string ('') but not null or undefined.
-         * @summary If the supplied element's document is an HTML document,
+         * @description If the supplied element's document is an HTML document,
          *     this method will perform a simple 'setAttribute()' call, but will
          *     use the 'whole name' (i.e. with a colon-separated name) as the
          *     name of the attribute.
@@ -1014,7 +1014,7 @@ TP.hc(
         /**
          * @method nodeAsString
          * @summary Returns the string representation of aNode.
-         * @summary This function takes in a flag as to whether the caller
+         * @description This function takes in a flag as to whether the caller
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
@@ -1299,7 +1299,7 @@ TP.hc(
         /**
          * @method nodeAsString
          * @summary Returns the string representation of aNode.
-         * @summary This function takes in a flag as to whether the caller
+         * @description This function takes in a flag as to whether the caller
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
@@ -1578,7 +1578,7 @@ TP.hc(
         /**
          * @method nodeAsString
          * @summary Returns the string representation of aNode.
-         * @summary This function takes in a flag as to whether the caller
+         * @description This function takes in a flag as to whether the caller
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
@@ -1872,7 +1872,7 @@ TP.hc(
         /**
          * @method nodeCloneNode
          * @summary Clones a node, deeply if the 'deep' parameter is true.
-         * @summary If aNode is an XML Document node, this method builds and
+         * @description If aNode is an XML Document node, this method builds and
          *     returns a proper clone of it. It it is an HTML Document node it
          *     returns null.
          * @param {Node|XMLDocument} aNode The node to clone.
@@ -1968,7 +1968,7 @@ TP.hc(
         /**
          * @method nodeCloneNode
          * @summary Clones a node, deeply if the 'deep' parameter is true.
-         * @summary If aNode is an XML Document node, this method builds and
+         * @description If aNode is an XML Document node, this method builds and
          *     returns a proper clone of it. It it is an HTML Document node it
          *     returns null.
          * @param {Node|XMLDocument} aNode The node to clone.

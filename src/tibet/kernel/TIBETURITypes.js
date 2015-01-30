@@ -81,7 +81,7 @@ virtual URIs:
  * @summary An abstract type that models Uniform Resource Identifiers in the
  *     TIBET system. While abstract, this type's constructor should always be
  *     used directly or via the TP.uc() or TP.uri() functions.
- * @summary The top-level URI type in the TIBET system is an abstract type.
+ * @description The top-level URI type in the TIBET system is an abstract type.
  *     This follows the somewhat 'classical' view of the W3C spec, where URIs
  *     represent the overall Web addressing and naming scheme and various
  *     scheme-specific forms manage the concrete data. When you ask for an
@@ -682,7 +682,7 @@ function(aURI, aCatalog, aFilter) {
      * @method $getURICatalog
      * @summary Returns the XML Catalog data for this application, converted
      *     into rough hash form for processing by consumers.
-     * @summary The actual XML for the URI catalog can be obtained using
+     * @description The actual XML for the URI catalog can be obtained using
      *     TP.sys.getURIXML(). Passing aURI value will cause the specific
      *     catalog related to that URI to be returned (typically a nextCatalog
      *     or delegateURI entry).
@@ -907,7 +907,7 @@ function(aURI) {
     /**
      * @method $getURIEntry
      * @summary Returns a catalog entry for the URI provided.
-     * @summary The return value from this method is a URI entry is
+     * @description The return value from this method is a URI entry is
      *     populated with all <uri>, <delegateURI>, and <rewriteURI> nodes which
      *     match at the URI level. Any items with delegateURI filters in place
      *     will be trimmed if they don't match the concrete URI to ensure that
@@ -1228,7 +1228,7 @@ function(forceRefresh) {
      * @summary Returns the current runtime environment profile, a hash of
      *     key/value pairs defining the current runtime state that should be
      *     used when rewriting URIs.
-     * @summary The 'key' entry in this hash provides a string
+     * @description The 'key' entry in this hash provides a string
      *     representation of the current profile that is useful for testing URI
      *     mappings for matching rules. The return value is cached as
      *     TP.sys.cfg('tibet.uriprofile') to avoid having to rebuild this
@@ -1311,7 +1311,7 @@ function(aProfile, useWildcards) {
      * @method $getURIProfileKey
      * @summary Returns the normalized (standard order) key string used when
      *     testing for URI map entries.
-     * @summary The key is built using the data found in the profile
+     * @description The key is built using the data found in the profile
      *     provided, which should include keys matching those available in
      *     TIBET's extended XML Catalog file format. The second parameter
      *     determines whether missing keys are defaulted to the values at the
@@ -1434,7 +1434,7 @@ function(aURI, aRequest) {
      * @method rewrite
      * @summary Rewrites the incoming URI as appropriate by invoking the
      *     current TP.sys.cfg('uri.rewriter') responsible for URI rewriting.
-     * @summary The default is the TP.core.URIRewriter type, which leverages
+     * @description The default is the TP.core.URIRewriter type, which leverages
      *     data in an XML Catalog file (typically uris.xml). This rewriting step
      *     is performed prior to any operations which require a URI handler such
      *     as load or save.
@@ -1473,7 +1473,7 @@ function(aURI, aRequest) {
      * @method route
      * @summary Routes the operation implied by any data in aRequest to a
      *     viable handler for the URI and request.
-     * @summary This typically results in the request being passed to a
+     * @description This typically results in the request being passed to a
      *     TP.core.URIHandler type/subtype. Note that the URI is expected to
      *     have been rewritten as needed prior to this call so that the route is
      *     appropriate for the concrete URI being accessed.
@@ -1762,7 +1762,7 @@ function(aRequest) {
      * @method constructSubRequest
      * @summary Constructs a subrequest for URI processing using any optionally
      *     provided request as input.
-     * @summary Subrequest creation differs from 'root' request creation in
+     * @description Subrequest creation differs from 'root' request creation in
      *     that subrequests are always new request objects which simply use the
      *     original request payload (when available).
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object defining
@@ -1956,7 +1956,7 @@ function(anAspect, anAction, aDescription) {
      * @method $changed
      * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @summary See the supertype method for more information.
+     * @description See the supertype method for more information.
      * @param {String} anAspect The aspect of the receiver that changed. This is
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
@@ -2351,7 +2351,7 @@ function(anObject, resultType, collapse) {
      *     resultType preferences. When the data doesn't match that preference a
      *     conversion is attempted and the return value of that conversion is
      *     returned.
-     * @summary If the data can't be converted properly this method returns
+     * @description If the data can't be converted properly this method returns
      *     undefined. If no resultType is specified then a "best fit" result is
      *     returned. The best fit result processing attempts to construct a
      *     valid TP.core.Node, then a viable JavaScript object by parsing for
@@ -2626,7 +2626,7 @@ function() {
      * @method getLocalPath
      * @summary Returns the locally-formatted absolute path to the URI's
      *     resource.
-     * @summary Note that no rewriting is performed in the production of
+     * @description Note that no rewriting is performed in the production of
      *     this value. The returned URI is simply adjusted for the current
      *     platform's semantics.
      * @returns {String} The receiver's local path.
@@ -3054,7 +3054,7 @@ function() {
     /**
      * @method getWebPath
      * @summary Returns the web-formatted absolute path to the URI's source.
-     * @summary Note that no rewriting is performed in the production of
+     * @description Note that no rewriting is performed in the production of
      *     this value. The URI is simply converted to its equivalent web format
      *     (forward slashes rather than backslash etc.)
      * @returns {String} The receiver's uri value as a 'web formatted URI'.
@@ -3071,7 +3071,7 @@ function(aSignal) {
     /**
      * @method handleChange
      * @summary Handles changes to the receiver's resource.
-     * @summary URIs listen for changes to their resource and invoke this
+     * @description URIs listen for changes to their resource and invoke this
      *     method when it changes. The supplied signal could have a
      *     TP.CHANGE_PATHS property in its payload, which is an Array of path
      *     Strings that referenced the resource at some point. If this property
@@ -3757,7 +3757,7 @@ function(aFlag) {
      * @method shouldSignalChange
      * @summary Defines whether the receiver should actively signal change
      *     notifications.
-     * @summary In general URI objects do not signal changes from their own
+     * @description In general URI objects do not signal changes from their own
      *      properties, because they act as 'value holders' for their resources.
      *      They will signal Change when their resources do so, acting as a
      *      'forwarding' mechanism for their resources.
@@ -3780,7 +3780,7 @@ function(aDataSource, aRequest) {
      *     transform operation. The data to transform is provided in aDataSource
      *     while parameters to the transformation operation should be placed in
      *     aRequest.
-     * @summary Note that since this method calls getResource() the
+     * @description Note that since this method calls getResource() the
      *     parameter list is provided to both getResource() and transform(),
      *     creating the potential for confusion if parameter names overlap. If
      *     this is possible you should invoke getResource() and transform
@@ -3989,7 +3989,7 @@ function(headerData) {
  *     TIBET system. A URN identifies its resource by specifying a name. Each
  *     "namespace identifier" (NID) tends to have a custom subtype of
  *     TP.core.URN to handle namespace-specific processing needs.
- * @summary Note that the spec requires this name to be globally unique and
+ * @description Note that the spec requires this name to be globally unique and
  *     persistent, even after the resource it points to no longer exists or is
  *     reachable. This condition is not enforced. Also, this type does not limit
  *     the namespace ID to less than 32 characters, per the URN RFC 2141, nor
@@ -4417,7 +4417,7 @@ function(aRequest) {
 /**
  * @type {TP.core.TIBETURN}
  * @summary A subtype of TP.core.URN specific to the urn:tibet 'namespace'.
- * @summary When creating URNs the portion after the scheme is what is known
+ * @description When creating URNs the portion after the scheme is what is known
  *     as the "NIS" or Namespace Identification String". This is followed by the
  *     "NSS" or Namespace Specific String. To ensure proper parsing of the
  *     latter we use subtypes specific to each URN namespace, the most common of
@@ -4634,7 +4634,7 @@ function(aResource, aRequest) {
  * @summary A subtype of TP.core.URI that models Uniform Resource Locators in
  *     the TIBET system. A URL identifies its resource by specifying the network
  *     location.
- * @summary The API of this object matches that of the Location object in
+ * @description The API of this object matches that of the Location object in
  *     the browser, although one can have multiple instances of these objects to
  *     represent many URLs that would be encountered in a TIBET program.
  */
@@ -4864,7 +4864,7 @@ function() {
     /**
      * @method getPath
      * @summary Returns the path portion of the receiver.
-     * @summary The value returned from this method will vary between
+     * @description The value returned from this method will vary between
      *     subtypes. For 'file' urls it will be the file path which starts after
      *     the file:// portion while for 'http' urls it is the portion between
      *     the host:port and ?query specs. Note that on windows this will not
@@ -4928,7 +4928,7 @@ function(secondPath, filePath) {
      *     compared to second path. If the secondPath contains a file reference
      *     then the filePath argument should be true so that the resulting
      *     relative path is always produced with respect to a directory target.
-     * @summary Note that there is one special case to this process which
+     * @description Note that there is one special case to this process which
      *     revolves around how to resolve against paths which end with a file
      *     reference. When dealing with ~lib/foo.xml relative to ~lib we can
      *     see it should be ./foo.xml, but what about when we have
@@ -5492,7 +5492,7 @@ function(aRequest) {
      *     currently routed storage location. This method relies on both
      *     rewriting and routing which ultimately hand off to a
      *     TP.core.URIHandler of some type to perform the actual load.
-     * @summary This method is rarely called directly, it's typically
+     * @description This method is rarely called directly, it's typically
      *     invoked by the get*Content() calls when the receiver has not yet been
      *     loaded, or when a refresh is being requested. Note that this is a
      *     "routed" action, meaning the URI undergoes rewriting and routing as
@@ -5542,7 +5542,7 @@ function(aRequest) {
      * @method nuke
      * @summary Destroys the target URL at the storage location. We'd have
      *     called this delete but that's a JS keyword.
-     * @summary This method is a "routed" action, meaning the URI undergoes
+     * @description This method is a "routed" action, meaning the URI undergoes
      *     rewriting and routing as part of the nuke process. This may, as you
      *     might expect, alter the physical location being targeted for
      *     destruction. You should probably verify these targets before invoking
@@ -5582,7 +5582,7 @@ function(aRequest) {
      * @summary Saves the receiver's content to its URI path. The request's
      *     fileMode key defaults to 'w' so that any existing content is replaced
      *     when operating on file URIs.
-     * @summary This method is a "routed" action, meaning the URI undergoes
+     * @description This method is a "routed" action, meaning the URI undergoes
      *     rewriting and routing as part of the save process. This may, as you
      *     might expect, alter the physical location in which the data is
      *     stored.
@@ -6564,7 +6564,7 @@ function(schemeSpecificString) {
  * @summary A subtype of TP.core.URI that stores a 'tibet:' URI. These URIs
  *     provide access to TIBET components, files, and other resources and are
  *     the preferred URI format for TIBET.
- * @summary TIBET uses tibet: URIs as a way of referring to things which a
+ * @description TIBET uses tibet: URIs as a way of referring to things which a
  *     standard URI such as a file: or http: URI can't reference. A common
  *     example is document references which require dynamic relative paths since
  *     file: and http: URIs don't have a way to handle dynamic values.
@@ -7244,7 +7244,7 @@ function(aRequest, filterResult) {
      *     TIBET path resolves to another URI form (i.e. when a ~ is used for a
      *     "virtual" file or http URI) the resource (content) of that URI is
      *     returned.
-     * @summary TIBET URLs are used to support a wide variety of access
+     * @description TIBET URLs are used to support a wide variety of access
      *     paths to objects in the system. This is unfortunately necessary since
      *     the standard URI schemes don't allow for client-side object
      *     referencing in any real sense, nor do they support the kind of
@@ -7972,7 +7972,7 @@ function(aRequest) {
  * @type {TP.core.URIHandler}
  * @summary TP.core.URIHandler provides a top-level supertype for URI-specific
  *     handler classes.
- * @summary When TIBET attempts to operate on a URI for load or save
+ * @description When TIBET attempts to operate on a URI for load or save
  *     operations it first rewrites the URI and then routes the URI/operation
  *     pair to a handler type. The handler types are responsible for managing
  *     the URI's data in a scheme-specific way that can also respect request and
@@ -8062,7 +8062,7 @@ function(targetURI, aRequest) {
      * @method save
      * @summary Saves URI data content. This is the default data persistence
      *     method for most URI content.
-     * @summary By creating alternative URI handlers and ensuring that URI
+     * @description By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
      *     URI instances. See TP.core.URIRewriter and TP.core.URIRouter for more
      *     information. Important keys include 'append', 'body', and 'backup',
@@ -8566,7 +8566,7 @@ function(aURI, aRequest) {
      * @method rewrite
      * @summary Rewrites the receiver based on any XML Catalog data which
      *     matches the current filtering parameter values and the URI.
-     * @summary The rewrite routine allows TP.core.URI to alter the real URI
+     * @description The rewrite routine allows TP.core.URI to alter the real URI
      *     used for various operations based on XML Catalog data enhanced for
      *     use with TIBET. This data is typically found in the file uris.xml in
      *     the application's data directory.
@@ -9159,7 +9159,7 @@ function(targetURI, aRequest) {
      * @method save
      * @summary Saves URI data content. This is the default data persistence
      *     method for most URI content.
-     * @summary By creating alternative URI handlers and ensuring that URI
+     * @description By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
      *     URI instances. See TP.core.URIRewriter and TP.core.URIRouter for more
      *     information. Important keys include 'append', 'body', and 'backup',

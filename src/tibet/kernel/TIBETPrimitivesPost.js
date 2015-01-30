@@ -1385,7 +1385,7 @@ function(signame) {
     /**
      * @method expandSignalName
      * @summary Produces the 'long form' of the supplied signal name.
-     * @summary Given a signal name of 'fooSignal', this method will produce
+     * @description Given a signal name of 'fooSignal', this method will produce
      *     'TP.sig.fooSignal'. If the signal name already has a period ('.'),
      *     this method will just prepend 'TP.'.
      * @param {String} signame The signal name.
@@ -1432,7 +1432,7 @@ function(signame) {
     /**
      * @method contractSignalName
      * @summary Produces the 'short form' of the supplied signal name.
-     * @summary Given a signal name of 'TP.sig.fooSignal', this method will
+     * @description Given a signal name of 'TP.sig.fooSignal', this method will
      *     produce 'fooSignal'.
      * @param {String} signame The signal name.
      * @returns {String} The shortened signal name.
@@ -1765,7 +1765,7 @@ function(anObject, assignIfAbsent) {
      *     memory leaks. NOTE that return values from this function are encoded
      *     via encodeURI since they are typically TIBET URI strings. Also note
      *     that the TP.gid() function is aliased to this call.
-     * @summary The return value of this function may vary between what
+     * @description The return value of this function may vary between what
      *     looks like typical TIBET ID, a window path, or a TIBET URI. The
      *     reason for the variation has to do with trying to keep the IDs as
      *     simple as possible while keeping them unique enough to use with
@@ -2119,7 +2119,7 @@ function(anObject, assignIfAbsent) {
      *     normally used on nodes as a way of getting an ID that is local to the
      *     node's enclosing document. NOTE that the TP.lid() function is aliased
      *     to this function as a 'shorthand'.
-     * @summary It's often necessary to get a handle to an object by ID. In
+     * @description It's often necessary to get a handle to an object by ID. In
      *     a typical environment this would be done via the native
      *     document.getElementById() call. Unfortunately, that call won't work
      *     on XML DOMs cross-browser so in TIBET you'd normally use
@@ -2761,7 +2761,7 @@ function(anObject, aDocument) {
      * @summary Returns an HTML node representation of the receiver. NOTE that
      *     the TP.htmlnode() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an HTML-compatible node. For objects which can't
      *     provide their own asHTMLNode() implementations this method typically
@@ -2851,7 +2851,7 @@ function(anObject) {
      * @summary Returns an HTML string representation of the receiver. NOTE
      *     that the TP.htmlstr() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an HTML-compatible string. For objects which can't
      *     provide their own asHTMLString implementations this method typically
@@ -3028,7 +3028,7 @@ function(anObject) {
      * @summary Returns a best-possible JSON representation of the object. NOTE
      *     that the TP.json() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need a JSON string.
      * @param {Object} anObject The object to return the JSON for.
@@ -3191,7 +3191,7 @@ function(anObject) {
     /**
      * @method objectKeys
      * @summary Returns the keys of the object.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need the object's keys.
      * @param {Object} anObject The object to return the keys for.
@@ -3429,7 +3429,7 @@ function(anObject) {
      * @summary Returns a JavaScript source representation of the object. NOTE
      *     that the TP.src() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need a source rep of the return value.
      * @param {Object} anObject The object to return the representational String
@@ -3551,7 +3551,7 @@ function(anObject, verbose) {
      * @summary Returns a best-possible string representation of the object.
      *     NOTE that the TP.str() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need a string rep of the return value. This method will
      *     attempt to get the best possible string by using asString and then
@@ -3869,7 +3869,7 @@ function(anObject, aDocument) {
      * @summary Returns an XHTML node representation of the supplied object.
      *     NOTE that the TP.xhtmlnode() function is aliased to this function as
      *     a 'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XHTML-compatible node.
      * @param {Object} anObject The object to format as XHTML.
@@ -3929,7 +3929,7 @@ function(anObject) {
      * @summary Returns an XHTML string representation of the supplied object.
      *     NOTE that the TP.xhtmlstr() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XHTML-compatible string. For objects which can't
      *     provide their own asXHTMLString implementations this method typically
@@ -3978,7 +3978,7 @@ function(anObject, aDocument) {
      * @summary Returns an XML node representation of the supplied object.
      *     NOTE that the TP.xmlnode() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XML-compatible node.
      * @param {Object} anObject The object to format as XML.
@@ -4031,7 +4031,7 @@ function(anObject) {
      * @summary Returns an XML string representation of the supplied object.
      *     NOTE that the TP.xmlstr() function is aliased to this function as a
      *     'shorthand'.
-     * @summary This function is used to avoid type checking an object or
+     * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
      *     function but need an XML-compatible string. For objects which can't
      *     provide their own asXHTMLString implementations this method typically
@@ -4404,7 +4404,7 @@ function(anObject) {
      *     is not the same as the value returned by the native typeof keyword,
      *     which is the type name. NOTE that the TP.type() function is aliased
      *     to this function as a 'shorthand'.
-     * @summary While we prefer polymorphic messaging to type checking it's
+     * @description While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the Type object responsible for the object provided. If you want
      *     the type name use TP.objectTypeName instead. Note that the value
@@ -4498,7 +4498,7 @@ function(anObject) {
      *     is not the same as the value returned by the native typeof keyword,
      *     which is often inadequately detailed and/or simply wrong. NOTE that
      *     the TP.tname() function is aliased to this function as a 'shorthand'.
-     * @summary While we prefer polymorphic messaging to type checking it's
+     * @description While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the Type name of the object provided. If you want the type object
      *     use TP.objectType instead. Note that the value returned by these
@@ -4571,7 +4571,7 @@ function(anObject) {
      * @summary Returns an Array of 'supertype' for the object provided.
      *     NOTE that the TP.stnames() function is aliased to this function as a
      *     'shorthand'.
-     * @summary While we prefer polymorphic messaging to type checking it's
+     * @description While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the list of supertypes of the object provided. Note that the
      *     values returned by these functions is based on the TIBET concept of
@@ -4695,7 +4695,7 @@ function(anObject) {
      * @summary Returns an Array of 'supertype' names for the object provided.
      *     NOTE that the TP.stnames() function is aliased to this function as a
      *     'shorthand'.
-     * @summary While we prefer polymorphic messaging to type checking it's
+     * @description While we prefer polymorphic messaging to type checking it's
      *     sometimes necessary to do the latter. This method gives you a way to
      *     get the list of supertype names of the object provided. Note that the
      *     values returned by these functions is based on the TIBET concept of
@@ -5235,7 +5235,7 @@ function(aPath) {
     /**
      * @method getPointerScheme
      * @summary Returns the 'pointer scheme' given a path.
-     * @summary Depending on the type of path supplied, this method will
+     * @description Depending on the type of path supplied, this method will
      *     return the proper 'scheme' to be used in an XPointer. These are the
      *     current return values:
      *

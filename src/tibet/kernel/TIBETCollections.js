@@ -198,7 +198,7 @@ TP.api.OrderedCollectionAPI =
 /**
  * @type {TP.api.OrderedPairAPI}
  * @summary The API required of objects which act as ordered pairs.
- * @summary TP.api.OrderedPairAPI is an interface which can be implemented
+ * @description TP.api.OrderedPairAPI is an interface which can be implemented
  *     by any object which may be used to hold key/value pairs. Objects in the
  *     core which implement this API include Array, Object, and TP.lang.Hash.
  */
@@ -212,7 +212,7 @@ TP.api.OrderedPairAPI =
          * @method getPair
          * @summary Returns an array containing the key and value of the
          *     receiver.
-         * @summary This method expects the receiver to have only a single
+         * @description This method expects the receiver to have only a single
          *     key/value pair. Objects can be used as ordered pairs as in:
          *
          *     {'a':1}
@@ -253,7 +253,7 @@ TP.api.OrderedPairAPI =
 /**
  * @type {TP.api.SortedCollectionAPI}
  * @summary The API required of objects which act as sorted collections.
- * @summary TP.api.SortedCollectionAPI is an interface which various
+ * @description TP.api.SortedCollectionAPI is an interface which various
  *     collections may implement as needed. Array is the only type in the system
  *     which has native sorting capability so the interface is typically
  *     implemented by types which use an array to manage either their internal
@@ -312,7 +312,7 @@ TP.sys.SortedCollectionAPI =
 /**
  * @type {TP.api.IterationAPI}
  * @summary The API required of objects which can support a TP.core.Iterator.
- * @summary The TP.api.IterationAPI is an interface definition for the
+ * @description The TP.api.IterationAPI is an interface definition for the
  *     methods required by a collection to support TP.core.Iterator management
  *     of the collection. TIBET interfaces are essentially just collections of
  *     method names in the current version. The ability to do multiple
@@ -383,7 +383,7 @@ TP.api.IterationAPI =
 /**
  * @type {Array}
  * @summary Collection-oriented API's for Array base class.
- * @summary The vast majority of functional support for the collection
+ * @description The vast majority of functional support for the collection
  *     module. Most other collection classes rely on Array for their internal
  *     storage needs either for data, keys, or both. Array implements all of the
  *     TPCollection, TPIndexedCollection, and TPOrderedCollection APIs as well
@@ -502,7 +502,7 @@ function(startIndexOrSpec, endIndex, aStep) {
      * @method vslice
      * @summary Returns a 'virtual slice' as a TP.core.Range that allows
      *     iteration over contents of the receiver.
-     * @summary This method can take a 'range spec' as the first argument.
+     * @description This method can take a 'range spec' as the first argument.
      *     This range spec follows the Python syntax for 'slicing' (which has
      *     also been proposed for JavaScript):
      *     [1:3]    -> slice items 1 and 2
@@ -669,7 +669,7 @@ function(aSize) {
     /**
      * @method truncate
      * @summary Reduces the size of the receiver to the size specified.
-     * @summary If the size provided is larger than the receiver the
+     * @description If the size provided is larger than the receiver the
      *     receiver is unaltered. If the size provided is negative the receiver
      *     is emptied. If no size is provided this method does nothing.
      * @param {Number} aSize The new size (if smaller than current).
@@ -800,7 +800,7 @@ function(anObject, aTest) {
      * @method addIfAbsent
      * @summary Adds an object to the receiver if it isn't already in the
      *     collection.
-     * @summary Note that the semantics of this call are slightly different
+     * @description Note that the semantics of this call are slightly different
      *     between Array and Hash. In the case of Array the object is added if
      *     it isn't contained in the Array, meaning the test is against the
      *     _value_. In the case of a Hash the object (a pair) is added if the
@@ -828,7 +828,7 @@ function(anItem) {
     /**
      * @method addItem
      * @summary Adds a single item to the receiver.
-     * @summary As mentioned in other contexts an item may have different
+     * @description As mentioned in other contexts an item may have different
      *     properties. For an array an item is a value unless that value happens
      *     to be an ordered pair whose first element is a number. In that case
      *     the receiver works like a numerically-indexed hash and adds the
@@ -919,7 +919,7 @@ function() {
      * @summary Returns a hash containing the key/value pairs of the array. The
      *     indexes of this hash are the numerical indices of the receiver for
      *     which the value TP.isDefined().
-     * @summary The resulting hash's keys are the indices of the array from
+     * @description The resulting hash's keys are the indices of the array from
      *     0 to array.length. Note that if the receiver is an ordered pair the
      *     result is a hash containing the key/value data from the single
      *     ordered pair.
@@ -1199,7 +1199,7 @@ function(aCollection, aTest) {
      * @method difference
      * @summary Returns the elements contained in the receiver which are not in
      *     the collection provided.
-     * @summary This method can be thought of as subtracting all elements
+     * @description This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
      * @param {TPCollection} aCollection The collection to difference against
@@ -1234,7 +1234,7 @@ function(aCollection, aTest) {
      * @method disjunction
      * @summary Returns the 'symmetric difference' or those elements which are
      *     disjunct between the two collections.
-     * @summary This method returns a new array containing the disjunction
+     * @description This method returns a new array containing the disjunction
      *     between the receiver and aCollection. This means that only those
      *     elements which occur in one of the collections but not the other are
      *     returned.
@@ -1385,7 +1385,7 @@ function(aCollection, aTest) {
     /**
      * @method intersection
      * @summary Returns the intersection of the two collections.
-     * @summary This method returns a collection of those elements which
+     * @description This method returns a collection of those elements which
      *     occur in BOTH the receiver and in aCollection.
      * @param {TPCollection} aCollection The collection to intersect the
      *     receiver with.
@@ -1416,7 +1416,7 @@ function() {
      * @summary Returns true if the receiver is behaving as a sorted
      *     collection. Effectively true any time the receiver has a valid sort
      *     function assigned.
-     * @summary Arrays can maintain their content in a sorted fashion so
+     * @description Arrays can maintain their content in a sorted fashion so
      *     that any access of the underlying data will be against a sorted data
      *     set. This method returns true if the receiver is operating in that
      *     fashion.
@@ -1490,7 +1490,7 @@ function(anItem, aTest) {
     /**
      * @method remove
      * @summary Removes a value from the receiver.
-     * @summary In this method, all instances of the value are removed. To
+     * @description In this method, all instances of the value are removed. To
      *     remove only the first instance use 'removeFirst()'. The array is
      *     updated in place. NOTE that this method won't remove nulls so
      *     remove(null) or remove() won't work. You have to use compact so TIBET
@@ -1771,7 +1771,7 @@ function(aCollection) {
     /**
      * @method union
      * @summary Returns a new array containing the members of both arrays.
-     * @summary This method computes a new array of elements, placing into
+     * @description This method computes a new array of elements, placing into
      *     it all elements from this array and all elements from aCollection.
      * @param {TPCollection} aCollection The other collection to union this
      *     array against.
@@ -1978,7 +1978,7 @@ function(aCollection, anItem) {
     /**
      * @method atAllPut
      * @summary Inserts anItem at a set of locations.
-     * @summary Places anItem at each location in the receiver. If the
+     * @description Places anItem at each location in the receiver. If the
      *     optional collection is provided the indices listed in the collection
      *     are updated rather than the entire array.
      * @param {TPCollection} aCollection An optional collection specifying
@@ -2040,7 +2040,7 @@ function(anIndex, aDefault) {
      * @method atIfInvalid
      * @summary Returns the value at the index provided or the default value if
      *     the key returns an invalid value.
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -2070,7 +2070,7 @@ function(anIndex, aDefault) {
      * @method atIfNull
      * @summary Returns the value at the index provided or the default value if
      *     the key returns null (and not undefined).
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -2100,7 +2100,7 @@ function(anIndex, aDefault) {
      * @method atIfUndefined
      * @summary Returns the value at the index provided or the default value if
      *     the key returns undefined.
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -2907,7 +2907,7 @@ function(aFunction) {
     /**
      * @method setSortFunction
      * @summary Sets the receiver's internal sort function.
-     * @summary This function will be called any time the receiver has been
+     * @description This function will be called any time the receiver has been
      *     updated without being sorted and a request for a value is made. This
      *     method will flag the receiver so that a re-sort will occur on the
      *     next data access call.
@@ -3059,7 +3059,7 @@ function(aCount, inline) {
 /**
  * @type {Object}
  * @summary Collection API extensions for Object.
- * @summary Because of the problems associated with keeping a clear
+ * @description Because of the problems associated with keeping a clear
  *     distinction between keys which are "content" and keys which are
  *     "properties" we _STRONGLY_ discourage using Objects as hashes. But for
  *     polymorphic reasons we add a few methods in the kernel so if you get an
@@ -3078,7 +3078,7 @@ function() {
     /**
      * @method collapse
      * @summary Returns the receiver.
-     * @summary This method is defined purely for polymorphic reasons so
+     * @description This method is defined purely for polymorphic reasons so
      *     that the system can just send 'collapse' to any object. For Arrays
      *     and other collections, the first item is returned.
      * @returns {Object} The receiver.
@@ -3271,7 +3271,7 @@ function(aValue) {
      * @method getPosition
      * @summary Returns the first index of the element provided or undefined if
      *     the element isn't found.
-     * @summary For numbers this is a bit of a strange concept but it tends
+     * @description For numbers this is a bit of a strange concept but it tends
      *     to get invoked when dealing with numerical keys in hashes.
      * @param {Object} aValue What to search for.
      * @returns {Number} The index of the value or undefined.
@@ -3289,7 +3289,7 @@ function(anObject) {
      * @method times
      * @summary Performs an operation the number of times defined by the
      *     receiver, for example (10).times(x) will process 'x' ten times.
-     * @summary The return value of this method will vary based on what type
+     * @description The return value of this method will vary based on what type
      *     of object was provided. When a string is passed the return value is
      *     that string's value concatenated that number of times. When a
      *     function is passed this method works like perform() to run the
@@ -3673,7 +3673,7 @@ function(aCollection, aTest) {
      * @method difference
      * @summary Returns the elements contained in the receiver which are not in
      *     the collection provided.
-     * @summary This method can be thought of as subtracting all elements
+     * @description This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
      * @param {TPCollection} aCollection The collection to difference against
@@ -3696,7 +3696,7 @@ function(aCollection, aTest) {
      * @method disjunction
      * @summary Returns the 'symmetric difference' or those elements which are
      *     disjunct between the two collections.
-     * @summary This method returns a new string containing the disjunction
+     * @description This method returns a new string containing the disjunction
      *     between the receiver and aCollection. This means that only those
      *     characters which occur in one of the collections but not the other
      *     are returned.
@@ -3773,7 +3773,7 @@ function(aCollection) {
     /**
      * @method intersection
      * @summary Returns the intersection of the two collections.
-     * @summary This method returns a collection of those elements which
+     * @description This method returns a collection of those elements which
      *     occur in BOTH the receiver and in aCollection.
      * @param {TPCollection} aCollection The collection to intersect the
      *     receiver with.
@@ -3843,7 +3843,7 @@ function(aCollection) {
     /**
      * @method union
      * @summary Returns a new string containing the members of both strings.
-     * @summary This method computes a new string of characters, placing
+     * @description This method computes a new string of characters, placing
      *     into it all characters from this string and all elements from
      *     aCollection.
      * @param {TPCollection} aCollection The other collection to union this
@@ -3915,7 +3915,7 @@ function(anIndex, aDefault) {
      * @method atIfInvalid
      * @summary Returns the value at the index provided or the default value if
      *     the key returns an invalid value.
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -3945,7 +3945,7 @@ function(anIndex, aDefault) {
      * @method atIfNull
      * @summary Returns the value at the index provided or the default value if
      *     the key returns null (and not undefined).
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -3975,7 +3975,7 @@ function(anIndex, aDefault) {
      * @method atIfUndefined
      * @summary Returns the value at the index provided or the default value if
      *     the key returns undefined.
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -4211,7 +4211,7 @@ function(anItem, startIndex, aTest) {
 /**
  * @type {TP.lang.Hash}
  * @summary Collection-oriented API's for TP.lang.Hash base class.
- * @summary TIBET's hash (dictionary, associative array) type. You should
+ * @description TIBET's hash (dictionary, associative array) type. You should
  *     always use a TP.lang.Hash (available via TP.hc()) when dealing with data
  *     in key/value form. In TIBET it's a dangerous, and potentially slow
  *     practice to use a regular object ({}) as a hash. We recommend you never
@@ -4238,7 +4238,7 @@ function(aString) {
     /**
      * @method STYLE_STRING_PARSER
      * @summary A parse function specific to CSS style strings.
-     * @summary The input is checked for conformance to key:value; syntax
+     * @description The input is checked for conformance to key:value; syntax
      *     and parsed into a valid hash if it matches. In addition the keys are
      *     converted into their proper DOM equivalents so that 'float' in CSS
      *     becomes 'cssFloat' in the hash.
@@ -4280,7 +4280,7 @@ function(aString) {
     /**
      * @method ATTRIBUTE_STRING_PARSER
      * @summary A parse function specific to XML attribute strings.
-     * @summary The input is checked for conformance to key="value" syntax
+     * @description The input is checked for conformance to key="value" syntax
      *     and parsed into a valid hash if it matches.
      * @param {String} aString A valid XML attribute string.
      * @returns {TP.lang.Hash} A new instance.
@@ -4390,7 +4390,7 @@ function(aString) {
     /**
      * @method QUERY_STRING_PARSER
      * @summary A parse function specific to URI query strings.
-     * @summary The input is checked for conformance to key=value[&|;]...
+     * @description The input is checked for conformance to key=value[&|;]...
      *     syntax and parsed into a valid hash if it matches. NOTE that a
      *     leading ? is allowed, and discarded by this routine (and in fact the
      *     entire URI can be passed to this routine if necessary). This method
@@ -4438,7 +4438,7 @@ function() {
      * @method hc
      * @summary Construct and return a new hash, populating it with initial
      *     data based on the argument list.
-     * @summary Input data can be provided in a variety of formats including
+     * @description Input data can be provided in a variety of formats including
      *     an array of ordered pairs, an array of key, value sequences, an
      *     Object (not recommended for speed reasons), a hash of key/value
      *     pairs, or a simple argument list of key, value sequences.
@@ -4643,7 +4643,7 @@ function(aCollection) {
     /**
      * @method addAllKeys
      * @summary Adds all the keys contained in aCollection.
-     * @summary This is a fast way to get a simple lookup table from an
+     * @description This is a fast way to get a simple lookup table from an
      *     array. The values are initialized to their index, effectively
      *     inverting the array into the hash. You can use the resulting hash to
      *     do containment checking against a hash key instead of scanning the
@@ -5015,7 +5015,7 @@ function(aSeparator) {
      * @summary Returns the receiver in URI query string form, meaning each
      *     key/value pair becomes key=value and each pair is separated by a
      *     single & or separator as provided.
-     * @summary This method automatically encodes query values by calling
+     * @description This method automatically encodes query values by calling
      *     encodeURIComponent() on them.
      * @param {String} aSeparator The default is '&'.
      * @returns {String} The receiver as a valid query string.
@@ -5260,7 +5260,7 @@ function(attributeName) {
     /**
      * @method get
      * @summary Returns the value of attributeName from the receiver.
-     * @summary Note that get() operates on the object's methods first and
+     * @description Note that get() operates on the object's methods first and
      *     then searches its content and properties. In other words, if the
      *     receiver has both a method named 'foo' and a key/value pair under the
      *     key 'foo' you won't get the value back, you'll get the result of
@@ -6211,7 +6211,7 @@ function(verbose) {
     /**
      * @method asString
      * @summary Returns the hash as a string.
-     * @summary Constructs a new string from the hash.
+     * @description Constructs a new string from the hash.
      *     The join is done using the receiver's current 'delimiter' value,
      *     normally ', '. Set the 'delimiter' value on the receiver to use a
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
@@ -6291,7 +6291,7 @@ function() {
     /**
      * @method collapse
      * @summary Returns the receiver.
-     * @summary This method is defined purely for polymorphic reasons so
+     * @description This method is defined purely for polymorphic reasons so
      *     that the system can just send 'collapse' to any object. For Arrays
      *     and other collections, the first item is returned.
      * @returns {Object} The receiver.
@@ -6689,7 +6689,7 @@ function(aCollection, aTest) {
      * @method difference
      * @summary Returns the elements contained in the receiver which are not in
      *     the collection provided.
-     * @summary This method can be thought of as subtracting all elements
+     * @description This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
      * @param {TPCollection} aCollection The collection to difference against
@@ -6730,7 +6730,7 @@ function(aCollection, aTest) {
      *     cause data to be missing from the resulting hash. The array of
      *     ordered pairs returned from this method doesn't suffer from that
      *     problem.
-     * @summary This method returns a new array containing the disjunction
+     * @description This method returns a new array containing the disjunction
      *     between the receiver and aCollection. This means that only those
      *     elements which occur in one of the collections but not the other are
      *     returned.
@@ -6896,7 +6896,7 @@ function(aCollection, aTest) {
      * @method intersection
      * @summary Returns the intersection of the two collections as a new
      *     TP.lang.Hash.
-     * @summary This method returns a hash of those elements which occur in
+     * @description This method returns a hash of those elements which occur in
      *     BOTH the receiver and in aCollection. NOTE that both the keys and the
      *     values are used in testing.
      * @param {TPCollection} aCollection The collection to intersect the
@@ -6947,7 +6947,7 @@ function() {
      * @summary Returns true if the receiver is behaving as a sorted
      *     collection. Effectively true any time the receiver has a valid sort
      *     function assigned.
-     * @summary Objects cannot maintain their content in a sorted fashion
+     * @description Objects cannot maintain their content in a sorted fashion
      *     although their keys may be sorted if a sort function has been
      *     defined. In that case this method returns true.
      * @returns {Boolean} Whether this hash is a sorted collection or not.
@@ -7028,7 +7028,7 @@ function(anItem, aTest) {
     /**
      * @method remove
      * @summary Removes an item from the receiver.
-     * @summary In this method, all instances of the item are removed. The
+     * @description In this method, all instances of the item are removed. The
      *     key and value must match for the item to be removed. If you want to
      *     remove the key without concern for whether the value matches use
      *     removeKey or removeAt.
@@ -7242,7 +7242,7 @@ function() {
      * @method transpose
      * @summary Transposes the keys and values of the receiver, creating a
      *     reverse-lookup version of the receiver.
-     * @summary Note that the sort order (if any) of the keys determines how
+     * @description Note that the sort order (if any) of the keys determines how
      *     duplicate values will ultimately be handled (ie. which key 'wins'
      *     when there are multiple values whose keys will collide).
      * @returns {TP.lang.Hash} A new instance with the values and keys reversed.
@@ -7475,7 +7475,7 @@ function(aCollection, aValue) {
     /**
      * @method atAllPut
      * @summary Inserts aValue at a set of locations.
-     * @summary Places aValue at each location in the receiver. If the
+     * @description Places aValue at each location in the receiver. If the
      *     optional collection is provided the indices listed in the collection
      *     are updated rather than the entire collection.
      * @param {TPCollection} aCollection An optional collection specifying
@@ -7526,7 +7526,7 @@ function(anIndex, aDefault) {
      * @method atIfInvalid
      * @summary Returns the value at the index provided or the default value if
      *     the key doesn't exist.
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -7555,7 +7555,7 @@ function(anIndex, aDefault) {
      * @method atIfNull
      * @summary Returns the value at the index provided or the default value if
      *     the key returns a value of null (not undefined).
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -7584,7 +7584,7 @@ function(anIndex, aDefault) {
      * @method atIfUndefined
      * @summary Returns the value at the index provided or the default value if
      *     the key returns undefined.
-     * @summary If a Function is supplied as the default value to this
+     * @description If a Function is supplied as the default value to this
      *     method, it will be executed and its value will be returned as the
      *     value. Therefore, this method cannot be used if the Function object
      *     itself is what is desired as the returned value.
@@ -7919,7 +7919,7 @@ function(aFilterName) {
     /**
      * @method getKeys
      * @summary Returns the unique keys of the receiver.
-     * @summary If the receiver has a sort function defined the keys are
+     * @description If the receiver has a sort function defined the keys are
      *     sorted. The result is that all methods which use the key array as a
      *     focal point for iteration effectively work to produce output sorted
      *     by the ordering of the keys.
@@ -8224,7 +8224,7 @@ function(aFunction) {
     /**
      * @method setSortFunction
      * @summary Sets the receiver's internal sort function.
-     * @summary This function will be called any time the receiver has been
+     * @description This function will be called any time the receiver has been
      *     updated without being sorted and a request for a value is made. This
      *     method will flag the receiver so that a re-sort will occur on the
      *     next data access call.
@@ -8630,7 +8630,7 @@ function(aFunction, terminateFunction) {
      * @method performUntil
      * @summary Performs the function on each iteration of the receiver until
      *     terminateFunction returns true.
-     * @summary performUntil can be used as an alternative to constructing
+     * @description performUntil can be used as an alternative to constructing
      *     repeat loops to iterate over a range.
      * @param {Function} aFunction A function which performs some action with
      *     each iteration.
@@ -8721,7 +8721,7 @@ function(aFunction, terminateFunction) {
      * @method performWhile
      * @summary Performs the function on each iteration of the receiver while
      *     terminateFunction returns true.
-     * @summary performUntil can be used as an alternative to constructing
+     * @description performUntil can be used as an alternative to constructing
      *     while loops to iterate over a range
      * @param {Function} aFunction A function which performs some action with
      *     each iteration index.

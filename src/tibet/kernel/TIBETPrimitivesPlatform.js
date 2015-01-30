@@ -729,7 +729,7 @@ TP.hc(
         /**
          * @method getStackInfo
          * @summary Extracts stack information from the supplied Error object.
-         * @summary This method returns an Array of function names, file
+         * @description This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number]
@@ -775,7 +775,7 @@ TP.hc(
         /**
          * @method getStackInfo
          * @summary Extracts stack information from the supplied Error object.
-         * @summary This method returns an Array of function names, file
+         * @description This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number]
@@ -823,7 +823,7 @@ TP.hc(
         /**
          * @method getStackInfo
          * @summary Extracts stack information from the supplied Error object.
-         * @summary This method returns an Array of function names, file
+         * @description This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number]
@@ -870,7 +870,7 @@ TP.hc(
         /**
          * @method getStackInfo
          * @summary Extracts stack information from the supplied Error object.
-         * @summary This method returns an Array of function names, file
+         * @description This method returns an Array of function names, file
          *     names and line numbers from stack information provided by the
          *     supplied Error object:
          *          [function name, file name, line number, character number]
@@ -1024,7 +1024,7 @@ TP.hc(
         /**
          * @method $nodeToString
          * @summary Returns a 'representational' String of the supplied Node.
-         * @summary Because IE does such a poor job of printing a reasonable
+         * @description Because IE does such a poor job of printing a reasonable
          *     representation of Nodes (they aren't even JS objects that one can
          *     send toString() to), we take in Nodes here and produce the same
          *     String that Mozilla produces.
@@ -1136,7 +1136,7 @@ TP.hc(
         /**
          * @method $nodeToString
          * @summary Returns a 'representational' String of the supplied Node.
-         * @summary Because Webkit does such a poor job of printing a
+         * @description Because Webkit does such a poor job of printing a
          *     reasonable representation of Nodes, we take in Nodes here and
          *     produce the same String that Gecko produces.
          * @param {Node} aNode The Node to produce a representational String
@@ -1255,7 +1255,7 @@ TP.hc(
         /**
          * @method objectToString
          * @summary Returns a 'representational String' of anObject.
-         * @summary This function is mostly used when the object in question
+         * @description This function is mostly used when the object in question
          *     cannot respond to toString(). In IE, this happens quite often
          *     with DOM / XML objects because they're not real JavaScript
          *     objects, but ActiveX objects :-(. For most browsers this function
@@ -1380,7 +1380,7 @@ TP.hc(
          *     consistent in format to the builtin toString method which, for
          *     some reason known only to the implementers of IE, doesn't
          *     actually work on all objects.
-         * @summary This function is mostly used when the object in question
+         * @description This function is mostly used when the object in question
          *     cannot respond to toString(). In IE, this happens in particular
          *     with DOM / XML objects because they're not real JS objects, but
          *     ActiveX objects :-(.
@@ -1515,7 +1515,7 @@ TP.hc(
         /**
          * @method objectToString
          * @summary Returns a 'representational String' of anObject.
-         * @summary This function is mostly used when the object in question
+         * @description This function is mostly used when the object in question
          *     cannot respond to toString(). In IE, this happens quite often
          *     with DOM / XML objects because they're not real JavaScript
          *     objects, but ActiveX objects :-(. For Webkit based browsers this

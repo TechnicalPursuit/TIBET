@@ -173,7 +173,7 @@ function(aDate, aFormat) {
      * @method fromDate
      * @summary Returns an instance of String that encodes aDate in the format
      *     according to the format string provided.
-     * @summary This method is used as the standard output method for most
+     * @description This method is used as the standard output method for most
      *     date strings. It attempts to produce a valid ISO 8601 string from the
      *     date provided according to the instructions found in the format
      *     string.
@@ -263,7 +263,7 @@ function(aString) {
     /**
      * @method parse
      * @summary Return the Date defined by the string provided.
-     * @summary This routine is invoked by the Date type when running its
+     * @description This routine is invoked by the Date type when running its
      *     list of registered Date parsers in an attempt to parse an input
      *     string.
      *

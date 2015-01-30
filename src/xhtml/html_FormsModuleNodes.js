@@ -620,7 +620,7 @@ function(beforeText, afterText) {
 /**
  * @type {TP.html.input}
  * @summary INPUT tag. Generic input control.
- * @summary NOTE: for TIBET's purposes this particular node type serves as
+ * @description NOTE: for TIBET's purposes this particular node type serves as
  *     an abstract supertype from which a number of specialized types descend to
  *     allow custom behavior to be inherited.
  *
@@ -717,7 +717,7 @@ function(anObject, aRequest) {
      * @method fromDate
      * @summary Returns a formatted XML String with the supplied Date object as
      *     the content.
-     * @summary The supplied request can contain the following keys and
+     * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -782,7 +782,7 @@ function(anObject, aRequest) {
      * @method fromString
      * @summary Returns a formatted XML String with the supplied String object
      *     as the content.
-     * @summary The supplied request can contain the following keys and
+     * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -961,7 +961,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -977,7 +977,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -1110,7 +1110,7 @@ function(aValue, elementProperty) {
      *     is a part of (as matched by their 'name' attribute) matching the
      *     criteria if found. Note that this method does not clear existing
      *     selections when processing the value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each grouped element to determine which of
      *      them will be selected.
      *          'value'     ->  The value of the element (the default)
@@ -1632,7 +1632,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -1720,7 +1720,7 @@ function(aValue, elementProperty) {
      *     receiver is a part of (as matched by their 'name' attribute) matching
      *     the criteria if found. Note that this method does not clear existing
      *     selections when processing the value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each grouped element to determine which of
      *      them will be deselected.
      *          'value'     ->  The value of the element (the default)
@@ -2477,7 +2477,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -3378,7 +3378,7 @@ function(aValue, optionProperty) {
      * @summary Adds the selection matching the criteria if found. Note that
      *     this method does not clear existing selections when processing the
      *     value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each 'option' element to determine which
      *      of them will be selected.
      *          'value'     ->  The value of the option (the default)
@@ -3786,7 +3786,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -3805,7 +3805,7 @@ function(aSignal, anItemset) {
      *     provided (or one found in the receiver's content model). NOTE that
      *     this requires the select to have an option below it with a
      *     tibet:tag="xctrls:itemset" value.
-     * @summary The itemset tag is an XForms tag intended for use with truly
+     * @description The itemset tag is an XForms tag intended for use with truly
      *     dynamic list content. It's not the best choice for a set of data that
      *     won't change actively while the page is visible so it's not really
      *     the best choice for most select controls. Still, it's possible that
@@ -4021,7 +4021,7 @@ function(aValue, optionProperty) {
      * @summary Removes the selection matching the criteria if found. Note that
      *     this method does not clear existing selections when processing the
      *     value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each 'option' element to determine which
      *      of them will be deselected.
      *          'value'     ->  The value of the option (the default)
@@ -4472,7 +4472,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -4488,7 +4488,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -4526,7 +4526,7 @@ function(aValue) {
 /**
  * @type {TP.html.button}
  * @summary 'button' tag.
- * @summary NOT the same as <input type="button"> due largely to rendering
+ * @description NOT the same as <input type="button"> due largely to rendering
  *     differences. The attributes and behavior are largely similar, however.
  *     This tag type supports content between the opening/closing button tags
  *     unlike the input form of this control which has no closing tag and hence

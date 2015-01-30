@@ -227,7 +227,7 @@ function() {
      * @method getMembers
      * @summary Returns the members of the group based on the query on the
      *     receiver.
-     * @summary If no query is supplied, a default of './*' (all descendants
+     * @description If no query is supplied, a default of './*' (all descendants
      *     from the receiver down) is used. Also, if the receiver is not empty,
      *     it is used as the 'context' of the query. If the receiver is empty,
      *     then the document element of the document the receiver is in is used

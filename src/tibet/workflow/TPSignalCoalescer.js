@@ -13,7 +13,7 @@
  * @summary An object whose goal is to coalesce a set of signals into a single
  *     new signal. These operations form the cornerstone of using events as
  *     triggers in a Petri-net style workflow model.
- * @summary When designing with events it quickly becomes necessary to
+ * @description When designing with events it quickly becomes necessary to
  *     support ways of blending or coalescing a set of events into a new, more
  *     semantically-interesting event. Examples are points in workflow where an
  *     Or-Join or And-Join occur and a new signal defining the transition from
@@ -222,7 +222,7 @@ function(aSignal) {
      * @method handleSignal
      * @summary Responds to signal notifications which drive the receiver by
      *     updating the receiver's trigger observation counts.
-     * @summary To support the semantics that are implied by using null, or
+     * @description To support the semantics that are implied by using null, or
      *     TP.ANY for an origin in the observation phase this method will
      *     actually count an incoming signal both against a specific origin and
      *     against an undifferentiated origin, meaning that signals may be

@@ -31,7 +31,7 @@ function(params, windowContext) {
     /**
      * @method $getContextGlobals
      * @summary Returns an Array of global property names.
-     * @summary Computing this list is done by iterating over the context
+     * @description Computing this list is done by iterating over the context
      *     object provided and filtering the resulting keys against known window
      *     slots and "exclusions" that don't represent global functionality. In
      *     other words, a property on a window that's truly a property of a
@@ -494,7 +494,7 @@ function(aThis) {
     /**
      * @method bind
      * @summary Binds a function to a particular context...for good :).
-     * @summary Returns a function which ensures the receiver will be
+     * @description Returns a function which ensures the receiver will be
      *     executed in the context of aThis. This is relevant any time the
      *     function contains a 'this' reference and might be invoked via a
      *     non-binding syntax. This is common when attempting to pass a method
@@ -580,7 +580,7 @@ function(aFlag) {
      * @summary Combined setter/getter that allows functions used during
      *     iterations to be configured with the current loop index state, or
      *     checked for it inside your processing logic.
-     * @summary The TIBET iteration process sets loop index state on the
+     * @description The TIBET iteration process sets loop index state on the
      *     function being invoked so you can write more intelligent loops that
      *     can deal with edge cases. To do this the functions (which may be
      *     bound) drill down to set their values as low as possible in the
@@ -627,7 +627,7 @@ function(aFlag) {
      * @summary Combined setter/getter that allows functions used during
      *     iterations to be configured with the current loop index state, or
      *     checked for it inside your processing logic.
-     * @summary The TIBET iteration process sets loop index state on the
+     * @description The TIBET iteration process sets loop index state on the
      *     function being invoked so you can write more intelligent loops that
      *     can deal with edge cases. To do this the functions (which may be
      *     bound) drill down to set their values as low as possible in the
@@ -704,7 +704,7 @@ function() {
      * @method afterUnwind
      * @summary Causes the receiver to be executed when the stack has been
      *     completely 'unwound' (i.e. when we're back at the main event loop).
-     * @summary The provides a convenient way for the receiver to execute at
+     * @description The provides a convenient way for the receiver to execute at
      *     the 'top' of the event loop to allow for things like intermediate
      *     display to occur. If you want to pass arguments to the function
      *     itself, simply pass them as parameters to this method:
@@ -797,7 +797,7 @@ function(aDelay) {
     /**
      * @method fork
      * @summary Causes the receiver to be forked via a timeout or interval.
-     * @summary Keep in mind that JS engines are NOT threaded, so the real
+     * @description Keep in mind that JS engines are NOT threaded, so the real
      *     value in this model is being able to chain routines so that gaps
      *     occur between processing cycles such that display can occur. The
      *     TIBET test harness, and boot system are examples of chaining that
@@ -1121,7 +1121,7 @@ function() {
      * @method getMethodSourceHead
      * @summary Returns a String that is a representation of the 'source head'
      *     of the canonical TIBET way of adding a method to the system.
-     * @summary NOTE: this method produces a representation which *must* be
+     * @description NOTE: this method produces a representation which *must* be
      *     followed with a Function statement (i.e. 'function() {...}') and a
      *     closing ')'.
      * @returns {String} A representation of the 'source method head' of the
@@ -1622,7 +1622,7 @@ function() {
      * @summary Returns the 'signal name' of the receiver. If the receiver is
      *     an Object this is equivalent to the escaped type name. If the
      *     receiver is a String the content of the string is returned.
-     * @summary This method allows Objects to function as Signals within the
+     * @description This method allows Objects to function as Signals within the
      *     framework so that the individual signal types don't have to exist
      *     when the signal is thrown.
      * @returns {String} The signal name of the receiver.
@@ -1645,7 +1645,7 @@ function() {
      * @summary Returns the 'signal name' of the receiver. If the receiver is
      *     an Object this is equivalent to getTypeName(). If the receiver is a
      *     String the content of the string is returned.
-     * @summary This method allows Numbers to function as Signals within the
+     * @description This method allows Numbers to function as Signals within the
      *     framework so that the individual signal types don't have to exist
      *     when the signal is thrown.
      * @returns {String} The signal name of the receiver.
@@ -1667,7 +1667,7 @@ function() {
      * @summary Returns the 'signal name' of the receiver. If the receiver is
      *     an Object this is equivalent to getTypeName(). If the receiver is a
      *     String the content of the string is returned.
-     * @summary This method allows Strings to function as Signals within the
+     * @description This method allows Strings to function as Signals within the
      *     framework so that the individual signal types don't have to exist
      *     when the signal is thrown.
      * @returns {String} The signal name of the receiver.
@@ -1882,7 +1882,7 @@ function(anObject) {
      *     likely to represent a URI. The test is performed using the
      *     TP.regex.URI_LIKELY regular expression, which is *not* a strict
      *     attempt to parse the URI.
-     * @summary Scheme-specific differences inherent in URI definitions make
+     * @description Scheme-specific differences inherent in URI definitions make
      *     it impossible to do a reasonable job without using subtypes specific
      *     to each scheme (which TIBET supports but which it does not leverage
      *     for this method).
@@ -1933,7 +1933,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
      * @method trapRecursion
      * @summary Terminates TIBET execution and optionally alerts the current
      *     TIBET call stack when recursion is detected.
-     * @summary Nav4 in particular is 'unhappy' with recursion. In fact,
+     * @description Nav4 in particular is 'unhappy' with recursion. In fact,
      *     it'll crash every time. Using a binary chop on your source can often
      *     locate the offending line but can't help you understand how the
      *     recursion is occuring. In an OO system like TIBET the recursion loop
@@ -2138,7 +2138,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType) {
      * @summary Signals activity to registered observers. Any additional
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
-     * @summary This bootstrap version of this method packages the signals
+     * @description This bootstrap version of this method packages the signals
      *     into objects and queues them for processing by later implementations
      *     and logs the activity to the TIBET activity log. Once TIBET has
      *     loaded further a more robust version that performs the actual
@@ -2483,7 +2483,7 @@ function() {
     /**
      * @method fireNextSignal
      * @summary Activates (fires) the next signal in the signal queue.
-     * @summary This method is called on kernel finalization and by the
+     * @description This method is called on kernel finalization and by the
      *     signal call as it completes each signal, forming a kind of event loop
      *     which terminates when no pending signals exist.
      */
@@ -2551,7 +2551,7 @@ function(aName) {
     /**
      * @method $getInstPropertyScope
      * @summary Returns the 'scope' of the named property.
-     * @summary Note that this version of this method is invoked for
+     * @description Note that this version of this method is invoked for
      *     instances which are not types or prototypes, so this won't be used
      *     by TP.ObjectProto, TP.FunctionProto, or any of the prototypes created
      *     by TIBET.
@@ -2606,7 +2606,7 @@ function(aName) {
     /**
      * @method $getPrototypePropertyScope
      * @summary Returns the 'scope' of the named property.
-     * @summary Note that this version of this method is invoked for
+     * @description Note that this version of this method is invoked for
      *     objects which are used as prototypes.
      * @param {String} aName The property to check.
      * @returns {String} TP.INTRODUCED, TP.INHERITED, TP.OVERRIDDEN
@@ -2690,7 +2690,7 @@ function(aName) {
     /**
      * @method $getTypePropertyScope
      * @summary Returns the 'scope' of the named property.
-     * @summary Note that this version of this method is invoked for
+     * @description Note that this version of this method is invoked for
      *     function instances which are native types, meaning they are types
      *     created via native JavaScript semantics. These are special in that
      *     they have a unique inheritance chain they all inherit from the same
@@ -2739,7 +2739,7 @@ function(aName) {
     /**
      * @method $getTypePropertyScope
      * @summary Returns the 'scope' of the named property.
-     * @summary Note that this version of this method is invoked for TIBET
+     * @description Note that this version of this method is invoked for TIBET
      *     type objects only; the native types will invoke the version on
      *     TP.FunctionProto. These objects are TIBET type objects, meaning they
      *     have the strange duality of being both a type and an instance in
@@ -3517,7 +3517,7 @@ function(aFilterName) {
     /**
      * @method isEmpty
      * @summary Returns whether or not the receiver is considered 'empty'.
-     * @summary At this level, this uses the number of attributes the
+     * @description At this level, this uses the number of attributes the
      *     receiver contains unless a different filter is provided and compares
      *     the size of that to 0.
      * @param {String} aFilterName A get*Interface() filter.
@@ -3610,7 +3610,7 @@ function() {
      * @method $$isPair
      * @summary Returns true if the receiver can be thought of as an ordered
      *     pair.
-     * @summary For arrays an ordered pair is a two-element array, however
+     * @description For arrays an ordered pair is a two-element array, however
      *     an array whose 'key' i.e. the first() element is null will not be
      *     considered a valid pair.
      * @returns {Boolean} Whether or not the receiver is considered to be an
@@ -3629,7 +3629,7 @@ function(aNumber) {
      * @method first
      * @summary Returns the first N items from the receiver, where N defaults
      *     to 1.
-     * @summary This method only returns consistent results on ordered
+     * @description This method only returns consistent results on ordered
      *     collections, but it should always successfully return N items if
      *     they're available.
      * @param {Number} aNumber The number of items to return. When N is greater
@@ -3703,7 +3703,7 @@ function(aNumber) {
      * @method last
      * @summary Returns the last N items from the receiver, where N defaults to
      *     1.
-     * @summary This method only returns consistent results on ordered
+     * @description This method only returns consistent results on ordered
      *     collections, but it should always successfully return N items if
      *     they're available.
      * @param {Number} aNumber The number of items to return. When N is greater
@@ -3807,7 +3807,7 @@ function(aSelectFunction) {
      *     new container, while an array of the form ['a','b','c'] will return
      *     [['a','b'],['c',null]]. This is the inverse operation a flatten would
      *     have had on the results of a getPairs on a TP.lang.Hash.
-     * @summary To allow Arrays to serve as a form of interchange format
+     * @description To allow Arrays to serve as a form of interchange format
      *     between collections of various types they have special behavior when
      *     it comes to managing "items" and "pairs". In particular, although the
      *     array's "keys" could be thought of as its numeric indexes the
@@ -3926,7 +3926,7 @@ function(aSelectFunction) {
     /**
      * @method getKVPairs
      * @summary Returns the key/value pairs contained in the receiver.
-     * @summary For Arrays this returns an array of ordered pairs where each
+     * @description For Arrays this returns an array of ordered pairs where each
      *     ordered pair consists of a numerical index and the value at that
      *     index. This is a more "inspection string" format used specifically
      *     for dumping key/value data.
@@ -4233,7 +4233,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
      * @method $changed
      * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @summary If 'anAspect' is provided then the signal fired will be
+     * @description If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -4322,7 +4322,7 @@ TP.changed = function(anAspect, anAction, aDescription) {
      * @method changed
      * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @summary If 'anAspect' is provided then the signal fired will be
+     * @description If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -4371,7 +4371,7 @@ function(anAspect, anAction, aDescription) {
      * @method changed
      * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @summary If 'anAspect' is provided then the signal fired will be
+     * @description If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -4515,7 +4515,7 @@ function(aSelectFunction) {
      * @summary Returns a list of items from the collection, filtering them via
      *     aSelectFunction if provided. Note that you can use the same semantics
      *     as select for this call.
-     * @summary The term "items", as opposed to "keys", "values", or "pairs"
+     * @description The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
      *     however for TP.lang.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
@@ -4544,7 +4544,7 @@ function(aSelectFunction) {
      * @summary Returns a list of items from the collection, filtering them via
      *     aSelectFunction if provided. Note that you can use the same semantics
      *     as select for this call.
-     * @summary The term "items", as opposed to "keys", "values", or "pairs"
+     * @description The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
      *     however for TP.lang.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
@@ -4576,7 +4576,7 @@ function(aSelectFunction) {
      * @summary Returns a list of items from the collection, filtering them via
      *     aSelectFunction if provided. Note that you can use the same semantics
      *     as select for this call.
-     * @summary The term "items", as opposed to "keys", "values", or "pairs"
+     * @description The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
      *     however for TP.lang.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
@@ -5318,7 +5318,7 @@ function(that) {
     /**
      * @method equalTo
      * @summary Compare for equality.
-     * @summary TIBET's notion of equality is based on "equality of value"
+     * @description TIBET's notion of equality is based on "equality of value"
      *     such that two objects with matching key/value data are equal. This
      *     isn't true for JS. TIBET therefore uses string value as the
      *     comparison of choice and of course allows individual subtypes to
@@ -5512,7 +5512,7 @@ function(that) {
     /**
      * @method identicalTo
      * @summary Compare for identity.
-     * @summary The === symbol in JS isn't really defined as "identity"
+     * @description The === symbol in JS isn't really defined as "identity"
      *     it's defined as "strict equality" which apparently isn't the same in
      *     certain cases. For TIBET we follow the general form but rely on our
      *     own OIDs to test for identity.
@@ -5932,7 +5932,7 @@ function() {
      * @method asStartUpper
      * @summary Returns a new string with the initial character in upper case.
      *     No other transformation is performed.
-     * @summary Since all objects can actually be used as object indexes and
+     * @description Since all objects can actually be used as object indexes and
      *     we attempt to convert things into proper message formatting for
      *     get()/set() calls we try to avoid overhead here from the inferencing
      *     engine on things like numerical indexing for arrays etc.
@@ -6175,7 +6175,7 @@ function(attributeName) {
     /**
      * @method get
      * @summary Returns the value, if any, for the attribute provided.
-     * @summary This method is a convenient wrapper that will automatically
+     * @description This method is a convenient wrapper that will automatically
      *     look for getAttributeName(), getattributeName(), .attribute, etc. to
      *     return the value. Using this method provides a way to fully
      *     encapsulate an attribute access whether the receiver has implemented
@@ -6302,7 +6302,7 @@ function() {
     /**
      * @method get
      * @summary Returns the value, if any, for the attribute provided.
-     * @summary For the TIBET object in particular we do a little extra
+     * @description For the TIBET object in particular we do a little extra
      *     processing here when the property in question is undefined. In that
      *     case we also check for a registered object using the property name as
      *     the key. This allows TP.sys.get() to act as a synonym for
@@ -6333,7 +6333,7 @@ function(attributeName) {
     /**
      * @method get
      * @summary Returns the value, if any, for the attribute provided.
-     * @summary This method is a convenient wrapper that will automatically
+     * @description This method is a convenient wrapper that will automatically
      *     look for getAttributeName(), getattributeName(), .attribute, etc. to
      *     return the value. Using this method provides a way to fully
      *     encapsulate an attribute access whether the receiver has implemented
@@ -6610,7 +6610,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @method set
      * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
-     * @summary As with get('attr') this method is a convenient
+     * @description As with get('attr') this method is a convenient
      *     encapsulation wrapper that will look for setAttribute, setattribute,
      *     and this.attribute to determine how to proceed. No notification is
      *     provided by this method if either function is found, however if the
@@ -6705,7 +6705,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @method set
      * @summary Sets the value of the named attribute to the value provided. If
      *     no value is provided the value null is used.
-     * @summary As with get('attr') this method is a convenient
+     * @description As with get('attr') this method is a convenient
      *     encapsulation wrapper that will look for setAttribute, setattribute,
      *     and this.attribute to determine how to proceed. No notification is
      *     provided by this method if either function is found, however if the
@@ -6857,7 +6857,7 @@ function(callingContext) {
     /**
      * @method $launchDebugger
      * @summary Launches the TIBET debugger if one is installed.
-     * @summary This method is invoked by TP.sys.dnu as a last resort. When
+     * @description This method is invoked by TP.sys.dnu as a last resort. When
      *     TP.sys.hasDebugger() is true whatever implementation of
      *     TP.sys.runDebugger() is in effect will be called. When TIBET doesn't
      *     have a debugger installed the native debugger trigger will be invoked
@@ -7143,7 +7143,7 @@ function(aFunction, shouldReverse) {
      * @method perform
      * @summary Performs the function with each item of the receiver where an
      *     item is typically a key/value pair in array form.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7208,7 +7208,7 @@ function(aFunction, shouldReverse) {
      * @summary Performs the function with each element of the receiver. This
      *     is the core method in the iteration model, providing the basis for
      *     many of the other iteration aspects in TIBET.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7274,7 +7274,7 @@ function(aFunction, shouldReverse) {
      * @summary Performs the function from 0 to N times where N is the value of
      *     the receiver. Note that negative numbers won't cause an iteration to
      *     occur.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7332,7 +7332,7 @@ function(aFunction, shouldReverse) {
      * @summary Performs the function from 0 to N times where N is the length
      *     of the receiver. Each iteration receives one character from the
      *     string.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -7528,7 +7528,7 @@ function(aMethodName) {
      * @method detectInvoke
      * @summary Executes the named method on each item in the receiver,
      *     providing any remaining arguments as the arguments to the method.
-     * @summary The semantics of this call are subtly different from both
+     * @description The semantics of this call are subtly different from both
      *     detect() and apply(). In this case the first invocation to return a
      *     non-null value is considered successful and the loop terminates,
      *     returning the value from the first successful invoke call. Note that
@@ -7663,7 +7663,7 @@ function(aPattern, aFunction) {
      * @summary Returns an array containing items (potentially transformed by
      *     aFunction) whose TP.str(item) values matched the regular expression
      *     pattern provided.
-     * @summary This method works on the values of the collection, so a call
+     * @description This method works on the values of the collection, so a call
      *     to grep() on a Hash will not grep the keys, it will grep the values.
      *     Use grepKeys() to scan a collection by its keys/indexes.
      * @param {String|RegExp} aPattern A string or regular expression to test
@@ -7712,7 +7712,7 @@ function(aPattern, aFunction) {
      * @summary Returns an array containing items (potentially transformed by
      *     aFunction) whose TP.str(index) values matched the regular expression
      *     pattern provided.
-     * @summary The value being tested is the index (0-N for Arrays, key
+     * @description The value being tested is the index (0-N for Arrays, key
      *     value for Object/Hash).
      * @param {String|RegExp} aPattern A string or regular expression to test
      *     items with.
@@ -7855,7 +7855,7 @@ function(anAccumulator, aFunction) {
      * @summary Performs the function with each element of the receiver as the
      *     first argument and anAccumulator as the second argument. The current
      *     item index is provided as the third argument.
-     * @summary injectInto allows you to pass an "accumulator" to the
+     * @description injectInto allows you to pass an "accumulator" to the
      *     function along with each element of the receiver as it performs the
      *     function. This is useful when attempting to do an operation like
      *     summing all the values in an array where the added variable you pass
@@ -8053,7 +8053,7 @@ function(aFunction, terminateFunction) {
      * @method performUntil
      * @summary Performs the function with each element of the receiver until
      *     terminateFunction returns true.
-     * @summary performUntil can be used as an alternative to constructing
+     * @description performUntil can be used as an alternative to constructing
      *     repeat loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
@@ -8085,7 +8085,7 @@ function(aFunction, terminateFunction) {
      * @method performWhile
      * @summary Performs the function with each element of the receiver while
      *     terminateFunction returns true.
-     * @summary performWhile can be used as an alternative to constructing
+     * @description performWhile can be used as an alternative to constructing
      *     while loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
@@ -8232,7 +8232,7 @@ function() {
      * @summary Runs the functions contained in the receiver using the argument
      *     list provided, returning the first successful Function's return
      *     value. Essentially an iteration-based try/catch using blocks.
-     * @summary This is a function-specific operation, meaning that it's
+     * @description This is a function-specific operation, meaning that it's
      *     appropriate for arrays containing alternative functions you want to
      *     run. In this case, the return value of the first function which
      *     doesn't throw an exception will be used.
@@ -8275,7 +8275,7 @@ function(aFilter) {
      *     undefined values are removed. NOTE that the receiver is always
      *     modified in place. Use select() or reject() to produce a new array
      *     without values and simply provide a suitable filtering function.
-     * @summary In some sense using a filtering function seems like
+     * @description In some sense using a filtering function seems like
      *     something that should be done via the remove() function but that
      *     would complicate the semantics when you want to remove function
      *     instances as values in an array. Hence we allow an optional filtering
@@ -8419,7 +8419,7 @@ function(aMethodName) {
      * @method detectInvoke
      * @summary Executes the named method on each item in the receiver,
      *     providing any remaining arguments as the arguments to the method.
-     * @summary The semantics of this call are subtly different from both
+     * @description The semantics of this call are subtly different from both
      *     detect() and apply(). In this case the first invocation to return a
      *     non-null value is considered successful and the loop terminates,
      *     returning the value from the first successful invoke call. Note that
@@ -8459,7 +8459,7 @@ function(aThis, anArgArray, whenError) {
      * @summary Runs the functions contained in the receiver using the argument
      *     list provided. An easy way to run a list of functions as if they were
      *     a single function.
-     * @summary This operation is used to allow a list of functions to
+     * @description This operation is used to allow a list of functions to
      *     operate somewhat polymorphically with a single function for purposes
      *     of execution. Because of that semantic goal we return the value of
      *     the last function's invocation. This means an array of one function,
@@ -8614,7 +8614,7 @@ function(aFunction, anObject) {
      *     a global regular expression, otherwise the replacement function will
      *     only be called once for the first match. Note that this iteration
      *     model cannot be reversed.
-     * @summary A variation on String.replace where the function is used
+     * @description A variation on String.replace where the function is used
      *     within an iterator so it can be controlled via normal TIBET iteration
      *     logic. As with String.replace the function will be passed at least 3
      *     arguments, the match string, the index of the match, and the string
@@ -8804,7 +8804,7 @@ function(anItem, aTest) {
     /**
      * @method contains
      * @summary Returns true if the receiver contains the item provided.
-     * @summary The test provided allows the caller to define whether
+     * @description The test provided allows the caller to define whether
      *     identity (===) or equality (==) are used for comparisons. NOTE: this
      *     method makes use of the TP.equal() function of TIBET for equality
      *     comparisons so that arrays, objects, dates, and functions with
@@ -8846,7 +8846,7 @@ function(aValue, aTest) {
     /**
      * @method contains
      * @summary Returns true if the receiver contains the value provided.
-     * @summary The test provided allows the caller to define whether
+     * @description The test provided allows the caller to define whether
      *     identity (===) or equality (==) are used for comparisons. NOTE: this
      *     method makes use of the TP.equal() function of TIBET for equality
      *     comparisons so that arrays, objects, dates, and functions with

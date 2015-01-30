@@ -120,7 +120,7 @@ function(aStanza) {
      * @summary Returns the signal origin to use when signaling arrival of
      *     packets of this type. Presence stanzas signal presence change signal
      *     from the corresponding JID.
-     * @summary Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
+     * @description Since this TP.xmpp.Node type *is* a stanza, 'aStanza' will
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalOrigin() calls as the stanza. This method should return
      *     TP.NONE if it does not want the XMPP connection to send a signal on

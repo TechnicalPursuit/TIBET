@@ -137,7 +137,7 @@ function(aDocument) {
     /**
      * @method documentGetDoctypeInfo
      * @summary Returns the Document Type info for the supplied document.
-     * @summary This function returns one of two values, depending on the
+     * @description This function returns one of two values, depending on the
      *     browser it is running in and whether or not the application author
      *     has placed a document type declaration at the top of the document. 1)
      *     If the document has a document type declaration and that information
@@ -200,7 +200,7 @@ function(aDocument) {
     /**
      * @method documentGetMIMEType
      * @summary Returns the MIME type for the supplied document.
-     * @summary This function returns one of two values, depending on the
+     * @description This function returns one of two values, depending on the
      *     browser it is running in and whether or not the application author
      *     has placed a 'meta' element that has a 'Content-Type' attribute
      *     defined in it. 1) If the document has a 'meta' element that has a
@@ -275,7 +275,7 @@ function(aNode, namespaceURI) {
      *     to be a Document or Element) *and returns a new Node* (since it is
      *     impossible to actually set the default namespace on an existing
      *     Element).
-     * @summary If the supplied Node already has a default namespace, this
+     * @description If the supplied Node already has a default namespace, this
      *     method will *not* reset it.
      * @param {Node} aNode The Node to add the default namespace to.
      * @returns {Node} A new Node (Document or Element depending on what was

@@ -81,7 +81,7 @@ function(controlParams, stepParams) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @summary Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -218,7 +218,7 @@ function(controlParams, stepParams) {
      * @method constructJob
      * @summary Constructs a TP.core.Job to execute the receiving transition
      *     type.
-     * @summary Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.lang.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
@@ -398,7 +398,7 @@ function(job, params) {
      * @method configure
      * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -524,7 +524,7 @@ function(job, params) {
      * @method step
      * @summary Changes some aspect of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -620,7 +620,7 @@ function(job, params) {
      * @method configure
      * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -766,7 +766,7 @@ function(job, params) {
      * @method configure
      * @summary Configures the transition, based on what this particular type
      *     of transition is trying to accomplish.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
@@ -913,7 +913,7 @@ function(job, params) {
      * @method step
      * @summary Changes some aspect of the target element given when this
      *     transition was executed via the 'start()' method.
-     * @summary Note that the 'job' parameter supplied here points to the
+     * @description Note that the 'job' parameter supplied here points to the
      *     same instance as our 'job' instance variable, but this method is used
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this

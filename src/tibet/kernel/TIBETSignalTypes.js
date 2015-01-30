@@ -20,7 +20,7 @@
  * @summary A TP.core.Monitor is an object whose responsibility is to
  *     essentially poll one or more target objects, testing them for some
  *     condition and reporting via signal when the condition is true.
- * @summary There are a variety of things in a browser which we'd like to be
+ * @description There are a variety of things in a browser which we'd like to be
  *     able to monitor such as style changes or similar aspects which don't have
  *     native events associated with them (yet). In these cases you can use a
  *     TP.core.Monitor to observe the object(s) and test them for a condition.
@@ -903,7 +903,7 @@ TP.sig.DOMErrorIndicationSignal.defineSubtype('DOMServiceError');
  * @type {TP.sig.DOMUISignal}
  * @summary TP.sig.DOMUISignal is the supertype for all DOM-related UI signals
  *     in the TIBET framework.
- * @summary TP.sig.DOMUISignal and its subtypes handle UI signals thrown
+ * @description TP.sig.DOMUISignal and its subtypes handle UI signals thrown
  *     from pages and are basically types that map a browser's native events
  *     into TIBET signal types.
  *
@@ -1073,7 +1073,7 @@ function(aPayload, noEvent) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @summary For a TP.sig.DOMUISignal the typical payload is a native
+     * @description For a TP.sig.DOMUISignal the typical payload is a native
      *     event object or an array whose first item is the native event. You
      *     can also provide a TP.lang.Hash as the payload and it will be treated
      *     as a container for the event properties normally associated with an
@@ -1245,7 +1245,7 @@ function() {
     /**
      * @method getMetaKey
      * @summary Returns the meta key setting at the time of the event.
-     * @summary Internet Explorer does not support a 'meta key' setting,
+     * @description Internet Explorer does not support a 'meta key' setting,
      *     therefore this method will always return false in that browser.
      * @returns {Boolean} Returns true if the meta key was pressed, false if it
      *     wasn't.
@@ -2253,7 +2253,7 @@ function() {
      * @method getSignalNames
      * @summary Returns the 'signal names' to use when dispatching signals of
      *     this type.
-     * @summary TP.sig.DOMKeySignals have a bit of complexity when providing
+     * @description TP.sig.DOMKeySignals have a bit of complexity when providing
      * their signal names. First, there is the 'virtual key' signal name (i.e.
      *     'TP.sig.DOM_b_Up', which is the default value. Next, there is
      *     (sometimes) a 'Unicode literal' signal name (i.e.
@@ -2318,7 +2318,7 @@ function() {
      * @method getVirtualKey
      * @summary Returns the normalized virtual key name for the receiver's
      *     event.
-     * @summary For example, a TP.sig.DOMKeySignal with a keyCode of 13 will
+     * @description For example, a TP.sig.DOMKeySignal with a keyCode of 13 will
      *     produce the identifier 'Enter'.
      * @returns {String} The virtual key name, such as 'Enter'.
      */
@@ -2362,7 +2362,7 @@ function() {
      * @method getSignalNames
      * @summary Returns the 'signal names' to use when dispatching signals of
      *     this type.
-     * @summary Normally, DOMKeySignals return an Array of signal names that
+     * @description Normally, DOMKeySignals return an Array of signal names that
      *     include both their signal name (which will correspond to a particular
      *     key) and the type name. But we want DOMKeyModifierChange signals to
      *     only return their type name so that observers have to observe this

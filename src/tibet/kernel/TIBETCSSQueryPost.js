@@ -86,7 +86,7 @@ function(aNode, aSelector, autoCollapse) {
      * @method nodeEvaluateCSS
      * @summary Returns any elements matching the selector given in the
      *     supplied selector String.
-     * @summary Note that if an 'ID' selector query (where the first
+     * @description Note that if an 'ID' selector query (where the first
      *     character is '#') is handed to this method, it will automatically
      *     collapse the results whether the autoCollapse flag is set or not.
      * @param {Node|Window} aNode The 'context node' for the evaluation (or a
@@ -190,7 +190,7 @@ function(aSelector) {
      * @summary Returns true if the selector provided is 'native' (i.e.
      *     supported in a built-in fashion) in the currently executing browser
      *     environment.
-     * @summary Note that this method will return true as long as the
+     * @description Note that this method will return true as long as the
      *     selector is a natively supported selector in the current browser
      *     environment. This means that selectors that are only supported for
      *     the current browser (i.e. those prefixed with -moz/-ms/-webkit) will
@@ -233,7 +233,7 @@ function(aWindow, queryStr) {
      * @method windowMatchesCSSMedia
      * @summary Returns true if the supplied 'CSS media query' matches the
      *     supplied Window's CSS environment.
-     * @summary Note that this method will return null if the CSSOM
+     * @description Note that this method will return null if the CSSOM
      *     'matchMedia' call is not supported or it doesn't return a valid
      *     result for the supplied query.
      * @param {Window} aWindow The window to execute the media query against.
@@ -276,7 +276,7 @@ function(aWindow, queryStr, watchFunction) {
      * @method windowQueryCSSMedia
      * @summary Returns a valid media query list if the supplied 'CSS media
      *     query' matches the supplied Window's CSS environment.
-     * @summary Note that this method will return null if the CSSOM
+     * @description Note that this method will return null if the CSSOM
      *     'matchMedia' call is not supported or it doesn't return a valid
      *     result for the supplied query.
      * @param {Window} aWindow The window to execute the media query against.

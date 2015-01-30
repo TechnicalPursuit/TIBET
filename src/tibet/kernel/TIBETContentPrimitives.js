@@ -59,7 +59,7 @@ function() {
     /**
      * @method getJSONPIFrame
      * @summary Retrieves the iframe used to fetch and/or parse JSON results.
-     * @summary The iframe returned by this routine is created (once) if it
+     * @description The iframe returned by this routine is created (once) if it
      *     doesn't exist. It is used by the jsonpCall() to load the actual
      *     results and then scrub it through a serialize/parse cycle to try to
      *     avoid malformed/malicious JSON data.
@@ -134,7 +134,7 @@ function(aString, smartConversion, shouldReport) {
      * @method json2js
      * @summary Transforms a JSON-formatted string into the equivalent
      *     JavaScript objects.
-     * @summary The TIBET version of this process extends the standard JSON
+     * @description The TIBET version of this process extends the standard JSON
      *     processing to allow strings in ISO8601 format
      *     (YYYY-MM-DDTHH:MM:SS[Z|+/-HH:MM]) to be reconstituted as Date
      *     instances. For more information on the JSON format see:
@@ -245,7 +245,7 @@ function(anObject) {
     /**
      * @method js2json
      * @summary Transforms an object into a representation in a JSON string.
-     * @summary Since JSON is a limited subset of JavaScript this
+     * @description Since JSON is a limited subset of JavaScript this
      *     representation may not be a complete copy of the object (in
      *     particular, since these primitives use the open source JSON
      *     serializer found at: http://www.json.org, Function objects will not
@@ -345,7 +345,7 @@ function(aNode) {
      * @method xml2js
      * @summary Transforms an XML node into a roughly equivalent JavaScript
      *     object.
-     * @summary If the XML is in XMLRPC format this call attempts to
+     * @description If the XML is in XMLRPC format this call attempts to
      *      reconstitute an Object from that, otherwise the node is processed
      *      into JsonML.
      * @param {Node} aNode An XML node.
@@ -397,7 +397,7 @@ function(aString) {
     /**
      * @method json2xml
      * @summary Transforms a JSON-formatted string into roughly equivalent XML.
-     * @summary The transformation is in two steps, first to JS and then
+     * @description The transformation is in two steps, first to JS and then
      *     into simple XML where keys are element names and values are content
      *     text nodes.
      * @param {String} aString A JSON-formatted string.
@@ -427,7 +427,7 @@ function(aNode) {
     /**
      * @method xml2json
      * @summary Transforms an XML node into a roughly equivalent JSON string.
-     * @summary If the XML is in XMLRPC format this transformation is very
+     * @description If the XML is in XMLRPC format this transformation is very
      *     close to lossless, otherwise the node is processed according to the
      *     rules found in XForms which focus on non-empty element nodes and
      *     their text content.
@@ -565,7 +565,7 @@ function(aString, tab) {
     /**
      * @method json2xmlrpc
      * @summary Transforms a JSON-formatted string into roughly equivalent XML.
-     * @summary The transformation is in two steps, first to JS and then
+     * @description The transformation is in two steps, first to JS and then
      *     into simple XML where keys are element names and values are content
      *     text nodes.
      * @param {String} aString A JSON-formatted string.
@@ -597,7 +597,7 @@ shouldRaise) {
      *     the TIBET frame is used.
      *
      *
-     * @summary !!!USE THIS CALL ONLY WITH SITES YOU CAN EXPLICITLY TRUST!!!
+     * @description !!!USE THIS CALL ONLY WITH SITES YOU CAN EXPLICITLY TRUST!!!
      *
      *     The code in script files referenced in this fashion is run
      *     automatically by the browser without any checking for cross-domain

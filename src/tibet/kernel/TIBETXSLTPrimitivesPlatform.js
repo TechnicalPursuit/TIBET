@@ -154,7 +154,7 @@ TP.hc(
          * @method $documentEscapeContent
          * @summary Escapes the content under the all of the tags named in the
          *     tags array in the supplied document with CDATA sections.
-         * @summary This works around a bug in the Mozilla XSLT engine,
+         * @description This works around a bug in the Mozilla XSLT engine,
          *     Transformiix, that assumes that escaping content is the same as
          *     placing it in CDATA sections, which its not - especially if its
          *     the output of (X)HTML 'style' or 'script'.
@@ -218,7 +218,7 @@ TP.hc(
          * @method $documentEscapeContent
          * @summary Escapes the content under the all of the tags named in the
          *     tags array in the supplied document with CDATA sections.
-         * @summary This works around a bug in the Mozilla XSLT engine,
+         * @description This works around a bug in the Mozilla XSLT engine,
          *     Transformiix, that assumes that escaping content is the same as
          *     placing it in CDATA sections, which its not - especially if its
          *     the output of (X)HTML 'style' or 'script'. TODO: It is unknown
@@ -284,7 +284,7 @@ TP.hc(
          * @summary Encodes namespace attributes from their original form to a
          *     form that will survive Mozilla's XSLT transformation. They will
          *     be restored to their original form by the 'post' routine below.
-         * @summary Unfortunately, Mozilla's XSLT processor does not
+         * @description Unfortunately, Mozilla's XSLT processor does not
          *     currently support namespace nodes. Even worse, it actually
          *     removes 'xmlns' attributes from transformed Nodes (instead of
          *     just leaving them alone).
@@ -352,7 +352,7 @@ TP.hc(
          * @summary Encodes namespace attributes from their original form to a
          *     form that will survive Mozilla's XSLT transformation. They will
          *     be restored to their original form by the 'post' routine below.
-         * @summary Unfortunately, Mozilla's XSLT processor does not
+         * @description Unfortunately, Mozilla's XSLT processor does not
          *     currently support namespace nodes. Even worse, it actually
          *     removes 'xmlns' attributes from transformed Nodes (instead of
          *     just leaving them alone). TODO: It is unknown whether Webkit
@@ -517,7 +517,7 @@ TP.hc(
          * @method $fixupNamespacedAttributesPost
          * @summary Restores namespace attributes to their original form from
          *     having been processed by the 'pre' routine above.
-         * @summary TODO: It is unknown whether Webkit actually needs to do
+         * @description TODO: It is unknown whether Webkit actually needs to do
          *     this - it needs testing.
          * @param {Node} inputNode The input data element.
          * @param {XMLDocument} resultDoc The result XML document after
