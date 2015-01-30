@@ -594,14 +594,15 @@ function(target, options) {
 
     TP.sys.setcfg('test.running', true);
 
-    return promise.then(function(obj) {
-        TP.sys.shouldThrowExceptions(shouldThrowSetting);
-        summarize();
-    },
-    function(err) {
-        TP.sys.shouldThrowExceptions(shouldThrowSetting);
-        summarize();
-    });
+    return promise.then(
+            function(obj) {
+                TP.sys.shouldThrowExceptions(shouldThrowSetting);
+                summarize();
+            },
+            function(err) {
+                TP.sys.shouldThrowExceptions(shouldThrowSetting);
+                summarize();
+            });
     /* eslint-enable handle-callback-err */
 });
 
