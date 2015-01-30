@@ -106,13 +106,17 @@ function(anID, regOnly, nodeContext) {
         //  registration checks only (reg = true means fault = false)
         if (TP.isValid(inst = TP.sys.getTypeByName(id, !reg))) {
             return inst;
-        } else if (TP.regex.VALID_ROOTNAME.test(id)) {
+        } else {
             parts = id.split('.');
-            obj = parts[0] === 'TP' ? TP : APP;
+            obj = top[parts[0]];
             parts.shift();
             while (TP.isValid(obj) && parts.length) {
                 key = parts.shift();
-                obj = obj[key];
+                if (TP.canInvoke(obj, 'get')) {
+                    obj = obj.get(key);
+                } else {
+                    obj = obj[key];
+                }
             }
 
             if (TP.isValid(obj)) {
