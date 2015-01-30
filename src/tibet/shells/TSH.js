@@ -2717,7 +2717,7 @@ function(aRequest) {
         }
     }
 
-    aRequest.complete(url);
+    aRequest.complete(url.getLocation());
 
     return;
 });
@@ -2854,7 +2854,7 @@ function(aRequest) {
         }
     }
 
-    aRequest.complete(url);
+    aRequest.complete(url.getLocation());
 
     return;
 });
