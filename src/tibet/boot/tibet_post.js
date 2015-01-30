@@ -1895,10 +1895,6 @@ TP.boot.$uriExpandPath = function(aPath) {
                     value = value.slice(1);
                 }
 
-                if (value.lastIndexOf('/') === (value.length - 1)) {
-                    value = value.slice(0, -1);
-                }
-
                 //  patch the original path for testing
                 path = aPath.replace('~' + variable, value);
             } else {
@@ -1909,6 +1905,10 @@ TP.boot.$uriExpandPath = function(aPath) {
                 }
             }
         }
+    }
+
+    if (path.lastIndexOf('/') === (path.length - 1)) {
+        path = path.slice(0, -1);
     }
 
     //  variable expansions can sometimes create additional ~ paths
