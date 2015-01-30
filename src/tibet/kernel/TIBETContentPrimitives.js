@@ -148,7 +148,7 @@ function(aString, smartConversion, shouldReport) {
      *     construct TP.lang.Hashes instead of Objects. This defaults to true.
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
      * @returns {Object} A JavaScript object containing the JSON data.
-     * @raise InvalidJSON
+     * @exception InvalidJSON
      */
 
     var text,
@@ -252,7 +252,7 @@ function(anObject) {
      *     be serialized).
      * @param {Object} anObject The object to transform.
      * @returns {String} A JavaScript String containing the JSON data.
-     * @raise TP.sig.JSONSerializationException
+     * @exception TP.sig.JSONSerializationException
      */
 
     var str,

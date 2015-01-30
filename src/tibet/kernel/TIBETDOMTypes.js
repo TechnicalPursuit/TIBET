@@ -5774,9 +5774,9 @@ function(attrName, attrValue) {
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The optional attribute value to check.
      * @returns {TP.core.ElementNode} An element ancestor of the node.
-     * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
+     * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -5801,9 +5801,9 @@ function(aTagName, aNamespaceURI) {
      * @param {String} aTagName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @returns {TP.core.ElementNode} An element ancestor of the node.
-     * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
+     * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied tag name is empty.
+     * @exception TP.sig.InvalidName Raised when the supplied tag name is empty.
      */
 
     return TP.wrap(TP.nodeGetFirstAncestorByTagName(

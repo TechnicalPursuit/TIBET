@@ -45,7 +45,7 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI, TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI, TP.sig.InvalidRequest
      */
 
     var request,

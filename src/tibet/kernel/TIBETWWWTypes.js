@@ -2735,7 +2735,7 @@ function(aURI, aRequest, logError) {
      * @param {Boolean} logError Whether or not this call logs errors if the
      *     data cannot be retrieved.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,
@@ -2775,7 +2775,7 @@ function(aURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,
@@ -2818,7 +2818,7 @@ function(aURI, aRequest) {
      * @param {Boolean} logError Whether or not this call logs errors if the
      *     data cannot be retrieved.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,

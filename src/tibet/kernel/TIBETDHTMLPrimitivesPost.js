@@ -7318,7 +7318,7 @@ function(aNode, startIndex, endIndex) {
      *     at or TP.FIRST to start at the first child node.
      * @param {Number} endIndex The end index to stop awakening child nodes at
      *     or TP.LAST to stop at the last child node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 

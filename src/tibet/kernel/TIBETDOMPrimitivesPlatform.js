@@ -43,9 +43,9 @@ TP.hc(
          *          <samp>foo</samp>
          *     </code>
          * @returns {Element} The owner element of the supplied attribute node.
-         * @raise TP.sig.InvalidAttributeNode Raised when a non-attribute Node
+         * @exception TP.sig.InvalidAttributeNode Raised when a non-attribute Node
          *     has been supplied to the method.
-         * @raise TP.sig.InvalidXMLDocument Raised when the supplied attribute
+         * @exception TP.sig.InvalidXMLDocument Raised when the supplied attribute
          *     Node is not part of an XML document.
          */
 
@@ -74,9 +74,9 @@ TP.hc(
          *          <samp>foo</samp>
          *     </code>
          * @returns {Element} The owner element of the supplied attribute node.
-         * @raise TP.sig.InvalidAttributeNode Raised when a non-attribute Node
+         * @exception TP.sig.InvalidAttributeNode Raised when a non-attribute Node
          *     has been supplied to the method.
-         * @raise TP.sig.InvalidXMLDocument Raised when the supplied attribute
+         * @exception TP.sig.InvalidXMLDocument Raised when the supplied attribute
          *     Node is not part of an XML document.
          */
 
@@ -130,7 +130,7 @@ TP.hc(
          *          <samp><foo><bar/></foo></samp>
          *     </code>
          * @returns {XMLDocument} The XML document parsed from the string.
-         * @raise TP.sig.DOMParseException Raised if the supplied String cannot
+         * @exception TP.sig.DOMParseException Raised if the supplied String cannot
          *     be parsed into a proper XML DOM construct and the shouldReport
          *     flag is true.
          */
@@ -267,7 +267,7 @@ TP.hc(
          *          <samp><foo><bar/></foo></samp>
          *     </code>
          * @returns {XMLDocument} The XML document parsed from the string.
-         * @raise TP.sig.DOMParseException Raised if the supplied String cannot
+         * @exception TP.sig.DOMParseException Raised if the supplied String cannot
          *     be parsed into a proper XML DOM construct and the shouldReport
          *     flag is true.
          */
@@ -387,7 +387,7 @@ TP.hc(
          *          <samp><foo><bar/></foo></samp>
          *     </code>
          * @returns {XMLDocument} The XML document parsed from the string.
-         * @raise TP.sig.DOMParseException Raised if the supplied String cannot
+         * @exception TP.sig.DOMParseException Raised if the supplied String cannot
          *     be parsed into a proper XML DOM construct and the shouldReport
          *     flag is true.
          */
@@ -848,11 +848,11 @@ TP.hc(
          *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
          *         bar:baz="bazify"/&gt;</samp>
          *     </code>
-         * @raise TP.sig.InvalidElement Raised when an invalid element is
+         * @exception TP.sig.InvalidElement Raised when an invalid element is
          *     provided to the method.
-         * @raise TP.sig.InvalidString Raised when a null or empty attribute
+         * @exception TP.sig.InvalidString Raised when a null or empty attribute
          *     name is provided to the method.
-         * @raise TP.sig.InvalidParameter Raised when a null or undefined
+         * @exception TP.sig.InvalidParameter Raised when a null or undefined
          *     attribute value is provided to the method.
          */
 
@@ -909,11 +909,11 @@ TP.hc(
          *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
          *         bar:baz="bazify"/&gt;</samp>
          *     </code>
-         * @raise TP.sig.InvalidElement Raised when an invalid element is
+         * @exception TP.sig.InvalidElement Raised when an invalid element is
          *     provided to the method.
-         * @raise TP.sig.InvalidString Raised when a null or empty attribute
+         * @exception TP.sig.InvalidString Raised when a null or empty attribute
          *     name is provided to the method.
-         * @raise TP.sig.InvalidParameter Raised when a null or undefined
+         * @exception TP.sig.InvalidParameter Raised when a null or undefined
          *     attribute value is provided to the method.
          */
 
@@ -1120,11 +1120,11 @@ TP.hc(
          *     </code>
          * @returns {String} The String produced by 'rendering' the supplied
          *     node.
-         * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+         * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
          *     the method.
-         * @raise TP.sig.SerializationException Raised when the serialization
+         * @exception TP.sig.SerializationException Raised when the serialization
          *     machinery encounters an error serializing the node.
-         * @raise TP.sig.UnsupportedOperation Raised when a Node is supplied
+         * @exception TP.sig.UnsupportedOperation Raised when a Node is supplied
          *     that this method doesn't know how to generate a string
          *     representation of. These include Nodes of type:
          *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
@@ -1405,11 +1405,11 @@ TP.hc(
          *     </code>
          * @returns {String} The String produced by 'rendering' the supplied
          *     node.
-         * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+         * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
          *     the method.
-         * @raise TP.sig.SerializationException Raised when the serialization
+         * @exception TP.sig.SerializationException Raised when the serialization
          *     machinery encounters an error serializing the node.
-         * @raise TP.sig.UnsupportedOperation Raised when a Node is supplied
+         * @exception TP.sig.UnsupportedOperation Raised when a Node is supplied
          *     that this method doesn't know how to generate a string
          *     representation of. These include Nodes of type:
          *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
@@ -1684,11 +1684,11 @@ TP.hc(
          *     </code>
          * @returns {String} The String produced by 'rendering' the supplied
          *     node.
-         * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+         * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
          *     the method.
-         * @raise TP.sig.SerializationException Raised when the serialization
+         * @exception TP.sig.SerializationException Raised when the serialization
          *     machinery encounters an error serializing the node.
-         * @raise TP.sig.UnsupportedOperation Raised when a Node is supplied
+         * @exception TP.sig.UnsupportedOperation Raised when a Node is supplied
          *     that this method doesn't know how to generate a string
          *     representation of. These include Nodes of type:
          *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
@@ -1904,7 +1904,7 @@ TP.hc(
          *          <samp>&lt;bar&gt;&lt;baz&gt;&lt;/baz&gt;&lt;/bar&gt;</samp>
          *     </code>
          * @returns {Node} The resulting clone of aNode.
-         * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+         * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
          *     the method.
          */
 
@@ -2000,7 +2000,7 @@ TP.hc(
          *          <samp>&lt;bar&gt;&lt;baz&gt;&lt;/baz&gt;&lt;/bar&gt;</samp>
          *     </code>
          * @returns {Node} The resulting clone of aNode.
-         * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+         * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
          *     the method.
          */
 

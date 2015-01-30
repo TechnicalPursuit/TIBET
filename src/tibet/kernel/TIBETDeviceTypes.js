@@ -710,7 +710,7 @@ function() {
     /**
      * @method loadKeymap
      * @summary Loads the XML keyboard map for the receiving keyboard type.
-     * @raise TP.sig.InvalidKeymap When the XML keyboard map file can't be
+     * @exception TP.sig.InvalidKeymap When the XML keyboard map file can't be
      *     loaded.
      */
 
@@ -1666,7 +1666,7 @@ function(keyNameOrGlyph) {
      * @param {String} keyNameOrGlyph The name or glyph of the key to look up.
      *     If a key name, this would be something like 'Backspace'. If a key
      *     glyph, it would be something like 'D'.
-     * @raise TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The virtual key code, or -1 when not found.
      */
 

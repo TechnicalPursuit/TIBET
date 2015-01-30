@@ -121,7 +121,7 @@ function(anElement) {
      * @param {Element} anElement The element node to retrieve the URI
      *     controller for.
      * @returns {TP.core.URIController}
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -177,9 +177,9 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
      *     computing the full URI and prepended back onto the result value.
      * @param {String} aSuffix An optional suffix that should be stripped before
      *     computing the full URI and appended back onto the result value.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidParameter Raised when a null value is supplied for
+     * @exception TP.sig.InvalidParameter Raised when a null value is supplied for
      *     the uriAttrNames parameter.
      */
 
@@ -338,9 +338,9 @@ function(aNode, otherNode, aPosition) {
      *     </code>
      * @returns {Boolean} Whether or not otherNode is positioned relative to
      *     aNode according to the supplied position.
-     * @raise TP.sig.InvalidNode Raised when either node is invalid as provided
+     * @exception TP.sig.InvalidNode Raised when either node is invalid as provided
      *     to the method.
-     * @raise TP.sig.InvalidParameter Raised when an invalid position is
+     * @exception TP.sig.InvalidParameter Raised when an invalid position is
      *     provided to the method.
      */
 
@@ -388,7 +388,7 @@ function(aNode) {
      * @param {Node} aNode The node to get the 'best', 'most representative'
      *     node of.
      * @returns {Node} The 'best' node for the node provided.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 

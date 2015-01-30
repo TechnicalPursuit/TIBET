@@ -492,7 +492,7 @@ function(aScheme) {
      * @summary Registers the receiving type for handling construction of URI
      *     instances for a particular scheme.
      * @param {String} aScheme A URI scheme such as http, file, etc.
-     * @raise TP.sig.InvalidParameter When the scheme isn't a string.
+     * @exception TP.sig.InvalidParameter When the scheme isn't a string.
      */
 
     var theScheme;
@@ -4079,7 +4079,7 @@ function(aNID) {
      * @param {String} aNID A URN namespace ID such as 'oid', or 'tibet'.
      * @param {TP.lang.RootObject} aHandler A type capable of handling requests
      *     for URNs for the namespace.
-     * @raise TP.sig.InvalidParameter When the scheme isn't a string.
+     * @exception TP.sig.InvalidParameter When the scheme isn't a string.
      */
 
     var theNID;

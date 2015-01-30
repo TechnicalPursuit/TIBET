@@ -69,7 +69,7 @@ function(aRequest) {
      * @param {TP.sig.JSONRequest} aRequest The TP.sig.JSONRequest request
      *     object to take the request parameters from.
      * @returns {TP.core.JSONService} The receiver.
-     * @raise TP.sig.InvalidURI, TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI, TP.sig.InvalidRequest
      */
 
     var request,

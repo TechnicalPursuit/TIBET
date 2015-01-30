@@ -4150,7 +4150,6 @@ function(target, name, value, track, owner) {
      * @param {String} name The attribute name.
      * @param {Object} value The attribute value or a property descriptor
      *     object.
-     * @param {Object} value The attribute value.
      * @param {String} track The attribute track (Inst, Type, Local).
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined attribute value.

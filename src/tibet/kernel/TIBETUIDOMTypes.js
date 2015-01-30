@@ -57,7 +57,7 @@ function(aDocument) {
      *     the stylesheet is already present, this method will *not* add another
      *     instance.
      * @param {The} aDocument document to add the stylesheet to.
-     * @raise TP.sig.InvalidDocument Raised when an invalid Document is provided
+     * @exception TP.sig.InvalidDocument Raised when an invalid Document is provided
      *     to the method.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -822,7 +822,7 @@ function() {
     /**
      * @method loadKeyBindings
      * @summary Loads the XML keyboard bindings for this type.
-     * @raise TP.sig.InvalidKeymap When the XML key bindings file can't be
+     * @exception TP.sig.InvalidKeymap When the XML key bindings file can't be
      *     loaded.
      * @returns {TP.core.UIElementNode} The receiver.
      */

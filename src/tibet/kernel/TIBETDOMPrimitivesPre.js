@@ -116,7 +116,7 @@ function(aDocument) {
      *          <samp>[object DocumentFragment]</samp>
      *     </code>
      * @returns {DocumentFragment} A valid DOM DocumentFragment.
-     * @raise TP.sig.InvalidDocument Raised when an invalid Document is provided
+     * @exception TP.sig.InvalidDocument Raised when an invalid Document is provided
      *     to the method.
      */
 
@@ -154,7 +154,7 @@ function(aDocument) {
      *          <samp>{"docTypeName":"moo", "publicID":"", "systemID":""}</samp>
      *     </code>
      * @returns {TP.lang.Hash} The document type info for this document.
-     * @raise TP.sig.InvalidXMLDocument Raised when an invalid XML document is
+     * @exception TP.sig.InvalidXMLDocument Raised when an invalid XML document is
      *     provided to the method.
      */
 
@@ -223,7 +223,7 @@ function(aDocument) {
      *          <samp>null</samp>
      *     </code>
      * @returns {String} The MIME type for this document.
-     * @raise TP.sig.InvalidDocument Raised when an invalid document is provided
+     * @exception TP.sig.InvalidDocument Raised when an invalid document is provided
      *     to the method.
      */
 
@@ -280,9 +280,9 @@ function(aNode, namespaceURI) {
      * @param {Node} aNode The Node to add the default namespace to.
      * @returns {Node} A new Node (Document or Element depending on what was
      *     provided to this method) with the namespace added to it.
-     * @raise TP.sig.InvalidNode Raised when an invalid document or element is
+     * @exception TP.sig.InvalidNode Raised when an invalid document or element is
      *     provided to the method.
-     * @raise TP.sig.InvalidString Raised when an invalid namespace URI is
+     * @exception TP.sig.InvalidString Raised when an invalid namespace URI is
      *     provided to the method.
      */
 

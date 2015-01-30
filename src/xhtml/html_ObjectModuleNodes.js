@@ -88,7 +88,7 @@ function(type) {
      *     as an image.
      * @param {String} type The MIME type indicating which data type to return.
      * @returns {String} The image data.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -109,7 +109,7 @@ function() {
      * @method get2DContext
      * @summary Returns the receiver's '2D graphics context'.
      * @returns {Object} The receiver's 2D graphics context.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -132,7 +132,7 @@ function(contextId) {
      *     context id.
      * @param {String} contextId The ID of the context to fetch.
      * @returns {Object} The receiver's matching graphics context.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -238,7 +238,7 @@ function(attributeName) {
      *     found on the receiver itself.
      * @param {String} attributeName The name/key of the attribute to return.
      * @returns {Object}
-     * @raise TP.sig.InvalidContext
+     * @exception TP.sig.InvalidContext
      */
 
     var val,
@@ -276,7 +276,7 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute to set.
      * @param {Object} attributeValue The value to set it to.
      * @returns {Object}
-     * @raise TP.sig.InvalidContext
+     * @exception TP.sig.InvalidContext
      */
 
     var the2DContext;

@@ -2005,7 +2005,7 @@ function(stepParams) {
      *     to the start() function for the job. Note that this parameter is
      *     optional and will default to the parameters computed by the job.
      * @returns {Object} A step-specific value computed by the compute function.
-     * @raise TP.sig.JobException
+     * @exception TP.sig.JobException
      */
 
     var val;

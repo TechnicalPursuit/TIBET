@@ -1031,7 +1031,7 @@ TP.hc(
          * @param {Node} aNode The Node to produce a representational String
          *     for.
          * @returns {String} The representational String for the supplied Node.
-         * @raise TP.sig.InvalidNode Raised when an invalid Node has been
+         * @exception TP.sig.InvalidNode Raised when an invalid Node has been
          *     supplied to the method.
          */
 
@@ -1142,7 +1142,7 @@ TP.hc(
          * @param {Node} aNode The Node to produce a representational String
          *     for.
          * @returns {String} The representational String for the supplied Node.
-         * @raise TP.sig.InvalidNode Raised when an invalid Node has been
+         * @exception TP.sig.InvalidNode Raised when an invalid Node has been
          *     supplied to the method.
          */
 

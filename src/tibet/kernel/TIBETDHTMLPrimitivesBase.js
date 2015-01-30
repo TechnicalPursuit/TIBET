@@ -1865,7 +1865,7 @@ function(aNode) {
      *     that is situated within a Window.
      * @param {Node} aNode The DOM node to operate on.
      * @returns {Boolean} True if the node is in a document that is in a window.
-     * @raise TP.sig.InvalidNode Raised when an object that isn't a Node is
+     * @exception TP.sig.InvalidNode Raised when an object that isn't a Node is
      *     provided to the method.
      */
 

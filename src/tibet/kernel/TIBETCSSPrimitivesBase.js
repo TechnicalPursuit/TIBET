@@ -42,9 +42,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, looking via URI
      *     rather than just prefix. Default is false (to keep things faster).
      * @returns {String} The attribute value, if found.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -125,9 +125,9 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 

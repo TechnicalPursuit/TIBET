@@ -150,11 +150,11 @@ function(aDocument, elementName, elementNS) {
      *          <samp>[object HTMLSpanElement]</samp>
      *     </code>
      * @returns {Element} The newly created Element.
-     * @raise TP.sig.InvalidDocument Raised when an invalid document is
+     * @exception TP.sig.InvalidDocument Raised when an invalid document is
      *     provided to the method.
-     * @raise TP.sig.InvalidString Raised when a null or empty element name is
+     * @exception TP.sig.InvalidString Raised when a null or empty element name is
      *     provided to the method.
-     * @raise TP.sig.DOMCreateException Raised when the element cannot be
+     * @exception TP.sig.DOMCreateException Raised when the element cannot be
      *     created in the supplied document.
      */
 
@@ -219,9 +219,9 @@ function(aNode) {
      *     </code>
      * @returns {XMLDocument} The new XML document wrapping aNode or aNode if
      *     its already an XML document.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidXMLDocument Raised when the node supplied is not
+     * @exception TP.sig.InvalidXMLDocument Raised when the node supplied is not
      *     part of an XML document.
      */
 
@@ -395,11 +395,11 @@ function(aDocument, aNode, aPath, aPathType) {
      *     TP.XPOINTER_PATH_TYPE TP.XTENSION_POINTER_PATH_TYPE.
      * @returns {Boolean} Whether or not aNode is contained in the set of
      *     results obtained by evaluating aPath against aDocument.
-     * @raise TP.sig.InvalidPath Raised when an invalid path is provided to the
+     * @exception TP.sig.InvalidPath Raised when an invalid path is provided to the
      *     method.
-     * @raise TP.sig.InvalidDocument Raised when an invalid document is provided
+     * @exception TP.sig.InvalidDocument Raised when an invalid document is provided
      *     to the method.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -974,7 +974,7 @@ function(anAttributeNode) {
      *          <samp>xforms:bind</samp>
      *     </code>
      * @returns {String} The attribute's canonical name.
-     * @raise TP.sig.InvalidAttributeNode Raised when a non-attribute Node has
+     * @exception TP.sig.InvalidAttributeNode Raised when a non-attribute Node has
      *     been supplied to the method.
      */
 
@@ -1095,7 +1095,7 @@ function(anAttributeNode) {
      *          <samp>bar:baz</samp>
      *     </code>
      * @returns {String} The attribute's canonical name.
-     * @raise TP.sig.InvalidAttributeNode Raised when a non-attribute Node has
+     * @exception TP.sig.InvalidAttributeNode Raised when a non-attribute Node has
      *     been supplied to the method.
      */
 
@@ -1151,7 +1151,7 @@ function(anAttributeNode) {
      *          <samp>style</samp>
      *     </code>
      * @returns {String} The local name of the supplied node.
-     * @raise TP.sig.InvalidAttributeNode Raised when a non-attribute Node has
+     * @exception TP.sig.InvalidAttributeNode Raised when a non-attribute Node has
      *     been supplied to the method.
      */
 
@@ -1199,9 +1199,9 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -1298,11 +1298,11 @@ function(anElement, aPrefix, aURI) {
      *          <samp>&lt;foo xmlns="http://www.foo.com"
      *         xmlns:svg="http://www.w3.org/2000/svg"/&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidXMLDocument Raised when the element supplied is not
+     * @exception TP.sig.InvalidXMLDocument Raised when the element supplied is not
      *     part of an XML document.
-     * @raise TP.sig.InvalidString Raised when a null or empty prefix or URI is
+     * @exception TP.sig.InvalidString Raised when a null or empty prefix or URI is
      *     provided to the method.
      */
 
@@ -1375,9 +1375,9 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
      *     should be defaulted to the current node's prefix on the new element.
      *     Default is true.
      * @returns {Element} A new element.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied tag name is empty.
+     * @exception TP.sig.InvalidName Raised when the supplied tag name is empty.
      */
 
     var attrStr,
@@ -1595,7 +1595,7 @@ function(anElement) {
      *     only be redefined further up the chain if it has both the same prefix
      *     and same namespace URI value).
      * @param {Element} anElement The element to bubble the namespaces up from.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -1709,7 +1709,7 @@ function(fromElement, toElement) {
      * @summary Copies all attributes from fromElement to toElement.
      * @param {Element} fromElement The source element.
      * @param {Element} toElement The target element.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -1782,7 +1782,7 @@ function(fromElement, toElement) {
      *          TP.nodeAsString(otherXMLDoc);
      *          <samp>&lt;fuzz xmlns:bar="http://www.bar.com"/&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -2005,9 +2005,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      *     </code>
      * @returns {Boolean} Whether or not the element has a value for the
      *     supplied attribute.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when a null or empty attribute name is
+     * @exception TP.sig.InvalidName Raised when a null or empty attribute name is
      *     provided to the method.
      */
 
@@ -2089,7 +2089,7 @@ function(anElement) {
      *          <samp>foo</samp>
      *     </code>
      * @returns {String} The local name of the supplied node.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -2237,9 +2237,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, looking via URI
      *     rather than just prefix. Default is false (to keep things faster).
      * @returns {String} The attribute value, if found.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -2394,9 +2394,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      *          <samp>theBinder</samp>
      *     </code>
      * @returns {String} The attribute value, if found.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -2456,7 +2456,7 @@ function(anElement, attributeName, stripPrefixes) {
      *         element)</samp>
      *     </code>
      * @returns {TP.lang.Hash} A collection of name/value pairs.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -2557,7 +2557,7 @@ function(anElement, stripPrefixes) {
      *         the document element)</samp>
      *     </code>
      * @returns {Array} A collection of name values.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -2677,7 +2677,7 @@ function(anElement, attributeName, stripPrefixes) {
      *     </code>
      * @returns {TP.lang.Hash} A collection of name/value pairs. The value part
      *     of the pair is returned as a Number.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -2782,7 +2782,7 @@ function(anElement, attributeName) {
      *     </code>
      * @returns {Attribute|null} The first attribute node matching the attribute
      *     name criteria.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -2862,7 +2862,7 @@ function(anElement, attributeName) {
      *         element)</samp>
      *     </code>
      * @returns {Array} An array of zero to N attribute nodes.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -2943,9 +2943,9 @@ function(anElement, attributeName, attrNS) {
      *         'http://www.bar.com' namespace, from the document element)</samp>
      *     </code>
      * @returns {Array} An array of zero to N attribute nodes.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute namespace is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute namespace is
      *     empty.
      */
 
@@ -3031,7 +3031,7 @@ function(anElement, ignoreSourcetag) {
      *          <samp>xforms:input</samp>
      *     </code>
      * @returns {String} The element's canonical name.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -3122,7 +3122,7 @@ function(anElement, joinChar) {
      *          <samp>/1/2/1</samp>
      *     </code>
      * @returns {String} The index or TP.NOT_FOUND.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -3202,7 +3202,7 @@ function(anElement, ignoreSourcetag) {
      *          <samp>xf:input</samp>
      *     </code>
      * @returns {String} The element's full name.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -3268,9 +3268,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, looking via URI
      *     rather than just prefix. Default is false (to keep things faster).
      * @returns {Attribute} The attribute node, if found.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -3439,9 +3439,9 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *     (to keep things faster).
      * @returns {Boolean} Whether or not the supplied attribute value matches
      *     the attribute value on the supplied element.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -3606,7 +3606,7 @@ function(fromElement, toElement, shouldOverlay, nameRegExp, useElementNS) {
      *         goo="moo" boo="yoo" gar="mar"/&gt;&lt;baz goo="moo"
      *         boo="yoo"/&gt;&lt;/foo&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
 
@@ -3854,9 +3854,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      *          true);
      *          <samp>false</samp>
      *     </code>
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when a null or empty attribute name is
+     * @exception TP.sig.InvalidName Raised when a null or empty attribute name is
      *     provided to the method.
      */
 
@@ -3960,9 +3960,9 @@ function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -4022,11 +4022,11 @@ function(anElement, aPrefix) {
      *          TP.nodeAsString(xmlDoc);
      *          <samp>&lt;foo xmlns="http://www.foo.com"/&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidElement Raised when an invalid element is
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
-     * @raise TP.sig.InvalidXMLDocument Raised when the element supplied is
+     * @exception TP.sig.InvalidXMLDocument Raised when the element supplied is
      *     not part of an XML document.
-     * @raise TP.sig.InvalidString Raised when a null or empty prefix or URI
+     * @exception TP.sig.InvalidString Raised when a null or empty prefix or URI
      *     is provided to the method.
      */
 
@@ -4082,9 +4082,9 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -4258,9 +4258,9 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *          'class');
      *          <samp>foo</samp>
      *     </code>
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -4313,9 +4313,9 @@ function(anElement, attributeHash, checkAttrNSURI) {
      *          <samp>&lt;foo moo="goo" foo="bar"
      *         boo="baz"&gt;&lt;/foo&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidParameter Raised when an invalid attribute hash is
+     * @exception TP.sig.InvalidParameter Raised when an invalid attribute hash is
      *     provided to the method.
      */
 
@@ -4988,11 +4988,11 @@ function(aNodeList, aTagname, aNamespace) {
      *         xmlns=""&gt;&lt;/baz&gt;&lt;/boo:goo&gt;</samp>
      *     </code>
      * @returns {Document} The supplied NodeList as a Document.
-     * @raise TP.sig.InvalidNodeList Raised when an invalid node list is
+     * @exception TP.sig.InvalidNodeList Raised when an invalid node list is
      *     provided to the method.
-     * @raise TP.sig.InvalidDocument Raised when an invalid document is created
+     * @exception TP.sig.InvalidDocument Raised when an invalid document is created
      *     by the method. This usually means a malformed tag name was supplied.
-     * @raise TP.sig.InvalidNode Raised when one of the supplied nodes is not an
+     * @exception TP.sig.InvalidNode Raised when one of the supplied nodes is not an
      *     XML node.
      */
 
@@ -5088,9 +5088,9 @@ function(aNodeList, aDocument, shouldClone) {
      *          <samp>&lt;bar&gt;&lt;/bar&gt;<baz&gt;&lt;/baz&gt;</samp>
      *     </code>
      * @returns {DocumentFragment} The list as a DocumentFragment.
-     * @raise TP.sig.InvalidNodeList Raised when an invalid node list is
+     * @exception TP.sig.InvalidNodeList Raised when an invalid node list is
      *     provided to the method.
-     * @raise TP.sig.InvalidDocument Raised when an invalid document is provided
+     * @exception TP.sig.InvalidDocument Raised when an invalid document is provided
      *     to the method or when a document cannot be created if needed.
      */
 
@@ -5350,7 +5350,7 @@ function(aNode, aDescendant) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not aNode is a parent of aDescendant.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method or an invalid child
      *     is provided.
      */
@@ -5448,7 +5448,7 @@ function(aNode, otherNode) {
      * @param {Node} otherNode The node to check against aNode.
      * @returns {Boolean} Whether or not the two nodes are *equal* (not
      *     necessarily identical).
-     * @raise TP.sig.InvalidNode Raised when either node is an invalid node.
+     * @exception TP.sig.InvalidNode Raised when either node is an invalid node.
      */
 
     if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
@@ -5486,7 +5486,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
      * @param {String} joinChar A character to use when joining the index parts.
      *     Default is '.'.
      * @returns {Array} An array of position strings.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -5626,7 +5626,7 @@ function(aNode, joinChar) {
      *          <samp>0.1.0</samp>
      *     </code>
      * @returns {String} The index or TP.NOT_FOUND.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -5696,7 +5696,7 @@ function(aNode, onlyElements) {
      *          <samp>0</samp>
      *     </code>
      * @returns {Number} The index number, or TP.NOT_FOUND.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -6155,7 +6155,7 @@ function(aNode, aRootNode) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} True if the node isn't in a document.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -6213,7 +6213,7 @@ function(aNode) {
      *     descendants.
      * @param {Node} aNode The node to normalize.
      * @returns {Node} The node.
-     * @raise TP.sig.InvalidNode Raised when the node is an invalid node.
+     * @exception TP.sig.InvalidNode Raised when the node is an invalid node.
      */
 
     var normalizeFunc;
@@ -6597,9 +6597,9 @@ function(aNode, aPath, autoCollapse, createAttr) {
      *     attribute, but that attribute doesn't exist.
      * @returns {Element|Attribute|Array} The element or attribute(s) obtained by
      *      evaluating the supplied path.
-     * @raise TP.sig.InvalidPath Raised when an invalid barename is provided to
+     * @exception TP.sig.InvalidPath Raised when an invalid barename is provided to
      *      the method.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -6708,9 +6708,9 @@ function(aNode, aPath) {
      * @param {Node} aNode The 'context node' for the evaluation.
      * @param {String} aPath A valid element scheme path.
      * @returns {Element} The element obtained by evaluating the supplied path.
-     * @raise TP.sig.InvalidPath Raised when an invalid element scheme is
+     * @exception TP.sig.InvalidPath Raised when an invalid element scheme is
      *     provided to the method.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -6844,9 +6844,9 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
      *     now, due to the nature of the various types of paths, this only
      *     applies for the TP.CSS_PATH_TYPE path.
      * @returns {Object} The value of evaluating the path.
-     * @raise TP.sig.InvalidPath Raised when an invalid path is provided to the
+     * @exception TP.sig.InvalidPath Raised when an invalid path is provided to the
      *     method.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -7008,9 +7008,9 @@ function(aNode, anXPath, resultType, logErrors) {
      *          <samp></samp>
      *     </code>
      * @returns {Array|Node} The XPath execution result.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
-     * @raise TP.sig.InvalidString Raised when a null or empty XPath
+     * @exception TP.sig.InvalidString Raised when a null or empty XPath
      *     expression is provided to the method.
      */
 
@@ -7354,7 +7354,7 @@ function(aNode) {
      *          <samp>[object HTMLBodyElement], [object HTMLHtmlElement]</samp>
      *     </code>
      * @returns {Array} An Array of the parent nodes of the supplied Node.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -7402,7 +7402,7 @@ function(aNode) {
      *          <samp>[object HTMLHeadElement], [object HTMLBodyElement]</samp>
      *     </code>
      * @returns {Array} An Array of the child nodes of the supplied Node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -7457,9 +7457,9 @@ function(aNode, anIndex) {
      *     </code>
      * @returns {Element} The child element of the supplied Node at the supplied
      *     index.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidParameter Raised when an invalid index is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid index is provided
      *     to the method.
      */
 
@@ -7550,7 +7550,7 @@ function(aNode) {
      *         body in the current document)</samp>
      *     </code>
      * @returns {Array} An Array of the Element children of the supplied Node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -7639,7 +7639,7 @@ function(aNode, breadthFirst) {
      *         traversal order)</samp>
      *     </code>
      * @returns {Array} An Array containing the nodes found.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -7722,9 +7722,9 @@ function(aNode, aType, breadthFirst) {
      *         breadth-first traversal order)</samp>
      *     </code>
      * @returns {Array} An Array containing the nodes found.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidParameter Raised when an invalid node type is
+     * @exception TP.sig.InvalidParameter Raised when an invalid node type is
      *     provided to the method.
      */
 
@@ -7781,7 +7781,7 @@ function(aNode, breadthFirst) {
      *     </code>
      * @returns {Array} An Array of the Element descendants of the supplied
      *     Node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -7854,9 +7854,9 @@ function(aNode, attrName, attrValue, breadthFirst) {
      *         'style' attribute)</samp>
      *     </code>
      * @returns {Array} An Array containing the nodes found.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidName Raised when an invalid attribute name is
+     * @exception TP.sig.InvalidName Raised when an invalid attribute name is
      *     provided to the method.
      */
 
@@ -7968,9 +7968,9 @@ function(aNode, attrPrefix, attrValue, breadthFirst) {
      *          <samp>[object Element], [object Element]</samp>
      *     </code>
      * @returns {Array} An Array containing the nodes found.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidName Raised when an invalid attribute prefix is
+     * @exception TP.sig.InvalidName Raised when an invalid attribute prefix is
      *     provided to the method.
      */
 
@@ -8075,9 +8075,9 @@ function(aNode, anIdOrName) {
      *     </code>
      * @returns {Array} The objects whose name is equal to anIdOrName or empty
      *     if there are no objects with that name.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidName Raised when an empty ID or name is provided to
+     * @exception TP.sig.InvalidName Raised when an empty ID or name is provided to
      *     the method.
      */
 
@@ -8145,9 +8145,9 @@ function(aNode, aName) {
      *          <samp>[object Element], [object Element]</samp>
      *     </code>
      * @returns {Array} An Array containing the nodes found.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidName Raised when an empty name is provided to the
+     * @exception TP.sig.InvalidName Raised when an empty name is provided to the
      *     method.
      */
 
@@ -8194,7 +8194,7 @@ function(aNode) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Document} The document containing the supplied Node.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -8275,9 +8275,9 @@ function(aNode, anID, retryWithPath) {
      *          <samp>[object HTMLBodyElement]</samp>
      *     </code>
      * @returns {Element} A native element, if one is found.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidID Raised when a null or empty ID is provided to the
+     * @exception TP.sig.InvalidID Raised when a null or empty ID is provided to the
      *     method.
      */
 
@@ -8486,9 +8486,9 @@ function(aNode, aTagName, aNamespaceURI) {
      *          <samp>[object Element]</samp>
      *     </code>
      * @returns {Array} An Array containing native elements found.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidName Raised when an invalid tag name is provided to
+     * @exception TP.sig.InvalidName Raised when an invalid tag name is provided to
      *     the method.
      */
 
@@ -8614,9 +8614,9 @@ function(aNode, attrName, attrValue, checkAttrNSURI) {
      *     (to keep things faster).
      * @example TODO:
      * @returns {Element} An element ancestor of the node.
-     * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
+     * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -8689,9 +8689,9 @@ function(aNode, aTagName, aNamespaceURI) {
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @example TODO
      * @returns {Element} An element ancestor of the node.
-     * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
+     * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied tag name is empty.
+     * @exception TP.sig.InvalidName Raised when the supplied tag name is empty.
      */
 
     var tagName,
@@ -8765,9 +8765,9 @@ function(aNode, attrName, attrValue) {
      *          <samp>[object HTMLBodyElement]</samp>
      *     </code>
      * @returns {Element} An element child of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidString Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidString Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -8878,9 +8878,9 @@ function(aNode, aTagName, aNamespaceURI) {
      *          <samp>[object HTMLBodyElement]</samp>
      *     </code>
      * @returns {Element} An element descendant of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -8952,9 +8952,9 @@ function(aNode, aType) {
      *          <samp>(the first child text node of the body element)</samp>
      *     </code>
      * @returns {Node} A child of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidParameter Raised when an invalid node type is
+     * @exception TP.sig.InvalidParameter Raised when an invalid node type is
      *     provided to the method.
      */
 
@@ -8997,7 +8997,7 @@ function(aNode) {
      *          <samp>Yet more text</samp>
      *     </code>
      * @returns {Node.TEXT_NODE|Node.CDATA_SECTION_NODE} A child of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -9059,7 +9059,7 @@ function(aNode) {
      *          <samp>[object HTMLHeadElement]</samp>
      *     </code>
      * @returns {Element} An element child of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -9132,9 +9132,9 @@ function(aNode, aType) {
      *          element)</samp>
      *     </code>
      * @returns {Node} A descendant of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidParameter Raised when an invalid node type is
+     * @exception TP.sig.InvalidParameter Raised when an invalid node type is
      *     provided to the method.
      */
 
@@ -9198,9 +9198,9 @@ function(aNode, attrName, attrValue) {
      *          <samp>[object HTMLBodyElement]</samp>
      *     </code>
      * @returns {Element} An element descendant of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -9312,9 +9312,9 @@ function(aNode, aTagName, aNamespaceURI) {
      *          <samp>[object HTMLBodyElement]</samp>
      *     </code>
      * @returns {Element} An element descendant of the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied tag name is empty.
+     * @exception TP.sig.InvalidName Raised when the supplied tag name is empty.
      */
 
     var tagName,
@@ -9368,7 +9368,7 @@ function(aNode, direction) {
      * @param {String} aDirection TP.NEXT or TP.PREVIOUS. The default is TP.NEXT
      *     so searching is forward.
      * @returns {Element} A native element.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided.
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided.
      */
 
     var dir,
@@ -9415,7 +9415,7 @@ function(aNode, nodeType) {
      *          <samp><bar/></samp>
      *     </code>
      * @returns {Node} The next node in document order.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided.
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided.
      */
 
     var next,
@@ -9530,7 +9530,7 @@ function(aNode, aSubset) {
      *          <samp>[object HTMLHeadElement]</samp>
      *     </code>
      * @returns {Array} An Array containing the nodes found.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -9604,7 +9604,7 @@ function(aNode) {
      *     node itself if the node is in a detached tree branch.
      * @param {Node} aNode The DOM node to operate on.
      * @returns {Node} The topmost node.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -9741,7 +9741,7 @@ function(firstNode, secondNode) {
      *          TP.nodeAsString(xmlDoc);
      *          <samp>&lt;foo&gt;&lt;baz/&gt;&lt;bar/&gt;&lt;/foo&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when either node is an invalid node or
+     * @exception TP.sig.InvalidNode Raised when either node is an invalid node or
      *     when the nodes are not contained in the same overall Document.
      */
 
@@ -9821,7 +9821,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
      *     Nodes of type Node.ELEMENT_NODE.
      * @param {Boolean} includeRoot True to include an enter/exit sequence on
      *     the initial element.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -10039,7 +10039,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
      *     Nodes of type Node.ELEMENT_NODE.
      * @param {Boolean} includeRoot True to include an enter/exit sequence on
      *     the initial element.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -10399,9 +10399,9 @@ function(aNode, aChild) {
      *          <samp>1</samp>
      *     </code>
      * @returns {Number} The index number, or TP.NOT_FOUND.
-     * @raise TP.sig.InvalidNode Raised when either node provided to the method
+     * @exception TP.sig.InvalidNode Raised when either node provided to the method
      *     is invalid.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method or the supplied child
      *     isn't a valid node
      */
@@ -10491,9 +10491,9 @@ function(aNode, aFunction, shouldReverse) {
      *          fooStr;
      *          <samp>BODY HTML</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -10612,9 +10612,9 @@ function(aNode, aFunction, shouldReverse) {
      *          <samp>(output of tag names of direct children of the body
      *         element)</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -10745,9 +10745,9 @@ function(aNode, aFunction, shouldReverse) {
      *          <samp>(output of the string value of direct child nodes of the
      *         head element)</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -10858,9 +10858,9 @@ function(aNode, aFunction, breadthFirst) {
      *          <samp>(output of the string value of direct child nodes of the
      *         head element)</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -10936,9 +10936,9 @@ function(aNode, aFunction, breadthFirst) {
      *          <samp>(output of tag names of descendants of the body
      *         element)</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11058,9 +11058,9 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *          fooStr;
      *          <samp>HEAD</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11245,9 +11245,9 @@ function(aNode, aFunction, shouldReverse) {
      *          <samp>[object HTMLHtmlElement]</samp>
      *     </code>
      * @returns {Node} An ancestor found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11331,9 +11331,9 @@ function(aNode, aFunction, shouldReverse) {
      *          });
      *          <samp>[object HTMLHeadElement]</samp>
      * @returns {Node} An child element found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11420,9 +11420,9 @@ function(aNode, aFunction, shouldReverse) {
      *          });
      *          <samp>(the HTML node with an index of 1 in the body)</samp>
      * @returns {Node} An child node found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11524,9 +11524,9 @@ function(aNode, aFunction, breadthFirst) {
      *         style attribute having a value)</samp>
      * @returns {Node} A descendant node found acceptable by aFunction.
      * @returns {Node} An descendant found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11628,9 +11628,9 @@ function(aNode, aFunction, breadthFirst) {
      *         style attribute having a value)</samp>
      * @returns {Node} A descendant element found acceptable by aFunction.
      * @returns {Node} An descendant found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11769,9 +11769,9 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *          });
      *          <samp>[object HTMLBodyElement]</samp>
      * @returns {Node} A sibling node found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11858,9 +11858,9 @@ function(aNode, aFunction, shouldReverse) {
      *          <samp>[object HTMLHtmlElement]</samp>
      *     </code>
      * @returns {Array} An Array of ancestors found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -11932,9 +11932,9 @@ function(aNode, aProperty) {
      *     </code>
      * @returns {Array} An Array of objects obtained by recursing using the
      *     supplied property.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidParameter Raised when an empty property name is
+     * @exception TP.sig.InvalidParameter Raised when an empty property name is
      *     provided to the method.
      */
 
@@ -12012,9 +12012,9 @@ function(aNode, aFunction, shouldReverse) {
      *     </code>
      * @returns {Array} An Array of child elements found acceptable by
      *     aFunction.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -12104,9 +12104,9 @@ function(aNode, aFunction, shouldReverse) {
      *          <samp>[object HTMLHeadElement]</samp>
      *     </code>
      * @returns {Array} An Array of child nodes found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -12199,9 +12199,9 @@ function(aNode, aFunction, breadthFirst) {
      * @returns {Array} An Array of descendant nodes found acceptable by
      *     aFunction.
      * @returns {Node} An descendant found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -12297,9 +12297,9 @@ function(aNode, aFunction, breadthFirst) {
      * @returns {Array} An Array of descendant elements found acceptable by
      *     aFunction.
      * @returns {Node} An descendant found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -12438,9 +12438,9 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *          <samp>(all span elements that are siblings of the body element's
      *         first child)</samp>
      * @returns {Array} An Array of sibling nodes found acceptable by aFunction.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
-     * @raise TP.sig.InvalidFunction Raised when an invalid function is provided
+     * @exception TP.sig.InvalidFunction Raised when an invalid function is provided
      *     to the method.
      */
 
@@ -12527,7 +12527,7 @@ function(aNode, aNamespaceURI, includeDescendants) {
      *     </code>
      * @returns {Array} An array of namespace prefixes for the supplied
      *     aNamespaceURI in the document.
-     * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
+     * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
      */
 
@@ -12644,7 +12644,7 @@ function(aNode) {
      *          <samp>http://www.foo.com</samp>
      *     </code>
      * @returns {String} A namespace URI or the empty string.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -12714,7 +12714,7 @@ function(aNode, includeDescendants) {
      *         http://www.baz.com</samp>
      *     </code>
      * @returns {Array} An array of unique namespace URIs found in the node.
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -12864,7 +12864,7 @@ function(aNode) {
      *     </code>
      * @returns {String} The text content of the first text child of the
      *     supplied Node (after all Text nodes under it have been normalized).
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -12955,7 +12955,7 @@ function(aNode, aTagName, aNamespaceURI) {
      * @returns {String} The text content of the text child of the first Element
      *     under the supplied Node whose tag name matches the supplied name
      *     (after all Text nodes under it have been normalized).
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -13003,7 +13003,7 @@ function(aNode, phaseList, outerElem) {
      * @param {Element} outerElem An optional 'outermost' element to test.
      *     Testing will not go higher than this element in the DOM tree.
      * @returns {String} The target phase for the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -13078,7 +13078,7 @@ function(aNode, phaseList, outerElem) {
      * @param {Element} outerElem An optional 'outermost' element to test.
      *     Testing will not go higher than this element in the DOM tree.
      * @returns {String} The target phase for the node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -13156,7 +13156,7 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
      * @param {Boolean} nodeOnly Flag determining whether to check only the node
      *     or the parent chain as well. Default is node only.
      * @returns {Boolean} True if the node looks processed.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -13319,7 +13319,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
      * @returns {Node} The first copied child node. This will be a different
      *     node than what was the first child node of the fromNode, as the node
      *     will have been copied and might have been imported.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -13423,7 +13423,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
      * @returns {Node} The first moved child node. This may be a different node
      *     than what was the first child node of the fromNode, as the node might
      *     have been imported.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -13661,7 +13661,7 @@ function(aNode, anObject) {
      *          <samp>&lt;foo&gt;Hi&lt;!--Another
      *         comment--&gt;&lt;/foo&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -13774,7 +13774,7 @@ function(aNode, aString, aTagName, aNamespaceURI) {
      *         xmlns="http://www.foo.com">&lt;bar&gt;Hi&lt;bar&gt;&lt;bar
      *         xmlns="http://www.bar.com"&gt;Hey&lt;bar&gt;&lt;foo&gt;</samp>
      *     </code>
-     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
      *     method.
      */
 
@@ -13824,7 +13824,7 @@ function(anObject) {
      *     this method returns the result of TP.name(anObject).
      * @param {Object} anObject The object to interrogate.
      * @returns {String} The object's canonical name.
-     * @raise TP.sig.InvalidParameter Raised when an invalid object is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid object is provided
      *     to the method.
      */
 
@@ -13967,7 +13967,7 @@ function(anObject, defaultNS, shouldReport) {
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown.
      * @returns {Element} A native Element node.
-     * @raise TP.sig.InvalidParameter Raised when an invalid object is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid object is provided
      *     to the method.
      */
 
@@ -14220,7 +14220,7 @@ function(anObject, defaultNS, shouldReport) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Node} A native Node.
-     * @raise TP.sig.InvalidParameter Raised when an invalid object is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid object is provided
      *     to the method.
      */
 
@@ -14279,7 +14279,7 @@ function(anObject) {
      *     nodes will have a valid prefix. All other objects will return null.
      * @param {Object} anObject The object to interrogate.
      * @returns {String} The object's prefix, if any.
-     * @raise TP.sig.InvalidParameter Raised when an invalid object is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid object is provided
      *     to the method.
      */
 
@@ -14317,7 +14317,7 @@ function(anObject) {
      *     return 'xforms:*' instead.
      * @param {Object} anObject The object to interrogate.
      * @returns {String} The object's qualified name, or QName.
-     * @raise TP.sig.InvalidParameter Raised when an invalid object is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid object is provided
      *     to the method.
      */
 
@@ -14447,7 +14447,7 @@ function(anObject, defaultNS, shouldReport) {
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown.
      * @returns {TP.core.ElementNode} A TIBET element wrapper.
-     * @raise TP.sig.InvalidParameter Raised when an invalid object is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid object is provided
      *     to the method.
      */
 
@@ -14570,7 +14570,7 @@ function(anObject, defaultNS, shouldReport) {
      *          <samp>[TP.core.DocumentNode HTMLDocument]</samp>
      *     </code>
      * @returns {Node} A native Node.
-     * @raise TP.sig.InvalidParameter Raised when an invalid object is provided
+     * @exception TP.sig.InvalidParameter Raised when an invalid object is provided
      *     to the method.
      */
 
