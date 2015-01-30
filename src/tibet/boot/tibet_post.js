@@ -8927,6 +8927,12 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
     scriptUrl = TP.boot.$isValid(srcUrl) ? srcUrl : 'inline';
 
+    //  Patch for stack traces on text-injected code. See:
+    //  https://bugs.webkit.org/show_bug.cgi?id=25475
+    if (scriptUrl !== 'inline') {
+        jsSrc = '//@ sourceURL=' + scriptUrl + '\n\n' + jsSrc;
+    }
+
     //  set a reference so when/if this errors out we'll get the right
     //  url reference
     TP.boot.$$onerrorURL = scriptUrl;
