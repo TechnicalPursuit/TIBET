@@ -69,9 +69,9 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['owners'],
-        'string': ['filter'],
-        'default': {'filter': 'unique_methods'}
+        'boolean': ['owners', 'methods', 'types', 'column'],
+        'string': ['filter', 'target'],
+        'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
 
@@ -80,7 +80,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet reflect [target] [--filter <filter>] [--owners]';
+    'tibet reflect [target] [--filter <filter>] [--types] [--methods] [--owners]';
 
 //  ---
 //  Instance Methods
@@ -158,6 +158,25 @@ Cmd.prototype.getScript = function() {
     } else {
         target = prefix;
     }
+
+    if (this.options.filter) {
+        target += ' --filter=\'' + this.options.filter + '\'';
+    }
+
+    if (this.options.types) {
+        target += ' --types';
+    }
+
+    if (this.options.methods) {
+        target += ' --methods';
+    }
+
+    if (this.options.owners) {
+        target += ' --owners';
+    }
+
+    //  Add column flag since we need column output for cli.
+    target += ' --column';
 
     return target;
 };
