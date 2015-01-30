@@ -12,7 +12,6 @@
  * @type {TP.xs.gDay}
  * @synopsis A day specification in XML schema format (---DD) with optional time
  *     zone data.
- * @todo
  */
 
 //  ------------------------------------------------------------------------

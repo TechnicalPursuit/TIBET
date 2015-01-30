@@ -172,7 +172,6 @@ function(name) {
      * @param {String} name The name of the subtype, including an optional
      *     namespace prefix and colon separator.
      * @returns {TP.lang.RootObject} A new type object.
-     * @todo
      */
 
     var parts,
@@ -499,7 +498,6 @@ function() {
      *     should consider the return value private and make a copy if you're
      *     going to manipulate the array.
      * @returns {Array} Array of supertypes.
-     * @todo
      */
 
     var arr,
@@ -579,7 +577,6 @@ function() {
      *     placing initialization code in the constructor...which would break
      *     dynamic attribute inheritance.
      * @returns {Object}
-     * @todo
      */
 
     return this;
@@ -644,7 +641,6 @@ function(aSignal) {
      *     for successful instance creation.
      * @param {TP.core.Signal} aSignal The signal instance to build for.
      * @returns {Object} A new instance, if possible.
-     * @todo
      */
 
     return this.construct();
@@ -827,7 +823,6 @@ function(anObj) {
      * @synopsis Constructs a new instance from the incoming object. The default
      *     implementation forwards to construct.
      * @returns {Object} A new instance of the receiver.
-     * @todo
      */
 
     return this.construct(anObj);
@@ -844,7 +839,6 @@ function(anObj) {
      *     implementation forwards to construct.
      * @param {Object} anObj The source object.
      * @returns {Object} A new instance of the receiver.
-     * @todo
      */
 
     return this.construct.apply(this, arguments);
@@ -866,7 +860,6 @@ function(aString, sourceLocale) {
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string
      *     is successful.
-     * @todo
      */
 
     return this.parse(aString, sourceLocale);
@@ -888,7 +881,6 @@ function(aString, sourceLocale) {
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string
      *     is successful.
-     * @todo
      */
 
     return this.parse(aString, sourceLocale);
@@ -908,7 +900,6 @@ function(aParser) {
      * @param {Object} aParser An object implementing the 'parse' method. By
      *     default this means types and functions.
      * @returns {TP.FunctionProto} The receiver.
-     * @todo
      */
 
     var parsers;
@@ -948,7 +939,6 @@ function(aParser) {
      * @param {Object} aParser An object implementing the 'parse' method. By
      *     default this means types and functions.
      * @returns {TP.lang.RootObject} The receiver.
-     * @todo
      */
 
     var parsers;
@@ -985,7 +975,6 @@ function(aString, sourceLocale) {
      *     language-country value.
      * @returns {Object} The result of the parse. This is null when the parse
      *     fails.
-     * @todo
      */
 
     var parsers,
@@ -1089,7 +1078,6 @@ function(aString, sourceLocale) {
      *     language-country value.
      * @returns {Object} The result of the parse. This is null when the parse
      *     fails.
-     * @todo
      */
 
     var parsers,
@@ -1239,7 +1227,6 @@ function(typeOrFormat, formatParams) {
      *         (CST)</samp>
      *     </code>
      * @returns {Object} An instance of the desired type/format.
-     * @todo
      */
 
     var funcName,
@@ -1369,7 +1356,6 @@ function(aFormat, formatParams) {
      * @param {TP.lang.Hash|TP.core.Request} formatParams Optional format
      *     parameters. These are parameters to a template transform.
      * @returns {String} The formatted output.
-     * @todo
      */
 
     if (TP.isValid(aFormat)) {
@@ -1393,7 +1379,6 @@ function(aDate, transformParams) {
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
-     * @todo
      */
 
     var format,
@@ -1467,7 +1452,6 @@ function(aNumber, transformParams) {
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
-     * @todo
      */
 
     var str;
@@ -1500,7 +1484,6 @@ function(anObject, transformParams) {
      *      @ - character substitution - String
      *      # - numeric substitution - Number
      *      % - *     keyed substitution - Object (keys found on object type)
-     * @todo
      */
 
     var obj,
@@ -1541,7 +1524,6 @@ function(aString, transformParams) {
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
-     * @todo
      */
 
     var str;
@@ -1595,7 +1577,6 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
      *     as computed from the supplied signal will be used.
      * @returns {Function} The specific function or method that would be (or
      *     was) invoked.
-     * @todo
      */
 
     var orig,
@@ -1740,7 +1721,6 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
      *     parameter is optional and, if not supplied, all of the signal names
      *     as computed from the supplied signal will be used.
      * @returns {Object} The handler function's results.
-     * @todo
      */
 
     var handlerFunc;
@@ -1767,7 +1747,6 @@ function(aRequest) {
      *     processTP_sig_Request method is invoked.
      * @param {TP.sig.Request} aRequest The request to process.
      * @returns {Object} The processing results.
-     * @todo
      */
 
     var request;
@@ -1798,7 +1777,6 @@ function(aRequest, stdinContent) {
      * @param {Object} stdinContent The content to use as 'stdin' when executing
      *     the supplied request.
      * @returns {Object} The processing and executing results.
-     * @todo
      */
 
     var request;
@@ -1824,7 +1802,6 @@ function(aRequest) {
      *     expected to override this method.
      * @param {TP.sig.Request} aRequest The request to process.
      * @returns {Object} The processing results.
-     * @todo
      */
 
     var retVal;
@@ -1866,7 +1843,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
-     * @todo
      */
 
     //  default is to let main routines handle it
@@ -1890,7 +1866,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
-     * @todo
      */
 
     //  found a node showing we have a method with that name? then we can
@@ -1912,7 +1887,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Array} anArgArray Optional arguments to function.
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
-     * @todo
      */
 
     //  not implemented? can't do anything
@@ -2072,7 +2046,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Array} anArgArray Optional arguments to function.
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of execution if possible.
-     * @todo
      */
 
     var str,
@@ -2290,7 +2263,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Array} anArgArray Optional arguments to function.
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of execution if possible.
-     * @todo
      */
 
     var i,
@@ -2526,7 +2498,6 @@ function(aFunction, anArgArray, aCount) {
      * @param {Array} anArgArray The arguments if any.
      * @param {Number} aCount How many iterations do we want?
      * @returns {Array} [total time, average time];.
-     * @todo
      */
 
     var i,
@@ -2567,7 +2538,6 @@ function(aFunction, millisecondCount, stackNames) {
      * @param {Function} aFunction The function being tracked.
      * @param {Number} millisecondCount A particular "run time" figure.
      * @param {Array} stackNames An optional call stack array.
-     * @todo
      */
 
     var d1,
@@ -2651,7 +2621,6 @@ function(aFunction) {
      *     function's performance.
      * @param {Function} aFunction The function being tracked.
      * @returns {Array} An array of millisecond counts.
-     * @todo
      */
 
     var fn,
@@ -2802,7 +2771,6 @@ function(name) {
      *     call is therefore only valid for subtypes of TP.FunctionProto.
      * @param {String} name The name of the subtype, including an optional
      *     namespace prefix and colon separator.
-     * @todo
      */
 
     return this.raise('TP.sig.InheritanceException',
@@ -3098,7 +3066,6 @@ function(aSignal) {
      *     handling them defers to an instance rather than the type itself.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
      * @returns {Object} The function's return value.
-     * @todo
      */
 
     var inst;
@@ -3145,7 +3112,6 @@ function(anInterface, anObject, shouldForce) {
      * @param {Boolean} shouldForce True to force construction of the DNU even
      *     when the receiver canInvoke a specific method in the interface.
      * @returns {Number} The actual number of methods backstopped.
-     * @todo
      */
 
     var target,
@@ -3229,7 +3195,6 @@ function(anInterface, anObject) {
      * @param {Object} anObject A target object which should have local
      *     backstops removed.
      * @returns {Number} The actual number of backstops removed.
-     * @todo
      */
 
     var target,
@@ -4914,7 +4879,6 @@ function(aList) {
      * @param {Array} aList The list of method names to remove.
      * @raises TP.sig.InvalidType
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return this.raise('TP.sig.InvalidType', this);
@@ -4932,7 +4896,6 @@ function(aList) {
      *     the receiver owns the properties in question.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var i,
@@ -4964,7 +4927,6 @@ function(aList) {
      * @param {Array} aList The list of method names to remove.
      * @raises TP.sig.InvalidType
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return this.raise('TP.sig.InvalidType', this);
@@ -4981,7 +4943,6 @@ function(aList) {
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var i,
@@ -5014,7 +4975,6 @@ function(aList) {
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var i,
@@ -5047,7 +5007,6 @@ function(aList) {
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var i,
@@ -5077,7 +5036,6 @@ function(aList) {
      *     whose keys are in the list.
      * @param {Array} aList The list of method names to remove.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var i,
@@ -5867,7 +5825,6 @@ function(aNote) {
      * @name deprecated
      * @synopsis Reports a warning that a deprecated method/type is in use.
      * @param {String} aNote An optional note to output.
-     * @todo
      */
 
     return TP.$$marker(aNote, 'Deprecated');
@@ -6157,7 +6114,6 @@ function(aString) {
      *     from a string.
      * @param {String} aString The string used to join() the array.
      * @returns {Array} The receiver.
-     * @todo
      */
 
     var str;
@@ -6251,7 +6207,6 @@ function(aFormat) {
      *     resulting string, however you can localize the return string
      *     directly.
      * @returns {String}
-     * @todo
      */
 
     switch (aFormat) {
@@ -6314,7 +6269,6 @@ function(aString, sourceLocale) {
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Boolean}
-     * @todo
      */
 
     //  kernel isn't loaded completely? use native call
@@ -6418,7 +6372,6 @@ function(verbose) {
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the Date's String representation. The default is true.
      * @returns {String} The date in default string format.
-     * @todo
      */
 
     var wantsVerbose;
@@ -6561,7 +6514,6 @@ function() {
      * @name asNumber
      * @returns {Number}
      * @abtract Returns the receiver as a Number instance.
-     * @todo
      */
 
     return this;
@@ -6583,7 +6535,6 @@ function(aString, sourceLocale) {
      * @abtract Parses the inbound string to produce a new Number using a
      *     combination of the current TP.core.Locale and native JavaScript
      *     numeric parse routines.
-     * @todo
      */
 
     //  kernel isn't loaded completely? use native call
@@ -6778,7 +6729,6 @@ function(splitChar) {
      *     array of characters (the default).
      * @param {String} splitChar The delimiter to split on.
      * @returns {Array}
-     * @todo
      */
 
     var delim;
@@ -6833,7 +6783,6 @@ function(name) {
      *     namespace prefix and colon separator.
      * @returns {TP.lang.RootObject} The new type object representing the
      *     subtype added.
-     * @todo
      */
 
     var typ;
@@ -6865,7 +6814,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
-     * @todo
      */
 
     var typ;
@@ -6950,7 +6898,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Array} anArgArray Optional arguments to function.
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
-     * @todo
      */
 
     var typ;
@@ -7639,7 +7586,6 @@ function(aFlag) {
      * @synopsis Combined setter/getter for the instance singleton flag.
      * @param {Boolean} aFlag An optional new flag value to set.
      * @returns {Boolean} The current state of the singleton flag.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -7664,7 +7610,6 @@ function() {
      *     instance returned may actually be an instance of a valid subtype
      *     if the receiver is abstract.
      * @returns {Object} A new instance.
-     * @todo
      */
 
     var newinst,
@@ -7740,7 +7685,6 @@ function() {
      * @synopsis Provides instances with an opportunity to initialize. The
      *     default implementation does nothing.
      * @returns {Object} A new instance.
-     * @todo
      */
 
     return this;
@@ -7772,7 +7716,6 @@ function(aFlag) {
      * @synopsis Returns true if the instance can be recycled.
      * @param {Boolean} aFlag A new setting. Optional.
      * @returns {Boolean} True if the instance can be recycled.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -7795,7 +7738,6 @@ function() {
      *     default this method does nothing, leaving the instance in its
      *     original state.
      * @returns {TP.lang.RootObject} The receiver.
-     * @todo
      */
 
     //  default is a no-op
@@ -7833,7 +7775,6 @@ function() {
      *     instance behavior can use this method to skip the specific local
      *     method and invoke the instance method of its type.
      * @returns {Object} The function's results.
-     * @todo
      */
 
     var theFunction,
@@ -7982,7 +7923,6 @@ function() {
      *     instance behavior can use this method to skip the specific local
      *     method and invoke the instance method of its type.
      * @returns {Object} The function's results.
-     * @todo
      */
 
     var theFunction,
@@ -8083,7 +8023,6 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *         callingContext. Only used when the original arguments should be
      *         altered for the call.
      * @returns {Object} The result of invoking the method found.
-     * @todo
      */
 
     var name,
@@ -8123,7 +8062,6 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *     callingContext. Only used when the original arguments should be
      *     altered for the call.
      * @returns {Function} The method found, or null.
-     * @todo
      */
 
     var name;
@@ -8162,7 +8100,6 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *     callingContext. Only used when the original arguments should be
      *     altered for the call.
      * @returns {String} The method name found, or null.
-     * @todo
      */
 
     var prefix,
@@ -8381,7 +8318,6 @@ function() {
      * @name getSupertypeName
      * @synopsis Returns the supertype name of the receiver.
      * @returns {String} The supertype name of the receiver.
-     * @todo
      */
 
     return this[TP.SUPER].getName();
@@ -9576,7 +9512,6 @@ function() {
      *     different from the receiver's prototype object.
      * @returns {Array} An Array of all *uniquely-valued* attributes of the
      *     receiver, hidden or shown, instance-level or local-level.
-     * @todo
      */
 
     var keys;

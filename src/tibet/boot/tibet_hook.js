@@ -67,7 +67,6 @@ $$getNextWindow = function(aWindow, aTimestamp) {
      *     in.
      * @param {String} aTimestamp The timestamp to use in the $$checked slot.
      * @return {Window} The next window to check in finding the TIBET frame.
-     * @todo
      */
 
     var win,
@@ -224,7 +223,6 @@ if (self.TP == null) {
          * @param {Error} errorObj The error object of the error that caused
          *     this hook to trigger.
          * @returns {Boolean} TP.sys.shouldCaptureErrors() value.
-         * @todo
          */
 
         var str;
@@ -1711,7 +1709,6 @@ if (window.onerror.failedlaunch !== true &&
          * @param {Window} aWindow The native window to test. For the hook file
          *     version this defaults to 'window'.
          * @return {Boolean}
-         * @todo
          */
 
         var win;
@@ -1755,7 +1752,6 @@ if (window.onerror.failedlaunch !== true &&
          *     'source element' or 'target'.
          * @return {Element|String} Typically a string, but sometimes the
          *     element when no string value can be computed with certainty.
-         * @todo
          */
 
         var tibetOrigin,
@@ -1844,7 +1840,6 @@ if (window.onerror.failedlaunch !== true &&
          * @param {String} policy A TIBET dispatch policy. Ignored at this
          *     level.
          * @return {null}
-         * @todo
          */
 
         try {
@@ -1884,7 +1879,6 @@ if (window.onerror.failedlaunch !== true &&
          * @param {Boolean} display Should the signal data be displayed,
          *     normally true.
          * @return {null}
-         * @todo
          */
 
         var signal,
@@ -1978,7 +1972,6 @@ if (window.onerror.failedlaunch !== true &&
          * @param {Object} anException The signal being triggered.
          * @param {Object} aPayload arguments for the signal.
          * @return {null}
-         * @todo
          */
 
         //  NOTE the context gets dropped here since the primitive version
@@ -2003,7 +1996,6 @@ if (window.onerror.failedlaunch !== true &&
          *     be installed for.
          * @param {Function} handlerFunc The handler function to use.
          * @return {null}
-         * @todo
          */
 
         var theEventName;
@@ -2036,7 +2028,6 @@ if (window.onerror.failedlaunch !== true &&
          * @param {String} eventName The name of the event that the handler was
          *     installed for.
          * @return {null}
-         * @todo
          */
 
         var handlerFunc,
@@ -2171,7 +2162,6 @@ if (window.onerror.failedlaunch !== true &&
          * @param {HTMLEvent} anEvent The HTML event to stop propagation and
          *     prevent default of.
          * @return {null}
-         * @todo
          */
 
         anEvent.stopPropagation();

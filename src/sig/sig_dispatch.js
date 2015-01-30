@@ -35,7 +35,6 @@ function() {
      *     request which can't provide viable input data. The default is true.
      * @returns {Boolean} Whether processing should stop if input data is null
      *     or undefined.
-     * @todo
      */
 
     return false;

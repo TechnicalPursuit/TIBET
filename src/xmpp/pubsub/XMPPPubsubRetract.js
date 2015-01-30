@@ -42,7 +42,6 @@ function(itemID) {
      *     optional.
      * @raises TP.sig.InvalidParameter
      * @returns {TP.xmpp.PubsubRetract} The receiver.
-     * @todo
      */
 
     var newItem,

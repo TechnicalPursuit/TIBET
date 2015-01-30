@@ -66,7 +66,6 @@ function(anID, regOnly, nodeContext) {
      * @returns {Object} Typically a TIBET object (meaning nodes are wrapped in
      *     TP.core.Node instances etc) to maintain encapsulation for as long as
      *     possible.
-     * @todo
      */
 
     var bits,
@@ -368,7 +367,6 @@ function(anObj, anID) {
      * @param {String} anID An optional ID to use instead of the object's
      *     internal ID.
      * @returns {Boolean} Whether or not the object was registered.
-     * @todo
      */
 
     if (TP.isEmpty(anID)) {
@@ -411,7 +409,6 @@ function(anObj, anID, forceRegistration, observeResource) {
      *     the supplied object should observe it for changes. The default is
      *     true.
      * @returns {Boolean} Whether or not the object was registered.
-     * @todo
      */
 
     var id,
@@ -500,7 +497,6 @@ function(anObj, anID) {
      * @param {String} anID An optional ID to use instead of the object's
      *     internal ID.
      * @returns {Boolean} Whether or not the object was unregistered.
-     * @todo
      */
 
     var id,

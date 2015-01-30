@@ -10,7 +10,6 @@
 
 /**
  * @WebSocket support.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -59,7 +58,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI,WebSocketException,WebSocketSendException
      * @throws Error Various WebSocket-related errors.
      * @returns {WebSocket} The result object.
-     * @todo
      */
 
     var request,
@@ -256,7 +254,6 @@ function(targetUrl, openCallback) {
      * @param {String} targetUrl The request's target URL.
      * @param {Function} openCallback
      * @returns {WebSocket}
-     * @todo
      */
 
     var url,
@@ -410,7 +407,6 @@ function(targetUrl, aSignal, aRequest) {
      * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
      * @raises WebSocketException
      * @throws Error Throws an Error containing aString.
-     * @todo
      */
 
     var args,
@@ -487,7 +483,6 @@ function(targetUrl, aRequest, wsObj) {
      *     data.
      * @param {WebSocket} wsObj The native WebSocket object used to service the
      *     request.
-     * @todo
      */
 
     var request,
@@ -558,7 +553,6 @@ function(targetUrl, aRequest, wsObj) {
      *     data.
      * @param {WebSocket} wsObj The native WebSocket object used to service the
      *     request.
-     * @todo
      */
 
     var request,

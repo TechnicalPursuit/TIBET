@@ -50,7 +50,6 @@ function() {
      * @name blur
      * @returns {TP.xctrls.textinput} The receiver.
      * @abtract Blurs the receiver for keyboard input.
-     * @todo
      */
 
     var valuePElem;
@@ -84,7 +83,6 @@ function(moveAction) {
      *          TP.FOLLOWING
      *          TP.PRECEDING.
      * @returns {TP.xctrls.textinput} The receiver.
-     * @todo
      */
 
     var valuePElem;

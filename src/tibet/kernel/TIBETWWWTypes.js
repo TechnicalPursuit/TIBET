@@ -202,7 +202,6 @@ function(docTypeName, publicID, systemID) {
      * @param {String} publicID The document type's public identifier.
      * @param {String} systemID The document type's system identifier.
      * @returns {TP.w3.DocType} The receiver.
-     * @todo
      */
 
     this.callNextMethod();
@@ -861,7 +860,6 @@ function(aMIMEType) {
      *     will return ['xht', 'xhtml'].
      * @param {String} aMIMEType The MIME type to look up.
      * @returns {Array} An array of strings denoting extensions.
-     * @todo
      */
 
     var info,
@@ -890,7 +888,6 @@ function(anExtension) {
      * @param {String} anExtension The extension to try to match a MIME type to.
      * @returns {String} The TP.ietf.Mime type constant for the extension, if
      *     found.
-     * @todo
      */
 
     return TP.ifInvalid(
@@ -934,7 +931,6 @@ function(aContent, aURI, defaultMIME) {
      *     optional.
      * @returns {String} The MIME type as determined from one of the three
      *     parameters.
-     * @todo
      */
 
     var content,
@@ -1085,7 +1081,6 @@ function(aMIMEType, aHash) {
      * @param {TP.lang.Hash} aHash A hash whose keys match those defined for
      *     this type.
      * @raises TP.sig.InvalidParameter
-     * @todo
      */
 
     var info,
@@ -1695,7 +1690,6 @@ function(anNSURI, aTransformURI) {
      * @param {String} aTransformURI A URI pointing to an XSLT.
      * @raises TP.sig.InvalidURI
      * @returns {String} The canonical prefix, if found.
-     * @todo
      */
 
     var arr,
@@ -1902,7 +1896,6 @@ function(anNSURI) {
      *     node via TP.nodeGetNSURI().
      * @raises TP.sig.InvalidURI
      * @returns {String} The MIME type, if found.
-     * @todo
      */
 
     var info;
@@ -1929,7 +1922,6 @@ function() {
      * @synopsis Returns an array of canonical prefixes supported natively on
      *     the current browser.
      * @returns {Array} The list of native prefixes.
-     * @todo
      */
 
     var arr;
@@ -1972,7 +1964,6 @@ function() {
      * @synopsis Returns an array of natively supported namespace URIS on the
      *     current browser.
      * @returns {Array} The list of native namespace URIs.
-     * @todo
      */
 
     var arr;
@@ -2015,7 +2006,6 @@ function() {
      * @synopsis Returns an array of canonical prefixes which are known but not
      *     supported on the current browser.
      * @returns {Array} The list of non-native prefixes.
-     * @todo
      */
 
     var arr;
@@ -2058,7 +2048,6 @@ function() {
      * @synopsis Returns an array of known URIs which are not native to the
      *     current browser.
      * @returns {Array} The list of non-native namespace URIs.
-     * @todo
      */
 
     var arr;
@@ -2205,7 +2194,6 @@ function(anNSURI, aNode) {
      * @param {Node} aNode The node (document or element) for which a prefix is
      *     required.
      * @returns {String} The first declared namespace prefix.
-     * @todo
      */
 
     var prefixes,
@@ -2320,7 +2308,6 @@ function(anNSURI, aHash) {
      * @param {TP.lang.Hash} aHash A hash whose keys match those defined for
      *     this type.
      * @raises TP.sig.InvalidURI,TP.sig.InvalidParameter
-     * @todo
      */
 
     var uriStr,
@@ -2453,7 +2440,6 @@ function(declarationName, declarationValue, affectedElements) {
      * @param {String} declarationValue The value of the declaration.
      * @param {Array} affectedElements An Array of the elements that were
      *     affected that the custom CSS declaration might need to change.
-     * @todo
      */
 
     return TP.override();
@@ -2473,7 +2459,6 @@ function(declarationName, declarationValue, affectedElements) {
      * @param {String} declarationValue The value of the declaration.
      * @param {Array} affectedElements An Array of the elements that were
      *     affected that the custom CSS declaration might need to change.
-     * @todo
      */
 
     return TP.override();
@@ -2628,7 +2613,6 @@ function(aName, aCookieText) {
      * @param {String} aCookieText The text to extract the cookie from.
      * @returns {Object} The value of the cookie matching the supplied name and
      *     the supplied chunk of cookie text.
-     * @todo
      */
 
     var start,
@@ -2669,7 +2653,6 @@ function(aName, aPath, aDomain) {
      * @param {String} aPath The path of the cookie to remove.
      * @param {String} aDomain The domain of the cookie to remove.
      * @returns {Boolean} Whether the cookie was successfully removed or not.
-     * @todo
      */
 
     return this.setCookie(aName,
@@ -2696,7 +2679,6 @@ function(aName, aValue, expiresAt, aPath, aDomain, wantsSecurity) {
      * @param {String} aDomain An alternate cookie domain.
      * @param {Boolean} wantsSecurity Whether security is desired.
      * @returns {Boolean} Whether the cookie was successfully set or not.
-     * @todo
      */
 
     var cooky;
@@ -2754,7 +2736,6 @@ function(aURI, aRequest, logError) {
      *     data cannot be retrieved.
      * @returns {TP.sig.Response} A valid response object for the request.
      * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
-     * @todo
      */
 
     var request,
@@ -2795,7 +2776,6 @@ function(aURI, aRequest) {
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
      * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
-     * @todo
      */
 
     var request,
@@ -2839,7 +2819,6 @@ function(aURI, aRequest) {
      *     data cannot be retrieved.
      * @returns {TP.sig.Response} A valid response object for the request.
      * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
-     * @todo
      */
 
     var request,
@@ -2927,7 +2906,6 @@ function(aURI, aRequest) {
  *
  *     // Fetch the content and cache it in the URL the first time
  *     myCookieURI.getContent(); // -> Returns the date set
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -2989,7 +2967,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object.
-     * @todo
      */
 
     return TP.core.Cookie;

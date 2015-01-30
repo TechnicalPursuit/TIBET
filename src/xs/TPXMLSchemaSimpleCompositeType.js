@@ -100,7 +100,6 @@ function(aValue, listElem) {
      *     validate against.
      * @returns {Boolean} True if the object validates against the type
      *     information contained in the supplied TP.xs.list element.
-     * @todo
      */
 
     var values,
@@ -224,7 +223,6 @@ function(aValue, restrictionElem) {
      *     information to validate against.
      * @returns {Boolean} True if the object is a valid member of the restricted
      *     value space.
-     * @todo
      */
 
     var value,
@@ -337,7 +335,6 @@ function(aValue, unionElem) {
      *     validate against.
      * @returns {Boolean} True if the object validates against the type
      *     information contained in the supplied TP.xs.union element.
-     * @todo
      */
 
     var value,

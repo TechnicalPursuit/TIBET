@@ -137,7 +137,6 @@
  *     davReq.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
  *     TP.info(aResponse.getResult(), TP.LOG); }); davReq.fire();
- * @todo
  */
 
 //  ------------------------------------------------------------------------

@@ -170,7 +170,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
-     * @todo
      */
 
     return true;
@@ -320,7 +319,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Array} anArgArray Optional arguments to function.
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The result of function execution.
-     * @todo
      */
 
     var type;

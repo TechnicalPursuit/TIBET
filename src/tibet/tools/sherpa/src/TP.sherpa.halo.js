@@ -109,7 +109,6 @@ function() {
      * @name blur
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
-     * @todo
      */
 
     var currentTargetTPElem;
@@ -135,7 +134,6 @@ function(target) {
      * @param {TP.core.Node} target
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
-     * @todo
      */
 
     if (TP.isKindOf(target, TP.core.ElementNode)) {
@@ -249,7 +247,6 @@ function(aSignal) {
      * @param {TP.sig.DOMMouseMove} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
-     * @todo
      */
 
     this.showHaloCorner(aSignal);
@@ -267,7 +264,6 @@ function(aSignal) {
      * @param {TP.sig.DOMMouseOver} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
-     * @todo
      */
 
     //this.showHaloCorner(aSignal);
@@ -285,7 +281,6 @@ function(aSignal) {
      * @param {TP.sig.DOMMouseOut} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
-     * @todo
      */
 
     //this.hideHaloCorner();
@@ -303,7 +298,6 @@ function(aSignal) {
      * @param {TP.sig.DOMMouseWheel} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
-     * @todo
      */
 
     //TP.info('got to TP.sherpa.halo::handleDOMMouseWheel', TP.LOG);
@@ -369,7 +363,6 @@ function(aTarget) {
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
 
-     * @todo
      */
 
     var existingTPTarget,
@@ -419,7 +412,6 @@ function(aSignal) {
      * @name showHaloCorner
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
-     * @todo
      */
 
     var existingTPTarget,
@@ -475,7 +467,6 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
 
-     * @todo
      */
 
     var sigTarget,

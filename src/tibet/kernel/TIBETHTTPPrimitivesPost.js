@@ -63,7 +63,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI, HTTPException
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -98,7 +97,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI, HTTPException
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     var request,
@@ -145,7 +143,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     return TP.$httpQuery(TP.HTTP_HEAD, targetUrl, aRequest);
@@ -167,7 +164,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     return TP.$httpQuery(TP.HTTP_OPTIONS, targetUrl, aRequest);
@@ -188,7 +184,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     return TP.$httpSend(TP.HTTP_POST, targetUrl, aRequest);
@@ -209,7 +204,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     return TP.$httpSend(TP.HTTP_PUT, targetUrl, aRequest);
@@ -231,7 +225,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     return TP.$httpQuery(TP.HTTP_TRACE, targetUrl, aRequest);
@@ -259,7 +252,6 @@ function(httpVerb, targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     var request,
@@ -309,7 +301,6 @@ function(httpVerb, targetUrl, aRequest) {
      * @raises TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
-     * @todo
      */
 
     var request,

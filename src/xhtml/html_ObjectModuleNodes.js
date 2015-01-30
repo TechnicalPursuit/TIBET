@@ -89,7 +89,6 @@ function(type) {
      * @param {String} type The MIME type indicating which data type to return.
      * @returns {String} The image data.
      * @raise TP.sig.InvalidNode
-     * @todo
      */
 
     var node;
@@ -111,7 +110,6 @@ function() {
      * @synopsis Returns the receiver's '2D graphics context'.
      * @returns {Object} The receiver's 2D graphics context.
      * @raise TP.sig.InvalidNode
-     * @todo
      */
 
     var node;
@@ -135,7 +133,6 @@ function(contextId) {
      * @param {String} contextId The ID of the context to fetch.
      * @returns {Object} The receiver's matching graphics context.
      * @raise TP.sig.InvalidNode
-     * @todo
      */
 
     var node;
@@ -166,7 +163,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     TRUE for TP.core.Node subtypes.
-     * @todo
      */
 
     //  If the method name is in the list of method names that a 2D context
@@ -199,7 +195,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The result of invoking the method using the native
      *     window object.
-     * @todo
      */
 
     var the2DContext,
@@ -244,7 +239,6 @@ function(attributeName) {
      * @param {String} attributeName The name/key of the attribute to return.
      * @returns {Object}
      * @raise TP.sig.InvalidContext
-     * @todo
      */
 
     var val,
@@ -283,7 +277,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The value to set it to.
      * @returns {Object}
      * @raise TP.sig.InvalidContext
-     * @todo
      */
 
     var the2DContext;

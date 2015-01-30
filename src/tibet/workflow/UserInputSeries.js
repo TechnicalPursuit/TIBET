@@ -44,7 +44,6 @@
  *     // note that we need to associate the request with a shell if // we want
  *     a console to respond since consoles only work on // behalf of their
  *     models uis.fire(this);
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -152,7 +151,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
      * @returns {TP.sig.UserInputSeries} The receiver.
-     * @todo
      */
 
     var arr,
@@ -267,7 +265,6 @@ function(aParamHash) {
      *     to show when the input isn't valid. Default is 'Retry?' 'validator':
      *     A function which should return true if the user's response is valid.
      * @returns {TP.sig.UserInputSeries}
-     * @todo
      */
 
     var arr,
@@ -439,7 +436,6 @@ function(anOrigin, aPayload, aPolicy) {
      * @param {Object} aPayload Optional signal arguments.
      * @param {Function} aPolicy A firing policy function.
      * @returns {TP.sig.UserInputSeries} The receiver.
-     * @todo
      */
 
     var arr,
@@ -535,7 +531,6 @@ function() {
      * @name getReplies
      * @synopsis Returns the array of current replies to the receiver's queries.
      * @returns {Array} The list of response strings acquired so far.
-     * @todo
      */
 
     return this.$get('replies');

@@ -114,7 +114,6 @@ function(aNode, aCommandList, aRequest) {
      * @param {Array} aCommandList The run requests for this script.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @todo
      */
 
     var children,
@@ -193,7 +192,6 @@ function(commands, aRequest) {
      *     individual sections of command pipeline.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @todo
      */
 
     var i,
@@ -382,7 +380,6 @@ function(aRequest) {
      *     input for the shell.
      * @returns {Object} A value which controls how the outer TSH processing
      *     loop should continue. TP.CONTINUE and TP.BREAK are common values.
-     * @todo
      */
 
     return this.tshExecute(aRequest);
@@ -547,7 +544,6 @@ function(source, shell, sibling, request) {
      *     pipe information.
      * @param {TP.sig.Request} request The request being desugared.
      * @returns {String} The translated/desugared script source.
-     * @todo
      */
 
     var requote,
@@ -1733,7 +1729,6 @@ function(aRequest, aMessage) {
      * @param {TP.sig.Request} aRequest The request to fail.
      * @param {String} aMessage The failure error message, if any.
      * @returns {TP.sig.Request|Number} The request or a TP status constant.
-     * @todo
      */
 
     var msg,
@@ -2396,7 +2391,6 @@ function(src, shell, request) {
      * @param {TP.core.Shell} shell The shell instance requesting processing.
      * @param {TP.sig.Request} request The request being processed.
      * @returns {String} The processed/converted content.
-     * @todo
      */
 
     var arr,
@@ -2830,7 +2824,6 @@ function(aSignal) {
      * @returns {TP.sig.Request} The request that was generated (or was
      *     supplied) to run this action.
      * @abstract
-     * @todo
      */
 
     var request;
@@ -2950,7 +2943,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @returns {TP.BREAK}
-     * @todo
      */
 
     if (this.isCompleting() || this.didComplete()) {
@@ -2987,7 +2979,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result for the
      *     request.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     if (this.isCompleting() || this.didComplete()) {
@@ -3024,7 +3015,6 @@ function(aFaultString, aFaultCode, anException) {
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
      * @returns {TP.BREAK}
-     * @todo
      */
 
     var str;
@@ -3073,7 +3063,6 @@ function(output, request) {
      * @param {Object} output The object to write to stderr.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
      *     Defaults to the receiver.
-     * @todo
      */
 
     var shell;
@@ -3095,7 +3084,6 @@ function(output, request) {
      * @param {Object} output The object to write to stderr.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
      *     Defaults to the receiver.
-     * @todo
      */
 
     var req,
@@ -3159,7 +3147,6 @@ function() {
      *     of 0 to N items provided by the various stdout, stderr, and input
      *     redirection calls related to a request.
      * @returns {Array} An array of 0 to N input objects.
-     * @todo
      */
 
     var buffer,
@@ -3328,7 +3315,6 @@ function(output, request) {
      * @param {Object} output The object to write to stdout.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
      *     Defaults to the receiver.
-     * @todo
      */
 
     var req,

@@ -283,7 +283,6 @@ TP.sys.getGlobals = function(params, windowContext) {
      * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.
      * @returns {Array} An array of all registered globals.
-     * @todo
      */
 
     if (typeof TP.sys.$getContextGlobals === 'function') {

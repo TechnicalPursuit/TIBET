@@ -32,7 +32,6 @@
  *     it to service these kinds of requests):
  *
  *     myJSONService.register();
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -71,7 +70,6 @@ function(aRequest) {
      *     object to take the request parameters from.
      * @returns {TP.core.JSONService} The receiver.
      * @raise TP.sig.InvalidURI, TP.sig.InvalidRequest
-     * @todo
      */
 
     var request,

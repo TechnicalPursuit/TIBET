@@ -99,7 +99,6 @@
  *                  TP.info(aResponse.getResult(), TP.LOG);
  *              });
  *     s3Req.fire();
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -138,7 +137,6 @@ function(aRequest, aResourceID, aThreadID) {
      * @param {String} aResourceID A unique resource identifier.
      * @param {String} aThreadID A unique thread identifier.
      * @returns {TP.sig.AmazonS3Request} A new instance.
-     * @todo
      */
 
     var newReq,
@@ -216,7 +214,6 @@ function(aRequest, aResourceID, aThreadID) {
      * @param {String} aResourceID A unique resource identifier.
      * @param {String} aThreadID A unique thread identifier.
      * @returns {TP.sig.AmazonS3GetItemRequest} A new instance.
-     * @todo
      */
 
     aRequest.atPutIfAbsent('action', 'getItemFromBucket');
@@ -253,7 +250,6 @@ function(aRequest, aResourceID, aThreadID) {
      * @param {String} aResourceID A unique resource identifier.
      * @param {String} aThreadID A unique thread identifier.
      * @returns {TP.sig.AmazonS3PutItemRequest} A new instance.
-     * @todo
      */
 
     aRequest.atPutIfAbsent('action', 'putItemInBucket');
@@ -275,7 +271,6 @@ function(aResponse) {
      *     type.
      * @returns {TP.sig.AmazonS3PutItemRequest} A new instance.
      * @abstract
-     * @todo
      */
 
     var putItemRequestParams,

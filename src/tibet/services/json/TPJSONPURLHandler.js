@@ -46,7 +46,6 @@ function(targetURI, aRequest) {
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
      * @raise TP.sig.InvalidURI, TP.sig.InvalidRequest
-     * @todo
      */
 
     var request,
@@ -118,7 +117,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var request,
@@ -149,7 +147,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var request,

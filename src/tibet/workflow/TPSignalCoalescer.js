@@ -75,7 +75,6 @@ function(aSignalName) {
      * @param {String} aSignalName The signal type name the instance should
      *     signal when it coalesces. Default is the receiver's type name.
      * @returns {TP.sig.SignalCoalescer} The new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -106,7 +105,6 @@ function(anOrigin, aSignal, aCount, aPolicy) {
      * @param {Function} aPolicy A registration policy. Using this you can
      *     define capture vs. bubble observations.
      * @returns {TP.sig.SignalCoalescer} The receiver.
-     * @todo
      */
 
     var item,
@@ -159,7 +157,6 @@ function(anOrigin, aSignal, aCount, aPolicy) {
      * @param {Function} aPolicy A registration policy. Using this you can
      *     define capture vs. bubble observations.
      * @returns {TP.sig.SignalCoalescer} The receiver.
-     * @todo
      */
 
     var item,
@@ -205,7 +202,6 @@ function(anOrigin, aSignal) {
      * @param {String} anOrigin What origin is being observed?
      * @param {String} aSignal What signal is being observed?
      * @returns {String} The trigger ID.
-     * @todo
      */
 
     var oKey,
@@ -297,7 +293,6 @@ function(anItem) {
      *     Or-Join scenarios.
      * @raises SubtypeResponsibility
      * @returns {Boolean} True if the receiver should signal it's notifier.
-     * @todo
      */
 
     return TP.override();

@@ -78,7 +78,6 @@ function(aResourceID, aRequest) {
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
      * @returns {TP.sherpa.ConsoleService} A new instance.
-     * @todo
      */
 
     var name;
@@ -114,7 +113,6 @@ function(aResourceID, aRequest) {
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
      * @returns {TP.sherpa.ConsoleService} A new instance.
-     * @todo
      */
 
     var request,
@@ -532,7 +530,6 @@ function(aSignal) {
      * @synopsis Handles notifications of keydown events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyDown} aSignal The TIBET signal which triggered this method.
-     * @todo
      */
 
     var evt,
@@ -583,7 +580,6 @@ function(aSignal) {
      *     console maps then the default action is overidden.
      * @param {DOMKeyPress} aSignal The TIBET signal which triggered this
      *     method.
-     * @todo
      */
 
     var evt;
@@ -1049,7 +1045,6 @@ function(aRequest) {
      *     default data.
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions.
-     * @todo
      */
 
     var query,
@@ -1361,7 +1356,6 @@ function() {
      * @synopsis Returns the maximum width of unbroken strings in the console.
      *     This value will default to the WIDTH variable setting.
      * @returns {Number}
-     * @todo
      */
 
     var model,
@@ -1398,7 +1392,6 @@ function(aFlag) {
      * @param {Boolean} aFlag An optional flag to set as the new system console
      *     status.
      * @returns {Boolean}
-     * @todo
      */
 
     //  TODO:   use this flag to control which console has stdio ownership
@@ -1488,7 +1481,6 @@ function(anObject, aRequest) {
      * @param {Object} anObject The message and level source.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @todo
      */
 
     return;
@@ -1508,7 +1500,6 @@ function(anError, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.sherpa.ConsoleService} The receiver.
-     * @todo
      */
 
     var request,
@@ -1571,7 +1562,6 @@ function(anObject, aDefault, aRequest) {
      *     input cell.
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions.
-     * @todo
      */
 
     var consoleGUI;
@@ -1601,7 +1591,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.sherpa.ConsoleService} The receiver.
-     * @todo
      */
 
     var request,
@@ -1693,7 +1682,6 @@ function(aRequest) {
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.tsh.ConsoleOutputCell} The receiver.
      * @abstract
-     * @todo
      */
 
     var request,
@@ -1778,7 +1766,6 @@ function(anObject, aRequest) {
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.sherpa.Console} The receiver.
      * @abstract
-     * @todo
      */
 
     var request,

@@ -47,7 +47,6 @@ function() {
      *     senders too.
      * @returns {Array} The list of functions that the receiver will attempt to
      *     invoke on itself.
-     * @todo
      */
 
     var re,
@@ -119,7 +118,6 @@ function(aFilter, undefNotNull) {
      *     differently than nulls for uniquing purposes.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var func,
@@ -257,7 +255,6 @@ function() {
      *     and is currently in need of sorting (it's changed since the last
      *     sort).
      * @returns {Array} The receiver.
-     * @todo
      */
 
     if (this.$needsSort && this.sortFunction) {
@@ -340,7 +337,6 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
      *     undefined. This isn't normally done except by certain container
      *     types, especially response objects.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var newVal,
@@ -445,7 +441,6 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var newVal,
@@ -584,7 +579,6 @@ function(anIndex, aValue) {
      * @param {Object} aValue The value to place at anIndex.
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var index;
@@ -618,7 +612,6 @@ function(anIndex, varargs) {
      *     which descend into nested array children.
      * @returns {Object} The value at the index.
      * @addon Array
-     * @todo
      */
 
     var index,
@@ -690,7 +683,6 @@ function(anIndex, varargs, aValue) {
      *     supplied.
      * @returns {Array} The receiver.
      * @addon Array
-     * @todo
      */
 
     var index,
@@ -819,7 +811,6 @@ function(anIndex, aValue) {
      * @param {Object} aValue The value to place at anIndex.
      * @returns {Object} A new string with the adjusted value.
      * @signals Change
-     * @todo
      */
 
     var index;
@@ -843,7 +834,6 @@ function(anIndex, aValue) {
 
 /**
  * @
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -858,7 +848,6 @@ function() {
      *     by combining pre-existing metadata with runtime information to
      *     construct a complete list.
      * @returns {Array} An array of the non-native type names.
-     * @todo
      */
 
     return TP.keys(TP.sys.getMetadata('types'));
@@ -876,7 +865,6 @@ function() {
      *     the Type.Track.MethodName separated with periods. This information is
      *     used by both the canResolveDNU and method linting routines in TIBET.
      * @returns {Array} An array of the unique method IDs.
-     * @todo
      */
 
     return TP.keys(TP.sys.getMetadata('methods'));
@@ -896,7 +884,6 @@ function() {
      * @param {Boolean} full True if full metadata is required for this call,
      *     meaning the external metadata cache should be loaded.
      * @returns {Array} An array of the unique method names.
-     * @todo
      */
 
     var methods,
@@ -934,7 +921,6 @@ function(aFunction, namesOnly) {
      * @param {Boolean} namesOnly True means return the list of owner names
      *     only. Default is false.
      * @returns {Array} An array of objects/types.
-     * @todo
      */
 
     var fname,
@@ -992,7 +978,6 @@ function(kind) {
      * @param {String} kind The subset of metadata to return. Should be one of
      *     'types', 'attributes', 'methods', 'owners', or 'pathinfo'.
      * @returns {TP.lang.Hash} The TIBET metadata hash.
-     * @todo
      */
 
     switch (kind) {
@@ -1037,7 +1022,6 @@ function(startIndex, endIndex, arrayPrefix) {
      * @param {Number} endIndex The final index.
      * @param {String} arrayPrefix Name of the array to reference.
      * @returns {String}
-     * @todo
      */
 
     var start,
@@ -1074,7 +1058,6 @@ function(startIndex, endIndex, arrayPrefix) {
 /**
  * @A significant amount of TIBET's power comes from controlling the object
  *     creation process so we start that as early as possible.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -1094,7 +1077,6 @@ function() {
      *     size.
      * @returns {Array} A new instance.
      * @abtract Constructs and returns a new array instance.
-     * @todo
      */
 
     var arg,
@@ -1134,7 +1116,6 @@ function(anObject) {
      * @abtract Constructs and returns a new instance of Boolean. Booleans are
      *     localized by using the current locale's parse routine to help ensure
      *     proper translation of Boolean string input.
-     * @todo
      */
 
     var val,
@@ -1190,7 +1171,6 @@ function() {
      *     using any date parsers which have been added to the Date type,
      *     followed by the current TP.core.Locale which attempts to construct a
      *     Date using localized parsing logic.
-     * @todo
      */
 
     var $$newinst,
@@ -1277,7 +1257,6 @@ function() {
      * @name construct
      * @returns {Function} A new instance.
      * @abtract Constructs and returns a new instance of the receiver.
-     * @todo
      */
 
     var $$newinst,
@@ -1368,7 +1347,6 @@ function(anObject) {
      *     parsed using any number parsers which have been added to the number
      *     type, followed by the current TP.core.Locale which attempts to
      *     construct a Number using localized parsing logic.
-     * @todo
      */
 
     var val,
@@ -1416,7 +1394,6 @@ function() {
      *     object as a hash for a number of reasons. If you truly want a
      *     "dictionary" (i.e. "hash") you should use TP.hc()
      *     (TP.lang.Hash.construct) instead.
-     * @todo
      */
 
     var i,
@@ -1457,7 +1434,6 @@ function(pattern, flags) {
      *     multiple lines.
      * @returns {RegExp} A new instance.
      * @abtract Constructs and returns a new instance of the receiver.
-     * @todo
      */
 
     var restr,
@@ -1502,7 +1478,6 @@ function() {
      * @returns {String} A new instance.
      * @abtract Constructs and returns a new instance of String from the
      *     arguments supplied. This routine localizes each argument.
-     * @todo
      */
 
     var currentLocale,

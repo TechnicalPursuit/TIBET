@@ -40,7 +40,6 @@ function(aNode, aNamespace) {
      *     template.
      * @param {String} aNamespace The namespace to qualify the receiver with.
      * @returns {TP.xmpp.Query} A new instance.
-     * @todo
      */
 
     var elem,

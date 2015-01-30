@@ -973,7 +973,6 @@ TP.sys.defineGlobal = function(aName, aValue, force) {
      * @param {Boolean} force True means an existing value will be forcefully
      *     replaced with the new value. The default is false.
      * @return {Object} The value after setting.
-     * @todo
      */
 
     var wasUndefined;
@@ -1150,7 +1149,6 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
      * @param {String} aPrefix The default prefix to use for unprefixed key
      *     values.
      * @return {Object} The value of the property.
-     * @todo
      */
 
     var prefix,
@@ -1256,7 +1254,6 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
      *     signaling.
      * @param {Boolean} override True to force an override property change.
      * @return {Object} The value of the named property.
-     * @todo
      */
 
     var key,
@@ -1359,7 +1356,6 @@ TP.sys.getcfg = function(aKey, aDefault) {
      * @param {String} aDefault The default value to use when the named property
      *     isn't defined.
      * @return {Object} The value of the named property.
-     * @todo
      */
 
     var val;
@@ -1404,7 +1400,6 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
      *     signaling.
      * @param {Boolean} override True to force an override property change.
      * @return {Object} The value of the named property.
-     * @todo
      */
 
     return TP.boot.$$setprop(TP.sys.configuration, aKey, aValue, 'cfg',
@@ -1459,7 +1454,6 @@ TP.boot.$getenv = function(aKey, aDefault) {
      * @param {String} aDefault The default value to use when the named property
      *     isn't defined.
      * @return {Object} The value of the named property.
-     * @todo
      */
 
     if (!aKey) {
@@ -1488,7 +1482,6 @@ TP.boot.$$setenv = function(aKey, aValue) {
      * @param {String} aKey The property name to set.
      * @param {Object} aValue The value to assign.
      * @return {Object} The value of the named property.
-     * @todo
      */
 
     return TP.boot.$$setprop(TP.sys.environment, aKey, aValue, 'env');

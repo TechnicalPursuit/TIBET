@@ -109,7 +109,6 @@ function() {
      * @name configure
      * @returns {TP.xctrls.richtext} The receiver.
      * @abstract
-     * @todo
      */
 
     var editorInst;
@@ -204,7 +203,6 @@ function(aSignal) {
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action. This signal should include a key of 'deep' and a value of
      *     true to cause a deep refresh that updates all nodes.
-     * @todo
      */
 
     /*
@@ -246,7 +244,6 @@ function(editorID, ctrlManager, elem, isCollapsed, otherObj) {
      * @param {undefined} otherObj
      * @returns {TP.xctrls.richtext} The receiver.
      * @abstract
-     * @todo
      */
 
     var oldLength,
@@ -299,7 +296,6 @@ function(aSignal) {
      * @param {undefined} aSignal
      * @returns {TP.xctrls.richtext} The receiver.
      * @abstract
-     * @todo
      */
 
     var firstItem,
@@ -325,7 +321,6 @@ function(publishName) {
      * @param {undefined} publishName
      * @returns {undefined}
      * @abstract
-     * @todo
      */
 
     var payload,
@@ -379,7 +374,6 @@ function(shareFlag, shareName) {
      * @param {undefined} shareName
      * @returns {TP.xctrls.richtext} The receiver.
      * @abstract
-     * @todo
      */
 
     var requestParams,
@@ -464,7 +458,6 @@ function() {
      * @name clearSelection
      * @returns {undefined}
      * @abstract
-     * @todo
      */
 
     var oldVal;
@@ -491,7 +484,6 @@ function(toStart) {
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
      * @returns {TP.xctrls.richtext} The receiver.
-     * @todo
      */
 
     this.$getEditorInstance().selection.collapse(toStart);
@@ -587,7 +579,6 @@ function(aText) {
      * @param {undefined} aText
      * @returns {undefined}
      * @abstract
-     * @todo
      */
 
     var oldVal,
@@ -617,7 +608,6 @@ function(aStartIndex, anEndIndex) {
      * @param {Number} aStartIndex The starting index.
      * @param {Number} aEndIndex The ending index.
      * @returns {TP.xctrls.richtext} The receiver.
-     * @todo
      */
 
     TP.todo();
@@ -667,7 +657,6 @@ function(aText) {
      * @param {undefined} aText
      * @returns {undefined}
      * @abstract
-     * @todo
      */
 
     //  This method is just an alias for replaceSelection()
@@ -687,7 +676,6 @@ function(beforeText, afterText) {
      * @param {String} beforeText The text to insert before the selection.
      * @param {String} afterText The text to insert after the selection.
      * @returns {TP.xctrls.richtext} The receiver.
-     * @todo
      */
 
     this.replaceSelection(TP.join(beforeText,

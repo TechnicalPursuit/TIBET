@@ -30,7 +30,6 @@ function(aSignal) {
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action. This signal should include a key of 'deep' and a value of
      *     true to cause a deep refresh that updates all nodes.
-     * @todo
      */
 
     var data,

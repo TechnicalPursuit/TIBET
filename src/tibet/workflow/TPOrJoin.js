@@ -34,7 +34,6 @@ function(anItem) {
      * @param {Array} anItem A 'trigger' array. Used primarily to optimize for
      *     Or-Join scenarios.
      * @returns {Boolean} True if the receiver should signal it's notifier.
-     * @todo
      */
 
     //  seen the proper count? then yes, at least one trigger qualification

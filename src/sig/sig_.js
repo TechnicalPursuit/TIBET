@@ -36,7 +36,6 @@ function(anElement) {
      *     signal payload from.
      * @returns {Object} An object which controls how outer TSH loop processing
      *     should continue.
-     * @todo
      */
 
     var signalName,

@@ -46,7 +46,6 @@ function(anElement, idValue) {
      *     already been created with this ID, it will be returned, thereby
      *     reusing the gradient element.
      * @returns {String} The 'gradient URL' for elements to use.
-     * @todo
      */
 
     return TP.override();
@@ -69,7 +68,6 @@ function(anElement, idValue, gradientTagName) {
      * @param {String} gradientTagName The tag name of the gradient to create -
      *     either 'linear' or 'radial'.
      * @returns {Element} The newly created SVG 'gradient' element.
-     * @todo
      */
 
     var nativeDoc,
@@ -283,7 +281,6 @@ function(anElement, idValue) {
      *     already been created with this ID, it will be returned, thereby
      *     reusing the gradient element.
      * @returns {String} The 'gradient URL' for elements to use.
-     * @todo
      */
 
     var gradElem,
@@ -422,7 +419,6 @@ function(anElement, idValue) {
      *     already been created with this ID, it will be returned, thereby
      *     reusing the gradient element.
      * @returns {String} The 'gradient URL' for elements to use.
-     * @todo
      */
 
     var gradElem,
@@ -494,7 +490,6 @@ function(anElement, idValue) {
      *     already been created with this ID, it will be returned, thereby
      *     reusing the pattern element.
      * @returns {Element} The newly created SVG 'pattern' element.
-     * @todo
      */
 
     var nativeDoc,

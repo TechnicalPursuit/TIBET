@@ -68,7 +68,6 @@
  *     register it to service these kinds of requests):
  *
  *     s3Service.register();
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -108,7 +107,6 @@ function(resourceID, aRequest) {
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.URIService} A new instance.
-     * @todo
      */
 
     this.callNextMethod();

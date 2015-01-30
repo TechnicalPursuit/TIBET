@@ -115,7 +115,6 @@ function(assignIfAbsent) {
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The canvas's global ID.
-     * @todo
      */
 
     return TP.gid(this.getNativeContentWindow(), assignIfAbsent);
@@ -132,7 +131,6 @@ function(assignIfAbsent) {
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The canvas's local ID.
-     * @todo
      */
 
     return TP.lid(this.getNativeContentWindow(), assignIfAbsent);
@@ -191,7 +189,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     TRUE for TP.core.Node subtypes.
-     * @todo
      */
 
     var win,
@@ -260,7 +257,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The result of invoking the method using the native
      *     window object.
-     * @todo
      */
 
     var win,
@@ -329,7 +325,6 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @todo
      */
 
     this.getContentDocument().setContent(aContentObject, aRequest);
@@ -469,7 +464,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
-     * @todo
      */
 
     var map,
@@ -661,7 +655,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
-     * @todo
      */
 
     var map,
@@ -762,7 +755,6 @@ function(aWindow, aName, aSpec) {
      *     a hash that can be used to produce a feature string. You should use
      *     'top' and 'left' on all browsers and TIBET will convert as needed.
      * @returns {TP.core.Window} The new instance.
-     * @todo
      */
 
     var theWindow,
@@ -856,7 +848,6 @@ function() {
      * @synopsis Returns an array of all windows TIBET is aware of (registered
      *     windows) that are open.
      * @returns {Array} An array of native window instances.
-     * @todo
      */
 
     var dict,
@@ -899,7 +890,6 @@ function(aWindowOrID, aKey) {
      *     first key.
      * @param {String} aKey The key into the specific window's info hash.
      * @returns {Object} The value registered for the key provided.
-     * @todo
      */
 
     var winID,
@@ -930,7 +920,6 @@ function() {
      * @synopsis Returns the window specification hash used by default when
      *     creating instances of this type.
      * @returns {TP.lang.Hash}
-     * @todo
      */
 
     return this.$get('$defaultWindowSpec');
@@ -1086,7 +1075,6 @@ function(url, aName, aSpec, shouldReplace) {
      * @param {Boolean} shouldReplace Whether the content should be replaced if
      *     the window is already open.
      * @returns {Window} The newly constructed window.
-     * @todo
      */
 
     var theURL,
@@ -1145,7 +1133,6 @@ function(aWindowOrID, aFunction, runFirst) {
      *     when the 'onload' event is triggered for aWindow.
      * @param {Boolean} runFirst Whether or not the function should run before
      *     the other functions in the list.
-     * @todo
      */
 
     var shouldRunFirst,
@@ -1268,7 +1255,6 @@ function(aWindowOrID, aKey) {
      * @param {Window|String} aWindowOrID The window, or window ID to use as the
      *     first key.
      * @param {String} aKey The key into the specific window's info hash.
-     * @todo
      */
 
     var winID,
@@ -1311,7 +1297,6 @@ function(aWindowOrID, theContent, aLoadedFunction) {
      * @param {String|URI|Node} theContent The content.
      * @param {Function} aLoadedFunction An optional 'loaded' function that will
      *     execute when the content is finished loading.
-     * @todo
      */
 
     var win,
@@ -1363,7 +1348,6 @@ function(aWindowOrID, aKey, aValue) {
      * @param {String} aKey The key into the specific window's info hash.
      * @param {Object} aValue The value to set for the key.
      * @returns {Object} The value registered for the key provided.
-     * @todo
      */
 
     var winID,
@@ -1454,7 +1438,6 @@ function(aURL, wantsHistoryEntry, onloadFunction) {
      * @param {Function} onloadFunction The setup function to execute as part of
      *     the document's 'onload' processing.
      * @returns {TP.core.Window} The receiver.
-     * @todo
      */
 
     var url,
@@ -1923,7 +1906,6 @@ function(assignIfAbsent) {
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The window's global ID (it's fully-qualified name).
-     * @todo
      */
 
     //  cached on creation
@@ -1942,7 +1924,6 @@ function(assignIfAbsent) {
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The window's local ID (it's non-qualified name).
-     * @todo
      */
 
     var win;
@@ -2011,7 +1992,6 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @todo
      */
 
     var req,
@@ -2373,7 +2353,6 @@ function(aSignalOrHash) {
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.
      * @returns {TP.core.Window} The receiver.
-     * @todo
      */
 
     TP.stop('break.bind_refresh');

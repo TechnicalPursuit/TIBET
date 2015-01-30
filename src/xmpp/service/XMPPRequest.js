@@ -204,7 +204,6 @@
  *     msgReq.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
  *     TP.info(aResponse.getResult(), TP.LOG); }); msgReq.fire();
- * @todo
  */
 
 //  ------------------------------------------------------------------------

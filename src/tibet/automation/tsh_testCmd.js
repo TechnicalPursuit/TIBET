@@ -266,7 +266,6 @@ function(aRequest) {
      *     input for the shell.
      * @returns {Array} An array containing the new node and a TSH loop control
      *     constant, TP.DESCEND by default.
-     * @todo
      */
 
     var node,

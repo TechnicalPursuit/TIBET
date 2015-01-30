@@ -53,7 +53,6 @@ function(aName, aValue, force) {
      * @param {Boolean} force True means an existing value will be forcefully
      *     replaced with the new value. The default is false.
      * @returns {Object} The value after setting.
-     * @todo
      */
 
     //  we prefer explicit tests

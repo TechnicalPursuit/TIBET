@@ -36,7 +36,6 @@ function() {
      *     ID for result signals.
      * @param {Boolean} aFlag The new value for the flag, if used as a setter.
      * @returns {Boolean} The current flag value, after optional set.
-     * @todo
      */
 
     return true;
@@ -58,7 +57,6 @@ function(aStanza) {
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
      * @returns {String}
-     * @todo
      */
 
     if (this.isSignal()) {

@@ -22,7 +22,6 @@ function(anEvent) {
      * @synopsis Prevents the event's default action from occurring.
      * @param {Event} anEvent The native event object.
      * @returns {Event} The native event object.
-     * @todo
      */
 
     if (!TP.isEvent(anEvent)) {

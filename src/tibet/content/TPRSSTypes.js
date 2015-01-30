@@ -41,7 +41,6 @@ function(aNode, aURI) {
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.core.Node} The initialized instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -243,7 +242,6 @@ function() {
      *     'getItems' is already defined as a method on TP.core.CollectionNode
      *     and therefore a getter built from a type schema entry won't be built.
      * @returns {Array} An Array of TP.core.RSSItems.
-     * @todo
      */
 
     return this.getElementsByTagName('item');

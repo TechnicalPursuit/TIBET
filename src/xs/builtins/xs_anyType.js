@@ -73,7 +73,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var name,
@@ -110,7 +109,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var inst;
@@ -137,7 +135,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  this facet is only supported for TP.xs.decimal
@@ -159,7 +156,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  strings and string-like types support this, but nothing else
@@ -181,7 +177,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  float and date/time types support this
@@ -203,7 +198,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  float and date/time types support this
@@ -226,7 +220,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  string and string-like types support this facet
@@ -248,7 +241,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  float and date/time types support this
@@ -270,7 +262,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  float and date/time types support this
@@ -293,7 +284,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  string and string-like types support this facet
@@ -318,7 +308,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var regex,
@@ -344,7 +333,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  supported by TP.xs.decimal and its descendants
@@ -368,7 +356,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     //  not really a validity check, more of a "pre-formatter" which is

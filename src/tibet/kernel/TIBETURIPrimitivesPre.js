@@ -11,7 +11,6 @@
 /**
  * @Common URI (file) access and support functions used as a starting point for
  *     many of the URI-related functionality in TIBET.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -24,7 +23,6 @@
  *     platform variations like the need to quote filenames on Windows that may
  *     include spaces in them. Additional functions specific to each browser are
  *     contained in the *Moz.js and *IE.js versions of this file.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -260,7 +258,6 @@ function(aURI, aNode, shouldClone) {
      *     rather than returned as is. The default is true.
      * @raises TP.sig.InvalidURI,TP.sig.InvalidNode
      * @returns {Array} An array containing zero or more Nodes.
-     * @todo
      */
 
     var resultElements,
@@ -488,7 +485,6 @@ function(aPath, aRoot) {
      * @param {String} aRoot The root to use for relative path resolution.
      *     Default is TP.sys.getAppRoot();.
      * @returns {String}
-     * @todo
      */
 
     var path;
@@ -594,7 +590,6 @@ function(aPath, aFragment) {
      *     match, the path will be returned unchanged.
      * @raises TP.sig.InvalidURI
      * @returns {String} A properly joined URI/Query string.
-     * @todo
      */
 
     var result,
@@ -745,7 +740,6 @@ function(firstPath, secondPath) {
      * @param {String} secondPath The 'tail' path.
      * @returns {String} The two paths joined together in an appropriate
      *     fashion.
-     * @todo
      */
 
     var i,
@@ -881,7 +875,6 @@ function(aPath, aQuery) {
      * @param {String} aQuery The query fragment.
      * @raises TP.sig.InvalidURI
      * @returns {String} A properly joined URI/Query string.
-     * @todo
      */
 
     var url,
@@ -1054,7 +1047,6 @@ function(firstPath, secondPath, filePath) {
      *     directories, not files. Defaults to true since the vast majority of
      *     URI references are to files.
      * @returns {String}
-     * @todo
      */
 
     var file,
@@ -1306,7 +1298,6 @@ function(aRootPath, aRelativePath, filePath) {
      *     directories, not files.
      * @raises TP.sig.InvalidURI
      * @returns {String}
-     * @todo
      */
 
     var url,
@@ -1466,7 +1457,6 @@ function(aPath, resourceOnly) {
      *     false.
      * @raises TP.sig.InvalidURI,TP.sig.InvalidCanvas
      * @returns {String} The fully resolved path.
-     * @todo
      */
 
     var url,
@@ -1628,7 +1618,6 @@ function(text, type, report) {
      *     reported.
      * @returns {String|Document|Array} An XML document, response text, or an
      *     array containing the text and DOM node in that order.
-     * @todo
      */
 
     var doc,
@@ -1690,7 +1679,6 @@ function(targetUrl, resultType) {
      * @param {TP.TEXT|TP.DOM|null} resultType A result type constant.
      * @raises TP.sig.InvalidURI
      * @returns {Object} TP.TEXT|TP.DOM|null.
-     * @todo
      */
 
     if (!TP.isString(targetUrl)) {
@@ -1740,7 +1728,6 @@ function(aPath, aSeparator) {
      * @param {String} aSeparator A single character. Default is '.'.
      * @raises TP.sig.InvalidURI
      * @returns {String}
-     * @todo
      */
 
     var name,
@@ -1876,7 +1863,6 @@ function(targetUrl, aRoot) {
      *     from.
      * @raises TP.sig.InvalidURI
      * @returns {String} The url, after ensuring a root exists.
-     * @todo
      */
 
     var root,
@@ -1921,7 +1907,6 @@ function(targetUrl, filePrefix, fileSuffix) {
      *     'tmp'.
      * @returns {String} A new file name with the directory and a new temp file
      *     name.
-     * @todo
      */
 
     var root,

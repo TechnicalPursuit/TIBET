@@ -42,8 +42,6 @@
  *     conn.close();
  *
  *
- * @todo Implement the ability to attach/detach from a transport.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -74,7 +72,6 @@ function(aServerName, aConnectionInfo) {
      *     information', such as 'httpServerURI' and 'connectionType'.
      * @raises TP.sig.InvalidParameter
      * @returns {TP.xmpp.Connection} A new instance.
-     * @todo
      */
 
     var inst;
@@ -147,7 +144,6 @@ function(aServerName, aConnectionInfo) {
      *     information', such as 'httpServerURI' and 'connectionType'.
      * @raises TP.sig.InvalidParameter
      * @returns {TP.xmpp.Connection} A new instance.
-     * @todo
      */
 
     var instr,
@@ -212,7 +208,6 @@ function(aJID, aPassword, aMethod) {
      * @raises TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
      *     TP.sig.XMPPAuthException, TP.sig.InvalidParameter
      * @returns {Boolean} True on successful authentication.
-     * @todo
      */
 
     var method,
@@ -274,7 +269,6 @@ function(aJID, aPassword) {
      * @raises TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
      *     TP.sig.XMPPAuthException
      * @returns {Boolean} True on successful authentication.
-     * @todo
      */
 
     var theJID,
@@ -565,7 +559,6 @@ function(aJID, aPassword) {
      * @raises TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
      *     TP.sig.XMPPAuthException
      * @returns {Boolean} True on successful authentication.
-     * @todo
      */
 
     TP.override();
@@ -585,7 +578,6 @@ function(aJID, aPassword) {
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID String.
      * @param {String} aPassword The password to use.
      * @returns {Boolean} True on successful connection.
-     * @todo
      */
 
     var jid,
@@ -803,7 +795,6 @@ function(aStanzaType, toJID, aPayload) {
      * @param {TP.xmpp.Payload} aPayload A payload instance.
      * @raises TP.sig.InvalidInstantiation, TP.sig.InvalidXMPPStanzaType
      * @returns {TP.xmpp.Stanza} A new stanza instance.
-     * @todo
      */
 
     var tagName,
@@ -1174,7 +1165,6 @@ function(aFlag) {
      * @synopsis Returns true if the receiver has authenticated successfully.
      * @param {Boolean} aFlag The new authenticatedness value, if any.
      * @returns {Boolean} The authenticatedness status, after optional set.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -1210,7 +1200,6 @@ function(aFlag) {
      *     connection is open.
      * @param {Boolean} aFlag The new open/closed status if any.
      * @returns {Boolean} The connection open status, after optional set.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {

@@ -300,7 +300,6 @@ function(aResourceID, aRequest) {
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
      * @returns {TP.core.ConsoleService} A new instance.
-     * @todo
      */
 
     var name;
@@ -335,7 +334,6 @@ function(aResourceID, aRequest) {
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
      * @returns {TP.core.ConsoleService} A new instance.
-     * @todo
      */
 
     var request,
@@ -424,7 +422,6 @@ function() {
      * @name configure
      * @returns {TP.core.ConsoleService} The receiver.
      * @abstract
-     * @todo
      */
 
     // Get the input area ready for user input.
@@ -451,7 +448,6 @@ function() {
      * @name configureInputCell
      * @returns {TP.core.ConsoleService} The receiver.
      * @abstract
-     * @todo
      */
 
     var cell,
@@ -590,7 +586,6 @@ function(aSignal) {
      *     updated for.
      * @returns {TP.tsh.ConsoleOutputCell} The receiver.
      * @abstract
-     * @todo
      */
 
     var val,
@@ -627,7 +622,6 @@ function(aSignal) {
      *     updated for.
      * @returns {TP.tsh.ConsoleOutputCell} The receiver.
      * @abstract
-     * @todo
      */
 
     var val,
@@ -876,7 +870,6 @@ function(aFlag) {
      *     process.
      * @param {Boolean} aFlag An optional new setting.
      * @returns {Boolean} The current input state.
-     * @todo
      */
 
     var inputCell;
@@ -921,7 +914,6 @@ function(anObject, shouldAppend) {
      * @param {Boolean} shouldAppend Whether or not to append the value of
      *     anObject to any existing content.
      * @returns {TP.core.ConsoleService} The receiver.
-     * @todo
      */
 
     var wrappedInputCell,
@@ -1093,7 +1085,6 @@ function(aSignal) {
      * @synopsis Handles notifications of keydown events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyDown} aSignal The TIBET signal which triggered this method.
-     * @todo
      */
 
     var evt,
@@ -1126,7 +1117,6 @@ function(aSignal) {
      *     console maps then the default action is overidden.
      * @param {DOMKeyPress} aSignal The TIBET signal which triggered this
      *     method.
-     * @todo
      */
 
     var evt,
@@ -1282,7 +1272,6 @@ function(aSignal) {
      * @param {TP.sig.DOMModifierKeyChange} aSignal The TIBET signal which
      *     triggered this handler.
      * @abstract
-     * @todo
      */
 
     return;
@@ -1686,7 +1675,6 @@ function(aRequest) {
      *     default data.
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions.
-     * @todo
      */
 
     var query,
@@ -1908,7 +1896,6 @@ function() {
      * @synopsis Clears any status information such as window.status and/or any
      *     status bar content, resetting it to the default state.
      * @returns {TP.core.ConsoleService} The receiver.
-     * @todo
      */
 
     //TP.info('fix TP.core.ConsoleService::clearStatus', TP.LOG);
@@ -2096,7 +2083,6 @@ function() {
      * @synopsis Returns the maximum width of unbroken strings in the console.
      *     This value will default to the WIDTH variable setting.
      * @returns {Number}
-     * @todo
      */
 
     var model,
@@ -2133,7 +2119,6 @@ function(aFlag) {
      * @param {Boolean} aFlag An optional flag to set as the new system console
      *     status.
      * @returns {Boolean}
-     * @todo
      */
 
     //  TODO:   use this flag to control which console has stdio ownership
@@ -2191,7 +2176,6 @@ function(aPrompt, aCSSClass) {
      * @param {String} aCSSClass An optional CSS class name to use for display
      *     of the prompt string.
      * @returns {TP.core.ConsoleService} The receiver.
-     * @todo
      */
 
     var cssClass,
@@ -2280,7 +2264,6 @@ function(anObject, aRequest) {
      * @param {Object} anObject The message and level source.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @todo
      */
 
     return;
@@ -2300,7 +2283,6 @@ function(anError, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.core.ConsoleService} The receiver.
-     * @todo
      */
 
     var request,
@@ -2363,7 +2345,6 @@ function(anObject, aDefault, aRequest) {
      *     input cell.
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions.
-     * @todo
      */
 
     TP.stop('break.tdc_stdin');
@@ -2389,7 +2370,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.core.ConsoleService} The receiver.
-     * @todo
      */
 
     var request,
@@ -2478,7 +2458,6 @@ function(aRequest) {
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.tsh.ConsoleOutputCell} The receiver.
      * @abstract
-     * @todo
      */
 
     var request,
@@ -2563,7 +2542,6 @@ function(anObject, aRequest) {
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.tdp.Console} The receiver.
      * @abstract
-     * @todo
      */
 
     var request,

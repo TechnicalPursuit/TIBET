@@ -48,7 +48,6 @@ function(aCondition, aComment, aFaultString) {
      * @param {String} aComment A human-readable comment String.
      * @param {String} aFaultString A String detailing the fault. This will be
      *     appended to the comment if it's supplied.
-     * @todo
      */
 
     var comment,
@@ -81,7 +80,6 @@ function(anArgArray, aCount, aComment) {
      * @param {String} aComment The comment to use when reporting that the
      *     argument Array does not have the required minimum number of
      *     arguments.
-     * @todo
      */
 
     var comment;
@@ -116,7 +114,6 @@ function(aCondition, aComment, aFaultString) {
      * @param {String} aComment A human-readable comment String.
      * @param {String} aFaultString A String detailing the fault. This will be
      *     appended to the comment if it's supplied.
-     * @todo
      */
 
     var condition,

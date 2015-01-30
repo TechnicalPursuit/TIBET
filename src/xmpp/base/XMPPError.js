@@ -104,7 +104,6 @@ function() {
      *     occurred. Note that error texts are completely optional as per the
      *     XMPP 1.0 specification.
      * @returns {String} The error text for the current error condition.
-     * @todo
      */
 
     var errorText,
@@ -138,7 +137,6 @@ function(aStanza) {
      *     'TP.sig.XMPPInvalidXmlErrorInput'.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
      * @returns {String}
-     * @todo
      */
 
     var condition,

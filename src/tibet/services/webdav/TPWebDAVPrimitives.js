@@ -10,7 +10,6 @@
 
 /**
  * @Basic support for WebDAV calls via XMLHttpRequest.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -29,7 +28,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -55,7 +53,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -111,7 +108,6 @@ function(targetUrl, aRequest) {
      *     result is an XHR object whose 'status' should be 207.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -138,7 +134,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -171,7 +166,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -202,7 +196,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -251,7 +244,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -294,7 +286,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -342,7 +333,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -406,7 +396,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -456,7 +445,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -482,7 +470,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -531,7 +518,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -590,7 +576,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -635,7 +620,6 @@ function(targetUrl, aRequest, useQuery) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -691,7 +675,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -720,7 +703,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -763,7 +745,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -855,7 +836,6 @@ function(targetUrl, aRequest) {
      *     content will contain the lock token.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -940,7 +920,6 @@ function(targetUrl, aRequest) {
      *     result is an XHR object whose 'status' should be 201.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -985,7 +964,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -1060,7 +1038,6 @@ function(targetUrl, aRequest) {
      *     containing the property information being queried for.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -1127,7 +1104,6 @@ function(targetUrl, aRequest) {
      *     containing entries of the form shown in the discussion section.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -1208,7 +1184,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;
@@ -1252,7 +1227,6 @@ function(targetUrl, aRequest) {
      * @raises TP.sig.InvalidParameter
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request,
@@ -1298,7 +1272,6 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
-     * @todo
      */
 
     var request;

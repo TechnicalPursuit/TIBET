@@ -124,7 +124,6 @@ function(aLocale, sourceLocale, forceRefresh) {
      * @param {Boolean} forceRefresh True to force the new object to be built
      *     from a refreshed resource bundle.
      * @returns {Object} A localized version of the source object.
-     * @todo
      */
 
     var locale,
@@ -183,7 +182,6 @@ function(aLocale, sourceLocale, forceRefresh) {
  *     TP.core.URI type's rewrite function, which uses the current locale's
  *     language code as a qualifier for locating URI aliases and other mapping
  *     data. See the TP.core.URI type for more information.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -346,7 +344,6 @@ function(aLocale, aKey) {
      *     this locale.
      * @returns {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
      *     type object.
-     * @todo
      */
 
     var key;
@@ -371,7 +368,6 @@ function(aLocale, aKey) {
 /**
  * @The localize() series of methods provide for localized formatting of data,
  *     i.e. "output formatting".
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -394,7 +390,6 @@ function(anObject, sourceLocale, forceRefresh) {
      * @param {Boolean} forceRefresh True to force the new object to be built
      *     from a refreshed resource bundle.
      * @returns {Object} A localized version of the source object.
-     * @todo
      */
 
     var tname,
@@ -461,7 +456,6 @@ function(aBoolean, sourceLocale, forceRefresh) {
      *     from a refreshed resource bundle.
      * @returns {String} The translation of the boolean, or the boolean if no
      *     translation was found.
-     * @todo
      */
 
     var str;
@@ -483,7 +477,6 @@ function() {
      *     provide real functionality.
      * @returns {Array} The array of string values that is considered to be
      *     'false'.
-     * @todo
      */
 
     return this.$get('falseStrings');
@@ -501,7 +494,6 @@ function() {
      *     provide real functionality.
      * @returns {Array} The array of string values that is considered to be
      *     'true'.
-     * @todo
      */
 
     return this.$get('trueStrings');
@@ -526,7 +518,6 @@ function(aDate, sourceLocale, forceRefresh) {
      *     from a refreshed resource bundle.
      * @returns {String} The translation of the date, or the date if no
      *     translation was found.
-     * @todo
      */
 
     var format;
@@ -603,7 +594,6 @@ function() {
      *     integers 0 - 11. In this type, this method does nothing. Subtypes
      *     should override to provide real functionality.
      * @returns {Array} An array of long month names.
-     * @todo
      */
 
     return this.$get('longMonthNames');
@@ -621,7 +611,6 @@ function() {
      *     integers 0 - 7. In this type, this method does nothing. Subtypes
      *     should override to provide real functionality.
      * @returns {Array} An array of long weekday names.
-     * @todo
      */
 
     return this.$get('longWeekdayNames');
@@ -639,7 +628,6 @@ function() {
      *     - 11. In this type, this method does nothing. Subtypes should
      *     override to provide real functionality.
      * @returns {Array} An array of short month names.
-     * @todo
      */
 
     return this.$get('shortMonthNames');
@@ -657,7 +645,6 @@ function() {
      *     - 7. In this type, this method does nothing. Subtypes should override
      *     to provide real functionality.
      * @returns {Array} An array of short weekday names.
-     * @todo
      */
 
     return this.$get('shortWeekdayNames');
@@ -682,7 +669,6 @@ function(aNumber, sourceLocale, forceRefresh) {
      *     from a refreshed resource bundle.
      * @returns {String} The translation of the number, or the number if no
      *     translation was found.
-     * @todo
      */
 
     var format;
@@ -789,7 +775,6 @@ function(aString, sourceLocale, forceRefresh) {
      *     from a refreshed resource bundle.
      * @returns {String} The translation of the string, or the string if no
      *     translation was found.
-     * @todo
      */
 
     var source,
@@ -966,7 +951,6 @@ function(forceRefresh) {
      *     (strings.xml) and used. Note that since each locale will only use one
      *     string file all strings needing translation in that language should
      *     be included in the file.
-     * @todo
      */
 
     var node,
@@ -1052,7 +1036,6 @@ function(aString, sourceLocale) {
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Boolean} The localized Boolean value.
-     * @todo
      */
 
     var str;
@@ -1082,7 +1065,6 @@ function(aString, sourceLocale) {
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Date} The localized Date value.
-     * @todo
      */
 
     TP.stop('break.locale_parse');
@@ -1115,7 +1097,6 @@ function(aString, sourceLocale) {
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Number} The localized Number value.
-     * @todo
      */
 
     var str,
@@ -1158,7 +1139,6 @@ function(aString, sourceLocale) {
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {String} The localized String value.
-     * @todo
      */
 
     TP.stop('break.locale_parse');

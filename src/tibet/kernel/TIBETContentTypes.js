@@ -27,7 +27,6 @@ function(aURI, content) {
      * @param {TP.core.URI} aURI The URI containing the content.
      * @param {Object} content The content to set into the content object.
      * @returns {Object} The object representation of the content.
-     * @todo
      */
 
     return this.construct(content);
@@ -59,7 +58,6 @@ function(aURI, content) {
      * @param {TP.core.URI} aURI The URI containing the content.
      * @param {String} content The string content to process.
      * @returns {Object} The object representation of the content.
-     * @todo
      */
 
     return this.construct(aURI, content);
@@ -92,7 +90,6 @@ function(aURI, content) {
      *     proper URI.
      * @param {String} content The string content to process.
      * @returns {TP.core.CSSStyleSheet} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -130,7 +127,6 @@ function(aURI, content) {
      * @param {TP.core.URI} aURI The URI containing the content.
      * @param {String} content The string content to process.
      * @returns {Object} The object representation of the content.
-     * @todo
      */
 
     return this.construct(content);
@@ -306,7 +302,6 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {TP.core.Content} The receiver.
-     * @todo
      */
 
     var retVal;
@@ -679,7 +674,6 @@ function(aPath, shouldCollapse) {
      *     'collapse' its results - i.e. if its a collection with only one
      *     item, it will just return that item. The default is false.
      * @returns {TP.core.AccessPath} The new instance.
-     * @todo
      */
 
     return TP.core.AccessPath.construct(aPath, shouldCollapse);
@@ -4516,7 +4510,6 @@ function() {
      * @synopsis Returns a newly initialized CSSPath instance.
      * @param {String} aPath The CSS path as a String.
      * @returns {TP.core.CSSPath} The new instance.
-     * @todo
      */
 
     return TP.core.CSSPath.construct.apply(TP.core.CSSPath, arguments);
@@ -4705,7 +4698,6 @@ function() {
      *     it is either a native or non-native path. See this type's
      *     discussion for more information.
      * @returns {TP.core.XPathPath} The new instance.
-     * @todo
      */
 
     return TP.core.XPathPath.construct.apply(TP.core.XPathPath, arguments);
@@ -5000,7 +4992,6 @@ function(aPath, shouldCollapse, forceNative) {
      *     it is either a native or non-native path. See this type's
      *     discussion for more information.
      * @returns {TP.core.XPathPath} The new instance.
-     * @todo
      */
 
     var thePath;
@@ -5137,7 +5128,6 @@ function(aNode, flagChanges) {
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
      * @returns {Array} The array of Nodes that got built.
-     * @todo
      */
 
     var wasNative,
@@ -5180,7 +5170,6 @@ function(aPath) {
      * @param {String} aPath The XPath as a String. Defaults to the receiver's
      *     current path.
      * @returns {TP.core.XPathPath} The receiver.
-     * @todo
      */
 
     var path,
@@ -5241,7 +5230,6 @@ function(aTPNode, resultType, logErrors, flagChanges) {
      * @returns {Object} The result of evaluating the receiver against the
      *     supplied TP.core.Node. Will be one of: String, Number, Boolean or
      *     Array (of Nodes).
-     * @todo
      */
 
     return this.execOnNative(
@@ -5271,7 +5259,6 @@ function(aNode, resultType, logErrors, flagChanges) {
      * @returns {Object} The result of evaluating the receiver against the
      *     supplied TP.core.Node. Will be one of: String, Number, Boolean or
      *     Array (of Nodes).
-     * @todo
      */
 
     var flag,
@@ -5599,7 +5586,6 @@ function(aNode) {
      * @param {Node|TP.core.Node} aNode The Node to execute the receiver
      *     against.
      * @returns {Array} The array of TP.core.Nodes referenced by the receiver.
-     * @todo
      */
 
     var context,
@@ -5670,7 +5656,6 @@ function() {
      *     path any place in its expression.
      * @returns {Array} The array of Strings that represent location steps
      *     referenced by expression in the receiver.
-     * @todo
      */
 
     var context,
@@ -5729,7 +5714,6 @@ function(aFlag) {
      * @param {Boolean} aFlag True will force the path to be a native path if
      *     possible, false will set it to non native path.
      * @returns {Boolean} Whether or not native processing is sufficient.
-     * @todo
      */
 
     var path;
@@ -5812,7 +5796,6 @@ function(aPath, forceNative) {
      *     it is either a native or non-native path. See this type's
      *     discussion for more information.
      * @returns {TP.core.XPathPath} The receiver.
-     * @todo
      */
 
     var pathType;
@@ -5872,7 +5855,6 @@ function(aPath, forceNative) {
  *     'expanded': { 'sequenceGroup': { 'children': [], 'elements': ['li'],
  *     'text': false } } }, 'empty': false, 'omitStart': false, 'omitEnd':
  *     false, 'text': false } } }
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -5945,7 +5927,6 @@ function(childElementName, parentElementName) {
      * @param {String} parentElementName The name of the parent element.
      * @returns {Boolean} Whether or not the child element is a valid child of
      *     the parent element.
-     * @todo
      */
 
     var parentContentModels,

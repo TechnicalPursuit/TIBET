@@ -9,7 +9,6 @@
 //  ========================================================================
 
 /**
- * @todo
  */
 
 //  A RegExp that 'captures' the content of 'style' elements.
@@ -261,7 +260,6 @@ function(anElement, attrName, newValue, changeFunction) {
      * @param {Function} changeFunction A Function that will cause the attribute
      *     change to happen.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
-     * @todo
      */
 
     //  Just exec the change function and return
@@ -368,7 +366,6 @@ function(cssStr, wants2DMatrix) {
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
      *     transforms. The default is false.
      * @returns {Array} An Array of Arrays representing the extracted matrix.
-     * @todo
      */
 
     var matrixValues,
@@ -426,7 +423,6 @@ function(a, b) {
      * @param {Array} b An Array of Arrays representing the first matrix to be
      *     multiplied.
      * @returns {Array} An Array of Arrays representing the multiplied matrix.
-     * @todo
      */
 
     var r = [], i, j, k, t;
@@ -461,7 +457,6 @@ function(m/*, tx, ty, tz*/) {
      * @param {Array} m An Array of Arrays representing the matrix to be
      *     translated.
      * @returns {Array} An Array of Arrays representing the translated matrix.
-     * @todo
      */
 
     var i, j, r = [];

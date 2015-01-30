@@ -72,7 +72,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     return 'browser';
@@ -124,7 +123,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     return 'browser';

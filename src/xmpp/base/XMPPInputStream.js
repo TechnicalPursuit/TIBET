@@ -229,7 +229,6 @@ function(content, response) {
      * @raises TP.sig.DOMParseException, TP.sig.InvalidParameter
      * @returns {TP.xmpp.InputStream} The receiver.
      * @signals TP.sig.XMPPDataAvailable
-     * @todo
      */
 
     var i,

@@ -507,7 +507,6 @@ function() {
      *     system which should cause the receiver to respond to requests. The
      *     trigger signals default based on the receiver's type.
      * @returns {Object}
-     * @todo
      */
 
     var signals;
@@ -608,7 +607,6 @@ function(aRequest) {
      *     Exception.
      * @param {TP.sig.Request} aRequest The request to be serviced.
      * @returns {TP.sig.Response}
-     * @todo
      */
 
     return TP.override();
@@ -689,7 +687,6 @@ function(aFlag) {
      *     going to be triggered by signals rather than by direct invocation.
      * @param {Boolean} aFlag A new value for this property. Optional.
      * @returns {Boolean}
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -745,7 +742,6 @@ function(aParamInfo, aRequest) {
      *     information on how to populate the request from the vCard.
      * @param {TP.sig.Request} aRequest The request to populate.
      * @returns {TP.core.URIService} The receiver.
-     * @todo
      */
 
     var sourceCard,
@@ -1056,7 +1052,6 @@ function(anOrigin, aPayload, aPolicy) {
      * @param {Object} aPayload Optional arguments.
      * @param {Function} aPolicy A firing policy. The default is INHERITANCE.
      * @returns {TP.sig.WorkflowSignal} The receiver.
-     * @todo
      */
 
     var origin,
@@ -1219,7 +1214,6 @@ function() {
      *     default at this level is to return whether TIBET is logging request
      *     signals in general.
      * @returns {Boolean} Whether or not this signal will be logged.
-     * @todo
      */
 
     return TP.sys.shouldLogRequestSignals();
@@ -1312,7 +1306,6 @@ function(aRequest, aResourceID, aThreadID) {
      * @param {String} aResourceID A unique resource identifier.
      * @param {String} aThreadID A unique thread identifier.
      * @returns {TP.sig.Request} A new instance.
-     * @todo
      */
 
     var request;
@@ -1346,7 +1339,6 @@ function(aRequest) {
      * @param {A} TP.lang.Hash viable payload object. NOTE that when no request
      *     or template exist the return value is NULL so no payload is implied
      *     for the call.
-     * @todo
      */
 
     var template,
@@ -1472,7 +1464,6 @@ function(aResult) {
      *     then updated with the result data and fired when ready.
      * @param {Object} aResult A result object.
      * @returns {TP.sig.Response}
-     * @todo
      */
 
     var response,
@@ -1520,7 +1511,6 @@ function(anOrigin, aPayload, aPolicy) {
      * @param {Object} aPayload Optional arguments.
      * @param {Function} aPolicy A firing policy. The default is INHERITANCE.
      * @returns {TP.sig.Response} The receiver's response.
-     * @todo
      */
 
     //  clear any response we may have from a prior execution
@@ -1567,7 +1557,6 @@ function () {
      *     information.
      * @returns {TP.sig.Response} The 'promise' which can be used in
      *     promises-based programming.
-     * @todo
      */
 
     return this.constructResponse();
@@ -1586,7 +1575,6 @@ function() {
      *     ID is that they serve as origins for any response signals which are
      *     generated so they should be reasonably unique.
      * @returns {String} A request ID which can take any form.
-     * @todo
      */
 
     return this.getID();
@@ -1605,7 +1593,6 @@ function() {
      *     request is called back with results when any low-level processing is
      *     complete.
      * @returns {Object} The requestor, often the TP.sig.Request itself.
-     * @todo
      */
 
     var obj;
@@ -1659,7 +1646,6 @@ function() {
      *     can alter it when you want to fine tune handler lookup without having
      *     to create new subtypes of TP.sig.Response.
      * @returns {String} The response signal name.
-     * @todo
      */
 
     var name;
@@ -1681,7 +1667,6 @@ function() {
      *     specific response processing.
      * @returns {TP.lang.RootObject.<TP.core.Response>} A TP.core.Response
      *     subtype type object.
-     * @todo
      */
 
     var typename,
@@ -1806,7 +1791,6 @@ function(aSignal) {
      *     response handling methods to fail, cancel, or complete the request.
      * @param {TP.sig.Signal} aSignal The signal to handle.
      * @returns {Object} The handler function's results.
-     * @todo
      */
 
     var request,
@@ -1859,7 +1843,6 @@ function(aSignal) {
      *     with the request's ID.
      * @param {TP.sig.Response} aSignal The TP.sig.Response instance.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     return this;
@@ -2034,7 +2017,6 @@ function(aName) {
      * @param {String} aName The response name. Default is the receiving type's
      *     response type name.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     this.$set('responseName', aName, false);
@@ -2144,7 +2126,6 @@ function(aRequest, aState) {
      * @param {Number|String} aState A job control state or suffix such as
      *     TP.SUCCEEDED (the default) or TP.FAILED.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     var ands,
@@ -2204,7 +2185,6 @@ function(aChildRequest, aFaultString, aFaultCode) {
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     //  already done? don't go further
@@ -2239,7 +2219,6 @@ function() {
      *     joined, meaning the receiver probably has pending asynchronous child
      *     requests and should not complete.
      * @returns {Array} The current and-joined or or-joined requests.
-     * @todo
      */
 
     var joins,
@@ -2288,7 +2267,6 @@ function(aChildRequest, aResult) {
      * @param {TP.sig.Request} aChildRequest A child request which completed.
      * @param {Object} aResult An optional result to output.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     //  already done? don't go further
@@ -2322,7 +2300,6 @@ function(aChildRequest, aFaultString, aFaultCode) {
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     //  already done? don't go further
@@ -2358,7 +2335,6 @@ function(aJoinKey) {
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant.
      * @returns {Array} The current and-joined or or-joined requests.
-     * @todo
      */
 
     var joins,
@@ -2397,7 +2373,6 @@ function(aJoinKey, aRequest) {
      * @param {TP.sig.Request} aRequest An optional request used when looking
      *     for joins specific to that request's completion.
      * @returns {Array} The current and-joined or or-joined requests.
-     * @todo
      */
 
     var joins,
@@ -2434,7 +2409,6 @@ function(aJoinKey) {
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant.
      * @returns {Array} The current and-joined or or-joined requests.
-     * @todo
      */
 
     var joins,
@@ -2477,7 +2451,6 @@ function(aRequest, childJoin) {
      *     completion.
      * @returns {Boolean} True if the receiver has reached a valid join state to
      *     support triggering.
-     * @todo
      */
 
     var list,
@@ -2547,7 +2520,6 @@ function(aRequest, aState, aCondition) {
      *     receiver is necessary to trigger firing.
      * @returns {TP.sig.Request} The downstream request. This helps support
      *     chained calls like r1.joinTo(r2).joinTo(r3).
-     * @todo
      */
 
     if (aCondition === TP.AND) {
@@ -2575,7 +2547,6 @@ function(aRequest, aState) {
      * @param {Number|String} aState A job control state or suffix such as
      *     TP.SUCCEEDED or "Succeeded" (the default).
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     var ors,
@@ -2636,7 +2607,6 @@ function(aRequest, aState, childJoin) {
      * @param {Boolean} childJoin True to signify that this join is a child
      *     join.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     var state,
@@ -2669,7 +2639,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     var joins,
@@ -2712,7 +2681,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result of the
      *     request.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     //  completing a job should ensure the result gets properly set in any
@@ -2744,7 +2712,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     var joins,
@@ -3055,7 +3022,6 @@ function(aRequest, aResult) {
      *     hash" types used by other request-oriented methods.
      * @param {Object} aResult A result object.
      * @returns {TP.sig.Response} A new instance.
-     * @todo
      */
 
     //  initialize the signal -- note we don't pass along the TP.sig.Request
@@ -3087,7 +3053,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
      * @returns {TP.sig.Response} The receiver.
-     * @todo
      */
 
     var request;
@@ -3112,7 +3077,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result of the
      *     request.
      * @returns {TP.sig.Response} The receiver.
-     * @todo
      */
 
     var request;
@@ -3147,7 +3111,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
      * @returns {TP.sig.Response} The receiver.
-     * @todo
      */
 
     var request;
@@ -3180,7 +3143,6 @@ function(anOrigin, aPayload, aPolicy) {
      * @param {Function} aPolicy A firing policy defining how the response
      *     should propogate.
      * @returns {TP.sig.Response} The receiver.
-     * @todo
      */
 
     var origin,
@@ -3306,7 +3268,6 @@ function() {
      *     contains a payload it is returned by this call, otherwise any payload
      *     used by the original request is returned.
      * @returns {Object} The receiver's payload.
-     * @todo
      */
 
     var payload;
@@ -3345,7 +3306,6 @@ function() {
      *     ID is that they serve as origins for any response signals which are
      *     generated so they should be reasonably unique.
      * @returns {String} A request ID which can take any form.
-     * @todo
      */
 
     var request;
@@ -3515,7 +3475,6 @@ function (onFulfilled, onRejected) {
      *     promise reaches it's rejected state.
      * @returns {TP.sig.Response} A 'promise' that can be used to be the 'next
      *     step' in a chain of promises.
-     * @todo
      */
 
     var myReq,
@@ -3719,7 +3678,6 @@ function() {
      * @synopsis Returns an array of the permission keys associated with the
      *     receiver by virtue of its associated keyrings.
      * @returns {Array} An array containing the string keys of the receiver.
-     * @todo
      */
 
     var keys,
@@ -3988,7 +3946,6 @@ function() {
      * @synopsis Returns the effective access keys, the access keys owned by the
      *     effective user instance if there is one.
      * @returns {Array} An array of the effective user's access keys.
-     * @todo
      */
 
     var keys,
@@ -4014,7 +3971,6 @@ function() {
      * @synopsis Returns the current "effective" user instance. Defaults to the
      *     current real user when no effective user instance has been set.
      * @returns {TP.core.User} The current effective user instance.
-     * @todo
      */
 
     var user;
@@ -4061,7 +4017,6 @@ function() {
      * @synopsis Returns the real user access keys, the access keys owned by the
      *     real user instance if there is one.
      * @returns {Array} An array of the real user's access keys.
-     * @todo
      */
 
     var keys,
@@ -4201,7 +4156,6 @@ function(resourceID) {
      * @param {String} resourceID A unique user identifier. This ID will be used
      *     to look for an initial vCard entry for the named user.
      * @returns {TP.core.User}
-     * @todo
      */
 
     var vCard;
@@ -4417,7 +4371,6 @@ function(resourceID, aSignal) {
      * @param {TP.sig.Signal} aSignal The signal which triggered this activity.
      * @returns {TP.core.Service} A valid service instance if one can be
      *     constructed.
-     * @todo
      */
 
     var inst,
@@ -4512,7 +4465,6 @@ function(aSignal) {
      *     no longer part of the request cycle.
      * @param {TP.sig.Request} aSignal The signal that triggered this handler.
      * @returns {Object} The result of processing the signal.
-     * @todo
      */
 
     var id,
@@ -4551,7 +4503,6 @@ function(aFlag) {
      *     creation until the first request.
      * @param {Boolean} aFlag A new value for this property. Optional.
      * @returns {Boolean}
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -4692,7 +4643,6 @@ function(resourceID, aRequest) {
      *     an instance.
      * @raises TP.sig.InvalidResourceID
      * @returns {TP.core.Resource} A new instance.
-     * @todo
      */
 
     var vCard;
@@ -4843,7 +4793,6 @@ function(aRequest) {
      * @param {TP.sig.FunctionRequest} aRequest The request object to take
      *     the request parameters from.
      * @returns {TP.core.FunctionService} The receiver.
-     * @todo
      */
 
     var request,
@@ -5188,7 +5137,6 @@ function(pollParams) {
      *     parameters. These may include: 'poll' [true|false|Function]
      *     'pollFirstInterval' Number 'pollMaxInterval' Number.
      * @returns {TP.core.IOService} The receiver.
-     * @todo
      */
 
     var firstInterval,
@@ -5511,7 +5459,6 @@ function(resourceID, aRequest) {
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.URIService} A new instance.
-     * @todo
      */
 
     var paramDict,
@@ -5608,7 +5555,6 @@ function(aRequest) {
      *     its own.
      * @param {TP.sig.Request} aRequest The request to check for a URI.
      * @returns {TPURI} The request URI.
-     * @todo
      */
 
     var url;
@@ -5635,7 +5581,6 @@ function() {
      *     URI used when an individual request does not override it with an
      *     alternative URI.
      * @returns {TP.core.URI} The receiver's default URI.
-     * @todo
      */
 
     //  start with instance and work outward to the type
@@ -5654,7 +5599,6 @@ function(aRequest) {
      *     TIBET's rewriting rules.
      * @param {TP.sig.Request} aRequest The request to rewrite.
      * @returns {TP.core.URI} The new/updated URI instance.
-     * @todo
      */
 
     var requestURI,
@@ -5842,7 +5786,6 @@ function(aResourceID, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
      *     hash containing initialization parameters.
      * @returns {TP.core.Application} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -5939,7 +5882,6 @@ function(aSignal) {
      * @param {TP.sig.LocationChanged} aSignal The signal that caused this
      *     handler to trip.
      * @returns {TP.core.Application} The receiver.
-     * @todo
      */
 
     var tpUICanvasWin,
@@ -6415,7 +6357,6 @@ function(aSignal, isCapturing) {
      *     event dispatch.
      * @returns {Boolean} Whether or not the receiver is a valid responder for
      *     the supplied signal and capturing mode.
-     * @todo
      */
 
     var sigType;
@@ -6450,7 +6391,6 @@ function(aSignal, isCapturing) {
      *     machinery is computing the chain for the 'capturing' phase of the
      *     event dispatch.
      * @returns {Object} The next responder as computed by the receiver.
-     * @todo
      */
 
     var elementWin,

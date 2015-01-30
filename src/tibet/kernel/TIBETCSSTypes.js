@@ -93,7 +93,6 @@ function(controlParams, stepParams) {
      * @param {TP.lang.Hash} stepParams A TP.lang.Hash of the following job
      *     step parameters: target, property.
      * @returns {TP.core.CSSPropertyTransition} A new instance.
-     * @todo
      */
 
 
@@ -233,7 +232,6 @@ function(controlParams, stepParams) {
      *     parameters: target, property.
      * @returns {TP.core.Job} The job constructed for executing the receiving
      *     transition.
-     * @todo
      */
 
     var ctrlParams,
@@ -263,7 +261,6 @@ function() {
      * @synopsis Returns the default compute Function for the receiving
      *     transition type.
      * @returns {Function} The default compute Function for this type.
-     * @todo
      */
 
     //  Note that for this type we return 'null' since its best to let the
@@ -410,7 +407,6 @@ function(job, params) {
      * @raises TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
-     * @todo
      */
 
     var styleProperty,
@@ -535,7 +531,6 @@ function(job, params) {
      *     step method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
-     * @todo
      */
 
     var styleProperty,
@@ -634,7 +629,6 @@ function(job, params) {
      * @raises TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
-     * @todo
      */
 
     var styleProperty,
@@ -781,7 +775,6 @@ function(job, params) {
      * @raises TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
-     * @todo
      */
 
     var styleProperty,
@@ -927,7 +920,6 @@ function(job, params) {
      *     step method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
-     * @todo
      */
 
     var styleProperty,

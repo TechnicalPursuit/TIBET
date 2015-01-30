@@ -121,7 +121,6 @@ function(aNode, aURI) {
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.xctrls.map} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -145,7 +144,6 @@ function(hasPan, zoomType, hasOverview, hasScale, hasMapType) {
      * @param {undefined} hasMapType
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -160,7 +158,6 @@ function() {
      * @name addLargeControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -175,7 +172,6 @@ function() {
      * @name addMapTypeControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -191,7 +187,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -206,7 +201,6 @@ function() {
      * @name addSmallControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -221,7 +215,6 @@ function() {
      * @name autoCenterAndZoom
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     var latMax,
@@ -266,7 +259,6 @@ function() {
      * @name getBounds
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -281,7 +273,6 @@ function() {
      * @name getCenter
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -297,7 +288,6 @@ function(anAddress) {
      * @param {String} anAddress The address to plot.
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -312,7 +302,6 @@ function() {
      * @name getMapType
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -327,7 +316,6 @@ function() {
      * @name getZoom
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -343,7 +331,6 @@ function(aMapBounds) {
      * @param {TP.core.MapBounds} aMapBounds
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -378,7 +365,6 @@ function(aSignal) {
      *     action. This signal should include a key of 'deep' and a value of
      *     true to cause a deep refresh that updates all nodes.
      * @returns {TP.xctrls.map} The receiver.
-     * @todo
      */
 
     if (TP.isEmpty(this.get('$markers'))) {
@@ -407,7 +393,6 @@ function() {
      * @name removeAllMarkers
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     this.hideAllMarkers();
@@ -428,7 +413,6 @@ function() {
      * @name removeAllControls
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -444,7 +428,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -460,7 +443,6 @@ function(aMapBounds) {
      * @param {undefined} aMapBounds
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -476,7 +458,6 @@ function(aLatLong) {
      * @param {undefined} aLatLong
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -492,7 +473,6 @@ function(aLat) {
      * @param {undefined} aLat
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     var currentCenter,
@@ -522,7 +502,6 @@ function(aLong) {
      * @param {undefined} aLong
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     var currentCenter,
@@ -553,7 +532,6 @@ function(aLatLong, zoomLevel) {
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -569,7 +547,6 @@ function(shouldBeDraggable) {
      * @param {undefined} shouldBeDraggable
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -585,7 +562,6 @@ function(aMapType) {
      * @param {undefined} aMapType
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -601,7 +577,6 @@ function(zoomLevel) {
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -632,7 +607,6 @@ function(width, height) {
      * @param {undefined} height
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();
@@ -648,7 +622,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.map} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.override();

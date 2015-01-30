@@ -173,7 +173,6 @@ TP.isCallable = function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean}
-     * @todo
      */
 
     //  NB: Do not replace this logic - it has been optimized to primitives
@@ -211,7 +210,6 @@ TP.canInvoke = function(anObj, anInterface) {
      *     </code>
      * @returns {Boolean} True if the object implements the method(s) of the
      *     interface.
-     * @todo
      */
 
     var obj,
@@ -264,7 +262,6 @@ TP.isValid = function(aValue) {
      *     </code>
      * @returns {Boolean} Whether or not the value is not null *and* is not
      *     undefined.
-     * @todo
      */
 
     return aValue !== undefined && aValue !== null;
@@ -291,7 +288,6 @@ TP.notValid = function(aValue) {
      *     </code>
      * @returns {Boolean} Whether or not the value is not valid (that is, either
      *     null or undefined).
-     * @todo
      */
 
     return aValue === undefined || aValue === null;
@@ -321,7 +317,6 @@ TP.ifInvalid = function(aSuspectValue, aDefaultValue) {
      *          theObj = TP.ifInvalid(anObj, true);
      *     </code>
      * @returns {Object} One of the two values provided.
-     * @todo
      */
 
     return TP.notValid(aSuspectValue) ? aDefaultValue : aSuspectValue;
@@ -406,7 +401,6 @@ TP.isFunction = function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a JavaScript
      *     Function.
-     * @todo
      */
 
     return TP.ObjectProto.toString.call(anObj) === '[object Function]';
@@ -445,7 +439,6 @@ TP.isString = function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean}
-     * @todo
      */
 
     return TP.ObjectProto.toString.call(anObj) === '[object String]';
@@ -470,7 +463,6 @@ TP.owns = function(anObject, aName) {
      * @param {Object} anObject The object to test.
      * @param {String} aName The slot name to check.
      * @returns {Boolean} True if the object owns the slot.
-     * @todo
      */
 
     //  This is the most efficient way to provide this functionality. This is
@@ -531,7 +523,6 @@ TP.objectSetLoadNode = function(anObject, aNode) {
      * @param {Node} aNode A script node, presumably the one responsible for
      *     loading the object.
      * @returns {Object} The updated object.
-     * @todo
      */
 
     anObject[TP.LOAD_NODE] = aNode;
@@ -581,7 +572,6 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
      *     owner.track.name triplet.
      * @returns {Function} A properly configured 'method'.
      * @para Object The object receiving the slot.
-     * @todo
      */
 
     var displayName;
@@ -683,7 +673,6 @@ if (!TP.sys.constructOID) {
          * @param {String} aPrefix An optional prefix which will be prepended to
          *     the return value.
          * @returns {String} Currently all OID's are String values.
-         * @todo
          */
 
         //  NOTE that starting with anything other than a number allows
@@ -839,7 +828,6 @@ TP.ArrayProto.at = function(anIndex) {
      *     first index in a potential list of indicies.
      * @returns {Object} The value at the index.
      * @addon Array
-     * @todo
      */
 
     return this[anIndex];
@@ -872,7 +860,6 @@ TP.ArrayProto.atPut = function(anIndex, aValue) {
      *     supplied.
      * @returns {Array} The receiver.
      * @addon Array
-     * @todo
      */
 
     this[anIndex] = aValue;
@@ -1199,7 +1186,6 @@ TP.PHash = function() {
          * @param {Object} aKey The key/index to put aValue into.
          * @param {Object} aValue The value to register under aKey.
          * @returns {TP.PHash} The receiver.
-         * @todo
          */
 
         this.$$hash[aKey] = aValue;
@@ -1338,7 +1324,6 @@ TP.PHash = function() {
          * @name getItems
          * @synopsis Returns the items [key,value] of the receiver.
          * @returns {Array} An array containing the receiver's items.
-         * @todo
          */
 
         var arr,
@@ -1377,7 +1362,6 @@ TP.PHash = function() {
          *     consistency with other getKeys() calls you should treat the
          *     returned array as a read-only object.
          * @returns {Array} An array containing the receiver's keys.
-         * @todo
          */
 
         return Object.keys(this.$$hash);
@@ -1471,7 +1455,6 @@ TP.PHash = function() {
          * @name getValues
          * @synopsis Returns an array containing the values of the receiver.
          * @returns {Array} An array containing the receiver's values.
-         * @todo
          */
 
         var arr,
@@ -1625,7 +1608,6 @@ TP.PHash = function() {
          * @param {String} attributeName The attribute name to set.
          * @param {Object} attributeValue The value to set.
          * @returns {Object} The value of the named property.
-         * @todo
          */
 
         var name;
@@ -1677,7 +1659,6 @@ TP.PHash = function() {
          * @param {String} attributeName The attribute name to set.
          * @param {Object} attributeValue The value to set.
          * @returns {TP.lang.Hash} The receiver.
-         * @todo
          */
 
         return this.$set(attributeName, attributeValue);
@@ -1715,7 +1696,6 @@ TP.hc = function() {
      *          <samp>{"lname":"Smith"}</samp>
      *     </code>
      * @returns {TP.lang.Hash} A new instance.
-     * @todo
      */
 
     var dict,
@@ -1856,7 +1836,6 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
      *          TP.INST_TRACK
      *          TP.TYPE_TRACK
      *          TP.TYPE_LOCAL_TRACK
-     * @todo
      */
 
     var iname,
@@ -2031,7 +2010,6 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
      *     descriptor would. NOTE that this object is _NOT_ passed to the ECMA5
      *     Object.defineProperty() call.
      * @returns {Object} The assigned slot value.
-     * @todo
      */
 
     //  If we were handed a descriptor, then try to use ECMA5's defineProperty()
@@ -2112,7 +2090,6 @@ function(target, name, value, track, desc, display, owner) {
      *     ID plus the track and name.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     var own,
@@ -2304,7 +2281,6 @@ function(name, bodyOrConditionals, desc, display, owner) {
      *     ID plus the track and name.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Function} The installed primitive.
-     * @todo
      */
 
     var test,
@@ -2376,7 +2352,6 @@ function(aValue) {
      *          if (TP.isDefined(anObj)) { TP.alert('its defined'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is defined.
-     * @todo
      */
 
     return aValue !== undefined;
@@ -2402,7 +2377,6 @@ function(aValue) {
      *          if (TP.isNaN(anObj)) { TP.alert('its NaN'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is NaN.
-     * @todo
      */
 
     try {
@@ -2433,7 +2407,6 @@ function(aValue) {
      *          if (TP.isNull(anObj)) { TP.alert('its null'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is null.
-     * @todo
      */
 
     return aValue === null;
@@ -2453,7 +2426,6 @@ function(aValue) {
      *          if (TP.notDefined(anObj)) { TP.alert('its not defined'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is undefined.
-     * @todo
      */
 
     return aValue === undefined;
@@ -2473,7 +2445,6 @@ function(aValue) {
      *          if (TP.notNaN(anObj)) { TP.alert('its not NaN'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not NaN.
-     * @todo
      */
 
     return !TP.isNaN(aValue);
@@ -2495,7 +2466,6 @@ function(aValue) {
      *          if (TP.notNull(anObj)) { TP.alert('its not null'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not null.
-     * @todo
      */
 
     return aValue !== null;
@@ -2521,7 +2491,6 @@ function(aSuspectValue, aDefaultValue) {
      *          theObj = TP.ifNull(anObj, true);
      *     </code>
      * @returns {Object} One of the two values provided.
-     * @todo
      */
 
     return (aSuspectValue === null) ? aDefaultValue : aSuspectValue;
@@ -2545,7 +2514,6 @@ function(aSuspectValue, aDefaultValue) {
      *          theObj = TP.ifUndefined(anObj, true);
      *     </code>
      * @returns {Object} One of the two values provided.
-     * @todo
      */
 
     return (aSuspectValue === undefined) ? aDefaultValue : aSuspectValue;
@@ -2577,7 +2545,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a Node.
-     * @todo
      */
 
     return TP.isValid(anObj) && typeof anObj.nodeType === 'number';
@@ -2743,7 +2710,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a Type.
-     * @todo
      */
 
     //  Based on jQuery 2.X isPlainObject with additional checks for TIBET
@@ -2790,7 +2756,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a Type.
-     * @todo
      */
 
     var name,
@@ -2891,7 +2856,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a frame.
-     * @todo
      */
 
     return (TP.isValid(anObj) && (anObj.moveBy !== undefined));
@@ -2994,7 +2958,6 @@ function(anObj) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is mutable.
-     * @todo
      */
 
     if (TP.notValid(anObj)) {
@@ -3058,7 +3021,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a 'reference
      *     type'.
-     * @todo
      */
 
     var type;
@@ -3180,7 +3142,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs changes in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -3212,7 +3173,6 @@ function(aFlag, shouldSignal) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET should construct DNUs.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -3923,7 +3883,6 @@ function(methodName, methodBody) {
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
      * @returns {Function} The installed method.
-     * @todo
      */
 
     var method;
@@ -4195,7 +4154,6 @@ function(target, name, value, track, owner) {
      * @param {String} track The attribute track (Inst, Type, Local).
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     var own,
@@ -4260,7 +4218,6 @@ function(target, name, value, track, owner) {
      *     TP.TYPE_TRACK.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined constant value.
-     * @todo
      */
 
     var own,
@@ -4569,7 +4526,6 @@ function() {
      * @synopsis Default implementation of the $getName operation. Returns the
      *     receiver's ID as the 'Name'.
      * @returns {String}
-     * @todo
      */
 
     if (TP.owns(this, TP.NAME)) {
@@ -4589,7 +4545,6 @@ function() {
      * @synopsis Default implementation of the $getName operation. Returns the
      *     receiver's ID as the 'Name'.
      * @returns {String}
-     * @todo
      */
 
     if (TP.owns(this, TP.NAME)) {
@@ -4615,7 +4570,6 @@ function(aPrefix) {
      * @param {String} aPrefix An optional prefix which will be prepended to any
      *     generated value.
      * @returns {String} Currently all OID's are String values.
-     * @todo
      */
 
     var type,
@@ -4732,7 +4686,6 @@ function(aPrefix) {
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
      *     </code>
      * @returns {String} Currently all OID's are String values.
-     * @todo
      */
 
     if (this === TP.ObjectProto) {
@@ -4812,7 +4765,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     return TP.defineAttributeSlot(
@@ -4857,7 +4809,6 @@ function(methodName, methodBody, desc, display) {
      * @param {String} display Optional string defining the public display name
      *     for the function.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     return TP.defineMethodSlot(
@@ -4946,7 +4897,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     return TP.defineAttributeSlot(
@@ -4991,7 +4941,6 @@ function(methodName, methodBody, desc, display) {
      * @param {String} display Optional string defining the public display name
      *     for the function.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     return TP.defineMethodSlot(
@@ -5014,7 +4963,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     return TP.defineAttributeSlot(
@@ -5059,7 +5007,6 @@ function(methodName, methodBody, desc, display) {
      * @param {String} display Optional string defining the public display name
      *     for the function.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     return TP.defineMethodSlot(
@@ -5082,7 +5029,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     return TP.defineAttributeSlot(
@@ -5127,7 +5073,6 @@ function(methodName, methodBody, desc, display) {
      * @param {String} display Optional string defining the public display name
      *     for the function.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     return TP.defineMethodSlot(
@@ -5184,7 +5129,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     return TP.defineAttributeSlot(
@@ -5227,7 +5171,6 @@ function(methodName, methodBody, desc) {
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     return TP.defineMethodSlot(
@@ -5249,7 +5192,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     var target,
@@ -5296,7 +5238,6 @@ function(constantName, constantValue) {
      * @param {Object} constantValue The constant value or a property descriptor
      *     object.
      * @returns {Object} The newly defined constant value.
-     * @todo
      */
 
     var target,
@@ -5345,7 +5286,6 @@ function(methodName, methodBody, desc) {
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     var target,
@@ -5392,7 +5332,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     var track,
@@ -5423,7 +5362,6 @@ function(constantName, constantValue) {
      * @param {Object} constantValue The constant value or a property descriptor
      *     object.
      * @returns {Object} The newly defined constant value.
-     * @todo
      */
 
     var track,
@@ -5456,7 +5394,6 @@ function(methodName, methodBody, desc) {
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     var track,
@@ -5491,7 +5428,6 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
      * @returns {Object} The newly defined attribute value.
-     * @todo
      */
 
     var track,
@@ -5554,7 +5490,6 @@ function(methodName, methodBody, desc) {
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
      * @returns {Function} The newly defined method.
-     * @todo
      */
 
     var track,
@@ -5610,7 +5545,6 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
      * @returns {Function} The installed method.
-     * @todo
      */
 
     var display = 'Window.Type.' + methodName;
@@ -5684,7 +5618,6 @@ function (aPrefix) {
      * @param {String} aPrefix An optional prefix which will be prepended to any
      *     generated value.
      * @returns {String} Currently all OID's are String values.
-     * @todo
      */
 
     var oid;
@@ -5720,7 +5653,6 @@ function (aPrefix) {
      * @param {String} aPrefix An optional prefix which will be prepended to any
      *     generated value.
      * @returns {String} Currently all OID's are String values.
-     * @todo
      */
 
     if (TP.notValid(this[TP.ID])) {
@@ -5852,7 +5784,6 @@ function(aMessage) {
      *     <code>
      *          TP.alert('TIBET Rocks!', TP.INFO);
      *     </code>
-     * @todo
      */
 
     /* eslint-disable no-alert */
@@ -5883,7 +5814,6 @@ function(anAction) {
      *          TP.confirm('Perform Action?', 'critical');
      *     </code>
      * @returns {Boolean} True if the user has approved the action.
-     * @todo
      */
 
     /* eslint-disable no-alert */
@@ -5916,7 +5846,6 @@ function(aQuestion, aDefaultAnswer) {
      *          TP.prompt('Favorite color', 'Black', 'emphasis');
      *     </code>
      * @returns {String} The user's answer.
-     * @todo
      */
 
     /* eslint-disable no-alert */
@@ -5941,7 +5870,6 @@ function(aMessage, aTarget) {
      *     <code>
      *          TP.status('TIBET Rocks!');
      *     </code>
-     * @todo
      */
 
     var msg,
@@ -6012,7 +5940,6 @@ function(aFlagOrParam) {
      *     <code>
      *          TP.stop('break.document_loaded');
      *     </code>
-     * @todo
      */
 
     if (!TP.sys.cfg('debug.use_debugger')) {
@@ -6088,7 +6015,6 @@ function() {
      *          arr = TP.ac('prefix string');
      *     </code>
      * @returns {Array} A new array.
-     * @todo
      */
 
     var arr;
@@ -6131,7 +6057,6 @@ function(anArgArray, aStart, anEnd) {
      *          arr = TP.args(arguments, 1);
      *     </code>
      * @returns {Array} A new array.
-     * @todo
      */
 
     var len,
@@ -6169,7 +6094,6 @@ function() {
      *          str = TP.join('Hello ', username, ' from TIBET!');
      *     </code>
      * @returns {String} A new string.
-     * @todo
      */
 
     //  NB: In modern browsers, going back to the old '+=' method of String
@@ -6207,7 +6131,6 @@ function() {
      *     </code>
      * @returns {Array} The receiver.
      * @addon Array
-     * @todo
      */
 
     var i,
@@ -6251,7 +6174,6 @@ function(anIndex) {
      * @param {Number} anIndex The index to use for lookup.
      * @returns {Object} The value at anIndex.
      * @addon Array
-     * @todo
      */
 
     return this.at(anIndex);
@@ -6587,7 +6509,6 @@ function(unwrapped) {
      *     </code>
      * @returns {TP.core.Window} The TP.core.Window wrapping the active UI
      *     canvas.
-     * @todo
      */
 
     var obj;
@@ -6621,7 +6542,6 @@ function(unwrapped) {
      *     form. The default is wrapped.
      * @param {Boolean} unwrapped True to unwrap the document.
      * @returns {TP.core.Document|Document}
-     * @todo
      */
 
     var obj;
@@ -6708,7 +6628,6 @@ function() {
      * @synopsis Returns the root UI canvas object's name. Defaults on initial
      *     invocation to the UI canvas name.
      * @returns {String} The name of the top UI canvas.
-     * @todo
      */
 
     var name;
@@ -6809,7 +6728,6 @@ function(aCanvas) {
  *     leverage signaling and logging. This section includes stubs for
  *     operations which may be called prior to the full signaling system being
  *     installed.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -6864,7 +6782,6 @@ function(anOrigin, anExceptionType, aPayload) {
      * @param {TP.sig.Exception} anExceptionType The type of exception to fire.
      * @param {Object} aPayload An object containing optional arguments. Passed
      *     without alteration to handlers.
-     * @todo
      */
 
     //  note that we don't mention the firing policy in this version
@@ -6884,7 +6801,6 @@ function(anExceptionType, aPayload) {
      * @param {TP.sig.Exception} anExceptionType The type of exception to fire.
      * @param {Object} aPayload An object containing optional arguments. Passed
      *     without alteration to handlers.
-     * @todo
      */
 
     return TP.raise(this, anExceptionType, aPayload);
@@ -6903,7 +6819,6 @@ function(anExceptionType, aPayload) {
      * @param {TP.sig.Exception} anExceptionType The type of exception to fire.
      * @param {Object} aPayload An object containing optional arguments. Passed
      *     without alteration to handlers.
-     * @todo
      */
 
     return TP.raise(this, anExceptionType, aPayload);
@@ -6966,7 +6881,6 @@ function(anObject, aKey, aDefault) {
      *     values in their own right. When invoked as a function the property
      *     value is provided.
      * @returns {Object} A value from the object, or the default value.
-     * @todo
      */
 
     var val;
@@ -7020,7 +6934,6 @@ function(anObject, aKey, aDefault) {
      *     values in their own right. When invoked as a function the property
      *     value is provided.
      * @returns {Object} A value from the object, or the default value.
-     * @todo
      */
 
     var val;
@@ -7074,7 +6987,6 @@ function(anObject, aKey, aDefault) {
      *     values in their own right. When invoked as a function the property
      *     value is provided.
      * @returns {Object} A value from the object, or the default value.
-     * @todo
      */
 
     var val;
@@ -7128,7 +7040,6 @@ function(aValue) {
      *          if (TP.isFalse(anObj)) { TP.alert('its false'); };
      *     </code>
      * @returns {Boolean} True if aValue === false.
-     * @todo
      */
 
     //  Seems pendantic, but its the best performer
@@ -7190,7 +7101,6 @@ function(aValue) {
      *          if (TP.isTrue(anObj)) { TP.alert('its true'); };
      *     </code>
      * @returns {Boolean} True if aValue === true.
-     * @todo
      */
 
     //  Seems pendantic, but its the best performer
@@ -7242,7 +7152,6 @@ function(aValue) {
      *          if (TP.notFalse(anObj)) { TP.alert('its not false'); };
      *     </code>
      * @returns {Boolean} True if aValue !== false.
-     * @todo
      */
 
     if (aValue === true) {
@@ -7272,7 +7181,6 @@ function(aValue) {
      *          if (TP.notTrue(anObj)) { TP.alert('its not true'); };
      *     </code>
      * @returns {Boolean} True if aValue !== true.
-     * @todo
      */
 
     if (aValue === false) {
@@ -7329,7 +7237,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an 'arguments'
      *     array.
-     * @todo
      */
 
     return TP.isValid(anObj) && (
@@ -7353,7 +7260,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a JavaScript
      *     Array.
-     * @todo
      */
 
     //  Defined by ECMAScript edition 5
@@ -7464,7 +7370,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a JavaScript
      *     Number.
-     * @todo
      */
 
     //  We have to check NaN first, since typeof NaN is considered to be
@@ -7619,7 +7524,6 @@ function(anObj, includeScannedGlobals) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean}
-     * @todo
      */
 
     //  typeof lies about certain edge cases and is indiscriminate in most
@@ -7821,7 +7725,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an attribute
      *     node.
-     * @todo
      */
 
     return (TP.isValid(anObj) && anObj.nodeType === Node.ATTRIBUTE_NODE);
@@ -7844,7 +7747,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an CDATA section
      *     node.
-     * @todo
      */
 
     return (TP.isValid(anObj) && anObj.nodeType === Node.CDATA_SECTION_NODE);
@@ -7872,7 +7774,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an Element or
      *     Document.
-     * @todo
      */
 
     return (TP.isValid(anObj) &&
@@ -7897,7 +7798,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an Comment node.
-     * @todo
      */
 
     return (TP.isValid(anObj) && anObj.nodeType === Node.COMMENT_NODE);
@@ -7922,7 +7822,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an (HTML)
      *     document.
-     * @todo
      */
 
     //  both html and xml documents still report node type as document, but
@@ -7948,7 +7847,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an Element.
-     * @todo
      */
 
     return (TP.isValid(anObj) && anObj.nodeType === Node.ELEMENT_NODE);
@@ -8013,7 +7911,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an (HTML)
      *     document.
-     * @todo
      */
 
     //  Check to make sure its some sort of DOCUMENT_NODE first.
@@ -8080,7 +7977,6 @@ function(anObj) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an HTML node.
-     * @todo
      */
 
     var doc;
@@ -8135,7 +8031,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not anObj is a Window object that belongs
      *     to an 'iframe'.
-     * @todo
      */
 
     var frame;
@@ -8210,7 +8105,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a named node
      *     map.
-     * @todo
      */
 
     return TP.isValid(anObj) &&
@@ -8239,7 +8133,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a node list.
-     * @todo
      */
 
     if (TP.notValid(anObj) || TP.isWindow(anObj)) {
@@ -8285,7 +8178,6 @@ function(anObj) {
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is a processing
      *     instruction node.
-     * @todo
      */
 
     return (TP.isValid(anObj) && anObj.nodeType ===
@@ -8311,7 +8203,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a 'style'
      *     object.
-     * @todo
      */
 
     if (TP.notValid(anObj)) {
@@ -8342,7 +8233,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a 'stylesheet'
      *     object.
-     * @todo
      */
 
     if (TP.notValid(anObj)) {
@@ -8372,7 +8262,6 @@ function(anObj) {
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a 'stylesheet'
      *     object.
-     * @todo
      */
 
     if (TP.notValid(anObj)) {
@@ -8430,7 +8319,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an Text node.
-     * @todo
      */
 
     return TP.isValid(anObj) && anObj.nodeType === Node.TEXT_NODE;
@@ -8555,7 +8443,6 @@ function(anObj) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an XML document.
-     * @todo
      */
 
     //  Check to make sure its some sort of DOCUMENT_NODE first.
@@ -8584,7 +8471,6 @@ function(anObj) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is an XML node.
-     * @todo
      */
 
     var doc;
@@ -8717,7 +8603,6 @@ function(anObj) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} True if the object has content size = 0.
-     * @todo
      */
 
     var val,
@@ -8819,7 +8704,6 @@ function(aSuspectValue, aDefaultValue) {
      *          theObj = TP.ifEmpty(anObj, 'Hi there');
      *     </code>
      * @returns {Object} One of the two values provided.
-     * @todo
      */
 
     return TP.isEmpty(aSuspectValue) ? aDefaultValue : aSuspectValue;
@@ -8865,7 +8749,6 @@ function(aSuspectValue, aDefaultValue) {
      *          theObj = TP.ifNaN(anObj, 42);
      *     </code>
      * @returns {Object} One of the two values provided.
-     * @todo
      */
 
     return TP.isNaN(aSuspectValue) === true ? aDefaultValue : aSuspectValue;
@@ -8890,7 +8773,6 @@ function(aSuspectValue, aDefaultValue) {
      *          theObj = TP.ifBlank(anObj, 'Hi there');
      *     </code>
      * @returns {Object} One of the two values provided.
-     * @todo
      */
 
     return TP.isBlank(aSuspectValue) ? aDefaultValue : aSuspectValue;
@@ -9094,7 +8976,6 @@ function(anObject) {
      *     These are keys for which the object has a unique value.
      * @param {Object} anObject The object to obtain the keys for.
      * @returns {Array} An Array of the supplied Object's own keys.
-     * @todo
      */
 
     var keys,
@@ -9222,7 +9103,6 @@ function(verbose) {
      *          <samp>"fname" => "Harry", "lname" => "Smith"</samp>
      *     </code>
      * @returns {String} The receiver's default String representation.
-     * @todo
      */
 
     var wantsVerbose,
@@ -9350,7 +9230,6 @@ function(aSize, aChar, aSide) {
      * @returns {String} The receiver padded out according to the values
      *     supplied.
      * @addon String
-     * @todo
      */
 
     var theSize,
@@ -9605,7 +9484,6 @@ function(includeDate, includeMillis, includeNonNum) {
      *     </code>
      * @returns {String} The receiver represented in a timestamp format.
      * @addon Date
-     * @todo
      */
 
     var s,
@@ -9684,7 +9562,6 @@ function () {
      *     change.
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     //  This early version does nothing.
@@ -9719,7 +9596,6 @@ function () {
          *          <var>TP.sig.ValueChange@Array_1119524bba7cc3127febfb45</var>
          *     </code>
          * @returns {Boolean} The current status.
-         * @todo
          */
 
         if (arguments.length) {
@@ -9863,7 +9739,6 @@ function(aFlag) {
          * @param {Object} attributeValue The value to assign.
          * @returns {Object} The receiver.
          * @addon Object
-         * @todo
          */
 
         //  NOTE this version doesn't notify, later versions replace this one
@@ -9907,7 +9782,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET allows duplicate entries in the
      *     system signal map.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -9934,7 +9808,6 @@ function(aFlag) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET caches deep subtype data.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -9966,7 +9839,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET captures native JS errors via the
      *     onerror hook.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -9995,7 +9867,6 @@ function(aFlag, shouldSignal) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET embeds progress messages.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10028,7 +9899,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET removes interests by flagging
      *     them.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10061,7 +9931,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET should use the inferencer if it
      *     can't resolve a method through 'normal' means.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10095,7 +9964,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs all 'activities' in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10128,7 +9996,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs console signals.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10156,7 +10023,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs IO activities in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10187,7 +10053,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs DOM focus in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10217,7 +10082,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs DOMLoaded signals.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10247,7 +10111,6 @@ function(aFlag, shouldSignal) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs errors in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10280,7 +10143,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs inferences in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10310,7 +10172,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs IO activities in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10339,7 +10200,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs IO activities in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10369,7 +10229,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs key events in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10399,7 +10258,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs link activation in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10430,7 +10288,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs load signals in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10464,7 +10321,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs null namespace in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10495,7 +10351,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs exception raises in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10527,7 +10382,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs request signals.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10557,7 +10411,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs security events.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10589,7 +10442,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs all signals in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10621,7 +10473,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs signal stack traces in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10652,7 +10503,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs the call stack when logging
      *     errors in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10686,7 +10536,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs the call stack when logging
      *     errors in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10719,7 +10568,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs tag transforms in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10749,7 +10597,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs TSH signal activity in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10779,7 +10626,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs User IO activities in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10813,7 +10659,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET logs XPath evaluations in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10846,7 +10691,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET should queue signals fired during
      *     load for later firing.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10876,7 +10720,6 @@ function(aFlag, shouldSignal) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET should process CSS structures.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10907,7 +10750,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET registers objects that log
      *     errors.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10938,7 +10780,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET forces DOM parser errors to be
      *     reported.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10967,7 +10808,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET requests privileges before
      *     performing certain browser operations.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -10999,7 +10839,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET signals DOMLoaded when page
      *     elements are having their content updated.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11028,7 +10867,6 @@ function(aFlag, shouldSignal) {
      *          <samp>false</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET signals DOM focus/blur.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11060,7 +10898,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET throws native JS errors when
      *     doing shell evaluations.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11096,7 +10933,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET throws exceptions using native JS
      *     Error objects.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11128,7 +10964,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET try/catch protects handler
      *     invocations.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11158,7 +10993,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET keeps track of job performance.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11188,7 +11022,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET keeps track of how many objects
      *     got constructed in the system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11222,7 +11055,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET will attempt to trap recursive
      *     calls.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11256,7 +11088,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET should unique type objects in the
      *     system.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11286,7 +11117,6 @@ function(aFlag, shouldSignal) {
      *     signaling for this call.
      * @returns {Boolean} Whether or not TIBET should use its backstop for
      *     methods that cannot be found.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11319,7 +11149,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET should checkpoint content.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11351,7 +11180,6 @@ function(aFlag, shouldSignal) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not TIBET should use file caches.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11386,7 +11214,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET should use the debugger when an
      *     exception is raised.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11418,7 +11245,6 @@ function(aFlag, shouldSignal) {
      * @discusson This flag tells TIBET whether inferences should be made. Note
      *     that the overall TIBET backstop processing must be active for this
      *     flag to change actual runtime behavior.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -11661,7 +11487,6 @@ function() {
      *     </code>
      * @returns {TP.lang.Hash} A collection containing data about the current
      *     execution environment.
-     * @todo
      */
 
     var info;
@@ -11791,7 +11616,6 @@ function() {
      *     </code>
      * @returns {String} The root path that the TIBET codebase was launched
      *     from.
-     * @todo
      */
 
     var str,
@@ -11873,7 +11697,6 @@ function() {
      *     connection is required as the default for future connections to the
      *     server.
      * @returns {String} The scheme used when TIBET was loaded.
-     * @todo
      */
 
     return TP.sys.$scheme;
@@ -11912,7 +11735,6 @@ function() {
      *     </code>
      * @returns {String} The current value for source language. The default is
      *     'en-us'.
-     * @todo
      */
 
     return TP.sys.cfg('tibet.sourcelang',
@@ -11939,7 +11761,6 @@ function() {
      *     </code>
      * @returns {String} The current target language key. The default is
      *     'en-us'.
-     * @todo
      */
 
     //  leverage the TP.core.Locale type if we've loaded it at this point
@@ -11970,7 +11791,6 @@ function(aLangCode) {
      *     </code>
      * @returns {String} The current value for source language. The default is
      *     'en-us'.
-     * @todo
      */
 
     return TP.sys.setcfg(
@@ -12073,7 +11893,6 @@ function(aFlag) {
      * @param {Boolean} aFlag True means we're "offline".
      * @returns {Boolean} Whether or not TIBET is currently running in "offline"
      *     mode.
-     * @todo
      */
 
     var oldVal;
@@ -12130,7 +11949,6 @@ function() {
      *     </code>
      * @returns {TP.core.User} The effective TP.core.User instance, if there is
      *     one.
-     * @todo
      */
 
     var type;
@@ -12157,7 +11975,6 @@ function() {
      *          <samp>bedney</samp>
      *     </code>
      * @returns {TP.core.User} The real TP.core.User instance, if there is one.
-     * @todo
      */
 
     var type;

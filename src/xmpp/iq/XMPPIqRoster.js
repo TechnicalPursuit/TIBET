@@ -118,7 +118,6 @@ function(aStanza) {
      *     TP.sig.XMPPMessageInput.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
      * @returns {String}
-     * @todo
      */
 
     return 'TP.sig.XMPPRosterInput';

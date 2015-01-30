@@ -261,7 +261,6 @@ function(aName, createIfAbsent) {
      * @raises TP.sig.XMPPNodeCorruption
      * @returns {Element} The DOM Element node representing the named
      *     descendant.
-     * @todo
      */
 
     var natElem,
@@ -306,7 +305,6 @@ function(aStanza) {
      *     XMPPMessageInput.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
      * @returns {String}
-     * @todo
      */
 
     var signame,
@@ -430,7 +428,6 @@ function(attributeName, attributeValue) {
      *     a wrapper for the standard DOM setAttribute call.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
-     * @todo
      */
 
     var natNode;

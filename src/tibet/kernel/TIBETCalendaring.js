@@ -11,7 +11,6 @@
 /**
  * @synopsis Types supporting various date, time, timezone, and calendar
  *     functionality.
- * @todo
  */
 
 //  ========================================================================
@@ -213,7 +212,6 @@ function(aDate, aFormat) {
      * @param {Date} aDate The Date to format.
      * @param {String} aFormat The format string to use.
      * @returns {String} The formatted Date value.
-     * @todo
      */
 
     if (!TP.isDate(aDate)) {
@@ -242,7 +240,6 @@ function(aString, sourceLocale) {
      * @param {TP.core.Locale|String} sourceLocale A source xml:lang or locale
      *     defining the language the string is now in.
      * @returns {String} An TP.iso.ISO8601 string.
-     * @todo
      */
 
     var dateStr;
@@ -305,7 +302,6 @@ function(aString) {
      * @raises TP.sig.InvalidParameter
      * @returns {Date} A new Date object representing the Date encoded in the
      *     parameter.
-     * @todo
      */
 
     var parts,
@@ -540,7 +536,6 @@ function(anObject) {
      * @synopsis Returns true if the object provided it meets the criteria for a
      *     valid time string with optional time zone data.
      * @returns {Boolean} True if the object is 'valid'.
-     * @todo
      */
 
     var str,

@@ -76,7 +76,6 @@ function(aString, sourceLocale) {
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language or locale the string is now in.
      * @returns {Boolean} The localized Boolean value.
-     * @todo
      */
 
     return TP.sys.getLocale().parseBoolean(aString, sourceLocale);
@@ -531,7 +530,6 @@ function(firstDuration, secondDuration) {
      * @param {String} secondDuration An xs:duration formatted string.
      * @raises TP.sig.InvalidParameter
      * @returns {String} A new xs:duration formatted string value.
-     * @todo
      */
 
     var s1,
@@ -690,7 +688,6 @@ function(aMonth, aYear) {
      * @param {Number} aYear The year number to check against. Defaults to the
      *     current year.
      * @returns {Number} The number of days in the month and year provided.
-     * @todo
      */
 
     var month,
@@ -766,7 +763,6 @@ function(aString, sourceLocale) {
      * @raises TP.sig.InvalidParameter
      * @returns {Date} A new Date object representing the Date encoded in the
      *     parameter.
-     * @todo
      */
 
     //  kernel isn't loaded completely? use native call
@@ -1368,7 +1364,6 @@ function() {
      * @synopsis Returns an array of Date instances for the days of the month
      *     for the receiver's month.
      * @returns {Array} An array containing instances of Date.
-     * @todo
      */
 
     var days,
@@ -1397,7 +1392,6 @@ function() {
      * @synopsis Returns an array containing instances of Date for each day in
      *     the receiver's week.
      * @returns {Array} An array containing instances of Date.
-     * @todo
      */
 
     var weekdays,
@@ -1895,7 +1889,6 @@ function() {
      * @synopsis Returns an array of Date instances for the days of the
      *     receiver's month.
      * @returns {Array} An array containing instances of Date.
-     * @todo
      */
 
     var days,
@@ -1927,7 +1920,6 @@ function() {
      * @synopsis Returns an array containing instances of Date for each day in
      *     the receiver's week.
      * @returns {Array} An array containing instances of Date.
-     * @todo
      */
 
     var weekdays,
@@ -2598,7 +2590,6 @@ function(aString, sourceLocale) {
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language or locale the string is now in.
      * @returns {Date} The localized Date value.
-     * @todo
      */
 
     return TP.sys.getLocale().parseDate(aString, sourceLocale);
@@ -2927,7 +2918,6 @@ Number.Type.defineConstant('EIGHTH_PI', Math.PI / 8);
  * @These are here to support requirements for StringCollectionExtensions
  *     regarding the various formatting functions related to the substitute
  *     call.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -3014,7 +3004,6 @@ function(min, max) {
      * @param {Number} max The maximum bounds of the random integer.
      * @raises TP.sig.InvalidParameter
      * @returns {Number} An integer between min and max.
-     * @todo
      */
 
     var div,
@@ -3110,7 +3099,6 @@ function(aComparison, aTolerance) {
      *     Defaults to 0.
      * @returns {Boolean} Whether or not the receiver is equal to the supplied
      *     comparison, within the supplied tolerance.
-     * @todo
      */
 
     var tolerance;
@@ -3165,7 +3153,6 @@ function(anAngle, aRadius) {
      * @param {Number} aRadius The radius to use.
      * @returns {Number} The X part of the distance for the given angle and
      *     radius.
-     * @todo
      */
 
     return aRadius * anAngle.degreesToRadians().cos();
@@ -3184,7 +3171,6 @@ function(anAngle, aRadius) {
      * @param {Number} aRadius The radius to use.
      * @returns {Number} The Y part of the distance for the given angle and
      *     radius.
-     * @todo
      */
 
     return aRadius * anAngle.degreesToRadians().sin();
@@ -3561,7 +3547,6 @@ function(minValue, maxValue) {
      *     lesser than.
      * @raises TP.sig.InvalidParameter
      * @returns {Boolean} Whether the receiver is between minValue and maxValue.
-     * @todo
      */
 
     if (!TP.isNumber(minValue) || !TP.isNumber(maxValue)) {
@@ -3587,7 +3572,6 @@ function(minValue, maxValue) {
      * @raises TP.sig.InvalidParameter
      * @returns {Boolean} Whether the receiver is between minValue and maxValue
      *     inclusive.
-     * @todo
      */
 
     if (!TP.isNumber(minValue) || !TP.isNumber(maxValue)) {
@@ -3780,7 +3764,6 @@ function(minNum, maxNum) {
      * @raises TP.sig.InvalidParameter
      * @returns {Number} The receiver or the minNum or the maxNum according to
      *     the method comment.
-     * @todo
      */
 
     if (!TP.isNumber(minNum) || !TP.isNumber(maxNum)) {
@@ -3829,7 +3812,6 @@ function(aString, sourceLocale) {
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language or locale the string is now in.
      * @returns {Number} The localized Number value.
-     * @todo
      */
 
     return TP.sys.getLocale().parseNumber(aString, sourceLocale);
@@ -3992,7 +3974,6 @@ function(aQuoteChar) {
      * @param {String} aQuoteChar The quote char to use. Default is single
      *     quotes.
      * @returns {String}
-     * @todo
      */
 
     return this.asString().quoted(aQuoteChar);
@@ -4042,7 +4023,6 @@ function(anObject) {
      * @param {Object} anObject The object whose string value should be tested.
      * @returns {Array} An array identical to the one produced by
      *     String.match().
-     * @todo
      */
 
     var str;
@@ -4126,7 +4106,6 @@ function(aString, sourceLocale) {
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {String} The localized String value.
-     * @todo
      */
 
     return TP.sys.getLocale().parseString(aString, sourceLocale);
@@ -4168,7 +4147,6 @@ function(aSymbol, anExistenceTest, aDataSymbol, aRegExp, aHandler) {
      *     for the handler to process.
      * @param {Function} aHandler The function used to process content.
      * @returns {String} The receiver.
-     * @todo
      */
 
     var subs;
@@ -4424,7 +4402,6 @@ function(aWidth) {
      *     substrings without any whitespace.
      * @param {Number} aWidth The width to split the receiver chunks into.
      * @returns {Array} The receiver split by the width provided.
-     * @todo
      */
 
     var i,
@@ -4711,7 +4688,6 @@ function(aSource, aChar) {
      * @returns {String} The receiver.
      * @abtract Replaces in a one-for-one fashion the characters in the receiver
      *     matching aChar with characters from aSource.
-     * @todo
      */
 
     var ch,
@@ -4921,7 +4897,6 @@ function(aSource, aSide) {
      *     This is useful for formatting floats in parts. This should be either
      *     TP.LEFT or TP.RIGHT.
      * @returns {String} A formatted number string.
-     * @todo
      */
 
     var theSource,
@@ -5236,7 +5211,6 @@ function(aQuoteChar) {
      * @param {String} aQuoteChar A quoting character to use. Default is "'"
      *     (single quote/apostrophe).
      * @returns {String} The string as a quoted string.
-     * @todo
      */
 
     var quote,
@@ -5283,7 +5257,6 @@ function(startDelim, endDelim, aFunction) {
      *     chunk of text to be replaced.
      * @param {Function} aFunction The Function to use to replace the text.
      * @returns {String} The entries processed for use in JavaScript Functions.
-     * @todo
      */
 
     var startDelimStr,
@@ -5368,7 +5341,6 @@ function(aString) {
      *     the space character (#x20).
      * @returns {String} A new string with the receiver's content after
      *     whitespace replacement.
-     * @todo
      */
 
     var replacement;
@@ -5389,7 +5361,6 @@ function(aString) {
      * @param {String} aString The delimiter string. Defaults to '' to create
      *     character arrays.
      * @returns {String} The receiver.
-     * @todo
      */
 
     var str;
@@ -5418,7 +5389,6 @@ function(delimiter, inclusive, last) {
      * @param {Boolean} last True if the delimiter should be the last occurrence
      *     in the receiver.
      * @returns {String} The sliced content.
-     * @todo
      */
 
     var str,
@@ -5453,7 +5423,6 @@ function(delimiter, inclusive, last) {
      * @param {Boolean} last True if the delimiter should be the last occurrence
      *     in the receiver.
      * @returns {String} The sliced content.
-     * @todo
      */
 
     var str,
@@ -5520,7 +5489,6 @@ function(aWidth, justified, forRendering, joinChar, splitMark) {
      *     in most content. But on the off chance you have data that might use
      *     that you can change it here.
      * @returns {String} The split/joined string result.
-     * @todo
      */
 
     var i,
@@ -5671,7 +5639,6 @@ function(stripSingle, stripMulti) {
      * @param {Boolean} stripMulti Should we strip multi-line comments? Default
      *     is true.
      * @returns {String}
-     * @todo
      */
 
     var src,
@@ -6008,7 +5975,6 @@ function(aDataSource, aKeySource, aScope) {
      * @param {Object} aScope The object to be used for the context of
      *     evaluating embedded JS expressions.
      * @returns {String} A formatted string.
-     * @todo
      */
 
     var str,
@@ -6069,7 +6035,6 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
      * @param {Object} aScope The object to be used for the context of
      *     evaluating embedded JS expressions.
      * @returns {String} A formatted string.
-     * @todo
      */
 
     var str,
@@ -6332,7 +6297,6 @@ function(spaceCount) {
      * @param {Number} spaceCount A number of spaces per tab. Defaults to 4.
      * @returns {String} A string having the contents of the receiver with
      *     leading and trailing whitespace removed.
-     * @todo
      */
 
     var repStr,
@@ -6428,7 +6392,6 @@ function(aSize, aTail) {
      * @raises TP.sig.InvalidParameter
      * @returns {String} The receiver shortened to aSize with a possible
      *     ellipsis.
-     * @todo
      */
 
     var size,

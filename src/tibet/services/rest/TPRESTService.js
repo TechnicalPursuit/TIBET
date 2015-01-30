@@ -70,7 +70,6 @@
  *
  *     response = TP.handle(service, request); TP.info(response.getResult(),
  *     TP.LOG);
- * @todo
  */
 
 //  ------------------------------------------------------------------------

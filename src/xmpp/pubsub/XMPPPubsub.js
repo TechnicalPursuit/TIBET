@@ -113,7 +113,6 @@ function(aNamespace, xPathExpr, aType) {
      * @returns {TP.lang.RootObject.<TP.xmpp.Pubsub>} A TP.xmpp.Pubsub subtype
      *     type object that will be returned when the XPath expression matches.
      * @returns {TP.xmpp.Pubsub} The receiver.
-     * @todo
      */
 
     this.get('pubsubTypeRegistry').atPut(xPathExpr, aType);

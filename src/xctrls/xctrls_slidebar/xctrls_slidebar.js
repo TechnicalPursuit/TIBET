@@ -215,7 +215,6 @@ function(aSide, incrementValue) {
      * @param {undefined} incrementValue
      * @returns {TP.xctrls.slidebar} The receiver.
      * @abstract
-     * @todo
      */
 
     var increment;

@@ -30,7 +30,6 @@ function() {
      * @name $computeYahooMapScriptSrc
      * @returns {String}
      * @abstract
-     * @todo
      */
 
     var scriptSrcURL;
@@ -55,7 +54,6 @@ function(aLatLong) {
      * @param {TP.core.LatLong} aLatLong
      * @returns {Object} A Yahoo LatLong object.
      * @abstract
-     * @todo
      */
 
     return this.get('tpIFrame').constructObject('YGeoPoint',
@@ -73,7 +71,6 @@ function(aMarker) {
      * @param {TPMarker} aMarker
      * @returns {Object} A Yahoo marker object.
      * @abstract
-     * @todo
      */
 
     var tpIFrame,
@@ -117,7 +114,6 @@ function(hasPan, zoomType, hasOverview, hasScale, hasMapType) {
      * @param {undefined} hasMapType
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var ourMap;
@@ -153,7 +149,6 @@ function() {
      * @name addLargeControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.get('map').addPanControl();
@@ -171,7 +166,6 @@ function() {
      * @name addMapTypeControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.get('map').Type.defineControl();
@@ -189,7 +183,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var yahooMarker;
@@ -226,7 +219,6 @@ function() {
      * @name addSmallControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.get('map').addPanControl();
@@ -244,7 +236,6 @@ function() {
      * @name configure
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var tpIFrame,
@@ -321,7 +312,6 @@ function() {
      * @name getBounds
      * @returns {TP.core.MapBounds}
      * @abstract
-     * @todo
      */
 
     var yahooBox,
@@ -347,7 +337,6 @@ function() {
      * @name getCenter
      * @returns {undefined}
      * @abstract
-     * @todo
      */
 
     var yahooLatLong;
@@ -367,7 +356,6 @@ function(anAddress) {
      * @param {String} anAddress The address to plot.
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var ourMap,
@@ -412,7 +400,6 @@ function() {
      * @name getMapType
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var mapTypeConstants,
@@ -459,7 +446,6 @@ function() {
      * @name getZoom
      * @returns {undefined}
      * @abstract
-     * @todo
      */
 
     //  TODO: Verify this.
@@ -476,7 +462,6 @@ function(aMapBounds) {
      * @param {TP.core.MapBounds} aMapBounds
      * @returns {undefined}
      * @abstract
-     * @todo
      */
 
     var southWestYLatLong,
@@ -523,7 +508,6 @@ function() {
      * @name removeAllControls
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var ourMap;
@@ -548,7 +532,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.get('map').removeOverlay(aMarker.get('nativeMarker'));
@@ -570,7 +553,6 @@ function(aMapBounds) {
      * @param {undefined} aMapBounds
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var southWestYLatLong,
@@ -639,7 +621,6 @@ function(aLatLong) {
      * @param {undefined} aLatLong
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var currentCenter,
@@ -686,7 +667,6 @@ function(aLatLong, zoomLevel) {
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var yahooZoomLevel;
@@ -714,7 +694,6 @@ function(shouldBeDraggable) {
      * @param {undefined} shouldBeDraggable
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     if (TP.isTrue(shouldBeDraggable)) {
@@ -736,7 +715,6 @@ function(aMapType) {
      * @param {undefined} aMapType
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     var mapTypeConstants,
@@ -788,7 +766,6 @@ function(zoomLevel) {
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.get('map').setZoomLevel(18 - zoomLevel);
@@ -849,7 +826,6 @@ function(width, height) {
      * @param {undefined} height
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -900,7 +876,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.yahoomap} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();

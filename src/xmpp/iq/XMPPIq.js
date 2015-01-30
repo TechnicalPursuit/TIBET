@@ -96,7 +96,6 @@ function() {
      * @name getDefaultType
      * @synopsis Returns the default stanza type for the receiver.
      * @returns {String}
-     * @todo
      */
 
     return 'get';
@@ -118,7 +117,6 @@ function(aStanza) {
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
      * @returns {String}
-     * @todo
      */
 
     var payload;

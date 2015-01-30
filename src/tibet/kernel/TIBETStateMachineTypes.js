@@ -22,7 +22,6 @@
 //  ========================================================================
 
 /**
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -164,7 +163,6 @@ function(startState) {
      *     TP.ACTIVE. The state must have no prerequisite states or a
      *     prerequisite state of TP.READY to be valid.
      * @param {String|Number} startState The new state to transition to.
-     * @todo
      */
 
     var prereqs;
@@ -208,7 +206,6 @@ function() {
      * @name activateEventStream
      * @synopsis Turns on an optional input event stream for the receiver by
      *     observing one or more input-related events.
-     * @todo
      */
 
     var events,
@@ -279,7 +276,6 @@ function() {
      * @name deactivateEventStream
      * @synopsis Turns off an optional input event stream for the receiver by
      *     observing one or more input-related events.
-     * @todo
      */
 
     var events,
@@ -300,7 +296,6 @@ function() {
      * @name defineDefaultStates
      * @synopsis Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
-     * @todo
      */
 
     return;
@@ -321,7 +316,6 @@ function(stateName, stateCheck, statePrereqs) {
      *     object is provided it must respond to 'accept' + stateName.
      * @param {String|Array} statePrereqs A string stateName which is the sole
      *     prerequisite state, or an array of such strings.
-     * @todo
      */
 
     var funcName,
@@ -482,7 +476,6 @@ function() {
      *     some form when it detects that an *exit, *ToB, or *enter action
      *     function has prevented the default action.
      * @returns {Number} A TP state code for the state after the rollback.
-     * @todo
      */
 
     var newState;
@@ -712,7 +705,6 @@ function(startState) {
      *     TP.ACTIVE. The state must have no prerequisite states or a
      *     prerequisite state of TP.READY to be valid.
      * @param {String|Number} startState The new state to transition to.
-     * @todo
      */
 
     var machine;
@@ -769,7 +761,6 @@ function() {
      * @name defineDefaultHandlers
      * @synopsis Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
-     * @todo
      */
 
     return;
@@ -793,7 +784,6 @@ function(stateName, stateHandler, statePhase, originState) {
      * @param {String} originState An optional origin state name used for
      *     TP.TRANSITION actions.
      * @returns {Number} The number of handlers registered for the state.
-     * @todo
      */
 
     var hash,
@@ -836,7 +826,6 @@ function(stateName, statePhase, toState) {
      * @param {String} toState An optional second state name used for
      *     TP.TRANSITION actions.
      * @returns {String} The transition name.
-     * @todo
      */
 
     var name;
@@ -894,7 +883,6 @@ function(statePhase) {
      * @param {String} statePhase TP.ENTER, TP.EXIT. If null/empty then the
      *     phase defaults to TP.INPUT.
      * @returns {String} The transition name.
-     * @todo
      */
 
     switch (statePhase) {
@@ -925,7 +913,6 @@ function(aSignal) {
      *     specialization.
      * @param {TP.sig.StateInput} aSignal The signal which triggered this
      *     handler.
-     * @todo
      */
 
     var state,
@@ -1067,7 +1054,6 @@ function(actionName, aSignal) {
      * @param {String} actionName The transition name to process.
      * @param {TP.sig.StateTransition} aSignal The state transition signal which
      *     triggered the invocation.
-     * @todo
      */
 
     var handlers,

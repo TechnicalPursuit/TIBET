@@ -232,7 +232,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
-     * @todo
      */
 
     var signals,
@@ -600,7 +599,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
-     * @todo
      */
 
     var signals,
@@ -717,7 +715,6 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType,
      *     whether they bubble (when using TP.DOM_FIRING).
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to signal the signal, false otherwise.
-     * @todo
      */
 
     var signals,

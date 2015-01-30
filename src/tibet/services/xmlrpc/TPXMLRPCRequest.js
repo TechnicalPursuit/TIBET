@@ -169,7 +169,6 @@ function() {
 /**
  * @Because an Array might be either a single parameter or a list of parameters
  *     we implement a custom encoder for it here.
- * @todo
  */
 
 //  ------------------------------------------------------------------------

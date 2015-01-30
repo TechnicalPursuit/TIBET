@@ -43,7 +43,6 @@ function(anItemXML, itemID) {
      * @param {String} itemID The item ID that is being published. This may be
      *     optional in which case the XMPP server must assign one.
      * @returns {TP.xmpp.PubsubPublish} The receiver.
-     * @todo
      */
 
     var newItem,

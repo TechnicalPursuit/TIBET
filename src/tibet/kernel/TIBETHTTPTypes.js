@@ -46,7 +46,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
      * @returns {TP.sig.HTTPRequest}
-     * @todo
      */
 
     var httpObj,
@@ -99,7 +98,6 @@ function(aFaultString, aFaultCode) {
      *     cancellation.
      * @param {Object} aFaultCode A reason for the cancellation.
      * @returns {TP.sig.HTTPRequest}
-     * @todo
      */
 
     var httpObj,
@@ -153,7 +151,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result of the
      *     request.
      * @returns {TP.sig.HTTPRequest}
-     * @todo
      */
 
     var httpObj,
@@ -637,7 +634,6 @@ function(aFormat) {
      * @param {Constant} aFormat One of the TP constants for low-level result
      *     data: TP.DOM, TP.TEXT, or TP.NATIVE.
      * @returns {Object} The object in the requested format.
-     * @todo
      */
 
     var result;
@@ -757,7 +753,6 @@ function() {
      *     default. This value is only used when a request does not specify a
      *     mimetype directly.
      * @returns {Constant} A constant suitable for TP.httpEncode.
-     * @todo
      */
 
     return TP.ifInvalid(this.$get('mimetype'),
@@ -775,7 +770,6 @@ function() {
      *     some cases this value isn't simply a default, it's the value used for
      *     all requests made via this service.
      * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
-     * @todo
      */
 
     return TP.ifInvalid(this.$get('verb'), this.getType().get('verb'));

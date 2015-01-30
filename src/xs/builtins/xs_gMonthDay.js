@@ -12,7 +12,6 @@
  * @type {TP.xs.gMonthDay}
  * @synopsis An XML Schema month/day specification in the form --MM-DD with
  *     optional time zone data.
- * @todo
  */
 
 //  ------------------------------------------------------------------------

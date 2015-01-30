@@ -2100,7 +2100,6 @@ function(aFlag, aLogName) {
      * @param {String} aLogName One of the TIBET log type names, or a custom
      *     name if custom logging is being used. See TP.*_LOG for names.
      * @returns {Boolean} The value of the flag after any optional set.
-     * @todo
      */
 
     var flag,
@@ -2161,7 +2160,6 @@ function(argList, aLogLevel) {
      * @param {Arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     var args,
@@ -2205,7 +2203,6 @@ function(argList, aLogLevel) {
      * @param {Arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 /*
     var name,
@@ -2827,7 +2824,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogCSS()) {
@@ -2862,7 +2858,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogInferences()) {
@@ -2929,7 +2924,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogIO()) {
@@ -2965,7 +2959,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogJobs()) {
@@ -2999,7 +2992,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogKeys()) {
@@ -3035,7 +3027,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogLinks()) {
@@ -3069,7 +3060,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogSecurity()) {
@@ -3105,7 +3095,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogSignals()) {
@@ -3139,7 +3128,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     if (!TP.sys.shouldLogTransforms()) {
@@ -3455,7 +3443,6 @@ function(anObject, aLogLevel) {
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
      */
 
     TP.sys.$$log(TP.ac(anObject, TP.TEST_LOG), aLogLevel);

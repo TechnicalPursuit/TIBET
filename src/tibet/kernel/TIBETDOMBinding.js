@@ -321,7 +321,6 @@ function(anElement, aDirection) {
      * @param {Constant} aDirection TP.STDIN, TP.STDOUT, or TP.STDERR.
      * @returns {Boolean} True if the receiver has a binding relative to the
      *     particular STDIO reference given.
-     * @todo
      */
 
     if (TP.notValid(anElement)) {
@@ -485,7 +484,6 @@ function(aDirection) {
      * @returns {Array} A triple containing a TP.core.URI, the bound script
      *     source, and a boolean which is true when the script represents a TSH
      *     pipe segment.
-     * @todo
      */
 
     var fname,
@@ -614,7 +612,6 @@ function(aDirection, aValue, shouldSignal) {
      * @param {Boolean} shouldSignal Should changes be notified. Defaults to the
      *     return value of this.shouldSignalChange().
      * @returns {TP.core.ElementNode} The receiver.
-     * @todo
      */
 
     var triplet,
@@ -679,7 +676,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {Object} The value, scalar or otherwise, bound to this element.
-     * @todo
      */
 
     var triplet,
@@ -824,7 +820,6 @@ function() {
      *     non-UI nodes this is typically null.
      * @returns {Object} An appropriate default value. The type of this object
      *     may vary by control.
-     * @todo
      */
 
     //  default is array for collections since it's a stand-in for nodelist
@@ -888,7 +883,6 @@ function(sourceURI, theContent) {
      * @param {Object} theContent The content returned from the URI
      *     resolution/access process.
      * @returns {TP.core.ElementNode} The receiver.
-     * @todo
      */
 
     var handler,
@@ -1025,7 +1019,6 @@ function(aValue, shouldSignal) {
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.ElementNode} The receiver.
-     * @todo
      */
 
     var newval,
@@ -1112,7 +1105,6 @@ function(aSignal) {
      *     action. This signal should include a key of 'deep' and a value of
      *     true to cause a deep refresh that updates all nodes.
      * @returns {TP.core.ElementNode} The receiver.
-     * @todo
      */
 
     var request;
@@ -1159,7 +1151,6 @@ function(aSignal) {
      *     found locally or as part of a binding's bind:target/bind:set pair.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action.
-     * @todo
      */
 
     var aspect,
@@ -1198,7 +1189,6 @@ function(aSignal) {
      *     refresh itself.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action.
-     * @todo
      */
 
     var node;
@@ -1269,7 +1259,6 @@ function(aSignal) {
      *     return.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action.
-     * @todo
      */
 
     //  no-op for most element types. bindings override
@@ -1358,7 +1347,6 @@ function(cacheName, isID, useGOBI) {
      *     local document.
      * @returns {Object} The cached value, if any. NOTE that the return value is
      *     often a native element.
-     * @todo
      */
 
     var node,
@@ -1437,7 +1425,6 @@ function(cacheName, cacheValue, cacheID) {
      *     can only be stored in attribute form the TP.gid() of the object is
      *     cached.
      * @returns {TP.core.ElementNode} The receiver.
-     * @todo
      */
 
     var node;
@@ -1478,7 +1465,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
      * @signals bind-binding-exception
-     * @todo
      */
 
     var val,
@@ -2003,7 +1989,6 @@ function(aRequest) {
      *     parameters.
      * @returns {Object} An appropriate default value. The type of this object
      *     may vary by control.
-     * @todo
      */
 
     if (this.isScalarValued()) {

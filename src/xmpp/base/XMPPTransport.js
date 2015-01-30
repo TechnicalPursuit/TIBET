@@ -56,7 +56,6 @@ function(aFlag) {
      *     should log received data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -77,7 +76,6 @@ function(aFlag) {
      *     should log sent data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -279,7 +277,6 @@ function(aFlag) {
      *     should log received data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -300,7 +297,6 @@ function(aFlag) {
      *     should log sent data. The default is false.
      * @param {Boolean} aFlag The new setting, if any.
      * @returns {Boolean} The setting, after any adjustment.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {

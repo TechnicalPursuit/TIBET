@@ -1019,7 +1019,6 @@ function(aString, replaceSpaces) {
      *     default is false.
      * @returns {String} The supplied String with the literal characters that
      *     need to be entities made into them.
-     * @todo
      */
 
     var regex,
@@ -1118,7 +1117,6 @@ function(aString, replaceSpaces) {
      *     default is false.
      * @returns {String} The supplied String with the literal characters that
      *     need to be entities made into them.
-     * @todo
      */
 
     var regex,
@@ -1266,7 +1264,6 @@ function(aList, aPrefix, aSuffix) {
      * @param {String} aSuffix A regex expression to append to the list
      *     alternation.
      * @returns {RegExp} A RegExp built from the supplied arguments.
-     * @todo
      */
 
     var prefix,
@@ -1845,7 +1842,6 @@ function(anObject, assignIfAbsent) {
      *     </code>
      * @returns {String} The global ID of anObject or null if it doesn't have
      *     one.
-     * @todo
      */
 
     var assign,
@@ -2192,7 +2188,6 @@ function(anObject, assignIfAbsent) {
      *          <samp>element(/1/1)</samp>
      *     </code>
      * @returns {String} The local ID of anObject.
-     * @todo
      */
 
     var assign,
@@ -2468,7 +2463,6 @@ function(anObject, assignIfAbsent) {
      *         <samp>tibet://TDC.ui/http://www.teamtibet.com/tibet/app/tdc/TIBET-INF/src/html/tdc_moz.html#BODY_111996b6d1560b4952693a988</samp>
      *     </code>
      * @returns {String} A string ID.
-     * @todo
      */
 
     if (anObject === void 0) {
@@ -2657,7 +2651,6 @@ function(anObject, shallow) {
      *     reference elements to be shallow copies.
      * @returns {Node|Object} A Node or Object depending on the nature of the
      *     inbound object.
-     * @todo
      */
 
     var eventDocument;
@@ -2710,7 +2703,6 @@ function(anObject, aFormat, formatParams) {
      * @param {TP.core.Hash|TP.core.Request} formatParams Optional formatting
      *     data.
      * @returns {Object} Typically a string, but not required.
-     * @todo
      */
 
     var obj;
@@ -2821,7 +2813,6 @@ function(anObject, aDocument) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Node} The best-possible HTML node for the Object.
-     * @todo
      */
 
     var doc;
@@ -3205,7 +3196,6 @@ function(anObject) {
      *     function but need the object's keys.
      * @param {Object} anObject The object to return the keys for.
      * @returns {Array} The object's keys.
-     * @todo
      */
 
     //  no valid source object means no work
@@ -3294,7 +3284,6 @@ function(aType, aString, aLocale) {
      * @param {TP.core.Locale|String} aLocale A string of the proper xml:lang
      *     format such as en, en:us, de, etc. or a valid TP.core.Locale subtype.
      * @returns {Object} An instance of aType if the parse is successful.
-     * @todo
      */
 
     var type;
@@ -3334,7 +3323,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request} aRequest The request to use in the processing
      *     process.
      * @returns {Object} The result of processing the object.
-     * @todo
      */
 
     var obj;
@@ -3374,7 +3362,6 @@ function(anObject, aRequest, stdinContent) {
      * @param {Object} stdinContent The content to use as 'stdin' when executing
      *     the supplied object.
      * @returns {Object} The result of processing and executing the object.
-     * @todo
      */
 
     var obj;
@@ -3576,7 +3563,6 @@ function(anObject, verbose) {
      *     'verbose' version (like Nodes, which will print their entire
      *     contents). This is true by default.
      * @returns {String} The best-possible string rep of the Object.
-     * @todo
      */
 
     var str,
@@ -3776,7 +3762,6 @@ function(anObject, anAspect, autoCollapse) {
      *     there's only one item in them. The default is false.
      * @returns {Object} The object's value, as defined by that object's
      *     semantics.
-     * @todo
      */
 
     var aspect,
@@ -3891,7 +3876,6 @@ function(anObject, aDocument) {
      * @param {XMLDocument} aDocument The document which should own the result
      *     node. Defaults to the XML document TP.XML_FACTORY_DOCUMENT.
      * @returns {Node} The best-possible XHTML node for the Object.
-     * @todo
      */
 
     var doc;
@@ -4001,7 +3985,6 @@ function(anObject, aDocument) {
      * @param {XMLDocument} aDocument The document which should own the result
      *     node. Defaults to the XML document TP.XML_FACTORY_DOCUMENT.
      * @returns {Node} The best-possible XML node for the Object.
-     * @todo
      */
 
     var doc;
@@ -4757,7 +4740,6 @@ function(anObject, anAspect, aValue) {
      *     capable of being wrapped in a more powerful TIBET type. The return
      *     value is effectively the object whose set(), atPut(), or slot was
      *     accessed.
-     * @todo
      */
 
     var obj,
@@ -4844,7 +4826,6 @@ function(anObject, aType) {
      * @param {String|Type} aType A Type or type name.
      * @param {TP.lang.RootObject|String} aType The type object or type name
      *     String to use for validation.
-     * @todo
      */
 
     var type;
@@ -4914,7 +4895,6 @@ function(anObject) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Object} A native object.
-     * @todo
      */
 
     var newObj,
@@ -5319,7 +5299,6 @@ function(prefixStr, aScriptStr) {
      *     statements in.
      * @returns {String} The supplied script String with the assignments
      *     prefixed by the supplied prefix.
-     * @todo
      */
 
     TP.regex.JS_ASSIGNMENT.lastIndex = 0;

@@ -35,7 +35,6 @@ function(aControlName) {
      * @param {undefined} aControlName
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var newControl;
@@ -56,7 +55,6 @@ function() {
      * @name $computeGoogleMapScriptSrc
      * @returns {String}
      * @abstract
-     * @todo
      */
 
     var scriptSrcURL,
@@ -107,7 +105,6 @@ function(aLatLong) {
      * @param {TP.core.LatLong} aLatLong
      * @returns {Object} A Google LatLong object.
      * @abstract
-     * @todo
      */
 
     return this.get('tpIFrame').constructObject('GLatLng',
@@ -125,7 +122,6 @@ function(aMarker) {
      * @param {TPMarker} aMarker
      * @returns {Object} A Google marker object.
      * @abstract
-     * @todo
      */
 
     var tpIFrame,
@@ -171,7 +167,6 @@ function(aNode, aURI) {
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.xctrls.googlemap} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -195,7 +190,6 @@ function(hasPan, zoomType, hasOverview, hasScale, hasMapType) {
      * @param {undefined} hasMapType
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     //  Remove all existing controls
@@ -231,7 +225,6 @@ function() {
      * @name addLargeControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.$addControl('GLargeMapControl');
@@ -251,7 +244,6 @@ function() {
      * @name addMapTypeControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.$addControl('GMapTypeControl');
@@ -269,7 +261,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var googleMarker;
@@ -308,7 +299,6 @@ function() {
      * @name addSmallControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.$addControl('GSmallMapControl');
@@ -325,7 +315,6 @@ function() {
      * @name configure
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var tpIFrame,
@@ -383,7 +372,6 @@ function() {
      * @name getBounds
      * @returns {TP.core.MapBounds}
      * @abstract
-     * @todo
      */
 
     var googleBox,
@@ -414,7 +402,6 @@ function() {
      * @name getCenter
      * @returns {TP.core.LatLong}
      * @abstract
-     * @todo
      */
 
     var googleLatLong;
@@ -434,7 +421,6 @@ function(anAddress) {
      * @param {String} anAddress The address to plot.
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var geocoder;
@@ -475,7 +461,6 @@ function() {
      * @name getMapType
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var mapTypeConstants,
@@ -522,7 +507,6 @@ function() {
      * @name getZoom
      * @returns {Number}
      * @abstract
-     * @todo
      */
 
     return this.get('map').getZoom();
@@ -538,7 +522,6 @@ function(aMapBounds) {
      * @param {TP.core.MapBounds} aMapBounds
      * @returns {Number}
      * @abstract
-     * @todo
      */
 
     var southWestGLatLong,
@@ -587,7 +570,6 @@ function() {
      * @name removeAllControls
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var ourMap;
@@ -617,7 +599,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.get('map').removeOverlay(aMarker.get('nativeMarker'));
@@ -639,7 +620,6 @@ function(aMapBounds) {
      * @param {undefined} aMapBounds
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var southWestGLatLong,
@@ -673,7 +653,6 @@ function(aLatLong) {
      * @param {undefined} aLatLong
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var currentCenter,
@@ -718,7 +697,6 @@ function(aLatLong, zoomLevel) {
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     //  NB: We don't signal 'TP.xctrls.MapPanned' manually from here since
@@ -742,7 +720,6 @@ function(shouldBeDraggable) {
      * @param {undefined} shouldBeDraggable
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     if (TP.isTrue(shouldBeDraggable)) {
@@ -764,7 +741,6 @@ function(aMapType) {
      * @param {undefined} aMapType
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     var mapTypeConstants,
@@ -816,7 +792,6 @@ function(zoomLevel) {
      * @param {undefined} zoomLevel
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     this.get('map').setZoom(zoomLevel);
@@ -881,7 +856,6 @@ function(width, height) {
      * @param {Number} height
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -932,7 +906,6 @@ function(aMarker) {
      * @param {undefined} aMarker
      * @returns {TP.xctrls.googlemap} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();

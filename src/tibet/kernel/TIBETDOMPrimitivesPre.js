@@ -59,7 +59,6 @@ function(aName) {
      *     'html:*', '*:div', '*', '*:*', etc.
      * @returns {RegExp} A regular expression which properly escapes any
      *     wildcarding in the search.
-     * @todo
      */
 
     var re,
@@ -119,7 +118,6 @@ function(aDocument) {
      * @returns {DocumentFragment} A valid DOM DocumentFragment.
      * @raise TP.sig.InvalidDocument Raised when an invalid Document is provided
      *     to the method.
-     * @todo
      */
 
     if (!TP.isDocument(aDocument)) {
@@ -158,7 +156,6 @@ function(aDocument) {
      * @returns {TP.lang.Hash} The document type info for this document.
      * @raise TP.sig.InvalidXMLDocument Raised when an invalid XML document is
      *     provided to the method.
-     * @todo
      */
 
     var theDocType,
@@ -228,7 +225,6 @@ function(aDocument) {
      * @returns {String} The MIME type for this document.
      * @raise TP.sig.InvalidDocument Raised when an invalid document is provided
      *     to the method.
-     * @todo
      */
 
     var metaTags,
@@ -288,7 +284,6 @@ function(aNode, namespaceURI) {
      *     provided to the method.
      * @raise TP.sig.InvalidString Raised when an invalid namespace URI is
      *     provided to the method.
-     * @todo
      */
 
     var elem,

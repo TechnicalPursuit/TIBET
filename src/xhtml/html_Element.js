@@ -52,7 +52,6 @@ function(aCSSClass, atEnd) {
      * @param {Boolean} atEnd Whether or not this CSS class should be added to
      *     the end of the list of CSS classes.
      * @returns {html:Element} The receiver.
-     * @todo
      */
 
     TP.elementAddCSSClass(this.getNativeNode(), aCSSClass, atEnd);
@@ -119,7 +118,6 @@ function(oldCSSClass, newCSSClass) {
      * @param {String} oldCSSClass The name of the CSS class to replace.
      * @param {String} newCSSClass The name of the CSS class to replace it with.
      * @returns {html:Element} The receiver.
-     * @todo
      */
 
     TP.elementReplaceCSSClass(this.getNativeNode(),
@@ -205,7 +203,6 @@ function() {
      *     type. The default operations here check for a non-empty value
      *     attribute, a value slot, and finally the text value.
      * @returns {Object} The value of the receiver.
-     * @todo
      */
 
     var node,
@@ -242,7 +239,6 @@ function(aValue) {
      *     'value' slot if possible.
      * @param {String} aValue The new value to set.
      * @returns {html:Element} The receiver.
-     * @todo
      */
 
     var node,

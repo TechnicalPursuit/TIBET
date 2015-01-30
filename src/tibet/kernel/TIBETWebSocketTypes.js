@@ -46,7 +46,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
      * @returns {TP.sig.WebSocketRequest} The receiver.
-     * @todo
      */
 
     var wsObj,
@@ -100,7 +99,6 @@ function(aFaultString, aFaultCode) {
      *     cancellation.
      * @param {Object} aFaultCode A reason for the cancellation.
      * @returns {TP.sig.WebSocketRequest} The receiver.
-     * @todo
      */
 
     var wsObj,
@@ -155,7 +153,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result of the
      *     request.
      * @returns {TP.sig.WebSocketRequest} The receiver.
-     * @todo
      */
 
     var wsObj,
@@ -413,7 +410,6 @@ function(aFormat) {
      * @param {Constant} aFormat One of the TP constants for low-level result
      *     data: TP.DOM, TP.TEXT, or TP.NATIVE.
      * @returns {Object} The object in the requested format.
-     * @todo
      */
 
     var result;

@@ -83,7 +83,6 @@ function(aKey, aValue) {
      * @param {String} aKey The key to use to set the data to be stored.
      * @param {String} aValue The data to store under the supplied key.
      * @returns {TP.core.DeviceStorage} The receiver.
-     * @todo
      */
 
     return TP.override();

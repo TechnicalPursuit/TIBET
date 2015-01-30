@@ -152,7 +152,6 @@ function() {
      * @name getCurrentEvalMarker
      * @synopsis
      * @returns
-     * @todo
      */
 
     var marker;
@@ -180,7 +179,6 @@ function() {
      * @name getCurrentInputMarker
      * @synopsis
      * @returns
-     * @todo
      */
 
     var marker;
@@ -208,7 +206,6 @@ function() {
      * @name getCurrentPromptMarker
      * @synopsis
      * @returns
-     * @todo
      */
 
     var marker;
@@ -480,7 +477,6 @@ function() {
      * @name getPrompt
      * @synopsis
      * @returns {String}
-     * @todo
      */
 
     return '>';
@@ -601,7 +597,6 @@ function(aPrompt, aCSSClass) {
      * @param {String} aCSSClass An optional CSS class name to use for display
      *     of the prompt string.
      * @returns {TP.sherpa.cmdline} The receiver.
-     * @todo
      */
 
     var cssClass,
@@ -666,7 +661,6 @@ function() {
      * @synopsis Clears any status information such as window.status and/or any
      *     status bar content, resetting it to the default state.
      * @returns {TP.sherpa.ConsoleService} The receiver.
-     * @todo
      */
 
     //  NB: This only works if the user gives us permission - need a different
@@ -768,7 +762,6 @@ function() {
      * @name activateInputEditor
      * @returns {TP.sherpa.console} The receiver.
      * @abstract
-     * @todo
      */
 
     var consoleInput;
@@ -864,7 +857,6 @@ function() {
      * @name deactivateInputEditor
      * @returns {TP.sherpa.console} The receiver.
      * @abstract
-     * @todo
      */
 
     var consoleInput;
@@ -948,7 +940,6 @@ function(anObject, shouldAppend) {
      * @param {Boolean} shouldAppend Whether or not to append the value of
      *     anObject to any existing content.
      * @returns {TP.sherpa.console} The receiver.
-     * @todo
      */
 
     var consoleInput,

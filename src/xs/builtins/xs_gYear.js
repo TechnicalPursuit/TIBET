@@ -13,7 +13,6 @@
  * @synopsis A year specification with optional time zone data in the form
  *     [-]YYYY with optional additional year digits to handle larger years (this
  *     is true for all XML Schema year representations).
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -45,7 +44,6 @@ function(anObject) {
      *     with optional timezone data.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}
-     * @todo
      */
 
     var str,

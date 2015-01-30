@@ -231,7 +231,6 @@ TP.api.OrderedPairAPI =
          * @name first
          * @returns {Object} An Object.
          * @asbstract Returns the first element of the ordered pair.
-         * @todo
          */
 
         'first',
@@ -347,7 +346,6 @@ TP.api.IterationAPI =
          * @param {TPCollection} anIndexCollection
          * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
          * @returns {Array} An array of zero or more items.
-         * @todo
          */
 
         'atAll',
@@ -362,7 +360,6 @@ TP.api.IterationAPI =
          *     undefined. For Object data stores the result is the set of unique
          *     keys for the object.
          * @returns {Array} An array of 'keys' for the underlying collection.
-         * @todo
          */
 
         'getKeys',
@@ -393,7 +390,6 @@ TP.api.IterationAPI =
  *     as the TPOrderedPair and TPSortedCollection interfaces.
  * @example See the /tibet/test directory for collection tests which provide a
  *     good view of usage.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -413,7 +409,6 @@ function(aType) {
      * @param {TP.lang.RootObject} aType A type object for conversion. Defaults
      *     to the type of the first element in the receiver.
      * @returns {Boolean}
-     * @todo
      */
 
     var value,
@@ -543,7 +538,6 @@ function(startIndexOrSpec, endIndex, aStep) {
      *          <samp>2 4</samp>
      *     </code>
      * @returns {TP.core.Range} The newly constructed TP.core.Range.
-     * @todo
      */
 
     var rangeSpec,
@@ -681,7 +675,6 @@ function(aSize) {
      * @param {Number} aSize The new size (if smaller than current).
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var size,
@@ -721,7 +714,6 @@ function(varargs) {
      * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var len;
@@ -794,7 +786,6 @@ function(aCollection) {
      * @abstract
      * @return
      * @signals Change
-     * @todo
      */
 
     return TP.todo();
@@ -820,7 +811,6 @@ function(anObject, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     if (this.contains(anObject, aTest)) {
@@ -846,7 +836,6 @@ function(anItem) {
      * @param {Object|Pair} anItem The item to add.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     //  a numerically-indexed pair is considered special to this method, a
@@ -873,7 +862,6 @@ function(anObject, aCount) {
      * @param {Number} aCount A number of times to add the object. Default is 0.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var i,
@@ -916,7 +904,6 @@ function() {
      * @synopsis Returns the receiver in Array form. For an Array instance this
      *     method simply returns the array.
      * @returns {Array} The receiver.
-     * @todo
      */
 
     return this;
@@ -970,7 +957,6 @@ function(aStep) {
      * @param {Number} aStep Defines the increment size the iteration should
      *     use. The default value is 1.
      * @returns {TP.core.Iterator} The new iterator.
-     * @todo
      */
 
     //  sort first because the iterator will copy our keys on init()
@@ -1053,7 +1039,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains all of the values
      *     in the collection provided.
-     * @todo
      */
 
     var comp,
@@ -1117,7 +1102,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains any of the values
      *     in the collection provided.
-     * @todo
      */
 
     var comp,
@@ -1181,7 +1165,6 @@ function(anItem, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Number} The number of occurrences of anItem.
-     * @todo
      */
 
     return this.select(
@@ -1225,7 +1208,6 @@ function(aCollection, aTest) {
      *     default is TP.EQUALITY.
      * @raises TP.sig.InvalidCollection
      * @returns {Array} The difference between aCollection and the receiver.
-     * @todo
      */
 
     var arr;
@@ -1261,7 +1243,6 @@ function(aCollection, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} The disjunction of aCollection and the receiver.
-     * @todo
      */
 
     var thisref,
@@ -1298,7 +1279,6 @@ function() {
      * @synopsis Empties the receiver.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var len;
@@ -1322,7 +1302,6 @@ function() {
      * @synopsis Extracts embedded elements which may exist and flattens them.
      * @returns {Array} A new array containing the elements of the receiver in
      *     flattened form.
-     * @todo
      */
 
     var result,
@@ -1414,7 +1393,6 @@ function(aCollection, aTest) {
      *     default is TP.EQUALITY.
      * @raises TP.sig.InvalidCollection
      * @returns {Array} An array of elements occurring in both.
-     * @todo
      */
 
     if (!TP.canInvoke(aCollection, 'contains')) {
@@ -1463,7 +1441,6 @@ function() {
      *     pairs.
      * @returns {Array} An array containing ordered pairs (or triplets, quads,
      *     etc.) constructed from the receiver and incoming collection elements.
-     * @todo
      */
 
     var arr,
@@ -1524,7 +1501,6 @@ function(anItem, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Number} The number of elements removed.
      * @signals Change
-     * @todo
      */
 
     var i,
@@ -1591,7 +1567,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {Number} The number of elements removed.
      * @signals Change
-     * @todo
      */
 
     var arr,
@@ -1660,7 +1635,6 @@ function(oldValue, newValue, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var shouldSignal,
@@ -1734,7 +1708,6 @@ function(aCollection, newValue, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var arr,
@@ -1804,7 +1777,6 @@ function(aCollection) {
      *     array against.
      * @raises TP.sig.InvalidCollection
      * @returns {Array} The new array containing elements from both arrays.
-     * @todo
      */
 
     var arr;
@@ -1845,7 +1817,6 @@ function(anItem, anIndex) {
      * @param {Number} anIndex The index to add anItem at.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var index,
@@ -1890,7 +1861,6 @@ function(aCollection, anIndex) {
      * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var arr,
@@ -1953,7 +1923,6 @@ function(aCollection) {
      * @param {TPCollection} aCollection The collection of indexes.
      * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array} A new array containing the values collected.
-     * @todo
      */
 
     var arr,
@@ -1996,7 +1965,6 @@ function(aCollection) {
      * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array}
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -2020,7 +1988,6 @@ function(aCollection, anItem) {
      * @raises TP.sig.InvalidCollection
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var arr,
@@ -2081,7 +2048,6 @@ function(anIndex, aDefault) {
      * @param {Object} aDefault The default value to return if undefined.
      *     Functions are executed to return their value in response.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -2112,7 +2078,6 @@ function(anIndex, aDefault) {
      * @param {Object} aDefault The default value to return if undefined.
      *     Functions are executed to return their value in response.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -2143,7 +2108,6 @@ function(anIndex, aDefault) {
      * @param {Object} aDefault The default value to return if undefined.
      *     Functions are executed to return their value in response.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -2176,7 +2140,6 @@ function(aKey, aValue) {
      * @raises InvalidPair
      * @returns {Object} The key's value after processing.
      * @signals Change
-     * @todo
      */
 
     if (!TP.isNumber(aKey)) {
@@ -2209,7 +2172,6 @@ function(aKey, anIndex) {
      *     match with.
      * @param {Number} anIndex The "column" index to check in each nested array.
      * @returns {Array} The nested array whose value at anIndex matches aKey.
-     * @todo
      */
 
     var index;
@@ -2246,7 +2208,6 @@ function(anItem, startIndex, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Number} The first index of an element equal to anItem.
-     * @todo
      */
 
     var found;
@@ -2295,7 +2256,6 @@ function(anItem, startIndex, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} A new array of indexes.
-     * @todo
      */
 
     var tmparr,
@@ -2350,7 +2310,6 @@ function(anIndex) {
      * @raises TP.sig.InvalidIndex
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var index,
@@ -2389,7 +2348,6 @@ function(aCollection) {
      * @raises TP.sig.InvalidCollection
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var arr,
@@ -2452,7 +2410,6 @@ function() {
      *     containing [[1,3,5],[2,4,6]].
      * @returns {Array} An array containing ordered pairs (or triplets, quads,
      *     etc.) constructed from the receiver and incoming collection elements.
-     * @todo
      */
 
     var items,
@@ -2486,7 +2443,6 @@ function(aValue, anItem, aTest) {
      * @raises NotFound
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var ind;
@@ -2516,7 +2472,6 @@ function(aCollection, anItem, aTest) {
      * @raises NotFound
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var ind;
@@ -2546,7 +2501,6 @@ function(aCollection, anItem, aTest) {
      * @raises NotFound
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var ind;
@@ -2571,7 +2525,6 @@ function(aCollection) {
      *     to prepend.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     return this.addAllAt(aCollection, 0);
@@ -2589,7 +2542,6 @@ function(aCollection) {
      *     to append.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     return this.addAllAt(aCollection, this.length);
@@ -2610,7 +2562,6 @@ function(aValue, anItem, aTest) {
      * @raises NotFound
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var ind;
@@ -2634,7 +2585,6 @@ function(aValue) {
      * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var len;
@@ -2661,7 +2611,6 @@ function(aValue) {
      * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var len;
@@ -2691,7 +2640,6 @@ function(anItem, aTest, noRaise) {
      *     default is TP.EQUALITY.
      * @raises NotFound
      * @returns {Object} An object or undefined.
-     * @todo
      */
 
     var ind;
@@ -2717,7 +2665,6 @@ function(anItem, aTest, noRaise) {
      *     default is TP.EQUALITY.
      * @raises NotFound
      * @returns {Object} An object or undefined.
-     * @todo
      */
 
     var ind;
@@ -2747,7 +2694,6 @@ function(anItem, startIndex, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Number} The last index of the element equal to anItem.
-     * @todo
      */
 
     var found;
@@ -2800,7 +2746,6 @@ function(anItem, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var ind,
@@ -2835,7 +2780,6 @@ function(anItem, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var len,
@@ -2878,7 +2822,6 @@ function(oldValue, newValue, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var index;
@@ -2908,7 +2851,6 @@ function(oldValue, newValue, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var index;
@@ -2974,7 +2916,6 @@ function(aFunction) {
      * @raises TP.sig.InvalidFunction
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     //  no change? don't waste time
@@ -3085,7 +3026,6 @@ function(aCount, inline) {
      * @param {Boolean} inline False to construct a new instance, otherwise the
      *     receiver is modified.
      * @returns {Array} The receiver, or a new instance if inline is false.
-     * @todo
      */
 
     var arr,
@@ -3126,7 +3066,6 @@ function(aCount, inline) {
  *     Object rather than a TP.lang.Hash once in a while it hopefully won't
  *     cause everything to break.
  * @subject Collection Extensions
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -3185,7 +3124,6 @@ function(aKey) {
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var k;
@@ -3224,7 +3162,6 @@ function(aKeyArray) {
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var changed,
@@ -3298,7 +3235,6 @@ function(startIndex, aStep) {
      *     is 0.
      * @param {Number} aStep What step should we use? The default is 1.
      * @returns {TP.core.Range}
-     * @todo
      */
 
     var step,
@@ -3420,7 +3356,6 @@ function(endIndex) {
  *     NOTE that we don't implement any of the mutation methods since native
  *     String types aren't mutable.
  * @subject Collection Extensions
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -3483,7 +3418,6 @@ function(aStep) {
      * @param {Number} aStep Defines the increment size the iteration should
      *     use. The default value is 1.
      * @returns {TP.core.Iterator} The new iterator.
-     * @todo
      */
 
     return TP.todo();
@@ -3679,7 +3613,6 @@ function(aValue, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Number} The number of occurrences of aValue.
-     * @todo
      */
 
     return this.getPositions(aValue).getSize();
@@ -3699,7 +3632,6 @@ function(aFunction, startIndex) {
      *     not.
      * @param {Number} startIndex A starting index for the search.
      * @returns {Object} The element detected or undefined.
-     * @todo
      */
 
     var retVal,
@@ -3750,7 +3682,6 @@ function(aCollection, aTest) {
      *     default is TP.EQUALITY.
      * @raises TP.sig.InvalidCollection
      * @returns {String} The difference between aCollection and the receiver.
-     * @todo
      */
 
     return TP.todo();
@@ -3774,7 +3705,6 @@ function(aCollection, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {String} The disjunction of aCollection and the receiver.
-     * @todo
      */
 
     return TP.todo();
@@ -3849,7 +3779,6 @@ function(aCollection) {
      *     receiver with.
      * @raises TP.sig.InvalidCollection
      * @returns {Array} An array of elements occurring in both.
-     * @todo
      */
 
     if (!TP.canInvoke(aCollection, 'contains')) {
@@ -3922,7 +3851,6 @@ function(aCollection) {
      * @raises TP.sig.InvalidCollection
      * @returns {Array} The new string containing elements from both
      *     collections.
-     * @todo
      */
 
     return TP.todo();
@@ -3955,7 +3883,6 @@ function(aCollection) {
      *     use.
      * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
      * @returns {Array} An array of zero or more items.
-     * @todo
      */
 
     return this.split('').atAll(aCollection);
@@ -3972,7 +3899,6 @@ function(aCollection) {
      * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @abstract
      * @return
-     * @todo
      */
 
     return TP.todo();
@@ -3997,7 +3923,6 @@ function(anIndex, aDefault) {
      * @param {Object} aDefault The default value to return if undefined.
      *     Functions are executed to return their value in response.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -4028,7 +3953,6 @@ function(anIndex, aDefault) {
      * @param {Object} aDefault The default value to return if undefined.
      *     Functions are executed to return their value in response.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -4059,7 +3983,6 @@ function(anIndex, aDefault) {
      * @param {Object} aDefault The default value to return if undefined.
      *     Functions are executed to return their value in response.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -4096,7 +4019,6 @@ function(aKey, anIndex) {
      *     match with.
      * @param {Number} anIndex The "column" index to check in each nested array.
      * @returns {Array} The nested array whose value at anIndex matches aKey.
-     * @todo
      */
 
     var index;
@@ -4131,7 +4053,6 @@ function(anItem, startIndex) {
      * @param {Object} anItem The element to search for.
      * @param {Number} startIndex The index to start looking for anItem.
      * @returns {Number} The first index of an element equal to anItem.
-     * @todo
      */
 
     return this.indexOf(anItem, startIndex);
@@ -4149,7 +4070,6 @@ function(aValue, startIndex) {
      * @param {Number} startIndex The index to start looking for aValue.
      * @returns {Array} An array containing indexes for the value provided. May
      *     be empty.
-     * @todo
      */
 
     var tmparr,
@@ -4263,7 +4183,6 @@ function(anItem, startIndex, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY.
      *     Ignore for this type.
      * @returns {Number} The last index of an element equal to anItem.
-     * @todo
      */
 
     return this.lastIndexOf(anItem, startIndex);
@@ -4732,7 +4651,6 @@ function(aCollection) {
      * @param {TPCollection} aCollection A collection of one or more keys.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var keys,
@@ -5101,7 +5019,6 @@ function(aSeparator) {
      *     encodeURIComponent() on them.
      * @param {String} aSeparator The default is '&'.
      * @returns {String} The receiver as a valid query string.
-     * @todo
      */
 
     var delim,
@@ -5261,7 +5178,6 @@ function() {
      *     certain operations.
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     this.convert(function(it, ind) {return it.first();});
@@ -5284,7 +5200,6 @@ function(aFilterNameOrKeys, contentOnly) {
      *     array.
      * @param {Boolean} contentOnly Copy content only? Default is true.
      * @returns {TP.lang.Hash} A shallow copy of the receiver.
-     * @todo
      */
 
     var content,
@@ -5521,7 +5436,6 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
      *
      *
      * @signals Change
-     * @todo
      */
 
     var keys,
@@ -5613,7 +5527,6 @@ function(aValue, aTest) {
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var tmparr,
@@ -5656,7 +5569,6 @@ function(oldKey, newKey) {
      * @raises TP.sig.InvalidKey
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var val,
@@ -5706,7 +5618,6 @@ function(oldValue, newValue, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var replaced,
@@ -5778,7 +5689,6 @@ function(attributeName, attributeValue, shouldSignal) {
      *     this.shouldSignalChange().
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var path,
@@ -5905,7 +5815,6 @@ function() {
      * @returns {Array} An ordered pair containing the first item in the hash
      *     based on the current sort function.
      * @signals Change
-     * @todo
      */
 
     var item;
@@ -5934,7 +5843,6 @@ function() {
      *     pairs.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var count,
@@ -6026,7 +5934,6 @@ function(aCollection, aFunction) {
      *     (key, old, new) which returns the value to use for the key.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var thisref,
@@ -6094,7 +6001,6 @@ function(aCollection) {
      * @param {TPCollection} aCollection A collection of ordered pairs to add.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var thisref;
@@ -6135,7 +6041,6 @@ function(anItemOrKey, aValue, varargs) {
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The key's value after processing.
      * @signals Change
-     * @todo
      */
 
     var i,
@@ -6190,7 +6095,6 @@ function(anItem) {
      * @param {The} anItem item to add.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     if (!TP.isPair(anItem)) {
@@ -6217,7 +6121,6 @@ function(anObject, aCount) {
      * @param {Number} aCount A number of times to add the object. Default is 0.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var count;
@@ -6253,7 +6156,6 @@ function() {
      *     example TP.hc('a',1,'b',2).asArray() returns the equivalent of [['a',
      *     1], ['b', 2]].
      * @returns {Array} The receiver as an Array.
-     * @todo
      */
 
     return this.getPairs();
@@ -6393,7 +6295,6 @@ function() {
      *     that the system can just send 'collapse' to any object. For Arrays
      *     and other collections, the first item is returned.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return this;
@@ -6422,7 +6323,6 @@ function(aFilter) {
      *     for values to remove from the collection.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var items,
@@ -6484,7 +6384,6 @@ function(anInterface, inline) {
      *     inline. Default is true.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var thisref;
@@ -6534,7 +6433,6 @@ function(anItem, aTest) {
      * @raises InvalidPair
      * @returns {Boolean} Whether or not the receiver contains the value
      *     provided.
-     * @todo
      */
 
     var val,
@@ -6582,7 +6480,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains all of the values
      *     in the collection provided.
-     * @todo
      */
 
     var arr,
@@ -6636,7 +6533,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains any of the values
      *     in the collection provided.
-     * @todo
      */
 
     var arr,
@@ -6741,7 +6637,6 @@ function(anItem, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Number} The number of occurrences of anItem.
-     * @todo
      */
 
     //  since it's an item...key/value...the answer is either 0 or 1...
@@ -6805,7 +6700,6 @@ function(aCollection, aTest) {
      * @returns {Array} An array containing the key/value pairs that differ.
      *     Since keys might have different values in different hashes we don't
      *     attempt to turn the list back into a hash.
-     * @todo
      */
 
     var arr;
@@ -6848,7 +6742,6 @@ function(aCollection, aTest) {
      * @returns {Array} An array containing the key/value pairs that differ.
      *     Since keys might have different values in different hashes we don't
      *     attempt to turn the list back into a hash.
-     * @todo
      */
 
     var arr;
@@ -6876,7 +6769,6 @@ function() {
      * @synopsis Empties the receiver.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var hash,
@@ -6969,7 +6861,6 @@ function() {
      * @synopsis Returns an array containing the values for the objects'
      *     attributes.
      * @returns {Array} An array of the values for the receiver's keys.
-     * @todo
      */
 
     var arr,
@@ -7015,7 +6906,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {TP.lang.Hash} A hash containing the elements in the
      *     intersection of the two collections.
-     * @todo
      */
 
     var arr;
@@ -7148,7 +7038,6 @@ function(anItem, aTest) {
      * @raises InvalidItem, InvalidPair
      * @returns {Number} The count of items removed.
      * @signals Change
-     * @todo
      */
 
     var count;
@@ -7178,7 +7067,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
      * @returns {Number} The count of items removed.
      * @signals Change
-     * @todo
      */
 
     var arr,
@@ -7247,7 +7135,6 @@ function(oldItem, newItem, aTest) {
      * @raises TP.sig.InvalidParameter, InvalidPair
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var shouldSignal;
@@ -7298,7 +7185,6 @@ function(aCollection, newItem, aTest) {
      *     TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var arr,
@@ -7397,7 +7283,6 @@ function(aCollection, aFunction) {
      *     (key, old, new) which returns the value to use for the key.
      * @returns {TP.lang.Hash} A new hash containing items from both
      *     collections.
-     * @todo
      */
 
     var dups,
@@ -7453,7 +7338,6 @@ function(aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return this;
@@ -7474,7 +7358,6 @@ function(aValue, anIndex) {
      * @raises TP.sig.InvalidIndex
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     if (TP.notValid(anIndex)) {
@@ -7498,7 +7381,6 @@ function(aCollection, anIndex) {
      * @raises TP.sig.InvalidIndex
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     return this.addAt(aCollection, anIndex);
@@ -7544,7 +7426,6 @@ function(aCollection) {
      * @param {TPCollection} aCollection The collection of indexes.
      * @raises TP.sig.InvalidCollection
      * @returns {Array} A new array containing the values collected.
-     * @todo
      */
 
     var arr,
@@ -7581,7 +7462,6 @@ function(aCollection) {
      * @raises TP.sig.InvalidCollection, TP.sig.InvalidIndex
      * @returns {Array}
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7605,7 +7485,6 @@ function(aCollection, aValue) {
      * @raises TP.sig.InvalidCollection
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var count,
@@ -7654,7 +7533,6 @@ function(anIndex, aDefault) {
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if invalid.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -7684,7 +7562,6 @@ function(anIndex, aDefault) {
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if null.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -7714,7 +7591,6 @@ function(anIndex, aDefault) {
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if undefined.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -7808,7 +7684,6 @@ function(anIndex, aValue) {
      *     </code>
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var entry,
@@ -7904,7 +7779,6 @@ function(anIndex, aValue) {
      * @param {Object} aValue The value to place at anIndex.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     var hash,
@@ -7998,7 +7872,6 @@ function(aKey, aValue) {
      * @raises InvalidPair
      * @returns {Object} The key's value after processing.
      * @signals Change
-     * @todo
      */
 
     return this.addIfAbsent(aKey, aValue);
@@ -8033,7 +7906,6 @@ function(aKey, anIndex) {
      * @param {Number} anIndex
      * @returns {Object}
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8053,7 +7925,6 @@ function(aFilterName) {
      *     by the ordering of the keys.
      * @param {String} aFilterName A get*Interface() filter spec.
      * @returns {Array} An array containing the receiver's keys.
-     * @todo
      */
 
     var arr,
@@ -8088,7 +7959,6 @@ function(aValue, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Object} The index of the value or undefined.
-     * @todo
      */
 
     var found;
@@ -8130,7 +8000,6 @@ function(aValue, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Array} A new array of indexes.
-     * @todo
      */
 
     var items;
@@ -8170,7 +8039,6 @@ function(anIndex) {
      * @param {Object} anIndex The index at which to remove the element.
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     return this.removeKey(anIndex);
@@ -8189,7 +8057,6 @@ function(aCollection) {
      * @raises TP.sig.InvalidParameter, TP.sig.InvalidCollection
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var count,
@@ -8250,7 +8117,6 @@ function(aKey) {
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     if (TP.isEmpty(aKey)) {
@@ -8281,7 +8147,6 @@ function(aKeyArray) {
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var changed,
@@ -8320,7 +8185,6 @@ function() {
      * @name transpose
      * @returns {TP.core.Hash}
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8369,7 +8233,6 @@ function(aFunction) {
      * @raises TP.sig.InvalidFunction
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
-     * @todo
      */
 
     //  no change? don't waste time
@@ -8439,7 +8302,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
-     * @todo
      */
 
     var key;
@@ -8475,7 +8337,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Array} anArgArray Optional arguments to function.
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
-     * @todo
      */
 
     var key;
@@ -8531,7 +8392,6 @@ function(startIndex, endIndex, aStep) {
      *     is smaller than the end this defaults to 1, when the start is larger
      *     than the end the step defaults to -1.
      * @returns {TP.core.Range} A new instance.
-     * @todo
      */
 
     var startInd,
@@ -8570,7 +8430,6 @@ function() {
      * @name asArray
      * @synopsis Returns the receiver in array form (as an Array of its keys).
      * @returns {Array} The receiver as an Array.
-     * @todo
      */
 
     var vals;
@@ -8656,7 +8515,6 @@ function() {
      * @name getKeys
      * @synopsis Returns an array containing the keys of the receiver.
      * @returns {Array} The receiver as an array of key values.
-     * @todo
      */
 
     var keys,
@@ -8780,7 +8638,6 @@ function(aFunction, terminateFunction) {
      *     This should be a Function that returns a Boolean. It is passed the
      *     same data as the performed function.
      * @returns {TP.core.Range} The receiver.
-     * @todo
      */
 
     var f,
@@ -8872,7 +8729,6 @@ function(aFunction, terminateFunction) {
      *     This should be a Function that returns a Boolean. It is passed the
      *     same data as the performed function.
      * @returns {TP.core.Range} The receiver.
-     * @todo
      */
 
     var count,

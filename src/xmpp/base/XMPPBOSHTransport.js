@@ -12,9 +12,7 @@
  * @type {TP.xmpp.BOSHTransport}
  * @synopsis Implements a subtype of TP.xmpp.Transport that implements the
  *     'XEP-124 Binding' specification.
- * @todo Support the XEP-124 'polling' behavior. Implement XEP-124 pause/resume
  *     behavior. Implement a queued sending model.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -446,7 +444,6 @@ function(aHref, aRequest) {
      *     for the http call. This should contain a key of 'xhr' with the native
      *     http request.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
-     * @todo
      */
 
     var httpObj,
@@ -684,7 +681,6 @@ function(aStr, extraAttrs) {
      * @param {TP.lang.Hash} extraAttrs Any extra attributes to be added to the
      *     '<body>' start tag.
      * @raises TP.sig.XMPPTransportException
-     * @todo
      */
 
     var href,
@@ -985,7 +981,6 @@ function(aStr, extraAttrs) {
      * @param {TP.lang.Hash} extraAttrs Any extra attributes to be added to the
      *     '<body>' start tag.
      * @returns {String} The content wrapped with a 'body' tag.
-     * @todo
      */
 
     var msgKey,

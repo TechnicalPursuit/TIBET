@@ -48,7 +48,6 @@ function(aRequest) {
      *     the shell.
      * @returns {Object}
      * @abstract
-     * @todo
      */
 
     var node,
@@ -186,7 +185,6 @@ function(aString, aRequest, aShell) {
      * @param {TP.core.Shell} aShell The shell handling processing and holding
      *     the history list.
      * @returns {String} The history replacement.
-     * @todo
      */
 
     var rest,

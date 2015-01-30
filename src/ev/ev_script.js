@@ -16,7 +16,6 @@
  *     TIBET the default type for an TP.ev.script block is TIBET Shell, not
  *     JavaScript so to use an TP.ev.script tag with javascript you use
  *     type="text/javascript".
- * @todo
  */
 
 //  ------------------------------------------------------------------------

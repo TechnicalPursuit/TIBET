@@ -110,7 +110,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var inst,
@@ -135,7 +134,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var date,
@@ -159,7 +157,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var date,
@@ -183,7 +180,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var date,
@@ -207,7 +203,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var date,

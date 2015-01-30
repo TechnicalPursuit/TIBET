@@ -35,7 +35,6 @@ function(aValue, aNode) {
      * @param {String} aValue The string to validate.
      * @param {Node} aNode The target node for the value.
      * @returns {Boolean} True if the value is valid for the target node.
-     * @todo
      */
 
     var node,

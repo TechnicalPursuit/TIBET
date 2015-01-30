@@ -14,7 +14,6 @@
  *     and presence. This type provides a common root for this subtree, while
  *     the TP.xmpp.Payload type provides a root for the various namespace
  *     fragments which provide optional content for the packet types.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -86,7 +85,6 @@ function(aNode, aType, toJID) {
      *     instance.
      * @param {TP.xmpp.JID|String} toJID The JID or JID string to target.
      * @returns {TP.xmpp.Stanza} A new instance.
-     * @todo
      */
 
     this.callNextMethod(aNode);
@@ -163,7 +161,6 @@ function(aFlag) {
      *     ID for result signals.
      * @param {Boolean} aFlag The new value for the flag, if used as a setter.
      * @returns {Boolean} The current flag value, after optional set.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -182,7 +179,6 @@ function() {
      * @name getDefaultType
      * @synopsis Returns the default stanza type for the receiver.
      * @returns {String}
-     * @todo
      */
 
     return '';
@@ -236,7 +232,6 @@ function(aTagName, aNamespace) {
      * @param {String} aNamespace The namespace any tags should be qualified by,
      *     such as IQ_ROSTER.
      * @returns {Array}
-     * @todo
      */
 
     var natNode,
@@ -304,7 +299,6 @@ function(aStanza) {
      *     the receiver's behalf.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
      * @returns {Object|String|Array} The origin(s) to use when signaling.
-     * @todo
      */
 
     return TP.ifEmpty(this.get('msgID'), this.getID());
@@ -335,7 +329,6 @@ function() {
      *     If the type had no value it is set to the default type as a result of
      *     this call and the default type is returned.
      * @returns {String}
-     * @todo
      */
 
     var tagType;
@@ -414,7 +407,6 @@ function(aConnection) {
      *     with. Defaults to the receiver's connection.
      * @raises TP.sig.InvalidXMPPConnection
      * @returns {String} The message ID used for the send.
-     * @todo
      */
 
     var conn;

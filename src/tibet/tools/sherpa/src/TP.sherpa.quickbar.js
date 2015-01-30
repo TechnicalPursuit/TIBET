@@ -363,7 +363,6 @@ function() {
      * @name activateInputEditor
      * @returns {TP.sherpa.quickbar} The receiver.
      * @abstract
-     * @todo
      */
 
     var textInput;
@@ -384,7 +383,6 @@ function() {
      * @name deactivateInputEditor
      * @returns {TP.sherpa.quickbar} The receiver.
      * @abstract
-     * @todo
      */
 
     var textInput;
@@ -452,7 +450,6 @@ function(aSignal) {
      * @synopsis Handles notifications of keydown events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyDown} aSignal The TIBET signal which triggered this method.
-     * @todo
      */
 
     var evt,
@@ -487,7 +484,6 @@ function(aSignal) {
      *     console maps then the default action is overidden.
      * @param {DOMKeyPress} aSignal The TIBET signal which triggered this
      *     method.
-     * @todo
      */
 
     var evt,
@@ -740,7 +736,6 @@ function(anObject, shouldAppend) {
      * @param {Boolean} shouldAppend Whether or not to append the value of
      *     anObject to any existing content.
      * @returns {TP.sherpa.quickbar} The receiver.
-     * @todo
      */
 
     var textInput,

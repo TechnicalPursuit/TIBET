@@ -88,7 +88,6 @@ function(aKey, aValue) {
      * @param {String} aKey The key to use to set the data to be stored.
      * @param {String} aValue The data to store under the supplied key.
      * @returns {TP.core.LocalStorage} The receiver.
-     * @todo
      */
 
     //  If the key matches a local/instance slot on ourself, then just

@@ -133,7 +133,6 @@ function(aRequest) {
      *     input for the shell.
      * @returns {Object} A value which controls how the outer TSH processing
      *     loop should continue. TP.CONTINUE and TP.BREAK are common values.
-     * @todo
      */
 
     return this.tshExecute(aRequest);

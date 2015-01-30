@@ -40,7 +40,6 @@ function() {
      *     signal checks the 'shouldLogTSHSignals' TIBET configuration flags to
      *     see if it can currently be logged.
      * @returns {Boolean} True if the signal can be logged.
-     * @todo
      */
 
     return TP.sys.shouldLogTSHSignals();
@@ -64,7 +63,6 @@ function(aRequest, aResult) {
      *     hash" types used by other request-oriented methods.
      * @param {Object} aResult A result object.
      * @returns {TP.sig.Response} A new instance.
-     * @todo
      */
 
     this.$set('result', undefined, false, true);

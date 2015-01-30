@@ -36,7 +36,6 @@ function(aDataSource, transformParams) {
      *     of '$REPEAT_START' and '$REPEAT_LIMIT' determine the range of the
      *     iteration.
      * @returns {String} The string resulting from the transformation process.
-     * @todo
      */
 
     TP.stop('break.content_transform');
@@ -68,7 +67,6 @@ function(aDataSource, transformParams) {
      *     of '$REPEAT_START' and '$REPEAT_LIMIT' determine the range of the
      *     iteration.
      * @returns {String} The string resulting from the transformation process.
-     * @todo
      */
 
     return null;
@@ -96,7 +94,6 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
      *     engine will usually treat '$' variables specially and draw their data
      *     from the 'params' argument instead of the source).
      * @returns {Function} The compiled template Function.
-     * @todo
      */
 
     var str,
@@ -195,7 +192,6 @@ function(tokenList, templateName, sourceVarNames) {
      *     engine will usually treat '$' variables specially and draw their data
      *     from the 'params' argument instead of the source).
      * @returns {Function} The compiled template Function.
-     * @todo
      */
 
     var     srcVars,
@@ -681,7 +677,6 @@ function(aDataSource, transformParams) {
      *     of '$REPEAT_START' and '$REPEAT_LIMIT' determine the range of the
      *     iteration.
      * @returns {String} The string resulting from the transformation process.
-     * @todo
      */
 
     var str,
@@ -807,7 +802,6 @@ function(aDataSource, transformParams) {
      *     of '$REPEAT_START' and '$REPEAT_LIMIT' determine the range of the
      *     iteration.
      * @returns {String} The string resulting from the transformation process.
-     * @todo
      */
 
     var dataSource,

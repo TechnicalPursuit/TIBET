@@ -9,7 +9,6 @@
 //  ========================================================================
 
 /**
- * @todo
  */
 
 //  ========================================================================
@@ -404,7 +403,6 @@ function(m1, m2, aHue) {
      * @param {Number} anAlpha The color alpha information.
      * @raises TP.sig.InvalidParameter
      * @returns {Number} The converted number.
-     * @todo
      */
 
     var hue,
@@ -461,7 +459,6 @@ function(aHue, aSaturation, aLightness, anAlpha) {
      * @raises TP.sig.InvalidParameter
      * @returns {Array} The color expressed as an RGBA value in an Array of [r,
      *     g, b, a].
-     * @todo
      */
 
     var theHue,
@@ -649,7 +646,6 @@ function(aString) {
      * @raises TP.sig.InvalidParameter
      * @returns {Array} An Array having this color value expressed as 3 Numbers
      *     [r, g, b].
-     * @todo
      */
 
     var results,
@@ -855,7 +851,6 @@ function(color1, color2, aPercentage) {
      * @raises TP.sig.InvalidNumber
      * @returns {Number} The number that is a mix of color1 and color using the
      *     supplied percentage.
-     * @todo
      */
 
     var n,
@@ -945,7 +940,6 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Number} A number of that can be computed from the supplied
      *     element, property and percentage.
-     * @todo
      */
 
     var theValue,
@@ -1157,7 +1151,6 @@ function(anElement, aPropertyName, aPropertyValue, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Number} The property value converted to a numeric value.
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -1215,7 +1208,6 @@ function(anElement, aProperty, aValue) {
      * @raises TP.sig.InvalidElement
      * @returns {String} The inline CSS style of the supplied element/property,
      *     or null if not found.
-     * @todo
      */
 
     var style,
@@ -1264,7 +1256,6 @@ function(anElement, aProperty) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {String} The computed style of the supplied element/property, or
      *     the empty String if there was no style.
-     * @todo
      */
 
     var compStyleObj,
@@ -1324,7 +1315,6 @@ function(anElement, aProperty) {
      *         TP.sig.InvalidStyle
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
-     * @todo
      */
 
     var compStyleObj,
@@ -1365,7 +1355,6 @@ function(anElement, aProperty) {
      * @raises TP.sig.InvalidElement
      * @returns {String} The inline CSS style of the supplied element/property,
      *     or the empty String if there was no style.
-     * @todo
      */
 
     var style,
@@ -1455,7 +1444,6 @@ function(anElement, aProperty) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {String} The current value of the style property named by
      *     aProperty on the supplied element.
-     * @todo
      */
 
     var style,
@@ -1490,7 +1478,6 @@ function(anElement, aProperty) {
      * @param {String} aProperty A CSS property name.
      * @raises TP.sig.InvalidElement
      * @returns {Boolean} True if the element's inline style is not empty.
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -1516,7 +1503,6 @@ function(anElement, aProperty) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Object} The value of the style property named by aProperty on
      *     anElement that had been pushed earlier.
-     * @todo
      */
 
     var vals;
@@ -1554,7 +1540,6 @@ function(anElement, aProperty) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
      * @returns {Object} The value of the style property named by aProperty on
      *     anElement that had been pushed earlier.
-     * @todo
      */
 
     var val;
@@ -1610,7 +1595,6 @@ function(anElement, aProperty, aPropertyValue) {
      * @param {String} aProperty The name of the style property to push.
      * @param {String|Number} aPropertyValue The value to push.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
-     * @todo
      */
 
     var propVal,
@@ -1654,7 +1638,6 @@ function(anElement, aProperty, aPropertyValue) {
      * @param {String} aProperty The name of the style property to push.
      * @param {String|Number} aPropertyValue The value to set as the new value.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -1691,7 +1674,6 @@ function(anElement, aProperty) {
      * @param {String} aProperty The property name to remove.
      * @raises TP.sig.InvalidElement
      * @returns {Element} The element.
-     * @todo
      */
 
     var str,
@@ -1730,7 +1712,6 @@ function(anElement, aProperty) {
      *     from.
      * @param {String|Array} aProperty The name of the style property to remove.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
-     * @todo
      */
 
     var style,
@@ -1778,7 +1759,6 @@ function(anElement, aProperty, oldValue, newValue) {
      * @param {String} newValue The new value to set.
      * @raises TP.sig.InvalidElement
      * @returns {Element} The element.
-     * @todo
      */
 
     var str,
@@ -1840,7 +1820,6 @@ function(anElement, theStyle) {
      * @param {String|TP.lang.Hash} theStyle A string or hash of style content.
      * @raises TP.sig.InvalidElement
      * @returns {Element} The element.
-     * @todo
      */
 
     var styleObj;
@@ -1880,7 +1859,6 @@ function(anElement, aProperty, aPropertyValue) {
      * @param {String|Number} aPropertyValue The value to set the style property
      *     to.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
-     * @todo
      */
 
     var style,
@@ -2041,7 +2019,6 @@ function(aHash, quoteWhitespaceValues) {
      * @param {Boolean} quoteWhitespaceValues Whether or not whitespace values
      *     should be quoted.
      * @returns {String} A String in the format of a CSS style string.
-     * @todo
      */
 
     var str,
@@ -2585,7 +2562,6 @@ function(strSelectorText, strictPseudos) {
      * @returns {Array} An Array of TP.lang.Hashes containing the keys described
      *     above alternated with the constant value containing the combinator
      *     separating them.
-     * @todo
      */
 
     var strictPseudoMatch,

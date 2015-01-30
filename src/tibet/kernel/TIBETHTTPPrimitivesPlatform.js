@@ -10,7 +10,6 @@
 
 /**
  * @Platform-specific HTTP verb support via XMLHttpRequest.
- * @todo
  * @discussion Note how we do *not* wrap ANY of the debugging messages below
  *     into TP.sc() calls, because when localization occurs, and we've booted
  *     over an HTTP-based URL, it tries to use this routine to do the
@@ -229,7 +228,6 @@ TP.hc(
          * @throws Error Various HTTP-related errors.
          * @returns {XMLHttpRequest} The result object. On success this object's
          *     status property will be TP.core.HTTP.OK.
-         * @todo
          */
 
         var request,
@@ -494,7 +492,6 @@ TP.hc(
          * @throws Error Various HTTP-related errors.
          * @returns {XMLHttpRequest} The result object. On success this object's
          *     status property will be TP.core.HTTP.OK.
-         * @todo
          */
 
         var request,
@@ -713,7 +710,6 @@ TP.hc(
          * @throws Error Various HTTP-related errors.
          * @returns {XMLHttpRequest} The result object. On success this object's
          *     status property will be TP.core.HTTP.OK.
-         * @todo
          */
 
         var request,

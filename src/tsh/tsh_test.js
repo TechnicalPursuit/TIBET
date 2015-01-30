@@ -33,7 +33,6 @@ function(aRequest) {
      *     the shell.
      * @returns {Object}
      * @abstract
-     * @todo
      */
 
     var shell,

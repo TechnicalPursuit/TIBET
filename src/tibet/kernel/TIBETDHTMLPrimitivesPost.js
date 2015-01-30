@@ -286,7 +286,6 @@ function(aDocument) {
      * @param {Document} aDocument The document to begin searching for iframes.
      * @raises TP.sig.InvalidDocument
      * @returns {Array} The list of nested iframes.
-     * @todo
      */
 
     var allIFrames,
@@ -558,7 +557,6 @@ function(aDocument, trimFile) {
      *     trimmed, returning only a directory. Default is false.
      * @raises TP.sig.InvalidDocument
      * @returns {String} The document's location.
-     * @todo
      */
 
     var doc,
@@ -651,7 +649,6 @@ function(aDocument, aFontSize) {
      * @raises TP.sig.InvalidDocument
      * @returns {Number} The number of pixels the supplied font size takes up in
      *     the supplied document.
-     * @todo
      */
 
     var numPixels,
@@ -837,7 +834,6 @@ function(aDocument, deltaX, deltaY) {
      * @param {Number} deltaX The X amount to scroll the document by.
      * @param {Number} deltaY The Y amount to scroll the document by.
      * @raises TP.sig.InvalidDocument
-     * @todo
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
@@ -861,7 +857,6 @@ function(aDocument, x, y) {
      * @param {Number} x The X coordinate to scroll the document to.
      * @param {Number} y The Y coordinate to scroll the document to.
      * @raises TP.sig.InvalidDocument
-     * @todo
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
@@ -889,7 +884,6 @@ function(aDocument, aURIStr, force) {
      *     value for 'tibet:src'.
      * @raises TP.sig.InvalidDocument
      * @returns {String} The document's location.
-     * @todo
      */
 
     var doc,
@@ -938,7 +932,6 @@ function(aDocument, titleText) {
      * @param {Document} aDocument The document to set the title content of.
      * @param {String} titleText The value to use as the title content.
      * @raises TP.sig.InvalidDocument,TP.sig.InvalidString
-     * @todo
      */
 
     var theTitle,
@@ -993,7 +986,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      *     just added. The default for an 'add' operation is false.
      * @raises TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
-     * @todo
      */
 
     var bodyElem;
@@ -1040,7 +1032,6 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     just inserted. The default for an 'insert' operation is false.
      * @raises TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
-     * @todo
      */
 
     if (!TP.isHTMLDocument(aDocument)) {
@@ -1080,7 +1071,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      *     a Window object associated with it or not.
      * @returns {Node} The first node of the content that was just inserted. In
      *     this case, the documentElement.
-     * @todo
      */
 
     var awakenContent,
@@ -1339,7 +1329,6 @@ function(anElement, className) {
      * @param {String} className The CSS class name to add.
      * @raises TP.sig.InvalidElement
      * @returns {Element} The element the supplied class was added to.
-     * @todo
      */
 
     var existingClass;
@@ -1396,7 +1385,6 @@ function(anElement, markup, boxType, wantsTransformed) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Array} The [width, height] pair computed when the content of
      *     the element is set to the supplied markup.
-     * @todo
      */
 
     var theBoxType,
@@ -1469,7 +1457,6 @@ insetLeft) {
      *     center of the supplied Element.
      * @raises TP.sig.InvalidElement
      * @returns {String}
-     * @todo
      */
 
     var elemCoords,
@@ -1562,7 +1549,6 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
      * @raises TP.sig.InvalidElement,TP.sig.InvalidNumber
      * @returns {Array} An Array of the following return values: [on-screen X,
      *     on-screen Y, corner used, distanceComputation].
-     * @todo
      */
 
     var desiredOffsetX,
@@ -1790,7 +1776,6 @@ function(anElement, x, y) {
      * @raises TP.sig.InvalidElement, TP.sig.InvalidNumber
      * @returns {Boolean} Whether or not the x and y coordinates fall inside of
      *     the element.
-     * @todo
      */
 
     var elemCoords;
@@ -1831,7 +1816,6 @@ function(anElement) {
      *     display property.
      * @param {HTMLElement} anElement The element to default the display of.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
-     * @todo
      */
 
     var computedStyle,
@@ -2002,7 +1986,6 @@ function(anElement, anAttrName, anAttrValue) {
      * @param {String} anAttrName The name of the attribute to look for on the
      *     ancestor.
      * @returns {HTMLElement}
-     * @todo
      */
 
     var theElement,
@@ -2162,7 +2145,6 @@ function(anElement) {
      * @returns {Array} An Array of Numbers containing the element's clipping
      *     rectangle *expressed in number of pixels*. The numbers are arranged
      *     in the following order: top, right, bottom, left.
-     * @todo
      */
 
     var computedStyle,
@@ -2387,7 +2369,6 @@ function(anElement, boxType, wantsTransformed) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
-     * @todo
      */
 
     var elemWin,
@@ -2484,7 +2465,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {Number} The global X coordinate of the element in pixels.
-     * @todo
      */
 
     var elemWin,
@@ -2553,7 +2533,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {Number} The global Y coordinate of the element in pixels.
-     * @todo
      */
 
     var elemWin,
@@ -2624,7 +2603,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {Number} The global X and Y coordinates of the element in
      *     pixels.
-     * @todo
      */
 
     var elemWin,
@@ -2689,7 +2667,6 @@ function(anElement, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Number} The element's height in pixels.
-     * @todo
      */
 
     var heightVal,
@@ -2814,7 +2791,6 @@ function(anElement, wantsTransformed) {
      * @raises TP.sig.InvalidElement
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
-     * @todo
      */
 
     var elemDoc,
@@ -2863,7 +2839,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @raises TP.sig.InvalidElement
      * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
-     * @todo
      */
 
     var elemBox,
@@ -3035,7 +3010,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Number} The page X coordinate of the element in pixels.
-     * @todo
      */
 
     var elemDoc,
@@ -3131,7 +3105,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Number} The page Y coordinate of the element in pixels.
-     * @todo
      */
 
     var elemDoc,
@@ -3228,7 +3201,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Array} The page X and Y coordinates of the element in pixels.
-     * @todo
      */
 
     var elemDoc,
@@ -3342,7 +3314,6 @@ function(anElement, boxType, wantsTransformed) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
-     * @todo
      */
 
     var offsetAncestor,
@@ -3384,7 +3355,6 @@ function(anElement, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Number} The offset X coordinate of the element in pixels.
-     * @todo
      */
 
     var offsetAncestor;
@@ -3421,7 +3391,6 @@ function(anElement, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Number} The offset Y coordinate of the element in pixels.
-     * @todo
      */
 
     var offsetAncestor;
@@ -3459,7 +3428,6 @@ function(anElement, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Array} The offset X and Y coordinates of the element in pixels.
-     * @todo
      */
 
     var offsetAncestor;
@@ -3500,7 +3468,6 @@ function(anElement, anAncestor, wantsTransformed) {
      * @raises TP.sig.InvalidElement
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
-     * @todo
      */
 
     var stopAncestor,
@@ -3570,7 +3537,6 @@ function(anElement, wantsTransformed) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
-     * @todo
      */
 
     var elemDoc,
@@ -3669,7 +3635,6 @@ function(anElement, xCoord, yCoord) {
      * @raises TP.sig.InvalidElement
      * @returns {Array} Two of the following four values: First position:
      *     TP.RIGHT or TP.LEFT First position: TP.TOP or TP.BOTTOM.
-     * @todo
      */
 
     var pageXY,
@@ -3737,7 +3702,6 @@ function(anElement, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Number} The element's width in pixels.
-     * @todo
      */
 
     var widthVal,
@@ -3824,7 +3788,6 @@ function(anElement, className) {
      * @param {String} className The CSS class name to test for.
      * @raises TP.sig.InvalidElement
      * @returns {Boolean} Whether or not the element has the supplied CSS class.
-     * @todo
      */
 
     var re;
@@ -3878,7 +3841,6 @@ function(anElement, preserveSpace) {
      * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
      *     taken up by the element in its document. The default is false.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -4215,7 +4177,6 @@ function(anElement, deltaX, deltaY) {
      * @param {Number} deltaX The X amount to move the element by.
      * @param {Number} deltaY The Y amount to move the element by.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
-     * @todo
      */
 
     var computedStyle,
@@ -4261,7 +4222,6 @@ function(anElement, x, y) {
      * @param {Number|String} x The X coordinate to move the element to.
      * @param {Number|String} y The Y coordinate to move the element to.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     var styleObj;
@@ -4298,7 +4258,6 @@ function(anElement, anotherElement) {
      * @param {HTMLElement} anElement The element to move 'up' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement over.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
-     * @todo
      */
 
     var computedStyle,
@@ -4332,7 +4291,6 @@ function(anElement, anotherElement) {
      * @param {HTMLElement} anElement The element to move 'down' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement under.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
-     * @todo
      */
 
     var computedStyle,
@@ -4382,7 +4340,6 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
      *     This should be one of: TP.TOP_LEFT TP.BOTTOM_LEFT TP.TOP_RIGHT
      *     TP.BOTTOM_RIGHT.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     var theMeasuringBoxType,
@@ -4528,7 +4485,6 @@ function(anElement, attrName, attrValue) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
      *     TP.sig.InvalidParameter
      * @returns {Element} The element.
-     * @todo
      */
 
     var existingWholeValue,
@@ -4587,7 +4543,6 @@ function(anElement, attrName, oldValue, newValue) {
      *     in the attribute's value.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Element} The element.
-     * @todo
      */
 
     var wholeValue,
@@ -4642,7 +4597,6 @@ function(anElement, className) {
      * @param {String} className The CSS class name to remove.
      * @raises TP.sig.InvalidElement
      * @returns {Element} The element.
-     * @todo
      */
 
     var re,
@@ -4691,7 +4645,6 @@ function(anElement, oldClassName, newClassName) {
      * @param {String} newClassName The CSS class name to replace it with.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Element} The element.
-     * @todo
      */
 
     var wholeClassValue,
@@ -4788,7 +4741,6 @@ function(anElement, deltaX, deltaY) {
      * @param {Number} deltaX The X coordinate to scroll the element by.
      * @param {Number} deltaY The Y coordinate to scroll the element by.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidNumber
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -4817,7 +4769,6 @@ function(anElement, x, y) {
      * @param {Number} x The X coordinate to scroll the element to.
      * @param {Number} y The Y coordinate to scroll the element to.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -4845,7 +4796,6 @@ function(anElement, aMessage) {
      * @param {HTMLElement} anElement The element to set the busy element
      *     message for.
      * @param {String} aMessage The message to use for the busy message.
-     * @todo
      */
 
     var busyMessageElement;
@@ -4881,7 +4831,6 @@ function(anElement, top, right, bottom, left) {
      * @param {Number|String} left The value to set the left coordinate of the
      *     element's clipping rectangle to.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -4912,7 +4861,6 @@ function(anElement, aHeight) {
      * @param {Number|String} aHeight The height dimension to set anElement's
      *     height to.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -4942,7 +4890,6 @@ function(anElement, aWidth) {
      * @param {Number|String} aWidth The width dimension to set anElement's
      *     width to.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -5009,7 +4956,6 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      *     supplied, it will default to the height of the supplied element.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {HTMLElement} The busy element itself.
-     * @todo
      */
 
     var busyElement,
@@ -5105,7 +5051,6 @@ function(anElement, aMessage) {
      *     message for.
      * @param {String} aMessage The message to use for the busy message.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
-     * @todo
      */
 
     var busyElement,
@@ -5184,7 +5129,6 @@ function(anElement, propName, useOffsetAncestors) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Number} The value of the property as computed up the ancestorp
      *     chain.
-     * @todo
      */
 
     var totalPropertyValue,
@@ -5242,7 +5186,6 @@ function(anElement, attrName, attrValue, atEnd, allowDuplicates) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
      *     TP.sig.InvalidParameter
      * @returns {Element} The element.
-     * @todo
      */
 
     var shouldAllowDups,
@@ -5366,7 +5309,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just added. The default for an 'add' operation is false.
      * @returns {Node} The first node of the content that was just added.
-     * @todo
      */
 
     //  Simply a cover for inserting child content before the end of the
@@ -5402,7 +5344,6 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      *     just inserted. The default for an 'insert' operation is false.
      * @raises TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
-     * @todo
      */
 
     var awakenContent,
@@ -5830,7 +5771,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @raises TP.sig.InvalidElement
      * @returns {Element|Text} The newly created Node (could be a Text node) or
      *     anElement, depending on how the replacement happened.
-     * @todo
      */
 
     var awakenContent,
@@ -6025,7 +5965,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      *     a Window object associated with it or not.
      * @raises TP.sig.InvalidElement
      * @returns {Element} The element.
-     * @todo
      */
 
     var awakenContent,
@@ -6579,7 +6518,6 @@ function(aNode, aDocument) {
      *     node. Defaults to the XML document TP.XML_FACTORY_DOCUMENT.
      * @raises TP.sig.InvalidNode
      * @returns {Node} An XML Node representation of aNode.
-     * @todo
      */
 
     var doc,
@@ -6719,7 +6657,6 @@ function(anElement, aContent) {
      *     iframe.
      * @raises TP.sig.InvalidParameter,TP.sig.InvalidElement,
      *     TP.sig.InvalidDocument
-     * @todo
      */
 
     var iframeDoc;
@@ -6767,7 +6704,6 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
      *     a Window object associated with it or not.
      * @raises TP.sig.InvalidParameter,TP.sig.InvalidElement,
      *     TP.sig.InvalidDocument
-     * @todo
      */
 
     var iframeDoc,
@@ -6841,7 +6777,6 @@ function(aNode, aDocument) {
      *     node. Defaults to the current canvas's document.
      * @raises TP.sig.InvalidNode
      * @returns {Node} An HTML node.
-     * @todo
      */
 
     var doc,
@@ -7023,7 +6958,6 @@ function(aNode, aDocument) {
      *     node. Defaults to the XML document TP.XML_FACTORY_DOCUMENT.
      * @raises TP.sig.InvalidNode
      * @returns {Node} An XML Node representation of aNode.
-     * @todo
      */
 
     var doc;
@@ -7105,7 +7039,6 @@ function(aString, aDocument) {
      *     node. Defaults to the current canvas's document.
      * @raises TP.sig.InvalidString
      * @returns {Node} The node created from the supplied content.
-     * @todo
      */
 
     var doc,
@@ -7364,7 +7297,6 @@ function(aNode, aDocument, aWindow) {
      * @param {Document} aDocument The node's document.
      * @param {Window} aWindow The node's window.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     return;
@@ -7388,7 +7320,6 @@ function(aNode, startIndex, endIndex) {
      *     or TP.LAST to stop at the last child node.
      * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
-     * @todo
      */
 
     var theStartIndex,
@@ -7460,7 +7391,6 @@ function(aNode, aClassName) {
      * @raises TP.sig.InvalidNode
      * @returns {Array} An Array of Elements under anElement whose CSS class
      *     name matches aClassName.
-     * @todo
      */
 
     var elem,
@@ -7600,7 +7530,6 @@ function(centerObj, endObj) {
      *     an X 'value' in the first position and a Y value in the second.
      * @returns {Number} The angle (in degrees) between the center point and the
      *     end point.
-     * @todo
      */
 
     var coords1,
@@ -7652,7 +7581,6 @@ function(obj1, obj2) {
      *     an X 'value' in the first position and a Y value in the second.
      * @returns {Number} The angle (in degrees) between the x1, y1 and x2, y2
      *     using the formula above.
-     * @todo
      */
 
     var coords1,
@@ -7734,7 +7662,6 @@ function(angle, numIncrements, centerInIncrement) {
      * @raises TP.sig.InvalidNumber
      * @returns {Number} A Number matching the constant corresponding to the
      *     compass corner.
-     * @todo
      */
 
     var center,
@@ -7802,7 +7729,6 @@ function(obj1, obj2) {
      *     an X 'value' in the first position and a Y value in the second.
      * @returns {Number} The distance between the x1, y1 and x2, y2 using the
      *     formula above.
-     * @todo
      */
 
     var coords1,
@@ -7850,7 +7776,6 @@ function(obj1, obj2) {
      *     an X 'value' in the first position and a Y value in the second.
      * @returns {Array} The distance and direction of the vector expressed as an
      *     Array of: [distance, direction].
-     * @todo
      */
 
     var coords1,
@@ -7961,7 +7886,6 @@ function(aWindow, aWindowID) {
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidString
      * @returns {Boolean} True if the call succeeded.
      * @function $$checkWindowClosed
-     * @todo
      */
 
     if (TP.notValid(aWindow)) {
@@ -8012,7 +7936,6 @@ function(url, name, aSpec, shouldReplace) {
      *     the window is already open.
      * @returns {Window} The newly opened window.
      * @function open
-     * @todo
      */
 
     var newWin,
@@ -8275,7 +8198,6 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
      * @param {Boolean} checkForWindowClosed Whether we should check to see if
      *     the window is closing.
      * @raises TP.sig.InvalidWindow
-     * @todo
      */
 
     var checkWindow,
@@ -8432,7 +8354,6 @@ function(aWindow, aclType) {
      * @param {String} aclType The acl type: real or effective. When not present
      *     both are set.
      * @raises TP.sig.InvalidWindow
-     * @todo
      */
 
     var doc;
@@ -8581,7 +8502,6 @@ function(aWindow, otherWindow, wantsTransformed) {
      *     has been transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidWindow
      * @returns {Array} The offsets expressed as [left, top].
-     * @todo
      */
 
     var frame1OffsetX,
@@ -8708,7 +8628,6 @@ function(aWindow) {
      * @raises TP.sig.InvalidWindow
      * @returns {Array} The names of all of the parent windows of aWindow all
      *     the way up to the top level window containing it.
-     * @todo
      */
 
     var arr,
@@ -8766,7 +8685,6 @@ function(aWindow) {
      * @raises TP.sig.InvalidWindow
      * @returns {Array} An ordered pair containing the width amount in the first
      *     position and the height amount in the second position.
-     * @todo
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -8811,7 +8729,6 @@ function(aWindow, deltaX, deltaY) {
      * @param {Number} deltaX The X amount to move the window by.
      * @param {Number} deltaY The Y amount to move the window by.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidNumber
-     * @todo
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -8839,7 +8756,6 @@ function(aWindow, x, y) {
      * @param {Number} x The X coordinate to move the window to.
      * @param {Number} y The Y coordinate to move the window to.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidNumber
-     * @todo
      */
 
     if (!TP.isWindow(aWindow)) {

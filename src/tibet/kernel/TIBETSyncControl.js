@@ -104,7 +104,6 @@ function(aProcessMode) {
      *     based on the value of supportedModes.
      * @param {String} aProcessMode A TP.core.SyncAsync constant.
      * @returns {TP.core.SyncAsync} The receiver.
-     * @todo
      */
 
     var supported;
@@ -144,7 +143,6 @@ function() {
      *     for the resource. If there is an instance value that is returned,
      *     otherwise any value specified for the type will be used.
      * @returns {Constant} A TP.core.Resource processing mode constant.
-     * @todo
      */
 
     return TP.ifInvalid(this.$get('mode'), this.getType().get('mode'));

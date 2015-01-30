@@ -10,7 +10,6 @@
 
 /**
  * @
- * @todo
  */
 
 /* JSHint checking */
@@ -63,7 +62,6 @@ function(aRequest) {
      *          shell command does not successfully complete.
      *
      * @returns {TP.sig.ShellRequest} The request instance used.
-     * @todo
      */
 
     var shell,
@@ -465,7 +463,6 @@ function(aResourceID, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing shell parameters etc.
      * @returns {TP.core.Shell} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -572,7 +569,6 @@ function(aPrefix) {
      * @param {String} aPrefix The namespace prefix. This should typically be in
      *     lower case (tsh, yak, etc).
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     var prefix;
@@ -682,7 +678,6 @@ function(aFlag) {
      * @synopsis Combined setter/getter for whether the shell is active.
      * @param {Boolean} aFlag Optional new value to set.
      * @returns {Boolean} The current value.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -705,7 +700,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     TP.override();
@@ -728,7 +722,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     //  can't log out of a non-login shell
@@ -964,7 +957,6 @@ function(aName, aValue) {
      * @param {String} aValue The string value to set. No object resolution is
      *     done on alias values so this will be used literally.
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     var value;
@@ -1101,7 +1093,6 @@ function(anIndex, afterExpansion) {
      * @param {Boolean} afterExpansion True to work against the expanded form
      *     rather than the original source command text.
      * @returns {String} The history entry's stored string content.
-     * @todo
      */
 
     var expanded,
@@ -1272,7 +1263,6 @@ function(aName, aValue) {
      *     as part of command input this may still resolve to an object, but no
      *     resolution is done at the time of variable definition.
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     var name;
@@ -1556,7 +1546,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for 'cmdNotifier', 'cmdAsIs', 'messageType', etc.
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     var message,
@@ -1603,7 +1592,6 @@ function(anError, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     var req;
@@ -1643,7 +1631,6 @@ function(aQuery, aDefault, aRequest) {
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions. The request should be capable of responding
      *     to TP.sig.UserInput signals so it can process the result when ready.
-     * @todo
      */
 
     var req;
@@ -1681,7 +1668,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.core.Shell} The receiver.
-     * @todo
      */
 
     var req;
@@ -1837,7 +1823,6 @@ function(aPath) {
      *     at the time of resolution.
      * @param {String} aPath The path to expand.
      * @returns {String} aPath The expanded path.
-     * @todo
      */
 
     var home,
@@ -2280,7 +2265,6 @@ function(aString) {
      *     provided as command tag attributes or content.
      * @param {String} aString A string requiring resolution.
      * @returns {String} The string with resolved variable substitutions.
-     * @todo
      */
 
     var str;
@@ -2379,7 +2363,6 @@ function(aRequest, shouldReport) {
      * @param {Boolean} shouldReport Whether to report missing substitutions or
      *     not. Default is true.
      * @returns {Node} The fully interpolated command node.
-     * @todo
      */
 
     var node,
@@ -2490,7 +2473,6 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
      *     value' of the argument (i.e. the value actually given by the script
      *     author, before any substitution was performed). The default is false.
      * @returns {String} The argument value.
-     * @todo
      */
 
     var args,
@@ -2901,7 +2883,6 @@ function(aRequest, parameterName) {
      * @param {TP.sig.ShellRequest} aRequest The request to query.
      * @param {String} parameterName The parameter to look up.
      * @returns {String} The parameter value.
-     * @todo
      */
 
     var params;
@@ -3212,7 +3193,6 @@ function(aRequest) {
      *     command.
      * @returns {TP.sig.Request} The request.
      * @abstract
-     * @todo
      */
 
     this.saveProfile();

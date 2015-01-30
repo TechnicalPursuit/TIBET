@@ -60,7 +60,6 @@ function() {
      *     occurred. Note that error texts are completely optional as per the
      *     XMPP 1.0 specification.
      * @returns {String} The error text for the current error condition.
-     * @todo
      */
 
     //  SASL 'failure's don't have error text.

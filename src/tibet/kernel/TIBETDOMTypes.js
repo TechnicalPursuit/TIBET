@@ -10,7 +10,6 @@
 
 /**
  * @
- * @todo
  */
 
 /* JSHint checking */
@@ -107,7 +106,6 @@ function(nodeSpec, varargs) {
      * @param {Array} varargs Optional additional arguments for the
      *     constructor.
      * @returns {TP.core.Node} A new instance.
-     * @todo
      */
 
     var node,
@@ -397,7 +395,6 @@ function(aString, defaultNS, shouldReport) {
      *     to be thrown.
      * @raises TP.sig.DOMParseException
      * @returns {TP.core.Node} The newly constructed TP.core.Node.
-     * @todo
      */
 
     var node;
@@ -476,7 +473,6 @@ function(aURI, shouldReport) {
      *     to be thrown.
      * @raises TP.sig.DOMParseException
      * @returns {TP.core.Node} The newly constructed TP.core.Node.
-     * @todo
      */
 
     var content;
@@ -620,7 +616,6 @@ function(aNode) {
      * @param {Node|TP.core.Node} aNode The node whose content language should
      *     be returned.
      * @returns {String} The node's content language.
-     * @todo
      */
 
     var node,
@@ -876,7 +871,6 @@ function(aNode, aURI) {
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.core.Node} The initialized instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -1279,7 +1273,6 @@ function(includeNode, aPrefix, joinChar) {
      * @param {String} joinChar A character to use when joining the index parts.
      *     Default is '.'.
      * @returns {Array} An array of position strings.
-     * @todo
      */
 
     return TP.nodeGetAncestorPositions(this.getNativeNode(),
@@ -1358,7 +1351,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
      *     parameters.
      * @returns {Node} A native node.
-     * @todo
      */
 
     return this.getNativeNode();
@@ -1376,7 +1368,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
      *     parameters.
      * @returns {String} The receiver's content as a String.
-     * @todo
      */
 
     return this.getTextContent();
@@ -1393,7 +1384,6 @@ function() {
      *     language if no xml:lang specification is found in the receiver's
      *     parent chain.
      * @returns {String} The receiver's content language.
-     * @todo
      */
 
     return TP.core.Node.getContentLanguage(this);
@@ -1410,7 +1400,6 @@ function() {
      *     language if no xml:lang specification is found in the receiver's
      *     parent chain.
      * @returns {String} The receiver's content language.
-     * @todo
      */
 
     return TP.core.Node.getContentLanguage(this);
@@ -1519,7 +1508,6 @@ function(joinChar) {
      * @param {String} joinChar A character to use when joining the index parts.
      *     Default is '.'.
      * @returns {String} The index or TP.NOT_FOUND.
-     * @todo
      */
 
     return TP.nodeGetDocumentPosition(this.getNativeNode(), joinChar);
@@ -1552,7 +1540,6 @@ function(assignIfAbsent) {
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The global ID of the receiver.
-     * @todo
      */
 
     return TP.gid(this.getNativeNode(), assignIfAbsent);
@@ -1585,7 +1572,6 @@ function(assignIfAbsent) {
      * @param {Boolean} assignIfAbsent True if an ID should be assigned when one
      *     isn't present. Default is false.
      * @returns {String} The local ID of the receiver.
-     * @todo
      */
 
     return TP.lid(this.getNativeNode(), assignIfAbsent);
@@ -1604,7 +1590,6 @@ function() {
      *     TP.sig.InvalidOperation exception.
      * @raises TP.sig.InvalidOperation
      * @returns {String} The local name of the receiver.
-     * @todo
      */
 
     return this.raise('TP.sig.InvalidOperation');
@@ -1733,7 +1718,6 @@ function(preserveDeletes, preserveCrud) {
      *     being used. This helps avoid problems with style sheets and other
      *     processes finding tibet:crud attributes as part of their queries.
      * @returns {Node} The receiver's native DOM node.
-     * @todo
      */
 
     var ndx,
@@ -1795,7 +1779,6 @@ function() {
      *     place that manages that overhead, otherwise the default
      *     implementation simply returns the ivar containing the internal node.
      * @returns {Node} The receiver's native DOM node.
-     * @todo
      */
 
     return this.$get('node');
@@ -1847,7 +1830,6 @@ function(aNamespaceURI, includeDescendants) {
      *     entire DOM tree? Default is false.
      * @returns {Array} An array of namespace prefixes for the supplied
      *     aNamespaceURI in the document.
-     * @todo
      */
 
     return TP.nodeGetNSPrefixes(this.getNativeNode(),
@@ -1882,7 +1864,6 @@ function(includeDescendants) {
      * @param {Boolean} includeDescendants Should the search run across the
      *     entire DOM tree? Default is false.
      * @returns {Array} An array of unique namespace URIs found in the receiver.
-     * @todo
      */
 
     return TP.nodeGetNSURIs(this.getNativeNode(), includeDescendants);
@@ -1935,7 +1916,6 @@ function(phaseList, outerElem) {
      * @param {Element} outerElem An optional 'outermost' element to test.
      *     Testing will not go higher than this element in the DOM tree.
      * @returns {String} The maximum content processing phase name.
-     * @todo
      */
 
     return TP.nodeGetTargetPhase(this.getNativeNode(),
@@ -2011,7 +1991,6 @@ function(targetPhase, targetPhaseList) {
      * @param {Array} targetPhaseList An optional list of phases to search for
      *     the target phase. The default is TP.core.TSH.NOCACHE.
      * @returns {Boolean} True if the phase has been reached.
-     * @todo
      */
 
     return TP.nodeHasReachedPhase(
@@ -2061,7 +2040,6 @@ function(aFlag) {
      *     set when provided.
      * @returns {Boolean} The current dirty state, after any optional set()
      *     operation has occurred.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -2085,7 +2063,6 @@ function(aRootNode) {
      * @param {Node} aRootNode An optional node the receiver must reside in,
      *     hence a Document or Element (Collection) node.
      * @returns {Boolean} True if the receiver isn't in a document.
-     * @todo
      */
 
     return TP.nodeIsDetached(this.getNativeNode());
@@ -2170,7 +2147,6 @@ function(aFlag) {
      *     will be set when provided.
      * @returns {Boolean} The current transaction state, after any optional
      *     set() operation has occurred.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -2427,7 +2403,6 @@ function(aProperty) {
      *     value.
      * @returns {Array} An Array of objects obtained by recursing using the
      *     supplied property.
-     * @todo
      */
 
     return TP.wrap(TP.nodeSelectChain(this.getNativeNode(), aProperty));
@@ -2473,7 +2448,6 @@ function(aNode, shouldSignal) {
      *     shouldSignalChange() to the receiver.
      * @raises TP.sig.InvalidNode
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var oldNode,
@@ -2560,7 +2534,6 @@ function(attributeName, attributeValue, shouldSignal) {
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      * @signals Change
-     * @todo
      */
 
     var model,
@@ -2647,7 +2620,6 @@ function(aValue, shouldSignal) {
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var node,
@@ -2746,7 +2718,6 @@ function(aValue, shouldSignal) {
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     return this.setTextContent(aValue, shouldSignal);
@@ -2774,7 +2745,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     TRUE for TP.core.Node subtypes.
-     * @todo
      */
 
     var node,
@@ -2872,7 +2842,6 @@ function(aTarget, aMethodName, supportsInvoke) {
      *     target.
      * @param {Boolean} supportsInvoke False to force apply to be used.
      * @returns {Boolean} True if the creation is successful.
-     * @todo
      */
 
     var fstr,
@@ -2927,7 +2896,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @raises TP.sig.InvalidNode
      * @returns {Object} The result of invoking the method using the receiver's
      *     native node.
-     * @todo
      */
 
     var node;
@@ -2962,7 +2930,6 @@ function(XPathExpr, resultType, logErrors) {
      *     particularly during operations such as string localization which can
      *     cause recusion issues.
      * @returns {Object} The result of executing the XPath.
-     * @todo
      */
 
     return TP.xpc(XPathExpr).exec(this, resultType, logErrors);
@@ -2989,7 +2956,6 @@ function(XPathExpr, resultType, logErrors, aNode, flagChanges) {
      *     flagged.
      * @raises TP.sig.InvalidNode
      * @returns {Object} The result of executing the XPath.
-     * @todo
      */
 
     if (!TP.isNode(aNode)) {
@@ -3044,7 +3010,6 @@ function(aName) {
      *     Defaults to the prior checkpoint location.
      * @raises TP.sig.InvalidCheckpoint
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var node,
@@ -3137,7 +3102,6 @@ function(anAspect, anAction, aDescription) {
      *     change.
      * @returns {TP.core.Node} The receiver.
      * @signals Change
-     * @todo
      */
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
@@ -3182,7 +3146,6 @@ function(aName) {
      *     can be supplied to rollback() calls.
      * @returns {Number} The number of checkpoints after the new checkpoint has
      *     been added.
-     * @todo
      */
 
     var node,
@@ -3258,7 +3221,6 @@ function(deep, viaString) {
      *     use string-based operations to ensure Moz doesn't mess up the
      *     document reference. Defaults to false.
      * @returns {TP.core.Node} The resulting clone of aNode.
-     * @todo
      */
 
     return TP.wrap(TP.nodeCloneNode(this.getNativeNode(), deep, viaString));
@@ -3404,7 +3366,6 @@ function(aName) {
      *     Defaults to the next checkpoint location available.
      * @raises TP.sig.InvalidCheckpoint
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var node,
@@ -3471,7 +3432,6 @@ function(aName) {
      * @synopsis Looks up the named checkpoint and returns true if it exists.
      * @param {String} aName An optional name to look up.
      * @returns {Boolean} True if the receiver has the named checkpoint.
-     * @todo
      */
 
     var points;
@@ -3501,7 +3461,6 @@ function(aName) {
      *     was made, identifying the specific point to roll back to.
      * @raises TP.sig.InvalidRollback
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var node,
@@ -3696,7 +3655,6 @@ function(aURI, force) {
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var node,
@@ -3746,7 +3704,6 @@ function(aURI, force, aParamHash) {
      *     value is null and a 'uri' slot is defined on this object, that
      *     object's String value will be used as the XML Base value.
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var url,
@@ -3886,7 +3843,6 @@ function(attributeName) {
      *     targeted.
      * @param {String} attributeName The attribute to find.
      * @returns {String} The attribute value, if found.
-     * @todo
      */
 
     var node;
@@ -3917,7 +3873,6 @@ function(attributeName) {
      *     targeted.
      * @param {String} attributeName The attribute to find.
      * @returns {String} The attribute value, if found.
-     * @todo
      */
 
     var funcName;
@@ -3949,7 +3904,6 @@ function(attributeName, stripPrefixes) {
      *     prefixes from the attribute names as they are populated into the
      *     return value.
      * @returns {TP.lang.Hash} A collection of name/value pairs.
-     * @todo
      */
 
     var node;
@@ -4060,7 +4014,6 @@ function(attributeName) {
      * @param {String} attributeName The attribute to test.
      * @raises TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not the receiver has the named attribute.
-     * @todo
      */
 
     var node;
@@ -4124,7 +4077,6 @@ function(attributeName) {
      *     standard change notification semantics for native nodes as well as
      *     proper namespace management.
      * @param {String} attributeName The attribute name to remove.
-     * @todo
      */
 
     var attr,
@@ -4184,7 +4136,6 @@ function(attributeName) {
      *     standard change notification semantics for native nodes as well as
      *     proper namespace management.
      * @param {String} attributeName The attribute name to remove.
-     * @todo
      */
 
     var funcName;
@@ -4211,7 +4162,6 @@ function(attributeName, attributeValue) {
      *     nodes as well as proper namespace management.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
-     * @todo
      */
 
     var boolAttrs,
@@ -4353,7 +4303,6 @@ function(attributeName, attributeValue) {
      *     nodes as well as proper namespace management.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
-     * @todo
      */
 
     var attrName,
@@ -4393,7 +4342,6 @@ function(attributeHash) {
      *     TP.lang.Hash. For document nodes this operation effectively operates
      *     on the document's documentElement.
      * @param {TP.lang.Hash} attributeHash The attributes to set.
-     * @todo
      */
 
     attributeHash.perform(
@@ -4416,7 +4364,6 @@ function(aNode, shouldSignal) {
      *     shouldSignalChange() to the receiver.
      * @raises TP.sig.InvalidNode
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var nodes,
@@ -4512,7 +4459,6 @@ function(anObject, aParamHash) {
      *     key of 'xmlns:fixup' should be set to true to fix up 'xmlns'
      *     attributes such that they won't be lost during the transformation.
      * @returns {String} The string resulting from the transformation process.
-     * @todo
      */
 
     var templateName,
@@ -4647,7 +4593,6 @@ function(newContent, aRequest, stdinContent) {
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
      * @returns {TP.core.Node} The result of adding content to the receiver.
-     * @todo
      */
 
     var request,
@@ -4706,7 +4651,6 @@ function(newContent, aRequest) {
      * @param {TP.sig.Request} aRequest An optional request object which defines
      *     further parameters.
      * @returns {TP.core.Node} The result of adding content to the receiver.
-     * @todo
      */
 
     var node,
@@ -4891,7 +4835,6 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
      *     content is 'executed', as well as processed, by the shell.
      * @returns {TP.core.Node} The result of setting the content of the
      *     receiver.
-     * @todo
      */
 
     var request,
@@ -4955,7 +4898,6 @@ function(newContent, aPositionOrPath, aRequest) {
      * @param {TP.sig.Request} aRequest An optional request object which defines
      *     further parameters.
      * @returns {TP.core.Node} The result of adding content to the receiver.
-     * @todo
      */
 
     var node,
@@ -5104,7 +5046,6 @@ function(newContent, aRequest, stdinContent) {
      *     content is 'executed', as well as processed, by the shell.
      * @returns {TP.core.Node} The result of setting the content of the
      *     receiver.
-     * @todo
      */
 
     var request,
@@ -5188,7 +5129,6 @@ function(newContent, aRequest) {
      *     further parameters.
      * @returns {TP.core.Node} The result of setting the content of the
      *     receiver.
-     * @todo
      */
 
     var node,
@@ -5325,7 +5265,6 @@ function() {
      * @synopsis Returns an Array containing the parent nodes of the receiver.
      *     This list ends with the top level node.
      * @returns {Array} An Array of the parent nodes of the supplied Node.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetAncestors(this.getNativeNode()));
@@ -5357,7 +5296,6 @@ function() {
      * @name getChildNodes
      * @synopsis Returns an Array of the child nodes of the receiver.
      * @returns {Array} An Array of the child nodes of the receiver.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetChildNodes(this.getNativeNode()));
@@ -5392,7 +5330,6 @@ function() {
      * @synopsis Returns an Array of the children of the receiver which are
      *     Element nodes.
      * @returns {Array} An Array of the Element children of the supplied Node.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetChildElements(this.getNativeNode()));
@@ -5413,7 +5350,6 @@ function(breadthFirst) {
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
      * @returns {Array} An Array containing the nodes found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetDescendants(this.getNativeNode(),
@@ -5435,7 +5371,6 @@ function(aType, breadthFirst) {
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
      * @returns {Array} An Array containing the nodes found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetDescendantsByType(this.getNativeNode(),
@@ -5456,7 +5391,6 @@ function(breadthFirst) {
      *     meaning depth first.
      * @returns {Array} An Array of the Element descendants of the supplied
      *     Node.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetDescendantElements(this.getNativeNode(),
@@ -5481,7 +5415,6 @@ function(attrName, attrValue, breadthFirst) {
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
      * @returns {Array} An Array containing the nodes found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByAttribute(
@@ -5511,7 +5444,6 @@ function(attrPrefix, attrValue, breadthFirst) {
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
      * @returns {Array} An Array containing the nodes found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByAttributePrefix(
@@ -5548,7 +5480,6 @@ function(anIdOrName) {
      * @param {String} anIdOrName The ID or name of the element to find.
      * @returns {Array} The objects whose name is equal to anIdOrName or empty
      *     if there are no objects with that name.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByIdOrName(
@@ -5568,7 +5499,6 @@ function(aName) {
      *     provided.
      * @param {String} aName The value of the 'name' attribute to search for.
      * @returns {Array} An Array containing native elements found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByName(
@@ -5589,7 +5519,6 @@ function(aClassName) {
      *     elements. Multiple class names should be space separated.
      * @returns {Array} An Array of Elements under anElement whose CSS class
      *     name matches aClassName.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetElementsByClassName(this.getNativeNode(),
@@ -5610,7 +5539,6 @@ function(anID, retryWithXPath) {
      *     search for id attributes when the native call fails.
      * @returns {TP.core.ElementNode} A TP.core.ElementNode wrapping the node
      *     with the ID specified.
-     * @todo
      */
 
     if (TP.isPrototype(this)) {
@@ -5654,7 +5582,6 @@ function(aSelectorStr) {
      *     null, the entire document is searched.
      * @param {String} aSelectorStr The CSS selector to use to search the DOM.
      * @returns {Array} An Array containing native elements found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeEvaluateCSS(this.getNativeNode(),
@@ -5679,7 +5606,6 @@ function(aName, aNamespaceURI) {
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @returns {Array} An Array containing elements found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetElementsByTagName(this.getNativeNode(),
@@ -5698,7 +5624,6 @@ function() {
      *     Order is from the parent's first child to the parent's last child,
      *     with aNode removed from the list.
      * @returns {Array} An Array containing the nodes found.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetSiblings(this.getNativeNode()));
@@ -5796,7 +5721,6 @@ function(aName, aNamespaceURI) {
      * @returns {String} The text content of the text child of the first Element
      *     under the receiver whose tag name matches the supplied name (after
      *     all Text nodes under it have been normalized).
-     * @todo
      */
 
     return TP.nodeGetChildTextContent(this.getNativeNode(),
@@ -5818,7 +5742,6 @@ function(aString, aName, aNamespaceURI) {
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @param {String} aString The content text to set.
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     //  NOTE the localization here
@@ -5855,7 +5778,6 @@ function(attrName, attrValue) {
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
      * @raise TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetFirstAncestorByAttribute(
@@ -5882,7 +5804,6 @@ function(aTagName, aNamespaceURI) {
      * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
      * @raise TP.sig.InvalidName Raised when the supplied tag name is empty.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetFirstAncestorByTagName(
@@ -5906,7 +5827,6 @@ function(attrName, attrValue) {
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The attribute value to check.
      * @returns {TP.core.ElementNode} An element child of the node.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetFirstElementChildByAttribute(
@@ -5929,7 +5849,6 @@ function(aName, aNamespaceURI) {
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @returns {TP.core.ElementNode} An element descendant of the node.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetFirstElementChildByTagName(
@@ -6000,7 +5919,6 @@ function(aType) {
      * @param {Node} aNode The node to process.
      * @param {Number} aType A Node.nodeType constant.
      * @returns {TP.core.Node} A descendant of the node.
-     * @todo
      */
 
 
@@ -6021,7 +5939,6 @@ function(attrName, attrValue) {
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The attribute value to check.
      * @returns {TP.core.ElementNode} An element descendant of the node.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetFirstElementByAttribute(this.getNativeNode(),
@@ -6043,7 +5960,6 @@ function(aName, aNamespaceURI) {
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @returns {TP.core.ElementNode} An element descendant of the node.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetFirstElementByTagName(this.getNativeNode(),
@@ -6064,7 +5980,6 @@ function(direction) {
      * @param {String} aDirection TP.NEXT or TP.PREVIOUS. The default is TP.NEXT
      *     so searching is forward.
      * @returns {TP.core.ElementNode} The first sibling.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetFirstSiblingElement(this.getNativeNode(),
@@ -6085,7 +6000,6 @@ function(nodeType) {
      * @param {Number} nodeType A valid nodeType constant. Defaults to any node
      *     type.
      * @returns {TP.core.Node} The next TP.core.Node in document order.
-     * @todo
      */
 
     return TP.wrap(TP.nodeGetNextNonChild(this.getNativeNode(), nodeType));
@@ -6127,7 +6041,6 @@ function(aFunction, shouldReverse) {
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
-     * @todo
      */
 
     return TP.nodeAncestorsPerform(this.getNativeNode(),
@@ -6157,7 +6070,6 @@ function(aFunction, shouldReverse) {
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
-     * @todo
      */
 
     return TP.nodeChildElementsPerform(this.getNativeNode(),
@@ -6184,7 +6096,6 @@ function(aFunction, shouldReverse) {
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
-     * @todo
      */
 
     return TP.nodeChildNodesPerform(this.getNativeNode(),
@@ -6211,7 +6122,6 @@ function(aFunction, breadthFirst) {
      *     each node provided.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @todo
      */
 
     return TP.nodeDescendantsPerform(this.getNativeNode(),
@@ -6239,7 +6149,6 @@ function(aFunction, breadthFirst) {
      *     each element provided.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @todo
      */
 
     return TP.nodeDescendantElementsPerform(this.getNativeNode(),
@@ -6268,7 +6177,6 @@ function(aFunction, aSubset, shouldReverse) {
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
-     * @todo
      */
 
     return TP.nodeSiblingsPerform(this.getNativeNode(),
@@ -6293,7 +6201,6 @@ function(aFunction, shouldReverse) {
      *     acceptable node.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.ElementNode} An ancestor found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeDetectAncestor(this.getNativeNode(),
@@ -6315,7 +6222,6 @@ function(aFunction, shouldReverse) {
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.ElementNode} A child element found acceptable by
      *     aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeDetectChildElement(this.getNativeNode(),
@@ -6336,7 +6242,6 @@ function(aFunction, shouldReverse) {
      *     acceptable node.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A child node found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeDetectChildNode(this.getNativeNode(),
@@ -6361,7 +6266,6 @@ function(aFunction, breadthFirst) {
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
      * @returns {TP.core.Node} A descendant found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeDetectDescendant(this.getNativeNode(),
@@ -6389,7 +6293,6 @@ function(aFunction, breadthFirst) {
      *     meaning depth first.
      * @returns {TP.core.ElementNode} A descendant element found acceptable by
      *     aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeDetectDescendantElement(this.getNativeNode(),
@@ -6412,7 +6315,6 @@ function(aFunction, aSubset, shouldReverse) {
      *     siblings.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A sibling found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeDetectSibling(this.getNativeNode(),
@@ -6437,7 +6339,6 @@ function(aFunction, shouldReverse) {
      *     acceptable node.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Array} An Array of ancestors found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeSelectAncestors(this.getNativeNode(),
@@ -6458,7 +6359,6 @@ function(aFunction, shouldReverse) {
      *     each node provided.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A child element found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeSelectChildElements(this.getNativeNode(),
@@ -6479,7 +6379,6 @@ function(aFunction, shouldReverse) {
      *     acceptable node.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Node} A child node found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeSelectChildNodes(this.getNativeNode(),
@@ -6504,7 +6403,6 @@ function(aFunction, breadthFirst) {
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
      * @returns {Node} An descendant found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeSelectDescendants(this.getNativeNode(),
@@ -6532,7 +6430,6 @@ function(aFunction, breadthFirst) {
      *     meaning depth first.
      * @returns {Array} An array of descendant elements found acceptable by
      *     aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeSelectDescendantElements(this.getNativeNode(),
@@ -6555,7 +6452,6 @@ function(aFunction, aSubset, shouldReverse) {
      *     siblings.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Array} An Array of siblings found acceptable by aFunction.
-     * @todo
      */
 
     return TP.wrap(TP.nodeSelectDescendants(this.getNativeNode(),
@@ -6579,7 +6475,6 @@ function(toNode, beforeNode) {
      * @returns {TP.core.Node} The first copied child node. This will be a
      *     different node than what was the first child node of the receiver, as
      *     the node will have been copied and might have been imported.
-     * @todo
      */
 
     var node,
@@ -6626,7 +6521,6 @@ function(toNode, beforeNode) {
      * @returns {TP.core.Node} The first moved child node. This will be a
      *     different node than what was the first child node of the receiver, as
      *     the node will have been copied and might have been imported.
-     * @todo
      */
 
     var node,
@@ -6709,7 +6603,6 @@ function() {
      * @name add
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     var node,
@@ -6745,7 +6638,6 @@ function() {
      * @name addAll
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6760,7 +6652,6 @@ function() {
      * @name addAllIfAbsent
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6775,7 +6666,6 @@ function() {
      * @name addIfAbsent
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6790,7 +6680,6 @@ function() {
      * @name addItem
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6805,7 +6694,6 @@ function() {
      * @name addWithCount
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6820,7 +6708,6 @@ function() {
      * @name asArray
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6835,7 +6722,6 @@ function() {
      * @name asHash
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6850,7 +6736,6 @@ function() {
      * @name asIterator
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6865,7 +6750,6 @@ function() {
      * @name asRange
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6882,7 +6766,6 @@ function() {
      * @name collapse
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return this;
@@ -6905,7 +6788,6 @@ function(aFunction, deep, breadthFirst) {
      *     breadth-first order. Only used when deep is true.
      * @returns {Array} The return values from each iteration of the supplied
      *     Function.
-     * @todo
      */
 
     var node;
@@ -6931,7 +6813,6 @@ function() {
      * @name collectGet
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6946,7 +6827,6 @@ function() {
      * @name collectInvoke
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6961,7 +6841,6 @@ function() {
      * @name compact
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -6976,7 +6855,6 @@ function() {
      * @name conform
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7000,7 +6878,6 @@ function(aDescendant, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Boolean} Whether or not the receiver contains the node
      *     provided.
-     * @todo
      */
 
     var node,
@@ -7040,7 +6917,6 @@ function(aCollection, aTest) {
      * @raises TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains all of the
      *     elements in the collection provided.
-     * @todo
      */
 
     return TP.todo();
@@ -7063,7 +6939,6 @@ function(aCollection) {
      * @raises TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains any of the
      *     elements in the collection provided.
-     * @todo
      */
 
     return TP.todo();
@@ -7079,7 +6954,6 @@ function() {
      * @name convert
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7094,7 +6968,6 @@ function() {
      * @name convert
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7114,7 +6987,6 @@ function(aNode, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Number} The number of occurrences of aNode.
-     * @todo
      */
 
     return TP.todo();
@@ -7137,7 +7009,6 @@ function(aFunction, deep, breadthFirst) {
      *     breadth-first order. Only used when deep is true.
      * @returns {TP.core.Node} The first element detected by the supplied
      *     Function.
-     * @todo
      */
 
     var node;
@@ -7163,7 +7034,6 @@ function() {
      * @name detectInvoke
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7178,7 +7048,6 @@ function() {
      * @name detectMax
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7193,7 +7062,6 @@ function() {
      * @name detectMin
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7208,7 +7076,6 @@ function() {
      * @name difference
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7223,7 +7090,6 @@ function() {
      * @name disjunction
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7272,7 +7138,6 @@ function() {
      * @name flatten
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7287,7 +7152,6 @@ function() {
      * @name getItems
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7302,7 +7166,6 @@ function() {
      * @name getIterator
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7317,7 +7180,6 @@ function() {
      * @name getIteratorType
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7351,7 +7213,6 @@ function() {
      * @name getValues
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7366,7 +7227,6 @@ function() {
      * @name grep
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7381,7 +7241,6 @@ function() {
      * @name groupBy
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7420,7 +7279,6 @@ function(aValue, aFunction, deep, breadthFirst) {
      *     breadth-first order. Only used when deep is true.
      * @returns {Object} The value of performing aFunction with aValue over the
      *     receiver.
-     * @todo
      */
 
     var node;
@@ -7445,7 +7303,6 @@ function() {
      * @name intersection
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7460,7 +7317,6 @@ function() {
      * @name isSortedCollection
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7475,7 +7331,6 @@ function() {
      * @name merge
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7490,7 +7345,6 @@ function() {
      * @name partition
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7511,7 +7365,6 @@ function(aFunction, deep, breadthFirst) {
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
      * @returns {TP.core.CollectionNode} The receiver.
-     * @todo
      */
 
     var node;
@@ -7536,7 +7389,6 @@ function() {
      * @name performInvoke
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7551,7 +7403,6 @@ function() {
      * @name performSet
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7566,7 +7417,6 @@ function() {
      * @name performUntil
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7581,7 +7431,6 @@ function() {
      * @name performWhile
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7609,7 +7458,6 @@ function(aFunction, deep, breadthFirst) {
      *     breadth-first order. Only used when deep is true.
      * @returns {Array} An Array of TP.core.Nodes that weren't rejected by the
      *     supplied Function.
-     * @todo
      */
 
     var node;
@@ -7672,7 +7520,6 @@ function() {
      * @name removeAll
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7687,7 +7534,6 @@ function() {
      * @name replace
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7702,7 +7548,6 @@ function() {
      * @name replaceAll
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7727,7 +7572,6 @@ function(aFunction, deep, breadthFirst) {
      *     breadth-first order. Only used when deep is true.
      * @returns {Array} An Array of TP.core.Nodes that were selected by the
      *     supplied Function.
-     * @todo
      */
 
     var node;
@@ -7753,7 +7597,6 @@ function() {
      * @name union
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7768,7 +7611,6 @@ function() {
      * @name unique
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7796,7 +7638,6 @@ function(anObject, anIndex, aPosition) {
      *     TP.AFTER_BEGIN, TP.BEFORE_END, TP.AFTER_END. Default is TP.AFTER_END.
      * @raises TP.sig.InvalidParameter,TP.sig.IndexOutOfRange
      * @returns {TP.core.CollectionNode} The receiver.
-     * @todo
      */
 
     var node,
@@ -7942,7 +7783,6 @@ function() {
      * @name addAllAt
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7972,7 +7812,6 @@ function() {
      * @name atAll
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -7987,7 +7826,6 @@ function() {
      * @name atAllIfAbsent
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8002,7 +7840,6 @@ function() {
      * @name atAllPut
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8017,7 +7854,6 @@ function() {
      * @name atIfInvalid
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8032,7 +7868,6 @@ function() {
      * @name atIfNull
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8047,7 +7882,6 @@ function() {
      * @name atIfUndefined
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8062,7 +7896,6 @@ function() {
      * @name atPut
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8077,7 +7910,6 @@ function() {
      * @name atPutIfAbsent
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8092,7 +7924,6 @@ function() {
      * @name containsKey
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8107,7 +7938,6 @@ function() {
      * @name containsValue
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8122,7 +7952,6 @@ function() {
      * @name detectKeyAt
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8137,7 +7966,6 @@ function() {
      * @name getKeys
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return this.callNextMethod();
@@ -8152,7 +7980,6 @@ function() {
      * @name getKVPairs
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8167,7 +7994,6 @@ function() {
      * @name getPairs
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8182,7 +8008,6 @@ function() {
      * @name getPosition
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8197,7 +8022,6 @@ function() {
      * @name getPositions
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8212,7 +8036,6 @@ function() {
      * @name grepKeys
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8227,7 +8050,6 @@ function() {
      * @name performOver
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8303,7 +8125,6 @@ function() {
      * @name removeAtAll
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8318,7 +8139,6 @@ function() {
      * @name removeKey
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8333,7 +8153,6 @@ function() {
      * @name removeKeys
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8348,7 +8167,6 @@ function() {
      * @name transpose
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8365,7 +8183,6 @@ function() {
      * @name addAfter
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8380,7 +8197,6 @@ function() {
      * @name addAllAfter
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8395,7 +8211,6 @@ function() {
      * @name addAllBefore
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8410,7 +8225,6 @@ function() {
      * @name addAllFirst
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8425,7 +8239,6 @@ function() {
      * @name addAllLast
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8440,7 +8253,6 @@ function() {
      * @name addBefore
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8455,7 +8267,6 @@ function() {
      * @name addFirst
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8470,7 +8281,6 @@ function() {
      * @name addLast
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8485,7 +8295,6 @@ function() {
      * @name after
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8500,7 +8309,6 @@ function() {
      * @name before
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8518,7 +8326,6 @@ function(aNumber) {
      * @param {Number} aNumber The number of elements to return. When N is
      *     greater than 1 the return value is a new array.
      * @returns {Object} The first N elements (TP.core.Nodes) in this node.
-     * @todo
      */
 
     var node,
@@ -8543,7 +8350,6 @@ function() {
      * @name getLastPosition
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8561,7 +8367,6 @@ function(aNumber) {
      * @param {Number} aNumber The number of elements to return. When N is
      *     greater than 1 the return value is a new array.
      * @returns {Object} The last N elements (TP.core.Nodes) in this node.
-     * @todo
      */
 
     var node,
@@ -8586,7 +8391,6 @@ function() {
      * @name orderedBy
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8601,7 +8405,6 @@ function() {
      * @name removeFirst
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8616,7 +8419,6 @@ function() {
      * @name removeLast
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8631,7 +8433,6 @@ function() {
      * @name replaceFirst
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8646,7 +8447,6 @@ function() {
      * @name replaceLast
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8661,7 +8461,6 @@ function() {
      * @name reverse
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
-     * @todo
      */
 
     return TP.todo();
@@ -8863,7 +8662,6 @@ function(aURI, force) {
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     return this;
@@ -8891,7 +8689,6 @@ function(aURI, force, aParamHash) {
      *     value is null and a 'uri' slot is defined on this object, that
      *     object's String value will be used as the XML Base value.
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     return this;
@@ -8922,7 +8719,6 @@ function(attributeName) {
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute to find.
      * @returns {String} The attribute value, if found.
-     * @todo
      */
 
     return;
@@ -8947,7 +8743,6 @@ function(attributeName, stripPrefixes) {
      *     prefixes from the attribute names as they are populated into the
      *     return value.
      * @returns {TP.lang.Hash} A collection of name/value pairs.
-     * @todo
      */
 
     return;
@@ -8984,7 +8779,6 @@ function(attributeName) {
      * @param {String} attributeName The attribute to test.
      * @raises TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not the receiver has the named attribute.
-     * @todo
      */
 
     return false;
@@ -9020,7 +8814,6 @@ function(attributeName) {
      *     proper namespace management.
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute name to remove.
-     * @todo
      */
 
     return;
@@ -9040,7 +8833,6 @@ function(attributeName, attributeValue) {
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
-     * @todo
      */
 
     return;
@@ -9058,7 +8850,6 @@ function(attributeHash) {
      *     on the document's documentElement.
      * @description At this level, this method is a no-op.
      * @param {TP.lang.Hash} attributeHash The attributes to set.
-     * @todo
      */
 
     return;
@@ -9351,7 +9142,6 @@ function(aURI, content) {
      * @param {TP.core.URI} aURI The URI containing the content.
      * @param {Object} content The content to set into the content object.
      * @returns {Object} The object representation of the content.
-     * @todo
      */
 
     var contentObj;
@@ -9380,7 +9170,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
-     * @todo
      */
 
     return TP.join(
@@ -9407,7 +9196,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
-     * @todo
      */
 
     var val;
@@ -9437,7 +9225,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
-     * @todo
      */
 
     return TP.join(
@@ -9487,7 +9274,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
-     * @todo
      */
 
     var theRequest,
@@ -9661,7 +9447,6 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
-     * @todo
      */
 
     var val;
@@ -9733,7 +9518,6 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
      *     containing parameters.
      * @returns {String} The markup generated by taking the supplied Object and
      *     iterating over its items.
-     * @todo
      */
 
     var tagName,
@@ -9813,7 +9597,6 @@ function(aNode) {
      * @param {Node} aNode The native node to wrap.
      * @returns {TP.lang.RootObject.<TP.core.ElementNode>} A TP.core.ElementNode
      *     subtype type object.
-     * @todo
      */
 
     var name,
@@ -9994,7 +9777,6 @@ function(anObject, formatArgs) {
      * @param {TP.lang.Hash} formatArgs The 'formatting arguments' used by this
      *     machinery to generate item markup.
      * @returns {String} The item tag name.
-     * @todo
      */
 
     return null;
@@ -10415,7 +10197,6 @@ function(aSignal) {
      *     handling them defers to an instance rather than the type itself.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      * @returns {Object} The function's return value.
-     * @todo
      */
 
     var observer;
@@ -10444,7 +10225,6 @@ function() {
      *     action elements).
      * @returns {Boolean} Whether the element is block level. The default is
      *     false.
-     * @todo
      */
 
     return false;
@@ -10463,7 +10243,6 @@ function(anObject, formatArgs) {
      * @param {TP.lang.Hash} formatArgs An optional object containing
      *     parameters.
      * @returns {Boolean} Whether or not we automatically wrap items.
-     * @todo
      */
 
     if (TP.isBoolean(formatArgs.at('autowrap'))) {
@@ -10516,7 +10295,6 @@ function(aNode) {
      *     setContent() calls to ensure that new content is properly awakened.
      * @param {Node} aNode The node to awaken.
      * @raises TP.sig.InvalidNode
-     * @todo
      */
 
     var processor;
@@ -10726,7 +10504,6 @@ function(attributeName, attributeValue, checkAttrNSURI) {
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
      * @returns {TP.core.ElementNode} The receiver.
-     * @todo
      */
 
     var natNode,
@@ -10829,7 +10606,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
-     * @todo
      */
 
     //  To be observed, we really need a global ID. Here, we don't care about
@@ -10875,7 +10651,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     parameter, the new value from the model and returns the
      *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var targetAttr;
@@ -10911,7 +10686,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var targetAttr;
@@ -11236,7 +11010,6 @@ function(attributeName, attributeValue, shouldSignal) {
      *     this.shouldSignalChange().
      * @returns {Object} The result of setting the attribute on the receiver.
      *     This can vary in actual type.
-     * @todo
      */
 
     var path,
@@ -11421,7 +11194,6 @@ function(aValue, shouldSignal) {
      * @param {Boolean} shouldSignal Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var newValue,
@@ -11454,7 +11226,6 @@ function(aValue, shouldSignal) {
  *     markup by flagging the elements involved with special attributes. These
  *     values are then observed in other parts of TP.core.Node's processing
  *     machinery.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -11606,7 +11377,6 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
      * @param {Boolean} isBubbling Optional flag for whether this signal should
      *     bubble.
      * @returns {TP.sig.Signal} The signal instance which was fired.
-     * @todo
      */
 
     var targetElem,
@@ -11677,7 +11447,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {Function} aPolicy A "registration" policy that will define how
      *     the handler is registered.
      * @returns {Object} The registration object.
-     * @todo
      */
 
     //  make sure we have an ID that will let the notification system find
@@ -11716,7 +11485,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
  *     a spaceor vertical bar (|). When separated by spaces all types must agree
  *     the valueis valid, when separated by a vertical bar only one of the types
  *     must agree.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -11746,7 +11514,6 @@ function(aValue, attributeName) {
      * @param {Object} aValue The value to format.
      * @param {String} attributName An attribute name containing formatters.
      * @returns {String} The formatted value.
-     * @todo
      */
 
     var result,
@@ -11855,7 +11622,6 @@ function(aValue) {
      *     this.getValue().
      * @returns {Boolean} True if the validation succeeds or no validators are
      *     found.
-     * @todo
      */
 
     var i,
@@ -12153,7 +11919,6 @@ function(aNode) {
      *     TP.core.TibetStylesheetPINode.
      * @returns {TP.lang.RootObject.<TP.core.ProcessingInstructionNode>} A
      *     TP.core.ProcessingInstructionNode subtype type object.
-     * @todo
      */
 
     var name,
@@ -12482,7 +12247,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
-     * @todo
      */
 
     //  To be observed, we really need a global ID. Here, we don't care about
@@ -12763,7 +12527,6 @@ function() {
      *     sets the value of the document's documentElement.
      * @raises TP.sig.InvalidDocument
      * @returns {String} The value in string form.
-     * @todo
      */
 
     var tpElem;
@@ -12870,7 +12633,6 @@ function(aValue, signalFlag) {
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @raises TP.sig.InvalidDocument
      * @returns {TP.core.Node} The receiver.
-     * @todo
      */
 
     var tpElem;
@@ -13175,7 +12937,6 @@ function(theContent, setupFunction) {
      *     the document's 'onload' processing.
      * @raises TP.sig.InvalidDocument
      * @returns {TP.core.DocumentNode} The receiver.
-     * @todo
      */
 
     var doc,
@@ -13247,7 +13008,6 @@ function(content, setupFunction) {
      *     the document's 'onload' processing.
      * @raises TP.sig.InvalidDocument
      * @returns {TP.core.DocumentNode} The receiver.
-     * @todo
      */
 
     var doc,
@@ -13454,7 +13214,6 @@ function(anObject, aParamHash) {
      *     attributes such that they won't be lost during the transformation.
      * @raises TP.sig.InvalidNode
      * @returns {String} The string resulting from the transformation process.
-     * @todo
      */
 
     var node,
@@ -13645,7 +13404,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidSink');
@@ -13660,7 +13418,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidFilter');
@@ -13675,7 +13432,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidSource');
@@ -13740,7 +13496,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidSink');
@@ -13755,7 +13510,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidTransform');
@@ -13809,7 +13563,6 @@ function(aRequest, parameterName) {
      * @param {TP.sig.Request} aRequest The request being processed.
      * @param {String} parameterName The name of the parameter to find.
      * @returns {String} The parameter value, if any.
-     * @todo
      */
 
     var shell;
@@ -13839,7 +13592,6 @@ function(aRequest) {
      *     name is usually sufficient.
      * @param {TP.sig.Request} aRequest The request being processed.
      * @returns {Object} The argument data.
-     * @todo
      */
 
     var name,
@@ -13870,7 +13622,6 @@ function() {
      *     getPrimaryArgument() and getActionInput() calls will typically fail
      *     to return useful results.
      * @returns {String} The argument name.
-     * @todo
      */
 
     return;
@@ -14182,7 +13933,6 @@ function(aRequest, parameterName) {
      * @param {TP.sig.Request} aRequest The request being processed.
      * @param {String} parameterName The name of the parameter to find.
      * @returns {String} The parameter value, if any.
-     * @todo
      */
 
     return this.getType().getActionParam(aRequest, parameterName);
@@ -14436,7 +14186,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidSink');
@@ -14451,7 +14200,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidFilter');
@@ -14466,7 +14214,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidSource');
@@ -14531,7 +14278,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidSink');
@@ -14546,7 +14292,6 @@ function(aRequest) {
 
     /**
      * @inheritDoc
-     * @todo
      */
 
     this.raise('TP.sig.InvalidTransform');
@@ -14644,7 +14389,6 @@ function(anInput, cmdNode, aRequest) {
      * @raises TP.sig.InvalidFilter
      * @returns {Boolean} True if the object should remain in the output stream,
      *     false otherwise.
-     * @todo
      */
 
     this.raise('TP.sig.InvalidFilter');
@@ -14663,7 +14407,6 @@ function(aRequest) {
      *     being processed.
      * @param {TP.sig.Request} aRequest The request to process.
      * @returns {String} 'filterInput' or 'transformInput'.
-     * @todo
      */
 
     var node,
@@ -14696,7 +14439,6 @@ function(aRequest, functionName) {
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @param {String} functionName 'filterInput' or 'transformInput'.
-     * @todo
      */
 
     var node,
@@ -14822,7 +14564,6 @@ function() {
      *     request which can't provide viable input data. The default is true.
      * @returns {Boolean} Whether processing should stop if input data is null
      *     or undefined.
-     * @todo
      */
 
     return true;
@@ -14844,7 +14585,6 @@ function(anInput, cmdNode, aRequest) {
      *     the shell.
      * @raises TP.sig.InvalidTransform
      * @returns {Object} The transformed input.
-     * @todo
      */
 
     this.raise('TP.sig.InvalidTransform');
@@ -14866,7 +14606,6 @@ function(aRequest) {
      * @param {TP.sig.Request} aRequest The request to process.
      * @returns {Object} A value which controls how the outer TSH processing
      *     loop should continue.
-     * @todo
      */
 
     var action;
@@ -15498,7 +15237,6 @@ function(aContentObject, aRequest) {
  *     reconstituting XMLRPC-formatted XML nodes into JavaScript objects. This
  *     type is used as the primary "internal" TIBET data conversion type since
  *     TIBET's default XML format is XMLRPC.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -15529,7 +15267,6 @@ function(anObj, filter, useNil) {
      * @param {Boolean} useNil Should null values be filled in with the
      *     non-standard nil?
      * @returns {Node} The receiver as an XML-RPC Node.
-     * @todo
      */
 
     var nullVal,
@@ -15612,7 +15349,6 @@ function(anObj, filter, useNil) {
      * @param {Boolean} useNil Should null values be filled in with the
      *     non-standard nil?
      * @returns {Node} The receiver as an XML-RPC Node.
-     * @todo
      */
 
     var booleanElem;
@@ -15644,7 +15380,6 @@ function(anObj, filter, useNil) {
      * @param {Boolean} useNil Should null values be filled in with the
      *     non-standard nil?
      * @returns {Node} The receiver as an XML-RPC Node.
-     * @todo
      */
 
     var dateElem;
@@ -15677,7 +15412,6 @@ function(anObj, filter, useNil) {
      * @param {Boolean} useNil Should null values be filled in with the
      *     non-standard nil?
      * @returns {Node} The receiver as an XML-RPC Node.
-     * @todo
      */
 
     var numberElem;
@@ -15714,7 +15448,6 @@ function(anObj, filter, useNil) {
      *     non-standard nil?
      * @returns {Node} An instance of a Node with anObj encoded according to
      *     this format.
-     * @todo
      */
 
     var nullVal,
@@ -15822,7 +15555,6 @@ function(anObj, filter, useNil) {
      * @param {Boolean} useNil Should null values be filled in with the
      *     non-standard nil?
      * @returns {Node} The receiver as an XML-RPC Node.
-     * @todo
      */
 
     var stringElem;
@@ -15854,7 +15586,6 @@ function(anObj, filter, useNil) {
      * @param {Boolean} useNil Should null values be filled in with the
      *     non-standard nil?
      * @returns {Node} The receiver as an XML-RPC Node.
-     * @todo
      */
 
     return this.fromObject(anObj, filter, useNil);

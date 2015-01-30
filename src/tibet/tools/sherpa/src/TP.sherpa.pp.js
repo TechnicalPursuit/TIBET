@@ -13,7 +13,6 @@
  * @synopsis The "pretty-print" formatter for the TIBET Shell when running under
  *      the Sherpa. Since this type is a formatter at heart most of the methods
  *      are built to support decent output for common JavaScript data types.
- * @todo
  */
 
 //  ------------------------------------------------------------------------

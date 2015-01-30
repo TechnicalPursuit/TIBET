@@ -12,7 +12,6 @@
  * @type {TP.xs.gYearMonth}
  * @synopsis An XML Schema gYearMonth string in the form [-]YYYY-MM followed by
  *     an optional time zone specification.
- * @todo
  */
 
 //  ------------------------------------------------------------------------

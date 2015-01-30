@@ -12,7 +12,6 @@
  * @type {TP.xs.decimal}
  * @synopsis A decimal number containing an optional decimal point and leading +
  *     or - sign descriptor.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -111,7 +110,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var inst;
@@ -135,7 +133,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var num,
@@ -167,7 +164,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var num,
@@ -196,7 +192,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var num,
@@ -225,7 +220,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var num,
@@ -254,7 +248,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var num,
@@ -283,7 +276,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var num,

@@ -10,7 +10,6 @@
 
 /**
  * @
- * @todo
  */
 
 //  ========================================================================
@@ -69,7 +68,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
-     * @todo
      */
 
     var signals,
@@ -179,7 +177,6 @@ function(aSignal, aHandler) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @todo
      */
 
     return;
@@ -221,7 +218,6 @@ function(singletonName, normalizedEvent, aSignal) {
      *     singleton/event pair.
      * @returns {TP.sig.Signal} The TIBET signal instance used during
      *     notification.
-     * @todo
      */
 
     TP.override();
@@ -250,7 +246,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     or a specific function to manage the observe process. IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
-     * @todo
      */
 
     var signals,
@@ -342,7 +337,6 @@ function(aSignal, aHandler) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @todo
      */
 
     return;
@@ -375,7 +369,6 @@ isCancelable, isBubbling) {
      *     whether they bubble (when using TP.DOM_FIRING).
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to signal the signal, false otherwise.
-     * @todo
      */
 
     var signals,
@@ -579,7 +572,6 @@ function(aSignal, aHandler) {
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
      * @returns {Array} The handler array with the new observer added.
-     * @todo
      */
 
     var shortcutData,
@@ -635,7 +627,6 @@ function(aSignal, shouldBuild) {
      *     origin(s).
      * @param {Boolean} shouldBuild
      * @returns {TP.lang.Hash} The shortcut data.
-     * @todo
      */
 
     var shortcuts,
@@ -721,7 +712,6 @@ function() {
      * @synopsis Loads the XML keyboard map for the receiving keyboard type.
      * @raise TP.sig.InvalidKeymap When the XML keyboard map file can't be
      *     loaded.
-     * @todo
      */
 
     var req,
@@ -824,7 +814,6 @@ function(singletonName, normalizedEvent, aSignal) {
      * @param {TP.sig.Signal} aSignal Optional signal to use rather than the
      *     singleton/event pair.
      * @returns {TP.sig.Signal} The signal that was actually triggered.
-     * @todo
      */
 
     var targetElem,
@@ -1551,7 +1540,6 @@ function(anEvent) {
      *     key.
      * @param {Event|Number} eventOrKey The keycode or charcode to look up.
      * @returns {String} The virtual key name, or null when not found.
-     * @todo
      */
 
     var ev,
@@ -2580,7 +2568,6 @@ function(singletonName, normalizedEvent, aSignal) {
      * @param {TP.sig.Signal} aSignal Optional signal to use rather than the
      *     singleton/event pair.
      * @returns {TP.sig.Signal} The signal that was actually triggered.
-     * @todo
      */
 
     var targetElem,

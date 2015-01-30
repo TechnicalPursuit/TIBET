@@ -294,7 +294,6 @@ function() {
      * @synopsis Returns the default firing policy to use for signals of this
      *     type when no other policy is provided.
      * @returns {String} The firing policy name such as TP.INHERITANCE_FIRING.
-     * @todo
      */
 
     return this.$get('defaultPolicy');
@@ -321,7 +320,6 @@ function(anOrigin, wantsFullName, aSignal, aState) {
      * @param {String} aState The application state to use. Defaults to the
      *     current application controller state.
      * @returns {String}
-     * @todo
      */
 
     var origin,
@@ -417,7 +415,6 @@ function() {
      *     responsibility for observations of this signal type. Default is null
      *     since most signals aren't "owned".
      * @returns {Object} The receiver's owner.
-     * @todo
      */
 
     return null;
@@ -590,7 +587,6 @@ function(anItemOrKey, aValue) {
      *     a string.
      * @raises TP.sig.InvalidPair
      * @returns {Object} The key's value after processing.
-     * @todo
      */
 
     var key,
@@ -998,7 +994,6 @@ function(anIndex, aDefault) {
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if invalid.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -1024,7 +1019,6 @@ function(anIndex, aDefault) {
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if null.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -1050,7 +1044,6 @@ function(anIndex, aDefault) {
      * @param {Object} anIndex The index of the value to return.
      * @param {Object} aDefault The default value to return if undefined.
      * @returns {Object} The element at anIndex in this collection.
-     * @todo
      */
 
     var value;
@@ -1133,7 +1126,6 @@ function(aKey, aValue) {
      * @param {String} aKey The key for the parameter.
      * @param {Object} aValue The value for the parameter.
      * @returns {Object} The key's value after processing.
-     * @todo
      */
 
     var payload,
@@ -1194,7 +1186,6 @@ function() {
      * @synopsis Computes the signal name. By default, this is the receiver's
      *     type name.
      * @returns {String} The signal name of the receiver.
-     * @todo
      */
 
     return this.getTypeName();
@@ -1254,7 +1245,6 @@ function(anOrigin, aPayload, aPolicy) {
      * @param {Array} aPayload Optional signal arguments.
      * @param {Function} aPolicy A firing policy function.
      * @returns {TP.sig.Signal} The signal.
-     * @todo
      */
 
     var origin;
@@ -1407,7 +1397,6 @@ function() {
      * @name getPayload
      * @synopsis Returns the optional arguments to the signal.
      * @returns {Object} The payload of the receiver.
-     * @todo
      */
 
     return this.payload;
@@ -1442,7 +1431,6 @@ function(attributeName) {
      *     method or attribute processing stops there.
      * @param {String} attributeName The name of the attribute to get.
      * @returns {Object} The value of the named property in the receiver.
-     * @todo
      */
 
     //  note no inferencing checks, we just go after the slot here. this is
@@ -1504,7 +1492,6 @@ function() {
      *     signal name, even for the receiving type - which for a spoofed signal
      *     will be different than its type name.
      * @returns {Array} An Array of signal names.
-     * @todo
      */
 
     var names;
@@ -1531,7 +1518,6 @@ function() {
      * @synopsis Returns the 'supertypes signal names' - that is, each supertype
      *     name encoded as a signal name.
      * @returns {Array} An Array of supertype signal names.
-     * @todo
      */
 
     var types,
@@ -1726,7 +1712,6 @@ function() {
      *     to a signal name, even for the receiving type - which for a spoofed
      *     signal will be different than its signal name.
      * @returns {Array} An Array of type signal names.
-     * @todo
      */
 
     var types,
@@ -1904,7 +1889,6 @@ function(aFlag) {
      * @synopsis Returns true if the signal can be recycled.
      * @param {Boolean} aFlag A new setting. Optional.
      * @returns {Boolean} True if the signal can be recycled.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -1973,7 +1957,6 @@ function(aFlag) {
      * @param {Boolean} aFlag Prevent default: yes or no?
      * @returns {Boolean} True if the signal should not perform its default
      *     action.
-     * @todo
      */
 
     var flag;
@@ -2231,7 +2214,6 @@ function(aFlag) {
      * @param {Boolean} aFlag Prevent default: yes or no?
      * @returns {Boolean} True if the signal should not perform its default
      *     action.
-     * @todo
      */
 
     if (TP.isDefined(aFlag)) {
@@ -2334,7 +2316,6 @@ function(anError, aMessage) {
      * @param {String} aMessage The message to use as the message of the
      *     TP.sig.Exception. If this message is empty, the message from the
      *     Error object is used.
-     * @todo
      */
 
     var msg;
@@ -2862,7 +2843,6 @@ function(aFlag) {
      * @param {Boolean} aFlag True to signify that this exception has been
      *     handled.
      * @returns {Boolean} False, since default processing has been switched off.
-     * @todo
      */
 
     //  set global handled flag so other external processing can see that
@@ -2961,7 +2941,6 @@ function() {
      * @synopsis Returns the all of the receiver's 'signal names' - that is,
      *     each supertype signal name *and* the receiver's direct *signal* name.
      * @returns {Array} An Array of signal names.
-     * @todo
      */
 
     var names;
@@ -3286,7 +3265,6 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
      * @returns {TP.sig.Signal} A Signal instance.
-     * @todo
      */
 
     var sig,
@@ -3364,7 +3342,6 @@ function(aSignal, aDefaultType) {
      *     a real signal type couldn't be computed.
      * @returns {TP.lang.RootObject.<TP.core.Signal>} A TP.core.Signal subtype
      *     type object.
-     * @todo
      */
 
     var aTypeName,
@@ -3463,7 +3440,6 @@ function(anOrigin, aSignal) {
      * @param {String|tp.sig.Signal} aSignal What signal name?
      * @returns {Boolean} Whether or not a particular origin/signal ID is
      *     suspended or not.
-     * @todo
      */
 
     var orgid,
@@ -3497,7 +3473,6 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
      *     should cancel the default action.
      * @param {Element} anObserver The observer element.
      * @param {Boolean} xmlEvent Should use XML Events semantics?
-     * @todo
      */
 
     var origins,
@@ -3648,7 +3623,6 @@ function(aHandlerEntry, quiet) {
      *     of this call.
      * @param {Object} aHandlerEntry A listener entry.
      * @param {Boolean} quiet True to quietly ignore duplicate entries.
-     * @todo
      */
 
     var map,
@@ -3889,7 +3863,6 @@ function(aHandlerEntry) {
      * @name $removeHandlerEntry
      * @synopsis Removes the supplied signal map entry from the signal map.
      * @param {Object} aHandlerEntry A listener entry.
-     * @todo
      */
 
     var map,
@@ -4057,7 +4030,6 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
      * @param {Object} aHandler What object will get notification?
      * @param {Boolean} isCapturing Should this be considered a capturing
      *     handler?
-     * @todo
      */
 
     var orgid,
@@ -4211,7 +4183,6 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
      * @param {Object} aHandler What object will get notification?
      * @param {Boolean} isCapturing Should this be considered a capturing
      *     handler?
-     * @todo
      */
 
     var orgid,
@@ -4349,7 +4320,6 @@ function(anOrigin, aSignal, captureState) {
      *     used for the third state. True means notify only handlers with "true"
      *     for their capture state, false means only those which are not
      *     capturing, and null is used to imply both. The default is null.
-     * @todo
      */
 
     var list,
@@ -4449,7 +4419,6 @@ aSigEntry, checkTarget) {
      *     the DOM spec's requirement that when a specific target was defined
      *     for a listener it should only fire if the signal target (not origin)
      *     matches it.
-     * @todo
      */
 
     var i,
@@ -4762,7 +4731,6 @@ function(anOrigin, aSignal, aPayload, aType) {
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
      * @returns {TP.sig.Signal} The signal.
-     * @todo
      */
 
     var sig,
@@ -4844,7 +4812,6 @@ function(anOrigin, signalSet, aPayload, aType) {
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
      * @returns {TP.sig.Signal} The signal.
-     * @todo
      */
 
     var policy,
@@ -4923,7 +4890,6 @@ function(originSet, aSignal, aPayload, aType) {
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
      * @returns {TP.sig.Signal} The signal.
-     * @todo
      */
 
     var map,
@@ -5257,7 +5223,6 @@ function(originSet, aSignal, aPayload, aType) {
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
      * @returns {TP.sig.Signal} The signal.
-     * @todo
      */
 
     var sig,
@@ -5415,7 +5380,6 @@ function(anOrigin, signalSet, aPayload, aType) {
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Exception.
      * @returns {TP.sig.Signal} The signal.
-     * @todo
      */
 
     var i,
@@ -5518,7 +5482,6 @@ function(anOrigin, aSignal, aPayload, aType) {
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
      * @returns {TP.sig.Signal} The signal.
-     * @todo
      */
 
     var aSig,
@@ -5659,7 +5622,6 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
-     * @todo
      */
 
     var orgid,
@@ -5715,7 +5677,6 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
-     * @todo
      */
 
     var orgid,
@@ -5772,7 +5733,6 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
-     * @todo
      */
 
     var orgid,
@@ -5800,7 +5760,6 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
-     * @todo
      */
 
     var orgid,
@@ -5824,7 +5783,6 @@ function(anOrigin, aSignal) {
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to resume
      *     interest in.
      * @abtract Resumes signaling status for a particular origin/signal pair.
-     * @todo
      */
 
     var entry,
@@ -5853,7 +5811,6 @@ function(anOrigin, aSignal) {
      * @param {String} anOrigin The origin to suspend interest in.
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to
      *     suspend interest in.
-     * @todo
      */
 
     var entry,
@@ -5886,7 +5843,6 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {Function} aHandler The specific handler to turn off, if any.
      * @param {Function} aPolicy The policy if any. Should be 'capture' to
      *     remove capturing handlers. Default is non-capturing.
-     * @todo
      */
 
     var origins,
@@ -6031,7 +5987,6 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
      * @param {TP.sig.Signal|Array} signals A signal or signals.
      * @param {Function} handler The handler if any.
      * @param {Function} policy The policy if any.
-     * @todo
      */
 
     var i,
@@ -6085,7 +6040,6 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
      *     for.
      * @param {Function} aPolicy The policy if any. Should be 'capture' to
      *     configure a capturing handler. Default is non-capturing.
-     * @todo
      */
 
     var origins,
@@ -6238,7 +6192,6 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
      *     notifications for.
      * @param {TP.sig.Signal|String|Array} aSignal A signal (or signals) to
      *     resume signaling from the origin(s).
-     * @todo
      */
 
     var origins,
@@ -6371,7 +6324,6 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
      *     notifications for.
      * @param {TP.sig.Signal|String|Array} aSignal A signal (or signals) to
      *     suspend signaling from the origin(s).
-     * @todo
      */
 
     var origins,
@@ -6552,7 +6504,6 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
      * @returns {TP.sig.Signal} The fired signal.
-     * @todo
      */
 
     var origin,
@@ -6809,7 +6760,6 @@ function(anOrigin, anException, aPayload) {
      * @param {Object} anOrigin The exception's origin.
      * @param {TP.sig.Exception} anException The exception to raise.
      * @param {Object} aPayload Optional argument object.
-     * @todo
      */
 
     var i,
@@ -8019,7 +7969,6 @@ TP.sig.SourceSignal.defineSubtype('SourceError');
  *     computation machinery. They are typically overridden to provide real
  *     functionality.
  * @subject Responder Computation Extensions
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -8041,7 +7990,6 @@ function(aSignal, isCapturing) {
      * @returns {Boolean} Whether or not the receiver is a valid responder for
      *     the supplied signal and capturing mode. The default at this level is
      *     false.
-     * @todo
      */
 
     return false;
@@ -8061,7 +8009,6 @@ function(aSignal, isCapturing) {
      *     machinery is computing the chain for the 'capturing' phase of the
      *     event dispatch.
      * @returns {Object} The next responder as computed by the receiver.
-     * @todo
      */
 
     return null;

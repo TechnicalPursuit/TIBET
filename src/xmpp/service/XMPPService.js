@@ -106,7 +106,6 @@
  *     Shut down a connection:
  *
  *     xmppService.shutdownConnection();
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -186,7 +185,6 @@ function(resourceID, aRequest) {
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.URIService} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -316,7 +314,6 @@ function(aJID, aPassword) {
      * @raises TP.sig.InvalidJID,TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not we successfully authenticated our
      *     connection.
-     * @todo
      */
 
     var authCredentials,
@@ -766,7 +763,6 @@ function(registrationValues) {
      * @params registrationValues TP.lang.Hash A hash containing the various
      *     fields and their values for registering with the server (like
      *     username and password).
-     * @todo
      */
 
     var registrationNode,
@@ -835,7 +831,6 @@ function(stanzaID, toJID, aName, aGroup) {
      *     have.
      * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
-     * @todo
      */
 
     if (TP.notValid(toJID)) {
@@ -906,7 +901,6 @@ function(stanzaID, toJID, aName) {
      * @param {String} aName The 'user-assigned' name that roster item has.
      * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
-     * @todo
      */
 
     if (TP.notValid(toJID)) {
@@ -939,7 +933,6 @@ function(stanzaID, toJID, aCommandAction, aCommandElem) {
      * @raises TP.sig.InvalidParameter,TP.sig.InvalidElement,
      *     TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
-     * @todo
      */
 
     if (TP.notValid(toJID)) {
@@ -976,7 +969,6 @@ function(stanzaID, toJID, aMessage, aSubject, aThreadID, aMessageType) {
      *     [normal|chat| groupchat|headline]).
      * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
-     * @todo
      */
 
     var conn,
@@ -1055,7 +1047,6 @@ function(stanzaID, presenceState, aStatus) {
      *     other JID's subscribed to the receiver's JID's presence.
      * @raises TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
-     * @todo
      */
 
     var conn,
@@ -1118,7 +1109,6 @@ function(stanzaID, aJID) {
      * @param {TP.xmpp.JID} aJID The JID to request presence subscription from.
      * @raises TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
-     * @todo
      */
 
     var conn,
@@ -1171,7 +1161,6 @@ function(stanzaID, aJID) {
      *     from.
      * @raises TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
-     * @todo
      */
 
     var conn,
@@ -1244,7 +1233,6 @@ function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
      * @example
  xmppService.constructPubsubNode( 'create1',
      *     xmppService.get('pubsubJID'), '/home/localhost/testrat');
-     * @todo
      */
 
     var pubsubJID,
@@ -1370,7 +1358,6 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      * @example
  xmppService.deletePubsubNode( 'delete1',
      *     xmppService.get('pubsubJID'), '/home/localhost/testrat');
-     * @todo
      */
 
     var pubsubJID,
@@ -1457,7 +1444,6 @@ function(stanzaID, pubsubServiceJID, nodeID, xmlContent, anAccessModel) {
  xmppService.publishToPubsubNode( 'publish1',
      *     xmppService.get('pubsubJID'), '/home/localhost/testrat',
      *     TP.doc('<foo><bar/></foo>'));
-     * @todo
      */
 
     var pubsubJID,
@@ -1589,7 +1575,6 @@ function(stanzaID, pubsubServiceJID, nodeID, itemID) {
  xmppService.retractFromPubsubNode( 'retract1',
      *     xmppService.get('pubsubJID'), '/home/localhost/testrat',
      *     '4D62E20579F7C');
-     * @todo
      */
 
     var pubsubJID,
@@ -1667,7 +1652,6 @@ function(stanzaID, pubsubServiceJID) {
      * @example
  xmppService.retrievePubsubSubscriptions( 'retrieve1',
      *     xmppService.get('pubsubJID'));
-     * @todo
      */
 
     var pubsubJID,
@@ -1772,7 +1756,6 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      * @example
  xmppService.subscribeToPubsubNode( 'subscribe1',
      *     xmppService.get('pubsubJID'), '/home/localhost/testrat');
-     * @todo
      */
 
     var pubsubJID,
@@ -1851,7 +1834,6 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      * @example
  xmppService.unsubscribeFromPubsubNode( 'unsubscribe1',
      *     xmppService.get('pubsubJID'), '/home/localhost/testrat');
-     * @todo
      */
 
     var pubsubJID,
@@ -2086,7 +2068,6 @@ function(aRequest) {
      * @param {TP.sig.XMPPRequest} aRequest The XMPP request object to take the
      *     request parameters from.
      * @returns {TP.core.XMPPService} The receiver.
-     * @todo
      */
 
     var request;

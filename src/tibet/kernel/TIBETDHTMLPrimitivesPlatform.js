@@ -59,7 +59,6 @@ TP.hc(
          * @raises TP.sig.InvalidDocument
          * @returns {HTMLElement} The 'iframe' (or 'object' if XHTML) element
          *     created in the supplied document.
-         * @todo
          */
 
         var docMIMEType,
@@ -191,7 +190,6 @@ TP.hc(
          * @raises TP.sig.InvalidDocument
          * @returns {HTMLElement} The 'iframe' (or 'object' if XHTML) element
          *     created in the supplied document.
-         * @todo
          */
 
         var docMIMEType,
@@ -303,7 +301,6 @@ TP.hc(
          * @param {Event|TP.lang.Hash} anEventSpec A hash containing the event
          *     specification as key/value pairs.
          * @returns {Event} The newly constructed native Event.
-         * @todo
          */
 
         var spec,
@@ -536,7 +533,6 @@ TP.hc(
          * @param {Event|TP.lang.Hash} anEventSpec A hash containing the event
          *     specification as key/value pairs.
          * @returns {Event} The newly constructed native Event.
-         * @todo
          */
 
         var spec,
@@ -758,7 +754,6 @@ TP.hc(
          * @param {Event|TP.lang.Hash} anEventSpec A hash containing the event
          *     specification as key/value pairs.
          * @returns {Event} The newly constructed native Event.
-         * @todo
          */
 
         var spec,
@@ -989,7 +984,6 @@ TP.hc(
          *     content' of what gets built.
          * @returns {HTMLElement} A container element holding the content to be
          *     inserted.
-         * @todo
          */
 
         var fakeContainer,
@@ -1257,7 +1251,6 @@ TP.hc(
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
          *     arranged in the following order: top, right, bottom, left.
-         * @todo
          */
 
         var values,
@@ -1346,7 +1339,6 @@ TP.hc(
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
          *     arranged in the following order: top, right, bottom, left.
-         * @todo
          */
 
         var computedStyle,
@@ -1460,7 +1452,6 @@ TP.hc(
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's margins. The numbers are
          *     arranged in the following order: top, right, bottom, left.
-         * @todo
          */
 
         var valueInPixels,
@@ -1550,7 +1541,6 @@ TP.hc(
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's margins. The numbers are
          *     arranged in the following order: top, right, bottom, left.
-         * @todo
          */
 
         var computedStyle,
@@ -1771,7 +1761,6 @@ TP.hc(
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's paddings. The numbers are
          *     arranged in the following order: top, right, bottom, left.
-         * @todo
          */
 
         var valueInPixels,
@@ -1862,7 +1851,6 @@ TP.hc(
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's paddings. The numbers are
          *     arranged in the following order: top, right, bottom, left.
-         * @todo
          */
 
         var computedStyle,
@@ -2254,7 +2242,6 @@ TP.hc(
          * @param {String} aTransformStr The value to set on the supplied
          *     Element as its CSS Transform.
          * @raises TP.sig.InvalidElement
-         * @todo
          */
 
         if (!TP.isElement(anElement)) {
@@ -2277,7 +2264,6 @@ TP.hc(
          * @param {String} aTransformStr The value to set on the supplied
          *     Element as its CSS Transform.
          * @raises TP.sig.InvalidElement
-         * @todo
          */
 
         if (!TP.isElement(anElement)) {
@@ -2300,7 +2286,6 @@ TP.hc(
          * @param {String} aTransformStr The value to set on the supplied
          *     Element as its CSS Transform.
          * @raises TP.sig.InvalidElement
-         * @todo
          */
 
         if (!TP.isElement(anElement)) {
@@ -2336,7 +2321,6 @@ TP.hc(
          * @param {Number|String} yValue The 'Y value' to set the transformation
          *     origin to.
          * @raises TP.sig.InvalidElement
-         * @todo
          */
 
         var xVal,
@@ -2371,7 +2355,6 @@ TP.hc(
          * @param {Number|String} yValue The 'Y value' to set the transformation
          *     origin to.
          * @raises TP.sig.InvalidElement
-         * @todo
          */
 
         var xVal,
@@ -2406,7 +2389,6 @@ TP.hc(
          * @param {Number|String} yValue The 'Y value' to set the transformation
          *     origin to.
          * @raises TP.sig.InvalidElement
-         * @todo
          */
 
         var xVal,
@@ -2453,7 +2435,6 @@ TP.hc(
          * @raises TP.sig.InvalidWindow,TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
-         * @todo
          */
 
         //  On Gecko, this does nothing.
@@ -2478,7 +2459,6 @@ TP.hc(
          * @raises TP.sig.InvalidWindow,TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
-         * @todo
          */
 
         if (!TP.isWindow(aWindow)) {
@@ -2522,7 +2502,6 @@ TP.hc(
          * @raises TP.sig.InvalidWindow,TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
-         * @todo
          */
 
         //  On Webkit, this does nothing.
@@ -2550,7 +2529,6 @@ TP.hc(
          *     construct.
          * @raises TP.sig.InvalidWindow
          * @returns {Object}
-         * @todo
          */
 
         if (!TP.isWindow(aWindow)) {
@@ -2618,7 +2596,6 @@ TP.hc(
          *     construct.
          * @raises TP.sig.InvalidWindow
          * @returns {Object}
-         * @todo
          */
 
         var constructorObj,

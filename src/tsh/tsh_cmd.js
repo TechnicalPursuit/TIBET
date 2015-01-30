@@ -56,7 +56,6 @@ function(aString, aShell, aRequest, asTokens) {
      * @param {TP.sig.Request} aRequest The shell request.
      * @param {Boolean} asTokens True to return the token array.
      * @returns {String|Array} A desugared string or token list.
-     * @todo
      */
 
     //  standard "special variables" we're willing to expose to scripts
@@ -598,7 +597,6 @@ function(aliasString, aTokenArray) {
      * @param {Array} aTokenArray An array of the tokens on the command line
      *     found after the alias.
      * @returns {String} The interpolated command line string.
-     * @todo
      */
 
     var argv,
@@ -782,7 +780,6 @@ function(aTokenArray) {
      *     future editions of JavaScript.
      * @param {Array} aTokenArray A list of tokens to check.
      * @returns {Boolean}
-     * @todo
      */
 
     var arr,

@@ -35,7 +35,6 @@ function(aValue, aFacet) {
      * @param {Object} anObject The object to use as source data.
      * @param {Element} aFacet The facet element used to indicate what sort of
      *     whitespace processing should be performed on the supplied value.
-     * @todo
      */
 
     var format,

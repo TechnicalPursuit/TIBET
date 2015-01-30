@@ -50,7 +50,6 @@ function(aHalo) {
      * @name getHaloParent
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     var haloWin,
@@ -92,7 +91,6 @@ function(aHalo, aSignal) {
      * @param {TP.sig.Signal} aSignal
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     var evtTarget,

@@ -594,7 +594,6 @@ function(anEvent) {
      * @synopsis Returns the window X,Y coordinate pair for the event.
      * @param {Event} anEvent The native event.
      * @returns {Array} An array of (window X, window Y).
-     * @todo
      */
 
     var evt,
@@ -621,7 +620,6 @@ function(anEvent) {
      * @param {Event} anEvent The native event.
      * @returns {Array} An array of (containing element X, containing element
      *     Y).
-     * @todo
      */
 
     var evt,
@@ -647,7 +645,6 @@ function(anEvent) {
      *     allows all events to be tracked relative to a common origin.
      * @param {Event} anEvent The native event.
      * @returns {Array} An array of (document X, document Y).
-     * @todo
      */
 
     var evt,
@@ -740,7 +737,6 @@ function(anEvent, aType) {
      *     be set to one of TIBET's 'fake event' types.
      * @param {Event} anEvent The native event.
      * @param {String} aType An event type.
-     * @todo
      */
 
     var evt;
@@ -766,7 +762,6 @@ function(eventOne, eventTwo) {
      * @param {Event} eventOne The first event to compare.
      * @param {Event} eventTwo The second event to compare.
      * @returns {Boolean} True when the events have common property values.
-     * @todo
      */
 
     var type,
@@ -878,7 +873,6 @@ isBubbling) {
      * @param {Boolean} isBubbling Optional flag for whether this signal should
      *     bubble.
      * @returns {TP.sig.Signal} The signal instance used.
-     * @todo
      */
 
     var argsOrEvent,
@@ -1404,7 +1398,6 @@ function(anElement, invalidateIdCache) {
      *     'cached' ids that were computed previously.
      * @raises TP.sig.InvalidElement
      * @returns {Array} An array containing the event ids of the element.
-     * @todo
      */
 
     var eventIdArray,
@@ -1620,7 +1613,6 @@ function(aWindow, aDocumentNode) {
      * @param {XMLDocument} aDocumentNode The node containing listener elements.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidDocument
      * @returns {Number} The count of listeners armed.
-     * @todo
      */
 
     var listeners,
@@ -1694,7 +1686,6 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
      * @param {Function} aPolicy An (optional) parameter that defines the
      *     "firing" policy.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidParameter
-     * @todo
      */
 
     var i,
@@ -1811,7 +1802,6 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
      * @param {Function} aPolicy An (optional) parameter that defines the
      *     "firing" policy.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
-     * @todo
      */
 
     var targetElement,
@@ -1933,7 +1923,6 @@ function(aWindow, aNodeOrList, eventNames, aHandler) {
      *     handler that was used instead of sending the event into the TIBET
      *     signaling system.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidParameter
-     * @todo
      */
 
     var i,
@@ -2026,7 +2015,6 @@ function(aWindow, aNode, eventNameArray, aHandler) {
      *     handler that was used instead of sending the event into the TIBET
      *     signaling system.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
-     * @todo
      */
 
     var i,

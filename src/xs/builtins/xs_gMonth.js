@@ -12,7 +12,6 @@
  * @type {TP.xs.gMonth}
  * @synopsis A month specification with optional time zone data in the format of
  *     --MM[timezone].
- * @todo
  */
 
 //  ------------------------------------------------------------------------

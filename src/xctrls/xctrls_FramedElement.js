@@ -169,7 +169,6 @@ function(aNode, aURI) {
      * @param {TP.core.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.xctrls.FramedElement} A new instance.
-     * @todo
      */
 
     var iFrame;
@@ -200,7 +199,6 @@ function() {
      *     been completely loaded and initialized.
      * @returns {TP.xctrls.FramedElement} The receiver.
      * @signals TP.sig.DOMReady
-     * @todo
      */
 
     //  Signal that we're ready

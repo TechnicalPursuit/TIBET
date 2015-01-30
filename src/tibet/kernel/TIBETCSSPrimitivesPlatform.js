@@ -79,7 +79,6 @@ TP.hc(
          *     on.
          * @param {String} propertyName The name of the CSS property to clear on
          *     the provided element.
-         * @todo
          */
 
         //  On IE9, trying to clear the 'clip' property in the normal way
@@ -108,7 +107,6 @@ TP.hc(
          *     on.
          * @param {String} propertyName The name of the CSS property to clear on
          *     the provided element.
-         * @todo
          */
 
         TP.elementGetStyleObj(anElement)[propertyName] = '';
@@ -134,7 +132,6 @@ TP.hc(
          *     rules for.
          * @raises TP.sig.InvalidElement
          * @returns {Array} An Array of CSSRule objects.
-         * @todo
          */
 
         var ruleArray,
@@ -215,7 +212,6 @@ TP.hc(
          *     rules for.
          * @raises TP.sig.InvalidElement
          * @returns {Array} An Array of CSSRule objects.
-         * @todo
          */
 
         var ruleArray;
@@ -251,7 +247,6 @@ TP.hc(
          *     rules for.
          * @raises TP.sig.InvalidElement
          * @returns {Array} An Array of CSSRule objects.
-         * @todo
          */
 
         var ruleArray,
@@ -318,7 +313,6 @@ TP.hc(
          * @raises TP.sig.InvalidParameter
          * @returns {Array} An Array of the style rule origin and its line
          *     number in that origin.
-         * @todo
          */
 
         var styleSheet,
@@ -401,7 +395,6 @@ TP.hc(
          * @raises TP.sig.InvalidParameter
          * @returns {Array} An Array of the style rule origin and its line
          *     number in that origin.
-         * @todo
          */
 
         var styleSheet,
@@ -449,7 +442,6 @@ TP.hc(
          * @raises TP.sig.InvalidParameter
          * @returns {Array} An Array of the style rule origin and its line
          *     number in that origin.
-         * @todo
          */
 
         if (TP.notValid(aStyleRule)) {

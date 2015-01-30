@@ -182,7 +182,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object.
-     * @todo
      */
 
     return TP.core.PouchDBURLHandler;
@@ -263,7 +262,6 @@ function(existingResource, newResource, aRequest) {
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
-     * @todo
      */
 
     this.set('$lastAdded', newResource);
@@ -288,7 +286,6 @@ function(aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Object}
-     * @todo
      */
 
     if (TP.isValid(aRequest)) {

@@ -52,7 +52,6 @@ function(forceRefresh) {
      *     cleared and the data reloaded from its source file. Defaults to
      *     false.
      * @returns {Node} The XML content containing the URI map.
-     * @todo
      */
 
     var node,
@@ -137,7 +136,6 @@ function(forceRefresh) {
      *     cleared and the data reloaded from its source file. Defaults to
      *     false.
      * @returns {Node} The XML content containing the URI map.
-     * @todo
      */
 
     var str,
@@ -255,7 +253,6 @@ function() {
      * @name getLoadedScripts
      * @synopsis Returns a list of all scripts loaded in the current system.
      * @returns {Array} An array of all script nodes loaded in the system.
-     * @todo
      */
 
     var nodes,
@@ -294,7 +291,6 @@ function(aPath) {
      * @param {String} aPath The package path to obtain the scripts for.
      * @returns {Array} An array of all script nodes loaded from the supplied
      *     package path.
-     * @todo
      */
 
     var path,
@@ -332,7 +328,6 @@ function(aPath) {
      * @param {String} aPath The package path to obtain the types for.
      * @returns {Array} An array of all TIBET types loaded from the supplied
      *     package path.
-     * @todo
      */
 
     var scripts,
@@ -359,7 +354,6 @@ function(aPath) {
      * @param {String} aPath The script path to obtain the types for.
      * @returns {Array} An array of all TIBET types loaded from the supplied
      *     script path.
-     * @todo
      */
 
     var path,
@@ -415,7 +409,6 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
      *     is true.
      * @returns {Number} The number of unique nodes loaded from the package
      *     during the import process.
-     * @todo
      */
 
     var sync,
@@ -489,7 +482,6 @@ function(aNamespaceURI, aPackageName) {
      *     prefix in.
      * @returns {Number} The number of unique nodes loaded from the package
      *     during the import process.
-     * @todo
      */
 
     var prefix,
@@ -518,7 +510,6 @@ function(aURI, aRequest) {
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
      * @returns {html:script} The HTML Script node holding the script.
-     * @todo
      */
 
     var url;
@@ -558,7 +549,6 @@ function(aTypeName, shouldReload, isProxy) {
      *     proxy? If true then certain registration-related tasks are performed
      *     to properly fault in the type. Default is false.
      * @returns {TP.lang.RootObject} A Type object.
-     * @todo
      */
 
     var reload,

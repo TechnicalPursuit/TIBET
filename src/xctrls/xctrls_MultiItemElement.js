@@ -51,7 +51,6 @@ function(aValue, aPositionOrPath, templateName) {
      *     This parameter is optional and if it's not supplied, the first
      *     template found will be used.
      * @returns {TP.xctrls.listbox} The receiver.
-     * @todo
      */
 
     var bodyElem,

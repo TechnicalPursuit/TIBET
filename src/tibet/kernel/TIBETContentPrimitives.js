@@ -42,7 +42,6 @@ Low-level content processing support.
  *     Changes to these pieces of code are focused primarily on avoiding the use
  *     offor/in which is inappropriate in environments which modify prototypes
  *     in thefashion used by TIBET.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -150,7 +149,6 @@ function(aString, smartConversion, shouldReport) {
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
      * @returns {Object} A JavaScript object containing the JSON data.
      * @raise InvalidJSON
-     * @todo
      */
 
     var text,
@@ -255,7 +253,6 @@ function(anObject) {
      * @param {Object} anObject The object to transform.
      * @returns {String} A JavaScript String containing the JSON data.
      * @raise TP.sig.JSONSerializationException
-     * @todo
      */
 
     var str,
@@ -325,7 +322,6 @@ function(anObject, aFilterName) {
      * @param {String} aFilterName A get*Interface() filter spec.
      * @returns {Node} An XML node representing the same data structures found
      *     in the Object.
-     * @todo
      */
 
     var node;
@@ -465,7 +461,6 @@ function(anObject, shouldReport) {
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
      * @returns {Node} An XML node representing the same data structures found
      *     in the JSONML Object.
-     * @todo
      */
 
     var node;
@@ -651,7 +646,6 @@ shouldRaise) {
      *     invalid results should raise a TIBET exception. The default is true.
      * @returns {Node} The script node used, after being removed from the
      *     document.
-     * @todo
      */
 
     var contextDoc,

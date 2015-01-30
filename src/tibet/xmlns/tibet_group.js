@@ -121,7 +121,6 @@ function(includesGroups) {
      *     false.
      * @returns {Array} An Array of TP.core.ElementNodes under the receiver that
      *     can be focused.
-     * @todo
      */
 
     var lid,
@@ -235,7 +234,6 @@ function() {
      *     as the context.
      * @returns {Array} The Array of member TP.core.ElementNodes that the
      *     receiver designates via its query and context.
-     * @todo
      */
 
     var query,
@@ -289,7 +287,6 @@ function() {
      * @name getMemberGroups
      * @synopsis Returns the members of the group that are themselves groups
      * @returns {Array} The Array of member 'tibet:group' TP.core.ElementNodes.
-     * @todo
      */
 
     var allMembers,

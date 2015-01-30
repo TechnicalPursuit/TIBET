@@ -52,7 +52,6 @@
  *                }
  *            }
  *        }
- * * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -95,7 +94,6 @@ function(aRequest) {
      * @param {TP.sig.LocalDBStorageRequest} aRequest The request object to take
      *     the request parameters from.
      * @returns {TP.core.LocalDBStorageService} The receiver.
-     * @todo
      */
 
     var request,

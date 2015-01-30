@@ -79,7 +79,6 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
      * @returns {TP.xmpp.Payload} The receiver.
-     * @todo
      */
 
     var funcName,

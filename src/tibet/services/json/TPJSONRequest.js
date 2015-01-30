@@ -77,7 +77,6 @@
  *
  *     TP.info('Failure... Result: ' + aResponse.getFaultText(), TP.LOG
  *     ); }); jsonReq.fire();
- * @todo
  */
 
 //  ------------------------------------------------------------------------

@@ -10,7 +10,6 @@
 
 /**
  * @file TIBETSignalTypes.js
- * @todo
  */
 
 //  ========================================================================
@@ -74,7 +73,6 @@ function() {
      * @name getDefaultSignal
      * @synopsis Returns the default signal type to signal.
      * @returns {String|TP.sig.Signal} The signal type or signal type name.
-     * @todo
      */
 
     return this.$get('defaultSignal');
@@ -90,7 +88,6 @@ function() {
      * @synopsis Returns the default test function used to detect monitor
      *     events.
      * @returns {Function} The default test function.
-     * @todo
      */
 
     return this.$get('defaultTest');
@@ -132,7 +129,6 @@ function(aTarget, aTest, aSignal) {
      * @param {String|TP.sig.Signal} aSignal The signal to fire when/if the
      *     test condition passes.
      * @returns {TP.core.Monitor} A newly initialized instance.
-     * @todo
      */
 
     var test,
@@ -385,7 +381,6 @@ function(controlParameters) {
      * @param {TP.lang.Hash} controlParameters An optional set of parameters
      *     used during job creation.
      * @returns {TP.lang.Hash} The control parameters for this monitor.
-     * @todo
      */
 
     var params;
@@ -427,7 +422,6 @@ function(stepParameters) {
      * @param {TP.lang.Hash} stepParameters An optional set of parameters used
      *     to control job steps.
      * @returns {TP.lang.Hash} The step parameters for this monitor.
-     * @todo
      */
 
     var params;
@@ -454,7 +448,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @returns {TP.core.Monitor} The receiver.
-     * @todo
      */
 
     this.getJob().cancel(aFaultString, aFaultCode);
@@ -473,7 +466,6 @@ function(aResult) {
      * @param {Object} aResult An optional result object associated with the
      *     job.
      * @returns {TP.core.Monitor} The receiver.
-     * @todo
      */
 
     this.getJob().complete(aResult);
@@ -495,7 +487,6 @@ function(aFaultString, aFaultCode, anException) {
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
      * @returns {TP.core.Monitor} The receiver.
-     * @todo
      */
 
     this.getJob().fail(aFaultString, aFaultCode, anException);
@@ -515,7 +506,6 @@ function(stepParameters) {
      * @param {TP.lang.Hash} stepParameters An optional set of parameters used
      *     to control job steps.
      * @returns {TP.core.Monitor} The receiver.
-     * @todo
      */
 
     this.getJob().start(this.getStepParameters(stepParameters));
@@ -942,7 +932,6 @@ TP.sig.DOMErrorIndicationSignal.defineSubtype('DOMServiceError');
  *
  *     This parameter can always be set to a different value in the signal
  *     handlers themselves.
- * @todo
  */
 //  ------------------------------------------------------------------------
 
@@ -979,7 +968,6 @@ function(anOrigin, aHandler, aPolicy, windowContext) {
      *     element(s). If not provided then the TP.context() method is used to
      *     find one.
      * @returns {TP.sig.Signal} The receiver.
-     * @todo
      */
 
     var context,
@@ -1027,7 +1015,6 @@ function(anOrigin, aHandler, windowContext) {
      *     element(s). If not provided then the TP.context() method is used to
      *     find one.
      * @returns {TP.sig.Signal} The receiver.
-     * @todo
      */
 
     var context,
@@ -1096,7 +1083,6 @@ function(aPayload, noEvent) {
      * @param {Boolean} noEvent True to skip event fabrication when there's no
      *     event provided. [False].
      * @returns {TP.sig.DOMUISignal} The receiver.
-     * @todo
      */
 
     var obj;
@@ -1407,7 +1393,6 @@ function(aFlag) {
      *     default action.
      * @returns {Boolean} Whether or not this signal is going to prevent the
      *     default action from happening.
-     * @todo
      */
 
     var retValue,
@@ -2079,7 +2064,6 @@ function(aFlag) {
      *     prevent status.
      * @param {Boolean} aFlag yes or no?
      * @returns {Boolean}
-     * @todo
      */
 
     var retValue,

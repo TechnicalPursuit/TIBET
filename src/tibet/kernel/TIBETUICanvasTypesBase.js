@@ -10,7 +10,6 @@
 
 /**
  * @subject Common extensions to the base TP.core.Window type.
- * @todo
  */
 
 //  ------------------------------------------------------------------------

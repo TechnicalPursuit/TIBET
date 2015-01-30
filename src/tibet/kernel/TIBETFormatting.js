@@ -61,7 +61,6 @@ function(aDocument) {
      * @param {HTMLDocument} aDocument The document which should own the result
      *     node. Defaults to the current canvas's document.
      * @returns {Node} The receiver in HTML node format.
-     * @todo
      */
 
     return TP.stringAsHTMLNode(this.asHTMLString(), aDocument);
@@ -78,7 +77,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     var arr,
@@ -147,7 +145,6 @@ function() {
      *     and what "storage" means for it, but the default format is source
      *     code form.
      * @returns {String} The receiver in storage format.
-     * @todo
      */
 
     return this.asJSONSource();
@@ -164,7 +161,6 @@ function() {
      *     possible. By default this method relies on the markup string produced
      *     by asXHTMLString for source text.
      * @returns {Node} The receiver in XHTML node format.
-     * @todo
      */
 
     return TP.nodeFromString(this.asXHTMLString());
@@ -181,7 +177,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XHTML string format.
-     * @todo
      */
 
     return this.asString();
@@ -198,7 +193,6 @@ function(aDocument) {
      *     possible. By default this method relies on the markup string produced
      *     by asXMLString for source text.
      * @returns {Node} The receiver in XML node format.
-     * @todo
      */
 
     return TP.nodeFromString(this.asXMLString());
@@ -216,7 +210,6 @@ function(aFilterName) {
      *     changes.
      * @param {String} aFilterName A get*Interface() filter spec.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     var arr,
@@ -339,7 +332,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     var arr,
@@ -463,7 +455,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     var arr,
@@ -516,7 +507,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -551,7 +541,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -585,7 +574,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -635,7 +623,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -675,7 +662,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     //  The only way to discern between Function objects that are one of the
@@ -700,7 +686,6 @@ function(aFilterName, aLevel) {
      * @param {String} aFilterName Ignored.
      * @param {Number} aLevel If 0, returns function() {...}
      * @returns {String} A JSON-formatted string.
-     * @todo
      */
 
     var supertypeName,
@@ -783,7 +768,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     //  The only way to discern between Function objects that are one of the
@@ -806,7 +790,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -841,7 +824,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -876,7 +858,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -927,7 +908,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     return TP.str(this);
@@ -944,7 +924,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in HTML string format.
-     * @todo
      */
 
     var str;
@@ -996,7 +975,6 @@ function() {
      *     default this method returns the receiver's string value without
      *     changes.
      * @returns {String} The receiver in XML string format.
-     * @todo
      */
 
     var str;

@@ -25,7 +25,6 @@ Platform-specific functionality related to file access operations.
  *     inthe directory we booted from.
  *
  *     Webkit-based browsers don't, in general, allow file-system access.
- * @todo
  */
 
 /* JSHint checking */
@@ -58,7 +57,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.UnsupportedFeature,
          *     TP.sig.URIException
          * @returns {Boolean}
-         * @todo
          */
 
         var path,
@@ -152,7 +150,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
-         * @todo
          */
 
         var path,
@@ -252,7 +249,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
-         * @todo
          */
 
         var path,
@@ -329,7 +325,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
-         * @todo
          */
 
         var request;
@@ -356,7 +351,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
-         * @todo
          */
 
         var request;
@@ -402,7 +396,6 @@ TP.hc(
          *     with call parameters.
          * @raises TP.sig.InvalidURI
          * @returns {Boolean}
-         * @todo
          */
 
         var path,
@@ -448,7 +441,6 @@ TP.hc(
          *     with call parameters.
          * @raises TP.sig.InvalidURI
          * @returns {Boolean}
-         * @todo
          */
 
         var path,
@@ -591,7 +583,6 @@ TP.hc(
          *     with call parameters.
          * @raises TP.sig.InvalidURI
          * @returns {Boolean}
-         * @todo
          */
 
         var path,
@@ -671,7 +662,6 @@ TP.hc(
          *     with call parameters.
          * @raises TP.sig.InvalidURI
          * @returns {Boolean}
-         * @todo
          */
 
         var path,
@@ -750,7 +740,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
-         * @todo
          */
 
         var request,
@@ -907,7 +896,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
-         * @todo
          */
 
         var request,
@@ -1077,7 +1065,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
-         * @todo
          */
 
         var path,
@@ -1197,7 +1184,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
-         * @todo
          */
 
         var path,
@@ -1311,7 +1297,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
-         * @todo
          */
 
         var path,
@@ -1518,7 +1503,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
-         * @todo
          */
 
         var path,
@@ -1648,7 +1632,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
-         * @todo
          */
 
         var request;
@@ -1679,7 +1662,6 @@ TP.hc(
          * @raises TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
          *     AccessViolation
          * @returns {Boolean} True on success, false on failure.
-         * @todo
          */
 
         var request;
@@ -1742,7 +1724,6 @@ TP.hc(
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
-         * @todo
          */
 
         var request,
@@ -2285,7 +2266,6 @@ TP.hc(
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
-         * @todo
          */
 
         var request,
@@ -2695,7 +2675,6 @@ TP.hc(
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
-         * @todo
          */
 
         var request;
@@ -2748,7 +2727,6 @@ TP.hc(
          *     ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
-         * @todo
          */
 
         var request;

@@ -34,7 +34,6 @@
  *
  *     // OR Fetch the content and ignore the URL cache, going to the // data
  *     source each time. myJSONPURL.getResourceText(jsonRequest);
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -82,7 +81,6 @@ function(targetURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object.
-     * @todo
      */
 
     return TP.core.JSONPURLHandler;

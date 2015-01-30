@@ -14,7 +14,6 @@
  *     and related localizations. This is the default locale used when no other
  *     locale is specified and the user's language code doesn't resolve to an
  *     alternative locale.
- * @todo
  */
 
 //  ------------------------------------------------------------------------

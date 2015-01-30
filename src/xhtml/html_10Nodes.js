@@ -16,7 +16,6 @@
  *     frame/frameset related. They are included in TIBET for completeness, but
  *     their use is discouraged.
  * @subject XHTML 1.0 Nodes
- * @todo
  */
 
 //  ========================================================================

@@ -38,7 +38,6 @@ TP.$$pluginVersionFunction = function(plugin, pluginEntry) {
      *     'navigator.plugins' Array.
      * @param {TP.lang.Hash} pluginEntry The entry to populate with the version
      *     information.
-     * @todo
      */
 
     var versionMatcher,

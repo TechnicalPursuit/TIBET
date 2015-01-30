@@ -11,7 +11,6 @@
 /**
  * @Support functions for HTTP operation. These include common error handling,
  *     status checking, and encoding routines.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -199,7 +198,6 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
      *     inconsistent so use caution when changing this value.
      * @returns {String} The encoded data, in string form so it can be sent to
      *     the server or stored on disk.
-     * @todo
      */
 
     var data,
@@ -736,7 +734,6 @@ function(targetUrl, aSignal, aRequest) {
      * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
      * @raises HTTPException
      * @throws Error Throws an Error containing aString.
-     * @todo
      */
 
     var args,
@@ -783,7 +780,6 @@ function() {
      * @synopsis Builds and returns a set of default headers for a web call.
      * @returns {TP.lang.Hash} A hash of default headers which can be used for a
      *     standard web call.
-     * @todo
      */
 
     //  NOTE that we build a new hash each time so it can be modified as
@@ -826,7 +822,6 @@ function(targetUrl, aRequest, httpObj) {
      * @returns {String} The headers in string form, for logging. Note that the
      *     httpObj provided will contain the new headers on return from this
      *     method.
-     * @todo
      */
 
     var request,
@@ -971,7 +966,6 @@ function(targetUrl, aRequest, httpObj) {
      *     data.
      * @param {XMLHttpRequest} httpObj The native XMLHttpRequest object used to
      *     service the request.
-     * @todo
      */
 
     var request,
@@ -1041,7 +1035,6 @@ function(targetUrl, aRequest, httpObj) {
      *     data.
      * @param {XMLHttpRequest} httpObj The native XMLHttpRequest object used to
      *     service the request.
-     * @todo
      */
 
     var request,

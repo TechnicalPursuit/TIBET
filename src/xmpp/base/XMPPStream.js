@@ -98,7 +98,6 @@ function(aNode, aConnection) {
      *     a required parameter.
      * @raises TP.sig.InvalidXMPPConnection
      * @returns {TP.xmpp.Stream} A new instance.
-     * @todo
      */
 
     var natNode;

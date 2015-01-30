@@ -163,7 +163,6 @@ TP.hc(
          * @param {Array} tagNameArray An Array of tag names to escape the
          *     content of.
          * @param {Array} tagNameArray
-         * @todo
          */
 
         var i,
@@ -229,7 +228,6 @@ TP.hc(
          * @param {Array} tagNameArray An Array of tag names to escape the
          *     content of.
          * @param {Array} tagNameArray
-         * @todo
          */
 
         var i,
@@ -427,7 +425,6 @@ TP.hc(
          * @param {Node} inputNode The input data element.
          * @param {XMLDocument} resultDoc The result XML document after
          *     transformation.
-         * @todo
          */
 
         var xsltHackAttrs,
@@ -525,7 +522,6 @@ TP.hc(
          * @param {Node} inputNode The input data element.
          * @param {XMLDocument} resultDoc The result XML document after
          *     transformation.
-         * @todo
          */
 
         var xsltHackAttrs,
@@ -627,7 +623,6 @@ TP.hc(
          *     will repair xmlns attributes.
          * @raises TP.sig.XSLTException, TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
-         * @todo
          */
 
         var url,
@@ -1274,7 +1269,6 @@ TP.hc(
          *     will repair xmlns attributes.
          * @raises TP.sig.XSLTException, TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
-         * @todo
          */
 
         var url,

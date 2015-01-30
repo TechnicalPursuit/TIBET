@@ -452,7 +452,6 @@ function(aStr, startDelim, endDelim, startPos) {
      *     Number or a String to look for to give the initial starting position.
      * @returns {Number} The index of the end delimiter that positionally
      *     matches the start delimiter or -1 if one can't be found.
-     * @todo
      */
 
     var startInd,
@@ -555,7 +554,6 @@ function(aString, left, right, flags) {
      *     match.
      * @param {String} flags A String that contains the flags used for matching.
      * @returns {Array} An Array with the matches found.
-     * @todo
      */
 
     var theFlags,
@@ -619,7 +617,6 @@ function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
      *     numeric prefix in the tokenized String.
      * @returns {String} The String with chunks tokenized and replaced with the
      *     token prefix, a numeric index and the token suffix.
-     * @todo
      */
 
     var result,
@@ -705,7 +702,6 @@ function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
      * @param {String} tokenSuffix The suffix that got written in after the
      *     token's numeric prefix in the tokenized String.
      * @returns {String} The String with the tokenized chunks put back in place.
-     * @todo
      */
 
     //  Run a replace() function on a RegExp that is generated, looking for

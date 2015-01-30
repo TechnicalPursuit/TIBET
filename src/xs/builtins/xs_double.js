@@ -31,7 +31,6 @@ function(anObject) {
      *     representing a 64-bit floating point number.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}
-     * @todo
      */
 
     var n,

@@ -63,7 +63,6 @@
  *     register it to service these kinds of requests):
  *
  *     webdavService.register();
- * @todo
  */
 
 //  ------------------------------------------------------------------------

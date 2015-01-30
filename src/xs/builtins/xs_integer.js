@@ -38,7 +38,6 @@ function(anObject) {
      *     optional leading + or - sign.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}
-     * @todo
      */
 
     var s;
@@ -66,7 +65,6 @@ function(aValue, aFacet) {
      * @param {Element} aFacet The facet node being tested.
      * @raises TP.sig.InvalidOperation
      * @returns {Boolean}
-     * @todo
      */
 
     this.raise('TP.sig.UnsupportedFeature',
@@ -87,7 +85,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var num,

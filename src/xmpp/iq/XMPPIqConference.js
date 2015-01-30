@@ -53,7 +53,6 @@ function(aFlag) {
      *     kept private when interacting with this conference.
      * @param {Boolean} aFlag The new flag value.
      * @returns {Boolean} The flag value, after optional set.
-     * @todo
      */
 
     var child;

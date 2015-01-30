@@ -13,7 +13,6 @@
  * @synopsis A string representing a date and optional time zone data in the
  *     format [-]YYYY-MM-DD followed by Z for UTC time, or a +/- prefixed HH:MM
  *     timezone offset.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -48,7 +47,6 @@ function(anObject) {
      *     valid date string with optional time zone data.
      * @param {String} anObject The object to validate.
      * @returns {Boolean}
-     * @todo
      */
 
     var str,
@@ -111,7 +109,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var m1,
@@ -185,7 +182,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var m1,
@@ -259,7 +255,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var m1,
@@ -333,7 +328,6 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @returns {Boolean}
-     * @todo
      */
 
     var m1,

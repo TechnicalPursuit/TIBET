@@ -36,7 +36,6 @@ TP.hc(
          * @raises TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
-         * @todo
          */
 
         var wheelVal,
@@ -115,7 +114,6 @@ TP.hc(
          * @raises TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
-         * @todo
          */
 
         var wheelVal,
@@ -183,7 +181,6 @@ TP.hc(
          * @raises TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
-         * @todo
          */
 
         var wheelVal,

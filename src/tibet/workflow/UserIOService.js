@@ -52,7 +52,6 @@ function(aResourceID, aRequest) {
      *     hash containing a service URI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.UserIOService} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -202,7 +201,6 @@ function(aRequest) {
      *     been processed. The default is simply to return.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
      *     need to provide information to this process.
-     * @todo
      */
 
     return;
@@ -265,7 +263,6 @@ function(aFlag) {
      *     process.
      * @param {Boolean} aFlag An optional new setting.
      * @returns {Boolean} The current input state.
-     * @todo
      */
 
     return TP.override();
@@ -301,7 +298,6 @@ function(aRequest) {
      *     implementation does nothing.
      * @param {TP.sig.UserIORequest} aRequest
      * @returns {TP.core.UserIOService} The receiver.
-     * @todo
      */
 
     return this;

@@ -47,7 +47,6 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
      * @param {String} aHandler The ID of the handler element that will be
      *     activated when the event(s) (is/are) fired from the target(s) and is
      *     observed by the observer(s).
-     * @todo
      */
 
     var doc,
@@ -365,7 +364,6 @@ function(anElement, shouldRegister) {
      * @param {Boolean} shouldRegister Whether to register or remove the
      *     handlers that can be computed from anElement.
      * @returns {null}
-     * @todo
      */
 
     var eventAttrValue,

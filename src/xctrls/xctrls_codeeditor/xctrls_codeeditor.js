@@ -216,7 +216,6 @@ function(aText, aMode, tokenizeCallback) {
      *     value and the token 'type' (which is a name that CodeMirror uses to
      *     style it - e.g. 'number').
      * @returns {TP.xctrls.codeeditor} The receiver.
-     * @todo
      */
 
     this.$getEditorConstructor().runMode(aText, aMode, tokenizeCallback);
@@ -364,7 +363,6 @@ function(aSignal) {
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action. This signal should include a key of 'deep' and a value of
      *     true to cause a deep refresh that updates all nodes.
-     * @todo
      */
 
     return;
@@ -680,7 +678,6 @@ function(toStart) {
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
      * @returns {TP.xctrls.codeeditor} The receiver.
-     * @todo
      */
 
     var editor,

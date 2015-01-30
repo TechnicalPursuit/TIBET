@@ -46,7 +46,6 @@ function(lat, lng) {
      * @param {Number} lat
      * @param {Number} lng
      * @returns {TP.core.LatLong} A new instance.
-     * @todo
      */
 
     //  Note here how it's the 'long' first (since its the 'x') and the
@@ -93,7 +92,6 @@ function(aLatLong) {
      * @name distance
      * @returns {Number}
      * @abstract
-     * @todo
      */
 
     var d,
@@ -141,7 +139,6 @@ function(swlat, swlong, nelat, nelong) {
      * @param {Number} nelat
      * @param {Number} nelong
      * @returns {TP.core.MapBounds} A new instance.
-     * @todo
      */
 
     this.callNextMethod();

@@ -41,7 +41,6 @@ function() {
      *     packets have no valid response so this method returns null in those
      *     cases.
      * @returns {TP.xmpp.Stanza}
-     * @todo
      */
 
     var msgID,
@@ -78,7 +77,6 @@ function() {
      * @name getDefaultType
      * @synopsis Returns the default stanza type for the receiver.
      * @returns {String}
-     * @todo
      */
 
     return 'available';

@@ -112,7 +112,6 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
      *     method.
      * @returns {Object} The results of the method invocation, or an array of
      *     such results.
-     * @todo
      */
 
     var elem,
@@ -187,7 +186,6 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
      *     method.
      * @returns {Object} The results of the method invocation, or an array of
      *     such results.
-     * @todo
      */
 
     var elem,
@@ -274,7 +272,6 @@ function(anObject, nodeContext, collapse) {
      *     (essentially sugaring for results.first()) or not. Default is true.
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The result as detailed in this function's discussion.
-     * @todo
      */
 
     var context,
@@ -350,7 +347,6 @@ function(cssExpr, nodeContext, autoCollapse) {
      * @raises TP.sig.InvalidString
      * @returns {Element|Array} The Array of matched Elements or a single
      *     Element if single-item Arrays are being collapsed.
-     * @todo
      */
 
     var node;
@@ -380,7 +376,6 @@ function(anID, nodeContext) {
      * @raises TP.sig.InvalidID
      * @returns {Element|Array} The element, if found, or an array when more
      *     than one ID was provided.
-     * @todo
      */
 
     var id,
@@ -467,7 +462,6 @@ function(anID, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Array} An array of TP.lang.Objects sharing the name provided.
-     * @todo
      */
 
     var id,
@@ -516,7 +510,6 @@ function(pathExpr, nodeContext, autoCollapse) {
      * @raises TP.sig.InvalidString
      * @returns {Element|Array} The Array of matched Elements or a single
      *     Element if single-item Arrays are being collapsed.
-     * @todo
      */
 
     var node;
@@ -554,7 +547,6 @@ function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
      *     keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @todo
      */
 
     return TP.tpcall(
@@ -583,7 +575,6 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      *     Default is the current canvas.
      * @returns {String} The attribute value, if found or null if the element
      *     couldn't be obtained.
-     * @todo
      */
 
     return TP.tpcall('elementGetAttribute',
@@ -611,7 +602,6 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Boolean} True if the attribute exists.
-     * @todo
      */
 
     return TP.tpcall('elementHasAttribute',
@@ -638,7 +628,6 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      *     keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @todo
      */
 
     return TP.tpcall('elementRemoveAttribute',
@@ -667,7 +656,6 @@ function(elemOrId, attrName, oldValue, newValue, checkAttrNSURI, nodeContext) {
      *     keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @todo
      */
 
     return TP.tpcall(
@@ -696,7 +684,6 @@ function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
      *     keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @todo
      */
 
     return TP.tpcall(
@@ -724,7 +711,6 @@ function(elemOrId, attrName, nodeContext) {
      *     NS: prefix.
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @todo
      */
 
     var value;
@@ -758,7 +744,6 @@ function(elemOrId, className, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementAddClass',
@@ -780,7 +765,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {String} An potentially space-separated string of class names.
-     * @todo
      */
 
     return TP.tpcall('elementGetClass',
@@ -803,7 +787,6 @@ function(elemOrId, className, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Boolean} True if the element has the named class.
-     * @todo
      */
 
     return TP.tpcall('elementHasClass',
@@ -826,7 +809,6 @@ function(elemOrId, className, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementRemoveClass',
@@ -850,7 +832,6 @@ function(elemOrId, oldClass, newClass, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementReplaceClass',
@@ -873,7 +854,6 @@ function(elemOrId, className, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementSetClass',
@@ -897,7 +877,6 @@ function(elemOrId, className, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     if (TP.hasClass(elemOrId, nodeContext, className)) {
@@ -929,7 +908,6 @@ function(elemOrId, newContent, aRequest, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('addContent',
@@ -951,7 +929,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('getContent', elemOrId, nodeContext);
@@ -978,7 +955,6 @@ function(elemOrId, newContent, aLocation, aRequest, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('insertContent',
@@ -1000,7 +976,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('empty', elemOrId, nodeContext);
@@ -1024,7 +999,6 @@ function(elemOrId, newContent, aRequest, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('setContent',
@@ -1049,7 +1023,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     var elem,
@@ -1093,7 +1066,6 @@ function(oldElemOrId, newElemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     var elem,
@@ -1137,7 +1109,6 @@ function(oldElemOrId, newElemOrId, nodeContext) {
  *     ALSO, if you are going to animate or alter an element's style you may
  *     wantto wrap your calls in a $preserveStyle/$restoreStyle pair so any
  *     valueswhich might have existed are reset on completion.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -1157,7 +1128,6 @@ function(elemOrId, aProperty, aValue, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementAddStyle',
@@ -1181,7 +1151,6 @@ function(elemOrId, aProperty, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {String} A CSS style string.
-     * @todo
      */
 
     return TP.tpcall('elementGetStyle', elemOrId, nodeContext, aProperty);
@@ -1205,7 +1174,6 @@ function(elemOrId, aProperty, nodeContext) {
      *     Default is the current canvas.
      * @returns {Boolean} True if the element has inline style with the property
      *     name, or inline style.
-     * @todo
      */
 
     return TP.tpcall('elementHasStyle', elemOrId, nodeContext, aProperty);
@@ -1226,7 +1194,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementPreserveStyle', elemOrId, nodeContext);
@@ -1248,7 +1215,6 @@ function(elemOrId, aProperty, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementRemoveStyle', elemOrId, nodeContext, aProperty);
@@ -1272,7 +1238,6 @@ function(elemOrId, aProperty, oldStyle, newStyle, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementReplaceStyle',
@@ -1294,7 +1259,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementRestoreStyle', elemOrId, nodeContext);
@@ -1317,7 +1281,6 @@ function(elemOrId, aProperty, aValue, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.tpcall('elementSetStyle',
@@ -1346,7 +1309,6 @@ function(anElement, propertyName, animationParams, nodeContext) {
      *     Default is the current canvas.
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     transition.
-     * @todo
      */
 
     var elems,
@@ -1394,7 +1356,6 @@ function(anElement, effectName, effectParams, nodeContext) {
      *     Default is the current canvas.
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     effect.
-     * @todo
      */
 
     var effectTypeName,
@@ -1621,7 +1582,6 @@ function(aNodeOrList, eventNames, aHandler, aPolicy, nodeContext) {
      * @param {Window} nodeContext An optional window to search for the
      *     element(s). If not provided then the TP.context() method is used to
      *     find one.
-     * @todo
      */
 
     var target,
@@ -1701,7 +1661,6 @@ function(anObject, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Array} The X and Y as a point pair.
-     * @todo
      */
 
     var elem;
@@ -1749,7 +1708,6 @@ function(aNodeOrList, eventNames, aHandler, nodeContext) {
      * @param {Window} nodeContext An optional window to search for the
      *     element(s).
      *     If not provided then the TP.context() method is used to fine one.
-     * @todo
      */
 
     var target,
@@ -1808,7 +1766,6 @@ function(anEvent) {
      * @param {Event} anEvent The native event to normalize. Default is
      *     window.event so this can be called with an empty value on IE.
      * @returns {Event} The normalized native event.
-     * @todo
      */
 
     return TP.eventNormalize(anEvent || window.event);
@@ -1883,7 +1840,6 @@ function(anObject, aFilter) {
      * @param {Function} aFilter An optional filtering function defining which
      *     values are retained.
      * @returns {Object} The compacted object, which may be a new object.
-     * @todo
      */
 
     if (TP.canInvoke(anObject, 'compact')) {
@@ -1916,7 +1872,6 @@ function(elemOrId, anAspect, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Object} The object value(s).
-     * @todo
      */
 
     var aspect,
@@ -1963,7 +1918,6 @@ function(elemOrId, anAspect, aValue, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Object} The element, or elements that were changed.
-     * @todo
      */
 
     var aspect,
@@ -2040,7 +1994,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('focus', elemOrId, nodeContext);
@@ -2062,7 +2015,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('reset', elemOrId, nodeContext);
@@ -2084,7 +2036,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('select', elemOrId, nodeContext);
@@ -2106,7 +2057,6 @@ function(elemOrId, nodeContext) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
-     * @todo
      */
 
     return TP.idcall('submit', elemOrId, nodeContext);
@@ -2255,7 +2205,6 @@ function(anObject) {
      * @param {The} anObject object whose properties and simple inspection
      *     string should be returned.
      * @returns {String} A simple inspection string for the object.
-     * @todo
      */
 
     var obj;
@@ -2348,7 +2297,6 @@ function(anObject, aMessage, aTitle, aCommand) {
      * @param {String} aCommand An optional TSH command to use rather than the
      *     default ':edit' command.
      * @returns {String} A string containing an HTML link element.
-     * @todo
      */
 
     var uri,
@@ -2659,7 +2607,6 @@ function(anObject, aValue) {
      * @param {Object} anObject The object to test.
      * @param {Object} aValue The value to check for containment.
      * @returns {Boolean} True if the value is clearly contained.
-     * @todo
      */
 
     if (TP.notValid(anObject)) {
@@ -2690,7 +2637,6 @@ function(anObject, aProperty) {
      * @param {Object} anObject The object to root the query at.
      * @param {String} aProperty A property name to query for.
      * @returns {Array} An array of zero to N result objects.
-     * @todo
      */
 
     var arr,
@@ -2740,7 +2686,6 @@ function(aURI, aRequest, nodeContext) {
      *     $$context placed on this function.
      * @raises TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
-     * @todo
      */
 
     var context,
@@ -2791,7 +2736,6 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
      *     bypassing normal callBestMethod() lookup semantics for the signal.
      * @param {Boolean} ignoreMisses True to turn off warnings when the handler
      *     can't be invoked.
-     * @todo
      */
 
     var ignore,

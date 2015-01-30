@@ -13,7 +13,6 @@
  *     your applications. A number of types in TIBET operate in conjuction with
  *     this job control mechanism so you can manage multiple "threads" of logic
  *     including animations, HTTP calls, XMPP polling, and more.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -400,7 +399,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     var hash,
@@ -452,7 +450,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     return this;
@@ -472,7 +469,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result for the
      *     request.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     //  avoid issues with perhaps calling this more than once
@@ -525,7 +521,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result for the
      *     job/request.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     return this;
@@ -543,7 +538,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on
      *     specific nature of the error. Often an exception or Error object.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     var hash,
@@ -600,7 +594,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     return this;
@@ -621,7 +614,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     var hash,
@@ -689,7 +681,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     return this;
@@ -901,7 +892,6 @@ function(parameters) {
  *     low-level names: getActiveTime() getElapsedTime() getPauseTime()
  *     getPercentComplete() getProjectedTime() getStepValue() isLimited()
  *     $iterate() $work()
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -956,7 +946,6 @@ function(job, params) {
      * @param {TP.core.Job} job The job instance.
      * @param {TP.lang.Hash} params The step parameter data for the job.
      * @returns {Object} The object at the computed index.
-     * @todo
      */
 
     var values,
@@ -981,7 +970,6 @@ function(job, params) {
      * @param {TP.core.Job} job The job instance.
      * @param {TP.lang.Hash} params The step parameter data for the job.
      * @returns {Object} The object at the computed index.
-     * @todo
      */
 
     var percent,
@@ -1013,7 +1001,6 @@ function(job, params) {
      * @param {TP.core.Job} job The job instance.
      * @param {TP.lang.Hash} params The step parameter data for the job.
      * @returns {Number} The computed value.
-     * @todo
      */
 
     var percent,
@@ -1241,7 +1228,6 @@ function(aJob) {
      * @param {TP.core.Job} aJob An instance whose processing data may be used
      *     to feed the computation.
      * @returns {Boolean} True on success.
-     * @todo
      */
 
     return true;
@@ -1261,7 +1247,6 @@ function(aJob) {
      * @param {TP.core.Job} aJob An instance whose processing data may be used
      *     to feed the computation.
      * @returns {Boolean} True on success.
-     * @todo
      */
 
     aJob.$steps = aJob.$steps || TP.ac();
@@ -1347,7 +1332,6 @@ function(anObjectArray, aMethodArray, aParamArray) {
      * @param {Array} aParamArray The Array of parameters to use when invoking
      *     the methods.
      * @returns {TP.core.Job} The receiver.
-     * @todo
      */
 
     var invokerFunc,
@@ -1452,7 +1436,6 @@ function(allParams) {
      *     one or more keys defining job configuration. See init() for more
      *     info.
      * @returns {Array} The Array containing ctrlParamsHash and stepParamsHash.
-     * @todo
      */
 
     var ctrlParams,
@@ -1599,7 +1582,6 @@ function(controlParams) {
      * @param {TP.lang.Hash|TP.sig.Request} controlParams A hash of control
      *     parameters that control the job.
      * @returns {TP.core.Job} A new instance.
-     * @todo
      */
 
     var paramVal,
@@ -1760,7 +1742,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result for the
      *     request.
      * @returns {TP.core.Job} The receiver.
-     * @todo
      */
 
     var runs;
@@ -2025,7 +2006,6 @@ function(stepParams) {
      *     optional and will default to the parameters computed by the job.
      * @returns {Object} A step-specific value computed by the compute function.
      * @raise TP.sig.JobException
-     * @todo
      */
 
     var val;
@@ -2466,7 +2446,6 @@ function(work) {
      *     function is used primarly to ensure that the work is properly
      *     enclosed in a try/catch to cleanup the job if any errors occur.
      * @returns {TP.core.Job} The receiver.
-     * @todo
      */
 
     var func,
@@ -2635,7 +2614,6 @@ function() {
      * @synopsis Sets the job's default parameters by running any 'config'
      *     function provided and computing missing values.
      * @returns {TP.core.Job} The receiver.
-     * @todo
      */
 
     var config;
@@ -3323,7 +3301,6 @@ function() {
      * @name getJobs
      * @synopsis Returns the list of current jobs.
      * @returns {Array} The TIBET job list.
-     * @todo
      */
 
     //  build lazily so we get "best" collection type/implementation
@@ -3452,7 +3429,6 @@ function(controlParams, stepParams) {
      * @returns {TP.core.Job} A TP.core.Job instance which represents the
      *     overall job, regardless of how many individual timeouts may be used
      *     to implement it.
-     * @todo
      */
 
     var job;
@@ -3516,7 +3492,6 @@ function(aMethodName, anArgument) {
      * @param {Object} anArgument An optional argument to pass to the method
      *     with each child invocation.
      * @returns {TP.core.JobGroup} The receiver.
-     * @todo
      */
 
     var children,
@@ -3572,7 +3547,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @returns {TP.core.JobGroup} The receiver.
-     * @todo
      */
 
     this.$performOverChildren('cancel', aFaultString, aFaultCode);
@@ -3608,7 +3582,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result for the
      *     request.
      * @returns {TP.core.JobGroup} The receiver.
-     * @todo
      */
 
     this.$performOverChildren('complete', aResult);
@@ -3639,7 +3612,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
      * @returns {TP.core.JobGroup} The receiver.
-     * @todo
      */
 
     this.$performOverChildren('fail', aFaultString, aFaultCode);

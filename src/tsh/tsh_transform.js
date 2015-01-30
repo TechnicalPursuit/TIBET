@@ -124,7 +124,6 @@ function(anInput, cmdNode, aRequest) {
      *     the shell.
      * @raises TP.sig.InvalidTransform
      * @returns {Object} The transformed input.
-     * @todo
      */
 
     var rootName,

@@ -104,7 +104,6 @@ function() {
      * @name hideAllHUDDrawers
      * @returns {TP.sherpa.hud} The receiver.
      * @abstract
-     * @todo
      */
 
     var win,
@@ -132,7 +131,6 @@ function() {
      * @name showAllHUDDrawers
      * @returns {TP.sherpa.hud} The receiver.
      * @abstract
-     * @todo
      */
 
     var win,

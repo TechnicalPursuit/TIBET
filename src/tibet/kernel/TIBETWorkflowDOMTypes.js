@@ -74,7 +74,6 @@ function(anID) {
      *     calls a web service to return a single TP.vcard_temp.vCard element
      *     with the requested ID/FN.
      * @returns {TP.vcard_temp.vCard} A vCard element wrapper.
-     * @todo
      */
 
     var xml,
@@ -279,7 +278,6 @@ function() {
      * @synopsis Returns an array of permission keys defined by the receiver's
      *     role and unit definitions.
      * @returns {Array} An array of permission keys (strings).
-     * @todo
      */
 
     var keys,
@@ -331,7 +329,6 @@ function() {
      *     the ROLE element with the content of the ORGNAME element to produce
      *     these names.
      * @returns {Array} An array of role names (TP.core.Role subtype names).
-     * @todo
      */
 
     var org,
@@ -363,7 +360,6 @@ function() {
      *     receiver. When a named role can't be loaded it won't be included in
      *     this list, and a warning will be logged.
      * @returns {Array} An array containing loadable TP.core.Role types.
-     * @todo
      */
 
     var names;
@@ -389,7 +385,6 @@ function() {
      *     producing this list.
      * @returns {Array} An array of unit names (TP.core.Unit subtype names).
      * @method
-     * @todo
      */
 
     var org,
@@ -419,7 +414,6 @@ function() {
      * @name getUnits
      * @returns {Array}
      * @abstract
-     * @todo
      */
 
     var names;
@@ -481,7 +475,6 @@ function(anID) {
      *     calls a web service to return a single keyring element with the
      *     requested ID.
      * @returns {tibet:keyring} A keyring element wrapper.
-     * @todo
      */
 
     var xml,
@@ -599,7 +592,6 @@ function() {
      * @name getAccessKeys
      * @synopsis Returns an array of the string keys found in the receiver.
      * @returns {Array} An array containing the string keys of the receiver.
-     * @todo
      */
 
     var keys,
@@ -669,7 +661,6 @@ function() {
      *     returned by the getAccessKeys() method so you rarely need to call it
      *     directly.
      * @returns {Array} An array containing the string keys of the receiver.
-     * @todo
      */
 
     var arr;

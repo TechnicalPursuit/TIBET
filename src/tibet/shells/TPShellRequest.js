@@ -83,7 +83,6 @@ function() {
      *     signal checks the 'shouldLogTSHSignals' TIBET configuration flags to
      *     see if it can currently be logged.
      * @returns {Boolean} True if the signal can be logged.
-     * @todo
      */
 
     return TP.sys.shouldLogTSHSignals();
@@ -129,7 +128,6 @@ function(aFaultString, aFaultCode) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @returns {TP.BREAK}
-     * @todo
      */
 
     this.callNextMethod();
@@ -151,7 +149,6 @@ function(aResult) {
      * @param {Object} aResult An optional object to set as the result for the
      *     request.
      * @returns {TP.core.JobStatus} The receiver.
-     * @todo
      */
 
     this.callNextMethod();
@@ -176,7 +173,6 @@ function(aFaultString, aFaultCode, anException) {
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
      * @returns {TP.BREAK}
-     * @todo
      */
 
     if (this.isCompleting() || this.didComplete()) {
@@ -231,7 +227,6 @@ function() {
      * @name getOriginalCmdText
      * @returns {String}
      * @abstract
-     * @todo
      */
 
     var text,
@@ -319,7 +314,6 @@ function(output, request) {
      * @param {Object} output The object to write to stderr.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional
      *     request/parameters. Defaults to the receiver.
-     * @todo
      */
 
     var req,
@@ -350,7 +344,6 @@ function() {
      *     of 0 to N items provided by the various stdout, stderr, and input
      *     redirection calls related to a request.
      * @returns {Array} An array of 0 to N input objects.
-     * @todo
      */
 
     TP.stop('break.tsh_stdin');
@@ -372,7 +365,6 @@ function(output, request) {
      * @param {Object} output The object to write to stdout.
      * @param {TP.sig.Request|TP.lang.Hash} request Optional
      *     request/parameters. Defaults to the receiver.
-     * @todo
      */
 
     var req,

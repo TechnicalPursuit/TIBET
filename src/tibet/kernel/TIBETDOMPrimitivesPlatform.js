@@ -47,7 +47,6 @@ TP.hc(
          *     has been supplied to the method.
          * @raise TP.sig.InvalidXMLDocument Raised when the supplied attribute
          *     Node is not part of an XML document.
-         * @todo
          */
 
         if (!TP.isAttributeNode(anAttributeNode)) {
@@ -79,7 +78,6 @@ TP.hc(
          *     has been supplied to the method.
          * @raise TP.sig.InvalidXMLDocument Raised when the supplied attribute
          *     Node is not part of an XML document.
-         * @todo
          */
 
         var owner;
@@ -135,7 +133,6 @@ TP.hc(
          * @raise TP.sig.DOMParseException Raised if the supplied String cannot
          *     be parsed into a proper XML DOM construct and the shouldReport
          *     flag is true.
-         * @todo
          */
 
         var report,
@@ -273,7 +270,6 @@ TP.hc(
          * @raise TP.sig.DOMParseException Raised if the supplied String cannot
          *     be parsed into a proper XML DOM construct and the shouldReport
          *     flag is true.
-         * @todo
          */
 
         var report,
@@ -394,7 +390,6 @@ TP.hc(
          * @raise TP.sig.DOMParseException Raised if the supplied String cannot
          *     be parsed into a proper XML DOM construct and the shouldReport
          *     flag is true.
-         * @todo
          */
 
         var report,
@@ -675,7 +670,6 @@ TP.hc(
          * @param {Element} anElement The element to restore iframe content for.
          * @param {TP.lang.Hash} docElemsHash The hash containing the document
          *     elements previously captured during the preserve process.
-         * @todo
          */
 
         var holderKeys,
@@ -744,7 +738,6 @@ TP.hc(
          * @param {Element} anElement The element to restore iframe content for.
          * @param {TP.lang.Hash} docElemsHash The hash containing the document
          *     elements previously captured during the preserve process.
-         * @todo
          */
 
         return;
@@ -766,7 +759,6 @@ TP.hc(
          * @param {Element} anElement The element to restore iframe content for.
          * @param {TP.lang.Hash} docElemsHash The hash containing the document
          *     elements previously captured during the preserve process.
-         * @todo
          */
 
         var holderKeys,
@@ -862,7 +854,6 @@ TP.hc(
          *     name is provided to the method.
          * @raise TP.sig.InvalidParameter Raised when a null or undefined
          *     attribute value is provided to the method.
-         * @todo
          */
 
         if (!TP.isElement(anElement)) {
@@ -924,7 +915,6 @@ TP.hc(
          *     name is provided to the method.
          * @raise TP.sig.InvalidParameter Raised when a null or undefined
          *     attribute value is provided to the method.
-         * @todo
          */
 
         var parts,
@@ -1139,7 +1129,6 @@ TP.hc(
          *     representation of. These include Nodes of type:
          *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
          *     Node.NOTATION_NODE
-         * @todo
          */
 
         var node,
@@ -1425,7 +1414,6 @@ TP.hc(
          *     representation of. These include Nodes of type:
          *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
          *     Node.NOTATION_NODE
-         * @todo
          */
 
         var node,
@@ -1705,7 +1693,6 @@ TP.hc(
          *     representation of. These include Nodes of type:
          *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
          *     Node.NOTATION_NODE
-         * @todo
          */
 
         var node,
@@ -1919,7 +1906,6 @@ TP.hc(
          * @returns {Node} The resulting clone of aNode.
          * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
          *     the method.
-         * @todo
          */
 
         var shouldBeDeep,
@@ -2016,7 +2002,6 @@ TP.hc(
          * @returns {Node} The resulting clone of aNode.
          * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
          *     the method.
-         * @todo
          */
 
         var shouldBeDeep,

@@ -10,7 +10,6 @@
 
 /**
  * @Exceptions signals specific to XMPP processing.
- * @todo
  */
 
 TP.sig.ERROR.defineSubtype('XMPPException');

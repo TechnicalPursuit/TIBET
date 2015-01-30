@@ -60,7 +60,6 @@ function(aDocument) {
      * @raise TP.sig.InvalidDocument Raised when an invalid Document is provided
      *     to the method.
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var ourID,
@@ -169,7 +168,6 @@ function(aRequest) {
      *     input for the shell.
      * @returns {TP.lang.Hash} A hash of attributes to be added to the compiled
      *     output from this type.
-     * @todo
      */
 
     var elem;
@@ -335,7 +333,6 @@ function(aTargetElem, anEvent) {
      * @param {Event} anEvent The native event that was triggered.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var evtTargetTPElem,
@@ -376,7 +373,6 @@ function(aTargetElem, anEvent) {
      * @param {Event} anEvent The native event that was triggered.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var evtTargetTPElem,
@@ -417,7 +413,6 @@ function(aTargetElem, anEvent) {
      * @param {Event} anEvent The native event that was triggered.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var evtTargetTPElem,
@@ -522,7 +517,6 @@ function(aTargetElem, anEvent) {
      * @param {Event} anEvent The native event that was triggered.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var evtTargetTPElem,
@@ -574,7 +568,6 @@ function(aTargetElem, anEvent) {
      * @param {Event} anEvent The native event that was triggered.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var evtTargetTPElem,
@@ -620,7 +613,6 @@ function(aTargetElem, anEvent) {
      * @param {Event} anEvent The native event that was triggered.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var evtTargetTPElem,
@@ -664,7 +656,6 @@ function(aTargetElem, nodesAdded) {
      * @param {Array} nodesAdded The nodes added to the receiver.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var processor,
@@ -738,7 +729,6 @@ function(aTargetElem, nodesRemoved) {
      * @param {Array} nodesRemoved  The nodes removed from the receiver.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var processor,
@@ -835,7 +825,6 @@ function() {
      * @raise TP.sig.InvalidKeymap When the XML key bindings file can't be
      *     loaded.
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var url,
@@ -1138,7 +1127,6 @@ function(focusedTPElem, moveAction) {
      *     TP.FIRST_IN_PREVIOUS_GROUP TP.FOLLOWING TP.PRECEDING.
      * @returns {TP.core.ElementNode} The element that is the successor focus
      *     element.
-     * @todo
      */
 
     var currentIsInGroup,
@@ -1702,7 +1690,6 @@ function(includesGroups) {
      *     false.
      * @returns {Array} An Array of TP.core.ElementNodes under the receiver that
      *     can be focused.
-     * @todo
      */
 
     var selExpr,
@@ -1792,7 +1779,6 @@ function() {
      *     attribute.
      * @returns {TP.core.UIElementNode} The TP.core.UIElementNode acting as the
      *      'focus context' element of the receiver.
-     * @todo
      */
 
     var focusContextTPElem;
@@ -1923,7 +1909,6 @@ function() {
      *     specific group (i.e. up the group hierarchy).
      * @returns {Array} The Array of 'tibet:group' names that the receiver is a
      *     member of or the empty Array.
-     * @todo
      */
 
     var groupName,
@@ -1999,7 +1984,6 @@ function(startGroupName, alwaysWrap, wantsNested) {
      * @param {Boolean} wantsNested Whether or not to consider nested groups as
      *     part of this query. Defaults to false.
      * @returns {String} The name of the 'next' group.
-     * @todo
      */
 
     var ourGroupName,
@@ -2116,7 +2100,6 @@ function(aSignal, isCapturing) {
      *     machinery is computing the chain for the 'capturing' phase of the
      *     event dispatch.
      * @returns {Object} The next responder as computed by the receiver.
-     * @todo
      */
 
     var node,
@@ -2293,7 +2276,6 @@ function(startGroupName) {
      * @param {Boolean} alwaysWrap Whether or not to ignore wrapping behavior
      *     and 'always wrap' around.
      * @returns {String} The name of the 'next' group.
-     * @todo
      */
 
     var ourGroupName,
@@ -2338,7 +2320,6 @@ function(startGroupName, alwaysWrap, wantsNested) {
      * @param {Boolean} wantsNested Whether or not to consider nested groups as
      *     part of this query. Defaults to false.
      * @returns {String} The name of the 'previous' group.
-     * @todo
      */
 
     var ourGroupName,
@@ -2449,7 +2430,6 @@ function() {
      *     when used in a forms context. This defaults to the value of the id
      *     attribute, followed by the name attribute.
      * @returns {String} The receiver's submission name.
-     * @todo
      */
 
     var node;
@@ -2540,7 +2520,6 @@ function(aSignal, isCapturing) {
      *     event dispatch.
      * @returns {Boolean} Whether or not the receiver is a valid responder for
      *     the supplied signal and capturing mode.
-     * @todo
      */
 
     var origin,
@@ -2591,7 +2570,6 @@ function(moveAction) {
      *          TP.FOLLOWING
      *          TP.PRECEDING.
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var currentTPElem,
@@ -2782,7 +2760,6 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
      * @returns {null} Null according to the spec for DOM 'setAttribute'.
-     * @todo
      */
 
     var node,
@@ -3663,7 +3640,6 @@ function(stateAttribute, stateFlag) {
      * @param {Boolean} stateFlag Optional parameter which defines the whether
      *     the state is in effect.
      * @returns {Boolean} Whether the receiver's state is active.
-     * @todo
      */
 
     //  NB: we use the '$' versions of setAttribute/getAttribute here or
@@ -3870,7 +3846,6 @@ function(beBusy, busyMsg) {
      * @param {Boolean} beBusy Whether or not the receiver is in a busy state.
      * @param {String} busyMsg The message to display while busy.
      * @returns {Boolean} Whether the receiver's state is busy.
-     * @todo
      */
 
     this.$isInState('pclass:busy', beBusy);
@@ -4124,7 +4099,6 @@ function() {
      * @name blur
      * @synopsis Blurs the receiver for keyboard input.
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var node;
@@ -4166,7 +4140,6 @@ function(moveAction) {
      *          TP.FOLLOWING
      *          TP.PRECEDING.
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var node;
@@ -4197,7 +4170,6 @@ function() {
      * @synopsis Selects the receiver for keyboard input (this also focuses the
      *     receiver).
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     var node;
@@ -4233,7 +4205,6 @@ function(oldItem, newItem) {
      * @param {Element} newItem The new element to select.
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     if (!TP.isElement(oldItem) || !TP.isElement(newItem)) {
@@ -4577,7 +4548,6 @@ function(aSignal) {
      * @name handleUIActivate
      * @param {TP.sig.UIActivate} aSignal The signal that caused this handler to
      *     trip.
-     * @todo
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -4719,7 +4689,6 @@ function(aSignal) {
      * @name handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
-     * @todo
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -4738,7 +4707,6 @@ function(aSignal) {
      * @name handleUIDelete
      * @param {TP.sig.UIDelete} aSignal The signal that caused this handler to
      *     trip.
-     * @todo
      */
 
     return TP.todo();
@@ -4785,7 +4753,6 @@ function(aSignal) {
      * @name handleUIDidBlur
      * @param {TP.sig.UIDidBlur} aSignal The signal that caused this handler to
      *     trip.
-     * @todo
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -4805,7 +4772,6 @@ function(aSignal) {
      * @name handleUIDidFocus
      * @param {TP.sig.UIDidFocus} aSignal The signal that caused this handler to
      *     trip.
-     * @todo
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -4825,7 +4791,6 @@ function(aSignal) {
      * @name handleUIDidPopFocus
      * @param {TP.sig.UIDidPopFocus} aSignal The signal that caused this
      *     handler to trip.
-     * @todo
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -4852,7 +4817,6 @@ function(aSignal) {
      * @name handleUIDidPushFocus
      * @param {TP.sig.UIDidPushFocus} aSignal The signal that caused this
      *     handler to trip.
-     * @todo
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -4898,7 +4862,6 @@ function(aSignal) {
      * @name handleUIDuplicate
      * @param {TP.sig.UIDuplicate} aSignal The signal that caused this handler
      *     to trip.
-     * @todo
      */
 
     return TP.todo();
@@ -5108,7 +5071,6 @@ function(aSignal) {
      * @name handleUIInsert
      * @param {TP.sig.UIInsert} aSignal The signal that caused this handler to
      *     trip.
-     * @todo
      */
 
     return TP.todo();
@@ -5162,7 +5124,6 @@ function(aSignal) {
      * @synopsis Causes the receiver to be put into its 'optional state'.
      * @param {TP.sig.UIOptional} aSignal The signal that caused this handler to
      *     trip.
-     * @todo
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -5257,7 +5218,6 @@ function(aSignal) {
      * @name handleUIScroll
      * @param {TP.sig.UIScroll} aSignal The signal that caused this handler to
      *     trip.
-     * @todo
      */
 
     return TP.todo();
@@ -5342,7 +5302,6 @@ function(aSignal) {
      * @name handleUIValueChanged
      * @param {TP.sig.UIValueChanged} aSignal The signal that caused this
      *     handler to trip.
-     * @todo
      */
 
     return TP.todo();
@@ -5366,7 +5325,6 @@ function(aSignal) {
      * @param {TP.sig.ResponderSignal} aSignal The signal to configure from any
      *     present 'ev:' attributes on the receiver.
      * @returns {TP.core.UIElementNode} The receiver.
-     * @todo
      */
 
     if (this.shouldStopSignal(aSignal)) {
@@ -5431,7 +5389,6 @@ function(aSignal) {
      *     receiver should perform its UI handler for the supplied signal.
      * @returns {Boolean} Whether or not the receiver should perform its UI
      *     handler for the supplied signal.
-     * @todo
      */
 
     this.configureSignalFromAttributes(aSignal);
@@ -5453,7 +5410,6 @@ function(aSignal) {
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if it
      *     should be prevented.
      * @returns {Boolean} Whether or not the signal should be prevented.
-     * @todo
      */
 
     var node;
@@ -5534,7 +5490,6 @@ isBubbling) {
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
      * @returns {TP.sig.Signal}
-     * @todo
      */
 
     TP.stop('break.signal_dispatch');
@@ -5572,7 +5527,6 @@ isBubbling) {
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
      * @returns {TP.sig.Signal}
-     * @todo
      */
 
     TP.stop('break.signal_dispatch');

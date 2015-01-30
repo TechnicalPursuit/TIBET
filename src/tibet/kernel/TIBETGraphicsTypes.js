@@ -69,7 +69,6 @@ function(x, y) {
      *     first position and y in the last position.
      * @param {Number} y The y value of the receiver.
      * @returns {TP.core.Point} The receiver.
-     * @todo
      */
 
     var theData,
@@ -436,7 +435,6 @@ function(aMin, aMax) {
      *     receiver to.
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
-     * @todo
      */
 
     var data;
@@ -467,7 +465,6 @@ function(aMin, aMax) {
      *     receiver to.
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
-     * @todo
      */
 
     var data;
@@ -611,7 +608,6 @@ function(aPoint, t) {
      * @returns {TP.core.Point} A new point with the coordinates of the receiver
      *     interpolated with the supplied point using the supplied interpolation
      *     factor.
-     * @todo
      */
 
     var data,
@@ -718,7 +714,6 @@ function(xVal, yVal) {
      *     to.
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
-     * @todo
      */
 
     var data;
@@ -748,7 +743,6 @@ function(xIncrement, yIncrement) {
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
      * @abstract
-     * @todo
      */
 
     var data;
@@ -779,7 +773,6 @@ function(points) {
      * @raises TP.sig.InvalidParameter
      * @returns {Array} The supplied Array with the points sorted by computing
      *     the distance between the receiver and each point.
-     * @todo
      */
 
     var thisX,
@@ -895,7 +888,6 @@ function(xDiff, yDiff) {
      * @param {Number} yDiff The amount to add to the y value of the receiver.
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
-     * @todo
      */
 
     var data;
@@ -988,7 +980,6 @@ function(x, y, width, height) {
      * @param {Number} width The width value of the receiver.
      * @param {Number} height The height value of the receiver.
      * @returns {TP.core.Rect} The receiver.
-     * @todo
      */
 
     var theData,
@@ -1538,7 +1529,6 @@ function(aRect) {
      * @param {TP.core.Rect} aRect The rectangle to test.
      * @returns {Array} An Array of TP.core.Rectangles containing the remaining
      *     regions.
-     * @todo
      */
 
     var intersectingRect,
@@ -1771,7 +1761,6 @@ function(widthDiff, heightDiff) {
      * @param {Number} heightDiff The amount to add to the height value of the
      *     receiver.
      * @returns {TP.core.Rect} The receiver.
-     * @todo
      */
 
     var data;
@@ -1838,7 +1827,6 @@ function(aRect, t) {
      * @returns {TP.core.Rect} A new rectangle with the coordinates of the
      *     receiver interpolated with the supplied rectangle using the supplied
      *     interpolation factor.
-     * @todo
      */
 
     var data,
@@ -1976,7 +1964,6 @@ function(aPoint, offset) {
      * @raises TP.sig.InvalidParameter
      * @returns {Boolean}
      * @abstract
-     * @todo
      */
 
     var centerPoint,
@@ -2241,7 +2228,6 @@ function(xVal, yVal) {
      *     to.
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
-     * @todo
      */
 
     var data;
@@ -2272,7 +2258,6 @@ function(widthDiff, heightDiff) {
      * @param {Number} heightDiff The amount to subtract from the height value
      *     of the receiver.
      * @returns {TP.core.Rect} The receiver.
-     * @todo
      */
 
     var data;
@@ -2403,7 +2388,6 @@ function(xDiff, yDiff) {
      * @param {Number} yDiff The amount to add to the y value of the receiver.
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Rect} The receiver.
-     * @todo
      */
 
     var data;
@@ -2719,7 +2703,6 @@ function(projectX, projectY) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that projects X and Y coordinates
      *     around the supplied X and Y point.
-     * @todo
      */
 
     var newMatrix,
@@ -2784,7 +2767,6 @@ function(reflectX, reflectY) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that reflects X and Y coordinates
      *     around the supplied X and Y point.
-     * @todo
      */
 
     var newMatrix,
@@ -2890,7 +2872,6 @@ function(diffX, diffY) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that scales X and Y coordinates by the
      *     supplied amounts.
-     * @todo
      */
 
     var newMatrix;
@@ -2986,7 +2967,6 @@ function(diffX, diffY) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that moves X and Y coordinates by the
      *     supplied amounts.
-     * @todo
      */
 
     var newMatrix;
@@ -3051,7 +3031,6 @@ function(anObj) {
      *     extracted from.
      * @returns {TP.core.Matrix} An instance of this type as extracted from
      *     anObj.
-     * @todo
      */
 
     var data,
@@ -3087,7 +3066,6 @@ function(angle, aPoint) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that is rotated around the point by
      *     the angle supplied.
-     * @todo
      */
 
     var rotationMatrix;
@@ -3118,7 +3096,6 @@ function(aPoint, xFactor, yFactor) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that scales around the point by the
      *     angle supplied.
-     * @todo
      */
 
     var scalingMatrix;
@@ -3150,7 +3127,6 @@ function(angle, aPoint) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that skews the X axis around the point
      *     by the angle supplied.
-     * @todo
      */
 
     var skewMatrix;
@@ -3180,7 +3156,6 @@ function(angle, aPoint) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that skews the Y axis around the point
      *     by the angle supplied.
-     * @todo
      */
 
     var skewMatrix;
@@ -3211,7 +3186,6 @@ function(diffX, diffY, aPoint) {
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} A matrix that translates the X and Y axis
      *     around the point by the differences supplied.
-     * @todo
      */
 
     var translationMatrix;
@@ -3793,7 +3767,6 @@ function(diffX, diffY) {
      * @param {Number} diffY The amount to scale Y coordinates.
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} The receiver.
-     * @todo
      */
 
     var data;
@@ -3927,7 +3900,6 @@ function(diffX, diffY) {
      * @param {Number} diffY The amount to move Y coordinates.
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Matrix} The receiver.
-     * @todo
      */
 
     var data;
@@ -4047,7 +4019,6 @@ function(anObj) {
      *     extracted from.
      * @returns {TP.core.Color} An instance of this type as extracted from
      *     anObj.
-     * @todo
      */
 
     var newObj;
@@ -4085,7 +4056,6 @@ function(red, green, blue, alpha) {
      * @param {Number} alpha The alpha value of the receiver, if 4 arguments are
      *     supplied.
      * @returns {TP.core.Color} The receiver.
-     * @todo
      */
 
     var theData,
@@ -4197,7 +4167,6 @@ function() {
      * @synopsis Returns the receiver as an Array of: [red, green, blue, alpha].
      * @returns {Array} An Array containing the color expressed in RGB values
      *     ([red, green, blue, alpha]).
-     * @todo
      */
 
     var colorData;
@@ -4473,7 +4442,6 @@ function(toColor, weight) {
      *     that determines how much of the 'toColor' to blend into the receiver.
      * @returns {TP.core.Color} The new color, after toColor has been blended
      *     with the receiver.
-     * @todo
      */
 
     var balanceWeight,
@@ -4820,7 +4788,6 @@ function(color, opacity) {
      *     between 0.0 and 1.0.
      * @raises TP.sig.InvalidParameter,TP.sig.InvalidNumber
      * @returns {TP.core.Gradient} The receiver.
-     * @todo
      */
 
     var opacityOffset,
@@ -4904,7 +4871,6 @@ function(aStopValue, aColorValue) {
      * @param {TP.core.Color|String} aColorValue A color value.
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.Gradient} The receiver.
-     * @todo
      */
 
     var colorValue;
@@ -6398,7 +6364,6 @@ function(segmentOpConstant, segmentArgs) {
      * @param {Array} segmentArgs An Array of Numbers, Booleans, Arrays or
      *     TP.core.Points that contain the segment arguments.
      * @returns {TP.core.Path} The receiver.
-     * @todo
      */
 
     var segmentInfo,
@@ -6438,7 +6403,6 @@ function(operandsArray) {
      *     sequence suitable for use in a segment.
      * @param {Array} operandsArray An Array of objects to convert.
      * @returns {Array} An Array of Numbers.
-     * @todo
      */
 
     var i,
@@ -6484,7 +6448,6 @@ function(segmentOpConstant, occurrenceCount) {
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be removed from the path. E.g. 'The 3rd MOVETO'.
      * @returns {TP.core.Path} The receiver.
-     * @todo
      */
 
     var segmentInfo,
@@ -6657,7 +6620,6 @@ function(segmentOpConstant, occurrenceCount) {
      *     that should be obtained from the path. E.g. 'The 3rd MOVETO'.
      * @returns {Array} An Array containing the desired segment in the following
      *     format: [operator, [operand, operand]].
-     * @todo
      */
 
     var segmentInfo,
@@ -6697,7 +6659,6 @@ function(segmentOpConstant, occurrenceCount) {
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be obtained from the path. E.g. 'The 3rd MOVETO'.
      * @returns {Number} The index of the segment in the path.
-     * @todo
      */
 
     var path,
@@ -6752,7 +6713,6 @@ occurrenceCount) {
      *     that should be the insertion point from the path. E.g. 'The 3rd
      *     MOVETO'.
      * @returns {TP.core.Path} The receiver.
-     * @todo
      */
 
     var segmentInfo,
@@ -6820,7 +6780,6 @@ function(segmentOpConstant, segmentArgs, occurrenceCount) {
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be obtained from the path. E.g. 'The 3rd MOVETO'.
      * @returns {TP.core.Path} The receiver.
-     * @todo
      */
 
     var segmentInfo,
@@ -7015,7 +6974,6 @@ function(bboxData, x, y) {
      * @name $updateBBoxData
      * @synopsis Update
      * @returns {TP.core.Path}
-     * @todo
      */
 
     if (bboxData.left === TP.NOT_FOUND) {
@@ -7053,7 +7011,6 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
      * @name $updateBBox
      * @returns {TP.core.SVGPath}
      * @abstract
-     * @todo
      */
 
     var i,
@@ -7367,7 +7324,6 @@ function(controlParams, stepParams) {
      * @param {TP.lang.Hash} stepParams A TP.lang.Hash of the following job step
      *     parameters: target, property.
      * @returns {TP.core.Transition} A new instance.
-     * @todo
      */
 
     var transitionJob;
@@ -7420,7 +7376,6 @@ function(job, params) {
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
-     * @todo
      */
 
     TP.override();
@@ -7450,7 +7405,6 @@ function(controlParams, stepParams) {
      *     parameters: target, property.
      * @returns {TP.core.JobStatus} The job or job group that was constructed to
      *     service the effect.
-     * @todo
      */
 
     var ctrlParams,
@@ -7610,7 +7564,6 @@ function() {
      * @synopsis Returns the default compute Function for the receiving
      *     transition type.
      * @returns {Function} The default compute Function for this type.
-     * @todo
      */
 
     //  At this level, this defaults to the simple
@@ -7629,7 +7582,6 @@ function() {
      *     execute for this transition type.
      * @returns {Number} The default number of times the transition should
      *     execute.
-     * @todo
      */
 
     //  By returning null here, we allow the job that will run this
@@ -7652,7 +7604,6 @@ function() {
      *     delay or a Duration Function A function returning the number of
      *     milliseconds to delay.
      * @returns {Number|String|Duration|Function} The delay as expressed above.
-     * @todo
      */
 
     //  By returning null here, we allow the job that will run this
@@ -7672,7 +7623,6 @@ function() {
      *     interval between iterations of the receiver's 'stepping' function.
      * @returns {Number} The number of milliseconds between iterations of the
      *     receiver's 'step' function.
-     * @todo
      */
 
     //  By returning null here, we allow the job that will run this
@@ -7696,7 +7646,6 @@ function() {
      *     execute before stopping Function A function returning true if the
      *     transition should stop.
      * @returns {Number|String|Duration|Function} The limit as expressed above.
-     * @todo
      */
 
     //  We return 1 second as a String representation of milliseconds.
@@ -7799,7 +7748,6 @@ function(job, params) {
      *     step method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
-     * @todo
      */
 
     TP.override();
@@ -7848,7 +7796,6 @@ function(controlParams, stepParams) {
      * @param {TP.lang.Hash} stepParams A TP.lang.Hash of the following job step
      *     parameters: target, property.
      * @returns {TP.core.MultiTransition} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -7948,7 +7895,6 @@ function(job, params) {
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
-     * @todo
      */
 
     var transitionEntries,
@@ -8092,7 +8038,6 @@ function(job, params) {
      *     step method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
-     * @todo
      */
 
     var transitionEntry,
@@ -8179,7 +8124,6 @@ function(aTarget, propertyName, aTransitionParams) {
      * @raises TP.sig.InvalidObject,TP.sig.InvalidParameter
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     transition.
-     * @todo
      */
 
     var targets,
@@ -8438,7 +8382,6 @@ function(job, params) {
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
-     * @todo
      */
 
     var property,
@@ -8538,7 +8481,6 @@ function(job, params) {
      *     step method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
-     * @todo
      */
 
     var property,
@@ -8621,7 +8563,6 @@ function(job, params) {
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
-     * @todo
      */
 
     var property,
@@ -8719,7 +8660,6 @@ function(job, params) {
      *     step method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
-     * @todo
      */
 
     var property,

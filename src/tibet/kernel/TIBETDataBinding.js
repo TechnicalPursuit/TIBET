@@ -878,7 +878,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     parameter, the new value from the model and returns the
      *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return TP.defineBinding(
@@ -1023,7 +1022,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return TP.destroyBinding(
@@ -1047,7 +1045,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return TP.destroyBinding(
@@ -1071,7 +1068,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return TP.destroyBinding(

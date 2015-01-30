@@ -493,7 +493,6 @@ function(aScheme) {
      *     instances for a particular scheme.
      * @param {String} aScheme A URI scheme such as http, file, etc.
      * @raise TP.sig.InvalidParameter When the scheme isn't a string.
-     * @todo
      */
 
     var theScheme;
@@ -648,7 +647,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object or a type object conforming to that interface.
-     * @todo
      */
 
     var tname,
@@ -697,7 +695,6 @@ function(aURI, aCatalog, aFilter) {
      *     when integrating delegateURI node content to ensure matches observe
      *     the delegation test.
      * @returns {TP.lang.Hash} A hash of URI rewriting/routing information.
-     * @todo
      */
 
     var cat,
@@ -1103,7 +1100,6 @@ function(url, entry, key) {
      * @param {String} key
      * @returns {TP.lang.Hash} A URI Catalog entry hash.
      * @abstract
-     * @todo
      */
 
     var map,
@@ -1328,7 +1324,6 @@ function(aProfile, useWildcards) {
      *     in places where no value was found.
      * @returns {String} A map key string in one of two forms, regex form used
      *     for testing, or static form.
-     * @todo
      */
 
     var profile,
@@ -1447,7 +1442,6 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request} aRequest An optional request whose values may
      *     inform the rewrite.
      * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
-     * @todo
      */
 
     var rewriter,
@@ -1488,7 +1482,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object that can handle the request for the supplied URI.
-     * @todo
      */
 
     var router,
@@ -1651,7 +1644,6 @@ function(existingResource, newResource, aRequest) {
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
-     * @todo
      */
 
     var retVal;
@@ -1684,7 +1676,6 @@ function(parts) {
      *     default routine simply returns.
      * @param {TP.lang.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
-     * @todo
      */
 
     return this;
@@ -1757,7 +1748,6 @@ function(aRequest) {
      *     control parameters.
      * @returns {TP.sig.Request} The original request or a suitable new request
      *     for use.
-     * @todo
      */
 
     return TP.request(aRequest);
@@ -1779,7 +1769,6 @@ function(aRequest) {
      *     control parameters.
      * @returns {TP.sig.Request} The original request or a suitable new request
      *     for use.
-     * @todo
      */
 
     var subrequest,
@@ -2172,7 +2161,6 @@ function(aFlag) {
      *     one-time override of any computation-based expiration.
      * @param {Boolean} aFlag The value to set the expiration flag to. Defaults
      *     to true.
-     * @todo
      */
 
     var url;
@@ -2223,7 +2211,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {Node} The receiver's content in node form.
-     * @todo
      */
 
     var request;
@@ -2247,7 +2234,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {String} The receiver's content in text form.
-     * @todo
      */
 
     var request;
@@ -2271,7 +2257,6 @@ function(aTypeName) {
      *     'mapped' URI then this method will attempt to use the URI map to
      *     determine the controller type.
      * @returns {Object} The receiver's URI controller object.
-     * @todo
      */
 
     var controller,
@@ -2350,7 +2335,6 @@ function(aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object or a type object conforming to that interface.
-     * @todo
      */
 
     return this.getType().$getDefaultHandler(this, aRequest);
@@ -2379,7 +2363,6 @@ function(anObject, resultType, collapse) {
      * @param {Boolean} collapse False to skip collapsing node lists to a single
      *     node.
      * @returns {Object} The desired return value type.
-     * @todo
      */
 
     var obj;
@@ -2759,7 +2742,6 @@ function(aRequest, filterResult) {
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
      * @returns {Object} The resource or TP.sig.Response when async.
-     * @todo
      */
 
     return TP.override();
@@ -2845,7 +2827,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {Node} The receiver's resource in node form.
-     * @todo
      */
 
     var request;
@@ -2868,7 +2849,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {String} The receiver's content in text form.
-     * @todo
      */
 
     var request;
@@ -2895,7 +2875,6 @@ function(aRequest, aResult, aResource) {
      * @param {Object} aResource Optional data from set* invocations.
      * @returns {Object} The return value for the content operation using this
      *     as a success body function.
-     * @todo
      */
 
     var result,
@@ -2930,7 +2909,6 @@ function(aRequest, aResult, aResource) {
      * @param {Object} aResource Optional data from set* invocations.
      * @returns {Object} The return value for the content operation using this
      *     as a success body function.
-     * @todo
      */
 
     var resultType,
@@ -3204,7 +3182,6 @@ function(aProperty, aFlag) {
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} The current flag state.
      * @abstract
-     * @todo
      */
 
     if (!TP.isString(aProperty)) {
@@ -3230,7 +3207,6 @@ function(aFlag) {
      *     last loaded from it's source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
-     * @todo
      */
 
     return this.$flag('dirty', aFlag);
@@ -3246,7 +3222,6 @@ function(aFlag) {
      * @synopsis Returns true if the receiver's content has been expired.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is expired.
-     * @todo
      */
 
     return this.$flag('expired', aFlag);
@@ -3286,7 +3261,6 @@ function(aFlag) {
      *     URI location.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
-     * @todo
      */
 
     return this.$flag('loaded', aFlag);
@@ -3351,7 +3325,6 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
      * @param {Object} aResource Optional data used for set* methods.
      * @returns {Object} The result returned from the successBody or failureBody
      *     function as defined.
-     * @todo
      */
 
     var fragment,
@@ -3472,7 +3445,6 @@ function(aRequest) {
      * @param {TP.sig.Request} aRequest An optional request whose values may
      *     inform the rewrite.
      * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
-     * @todo
      */
 
     //  vast majority of URIs are not mapped so once we know that we can
@@ -3523,7 +3495,6 @@ function(contentData, aRequest) {
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
-     * @todo
      */
 
     return this.$requestContent(aRequest,
@@ -3585,7 +3556,6 @@ function(aResource, aRequest) {
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
-     * @todo
      */
 
     var url,
@@ -3662,7 +3632,6 @@ function(aResource, aRequest) {
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
-     * @todo
      */
 
     var frag;
@@ -3701,7 +3670,6 @@ function(aRequest, aResult, aResource) {
      * @param {Object} aResource Optional data used for set* methods.
      * @returns {Object} The return value for the content operation using this
      *     as a success body function.
-     * @todo
      */
 
     var result;
@@ -3743,7 +3711,6 @@ function(aRequest, aResult, aResource) {
      * @param {Object} aResource Optional data used for set* methods.
      * @returns {Object} The return value for the content operation using this
      *     as a success body function.
-     * @todo
      */
 
     var fragment,
@@ -3827,7 +3794,6 @@ function(aDataSource, aRequest) {
      *     have 'automatic' iteration occur). Additional keys of '$STARTINDEX'
      *     and '$REPEATCOUNT' determine the range of the iteration.
      * @returns {String} The string resulting from the transformation process.
-     * @todo
      */
 
     var subrequest,
@@ -4114,7 +4080,6 @@ function(aNID) {
      * @param {TP.lang.RootObject} aHandler A type capable of handling requests
      *     for URNs for the namespace.
      * @raise TP.sig.InvalidParameter When the scheme isn't a string.
-     * @todo
      */
 
     var theNID;
@@ -4224,7 +4189,6 @@ function(aRequest, filterResult) {
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
      * @returns {Object} The resource or TP.sig.Response when async.
-     * @todo
      */
 
     var url,
@@ -4422,7 +4386,6 @@ function(aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var request,
@@ -4528,7 +4491,6 @@ function(aResource, aRequest) {
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
-     * @todo
      */
 
     var url,
@@ -4732,7 +4694,6 @@ function(aSeparator) {
      * @param {String} aSeparator The separator to use to find the extension.
      *     This defaults to the period (.).
      * @returns {String} The receiver's path extension, if it has one.
-     * @todo
      */
 
     if (this.hasFragment()) {
@@ -4979,7 +4940,6 @@ function(secondPath, filePath) {
      *     file reference. This is important since the offset is relative to
      *     directories, not files.
      * @returns {String}
-     * @todo
      */
 
     return TP.uriRelativeToPath(this.getLocation(), secondPath, filePath);
@@ -5002,7 +4962,6 @@ function(aRequest, filterResult) {
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
      * @returns {Object} The resource or TP.sig.Response when async.
-     * @todo
      */
 
     var url,
@@ -5392,7 +5351,6 @@ function(targetPhase, targetPhaseList) {
      *     TP.core.TSH.NOCACHE.
      * @returns {Boolean} Whether or not the content of the receiver has reached
      *     the supplied phase in its processing.
-     * @todo
      */
 
     var content;
@@ -5426,7 +5384,6 @@ function(aRequest) {
      *     hash with control parameters. The 'targetPhase' parameter is the most
      *     important here. Default is 'Finalized'.
      * @returns {Object} The processing results.
-     * @todo
      */
 
     var request,
@@ -5633,7 +5590,6 @@ function(aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
-     * @todo
      */
 
     var request,
@@ -5695,7 +5651,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object or a type object conforming to that interface.
-     * @todo
      */
 
     return TP.core.FileURLHandler;
@@ -5784,7 +5739,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object or a type object conforming to that interface.
-     * @todo
      */
 
     return TP.core.HTTPURLHandler;
@@ -6036,7 +5990,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object or a type object conforming to that interface.
-     * @todo
      */
 
     return TP.core.FileURLHandler;
@@ -6198,7 +6151,6 @@ function(aURI, content) {
      * @param {TP.core.URI} aURI The URI containing JavaScript source.
      * @param {String} content The string content to process.
      * @returns {String} The JavaScript source code in text form.
-     * @todo
      */
 
     return content;
@@ -6305,7 +6257,6 @@ function(aRequest, filterResult) {
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
      * @returns {Object} The resource or TP.sig.Response when async.
-     * @todo
      */
 
     var request,
@@ -6370,7 +6321,6 @@ function(aFlag) {
      *     last loaded from it's source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
-     * @todo
      */
 
     //  We basically assume that a JS URI would always return new data. This
@@ -6390,7 +6340,6 @@ function(aFlag) {
      *     location.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
-     * @todo
      */
 
     //  A JavaScript URI is never considered loaded, it has to be able to
@@ -6484,7 +6433,6 @@ function(aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var request,
@@ -6777,7 +6725,6 @@ function(schemeSpecificString) {
  *     containing the data for the document search.xml. All XPointer URIs
  *     referencing that root document share the content found at that location
  *     to avoid problems with inconsistent data.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -7047,7 +6994,6 @@ function() {
      *     canvas name is specified the canvas defaults to the current UI canvas
      *     for TIBET.
      * @returns {Window} The receiver's resource canvas.
-     * @todo
      */
 
     var name;
@@ -7315,7 +7261,6 @@ function(aRequest, filterResult) {
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
      * @returns {Object} The resource or TP.sig.Response when async.
-     * @todo
      */
 
     var request,
@@ -7705,7 +7650,6 @@ function(request, result, async, filter) {
      *     the request. The default is false.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
-     * @todo
      */
 
     var resource,
@@ -7910,7 +7854,6 @@ function(aFlag) {
      *     it was last loaded/reset.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
-     * @todo
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
@@ -7934,7 +7877,6 @@ function(aFlag) {
      *     location.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
-     * @todo
      */
 
     //  We never really consider a TIBET URL to be "loaded". If we defer to
@@ -8062,7 +8004,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The response.
-     * @todo
      */
 
     TP.stop('break.uri_load');
@@ -8090,7 +8031,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The response.
-     * @todo
      */
 
     var request,
@@ -8134,7 +8074,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The response.
-     * @todo
      */
 
     var request,
@@ -8168,7 +8107,6 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @todo
      */
 
     var method;
@@ -8256,7 +8194,6 @@ function(aSignal) {
      * @param {TPXControlsSignal} aSignal The signal instance whose content is
      *     being processed.
      * @returns {String} The serialized data.
-     * @todo
      */
 
     var dat,
@@ -8612,7 +8549,6 @@ function(aSignal) {
  *     XML Catalog file, typically uris.xml, and remapping the URI based on
  *     either explicit match or regular expression match rules. See the sample
  *     uris.xml file for examples.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -8646,7 +8582,6 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request} aRequest An optional request whose values may
      *     inform the rewrite.
      * @returns {TP.core.URI} The true URI for the resource.
-     * @todo
      */
 
     var entry,
@@ -8887,7 +8822,6 @@ function(aURI, aRequest) {
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object that can handle the request for the supplied URI.
-     * @todo
      */
 
     var uri,
@@ -9021,7 +8955,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var subrequest,
@@ -9143,7 +9076,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var subrequest,
@@ -9240,7 +9172,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var subrequest,
@@ -9361,7 +9292,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var request,
@@ -9427,7 +9357,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var request,
@@ -9515,7 +9444,6 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @todo
      */
 
     var request,

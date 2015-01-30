@@ -38,7 +38,6 @@ function(aString, sourceLocale) {
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string
      *     is successful.
-     * @todo
      */
 
     return this.fromObject(aString, sourceLocale);

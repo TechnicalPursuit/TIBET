@@ -102,7 +102,6 @@ TP.hc(
          *     that requires a particular set of privileges.
          * @returns {Boolean} Whether or not the privileged Function succeeded
          *     in obtaining permission to execute.
-         * @todo
          */
 
         var dialogShownThreshold,
@@ -371,7 +370,6 @@ TP.hc(
          *     that requires a particular set of privileges.
          * @returns {Boolean} Whether or not the privileged Function succeeded
          *     in obtaining permission to execute.
-         * @todo
          */
 
         var dialogShownThreshold,
@@ -578,7 +576,6 @@ TP.hc(
          *     that requires a particular set of privileges.
          * @returns {Boolean} Whether or not the privileged Function succeeded
          *     in obtaining permission to execute.
-         * @todo
          */
 
         //  On Webkit, this is a no-op.
@@ -1036,7 +1033,6 @@ TP.hc(
          * @returns {String} The representational String for the supplied Node.
          * @raise TP.sig.InvalidNode Raised when an invalid Node has been
          *     supplied to the method.
-         * @todo
          */
 
         var str,
@@ -1148,7 +1144,6 @@ TP.hc(
          * @returns {String} The representational String for the supplied Node.
          * @raise TP.sig.InvalidNode Raised when an invalid Node has been
          *     supplied to the method.
-         * @todo
          */
 
         var str,
@@ -1296,7 +1291,6 @@ TP.hc(
          *          <samp>TP.lang.Object_11195ea9ded7b7e55b8b5207</samp>
          *     </code>
          * @returns {String} The 'representational String' of the Object.
-         * @todo
          */
 
         var str,
@@ -1420,7 +1414,6 @@ TP.hc(
          *          <samp>TP.lang.Object_11195ea9ded7b7e55b8b5207</samp>
          *     </code>
          * @returns {String} The 'representational String' of the Object.
-         * @todo
          */
 
         var str,
@@ -1558,7 +1551,6 @@ TP.hc(
          *          <samp>TP.lang.Object_11195ea9ded7b7e55b8b5207</samp>
          *     </code>
          * @returns {String} The 'representational String' of the Object.
-         * @todo
          */
 
         var str,

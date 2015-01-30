@@ -36,7 +36,6 @@ function() {
      *     ID for result signals.
      * @param {Boolean} aFlag The new value for the flag, if used as a setter.
      * @returns {Boolean} The current flag value, after optional set.
-     * @todo
      */
 
     return true;

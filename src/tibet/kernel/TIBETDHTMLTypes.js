@@ -9,7 +9,6 @@
 //  ========================================================================
 
 /**
- * @todo
  */
 
 //  ========================================================================
@@ -51,7 +50,6 @@ function(source) {
      *     receiver will be observing. The source must resolve to either an
      *     Element or the Mouse object. The default is TP.core.Mouse.
      * @returns {TP.core.DragMachine} A new instance.
-     * @todo
      */
 
     var obj;
@@ -119,7 +117,6 @@ function() {
      * @name defineDefaultStates
      * @synopsis Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
-     * @todo
      */
 
     //  We can transition to dragging from active and vice versa.
@@ -541,7 +538,6 @@ function(stateMachine, actionElement) {
      *     null. The action element will then have to be set before the receiver
      *     is fully operational.
      * @returns {TP.core.DragResponder} A new instance.
-     * @todo
      */
 
     var obj,
@@ -588,7 +584,6 @@ function(aModifierFunc, modifierData) {
      * @param {Object} modifierData Modifier data that goes along with the
      *     modifier function.
      * @returns {TP.core.DragResponder} The receiver.
-     * @todo
      */
 
     if (!TP.isFunction(aModifierFunc)) {
@@ -777,7 +772,6 @@ function() {
      * @name defineDefaultHandlers
      * @synopsis Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
-     * @todo
      */
 
     //  We handle dragging related states of Enter, Exit, Input, and the
@@ -914,7 +908,6 @@ function(runModifiers) {
      * @param {Boolean} runModifiers Whether or not to run the 'data modifiers'
      *     (i.e. Functions that alter the current point). Defaults to true.
      * @returns {TP.core.Point} The gesture's current point.
-     * @todo
      */
 
     var xyPoint,
@@ -977,7 +970,6 @@ function(aSignal, aPoint) {
      * @param {TP.sig.DOMDragMove} aSignal The current DOMDragMove signal.
      * @param {TP.core.Point} aPoint Optional point data to modify.
      * @returns {TP.core.DragResponder} The receiver.
-     * @todo
      */
 
     var modifiers,
@@ -1122,7 +1114,6 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the info element.
      * @returns {TP.core.DragResponder} The receiver.
-     * @todo
      */
 
     var attrs,
@@ -1637,7 +1628,6 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the element.
      * @returns {TP.core.MoveResponder} The receiver.
-     * @todo
      */
 
     var attrs,
@@ -1818,7 +1808,6 @@ function(stateMachine, actionElement) {
      *     null. The action element will then have to be set before the receiver
      *     is fully operational.
      * @returns {TP.core.ResizeResponder} A new instance.
-     * @todo
      */
 
     this.callNextMethod();
@@ -2547,7 +2536,6 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the element.
      * @returns {TP.core.ResizeResponder} The receiver.
-     * @todo
      */
 
     var attrs,
@@ -3337,7 +3325,6 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the element.
      * @returns {TP.core.DNDResponder} The receiver.
-     * @todo
      */
 
     var attrs,
@@ -3441,7 +3428,6 @@ function(aTargetElem, anEvent) {
      * @raises TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      * @abstract
-     * @todo
      */
 
     var evtTargetTPElem,
@@ -3591,7 +3577,6 @@ function() {
      * @name getDragInfo
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     var attrVal,
@@ -3630,7 +3615,6 @@ function() {
      * @name getDragItem
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     var attrVal,
@@ -3686,7 +3670,6 @@ function() {
      * @name getDragSource
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     var sourceTPElem,
@@ -3748,7 +3731,6 @@ function() {
      * @name getDNDInfo
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     var attrVal,
@@ -3793,7 +3775,6 @@ function() {
      * @raises TP.sig.InvalidElement
      * @returns {Element} The native Element to use as a representation during a
      *     drag and drop operation.
-     * @todo
      */
 
     var elem,
@@ -3850,7 +3831,6 @@ function() {
      * @name getDNDSource
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     //  If the receiver itself has a 'dnd:vend' attribute, then we can use
@@ -3879,7 +3859,6 @@ function() {
      * @name getDNDTarget
      * @returns {TP.core.ElementNode}
      * @abstract
-     * @todo
      */
 
     //  If the receiver itself has a 'dnd:accept' attribute, then we can
@@ -3908,7 +3887,6 @@ function() {
      * @name isValidTarget
      * @returns {Boolean}
      * @abstract
-     * @todo
      */
 
     var dndSource,
@@ -3979,7 +3957,6 @@ function() {
      * @name willDrop
      * @returns {Boolean}
      * @abstract
-     * @todo
      */
 
     return true;
@@ -3994,7 +3971,6 @@ function() {
      * @name willGrab
      * @returns {Boolean}
      * @abstract
-     * @todo
      */
 
     return true;
@@ -4009,7 +3985,6 @@ function() {
      * @name willMove
      * @returns {Boolean}
      * @abstract
-     * @todo
      */
 
     var sourceTPElem,
@@ -4066,7 +4041,6 @@ function() {
      * @name willResize
      * @returns {Boolean}
      * @abstract
-     * @todo
      */
 
     var sourceTPElem,
@@ -4297,7 +4271,6 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
      *
      *
      * @returns {TP.core.DragTracker} A new instance.
-     * @todo
      */
 
     var machine;
@@ -4404,7 +4377,6 @@ function() {
      * @name defineDefaultHandlers
      * @synopsis Provides for state configuration by subtypes so different
      *     specialized instances can be created with minimal code.
-     * @todo
      */
 
     this.defineStateHandler('dragging', this, TP.ENTER);

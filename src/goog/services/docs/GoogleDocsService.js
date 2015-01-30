@@ -51,7 +51,6 @@
  *     described above and register it to service these kinds of requests):
  *
  *     waveService.register();
- * @todo
  */
 
 //  ------------------------------------------------------------------------

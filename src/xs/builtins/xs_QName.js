@@ -32,7 +32,6 @@ function(anObject) {
      *     a valid pair itself or can be used to acquire one.
      * @param {Object} anObject The object to use as source data.
      * @returns {Array} The QName pair in ordered pair form.
-     * @todo
      */
 
     var pair,

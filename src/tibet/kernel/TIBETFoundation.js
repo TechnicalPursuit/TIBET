@@ -49,7 +49,6 @@ function(params, windowContext) {
      *     returned. Default is the current window.
      * @returns {Array} The list of Strings representing keys on the JavaScript
      *     global object.
-     * @todo
      */
 
     var arr,
@@ -178,7 +177,6 @@ function(typeName, customType) {
      * @param {String} typeName The key under which to store the type.
      * @param {Object} customType The type to store.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     //  Note that we use a primitive hash here since that way all of the
@@ -275,7 +273,6 @@ function(aName, shouldFault) {
      *     by the kernel only.
      * @returns {TP.lang.RootObject} The type object registered under the name
      *     given.
-     * @todo
      */
 
     var fault,
@@ -530,7 +527,6 @@ function(aThis) {
      *     the bound function.
      * @returns {Function} The new 'bound' Function, which captures the supplied
      *     'this' reference and uses it when invoking.
-     * @todo
      */
 
     var retFunc;
@@ -717,7 +713,6 @@ function() {
      *     executing Functions at the top the stack than a '0' based timeout or
      *     fork as it leverage some underlying platform capabilities.
      * @returns {Function} The receiver.
-     * @todo
      */
 
     var thisref,
@@ -813,7 +808,6 @@ function(aDelay) {
      *     run.
      * @returns {Object} The object to use to stop the fork() prematurely (via
      *     clearTimeout()).
-     * @todo
      */
 
     var thisref,
@@ -1183,7 +1177,6 @@ function() {
      * @synopsis Returns an Array of the formal parameter names of this
      *     function.
      * @returns {Array} The formal parameter names to this function.
-     * @todo
      */
 
     var text,
@@ -1349,7 +1342,6 @@ function(shouldDescend) {
      * @param {Boolean} shouldDescend A flag controlling whether the list
      *     includes all subtypes or only immediate children.
      * @returns {Array} An array of subtypes.
-     * @todo
      */
 
     var types,
@@ -1419,7 +1411,6 @@ function(shouldDescend) {
      * @param {Boolean} shouldDescend A flag controlling whether the list
      *     includes all subtypes or only immediate children.
      * @returns {Array} An array of subtype names.
-     * @todo
      */
 
     var names,
@@ -1501,7 +1492,6 @@ function() {
      * @name getSupertypeName
      * @synopsis Returns the supertype name of the receiver.
      * @returns {String} The supertype name of the receiver.
-     * @todo
      */
 
     //  Object doesn't have a supertype thanks ;)
@@ -1531,7 +1521,6 @@ function() {
      *     supertype of the receiver or, in the case of an instance, it's the
      *     receiver's type.
      * @returns {Array} An array of root to immediate supertypes.
-     * @todo
      */
 
     var arr,
@@ -1582,7 +1571,6 @@ function() {
      * @synopsis Returns an array containing the supertype names of the
      *     receiver.
      * @returns {Array} An array containing the supertype names of the receiver.
-     * @todo
      */
 
     var type,
@@ -1717,7 +1705,6 @@ function(anObject, aType) {
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the supplied object is a member of the
      *     supplied type.
-     * @todo
      */
 
     var result,
@@ -1822,7 +1809,6 @@ function(anObject, aType) {
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the supplied object is a kind of the
      *     supplied type.
-     * @todo
      */
 
     var typeName,
@@ -1867,7 +1853,6 @@ function(anObject, aType) {
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
      * @returns {Boolean} Whether or not the supplied object is a subtype of the
      *     supplied type.
-     * @todo
      */
 
     var typeName;
@@ -1961,7 +1946,6 @@ function(shouldNotify, shouldThrow, stackDepth) {
      * @param {Boolean} shouldNotify If true notify()'s call stack. Defaults to
      * @param {Boolean} shouldThrow
      * @param {Number} stackDepth
-     * @todo
      */
 
     var doNotify,
@@ -2019,7 +2003,6 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
      * @param {Error} errorObj The error object of the error that caused this
      *     hook to trigger.
      * @returns {Boolean} TP.sys.shouldCaptureErrors() value.
-     * @todo
      */
 
     var file,
@@ -2113,7 +2096,6 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType) {
      *     signal is fired.
      * @param {String|TP.sig.Signal} aType The default supertype to use when
      *     aSignal type doesn't exist.
-     * @todo
      */
 
     TP.sys.$signalQueue.add(
@@ -2141,7 +2123,6 @@ function(aSignal, aPayload, aPolicy, aType) {
      *     signal is fired.
      * @param {String|TP.sig.Signal} aType The default supertype to use when
      *     aSignal type doesn't exist.
-     * @todo
      */
 
     return TP.queue(this, aSignal, aPayload, aPolicy, aType);
@@ -2170,7 +2151,6 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType) {
      * @param {String|TP.sig.Signal} aType The default supertype to use when
      *     aSignal type doesn't exist.
      * @returns {TP.sig.Signal} The fired signal.
-     * @todo
      */
 
     var args;
@@ -2223,7 +2203,6 @@ function(aSignal, aPayload, aPolicy, aType) {
      * @param {String|TP.sig.Signal} aType The default supertype to use when
      *     aSignal type doesn't exist.
      * @returns {TP.sig.Signal} The fired signal.
-     * @todo
      */
 
     return TP.signal(this, aSignal, aPayload, aPolicy, aType);
@@ -2245,7 +2224,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {Function} aPolicy A "removal" policy that will define how the
      *     handler is removed.
      * @returns {Object} The registration object.
-     * @todo
      */
 
     var type;
@@ -2276,7 +2254,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {Function} aPolicy A "removal" policy that will define how the
      *     handler is removed.
      * @returns {Object} The registration object.
-     * @todo
      */
 
     var handler;
@@ -2304,7 +2281,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {Function} aPolicy A "registration" policy that will define how
      *     the handler is registered.
      * @returns {Object} The registration object.
-     * @todo
      */
 
     var type;
@@ -2337,7 +2313,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {Function} aPolicy A "registration" policy that will define how
      *     the handler is registered.
      * @returns {Object} The registration object.
-     * @todo
      */
 
     var handler;
@@ -2359,7 +2334,6 @@ function(anOrigin, aSignal) {
      * @param {Object|Array} anOrigin The origin(s) for signals to resume.
      * @param {TP.sig.Signal|Array} aSignal The signal(s) to resume.
      * @returns {Object} The registration.
-     * @todo
      */
 
     var type;
@@ -2407,7 +2381,6 @@ function(anOrigin, aSignal) {
      * @param {Object|Array} anOrigin The origin(s) to suspend.
      * @param {TP.sig.Signal|Array} aSignal The signal(s) to suspend.
      * @returns {Object} The registration.
-     * @todo
      */
 
     var type;
@@ -2834,7 +2807,6 @@ function(aName, skipChecks) {
      *     about have already been checked.
      * @returns {String} TP.DNU, TP.INTRODUCED, TP.INHERITED, TP.OVERRIDDEN,
      *     TP.LOCAL, TP.GLOBAL, or TP.NONE.
-     * @todo
      */
 
     var flag;
@@ -2890,7 +2862,6 @@ function(aFilter) {
      *     a name of one of the keys registered under TP.SLOT_FILTERS. The
      *     default is 'unique_methods'.
      * @returns {Array} An array containing matching slots.
-     * @todo
      */
 
     var obj,
@@ -3087,7 +3058,6 @@ function(aFilter) {
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
      * @returns {Array} Array of slot names matching the filter.
-     * @todo
      */
 
     var inheriteds,
@@ -3161,7 +3131,6 @@ function(aFilter) {
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
      * @returns {Array} Array of slot names matching the filter.
-     * @todo
      */
 
     var type;
@@ -3196,7 +3165,6 @@ function(aFilter) {
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
      * @returns {Array} Array of slot names matching the filter.
-     * @todo
      */
 
     return this.$getInterface(aFilter);
@@ -3214,7 +3182,6 @@ function(aFilter) {
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
      * @returns {Array} Array of slot names matching the filter.
-     * @todo
      */
 
     var type;
@@ -3249,7 +3216,6 @@ function(aFilterName) {
      *     filtering.
      * @param {String} aFilterName A get*Interface() filter spec.
      * @returns {Array} An array containing the keys of the receiver.
-     * @todo
      */
 
     //  non-mutable things like strings etc. can't have had new keys placed
@@ -3281,7 +3247,6 @@ function(aFilterName, includeUndefined) {
      * @param {String} aFilterName Ignored.
      * @param {Boolean} includeUndefined Should 'sparse' slots be included?
      * @returns {Array} An array containing the keys of the receiver.
-     * @todo
      */
 
     var includeUndef,
@@ -3314,7 +3279,6 @@ function() {
      *     the receiver. This is supported on String to allow it to behave as a
      *     collection of characters.
      * @returns {Array} An array containing the keys of the receiver.
-     * @todo
      */
 
     var i,
@@ -3378,7 +3342,6 @@ function(aFilterName) {
      *     to acquire the values.
      * @param {String} aFilterName A get*Interface() filter.
      * @returns {Array} An array of the values for the receiver's keys.
-     * @todo
      */
 
     var arr,
@@ -3405,7 +3368,6 @@ function() {
      * @synopsis Top-level value-getter. For Arrays the values are contained in
      *     the array itself.
      * @returns {Array} An array containing the receiver's values.
-     * @todo
      */
 
     return this;
@@ -3420,7 +3382,6 @@ function() {
      * @name getValues
      * @synopsis Returns an array containing the characters in the receiver.
      * @returns {Array} An array of characters.
-     * @todo
      */
 
     return this.split('');
@@ -3458,7 +3419,6 @@ function(aKey, includeUndefined) {
      * @param {Number} aKey The numerical index (key) to test.
      * @param {Boolean} includeUndefined Should 'sparse' slots be included?
      * @returns {Boolean} True if the key is defined.
-     * @todo
      */
 
     var includeUndef;
@@ -3623,7 +3583,6 @@ function(aName) {
  * pair is the key while the last() item is the value at that key. When
  * operations are performed on objects used as hashes the individual items
  * being iterated over are actually ordered pairs.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -3678,7 +3637,6 @@ function(aNumber) {
      * @returns {Object} When N is 1 the result is an array of length 2 with key
      *     and value in positions 0 and 1. When N is greater than 1 the return
      *     value is an array containing N ordered pairs of this form.
-     * @todo
      */
 
     //  work from item set when more than one item is being requested
@@ -3703,7 +3661,6 @@ function(aNumber) {
      *     than 1 the return value is a new array.
      * @raises TP.sig.InvalidIndex
      * @returns {Object} The first N items in this array.
-     * @todo
      */
 
     this.$sortIfNeeded();
@@ -3728,7 +3685,6 @@ function(aNumber) {
      *     greater than 1 the return value is a string with that length (if
      *     enough characters are available).
      * @returns {Object} The first N characters in the string.
-     * @todo
      */
 
     if (TP.isNumber(aNumber) && aNumber > 1) {
@@ -3755,7 +3711,6 @@ function(aNumber) {
      * @returns {Object} When N is 1 the result is an array of length 2 with key
      *     and value in positions 0 and 1. When N is greater than 1 the return
      *     value is an array containing N ordered pairs of this form.
-     * @todo
      */
 
     //  work from item set when more than one item is being requested
@@ -3780,7 +3735,6 @@ function(aNumber) {
      *     than 1 the return value is a new array.
      * @raises TP.sig.InvalidIndex
      * @returns {Object} The last N items in this array.
-     * @todo
      */
 
     this.$sortIfNeeded();
@@ -3805,7 +3759,6 @@ function(aNumber) {
      *     greater than 1 the return value is a string with that length (if
      *     enough characters are available).
      * @returns {Object} The last N characters in the string.
-     * @todo
      */
 
     if (TP.isNumber(aNumber) && aNumber > 1) {
@@ -3830,7 +3783,6 @@ function(aSelectFunction) {
      * @asbstract Returns an array of ordered pairs generated from the receiver.
      *     The individual pairs are [key,value] arrays where the keys are
      *     filtered using the optional function provided.
-     * @todo
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
@@ -3865,7 +3817,6 @@ function(aSelectFunction) {
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
      * @returns {Array} A new array containing the pairs.
-     * @todo
      */
 
     var tmparr,
@@ -3936,7 +3887,6 @@ function() {
      *     TP.sig.InvalidPairRequest exception will be raised.
      * @raises TP.sig.InvalidPairRequest
      * @asbstract Returns an array of ordered pairs generated from the receiver.
-     * @todo
      */
 
     return this.raise('TP.sig.InvalidPairRequest');
@@ -3957,7 +3907,6 @@ function(aSelectFunction) {
      * @asbstract Returns an array of ordered pairs generated from the receiver.
      *     The individual pairs are [key,value] arrays where the keys are
      *     filtered using the optional function provided.
-     * @todo
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
@@ -3985,7 +3934,6 @@ function(aSelectFunction) {
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
      * @returns {Array} A new array containing the pairs.
-     * @todo
      */
 
     var tmparr,
@@ -4275,7 +4223,6 @@ function() {
 /**
  * More signaling support. In particular, the working versions of the change
  * notification methods.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -4312,7 +4259,6 @@ TP.$changed = function(anAspect, anAction, aDescription) {
      *     change.
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     var sig,
@@ -4401,7 +4347,6 @@ TP.changed = function(anAspect, anAction, aDescription) {
      *     change.
      * @returns {Object} The receiver.
      * @signals Change
-     * @todo
      */
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
@@ -4445,7 +4390,6 @@ function(anAspect, anAction, aDescription) {
      *     change.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
@@ -4479,7 +4423,6 @@ function(anAspect, anAction, aDescription) {
      *     change.
      * @returns {String} The receiver.
      * @signals Change
-     * @todo
      */
 
     var target,
@@ -4545,7 +4488,6 @@ function(anAspect, anAction, aDescription) {
  * @RE: the discussion on TIBET's ordered pairs, an object's 'items' in TIBET
  *     terminology are ordered pairs of keys/values for Objects and the
  *     index/valuefor Arrays.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -4585,7 +4527,6 @@ function(aSelectFunction) {
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
      * @returns {Array} The receiver's items in array key/value form.
-     * @todo
      */
 
     //  Most objects are associative arrays, so we can work from the
@@ -4616,7 +4557,6 @@ function(aSelectFunction) {
      *     function returns true the item is included in the result.
      * @returns {Array} The receiver or a new Array containing the filtered
      *     results.
-     * @todo
      */
 
     if (TP.isCallable(aSelectFunction)) {
@@ -4648,7 +4588,6 @@ function(aSelectFunction) {
      *     will be returned. Each char is passed to this function and if the
      *     function returns true the char is included in the result.
      * @returns {Array} An array of characters in the receiver.
-     * @todo
      */
 
     if (TP.isCallable(aSelectFunction)) {
@@ -4709,7 +4648,6 @@ function(aHash, aLevel) {
      *     previously mentioned keys.
      * @param {Number} aLevel Number of levels to descend in nested objs.
      * @returns {String} A formatted string.
-     * @todo
      */
 
     var params,
@@ -5100,7 +5038,6 @@ function(aFilterName, aLevel) {
      * @param {String} aFilterName Ignored.
      * @param {Number} aLevel If 0, returns function() {...}
      * @returns {String} An appropriate form for recreating the receiver.
-     * @todo
      */
 
     var lvl,
@@ -5243,7 +5180,6 @@ function() {
      *     for the receiver. The default is the receiver in "source code"
      *     format.
      * @returns {String} A value appropriate for use in equality comparisons.
-     * @todo
      */
 
     //  TODO:   optimize this!!!
@@ -5260,7 +5196,6 @@ function() {
      * @synopsis Returns the value which should be used for testing identity
      *     for the receiver. The default is the receiver's OID.
      * @returns {String} A value appropriate for use in identity comparisons.
-     * @todo
      */
 
     //  TODO:   optimize this!!!
@@ -5646,7 +5581,6 @@ function(objectA, objectB, aType) {
      *     supplied type.
      * @returns {Boolean} Whether or not the two objects are equal to one
      *     another.
-     * @todo
      */
 
     //  nulls compare equally
@@ -5703,7 +5637,6 @@ function(objectA, objectB) {
      * @param {Object} objectB The second object to compare.
      * @returns {Boolean} Whether or not the two objects are identical to one
      *     another.
-     * @todo
      */
 
     if (TP.isNull(objectA)) {
@@ -5740,7 +5673,6 @@ function(objectA, objectB) {
  *     meaning that they can't easily be sorted based on simple criteria. To
  *     helpwith that we define a set of comparison support features here that
  *     you canimplement in your types to help sort at the object level.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -5754,7 +5686,6 @@ function() {
      *     "magnitudes" for purposes of sorting a set of objects. The default
      *     returns the result of calling getSize().
      * @returns {Number} The size of the object.
-     * @todo
      */
 
     return this.getSize();
@@ -5812,7 +5743,6 @@ function(objectA, objectB) {
      * @param {Object} objectB The second object to compare.
      * @returns {Number} -1 if objectA is "smaller" than objectB, 0 if they are
      *     "equal", and 1 if objectA is "larger" than objectB.
-     * @todo
      */
 
     if (TP.canInvoke(objectA, 'compareTo')) {
@@ -5904,7 +5834,6 @@ function(aSelector, anObject) {
      *     other object implementing 'test'.
      * @param {Object} anObject The object (usually string or node) to test.
      * @returns {Boolean} True if there's a match.
-     * @todo
      */
 
     if (TP.canInvoke(aSelector, 'test')) {
@@ -6572,7 +6501,6 @@ function() {
      * @synopsis Returns the 'content' of the receiver. The default version is a
      *     synonym for getValue.
      * @returns {Object} The value of the receiver.
-     * @todo
      */
 
     return this.getValue();
@@ -6668,7 +6596,6 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {Object} The receiver.
-     * @todo
      */
 
     return this.$set(attributeName, attributeValue, shouldSignal);
@@ -6696,7 +6623,6 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var path,
@@ -6792,7 +6718,6 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var path,
@@ -7028,7 +6953,6 @@ function(aFilterNameOrKeys, contentOnly) {
      *     array.
      * @param {Boolean} contentOnly Copy content only? Default is true.
      * @returns {Array} A shallow copy of the receiver.
-     * @todo
      */
 
     var content,
@@ -7229,7 +7153,6 @@ function(aFunction, shouldReverse) {
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var reverse,
@@ -7295,7 +7218,6 @@ function(aFunction, shouldReverse) {
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Array} The receiver.
-     * @todo
      */
 
     var len,
@@ -7362,7 +7284,6 @@ function(aFunction, shouldReverse) {
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Number} The receiver.
-     * @todo
      */
 
     var i,
@@ -7421,7 +7342,6 @@ function(aFunction, shouldReverse) {
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {String} The receiver.
-     * @todo
      */
 
     var i,
@@ -7486,7 +7406,6 @@ function(aFunction) {
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
      * @returns {Array} An array containing the transformed elements.
-     * @todo
      */
 
     var tmparr;
@@ -7517,7 +7436,6 @@ function(propertyName) {
      * @returns {Array} An array containing the return values of the individual
      *     invocations. Skipped objects have nulls in their return value
      *     positions.
-     * @todo
      */
 
     return this.collect(
@@ -7551,7 +7469,6 @@ function(aMethodName) {
      * @returns {Array} An array containing the return values of the individual
      *     invocations. Skipped objects have nulls in their return value
      *     positions.
-     * @todo
      */
 
     var args;
@@ -7585,7 +7502,6 @@ function(aFunction) {
      *     in the array.
      * @returns {Array} The receiver.
      * @signals Change
-     * @todo
      */
 
     var thisref;
@@ -7621,7 +7537,6 @@ function(aMethodName) {
      * @param {arguments} varargs Zero or more additional arguments to provide
      *     to the function.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var args,
@@ -7733,7 +7648,6 @@ function() {
      *     the equivalent of TP.ac('a', 1, 'b', 2);
      * @returns {Array} A new array containing the elements of the receiver in
      *     flattened form.
-     * @todo
      */
 
     return this.getItems().flatten();
@@ -7757,7 +7671,6 @@ function(aPattern, aFunction) {
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
      * @returns {Array} An array containing the matched values.
-     * @todo
      */
 
     var func,
@@ -7806,7 +7719,6 @@ function(aPattern, aFunction) {
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
      * @returns {Array} An array containing the matched items.
-     * @todo
      */
 
     var func,
@@ -7866,7 +7778,6 @@ function(keyCriteria, selectionCriteria) {
      *     returns:
      *
      *     {'true' : [1, 3, 5], 'false' : [2, 4, 6]}
-     * @todo
      */
 
     var dict,
@@ -7963,7 +7874,6 @@ function(anAccumulator, aFunction) {
      *     the elements it is passed and returns anAccumulator.
      * @returns {Object} The value of performing aFunction with anAccumulator
      *     over the receiver.
-     * @todo
      */
 
     var value;
@@ -7992,7 +7902,6 @@ function(aFunction) {
      * @param {Function} aFunction The return value function.
      * @returns {Array} An array containing the items of the receiver sorted as
      *     requested.
-     * @todo
      */
 
     var items;
@@ -8018,7 +7927,6 @@ function(aFunction) {
      * @param {Function} aFunction A function which should return true or false
      *     after testing the element it is passed.
      * @returns {Array} A new array containing the elements selected.
-     * @todo
      */
 
     var good,
@@ -8083,7 +7991,6 @@ function(aFunction, aCollection) {
      * @param {Function} aFunction The function to perform.
      * @param {TP.api.CollectionAPI} aCollection The collection of indexes.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var thisref;
@@ -8154,7 +8061,6 @@ function(aFunction, terminateFunction) {
      *     This should be a Function that returns a Boolean. It is passed the
      *     same data as the performed function.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     this.perform(
@@ -8187,7 +8093,6 @@ function(aFunction, terminateFunction) {
      *     This should be a Function that returns a Boolean. It is passed the
      *     same data as the performed function.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     this.perform(
@@ -8223,7 +8128,6 @@ function(aFunction, aCollection) {
      *     use for the second argument to aFunction.
      * @raises TP.sig.InvalidCollection, CollectionSizeMismatch
      * @returns {Object} The receiver.
-     * @todo
      */
 
     this.perform(
@@ -8253,7 +8157,6 @@ function(aFunction) {
      *     after testing the element it is passed.
      * @returns {Array} A new array containing the elements which weren't
      *     rejected.
-     * @todo
      */
 
     var tmparr;
@@ -8289,7 +8192,6 @@ function(aFunction) {
      * @param {Function} aFunction A function which should return true or false
      *     after testing the element it is passed.
      * @returns {Array} A new array containing the elements selected.
-     * @todo
      */
 
     var tmparr;
@@ -8385,7 +8287,6 @@ function(aFilter) {
      *     return true for elements which should be removed. The default
      *     function is TP.notValid().
      * @returns {Array} The receiver.
-     * @todo
      */
 
     var filter,
@@ -8438,7 +8339,6 @@ function(anInterface, inline) {
      * @param {Boolean} inline False to return a new array instead of collapsing
      *     inline. Default is true.
      * @returns {Array} The receiver.
-     * @todo
      */
 
     var i,
@@ -8482,7 +8382,6 @@ function(aFunction, startIndex) {
      *     not.
      * @param {Number} startIndex A starting index for the search.
      * @returns {Object} The element detected or undefined.
-     * @todo
      */
 
     var retval,
@@ -8529,7 +8428,6 @@ function(aMethodName) {
      * @param {arguments} varargs Zero or more additional arguments to provide
      *     to the function.
      * @returns {Object} The receiver.
-     * @todo
      */
 
     var args,
@@ -8575,7 +8473,6 @@ function(aThis, anArgArray, whenError) {
      *     item, index, and error object. Called for each individual function in
      *     the list which fails in any way.
      * @returns {Object} The result of the last invocation.
-     * @todo
      */
 
     var retval;
@@ -8618,7 +8515,6 @@ function(aThis, anArgArray, whenError, stopOnError) {
      *     the list which fails in any way.
      * @param {Boolean} stopOnError True to have the invocation sequence stop
      *     after any error occur. Default is false.
-     * @todo
      */
 
     var that,
@@ -8687,7 +8583,6 @@ function(aStep, aFunction) {
      *     if the function should be run at this index.
      * @param {Function} aFunction The iteration block to execute.
      * @returns {Number} The number of times the function was invoked.
-     * @todo
      */
 
     var count;
@@ -8732,7 +8627,6 @@ function(aFunction, anObject) {
      *     provided to a replace() function.
      * @param {Object} anObject The object whose string representation should be
      *     iterated.
-     * @todo
      */
 
     var str,
@@ -8847,7 +8741,6 @@ function(aNumber) {
  *     adds additional functionality here by supporting two types of testing:
  *     TP.EQUALITY and TP.IDENTITY. So when you ask whether obj.contains(x) you
  *     can ask for the results based on either condition.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -8882,7 +8775,6 @@ function(aValue, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Boolean} Whether or not the receiver contains the value
      *     provided.
-     * @todo
      */
 
     var it;
@@ -8922,7 +8814,6 @@ function(anItem, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Boolean} Whether or not the receiver contains the value
      *     provided.
-     * @todo
      */
 
     var key,
@@ -8965,7 +8856,6 @@ function(aValue, aTest) {
      *     default is TP.EQUALITY.
      * @returns {Boolean} Whether or not the receiver contains the value
      *     provided.
-     * @todo
      */
 
     var it;
@@ -9074,7 +8964,6 @@ function() {
      *     objects this results in a list of the methods the receiver implements
      *     which could be quite large.
      * @returns {Array} An array of method names.
-     * @todo
      */
 
     return this.getLocalInterface('methods');
@@ -9090,7 +8979,6 @@ function() {
      * @synopsis Returns the receiver as a method interface. For arrays this
      *     method assumes the array already contains a list of strings.
      * @returns {Array} The receiver.
-     * @todo
      */
 
     return this;
@@ -9107,7 +8995,6 @@ function() {
      *     returns an array containing the string suitable for testing as an
      *     interface.
      * @returns {Array} An array containing the receiver.
-     * @todo
      */
 
     var intArray;

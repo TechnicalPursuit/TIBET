@@ -46,7 +46,6 @@ function(anElement, attributeName, checkAttrNSURI) {
      *     to the method.
      * @raise TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
-     * @todo
      */
 
     var pclassName,
@@ -130,7 +129,6 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *     to the method.
      * @raise TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
-     * @todo
      */
 
     var theAttrName,
@@ -215,7 +213,6 @@ function(targetDoc, cssHref, inlineRuleText) {
      *     'inlined' into the document. Defaults to false.
      * @raises TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link or style element that was added.
-     * @todo
      */
 
     var targetHead,
@@ -263,7 +260,6 @@ function(targetDoc, linkHref, beforeNode) {
      * @param {Node} beforeNode Optional 'insertion point'.
      * @raises TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link element that was added.
-     * @todo
      */
 
     var targetHead,
@@ -317,7 +313,6 @@ function(targetDoc, styleText, beforeNode) {
      * @param {Node} beforeNode Optional 'insertion point'.
      * @raises TP.sig.InvalidDocument
      * @returns {HTMLElement} The new style element that was added.
-     * @todo
      */
 
     var targetHead,
@@ -373,7 +368,6 @@ function(cssElements, targetDoc) {
      * @param {Document} targetDoc The document whose style nodes should be
      *     updated.
      * @raises TP.sig.InvalidDocument,TP.sig.InvalidArray
-     * @todo
      */
 
     var i,
@@ -425,7 +419,6 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
      * @param {Boolean} onlyIfAbsent Whether or not the style element/link
      *     should be added only if it doesn't already exist. Defaults to false.
      * @raises TP.sig.InvalidDocument,TP.sig.InvalidElement
-     * @todo
      */
 
     var shouldOnlyIfAbsent,
@@ -545,7 +538,6 @@ function(anElement, targetDoc) {
      * @raises TP.sig.InvalidDocument,TP.sig.InvalidElement
      * @returns {HTMLElement|null} The newly added 'style' element if the style
      *     was *not* processed by the CSS processor or null if it was.
-     * @todo
      */
 
     var cssText,
@@ -618,7 +610,6 @@ function(aDocument) {
      * @raises TP.sig.InvalidDocument
      * @returns {Array} An Array of either the 'link' or 'style' elements in the
      *     supplied document.
-     * @todo
      */
 
     var targetHead,
@@ -676,7 +667,6 @@ function(aDocument) {
      *     for.
      * @raises TP.sig.InvalidDocument
      * @returns {Array} The list of CSS rules for the supplied document.
-     * @todo
      */
 
     var allSheets,
@@ -722,7 +712,6 @@ function(aDocument) {
      * @raises TP.sig.InvalidDocument
      * @returns {Array} An Array of either TP.lang.Hashes or native browser
      *     'rule' objects representing the CSS rules for the supplied document.
-     * @todo
      */
 
     return TP.documentGetNativeStyleRules(aDocument);
@@ -944,7 +933,6 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      *     TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element.
-     * @todo
      */
 
     var targetPropName,
@@ -1081,7 +1069,6 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element. Note that this routine can also
      *     return NaN, if it cannot compute a numeric value.
-     * @todo
      */
 
     var parentElem,
@@ -1575,7 +1562,6 @@ function(anElement, styleText) {
      * @param {String} styleText The CSS text to use as the rule text for the
      *     style element.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     var styleTextNode;
@@ -1643,7 +1629,6 @@ function(aStylesheet, expandImports) {
      * @returns {Array} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
      *     @import statement.
-     * @todo
      */
 
     var resultSheets,
@@ -1706,7 +1691,6 @@ function(aStylesheet, expandImports) {
      * @returns {Array} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
      *     @import statement.
-     * @todo
      */
 
     var resultRules,
@@ -1763,7 +1747,6 @@ function(aStylesheet, selectorText) {
      * @returns {Array} A list of CSS rules in the supplied style sheet,
      *     including those that may have been imported using an. @import
      *     statement, whose selector match the supplied selector text.
-     * @todo
      */
 
     var resultRules,
@@ -1825,7 +1808,6 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
      *     stylesheet element's rule set. This is important in case the rule
      *     needs to be deleted later. If the index was supplied to this method,
      *     this value will be the same as that supplied.
-     * @todo
      */
 
     var theRuleText,
@@ -1865,7 +1847,6 @@ function(aStylesheet, ruleIndex) {
      * @param {Number} ruleIndex The index of the rule within the stylesheet to
      *     remove.
      * @raises TP.sig.InvalidParameter
-     * @todo
      */
 
     if (TP.notValid(aStylesheet)) {

@@ -68,7 +68,6 @@ function(aValue, choiceElem) {
      *     to validate against.
      * @returns {Boolean} True if the object validates against the type
      *     information contained in the supplied TP.xs.choice element.
-     * @todo
      */
 
     var numValidElems,
@@ -128,7 +127,6 @@ function(aValue, anElem) {
      *     information contained in the supplied compositor elements under the
      *     supplied node. This method returns null if there are no compositor
      *     elements under the supplied node.
-     * @todo
      */
 
     var list,
@@ -192,7 +190,6 @@ function(aValue, anElem) {
      *     TP.xs.elements to validate against.
      * @returns {Number} The number of elements that the object successfully
      *     validated against.
-     * @todo
      */
 
     var value,
@@ -310,7 +307,6 @@ function(aValue, sequenceElem) {
      *     to validate against.
      * @returns {Boolean} True if the object validates against the type
      *     information contained in the supplied TP.xs.sequence element.
-     * @todo
      */
 
     var numValidElems,

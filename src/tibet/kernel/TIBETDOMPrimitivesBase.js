@@ -42,7 +42,6 @@ function(anElement, expandVirtuals) {
      * @raises TP.sig.InvalidElement
      * @returns {String} The XML Base path as computed from anElement up the
      *     document hierarchy.
-     * @todo
      */
 
     var elem,
@@ -124,7 +123,6 @@ function(anElement) {
      * @returns {TP.core.URIController}
      * @raise TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @todo
      */
 
     var doc,
@@ -183,7 +181,6 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
      *     to the method.
      * @raise TP.sig.InvalidParameter Raised when a null value is supplied for
      *     the uriAttrNames parameter.
-     * @todo
      */
 
     var computedBase,
@@ -345,7 +342,6 @@ function(aNode, otherNode, aPosition) {
      *     to the method.
      * @raise TP.sig.InvalidParameter Raised when an invalid position is
      *     provided to the method.
-     * @todo
      */
 
     var position;

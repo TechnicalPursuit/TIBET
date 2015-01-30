@@ -34,7 +34,6 @@
  *
  *     myPouchDBService.register();
  *
- * * @todo
  */
 
 /* JSHint checking */

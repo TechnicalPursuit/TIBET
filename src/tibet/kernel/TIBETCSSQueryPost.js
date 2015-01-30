@@ -22,7 +22,6 @@ function(anElement, aSelector) {
      * @param {String} aSelector A valid CSS selector.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
      * @returns {Boolean} True if the element would be found by the selector.
-     * @todo
      */
 
     var matchesSelector;
@@ -98,7 +97,6 @@ function(aNode, aSelector, autoCollapse) {
      * @raises TP.sig.InvalidNode,TP.sig.InvalidString
      * @returns {Array|Node} A collection of zero or more result nodes or a
      *     single node if we're autoCollapsing.
-     * @todo
      */
 
     var theNode,

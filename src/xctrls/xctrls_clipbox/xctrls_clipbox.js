@@ -88,7 +88,6 @@ function(aSignal) {
     /**
      * @name handleSlide
      * @abstract
-     * @todo
      */
 
     var sigParams;
@@ -131,7 +130,6 @@ function(aSide, incrementValue) {
      * @param {String} aSide
      * @param {Number} incrementValue
      * @abstract
-     * @todo
      */
 
     var bodyElem,

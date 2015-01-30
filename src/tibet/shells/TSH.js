@@ -2392,6 +2392,7 @@ function(aRequest) {
         methods,
         owners,
         filter,
+        keys,
         result;
 
     usage = 'Usage: :reflect [target] [--filter <filter>]' +

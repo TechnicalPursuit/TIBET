@@ -14,7 +14,6 @@
  *     operationswhich allow the loading and processing of XSLT style sheets.
  *     The TIBETkernel includes XSLT style sheets supporting common DOM
  *     operations/transforms.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -34,7 +33,6 @@ function(styleUrl, inputUrl, paramHash) {
      * @raises TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
      *     URINotFound
      * @returns {Document} A document object containing the results.
-     * @todo
      */
 
     var url1,
@@ -79,7 +77,6 @@ function(styleUrl, inputNode, paramHash) {
      * @raises TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
      *     URINotFound
      * @returns {Document} A document object containing the results.
-     * @todo
      */
 
     var url1,
@@ -113,7 +110,6 @@ function(styleNode, inputUrl, paramHash) {
      * @raises TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
      *     URINotFound
      * @returns {Document} A document object containing the results.
-     * @todo
      */
 
     var url2,

@@ -13,7 +13,6 @@
  * @synopsis A TP.core.Shell specific to handling XMPP (Jabber) communication.
  *     The default "execution" in this shell is to send the input to the
  *     currently targeted JID.
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -231,7 +230,6 @@ function(aJID) {
      * @synopsis Sets the default JID to target with unqualified sends.
      * @param {TP.xmpp.JID} aJID The JID to target.
      * @returns {TP.core.YAK} The receiver.
-     * @todo
      */
 
     this.$set('targetJID', aJID);
@@ -1285,7 +1283,6 @@ function(aRequest) {
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
      * @returns {TP.sig.ShellRequest} The request.
-     * @todo
      */
 
     var args,
@@ -1497,7 +1494,6 @@ function(aRequest) {
      * @param {TP.sig.ShellRequest} aRequest The request containing the command
      *     input.
      * @returns {TP.sig.ShellRequest} The request.
-     * @todo
      */
 
     var args,

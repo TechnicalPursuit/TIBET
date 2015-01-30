@@ -43,7 +43,6 @@ function(anElement, aName, aURI) {
      * @param {TP.core.URI} aURI The src URI, if any.
      * @raises TP.sig.InvalidTemplate
      * @returns {Function} The template function created, if any.
-     * @todo
      */
 
     var result,
@@ -125,7 +124,6 @@ function(anElement, aName, aURI) {
      * @returns {Element|Array} The new element for tshCompile processing or an
      *     array with the new element and a processing constant such as
      *     TP.DESCEND.
-     * @todo
      */
 
     var result,
@@ -234,7 +232,6 @@ function(anElement, aName, aURI) {
      * @returns {Element|Array} The new element for tshCompile processing or an
      *     array with the new element and a processing constant such as
      *     TP.DESCEND.
-     * @todo
      */
 
     var template,
@@ -333,7 +330,6 @@ function(anElement) {
      * @param {Element} anElement The template element to query.
      * @returns {TP.lang.RootObject.<TP.core.ElementNode>} A TP.core.ElementNode
      *     subtype type object used for the generator.
-     * @todo
      */
 
     var generator;
@@ -365,7 +361,6 @@ function(aTemplateName, aDataSource, formatParams) {
      * @param {TP.lang.Hash|TP.sig.Request} formatParams An object which can
      *     provide additional formatting data.
      * @returns {Node} A node representing the template result data.
-     * @todo
      */
 
     var uri,
@@ -522,7 +517,6 @@ function(transformElement, templatePrefix) {
      *     template (if it doesn't have a name already).
      * @returns {Element} The 'tsh:transform' element wrapping a copy of the
      *     supplied template element.
-     * @todo
      */
 
     var str,

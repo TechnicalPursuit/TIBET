@@ -92,7 +92,6 @@ function(anObject) {
      * @raises TP.sig.InvalidObject
      * @returns {Array} An ordered pair where the first item is the X coordinate
      *     and the second item is the Y coordinate.
-     * @todo
      */
 
     var anX,
@@ -148,7 +147,6 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
      * @raises TP.sig.InvalidDocument
      * @returns {HTMLElement} The script element created in the supplied
      *     document.
-     * @todo
      */
 
     var newScriptElement,
@@ -435,7 +433,6 @@ function(aDocument, toStart) {
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
      * @raises TP.sig.InvalidDocument
-     * @todo
      */
 
     var theSelection;
@@ -526,7 +523,6 @@ function(aDocument, newContent) {
      *     appended to.
      * @param {String} newContent A new string of content.
      * @raises TP.sig.InvalidDocument
-     * @todo
      */
 
     var theSelection,
@@ -573,7 +569,6 @@ function(aDocument, newContent) {
      *     inserted before.
      * @param {String} newContent A new string of content.
      * @raises TP.sig.InvalidDocument
-     * @todo
      */
 
     var theSelection,
@@ -869,7 +864,6 @@ function(aDocument, aSelectionMarker) {
      * @param {Object} aSelectionMarker The object to use as the selection
      *     marker.
      * @raises TP.sig.InvalidDocument
-     * @todo
      */
 
     var theSelection;
@@ -927,7 +921,6 @@ function(aDocument, newContent) {
      *     replaced.
      * @param {String} newContent The new content to use.
      * @raises TP.sig.InvalidDocument
-     * @todo
      */
 
     var theSelection,
@@ -1008,7 +1001,6 @@ function(anElement, x, y) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidNumber
      * @returns {Element} The 'most nested' child element found at x and y
      *     coordinates given.
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -1234,7 +1226,6 @@ function(anElement, styleProperty, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {Number} The supplied property as a pixel value.
-     * @todo
      */
 
     var computedStyle;
@@ -1278,7 +1269,6 @@ function(anElement, styleProperties, wantsTransformed) {
      * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {TP.lang.Hash} A TP.lang.Hash of Numbers containing the supplied
      *     properties as a pixel value.
-     * @todo
      */
 
     var computedStyle,
@@ -1340,7 +1330,6 @@ function(anElement, wants2DMatrix) {
      * @raises TP.sig.InvalidElement
      * @returns {Array} An Array of Arrays representing the current
      *     transformation matrix.
-     * @todo
      */
 
     var identity,
@@ -1436,7 +1425,6 @@ function(anElement) {
      * @raises TP.sig.InvalidElement
      * @returns {TP.lang.Hash} A hash of values, keyed by the following keys:
      *     TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE
-     * @todo
      */
 
     var length,
@@ -1562,7 +1550,6 @@ function(anElement, includeElement) {
      *     be included in the selection. Note that this setting has no meaning
      *     if the element is a sort of 'input element'. The default is false.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     var elementName,
@@ -1626,7 +1613,6 @@ function(anElement, aClassName) {
      * @param {String} aClassName Class name(s) to use as the CSS class names
      *     for the element.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -1660,7 +1646,6 @@ function(anElement, opacityLevel) {
      *     opacity to or the empty String ('') to clear the element's opacity
      *     value.
      * @raises TP.sig.InvalidElement
-     * @todo
      */
 
     if (!TP.isElement(anElement)) {
@@ -1690,7 +1675,6 @@ function(anElement, transformationMatrix) {
      * @raises TP.sig.InvalidElement
      * @returns {Object} An Object with left, top, right and bottom properties
      *     representing the bounding client rect.
-     * @todo
      */
 
     var points;
@@ -1733,7 +1717,6 @@ function(anElement, aContent) {
      *     to insert content into.
      * @param {String} aContent The content to insert.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
-     * @todo
      */
 
     var elementName,
@@ -1795,7 +1778,6 @@ function(anElement, aContent) {
      *     to replace the selection of.
      * @param {String} aContent The content to use as the replacement.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidString
-     * @todo
      */
 
     var elementName,
@@ -1885,7 +1867,6 @@ function(aNode) {
      * @returns {Boolean} True if the node is in a document that is in a window.
      * @raise TP.sig.InvalidNode Raised when an object that isn't a Node is
      *     provided to the method.
-     * @todo
      */
 
     if (!TP.isNode(aNode)) {
@@ -1911,7 +1892,6 @@ function(aWindow, eventNameArray, aHandler) {
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of the default handler.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidArray
-     * @todo
      */
 
     var i,
@@ -1961,7 +1941,6 @@ function(aWindow, objectName) {
      * @param {String} objectName The 'type name' of the object to construct.
      * @raises TP.sig.InvalidWindow
      * @returns {Object}
-     * @todo
      */
 
     var constructorObj,
@@ -2042,7 +2021,6 @@ function(aWindow, eventNameArray, aHandler) {
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of the default handler for TIBET.
      * @raises TP.sig.InvalidWindow,TP.sig.InvalidArray
-     * @todo
      */
 
     var i,

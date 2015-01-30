@@ -64,7 +64,6 @@ function(resourceID, aRequest) {
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.goog.GoogleService} A new instance.
-     * @todo
      */
 
     var paramDict,
