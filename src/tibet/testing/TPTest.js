@@ -360,8 +360,8 @@ function(target, options) {
 
     suites = TP.test.Suite.$get('suites');
 
-    // If we have a specific target restrict our hash down to just that target's
-    // suites as a first step.
+    //  If we have a specific target restrict our hash down to just that
+    //  target's suites as a first step.
     if (TP.isValid(target)) {
 
         id = TP.id(target);
@@ -372,23 +372,26 @@ function(target, options) {
         suites = TP.hc(id, suites.at(id));
     }
 
-    // No options means no filtering criteria...
+    //  No options means no filtering criteria...
     if (TP.notValid(options)) {
         return suites;
     }
 
     params = TP.hc(options);
 
-    // TODO: if options includes things like inherited etc. we need to collect
-    // more suites rather than assuming a single slice.
+    //  TODO: if options includes things like inherited etc. we need to collect
+    //  more suites rather than assuming a single slice.
 
     name = params.at('suite');
     if (TP.notEmpty(name)) {
-        suite = suites.getValues().filter(function(item) {
-            return item.getKeys().contains(name);
-        }).collect(function(item) {
-            return item.at(name);
-        }).first();
+
+        suite = suites.getValues().filter(
+                    function(item) {
+                        return item.getKeys().contains(name);
+                    }).collect(
+                        function(item) {
+                           return item.at(name);
+                    }).first();
 
         if (TP.isValid(suite)) {
             return TP.hc(id || name, TP.hc(name, suite));
@@ -398,7 +401,6 @@ function(target, options) {
     } else {
         return suites;
     }
-
 });
 
 //  ------------------------------------------------------------------------
