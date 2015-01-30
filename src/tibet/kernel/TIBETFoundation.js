@@ -860,60 +860,179 @@ function() {
      *     function.
      */
 
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.length;
+    }
+
     return this.length;
 });
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('generateMethodSourceHead',
+Function.Inst.defineMethod('getCommentLines',
 function() {
 
     /**
-     * @name generateMethodSourceHead
-     * @synopsis Returns a String that is a representation of the 'source head'
-     *     of the canonical TIBET way of adding a method to the system.
-     * @description NOTE: this method produces a representation which *must* be
-     *     followed with a Function statement (i.e. 'function() {...}') and a
-     *     closing ')'.
-     * @returns {String} A representation of the 'source method head' of the
-     *     receiver in TIBET.
+     * @name getCommentLines
+     * @synopsis Parses the receiver's comment text and returns it as a set of
+     *     lines, one per JSDoc tag found in the comment. The resulting lines
+     *     can be individually parsed by tag-specific line parsers as part of a
+     *     larger comment processing operation.
+     *  @example
+     *          line 1
+     *          line 2
+     *          line 3
+     *                  indented line 4
+     *              line 5 back out
+     *          line 6
+     *          line 7
+     * @return {Array.<String>} The comment lines in order from the comment.
      */
 
-    var owner,
-        track,
+    var text,
+        example,
+        tokens,
+        lines,
+        clean,
+        len,
+        i,
+        line,
+        joined;
 
-        str,
-
-        ownerName;
-
-    owner = this[TP.OWNER];
-    track = this[TP.TRACK];
-
-    str = TP.ac();
-
-    //  We need to have both a valid owner and track to generate the header.
-    if (TP.isValid(owner) && TP.isValid(track)) {
-        ownerName = owner.getName();
-
-        if (track === TP.GLOBAL_TRACK) {
-            str.push('TP.defineGlobalMethod(');
-        } else if (track === TP.PRIMITIVE_TRACK) {
-            str.push('TP.definePrimitive(');
-        } else if (track === TP.META_TYPE_TRACK) {
-            str.push('TP.defineMetaTypeMethod(');
-        } else if (track === TP.META_INST_TRACK) {
-            str.push('TP.defineMetaInstMethod(');
-        } else if (track === TP.TYPE_LOCAL_TRACK ||
-                    track === TP.LOCAL_TRACK) {
-            str.push(ownerName, '.defineMethod(');
-        } else {
-            str.push(ownerName, '.', track, '.defineMethod(');
-        }
-
-        str.push('\'', this.getName() + '\',\n');
+    //  Get the JSDoc comment text of the receiver. If this is empty no real
+    //  structure can be provided.
+    text = this.getCommentText();
+    if (TP.isEmpty(text)) {
+        return;
     }
 
-    return str.join('');
+    //  ---
+    //  cleanse
+    //  ---
+
+    //  Set our 'in @example' state flag to false before we enter loop.
+    example = false;
+
+    //  Simplistic cleansing of the comment text to make processing content tags
+    //  a little easier.
+    lines = text.split('\n');
+    lines = lines.map(function(line) {
+        var str;
+
+        str = line.trim();
+
+        // Ignore the opening and closing lines for a doc comment.
+        if (str.startsWith('/**') || str.startsWith('*/')) {
+            return;
+        }
+
+        //  If the line's starting text is @example turn off whitespace
+        //  stripping until we come to the next tag.
+        if (str.match(/^\s*\*\s*@example/)) {
+            example = true;
+            return str.replace(/^\s*\*\s*@example/, '@example');
+        }
+
+        //  Check to see if we're in example mode but have hit a new tag.
+        //  If so we flip back out of example mode so we trim whitespace.
+        if (example && str.match(/^\s*\*\s*@/)) {
+            example = false;
+        }
+
+        if (!example) {
+            // str is already trimmed, just remove any leading '*' etc.
+            str = str.replace(/^\*\s*/, '');
+        } else {
+            str = line;
+            // Replace any * in the text with a space, preserving any other
+            // whitespace on that line.
+            str = str.replace(/^(\s*)\*(\s*)/, '$1 $2');
+        }
+
+        return str;
+    }).compact();   // Compact removes null-valued lines.
+
+    //  Might be an empty comment, in which case we return an empty array rather
+    //  than null to signify there was a comment, but it was empty.
+    if (lines.length === 0) {
+        return lines;
+    }
+
+    //  ---
+    //  join
+    //  ---
+
+    //  Join "blocks" of text with their associated tag. Also watch out for
+    //  opening block which may not start with @name or a similar tag.
+    clean = [];
+
+    //  First line. Should start with @name or similar but some authors
+    //  put in description without an opening tag.
+    if (lines[0].charAt(0) !== '@') {
+        lines[0] = '@summary ' + lines[0];
+    }
+
+    //  Set our 'in @example' state flag to false before we enter loop.
+    example = false;
+
+    //  With first line cleansed we should be able to loop over the lines and
+    //  join any which don't start with '@' to the currently open tag.
+    len = lines.length;
+    for (i = 0; i < len; i++) {
+        line = lines.at(i);
+        if (line.charAt(0) === '@') {
+            if (i !== 0) {
+                clean.push(joined);
+            }
+            joined = line;
+
+            example = line.startsWith('@example');
+            if (example) {
+                clean.push(joined);
+            }
+        } else if (!example) {
+            joined += ' ' + line;
+        } else {
+            clean.push(line);
+            joined = null;
+        }
+    }
+
+    //  Push any remaining line and ensure we don't have any null lines.
+    clean.push(joined);
+    clean.compact();
+
+    return clean;
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getCommentText',
+function() {
+
+    /**
+     * @name getCommentText
+     * @synopsis Returns the JSDoc comment text for the receiver, if any.
+     * @return {String} The comment text.
+     */
+
+    var text,
+        tokens,
+        comment;
+
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.getCommentText();
+    }
+
+    text = this.toString();
+    tokens = TP.$tokenize(text);
+    comment = tokens.detect(function(token) {
+        return token.name === 'comment' && token.value.startsWith('/**');
+    });
+
+    if (TP.isValid(comment)) {
+        return comment.value;
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -939,6 +1058,10 @@ function(methodText) {
         match,
         newtext,
         patch;
+
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.getMethodPatch(methodText);
+    }
 
     if (TP.notValid(self.JsDiff)) {
         TP.ifWarn() ?
@@ -997,6 +1120,130 @@ function(methodText) {
 
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('getMethodSourceHead',
+function() {
+
+    /**
+     * @name getMethodSourceHead
+     * @synopsis Returns a String that is a representation of the 'source head'
+     *     of the canonical TIBET way of adding a method to the system.
+     * @description NOTE: this method produces a representation which *must* be
+     *     followed with a Function statement (i.e. 'function() {...}') and a
+     *     closing ')'.
+     * @returns {String} A representation of the 'source method head' of the
+     *     receiver in TIBET.
+     */
+
+    var owner,
+        track,
+        str,
+        ownerName;
+
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.getMethodSourceHead();
+    }
+
+    owner = this[TP.OWNER];
+    track = this[TP.TRACK];
+
+    str = TP.ac();
+
+    //  We need to have both a valid owner and track to generate the header.
+    if (TP.isValid(owner) && TP.isValid(track)) {
+        ownerName = owner.getName();
+
+        if (track === TP.GLOBAL_TRACK) {
+            str.push('TP.defineGlobalMethod(');
+        } else if (track === TP.PRIMITIVE_TRACK) {
+            str.push('TP.definePrimitive(');
+        } else if (track === TP.META_TYPE_TRACK) {
+            str.push('TP.defineMetaTypeMethod(');
+        } else if (track === TP.META_INST_TRACK) {
+            str.push('TP.defineMetaInstMethod(');
+        } else if (track === TP.TYPE_LOCAL_TRACK ||
+                    track === TP.LOCAL_TRACK) {
+            str.push(ownerName, '.defineMethod(');
+        } else {
+            str.push(ownerName, '.', track, '.defineMethod(');
+        }
+
+        str.push('\'', this.getName() + '\',\n');
+    }
+
+    return str.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getParameterNames',
+function() {
+
+    /**
+     * @name getParameterNames
+     * @synopsis Returns an Array of the formal parameter names of this
+     *     function.
+     * @returns {Array} The formal parameter names to this function.
+     * @todo
+     */
+
+    var text,
+        params,
+        tokens,
+        comments;
+
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.getParameterNames();
+    }
+
+    text = this.toString();
+    params = text.slice(text.indexOf('('), text.indexOf(')'));
+
+    //  Some people put comments in their parameter lists so we might as well
+    //  leverage tokenizing and just return identifiers.
+    tokens = TP.$tokenize(params);
+
+    //  Warn about any comments in parameter lists. This is done here since the
+    //  largest invocation of this method occurs as part of the :doclint
+    //  command in TIBET which tries to lint comments.
+    comments = tokens.filter(function(token) {
+        return token.name === 'comment';
+    });
+
+    if (TP.notEmpty(comments)) {
+        TP.warn('Comment(s) in parameter list for ' + this.getName());
+    }
+
+    tokens = tokens.filter(function(token) {
+        return token.name === 'identifier';
+    });
+
+    return tokens.map(function(token) {
+        return token.value;
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getSignature',
+function() {
+
+    /**
+     * @name getSignature
+     * @synopsis Returns the "method signature" or function calling signature
+     *     for the receiver.
+     * @returns {String} The signature string.
+     */
+
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.getSignature();
+    }
+
+    return 'function ' + this.getName() +
+        '(' + this.getParameterNames().join(', ') + ')';
+});
+
+//  ------------------------------------------------------------------------
+
 Function.Inst.defineMethod('postMethodPatch',
 function(methodText, onsuccess, onfailure) {
     var patch,
@@ -1042,76 +1289,6 @@ function(methodText, onsuccess, onfailure) {
     });
 
     return req.fire();
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('getParameterNames',
-function() {
-
-    /**
-     * @name getParameterNames
-     * @synopsis Returns an Array of the formal parameter names of this
-     *     function.
-     * @returns {Array} The formal parameter names to this function.
-     * @todo
-     */
-
-    var str,
-        arr,
-
-        list,
-        argStr;
-
-    str = this.asString();
-
-    //  first look for anonymouse ;) functions (slicing off the 'whole match')
-    arr = str.match(/function[ ]*\((.*?)\)/).slice(1);
-    if (TP.notEmpty(arr)) {
-        list = arr;
-    }
-
-    //  next look for named functions (slicing off the 'whole match')
-    if (TP.isEmpty(list)) {
-        arr = str.match(/function [$]*\w+[ ]*\((.*?)\)/).slice(1);
-        list = arr;
-    }
-
-    if (TP.notEmpty(list) && TP.notEmpty(argStr = list.at(0))) {
-        return argStr.split(/,\s*/);
-    }
-
-    return TP.ac();
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('getSignature',
-function() {
-
-    /**
-     * @name getSignature
-     * @synopsis Returns the "method signature" or function calling signature
-     *     for the receiver.
-     * @returns {String} The signature string.
-     */
-
-    var src,
-        sig;
-
-    src = this.asString();
-
-    sig = src.slice(0, src.indexOf(')') + 1);
-
-    //  at this point we've got something that probably looks like:
-    //  function (paramA, paramB, ...) so we want to "pretty it up" a bit
-    //  with some additional content
-    if (/function(\W*)\(/.test(sig)) {
-
-        sig = sig.replace('function', 'function ' + this.getName());
-    }
-
-    return sig;
 });
 
 //  ------------------------------------------------------------------------
@@ -4965,7 +5142,7 @@ function(aFilterName, aLevel) {
         //  system. Note that this produces a representation which *must* be
         //  followed with a Function statement (i.e. 'function() {...}') and a
         //  closing ')'.
-        head = this.generateMethodSourceHead();
+        head = this.getMethodSourceHead();
 
         //  Add that head, our source and a trailing ')' to the representation.
         str.push(head, src, ')');
