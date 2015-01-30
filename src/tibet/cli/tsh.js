@@ -109,7 +109,7 @@ Cmd.prototype.USAGE = 'tibet tsh <script> [<phantomtsh_args>]';
  * Perform phantom startup announcement as appropriate for the (sub)command.
  */
 Cmd.prototype.announce = function() {
-    return;
+    this.log('# Booting TIBET via PhantomJS...');
 };
 
 

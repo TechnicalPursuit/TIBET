@@ -2195,9 +2195,12 @@ function(aRequest) {
      */
 
     var methods,
-        results;
+        results,
+        column;
 
     results = [];
+
+    column = this.getArgument(aRequest, 'tsh:column', false);
 
     methods = TP.sys.getMetadata('methods');
     methods.perform(function(item) {
@@ -2350,6 +2353,13 @@ function(aRequest) {
         return result.name + ': ' + result.errors.join(', ');
     });
 
+    if (column) {
+        results.forEach(function(result) {
+            aRequest.stdout(result);
+        });
+        return aRequest.complete();
+    }
+
     return aRequest.complete(results);
 });
 
@@ -2373,7 +2383,8 @@ function(aRequest) {
      * @param {Request} aRequest The shell request containing command arguments.
      */
 
-    var arg0,
+    var usage,
+        arg0,
         flag,
         obj,
         types,
@@ -2383,12 +2394,13 @@ function(aRequest) {
         filter,
         result;
 
+    usage = 'Usage: :reflect [target] [--filter <filter>]' +
+        ' [--types] [--methods] [--owners] [--column]';
+
     //  No arguments means we dump usage. Need at least a flag to list
     //  something like types.
     if (!this.hasArguments(aRequest)) {
-        aRequest.stdout(
-            'Usage: :reflect [target] [--filter <filter>]  [--types] [--methods] [--owners] [--column]'
-        );
+        aRequest.stdout(usage);
         return aRequest.complete();
     }
 
@@ -2418,6 +2430,9 @@ function(aRequest) {
             });
         } else if (methods) {
             result = TP.sys.getMetadata('methods').getKeys();
+        } else {
+            aRequest.stdout(usage);
+            return aRequest.complete();
         }
 
         result = result.filter(function(item) {
