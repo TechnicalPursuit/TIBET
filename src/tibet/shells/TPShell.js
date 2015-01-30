@@ -2197,6 +2197,12 @@ function(anObjectSpec, aRequest) {
         spec = anObjectSpec.slice(1);
     }
 
+    //  With most of our desugaring done can we just use getObjectById?
+    $$inst = TP.sys.getObjectById(spec);
+    if (TP.isValid($$inst)) {
+        return $$inst;
+    }
+
     try {
         if (TP.regex.URI_LIKELY.test(spec) &&
             !TP.regex.REGEX_LITERAL_STRING.test(spec)) {
@@ -2241,20 +2247,20 @@ function(anObjectSpec, aRequest) {
 
         }
 
-    //  If the original object spec was some 'dereference sugar', then, as a
-    //  final step, we need to call 'cmdGetContent' on it (or it's type if it
-    //  doesn't respond). This is to keep the same semantics that the rest of
-    //  the shell has around dereference sugar.
-    if (TP.regex.TSH_DEREF_SUGAR.test(anObjectSpec)) {
-      if (TP.canInvoke($$inst, 'cmdGetContent')) {
-          $$inst = $$inst.cmdGetContent(aRequest);
-      } else if (TP.canInvoke($$inst, 'getType')) {
-          instType = $$inst.getType();
-          if (TP.canInvoke(instType, 'cmdGetContent')) {
-              $$inst = instType.cmdGetContent(aRequest);
+        //  If the original object spec was some 'dereference sugar', then, as a
+        //  final step, we need to call 'cmdGetContent' on it (or it's type if
+        //  it doesn't respond). This is to keep the same semantics that the
+        //  rest of the shell has around dereference sugar.
+        if (TP.regex.TSH_DEREF_SUGAR.test(anObjectSpec)) {
+          if (TP.canInvoke($$inst, 'cmdGetContent')) {
+              $$inst = $$inst.cmdGetContent(aRequest);
+          } else if (TP.canInvoke($$inst, 'getType')) {
+              instType = $$inst.getType();
+              if (TP.canInvoke(instType, 'cmdGetContent')) {
+                  $$inst = instType.cmdGetContent(aRequest);
+              }
           }
-      }
-    }
+        }
 
     } catch (e) {
         $$inst = undefined;
@@ -2870,9 +2876,13 @@ function(aRequest) {
      * @return {Boolean} True for non-zero argument lists.
      */
 
-    var args = this.getArguments(aRequest);
+    var args,
+        keys;
 
-    if (args.getSize() > 1) {
+    args = this.getArguments(aRequest, true);
+    keys = args.getKeys();
+
+    if (keys.getSize() > 1) {
         return true;
     }
 
