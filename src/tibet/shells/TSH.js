@@ -1168,7 +1168,7 @@ function(aRequest) {
     } else if (!TP.isNode(node = src)) {
         //  if the content had been a string or node then we can work with
         //  it but otherwise we'll consider it an error
-        return aRequest.fail('Invalid command: "' + src + '".');
+        return aRequest.fail('Invalid command: "' + src + '". Try ? or :help.');
     }
 
     //  all processing has to take place within a viable document, so we

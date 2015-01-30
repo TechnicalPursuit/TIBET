@@ -3549,7 +3549,7 @@ function(aRequest) {
     type = TP.sys.require(tagname);
     if (TP.notValid(type)) {
         aRequest.at('rootRequest').stderr('Invalid command: ' +
-            tagname, aRequest);
+            tagname + '. Try ? or :help.', aRequest);
         aRequest.fail();
         return;
     }
