@@ -1307,6 +1307,12 @@ TP.sys.setcfg('tsh.test_step_max', 15000);
 //  maximum number of milliseconds in a comprehensive test run.
 TP.sys.setcfg('tsh.test_series_max', 600000);
 
+//  the test case timeout
+TP.sys.setcfg('tibet.test.case.mslimit', 5000);
+
+//  the test suite timeout
+TP.sys.setcfg('tibet.test.suite.mslimit', 30000);
+
 //  when tracing is on each individual command's status and result is pushed
 //  into a $RESULTS slot that can be inspected
 TP.sys.setcfg('tsh.trace_commands', false);

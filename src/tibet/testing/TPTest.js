@@ -69,7 +69,8 @@ TP.test.Root.Inst.defineAttribute('msend');
  * timing out. Default here is 60 seconds but this is reset by Suite and Case.
  * @type {Number}
  */
-TP.test.Root.Inst.defineAttribute('mslimit', 60000);
+TP.test.Root.Inst.defineAttribute('mslimit',
+                                    TP.sys.cfg('tibet.test.suite.mslimit'));
 
 /**
  * The millisecond timestamp at start of the task.
@@ -1806,7 +1807,8 @@ TP.test.Case.Inst.defineAttribute('caseName');
  * timing out. Default is 3 seconds for a test case.
  * @type {Number}
  */
-TP.test.Case.Inst.defineAttribute('mslimit', 5000);
+TP.test.Case.Inst.defineAttribute('mslimit',
+                                    TP.sys.cfg('tibet.test.case.mslimit'));
 
 /**
  * The object that holds all of the test methods as a 'refuter'.
