@@ -399,6 +399,7 @@ function(anObj, anID, forceRegistration, observeResource) {
 
     /**
      * @method registerObject
+     * @alias register
      * @summary Places the object into the public registry under its ID.
      * @param {Object} anObj The object to register.
      * @param {String} anID An optional ID to use instead of the object's
@@ -490,6 +491,7 @@ function(anObj, anID) {
 
     /**
      * @method unregisterObject
+     * @alias unregister
      * @summary Removes public registration for the object provided. This
      *     operation should be called RELIGIOUSLY to avoid memory leaks if
      *     objects are registered.

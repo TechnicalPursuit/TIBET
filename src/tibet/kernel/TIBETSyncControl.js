@@ -69,7 +69,7 @@ TP.core.SyncAsync.Type.defineMethod('isDualMode',
 function() {
 
     /**
-     * @method isSyncOnly
+     * @method isDualMode
      * @summary Returns true if the receiver can process body synchronously and
      *     asynchronously.
      * @returns {Boolean}

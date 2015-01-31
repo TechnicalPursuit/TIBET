@@ -267,7 +267,8 @@ function(resourceID) {
      * @method construct
      * @summary Constructs a new instance of the receiver. If the resourceID
      *     provided is a duplicate an exception is thrown.
-     * @param {TP.core.Resource} aResource The resource to add.
+     * @param {TP.core.Resource} resourceID The resource ID for the new resource
+     *     being constructed.
      * @exception TP.sig.NonUniqueID
      */
 
@@ -621,6 +622,7 @@ function(aKey) {
      * @method hasAccessKey
      * @summary Returns true if the receiver has the access key provided by
      *     virtue of their current vCard assignment.
+     * @param {String} aKey The access key to check for.
      * @returns {Boolean} True if the receiver's vCard data includes the key
      *     provided.
      */
@@ -1163,6 +1165,9 @@ function(varargs) {
      *     request's payload, otherwise the object itself becomes the request
      *     payload. When multiple arguments are given they are passed to TP.hc()
      *     and the resulting hash becomes the request's payload.
+     * @param {Object} varargs One or more objects to place in the request. The
+     *     format is similar to that used by TP.hc() with alternating keys and
+     *     values.
      * @returns {TP.sig.Request} A request whose payload is a hash containing
      *     the parameter values provided.
      */
@@ -3874,6 +3879,7 @@ function(resourceID) {
      * @summary Constructs and returns a new TP.core.User instance. Also
      *     ensures that the first TP.core.User instance constructed is
      *     automatically set to be the real user.
+     * @param {String} aResourceID A unique resource identifier.
      * @returns {TP.core.User} A newly constructed user instance.
      */
 
@@ -6022,7 +6028,7 @@ function() {
     //  (the 'tibet' window) that informs us when the user changes the hash,
     //  either via using the back/forward buttons or by using a bookmark.
     top.onhashchange = function(evt) {
-        this.handleHashChanged(evt);
+        this.onhashchange(evt);
     }.bind(this);
 
     //  Prime the pump with the top location, but don't use setLocation()
@@ -6095,17 +6101,17 @@ function(hashValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.History.Type.defineMethod('handleHashChanged',
+TP.core.History.Type.defineMethod('onhashchange',
 function(anEvent) {
 
     /**
-     * @method handleHashChanged
+     * @method onhashchange
      * @summary A native browser-level event handler that is called when the
      *     user has changed the top-level window hash in some fashion. For
      *     TIBET, this usually means they've navigated with the forward or back
      *     buttons, used a bookmark or double-clicked on a file from the file
      *     system.
-     * @param {HashChanged} aSignal The event that caused this handler to trip.
+     * @param {Event} anEvent The native event that caused this handler to trip.
      * @returns {TP.core.History} The receiver.
      */
 

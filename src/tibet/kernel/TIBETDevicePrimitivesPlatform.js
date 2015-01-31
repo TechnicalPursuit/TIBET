@@ -236,8 +236,9 @@ TP.definePrimitive('$eventGetNormalizedView',
 function(anEvent, currentTarget) {
 
     /**
-     * Returns the native window object associated with the event. This is a
-     * lower-level routine leveraged by the eventNormalize primitive.
+     * @method $eventGetNormalizedView
+     * @summary Returns the native window object associated with the event. This
+     *     is a lower-level routine leveraged by the eventNormalize primitive.
      * @param {Event} anEvent The event to convert into a 'W3C plus'
      *     compliant event object.
      * @param {HTMLElement} currentTarget The object to make the

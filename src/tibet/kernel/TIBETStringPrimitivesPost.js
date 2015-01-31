@@ -287,7 +287,7 @@ TP.definePrimitive('utf82unicode',
 function(utf8) {
 
     /**
-     * @method TP.utf82unicode
+     * @method utf82unicode
      * @summary Decode UTF-8 argument into Unicode string return value.
      * @param {String} utf8 A UTF-8 encoded string to translate.
      * @returns {String} The Unicode representation of utf8.
@@ -333,7 +333,7 @@ TP.definePrimitive('utf8decode',
 function(str) {
 
     /**
-     * @method TP.utf8decode
+     * @method utf8decode
      * @summary Decode a string encoded with TP.utf8encode above.
      * @description If the string begins with the sentinel character 0x9D
      *     (OPERATING SYSTEM COMMAND), then we decode the balance as a UTF-8
@@ -356,7 +356,7 @@ TP.definePrimitive('utf8encode',
 function(str) {
 
     /**
-     * @method TP.utf8encode
+     * @method utf8encode
      * @summary Encode string as UTF8 only if it contains a character of 0x9D
      *     (Unicode OPERATING SYSTEM COMMAND) or a character greater than 0xFF.
      * @description This permits all strings consisting exclusively of 8 bit
@@ -398,7 +398,7 @@ TP.definePrimitive('unicode2utf8',
 function(str) {
 
     /**
-     * @method TP.unicode2utf8
+     * @method unicode2utf8
      * @summary Encode Unicode argument string as UTF-8 return value
      * @param {String} str A Unicode string to encode.
      * @returns {String} The UTF-8 representation of str.
@@ -441,7 +441,7 @@ TP.definePrimitive('stringFindDelimiterIndex',
 function(aStr, startDelim, endDelim, startPos) {
 
     /**
-     * @method TP.stringFindDelimiterIndex
+     * @method stringFindDelimiterIndex
      * @summary Finds the ending delimiter that matches (positionally) the
      *     start delimiter. If further start and end delimiters are nested, this
      *     routine will keep searching for the matching end delimiter.
@@ -540,7 +540,7 @@ TP.definePrimitive('stringMatchRecursive',
 function(aString, left, right, flags) {
 
     /**
-     * @method TP.stringMatchRecursive
+     * @method stringMatchRecursive
      * @summary Makes recursive matches within the supplied String, using the
      *     'left' and 'right' RegExps. If the 'flags' parameter is supplied, all
      *     matches are returned, otherwise only the first one is.
@@ -603,7 +603,7 @@ TP.definePrimitive('stringTokenizeUsingDelimiters',
 function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
 
     /**
-     * @method TP.stringTokenizeUsingDelimiters
+     * @method stringTokenizeUsingDelimiters
      * @summary Tokenizes chunks of Strings between the supplied start and end
      *     delimiters, places those chunks under numeric keys in the supplied
      *     expression Array and returns the tokenized String.
@@ -689,7 +689,7 @@ TP.definePrimitive('stringUntokenizeUsingDelimiters',
 function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
 
     /**
-     * @method TP.stringUntokenizeUsingDelimiters
+     * @method stringUntokenizeUsingDelimiters
      * @summary Untokenizes chunks of Strings that were tokenized by the
      *     TP.stringTokenizeUsingDelimiters() method above.
      * @param {String} aStr The string to untokenize.

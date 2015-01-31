@@ -37,7 +37,6 @@ function(aURI, content) {
 //  ========================================================================
 
 /**
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -1227,8 +1226,8 @@ function(targetObj, varargs) {
      * @summary Returns the result of executing the path in a 'get' fashion -
      *     i.e. with the intent of retrieving data from the supplied target
      *     object.
-     * @param {targetObj} Object The object to execute the receiver against to
-     *     get data.
+     * @param {Object} targetObj The object to execute the receiver against
+     *     to get data.
      * @param {Array} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
@@ -1249,11 +1248,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      * @method executeSet
      * @summary Executes the path in a 'set' fashion - i.e. with the intent of
      *     setting the supplied data into the supplied target object.
-     * @param {targetObj} Object The object to execute the receiver against to
+     * @param {Object} targetObj The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set
+     * @param {Object} attributeValue The object to use as the value to set
      *     into the target object.
-     * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
+     * @param {Boolean} shouldSignal If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
@@ -1299,7 +1298,7 @@ function(aReturnValue, targetObj) {
      *          4.  Using a fallback Function to create a result if one
      *          couldn't be found (i.e. the value is not valid).
      * @param {Object} aReturnValue The initial return value from this path.
-     * @param {targetObj} Object The object to that the receiver has just
+     * @param {Object} targetObj The object to that the receiver has just
      *     executed against.
      * @returns {Object} The final value to be returned from this path.
      */
@@ -1373,7 +1372,7 @@ function(targetObj) {
      *     provide any 'cleanup' for paths that reference data that no longer
      *     exist and to reset them to data that might now exist at the same
      *     address.
-     * @param {targetObj} Object The object to update the path and address
+     * @param {Object} targetObj The object to update the path and address
      *     information for.
      * @returns {TP.core.AccessPath} The receiver.
      */
@@ -1435,7 +1434,7 @@ function(targetObj) {
      *     be being deleted or whose structure is changing. This information is
      *     then used after signaling change to 'clean up' these referred to
      *     paths and addresses.
-     * @param {targetObj} Object The object to update the path and address
+     * @param {Object} targetObj The object to update the path and address
      *     information for.
      * @returns {TP.core.AccessPath} The receiver.
      */
@@ -1521,7 +1520,7 @@ function(targetObj) {
      * @method sendChangedSignal
      * @summary Sends a signal using the supplied target object as the origin
      *     to let observers know that we have changed.
-     * @param {targetObj} Object The object to send the 'changed signal' from.
+     * @param {Object} targetObj The object to send the 'changed signal' from.
      * @returns {TP.core.AccessPath} The receiver.
      */
 
@@ -1814,7 +1813,7 @@ function(targetObj, varargs) {
      * @summary Returns the result of executing the path in a 'get' fashion -
      *     i.e. with the intent of retrieving data from the supplied target
      *     object.
-     * @param {targetObj} Object The object to execute the receiver against to
+     * @param {Object} targetObj The object to execute the receiver against to
      *     get data.
      * @param {Array} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
@@ -1923,7 +1922,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
 /**
  * @type {TP.core.SimpleTIBETPath}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -1965,7 +1963,6 @@ function() {
 
     /**
      * @method endChangedAddress
-     * @synopsis
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
@@ -1981,7 +1978,6 @@ function() {
 
     /**
      * @method endObservedAddress
-     * @synopsis
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
@@ -1997,7 +1993,6 @@ function() {
 
     /**
      * @method getChangedAddress
-     * @synopsis
      * @returns {String}
      */
 
@@ -2011,7 +2006,6 @@ function(addressPart) {
 
     /**
      * @method startChangedAddress
-     * @synopsis
      * @param {String} addressPart
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -2032,7 +2026,6 @@ function(addressPart) {
 
     /**
      * @method startObservedAddress
-     * @synopsis
      * @param {String} addressPart
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -2321,7 +2314,6 @@ function(targetObj) {
 
     /**
      * @method preGetAccess
-     * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -2357,7 +2349,6 @@ function(targetObj) {
 
     /**
      * @method preSetAccess
-     * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -2376,7 +2367,6 @@ function(targetObj) {
 
     /**
      * @method postGetAccess
-     * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -2402,7 +2392,6 @@ function(targetObj) {
 
     /**
      * @method postSetAccess
-     * @synopsis
      * @param {targetObj} Object
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
@@ -2422,7 +2411,6 @@ function(targetObj) {
 
 /**
  * @type {TP.core.ComplexTIBETPath}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -3664,7 +3652,6 @@ function() {
 
 /**
  * @type {TP.core.XMLPath}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -4673,7 +4660,6 @@ TP.extern.XPathVariableResolver = function() {};
 
 /**
  * @type {TP.core.XPathPath}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

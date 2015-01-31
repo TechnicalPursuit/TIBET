@@ -14,7 +14,6 @@
 
 /**
  * @type {TP.svg.text}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -32,7 +31,6 @@ TP.svg.text.Type.set('uriAttrs',
 
 /**
  * @type {TP.svg.tspan}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -49,7 +47,6 @@ TP.svg.tspan.Type.set('uriAttrs', TP.ac('fill', 'stroke'));
 
 /**
  * @type {TP.svg.tref}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -66,7 +63,6 @@ TP.svg.tref.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 /**
  * @type {TP.svg.textPath}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -83,7 +79,6 @@ TP.svg.textpath.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 /**
  * @type {TP.svg.altGlyph}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -100,7 +95,6 @@ TP.svg.altGlyph.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 /**
  * @type {TP.svg.altGlyphDef}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -115,7 +109,6 @@ TP.svg.altGlyphDef.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.altGlyphItem}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -130,7 +123,6 @@ TP.svg.altGlyphItem.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.glyphRef}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

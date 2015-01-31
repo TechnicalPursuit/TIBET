@@ -10,7 +10,6 @@
 
 /**
  * @type {TP.xctrls.yahoomap}
- * @synopsis
  */
 
 /* eslint-disable new-cap */

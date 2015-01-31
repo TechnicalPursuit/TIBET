@@ -14,7 +14,6 @@
 
 /**
  * @type {TP.svg.svg}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -31,7 +30,6 @@ TP.svg.svg.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 /**
  * @type {TP.svg.g}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -48,7 +46,6 @@ TP.svg.g.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 /**
  * @type {TP.svg.defs}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -65,7 +62,6 @@ TP.svg.defs.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'))
 
 /**
  * @type {TP.svg.desc}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -80,7 +76,6 @@ TP.svg.desc.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.title}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -95,7 +90,6 @@ TP.svg.title.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.metadata}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -110,7 +104,6 @@ TP.svg.metadata.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.symbol}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -127,7 +120,6 @@ TP.svg.symbol.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'
 
 /**
  * @type {TP.svg.use}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

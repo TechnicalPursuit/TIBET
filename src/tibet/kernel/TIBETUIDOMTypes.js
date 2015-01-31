@@ -4374,7 +4374,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusFirst
-     * @synopsis
      * @param {TP.sig.UIFocusFirst} aSignal The signal that caused this handler
      *     trip.
      */
@@ -4391,7 +4390,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusLast
-     * @synopsis
      * @param {TP.sig.UIFocusLast} aSignal The signal that caused this handler
      *     trip.
      */
@@ -4408,7 +4406,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusNext
-     * @synopsis
      * @param {TP.sig.UIFocusNext} aSignal The signal that caused this handler
      *     trip.
      */
@@ -4425,7 +4422,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusPrevious
-     * @synopsis
      * @param {TP.sig.UIFocusPrevious} aSignal The signal that caused this
      *     handler trip.
      */
@@ -4442,7 +4438,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusFollowing
-     * @synopsis
      * @param {TP.sig.UIFocusFollowing} aSignal The signal that caused this
      *     handler trip.
      */
@@ -4459,7 +4454,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusPreceding
-     * @synopsis
      * @param {TP.sig.UIFocusPreceding} aSignal The signal that caused this
      *     handler trip.
      */
@@ -4476,7 +4470,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusFirstInGroup
-     * @synopsis
      * @param {TP.sig.UIFocusFirstInGroup} aSignal The signal that caused this
      *     handler trip.
      */
@@ -4493,7 +4486,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusLastInGroup
-     * @synopsis
      * @param {TP.sig.UIFocusLastInGroup} aSignal The signal that caused this
      *     handler trip.
      */
@@ -4510,7 +4502,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusFirstInPreviousGroup
-     * @synopsis
      * @param {TP.sig.UIFocusFirstInPreviousGroup} aSignal The signal that
      *     caused this handler trip.
      */
@@ -4527,7 +4518,6 @@ function(aSignal) {
 
     /**
      * @method handleUIFocusFirstInNextGroup
-     * @synopsis
      * @param {TP.sig.UIFocusFirstInNextGroup} aSignal The signal that
      *     caused this handler trip.
      */

@@ -1129,6 +1129,7 @@ function(aSignal, aHandler) {
      *     example of signal paths.
      * @param {Object|Array} aSignal One or more signals to observe from the
      *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off.
      * @returns {Number} The number of handler's that were removed.
      */
 
@@ -1448,7 +1449,7 @@ function(normalizedEvent, keyName, shift) {
      *     dependent on the event's modifier states and 'action' (i.e. down,
      *     press or up).
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
-     * @param {String} keyname The key name.
+     * @param {String} keyName The key name.
      * @param {Boolean} shift Whether or not the key was shifted. Note that we
      *     allow the caller to supply this rather than calculating it from the
      *     supplied event so that the caller can 'spoof' it.
@@ -1538,7 +1539,7 @@ function(anEvent) {
      *     provided. The shift and special values help refine the search when a
      *     code represents a special key and/or is augmented by use of the Shift
      *     key.
-     * @param {Event|Number} eventOrKey The keycode or charcode to look up.
+     * @param {Event|Signal} anEvent The event or signal containing the event.
      * @returns {String} The virtual key name, or null when not found.
      */
 
@@ -1930,6 +1931,7 @@ function(aFlag) {
     /**
      * @method isMetaDown
      * @summary Returns true if the Meta key is currently pressed.
+     * @param {?Boolean} aFlag An optional flag to set the value.
      * @returns {Boolean} True if the Meta key is down.
      */
 
@@ -2854,7 +2856,7 @@ TP.core.Mouse.Type.defineMethod('$$handleMouseEvent',
 function(nativeEvent) {
 
     /**
-     * @method handleMouseEvent
+     * @method $$handleMouseEvent
      * @summary Responds to notification of a native mouse event.
      * @param {Event} nativeEvent The native event.
      */

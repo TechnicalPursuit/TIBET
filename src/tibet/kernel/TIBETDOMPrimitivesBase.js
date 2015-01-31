@@ -308,10 +308,10 @@ function(aNode, otherNode, aPosition) {
      *          TP.CONTAINS_NODE        otherNode contains aNode in the document
      *          TP.CONTAINED_BY_NODE    otherNode is contained by aNode in the
      *                                  document
-     * @param {Node} aNode The node to check to see if aChild is contained
+     * @param {Node} aNode The node to check to see if otherNode is contained
      *     within it.
-     * @param {Node} aChild The node to check to see if it is contained within
-     *     aNode.
+     * @param {Node} otherNode The node to check to see if it is contained
+     *     within aNode.
      * @param {Number} aPosition One of the following constants: TP.SAME_NODE
      *     TP.PRECEDING_NODE TP.FOLLOWING_NODE TP.CONTAINS_NODE
      *     TP.CONTAINED_BY_NODE.

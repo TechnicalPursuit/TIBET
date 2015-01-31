@@ -131,7 +131,6 @@ function(aText, line) {
 
     /**
      * @method appendToLine
-     * @synopsis
      * @param {String} aText The text to insert.
      * @param {String} line The line number to insert the text at the end of.
      * @returns {TP.xctrls.codeeditor} The receiver.
@@ -188,7 +187,6 @@ function(line, ch) {
 
     /**
      * @method createPos
-     * @synopsis
      * @param
      * @param
      * @returns {TP.xctrls.codeeditor} The receiver.
@@ -258,7 +256,6 @@ function(start) {
 
     /**
      * @method getCursor
-     * @synopsis
      * @param
      * @returns
      */

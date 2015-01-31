@@ -213,6 +213,7 @@ function(targetUrl, aRequest) {
      * @summary Closes an open WebSocket, clearing any handlers which may be
      *     present.
      * @param {String} targetUrl The request's target URL.
+     * @param {Request} aRequest The associated request for the operation.
      * @returns {WebSocket} The aborted WebSocket object.
      */
 

@@ -14,7 +14,6 @@
 
 /**
  * @type {TP.svg.font}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -29,7 +28,6 @@ TP.svg.font.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.font_face}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -49,7 +47,6 @@ TP.svg.font_face.set('localName', 'font-face');
 
 /**
  * @type {TP.svg.glyph}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -64,7 +61,6 @@ TP.svg.glyph.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.missing_glyph}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -83,7 +79,6 @@ TP.svg.missing_glyph.set('localName', 'missing-glyph');
 
 /**
  * @type {TP.svg.hkern}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -98,7 +93,6 @@ TP.svg.hkern.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.vkern}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -113,7 +107,6 @@ TP.svg.vkern.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.font_face_src}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -132,7 +125,6 @@ TP.svg.font_face_src.set('localName', 'font-face-src');
 
 /**
  * @type {TP.svg.font_face_uri}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -151,7 +143,6 @@ TP.svg.font_face_uri.set('localName', 'font-face-uri');
 
 /**
  * @type {TP.svg.font_face_format}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -170,7 +161,6 @@ TP.svg.font_face_format.set('localName', 'font-face-format');
 
 /**
  * @type {TP.svg.font_face_name}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -189,7 +179,6 @@ TP.svg.font_face_name.set('localName', 'font-face-name');
 
 /**
  * @type {TP.svg.definition_src}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

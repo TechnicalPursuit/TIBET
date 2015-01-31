@@ -632,6 +632,7 @@ function(aYear) {
      * @method constructDayOne
      * @summary Returns a date representing the first day (at exactly 00:00:00)
      *     of the year provided.
+     * @param {Number} aYear The year to compute for.
      * @returns {Date} A Date object representing YYYY-01-01T00:00:00.
      */
 
@@ -647,6 +648,7 @@ function(aYear) {
      * @method constructUTCDayOne
      * @summary Returns a date representing the first day (at exactly 00:00:00)
      *     of the year provided in UTC.
+     * @param {Number} aYear The year to compute for.
      * @returns {Date} A Date object representing YYYY-01-01T00:00:00Z.
      */
 
@@ -862,7 +864,7 @@ function(aYear) {
 //  ------------------------------------------------------------------------
 
 Date.Type.defineMethod('getMillisecondsInDuration',
-function(anObject) {
+function(aDuration) {
 
     /**
      * @method getMillisecondsInDuration
@@ -878,11 +880,11 @@ function(anObject) {
         str,
         units;
 
-    if (!TP.isString(anObject)) {
+    if (!TP.isString(aDuration)) {
         return this.raise('TP.sig.InvalidDuration');
     }
 
-    str = anObject;
+    str = aDuration;
 
     if (!Date.DURATION_REGEX.test(str)) {
         return this.raise('TP.sig.InvalidDuration');
@@ -930,7 +932,7 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 Date.Type.defineMethod('getMonthsInDuration',
-function(anObject) {
+function(aDuration) {
 
     /**
      * @method getMonthsInDuration
@@ -946,11 +948,11 @@ function(anObject) {
         str,
         units;
 
-    if (!TP.isString(anObject)) {
+    if (!TP.isString(aDuration)) {
         return this.raise('TP.sig.InvalidDuration');
     }
 
-    str = anObject;
+    str = aDuration;
 
     if (!Date.DURATION_REGEX.test(str)) {
         return this.raise('TP.sig.InvalidDuration');
@@ -984,7 +986,7 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 Date.Type.defineMethod('getSecondsInDuration',
-function(anObject) {
+function(aDuration) {
 
     /**
      * @method getSecondsInDuration
@@ -1000,11 +1002,11 @@ function(anObject) {
         str,
         units;
 
-    if (!TP.isString(anObject)) {
+    if (!TP.isString(aDuration)) {
         return this.raise('TP.sig.InvalidDuration');
     }
 
-    str = anObject;
+    str = aDuration;
 
     if (!Date.DURATION_REGEX.test(str)) {
         return this.raise('TP.sig.InvalidDuration');
@@ -1133,23 +1135,23 @@ function() {
 //  ------------------------------------------------------------------------
 
 Date.Inst.defineMethod('add',
-function(anObject) {
+function(aValue) {
 
     /**
      * @method add
      * @summary Adds a number of milliseconds or duration to the receiver,
      *     returning the new date produced.
-     * @param {Number|String} anObject A number or string value defining the
+     * @param {Number|String} aValue A number or string value defining the
      *     quantity to be added to the receiver. Numbers and strings are treated
      *     as durations. NOTE that this means the number should be a millisecond
      *     count defining a span of time, not a date.
      * @returns {Date} A new Date instance.
      */
 
-    if (TP.isNumber(anObject)) {
-        return TP.dc(this.getTime() + anObject);
-    } else if (TP.isString(anObject)) {
-        return this.addDuration(anObject);
+    if (TP.isNumber(aValue)) {
+        return TP.dc(this.getTime() + aValue);
+    } else if (TP.isString(aValue)) {
+        return this.addDuration(aValue);
     }
 
     return this.raise('TP.sig.InvalidParameter');
@@ -2000,7 +2002,7 @@ Date.Inst.defineMethod('getUTCISOTime',
 function(aFormat) {
 
     /**
-     * @method getUCTISOTime
+     * @method getUTCISOTime
      * @summary Returns the ISO 8601 time string for the receiver in the format
      *     provided.
      * @param {String} aFormat An ISO8601 time component FORMAT.
@@ -2328,7 +2330,7 @@ Date.Inst.defineMethod('isBefore',
 function(aDate) {
 
     /**
-     * @method before
+     * @method isBefore
      * @summary Returns true if the receiver is a date/time which occurs before
      *     the date/time provided.
      * @param {Date|String} aDate A date or date string.
@@ -2609,7 +2611,7 @@ function(aWeekNumber) {
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
      *     this metric.
-     * @param {The} Number number of the receiver's week, according to ISO 8601.
+     * @param {Number} aWeekNumber The number of the week in ISO 8601 terms.
      * @returns {Date} The receiver.
      */
 
@@ -2664,7 +2666,7 @@ function(aWeekNumber) {
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
      *     this metric.
-     * @param {The} Number number of the receiver's week, according to ISO 8601.
+     * @param {Number} aWeekNumber The number of the week in ISO 8601 terms.
      * @returns {Date} The receiver.
      */
 
@@ -2714,7 +2716,7 @@ function(aWeekNumber) {
      * @method setUTCWeek
      * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as commonly used in the U.S.
-     * @param {The} Number number of the new week.
+     * @param {Number} aWeekNumber The number of the week in ISO 8601 terms.
      * @returns {Date} The receiver.
      */
 
@@ -2764,7 +2766,7 @@ function(aWeekNumber) {
      * @method setWeek
      * @summary Sets the receiver to be the same day of the week and time, but
      *     in week number N as commonly used in the U.S.
-     * @param {The} Number number of the new week.
+     * @param {Number} aWeekNumber The number of the week to set.
      * @returns {Date} The receiver.
      */
 
@@ -3685,7 +3687,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Number.Inst.defineMethod('max',
-function() {
+function(varargs) {
 
     /**
      * @method max
@@ -3719,7 +3721,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Number.Inst.defineMethod('min',
-function() {
+function(varargs) {
 
     /**
      * @method min

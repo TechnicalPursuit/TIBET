@@ -1754,6 +1754,7 @@ function(anObject, assignIfAbsent) {
 
     /**
      * @method objectGlobalID
+     * @alias gid
      * @summary Returns the global ID of the object, an identifier that
      *     uniquely identifies the element within a particular TIBET
      *     environment. Most objects can be found via their global ID however
@@ -2115,6 +2116,7 @@ function(anObject, assignIfAbsent) {
 
     /**
      * @method objectLocalID
+     * @alias lid
      * @summary Returns the local ID of the object provided. This method is
      *     normally used on nodes as a way of getting an ID that is local to the
      *     node's enclosing document. NOTE that the TP.lid() function is aliased
@@ -2410,6 +2412,7 @@ function(anObject, assignIfAbsent) {
 
     /**
      * @method objectID
+     * @alias id
      * @summary Returns the ID of anObject, the value considered to be the
      *     object's unique identifier. NOTE that the TP.id() function is aliased
      *     to this function as a 'shorthand'.
@@ -2498,6 +2501,7 @@ function(anObject) {
 
     /**
      * @method objectName
+     * @alias name
      * @summary Returns the name of the receiver, most often associated with
      *     types, functions, or node "tag names". When dealing with tag names
      *     this method returns the canonical name of the tag. When all else
@@ -2641,6 +2645,7 @@ function(anObject, shallow) {
 
     /**
      * @method objectCopy
+     * @alias copy
      * @summary Returns a copy of the object provided. When the object is a
      *     Node the copy is deep unless overridden by the shallow flag. When the
      *     object is a standard JS object the clone is shallow. NOTE that window
@@ -2758,6 +2763,7 @@ function(anObject, aDocument) {
 
     /**
      * @method objectHTMLNode
+     * @alias htmlnode
      * @summary Returns an HTML node representation of the receiver. NOTE that
      *     the TP.htmlnode() function is aliased to this function as a
      *     'shorthand'.
@@ -2848,6 +2854,7 @@ function(anObject) {
 
     /**
      * @method objectHTMLString
+     * @alias htmlstr
      * @summary Returns an HTML string representation of the receiver. NOTE
      *     that the TP.htmlstr() function is aliased to this function as a
      *     'shorthand'.
@@ -3025,6 +3032,7 @@ function(anObject) {
 
     /**
      * @method objectJSONString
+     * @alias json
      * @summary Returns a best-possible JSON representation of the object. NOTE
      *     that the TP.json() function is aliased to this function as a
      *     'shorthand'.
@@ -3190,6 +3198,7 @@ function(anObject) {
 
     /**
      * @method objectKeys
+     * @alias keys
      * @summary Returns the keys of the object.
      * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
@@ -3237,6 +3246,7 @@ function(anObject) {
 
     /**
      * @method objectLocation
+     * @alias loc
      * @summary Returns the location represented by the receiver. The typical
      *     usage is in methods that might accept either a string or a
      *     TP.core.URI which need a common way to ask for the location. When the
@@ -3394,6 +3404,7 @@ function(anObject) {
 
     /**
      * @method objectSize
+     * @alias size
      * @summary Returns the best size for the object, or TP.NO_SIZE if the
      *     object doens't appear to have a size.
      * @param {Object} anObject The object to query for size.
@@ -3426,6 +3437,7 @@ function(anObject) {
 
     /**
      * @method objectSourceValue
+     * @alias src
      * @summary Returns a JavaScript source representation of the object. NOTE
      *     that the TP.src() function is aliased to this function as a
      *     'shorthand'.
@@ -3548,6 +3560,7 @@ function(anObject, verbose) {
 
     /**
      * @method objectStringValue
+     * @alias str
      * @summary Returns a best-possible string representation of the object.
      *     NOTE that the TP.str() function is aliased to this function as a
      *     'shorthand'.
@@ -3750,6 +3763,7 @@ function(anObject, anAspect, autoCollapse) {
 
     /**
      * @method objectValue
+     * @alias val
      * @summary Returns anObject's value for anAspect, where the aspect
      *     defaults to 'value'. This method will attempt to use various TIBET
      *     methods such as get(), at(), etc. to get the best result. NOTE that
@@ -3866,6 +3880,7 @@ function(anObject, aDocument) {
 
     /**
      * @method objectXHTMLNode
+     * @alias xhtmlnode
      * @summary Returns an XHTML node representation of the supplied object.
      *     NOTE that the TP.xhtmlnode() function is aliased to this function as
      *     a 'shorthand'.
@@ -3926,6 +3941,7 @@ function(anObject) {
 
     /**
      * @method objectXHTMLString
+     * @alias xhtmlstr
      * @summary Returns an XHTML string representation of the supplied object.
      *     NOTE that the TP.xhtmlstr() function is aliased to this function as a
      *     'shorthand'.
@@ -3975,6 +3991,7 @@ function(anObject, aDocument) {
 
     /**
      * @method objectXMLNode
+     * @alias xmlnode
      * @summary Returns an XML node representation of the supplied object.
      *     NOTE that the TP.xmlnode() function is aliased to this function as a
      *     'shorthand'.
@@ -4028,6 +4045,7 @@ function(anObject) {
 
     /**
      * @method objectXMLString
+     * @alias xmlstr
      * @summary Returns an XML string representation of the supplied object.
      *     NOTE that the TP.xmlstr() function is aliased to this function as a
      *     'shorthand'.
@@ -4400,6 +4418,7 @@ function(anObject) {
 
     /**
      * @method objectType
+     * @alias type
      * @summary Returns the type object for the object provided. NOTE that this
      *     is not the same as the value returned by the native typeof keyword,
      *     which is the type name. NOTE that the TP.type() function is aliased
@@ -4459,6 +4478,7 @@ function(anObject) {
 
     /**
      * @method objectSuperType
+     * @alias stype
      * @summary Returns the supertype object for the object provided.
      * @param {Object} anObject The object to return the supertype for.
      * @returns {Object} The supertype of the supplied object.
@@ -4494,6 +4514,7 @@ function(anObject) {
 
     /**
      * @method objectTypeName
+     * @alias tname
      * @summary Returns the type name for the object provided. NOTE that this
      *     is not the same as the value returned by the native typeof keyword,
      *     which is often inadequately detailed and/or simply wrong. NOTE that
@@ -4568,6 +4589,7 @@ function(anObject) {
 
     /**
      * @method objectSupertypes
+     * @alias stypes
      * @summary Returns an Array of 'supertype' for the object provided.
      *     NOTE that the TP.stnames() function is aliased to this function as a
      *     'shorthand'.
@@ -4692,6 +4714,7 @@ function(anObject) {
 
     /**
      * @method objectSupertypeNames
+     * @alias stnames
      * @summary Returns an Array of 'supertype' names for the object provided.
      *     NOTE that the TP.stnames() function is aliased to this function as a
      *     'shorthand'.
@@ -4730,6 +4753,7 @@ function(anObject, anAspect, aValue) {
 
     /**
      * @method objectSetValue
+     * @alias setval
      * @summary Sets the value for anAspect using set(), atPut(), or a direct
      *     slot access in that order.
      * @param {Object} anObject The object to update.
@@ -4871,6 +4895,7 @@ function(anObject) {
 
     /**
      * @method objectUnwrap
+     * @alias unwrap
      * @summary Returns the native object equivalent (or content) of the
      *     receiver. This is a way of "unboxing" TIBET wrappers in a consistent
      *     fashion regardless of their type. NOTE that the TP.unwrap() function
@@ -4971,6 +4996,7 @@ function(anObject) {
 
     /**
      * @method objectWrap
+     * @alias wrap
      * @summary Wraps the object in a suitable TIBET encapsulation type. Most
      *     objects don't require this and simply pass through, however Node and
      *     Window instances will be wrapped in TP.core.Node or TP.core.Window

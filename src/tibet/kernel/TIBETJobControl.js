@@ -2316,8 +2316,8 @@ function(anInterval) {
      * @summary Sets the queuing interval in milliseconds using a Number,
      *     String, or Duration string value or a function to compute that value
      *     at runtime.
-     * @param {Number|String|Duration} aDelay A number of milliseconds in one of
-     *     three formats.
+     * @param {Number|String|Duration} anInterval A number of milliseconds in
+     *     one of three formats.
      * @returns {TP.core.Job} The receiver.
      */
 
@@ -2384,7 +2384,7 @@ function(aLimit) {
      *     a String or an xs:Duration. Number The maximum number of times the
      *     step function(s) will be invoked per execution of the job. Function A
      *     function that returns true if the job/step has reached its limit.
-     * @param {Number|String|Duration} aDelay The job limit in one of two
+     * @param {Number|String|Duration} aLimit The job limit in one of two
      *     formats or a function to compute it.
      * @returns {TP.core.Job} The receiver.
      */
@@ -2445,6 +2445,7 @@ function(work) {
      *     a default work function from the current step content. The default
      *     function is used primarly to ensure that the work is properly
      *     enclosed in a try/catch to cleanup the job if any errors occur.
+     * @param {Function} work The function serving as the work function.
      * @returns {TP.core.Job} The receiver.
      */
 

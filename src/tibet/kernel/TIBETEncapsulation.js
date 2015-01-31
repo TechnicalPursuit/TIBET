@@ -1067,7 +1067,8 @@ function() {
 
     /**
      * @method construct
-     * @summary The arguments provided are treated as elements of the array
+     * @summary Constructs and returns a new array instance.
+     * @description The arguments provided are treated as elements of the array
      *     with three exceptions. When an arguments object, node list, or named
      *     node map is passed as the single argument to this call the new
      *     instance's data is the result of converting those objects into native
@@ -1076,7 +1077,6 @@ function() {
      *     convention of accepting a single argument Number and treating it as a
      *     size.
      * @returns {Array} A new instance.
-     * @abtract Constructs and returns a new array instance.
      */
 
     var arg,
@@ -1111,11 +1111,11 @@ function(anObject) {
 
     /**
      * @method construct
-     * @param {Object} anObject An optional object to return in Boolean form.
-     * @returns {Boolean} A new instance.
-     * @abtract Constructs and returns a new instance of Boolean. Booleans are
+     * @summary Constructs and returns a new instance of Boolean. Booleans are
      *     localized by using the current locale's parse routine to help ensure
      *     proper translation of Boolean string input.
+     * @param {Object} anObject An optional object to return in Boolean form.
+     * @returns {Boolean} A new instance.
      */
 
     var val,
@@ -1159,7 +1159,11 @@ function() {
 
     /**
      * @method construct
-     * @summary Date parsing is a key element of usability. TIBET's approach
+     * @summary Constructs and returns a new instance of Date. Dates are parsed
+     *     using any date parsers which have been added to the Date type,
+     *     followed by the current TP.core.Locale which attempts to construct a
+     *     Date using localized parsing logic.
+     * @description Date parsing is a key element of usability. TIBET's approach
      *     is to attempt to use the standard Date constructor, followed by the
      *     Date.fromString() method when the input is a string. The fromString
      *     method looks for any parsers which may have been registered via prior
@@ -1167,10 +1171,6 @@ function() {
      *     TP.core.Locale is invoked to parse the input string in an attempt to
      *     offer locale-specific Date construction.
      * @returns {Date} A new instance.
-     * @abtract Constructs and returns a new instance of Date. Dates are parsed
-     *     using any date parsers which have been added to the Date type,
-     *     followed by the current TP.core.Locale which attempts to construct a
-     *     Date using localized parsing logic.
      */
 
     var $$newinst,
@@ -1255,8 +1255,8 @@ function() {
 
     /**
      * @method construct
+     * @summary Constructs and returns a new instance of the receiver.
      * @returns {Function} A new instance.
-     * @abtract Constructs and returns a new instance of the receiver.
      */
 
     var $$newinst,
@@ -1335,7 +1335,11 @@ function(anObject) {
 
     /**
      * @method construct
-     * @summary Number parsing is a key element of usability. TIBET's
+     * @summary Constructs and returns a new instance of Number. Numbers are
+     *     parsed using any number parsers which have been added to the number
+     *     type, followed by the current TP.core.Locale which attempts to
+     *     construct a Number using localized parsing logic.
+     * @description Number parsing is a key element of usability. TIBET's
      *     approach is to attempt to use the Number.fromString() method when the
      *     input is a string. The fromString method looks for any parsers which
      *     may have been registered via addParser. If those parsers are
@@ -1343,10 +1347,6 @@ function(anObject) {
      *     string in an attempt to offer locale-specific Number construction.
      * @param {Object} anObject An optional object to return in Number form.
      * @returns {Number} A new instance.
-     * @abtract Constructs and returns a new instance of Number. Numbers are
-     *     parsed using any number parsers which have been added to the number
-     *     type, followed by the current TP.core.Locale which attempts to
-     *     construct a Number using localized parsing logic.
      */
 
     var val,
@@ -1386,14 +1386,13 @@ function() {
 
     /**
      * @method construct
+     * @description Constructs and returns a new instance of the receiver.
+     *     Arguments are treated as alternating keys and values to match the
+     *     semantics of the standard call, but not quite the same syntax (a, b,
+     *     c, d rather than a: b, c: d). NOTE that in TIBET it is deprecated to
+     *     use an object as a hash for a number of reasons. If you truly want a
+     *     "dictionary" (i.e. "hash") you should use TP.hc() instead.
      * @returns {Object} A new instance.
-     * @abtract Constructs and returns a new instance of the receiver. Arguments
-     *     are treated as alternating keys and values to match the semantics of
-     *     the standard call, but not quite the same syntax (a, b, c, d rather
-     *     than a: b, c: d). NOTE that in TIBET it is deprecated to use an
-     *     object as a hash for a number of reasons. If you truly want a
-     *     "dictionary" (i.e. "hash") you should use TP.hc()
-     *     (TP.lang.Hash.construct) instead.
      */
 
     var i,
@@ -1428,12 +1427,12 @@ function(pattern, flags) {
 
     /**
      * @method construct
+     * @summary Constructs and returns a new instance of the receiver.
      * @param {String} pattern The regular expression pattern.
      * @param {String} flags A concatenated set of flags to control the RegExp
      *     object. These are: 'g' match globally 'i' ignore case 'm' match over
      *     multiple lines.
      * @returns {RegExp} A new instance.
-     * @abtract Constructs and returns a new instance of the receiver.
      */
 
     var restr,
@@ -1469,15 +1468,15 @@ TP.defineMethodAlias(TP, 'rc', RegExp.construct);
 //  ------------------------------------------------------------------------
 
 String.Type.defineMethod('construct',
-function() {
+function(varargs) {
 
     /**
      * @method construct
+     * @summary Constructs and returns a new instance of String from the
+     *     arguments supplied. This routine localizes each argument.
      * @param {Array} varargs A variable list of 0 to N values to build the
      *     String from.
      * @returns {String} A new instance.
-     * @abtract Constructs and returns a new instance of String from the
-     *     arguments supplied. This routine localizes each argument.
      */
 
     var currentLocale,

@@ -247,7 +247,7 @@ TP.definePrimitive('uriGetXPointerData',
 function(aURI, aNode, shouldClone) {
 
     /**
-     * @method getXPointerData
+     * @method uriGetXPointerData
      * @summary Returns the XML data defined by the XPointer relative to the
      *     node provided. The node is presumed to be the content node from the
      *     URI's document href.
@@ -562,7 +562,8 @@ TP.definePrimitive('uriIsVirtual',
 function(aPath) {
 
     /**
-     * Returns true if the path provided appears to be a virtual path.
+     * @method uriIsVirtual
+     * @summary Returns true if the path provided appears to be a virtual path.
      * @param {string} aPath The path to be tested.
      * @returns {Boolean} True if the path is virtual.
      */
@@ -582,12 +583,12 @@ TP.definePrimitive('uriJoinFragments',
 function(aPath, aFragment) {
 
     /**
-     * @method uriJoinFragment
+     * @method uriJoinFragments
      * @summary Joins a URI and a pointer fragment.
      * @param {String} aPath The URI string used as the prefix.
-     * @param {String} aFragment The pointer fragment. Note that this may contain
-     *     an XPointer and, if the path contains one as well and they don't
-     *     match, the path will be returned unchanged.
+     * @param {String} aFragment The pointer fragment. Note that this may
+     *     contain an XPointer and, if the path contains one as well and they
+     *     don't match, the path will be returned unchanged.
      * @exception TP.sig.InvalidURI
      * @returns {String} A properly joined URI/Query string.
      */
@@ -1670,7 +1671,7 @@ TP.definePrimitive('uriResultType',
 function(targetUrl, resultType) {
 
     /**
-     * @method $uriResultType
+     * @method uriResultType
      * @summary Returns a reasonable result type, TP.TEXT or TP.DOM, based on
      *     examination of the targetUrl's extension. If that check isn't
      *     definitive then the original resultType is returned (which may mean a

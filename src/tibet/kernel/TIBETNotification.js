@@ -66,7 +66,8 @@ TP.core.Annotation.Inst.defineAttribute('message');
 TP.core.Annotation.Inst.defineMethod('init', function(anObject, aMessage) {
 
     /**
-     * Initializes a new instance and returns it.
+     * @method init
+     * @summary Initializes a new instance and returns it.
      * @param {Object} anObject The object to annotate. Often an Error.
      * @param {String} aMessage The message to associate with anObject.
      * @returns {TP.core.Annotation} A new instance.
@@ -216,7 +217,8 @@ TP.core.Annotation.Inst.defineMethod('toString', function() {
 TP.definePrimitive('annotate', function(anObject, aMessage) {
 
     /**
-     * Initializes a new instance and returns it.
+     * @method annotate
+     * @summary Initializes a new instance and returns it.
      * @param {Object} anObject The object to annotate. Often an Error.
      * @param {String} aMessage The message to associate with anObject.
      * @returns {TP.core.Annotation} A new instance.
@@ -230,8 +232,9 @@ TP.definePrimitive('annotate', function(anObject, aMessage) {
 TP.definePrimitive('isAnnotation', function(anObject) {
 
     /**
-     * Returns true if the object provided is an instance of Annotation of
-     * either the boot or core variant.
+     * @method isAnnotation
+     * @summary Returns true if the object provided is an instance of Annotation
+     *     of either the boot or core variant.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object is any form of annotation.
      */
@@ -4806,7 +4809,7 @@ function(anOrigin, signalSet, aPayload, aType) {
      * @summary Fires a signal or set of signals from an origin. If a single
      *     signal/origin pair is provided this method defers to FIRE_ONE.
      * @param {Object} anOrigin The originator of the signal.
-     * @param {String|TP.sig.Signal} aSignal The signal to fire.
+     * @param {String|TP.sig.Signal} signalSet The signal to fire.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -5779,10 +5782,10 @@ function(anOrigin, aSignal) {
 
     /**
      * @method RESUME
+     * @summary Resumes signaling status for a particular origin/signal pair.
      * @param {String} anOrigin The origin to resume interest in.
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to resume
      *     interest in.
-     * @abtract Resumes signaling status for a particular origin/signal pair.
      */
 
     var entry,
@@ -7020,7 +7023,7 @@ function(aDocument) {
 
     /**
      * @method addObserverFor
-     * @synopsis
+     * @summary Sets up observations for mutation on the document provided.
      * @param {Document} aDocument The document to register a Mutation Observer
      *     on.
      * @exception TP.sig.InvalidNode
@@ -7081,7 +7084,7 @@ function(aDocument) {
 
     /**
      * @method removeObserverFor
-     * @synopsis
+     * @summary Removes mutation observation for the document provided.
      * @param {Document} aDocument The document to remove a Mutation Observer
      *     from.
      * @exception TP.sig.InvalidNode
@@ -7115,8 +7118,8 @@ function(aMutationRecord) {
 
     /**
      * @method handleMutationEvent
-     * @synopsis
-     * @param {MutationRecord} aMutationRecord
+     * @summary Responds to notifications that a mutation has occurred.
+     * @param {MutationRecord} aMutationRecord The incoming mutation record.
      * @exception TP.sig.InvalidNode
      * @returns {TP.lang.RootObject.<TP.core.MutationSignalSource>} The
      *     MutationSignalSource type.

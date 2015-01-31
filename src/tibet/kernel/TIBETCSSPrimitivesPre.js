@@ -126,8 +126,8 @@ function(aString) {
      *     crash Mozilla-based browers. We do the work consistently across
      *     browsers to avoid having inconsistent markup to support when
      *     searching for link or style elements in processed markup.
-     * @param {Node} aNode A native node to potentially escape.
-     * @returns {Node} The node, or a new node with CSS constructs escaped.
+     * @param {String} aString The string to escape values in.
+     * @returns {String} A new string with CSS constructs escaped.
      */
 
     return aString;
@@ -300,6 +300,7 @@ function(aMatrix) {
      *     a 4X4 matrix will be converted into a 3X2 matrix.
      * @description This code derived from:
      *     https://gist.github.com/Yaffle/1145197
+     * @param {Array} aMatrix An Array of Arrays representing the matrix.
      * @returns {Array} An Array of Arrays representing the converted matrix.
      */
 
@@ -330,6 +331,7 @@ function(aMatrix) {
      *     values for the missing spots).
      * @description This code derived from:
      *     https://gist.github.com/Yaffle/1145197
+     * @param {Array} aMatrix An Array of Arrays representing the matrix.
      * @returns {Array} An Array of Arrays representing the converted matrix.
      */
 
@@ -451,8 +453,8 @@ function(m/*, tx, ty, tz*/) {
      * @method translateMatrix
      * @summary Translates the supplied matrix.
      * @description This code derived from: https://gist.github.com/1145197
-     *     Note that this method assumes it is operating on a 4X4 matrix suitable
-     *     for use with CSS 3D transforms. This code derived from:
+     *     Note that this method assumes it is operating on a 4X4 matrix
+     *     suitable for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @param {Array} m An Array of Arrays representing the matrix to be
      *     translated.

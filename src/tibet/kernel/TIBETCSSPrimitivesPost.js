@@ -400,7 +400,6 @@ function(m1, m2, aHue) {
      * @param {Number} m1
      * @param {Number} m2
      * @param {Number} aHue The color hue information.
-     * @param {Number} anAlpha The color alpha information.
      * @exception TP.sig.InvalidParameter
      * @returns {Number} The converted number.
      */
@@ -1204,7 +1203,8 @@ function(anElement, aProperty, aValue) {
      *     property names.
      * @param {HTMLElement} anElement The element to retrieve the inline CSS
      *     style for.
-     * @param {String} aProperty An optional property name to query for.
+     * @param {String} aProperty The property name to add.
+     * @param {String} aValue The value for the property to be added.
      * @exception TP.sig.InvalidElement
      * @returns {String} The inline CSS style of the supplied element/property,
      *     or null if not found.
@@ -1526,7 +1526,7 @@ function(anElement, aProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementPopAndSetStyleProperty',
+TP.definePrimitive('elementPopStyleProperty',
 function(anElement, aProperty) {
 
     /**
@@ -1895,7 +1895,7 @@ TP.definePrimitive('$eventHandleStyleInsertion',
 function(insertionEvent) {
 
     /**
-     * @method $eventHandleStyleNodeInsertion
+     * @method $eventHandleStyleInsertion
      * @summary An event handler that is called upon document loading or
      *     writing to capture DOM Node insertions of 'style' or 'link' (to CSS
      *     style sheets) elements.
@@ -2167,7 +2167,7 @@ function(selectorStr) {
      * @method $$setupSelectorParseRecord
      * @summary An internal method that sets up an internal data structure for
      *     use by the 'TP.parseCSSSelector' method below.
-     * @param {String} strSelectorText The selector String to parse.
+     * @param {String} selectorStr The selector String to parse.
      * @returns {Object} A private 'parsing record' for use by the calling
      *     method.
      */

@@ -71,7 +71,7 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': [],
+        'boolean': ['checklib', 'missing'],
         'string': [],
         'default': {}
     },
@@ -113,6 +113,14 @@ Cmd.prototype.getScript = function() {
         target = prefix + '\'' + target + '\'';
     } else {
         target = prefix;
+    }
+
+    if (this.options.checklib) {
+        target += '--checklib';
+    }
+
+    if (this.options.missing) {
+        target += '--missing';
     }
 
     //  Add column flag since we need column output for cli. Otherwise we'll end

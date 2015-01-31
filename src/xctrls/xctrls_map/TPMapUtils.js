@@ -110,7 +110,6 @@ function(aLatLong) {
 
 /**
  * @type {TP.core.MapBounds}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -153,7 +152,6 @@ function(swlat, swlong, nelat, nelong) {
 
 /**
  * @type {TP.core.MapMarker}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

@@ -174,6 +174,8 @@ function(aURI, $$vetted) {
      *     this form.
      * @param {String} aURI Typically an absolute path but possibly a path
      *     starting with '.','/','-', or '~' which is adjusted as needed.
+     * @param {Boolean} $$vetted An internally used parameter used to trim
+     *     recursive searches for subtypes.
      * @returns {TP.core.URI} The new instance.
      */
 
@@ -1095,11 +1097,12 @@ function(url, entry, key) {
 
     /**
      * @method $getURIMapForKey
-     * @param {String} url
-     * @param {Object} entry
-     * @param {String} key
+     * @summary Searches the URI map for the uri provided and returns the data
+     *     found.
+     * @param {String} url The url to search for as the primary key.
+     * @param {Object} entry The URI catalog hash entry to leverage.
+     * @param {String} key The specific hash entry key to look up.
      * @returns {TP.lang.Hash} A URI Catalog entry hash.
-     * @abstract
      */
 
     var map,
@@ -3177,11 +3180,11 @@ function(aProperty, aFlag) {
 
     /**
      * @method $flag
+     * @summary Sets a specific property value to a boolean based on aFlag.
      * @param {String} aProperty The name of the boolean property being tested
      *     and/or manipulated.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} The current flag state.
-     * @abstract
      */
 
     if (!TP.isString(aProperty)) {
@@ -3276,6 +3279,8 @@ function(aFlag) {
      * @summary Returns true if the receiver has a URI map entry. Note that
      *     this value is set based on the first map lookup and won't be reset
      *     unless you clear the flag (make it non-boolean).
+     * @param {?Boolean} aFlag The value to set for whether the receiver is a
+     *     mapped URI or not.
      * @returns {Boolean} Whether or not the receiver is a 'mapped' URI.
      */
 
@@ -4077,8 +4082,6 @@ function(aNID) {
      * @summary Registers the receiving type for handling construction of URN
      *     instances for a particular namespace ID (NID).
      * @param {String} aNID A URN namespace ID such as 'oid', or 'tibet'.
-     * @param {TP.lang.RootObject} aHandler A type capable of handling requests
-     *     for URNs for the namespace.
      * @exception TP.sig.InvalidParameter When the scheme isn't a string.
      */
 
@@ -5832,7 +5835,7 @@ function(aRequest) {
      * @method httpDelete
      * @summary Uses the receiver as a target URI and invokes an HTTP DELETE
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -5849,7 +5852,7 @@ function(aRequest) {
      * @method httpGet
      * @summary Uses the receiver as a target URI and invokes an HTTP GET
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -5866,7 +5869,7 @@ function(aRequest) {
      * @method httpHead
      * @summary Uses the receiver as a target URI and invokes an HTTP HEAD
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -5883,7 +5886,7 @@ function(aRequest) {
      * @method httpOptions
      * @summary Uses the receiver as a target URI and invokes an HTTP OPTIONS
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -5900,7 +5903,7 @@ function(aRequest) {
      * @method httpPost
      * @summary Uses the receiver as a target URI and invokes an HTTP POST
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -5917,7 +5920,7 @@ function(aRequest) {
      * @method httpPut
      * @summary Uses the receiver as a target URI and invokes an HTTP PUT
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -5934,7 +5937,7 @@ function(aRequest) {
      * @method httpTrace
      * @summary Uses the receiver as a target URI and invokes an HTTP TRACE
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -7689,7 +7692,8 @@ TP.core.TIBETURL.Inst.defineMethod('getURIParts',
 function() {
 
     /**
-     * Returns the URI in split form.
+     * @method getURIParts
+     * @summary Returns the URI in split form.
      * @returns {Array.<String>} The split parts.
      */
 
@@ -7705,7 +7709,7 @@ function(aRequest) {
      * @method httpDelete
      * @summary Uses the receiver as a target URI and invokes an HTTP DELETE
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -7726,7 +7730,7 @@ function(aRequest) {
      * @method httpGet
      * @summary Uses the receiver as a target URI and invokes an HTTP GET
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -7747,7 +7751,7 @@ function(aRequest) {
      * @method httpHead
      * @summary Uses the receiver as a target URI and invokes an HTTP HEAD
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -7768,7 +7772,7 @@ function(aRequest) {
      * @method httpOptions
      * @summary Uses the receiver as a target URI and invokes an HTTP OPTIONS
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -7789,7 +7793,7 @@ function(aRequest) {
      * @method httpPost
      * @summary Uses the receiver as a target URI and invokes an HTTP POST
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -7810,7 +7814,7 @@ function(aRequest) {
      * @method httpPut
      * @summary Uses the receiver as a target URI and invokes an HTTP PUT
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */
@@ -7831,7 +7835,7 @@ function(aRequest) {
      * @method httpTrace
      * @summary Uses the receiver as a target URI and invokes an HTTP TRACE
      *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
+     * @param {TP.sig.Request} aRequest The original request being processed.
      * @returns {Object|TP.sig.Response} A response when async, object
      *     otherwise.
      */

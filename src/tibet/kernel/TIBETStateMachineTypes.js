@@ -436,7 +436,7 @@ TP.core.StateMachine.Inst.defineMethod('handleSignal',
 function(aSignal) {
 
     /**
-     * @method handleTPSignal
+     * @method handleSignal
      * @summary Responds to notifications of a signal/event that makes up part
      *     of the state machine's "input event stream". This method is invoked
      *     when you connect a state machine to an event stream via observe()

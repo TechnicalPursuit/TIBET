@@ -10,7 +10,6 @@
 
 /**
  * @type {TP.sherpa.quickbar}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -401,7 +400,6 @@ function() {
 
     /**
      * @method installHandlers
-     * @synopsis
      * @returns {TP.sherpa.quickbar} The receiver.
      */
 
@@ -423,7 +421,6 @@ function() {
 
     /**
      * @method removeHandlers
-     * @synopsis
      * @returns {TP.sherpa.quickbar} The receiver.
      */
 

@@ -7761,7 +7761,6 @@ function(job, params) {
 
 /**
  * @type {TP.core.MultiTransition}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

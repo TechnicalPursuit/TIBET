@@ -3588,7 +3588,7 @@ function() {
  *
  *     TP.api.IndexedCollectionAPI:
  *
- *     'addAt', 'addAllAt', 'at', 'atAll', 'atAllIfAbsent', 'atAllPut',
+ *     'addAt', 'addAllAt', 'at', 'atAll', 'atAllPut',
  *     'atIfInvalid', 'atIfNull', 'atIfUndefined', 'atPut', 'atPutIfAbsent',
  *     'containsKey', 'containsValue', 'detectKeyAt', 'getKeys', 'getKVPairs',
  *     'getPairs', 'getPosition', 'getPositions', 'grepKeys', 'performOver',
@@ -7810,20 +7810,6 @@ function() {
 
     /**
      * @method atAll
-     * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('atAllIfAbsent',
-function() {
-
-    /**
-     * @method atAllIfAbsent
      * @returns {TP.core.CollectionNode} The receiver.
      * @abstract
      */
@@ -14330,7 +14316,6 @@ function(aRequest) {
 
 /**
  * @type {TP.core.PipeSegmentElementNode}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

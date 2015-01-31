@@ -2677,6 +2677,7 @@ TP.hc(
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
+         * @param {Function} aFunction The onbeforeunload event handler.
          * @exception TP.sig.InvalidWindow
          */
 
@@ -2735,6 +2736,7 @@ TP.hc(
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
+         * @param {Function} aFunction The onbeforeunload event handler.
          * @exception TP.sig.InvalidWindow
          */
 
@@ -2797,6 +2799,7 @@ TP.hc(
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
+         * @param {Function} aFunction The onbeforeunload event handler.
          * @exception TP.sig.InvalidWindow
          */
 

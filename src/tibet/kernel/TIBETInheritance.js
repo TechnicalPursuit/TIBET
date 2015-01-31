@@ -822,6 +822,7 @@ function(anObj) {
      * @method fromObject
      * @summary Constructs a new instance from the incoming object. The default
      *     implementation forwards to construct.
+     * @param {Object} anObj The source object.
      * @returns {Object} A new instance of the receiver.
      */
 
@@ -2671,6 +2672,7 @@ function(aName) {
      * @method getImplementers
      * @summary Returns an array containing objects which have declared that
      *     they implement the receiver or a function with that name.
+     * @param {String} aName The method name to look up owners for.
      * @returns {Array} An Array of objects that implement the receiver.
      */
 
@@ -3041,7 +3043,7 @@ TP.lang.RootObject.Type.defineMethod('fromTP_sig_Signal',
 function(aSignal) {
 
     /**
-     * @method fromTP.core.Signal
+     * @method fromTP_sig_Signal
      * @summary Common backstop for constructing instances from a
      *     TP.core.Signal which should normally only occur for types that are
      *     being used as handlers for signal data.
@@ -4610,8 +4612,8 @@ function(propertyName, resolverObject, resolvingOption) {
      *     using the supplied resolverObject.
      * @param {TP.lang.RootObject|Function} resolverObject The object to use to
      *     resolve the trait.
-     * @param {String|Constant|Function} An optional property name or values of
-     *     TP.BEFORE/TP.AFTER or Function.
+     * @param {String|Constant|Function} resolvingOption An optional property
+     *     name or values of TP.BEFORE/TP.AFTER or Function.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
@@ -4764,8 +4766,8 @@ function(propertyName, resolverObject, resolvingOption) {
      *     using the supplied resolverObject.
      * @param {TP.lang.RootObject|Function} resolverObject The object to use to
      *     resolve the trait.
-     * @param {String|Constant|Function} An optional property name or values of
-     *     TP.BEFORE/TP.AFTER or Function.
+     * @param {String|Constant|Function} resolvingOption An optional property
+     *     name or values of TP.BEFORE/TP.AFTER or Function.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
@@ -5350,7 +5352,7 @@ TP.lang.RootObject.Type.defineMethod('validateConstraintsOn',
 function(anObject, constraints) {
 
     /**
-     * @method validateConstraints
+     * @method validateConstraintsOn
      * @summary Validates a supplied object against a set of validity
      *     constraints supplied in a second, literal POJO object.
      * @param {Object} anObject The object to test.
@@ -6211,6 +6213,7 @@ function(aFormat) {
      *     or "false" variants. Note that this method won't localize the
      *     resulting string, however you can localize the return string
      *     directly.
+     * @param {String} aFormat The format specification to format the receiver.
      * @returns {String}
      */
 
@@ -6517,8 +6520,8 @@ function() {
 
     /**
      * @method asNumber
+     * @summary Returns the receiver as a Number instance.
      * @returns {Number}
-     * @abtract Returns the receiver as a Number instance.
      */
 
     return this;
@@ -6531,15 +6534,15 @@ function(aString, sourceLocale) {
 
     /**
      * @method fromString
+     * @summary Parses the inbound string to produce a new Number using a
+     *     combination of the current TP.core.Locale and native JavaScript
+     *     numeric parse routines.
      * @param {String} aString The string to parse.
      * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
      *     TP.core.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Number} A new instance.
-     * @abtract Parses the inbound string to produce a new Number using a
-     *     combination of the current TP.core.Locale and native JavaScript
-     *     numeric parse routines.
      */
 
     //  kernel isn't loaded completely? use native call
@@ -9054,7 +9057,7 @@ function(methodName) {
      * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
-     * @param {String} aName The method name to return method information for.
+     * @param {String} methodName The method name to return information for.
      * @returns {TP.lang.Hash} The hash containing the method information as
      *     described in the method comment.
      */
@@ -9095,7 +9098,7 @@ function(methodName) {
      * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
-     * @param {String} aName The method name to return method information for.
+     * @param {String} methodName The method name to return information for.
      * @returns {TP.lang.Hash} The hash containing the method information as
      *     described in the method comment.
      */
@@ -9151,7 +9154,7 @@ function(methodName) {
      * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
-     * @param {String} aName The method name to return method information for.
+     * @param {String} methodName The method name to return information for.
      * @returns {TP.lang.Hash} The hash containing the method information as
      *     described in the method comment.
      */
@@ -9199,7 +9202,7 @@ function(methodName) {
      * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
-     * @param {String} aName The method name to return method information for.
+     * @param {String} methodName The method name to return information for.
      * @returns {TP.lang.Hash} The hash containing the method information as
      *     described in the method comment.
      */
@@ -9482,8 +9485,8 @@ function() {
 
     /**
      * @method getKeys
-     *     the receivers keys will be all of its attributes, hidden or shown,
-     *     instance-level or local-level.
+     * @summary Returns the objects keys. The keys will be all of the receiver's
+     *     attributes, hidden or shown, instance-level or local-level.
      * @returns {Array} An Array of all attributes of the receiver, hidden or
      *     shown, instance-level or local-level.
      */
@@ -9510,9 +9513,9 @@ function() {
 
     /**
      * @method getUniqueValueKeys
-     *     *uniquely-valued* slot on the receiver. That is, any attributes,
-     *     hidden or shown, instance-level or local-level, that have a value
-     *     different from the receiver's prototype object.
+     * @summary Returns uniquely-valued* slot on the receiver. That is, any
+     *     attributes, hidden or shown, instance-level or local-level, that have
+     *     a value different from the receiver's prototype object.
      * @returns {Array} An Array of all *uniquely-valued* attributes of the
      *     receiver, hidden or shown, instance-level or local-level.
      */

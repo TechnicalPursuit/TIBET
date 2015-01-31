@@ -535,6 +535,7 @@ function(anObject) {
      * @method validate
      * @summary Returns true if the object provided it meets the criteria for a
      *     valid time string with optional time zone data.
+     * @param {Object} anObject The object whose value should be verified.
      * @returns {Boolean} True if the object is 'valid'.
      */
 

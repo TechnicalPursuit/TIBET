@@ -489,7 +489,7 @@ if (!TP.isFunction(TP.FunctionProto.bind)) {
 //  ---
 
 Function.Inst.defineMethod('bind',
-function(aThis) {
+function(aThis, varargs) {
 
     /**
      * @method bind
@@ -675,6 +675,7 @@ function(aFunction) {
      *     potentially bound function (or series of them). This method "drills
      *     down" through a set of bound functions until it reaches the
      *     originally bound function reference.
+     * @param {Function} aFunction A function to unbind, returning the original.
      * @returns {Function} The originally bound source function.
      */
 
@@ -2466,8 +2467,10 @@ TP.defineMetaInstMethod('getHandlers',
 function() {
 
     /**
-     * Returns a hash containing any handlers defined on the receiver. Note that
-     * handler definitions are local to the receiver and are not inherited.
+     * @method getHandlers
+     * @summary Returns a hash containing any handlers defined on the receiver.
+     *     Note that handler definitions are local to the receiver and are not
+     *     inherited.
      * @returns {TP.lang.Hash} The receiver's local handler dictionary.
      */
 
@@ -2521,6 +2524,8 @@ function(aFlag) {
      * @method isOriginSet
      * @summary Returns true if the receiver has been flagged as a signal
      *     origin set. If aFlag is provided it will set this value.
+     * @param {Boolean} aFlag True if the receiver should be treated as a list
+     *     of origins and not the actual origin itself.
      * @returns {Boolean} Whether or not the receiving Array has been set to be
      *     an origin set.
      */
@@ -3775,14 +3780,14 @@ function(aSelectFunction) {
 
     /**
      * @method getPairs
+     * @summary Returns an array of ordered pairs generated from the receiver.
+     *     The individual pairs are [key,value] arrays where the keys are
+     *     filtered using the optional function provided.
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
      * @exception TP.sig.InvalidPairRequest
      * @returns {Array} The array of ordered pairs.
-     * @asbstract Returns an array of ordered pairs generated from the receiver.
-     *     The individual pairs are [key,value] arrays where the keys are
-     *     filtered using the optional function provided.
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
@@ -3883,10 +3888,10 @@ function() {
 
     /**
      * @method getPairs
-     * @summary For a String this is an invalid operation and an
+     * @abstract Returns an array of ordered pairs generated from the receiver.
+     * @description For a String this is an invalid operation and an
      *     TP.sig.InvalidPairRequest exception will be raised.
      * @exception TP.sig.InvalidPairRequest
-     * @asbstract Returns an array of ordered pairs generated from the receiver.
      */
 
     return this.raise('TP.sig.InvalidPairRequest');
@@ -3899,14 +3904,14 @@ function(aSelectFunction) {
 
     /**
      * @method getKVPairs
+     * @summary Returns an array of ordered pairs generated from the receiver.
+     *     The individual pairs are [key,value] arrays where the keys are
+     *     filtered using the optional function provided.
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
      * @exception TP.sig.InvalidPairRequest
      * @returns {Array} The array of ordered pairs.
-     * @asbstract Returns an array of ordered pairs generated from the receiver.
-     *     The individual pairs are [key,value] arrays where the keys are
-     *     filtered using the optional function provided.
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
@@ -7522,7 +7527,7 @@ function(aFunction) {
 //  ------------------------------------------------------------------------
 
 TP.defineCommonMethod('detectInvoke',
-function(aMethodName) {
+function(aMethodName, varargs) {
 
     /**
      * @method detectInvoke
@@ -8022,6 +8027,7 @@ function(attributeName, attributeValue) {
      *     object doesn't implement set() a direct slot access is attempted.
      * @param {String} attributeName The name of the attribute to set() on each
      *     item.
+     * @param {Object} attributeValue The value to set.
      * @returns {Object} The receiver.
      */
 
@@ -8413,7 +8419,7 @@ function(aFunction, startIndex) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('detectInvoke',
-function(aMethodName) {
+function(aMethodName, varargs) {
 
     /**
      * @method detectInvoke
