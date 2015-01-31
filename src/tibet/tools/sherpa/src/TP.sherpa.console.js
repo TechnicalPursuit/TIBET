@@ -10,7 +10,6 @@
 
 /**
  * @type {TP.sherpa.console}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -150,7 +149,6 @@ function() {
 
     /**
      * @method getCurrentEvalMarker
-     * @synopsis
      * @returns
      */
 
@@ -177,7 +175,6 @@ function() {
 
     /**
      * @method getCurrentInputMarker
-     * @synopsis
      * @returns
      */
 
@@ -204,7 +201,6 @@ function() {
 
     /**
      * @method getCurrentPromptMarker
-     * @synopsis
      * @returns
      */
 
@@ -404,7 +400,6 @@ function(aMode) {
 
     /**
      * @method toggleOutputMode
-     * @synopsis
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -475,7 +470,6 @@ function() {
 
     /**
      * @method getPrompt
-     * @synopsis
      * @returns {String}
      */
 
@@ -489,7 +483,6 @@ function(range, cssClass, promptText) {
 
     /**
      * @method generatePromptMarkAt
-     * @synopsis
      * @param
      * @param
      * @returns
@@ -538,7 +531,6 @@ function() {
 
     /**
      * @method movePromptMarkToCursor
-     * @synopsis
      * @returns
      */
 
@@ -888,7 +880,6 @@ function(select) {
 
     /**
      * @method focusInput
-     * @synopsis
      * @param {Boolean} select True to select in addition.
      * @returns {TP.sherpa.console} The receiver.
      */
@@ -1075,7 +1066,6 @@ function(aSignal) {
 
     /**
      * @method getInputStats
-     * @synopsis
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
      * @returns {TP.sherpa.console} The receiver.
@@ -1111,7 +1101,6 @@ function(aSignal) {
 
     /**
      * @method getOutputTypeInfo
-     * @synopsis
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
      * @returns {TP.sherpa.console} The receiver.
@@ -1197,7 +1186,6 @@ function(uniqueID, dataRecord) {
 
     /**
      * @method createOutputEntry
-     * @synopsis
      * @param
      * @param
      * @returns {TP.sherpa.console} The receiver.
@@ -1275,7 +1263,6 @@ function(uniqueID, dataRecord) {
 
     /**
      * @method updateOutputEntry
-     * @synopsis
      * @param
      * @param
      * @returns {TP.sherpa.console} The receiver.
@@ -1397,7 +1384,6 @@ function(uniqueID) {
 
     /**
      * @method generateOutputElement
-     * @synopsis
      * @param
      * @returns
      */
@@ -1441,7 +1427,6 @@ function() {
 
     /**
      * @method setupEvalMark
-     * @synopsis
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -1496,7 +1481,6 @@ function(direction, endPoint) {
 
     /**
      * @method shiftEvalMark
-     * @synopsis
      * @param
      * @param
      * @returns {TP.sherpa.console} The receiver.
@@ -1641,7 +1625,6 @@ function() {
 
     /**
      * @method teardownEvalMark
-     * @synopsis
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -1697,7 +1680,6 @@ function() {
 
     /**
      * @method computeEvalMarkRangeAnchor
-     * @synopsis
      * @returns
      */
 
@@ -1779,7 +1761,6 @@ function() {
 
     /**
      * @method computeEvalMarkRangeHead
-     * @synopsis
      * @returns
      */
 
@@ -1831,7 +1812,6 @@ function() {
 
     /**
      * @method computeEvalMarkRange
-     * @synopsis
      * @returns
      */
 
@@ -1861,7 +1841,6 @@ function(range) {
 
     /**
      * @method generateEvalMarkAt
-     * @synopsis
      * @returns
      */
 

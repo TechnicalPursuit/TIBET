@@ -185,7 +185,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('asXMLNode',
-function(aDocument) {
+function() {
 
     /**
      * @method asXMLNode

@@ -132,7 +132,6 @@ TP.api.IndexedCollectionAPI =
         'addAllAt',
         'at',
         'atAll',
-        'atAllIfAbsent',
         'atAllPut',
         'atIfInvalid',
         'atIfNull',
@@ -229,8 +228,8 @@ TP.api.OrderedPairAPI =
 
         /**
          * @method first
+         * @summary Returns the first element of the ordered pair.
          * @returns {Object} An Object.
-         * @asbstract Returns the first element of the ordered pair.
          */
 
         'first',
@@ -782,10 +781,10 @@ function(aCollection) {
 
     /**
      * @method addAllIfAbsent
-     * @param {TPCollection} aCollection
-     * @abstract
-     * @return
-     * @fires Change
+     * @summary Adds all items from the collection provided which are not
+     *     currently found in the receiver.
+     * @param {TPCollection} aCollection The collection to add items from.
+     * @return {Array} The receiver.
      */
 
     return TP.todo();
@@ -916,6 +915,7 @@ function() {
 
     /**
      * @method asHash
+     * @alias asTP_lang_Hash
      * @summary Returns a hash containing the key/value pairs of the array. The
      *     indexes of this hash are the numerical indices of the receiver for
      *     which the value TP.isDefined().
@@ -1429,7 +1429,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('merge',
-function() {
+function(varargs) {
 
     /**
      * @method merge
@@ -1952,22 +1952,6 @@ function(aCollection) {
         });
 
     return tmparr;
-});
-
-//  ------------------------------------------------------------------------
-
-Array.Inst.defineMethod('atAllIfAbsent',
-function(aCollection) {
-
-    /**
-     * @method atAllIfAbsent
-     * @param {TPCollection} aCollection
-     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
-     * @returns {Array}
-     * @abstract
-     */
-
-    return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
@@ -2577,7 +2561,7 @@ function(aValue, anItem, aTest) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('addFirst',
-function(aValue) {
+function(varargs) {
 
     /**
      * @method addFirst
@@ -2603,7 +2587,7 @@ function(aValue) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('addLast',
-function(aValue) {
+function(varargs) {
 
     /**
      * @method addLast
@@ -2630,7 +2614,7 @@ function(aValue) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('after',
-function(anItem, aTest, noRaise) {
+function(anItem, aTest) {
 
     /**
      * @method after
@@ -2655,7 +2639,7 @@ function(anItem, aTest, noRaise) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('before',
-function(anItem, aTest, noRaise) {
+function(anItem, aTest) {
 
     /**
      * @method before
@@ -3886,22 +3870,6 @@ function(aCollection) {
      */
 
     return this.split('').atAll(aCollection);
-});
-
-//  ------------------------------------------------------------------------
-
-String.Inst.defineMethod('atAllIfAbsent',
-function(aCollection) {
-
-    /**
-     * @method atAllIfAbsent
-     * @param {TPCollection} aCollection The collection of indexes.
-     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
-     * @abstract
-     * @return
-     */
-
-    return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
@@ -5830,7 +5798,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.Hash.Inst.defineMethod('add',
-function() {
+function(varargs) {
 
     /**
      * @method add
@@ -6198,6 +6166,8 @@ function() {
 
     /**
      * @method asRange
+     * @summary Returns a new TP.core.Range based on the size of the receiver.
+     * @returns {TP.core.Range} The new range object.
      */
 
     return TP.todo();
@@ -6576,8 +6546,7 @@ function(aString) {
     /**
      * @method containsString
      * @summary Returns true if the receiver contains the string provided.
-     * @param {String} aValue The value that at least one element in the
-     *     receiver should be equal to for this method to return true.
+     * @param {String} aString The string value to check for as a value.
      * @returns {Boolean}
      */
 
@@ -6959,7 +6928,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.Hash.Inst.defineMethod('merge',
-function(shouldForce) {
+function(varargs) {
 
     /**
      * @method merge
@@ -7453,22 +7422,6 @@ function(aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atAllIfAbsent',
-function(aCollection) {
-
-    /**
-     * @method atAllIfAbsent
-     * @param {TPCollection} aCollection The collection of indexes.
-     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
-     * @returns {Array}
-     * @abstract
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.lang.Hash.Inst.defineMethod('atAllPut',
 function(aCollection, aValue) {
 
@@ -7901,11 +7854,14 @@ function(aKey, anIndex) {
 
     /**
      * @method detectKeyAt
+     * @summary Searches for the first nested element whose value at(anIndex)
+     *     matches aKey. This can be a useful detection for finding data in an
+     *     ordered collection (array, sorted hash, or node) by the value at a
+     *     particular index or attribute location.
      * @param {String|RegExp} aKey The string or regular expression selector to
      *     match with.
-     * @param {Number} anIndex
-     * @returns {Object}
-     * @abstract
+     * @param {Number} anIndex The "column" index to check in each nested array.
+     * @returns {Array} The nested array whose value at anIndex matches aKey.
      */
 
     return TP.todo();
@@ -8493,7 +8449,7 @@ function(aStep) {
 //  ------------------------------------------------------------------------
 
 TP.core.Range.Inst.defineMethod('empty',
-function(anIndex) {
+function() {
 
     /**
      * @method empty

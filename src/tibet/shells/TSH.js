@@ -1803,9 +1803,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeEcho',
 function(aRequest) {
 
-    /**
-     */
-
     var args;
 
     args = this.getArgument(aRequest, 'ARGV');
@@ -1893,9 +1890,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeSort',
 function(aRequest) {
 
-    /**
-     */
-
     aRequest.stdout('Not yet implemented.');
 
     return aRequest.complete();
@@ -1905,9 +1899,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeUniq',
 function(aRequest) {
-
-    /**
-     */
 
     aRequest.stdout('Not yet implemented.');
 
@@ -1922,9 +1913,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeBreak',
 function(aRequest) {
 
-    /**
-     */
-
     aRequest.stdout('Not yet implemented.');
 
     return aRequest.complete();
@@ -1935,9 +1923,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeExpect',
 function(aRequest) {
 
-    /**
-     */
-
     aRequest.stdout('Not yet implemented.');
 
     return aRequest.complete();
@@ -1947,9 +1932,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeWatch',
 function(aRequest) {
-
-    /**
-     */
 
     aRequest.stdout('Not yet implemented.');
 
@@ -1963,9 +1945,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeJob',
 function(aRequest) {
 
-    /**
-     */
-
     aRequest.stdout('Not yet implemented.');
 
     return aRequest.complete();
@@ -1975,9 +1954,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeKill',
 function(aRequest) {
-
-    /**
-     */
 
     aRequest.stdout('Not yet implemented.');
 
@@ -2074,9 +2050,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeDump',
 function(aRequest) {
 
-    /**
-     */
-
     var arg,
         obj;
 
@@ -2098,9 +2071,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeEdit',
 function(aRequest) {
-
-    /**
-     */
 
     var arg,
         url,
@@ -2144,9 +2114,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeScreen',
 function(aRequest) {
 
-    /**
-     */
-
     var tdp,
         arg;
 
@@ -2165,9 +2132,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeInspect',
 function(aRequest) {
 
-    /**
-     */
-
     aRequest.stdout('Not yet implemented.');
 
     return aRequest.complete();
@@ -2177,9 +2141,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeMan',
 function(aRequest) {
-
-    /**
-     */
 
     aRequest.stdout('Not yet implemented.');
 
@@ -2191,12 +2152,10 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeDoclint',
 function(aRequest) {
 
-    /**
-     */
-
     var methods,
         results,
         column,
+        missing,
         dups;
 
     results = [];
@@ -2207,6 +2166,7 @@ function(aRequest) {
         '@example', '@author'];
 
     column = this.getArgument(aRequest, 'tsh:column', false);
+    missing = this.getArgument(aRequest, 'tsh:missing', false);
 
     methods = TP.sys.getMetadata('methods');
     methods.perform(function(item) {
@@ -2215,6 +2175,9 @@ function(aRequest) {
             file,
             lines,
             line,
+            names,
+            match,
+            found,
             taglines,
             dict,
             text,
@@ -2229,7 +2192,7 @@ function(aRequest) {
 
         if (TP.notValid(lines)) {
             text = func.toString();
-            if (!TP.regex.NATIVE_CODE.test(text)) {
+            if (missing && !TP.regex.NATIVE_CODE.test(text)) {
                 // No comment and not native code.
                 TP.regex.UNDERSCORES.index = 0;
                 results.push({
@@ -2249,32 +2212,45 @@ function(aRequest) {
             //  aliased tags
             //  ---
 
-            // TODO: replace aliases with canonical versions for TIBET.
+            // TODO: replace aliases with canonical versions for TIBET. For
+            // example, @return => @returns, @func => @method, etc.
 
 
             //  ---
             //  @method
             //  ---
 
-            line = lines.detect(function(line) {
-                return line.startsWith('@method ');
+            names = lines.filter(function(line) {
+                return line.startsWith('@method ') ||
+                    line.startsWith('@alias ');
             });
 
-            if (TP.notValid(line)) {
+            if (TP.isEmpty(names)) {
                 result = TP.ifInvalid(result,
                     {name: name, errors: []});
                 result.errors.push('@method missing');
             } else {
-                //  TODO:   "aliased" primitives fail this test. Maybe we can
-                //  fix by noting that the named one is identical.
 
-                // Name here is full name so we need to slice off the last part
-                // of that to check against.
-                line = line.split(' ').last();
-                if (name.split('_').last() !== line) {
+                //  The name is of the form A_B_method_name_parts where we
+                //  can even have double-underscore. As a result we have to
+                //  use a regex rather than split or other approaches.
+                match = name.match(/^(.*?)_(.*?)_(.*)$/);
+
+                found = false;
+                names.forEach(function(line) {
+                    //  Throw away tag, keeping remainder.
+                    line = line.split(' ').last();
+
+                    if (match && match[3] === line) {
+                        found = true;
+                    }
+                });
+
+                if (!found) {
+
                     result = TP.ifInvalid(result,
                         {name: name, errors: []});
-                    result.errors.push('@method is ' + line);
+                    result.errors.push('@method incorrect');
                 }
             }
 
@@ -2309,6 +2285,22 @@ function(aRequest) {
                     dict.atPut(tag, tag);
                 }
             });
+
+            //  ---
+            //  Discussion
+            //  ---
+
+            //  Have to have a summary or description (preferably both ;)).
+            taglines = lines.filter(function(line) {
+                return line.startsWith('@summary ') ||
+                    line.startsWith('@description ');
+            });
+
+            if (TP.isEmpty(taglines)) {
+                result = TP.ifInvalid(result,
+                    {name: name, errors: []});
+                result.errors.push('@summary/@desc missing');
+            }
 
             //  ---
             //  @param
@@ -2400,13 +2392,20 @@ function(aRequest) {
                 results.push(result);
             }
 
+            //  ---
+            //  @returns
+            //  ---
+
+            //  TODO:   if no @returns verify that return; is only return line
+            //          found, if any.
+
+
             //  TODO:   cross-check function source against:
-            //  @fires
-            //  @throws
-            //  @exception
-            //  @listens
-            //  @return
-            //  @ignore
+            //  @todo               todo()
+            //  @fires              signal() / fire()
+            //  @throws             'throw '
+            //  @exception          raise()
+            //  @listens            observe(), addListener/addObserver
             //  @deprecated
             //  etc :)
         }
@@ -2573,9 +2572,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeEntity',
 function(aRequest) {
-
-    /**
-     */
 
     var arg,
         entity;
@@ -2946,9 +2942,6 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeBuiltins',
 function(aRequest) {
 
-    /**
-     */
-
     aRequest.stdout('Not yet implemented.');
 
     return aRequest.complete();
@@ -2958,9 +2951,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeGlobals',
 function(aRequest) {
-
-    /**
-     */
 
     var keys;
 
@@ -2986,9 +2976,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeHelp',
 function(aRequest) {
-
-    /**
-     */
 
     var methods,
         shell;
@@ -3027,9 +3014,6 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeShorts',
 function(aRequest) {
-
-    /**
-     */
 
     var keys;
 

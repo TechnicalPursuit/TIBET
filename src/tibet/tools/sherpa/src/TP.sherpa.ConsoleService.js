@@ -10,7 +10,6 @@
 
 /**
  * @type {TP.sherpa.ConsoleService}
- * @synopsis
  */
 
 //  ----------------------------------------------------------------------------
@@ -479,7 +478,6 @@ function() {
 
     /**
      * @method installHandlers
-     * @synopsis
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
@@ -503,7 +501,6 @@ function() {
 
     /**
      * @method removeHandlers
-     * @synopsis
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
@@ -1278,7 +1275,6 @@ function(rawInput) {
 
     /**
      * @method execRawInput
-     * @synopsis
      * @param {String} rawInput A String of raw input
      */
 

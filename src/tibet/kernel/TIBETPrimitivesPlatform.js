@@ -1514,6 +1514,7 @@ TP.hc(
 
         /**
          * @method objectToString
+         * @alias tostr
          * @summary Returns a 'representational String' of anObject.
          * @description This function is mostly used when the object in question
          *     cannot respond to toString(). In IE, this happens quite often

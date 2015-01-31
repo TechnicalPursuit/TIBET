@@ -278,6 +278,8 @@ function(aNode, namespaceURI) {
      * @description If the supplied Node already has a default namespace, this
      *     method will *not* reset it.
      * @param {Node} aNode The Node to add the default namespace to.
+     * @param {String} namespaceURI The namespace URI to associate with the
+     *     default namespace.
      * @returns {Node} A new Node (Document or Element depending on what was
      *     provided to this method) with the namespace added to it.
      * @exception TP.sig.InvalidNode Raised when an invalid document or element is

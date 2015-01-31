@@ -1568,7 +1568,8 @@ TP.definePrimitive('arm',
 function(aNodeOrList, eventNames, aHandler, aPolicy, nodeContext) {
 
     /**
-     * @method Arms a node or list of them with the event or events given.
+     * @method arm
+     * @summary Arms a node or list of them with the event or events given.
      * @param {Node|String} aNodeOrList The node or list of nodes to arm with
      *     the event(s) specified. This can also be the TP.ANY constant,
      *     indicating that the event is to be observed coming from any node.
@@ -1697,7 +1698,8 @@ TP.definePrimitive('disarm',
 function(aNodeOrList, eventNames, aHandler, nodeContext) {
 
     /**
-     * @method Disarms a node or list of them for the event or events.
+     * @method disarm
+     * @summary Disarms a node or list of them for the event or events.
      * @param {Node|String} aNodeOrList The node or list of nodes to disarm with
      *     the event(s) specified. This can also be the TP.ANY constant.
      * @param {String|Array} eventNames The names or types of the events to

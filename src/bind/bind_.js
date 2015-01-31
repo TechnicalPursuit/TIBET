@@ -28,7 +28,6 @@ function(anElement) {
 
     /**
      * @method setup
-     * @synopsis
      * @param {Element} anElement The element to set up.
      * @returns {null}
      */
@@ -60,7 +59,6 @@ function(anElement) {
 
     /**
      * @method teardown
-     * @synopsis
      * @param {Element} anElement The element to tear down.
      * @returns {null}
      */

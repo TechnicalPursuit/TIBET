@@ -338,12 +338,10 @@ function(aLocale, aKey) {
      *     allowing it to be found quickly. Note that by using one or more calls
      *     and different keys you can map a particular locale as the handler for
      *     a number of language and country code combinations.
-     * @param {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
-     *     type object.
+     * @param {TP.meta.Locale} aLocale A TP.core.Locale subtype type object.
      * @param {String} aKey The language-country code key to use to register
      *     this locale.
-     * @returns {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
-     *     type object.
+     * @returns {TP.meta.Locale} A TP.core.Locale subtype type object.
      */
 
     var key;

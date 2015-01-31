@@ -929,6 +929,7 @@ function(aRequest) {
     /**
      * @method rewriteRequestMIMEType
      * @summary Returns the MIME type this service uses for body encoding.
+     * @param {TP.sig.HTTPRequest} aRequest The request to rewrite for.
      * @returns {Constant} A constant suitable for TP.httpEncode.
      */
 

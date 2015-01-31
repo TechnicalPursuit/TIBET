@@ -1981,7 +1981,6 @@ function(rawInput) {
 
     /**
      * @method execRawInput
-     * @synopsis
      * @param {String} rawInput A String of raw input
      */
 
@@ -2751,7 +2750,6 @@ function() {
 
 /**
  * @type {TP.sig.ToggleConsole}
- * @synopsis
  */
 
 //  ----------------------------------------------------------------------------

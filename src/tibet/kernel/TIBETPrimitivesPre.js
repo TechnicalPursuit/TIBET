@@ -154,7 +154,7 @@ TP.isCallable = function(anObj) {
      *     marked as a DNU. No owner or track testing is performed which is what
      *     disinguishes this call from TP.isMethod(). Methods, unlike more
      *     generic "callables", have an owner and track.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test to see if a function is callable:
      *     <code>
      *          anObj = function() {return 42};
@@ -342,7 +342,7 @@ TP.isDNU = function(anObj) {
      * @description TIBET's support for "missing" methods is driven largely by
      *     the DNU concept, which provides the hooks found in Ruby's missing
      *     methods, Smalltalk/Self's "doesNotUnderstand", etc.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is a DNU.
      */
 
@@ -382,7 +382,7 @@ TP.isFunction = function(anObj) {
      *     advice? Don't use typeof unless you're certain of what you're
      *     really testing against and you're only interested in knowing what the
      *     primitive type (in ECMA-standard terms) of the object is.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test to see if a function is a Function:
      *     <code>
      *          anObj = function() {return 42};
@@ -427,7 +427,7 @@ TP.isString = function(anObj) {
      *     to concatenate strings, use TP.join() or one of the collection
      *     methods instead since they're faster and can deal with strings of
      *     different types...but you knew all that :).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test to see if an object is a string:
      *     <code>
      *          anObj = 'foo';
@@ -566,6 +566,7 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
      *
      *     This allows you to alter behavior for a single method and then put
      *     it back where you found it all clean and nice.
+     * @param {Object} owner The object that owns the method.
      * @param {String} name The slot name.
      * @param {String} track The slot track (type, inst, local, etc).
      * @param {String} display The slot display name. Defaults to the
@@ -624,7 +625,7 @@ TP.StringProto.strip = function(aRegExp) {
      * @method strip
      * @summary Returns a new string with the contents of the receiver after
      *     having removed any characters matching the RegExp passed in.
-     * @param {RegExp} aRegexp The pattern to strip from receiver.
+     * @param {RegExp} aRegExp The pattern to strip from receiver.
      * @returns {String} A new string with the contents of the receiver except
      *     for characters specified in aRegexp.
      */
@@ -1775,9 +1776,6 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
 TP.objectGetMetadataName = function(anObject) {
 
-    /**
-     */
-
     if (TP.notValid(anObject)) {
         return;
     }
@@ -2222,41 +2220,6 @@ TP.defineMethodSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
 
-//  Add metadata for the 'bootstrap' methods that got us this far.
-
-//  Defined in TIBETGlobal.js
-
-TP.sys.addMetadata(TP, TP.constructOrphanObject, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.defineNamespace, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.isNamespace, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.getGlobals, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.release, TP.METHOD, TP.PRIMITIVE_TRACK);
-
-//  Defined in this file
-
-TP.sys.addMetadata(TP, TP.isCallable, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.canInvoke, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.isValid, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.notValid, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.ifInvalid, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.isDNU, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.isFunction, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.isString, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.owns, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.objectGetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.objectSetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(Function, TP.FunctionProto.asMethod,
-                    TP.METHOD, TP.INST_TRACK);
-TP.sys.addMetadata(String, TP.StringProto.strip, TP.METHOD, TP.INST_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.LOCAL_TRACK);
-TP.sys.addMetadata(TP, TP.getFunctionName, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(Function, TP.FunctionProto.$getName,
-                    TP.METHOD, TP.INST_TRACK);
-TP.sys.addMetadata(TP, TP.objectGetMetadataName, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
-
-//  ------------------------------------------------------------------------
-
 TP.defineMethodSlot(TP, 'definePrimitive',
 function(name, bodyOrConditionals, desc, display, owner) {
 
@@ -2531,7 +2494,7 @@ function(anObj) {
      * @summary Returns true if the object provided is a DOM node, regardless
      *     of whether it's in an HTML or XML DOM. This is a simple test for a
      *     valid nodeType property.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a node and what's not:
      *     <code>
      *          TP.isNode(TP.documentGetBody(document)); // Elements are Nodes
@@ -2560,7 +2523,7 @@ function(anObj) {
      * @summary Returns whether or not the supplied object is a 'non Function'
      *     constructor. Host environments have constructors that are not
      *     Functions, but are faked by the platform.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is a non Function
      *     constructor object.
      */
@@ -2684,7 +2647,7 @@ function(anObj) {
      * @method isPlainObject
      * @summary Returns true if the object provided is a 'plain JavaScript
      *     Object' - that is, created via 'new Object()' or '{}'.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a type and what's not:
      *     <code>
      *          anObj = new Object();
@@ -2741,7 +2704,7 @@ function(anObj) {
      * @summary Returns true if the object provided acts as a Type/Class. To
      *     properly respond the object must have a META hash reference which
      *     TIBET adds for any object used as a type.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a type and what's not:
      *     <code>
      *          anObj = TP.lang.Object.construct();
@@ -2819,7 +2782,7 @@ function(anObj) {
      *     extend those 8 such as Event, but most HTML/DOM types will vary
      *     between implementations. By also checking for 'non Function'
      *     constructors here, we try to mitigate this problem.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is a native type
      *     (that is, one that is built into the browser).
      */
@@ -2843,7 +2806,7 @@ function(anObj) {
     /**
      * @method isWindow
      * @summary Returns true if the object to be tested is a window.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a window and what's not:
      *     <code>
      *          TP.isWindow(window)
@@ -2888,6 +2851,7 @@ function(anObject) {
      * @summary Returns true if the object is being used as a prototypical
      *     instance within the constructor.prototype chain or within TIBET's
      *     inheritance mechanism.
+     * @param {Object} anObject The object to test.
      * @returns {Boolean}
      */
 
@@ -2935,7 +2899,7 @@ function(anObj) {
      *     NOTE: Even though Function objects don't have 'official' properties
      *     that can be set, we consider them to be mutable, since custom
      *     properties can be set on them.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's mutable and what's not:
      *     <code>
      *          TP.isMutable(42);
@@ -2997,7 +2961,7 @@ function(anObj) {
      *     others can be defined in the add*Attribute definition calls -- unless
      *     you truly want to share one attribute across all instances (or all
      *     subtypes).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a reference type and what's not:
      *     <code>
      *          TP.isReferenceType(42);
@@ -3095,30 +3059,30 @@ if (TP.notValid(TP.sys.$statistics)) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('isMethod',
-function(anObj) {
+function(anObject) {
 
     /**
      * @method isMethod
      * @summary Returns true if the object provided is a method on some object.
-     * @param {Object} anObject The Object to test.
+     * @param {Object} anObject The object to test.
      * @returns {Boolean} Whether or not the supplied object is a method.
      */
 
     //  methods have owners and tracks in TIBET so those need to be present
-    if (TP.notValid(anObj) ||
-        TP.notValid(anObj[TP.OWNER]) ||
-        TP.notValid(anObj[TP.TRACK])) {
+    if (TP.notValid(anObject) ||
+        TP.notValid(anObject[TP.OWNER]) ||
+        TP.notValid(anObject[TP.TRACK])) {
         return false;
     }
 
     //  owner and track can't be NONE, which implies a bound function
-    if ((anObj[TP.OWNER] === TP.NONE) || (anObj[TP.TRACK] === TP.NONE)) {
+    if ((anObject[TP.OWNER] === TP.NONE) || (anObject[TP.TRACK] === TP.NONE)) {
         return false;
     }
 
     //  if owner/track are valid is it callable? then it's a method as long
     //  as we don't trip over a native type
-    return TP.isCallable(anObj) && !TP.isType(anObj);
+    return TP.isCallable(anObject) && !TP.isType(anObject);
 }, false, 'TP.isMethod');
 
 //  ------------------------------------------------------------------------
@@ -5739,7 +5703,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('sc',
-function() {
+function(varargs) {
 
     /**
      * @method sc
@@ -5748,8 +5712,8 @@ function() {
      *     localized. All arguments used in constructing Strings using TP.sc()
      *     are subject to localization based on the current source and target
      *     locale information. See TP.core.Locale for more information.
-     * @param {Array} varargs A variable list of 0 to N values to build the
-     *     String from.
+     * @param {Object} varargs A variable list of 0 to N values to build
+     *     the String from.
      * @returns {String} A new instance.
      */
 
@@ -5802,7 +5766,7 @@ function(anAction) {
      *     and a "curtain" to display the prompt in a modal fashion, or act in a
      *     non-modal fashion, offering usability improvements over the native
      *     confirm function.
-     * @param {String} aQuestion The question for the user.
+     * @param {String} anAction The action for the user to confirm.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.confirm('Perform Action?');
@@ -5912,7 +5876,7 @@ TP.definePrimitive('stop',
 function(aFlagOrParam) {
 
     /**
-     * @method debug
+     * @method stop
      * @summary A stand-in for the debugger keyword that won't cause Safari to
      *     complain about syntax errors. Also a convenient way to provide if
      *     (some condition) debugger; logic. By providing either a Boolean or a
@@ -7228,7 +7192,7 @@ function(anObj) {
      * @method isArgArray
      * @summary Returns true if the object provided is an 'arguments' array, a
      *     very special object in JavaScript which isn't an Array.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test to see if 'arguments' is an arg Array:
      *     <code>
      *          TP.isArgArray(arguments);
@@ -7250,7 +7214,7 @@ function(anObj) {
     /**
      * @method isArray
      * @summary Returns true if the object provided is a JavaScript Array.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test to see if 'anObj' is an Array:
      *     <code>
      *          anObj = TP.ac();
@@ -7274,7 +7238,7 @@ function(anObj) {
      * @method isBoolean
      * @summary Returns true if the object provided is a boolean primitive or
      *     wrapper object.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is a boolean.
      */
 
@@ -7303,7 +7267,7 @@ function(anObj) {
     /**
      * @method isDate
      * @summary Returns true if the object provided is a date value.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean}
      */
 
@@ -7353,7 +7317,7 @@ function(anObj) {
      *     work so that a call like if (TP.isNumber(parseInt(userData)))
      *     doMath(); works the way you'd expect and won't try to compute the sum
      *     of 'foo', 'bar', and 'baz' when the user enters alphas.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test to see if anObj is a Number:
      *     <code>
      *          anObj = 42;
@@ -7393,7 +7357,7 @@ function(anObj) {
      * @method isRegExp
      * @summary Returns true if the object provided is a regular expression
      *     instance.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is a RegExp.
      */
 
@@ -7418,7 +7382,7 @@ function(anObj) {
      * @method isInvalidDate
      * @summary Returns true if the object is a Date object, but has an invalid
      *     Date value.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean}
      */
 
@@ -7611,7 +7575,7 @@ function(anObj) {
      *     loaded and the message will be sent to the type. This allows TIBET to
      *     support autoloading of code with no programmer intervention or
      *     additional maintenance coding.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is a proxy.
      */
 
@@ -7632,7 +7596,8 @@ function(anObj, propName) {
      *     (DoesNotUnderstand) method. Note the syntax is typically
      *     TP.isProperty(someObj, 'someProperty') so what we typically get here
      *     is undefined or a real value
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
+     * @param {String} propName The property name to check.
      * @returns {Boolean} Whether or not the supplied object is a property (that
      *     is a defined 'slot', but not a DNU).
      */
@@ -7662,7 +7627,8 @@ function(anObj, propName) {
      * @summary Returns true if the object provided is a valid property *and
      *     which the supplied object owns* (i.e. has a local value). See
      *     TP.isProperty() for more on what constitutes a valid property.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
+     * @param {String} propName The property name to check.
      * @returns {Boolean} Whether or not the supplied object is a property (that
      *     is a defined 'slot', but not a DNU) and which the supplied object has
      *     it's own local value.
@@ -7714,7 +7680,7 @@ function(anObj) {
      * @summary Returns true if the object provided is an XML or HTML attribute
      *     node (Node.ATTRIBUTE_NODE). NOTE that this is quite different from
      *     the TP.isProperty() call, which tests validity of a slot value.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test to see if anObj is a DOM attribute node (assume that the
      *     document's body element has a 'style' attribute on it):
      *     <code>
@@ -7738,7 +7704,7 @@ function(anObj) {
      * @method isCDATASectionNode
      * @summary Returns true if the object provided is an XML or HTML CDATA
      *     section node (Node.CDATA_SECTION_NODE).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a CDATA section node and what's not:
      *     <code>
      *          TP.isCDATASectionNode(document.documentElement);
@@ -7761,7 +7727,7 @@ function(anObj) {
      * @summary Returns true if the object provided is an XML or HTML element
      *     (Node.ELEMENT_NODE), document (Node.DOCUMENT_NODE), or document
      *     fragment (Node.DOCUMENT_FRAGMENT_NODE).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's an element and what's not:
      *     <code>
      *          TP.isCollectionNode(document.documentElement);
@@ -7790,7 +7756,7 @@ function(anObj) {
      * @method isCommentNode
      * @summary Returns true if the object provided is an XML or HTML Comment
      *     node (Node.COMMENT_NODE).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a comment node and what's not:
      *     <code>
      *          TP.isCommentNode(document.documentElement);
@@ -7811,7 +7777,7 @@ function(anObj) {
      * @method isDocument
      * @summary Returns true if the object provided TP.isHTMLDocument() or
      *     TP.isXMLDocument().
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a document and what's not:
      *     <code>
      *          isDocument(window.document);
@@ -7837,7 +7803,7 @@ function(anObj) {
      * @method isElement
      * @summary Returns true if the object provided is an XML or HTML element
      *     node (Node.ELEMENT_NODE).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's an element and what's not:
      *     <code>
      *          TP.isElement(document.documentElement);
@@ -7861,7 +7827,7 @@ function(anObj) {
     /**
      * @method isEvent
      * @summary Returns true if the object provided is an Event object.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is an Event object.
      */
 
@@ -7879,7 +7845,7 @@ function(anObj) {
      * @method isFragment
      * @summary Returns true if the object provided is an XML or HTML document
      *     fragment node (Node.DOCUMENT_FRAGMENT_NODE).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example TODO
      * @returns {Boolean} Whether or not the supplied object is a document
      *     fragment.
@@ -7899,7 +7865,7 @@ function(anObj) {
      * @summary Returns true if the object contains 'open' and 'applets'
      *     references which seems sufficient to determine whether it is a true
      *     HTML document, a general object, or 'self'.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's an html document and what's not:
      *     <code>
      *          TP.isHTMLDocument(top.document);
@@ -7967,7 +7933,7 @@ function(anObj) {
     /**
      * @method isHTMLNode
      * @summary Returns true if the object provided is an HTML node.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's an html node and what's not:
      *     <code>
      *          TP.isHTMLNode(top.document.documentElement);
@@ -8065,7 +8031,9 @@ function(anObj) {
 
     /**
      * @method isMediaQueryList
-     * @param {Object} anObj The Object to test.
+     * @summary Returns true if the object provided is a valid media query list
+     *     object.
+     * @param {Object} anObj The object to test.
      * @example Test what's a media query list and what's not:
      *     <code>
      *          TP.isMediaQueryList(window.matchMedia('@media screen'));
@@ -8094,7 +8062,7 @@ function(anObj) {
     /**
      * @method isNamedNodeMap
      * @summary Returns true if the object provided is a DOM named node map.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a named node map and what's not:
      *     <code>
      *          TP.isNamedNodeMap(TP.documentGetBody(document).attributes);
@@ -8123,7 +8091,7 @@ function(anObj) {
      * @description We need to supply a special version of this for IE because
      *     node lists returned from the XML DOM are different from those
      *     returned from the HTML DOM.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a node list and what's not:
      *     <code>
      *          TP.isNodeList(TP.documentGetBody(document).childNodes);
@@ -8174,7 +8142,7 @@ function(anObj) {
      * @method isPINode
      * @summary Returns true if the object provided is an XML or HTML
      *     processing instruction node (Node.PROCESSING_INSTRUCTION_NODE).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is a processing
      *     instruction node.
      */
@@ -8192,7 +8160,7 @@ function(anObj) {
      * @method isStyleDeclaration
      * @summary Returns true if the object provided is a 'style' object you'd
      *     find on a rendered DOM node or as a declaration in a CSS style rule.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a style object and what's not:
      *     <code>
      *          TP.isStyleDeclaration(TP.documentGetBody(document).style);
@@ -8221,7 +8189,7 @@ function(anObj) {
      * @method isStyleRule
      * @summary Returns true if the object provided is a 'style rule' object
      *     you'd find attached to a stylesheet.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a style rule object and what's not:
      *     <code>
      *          TP.isStyleRule(TP.styleSheetGetStyleRules(
@@ -8251,7 +8219,7 @@ function(anObj) {
      * @method isStyleSheet
      * @summary Returns true if the object provided is a 'stylesheet' object
      *     you'd find attached to a document.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a style sheet object and what's not:
      *     <code>
      *          TP.isStyleSheet(TP.documentGetBody(document).styleSheets[0]);
@@ -8279,7 +8247,7 @@ function(anObj) {
     /**
      * @method isSVGNode
      * @summary Returns true if the object provided is an SVG node.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is an SVG node.
      */
 
@@ -8311,7 +8279,7 @@ function(anObj) {
      * @method isTextNode
      * @summary Returns true if the object provided is an XML or HTML Text node
      *     (Node.TEXT_NODE).
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's a text node and what's not:
      *     <code>
      *          TP.isTextNode(document.documentElement);
@@ -8331,7 +8299,7 @@ function(anObj) {
     /**
      * @method isXHTMLDocument
      * @summary Returns true if the object provided is an XHTML document.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is an XHTML
      *     document.
      */
@@ -8392,7 +8360,7 @@ function(anObj) {
     /**
      * @method isXHTMLNode
      * @summary Returns true if the object provided is an XHTML node.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} Whether or not the supplied object is an XHTML node.
      */
 
@@ -8432,7 +8400,7 @@ function(anObj) {
     /**
      * @method isXMLDocument
      * @summary Returns true if the object provided is an XML document.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's an xml document and what's not:
      *     <code>
      *          newXMLDoc = TP.doc('<foo/>');
@@ -8460,7 +8428,7 @@ function(anObj) {
     /**
      * @method isXMLNode
      * @summary Returns true if the object provided is an XML node.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test what's an xml element and what's not:
      *     <code>
      *          newXMLDoc = TP.doc('<foo/>');
@@ -8560,7 +8528,7 @@ function(anObj) {
      *     which is a Node. This will return varying results depending on how
      *     many childNodes the Node has. Use TP.isValid() to test whether a node
      *     exists, then use TP.isEmpty() to test for children.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example Test which primitive objects are considered empty and which ones
      *     aren't:
      *     <code>
@@ -8722,7 +8690,7 @@ function(anObj) {
      *     which is a Node. This will return varying results depending on how
      *     many childNodes the Node has. Use TP.isValid() to test whether a node
      *     exists, then use TP.notEmpty() to test for children.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @example See the TP.isEmpty() method for examples on 'emptiness'.
      * @returns {Boolean} True if the object has content size > 0.
      */
@@ -8815,7 +8783,7 @@ function(anObj) {
      * @summary Returns true if the object provided is not blank meaning it
      *     must be a String containing at least one non-whitespace character or
      *     an object which is notEmpty.
-     * @param {Object} anObj The Object to test.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} True if the object is not blank/empty.
      */
 
@@ -8832,6 +8800,7 @@ function(anObj) {
      * @summary Returns true if the object provided is a window (or control)
      *     that is closed, or resides in one. This is only relevant for window
      *     and DOM objects.
+     * @param {Object} anObj The object to test.
      * @returns {Boolean} True when the object provided lives in a closed
      *     windows.
      */
@@ -9423,6 +9392,7 @@ function(aString) {
      * @method trim
      * @summary Returns a new string with the contents of the receiver after
      *     having stripped leading and trailing whitespace.
+     * @param {String} aString The string to be trimmed.
      * @returns {String} A string having the contents of the receiver with
      *     leading and trailing whitespace removed.
      */
@@ -9530,7 +9500,7 @@ function(includeDate, includeMillis, includeNonNum) {
 //  stub for early calls, replaced later in kernel
 
 TP.defineMetaInstMethod('changed',
-function () {
+function (anAspect, anAction, aDescription) {
 
     /**
      * @method changed
@@ -11980,6 +11950,43 @@ function() {
 
     return;
 });
+
+//  ------------------------------------------------------------------------
+
+//  Add metadata for the 'bootstrap' methods that got us this far.
+
+//  Defined in TIBETGlobal.js
+TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETGlobals.js');
+
+TP.sys.addMetadata(TP, TP.constructOrphanObject, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.defineNamespace, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.isNamespace, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.getGlobals, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.release, TP.METHOD, TP.PRIMITIVE_TRACK);
+
+//  Defined in this file
+TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesPre.js');
+
+TP.sys.addMetadata(TP, TP.isCallable, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.canInvoke, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.isValid, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.notValid, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.ifInvalid, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.isDNU, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.isFunction, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.isString, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.owns, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.objectGetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP, TP.objectSetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(Function, TP.FunctionProto.asMethod,
+                    TP.METHOD, TP.INST_TRACK);
+TP.sys.addMetadata(String, TP.StringProto.strip, TP.METHOD, TP.INST_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.LOCAL_TRACK);
+TP.sys.addMetadata(TP, TP.getFunctionName, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(Function, TP.FunctionProto.$getName,
+                    TP.METHOD, TP.INST_TRACK);
+TP.sys.addMetadata(TP, TP.objectGetMetadataName, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
 
 //  ------------------------------------------------------------------------
 //  TIBET - PLUGIN INFORMATION

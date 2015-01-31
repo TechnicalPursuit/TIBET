@@ -2436,7 +2436,7 @@ function(declarationName, declarationValue, affectedElements) {
      * @summary Activates the supplied CSS declaration.
      * @description At this level, this method does nothing. Subtypes must
      *     implement this to provide real functionality.
-     * @param {String} declarationsName The name of the declaration.
+     * @param {String} declarationName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
      * @param {Array} affectedElements An Array of the elements that were
      *     affected that the custom CSS declaration might need to change.
@@ -2455,7 +2455,7 @@ function(declarationName, declarationValue, affectedElements) {
      * @summary Deactivates the supplied CSS declaration.
      * @description At this level, this method does nothing. Subtypes must
      *     implement this to provide real functionality.
-     * @param {String} declarationsName The name of the declaration.
+     * @param {String} declarationName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
      * @param {Array} affectedElements An Array of the elements that were
      *     affected that the custom CSS declaration might need to change.
@@ -2815,8 +2815,6 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @param {Boolean} logError Whether or not this call logs errors if the
-     *     data cannot be retrieved.
      * @returns {TP.sig.Response} A valid response object for the request.
      * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */

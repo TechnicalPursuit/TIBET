@@ -16,7 +16,7 @@
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('httpCreate',
-function(targetUrl, aRequest) {
+function(targetUrl) {
 
     /**
      * @method httpCreate

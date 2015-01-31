@@ -4009,7 +4009,6 @@ function(anElement, aPrefix) {
      * @param {Element} anElement The Element node to remove a namespace from.
      * @param {String} aPrefix The prefix of the namespace being removed. This
      *     can have the 'xmlns:' already prepended to it.
-     * @param {String} aURI The URI of the namespace being added.
      * @example Add a namespace to an element in an XML document:
      *     <code>
      *          xmlDoc = TP.documentFromString(
@@ -9363,7 +9362,7 @@ function(aNode, direction) {
      *     element. This is a useful operation when trying to iterate over only
      *     elements within a particular set of nodes.
      * @param {Node} aNode The node to start the search from.
-     * @param {String} aDirection TP.NEXT or TP.PREVIOUS. The default is TP.NEXT
+     * @param {String} direction TP.NEXT or TP.PREVIOUS. The default is TP.NEXT
      *     so searching is forward.
      * @returns {Element} A native element.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided.

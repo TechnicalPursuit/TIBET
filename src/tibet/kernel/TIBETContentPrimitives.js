@@ -560,7 +560,7 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('json2xmlrpc',
-function(aString, tab) {
+function(aString) {
 
     /**
      * @method json2xmlrpc

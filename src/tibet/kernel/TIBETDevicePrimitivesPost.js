@@ -1502,6 +1502,7 @@ function(anElement, anEvent) {
      *     signal DOM events for anElement. The origins are computed by walking
      *     up the DOM tree, appending each element to the list of origins.
      * @param {Element} anElement The Element node to get the origin list for.
+     * @param {Event} anEvent The native event object.
      * @exception TP.sig.InvalidElement, TP.sig.InvalidEvent
      * @returns {Array.<Object>} An array of elements and objects.
      */

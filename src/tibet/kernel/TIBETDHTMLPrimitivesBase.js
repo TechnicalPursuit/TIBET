@@ -1255,7 +1255,7 @@ TP.definePrimitive('elementGetStyleValuesInPixels',
 function(anElement, styleProperties, wantsTransformed) {
 
     /**
-     * @method elementGetStyleValueInPixels
+     * @method elementGetStyleValuesInPixels
      * @summary Gets the computed style values of the properties on the element
      *     in pixels. This routine can produce NaNs in the output if a Number
      *     couldn't be computed for that property.
@@ -1887,6 +1887,7 @@ function(aWindow, eventNameArray, aHandler) {
      * @method windowArmEvents
      * @summary Arms all elements in the window's document to fire the events
      *     named in eventNameArray.
+     * @param {Window} aWindow The window to arm events for.
      * @param {Array} eventNameArray The array of event names to instrument all
      *     elements in the document to fire.
      * @param {Function} aHandler An (optional) parameter that defines a native

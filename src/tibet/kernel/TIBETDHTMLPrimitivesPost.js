@@ -797,7 +797,7 @@ function(theContent) {
      *     Mozilla bugs, it needs to exist across all platforms since content
      *     generated on Mozilla may be saved in cache files and used on other
      *     browsers.
-     * @param {String} aContent The content to rewrite the style rules in.
+     * @param {String} theContent The content to rewrite the style rules in.
      * @exception TP.sig.InvalidString
      * @returns {String}
      */
@@ -1367,7 +1367,7 @@ TP.definePrimitive('elementComputeBoxSizeOfMarkup',
 function(anElement, markup, boxType, wantsTransformed) {
 
     /**
-     * @method elementComputeSizeOfMarkup
+     * @method elementComputeBoxSizeOfMarkup
      * @summary Returns an Array of width and height of the element as if it
      *     contained the supplied markup. For now, this markup is limited to
      *     (X)HTML markup.
@@ -1438,7 +1438,7 @@ function(anElement, pointX, pointY, insetTop, insetRight, insetBottom,
 insetLeft) {
 
     /**
-     * @method elementComputeCornersUsing
+     * @method elementComputeCornerUsing
      * @summary Computes a 'corner' that a particular point is in, given a set
      *     of offsets.
      * @description Given the point and the offsets, this method will return one
@@ -1983,8 +1983,7 @@ function(anElement, anAttrName, anAttrValue) {
      *     ancestor.
      * @param {String} anAttrName The name of the attribute to look for on the
      *     ancestor.
-     * @param {String} anAttrName The name of the attribute to look for on the
-     *     ancestor.
+     * @param {String} anAttrValue The value of the attribute to check for.
      * @returns {HTMLElement}
      */
 
@@ -7868,6 +7867,7 @@ TP.definePrimitive('$$checkWindowClosed',
 function(aWindow, aWindowID) {
 
     /**
+     * @method $$checkWindowClosed
      * @summary Checks to see if the window whose ID is provided is indeed
      *     closed.
      * @description This function checks to see if a window which got an
@@ -7920,6 +7920,7 @@ TP.definePrimitive('open',
 function(url, name, aSpec, shouldReplace) {
 
     /**
+     * @method open
      * @summary Opens a new Window and instruments it to set it up for use with
      *     TIBET.
      * @description This function opens a new window and sets it up for use with
@@ -8572,6 +8573,7 @@ function(aWindow, wants2DMatrix) {
      *      (which may be embedded in more iframes up to a top-level window) and
      *      is really returning the transformation of those iframe elements up
      *      to the top-level window.
+     * @param {Window} aWindow The window to compute the matrix for.
      * @param {Boolean} wants2DMatrix An optional parameter that tells the
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
      *     transforms. The default is false.
@@ -8625,6 +8627,7 @@ function(aWindow) {
      * @method windowGetParentNames
      * @summary Returns the list of parent window/frame names for the window
      *     provided. This data is used in building a global ID.
+     * @param {Window} aWindow The window to fetch parent names for.
      * @exception TP.sig.InvalidWindow
      * @returns {Array} The names of all of the parent windows of aWindow all
      *     the way up to the top level window containing it.

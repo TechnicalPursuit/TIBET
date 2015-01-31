@@ -2137,6 +2137,8 @@ function(constructorName, varargs) {
      *     you will, should be passed after the constructorName.
      * @param {String} constructorName The name of the constructor to use to
      *     construct the object.
+     * @param {Object} varargs Zero or more arguments to pass to the construct
+     *     call being invoked.
      * @returns {Object} The object constructed in the receiver's native window.
      */
 

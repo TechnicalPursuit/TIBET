@@ -14,7 +14,6 @@
 
 /**
  * @type {TP.svg.linearGradient}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -31,7 +30,6 @@ TP.svg.linearGradient.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.radialGradient}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -48,7 +46,6 @@ TP.svg.radialGradient.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.stop}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------

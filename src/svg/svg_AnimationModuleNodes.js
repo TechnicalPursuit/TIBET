@@ -14,7 +14,6 @@
 
 /**
  * @type {TP.svg.animate}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -31,7 +30,6 @@ TP.svg.animate.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.set}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -48,7 +46,6 @@ TP.svg.set.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.animateMotion}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -65,7 +62,6 @@ TP.svg.animateMotion.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.animateTransform}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -82,7 +78,6 @@ TP.svg.animateTransform.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.animateColor}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -97,7 +92,6 @@ TP.svg.animateColor.addTraits(TP.svg.Element);
 
 /**
  * @type {TP.svg.mpath}
- * @synopsis
  */
 
 //  ------------------------------------------------------------------------
