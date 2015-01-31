@@ -616,6 +616,8 @@
                 },
                 function() {
 
+                    var timeoutFromConfig;
+
                     PhantomTSH.loaded = true;
 
                     PhantomTSH.startExec = new Date().getTime();
@@ -624,6 +626,31 @@
                         PhantomTSH.log('TIBET loaded in ' +
                             (PhantomTSH.startExec - PhantomTSH.start) + ' ms.' +
                             ' Starting execution.', 'gray', true);
+                    }
+
+                    //  If the timeout wasn't supplied on the command line, then
+                    //  we try to use either the cfg() value that is used as
+                    //  'test case' timeout or, if that isn't defined, the
+                    //  DEFAULT_TIMEOUT defined above. We then add 1000ms to
+                    //  give the currently executing test case a chance to
+                    //  report a timeout if it's going to before PhantomJS
+                    //  itself times out.
+                    if (!PhantomTSH.argv.timeout) {
+
+                        timeoutFromConfig = PhantomTSH.page.evaluate(
+                            function() {
+                                return TP.sys.cfg('tibet.test.case.mslimit');
+                            });
+
+                        if (!timeoutFromConfig) {
+                            PhantomTSH.timeout = PhantomTSH.DEFAULT_TIMEOUT;
+                        } else {
+                            PhantomTSH.timeout = timeoutFromConfig;
+                        }
+
+                        PhantomTSH.timeout = PhantomTSH.timeout + 1000;
+                    } else {
+                        PhantomTSH.timeout = PhantomTSH.argv.timeout;
                     }
 
                     //  It is important for somewhere in the 'tsh' function to
@@ -680,7 +707,7 @@
             PhantomTSH.url += '&' + argv.params;
         }
 
-        PhantomTSH.timeout = argv.timeout || PhantomTSH.DEFAULT_TIMEOUT;
+        //PhantomTSH.timeout = argv.timeout || PhantomTSH.DEFAULT_TIMEOUT;
     };
 
     /**
