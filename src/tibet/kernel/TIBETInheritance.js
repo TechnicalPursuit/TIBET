@@ -4484,7 +4484,12 @@ function(targetType, conflictedTraits, track) {
                                         ' ' + track.toUpperCase() + '-LEVEL' +
                                         ' PROPERTY: ' + propName +
                                         ' ON TARGET: ' + TP.name(targetType) +
-                                        ' TO TYPE: ' + TP.name(resolvedType),
+                                        ' TO TYPE: ' + TP.name(resolvedType) +
+                                        ' (CONFLICTED BETWEEN: ' +
+                                                candidateTypes.collect(
+                                                    function(aType) {
+                                                        return aType.getName();
+                                                    }).join(', ') + ')',
                                         TP.LOG) : 0;
                                     }
                         }
