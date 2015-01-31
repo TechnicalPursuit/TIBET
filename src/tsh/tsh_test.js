@@ -76,8 +76,8 @@ function(aRequest) {
     }
 
     options = TP.hc('ignore_only', ignore_only,
-        'ignore_skip', ignore_skip,
-        'suite', suiteName);
+                    'ignore_skip', ignore_skip,
+                    'suite', suiteName);
 
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
