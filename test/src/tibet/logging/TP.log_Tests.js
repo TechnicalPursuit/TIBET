@@ -290,9 +290,6 @@ function() {
     });
 
     this.it('new loggers inherit root appenders', function() {
-        // Root logger doesn't have default appenders...add one for this test.
-        root.addAppender(TP.log.Appender.construct());
-
         try {
             this.refute.isEmpty(logger.getAppenders());
         } finally {
@@ -301,11 +298,8 @@ function() {
     });
 
     this.it('loggers can define appenders', function() {
-        // Root logger doesn't have default appenders...add one for this test.
-        root.addAppender(TP.log.Appender.construct());
-
         logger.addAppender(TP.log.Appender.construct());
-        // Note the 2 here...one from root, one we defined...
+        // Note the 2 here...default from root, one we defined...
         this.assert.isEqualTo(logger.getAppenders().length, 2);
     });
 
