@@ -1317,41 +1317,49 @@ function(options) {
     //  Binding attribute for our promise closures below.
     suite = this;
 
-    //  Generate the first promise here. This will be the Promise that 'starts
-    //  things off' below. It uses a Function to run any 'before' method for
-    //  this suite and in that we set '$internalPromise' to it.
-    //  method wants to use that.
-    firstPromise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
+    //  Generate the starter promise here.
+    firstPromise = TP.extern.Promise.resolve();
 
-            var nextPromise;
+    //  Run any 'before' hook for the suite *and reassign 'firstPromise' to
+    //  it*. This will be the Promise that 'starts things off' below.
+    firstPromise = firstPromise.then(
+        function() {
+            var beforeMaybe,
+                lastPromise;
 
-            //  Do this before we run the 'before' so that any 'then*' calls
-            //  inside of it get hooked up properly.
-            suite.$set('$internalPromise', firstPromise);
-
-            //  Run any 'before' hook for the suite. Note that this may generate
-            //  a Promise that will now be in '$internalPromise'.
+            //  Run any 'before' hook for the suite. Note that this may
+            //  generate a Promise that will now be in '$internalPromise'.
             beforeMaybe = suite.executeBefore(null, options);
 
-            //  Make sure to resolve this Promise ;-).
-            resolver();
+            //  Grab any internal promise that might have been created by
+            //  running the 'before' hook. This might or might not exist.
+            lastPromise = suite.$get('$internalPromise');
+
+            //  If the before method returned a Promise, hook it up into the
+            //  chain.
+            if (TP.canInvoke(beforeMaybe, 'then')) {
+
+                //  If there was also a valid internal Promise, chain it on.
+                //  Otherwise, just return the Promise that was returned by the
+                //  'before' hook.
+
+                if (TP.isValid(lastPromise)) {
+                    lastPromise.then(
+                        function() {
+                            return beforeMaybe;
+                        });
+                } else {
+                    return beforeMaybe;
+                }
+            }
+
+            //  The 'before' hook did not return a Promise, but if it created an
+            //  internal one, make sure to return that to keep things hooked up
+            //  properly.
+            if (TP.isValid(lastPromise)) {
+                return lastPromise;
+            }
         });
-
-    //  If the before method returned a Promise, hook it up into the chain.
-    if (TP.canInvoke(beforeMaybe, 'then')) {
-
-        currentPromise = suite.$get('$internalPromise');
-
-        nextPromise = currentPromise.then(
-                            function() {
-                                return beforeMaybe;
-                            });
-        suite.$set('$internalPromise', nextPromise);
-
-        //  Make sure to set the firstPromise to the 'end of the chain'.
-        firstPromise = nextPromise;
-    }
 
     //  Use reduce to convert our caselist array into a chain of promises. We
     //  prime the list with a resolved promise to ensure 'current' receives all
