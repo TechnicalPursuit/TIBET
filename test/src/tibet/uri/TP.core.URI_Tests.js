@@ -1484,7 +1484,8 @@ function() {
                     //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    pouchRequest = TP.request(TP.hc('uri', url));
+                    pouchRequest = TP.request(TP.hc('uri', url,
+                                                    'async', true));
 
                     pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
@@ -1548,7 +1549,8 @@ function() {
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
                     pouchRequest = TP.request(TP.hc('uri', url,
-                                                    'verb', TP.HTTP_HEAD));
+                                                    'verb', TP.HTTP_HEAD,
+                                                    'async', true));
 
                     pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
@@ -1598,7 +1600,8 @@ function() {
                     //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    pouchRequest = TP.request(TP.hc('uri', url));
+                    pouchRequest = TP.request(TP.hc('uri', url,
+                                                    'async', true));
 
                     pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
@@ -2418,7 +2421,9 @@ function() {
             url = TP.uc('pouchdb://pouch_test/author_info');
 
             //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_PUT));
+            pouchRequest = TP.request(TP.hc('uri', url,
+                                            'verb', TP.HTTP_PUT,
+                                            'async', true));
 
             url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
 
@@ -2452,7 +2457,9 @@ function() {
             url = TP.uc('pouchdb://pouch_test');
 
             //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_POST));
+            pouchRequest = TP.request(TP.hc('uri', url,
+                                            'verb', TP.HTTP_POST,
+                                            'async', true));
 
             url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
 
@@ -2485,7 +2492,9 @@ function() {
             url = TP.uc('pouchdb://pouch_test/author_info');
 
             //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+            pouchRequest = TP.request(TP.hc('uri', url,
+                                            'verb', TP.HTTP_DELETE,
+                                            'async', true));
 
             url.setResource(null);
 
@@ -2519,7 +2528,9 @@ function() {
             url = TP.uc('pouchdb://pouch_test');
 
             //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+            pouchRequest = TP.request(TP.hc('uri', url,
+                                            'verb', TP.HTTP_DELETE,
+                                            'async', true));
 
             url.setResource(null);
 
