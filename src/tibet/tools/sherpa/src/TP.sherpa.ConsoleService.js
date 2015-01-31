@@ -66,7 +66,7 @@ function(aResourceID, aRequest) {
     /**
      * @method construct
      * @summary Constructs a new console service instance.
-     * @summary The primary purpose of this custom constructor is to provide
+     * @description The primary purpose of this custom constructor is to provide
      *     defaulting for the resource ID so we can ensure that a default
      *     SystemConsole instance can be constructed. By leaving the resource ID
      *     null when creating console instances you can ensure that the first

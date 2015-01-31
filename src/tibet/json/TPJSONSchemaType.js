@@ -31,7 +31,7 @@ function(aString, sourceLocale) {
      * @method fromString
      * @summary Returns a new instance from the string provided by processing
      *     the String into another type.
-     * @summary For XML Schema data types, we have no 'parsers' - but the
+     * @description For XML Schema data types, we have no 'parsers' - but the
      *     types themselves take a String and convert it into an instance by
      *     calling fromObject(). Therefore we override this method and just call
      *     fromObject().

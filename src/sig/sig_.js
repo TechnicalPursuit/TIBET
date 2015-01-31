@@ -28,7 +28,7 @@ function(anElement) {
      * @method dispatchSignal
      * @summary Dispatches a signal as specified by the supplied element's
      *     attributes.
-     * @summary This method is a slight variation on the 'tshExecute' method
+     * @description This method is a slight variation on the 'tshExecute' method
      *     on the sig:dispatch type but that method uses a request object
      *     whereas this operates directly on the supplied element.
      * @param {Element} anElement The element to use to derive dispatching

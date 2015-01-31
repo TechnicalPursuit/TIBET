@@ -501,7 +501,7 @@ function() {
      * @method openConnection
      * @summary Opens a connection to the server based on the values in the
      *     receiver's 'serviceURI' and 'serverName' instance variables.
-     * @summary An open connection isn't necessarily an authenticated
+     * @description An open connection isn't necessarily an authenticated
      *     connection. Authentication is done in a separate step.
      * @returns {Boolean} Whether or not the receiver's connection is open.
      */

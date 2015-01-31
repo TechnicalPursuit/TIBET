@@ -186,7 +186,7 @@ function(targetUrl, aRequest) {
      * @method webdavGetDAVPropertyValues
      * @summary Gets all 'WebDAV' properties (and only WebDAV properties - no
      *     custom properties) defined on the resource at the target URL.
-     * @summary This call expects an additional parameter in the request
+     * @description This call expects an additional parameter in the request
      *     called 'propertyNames' that contains an Array with the names of the
      *     properties to retrieve values for.
      * @param {String} targetUrl The request's target URL.
@@ -371,7 +371,7 @@ function(targetUrl, aRequest) {
      * @method webdavGetProperty
      * @summary Gets the supplied property(s) of a versioned controlled WebDAV
      *     resource at the target URL specified.
-     * @summary This call expects an additional parameter in the request
+     * @description This call expects an additional parameter in the request
      *     called 'property' that contains a TP.lang.Hash with the following
      *     format:
      *
@@ -503,7 +503,7 @@ function(targetUrl, aRequest) {
      * @method webdavRemoveProperty
      * @summary Removes the supplied property(s) from a versioned controlled
      *     WebDAV resource at the target URL specified.
-     * @summary This call expects an additional parameter in the request
+     * @description This call expects an additional parameter in the request
      *     called 'property' that contains a TP.lang.Hash with the following
      *     format:
      *
@@ -550,7 +550,7 @@ function(targetUrl, aRequest) {
      * @method webdavSetProperty
      * @summary Sets the supplied property(s) of a versioned controlled WebDAV
      *     resource at the target URL specified.
-     * @summary This call expects an additional parameter in the request
+     * @description This call expects an additional parameter in the request
      *     called 'property' that contains a TP.lang.Hash with the following
      *     format:
      *
@@ -803,7 +803,7 @@ function(targetUrl, aRequest) {
      * @summary Sets a lock on the resource at the target URL. The returning
      *     XMLHttpRequest object will have the unique lock token used to unlock
      *     the resource as part of its response data.
-     * @summary The supplied request object has three parameters that are
+     * @description The supplied request object has three parameters that are
      *     used when setting the lock. These should be one of the TP.WEBDAV_*
      *     constants as follows:
      *
@@ -902,7 +902,7 @@ function(targetUrl, aRequest) {
     /**
      * @method webdavMkCol
      * @summary Creates a new WebDAV 'collection' at the target URL specified.
-     * @summary When executed against a 'file system' WebDAV resource, this
+     * @description When executed against a 'file system' WebDAV resource, this
      *     function creates a directory at the specified target. Note that the
      *     specification states that *all* ancestors (i.e. parent directories)
      *     must exist in order for this call to succeed.
@@ -1020,7 +1020,7 @@ function(targetUrl, aRequest) {
     /**
      * @method webdavPropFind
      * @summary Gets properties defined on the resource at the target URL.
-     * @summary This call takes an optional parameter containing XML that
+     * @description This call takes an optional parameter containing XML that
      *     defines the names of the properties to retrieve values for. This XML
      *     must start and end with 'prop' tags. It can assume that the 'D' XML
      *     namespace prefix has been defined as the 'DAV:' namespace, as per the
@@ -1088,7 +1088,7 @@ function(targetUrl, aRequest) {
      * @method webdavPropPatch
      * @summary Sets or removes properties defined on the resource at the
      *     target URL.
-     * @summary This call uses the 'setList' and 'removeList' parameters of
+     * @description This call uses the 'setList' and 'removeList' parameters of
      *     the supplied request. Each parameter should contain an Array with the
      *     following format:
      *

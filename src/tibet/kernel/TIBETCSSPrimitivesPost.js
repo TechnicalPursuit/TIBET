@@ -395,7 +395,7 @@ function(m1, m2, aHue) {
      * @method convertHueToRGB
      * @summary Converts the supplied hue (given by the values) to its RGB
      *     equivalent.
-     * @summary This uses the CSS3 Color Module algorithm for converting
+     * @description This uses the CSS3 Color Module algorithm for converting
      *     hsla values to rgba.
      * @param {Number} m1
      * @param {Number} m2
@@ -448,7 +448,7 @@ function(aHue, aSaturation, aLightness, anAlpha) {
      * @method convertHSLAToRGBA
      * @summary Converts the supplied hue, saturation, lightness and alpha
      *     values to their RGB equivalents.
-     * @summary This uses the CSS3 Color Module algorithm for converting
+     * @description This uses the CSS3 Color Module algorithm for converting
      *     hsla values to rgba.
      * @param {Number} aHue The color hue information.
      * @param {Number} aSaturation The color saturation information, given as a
@@ -518,7 +518,7 @@ function(aString) {
      * @method convertColorStringToHex
      * @summary Converts a String containing a color value to a String
      *     containing the hex-formatted value: #RRGGBB
-     * @summary The supplied String can be in one of nine formats: FFFFFF
+     * @description The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @param {String} aString The String containing color information to
@@ -638,7 +638,7 @@ function(aString) {
      * @method convertColorStringToArray
      * @summary Converts a String containing a color to an Array containing,
      *     [r, g, b]
-     * @summary The supplied String can be in one of nine formats: FFFFFF
+     * @description The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @param {String} aString The String containing color information to
@@ -769,7 +769,7 @@ function(aString) {
      * @method convertColorStringToLongNumber
      * @summary Converts a String containing a color value to a 'long' number
      *     representing the color numerically.
-     * @summary The supplied String can be in one of nine formats: FFFFFF
+     * @description The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
      * @param {String} aString The String containing color information to
@@ -802,7 +802,7 @@ function(aLongNumber) {
      * @method convertLongNumberToColorString
      * @summary Converts a 'long' number representing a color numerically to
      *     the equivalent 'hex' color (#RRGGBB) used for CSS colors.
-     * @summary This algorithm from Oliver Steele (http://osteele.com).
+     * @description This algorithm from Oliver Steele (http://osteele.com).
      * @param {Number} aLongNumber A 'long' number (one between 0 and 16777215 -
      *     parseInt('FFFFFF',16) ).
      * @exception TP.sig.InvalidNumber
@@ -841,7 +841,7 @@ function(color1, color2, aPercentage) {
      * @method interpolateColors
      * @summary Interpolates a mixture of color2 into color1 according to the
      *     supplied percentage.
-     * @summary This algorithm from Oliver Steele (http://osteele.com).
+     * @description This algorithm from Oliver Steele (http://osteele.com).
      * @param {Number} color1 A 'long' number (one between 0 and 16777215 -
      *     parseInt('FFFFFF',16) ) that specifies the color to start from.
      * @param {Number} color2 A 'long' number (one between 0 and 16777215 -
@@ -897,7 +897,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
      *     that, for properties that compute a percentage of the (possibly
      *     offset) parent, this method will recurse upwards if that parent is
      *     also found to have a percentage value.
-     * @summary Depending on the property being requested, a percentage
+     * @description Depending on the property being requested, a percentage
      *     value can mean different things. In most cases, it is computed as a
      *     percentage of the containing block, but there are a few exceptions:
      *
@@ -1899,7 +1899,7 @@ function(insertionEvent) {
      * @summary An event handler that is called upon document loading or
      *     writing to capture DOM Node insertions of 'style' or 'link' (to CSS
      *     style sheets) elements.
-     * @summary Because Webkit-based browsers are so "particular" about the
+     * @description Because Webkit-based browsers are so "particular" about the
      *     CSS in loaded sheets (normally a good thing), we've got to grab our
      *     CSS sheets early and rip them out of the document to avoid all of the
      *     errors that it will spew to the JavaScript console.
@@ -2063,7 +2063,7 @@ function(aValueString) {
      * @method cssDimensionValuesFromString
      * @summary Extracts dimension values from the supplied String, according
      *     to the standard CSS rules for doing so.
-     * @summary The CSS rules used for parsing values for dimensional
+     * @description The CSS rules used for parsing values for dimensional
      *     properties, like padding, are:
      *
      *     1 value applies to all sides 2 values first value applies to top &
@@ -2534,7 +2534,7 @@ function(strSelectorText, strictPseudos) {
      *     containing an Array of alternating TP.lang.Hashes (representing each
      *     'simple' selector) and constant values representing the combinators
      *     separating them.
-     * @summary The returned data structure has the following keys (note
+     * @description The returned data structure has the following keys (note
      *     that due to the way selectors can be constructed, all of these are
      *     optional and may not exist):
      *

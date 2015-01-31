@@ -15,7 +15,7 @@
 /**
  * @type {TP.vcard_temp.vCard}
  * @summary A VCard based on the Jabber/XEP-0054 vcard-temp specification.
- * @summary The primary purpose of this type in TIBET is to support
+ * @description The primary purpose of this type in TIBET is to support
  *     TP.core.User instances in the definition of their organization and role
  *     affiliations. By virtue of vCard association types can autoload
  *     organization-specific role/unit types which serve as delegates for
@@ -67,7 +67,7 @@ function(anID) {
      *     provided. NOTE that the FN data doesn't have to match the ID of the
      *     TP.core.User you'll associate it with, allowing you to reuse commonly
      *     named vCard instances across numerous users.
-     * @summary This method defaults to loading the shared vCard data
+     * @description This method defaults to loading the shared vCard data
      *     normally found at ~app_dat/vcards.xml. When your needs are simple
      *     this is probably adequate, but in more complex applications you
      *     probably want to override this method and replace it with one that
@@ -108,7 +108,7 @@ function(forceRefresh) {
      * @summary Returns the vCard XML containing the application's set of
      *     vCards. This method is typically used by applications that don't
      *     required a large number of unique vCard entries.
-     * @summary The vCard data file location can be altered by setting the
+     * @description The vCard data file location can be altered by setting the
      *     environment parameter 'vcards', or by altering the tibet.vcard_file
      *     parameter. This URI is then loaded to provide the application vCard
      *     XML data.
@@ -439,7 +439,7 @@ function() {
  * @type {TP.tibet.keyring}
  * @summary A keyring is a container for one or more keys, strings that
  *     represent individual permissions within an application.
- * @summary To help manage permissions in the most flexible way possible
+ * @description To help manage permissions in the most flexible way possible
  *     TIBET uses the concept of keys, strings you define to have some meaning
  *     relative to permissions in your application. These keys can be grouped
  *     within keyrings, which can be nested to keep things easier to maintain in
@@ -468,7 +468,7 @@ function(anID) {
      * @method getInstanceById
      * @summary Returns the keyring instance whose id attribute matches the ID
      *     provided.
-     * @summary This method defaults to loading the shared keyring data
+     * @description This method defaults to loading the shared keyring data
      *     normally found at ~app_dat/keyrings.xml. When your needs are simple
      *     this is probably adequate, but in more complex applications you
      *     probably want to override this method and replace it with one that
@@ -504,7 +504,7 @@ function(forceRefresh) {
      * @summary Returns the keyring XML containing the application's set of
      *     keyrings. This method is typically used by applications that don't
      *     required a large number of unique keyring entries.
-     * @summary The keyring data file location can be altered by setting the
+     * @description The keyring data file location can be altered by setting the
      *     environment parameter 'keyrings', or by altering the
      *     tibet.keyring_file setting. This URI is then loaded to provide the
      *     application keyring XML data.
@@ -1139,7 +1139,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1206,7 +1206,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1273,7 +1273,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1368,7 +1368,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1430,7 +1430,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1491,7 +1491,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1627,7 +1627,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1729,7 +1729,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1795,7 +1795,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -1930,7 +1930,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -2032,7 +2032,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can
@@ -2098,7 +2098,7 @@ function(aNode) {
      * @method queryForNodes
      * @summary Given the supplied node, this method queries it using a query
      *     very specific to this phase.
-     * @summary This method should produce the sparsest result set possible
+     * @description This method should produce the sparsest result set possible
      *     for consideration by the next phase of the tag processing engine,
      *     which is to then filter this set by whether a) a TIBET wrapper type
      *     can be found for each result and b) whether that wrapper type can

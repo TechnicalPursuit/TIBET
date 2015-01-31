@@ -407,7 +407,7 @@ function(anEvent) {
      * @summary Returns the key code for the event after ensuring that it has
      *     been adjusted for cross-browser issues (generally, TIBET normalizes
      *     to the key code sent on 'key down').
-     * @summary In general, you should not use key codes, but instead use
+     * @description In general, you should not use key codes, but instead use
      *     the 'getEventVirtualKey()' method of the TP.core.Keyboard type and
      *     test the result of that method against one of the key identifier
      *     names defined by the W3C (i.e. 'Enter' or 'Spacebar').
@@ -495,7 +495,7 @@ function(anEvent) {
     /**
      * @method eventGetUnicodeCharCode
      * @summary Returns the Unicode character code for the supplied event.
-     * @summary In general, you should not use Unicode character codes, but
+     * @description In general, you should not use Unicode character codes, but
      *     instead use the 'getEventVirtualKey()' method of the TP.core.Keyboard
      *     type and test the result of that method against one of the key
      *     identifier names defined by the W3C (i.e. 'Enter' or 'Spacebar').
@@ -1055,7 +1055,7 @@ function(nativeEvt) {
      * @summary The handler that all elements instrumented to fire events are
      *     instrumented with. NOTE that you typically don't need to arm
      *     elements, TIBET handles most things automatically.
-     * @summary This handler performs the following steps: 1) Processes the
+     * @description This handler performs the following steps: 1) Processes the
      *     native event data into an object hash, registering it under commonly
      *     known keys that TIBET is expecting. 2) Computes the parent ID array
      *     for the element, if it isn't already available on the element and

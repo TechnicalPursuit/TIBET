@@ -122,7 +122,7 @@ function(aRequest, aResourceID, aThreadID) {
     /**
      * @method init
      * @summary Initialize a new request.
-     * @summary Each request is composed of a request payload (usually a
+     * @description Each request is composed of a request payload (usually a
      *     TP.lang.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
@@ -199,7 +199,7 @@ function(aRequest, aResourceID, aThreadID) {
     /**
      * @method init
      * @summary Initialize a new request.
-     * @summary Each request is composed of a request payload (usually a
+     * @description Each request is composed of a request payload (usually a
      *     TP.lang.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
@@ -235,7 +235,7 @@ function(aRequest, aResourceID, aThreadID) {
     /**
      * @method init
      * @summary Initialize a new request.
-     * @summary Each request is composed of a request payload (usually a
+     * @description Each request is composed of a request payload (usually a
      *     TP.lang.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing

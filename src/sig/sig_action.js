@@ -36,7 +36,7 @@ function(aRequest) {
     /**
      * @method tshExecute
      * @summary Runs the receiver, effectively invoking its action.
-     * @summary For this type, this method merely returns TP.DESCEND,
+     * @description For this type, this method merely returns TP.DESCEND,
      *     allowing all of its 'action' children to get their chance at
      *     processing the request.
      * @param {TP.sig.Request} aRequest The TP.sig.TSHRunRequest or other shell

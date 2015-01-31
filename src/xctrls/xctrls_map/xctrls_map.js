@@ -12,7 +12,7 @@
  * @type {TP.xctrls.map}
  * @summary A common supertype for various DHTML map controls, such as those
  *     provided by Google and Yahoo! and Microsoft.
- * @summary This API largely based on mapstraction -
+ * @description This API largely based on mapstraction -
  *     http://www.mapstraction.com. Copyright (C) 2006, Tom Carden and Steve
  *     Coast
  */
@@ -60,7 +60,7 @@ function(aRequest) {
      * @method getCompilationAttrs
      * @summary Returns a TP.lang.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled.
-     * @summary This type produces custom values for the 'tibet:ctrl'
+     * @description This type produces custom values for the 'tibet:ctrl'
      *     attribute (matching the type of the map based on the 'type'
      *     attribute), thereby allowing instances of subtypes of this type to be
      *     created.

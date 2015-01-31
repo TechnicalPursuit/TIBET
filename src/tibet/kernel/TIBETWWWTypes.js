@@ -38,7 +38,7 @@ handling of different text dialects such as CSS or JSON.
  * @type {TP.w3.DocType}
  * @summary A type that represents a Document Type in the TIBET system, as
  *     defined by the DOCTYPE information that it is holding.
- * @summary This is TIBET's data structure for a Document Type Declaration,
+ * @description This is TIBET's data structure for a Document Type Declaration,
  *     which would usually be found at the top of a document before any of the
  *     markup begins. These declarations indicate to the browser which DTD that
  *     the markup in this page in going to conform to. Older browsers typically
@@ -525,7 +525,7 @@ function(aStatusCode) {
 /**
  * @type {TP.ietf.Mime}
  * @summary Provides registration and lookup services for MIME data.
- * @summary The TP.ietf.Mime type is largely a container for constants to
+ * @description The TP.ietf.Mime type is largely a container for constants to
  *     make working with MIME strings easier. One feature of this type that is
  *     more interesting is the ability to register "content handlers" for
  *     different MIME types. The canonical example for this is the CSS MIME type
@@ -818,7 +818,7 @@ function(aMIMEType) {
      * @method getConcreteType
      * @summary Looks up a TIBET Type for the MIME type provided. This type is
      *     used to handle content in an intelligent fashion.
-     * @summary This method will return any MIME-specific content handler
+     * @description This method will return any MIME-specific content handler
      *     type which may be registered. The common example in TIBET is the
      *     handler for TP.ietf.Mime.CSS which can parse a CSS style sheet,
      *     making CSS content "smarter" than pure text.
@@ -905,7 +905,7 @@ function(aContent, aURI, defaultMIME) {
      * @summary Guesses the MIME type of the incoming content data, using a
      *     multi-pronged approach that hopefully provides an accurate answer
      *     based on content testing followed by extension tests.
-     * @summary This method tries to guess the MIME type of the receiver.
+     * @description This method tries to guess the MIME type of the receiver.
      *     The testing starts with testing for XML and moves on to testing text
      *     content and URI extension information using the TP.ietf.Mime 'info'
      *     hash to help with resolution. The specific steps used are: 1. If XML,
@@ -1131,7 +1131,7 @@ function(aMIMEType, aHash) {
  * @type {TP.w3.Xmlns}
  * @summary The TP.w3.Xmlns type provides registration and lookup services for
  *     information about common XML namespaces.
- * @summary A large number of TIBET features rely on namespace support,
+ * @description A large number of TIBET features rely on namespace support,
  *     which requires information regarding common prefixes, MIME types,
  *     document element names, etc. which are all managed by the TP.w3.Xmlns
  *     type.
@@ -1645,7 +1645,7 @@ function(anNSURI, anElement) {
     /**
      * @method addNamespaceTo
      * @summary Adds the namespace supplied in anNSURI to the element.
-     * @summary One of the constants available on the TP.w3.Xmlns type must
+     * @description One of the constants available on the TP.w3.Xmlns type must
      *     be used as the URI as this method will try to determine the canonical
      *     prefix to install the namespace under. Otherwise, if a canonical
      *     prefix cannot be found this method will fail. See the lower-level
@@ -2434,7 +2434,7 @@ function(declarationName, declarationValue, affectedElements) {
     /**
      * @method activate
      * @summary Activates the supplied CSS declaration.
-     * @summary At this level, this method does nothing. Subtypes must
+     * @description At this level, this method does nothing. Subtypes must
      *     implement this to provide real functionality.
      * @param {String} declarationsName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
@@ -2453,7 +2453,7 @@ function(declarationName, declarationValue, affectedElements) {
     /**
      * @method deactivate
      * @summary Deactivates the supplied CSS declaration.
-     * @summary At this level, this method does nothing. Subtypes must
+     * @description At this level, this method does nothing. Subtypes must
      *     implement this to provide real functionality.
      * @param {String} declarationsName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
@@ -2528,7 +2528,7 @@ TP.core.XMLNamespace.defineSubtype('xsl:XMLNS');
  * @type {TP.core.Cookie}
  * @summary TP.core.Cookie provides simple utility routines for setting and
  *     getting browser cookie values.
- * @summary The storage format is basically an escaped source code form so
+ * @description The storage format is basically an escaped source code form so
  *     you can do the following:
  *
  *     TP.core.Cookie.setCookie('name', someObject); ... myObj =
@@ -2582,7 +2582,7 @@ function(aName) {
     /**
      * @method getCookie
      * @summary Returns the value of the named cookie or undefined.
-     * @summary The value returned is a source-code form string derived from
+     * @description The value returned is a source-code form string derived from
      *     the original object so using eval on it will effectively construct a
      *     new instance of the original object -- provided that you are working
      *     primarily with hashes or arrays etc.
@@ -2735,7 +2735,7 @@ function(aURI, aRequest, logError) {
      * @param {Boolean} logError Whether or not this call logs errors if the
      *     data cannot be retrieved.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,
@@ -2775,7 +2775,7 @@ function(aURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,
@@ -2818,7 +2818,7 @@ function(aURI, aRequest) {
      * @param {Boolean} logError Whether or not this call logs errors if the
      *     data cannot be retrieved.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI,TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,
@@ -2866,7 +2866,7 @@ function(aURI, aRequest) {
 /**
  * @type {TP.core.CookieURL}
  * @summary A subtype of TP.core.URL specific to the 'cookie://' scheme.
- * @summary The overall format of a cookie URI is:
+ * @description The overall format of a cookie URI is:
  *
  *     cookie://[domain]/[path]/[cookie_name]?[expires=<value>]&[secure=true]
  *

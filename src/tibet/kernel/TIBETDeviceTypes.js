@@ -205,7 +205,7 @@ function(singletonName, normalizedEvent, aSignal) {
     /**
      * @method invokeObservers
      * @summary Runs the event handlers for any registered observers.
-     * @summary Each native event type has a singleton TIBET signal instance
+     * @description Each native event type has a singleton TIBET signal instance
      *     registered with the device type. This singleton is acquired, updated,
      *     and then passed to each handler for processing. The normalizedEvent
      *     becomes the payload/native event for the signal and is thereby
@@ -563,7 +563,7 @@ function(aSignal, aHandler) {
      * @method addShortcutObserver
      * @summary Adds a local signal observation for a "signal path", which is
      *     effectively a "gesture".
-     * @summary Keyboard shortcuts are stored as a nested set of hashes
+     * @description Keyboard shortcuts are stored as a nested set of hashes
      *     where each hash contains the name of the overall shortcut signal, an
      *     optional hash of shortcuts which extend the current one, and an
      *     optional array of handler objects/functions (observers).
@@ -710,7 +710,7 @@ function() {
     /**
      * @method loadKeymap
      * @summary Loads the XML keyboard map for the receiving keyboard type.
-     * @raise TP.sig.InvalidKeymap When the XML keyboard map file can't be
+     * @exception TP.sig.InvalidKeymap When the XML keyboard map file can't be
      *     loaded.
      */
 
@@ -802,7 +802,7 @@ function(singletonName, normalizedEvent, aSignal) {
     /**
      * @method invokeObservers
      * @summary Runs the event handlers for any registered observers.
-     * @summary Each native event type has a singleton TIBET signal instance
+     * @description Each native event type has a singleton TIBET signal instance
      *     registered with the device type. This singleton is acquired, updated,
      *     and then passed to each handler for processing. The normalizedEvent
      *     becomes the payload/native event for the signal and is thereby
@@ -1515,7 +1515,7 @@ function(normalizedEvent) {
     /**
      * @method getDOMSignalName
      * @summary Returns the DOM signal name for a particular event.
-     * @summary The returned signal name is based largely on the current
+     * @description The returned signal name is based largely on the current
      *     keyboard's mapping for the particular event information including
      *     charCode, keyCode, and modifier key states. For example, a keyup
      *     event with the shift key active and a keycode of 13 on a US ASCII 101
@@ -1666,7 +1666,7 @@ function(keyNameOrGlyph) {
      * @param {String} keyNameOrGlyph The name or glyph of the key to look up.
      *     If a key name, this would be something like 'Backspace'. If a key
      *     glyph, it would be something like 'D'.
-     * @raise TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The virtual key code, or -1 when not found.
      */
 
@@ -1742,7 +1742,7 @@ function(normalizedEvent) {
      * @summary Returns the 'raw key' signal name for a particular event. This
      *     will then be prepended by 'DOM_' by the getDOMSignalName() method to
      *     generate the proper 'full' signal name.
-     * @summary The returned signal name is based largely on the current
+     * @description The returned signal name is based largely on the current
      *     keyboard's mapping for the particular event information including
      *     charCode, keyCode, and modifier key states. For example, a keyup
      *     event with the shift key active and a keycode of 13 on a US ASCII 101
@@ -2556,7 +2556,7 @@ function(singletonName, normalizedEvent, aSignal) {
     /**
      * @method invokeObservers
      * @summary Runs the event handlers for any registered observers.
-     * @summary Each native event type has a singleton TIBET signal instance
+     * @description Each native event type has a singleton TIBET signal instance
      *     registered with the device type. This singleton is acquired, updated,
      *     and then passed to each handler for processing. The normalizedEvent
      *     becomes the payload/native event for the signal and is thereby

@@ -1028,7 +1028,7 @@ function(firstPath, secondPath, filePath) {
      * @summary Returns a "relativized" version of the firstPath at it relates
      *     to the second path. In essence, what path would you have to append to
      *     the secondPath to acquire the resource defined by the first path.
-     * @summary This method is a core method for helping stored files remain
+     * @description This method is a core method for helping stored files remain
      *     "relocatable". When storing TIBET metadata or compiled pages their
      *     internal references are automatically adjusted to relative paths
      *     using this routine. For example, given a path of ~lib_cfg/tibet.xml

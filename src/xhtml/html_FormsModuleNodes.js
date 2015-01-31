@@ -108,7 +108,7 @@ function() {
      * @method clearValue
      * @summary Clears the entire value of the receiver.
      * @returns {TP.html.textUtilities} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -137,7 +137,7 @@ function() {
      * @method clearSelection
      * @summary Clears the currently selected text.
      * @returns {TP.html.textUtilities} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -169,7 +169,7 @@ function(toStart) {
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
      * @returns {TP.html.textUtilities} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -202,7 +202,7 @@ function() {
      * @method getSelection
      * @summary Returns the currently selected text.
      * @returns {String} The currently selected text.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -232,7 +232,7 @@ function() {
      * @method getSelectionEnd
      * @summary Returns the ending index of the currently selected text.
      * @returns {Number} The ending index of the current selection.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -269,7 +269,7 @@ function() {
      * @method getSelectionStart
      * @summary Returns the starting index of the currently selected text.
      * @returns {Number} The starting index of the current selection.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -376,7 +376,7 @@ function(aText) {
      * @summary Replaces the current selection with the supplied text.
      * @param {String} aText The text to replace the current selection with.
      * @returns {TP.html.textUtilities} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -620,7 +620,7 @@ function(beforeText, afterText) {
 /**
  * @type {TP.html.input}
  * @summary INPUT tag. Generic input control.
- * @summary NOTE: for TIBET's purposes this particular node type serves as
+ * @description NOTE: for TIBET's purposes this particular node type serves as
  *     an abstract supertype from which a number of specialized types descend to
  *     allow custom behavior to be inherited.
  *
@@ -717,7 +717,7 @@ function(anObject, aRequest) {
      * @method fromDate
      * @summary Returns a formatted XML String with the supplied Date object as
      *     the content.
-     * @summary The supplied request can contain the following keys and
+     * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -782,7 +782,7 @@ function(anObject, aRequest) {
      * @method fromString
      * @summary Returns a formatted XML String with the supplied String object
      *     as the content.
-     * @summary The supplied request can contain the following keys and
+     * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -961,7 +961,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -977,7 +977,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -1093,7 +1093,7 @@ function() {
      * @summary Returns false since radio buttons, by their very nature, don't
      *     allow multiple selection.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     return true;
@@ -1110,7 +1110,7 @@ function(aValue, elementProperty) {
      *     is a part of (as matched by their 'name' attribute) matching the
      *     criteria if found. Note that this method does not clear existing
      *     selections when processing the value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each grouped element to determine which of
      *      them will be selected.
      *          'value'     ->  The value of the element (the default)
@@ -1121,7 +1121,7 @@ function(aValue, elementProperty) {
      *      elements to add to the selection. Note that this can be an Array.
      * @param {String} elementProperty The property of the elements to use to
      *      determine which elements should be selected.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
@@ -1225,7 +1225,7 @@ function(aValue) {
      * @param {Object} aValue The value to de-select. Note that this can be an
      *     array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
-     * @raise TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
@@ -1356,7 +1356,7 @@ function() {
     /**
      * @method deselectAll
      * @summary Clears any current selection(s).
-     * @raise TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
@@ -1513,7 +1513,7 @@ function() {
      * @returns {String|Array} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
      *     allow multiple selections.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -1559,7 +1559,7 @@ function() {
      *     checkable item, this is the list of elements that share the same name
      *     as the receiver.
      * @returns {Array} The array of native items.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -1589,7 +1589,7 @@ function() {
      * @summary Returns the name under which the receiver would be submitted
      *     when used in a forms context.
      * @returns {TP.html.inputRadio} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -1632,7 +1632,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -1649,7 +1649,7 @@ function() {
      * @method isSelected
      * @summary Returns true if the receiver is selected.
      * @returns {Boolean} Whether or not the receiver is selected.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -1670,7 +1670,7 @@ function() {
      * @method on
      * @summary Sets the receiver's checked state to 'true'.
      * @returns {TP.html.inputCheckable} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -1694,7 +1694,7 @@ function() {
      * @method off
      * @summary Sets the receiver's checked state to 'false'.
      * @returns {TP.html.inputCheckable} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -1720,7 +1720,7 @@ function(aValue, elementProperty) {
      *     receiver is a part of (as matched by their 'name' attribute) matching
      *     the criteria if found. Note that this method does not clear existing
      *     selections when processing the value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each grouped element to determine which of
      *      them will be deselected.
      *          'value'     ->  The value of the element (the default)
@@ -1732,7 +1732,7 @@ function(aValue, elementProperty) {
      *      Array.
      * @param {String} elementProperty The property of the elements to use to
      *      determine which elements should be deselected.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
@@ -1839,7 +1839,7 @@ function(aValue) {
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
@@ -1911,7 +1911,7 @@ function() {
      *     receiver. Note that for groupings of controls that don't allow
      *     multiple selections (such as radiobuttons), this will raise an
      *     'InvalidOperation' exception.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
@@ -2211,7 +2211,7 @@ function() {
      * @summary Returns the Array of native elements. In the case of a form
      *     object this is the elements[] Array.
      * @returns {Array} The array of native items.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2235,7 +2235,7 @@ function() {
      *     the form.
      * @returns {TP.lang.Hash} A hash containing keys and values which represent
      *     the overall value of the form.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var i,
@@ -2281,7 +2281,7 @@ function(aValue) {
      * @param {TP.lang.Hash} aValue Hash containing key/value pairs where the
      *     keys need to map to ids or names in the form.
      * @returns {TP.html.form} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -2327,7 +2327,7 @@ function() {
      * @method reset
      * @summary Resets the form. As a node component, however, this method
      *     provides the opportunity for custom reset pre/post processing.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2351,7 +2351,7 @@ function() {
      * @method submit
      * @summary Submits the form. As a node component, however, this method
      *     provides the opportunity for custom submit pre/post processing.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2477,7 +2477,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -2512,7 +2512,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2533,7 +2533,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputEmail} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2599,7 +2599,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2620,7 +2620,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputNumber} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2673,7 +2673,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2694,7 +2694,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputPassword} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2734,7 +2734,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2755,7 +2755,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputSearch} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2795,7 +2795,7 @@ function() {
      * @summary Returns false since radio buttons, by their very nature, don't
      *     allow multiple selection.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     return false;
@@ -2853,7 +2853,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2874,7 +2874,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputTel} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2935,7 +2935,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -2956,7 +2956,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputText} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3043,7 +3043,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3064,7 +3064,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputUrl} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3245,7 +3245,7 @@ function() {
      * @method isSelected
      * @summary Returns true if the receiver is selected.
      * @returns {Boolean} Whether or not the receiver is selected.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3266,7 +3266,7 @@ function() {
      * @method on
      * @summary Sets the receiver's selected state to 'true'.
      * @returns {TP.html.option} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3290,7 +3290,7 @@ function() {
      * @method off
      * @summary Sets the receiver's selected state to 'false'.
      * @returns {TP.html.option} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3378,7 +3378,7 @@ function(aValue, optionProperty) {
      * @summary Adds the selection matching the criteria if found. Note that
      *     this method does not clear existing selections when processing the
      *     value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each 'option' element to determine which
      *      of them will be selected.
      *          'value'     ->  The value of the option (the default)
@@ -3389,7 +3389,7 @@ function(aValue, optionProperty) {
      *      options to add to the selection. Note that this can be an Array.
      * @param {String} optionProperty The property of the option elements to use
      *      to determine which options should be selected.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
@@ -3483,7 +3483,7 @@ function() {
      * @summary Returns true if the receiver is configured for multiple
      *     selection.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3507,7 +3507,7 @@ function(aValue) {
      * @param {Object} aValue The value to de-select. Note that this can be an
      *     array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
-     * @raise TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
@@ -3571,7 +3571,7 @@ function() {
     /**
      * @method deselectAll
      * @summary Clears any current selection(s).
-     * @raise TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
@@ -3692,7 +3692,7 @@ function() {
      * @returns {String|Array} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
      *     allow multiple selections.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -3745,7 +3745,7 @@ function() {
      * @summary Returns the Array of native elements. In the case of a select
      *     list this is the options[] Array.
      * @returns {Array} The array of native items.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -3786,7 +3786,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -3805,7 +3805,7 @@ function(aSignal, anItemset) {
      *     provided (or one found in the receiver's content model). NOTE that
      *     this requires the select to have an option below it with a
      *     tibet:tag="xctrls:itemset" value.
-     * @summary The itemset tag is an XForms tag intended for use with truly
+     * @description The itemset tag is an XForms tag intended for use with truly
      *     dynamic list content. It's not the best choice for a set of data that
      *     won't change actively while the page is visible so it's not really
      *     the best choice for most select controls. Still, it's possible that
@@ -3828,7 +3828,7 @@ function(aSignal, anItemset) {
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action.
      * @param {xctrls:itemset} anItemset The itemset to refresh from.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     //  the itemset has to be encoded onto an option element to be valid
@@ -3952,7 +3952,7 @@ function(aSignal) {
      *     substitution template with each node of the receiver's bound content.
      * @param {DOMRefresh} aSignal An optional signal which triggered this
      *     action.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -4021,7 +4021,7 @@ function(aValue, optionProperty) {
      * @summary Removes the selection matching the criteria if found. Note that
      *     this method does not clear existing selections when processing the
      *     value(s) provided.
-     * @summary Note that the aspect can be one of the following, which will
+     * @description Note that the aspect can be one of the following, which will
      *      be the property used with each 'option' element to determine which
      *      of them will be deselected.
      *          'value'     ->  The value of the option (the default)
@@ -4033,7 +4033,7 @@ function(aValue, optionProperty) {
      *      Array.
      * @param {String} optionProperty The property of the option elements to use
      *      to determine which options should be deselected.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
@@ -4141,7 +4141,7 @@ function(aValue) {
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
@@ -4210,7 +4210,7 @@ function() {
     /**
      * @method selectAll
      * @summary Selects all options.
-     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
@@ -4429,7 +4429,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -4472,7 +4472,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -4488,7 +4488,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
@@ -4505,7 +4505,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.textarea} The receiver.
-     * @raise TP.sig.InvalidNode
+     * @exception TP.sig.InvalidNode
      */
 
     var node;
@@ -4526,7 +4526,7 @@ function(aValue) {
 /**
  * @type {TP.html.button}
  * @summary 'button' tag.
- * @summary NOT the same as <input type="button"> due largely to rendering
+ * @description NOT the same as <input type="button"> due largely to rendering
  *     differences. The attributes and behavior are largely similar, however.
  *     This tag type supports content between the opening/closing button tags
  *     unlike the input form of this control which has no closing tag and hence

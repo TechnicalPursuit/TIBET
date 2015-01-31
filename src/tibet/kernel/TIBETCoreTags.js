@@ -36,7 +36,7 @@ function() {
      * @method getApplicationType
      * @summary Returns the application type that the singleton Application
      *     instance will be created from.
-     * @summary This method looks for a 'tibet:appctrl' attribute on the
+     * @description This method looks for a 'tibet:appctrl' attribute on the
      *     receiver and, if present, will try to resolve the value of that
      *     attribute to a TIBET type. If the attribute is missing or a type
      *     cannot be found, the standard TP.core.Application type will be
@@ -104,7 +104,7 @@ function(aRequest) {
      * @method tagCompile
      * @summary Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @summary In this type, this method generates either a 'tibet:app' or
+     * @description In this type, this method generates either a 'tibet:app' or
      *     a 'tibet:sherpa' tag, depending on whether or not the current boot
      *     environment is set to 'development' or not.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
@@ -249,7 +249,7 @@ function(aRequest) {
     /**
      * @method tagAttachDOM
      * @summary Sets up runtime machinery for the element in aRequest.
-     * @summary In this type, if the Sherpa is not 'active' this method
+     * @description In this type, if the Sherpa is not 'active' this method
      *     loads the URL pointed to by the 'project.homepage' configuration
      *     variable into the UIROOT frame. If a value hasn't been configured,
      *     then the standard system blank page is loaded into that frame.
@@ -315,7 +315,7 @@ function(aRequest) {
      * @method tagCompile
      * @summary Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @summary In this type, if the Sherpa is 'active' (not just loaded but
+     * @description In this type, if the Sherpa is 'active' (not just loaded but
      *     active) this method converts the receiver (a 'tibet:root' tag) into a
      *     'tibet:sherpa' tag.
      * @param {TP.sig.Request} aRequest A request containing processing

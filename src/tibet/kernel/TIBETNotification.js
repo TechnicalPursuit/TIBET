@@ -429,7 +429,7 @@ function() {
      * @method isBubbling
      * @summary Returns true if the signal bubbles. This is typically only used
      *     by signals which use DOM firing policies.
-     * @summary When a signal isBubbling and it is being fired via a DOM
+     * @description When a signal isBubbling and it is being fired via a DOM
      *     policy it will not stop TP.AT_TARGET but will continue up through the
      *     parent chain until it reaches the outermost DOM element containing
      *     it. Most signals bubble.
@@ -1068,7 +1068,7 @@ function(aKey, aValue) {
      *     that the payload is empty and can be constructed, or that it can
      *     handle an atPut operation. This is the preferred way of manipulating
      *     the content of the signal in terms of its control parameters.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true. Observe the payload for
      *     change notification.
      * @param {String} aKey The key for the parameter.
@@ -1120,7 +1120,7 @@ function(aKey, aValue) {
      * @summary Defines a key/value pair in the receiver's payload, provided
      *     that the payload does not already contain a value for the key in
      *     question.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true. Observe the payload for
      *     change notification.
      * @param {String} aKey The key for the parameter.
@@ -1424,7 +1424,7 @@ function(attributeName) {
     /**
      * @method getProperty
      * @summary Returns the value, if any, for the attribute provided.
-     * @summary This method takes over when get() fails to find a specific
+     * @description This method takes over when get() fails to find a specific
      *     getter or an aspect adapted getter. For signals we vary the default
      *     implementation in that no inferencing or backstop invocation occurs
      *     when attempting to look up values. If the receiver doesn't have the
@@ -1487,7 +1487,7 @@ function() {
      * @method getSignalNames
      * @summary Returns the all of the receiver's 'signal names' - that is,
      *     each supertype signal name *and* the receiver's direct *signal* name.
-     * @summary Note that this method is different than
+     * @description Note that this method is different than
      *     'getTypeSignalNames()' below in that this method will always use the
      *     signal name, even for the receiving type - which for a spoofed signal
      *     will be different than its type name.
@@ -1707,7 +1707,7 @@ function() {
      * @method getTypeSignalNames
      * @summary Returns the 'types signal names' - that is, each supertype
      *     signal name *and* the receiver's direct type signal name.
-     * @summary Note that this method is different than 'getSignalNames()'
+     * @description Note that this method is different than 'getSignalNames()'
      *     above in that this method will always use the type name as converted
      *     to a signal name, even for the receiving type - which for a spoofed
      *     signal will be different than its signal name.
@@ -1811,7 +1811,7 @@ function() {
      * @method isBubbling
      * @summary Returns true if the signal bubbles. This is typically only used
      *     by signals which use DOM firing policies.
-     * @summary When a signal isBubbling and it is being fired via a DOM
+     * @description When a signal isBubbling and it is being fired via a DOM
      *     policy it will not stop TP.AT_TARGET but will continue up through the
      *     parent chain until it reaches the outermost DOM element containing
      *     it. Most signals bubble.
@@ -1952,7 +1952,7 @@ function(aFlag) {
      * @method preventDefault
      * @summary Tells a potential handler to not perform whatever default
      *     action it might perform.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Prevent default: yes or no?
      * @returns {Boolean} True if the signal should not perform its default
@@ -2027,7 +2027,7 @@ function(aKey) {
      * @method removeKey
      * @summary Removes a key (and it's attendant value) from the receiver's
      *     payload, provided that the payload can handle a removeKey operation.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true. Observe the payload for
      *     change notification.
      * @param {String} aKey The key for the parameter.
@@ -2093,7 +2093,7 @@ function(anOrigin) {
     /**
      * @method setOrigin
      * @summary Sets the origin of the signal.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Object} anOrigin The originating object.
      * @returns {TP.sig.Signal} The receiver.
@@ -2118,7 +2118,7 @@ function(anObject) {
     /**
      * @method setPayload
      * @summary Sets the payload/parameter object of the signal.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Object} anObject The optional signal payload.
      * @returns {TP.sig.Signal} The receiver.
@@ -2137,7 +2137,7 @@ function(aPhase) {
     /**
      * @method setPhase
      * @summary Sets the phase of the signal.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {String} aPhase The current dispatch phase.
      * @returns {TP.sig.Signal} The receiver.
@@ -2156,7 +2156,7 @@ function(aSignalName, clearIgnores) {
     /**
      * @method setSignalName
      * @summary Defines the name of the signal.
-     * @summary By default a signal's name matches its type, but to support
+     * @description By default a signal's name matches its type, but to support
      *     lightweight signals whose only differentiation is their name we allow
      *     TP.sig.Signal and other subtypes to stand in for a subtype simply by
      *     changing their names. An additional side-effect of this call is that
@@ -2209,7 +2209,7 @@ function(aFlag) {
      * @summary Returns true if the signal handler(s) should not perform the
      *     default action. If a flag is provided this flag is used to set the
      *     prevent status.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Prevent default: yes or no?
      * @returns {Boolean} True if the signal should not perform its default
@@ -2232,7 +2232,7 @@ function(aFlag) {
      * @method shouldStop
      * @summary Returns true if the signal should stop propagating. If a flag
      *     is provided this flag is used to set the propagation status.
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Stop propagating: yes or no?
      * @returns {Boolean} True if the signal should stop propagation.
@@ -2260,7 +2260,7 @@ function(aFlag) {
      * @summary Tells the signal to stop propagation -- subject to the
      *     observance of this property by the various firing policies and
      *     whether the receiver isCancelable()
-     * @summary Note that this method does not signal 'Change', even if it's
+     * @description Note that this method does not signal 'Change', even if it's
      *     'shouldSignalChange' attribute is true.
      * @param {Boolean} aFlag Stop propagating: yes or no?
      * @returns {Boolean} True if the signal should stop propagation.
@@ -3251,7 +3251,7 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
      * @summary Returns a signal instance for use. This is optimized via the
      *     TP.sig.Signal construct machinery to reuse a common instance in most
      *     cases so that instance creation overhead is minimized.
-     * @summary When processing signals provided in string form the default
+     * @description When processing signals provided in string form the default
      *     type rules will cause types with Change in their name to be turned
      *     into Change signals, while types with Exception in their name will
      *     become subtypes of TP.sig.Exception. Exception is tested first, so a
@@ -3330,7 +3330,7 @@ function(aSignal, aDefaultType) {
      *     supplied it is used as the return type. If its not defined, a number
      *     of rules (explained below) are used to try to 'compute' the return
      *     type.
-     * @summary When returning signal types for signal values provided in
+     * @description When returning signal types for signal values provided in
      *     String form the default type rules will cause types with Change in
      *     their name to return Change signals, while types with Exception in
      *     their name will return TP.sig.Exception. TP.sig.Exception is tested
@@ -3614,7 +3614,7 @@ function(aHandlerEntry, quiet) {
     /**
      * @method $registerHandlerEntry
      * @summary Registers the supplied signal map entry into the signal map.
-     * @summary Note that no duplicate entries are made meaning each handler
+     * @description Note that no duplicate entries are made meaning each handler
      *     is notified only once per signal occurrence unless the TIBET flag
      *     shouldAllowDuplicateInterests() returns true. Also, if the enclosing
      *     interest container has already been created for another handler, and
@@ -4018,7 +4018,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     /**
      * @method $registerInterest
      * @summary Creates a signal map entry for the interest specified.
-     * @summary No duplicate entries are made meaning each handler is
+     * @description No duplicate entries are made meaning each handler is
      *     notified only once per signal occurrence unless the TIBET flag
      *     shouldAllowDuplicateInterests() returns true. Also, if the enclosing
      *     interest container has already been created for another handler, and
@@ -4173,7 +4173,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
      * @method $removeInterest
      * @summary Removes the signal map entry for the specific interest
      *     specified.
-     * @summary This method affects the handler provided, or all handlers of
+     * @description This method affects the handler provided, or all handlers of
      *     the particular capturing type (ie. capturing or non-capturing) if no
      *     handler is present. Note that when a handler is present the
      *     isCapturing flag is ignored and the handler's entry is removed
@@ -4391,7 +4391,7 @@ aSigEntry, checkTarget) {
      * @method notifyHandlers
      * @summary Notifies all handlers found for the origin/signal name pair
      *     provided, adjusting for capturing semantics as needed.
-     * @summary This method notifies every available listener it can find
+     * @description This method notifies every available listener it can find
      *     which meet the captureState requirements -- unless the
      *     checkPropagation flag is true in which case the notification only
      *     occurs until a handler sets the stopPropagation() flag on the signal.
@@ -5609,7 +5609,7 @@ function(anOrigin, aSignal, aHandler) {
      * @method REGISTER_CAPTURING
      * @summary Handles registration of a capturing handler for the
      *     registration data provided.
-     * @summary One feature yet to be added is the concept of a "cleanup
+     * @description One feature yet to be added is the concept of a "cleanup
      *     policy". We want registrations to occur in which the observer
      *     specifies when to clean them out or "auto-ignore" them. A couple
      *     obvious policies would be to remove the observer after a certain
@@ -6748,7 +6748,7 @@ function(anOrigin, anException, aPayload) {
     /**
      * @method raise
      * @summary Raise an exception.
-     * @summary The exception type can be either a type or a String
+     * @description The exception type can be either a type or a String
      *     representing a type as appropriate. The calling context should be a
      *     reference to the function in which the exception was issued. This is
      *     usually provided as arguments (too bad about 'caller' isn't it). The
@@ -7699,7 +7699,7 @@ function(signalTypes) {
     /**
      * @method setupCustomHandlers
      * @summary Sets up handlers for 'custom' server-side events.
-     * @summary Because the Server-Sent Events specification does not
+     * @description Because the Server-Sent Events specification does not
      *     specify that the general 'message' handler will fire when there is a
      *     custom 'event' (as specified by the 'event:' tag in the received
      *     data), we look at the signals being registered and if they have a
@@ -7886,7 +7886,7 @@ function(signalTypes) {
     /**
      * @method teardownCustomHandlers
      * @summary Tears down handlers for 'custom' server-side events.
-     * @summary Because the Server-Sent Events specification does not
+     * @description Because the Server-Sent Events specification does not
      *     specify that the general 'message' handler will fire when there is a
      *     custom 'event' (as specified by the 'event:' tag in the received
      *     data), we look at the signals being registered and if they have a
@@ -7965,7 +7965,7 @@ TP.sig.SourceSignal.defineSubtype('SourceError');
 /**
  * @type {Object}
  * @summary Responder Computation API extensions for Object.
- * @summary These allow any Object in the system to respond to the responder
+ * @description These allow any Object in the system to respond to the responder
  *     computation machinery. They are typically overridden to provide real
  *     functionality.
  * @subject Responder Computation Extensions

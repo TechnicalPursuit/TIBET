@@ -68,7 +68,7 @@ function(aRequest) {
      * @method getCompilationAttrs
      * @summary Returns a TP.lang.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled.
-     * @summary This type produces custom values for the 'tibet:ctrl'
+     * @description This type produces custom values for the 'tibet:ctrl'
      *     attribute (matching the type of the map based on the 'type'
      *     attribute), thereby allowing instances of subtypes of this type to be
      *     created.
@@ -158,7 +158,7 @@ function() {
     /**
      * @method getDisplayValue
      * @summary Gets the display, or visual, value of the receiver's node.
-     * @summary For this type, this is the value of the underlying data
+     * @description For this type, this is the value of the underlying data
      *     being displayed by the chart.
      * @returns {Object} The visual value of the receiver's UI node.
      */

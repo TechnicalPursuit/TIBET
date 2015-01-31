@@ -772,7 +772,7 @@ function(aTokenArray) {
      * @method isAccessPath
      * @summary Returns true if the token array provided represents what
      *     appears to be a viable access path.
-     * @summary An access path is a sugared form of property naming which
+     * @description An access path is a sugared form of property naming which
      *     can be converted into a call to TIBET's 'set' or 'get' functions. For
      *     example, a sequence of tokens such as 'a.b.c' can be resolved by a
      *     get call on 'a' of a.get('b.c'); Note that the access path syntax
@@ -1711,7 +1711,7 @@ function(aString, aShell, aRequest) {
      * @method expandContent
      * @summary Expands content contained in the supplied source string using
      *     the provided shell.
-     * @summary Content expansion consists of expanding any command
+     * @description Content expansion consists of expanding any command
      *     substitutions (content inside of `...` constructs), templates, and
      *     shell variables contained in the content.
      * @param {String} aString The source string to expand content in.

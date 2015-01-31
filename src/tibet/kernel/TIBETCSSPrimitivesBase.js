@@ -34,7 +34,7 @@ function(anElement, attributeName, checkAttrNSURI) {
     /**
      * @method elementGetAttribute
      * @summary Returns the value of the attribute provided.
-     * @summary See discussion in main DOM primitives file.
+     * @description See discussion in main DOM primitives file.
      * @param {Element} anElement The element to retrieve the attribute value
      *     from.
      * @param {String} attributeName The attribute to find.
@@ -42,9 +42,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, looking via URI
      *     rather than just prefix. Default is false (to keep things faster).
      * @returns {String} The attribute value, if found.
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -117,7 +117,7 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
     /**
      * @method elementSetAttribute
      * @summary Sets the value of the attribute provided.
-     * @summary See discussion in main DOM primitives file.
+     * @description See discussion in main DOM primitives file.
      * @param {Element} anElement The element to set the attribute on.
      * @param {String} attributeName The attribute to set.
      * @param {String} attributeValue The attribute value.
@@ -125,9 +125,9 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -701,7 +701,7 @@ function(aDocument) {
     /**
      * @method documentGetStyleRules
      * @summary Returns all of the CSS style rules for the supplied document.
-     * @summary If the TP.sys.shouldProcessCSS() flag is 'true' (the
+     * @description If the TP.sys.shouldProcessCSS() flag is 'true' (the
      *     default) this call will return an Array of TP.lang.Hashes that
      *     represent all of the rules in this document. If it is false, this
      *     method will return the result of calling
@@ -728,7 +728,7 @@ function(aDocument) {
      *     The end result of running this function is that every element in the
      *     document will have a '.appliedRules' property that contains an Array
      *     of CSS style rules that apply to it.
-     * @summary As this function iterates over every CSS rule in the
+     * @description As this function iterates over every CSS rule in the
      *     document, querying the document for matching elements and then adding
      *     to that element's '.appliedRules' property with that rule. Therefore,
      *     this can be a time consuming process. A 50 rule document with 50
@@ -917,7 +917,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      * @method elementConvertUnitLengthToPixels
      * @summary A routine that computes a number of pixels from the supplied
      *     CSS unit value.
-     * @summary Note that the supplied value here must be a 'CSS unit value'
+     * @description Note that the supplied value here must be a 'CSS unit value'
      *     (i.e. '3em' or '27%'). It cannot be a CSS value such as 'normal' or
      *     'inherit'.
      * @param {HTMLElement} anElement The element to use to compute the pixel

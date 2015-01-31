@@ -47,7 +47,7 @@ function(nodeSpec, varargs) {
      *     node may have been provided or a String could have been provided . By
      *     far the most common usage is construction of a wrapper around an
      *     existing node.
-     * @summary This method takes two arguments. Depending on the validity
+     * @description This method takes two arguments. Depending on the validity
      *     and types of those arguments, various sorts of Node construction can
      *     happen:
      *
@@ -893,7 +893,7 @@ function(aContentObject, aRequest) {
      * @method addContent
      * @summary Adds the value supplied to the content of the receiver's native
      *     DOM counterpart.
-     * @summary At this level, this method merely sets adds to the text
+     * @description At this level, this method merely sets adds to the text
      *     content of the node what is produced by executing the
      *     'produceContent' on the supplied content object. Subtypes should
      *     override this method to provide a more specific version of this.
@@ -1119,7 +1119,7 @@ function() {
     /**
      * @method asXHTMLNode
      * @summary Returns an XHTML node built from the receiver.
-     * @summary The emphasis here on XHTML, implying that the return value
+     * @description The emphasis here on XHTML, implying that the return value
      *     is an XML node, not an HTML node. Also note that since it's XML the
      *     resulting node may have content in other namespaces. Use
      *     TP.nodePurifyXMLNS() to remove all non-XHTML content, or
@@ -1215,7 +1215,7 @@ function(aNode) {
     /**
      * @method equalTo
      * @summary Returns whether the supplied node is 'equal to' the receiver.
-     * @summary This method follows the DOM Level 3 standard for
+     * @description This method follows the DOM Level 3 standard for
      *     checking Nodes for equality with each other. This specification
      *     states that two Nodes are equal if:
      *          -   The two nodes are of the same type
@@ -1328,7 +1328,7 @@ function(aRequest) {
     /**
      * @method getContent
      * @summary Returns the receiver's content.
-     * @summary At this level, this method merely returns the text content
+     * @description At this level, this method merely returns the text content
      *     of its native node. Subtypes should override this method to provide a
      *     more specific version of this.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
@@ -1773,7 +1773,7 @@ function() {
     /**
      * @method getNativeNode
      * @summary Returns the receiver's native DOM node object.
-     * @summary There are actually two variants of this method, which are
+     * @description There are actually two variants of this method, which are
      *     manipulated based on whether the node is transactional/flagging
      *     changes. If either of those are true then a "slow" version is put in
      *     place that manages that overhead, otherwise the default
@@ -2006,7 +2006,7 @@ function(aNode) {
      * @method identicalTo
      * @summary Returns whether the supplied node is 'identical to' the
      *     receiver.
-     * @summary This method will return true if the underlying native Node
+     * @description This method will return true if the underlying native Node
      *     of the receiver is identical to the supplied Node (or underlying
      *     native Node if a TP.core.Node was supplied).
      * @param {TP.core.Node|Node} aNode The TP.core.Node or Node to use in the
@@ -2091,7 +2091,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -2107,7 +2107,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary Most 'field-level' UI controls bind to scalar values (i.e.
+     * @description Most 'field-level' UI controls bind to scalar values (i.e.
      *     Booleans, Numbers and Strings), but action tags and certain other
      *     complex UI elements can bind to nodes or nodelists. In the first
      *     case, this method should return true and in the second it should
@@ -2218,7 +2218,7 @@ function(aContentObject, aRequest) {
      * @method produceValue
      * @summary Produces the value that will be used by the setValue() method
      *     to set the content of the receiver.
-     * @summary This method works together with the 'isSingleValued()' and
+     * @description This method works together with the 'isSingleValued()' and
      *     'isScalarValued()' methods to produce the proper value for the
      *     receiver. See the method description for isScalarValued() for more
      *     information.
@@ -2314,7 +2314,7 @@ function(theContent, anIndex) {
     /**
      * @method $reduceValue
      * @summary Reduces the content value to a 'single value'.
-     * @summary When the receiver isSingleValued() this method will return a
+     * @description When the receiver isSingleValued() this method will return a
      *     single object from a content result set (a collection of some sort -
      *     usually an Array, Object, TP.lang.Hash, NodeList or NamedNodeMap).
      *     The result set must be a collection for this method to operate
@@ -2417,7 +2417,7 @@ function(aContentObject, aRequest) {
      * @method setContent
      * @summary Sets the content of the receiver's native DOM counterpart to
      *     the value supplied.
-     * @summary At this level, this method merely sets the text content of
+     * @description At this level, this method merely sets the text content of
      *     the node to what is produced by executing the 'produceContent'
      *     on the supplied content object. Subtypes should override this method
      *     to provide a more specific version of this.
@@ -2609,7 +2609,7 @@ function(aValue, shouldSignal) {
      * @summary Sets the text value of the receiver's first text node to
      *     aValue. For general node types this method sets the value/content of
      *     the node.
-     * @summary For common nodes the standard attribute list and the type of
+     * @description For common nodes the standard attribute list and the type of
      *     input determines what is actually manipulated. For element and
      *     document nodes the behavior is a little different. When the receiver
      *     has a pre-existing value attribute that's typically what is
@@ -2885,7 +2885,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @method resolveDNU
      * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
-     * @summary Handles resolution of methods which have triggered the
+     * @description Handles resolution of methods which have triggered the
      *     inferencer. For TP.core.DocumentNodes the resolution process is used
      *     in conjunction with method aspects to allow the receiver to translate
      *     method calls.
@@ -3078,7 +3078,7 @@ function(anAspect, anAction, aDescription) {
      * @method changed
      * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @summary If 'anAspect' is provided then the signal fired will be
+     * @description If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -3276,7 +3276,7 @@ function() {
      * @method discardCheckpointNames
      * @summary Flushes any stored checkpoint names which come after the
      *     current node list length.
-     * @summary When using back() and forward() along with checkpoint,
+     * @description When using back() and forward() along with checkpoint,
      *     rollback, or any mutation operations this method will be called to
      *     clear name references to indexes into the node list which no longer
      *     exist.
@@ -3566,7 +3566,7 @@ function() {
  * @type {TP.core.CollectionNode}
  * @summary A node type providing common collection-style operations for
  *     certain node subtypes such as document and element nodes.
- * @summary The TP.core.CollectionNode is an abstract supertype for nodes
+ * @description The TP.core.CollectionNode is an abstract supertype for nodes
  *     such as document or element nodes which can support a TIBET collection
  *     API. The API methods of this type are extensive since TP.core.Node is the
  *     primary data management structure for XForms and various web service
@@ -3834,7 +3834,7 @@ function(attributeName) {
     /**
      * @method $getAttribute
      * @summary Returns the value of the attribute provided.
-     * @summary The typical operation is to retrieve the attribute from the
+     * @description The typical operation is to retrieve the attribute from the
      *     receiver's native node. When the attribute is prefixed this method
      *     will attempt to find the matching attribute value for that prefix
      *     based on the document's prefixes and TIBET's canonical prefixing
@@ -3864,7 +3864,7 @@ function(attributeName) {
     /**
      * @method getAttribute
      * @summary Returns the value of the attribute provided.
-     * @summary The typical operation is to retrieve the attribute from the
+     * @description The typical operation is to retrieve the attribute from the
      *     receiver's native node. When the attribute is prefixed this method
      *     will attempt to find the matching attribute value for that prefix
      *     based on the document's prefixes and TIBET's canonical prefixing
@@ -3925,7 +3925,7 @@ function(aRequest) {
     /**
      * @method getContent
      * @summary Returns the receiver's content.
-     * @summary At this level, this method returns its 'inner content',
+     * @description At this level, this method returns its 'inner content',
      *     which is basically all of its child nodes serialized as a document
      *     fragment.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
@@ -4985,7 +4985,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when single valued.
      */
@@ -5001,7 +5001,7 @@ function() {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @summary See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
      * @returns {Boolean} True when scalar valued.
      */
@@ -5407,7 +5407,7 @@ function(attrName, attrValue, breadthFirst) {
      * @summary Returns an Array containing descendants of the receiver which
      *     are Element nodes and which contain an attribute name/value matching
      *     the value provided.
-     * @summary If the supplied attribute value is null, this method will
+     * @description If the supplied attribute value is null, this method will
      *     return Element nodes that have any value for the named attribute, no
      *     matter its value.
      * @param {String} attrName The attribute to test for.
@@ -5436,7 +5436,7 @@ function(attrPrefix, attrValue, breadthFirst) {
      *     the receiver which are Element nodes and which contain an attribute
      *     name prefixed as required and whose value matches the optionally
      *     supplied value.
-     * @summary If the supplied attribute value is null, this method will
+     * @description If the supplied attribute value is null, this method will
      *     return Element nodes that have any value for the named attribute, no
      *     matter its value.
      * @param {String} attrPrefix The prefix string to test for.
@@ -5462,7 +5462,7 @@ function(anIdOrName) {
      * @method getDescendantElementsByIdOrName
      * @summary Returns any elements that can be found which have either the ID
      *     or Name provided.
-     * @summary For HTML documents where radio buttons often use the 'name'
+     * @description For HTML documents where radio buttons often use the 'name'
      *     attribute as an identifier rather than 'id' we need a way to query
      *     the document for elements matching an identifier which might be
      *     either a name or id value.
@@ -5558,7 +5558,7 @@ function(anIndex) {
     /**
      * @method getElementByIndex
      * @summary Returns the element at the specified index.
-     * @summary When using this method indexes are in the form consistent
+     * @description When using this method indexes are in the form consistent
      *     with the element() scheme in XPointer and those from
      *     TP.elementGetDocumentIndex(). When invoked with a non-document node
      *     the index is taken to be relative to the receiving node.
@@ -5599,7 +5599,7 @@ function(aName, aNamespaceURI) {
      *     supplied node whose tag names match the name provided. Note that this
      *     function can deal properly with namespace-qualified tag names across
      *     platforms.
-     * @summary This method merely returns the result of calling the TIBET
+     * @description This method merely returns the result of calling the TIBET
      *     DOM primitive call TP.nodeGetElementsByTagName() on the receiver's
      *     native node and then TP.wrap()ing the result. See that function for
      *     more information on the capabilities of this method.
@@ -5768,15 +5768,15 @@ function(attrName, attrValue) {
      * @summary Returns the first element ancestor of the receiver which has an
      *     attribute matching attrName and whose value matches the optional
      *     attrValue provided.
-     * @summary This is a commonly used method in widget construction where
+     * @description This is a commonly used method in widget construction where
      *     an inner element is looking outward for its containing widget or
      *     control, often during event dispatch.
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The optional attribute value to check.
      * @returns {TP.core.ElementNode} An element ancestor of the node.
-     * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
+     * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied attribute name is
+     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
@@ -5795,15 +5795,15 @@ function(aTagName, aNamespaceURI) {
      * @method getFirstAncestorByTagName
      * @summary Returns the first element ancestor of the receiver which
      *     matches the name and optional namespace URI provided.
-     * @summary This is a commonly used method in widget construction where
+     * @description This is a commonly used method in widget construction where
      *     an inner element is looking outward for its containing widget or
      *     control, often during event dispatch.
      * @param {String} aTagName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @returns {TP.core.ElementNode} An element ancestor of the node.
-     * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
+     * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
-     * @raise TP.sig.InvalidName Raised when the supplied tag name is empty.
+     * @exception TP.sig.InvalidName Raised when the supplied tag name is empty.
      */
 
     return TP.wrap(TP.nodeGetFirstAncestorByTagName(
@@ -5844,7 +5844,7 @@ function(aName, aNamespaceURI) {
      * @method getFirstElementChildByTagName
      * @summary Returns the first element descendant of the node which matches
      *     the name and optional namespace URI provided.
-     * @summary This is a commonly used method in widget construction where
+     * @description This is a commonly used method in widget construction where
      *     the outer widget is looking for specific parts of its content.
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
@@ -5898,7 +5898,7 @@ function() {
     /**
      * @method getFirstChildElement
      * @summary Returns the first element child of the node.
-     * @summary This method is a replacement for node.firstChild which
+     * @description This method is a replacement for node.firstChild which
      *     ensures that text nodes, comment nodes, and other node types don't
      *     break your code when you're assuming element nodes.
      * @returns {TP.core.ElementNode} An element child of the node.
@@ -5955,7 +5955,7 @@ function(aName, aNamespaceURI) {
      * @method getFirstElementByTagName
      * @summary Returns the first element descendant of the node which matches
      *     the name and optional namespace URI provided.
-     * @summary This is a commonly used method in widget construction where
+     * @description This is a commonly used method in widget construction where
      *     the outer widget is looking for specific parts of its content.
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
@@ -6032,7 +6032,7 @@ function(aFunction, shouldReverse) {
      * @method ancestorsPerform
      * @summary Executes aFunction with each ancestor of the node, working from
      *     the node outward unless shouldReverse is true.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -6056,7 +6056,7 @@ function(aFunction, shouldReverse) {
     /**
      * @method childElementsPerform
      * @summary Executes aFunction with each child element of the node.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -6087,7 +6087,7 @@ function(aFunction, shouldReverse) {
      * @summary Executes aFunction with each child node of the node. NOTE that
      *     as part of the processing here the node is normalized to coalesce
      *     adjacent text nodes.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -6111,7 +6111,7 @@ function(aFunction, breadthFirst) {
     /**
      * @method descendantsPerform
      * @summary Executes aFunction with each descendant of the node.
-     * @summary aFunction implementations can return TP.BREAK to terminate
+     * @description aFunction implementations can return TP.BREAK to terminate
      *     the traversal, TP.CONTINUE to allow you to skip child content under
      *     an element and proceed to the next non-child element node for
      *     processing (only when the current item is an Element, not non-Element
@@ -6137,7 +6137,7 @@ function(aFunction, breadthFirst) {
     /**
      * @method descendantElementsPerform
      * @summary Executes aFunction with each element descendant of the node.
-     * @summary aFunction implementations can return TP.BREAK to terminate
+     * @description aFunction implementations can return TP.BREAK to terminate
      *     the traversal, TP.CONTINUE to allow you to skip child content under
      *     an element and proceed to the next non-child element node for
      *     processing (only when the current item is an Element, not non-Element
@@ -6164,7 +6164,7 @@ function(aFunction, aSubset, shouldReverse) {
     /**
      * @method siblingsPerform
      * @summary Executes aFunction with each sibling of the node.
-     * @summary Perform can be used as an alternative to constructing for
+     * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate. You
      *     can also call atStart or atEnd within your implemenation of aFunction
@@ -6258,7 +6258,7 @@ function(aFunction, breadthFirst) {
      * @method detectDescendant
      * @summary Returns the first descendant of the node for which aFunction
      *     returns true. Search is typically downward in a depth-first fashion.
-     * @summary Note that you can't reverse this detection process. To
+     * @description Note that you can't reverse this detection process. To
      *     perform a reverse detection use nodeGetDescendants() to get the
      *     collection in the order you desire and iterate on that.
      * @param {Function} aFunction A function returning true when passed an
@@ -6283,7 +6283,7 @@ function(aFunction, breadthFirst) {
      * @summary Returns the first element descendant of the node for which
      *     aFunction returns true. Search is typically downward in a depth-first
      *     fashion.
-     * @summary Note that you can't reverse this detection process. To
+     * @description Note that you can't reverse this detection process. To
      *     perform a reverse detection use TP.nodeGetDescendantElements() to get
      *     the collection in the order you desire and iterate on that
      *     collection.
@@ -6395,7 +6395,7 @@ function(aFunction, breadthFirst) {
      * @method selectDescendants
      * @summary Returns an Array of descendants of the node for which aFunction
      *     returns true. Search is typically downward in a depth-first fashion.
-     * @summary Note that you can't reverse this selection process. To
+     * @description Note that you can't reverse this selection process. To
      *     perform a reverse selection use nodeGetDescendants() to get the
      *     collection in the order you desire and iterate on that.
      * @param {Function} aFunction A function returning true when passed an
@@ -6420,7 +6420,7 @@ function(aFunction, breadthFirst) {
      * @summary Returns an Array of descendant elements of the node for which
      *     aFunction returns true. Search is typically downward in a depth-first
      *     fashion.
-     * @summary Note that you can't reverse this selection process. To
+     * @description Note that you can't reverse this selection process. To
      *     perform a reverse selection use TP.nodeGetDescendantElements() to get
      *     the collection in the order you desire and iterate on that
      *     collection.
@@ -6871,7 +6871,7 @@ function(aDescendant, aTest) {
      *     document for) aDescendant. If the receiver is a TP.core.DocumentNode,
      *     this method will return true if aDescendant's document is the
      *     receiver.
-     * @summary This method checks 'deeply' throughout the receiver's tree.
+     * @description This method checks 'deeply' throughout the receiver's tree.
      * @param {Node|TP.core.Node} aDescendant Whether or not the receiver
      *     contains the supplied (TP)Node.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -7256,7 +7256,7 @@ function(aValue, aFunction, deep, breadthFirst) {
      * @summary Performs the function with each element of the receiver as the
      *     first argument and aValue as the second argument. The current index
      *     is provided as the third argument.
-     * @summary injectInto allows you to pass an additional value to the
+     * @description injectInto allows you to pass an additional value to the
      *     function along with each element of the receiver as it performs the
      *     function. This is useful when attempting to do an operation like
      *     summing all the values in an array where the added variable you pass
@@ -7482,7 +7482,7 @@ function(attributeName) {
      * @summary Removes the named attribute from the receiver when dealing with
      *     a non-XPath attribute specification, or all nodes matching the XPath
      *     when provided with an XPath.
-     * @summary In this type, if an XPath is supplied, then it is used to
+     * @description In this type, if an XPath is supplied, then it is used to
      *     locate nodes (including attribute nodes) to remove. NB: You *must*
      *     use a '/', '[', '@' or '.' to allow the XPath mechanism to trigger
      *     properly.
@@ -8656,7 +8656,7 @@ function(aURI, force) {
      * @summary Adds an tibet:src value to the documentElement of the receiver.
      *     This method is normally invoked when the Node is "owned" by a URI to
      *     ensure proper ID generation can occur.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {TP.core.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
@@ -8679,7 +8679,7 @@ function(aURI, force, aParamHash) {
      *     ensure proper base-aware attribute computation can occur. If the
      *     receiver's document already has xml:base definition on the
      *     documentElement this method will return without altering the content.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {TP.core.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
@@ -8716,7 +8716,7 @@ function(attributeName) {
     /**
      * @method getAttribute
      * @summary Returns the value of the attribute provided.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute to find.
      * @returns {String} The attribute value, if found.
      */
@@ -8735,7 +8735,7 @@ function(attributeName, stripPrefixes) {
      *     potentially matching the attribute name provided. For document nodes
      *     this operation effectively operates on the document's
      *     documentElement.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {String|RegExp} attributeName An attributeName "search" criteria
      *     of the form 'wholename' '*:localname' or 'prefix:*' or any RegExp.
      *     This is optional.
@@ -8756,7 +8756,7 @@ function() {
     /**
      * @method getTemplateName
      * @summary Returns the name of any associated template for the receiver.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @returns {String} The template name.
      */
 
@@ -8775,7 +8775,7 @@ function(attributeName) {
      *     hasAttribute call. Note that this call is only valid for Element
      *     nodes; when invoked on a document wrapper the documentElement is
      *     targeted.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute to test.
      * @exception TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not the receiver has the named attribute.
@@ -8793,7 +8793,7 @@ function() {
      * @method hasXMLBase
      * @summary Returns true if xml:base references are found on or above the
      *     receiver.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @returns {Boolean} Whether an xml:base reference was found on or above
      *     the receiver.
      */
@@ -8812,7 +8812,7 @@ function(attributeName) {
      *     the native element node removeAttribute call which attempts to handle
      *     standard change notification semantics for native nodes as well as
      *     proper namespace management.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute name to remove.
      */
 
@@ -8830,7 +8830,7 @@ function(attributeName, attributeValue) {
      *     wrapper around the native element node setAttribute call which
      *     attempts to handle standard change notification semantics for native
      *     nodes as well as proper namespace management.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
      */
@@ -8848,7 +8848,7 @@ function(attributeHash) {
      * @summary Sets the value of the attributes provided using the supplied
      *     TP.lang.Hash. For document nodes this operation effectively operates
      *     on the document's documentElement.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {TP.lang.Hash} attributeHash The attributes to set.
      */
 
@@ -8952,7 +8952,7 @@ function(aNode) {
      * @method generateXPathTo
      * @summary Generates a 'simple' XPath expression that would access the
      *     supplied node from the receiver's native node.
-     * @summary At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {Node|TP.core.Node} aNode The node to generate the path to.
      * @returns {String} The generated XPath expression.
      */
@@ -9187,7 +9187,7 @@ function(anObject, aRequest) {
      * @method fromDate
      * @summary Returns a formatted XML String with the supplied Date object as
      *     the content.
-     * @summary The supplied request can contain the following keys and
+     * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -9242,7 +9242,7 @@ function(anObject, aRequest) {
      * @method fromObject
      * @summary Returns a formatted XML String with each item in the Array as
      *     the content of each item in the Array.
-     * @summary The supplied request can contain the following keys and
+     * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'attrInfo' TP.lang.Hash|Function The Hash or Function to use to
@@ -9438,7 +9438,7 @@ function(anObject, aRequest) {
      * @method fromString
      * @summary Returns a formatted XML String with the supplied String object
      *     as the content.
-     * @summary The supplied request can contain the following keys and
+     * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
@@ -9575,7 +9575,7 @@ function(aNode) {
     /**
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
-     * @summary This method determines the 'TP wrapper' type for the
+     * @description This method determines the 'TP wrapper' type for the
      *     supplied node by using the following logic cascade. 1. Checks for the
      *     'tibet:ctrl' attribute on the node and attempts to obtain a type
      *     matching that name. 2. Checks for the 'tibet:tag' attribute on
@@ -10114,7 +10114,7 @@ function(anElement) {
      * @method guessContentTypeAndLocation
      * @summary Retrieves (and caches on the receiver) the MIME type and
      *     location of the receiver's content.
-     * @summary This method guesses the receiver's content type and
+     * @description This method guesses the receiver's content type and
      *     location, if the receiver has external content. It then populates
      *     that information on the 'tibet:src' and 'tibet:mime' attributes.
      * @param {Element|TP.core.ElementNode} anElement The element to guess the
@@ -10291,7 +10291,7 @@ function(aNode) {
      * @method nodeAwakenContent
      * @summary This method is the primary entry point for awakening new
      *     content that has been added to a visible DOM.
-     * @summary You don't normally call this, it's invoked by the various
+     * @description You don't normally call this, it's invoked by the various
      *     setContent() calls to ensure that new content is properly awakened.
      * @param {Node} aNode The node to awaken.
      * @exception TP.sig.InvalidNode
@@ -10592,7 +10592,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @summary Note that we implement this method because, in order to have
+     * @description Note that we implement this method because, in order to have
      *     TP.core.ElementNodes as event sources, they *must* have an assigned,
      *     globally-unique, ID. By implementing this method, we ensure they have
      *     that before they're registered in the signaling system as signal
@@ -10714,7 +10714,7 @@ function(attributeName) {
      * @method get
      * @summary Returns the value, if any, of the attribute provided. Note
      *     however that special parsing rules apply to TP.core.Node types.
-     * @summary TP.core.Nodes, particularly TP.core.ElementNode nodes, can
+     * @description TP.core.Nodes, particularly TP.core.ElementNode nodes, can
      *     process complex paths consistent with a variety of standards. The
      *     parsing of these paths is handled by the TP.nodeEvaluatePath()
      *     primitive when any non-JS identifier characters are found in the
@@ -10841,7 +10841,7 @@ function(locationPath) {
     /**
      * @method getChangeAction
      * @summary Returns any action for the supplied location path.
-     * @summary The supplied location path should take the form of:
+     * @description The supplied location path should take the form of:
      *     TP.SELF                  ->  The action for the receiving element
      *                                  itself.
      *     TP.ATTR + attributeName  ->  The action for a named attribute
@@ -10993,7 +10993,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @method set
      * @summary Sets the value of the named attribute or path target to the
      *     value provided.
-     * @summary Paths of various forms can be used to define what should be
+     * @description Paths of various forms can be used to define what should be
      *     set via this call. These paths are typically found in XML source such
      *     as XForms or XControls in bind: attributes. NB: You *must* use a '/',
      *     '[', '(', or '@' in the XPath to allow XPaths to be recognized
@@ -11096,7 +11096,7 @@ function(anID) {
      * @method setID
      * @summary Sets the public ID of the receiver. Note that this corresponds
      *     to the 'local ID' of the receiver.
-     * @summary Note that this method will assign a generated ID if the
+     * @description Note that this method will assign a generated ID if the
      *     supplied ID is empty.
      * @param {String} anID The value to use as a public ID.
      * @returns {String} The ID that was set.
@@ -11183,7 +11183,7 @@ function(aValue, shouldSignal) {
      * @method setValue
      * @summary Sets the value of the receiver's node. For general node types
      *     this method sets the value/content of the node.
-     * @summary For common nodes the standard attribute list and the type of
+     * @description For common nodes the standard attribute list and the type of
      *     input determines what is actually manipulated. For element and
      *     document nodes the behavior is a little different. When the receiver
      *     has a pre-existing value attribute that's typically what is
@@ -11237,7 +11237,7 @@ function(aFlag) {
      * @method shouldFlagChanges
      * @summary A combined setter/getter for the change flagging flag for the
      *     receiver.
-     * @summary When a TP.core.ElementNode instance is flagging changes the
+     * @description When a TP.core.ElementNode instance is flagging changes the
      *     alterations it makes to a DOM structure are flagged in the form of
      *     'tibet:crud' attributes. Note in particular that deletes don't
      *     actually occur when change flagging is on, items are simply flagged
@@ -11286,7 +11286,7 @@ function(aFlag) {
      * @method shouldSignalChange
      * @summary Defines whether the receiver should actively signal change
      *     notifications.
-     * @summary In general objects do not signal changes when no observers
+     * @description In general objects do not signal changes when no observers
      *     exist. This flag is triggered by observe where the signal being
      *     observed is a form of Change signal to "arm" the object for change
      *     notification. You can also manipulate it during multi-step
@@ -11358,7 +11358,7 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
     /**
      * @method dispatch
      * @summary Dispatches a signal to the target element via TP.DOM_FIRING.
-     * @summary This method is used rather than signal() when it's necessary
+     * @description This method is used rather than signal() when it's necessary
      *     to ensure compatibility the requirements of XForms event processing.
      *     When the target is a window this routine will target that window's
      *     document.
@@ -11496,7 +11496,7 @@ function(aValue, attributeName) {
      * @method $formatValue
      * @summary Formats a value using the formatter list in the attribute
      *     provided.
-     * @summary The value provided is formatted based on the rules of the
+     * @description The value provided is formatted based on the rules of the
      *     formatter type(s) found in the attribute provided. Note that even
      *     null values are formatted based on this rule such that you can cause
      *     a null to appear as '' or null or any other value your formatter
@@ -11606,7 +11606,7 @@ function(aValue) {
      * @method $validateValue
      * @summary Ensures that the value provided is valid according to the
      *     receiver's type constraints.
-     * @summary The validation is actually done by types specified via the
+     * @description The validation is actually done by types specified via the
      *     xsi:type attribute or the tibet:type attribute if found. When using
      *     xsi:type, the XML Schema mechanism, you are restricted to a single
      *     type name but you can use any type TIBET can locate which implements
@@ -11910,7 +11910,7 @@ function(aNode) {
     /**
      * @method getConcreteType
      * @summary Returns a viable processing instruction node type for aNode.
-     * @summary If a specific type isn't found the return value is
+     * @description If a specific type isn't found the return value is
      *     TP.core.ProcessingInstructionNode itself. The lookup process first
      *     calculates a type name by acquiring the PI's name, title casing that
      *     name, making its first character be uppercase, and stripping it of
@@ -12233,7 +12233,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @summary Note that we implement this method because, in order to have
+     * @description Note that we implement this method because, in order to have
      *     TP.core.DocumentNodes as event sources, they *must* have an assigned,
      *     globally-unique, ID. By implementing this method, we ensure they have
      *     that before they're registered in the signaling system as signal
@@ -12282,7 +12282,7 @@ function(attributeName) {
      * @summary Returns the value, if any, of the attribute provided. NOTE
      *     however that special parsing rules apply to TP.core.Node types with
      *     respect to the nature of the attribute name provided.
-     * @summary TP.core.Nodes, particularly TP.core.ElementNode nodes, can
+     * @description TP.core.Nodes, particularly TP.core.ElementNode nodes, can
      *     process complex paths consistent with XPointer and XPath syntax.
      *     These sometimes overlapping syntax options are handled in the order
      *     presented here. First a check is done to see if the path appears to
@@ -12521,7 +12521,7 @@ function() {
     /**
      * @method getValue
      * @summary Returns the value of the receiver.
-     * @summary Document nodes are handled a little differently than
+     * @description Document nodes are handled a little differently than
      *     typical nodes since without their documentElement they're not of much
      *     use. For that reason setting the value of a document node actually
      *     sets the value of the document's documentElement.
@@ -12551,7 +12551,7 @@ function(anID) {
      *     Element nodes, this corresponds to the 'local ID' of the receiver,
      *     for Document nodes this corresponds to the 'global ID' (since they
      *     don't really have a local ID).
-     * @summary Note that this method will assign a generated ID if the
+     * @description Note that this method will assign a generated ID if the
      *     supplied ID is empty.
      * @param {String} anID The value to use as a public ID.
      * @returns {String} The ID that was set.
@@ -12624,7 +12624,7 @@ function(aValue, signalFlag) {
     /**
      * @method setValue
      * @summary Sets the value of the receiver's node.
-     * @summary Document nodes are handled a little differently than
+     * @description Document nodes are handled a little differently than
      *     typical nodes since without their documentElement they're not of much
      *     use. For that reason setting the value of a document node actually
      *     sets the value of the document's documentElement.
@@ -12658,7 +12658,7 @@ function(aFlag) {
      * @method shouldFlagChanges
      * @summary A combined setter/getter for the change flagging flag for the
      *     receiver.
-     * @summary When the document element of a TP.core.DocumentNode instance
+     * @description When the document element of a TP.core.DocumentNode instance
      *     is flagging changes the alterations it makes to a DOM structure are
      *     flagged in the form of 'tibet:crud' attributes. Note in particular
      *     that deletes don't actually occur when change flagging is on, items
@@ -12678,7 +12678,7 @@ function(aFlag) {
      * @method shouldSignalChange
      * @summary Defines whether the receiver should actively signal change
      *     notifications.
-     * @summary In general objects do not signal changes when no observers
+     * @description In general objects do not signal changes when no observers
      *     exist. This flag is triggered by observe where the signal being
      *     observed is a form of Change signal to "arm" the object for change
      *     notification. You can also manipulate it during multi-step
@@ -13285,7 +13285,7 @@ TP.core.Node.defineSubtype('NotationNode');
  *     in the TIBET framework. Action nodes are found most typically in
  *     association with XControls and the various TIBET shells where they serve
  *     as "xml macros" for various JavaScript operations or commands.
- * @summary An action element is essentially a "macro" encoded in tag form.
+ * @description An action element is essentially a "macro" encoded in tag form.
  *     The XForms specification defines a number of these tags and TIBET extends
  *     this concept as part of the TIBET Shell (TSH).
  *
@@ -13447,7 +13447,7 @@ function(aRequest) {
     /**
      * @method cmdRunContent
      * @summary Runs the receiver, effectively invoking its action.
-     * @summary This method is invoked any time a tag is being run as part
+     * @description This method is invoked any time a tag is being run as part
      *     of the processing of an enclosing tsh:script, which happens most
      *     often when the tag is being run interactively. When being run
      *     interactively the tag will execute when no ev:event is defined which
@@ -13866,7 +13866,7 @@ function(aSignal) {
      * @method act
      * @summary Performs the action the receiver is responsible for. This
      *     method should be overridden in subtypes to provide concrete behavior.
-     * @summary The act method is typically invoked indirectly by the handle
+     * @description The act method is typically invoked indirectly by the handle
      *     functionality found in this type, however you can invoke it directly
      *     when you've got a handle to a specific action element. When invoked
      *     via handle the signal which is currently being processed is provided
@@ -14129,7 +14129,7 @@ function() {
      * @method isOutermostAction
      * @summary Returns true if the receiver is the outermost action handler
      *     (not '<action> element).
-     * @summary The XForms specification states the when an action handler
+     * @description The XForms specification states the when an action handler
      *     is the outermost handler model updates occur immediately, but when
      *     enclosed in an action element they can have a deferred update effect.
      *     The result is that all elements which can potentially defer their
@@ -14229,7 +14229,7 @@ function(aRequest) {
     /**
      * @method cmdRunContent
      * @summary Runs the receiver, effectively invoking its action.
-     * @summary This method is invoked any time a tag is being run as part
+     * @description This method is invoked any time a tag is being run as part
      *     of the processing of an enclosing tsh:script, which happens most
      *     often when the tag is being run interactively. When being run
      *     interactively the tag will execute when no ev:event is defined which
@@ -15196,7 +15196,7 @@ function(aRequest) {
     /**
      * @method getContent
      * @summary Returns the receiver's content.
-     * @summary Tags that trait-in this type are supposed to be "EMPTY",
+     * @description Tags that trait-in this type are supposed to be "EMPTY",
      *     according to some definition (maybe a DTD or something). Therefore,
      *     for this type, this method does nothing and returns null.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
@@ -15216,7 +15216,7 @@ function(aContentObject, aRequest) {
      * @method setContent
      * @summary Sets the content of the receiver's native DOM counterpart to
      *     the value supplied.
-     * @summary Tags that trait-in this type are supposed to be "EMPTY",
+     * @description Tags that trait-in this type are supposed to be "EMPTY",
      *     according to some definition (maybe a DTD or something). Therefore,
      *     for this type, this method does nothing and returns null.
      * @param {Object} aContentObject An object to use for content.

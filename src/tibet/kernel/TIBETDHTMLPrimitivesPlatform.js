@@ -37,7 +37,7 @@ TP.hc(
          * @method documentCreateIFrameElement
          * @summary Creates an (X)HTML 'iframe' element in the document and
          *     'initializes' it to make sure its set up for manipulation.
-         * @summary In order for the frame element produced by this routine
+         * @description In order for the frame element produced by this routine
          *     to have been properly set up, it will be appended to the supplied
          *     document and will be returned that way. If a forced MIME type
          *     isn't supplied, then the supplied Document will be queried to
@@ -168,7 +168,7 @@ TP.hc(
          * @method documentCreateIFrameElement
          * @summary Creates an (X)HTML 'iframe' element in the document and
          *     'initializes' it to make sure its set up for manipulation.
-         * @summary In order for the frame element produced by this routine
+         * @description In order for the frame element produced by this routine
          *     to have been properly set up, it will be appended to the supplied
          *     document and will be returned that way. If a forced MIME type
          *     isn't supplied, then the supplied Document will be queried to
@@ -966,7 +966,7 @@ TP.hc(
          * @method $$buildTableDOM
          * @summary Builds a DOM consisting of a 'table', based on the supplied
          *     element tag name and using the supplied content.
-         * @summary This is an 'internal only' method used by the Trident
+         * @description This is an 'internal only' method used by the Trident
          *     rendering engine to generate 'table DOMs' for use in content
          *     setting and insertion. This mechanism is used because of IE's
          *     limitations around using the innerHTML, outerHTML and
@@ -1659,7 +1659,7 @@ TP.hc(
         /**
          * @method elementGetOffsetParent
          * @summary Returns the element's offset parent.
-         * @summary In non-IE browsers the '.offsetParent' property will
+         * @description In non-IE browsers the '.offsetParent' property will
          *     only properly return the offset parent if it's positioned
          *     absolute, relative or fixed, but not if it's a statically-placed
          *     element that has scrolled. We compensate for that here.
@@ -1952,7 +1952,7 @@ TP.hc(
         /**
          * @method elementGetTransformMatrix
          * @summary Gets the transformation matrix of the element specified.
-         * @summary Note that this method will, by default, return a 4x4
+         * @description Note that this method will, by default, return a 4x4
          *     matrix suitable for use with CSS 3D transforms. By passing true
          *     to wants2DMatrix, a 3x2 matrix suitable for use by CSS 2D
          *     transforms will be returned.
@@ -1992,7 +1992,7 @@ TP.hc(
         /**
          * @method elementGetTransformMatrix
          * @summary Gets the transformation matrix of the element specified.
-         * @summary Note that this method will, by default, return a 4x4
+         * @description Note that this method will, by default, return a 4x4
          *     matrix suitable for use with CSS 3D transforms. By passing true
          *     to wants2DMatrix, a 3x2 matrix suitable for use by CSS 2D
          *     transforms will be returned.
@@ -2032,7 +2032,7 @@ TP.hc(
         /**
          * @method elementGetTransformMatrix
          * @summary Gets the transformation matrix of the element specified.
-         * @summary Note that this method will, by default, return a 4x4
+         * @description Note that this method will, by default, return a 4x4
          *     matrix suitable for use with CSS 3D transforms. By passing true
          *     to wants2DMatrix, a 3x2 matrix suitable for use by CSS 2D
          *     transforms will be returned.
@@ -2311,7 +2311,7 @@ TP.hc(
          * @method elementSetTransformOrigin
          * @summary Sets the transformation origin of the element specified
          *     using the supplied X and Y values.
-         * @summary The X and Y values supplied to this method can be any
+         * @description The X and Y values supplied to this method can be any
          *     CSS 'length' value (i.e. a number with a unit or a percentage).
          *     If a Number is supplied, 'px' is assumed.
          * @param {Element} anElement The element to set the transformation
@@ -2345,7 +2345,7 @@ TP.hc(
          * @method elementSetTransformOrigin
          * @summary Sets the transformation origin of the element specified
          *     using the supplied X and Y values.
-         * @summary The X and Y values supplied to this method can be any
+         * @description The X and Y values supplied to this method can be any
          *     CSS 'length' value (i.e. a number with a unit or a percentage).
          *     If a Number is supplied, 'px' is assumed.
          * @param {Element} anElement The element to set the transformation
@@ -2379,7 +2379,7 @@ TP.hc(
          * @method elementSetTransformOrigin
          * @summary Sets the transformation origin of the element specified
          *     using the supplied X and Y values.
-         * @summary The X and Y values supplied to this method can be any
+         * @description The X and Y values supplied to this method can be any
          *     CSS 'length' value (i.e. a number with a unit or a percentage).
          *     If a Number is supplied, 'px' is assumed.
          * @param {Element} anElement The element to set the transformation
@@ -2425,7 +2425,7 @@ TP.hc(
          *     the context of the supplied Window. This is normally used when
          *     installing callback Functions into code that TIBET has no control
          *     over and that is executing in another window or frame.
-         * @summary Trident requires this to avoid throwing exceptions on
+         * @description Trident requires this to avoid throwing exceptions on
          *     Functions that are built in the TIBET code frame and then vended
          *     to another window and then has either 'call' or 'apply' called on
          *     it. Trident will throw an exception in this case. Gecko/Webkit
@@ -2449,7 +2449,7 @@ TP.hc(
          *     the context of the supplied Window. This is normally used when
          *     installing callback Functions into code that TIBET has no control
          *     over and that is executing in another window or frame.
-         * @summary Trident requires this to avoid throwing exceptions on
+         * @description Trident requires this to avoid throwing exceptions on
          *     Functions that are built in the TIBET code frame and then vended
          *     to another window and then has either 'call' or 'apply' called on
          *     it. Trident will throw an exception in this case. Gecko/Webkit
@@ -2492,7 +2492,7 @@ TP.hc(
          *     the context of the supplied Window. This is normally used when
          *     installing callback Functions into code that TIBET has no control
          *     over and that is executing in another window or frame.
-         * @summary Trident requires this to avoid throwing exceptions on
+         * @description Trident requires this to avoid throwing exceptions on
          *     Functions that are built in the TIBET code frame and then vended
          *     to another window and then has either 'call' or 'apply' called on
          *     it. Trident will throw an exception in this case. Gecko/Webkit

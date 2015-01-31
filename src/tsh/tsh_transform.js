@@ -116,7 +116,7 @@ function(anInput, cmdNode, aRequest) {
      * @method transformInput
      * @summary Transforms an input object using information from the request
      *     provided.
-     * @summary This type's version of this method executes the templates
+     * @description This type's version of this method executes the templates
      *     configured for it against the supplied input and returns the result.
      * @param {Object} anInput The object to transform.
      * @param {Node} cmdNode The original transformation node.
@@ -193,7 +193,7 @@ function() {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver binds to single values.
-     * @summary This method on this type always returns 'false', since we
+     * @description This method on this type always returns 'false', since we
      *     can handle 'collection' data, not just single values.
      * @returns {Boolean} True when single valued.
      */

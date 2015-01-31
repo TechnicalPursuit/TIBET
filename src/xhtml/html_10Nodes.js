@@ -199,7 +199,7 @@ function(aPath) {
      * @summary Sets the content of the receiver to the content pointed to by
      *     the supplied attribute, running it through the content processor
      *     first.
-     * @summary Note that the supplied path can be a relative URI, as the
+     * @description Note that the supplied path can be a relative URI, as the
      *     receiver will be asked to resolve it to an absolute URI. This is
      *     usually done by resolving it against the receiver's XML Base value or
      *     it's document baseURI if an XML Base value cannot be computed.
@@ -368,7 +368,7 @@ function(constructorName) {
     /**
      * @method constructObject
      * @summary Constructs an object in the receiver's content window.
-     * @summary Note that all parameters to this method are passed along in
+     * @description Note that all parameters to this method are passed along in
      *     the object creation process. Therefore, arguments to the 'new', if
      *     you will, should be passed after the constructorName. Note that this
      *     type's implementation of this method is different from

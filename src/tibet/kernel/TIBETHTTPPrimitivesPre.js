@@ -65,7 +65,7 @@ function(httpObj) {
     /**
      * @method httpDidSucceed
      * @summary Returns true if the request is done and was successful.
-     * @summary In essence this simply tests the status code to see if it is
+     * @description In essence this simply tests the status code to see if it is
      *     in the range of 200 to 207. Normally success is 200, but for
      *     operations like WebDAV MkCol, Lock, etc. we may receive other 2xx
      *     codes which signify success. A status code of 304 (Not-Modified) is
@@ -121,7 +121,7 @@ function(httpObj) {
      * @method httpDidRedirect
      * @summary Returns true if the request provided has a status code
      *     indicating a redirect.
-     * @summary TIBET considers all 300-series codes other than a 304 (Not
+     * @description TIBET considers all 300-series codes other than a 304 (Not
      *     Modified) to be valid redirection indicators. We avoid 304 in
      *     particular so we can support HTTP Validation via ETag headers. The
      *     300 series codes are:
@@ -170,7 +170,7 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
      *     operation. NOTE that if the data is a string already, or is
      *     null/undefined no new content is created and the data is returned as
      *     is.
-     * @summary Encoding of data can be performed a number of ways but this
+     * @description Encoding of data can be performed a number of ways but this
      *     method handles the most common formats related to content types
      *     typically used to communicate with web servers and web services.
      *     Supported MIME types include:
@@ -719,7 +719,7 @@ function(targetUrl, aSignal, aRequest) {
      * @summary Low-level error handler for httpCall processing. This function
      *     will cause both the IO log and Error log to be updated to reflect the
      *     error condition.
-     * @summary aRequest could contain 1 or more of the following keys:
+     * @description aRequest could contain 1 or more of the following keys:
      *
      *     'uri' - the targetUrl 'uriparams' - URI query parameters 'headers' -
      *     call headers 'verb' - the command verb 'body' - string content 'xhr'
@@ -806,7 +806,7 @@ function(targetUrl, aRequest, httpObj) {
      * @method httpSetHeaders
      * @summary Sets the HTTP headers on httpObj for the URL, call type (HTTP
      *     Verb), and header collection provided.
-     * @summary TIBET manages certain headers by default, in particular
+     * @description TIBET manages certain headers by default, in particular
      *     Cache-control and Pragma headers that help ensure that requests for
      *     data get current data whenever possible. You can override this by
      *     simply providing those keys in the header collection to tell TIBET

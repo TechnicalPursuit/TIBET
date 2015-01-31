@@ -186,7 +186,7 @@ application manifest for different user role/unit affiliations.
 /**
  * @type {TP.core.Resource}
  * @summary Root type for TIBET resources.
- * @summary In a strict workflow sense resources are elements which can
+ * @description In a strict workflow sense resources are elements which can
  *     perform tasks. Using that definition, specific resource types would
  *     include people and machines. In TIBET we model people as 'users' (note
  *     that each person may well have more than one login/username they use). We
@@ -415,7 +415,7 @@ function() {
      * @method getPrimaryRole
      * @summary Returns the primary role, the first role in the receiver's
      *     vCard, if any.
-     * @summary Note the ordering here. Unlike unit assignments which
+     * @description Note the ordering here. Unlike unit assignments which
      *     typically go from least specific to most specific the presumption
      *     here is that the user's roles are defined in order from most-specific
      *     to least-specific (or at least to "least important") so the first
@@ -441,7 +441,7 @@ function() {
      * @method getPrimaryUnit
      * @summary Returns the primary unit, the _last_ unit in the receiver's
      *     vCard, if any.
-     * @summary Note the subtle distinction here. Units are normally defined
+     * @description Note the subtle distinction here. Units are normally defined
      *     in hierarchy order, so the first unit is actually the least specific
      *     one. For that reason we return the last unit in line as the primary
      *     (most-specific) unit.
@@ -480,7 +480,7 @@ function() {
      * @method getTriggerOrigins
      * @summary Returns one or more origins for the TIBET signaling system
      *     which should cause the receiver to respond to requests.
-     * @summary The trigger origins are typically null meaning any origin is
+     * @description The trigger origins are typically null meaning any origin is
      *     valid and responsiveness depends on the signal type. You can override
      *     this for specific instances so that a particular resource is focused
      *     on responding to a particular requestor.
@@ -540,7 +540,7 @@ function(aSignal) {
     /**
      * @method handle
      * @summary Handles notification of an incoming signal.
-     * @summary For TP.core.Resources this method provides the same lookup
+     * @description For TP.core.Resources this method provides the same lookup
      *     semantics as a normal TIBET object, but checks specifically for
      *     TP.sig.Request and TP.sig.Response objects to keep things moving as
      *     quickly as possible with respect to processing requests and
@@ -601,7 +601,7 @@ function(aRequest) {
      * @summary Default request-type handling method. Intended to be overridden
      *     in specific resource subtypes, or to have a more specific handler
      *     catching requests before they reach this default handler.
-     * @summary When a handle call is received the search for a handler
+     * @description When a handle call is received the search for a handler
      *     proceeds through the type hierarchy of the request and terminates at
      *     handleRequest. This implementation raises a MissingOverride
      *     Exception.
@@ -732,7 +732,7 @@ function(aParamInfo, aRequest) {
      * @method populateMissingVCardData
      * @summary Populates any missing parameters in the request from the
      *     receiver's vCard.
-     * @summary This method uses the information in the supplied 'parameter
+     * @description This method uses the information in the supplied 'parameter
      *     info' to perform this process. This hash has the following format:
      *
      *     TP.hc('<name_of_param>', TP.ac('<vCard_name>', <prompt_message>'));
@@ -1003,7 +1003,7 @@ function() {
 /**
  * @type {TP.sig.WorkflowSignal}
  * @summary Top level workflow signal type.
- * @summary The TP.sig.WorkflowSignal type is a root signal type for
+ * @description The TP.sig.WorkflowSignal type is a root signal type for
  *     workflow request/response signal types such as TP.sig.Request and
  *     TP.sig.Response.
  */
@@ -1042,7 +1042,7 @@ function(anOrigin, aPayload, aPolicy) {
     /**
      * @method fire
      * @summary Fires the signal so that registered observers are notified.
-     * @summary For TP.sig.WorkflowSignals and their subtypes the firing
+     * @description For TP.sig.WorkflowSignals and their subtypes the firing
      *     policy is TP.INHERITANCE_FIRING meaning that observers of any form of
      *     TP.sig.WorkflowSignal are notified. Also, the origin is typically the
      *     request ID for the signal's associated request so that "processes"
@@ -1105,7 +1105,7 @@ TP.sig.WorkflowSignal.finalizeTraits();
  *     (the payload/args data) to a task (a set of one or more steps for
  *     processing a case -- i.e. the handler logic of the responding resource
  *     and the request type itself.
- * @summary In workflow systems the binding between a particular 'case' and
+ * @description In workflow systems the binding between a particular 'case' and
  *     a particular 'task' is a 'work item'. In TIBET the tasks can be thought
  *     of as the specific handlers implemented by resource objects while the
  *     'case' is represented by the data contained within request signals, also
@@ -1157,7 +1157,7 @@ function(varargs) {
      * @method request
      * @summary Constructs a standard TP.sig.Request populated differently
      *     depending on the nature of the argument list.
-     * @summary When no arguments are given this is a synonym for
+     * @description When no arguments are given this is a synonym for
      *     TP.sig.Request.construct(), when a single argument is given if it's a
      *     TP.sig.Signal of any kind then the signal's payload becomes the
      *     request's payload, otherwise the object itself becomes the request
@@ -1500,7 +1500,7 @@ function(anOrigin, aPayload, aPolicy) {
     /**
      * @method fire
      * @summary Fires the signal so that registered observers are notified.
-     * @summary For TP.sig.WorkflowSignal types the signaling origin is
+     * @description For TP.sig.WorkflowSignal types the signaling origin is
      *     typically the request ID for the signal's associated request so that
      *     "processes" can be constructed using the request ID as the common
      *     reference.
@@ -1837,7 +1837,7 @@ function(aSignal) {
      *     request/response processing it's possible to leverage the request
      *     instances themselves as responders so this method is often invoked to
      *     perform response processing.
-     * @summary Default response processing ensures that observation of the
+     * @description Default response processing ensures that observation of the
      *     request/response ID are turned off, that the request is removed from
      *     any pending request queues, and that a RequestCompleted is signaled
      *     with the request's ID.
@@ -2074,7 +2074,7 @@ function(aRequest) {
      * @method updateRequestMode
      * @summary Updates the receiver's request mode to match that of the
      *     supplied request, with particular regards to asynchronous behavior.
-     * @summary If the receiver is configured for synchronous operation, but
+     * @description If the receiver is configured for synchronous operation, but
      *     the supplied request is configured for asynchronous operation, the
      *     receiver will be configured for asynchronous operation. NOTE: The
      *     reverse is *NOT* true - if the receiver is asynchronous, but the
@@ -2115,7 +2115,7 @@ function(aRequest, aState) {
      * @method andJoin
      * @summary Adds a peer request and state to the list of requests which
      *     must reach a prescribed state before the receiver will fire.
-     * @summary The andJoin call allows a request to wait on multiple
+     * @description The andJoin call allows a request to wait on multiple
      *     request prerequisites before it will fire. Because most pipes should
      *     stop processing if an error occurs in an early segment the default
      *     state is TP.SUCCEEDED. A failed prerequisite request will typically
@@ -2752,7 +2752,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode) {
      * @summary Handles notifying the common parties to a request, the request,
      *     responder, and requestor of request completion and ensures any joined
      *     requests are triggered properly based on the final request status.
-     * @summary The various job control methods (completeJob, failJob,
+     * @description The various job control methods (completeJob, failJob,
      *     cancelJob) invoke this wrapup method to handle their final
      *     notification and join work.
      * @param {String} aSuffix The suffix provided is typically based on the
@@ -3463,7 +3463,7 @@ function (onFulfilled, onRejected) {
      * @method then
      * @summary A method which implements, as closely as possible, a
      *     'Promises/A+' implementation in TIBET.
-     * @summary This method, which is standardized by the 'Promises/A+'
+     * @description This method, which is standardized by the 'Promises/A+'
      *     standard, implements the core functionality of TIBET-based JavaScript
      *      Promises. Note that, in TIBET, Promises are really just instances of
      *      TP.sig.Response. This method allows for Promise composition as
@@ -3600,7 +3600,7 @@ function (onFulfilled, onRejected) {
  * @summary An object whose primary purpose is to hold permission-specific
  *     behavior and one or more keyrings that provide permissions to members of
  *     the group.
- * @summary Roles and units in a workflow sense are mapped to permission
+ * @description Roles and units in a workflow sense are mapped to permission
  *     groups in TIBET. These permission groups are then assigned by way of
  *     vCard entries which are typically assigned to TP.core.User instances
  *     representing the "real" and "effective" user.
@@ -3634,7 +3634,7 @@ function(keyRingName) {
      *     defined by the keys contained in the key ring. Note that this
      *     operation is typically done via an initialize method which defines
      *     the permissions related to each group type.
-     * @summary When defining different permission group types one of the
+     * @description When defining different permission group types one of the
      *     operations needed is to define the keyrings which that group has
      *     access to. This is typically done by string name so that the keyrings
      *     don't have to exist at the time of the assignment -- allowing
@@ -3713,7 +3713,7 @@ function() {
  * @type {TP.core.Role}
  * @summary A functionally-oriented permission group capable of providing both
  *     permissions and behavior to a TP.core.Resource.
- * @summary Roles are typically used as a way of grouping capabilities
+ * @description Roles are typically used as a way of grouping capabilities
  *     related to a specific job function such as "Manager" or "Clerk" in an
  *     application. This is in contrast to TP.core.Unit, which allows you to
  *     organize functionality and permissions based on organizational boundaries
@@ -3762,7 +3762,7 @@ TP.core.Role.defineSubtype('Public:Guest');
  * @type {TP.core.Unit}
  * @summary A organizationally-oriented permission group capable of providing
  *     both permissions and behavior to a TP.core.Resource.
- * @summary Units are used as a way of grouping functionality along
+ * @description Units are used as a way of grouping functionality along
  *     organizational lines and can be useful when designing applications which
  *     deploy across organizational boundaries.
  */
@@ -3813,7 +3813,7 @@ TP.sig.Request.defineSubtype('UserRequest');
 /**
  * @type {TP.core.User}
  * @summary A resource specific to the application user.
- * @summary TP.core.User is a somewhat special, and perhaps unexpected,
+ * @description TP.core.User is a somewhat special, and perhaps unexpected,
  *     resource.
  *
  *     TIBET thinks of the user as another resource, one that can service
@@ -4889,7 +4889,7 @@ TP.sig.Response.defineSubtype('IOResponse');
 /**
  * @type {TP.core.IOService}
  * @summary Common supertype for IO-related responses.
- * @summary This type adds polling capability to TP.core.Service.
+ * @description This type adds polling capability to TP.core.Service.
  */
 
 //  ------------------------------------------------------------------------
@@ -4949,7 +4949,7 @@ function() {
     /**
      * @method inPollMode
      * @summary Returns true if the receiver is currently in a polling mode.
-     * @summary The receiver might not actually be polling at the time, but
+     * @description The receiver might not actually be polling at the time, but
      *     it is in an 'active poll' mode. Note also that pausing the polling
      *     behavior will cause this method to return false.
      * @returns {Boolean} Whether or not the service is in a polling mode.
@@ -5126,7 +5126,7 @@ function(pollParams) {
     /**
      * @method startPolling
      * @summary Start the service's polling behavior.
-     * @summary The polling parameters supplied to this method can contain a
+     * @description The polling parameters supplied to this method can contain a
      *     'polling interval computation' Function in the 'poll' key. This
      *     Function will be bound to this object (so the 'this' reference point
      *     to this service) and will take the polling job as the only parameter.
@@ -5295,7 +5295,7 @@ function() {
     /**
      * @method getFinalURI
      * @summary Returns the final URI associated with this request.
-     * @summary There are effectively two URIs that are related to a
+     * @description There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the latter, the URI actually sent to the
@@ -5314,7 +5314,7 @@ function() {
     /**
      * @method getRequestURI
      * @summary Returns the target URI associated with this request.
-     * @summary There are effectively two URIs that are related to a
+     * @description There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the former, the URI used as the "root"
@@ -5355,7 +5355,7 @@ function() {
     /**
      * @method getFinalURI
      * @summary Returns the final URI associated with this request.
-     * @summary There are effectively two URIs that are related to a
+     * @description There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the latter, the URI actually sent to the
@@ -5381,7 +5381,7 @@ function() {
     /**
      * @method getRequestURI
      * @summary Returns the target URI associated with this request.
-     * @summary There are effectively two URIs that are related to a
+     * @description There are effectively two URIs that are related to a
      *     request, the original "request URI" and the "final URI" which is the
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the former, the URI used as the "root"
@@ -5731,7 +5731,7 @@ function(aSignal) {
      * @method handleAppStart
      * @summary A handler that is called when the system has set up everything
      *     required to run a TIBET application and is ready to start the GUI.
-     * @summary At this level, this type does nothing.
+     * @description At this level, this type does nothing.
      * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
      *     trip.
      * @returns {TP.core.Application} The receiver.
@@ -5876,7 +5876,7 @@ function(aSignal) {
      *     backward controls in the browser or by attempting to load a bookmark.
      *     The default implementation that this type supplies attempts to load
      *     the URI that the user is navigating to into the current 'UI canvas'.
-     * @summary If a 'direction' (forward or backward) can be determined a
+     * @description If a 'direction' (forward or backward) can be determined a
      *     'TP.sig.LocationBack' or 'TP.sig.LocationNext' signal is *also*
      *     signaled, in addition to this signal.
      * @param {TP.sig.LocationChanged} aSignal The signal that caused this
@@ -6056,7 +6056,7 @@ function(hashValue) {
      * @method getIndexForHash
      * @summary Returns the numeric 'index' within the history list of the
      *     hashValue or null if one can't be determined.
-     * @summary If the hashValue occurs more than once in the history list
+     * @description If the hashValue occurs more than once in the history list
      *     (i.e. the location has been navigated to more than once), this
      *     routine will examine entries 'around' (front and back) of each of
      *     those entries in the real history list to try to determine the 'best

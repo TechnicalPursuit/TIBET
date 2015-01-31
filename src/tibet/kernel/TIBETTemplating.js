@@ -23,7 +23,7 @@ function(aDataSource, transformParams) {
      * @method transform
      * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @summary At this level, this method merely calls transform<Type>
+     * @description At this level, this method merely calls transform<Type>
      *     where <type> is the type of the data source. If that type has no
      *     transform method, transformObject() will be called as the default.
      * @param {Object} aDataSource The object supplying the data to use in the
@@ -55,7 +55,7 @@ function(aDataSource, transformParams) {
      * @method transformObject
      * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @summary At this level, this method is providing the 'fallback' for
+     * @description At this level, this method is providing the 'fallback' for
      *     the 'transform()' method. It provides no functionality.
      * @param {Object} aDataSource The object supplying the data to use in the
      *     transformation.
@@ -662,7 +662,7 @@ function(aDataSource, transformParams) {
      * @method transform
      * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @summary At this level, this method performs a TIBET-specific string
+     * @description At this level, this method performs a TIBET-specific string
      *     interpolation (a fancy word for substitutions) of a particular form.
      *     In TIBET we support the {{varname}} for performing interpolation. See
      *     Function's version of 'transform' for more information on how
@@ -784,7 +784,7 @@ function(aDataSource, transformParams) {
      * @method transform
      * @summary Performs a transformation on the supplied data source object
      *     using the receiver.
-     * @summary At this level, this method performs a TIBET-specific string
+     * @description At this level, this method performs a TIBET-specific string
      *     interpolation (a fancy word for substitutions) of a particular form.
      *     In TIBET we support the {{varname}} for performing interpolation.
      *     In TIBET you can think of both the 'xpath' and 'varname' portions as

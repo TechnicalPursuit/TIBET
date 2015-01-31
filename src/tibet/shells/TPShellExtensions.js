@@ -31,7 +31,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @summary This method work in conjunction with 'tsh:cmd' type's
+     * @description This method work in conjunction with 'tsh:cmd' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'filter' content. At this level, it simply complete()s the request
      *     with the receiver as the result.
@@ -53,7 +53,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @summary This method work in conjunction with 'tsh:cmd' type's
+     * @description This method work in conjunction with 'tsh:cmd' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'transform' content. At this level, it simply complete()s the request
      *     with the receiver as the result.
@@ -125,7 +125,7 @@ function(aRequest) {
     /**
      * @method cmdRunContent
      * @summary Runs the receiver, effectively invoking its action.
-     * @summary This method is invoked any time a tag is being run as part
+     * @description This method is invoked any time a tag is being run as part
      *     of the processing of an enclosing tsh:script, which happens most
      *     often when the tag is being run interactively. The default defers to
      *     the tshExecute method of their type.
@@ -534,7 +534,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @summary This occurs when the string is quoted in a pipe segment
+     * @description This occurs when the string is quoted in a pipe segment
      *     which does not include a ? implying filtering. In these cases the
      *     string is treated either as a template or as an aspect path used to
      *     query the objects for a new value.
@@ -779,7 +779,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @summary This occurs when the XSL Node is quoted in a pipe segment
+     * @description This occurs when the XSL Node is quoted in a pipe segment
      *     which does not include a ? implying filtering. In these cases the
      *     Node is treated an XSLT for use in transforming the content supplied
      *     to it, resulting in new content.
@@ -930,7 +930,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -948,7 +948,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -965,7 +965,7 @@ function(aRequest) {
      * @method cmdGetContent
      * @summary Invoked by the TSH when the receiver is the data source for a
      *     command sequence which is piping data from the receiver.
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -1267,7 +1267,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using a simple
      *     set operation such as .>
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -1285,7 +1285,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
@@ -1305,7 +1305,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is the data sink for a
      *     command sequence which is piping data to the receiver using an
      *     appending operation such as .>>.
-     * @summary On this type, this method merely invokes 'cmdRunContent'
+     * @description On this type, this method merely invokes 'cmdRunContent'
      *     against the receiver.
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */

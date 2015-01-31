@@ -298,7 +298,7 @@ function(aMatrix) {
      * @summary Returns a 3X2 matrix suitable for use with CSS 2D transforms.
      *     If a 3X2 matrix is already supplied, then it is returned. Otherwise,
      *     a 4X4 matrix will be converted into a 3X2 matrix.
-     * @summary This code derived from:
+     * @description This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @returns {Array} An Array of Arrays representing the converted matrix.
      */
@@ -328,7 +328,7 @@ function(aMatrix) {
      *     If a 4X4 matrix is already supplied, then it is returned. Otherwise,
      *     a 3X2 matrix will be converted into a 4X4 matrix (with identity
      *     values for the missing spots).
-     * @summary This code derived from:
+     * @description This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @returns {Array} An Array of Arrays representing the converted matrix.
      */
@@ -357,7 +357,7 @@ function(cssStr, wants2DMatrix) {
     /**
      * @method matrixFromCSSString
      * @summary Extracts a matrix from the supplied CSS string.
-     * @summary Note that this method will return a 4X4 matrix suitable for
+     * @description Note that this method will return a 4X4 matrix suitable for
      *     use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @param {String} cssStr A CSS string representing a matrix used in CSS
@@ -414,7 +414,7 @@ function(a, b) {
     /**
      * @method multiplyMatrix
      * @summary Multiplies the supplied matrices.
-     * @summary This code derived from: https://gist.github.com/1145197
+     * @description This code derived from: https://gist.github.com/1145197
      *     Note that this method assumes it is operating on a 4X4 matrix suitable
      *     for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
@@ -450,7 +450,7 @@ function(m/*, tx, ty, tz*/) {
     /**
      * @method translateMatrix
      * @summary Translates the supplied matrix.
-     * @summary This code derived from: https://gist.github.com/1145197
+     * @description This code derived from: https://gist.github.com/1145197
      *     Note that this method assumes it is operating on a 4X4 matrix suitable
      *     for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197

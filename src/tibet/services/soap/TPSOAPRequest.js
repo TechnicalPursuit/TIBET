@@ -96,7 +96,7 @@ function() {
      *     an SOAP payload. This method is useful for processing SOAP requests
      *     as well as in leveraging other communication pathways to tunnel SOAP
      *     payloads (or for debugging).
-     * @summary Transforms the receiver into a viable SOAP message node. The
+     * @description Transforms the receiver into a viable SOAP message node. The
      *     'usenil' key, if any, in the receiver's payload defines whether a
      *     non-standard <nil/> is used when a parameter value is null/undefined.
      * @returns {Node} A valid SOAP message payload.

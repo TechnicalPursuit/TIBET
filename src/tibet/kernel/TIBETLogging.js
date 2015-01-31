@@ -200,7 +200,7 @@ function(aLogger) {
     name = TP.isString(aLogger) ? aLogger : aLogger.get('name');
 
     if (this.exists(name)) {
-        this.loggers.removeKey(name);
+        this.loggers.removeKey(name.toLowerCase());
     }
 
     return this;
@@ -340,7 +340,7 @@ function() {
     /**
      * @method getAncestorNames
      * @summary Returns a list of all ancestor instance names for the receiver.
-     * @returns {Array.<TP.log.Nestable>} The ancestor list.
+     * @returns {Array.<Strings>} The ancestor name list.
      */
 
     var str,
@@ -473,7 +473,7 @@ function(anEntry) {
      *     NOTE that unlike log4j TIBET filtering simply checks that no filter
      *     blocks the entry. There is no "neutral" or "pass and ignore others"
      *     option in our implementation of filters.
-     * @returns {TP.log.Entry} The entry, if it isn't filtered.
+     * @returns {?TP.log.Entry} The entry, if it isn't filtered.
      */
 
     var filters,
@@ -549,7 +549,7 @@ function() {
     /**
      * @method getLevel
      * @summary Returns the logging level for the receiver. Defaults to ALL.
-     * @returns {Number} The current logging level.
+     * @returns {TP.log.Level} The current logging level.
      */
 
     return TP.ifInvalid(this.$get('level'), TP.log.ALL);
@@ -904,7 +904,7 @@ function() {
      * @summary Returns the logging level for the receiver. This search may
      *     include traversing up the parent chain to return the first level
      *     which is specifically defined. Level is inherited bottom up.
-     * @returns {Number} The current logging level.
+     * @returns {TP.log.Level} The current logging level.
      */
 
     var parent;
@@ -1067,7 +1067,7 @@ function(varargs) {
      * @summary Log all arguments provided at trace level. If there is a marker
      *     for this entry it should be the first argument.
      * @param {Object} varargs One or more arguments as desired.
-     * @returns {TP.log.Logger|null} The receiver or null if the log for this
+     * @returns {?TP.log.Logger} The receiver or null if the log for this
      *     level is disabled.
      */
 
@@ -1088,7 +1088,7 @@ function(varargs) {
      * @summary Log all arguments provided at debug level. If there is a marker
      *     for this entry it should be the first argument.
      * @param {Object} varargs One or more arguments as desired.
-     * @returns {TP.log.Logger|null} The receiver or null if the log for this
+     * @returns {?TP.log.Logger} The receiver or null if the log for this
      *     level is disabled.
      */
 
@@ -1109,7 +1109,7 @@ function(varargs) {
      * @summary Log all arguments provided at info level. If there is a marker
      *     for this entry it should be the first argument.
      * @param {Object} varargs One or more arguments as desired.
-     * @returns {TP.log.Logger|null} The receiver or null if the log for this
+     * @returns {?TP.log.Logger} The receiver or null if the log for this
      *     level is disabled.
      */
 
@@ -1130,7 +1130,7 @@ function(varargs) {
      * @summary Log all arguments provided at warn level. If there is a marker
      *     for this entry it should be the first argument.
      * @param {Object} varargs One or more arguments as desired.
-     * @returns {TP.log.Logger|null} The receiver or null if the log for this
+     * @returns {?TP.log.Logger} The receiver or null if the log for this
      *     level is disabled.
      */
 
@@ -1170,7 +1170,7 @@ function(varargs) {
      * @summary Log all arguments provided at severe level. If there is a
      *     marker for this entry it should be the first argument.
      * @param {Object} varargs One or more arguments as desired.
-     * @returns {TP.log.Logger|null} The receiver or null if the log for this
+     * @returns {?TP.log.Logger} The receiver or null if the log for this
      *     level is disabled.
      */
 
@@ -1191,7 +1191,7 @@ function(varargs) {
      * @summary Log all arguments provided at fatal level. If there is a marker
      *     for this entry it should be the first argument.
      * @param {Object} varargs One or more arguments as desired.
-     * @returns {TP.log.Logger|null} The receiver or null if the log for this
+     * @returns {?TP.log.Logger} The receiver or null if the log for this
      *     level is disabled.
      */
 
@@ -1212,7 +1212,7 @@ function(varargs) {
      * @summary Log all arguments provided at system level. If there is a
      *     marker for this entry it should be the first argument.
      * @param {Object} varargs One or more arguments as desired.
-     * @returns {TP.log.Logger|null} The receiver or null if the log for this
+     * @returns {?TP.log.Logger} The receiver or null if the log for this
      *     level is disabled.
      */
 
@@ -1343,6 +1343,7 @@ function() {
      * @summary Returns the layout used by the receiver. If no specific layout
      *     has been assigned TP.log.Appender.DEFAULT_LAYOUT_TYPE is used.
      * @param {TP.log.Layout} aLayout The layout to use.
+     * @returns {TP.log.Layout} The receiver's layout.
      */
 
     return TP.ifInvalid(this.$get('layout'), this.getType().getDefaultLayout());

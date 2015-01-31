@@ -197,7 +197,7 @@ TP.canInvoke = function(anObj, anInterface) {
      *     methods in the interface provided. The interface can be defined as
      *     either a single method name or an array of names which constitute the
      *     list of methods to check.
-     * @summary The Smalltalk method 'respondsTo' is replaced in TIBET with
+     * @description The Smalltalk method 'respondsTo' is replaced in TIBET with
      *     this method, which allows you to check a method name against a
      *     potentially null/undefined parameter or return value.
      * @param {Object} anObj The object to check.
@@ -339,7 +339,7 @@ TP.isDNU = function(anObj) {
      *     (DoesNotUnderstand) function. These functions are installed by TIBET
      *     to provide support for delegation, inferencing, and other method
      *     resolution strategies.
-     * @summary TIBET's support for "missing" methods is driven largely by
+     * @description TIBET's support for "missing" methods is driven largely by
      *     the DNU concept, which provides the hooks found in Ruby's missing
      *     methods, Smalltalk/Self's "doesNotUnderstand", etc.
      * @param {Object} anObj The Object to test.
@@ -372,7 +372,7 @@ TP.isFunction = function(anObj) {
      *     attempt is made to determine whether that function is a DNU, or
      *     method (an owned function). Use TP.isCallable(), or TP.isMethod() to
      *     test for those cases.
-     * @summary Perhaps the most glaring example of why we've encapsulated
+     * @description Perhaps the most glaring example of why we've encapsulated
      *     so heavily in TIBET. Most libraries use typeof == 'function' and call
      *     it a day. Unfortunately many of IE's DOM-associated functions don't
      *     return 'function' in response to a typeof call and Mozilla is
@@ -544,7 +544,7 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
      * @method asMethod
      * @summary Returns the receiver as a method. In most cases this simply
      *     returns the function.
-     * @summary In certain special cases this function can be overridden to
+     * @description In certain special cases this function can be overridden to
      *     provide advanced behavior which significantly enhances the
      *     functionality of the system. The various as*Method functions are all
      *     controlled from this root method. The asMethod call is triggered in
@@ -656,7 +656,7 @@ if (!TP.sys.constructOID) {
          *     with an _, $, or alpha character regardless of the prefix to
          *     ensure unprefixed OIDs are valid IDREF values and legal JS
          *     identifiers.
-         * @summary A TIBET OID value is a random identifier which has no
+         * @description A TIBET OID value is a random identifier which has no
          *     long-term uniqueness properties but is sufficient for managing
          *     unique references during a particular application invocation
          *     cycle.
@@ -819,7 +819,7 @@ TP.ArrayProto.at = function(anIndex) {
      *     access to indexed collection data, which isn't possible with literal
      *     bracket syntax (you can't use []'s on strings etc). NOTE that this
      *     initial version doesn't support varargs or negative indices.
-     * @summary To support multi-dimensional access this method will allow
+     * @description To support multi-dimensional access this method will allow
      *     more than one index parameter as in arr.at(1, 1) so that, in reality,
      *     the value is acquired from a nested child of the receiver. For
      *     example, arr.at(1, 1) returns the value 3 when used on the array
@@ -849,7 +849,7 @@ TP.ArrayProto.atPut = function(anIndex, aValue) {
      *     bracket syntax. This version does not provide change notification.
      *     NOTE that this initial version does not support vararg values or
      *     negative indices.
-     * @summary To support multi-dimensional access expanded versions allow
+     * @description To support multi-dimensional access expanded versions allow
      *     more than one index parameter as in arr.atPut(1, 2, 'foo') so that,
      *     in reality, aValue is defined by the last argument and is placed in
      *     the location found by traversing to the last index (arguments.length
@@ -1515,7 +1515,7 @@ TP.PHash = function() {
         /**
          * @method perform
          * @summary Performs the function with each item of the receiver.
-         * @summary Perform can be used as an alternative to constructing
+         * @description Perform can be used as an alternative to constructing
          *     for loops to iterate over a collection.
          * @param {Function} aFunction A function which performs some action
          *     with each item.
@@ -1813,7 +1813,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
      *     dynamic, keeping track of all operations affecting types and methods
      *     within the system so that runtime reflection data is accurate and
      *     available for storage/reuse.
-     * @summary TIBET provides a number of functions that are "unusual",
+     * @description TIBET provides a number of functions that are "unusual",
      *     shall we say, when it comes to JavaScript. Examples are dynamic
      *     autoloading (without require statements or other programmer
      *     intervention) and on-the-fly method inferencing.
@@ -2264,7 +2264,7 @@ function(name, bodyOrConditionals, desc, display, owner) {
      * @method definePrimitive
      * @summary Adds the method supplied as a 'primitive' to the 'TP' object
      *     under the name given.
-     * @summary Note that this method can take a variety of arguments in
+     * @description Note that this method can take a variety of arguments in
      *     the 'methodBodyOrTests' parameter. If no sophisticated 'feature
      *     testing' is required, it can just take a Function in that parameter.
      *     Otherwise, it can take a hash of tests and the matching Functions
@@ -2365,7 +2365,7 @@ function(aValue) {
     /**
      * @method isNaN
      * @summary Returns true if the value provided is NaN.
-     * @summary The ECMAScript-supplied isNaN lies:
+     * @description The ECMAScript-supplied isNaN lies:
             isNaN({}) => true.
             Welcome to JavaScript. Oh...but it gets better. If you run isNaN
             on the wrong thing it'll throw an exception about being unable to
@@ -2813,7 +2813,7 @@ function(anObj) {
      * @method isNativeType
      * @summary Returns true if the object provided is a native type for the
      *     current browser.
-     * @summary Because the browsers don't have a common set of types the
+     * @description Because the browsers don't have a common set of types the
      *     results of this method may vary based on the browser in question.
      *     The results are consistent for the "big 8" and the major types which
      *     extend those 8 such as Event, but most HTML/DOM types will vary
@@ -2928,7 +2928,7 @@ function(anObj) {
      *     null/undefined so don't assume that a return value of true means it's
      *     a primitive string/number/boolean, it might also be a null/undefined
      *     value.
-     * @summary JavaScript has a number of non-mutable types, particularly
+     * @description JavaScript has a number of non-mutable types, particularly
      *     Boolean, Number, and String (at least value-wise). This is important
      *     when trying to make decisions about whether a slot modification will
      *     succeed or fail.
@@ -2989,7 +2989,7 @@ function(anObj) {
     /**
      * @method isReferenceType
      * @summary Returns true if the type provided is a reference type.
-     * @summary Reference types don't support copy-on-write semantics within
+     * @description Reference types don't support copy-on-write semantics within
      *     the JS prototype system. This means certain operations need to "do
      *     the right thing" and make a copy when necessary. This is particularly
      *     apparent when working with TIBET attributes -- reference type
@@ -3055,7 +3055,7 @@ function () {
     /**
      * @method genUUID
      * @summary Generates an RFC4122 version 4 UUID.
-     * @summary This solution courtesy of 'broofa' at:
+     * @description This solution courtesy of 'broofa' at:
      *      http://stackoverflow.com/questions/105034/
      *          how-to-create-a-guid-uuid-in-javascript
      * @returns {String} An RFC4122 version 4 compliant UUID
@@ -3129,7 +3129,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogCodeChanges
      * @summary Controls and returns the state of the 'log changes' flag.
-     * @summary This flag determines whether changes which are logged for
+     * @description This flag determines whether changes which are logged for
      *     altering TIBET code are stored. This flag is central to the IDE and
      *     inferencer processing which can generate code to upgrade your
      *     application and save it for later use.
@@ -3159,7 +3159,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method $$shouldConstructDNUs
      * @summary Controls and returns the state of the 'construct DNU' flag.
-     * @summary This flag determines whether TIBET generates top-level
+     * @description This flag determines whether TIBET generates top-level
      *     DoesNotUnderstand catch methods. This flag is not intended for public
      *     use. It's off during early kernel loading and turned on near the end
      *     of kernel load. It should be left on during your application
@@ -3341,7 +3341,7 @@ NativeTypeStub.prototype.getMethodInfoFor =
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @summary This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -3616,7 +3616,7 @@ NativeInstStub.prototype.getMethodInfoFor =
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @summary This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -3759,7 +3759,7 @@ function() {
      * @method $constructPrototype
      * @summary Returns a new prototype constructed by invoking the receiver as
      *     a constructor.
-     * @summary This method is used exclusively to construct prototype
+     * @description This method is used exclusively to construct prototype
      *     instances which are used to fill in the inheritance tree. You don't
      *     normally need to override this method since the add*Method() and
      *     add*Attribute() methods configure the prototypes properly for the
@@ -3876,7 +3876,7 @@ function(methodName, methodBody) {
      * @method defineGlobalMethod
      * @summary Adds the method with name and body provided as a global
      *     method.
-     * @summary Global methods are methods on the "Global" object, which
+     * @description Global methods are methods on the "Global" object, which
      *     means they overlap with Window methods. For that reason there are
      *     some sanity checks that can be performed to help avoid issues when
      *     overriding a Window method.
@@ -3906,7 +3906,7 @@ function(methodName, methodBody) {
      * @method defineMetaTypeMethod
      * @summary Adds the method with name and body provided as a 'meta type'
      *     method.
-     * @summary Meta type methods are methods on the native constructor
+     * @description Meta type methods are methods on the native constructor
      *     Functions objects which provide polymorphic behavior system-wide.
      *     Rather than place these methods on Function.prototype, we place them
      *     on the other 'core' system constructor objects (as listed in the
@@ -3959,7 +3959,7 @@ function(methodName, methodBody) {
      * @method defineMetaInstMethod
      * @summary Adds the method with name and body provided as a 'meta
      *     instance' method.
-     * @summary Meta instance methods are methods on a set of objects that
+     * @description Meta instance methods are methods on a set of objects that
      *     provide polymorphic behavior system-wide. Rather than place these
      *     methods on Object.prototype (which is considered bad form), we place
      *     them on the other 'core' system '.prototype' objects (as listed in
@@ -4061,7 +4061,7 @@ function(methodName, methodBody) {
      * @method defineCommonMethod
      * @summary Adds the method with name and body provided as a 'common'
      *     method.
-     * @summary Common methods are methods on a set of objects that provide
+     * @description Common methods are methods on a set of objects that provide
      *     polymorphic behavior system-wide. Like 'meta instance methods' above,
      *     rather than place these methods on Object.prototype (which is
      *     considered bad form), we place them on the other 'core' system
@@ -4134,7 +4134,7 @@ function(target, name, value, track, owner) {
     /**
      * @method defineAttributeSlot
      * @summary Defines an attribute, tracking all necessary metadata.
-     * @summary Note that the 'value' property can either take an initial
+     * @description Note that the 'value' property can either take an initial
      *     object value or a property descriptor. That property descriptor can
      *     any fields, but here are the ones that TIBET standardizes:
      *
@@ -4150,7 +4150,6 @@ function(target, name, value, track, owner) {
      * @param {String} name The attribute name.
      * @param {Object} value The attribute value or a property descriptor
      *     object.
-     * @param {Object} value The attribute value.
      * @param {String} track The attribute track (Inst, Type, Local).
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined attribute value.
@@ -4278,7 +4277,7 @@ function(functionBodyOrTests) {
      * @method runConditionalFunction
      * @summary Runs the function supplied, usually supplied as part of a set
      *     of tests.
-     * @summary Note that this method can take a variety of arguments in
+     * @description Note that this method can take a variety of arguments in
      *     the 'functionBodyOrTests' parameter. If no sophisticated 'feature
      *     testing' is required, it just executes the Function in that
      *     parameter. Otherwise, it can take a hash of tests and the matching
@@ -4365,7 +4364,7 @@ function(target, methodName, methodBody) {
     /**
      * @method defineMethodAlias
      * @summary Defines an alias to a previously defined method.
-     * @summary This method will alias an existing method over to the slot
+     * @description This method will alias an existing method over to the slot
      *     on the target object *without resetting it's track and owner
      *     information*.
      * @param {Object} target The target object.
@@ -4657,7 +4656,7 @@ function(aPrefix) {
      *     doesn't have an ID set, the objects' OID is returned instead. See
      *     $getOID for more info. Note that non-mutable JavaScript objects (i.e.
      *     String, Number and Boolean) will return themselves as their ID.
-     * @summary Using a two-layer ID scheme allows the system to maintain an
+     * @description Using a two-layer ID scheme allows the system to maintain an
      *     internal identifier in the form of OID values and at the same time
      *     allow developers to register certain objects under explicitly defined
      *     identifiers. This is an important feature for developing cross-frame
@@ -4714,7 +4713,7 @@ function(anID) {
     /**
      * @method setID
      * @summary Sets the public ID of the receiver.
-     * @summary Public IDs are useful as handles for acquiring objects from
+     * @description Public IDs are useful as handles for acquiring objects from
      *     the TIBET instance hashes. See the comment for getID(). Note that the
      *     object is un-registered under its old ID by this operation.
      * @param {String} anID The value to use as a public ID.
@@ -5643,7 +5642,7 @@ function (aPrefix) {
      *     doesn't have an ID set the objects' OID is returned instead. See
      *     $getOID for more info. For UI elements in the DOM this method will
      *     return the attribute id='val' value.
-     * @summary Using a two-layer ID scheme allows the system to maintain an
+     * @description Using a two-layer ID scheme allows the system to maintain an
      *     internal identifier in the form of OID values and at the same time
      *     allow developers to register certain objects under explicitly defined
      *     identifiers. This is an important feature for developing cross-frame
@@ -5992,7 +5991,7 @@ function() {
      *     'new Array' this call does not use the first argument as a count when
      *     only one argument is provided. All arguments are treated as array
      *     elements.
-     * @summary One of TIBET's standard "shorthand constructors" which
+     * @description One of TIBET's standard "shorthand constructors" which
      *     follow the pattern $[firstInitialOfType]c(), for example TP.ac() for
      *     Array.construct, TP.dc() for Date.construct, TP.rc() for
      *     RegExp.construct. While some of these don't appear to offer much
@@ -7344,7 +7343,7 @@ function(anObj) {
      *     test since our semantic usage of isNumber is based on testing
      *     parseInt results to see if a user has entered a valid numeric value
      *     or if data from a service is numeric.
-     * @summary The obvious question is why not use typeof anObj ==
+     * @description The obvious question is why not use typeof anObj ==
      *     "number"? Well, because typeof NaN == "number" will return true and,
      *     in our minds anyway, NaN is explicitly by name Not A Number. At the
      *     very least you won't want to do math with it or try to save it to a
@@ -7449,7 +7448,7 @@ function(anObj) {
      * @method isCollection
      * @summary Returns true if the value passed in is an instance of a
      *     Collection type such as Array or TP.lang.Hash.
-     * @summary While String instances can be thought of as collections of
+     * @description While String instances can be thought of as collections of
      *     characters this routine will not return true for Strings. Likewise,
      *     although documents and elements can be thought of as collections of
      *     subelements this routine will return false for Node types.
@@ -7503,7 +7502,7 @@ function(anObj, includeScannedGlobals) {
      *     discriminate between the two. Passing true for the window slot
      *     parameter will cause this method to return true for things like
      *     'opener' and other window properties.
-     * @summary In the absense of other flags, anObj is considered to be a
+     * @description In the absense of other flags, anObj is considered to be a
      *     'global' if it meets one of the following criteria:
      *
      *     1) It is an instance of Boolean or Number. 2) It is a String that is
@@ -7607,7 +7606,7 @@ function(anObj) {
     /**
      * @method $$isTypeProxy
      * @summary Returns true if the object provided is a type proxy.
-     * @summary TIBET supports using proxy objects for types such that when
+     * @description TIBET supports using proxy objects for types such that when
      *     the proxy is first messaged the named type will automatically be
      *     loaded and the message will be sent to the type. This allows TIBET to
      *     support autoloading of code with no programmer intervention or
@@ -8121,7 +8120,7 @@ function(anObj) {
      * @method isNodeList
      * @summary Returns true if the object provided is a DOM node list (or an
      *     Array acting like one).
-     * @summary We need to supply a special version of this for IE because
+     * @description We need to supply a special version of this for IE because
      *     node lists returned from the XML DOM are different from those
      *     returned from the HTML DOM.
      * @param {Object} anObj The Object to test.
@@ -8557,7 +8556,7 @@ function(anObj) {
      * @summary Returns true if the object provided is 'empty' meaning it may
      *     be 'invalid' or have a size, length, or empty attribute which defines
      *     it as having zero-length content.
-     * @summary A common error is using TP.isEmpty() to test a return value
+     * @description A common error is using TP.isEmpty() to test a return value
      *     which is a Node. This will return varying results depending on how
      *     many childNodes the Node has. Use TP.isValid() to test whether a node
      *     exists, then use TP.isEmpty() to test for children.
@@ -8719,7 +8718,7 @@ function(anObj) {
      * @summary Returns true if the object provided is not 'empty' meaning it
      *     must be a valid object with a size, length, or empty attribute which
      *     defines it as having content.
-     * @summary A common error is using TP.notEmpty() to test a return value
+     * @description A common error is using TP.notEmpty() to test a return value
      *     which is a Node. This will return varying results depending on how
      *     many childNodes the Node has. Use TP.isValid() to test whether a node
      *     exists, then use TP.notEmpty() to test for children.
@@ -9084,7 +9083,7 @@ function(verbose) {
      *     string representation of an object. The default output from toString
      *     in TIBET is the object's OID so that objects can properly be used in
      *     Object keys etc.
-     * @summary The typical implementation of asString is to return the same
+     * @description The typical implementation of asString is to return the same
      *     value as toString() for objects which can respond, however a number
      *     of types override asString to provide a more human-readable string.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
@@ -9537,7 +9536,7 @@ function () {
      * @method changed
      * @summary Notifies observers that some aspect of the receiver has
      *     changed. The fundamental data-driven dependency method.
-     * @summary If 'anAspect' is provided then the signal fired will be
+     * @description If 'anAspect' is provided then the signal fired will be
      *     'aspectChange' where 'aspect' is replaced with the title-case aspect
      *     value. For example, if the aspect is 'lastname' the signal will be:
      *
@@ -9577,7 +9576,7 @@ function () {
          * @method shouldSignalChange
          * @summary Defines whether the receiver should actively signal change
          *     notifications.
-         * @summary In general objects do not signal changes when no
+         * @description In general objects do not signal changes when no
          *     observers exist. This flag is triggered by observe where the
          *     signal being observed is a form of Change signal to "arm" the
          *     object for change notification. You can also manipulate it during
@@ -9643,7 +9642,7 @@ function(aFlag) {
      * @summary When true, TIBET will invalidate all caches used during content
      *     processing. This will cause new calls to get content data to rebuild
      *     their file caches lazily.
-     * @summary This method has a similar interface to the should* calls
+     * @description This method has a similar interface to the should* calls
      *     however since it acts only at the time it's called we use a little
      *     different naming convention to help clarify that it's different from
      *     the control flag methods.
@@ -9825,7 +9824,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldCaptureErrors
      * @summary Controls and returns the value of the error forwarding flag.
-     * @summary This flag determines whether errors caught by TIBET should
+     * @description This flag determines whether errors caught by TIBET should
      *     be forwarded to the native JS error handling system. If so, the
      *     browser's native handling will execute. Note that certain
      *     browser/debugger tools ignore this so this flag may have no effect.
@@ -9856,7 +9855,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldEmbedProgress
      * @summary Controls and returns the value of the progress format flag.
-     * @summary This flag determines whether progress messages will be
+     * @description This flag determines whether progress messages will be
      *     embedded in the page or via TIBET's notify call. Default is true.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -9884,7 +9883,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldIgnoreViaFlag
      * @summary Controls and returns TIBET's signal interest removal flag.
-     * @summary When this flag is true, signal interests are removed from
+     * @description When this flag is true, signal interests are removed from
      *     the signal map by simply flagging them. When this flag is false the
      *     interest is removed completely. Useful for debugging and tuning
      *     performance.
@@ -9917,7 +9916,7 @@ function(aFlag, shouldSignal) {
      * @method $$shouldInvokeInferences
      * @summary Controls and returns the state of TIBET's 'invoke inferences'
      *     flag.
-     * @summary This flag tells TIBET whether inferences made should be
+     * @description This flag tells TIBET whether inferences made should be
      *     actually executed. This can potentially be turned off so you see what
      *     TIBET would have done, without actually doing it, but in practice
      *     it's normally left on.
@@ -9948,7 +9947,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogActivities
      * @summary Controls and returns the state of the 'log activity' flag.
-     * @summary This flag determines whether calls to log actually log. Note
+     * @description This flag determines whether calls to log actually log. Note
      *     that turning on other log status flags won't automatically turn on
      *     the log activity flag. The activity log is the 'meta log' capturing
      *     log data from all the other TIBET logs and providing support for
@@ -9982,7 +9981,7 @@ function(aFlag, shouldSignal) {
      * @method shouldLogConsoleSignals
      * @summary Controls and returns the state of TIBET's 'log console signals'
      *     flag.
-     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
+     * @description When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log console signals such as
      *     TP.sig.UserInput/OutputRequests, TP.sig.ConsoleRequest/Response, etc.
      *     which can be obtrusive when running the TIBET console. The default
@@ -10013,7 +10012,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogCSS
      * @summary Controls and returns the state of the CSS logging flag.
-     * @summary When true TIBET will output CSS debugging data.
+     * @description When true TIBET will output CSS debugging data.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.
@@ -10040,7 +10039,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogDOMFocusSignals
      * @summary Controls and returns the state of the DOM focus logging flag.
-     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
+     * @description When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log DOMFocus, DOMBlur, DOMFocusIn and
      *     DOMFocusOut events. Since these happen with most operations this
      *     value is false by default.
@@ -10070,7 +10069,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogDOMLoadedSignals
      * @summary Controls and returns the state of the DOMLoaded logging flag.
-     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
+     * @description When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log element-level DOMLoaded events. Since
      *     these happen with most operations this value is false by default.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10099,7 +10098,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogErrors
      * @summary Controls and returns the value of the error log flag.
-     * @summary This flag determines whether calls to log warnings and
+     * @description This flag determines whether calls to log warnings and
      *     errors of any level of severity actually write entries to the error
      *     log. Note that the logging level may also affect output.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10129,7 +10128,7 @@ function(aFlag, shouldSignal) {
      * @method shouldLogInferences
      * @summary Controls and returns the state of TIBET's 'log inferences'
      *     flag.
-     * @summary This tells TIBET whether inferences made should be logged.
+     * @description This tells TIBET whether inferences made should be logged.
      *     Turning this flag on can help you tune TIBET for better runtime
      *     performance by showing you which methods might benefit from a
      *     concrete implementation rather than being inferred. It should be off
@@ -10160,7 +10159,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogIO
      * @summary Controls and returns the state of the IO logging flag.
-     * @summary This flag tells TIBET whether to log calls to the IO
+     * @description This flag tells TIBET whether to log calls to the IO
      *     subsystem. When the uri and http primitives operate they can log
      *     their activity to TIBET's IO log.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10189,7 +10188,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogJobs
      * @summary Controls and returns the state of the job logging flag.
-     * @summary When this flag is true and the job system runs a job it will
+     * @description When this flag is true and the job system runs a job it will
      *     log start, step, and stop times for review.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10217,7 +10216,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogKeys
      * @summary Controls and returns the state of TIBET's key logging flag.
-     * @summary When this flag is true any keyboard event handlers armed
+     * @description When this flag is true any keyboard event handlers armed
      *     with the standard TIBET event handler will log key events. This is
      *     useful for gathering keycode information from a keyboard.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10246,7 +10245,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogLinks
      * @summary Controls and returns the state of TIBET's link logging flag.
-     * @summary This flag controls whether instrumented links will log their
+     * @description This flag controls whether instrumented links will log their
      *     activation to the TIBET log.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10276,7 +10275,7 @@ function(aFlag, shouldSignal) {
      * @method shouldLogLoadSignals
      * @summary Controls and returns the state of TIBET's 'log load signals'
      *     flag.
-     * @summary This flags tells TIBET whether, when the signaling machinery
+     * @description This flags tells TIBET whether, when the signaling machinery
      *     is invoked prior to installation of the full signaling system, TIBET
      *     should log such signals.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10307,7 +10306,7 @@ function(aFlag, shouldSignal) {
      * @summary Controls and returns the state of TIBET's null namespace
      *     logging. Normally used during development to help detect when a
      *     namespace declaration may be missing.
-     * @summary Mozilla will, at least in older versions, move elements
+     * @description Mozilla will, at least in older versions, move elements
      *     whose prefixes don't match declared namespaces, to the null
      *     namespace. This flag controls whether TIBET checks for that and logs
      *     any element names found that match.
@@ -10338,7 +10337,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogRaise
      * @summary Controls and returns the value of the raise log flag.
-     * @summary This flag determines whether calls to raise should invoke
+     * @description This flag determines whether calls to raise should invoke
      *     log*() based on the incoming exception type. Usually you want this
      *     set to true.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10369,7 +10368,7 @@ function(aFlag, shouldSignal) {
      * @method shouldLogRequestSignals
      * @summary Controls and returns the state of TIBET's 'log request signals'
      *     flag.
-     * @summary When true, and when TP.sys.shouldLogSignals() is true, this
+     * @description When true, and when TP.sys.shouldLogSignals() is true, this
      *     flag will cause TIBET to log request signals such as RequestCompleted
      *     which can be obtrusive when running the TIBET console. The default
      *     value is false.
@@ -10399,7 +10398,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogSecurity
      * @summary Controls and returns the state of TIBET's 'log security' flag.
-     * @summary This flag tells TIBET whether permission requests and other
+     * @description This flag tells TIBET whether permission requests and other
      *     aspects of security-related information should be logged. The default
      *     is true.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10428,9 +10427,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogSignals
      * @summary Controls and returns the state of TIBET's 'log signals' flag.
-     * @summary This flag tells TIBET whether, when the signaling machinery
-     *     is invoked, it should log signals.
-     * @summary Given TIBET's heavy use of signaling this can generate a LOT
+     * @description Given TIBET's heavy use of signaling this can generate a LOT
      *     of output. At the same time, it can be a critical debugging aid,
      *     particularly with respect to workflow and UI event tracing.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10460,7 +10457,7 @@ function(aFlag, shouldSignal) {
      * @method shouldLogSignalStack
      * @summary Controls and returns the state of TIBET's 'log signal stack'
      *     flag.
-     * @summary This flag tells TIBET whether, when the signaling machinery
+     * @description This flag tells TIBET whether, when the signaling machinery
      *     is invoked, it should log signal stack traces, which helps identify
      *     where a signal has originated from.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10490,7 +10487,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogStack
      * @summary Controls and returns the value of the error log stack flag.
-     * @summary This flag determines whether the call stack should be
+     * @description This flag determines whether the call stack should be
      *     written when logging errors. This generates a LOT of output,
      *     particularly if signal logging is also on. Be prepared :).
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10523,7 +10520,7 @@ function(aFlag, shouldSignal) {
      *     flag. When this flag is true TIBET will try to log file information
      *     including name and line number for the functions being logged from
      *     the call stack.
-     * @summary This flag determines whether the call stack should be
+     * @description This flag determines whether the call stack should be
      *     written when logging errors. This generates a LOT of output,
      *     particularly if signal logging is also on. Be prepared :).
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10554,7 +10551,7 @@ function(aFlag, shouldSignal) {
      * @method shouldLogTransforms
      * @summary Controls and returns the value of the content transform logging
      *     flag.
-     * @summary This flag determines whether the content processing system
+     * @description This flag determines whether the content processing system
      *     should log tranformation steps. The logging of this data occurs at
      *     DEBUG level so TP.setLogLevel() must be used to set the proper logger
      *     to DEBUG to capture the output in the logs.
@@ -10585,7 +10582,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogTSHSignals
      * @summary Controls and returns the state of the TSH signal logging flag.
-     * @summary This flag tells TIBET whether to log signals related to TSH
+     * @description This flag tells TIBET whether to log signals related to TSH
      *     processing.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10614,7 +10611,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogUserIOSignals
      * @summary Controls and returns the state of the User IO logging flag.
-     * @summary This flag tells TIBET whether to log calls to the User IO
+     * @description This flag tells TIBET whether to log calls to the User IO
      *     subsystem.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10645,7 +10642,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldLogXPaths
      * @summary Controls and returns the value of the XPath query logging flag.
-     * @summary This flag determines whether XPaths should be output to the
+     * @description This flag determines whether XPaths should be output to the
      *     activity log, which can help with performance tuning. The logging of
      *     this data occurs at DEBUG level so TP.setLogLevel() must be used to
      *     set the proper logger to DEBUG to capture the output in the logs.
@@ -10676,7 +10673,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldQueueLoadSignals
      * @summary Controls and returns the value of the queue load signal flag.
-     * @summary This flag defines whether TIBET should queue signals fired
+     * @description This flag defines whether TIBET should queue signals fired
      *     prior to full signaling installation for later processing. This
      *     allows you to see any signals which may have fired during kernel
      *     load.
@@ -10708,7 +10705,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldProcessCSS
      * @summary Controls and returns TIBET's CSS Processor.
-     * @summary When this flag is on, TIBET will translate selectors and
+     * @description When this flag is on, TIBET will translate selectors and
      *     create runtime data structures to repair most common CSS selector
      *     limitations.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
@@ -10737,7 +10734,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldRegisterLoggers
      * @summary Controls and returns TIBET's registration policy flag.
-     * @summary If this flag is true, TIBET will register objects which log
+     * @description If this flag is true, TIBET will register objects which log
      *     errors. This allows developers to access the objects which have
      *     written to the error log via their OIDs.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10767,7 +10764,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldReportParseErrors
      * @summary Controls and returns TIBET's DOM parsing report flag.
-     * @summary When this flag is true, TIBET forces DOM parse errors to be
+     * @description When this flag is true, TIBET forces DOM parse errors to be
      *     reported. This is useful primarily for debugging so the default is
      *     false.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
@@ -10825,7 +10822,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldSignalDOMLoaded
      * @summary Controls and returns TIBET's DOMLoaded signal flag.
-     * @summary If true, TIBET will signal DOMLoaded from page elements
+     * @description If true, TIBET will signal DOMLoaded from page elements
      *     which are having their content updated. NOTE that this flag will have
      *     no effect on DOMLoaded signals thrown from the document level so that
      *     in-page content load listeners will always function.
@@ -10885,7 +10882,7 @@ function(aFlag, shouldSignal) {
      * @method shouldThrowEvaluations
      * @summary Controls and returns the state of TIBET's flag for shell
      *     evaluations.
-     * @summary When true TIBET will throw native JavaScript errors that
+     * @description When true TIBET will throw native JavaScript errors that
      *     occur in evaluations done in the shell.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10916,7 +10913,7 @@ function(aFlag, shouldSignal) {
      * @method shouldThrowExceptions
      * @summary Controls and returns the state of TIBET's flag for exception
      *     handling behavior.
-     * @summary When this flag is true, TIBET will throw native JS Error
+     * @description When this flag is true, TIBET will throw native JS Error
      *     objects in response to exception raise calls whose exception
      *     instances aren't handled by an observer. By controlling this flag
      *     effectively TIBET allows you to have an integrated error handling
@@ -10951,7 +10948,7 @@ function(aFlag, shouldSignal) {
      * @method shouldThrowHandlers
      * @summary Controls and returns the state of TIBET's flag for handler
      *     invocation try/catch behavior.
-     * @summary When this flag is true the system will run event handlers
+     * @description When this flag is true the system will run event handlers
      *     without a try/catch block.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10982,7 +10979,7 @@ function(aFlag, shouldSignal) {
      * @method shouldTrackJobStats
      * @summary Controls and returns the state of TIBET's job statistics
      *     gathering.
-     * @summary When this flag is true (and not overridden by a specific job
+     * @description When this flag is true (and not overridden by a specific job
      *     instance) jobs will track step and timing information for review.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -11040,7 +11037,7 @@ function(aFlag, shouldSignal) {
      * @method shouldTrapRecursion
      * @summary Controls and returns the flag defining whether TIBET should
      *     enforce its recursion trapping method.
-     * @summary The TIBET recursion-trapping method, trapRecursion() is
+     * @description The TIBET recursion-trapping method, trapRecursion() is
      *     installed in a few locations to help with recursion debugging. While
      *     Mozilla will report endless recursion, it won't show the stack :(.
      *     Using this method helps provide a little more control although
@@ -11072,7 +11069,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldUniqueTypes
      * @summary Controls and returns the state of TIBET's type uniquing flag.
-     * @summary When true TIBET will not recreate types in the defineSubtype
+     * @description When true TIBET will not recreate types in the defineSubtype
      *     call. The default is true, meaning that when a type is ':source'd in
      *     using the TAP/TDC the original type is not replaced. This can help
      *     with maintaining type attribute state across iterative reloads if the
@@ -11105,7 +11102,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method $$shouldUseBackstop
      * @summary Controls and returns the state of TIBET's backstop.
-     * @summary If this flag is true, TIBET will cause the
+     * @description If this flag is true, TIBET will cause the
      *     'doesNotUnderstand' backstop to be invoked by get() calls which fail
      *     to find a value. The TIBET backstop provides support for 'Proxies',
      *     and the TIBET inferencer so this should normally be true.
@@ -11135,7 +11132,7 @@ function(aFlag, shouldSignal) {
      * @method shouldUseContentCheckpoints
      * @summary Controls and returns the state of TIBET's content checkpointing
      *     flag.
-     * @summary If this flag is true then TIBET's content processing methods
+     * @description If this flag is true then TIBET's content processing methods
      *     will checkpoint when possible to assist with debugging content
      *     transformations which occur. This allows you to review the content at
      *     each processing phase to see how the transformations are effecting
@@ -11166,7 +11163,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldUseContentCaches
      * @summary Controls and returns the state of the content file cache flag.
-     * @summary Turning this off will cause content processing to skip using
+     * @description Turning this off will cause content processing to skip using
      *     file-based caches without affecting how they may choose to leverage
      *     memory caching. During development it's often useful to run with
      *     caches off so you work primarily with memory-based caches to avoid
@@ -11197,7 +11194,7 @@ function(aFlag, shouldSignal) {
     /**
      * @method shouldUseDebugger
      * @summary Controls and returns the state of TIBET's 'debugger' flag.
-     * @summary This flag tells TIBET whether, when an exception is raised,
+     * @description This flag tells TIBET whether, when an exception is raised,
      *     the debugger hook should be invoked. The default hook will cause
      *     TIBET to stop in any currently running debugger by invoking the
      *     ECMA-defined 'debugger;' keyword. Future versions of TIBET on
@@ -11273,7 +11270,7 @@ function() {
      * @summary Checks whether the current kernel version is the latest
      *     available version by comparing current version data against a
      *     published TIBET release reference.
-     * @summary This method expects to find a file at the location pointed
+     * @description This method expects to find a file at the location pointed
      *     to by '~lib_version_file' with the following content:
      *
      *      release({
@@ -11725,7 +11722,7 @@ function() {
      * @method getSourceLanguage
      * @summary Returns the current source 'lang', the language most source
      *     strings will be in.
-     * @summary This value is typically en-us, but can be changed to adapt
+     * @description This value is typically en-us, but can be changed to adapt
      *     to local coding preferences. The source language is used as the key
      *     during localization lookups.
      * @example Get TIBET's current 'source language':
@@ -11750,7 +11747,7 @@ function() {
      * @method getTargetLanguage
      * @summary Returns the target 'lang', the user's targeted language
      *     setting.
-     * @summary This method leverages TP.core.Locale data whenever possible,
+     * @description This method leverages TP.core.Locale data whenever possible,
      *     otherwise the boot property for userlang is used. When translations
      *     are performed this is the language being targeted using the current
      *     source language as the key.
@@ -11781,7 +11778,7 @@ function(aLangCode) {
      * @method getSourceLanguage
      * @summary Returns the current source 'lang', the language most source
      *     strings will be in.
-     * @summary This is typically en-us, but can be changed to adapt to
+     * @description This is typically en-us, but can be changed to adapt to
      *     local coding preferences. The source language is used as the key
      *     during localization lookups.
      * @example Set TIBET's current 'source language':
@@ -11884,12 +11881,10 @@ function(aFlag) {
     /**
      * @method isOffline
      * @summary Controls and returns the state of the online/offline flag.
-     * @summary This is set automatically to false when the launch was from
+     * @description This is set automatically to false when the launch was from
      *     a file:// url. You can still force it back to true if you start
      *     accessing HTTP urls later in your session. Note that the HTML5
      *     'online/offline' events have been wired to set this flag as well.
-     * @summary This flag determines which key is used when performing URI
-     *     resolution.
      * @param {Boolean} aFlag True means we're "offline".
      * @returns {Boolean} Whether or not TIBET is currently running in "offline"
      *     mode.

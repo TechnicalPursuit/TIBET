@@ -29,7 +29,7 @@ function(targetURI, aRequest) {
     /**
      * @method load
      * @summary Loads URI data content and returns it on request.
-     * @summary This method performs the actual work of querying a JSONP URL
+     * @description This method performs the actual work of querying a JSONP URL
      *     for its content. Two notable parameters from the request are passed
      *     on to the JSON call:
      *
@@ -45,7 +45,7 @@ function(targetURI, aRequest) {
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @raise TP.sig.InvalidURI, TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI, TP.sig.InvalidRequest
      */
 
     var request,

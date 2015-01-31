@@ -12,7 +12,7 @@
  * @type {TP.core.TSH}
  * @summary TIBET's primary shell, used for content processing, script
  *     execution, and interactive development via the TIBET console.
- * @summary When working in the client we found it invaluable to have an
+ * @description When working in the client we found it invaluable to have an
  *     interactive tool we could use to support debugging and simple
  *     experimentation. A simple 'workspace' in Smalltalk terms. But simply
  *     eval'ing JS was pretty limiting so we started adding features like
@@ -648,7 +648,7 @@ function(aRequest) {
     /**
      * @method handle
      * @summary The primary resource/request handling method.
-     * @summary We override this here to enable privileges if we're on
+     * @description We override this here to enable privileges if we're on
      *     Mozilla. This avoids a lot of issues when manipulating a window or
      *     contents of a window that come from another domain. The shell
      *     variable PRIVILEGED must be true for this feature to be enabled. It's
@@ -2196,9 +2196,15 @@ function(aRequest) {
 
     var methods,
         results,
-        column;
+        column,
+        dups;
 
     results = [];
+
+    // The following tags allow duplicate entries for the same tag. This list is
+    // not strictly exhaustive, but it should be adequate for now.
+    dups = ['@param', '@throws', '@exception', '@fires', '@listens', '@mixes',
+        '@example', '@author'];
 
     column = this.getArgument(aRequest, 'tsh:column', false);
 
@@ -2206,8 +2212,11 @@ function(aRequest) {
     methods.perform(function(item) {
         var name,
             func,
+            file,
             lines,
             line,
+            taglines,
+            dict,
             text,
             result,
             fParams,
@@ -2215,6 +2224,7 @@ function(aRequest) {
 
         name = item.at(0);
         func = item.at(1);
+        file = TP.objectGetSourcePath(func);
         lines = func.getCommentLines();
 
         if (TP.notValid(lines)) {
@@ -2234,15 +2244,26 @@ function(aRequest) {
             });
         } else {
             // Comment. Question is, is it viable?
-            //  Check the name...
+
+            //  ---
+            //  aliased tags
+            //  ---
+
+            // TODO: replace aliases with canonical versions for TIBET.
+
+
+            //  ---
+            //  @method
+            //  ---
+
             line = lines.detect(function(line) {
-                return line.startsWith('@name ');
+                return line.startsWith('@method ');
             });
 
             if (TP.notValid(line)) {
                 result = TP.ifInvalid(result,
                     {name: name, errors: []});
-                result.errors.push('no @name');
+                result.errors.push('@method missing');
             } else {
                 //  TODO:   "aliased" primitives fail this test. Maybe we can
                 //  fix by noting that the named one is identical.
@@ -2253,15 +2274,53 @@ function(aRequest) {
                 if (name.split('_').last() !== line) {
                     result = TP.ifInvalid(result,
                         {name: name, errors: []});
-                    result.errors.push('@name is ' + line);
+                    result.errors.push('@method is ' + line);
                 }
             }
 
-            //  Check the parameters...
-            cParams = lines.filter(function(line) {
-                return line.startsWith('@param');
+            //  ---
+            //  duplicates
+            //  ---
+
+            //  Collect all tag-prefixed lines.
+            taglines = lines.filter(function(line) {
+                return line.startsWith('@');
             });
 
+            dict = TP.hc();
+
+            taglines.forEach(function(line) {
+                var tag;
+
+                //  Slice the tag off the front.
+                tag = line.split(' ').first();
+
+                //  Check to see if dups are allowed for this tag.
+                if (dups.indexOf(tag) !== TP.NOT_FOUND) {
+                    return;
+                }
+
+                //  Verify via hash lookup and add any new ones.
+                if (dict.at(tag)) {
+                    result = TP.ifInvalid(result,
+                        {name: name, errors: []});
+                    result.errors.push('multiple ' + tag + '\'s');
+                } else {
+                    dict.atPut(tag, tag);
+                }
+            });
+
+            //  ---
+            //  @param
+            //  ---
+
+            //  Collect the comment parameters...
+            cParams = lines.filter(function(line) {
+                return line.startsWith('@param ');
+            });
+
+            //  Collect comment parameter names. While we're processing these
+            //  verify that each @param has a type definition.
             cParams = cParams.map(function(param) {
                 var type,
                     pname,
@@ -2274,7 +2333,7 @@ function(aRequest) {
                     // Apparently not formatted with a type for the param.
                     result = TP.ifInvalid(result,
                         {name: name, errors: []});
-                    result.errors.push('missing type for param ');
+                    result.errors.push('missing type for @param ');
                     needName = true;
                 } else {
                     type = param.slice(1, param.indexOf('}'));
@@ -2290,7 +2349,8 @@ function(aRequest) {
                     pname = param.split(' ').first();
                 }
 
-                // If we flagged a missing type we need to push the name.
+                // If we flagged a missing type we need to append the name to
+                // the last message.
                 if (needName) {
                     result.errors.atPut(result.errors.length - 1,
                         result.errors.last() + 'pname');
@@ -2299,41 +2359,44 @@ function(aRequest) {
                 return pname;
             });
 
+            //  Get the function's parameter name list.
             fParams = func.getParameterNames();
+
+            //  Filter comment parameters to remove any nested ones.
+            cParams = cParams.filter(function(pname) {
+                return pname.indexOf('.') === TP.NOT_FOUND;
+            });
 
             //  Order matters here so loop over the function signature and make
             //  sure that a) all items are accounted for, and b) the order of
             //  the items (not including "nested properties") is consistent.
-            fParams.forEach(function(pname) {
+            fParams.forEach(function(pname, index) {
                 var next;
 
-                //  TODO: if we have a missing one early in the list the result
-                //  is the remaining ones, esp the final one, will say missing
-                //  when it might actually be there...but it's been rotated out.
-
-                //  Get the next param from the comment, skipping any nested
-                //  names (those with period in them).
-                next = cParams.shift();
-                if (TP.notValid(next)) {
-                    // Out of parameters...
+                //  Does the parameter exist?
+                if (cParams.indexOf(pname) === TP.NOT_FOUND) {
                     result = TP.ifInvalid(result,
                         {name: name, errors: []});
-                    result.errors.push('param ' + pname + ' missing');
-                    return;
-                }
-
-                while (next && next.indexOf('.') !== TP.NOT_FOUND) {
-                    next = cParams.shift();
-                }
-
-                if (pname !== next) {
+                    result.errors.push('@param ' + pname + ' missing');
+                } else if (cParams[index] !== pname) {
                     result = TP.ifInvalid(result,
                         {name: name, errors: []});
-                    result.errors.push('param ' + pname + ' mismatch');
+                    result.errors.push('@param ' + pname + ' mismatch');
+                }
+            });
+
+            //  Now for the other direction, comment parameters which are found
+            //  but which are not valid in the function signature...
+            cParams.forEach(function(pname) {
+                if (fParams.indexOf(pname) === TP.NOT_FOUND) {
+                    result = TP.ifInvalid(result,
+                        {name: name, errors: []});
+                    result.errors.push('@param ' + pname + ' not in signature');
                 }
             });
 
             if (result) {
+                result.file = file;
                 results.push(result);
             }
 
@@ -2350,7 +2413,8 @@ function(aRequest) {
     });
 
     results = results.map(function(result) {
-        return result.name + ': ' + result.errors.join(', ');
+        return result.file + ' - ' + result.name + ' (' + result.errors.length +
+            ') -> [' + result.errors.join(', ') + ']';
     });
 
     if (column) {

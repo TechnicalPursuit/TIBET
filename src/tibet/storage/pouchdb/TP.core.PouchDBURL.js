@@ -278,7 +278,7 @@ function(aRequest) {
      * @method getContent
      * @summary Fetches the receiver's content, returns a content-specific
      *     object or a TP.sig.Response when the request is asynchronous.
-     * @summary For pouchdb: URLs, this method defaults the 'refresh'
+     * @description For pouchdb: URLs, this method defaults the 'refresh'
      *     parameter to true, which is inverted from the base URI type's value
      *     of 'false'. This is because most of the time the requestor won't want
      *     the cached value of the URI, but will want to query the database.

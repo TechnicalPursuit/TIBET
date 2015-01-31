@@ -23,7 +23,7 @@
  * @type {TP.core.JobStatus}
  * @summary An abstract type, designed specifically to be mixed in to other
  *     types which want to use common process/job status functionality.
- * @summary The most prevalent consumers of TP.core.JobStatus are
+ * @description The most prevalent consumers of TP.core.JobStatus are
  *     TP.core.Job, TP.core.JobGroup, and TP.core.WorkflowSignal (which provides
  *     the common supertype for TP.core.Requests and TP.core.Responses). By
  *     traiting in this type those types are able to work with a common set of
@@ -230,7 +230,7 @@ function(aFlag) {
      * @method isActive
      * @summary Returns true if the receiver is still running in a TP.ACTIVE
      *     state.
-     * @summary Paused receivers and receivers that are waiting at TP.READY
+     * @description Paused receivers and receivers that are waiting at TP.READY
      *     are not considered "active" by this test. Use isRunnable() to check
      *     for general runnability.
      * @param {Boolean} aFlag True to place the receiver into an active state.
@@ -296,7 +296,7 @@ function() {
     /**
      * @method isCompleted
      * @summary Returns true if the receiver is done processing.
-     * @summary A true value doesn't mean success, just that the processing
+     * @description A true value doesn't mean success, just that the processing
      *     is finished. It may have been cancelled, failed, or completed
      *     properly. You can use the 'did*' methods to check the final status.
      * @returns {Boolean} Whether or not the job is done processing.
@@ -791,7 +791,7 @@ function() {
      * @method pause
      * @summary Pauses the receiver if that operation is supportable by the
      *     particular type.
-     * @summary Not all receivers of the pause operation are able to pause
+     * @description Not all receivers of the pause operation are able to pause
      *     effectively (XMLHttpRequest for example), but the job does enter the
      *     TP.PAUSED state as a result of this method.
      * @returns {TP.core.JobStatus} The receiver.
@@ -833,7 +833,7 @@ function() {
     /**
      * @method resume
      * @summary Resumes a paused receiver, if it was actually paused.
-     * @summary Not all receivers can pause effectively and may ignore this
+     * @description Not all receivers can pause effectively and may ignore this
      *     call along with the pause() call itself. If the job was in a
      *     TP.PAUSED state however, this call will return it to the TP.ACTIVE
      *     state.
@@ -879,7 +879,7 @@ function(parameters) {
  *     sequence of asynchronous calls which follow a scheduling algorithm. In
  *     addition, TP.core.Job instances are tracked by TIBET so you can view and
  *     manage them from a central "process list".
- * @summary Job instances are essentially scheduling/control objects that
+ * @description Job instances are essentially scheduling/control objects that
  *     help you run one or more "work functions" in a particular way. The
  *     primary goal of TP.core.Job is to provide you with a way to run these
  *     work functions with optional pre/post functions and to manage their
@@ -1427,7 +1427,7 @@ function(allParams) {
      * @summary Splits the supplied params into two TP.lang.Hashes, one
      *     containing the control parameters and the other containing the step
      *     parameters.
-     * @summary This method takes all entries from the supplied params hash
+     * @description This method takes all entries from the supplied params hash
      *     that have keys matching those listed in CONTROL_PARAM_KEYS and places
      *     those in the control parameters hash. All remaining parameters will
      *     be in the step parameters hash (including those not strictly listed
@@ -1553,7 +1553,7 @@ function(controlParams) {
     /**
      * @method init
      * @summary Initializes new job instances and returns them for use.
-     * @summary The resulting job can be run multiple times with different
+     * @description The resulting job can be run multiple times with different
      *     execution data by passing a set of step parameters to the start()
      *     function. The jobs control parameters are fixed by this call, but can
      *     be adjusted using standard set methods on the job instance before
@@ -1734,7 +1734,7 @@ function(aResult) {
     /**
      * @method complete
      * @summary Tells the receiver to complete the current run.
-     * @summary For a job with a repeat count this method may invoke the
+     * @description For a job with a repeat count this method may invoke the
      *     next run if one exists and that will continue until the job is truly
      *     complete. Use shutdown to end processing and close out the job with a
      *     successful status code without running any additional runs which
@@ -1797,7 +1797,7 @@ function() {
      * @summary Returns the total time (minus any paused time) that the job has
      *     been active. This is the amount of time the job has been "executing"
      *     by being in an active state.
-     * @summary The active time does not include initial delay time, so a
+     * @description The active time does not include initial delay time, so a
      *     job queued 10 seconds ago to start in 5 seconds will show an elapsed
      *     time of 10 seconds, but an active time of 5 seconds. The same job, if
      *     paused for 2 seconds during that period, will still show 10 seconds
@@ -1834,7 +1834,7 @@ function() {
      * @method getElapsedTime
      * @summary Returns the total elapsed time (including paused time) that the
      *     job has been active as computed from the runstart time.
-     * @summary The elapsed time does not include initial delay time, so a
+     * @description The elapsed time does not include initial delay time, so a
      *     job queued 10 seconds ago to start in 5 seconds will show an elapsed
      *     time of 10 seconds, but an active time of 5 seconds. The same job, if
      *     paused for 2 seconds during that period, will still show 10 seconds
@@ -1878,7 +1878,7 @@ function() {
     /**
      * @method getPercentComplete
      * @summary Returns the computed percentage complete for the current job.
-     * @summary For time-limited jobs this is the relative percentage
+     * @description For time-limited jobs this is the relative percentage
      *     between active and total time, but for iteration limited jobs it is
      *     the relative percentage of iterations to total iteration count. Jobs
      *     using a limit function have no value for this function.
@@ -1940,7 +1940,7 @@ function() {
      * @method getProjectedTime
      * @summary Returns the total time the job is expected to run based on the
      *     limit and interval data supplied.
-     * @summary The initial delay time is not included in this computation,
+     * @description The initial delay time is not included in this computation,
      *     making this equivalent to "job duration". The one thing to keep in
      *     mind is that unless limit was provided as a duration this value is
      *     purely an estimate and not a limiting factor.
@@ -1978,12 +1978,12 @@ function(stepParams) {
      * @method getStepValue
      * @summary Computes a value for the current step using the function found
      *     in the job parameters under the key 'compute'.
-     * @summary If no function is found but 'values' exist then the standard
+     * @description If no function is found but 'values' exist then the standard
      *     value indexing compute function is used, if a 'from' and 'to' pair
      *     are found a standard linear from/to computation is used. If all else
      *     fails but a 'value' key exists in the parameter data that value is
      *     used (to allow steps to pass a value).
-     * @summary The 'stepParams' hash can contain keys that are used by the
+     *     The 'stepParams' hash can contain keys that are used by the
      *     job to perform its task. It can contain the following keys:
      *
      *     'from' The 'from value' to start the job counting at. 'to' The 'to
@@ -2005,7 +2005,7 @@ function(stepParams) {
      *     to the start() function for the job. Note that this parameter is
      *     optional and will default to the parameters computed by the job.
      * @returns {Object} A step-specific value computed by the compute function.
-     * @raise TP.sig.JobException
+     * @exception TP.sig.JobException
      */
 
     var val;
@@ -2083,7 +2083,7 @@ function(silently) {
      * @method kill
      * @summary Performs an immediate shutdown of the job, setting its status
      *     to TP.CANCELLED and ceasing any future processing.
-     * @summary This not only cancels any interval-based iterations but it
+     * @description This not only cancels any interval-based iterations but it
      *     will also cancel any repeat-count processing that might have
      *     otherwise occurred. No job post-processing functions will be run
      *     either.
@@ -2379,7 +2379,7 @@ function(aLimit) {
      * @summary Sets the limit using a Number or String, or Duration string
      *     value. A limit can also be a function which computes this value based
      *     on current job parameters.
-     * @summary This control parameter is used differently based on the type
+     * @description This control parameter is used differently based on the type
      *     of argument supplied here: String Either a number of milliseconds as
      *     a String or an xs:Duration. Number The maximum number of times the
      *     step function(s) will be invoked per execution of the job. Function A
@@ -2441,7 +2441,7 @@ function(work) {
      * @method setWork
      * @summary Sets the work function, the function the job actually uses to
      *     perform the steps.
-     * @summary When the work parameter here is empty this method will build
+     * @description When the work parameter here is empty this method will build
      *     a default work function from the current step content. The default
      *     function is used primarly to ensure that the work is properly
      *     enclosed in a try/catch to cleanup the job if any errors occur.
@@ -2513,7 +2513,7 @@ function(now) {
      * @summary Performs a clean shutdown of the job so it doesn't appear to
      *     have been terminated with an error or killed. This includes running
      *     the job's teardown/post-processing logic.
-     * @summary If "now" is true then any pending steps or job cycles (based
+     * @description If "now" is true then any pending steps or job cycles (based
      *     on repeat count) are terminated before the teardown step.
      * @param {Boolean} now True to stop iterations and terminate now.
      * @returns {TP.core.Job} The receiver.
@@ -2552,7 +2552,7 @@ function(stepParams) {
      *     public interface to initiating a job. As a result of this call the
      *     job's parameters will be set and its iterate method will be invoked
      *     to start the job scheduling process.
-     * @summary The 'stepParams' hash can contain keys that are used by the
+     * @description The 'stepParams' hash can contain keys that are used by the
      *     job to perform its task. It can contain the following keys:
      *
      *     'from' The 'from value' to start the job counting at. 'to' The 'to
@@ -3385,7 +3385,7 @@ function(controlParams, stepParams) {
      * @method schedule
      * @summary Replaces setTimeout() and setInterval() calls, allowing you to
      *     manage long-running processes more effectively.
-     * @summary The 'controlParams' hash can contain keys that control the
+     * @description The 'controlParams' hash can contain keys that control the
      *     job. It can have the following keys:
      *
      *     'config' A function to run to do any final job setup such as setting
@@ -3539,7 +3539,7 @@ function(aFaultString, aFaultCode) {
      * @method cancel
      * @summary Tells the receiver to cancel, meaning it is being rescinded by
      *     the user or calling process.
-     * @summary If the receiver has specific behavior to implement it should
+     * @description If the receiver has specific behavior to implement it should
      *     override this method, but be sure to set the status to TP.CANCELLING
      *     during any processing and TP.CANCELLED after processing is complete.
      *     The default implementation simply sets the status to TP.CANCELLED.
@@ -3575,7 +3575,7 @@ function(aResult) {
      * @method complete
      * @summary Tells the receiver to complete, meaning the receiver should do
      *     whatever finalization is necessary to reach the TP.SUCCEEDED state.
-     * @summary If the receiver has specific behavior to implement it should
+     * @description If the receiver has specific behavior to implement it should
      *     override this method, but be sure to set the status to TP.COMPLETING
      *     during any processing and TP.SUCCEEDED after processing is complete.
      *     The default implementation simply sets the status to TP.SUCCEEDED.
@@ -3747,7 +3747,7 @@ function(now) {
      * @summary Performs a clean shutdown of the receiver so it doesn't appear
      *     to have been terminated with an error or killed. This includes
      *     running the receiver's teardown/post-processing logic.
-     * @summary If "now" is true then any pending steps or job cycles (based
+     * @description If "now" is true then any pending steps or job cycles (based
      *     on repeat count) are terminated before the teardown step.
      * @param {Boolean} now True to stop iterations and terminate now.
      * @returns {TP.core.JobGroup} The receiver.

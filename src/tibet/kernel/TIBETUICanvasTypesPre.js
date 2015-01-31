@@ -17,7 +17,7 @@
  * @summary A type intended to be used as a trait type for objects which
  *     provide UI canvas support such as windows, frames, iframes, and the
  *     Mozilla "canvas" object.
- * @summary UI canvases are the surfaces you use to display content to the
+ * @description UI canvases are the surfaces you use to display content to the
  *     user. In TIBET these can be a variety of things including windows,
  *     iframes, and canvas objects. When dealing with IFRAME elements in
  *     particular there are a few complexities since an IFRAME exists within a
@@ -247,7 +247,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @method resolveDNU
      * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
-     * @summary Handles resolution of methods which have triggered the
+     * @description Handles resolution of methods which have triggered the
      *     inferencer. For TP.core.Window the resolution process is used in
      *     conjunction with method aspects to allow the receiver to translate
      *     method calls.
@@ -339,7 +339,7 @@ function(aContentObject, aRequest) {
 /**
  * @type {TP.core.Window}
  * @summary TP.core.Window is a top-level type for wrapping windows and frames.
- * @summary In TIBET you typically operate with documents and elements via
+ * @description In TIBET you typically operate with documents and elements via
  *     the TP.core.Node hierarchy. The TP.core.Window hierarchy is intended to
  *     provide functional support for window-level operations. When creating a
  *     TP.core.Window the specific subtype vended back on construct().
@@ -982,7 +982,7 @@ function(aWindow) {
     /**
      * @method instrument
      * @summary Instruments a native window to set it up for use with TIBET.
-     * @summary This method instruments a native window to provide common
+     * @description This method instruments a native window to provide common
      *     facilities to consumers of the window, such as component acquisition,
      *     DHTML or event facilties. This also includes setting the opener, the
      *     onerror handler, etc.
@@ -1169,7 +1169,7 @@ function(aWindow) {
     /**
      * @method registerWindow
      * @summary Registers aWindow with the window information registry.
-     * @summary If aWindow is already registered with the window registry,
+     * @description If aWindow is already registered with the window registry,
      *     this method will just return. Otherwise, it will check to make sure
      *     that this window isn't registered under another name (it might have
      *     been, if it was registered before the real global ID could have been
@@ -2132,7 +2132,7 @@ function(constructorName, varargs) {
     /**
      * @method constructObject
      * @summary Constructs an object in the receiver's native window.
-     * @summary Note that all parameters to this method are passed along in
+     * @description Note that all parameters to this method are passed along in
      *     the object creation process. Therefore, arguments to the 'new', if
      *     you will, should be passed after the constructorName.
      * @param {String} constructorName The name of the constructor to use to
@@ -2163,7 +2163,7 @@ function() {
      * @summary Returns a TP.core.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument.
-     * @summary Windows are unique in that their content document and their
+     * @description Windows are unique in that their content document and their
      *     document are the same object. For other UICanvas objects the content
      *     document is contained within the canvas, but the document contains
      *     the canvas. Windows sit at the boundary.
@@ -2299,7 +2299,7 @@ function() {
     /**
      * @method getWindow
      * @summary Returns the receiver.
-     * @summary This method exists for polymorphism purposes.
+     * @description This method exists for polymorphism purposes.
      * @returns {TP.core.Window} The receiver.
      */
 

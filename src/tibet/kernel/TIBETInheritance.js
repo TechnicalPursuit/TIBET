@@ -54,10 +54,10 @@ function(ensureUniqueness) {
      * @method asJSIdentifier
      * @summary Returns a version of the string suitable for use as a valid JS
      *     identifier.
-     * @summary This method is used by the defineSubtype call to allow strings
-     *     of the form "html:form" to actually act as types within the system.
-     *     The return value is a mangled form of the original and the two are
-     *     mapped into the metadata so that a call to the string
+     * @description This method is used by the defineSubtype call to allow
+     *     strings of the form "html:form" to actually act as types within the
+     *     system. The return value is a mangled form of the original and the
+     *     two are mapped into the metadata so that a call to the string
      *     "html:form".asType() will return the type with the properly mangled
      *     name. This allows both namespace types and operations for formatting
      *     template strings etc. to work with strings that are nice "picture
@@ -147,7 +147,7 @@ function(name) {
      *     TIBET Type. Note that typenames can contain 'invalid' characters so
      *     you can create types named '(999)-999-9999' or 'MyNamespace:Mytype'
      *     etc.
-     * @summary Types are central to TIBET, and one of the areas where TIBET
+     * @description Types are central to TIBET, and one of the areas where TIBET
      *     differs largely from other JavaScript libraries. TIBET's type system
      *     uses metatypes so each type object is actually an instance of a
      *     metatype. This is important because it means that unlike many other
@@ -541,7 +541,7 @@ function() {
     /**
      * @method $init
      * @summary Provides low-level initialization of a new instance.
-     * @summary The main task here is to construct specific instances of
+     * @description The main task here is to construct specific instances of
      *     reference type attributes on each new instance based on information
      *     from the add*Attribute calls made when defining the type. Since
      *     reference type attributes do NOT support copy-on-write semantics this
@@ -571,7 +571,7 @@ function() {
      * @method init
      * @summary Initializes a new object instance. The default implementation
      *     simply returns.
-     * @summary Subclasses can override this method to do proper instance
+     * @description Subclasses can override this method to do proper instance
      *     initialization. This method is called by the construct() methods to
      *     allow each class to 'do the right thing' for each instance without
      *     placing initialization code in the constructor...which would break
@@ -592,7 +592,7 @@ function(aFlag) {
     /**
      * @method isAbstract
      * @summary Returns true if the receiver is abstract.
-     * @summary In TIBET this means instances can be constructed as long as
+     * @description In TIBET this means instances can be constructed as long as
      *     a valid subtype can be found to provide them. Instances of a subtype
      *     are, by definition, an instance of their supertype so this is a valid
      *     OO concept and offers a lot of support for both localization and
@@ -655,7 +655,7 @@ function() {
      * @method constructViaSubtype
      * @summary Returns a new instance of the receiving type in the form of an
      *     instance of a viable subtype.
-     * @summary This method supports a variety of "localization" mechanisms
+     * @description This method supports a variety of "localization" mechanisms
      *     which rely on a common TIBET design pattern referred to as "type
      *     clustering". This allows a common abstract supertype such as
      *     TP.core.Browser to be messaged for a new instance and for different
@@ -767,7 +767,7 @@ function(anObj) {
     /**
      * @method from
      * @summary Constructs a new instance from the incoming object.
-     * @summary This method attempts to find a method like from[Type]() for
+     * @description This method attempts to find a method like from[Type]() for
      *     the object's type to do a custom conversion. Note that this method
      *     doesn't attempt to use as() since that method calls from() as its
      *     last resort. You should avoid overriding this method and work with
@@ -794,7 +794,7 @@ function(anObj) {
     /**
      * @method from
      * @summary Constructs a new instance from the incoming object.
-     * @summary This method attempts to find a method like from[Type]() for
+     * @description This method attempts to find a method like from[Type]() for
      *     the object's type to do a custom conversion. Note that this method
      *     doesn't attempt to use as() since that method calls from() as its
      *     last resort. You should avoid overriding this method and work with
@@ -895,7 +895,7 @@ function(aParser) {
      * @method addParser
      * @summary Adds a registered parser to the receiving type. Note that this
      *     only applies to those instances of function which are actual Types.
-     * @summary Note that parsers are executed in the order in which they're
+     * @description Note that parsers are executed in the order in which they're
      *     registered unless you manually adjust the parser list.
      * @param {Object} aParser An object implementing the 'parse' method. By
      *     default this means types and functions.
@@ -934,7 +934,7 @@ function(aParser) {
      * @method addParser
      * @summary Adds a registered parser to the receiving type. Note that this
      *     only applies to those instances of function which are actual Types.
-     * @summary Note that parsers are executed in the order in which they're
+     * @description Note that parsers are executed in the order in which they're
      *     registered unless you manually adjust the parser list.
      * @param {Object} aParser An object implementing the 'parse' method. By
      *     default this means types and functions.
@@ -1029,7 +1029,7 @@ function(aString) {
      * @summary Parses the supplied String and returns the number of
      *     milliseconds January 1, 1970, 00:00:00 UTC. represented by a Date
      *     within the String.
-     * @summary This method returns a new Date by parsing the supplied
+     * @description This method returns a new Date by parsing the supplied
      *     content String. It first tries the built in Date.parse() method and,
      *     if that doesn't produce Date output, it will try any other parsers it
      *     has been supplied with.
@@ -1067,7 +1067,7 @@ function(aString, sourceLocale) {
      * @method parse
      * @summary Parses aString using the best method possible given the
      *     receiver and the target object/type.
-     * @summary The parser search attempts to locate methods of the form
+     * @description The parser search attempts to locate methods of the form
      *     'parse[Type]String' where Type is replaced with the target's type or
      *     one of its supertypes. For example, a Date would try to find
      *     'parseDateString'.
@@ -1138,7 +1138,7 @@ function(typeOrFormat, formatParams) {
      * @summary Returns a new object representing the receiver as an instance
      *     of the type provided, or formatted as the format specification
      *     defines.
-     * @summary This method attempts to convert an object to either another
+     * @description This method attempts to convert an object to either another
      *     type or to a string of a specific form. The former process is
      *     performed by using reflection to locate possible methods for
      *     converting the receiver. When the parameter doesn't appear to
@@ -1342,7 +1342,7 @@ function(aFormat, formatParams) {
      * @summary Formats the receiver using the format provided, formatting the
      *     object and possibly using any optional formatting specification
      *     provided.
-     * @summary In this method, the receiver is the object that is formatted
+     * @description In this method, the receiver is the object that is formatted
      *     using the format specification defined by the aFormat parameter.
      *
      *     For example, a string with {{varname}} entries, or which names a
@@ -1473,7 +1473,7 @@ function(anObject, transformParams) {
     /**
      * @method transformObject
      * @summary Transforms an object using the 'substitute()' call.
-     * @summary Depending on the character given in the format of the
+     * @description Depending on the character given in the format of the
      *     receiver, this call will perform the following substitutions (and
      *     expect the following types for anObject):
      * @param {Object} anObject The object to format.
@@ -1560,7 +1560,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
      * @method getHandler
      * @summary Returns the specific function or method which the receiver
      *     would (or did) leverage to respond to the signal provided.
-     * @summary Note that the startSignalName parameter contains an optional
+     * @description Note that the startSignalName parameter contains an optional
      *     signal name to 'start consideration' from. The computation machinery
      *     in this method will always derive it's signal names by querying
      *     aSignal, but sometimes the caller already knows that it wants to
@@ -1704,7 +1704,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
     /**
      * @method handle
      * @summary Handles notification of an incoming signal.
-     * @summary The implementation of this function on Object instances
+     * @description The implementation of this function on Object instances
      *     looks for a signal-specific handler before defaulting to simply
      *     logging the signal. You shouldn't override this method. Instead,
      *     create custom handle* methods for the various TP.core.Signal subtypes
@@ -1994,7 +1994,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     /**
      * @method infer
      * @summary The inferencing driver.
-     * @summary The inference engine. The current version uses as()
+     * @description The inference engine. The current version uses as()
      *     information which is captured during method registration to keep
      *     track of which objects can respond to the method and which type
      *     conversions the origin can be put through. Future versions will add a
@@ -2252,7 +2252,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @method dnu
      * @summary A standard function for catching methods targeted at the wrong
      *     receiver.
-     * @summary This method is typically invoked via an instance's
+     * @description This method is typically invoked via an instance's
      *     doesNotUnderstand call. The doesNotUnderstand functionality is
      *     installed when TIBET's $$shouldConstructDNUs flag is true. When
      *     triggered, this method first checks with the origin to see if it
@@ -2819,7 +2819,7 @@ function(aFlag) {
     /**
      * @method isAbstract
      * @summary Returns true if the receiver is abstract.
-     * @summary In TIBET this means instances can be constructed as long as
+     * @description In TIBET this means instances can be constructed as long as
      *     a valid subtype can be found to provide them. Instances of a subtype
      *     are, by definition, an instance of their supertype so this is a valid
      *     OO construct and offers a lot of support for both localization and
@@ -3321,7 +3321,7 @@ function() {
     /**
      * @method computeC3Linearization
      * @summary Computes a 'C3 linearization' off of the receiving type.
-     * @summary In TIBET, multiple inheritance is implemented using traits.
+     * @description In TIBET, multiple inheritance is implemented using traits.
      *     In other multiple inheritance systems, the 'C3 linearization'
      *     algorithm is used to compute the 'method resolution order' when
      *     looking up methods. Although traits doesn't use C3, sometimes it's
@@ -4366,7 +4366,7 @@ function(targetType, conflictedTraits, track) {
     /**
      * @method $resolveConflictedTraits
      * @summary Processes the supplied hash of conflicted traits.
-     * @summary If auto-resolution is turned on, it will try to resolve the
+     * @description If auto-resolution is turned on, it will try to resolve the
      *     conflicts. If it cannot, an error will be raised. If auto-resolution
      *     is not turned on, an error will be raised straightaway.
      * @param {TP.lang.RootObject} targetType The type object that the
@@ -4567,7 +4567,7 @@ function(propertyName, resolverObject, resolvingOption) {
      * @summary Adds an entry to resolve the named trait according to the
      *     supplied resolverObject, which can either be a TIBET Type object or
      *     a JavaScript Function.
-     * @summary This resolves a trait in a number of ways:
+     * @description This resolves a trait in a number of ways:
      *
      *     1. If the resolverObject is a JavaScript Function, then the property
      *     on the receiver will be resolved by installing the Function as a
@@ -4721,7 +4721,7 @@ function(propertyName, resolverObject, resolvingOption) {
      * @summary Adds an entry to resolve the named trait according to the
      *     supplied resolverObject, which can either be a TIBET Type object or
      *     a JavaScript Function.
-     * @summary This resolves a trait in a number of ways:
+     * @description This resolves a trait in a number of ways:
      *
      *     1. If the resolverObject is a JavaScript Function, then the property
      *     on the receiver will be resolved by installing the Function as a
@@ -5194,7 +5194,7 @@ function(anObject) {
      * @method validate
      * @summary Tests the incoming value to see if it represents a valid
      *     instance of the receiving type.
-     * @summary In performing this test the receiver will begin with
+     * @description In performing this test the receiver will begin with
      *     validating any aspects on the supplied that match any validity facets
      *     on the receiver. If none can be found, then it will use the
      *     callBestMethod() approach to find a validation suitable for any
@@ -5996,7 +5996,7 @@ function(verbose) {
     /**
      * @method asString
      * @summary Returns the array as a string.
-     * @summary Constructs a new string from the array.
+     * @description Constructs a new string from the array.
      *     The join is done using the receiver's current 'delimiter' value,
      *     normally ', '. Set the 'delimiter' value on the receiver to use a
      *     different delimiter.
@@ -7355,7 +7355,7 @@ function(aspectName, facetName) {
      * @method getFacetValueFor
      * @summary Returns the facet value for the named facet of the named aspect
      *     on the receiver.
-     * @summary Note that the facet value is *not* the same as the facet
+     * @description Note that the facet value is *not* the same as the facet
      *     setting. The facet setting is the mechanism, supplied by the code
      *     author, of computing the facet value. It may be a simple literal
      *     value, an access path or the name of a method to execute on the
@@ -9046,7 +9046,7 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @summary This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9087,7 +9087,7 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @summary This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9143,7 +9143,7 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @summary This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9191,7 +9191,7 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @summary This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.lang.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
@@ -9533,7 +9533,7 @@ function(aFunction) {
     /**
      * @method replaceWith
      * @summary Replaces the receiver with an alternate function.
-     * @summary This method provides an easy way to reinstall a function
+     * @description This method provides an easy way to reinstall a function
      *     in the proper context, particularly when you don't know the original
      *     context. In other words, you can ask a function to
      *     'replaceWith(aReplacement)' and the proper 'defineMethod' call will

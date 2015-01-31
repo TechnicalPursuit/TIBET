@@ -418,7 +418,7 @@ function(targetURI, aRequest) {
      * @method save
      * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided.
-     * @summary The 'save' method on TP.xmpp.URLHandler just checks for
+     * @description The 'save' method on TP.xmpp.URLHandler just checks for
      *     content that the URI might have and, depending on the XMPP URI's
      *     action, it makes that the value of one of the request's parameters.
      *     Then it just calls this type's 'load' method to complete the

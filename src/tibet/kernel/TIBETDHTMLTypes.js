@@ -606,7 +606,7 @@ function() {
     /**
      * @method computeOffsetPoint
      * @summary Computes the gestures initial 'offset point'.
-     * @summary When computing the offset point, this method takes into
+     * @description When computing the offset point, this method takes into
      *     account the following parameters: - The initial starting point - The
      *     offset from the action element's offset parent to the action element.
      *     - The border of the action element. - The 'drag corner' that was
@@ -1828,7 +1828,7 @@ function() {
     /**
      * @method computeOffsetPoint
      * @summary Computes the gestures initial 'offset point'.
-     * @summary When computing the offset point, this method takes into
+     * @description When computing the offset point, this method takes into
      *     account the following parameters: - The initial starting point - The
      *     offset from the action element's offset parent to the action element.
      *     - The border of the action element. - The 'drag corner' that was
@@ -2941,7 +2941,7 @@ function() {
     /**
      * @method computeOffsetPoint
      * @summary Computes the gestures initial 'offset point'.
-     * @summary When computing the offset point, this method takes into
+     * @description When computing the offset point, this method takes into
      *     account the following parameters: - The initial starting point - The
      *     offset from the action element's offset parent to the action element.
      *     - The border and margin from the action element's offset parent. -
@@ -4097,7 +4097,7 @@ function() {
  * @summary The TP.core.DragTracker is a StateResponder which responds to the
  *     current drag state and related events by tracking the mouse relative to a
  *     "domain" of objects.
- * @summary Based on the configuration of the tracker instance the various
+ * @description Based on the configuration of the tracker instance the various
  *     geometric relationships between the mouse, any currently active drag
  *     element, and the domain objects, cause the tracker to signal
  *     "interesting" events. For example, a tracker configured for drag

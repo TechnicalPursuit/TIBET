@@ -14,7 +14,7 @@ function(aValue, aPassword) {
     /**
      * @method decryptStorageValue
      * @summary Decrypts the supplied value with the supplied password.
-     * @summary Note that this method expects the value to be in a specific
+     * @description Note that this method expects the value to be in a specific
      *      format, such as that produced by 'encryptStorageValue'.
      * @param {String} aValue The data to decrypt using the supplied key.
      * @param {String} aPassword The password to use to decrypt the supplied

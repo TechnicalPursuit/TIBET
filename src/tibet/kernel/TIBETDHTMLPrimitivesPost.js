@@ -793,7 +793,7 @@ function(theContent) {
      * @summary Rewrites any 'style' content in the head (either 'link'
      *     elements or content within a 'style' element) that was placed there
      *     to work around Mozilla bugs.
-     * @summary Even though this function rewrites content because of
+     * @description Even though this function rewrites content because of
      *     Mozilla bugs, it needs to exist across all platforms since content
      *     generated on Mozilla may be saved in cache files and used on other
      *     browsers.
@@ -1054,7 +1054,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      * @method htmlDocumentSetContent
      * @summary Sets the content of the supplied document, replacing the
      *     document's documentElement with the resulting content if valid.
-     * @summary Content sent to a document must be suitable for replacing
+     * @description Content sent to a document must be suitable for replacing
      *     the entire content of the document, i.e. it becomes the source of the
      *     new documentElement. This implies that the content must be able to
      *     provide a valid node containing a single root element of the same
@@ -1441,7 +1441,7 @@ insetLeft) {
      * @method elementComputeCornersUsing
      * @summary Computes a 'corner' that a particular point is in, given a set
      *     of offsets.
-     * @summary Given the point and the offsets, this method will return one
+     * @description Given the point and the offsets, this method will return one
      *     of the following values: TP.TOP TP.RIGHT TP.BOTTOM TP.LEFT
      *     TP.TOP_LEFT TP.TOP_RIGHT TP.BOTTOM_LEFT TP.BOTTOM_RIGHT
      * @param {Element} anElement The element to compute the corner for.
@@ -1527,7 +1527,7 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
      * @method elementComputeOnScreenXY
      * @summary Returns an Array of data that includes X and Y values for the
      *     supplied Element that are guaranteed to keep the element 'on-screen'.
-     * @summary This method takes the supplied preferred X and Y for the
+     * @description This method takes the supplied preferred X and Y for the
      *     element and, using the element to compute a width and height for the
      *     element, computes an X and Y that keeps the element on screen. This
      *     method also accepts an X and Y offset to 'pad' around the supplied
@@ -1768,7 +1768,7 @@ function(anElement, x, y) {
      * @method elementContainsPoint
      * @summary Returns true or false depending on whether the given x and y
      *     falls inside of the element.
-     * @summary Note that the coordinates should be given in 'document'
+     * @description Note that the coordinates should be given in 'document'
      *     coordinates.
      * @param {HTMLElement} anElement The element to test the x and y against.
      * @param {Number} x The X coordinate to test.
@@ -2133,7 +2133,7 @@ function(anElement) {
     /**
      * @method elementGetClipRect
      * @summary Returns the element's clipping rectangle.
-     * @summary The clipping rectangle is assumed to be in pixels (something
+     * @description The clipping rectangle is assumed to be in pixels (something
      *     like 'rect(10px 10px 10px 10px)'). If the clipping rectangle is not a
      *     '4 valued' value, null is returned. Each individual value is
      *     processed and turned from its current value into pixels (i.e. the
@@ -2750,7 +2750,7 @@ function(anElement) {
     /**
      * @method elementGetInnerContent
      * @summary Gets the 'inner content' of anElement.
-     * @summary This method gets the 'inner content' of anElement which
+     * @description This method gets the 'inner content' of anElement which
      *     means that just the contents of the element, not including its start
      *     and end tags, will be returned.
      * @param {HTMLElement} anElement The element to get the 'inner content' of.
@@ -3902,7 +3902,7 @@ function(anElement) {
      * @summary Returns whether or not anElement is displayed to the user. This
      *     is dependent not only on its own 'display' and 'visibility' settings,
      *     but on those settings of its parents.
-     * @summary Note that this only tests whether the element is currently
+     * @description Note that this only tests whether the element is currently
      *     being displayed insofar as CSS is concerned. The element very well
      *     may be scrolled off screen or under the influence of a CSS transform
      *     that would cause it to not be visible to the user. Use the
@@ -3976,7 +3976,7 @@ function(anElement) {
      * @method elementIsVisible
      * @summary Returns whether or not anElement is *really* visible to the
            user, no matter what its CSS setting is.
-     * @summary In addition to the standard CSS properties of 'display' and
+     * @description In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any
            CSS transformation that has been applied to the element.
      * @param {HTMLElement} anElement The element to determine the visibility
@@ -4170,7 +4170,7 @@ function(anElement, deltaX, deltaY) {
     /**
      * @method elementMoveBy
      * @summary Moves the element by the deltaX and deltaY amounts provided.
-     * @summary deltaX and deltaY are assumed to be Numbers of pixels to
+     * @description deltaX and deltaY are assumed to be Numbers of pixels to
      *     move the element by. Also note that if the supplied element is not
      *     positioned either absolute or relative, this method does nothing.
      * @param {HTMLElement} anElement The element to move.
@@ -4216,7 +4216,7 @@ function(anElement, x, y) {
     /**
      * @method elementMoveTo
      * @summary Moves the element to the X and Y coordinates provided.
-     * @summary If a Number is supplied to x or y a default unit of 'px' is
+     * @description If a Number is supplied to x or y a default unit of 'px' is
      *     assumed.
      * @param {HTMLElement} anElement The element to move.
      * @param {Number|String} x The X coordinate to move the element to.
@@ -4819,7 +4819,7 @@ function(anElement, top, right, bottom, left) {
     /**
      * @method elementSetClipRect
      * @summary Sets the element's clipping rectangle.
-     * @summary If a Number is supplied to top, right, bottom or left, a
+     * @description If a Number is supplied to top, right, bottom or left, a
      *     default unit of 'px' is assumed.
      * @param {HTMLElement} anElement The element to set the clip rect on.
      * @param {Number|String} top The value to set the top coordinate of the
@@ -4855,7 +4855,7 @@ function(anElement, aHeight) {
     /**
      * @method elementSetHeight
      * @summary Sets the element's height.
-     * @summary If a Number is supplied to aHeight a default unit of 'px' is
+     * @description If a Number is supplied to aHeight a default unit of 'px' is
      *     assumed.
      * @param {HTMLElement} anElement The element to set the height on.
      * @param {Number|String} aHeight The height dimension to set anElement's
@@ -4884,7 +4884,7 @@ function(anElement, aWidth) {
     /**
      * @method elementSetWidth
      * @summary Sets the element's width.
-     * @summary If a Number is supplied to aWidth a default unit of 'px' is
+     * @description If a Number is supplied to aWidth a default unit of 'px' is
      *     assumed.
      * @param {HTMLElement} anElement The element to set the width on.
      * @param {Number|String} aWidth The width dimension to set anElement's
@@ -5260,7 +5260,7 @@ function(anElement) {
     /**
      * @method elementWrapToContent
      * @summary "Shrink wraps" the element to its content.
-     * @summary This method grows or shrinks the element's size to be the
+     * @description This method grows or shrinks the element's size to be the
      *     size of its contents. It also adjusts the clipping rectangle to that
      *     same dimension.
      * @param {HTMLElement} anElement The element to wrap to its content.
@@ -5756,7 +5756,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     /**
      * @method htmlElementReplaceWith
      * @summary Replaces anElement which should be an HTML element.
-     * @summary This method sets the 'outer content' of anElement to
+     * @description This method sets the 'outer content' of anElement to
      *     theContent which means that the entire element, including its start
      *     and end tags, will be replaced with theContent. NOTE: This method may
      *     replace anElement!!! To use this method safely, always capture its
@@ -5952,7 +5952,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @method htmlElementSetContent
      * @summary Sets the 'content' of anElement, which should be an HTML
      *     element.
-     * @summary This method sets the 'inner content' of anElement to
+     * @description This method sets the 'inner content' of anElement to
      *     theContent which means that just the contents of the element, not
      *     including its start and end tags, will be replaced with theContent.
      * @param {HTMLElement} anElement The element to set the 'inner content' of.
@@ -6445,7 +6445,7 @@ function(aFragment) {
      * @method $htmlFragmentRepair
      * @summary "Repairs" any content in the fragment that doesn't get properly
      *     created when the supplied fragment is created.
-     * @summary This method is only used in the htmlElement*Content()
+     * @description This method is only used in the htmlElement*Content()
      *     methods to repair XML content that has been placed within HTML. For
      *     now, this is limited to Gecko/Webkit browsers and is used only for
      *     SVG embedded in HTML.
@@ -6917,7 +6917,7 @@ function(aNode) {
      *     markup that could be used in an innerHTML call. This is part of the
      *     core "cleansing" pathway to help ensure that content going into the
      *     UI is proper HTML content.
-     * @summary The setContent pipeline of TIBET requires properly formatted
+     * @description The setContent pipeline of TIBET requires properly formatted
      *     HTML content when the target node is an HTML node. This routine is
      *     the primary interface to perform any translation that's needed to get
      *     the new content ready. You have two options when using this routine.
@@ -7318,7 +7318,7 @@ function(aNode, startIndex, endIndex) {
      *     at or TP.FIRST to start at the first child node.
      * @param {Number} endIndex The end index to stop awakening child nodes at
      *     or TP.LAST to stop at the last child node.
-     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
@@ -7565,7 +7565,7 @@ function(obj1, obj2) {
      * @method computeAngleFromEnds
      * @summary Returns the angle (in degrees) between two objects that
      *     represent the 'end points'.
-     * @summary Given the two points (x1, y1) and (x2, y2), the distance
+     * @description Given the two points (x1, y1) and (x2, y2), the distance
      *     between these points is given by the formula:
      *
      *     degreesStandardizedTo360(atan2(y2 - y1, x2 - x1))
@@ -7628,7 +7628,7 @@ function(angle, numIncrements, centerInIncrement) {
      * @summary Computes a 'compass corner' given an angle. The values advance
      *     around the compass in a clockwise fashion (i.e. north is 1, east is
      *     9, south is 17, west is 25).
-     * @summary Given the angle, this method returns a value which is
+     * @description Given the angle, this method returns a value which is
      *     compatible with the following constants:
      *
      *     TP.NORTH TP.NORTH_BY_EAST TP.NORTH_NORTHEAST TP.NORTHEAST_BY_NORTH
@@ -7713,7 +7713,7 @@ function(obj1, obj2) {
      * @method computeDistance
      * @summary Returns the distance between two objects. Useful for things
      *     like drag and drop tolerances or magnetism.
-     * @summary Given the two points (x1, y1) and (x2, y2), the distance
+     * @description Given the two points (x1, y1) and (x2, y2), the distance
      *     between these points is given by the formula:
      *
      *     d = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
@@ -7870,7 +7870,7 @@ function(aWindow, aWindowID) {
     /**
      * @summary Checks to see if the window whose ID is provided is indeed
      *     closed.
-     * @summary This function checks to see if a window which got an
+     * @description This function checks to see if a window which got an
      *     onunload event is truly closed. This function is scheduled by the
      *     standard onunload event handler to ensure that it will fire the
      *     proper TIBET event accurately. If the window is closed, this function
@@ -7922,7 +7922,7 @@ function(url, name, aSpec, shouldReplace) {
     /**
      * @summary Opens a new Window and instruments it to set it up for use with
      *     TIBET.
-     * @summary This function opens a new window and sets it up for use with
+     * @description This function opens a new window and sets it up for use with
      *     TIBET. This function manages a number of problems with the standard
      *     window.open() call, including firing an onload properly after an
      *     asychronous window.load call that is loaded externally (which native
@@ -8032,7 +8032,7 @@ function(aWindow) {
     /**
      * @method $$processDocumentLoaded
      * @summary The standard TIBET hook for consistent onload processing.
-     * @summary This function is attached to native windows by tibet_hook.js
+     * @description This function is attached to native windows by tibet_hook.js
      *     to ensure we get a consistent entry point for page setup. Once
      *     invoked, this function will find and invoke any onload functions
      *     registered for the window via the TP.core.Window method
@@ -8487,7 +8487,7 @@ function(aWindow, otherWindow, wantsTransformed) {
      * @method windowComputeWindowOffsets
      * @summary Computes position offsets between the first window and the
      *     second window.
-     * @summary This method assumes that the supplied windows are either
+     * @description This method assumes that the supplied windows are either
      *     iframe windows embedded somewhere in the same top-level window (maybe
      *     at different levels) or one of them is the top-level window itself.
      *     Note that this routine will hand back positive values if the second
@@ -8568,7 +8568,7 @@ function(aWindow, wants2DMatrix) {
      * @method windowComputeTransformationMatrix
      * @summary Returns the 'computed' transformation matrix for the window
      *     (really its iframe element).
-     * @summary This method assumes that the window is embedded in an iframe
+     * @description This method assumes that the window is embedded in an iframe
      *      (which may be embedded in more iframes up to a top-level window) and
      *      is really returning the transformation of those iframe elements up
      *      to the top-level window.
@@ -8858,7 +8858,7 @@ function(aWindow) {
      * @summary Resets the window's location using the 'TIBET-approved' way of
      *     doing so. This method is used by the hook file to (re)process
      *     navigations using links, etc.
-     * @summary The tibet_hook.js file captures all inbound locations and
+     * @description The tibet_hook.js file captures all inbound locations and
      *     routes them to this call so that all TIBET-enabled pages which find
      *     their way into a window are properly processed for CSS and/or markup
      *     extensions. This allows TIBET to work effectively with content

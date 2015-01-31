@@ -32,7 +32,7 @@ function(aRequest) {
     /**
      * @method tshExecute
      * @summary Runs the receiver, effectively invoking its action.
-     * @summary For this type, this method invokes the script content of the
+     * @description For this type, this method invokes the script content of the
      *     receiver. The content should have been encapsulated in a CDATA block
      *     to avoid potential problems with entity encoding.
      * @param {TP.sig.Request} aRequest The TP.sig.TSHRunRequest or other shell

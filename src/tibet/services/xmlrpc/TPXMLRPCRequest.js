@@ -138,7 +138,7 @@ function() {
      *     an XMLRPC payload. This method is useful for processing XMLRPC
      *     requests as well as in leveraging other communication pathways to
      *     tunnel XMLRPC payloads (or for debugging).
-     * @summary Transforms the receiver into a viable XMLRPC message node.
+     * @description Transforms the receiver into a viable XMLRPC message node.
      *     The 'usenil' key, if any, in the receiver's payload defines whether a
      *     non-standard <nil/> is used when a parameter value is null/undefined.
      * @returns {Node} A valid XMLRPC message payload.

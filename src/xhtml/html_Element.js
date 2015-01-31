@@ -42,7 +42,7 @@ function(aCSSClass, atEnd) {
      * @method addCSSClass
      * @summary Adds the CSS class whose name is equal to aCSSClass to this
      *     object's CSS class name list.
-     * @summary Note that if the 'atEnd' argument is set to 'true', this
+     * @description Note that if the 'atEnd' argument is set to 'true', this
      *     causes aCSSClass to be appended to the end of the list of CSS class
      *     names. Since the order of CSS class names is important when
      *     specifying multiple names in the same 'className' attribute for the

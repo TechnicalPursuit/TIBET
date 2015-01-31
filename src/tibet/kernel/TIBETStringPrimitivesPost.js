@@ -335,7 +335,7 @@ function(str) {
     /**
      * @method TP.utf8decode
      * @summary Decode a string encoded with TP.utf8encode above.
-     * @summary If the string begins with the sentinel character 0x9D
+     * @description If the string begins with the sentinel character 0x9D
      *     (OPERATING SYSTEM COMMAND), then we decode the balance as a UTF-8
      *     stream. Otherwise, the string is output unchanged, as it's guaranteed
      *     to contain only 8 bit characters excluding 0x9D.
@@ -359,7 +359,7 @@ function(str) {
      * @method TP.utf8encode
      * @summary Encode string as UTF8 only if it contains a character of 0x9D
      *     (Unicode OPERATING SYSTEM COMMAND) or a character greater than 0xFF.
-     * @summary This permits all strings consisting exclusively of 8 bit
+     * @description This permits all strings consisting exclusively of 8 bit
      *     graphic characters to be encoded as themselves. We choose 0x9D as the
      *     sentinel character as opposed to one of the more logical PRIVATE USE
      *     characters because 0x9D is not overloaded by the regrettable
@@ -544,7 +544,7 @@ function(aString, left, right, flags) {
      * @summary Makes recursive matches within the supplied String, using the
      *     'left' and 'right' RegExps. If the 'flags' parameter is supplied, all
      *     matches are returned, otherwise only the first one is.
-     * @summary This method was adapted from Steven Levithan's
+     * @description This method was adapted from Steven Levithan's
      *     'matchRecursiveRegExp' routine. Copyright 2007 Steven Levithan, MIT
      *     license.
      * @param {String} aString The string to match recursively on.

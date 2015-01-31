@@ -715,7 +715,7 @@ function(aRequest) {
     /**
      * @method logout
      * @summary Logs out of the current login shell.
-     * @summary The shell uses several variables on logout to determine what
+     * @description The shell uses several variables on logout to determine what
      *     values if any to save. These variables are SAVEVARS, SAVEALIAS,
      *     SAVEHIST, and SAVEDIRS. The DISCARD variable controls whether change
      *     set data should be discarded, the default is false.
@@ -999,7 +999,7 @@ function(aRequest) {
     /**
      * @method addHistory
      * @summary Adds a request to the command history for the receiver.
-     * @summary The variable HISTSIZE controls whether the list will be
+     * @description The variable HISTSIZE controls whether the list will be
      *     trimmed as a result, keeping a maximum number of entries. Also, the
      *     HISTDUP variable will determine if the entry is actually added. If
      *     HISTDUP is 'prev' the entry will only be added if its command text is
@@ -1399,7 +1399,7 @@ function(aSignal) {
      * @method handleUserInput
      * @summary Responds to TP.sig.UserInput signals, which are sent in
      *     response to a previous TP.sig.UserInputRequest from the shell itself.
-     * @summary The implication is that this method is only invoked when the
+     * @description The implication is that this method is only invoked when the
      *     shell had a prior request in the queue. The request itself will have
      *     been bound to the input response. The shell's response is to invoke
      *     the input as if it were a standard shell request.
@@ -1538,7 +1538,7 @@ function(anObject, aRequest) {
     /**
      * @method notify
      * @summary Notifies the user outside of "stdout" of a message.
-     * @summary The default version of this method uses the low-level
+     * @description The default version of this method uses the low-level
      *     TP.boot.$alert() function. Shells which are connect to a Console or
      *     other UI will typically have this version overwritten so output is
      *     directed to the UI.
@@ -1803,7 +1803,7 @@ function(aPath) {
      * @method expandPath
      * @summary Expands a path to absolute form using current path stack and
      *     environment information.
-     * @summary Expansion uses the following rules:
+     * @description Expansion uses the following rules:
      *
      *     Absolute paths start with a scheme, either http(s) or file and are
      *     left unchanged by this process. All other paths are considered
@@ -2454,7 +2454,7 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
      * @method getArgument
      * @summary Returns a single value acquired from the current command node's
      *     primary argument, argv, or the node's content.
-     * @summary A number of tags have a single argument which defines the
+     * @description A number of tags have a single argument which defines the
      *     target of the tag's operation. For sugaring purposes it's not
      *     uncommon for that argument's name to be left off so that the argument
      *     value ends up in the argv vector. Alternatively the argument content

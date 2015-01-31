@@ -934,7 +934,7 @@ function(anObject, shouldAppend) {
      * @method setInputContent
      * @summary Sets the value of the input cell, essentially 'pre-filling' the
      *     input area with content.
-     * @summary If shouldAppend is true, and the input cell already has
+     * @description If shouldAppend is true, and the input cell already has
      *     content, a '.;\n' is appended to the front of the content.
      * @param {Object} anObject The object defining the input.
      * @param {Boolean} shouldAppend Whether or not to append the value of

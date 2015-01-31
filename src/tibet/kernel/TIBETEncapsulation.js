@@ -39,7 +39,7 @@ function() {
      * @method $getNeeds
      * @summary Returns a list of 'needs' or functions that the receiver will
      *     attempt to invoke on any internal 'this' references.
-     * @summary This is useful for the inferencer since it can decide to
+     * @description This is useful for the inferencer since it can decide to
      *     rank order its options by how well the function in question matches
      *     the needs. It's also useful for collecting information on 'senders'.
      *     The add*Method calls already track 'implementers' but by invoking
@@ -601,7 +601,7 @@ function(anIndex, varargs) {
      * @summary Returns the value found at an index. Provides polymorphic
      *     access to indexed collection data, which isn't possible with literal
      *     bracket syntax (you can't use []'s on strings etc).
-     * @summary To support multi-dimensional access this method will allow
+     * @description To support multi-dimensional access this method will allow
      *     more than one index parameter as in arr.at(1, 1) so that, in reality,
      *     the value is acquired from a nested child of the receiver. For
      *     example, arr.at(1, 1) returns the value 3 when used on the array
@@ -670,7 +670,7 @@ function(anIndex, varargs, aValue) {
      *     bracket syntax. This version does not provide change notification.
      *     NOTE that this initial version does not support vararg values or
      *     negative indices.
-     * @summary To support multi-dimensional access this method will allow
+     * @description To support multi-dimensional access this method will allow
      *     more than one index parameter as in arr.atPut(1, 2, 'foo') so that,
      *     in reality, aValue is defined by the last argument and is placed in
      *     the location found by traversing to the last index (arguments.length

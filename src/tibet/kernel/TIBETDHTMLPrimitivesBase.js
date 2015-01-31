@@ -74,7 +74,7 @@ function(anObject) {
      * @method objectGetXY
      * @summary Returns the 'global' (according to the supplied object) X and Y
      *     as extracted from the supplied object.
-     * @summary A variety of different objects can be supplied to this
+     * @description A variety of different objects can be supplied to this
      *     method to extract X and Y values from. Depending on the type of that
      *     object, here is how the X and Y are computed:
      *
@@ -134,7 +134,7 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
      * @summary Creates an (X)HTML 'script' element in the document, using
      *     the URL provided and configures it to call the supplied loaded
      *     function when it completes loading.
-     * @summary In order for the script element produced by this routine
+     * @description In order for the script element produced by this routine
      *     to actually load its content, it needs to be appended to an
      *     (X)HTML document, preferable to the 'head'.
      * @param {Document} aDocument The document to create the 'script'
@@ -992,7 +992,7 @@ function(anElement, x, y) {
      * @method elementGetElementAtPoint
      * @summary Returns the 'most nested' child element at the x and y
      *     coordinates given.
-     * @summary Note that the coordinates should be given in 'document'
+     * @description Note that the coordinates should be given in 'document'
      *     coordinates.
      * @param {HTMLElement} anElement The element to begin searching for the
      *     element at x and y.
@@ -1023,7 +1023,7 @@ function(anElement) {
      * @method elementIsTransformed
      * @summary Returns whether or not the supplied element has been
      *     transformed with a CSS transformation.
-     * @summary This method takes into account any CSS transformations that
+     * @description This method takes into account any CSS transformations that
      *     are applying to the element because a parent of the element has had a
      *     CSS transformation applied to it.
      * @param {HTMLElement} anElement The element to check to see if it has been
@@ -1193,7 +1193,7 @@ function(anElement) {
     /**
      * @method elementGetOuterContent
      * @summary Gets the 'outer content' of anElement.
-     * @summary This method gets the 'outer content' of anElement which
+     * @description This method gets the 'outer content' of anElement which
      *     means that the entire element, including its start and end tags, will
      *     be returned.
      * @param {HTMLElement} anElement The element to get the 'outer content' of.
@@ -1315,7 +1315,7 @@ function(anElement, wants2DMatrix) {
      * @method elementGetComputedTransformMatrix
      * @summary Returns the current transformation matrix of the supplied
      *     element.
-     * @summary This method computes the current transformation matrix of
+     * @description This method computes the current transformation matrix of
      *     the supplied element by obtaining any transformation matrix of the
      *     element itself and then walking the parent tree and integrating each
      *     transformation matrix of that element to the computed matrix. This
@@ -1419,7 +1419,7 @@ function(anElement) {
     /**
      * @method elementGetTransformValues
      * @summary Returns the values of any CSS3 transforms of the given Element.
-     * @summary This code derived from: https://gist.github.com/2329465.
+     * @description This code derived from: https://gist.github.com/2329465.
      * @param {Element} anElement The element to retrive the transform
      *     values from.
      * @exception TP.sig.InvalidElement
@@ -1666,7 +1666,7 @@ function(anElement, transformationMatrix) {
      * @method $elementTransformBoundingClientRect
      * @summary Transforms the bounding client rect of the supplied element
      *     using the supplied transformation matrix
-     * @summary This code derived from:
+     * @description This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @param {Element} anElement The element to compute the bounding client
      *     rect for.
@@ -1709,7 +1709,7 @@ function(anElement, aContent) {
     /**
      * @method textElementInsertContent
      * @summary Inserts the supplied content at the element's insertion point.
-     * @summary Note that this method focuses the text element in question.
+     * @description Note that this method focuses the text element in question.
      *     It also ensures that the supplied element is a 'textarea' or an
      *     'input' with 'type="text"' and will raise an TP.sig.InvalidElement
      *     exception if its not.
@@ -1770,7 +1770,7 @@ function(anElement, aContent) {
      * @method textElementReplaceSelection
      * @summary Replaces the element's current selection (could be empty) with
      *     the supplied content.
-     * @summary Note that this method focuses the text element in question.
+     * @description Note that this method focuses the text element in question.
      *     It also ensures that the supplied element is a 'textarea' or an
      *     'input' with 'type="text"' and will raise an TP.sig.InvalidElement
      *     exception if its not.
@@ -1865,7 +1865,7 @@ function(aNode) {
      *     that is situated within a Window.
      * @param {Node} aNode The DOM node to operate on.
      * @returns {Boolean} True if the node is in a document that is in a window.
-     * @raise TP.sig.InvalidNode Raised when an object that isn't a Node is
+     * @exception TP.sig.InvalidNode Raised when an object that isn't a Node is
      *     provided to the method.
      */
 
