@@ -32,7 +32,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:JobStatus');
+TP.lang.Object.defineSubtype('core.JobStatus');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
@@ -896,7 +896,7 @@ function(parameters) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Job');
+TP.lang.Object.defineSubtype('core.Job');
 
 //  add job status code support.
 TP.core.Job.addTraits(TP.core.JobStatus);
@@ -3467,7 +3467,7 @@ function(controlParams, stepParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:JobGroup');
+TP.lang.Object.defineSubtype('core.JobGroup');
 
 //  add job status code support.
 TP.core.JobGroup.addTraits(TP.core.JobStatus);

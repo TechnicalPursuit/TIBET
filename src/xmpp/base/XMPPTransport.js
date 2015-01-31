@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('xmpp:Transport');
+TP.lang.Object.defineSubtype('xmpp.Transport');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

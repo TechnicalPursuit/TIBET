@@ -30,7 +30,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:UICanvas');
+TP.lang.Object.defineSubtype('core.UICanvas');
 
 //  This type is intended to be used as a trait type only, so don't allow
 //  instance creation
@@ -365,7 +365,7 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Window');
+TP.lang.Object.defineSubtype('core.Window');
 
 //  Trait in UI canvas behavior, then any methods we define will override the
 //  defaults (this would be true in any case unless we force overrides)

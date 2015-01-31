@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('xmpp:URLHandler');
+TP.core.URIHandler.defineSubtype('xmpp.URLHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

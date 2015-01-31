@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.defineSubtype('goog:GoogleSearchData');
+TP.core.JSONContent.defineSubtype('goog.GoogleSearchData');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

@@ -262,7 +262,7 @@ derive. As part of the TP.sig.Signal installation we add a new TP.signal()
 implementation that is TP.sig.Signal-aware.
 */
 
-TP.lang.Object.defineSubtype('sig:Signal');
+TP.lang.Object.defineSubtype('sig.Signal');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -3095,7 +3095,7 @@ alter the behavior of the registration or signal notification process.
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('sig:SignalMap');
+TP.lang.Object.defineSubtype('sig.SignalMap');
 
 //  ------------------------------------------------------------------------
 
@@ -6978,7 +6978,7 @@ sources derive. Signal sources are objects that throw off signals; devices like
 mice and keyboards and remote sources like server-sent event servers.
 */
 
-TP.lang.Object.defineSubtype('core:SignalSource');
+TP.lang.Object.defineSubtype('core.SignalSource');
 
 //  ========================================================================
 //  TP.core.MutationSignalSource
@@ -6987,7 +6987,7 @@ TP.lang.Object.defineSubtype('core:SignalSource');
 /*
 */
 
-TP.core.SignalSource.defineSubtype('core:MutationSignalSource');
+TP.core.SignalSource.defineSubtype('core.MutationSignalSource');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -7356,7 +7356,7 @@ TP.core.URISignalSource is a type of signaling source that has a URI associated
 with it. These would include signal sources like server-sent event servers.
 */
 
-TP.core.SignalSource.defineSubtype('core:URISignalSource');
+TP.core.SignalSource.defineSubtype('core.URISignalSource');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -7399,7 +7399,7 @@ function(aURI) {
 //  TP.core.SSESignalSource
 //  ========================================================================
 
-TP.core.URISignalSource.defineSubtype('core:SSESignalSource');
+TP.core.URISignalSource.defineSubtype('core.SSESignalSource');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

@@ -34,7 +34,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Monitor');
+TP.lang.Object.defineSubtype('core.Monitor');
 
 TP.core.Monitor.addTraits(TP.core.JobStatus);
 

@@ -186,7 +186,7 @@ function(aLocale, sourceLocale, forceRefresh) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Locale');
+TP.lang.Object.defineSubtype('core.Locale');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

@@ -46,7 +46,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('xmpp:Connection');
+TP.lang.Object.defineSubtype('xmpp.Connection');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

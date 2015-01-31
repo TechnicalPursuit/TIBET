@@ -29,7 +29,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Node');
+TP.lang.Object.defineSubtype('core.Node');
 
 //  actual node instances returned are specialized on a number of factors
 TP.core.Node.isAbstract(true);
@@ -3609,7 +3609,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.defineSubtype('core:CollectionNode');
+TP.core.Node.defineSubtype('core.CollectionNode');
 
 //  can't construct concrete instances of this since its really not a native
 //  node type wrapper
@@ -15087,7 +15087,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:EmbeddedTemplateNode');
+TP.lang.Object.defineSubtype('core.EmbeddedTemplateNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.
@@ -15226,7 +15226,7 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:XMLRPCNode');
+TP.lang.Object.defineSubtype('core.XMLRPCNode');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

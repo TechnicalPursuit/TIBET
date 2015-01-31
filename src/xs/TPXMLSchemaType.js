@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('xs:XMLSchemaType');
+TP.lang.Object.defineSubtype('xs.XMLSchemaType');
 
 //  ------------------------------------------------------------------------
 

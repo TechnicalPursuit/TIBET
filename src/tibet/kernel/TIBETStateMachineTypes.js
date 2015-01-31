@@ -26,7 +26,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:StateObject');
+TP.lang.Object.defineSubtype('core.StateObject');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

@@ -114,7 +114,7 @@ function(aLatLong) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:MapBounds');
+TP.lang.Object.defineSubtype('core.MapBounds');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -156,7 +156,7 @@ function(swlat, swlong, nelat, nelong) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:MapMarker');
+TP.lang.Object.defineSubtype('core.MapMarker');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -194,7 +194,7 @@ function(aLatLong) {
 //  MAP SIGNALS
 //  ========================================================================
 
-TP.sig.DOMSignal.defineSubtype('xctrls:MapSignal');
+TP.sig.DOMSignal.defineSubtype('xctrls.MapSignal');
 
 //  ------------------------------------------------------------------------
 

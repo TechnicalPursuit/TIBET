@@ -210,7 +210,7 @@ application manifest for different user role/unit affiliations.
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Resource');
+TP.lang.Object.defineSubtype('core.Resource');
 
 //  add sync and async mode support along with necessary constants.
 TP.core.Resource.addTraits(TP.core.SyncAsync);
@@ -3618,7 +3618,7 @@ function (onFulfilled, onRejected) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:PermissionGroup');
+TP.lang.Object.defineSubtype('core.PermissionGroup');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -3757,7 +3757,7 @@ function() {
 //  ========================================================================
 
 //  Build a default role for "Public" organization and "Guest" role.
-TP.core.Role.defineSubtype('Public:Guest');
+TP.core.Role.defineSubtype('Public.Guest');
 
 //  ========================================================================
 //  TP.core.Unit
@@ -3797,7 +3797,7 @@ function() {
 //  ========================================================================
 
 //  Build a default unit for "Public" organization and "Public" unit.
-TP.core.Unit.defineSubtype('Public:Public');
+TP.core.Unit.defineSubtype('Public.Public');
 
 //  ========================================================================
 //  TP.sig.UserRequest
@@ -5697,7 +5697,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Application');
+TP.lang.Object.defineSubtype('core.Application');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -5994,7 +5994,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:History');
+TP.lang.Object.defineSubtype('core.History');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -6319,7 +6319,7 @@ function(histValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Controller');
+TP.lang.Object.defineSubtype('core.Controller');
 
 //  ========================================================================
 //  TP.core.URIController

@@ -32,7 +32,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('sig:SignalCoalescer');
+TP.lang.Object.defineSubtype('sig.SignalCoalescer');
 
 //  ------------------------------------------------------------------------
 //  Type Constants

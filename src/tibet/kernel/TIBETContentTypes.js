@@ -41,7 +41,7 @@ function(aURI, content) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:CSSStyleSheet');
+TP.lang.Object.defineSubtype('core.CSSStyleSheet');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -654,7 +654,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:AccessPath');
+TP.lang.Object.defineSubtype('core.AccessPath');
 
 //  This is an abstract supertype - need a concrete subtype to get real work
 //  done.
@@ -5845,7 +5845,7 @@ function(aPath, forceNative) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.defineSubtype('w3:DTDInfo');
+TP.core.JSONContent.defineSubtype('w3.DTDInfo');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
