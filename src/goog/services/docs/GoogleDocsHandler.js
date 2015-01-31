@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('goog:GoogleDocsHandler');
+TP.core.URIHandler.defineSubtype('goog.GoogleDocsHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

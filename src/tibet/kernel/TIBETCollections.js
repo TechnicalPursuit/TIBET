@@ -4223,7 +4223,7 @@ function(anItem, startIndex, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('lang:Hash');
+TP.lang.Object.defineSubtype('lang.Hash');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -8363,7 +8363,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Range');
+TP.lang.Object.defineSubtype('core.Range');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

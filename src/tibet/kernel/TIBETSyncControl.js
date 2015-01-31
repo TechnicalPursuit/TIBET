@@ -17,7 +17,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:SyncAsync');
+TP.lang.Object.defineSubtype('core.SyncAsync');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.

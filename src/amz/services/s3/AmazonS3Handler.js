@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('amz:AmazonS3Handler');
+TP.core.URIHandler.defineSubtype('amz.AmazonS3Handler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -54,7 +54,7 @@ handling of different text dialects such as CSS or JSON.
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('w3:DocType');
+TP.lang.Object.defineSubtype('w3.DocType');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -419,7 +419,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:HTTP');
+TP.lang.Object.defineSubtype('core.HTTP');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -536,7 +536,7 @@ function(aStatusCode) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('ietf:Mime');
+TP.lang.Object.defineSubtype('ietf.Mime');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -1139,7 +1139,7 @@ function(aMIMEType, aHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('w3:Xmlns');
+TP.lang.Object.defineSubtype('w3.Xmlns');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -2422,7 +2422,7 @@ function(anNSURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:XMLNamespace');
+TP.lang.Object.defineSubtype('core.XMLNamespace');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -2540,7 +2540,7 @@ TP.core.XMLNamespace.defineSubtype('xsl:XMLNS');
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Cookie');
+TP.lang.Object.defineSubtype('core.Cookie');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

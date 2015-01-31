@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('amz:AmazonSimpleDBHandler');
+TP.core.URIHandler.defineSubtype('amz.AmazonSimpleDBHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

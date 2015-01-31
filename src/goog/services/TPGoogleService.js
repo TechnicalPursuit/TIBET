@@ -19,7 +19,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.defineSubtype('goog:GoogleService');
+TP.core.HTTPService.defineSubtype('goog.GoogleService');
 
 TP.goog.GoogleService.isAbstract(true);
 

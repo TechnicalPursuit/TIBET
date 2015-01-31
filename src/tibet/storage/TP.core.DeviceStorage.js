@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:DeviceStorage');
+TP.lang.Object.defineSubtype('core.DeviceStorage');
 
 //  This type is abstract
 TP.core.DeviceStorage.isAbstract(true);

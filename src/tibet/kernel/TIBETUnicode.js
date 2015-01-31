@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Unicode');
+TP.lang.Object.defineSubtype('core.Unicode');
 
 //  ------------------------------------------------------------------------
 //  Type Constants

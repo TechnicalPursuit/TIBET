@@ -27,7 +27,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Browser');
+TP.lang.Object.defineSubtype('core.Browser');
 
 //  ------------------------------------------------------------------------
 //  Type Constants

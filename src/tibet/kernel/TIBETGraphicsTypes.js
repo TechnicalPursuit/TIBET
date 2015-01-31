@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Point');
+TP.lang.Object.defineSubtype('core.Point');
 
 //  ------------------------------------------------------------------------
 
@@ -942,7 +942,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Rect');
+TP.lang.Object.defineSubtype('core.Rect');
 
 //  ------------------------------------------------------------------------
 
@@ -2442,7 +2442,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Matrix');
+TP.lang.Object.defineSubtype('core.Matrix');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -3967,7 +3967,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Color');
+TP.lang.Object.defineSubtype('core.Color');
 
 //  ------------------------------------------------------------------------
 
@@ -4578,7 +4578,7 @@ function(aColor) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Gradient');
+TP.lang.Object.defineSubtype('core.Gradient');
 
 //  TP.core.Gradient is an abstract type.
 TP.core.Gradient.isAbstract(true);
@@ -5921,7 +5921,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Pattern');
+TP.lang.Object.defineSubtype('core.Pattern');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -6291,7 +6291,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Path');
+TP.lang.Object.defineSubtype('core.Path');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -7291,7 +7291,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Transition');
+TP.lang.Object.defineSubtype('core.Transition');
 
 //  This is an abstract type.
 TP.core.Transition.isAbstract(true);

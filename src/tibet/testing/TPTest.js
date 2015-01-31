@@ -33,7 +33,7 @@ AssertionFailed.prototype.name = 'AssertionFailed';
 /**
  * Common supertype for other TP.test objects like test.Case and test.Suite.
  */
-TP.lang.Object.defineSubtype('test:Root');
+TP.lang.Object.defineSubtype('test.Root');
 
 //  Add support for job control status tracking and querying.
 TP.test.Root.addTraits(TP.core.JobStatus);

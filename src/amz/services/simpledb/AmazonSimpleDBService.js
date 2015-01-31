@@ -73,7 +73,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.RESTService.defineSubtype('amz:AmazonSimpleDBService');
+TP.core.RESTService.defineSubtype('amz.AmazonSimpleDBService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

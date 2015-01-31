@@ -115,7 +115,7 @@ virtual URIs:
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:URI');
+TP.lang.Object.defineSubtype('core.URI');
 
 //  TP.core.URI is an abstract type in TIBET terms, meaning you can't
 //  construct a concrete instance of TP.core.URI (but you can invoke the
@@ -7984,7 +7984,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:URIHandler');
+TP.lang.Object.defineSubtype('core.URIHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -8553,7 +8553,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:URIRewriter');
+TP.lang.Object.defineSubtype('core.URIRewriter');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -8803,7 +8803,7 @@ function(aURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:URIRouter');
+TP.lang.Object.defineSubtype('core.URIRouter');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

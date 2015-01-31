@@ -3397,7 +3397,7 @@ TP.sig.ShellResponse.defineSubtype('TSHRunResponse');
  * @summary The primary "working service" for execution of TSH scripts.
  */
 
-TP.core.Service.defineSubtype('tsh:RunService');
+TP.core.Service.defineSubtype('tsh.RunService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

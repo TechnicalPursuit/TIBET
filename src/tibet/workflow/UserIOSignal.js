@@ -19,7 +19,7 @@
 
 //  NOTE that we're not a TP.sig.Signal, the attributes and methods here are
 //  intended to be mixed in to TP.sig.Signal subtypes
-TP.lang.Object.defineSubtype('sig:UserIOSignal');
+TP.lang.Object.defineSubtype('sig.UserIOSignal');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
