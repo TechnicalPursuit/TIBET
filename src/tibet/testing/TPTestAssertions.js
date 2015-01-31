@@ -1349,6 +1349,32 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.defineAssertion('isChildNodeOf',
+function(anObject, anotherObject, aComment) {
+
+    var obj,
+        otherObj,
+
+        childNodes;
+
+    this.assertMinArguments(arguments, 2);
+
+    obj = TP.unwrap(anObject);
+    otherObj = TP.unwrap(anotherObject);
+
+    childNodes = TP.nodeGetChildNodes(obj);
+
+    this.assert(
+        childNodes.contains(otherObj, TP.IDENTITY),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject),
+                ' to be a child of ', TP.id(anotherObject)));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.defineAssertion('isCommentNode',
 function(anObject, aComment) {
 
