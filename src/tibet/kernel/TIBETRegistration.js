@@ -119,7 +119,7 @@ function(anID, regOnly, nodeContext) {
             }
 
             if (TP.isValid(obj)) {
-                return obj;
+                return TP.wrap(obj);
             }
         }
     }
