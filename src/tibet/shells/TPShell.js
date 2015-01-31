@@ -2141,7 +2141,11 @@ function(anObjectSpec, aRequest) {
         url,
         $$inst,
 
-        instType;
+        instType,
+
+        isIdentifier,
+        i,
+        specs;
 
     //  We can't use non-Strings for object specifications anyway.
     if (!TP.isString(anObjectSpec)) {
@@ -2182,10 +2186,23 @@ function(anObjectSpec, aRequest) {
         spec = anObjectSpec.slice(1);
     }
 
-    //  With most of our desugaring done can we just use getObjectById?
-    $$inst = TP.sys.getObjectById(spec);
-    if (TP.isValid($$inst)) {
-        return $$inst;
+    //  With most of our desugaring done can we just use getObjectById? Let's
+    //  see if the spec is a JS identifer (or dot-separated JS identifier).
+    isIdentifier = false;
+    specs = spec.split('.');
+    for (i = 0; i < specs.getSize(); i++) {
+        if (!TP.regex.JS_IDENTIFIER.test(specs.at(i))) {
+            //  Not a JS identifier - can't use it as such.
+            break;
+        }
+        isIdentifier = true;
+    }
+
+    if (isIdentifier) {
+        $$inst = TP.sys.getObjectById(spec);
+        if (TP.isValid($$inst)) {
+            return $$inst;
+        }
     }
 
     try {
