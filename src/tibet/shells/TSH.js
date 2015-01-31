@@ -2156,6 +2156,7 @@ function(aRequest) {
         results,
         column,
         missing,
+        checklib,
         dups;
 
     results = [];
@@ -2165,6 +2166,7 @@ function(aRequest) {
     dups = ['@param', '@throws', '@exception', '@fires', '@listens', '@mixes',
         '@example', '@author'];
 
+    checklib = this.getArgument(aRequest, 'tsh:checklib', false);
     column = this.getArgument(aRequest, 'tsh:column', false);
     missing = this.getArgument(aRequest, 'tsh:missing', false);
 
@@ -2190,9 +2192,14 @@ function(aRequest) {
         file = TP.objectGetSourcePath(func);
         lines = func.getCommentLines();
 
+        if ((name.startsWith('TP') || name.startsWith('MetaInst')) &&
+                TP.isFalse(checklib)) {
+            return;
+        }
+
         if (TP.notValid(lines)) {
             text = func.toString();
-            if (missing && !TP.regex.NATIVE_CODE.test(text)) {
+            if (TP.notFalse(missing) && !TP.regex.NATIVE_CODE.test(text)) {
                 // No comment and not native code.
                 TP.regex.UNDERSCORES.index = 0;
                 results.push({
@@ -2340,6 +2347,8 @@ function(aRequest) {
                 } else {
                     pname = param.split(' ').first();
                 }
+
+                //  TODO:   verify there's a description of the parameter.
 
                 // If we flagged a missing type we need to append the name to
                 // the last message.
