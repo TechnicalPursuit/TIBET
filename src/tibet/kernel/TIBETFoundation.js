@@ -1238,6 +1238,38 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('getSourceText',
+function() {
+
+    /**
+     * @method getSourceText
+     * @summary Returns the source text for the receiver after stripping all
+     *     comment text from it.
+     * @returns {String} The source text.
+     */
+
+    var text,
+        tokens;
+
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.getSourceText();
+    }
+
+    text = this.toString();
+    tokens = TP.$tokenize(text);
+    tokens = tokens.filter(function(token) {
+        return token.name !== 'comment';
+    });
+
+    text = tokens.reduce(function(previous, current) {
+        return previous + current.value;
+    }, '');
+
+    return text;
+});
+
+//  ------------------------------------------------------------------------
+
 Function.Inst.defineMethod('postMethodPatch',
 function(methodText, onsuccess, onfailure) {
     var patch,

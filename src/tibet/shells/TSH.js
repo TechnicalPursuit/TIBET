@@ -2157,7 +2157,17 @@ function(aRequest) {
         column,
         missing,
         checklib,
-        dups;
+        tags,
+        aliases,
+        keys,
+        dict,
+        dups,
+        fileDict,
+        totalErrors,
+        errorFiles,
+        totalFiles;
+
+    //  TODO:   migrate the actual checking code to a more reusable location.
 
     results = [];
 
@@ -2165,6 +2175,44 @@ function(aRequest) {
     // not strictly exhaustive, but it should be adequate for now.
     dups = ['@param', '@throws', '@exception', '@fires', '@listens', '@mixes',
         '@example', '@author'];
+
+    tags = ['@abstract', '@virtual', '@access', '@alias', '@augments',
+         '@extends', '@author', '@borrows', '@callback', '@class',
+         '@constructor', '@classdesc', '@constant', '@const', '@constructs',
+         '@copyright', '@default', '@defaultvalue', '@deprecated',
+         '@description', '@desc', '@enum', '@event', '@example', '@exports',
+         '@external', '@host', '@file', '@fileoverview', '@overview', '@fires',
+         '@emits', '@function', '@func', '@method', '@global', '@ignore',
+         '@implements', '@inheritdoc', '@inner', '@instance', '@interface',
+         '@kind', '@lends', '@license', '@listens', '@member', '@var',
+         '@memberof', '@mixes', '@mixin', '@module', '@name', '@namespace',
+         '@overide', '@param', '@arg', '@argument', '@private', '@property',
+         '@prop', '@protected', '@public', '@readonly', '@requires', '@returns',
+         '@return', '@see', '@since', '@static', '@summary', '@this', '@throws',
+         '@exception', '@todo', '@tutorial', '@type', '@typedef', '@variation',
+         '@version'];
+
+    aliases = {'@virtual': '@abstract',
+        '@extends': '@augments',
+        '@const': '@constant',
+        '@defaultvalue': '@default',
+        '@desc': '@description',
+        '@host': '@external',
+        '@fileoverview': '@overview',
+        '@file': '@overview',
+        '@emits': '@fires',
+        // NOTE we don't convert @exception to @throws, they're different in
+        // TIBET. @exception is based on raise() and @throws is via throw.
+        '@function': '@method',
+        '@func': '@method',
+        '@member': '@var',
+        '@arg': '@param',
+        '@argument': '@param',
+        '@prop': '@property'};
+
+    keys = TP.keys(aliases);
+
+    fileDict = TP.hc();
 
     checklib = this.getArgument(aRequest, 'tsh:checklib', false);
     column = this.getArgument(aRequest, 'tsh:column', false);
@@ -2180,10 +2228,14 @@ function(aRequest) {
             names,
             match,
             found,
+            tagline,
+            type,
             taglines,
             dict,
             text,
             result,
+            source,
+            error,
             fParams,
             cParams;
 
@@ -2191,7 +2243,15 @@ function(aRequest) {
         func = item.at(1);
         file = TP.objectGetSourcePath(func);
         lines = func.getCommentLines();
+        source = func.getSourceText();
+        error = {file: file, name: name, errors: []};
 
+        //  Create an entry for every file. This will let us count total files
+        //  in addition to just error files.
+        fileDict.atPut(file, null);
+
+        //  This doesn't mask off all lib code since additions to native types
+        //  won't be caught here.
         if ((name.startsWith('TP') || name.startsWith('MetaInst')) &&
                 TP.isFalse(checklib)) {
             return;
@@ -2201,27 +2261,44 @@ function(aRequest) {
             text = func.toString();
             if (TP.notFalse(missing) && !TP.regex.NATIVE_CODE.test(text)) {
                 // No comment and not native code.
-                TP.regex.UNDERSCORES.index = 0;
-                results.push({
-                    name: name.replace(TP.regex.UNDERSCORES, '.'),
-                    errors: ['missing comment']
-                });
+                results.push(
+                    {file: file, name: name, errors: ['missing comment']});
             }
         } else if (lines.length === 0) {
-            results.push({
-                name: name.replace(TP.regex.UNDERSCORES, '.'),
-                errors: ['empty comment']
-            });
+            results.push(
+                {file: file, name: name, errors: ['empty comment']});
         } else {
             // Comment. Question is, is it viable?
 
             //  ---
-            //  aliased tags
+            //  tag validity and aliasing
             //  ---
 
-            // TODO: replace aliases with canonical versions for TIBET. For
-            // example, @return => @returns, @func => @method, etc.
+            lines.forEach(function(line, index) {
+                var tag;
 
+                //  Skip lines for examples etc. which won't start with @
+                if (line.charAt(0) !== '@') {
+                    return;
+                }
+
+                //  Alias over any tags so our lint checks focus on a canonical
+                //  variant.
+                keys.forEach(function(key) {
+                    var value;
+                    value = aliases[key];
+                    if (line.startsWith(key)) {
+                        lines[index] = line.replace(key, value);
+                    }
+                });
+
+                //  Verify all tags are known.
+                tag = line.split(' ').first();
+                if (tags.indexOf(tag) === TP.NOT_FOUND) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push(tag + ' unknown');
+                }
+            });
 
             //  ---
             //  @method
@@ -2233,8 +2310,7 @@ function(aRequest) {
             });
 
             if (TP.isEmpty(names)) {
-                result = TP.ifInvalid(result,
-                    {name: name, errors: []});
+                result = TP.ifInvalid(result, error);
                 result.errors.push('@method missing');
             } else {
 
@@ -2255,8 +2331,7 @@ function(aRequest) {
 
                 if (!found) {
 
-                    result = TP.ifInvalid(result,
-                        {name: name, errors: []});
+                    result = TP.ifInvalid(result, error);
                     result.errors.push('@method incorrect');
                 }
             }
@@ -2285,8 +2360,7 @@ function(aRequest) {
 
                 //  Verify via hash lookup and add any new ones.
                 if (dict.at(tag)) {
-                    result = TP.ifInvalid(result,
-                        {name: name, errors: []});
+                    result = TP.ifInvalid(result, error);
                     result.errors.push('multiple ' + tag + '\'s');
                 } else {
                     dict.atPut(tag, tag);
@@ -2294,7 +2368,7 @@ function(aRequest) {
             });
 
             //  ---
-            //  Discussion
+            //  summary/description
             //  ---
 
             //  Have to have a summary or description (preferably both ;)).
@@ -2304,9 +2378,8 @@ function(aRequest) {
             });
 
             if (TP.isEmpty(taglines)) {
-                result = TP.ifInvalid(result,
-                    {name: name, errors: []});
-                result.errors.push('@summary/@desc missing');
+                result = TP.ifInvalid(result, error);
+                result.errors.push('@summary/@description missing');
             }
 
             //  ---
@@ -2322,39 +2395,135 @@ function(aRequest) {
             //  verify that each @param has a type definition.
             cParams = cParams.map(function(param) {
                 var type,
+                    count,
+                    i,
+                    c,
+                    len,
                     pname,
-                    needName;
+                    needName,
+                    optional,
+                    defaulted,
+                    description;
 
                 param = param.slice('@param '.length);
 
                 //  Check for parameter type references...
                 if (param.indexOf('{') !== 0) {
                     // Apparently not formatted with a type for the param.
-                    result = TP.ifInvalid(result,
-                        {name: name, errors: []});
+                    result = TP.ifInvalid(result, error);
                     result.errors.push('missing type for @param ');
                     needName = true;
                 } else {
-                    type = param.slice(1, param.indexOf('}'));
-                    param = param.slice(param.indexOf('}') + 1).trim();
+                    //  Since some parameter type descriptions involve the use
+                    //  of nested {}'s we need to actually do a simple count
+                    //  here to be certain of our result.
+                    len = param.length;
+                    type = '';
+                    count = 0;
+                    for (i = 0; i < len; i++) {
+                        c = param.charAt(i);
+                        if (c === '}') {
+                            count--;
+                            if (count === 0) {
+                                param = param.slice(i + 1).trim();
+                                break;
+                            }
+                        } else if (c === '{') {
+                            count++;
+                        }
+                        type += c;
+                    }
+
+                    //  If the braces aren't balanced we can fall off the end.
+                    //  Watch out for that.
+                    if (count !== 0) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('unbalanced {}\'s in @param ');
+                        needName = true;
+
+                        // Take our best guess at what the real type and
+                        // parameter name are.
+                        type = param.slice(1, param.lastIndexOf('}'));
+                        type = '{' + type.strip('{').strip('}') + '}';
+                        param = param.slice(param.lastIndexOf('}') + 1).trim();
+                    }
+
+                    //  We want to use a leading '?' not 'null' in types.
+                    if (type.match(/null/)) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('prefer {?...} in @param ');
+                        needName = true;
+                    }
+
+                    //  We want function() instead of Function for function
+                    //  parameters so there's a tendency to document signature.
+                    if (type.match(/Function/)) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('prefer {function(...)} in @param ');
+                        needName = true;
+                    }
+
+                    //  We want to use Type[] rather than Array.<Type>
+                    if (type.match(/Array/)) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('prefer {Type[]} in @param ');
+                        needName = true;
+                    }
+
+                    //  We want to use {key: type} rather than Object.<>
+                    if (type.match(/Object\./)) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push(
+                            'prefer @param name.slot for @param ');
+                        needName = true;
+                    }
                 }
 
                 //  Param name should be next non-whitespace sequence...or the
                 //  content of ['s before any = for signifying a default value.
                 if (param.charAt(0) === '[') {
-                    pname = param.slice(1,
-                        param.indexOf(']')).split('=').first();
+                    optional = true;
+                    pname = param.slice(1, param.indexOf(']'));
+                    defaulted = pname.indexOf('=') !== TP.NOT_FOUND;
+                    pname = pname.split('=').first();
                 } else {
                     pname = param.split(' ').first();
                 }
 
-                //  TODO:   verify there's a description of the parameter.
+                //  Verify the parameter has a description.
+                if (param.indexOf(' ') === TP.NOT_FOUND) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('missing text for @param ');
+                    needName = true;
+                } else {
+                    //  There's a description. Does it indicate that we may need
+                    //  optional/default value content for the pname?
+                    description = param.slice(param.indexOf(' ') + 1);
+                    if (description.match(/[Oo]ptional/) && !optional) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('use [name] for optional @param ');
+                        needName = true;
+                    }
 
-                // If we flagged a missing type we need to append the name to
-                // the last message.
+                    if (description.match(/[Dd]efault/) && !defaulted) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('use [name=value] for defaulted @param ');
+                        needName = true;
+                    }
+                }
+
+                //  If we flagged a missing type we need to append the name to
+                //  the last message.
                 if (needName) {
                     result.errors.atPut(result.errors.length - 1,
-                        result.errors.last() + 'pname');
+                        result.errors.last() + pname);
+                }
+
+                //  If the param is a varargs param we should see '...' in the
+                //  type definition.
+                if (pname === 'varargs' && TP.notValid(type.match(/\.\.\./))) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('@param varargs needs \'...\' in type');
                 }
 
                 return pname;
@@ -2376,12 +2545,10 @@ function(aRequest) {
 
                 //  Does the parameter exist?
                 if (cParams.indexOf(pname) === TP.NOT_FOUND) {
-                    result = TP.ifInvalid(result,
-                        {name: name, errors: []});
+                    result = TP.ifInvalid(result, error);
                     result.errors.push('@param ' + pname + ' missing');
                 } else if (cParams[index] !== pname) {
-                    result = TP.ifInvalid(result,
-                        {name: name, errors: []});
+                    result = TP.ifInvalid(result, error);
                     result.errors.push('@param ' + pname + ' mismatch');
                 }
             });
@@ -2390,40 +2557,215 @@ function(aRequest) {
             //  but which are not valid in the function signature...
             cParams.forEach(function(pname) {
                 if (fParams.indexOf(pname) === TP.NOT_FOUND) {
-                    result = TP.ifInvalid(result,
-                        {name: name, errors: []});
+                    result = TP.ifInvalid(result, error);
                     result.errors.push('@param ' + pname + ' not in signature');
                 }
             });
 
             if (result) {
-                result.file = file;
                 results.push(result);
             }
+
 
             //  ---
             //  @returns
             //  ---
 
-            //  TODO:   if no @returns verify that return; is only return line
-            //          found, if any.
+            tagline = lines.detect(function(line) {
+                return line.startsWith('@returns ');
+            });
+
+            //  Returns should include a type at a minimum.
+            if (TP.notEmpty(tagline)) {
+                type = tagline.slice(tagline.indexOf('{'),
+                    tagline.lastIndexOf('}'));
+                if (TP.isEmpty(type)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('no @return type(s)');
+                }
+            }
+
+            //  Remaining checks are sanity checks comparing the type and the
+            //  nature of the return calls in the code.
+            if (source.match(/return (.*?)/)) {
+                //  Complex returns, so there should be a real @return tag.
+                if (TP.isEmpty(tagline)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('no @return for non-empty return(s)');
+                } else if (type) {
+                    if (source.match(/return;/)) {
+                        //  At least one nullable return. Make sure the type
+                        //  accounts for that.
+                        if (type && !type.match(/(null|\?)/)) {
+                            result = TP.ifInvalid(result, error);
+                            result.errors.push(
+                                'missing {?...} for nullable @return');
+                        }
+                    } else if (type && type.match(/null/)) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push(
+                            'prefer {?...} for nullable @return');
+                    }
+                }
+            } else {
+                //  No complex returns in the code.
+                if (TP.notEmpty(tagline)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('extraneous @return');
+                }
+            }
 
 
-            //  TODO:   cross-check function source against:
-            //  @todo               todo()
-            //  @fires              signal() / fire()
-            //  @throws             'throw '
-            //  @exception          raise()
-            //  @listens            observe(), addListener/addObserver
-            //  @deprecated
-            //  etc :)
+            //  ---
+            //  other type checks
+            //  ---
+
+            //  @throws, @exception, @signal, @listens should all be done so we
+            //  have a separate type and description per line.
+            taglines = lines.filter(function(line) {
+                return line.match(/@(throws|exception|fires|listens) /);
+            });
+
+            taglines.forEach(function(line) {
+                var tag;
+
+                tag = line.split(' ').first();
+
+                if (TP.notEmpty(line)) {
+                    type = line.slice(line.indexOf('{'),
+                        line.lastIndexOf('}'));
+                    if (TP.isEmpty(type)) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('no ' + tag + ' type(s)');
+                    } else if (type.match(/[,|]/)) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push(
+                            'prefer one type per ' + tag);
+                    }
+                }
+            });
+
+
+
+            //  ---
+            //  source checks
+            //  ---
+
+            if (source.match(/\.todo\(/)) {
+                tagline = lines.detect(function(line) {
+                    return line.startsWith('@todo ');
+                });
+
+                if (TP.isEmpty(tagline)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('no @todo for TP.todo()');
+                }
+            }
+
+            if (source.match(/\.signal\(/)) {
+                tagline = lines.detect(function(line) {
+                    return line.startsWith('@fires ');
+                });
+
+                if (TP.isEmpty(tagline)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('no @fires for signal()');
+                }
+            }
+
+            if (source.match(/\.observe\(/)) {
+                tagline = lines.detect(function(line) {
+                    return line.startsWith('@listens ');
+                });
+
+                if (TP.isEmpty(tagline)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('no @listens for observe()');
+                }
+            }
+
+            if (source.match(/\.raise\(/)) {
+                tagline = lines.detect(function(line) {
+                    return line.startsWith('@exception ');
+                });
+
+                if (TP.isEmpty(tagline)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('no @exception for raise()');
+                }
+            }
+
+            if (source.match(/throw (.*?);/)) {
+                tagline = lines.detect(function(line) {
+                    return line.startsWith('@throws ');
+                });
+
+                if (TP.isEmpty(tagline)) {
+                    result = TP.ifInvalid(result, error);
+                    result.errors.push('no @throws for throw');
+                }
+            }
         }
     });
 
-    results = results.map(function(result) {
-        return result.file + ' - ' + result.name + ' (' + result.errors.length +
-            ') -> [' + result.errors.join(', ') + ']';
+    //  Output the results. Our content looks like this:
+    //  [ { file: filename, name: funcname, errors: [a, b, c] }, ... ]
+    //  Our goal is to coalesce by file name so we can output the set of errors
+    //  specific to that file in a set.
+
+    totalFiles = fileDict.getKeys().getSize();
+    errorFiles = 0;
+    totalErrors = 0;
+
+    results.forEach(function(result) {
+        var errors;
+
+        errors = fileDict.at(result.file);
+        if (TP.notValid(errors)) {
+            errors = [];
+        }
+        fileDict.atPut(result.file, errors);
+
+        errors.push(result);
     });
+
+    //  Now that we've reorganized the results truncate that list. We'll use it
+    //  again for line-by-line output below.
+    results.length = 0;
+
+    //  Loop over the files, sorted by name, and dump the file name and then all
+    //  errors for that file.
+    fileDict.getKeys().sort().forEach(function(key) {
+        var entries;
+
+        entries = fileDict.at(key);
+        if (TP.notValid(entries)) {
+            return;
+        }
+
+        errorFiles++;
+
+        //  Output the file name.
+        results.push('\n# ' + key + '\n');
+
+        entries.forEach(function(entry) {
+            var name,
+                errors;
+
+            TP.regex.UNDERSCORES.index = 0;
+            name = entry.name.replace(TP.regex.UNDERSCORES, '.');
+            errors = entry.errors;
+
+            totalErrors += errors.length;
+
+            results.push(name + ' (' + errors.length +
+                ') -> [' + errors.join(', ') + ']');
+        });
+    });
+
+    //  Output some summary data.
+    results.push('\n' + totalErrors + ' errors in ' + errorFiles +
+        ' of ' + totalFiles + ' files.');
 
     if (column) {
         results.forEach(function(result) {

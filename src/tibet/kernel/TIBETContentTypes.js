@@ -1866,11 +1866,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      * @method executeSet
      * @summary Executes the path in a 'set' fashion - i.e. with the intent of
      *     setting the supplied data into the supplied target object.
-     * @param {targetObj} Object The object to execute the receiver against to
+     * @param {Object} targetObj The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set
+     * @param {Object} attributeValue The object to use as the value to set
      *     into the target object.
-     * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
+     * @param {Boolean} shouldSignal If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
