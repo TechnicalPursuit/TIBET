@@ -192,7 +192,8 @@
         'number': ['timeout'],
         'default': {
             color: true,
-            system: false
+            system: false,
+            quiet: false
         }
     };
 
@@ -553,6 +554,8 @@
 
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
+
+
         if (!PhantomTSH.argv.quiet) {
             PhantomTSH.log('Loading TIBET via PhantomJS ' +
                     phantom.version.major + '.' +
@@ -567,6 +570,8 @@
                 fragment = PhantomTSH.url.slice(index + 1);
                 PhantomTSH.log(root, 'gray');
                 PhantomTSH.log(fragment, 'gray');
+                PhantomTSH.log('PhantomTSH.argv: ' +
+                    JSON.stringify(PhantomTSH.argv), 'gray');
             }
         }
 
