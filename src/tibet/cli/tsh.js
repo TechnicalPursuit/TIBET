@@ -89,8 +89,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     'string': ['script', 'url', 'profile', 'params', 'level'],
     'number': ['timeout'],
     'default': {
-        color: true,
-        quiet: true
+        color: true
     }
 },
 Parent.prototype.PARSE_OPTIONS);
@@ -109,7 +108,7 @@ Cmd.prototype.USAGE = 'tibet tsh <script> [<phantomtsh_args>]';
  * Perform phantom startup announcement as appropriate for the (sub)command.
  */
 Cmd.prototype.announce = function() {
-    this.log('# Booting TIBET via PhantomJS...');
+    return;
 };
 
 
