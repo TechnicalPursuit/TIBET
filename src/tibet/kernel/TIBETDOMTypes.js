@@ -15007,18 +15007,12 @@ function(aRequest) {
         return;
     }
 
-    //  If the element already has a 'tsh:generator', then it had to be placed
-    //  here by some template in an earlier iteration. Remove the attribute
-    //  (less cruft) and, if the generator was ourself, return nothing, thereby
-    //  causing elem to be untouched and 'descend into children' behavior to be
-    //  triggered.
-    if (TP.notEmpty(genName =
-                    TP.elementGetAttribute(elem, 'tsh:generator', true))) {
-        TP.elementRemoveAttribute(elem, 'tsh:generator', true);
-
-        if (genName === this.getCanonicalName()) {
-            return;
-        }
+    //  If the element already has a TP.GENERATOR, then it had to be placed here
+    //  by some template in an earlier iteration. If the generator was ourself,
+    //  return nothing, thereby causing elem to be untouched.
+    if (TP.notEmpty(genName = elem[TP.GENERATOR]) &&
+        genName === this.getCanonicalName()) {
+        return;
     }
 
     wantsTemplateWrapper = TP.ifInvalid(this.get('wantsTemplateWrapper'),
@@ -15029,7 +15023,7 @@ function(aRequest) {
         //  tsh:template which replaces the receiver. That template tag is _not
         //  yet processed_ but is instrumented to know that it should replace
         //  itself with the result of running itself immediately. The
-        //  tsh:generator attribute gives the template a reference back to the
+        //  TP.GENERATOR property gives the template a reference back to the
         //  original type which built it.
         replacement = TP.documentCreateElement(
                             TP.nodeGetDocument(elem),
@@ -15042,8 +15036,7 @@ function(aRequest) {
         //  canonical name of the templated element.
         TP.elementSetAttribute(
                 replacement, 'tsh:name', canonicalName, true);
-        TP.elementSetAttribute(
-                replacement, 'tsh:generator', canonicalName, true);
+        replacement[TP.GENERATOR] = canonicalName;
 
         this.guessContentTypeAndLocation(elem);
 
@@ -15058,14 +15051,20 @@ function(aRequest) {
         //  Remove any processing phase attribute migrated from the receiver...
         //  we'll let the processing engine worry about that.
         TP.elementRemoveAttribute(elem, 'tibet:phase', true);
+
     } else {
+
+        canonicalName = TP.elementGetCanonicalName(elem);
 
         //  We didn't need a template wrapper - just fetch the resource content
         //  as indicated by the MIME type that should be in the element's
         //  'tibet:mime' attribute (if missing, the MIME type will be guessed).
-        replacement = TP.unwrap(
-            this.getResourceElement('template',
-                TP.elementGetAttribute(elem, 'tibet:mime', true)));
+        replacement = this.getResourceElement(
+                        'template',
+                        TP.elementGetAttribute(elem, 'tibet:mime', true));
+
+        replacement = TP.unwrap(replacement.clone());
+        replacement[TP.GENERATOR] = canonicalName;
     }
 
     //  Replace the original element in the DOM so processing will continue in
@@ -15125,7 +15124,7 @@ function(aRequest) {
     //  we don't)
     ourID = TP.lid(elem, true);
 
-    //  Note how we stamp a 'tsh:generator' of our ID onto individual template
+    //  Note how we stamp a TP.GENERATOR of our ID onto individual template
     //  elements.
     templateElems.perform(
         function(anElem) {
@@ -15138,8 +15137,8 @@ function(aRequest) {
                 TP.uc(TP.TIBET_URN_PREFIX + templateName).setResource(null);
             }
 
-            //  We are the 'tsh:generator' for these template elements.
-            TP.elementSetAttribute(anElem, 'tsh:generator', ourID, true);
+            //  We are the TP.GENERATOR for these template elements.
+            anElem[TP.GENERATOR] = ourID;
 
             transformElem = TP.tsh.template.wrapInTransformElement(
                                                             anElem, ourID);
