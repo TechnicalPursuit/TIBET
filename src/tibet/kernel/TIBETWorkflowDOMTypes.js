@@ -1327,6 +1327,39 @@ function() {
     return 'tagPrecompile';
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.PrecompilePhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    queriedNodes = TP.nodeEvaluateXPath(
+                    aNode,
+                    './/@*[contains(.,"{{")] | .//text()[contains(.,"{{")]',
+                    TP.NODESET);
+
+    return queriedNodes;
+});
+
 //  ========================================================================
 //  TP.core.CompilePhase
 //  ========================================================================

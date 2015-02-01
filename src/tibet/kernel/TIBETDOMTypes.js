@@ -782,6 +782,51 @@ function() {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Type.defineMethod('tagPrecompile',
+function(aRequest) {
+
+    /**
+     * @method tagPrecompile
+     * @summary Precompiles the content by running any substitution expressions
+     *     in it.
+     * @description At this level, this method runs substitutions against the
+     *     text content of the node and supplies the following variables to the
+     *     substitutions expressions:
+     *
+     *          $REQUEST    ->  The request that triggered this processing.
+     *          $TARGET     ->  The target document, if any, that the result of
+     *                          this processing will be rendered into.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+
+        templateStr,
+        templateParams,
+
+        result;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isNode(node = aRequest.at('node'))) {
+        return;
+    }
+
+    templateStr = TP.nodeGetTextContent(node);
+
+    templateParams = TP.hc(
+        '$REQUEST', aRequest,
+        '$TARGET', aRequest.at('target'));
+
+    result = templateStr.transform(null, templateParams);
+
+    TP.nodeSetTextContent(node, result);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
@@ -11785,6 +11830,64 @@ function(operation) {
 TP.core.Node.defineSubtype('AttributeNode');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.core.AttributeNode.Type.defineMethod('tagPrecompile',
+function(aRequest) {
+
+    /**
+     * @method tagPrecompile
+     * @summary Precompiles the content by running any substitution expressions
+     *     in it.
+     * @description At this level, this method runs substitutions against the
+     *     text content of the node and supplies the following variables to the
+     *     substitutions expressions:
+     *
+     *          $REQUEST    ->  The request that triggered this processing.
+     *          $TAG        ->  The element that owns this attribute.
+     *          $TARGET     ->  The target document, if any, that the result of
+     *                          this processing will be rendered into.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        parentNode,
+
+        templateStr,
+        templateParams,
+
+        result;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isNode(node = aRequest.at('node'))) {
+        return;
+    }
+
+    parentNode = TP.attributeGetOwnerElement(node);
+
+    templateStr = TP.nodeGetTextContent(node);
+
+    templateParams = TP.hc(
+        '$REQUEST', aRequest,
+        '$TAG', TP.wrap(parentNode),
+        '$TARGET', aRequest.at('target'));
+
+    result = templateStr.transform(null, templateParams);
+
+    TP.nodeSetTextContent(node, result);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.core.AttributeNode.Inst.defineMethod('getLocalName',
 function() {
@@ -11822,6 +11925,64 @@ function() {
 
 TP.core.Node.defineSubtype('TextNode');
 
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.core.TextNode.Type.defineMethod('tagPrecompile',
+function(aRequest) {
+
+    /**
+     * @method tagPrecompile
+     * @summary Precompiles the content by running any substitution expressions
+     *     in it.
+     * @description At this level, this method runs substitutions against the
+     *     text content of the node and supplies the following variables to the
+     *     substitutions expressions:
+     *
+     *          $REQUEST    ->  The request that triggered this processing.
+     *          $TAG        ->  The element that wraps this text node.
+     *          $TARGET     ->  The target document, if any, that the result of
+     *                          this processing will be rendered into.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        parentNode,
+
+        templateStr,
+        templateParams,
+
+        result;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isNode(node = aRequest.at('node'))) {
+        return;
+    }
+
+    parentNode = node.parentNode;
+
+    templateStr = TP.nodeGetTextContent(node);
+
+    templateParams = TP.hc(
+        '$REQUEST', aRequest,
+        '$TAG', TP.wrap(parentNode),
+        '$TARGET', aRequest.at('target'));
+
+    result = templateStr.transform(null, templateParams);
+
+    TP.nodeSetTextContent(node, result);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.core.TextNode.Inst.defineMethod('getTextContent',
