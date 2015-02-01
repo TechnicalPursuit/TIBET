@@ -1161,7 +1161,7 @@ function(aNode) {
 
     //  The default phase grabs *all* nodes here - not just Elements. Note that
     //  this expression will also grab the aNode itself.
-    query = './descendant-or-self::node()';
+    query = 'descendant-or-self::node()';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
