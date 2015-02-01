@@ -6153,14 +6153,19 @@ function(aNode, aRootNode) {
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} True if the node isn't in a document.
-     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to the
-     *     method.
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
+     *     the method.
      */
 
     var ancestor;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  attribute nodes are never detached
+    if (TP.isAttributeNode(aNode)) {
+        return false;
     }
 
     //  the node could be the root itself, in which case we're not
