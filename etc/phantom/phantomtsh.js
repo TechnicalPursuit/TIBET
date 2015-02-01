@@ -561,7 +561,8 @@
                     phantom.version.major + '.' +
                     phantom.version.minor + '.' +
                     phantom.version.patch +
-                    ' at ' + (new Date()).toLocaleString().replace(/  /g, ' '),
+                    ' at ' + (new Date()).toLocaleString().replace(
+                        /( ){2}/g, ' '),
                 'gray', true);
 
             if (PhantomTSH.argv.debug) {
