@@ -71,9 +71,11 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['checklib', 'missing'],
+        'boolean': ['checklib', 'tap'],
         'string': [],
-        'default': {}
+        'default': {
+            tap: true
+         }
     },
     Parent.prototype.PARSE_OPTIONS);
 
@@ -87,6 +89,21 @@ Cmd.prototype.USAGE =
 //  ---
 //  Instance Methods
 //  ---
+
+/**
+ * Performs any final processing of the argument list prior to execution.
+ * @param {Array.<String>} arglist The argument list to finalize.
+ * @returns {Array.<String>} The finalized argument list.
+ */
+Cmd.prototype.finalizePhantomArglist = function(arglist) {
+
+    if ((arglist.indexOf('--tap') === -1) &&
+            (arglist.indexOf('--no-tap') === -1)) {
+        arglist.push('--tap');
+    }
+
+    return arglist;
+};
 
 /**
  * Computes and returns the TIBET Shell script command line to be run.
@@ -117,10 +134,6 @@ Cmd.prototype.getScript = function() {
 
     if (this.options.checklib) {
         target += '--checklib';
-    }
-
-    if (this.options.missing) {
-        target += '--missing';
     }
 
     //  Add column flag since we need column output for cli. Otherwise we'll end

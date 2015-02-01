@@ -2155,7 +2155,6 @@ function(aRequest) {
     var methods,
         results,
         column,
-        missing,
         checklib,
         tags,
         aliases,
@@ -2165,9 +2164,12 @@ function(aRequest) {
         fileDict,
         totalErrors,
         errorFiles,
-        totalFiles;
+        totalFiles,
+        prefix;
 
     //  TODO:   migrate the actual checking code to a more reusable location.
+
+    aRequest.atPut('cmdTAP', true);
 
     results = [];
 
@@ -2216,7 +2218,6 @@ function(aRequest) {
 
     checklib = this.getArgument(aRequest, 'tsh:checklib', false);
     column = this.getArgument(aRequest, 'tsh:column', false);
-    missing = this.getArgument(aRequest, 'tsh:missing', false);
 
     methods = TP.sys.getMetadata('methods');
     methods.perform(function(item) {
@@ -2241,7 +2242,7 @@ function(aRequest) {
 
         name = item.at(0);
         func = item.at(1);
-        file = TP.objectGetSourcePath(func);
+        file = TP.objectGetSourcePath(func) || TP.objectGetLoadPath(func);
         lines = func.getCommentLines();
         source = func.getSourceText();
         error = {file: file, name: name, errors: []};
@@ -2258,11 +2259,15 @@ function(aRequest) {
         }
 
         if (TP.notValid(lines)) {
-            text = func.toString();
-            if (TP.notFalse(missing) && !TP.regex.NATIVE_CODE.test(text)) {
-                // No comment and not native code.
-                results.push(
-                    {file: file, name: name, errors: ['missing comment']});
+            //  Most common issue here is running against a system that's
+            //  loading minified code.
+            if (TP.notEmpty(file) && !file.match(/\.min\./) &&
+                    !func.$resolutionMethod) {
+                text = func.toString();
+                if (!TP.regex.NATIVE_CODE.test(text)) {
+                    results.push(
+                        {file: file, name: name, errors: ['missing comment']});
+                }
             }
         } else if (lines.length === 0) {
             results.push(
@@ -2740,13 +2745,16 @@ function(aRequest) {
 
         entries = fileDict.at(key);
         if (TP.notValid(entries)) {
+            if (TP.notEmpty(key)) {
+                results.push('ok - ' + key);
+            }
             return;
         }
 
         errorFiles++;
 
         //  Output the file name.
-        results.push('\n# ' + key + '\n');
+        results.push('not ok - ' + key);
 
         entries.forEach(function(entry) {
             var name,
@@ -2758,16 +2766,28 @@ function(aRequest) {
 
             totalErrors += errors.length;
 
-            results.push(name + ' (' + errors.length +
+            results.push('# ' + name + ' (' + errors.length +
                 ') -> [' + errors.join(', ') + ']');
         });
     });
 
     //  Output some summary data.
-    results.push('\n' + totalErrors + ' errors in ' + errorFiles +
-        ' of ' + totalFiles + ' files.');
+    if (totalErrors > 0) {
+        prefix = '# FAIL: ';
+    } else {
+        prefix = '# PASS: ';
+    }
 
-    if (column) {
+    results.push(prefix + totalErrors + ' errors in ' + errorFiles +
+            ' of ' + totalFiles + ' files.');
+
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        results.forEach(function(result) {
+            TP.sys.logTest(result);
+        });
+        return aRequest.complete();
+
+    } else if (column) {
         results.forEach(function(result) {
             aRequest.stdout(result);
         });
