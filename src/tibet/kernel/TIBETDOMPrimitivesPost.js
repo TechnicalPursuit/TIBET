@@ -3030,8 +3030,8 @@ function(anElement, ignoreSourcetag) {
      *          <samp>xforms:input</samp>
      *     </code>
      * @returns {String} The element's canonical name.
-     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
-     *     to the method.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
      */
 
     var tag,
@@ -3044,7 +3044,8 @@ function(anElement, ignoreSourcetag) {
 
     //  tag is fastest if it exists and we're allowed to use it
     if ((!ignoreSourcetag) &&
-        TP.notEmpty(tag = anElement.getAttribute('tibet:tag'))) {
+        TP.notEmpty(tag = anElement.getAttribute('tibet:tag')) &&
+        !TP.regex.HAS_ACP.test(tag)) {
         return tag;
     }
 
