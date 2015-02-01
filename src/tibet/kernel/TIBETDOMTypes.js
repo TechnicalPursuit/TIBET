@@ -15065,6 +15065,10 @@ function(aRequest) {
 
         replacement = TP.unwrap(replacement.clone());
         replacement[TP.GENERATOR] = canonicalName;
+
+        //  Merge any remaining attributes. Note that we don't want to overwrite
+        //  or duplicate any src attribute we had to compute.
+        TP.elementMergeAttributes(elem, replacement);
     }
 
     //  Replace the original element in the DOM so processing will continue in
