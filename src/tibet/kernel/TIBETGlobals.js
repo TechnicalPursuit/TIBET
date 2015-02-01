@@ -691,6 +691,8 @@ TP.AFTER = 'after';
 TP.REQUIRED = function() {return;};
 
 //  for native nodes
+//  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
+//  to be changed.
 TP.EVENT_IDS = 'eventIds';
 TP.GLOBAL_ID = 'globalID';
 TP.SHOULD_SIGNAL_CHANGE = 'shouldSignalChange';

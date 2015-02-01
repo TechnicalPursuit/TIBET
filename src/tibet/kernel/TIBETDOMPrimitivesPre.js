@@ -328,5 +328,48 @@ function(aNode, namespaceURI) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeCopyTIBETExpandos',
+function(srcNode, destNode, shouldRemove) {
+
+    /**
+     * @method nodeCopyTIBETExpandos
+     * @summary Copies the special TIBET expandos from the srcNode to the
+     *     destNode.
+     * @param {Node} srcNode The node to copy the expandos from.
+     * @param {Node} destNode The node to copy the expandos to.
+     * @param {Boolean} [shouldRemove=true] Whether or not to remove expandos
+     *     from the srcNode.
+     * @exception TP.sig.InvalidNode
+     */
+
+    if (!TP.isNode(srcNode) || !TP.isNode(destNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    destNode[TP.EVENT_IDS] = srcNode[TP.EVENT_IDS];
+    destNode[TP.GLOBAL_ID] = srcNode[TP.GLOBAL_ID];
+
+    destNode[TP.SHOULD_SIGNAL_CHANGE] =
+                srcNode[TP.SHOULD_SIGNAL_CHANGE];
+    destNode[TP.SHOULD_SUSPEND_SIGNALING] =
+                srcNode[TP.SHOULD_SUSPEND_SIGNALING];
+
+    destNode[TP.WRAPPER] = srcNode[TP.WRAPPER];
+    destNode[TP.GENERATOR] = srcNode[TP.GENERATOR];
+
+    if (TP.notFalse(shouldRemove)) {
+        srcNode[TP.EVENT_IDS] = null;
+        srcNode[TP.GLOBAL_ID] = null;
+        srcNode[TP.SHOULD_SIGNAL_CHANGE] = null;
+        srcNode[TP.SHOULD_SUSPEND_SIGNALING] = null;
+        srcNode[TP.WRAPPER] = null;
+        srcNode[TP.GENERATOR] = null;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
