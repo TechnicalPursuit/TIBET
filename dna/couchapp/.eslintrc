@@ -15,6 +15,7 @@
         "consistent-return": 0,
         "consistent-this": [0, "thisref"],
         "default-case": 0,
+        "eol-last": 0,
         "guard-for-in": 2,
         "max-len": [0, 80, 4],
         "no-extend-native": 0,
