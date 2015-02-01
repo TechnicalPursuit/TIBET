@@ -6352,6 +6352,8 @@ function(aNode, newNode, oldNode, shouldAwake) {
     //  document. as of ff3 and s3 this is required to avoid exceptions
     importedContent = TP.nodeImportNode(targetNode, childContent);
 
+    TP.nodeCopyTIBETExpandos(childContent, importedContent);
+
     //  We awaken if the content is an HTML node, otherwise we don't.
     awakenContent = TP.ifInvalid(shouldAwake, false);
 

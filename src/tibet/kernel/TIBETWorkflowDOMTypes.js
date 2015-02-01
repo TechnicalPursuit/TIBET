@@ -1085,7 +1085,8 @@ function(aNode, aProcessor, aRequest) {
         //  'node equality'. Therefore, we just continue without further
         //  processing of the result.
         if (TP.isNode(result) &&
-            (result === node || TP.nodeEqualsNode(result, node))) {
+            (result === node || TP.nodeEqualsNode(result, node) &&
+             TP.notValid(node[TP.GENERATOR]))) {
             continue;
         }
 
