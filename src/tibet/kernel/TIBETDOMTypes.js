@@ -815,9 +815,10 @@ function(aRequest) {
         selectionFunc,
         focusFunc,
 
-        info,
+        sources,
+        source,
 
-        result;
+        info;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('node'))) {
@@ -852,10 +853,15 @@ function(aRequest) {
         }
     };
 
+    if (TP.notEmpty(sources = aRequest.at('sources'))) {
+        source = sources.last();
+    }
+
     info = TP.hc(
         '$REQUEST', aRequest,
         '$TAG', TP.wrap(parentNode),
         '$TARGET', aRequest.at('target'),
+        '$SOURCE', TP.wrap(source),
         '$SELECTION', selectionFunc,
         '$*', selectionFunc,            //  Alias for $SELECTION
         '$FOCUS', focusFunc,

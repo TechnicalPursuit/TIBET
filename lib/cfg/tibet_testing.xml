@@ -88,8 +88,11 @@
     <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello3.js" />
     <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello4.js" />
     <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello5.js" />
+    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello6.js" />
+    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello7.js" />
 
     <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hellonested.js" />
+    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hellonestedvars.js" />
 </config>
 
 <config id="databinding">

@@ -608,35 +608,379 @@ function() {
 
     //  ---
 
-    this.it('Substitutions within standard markup', function(test, options) {
+    this.it('Substitutions having variables within standard markup', function(test, options) {
 
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating11.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var contentElem,
+
+                    correctVal,
+                    testVal;
+
+                //  Test for elements from the templates
+
+                contentElem = TP.byId('textResults');
+                test.assert.isElement(contentElem);
+
+                //  The content of the element should be outer content of the
+                //  element itself
+                correctVal = '<div xmlns="http://www.w3.org/1999/xhtml" id="textResults">{{$TAG.outerContent}}</div>';
+                testVal = TP.nodeGetTextContent(contentElem);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                contentElem = TP.byId('attrResults');
+                test.assert.isElement(contentElem);
+
+                correctVal = 'html:div';
+                testVal = TP.elementGetAttribute(contentElem, 'canonicalname', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
     });
 
     //  ---
 
-    this.it('Substitutions within custom markup', function(test, options) {
+    this.it('Substitutions having variables within custom markup having substitutions', function(test, options) {
 
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating12.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var contentElem,
+
+                    correctVal,
+                    testVal;
+
+                //  Test for elements from the templates
+
+                contentElem = TP.byId('textResults');
+                test.assert.isElement(contentElem);
+
+                //  The content of the element should be outer content of the
+                //  element itself, but uppercased after it ran through the
+                //  custom element template.
+                correctVal = /<TEMPLATETEST:HELLO6.*XMLNS:TEMPLATETEST="URN:TEST:TEMPLATETEST".*ID="TEXTRESULTS">\{\{\$TAG.OUTERCONTENT\}\}<\/TEMPLATETEST:HELLO6>/;
+                testVal = TP.nodeGetTextContent(contentElem).trim();
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults'));
+                test.assert.isElement(contentElem);
+
+                correctVal = 'TEMPLATETEST:HELLO6';
+                testVal = TP.elementGetAttribute(contentElem, 'templateattr', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
     });
 
     //  ---
 
-    this.it('Substitutions within custom markup producing further custom markup having substitutions', function(test, options) {
+    this.it('Substitutions having variables within pre-transformed custom markup having substitutions', function(test, options) {
 
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating13.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var contentElem,
+
+                    correctVal,
+                    testVal;
+
+                //  Test for elements from the templates
+
+                contentElem = TP.byId('textResults');
+                test.assert.isElement(contentElem);
+
+                //  The content of the element should be outer content of the
+                //  element itself, but uppercased after it ran through the
+                //  custom element template.
+                testVal = TP.nodeGetTextContent(contentElem).trim();
+
+                //  NOTE: We have to test these pieces individually, since
+                //  different engines will have different serialization
+                //  mechanisms.
+
+                correctVal = /<DIV.*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*XMLNS="HTTP:\/\/WWW.W3.ORG\/1999\/XHTML".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*XMLNS:TIBET="HTTP:\/\/WWW.TECHNICALPURSUIT.COM\/1999\/TIBET".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*TIBET:TAG="TEMPLATETEST:HELLO6".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*ID="TEXTRESULTS".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*\{\{\$TAG.OUTERCONTENT\}\}.*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*<\/DIV>/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                //  Test the attribute substitutions
+
+                contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults'));
+                test.assert.isElement(contentElem);
+
+                correctVal = 'TEMPLATETEST:HELLO6';
+                testVal = TP.elementGetAttribute(contentElem, 'templateattr', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
     });
 
     //  ---
 
-    this.it('Substitutions within custom markup having variables', function(test, options) {
+    this.it('Substitutions having variables within custom markup producing further custom markup having substitutions', function(test, options) {
 
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating14.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var contentElem,
+
+                    correctVal,
+                    testVal;
+
+                //  Test for elements from the templates
+
+                contentElem = TP.byId('textResults');
+                test.assert.isElement(contentElem);
+
+                //  The content of the element should be outer content of the
+                //  element itself, but uppercased after it ran through the
+                //  custom element template.
+                correctVal = /<TEMPLATETEST:HELLO7.*XMLNS:TEMPLATETEST="URN:TEST:TEMPLATETEST".*ID="TEXTRESULTS">\{\{\$TAG.OUTERCONTENT\}\}<\/TEMPLATETEST:HELLO7>/;
+                testVal = TP.nodeGetTextContent(contentElem).trim();
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults')).first();
+                test.assert.isElement(contentElem);
+
+                correctVal = 'templatetest:hello7';
+                testVal = TP.elementGetAttribute(contentElem, 'nestedtemplateattr', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
     });
 
     //  ---
 
-    this.it('Substitutions within custom markup having variables producing further custom markup having substitutions', function(test, options) {
+    this.it('Substitutions having variables within pre-transformed custom markup producing further custom markup having substitutions', function(test, options) {
 
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating15.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var contentElem,
+
+                    correctVal,
+                    testVal;
+
+                //  Test for elements from the templates
+
+                contentElem = TP.byId('textResults');
+                test.assert.isElement(contentElem);
+
+                //  The content of the element should be outer content of the
+                //  element itself, but uppercased after it ran through the
+                //  custom element template.
+                testVal = TP.nodeGetTextContent(contentElem).trim();
+
+                //  NOTE: We have to test these pieces individually, since
+                //  different engines will have different serialization
+                //  mechanisms.
+
+                correctVal = /<DIV.*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*XMLNS="HTTP:\/\/WWW.W3.ORG\/1999\/XHTML".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*XMLNS:TIBET="HTTP:\/\/WWW.TECHNICALPURSUIT.COM\/1999\/TIBET".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*TIBET:TAG="TEMPLATETEST:HELLO7".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*ID="TEXTRESULTS".*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*\{\{\$TAG.OUTERCONTENT\}\}.*/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                correctVal = /.*<\/DIV>/;
+
+                test.assert.matches(
+                    testVal,
+                    correctVal);
+
+                //  Test the attribute substitutions
+
+                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults')).first();
+                test.assert.isElement(contentElem);
+
+                correctVal = 'templatetest:hello7';
+                testVal = TP.elementGetAttribute(contentElem, 'nestedtemplateattr', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
     });
-
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 

@@ -1010,7 +1010,8 @@ function(aNode, aProcessor, aRequest) {
     var methodName,
         nodes,
         tagTypeDict,
-        producedNodes,
+
+        producedEntries,
 
         processingRequest,
 
@@ -1023,7 +1024,10 @@ function(aNode, aProcessor, aRequest) {
         result,
 
         subPhases,
-        subProcessor;
+        subProcessor,
+        subProcessingRequest,
+
+        sources;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode');
@@ -1052,7 +1056,7 @@ function(aNode, aProcessor, aRequest) {
 
     //  Any nodes that are actually newly-produced (and returned) by running the
     //  processor over the supplied content.
-    producedNodes = TP.ac();
+    producedEntries = TP.ac();
 
     len = nodes.getSize();
     for (i = 0; i < len; i++) {
@@ -1099,11 +1103,17 @@ function(aNode, aProcessor, aRequest) {
         }
 
         //  If either a singular Node or Array of Nodes was returned, then push
-        //  them onto our list of 'produced nodes'.
+        //  them onto our list of 'produced nodes', along with the node that
+        //  produced it/them.
         if (TP.isNode(result)) {
-            producedNodes.push(result);
+            producedEntries.push(TP.ac(result, node));
         } else if (TP.isArray(result)) {
-            producedNodes.addAll(result);
+            /* eslint-disable no-loop-func */
+            result.forEach(
+                    function(aNode) {
+                        producedEntries.push(TP.ac(aNode, node));
+                    });
+            /* eslint-enable no-loop-func */
         }
     }
 
@@ -1111,7 +1121,7 @@ function(aNode, aProcessor, aRequest) {
     //  target content Nodes is not empty, then we need to process them *from
     //  the processor's first phase up through ourself* (so as to have
     //  consistent results).
-    if (TP.notEmpty(producedNodes)) {
+    if (TP.notEmpty(producedEntries)) {
         //  Grab the processor's phase list and slice a copy of it from the
         //  beginning to this phase (inclusive)
         subPhases = aProcessor.get('phases');
@@ -1122,11 +1132,30 @@ function(aNode, aProcessor, aRequest) {
         subProcessor = TP.core.TagProcessor.construct();
         subProcessor.set('phases', subPhases);
 
+        subProcessingRequest = TP.request(aRequest);
+
+        //  The 'sources' Array provides processing sub nodes with a reference
+        //  back to the node that produced them
+        if (!TP.isArray(sources = subProcessingRequest.at('sources'))) {
+            sources = TP.ac();
+            subProcessingRequest.atPut('sources', sources);
+        }
+
         //  Run the subprocessor on the produced nodes, thereby recursively
         //  processing the tree.
-        len = producedNodes.getSize();
+        len = producedEntries.getSize();
         for (i = 0; i < len; i++) {
-            subProcessor.processTree(producedNodes.at(i));
+
+            //  Push the node that produced the node we're going to process into
+            //  the sources Array. See above to see how producedEntries is
+            //  populated.
+            sources.push(producedEntries.at(i).last());
+
+            subProcessor.processTree(producedEntries.at(i).first(),
+                                        subProcessingRequest);
+
+            //  Pop the source that was in effect.
+            sources.pop();
         }
     }
 
