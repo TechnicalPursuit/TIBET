@@ -136,10 +136,6 @@ Cmd.prototype.getScript = function() {
         target += '--checklib';
     }
 
-    //  Add column flag since we need column output for cli. Otherwise we'll end
-    //  up with a single block of text which PhantomJS 1.9.x has trouble with.
-    target += ' --column';
-
     return target;
 };
 

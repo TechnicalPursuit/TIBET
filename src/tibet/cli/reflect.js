@@ -62,27 +62,32 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 Cmd.prototype.HELP =
 'Runs the TSH :reflect command to show object or system reflection data.\n\n' +
 
-'The [target] parameter can be any object reference TIBET can resolve.\n' +
-'Output from this command depends on the nature of that object. For example,\n' +
-'namespace objects default to listing their types while Types default to a\n' +
-'list of their type and instance methods.\n\n' +
-
 'You can list all of TIBET\'s types via `tibet reflect --types` or list all\n' +
-'methods via `tibet reflect --methods`. If you specify a method name and use\n' +
-'--owners you\'ll see a list of all implementers of methods of that name.\n\n' +
+'methods via `tibet reflect --methods`. You can combine these flags along\n' +
+'with --slots to create collections of results. Without a target object this\n' +
+'approach lets you view a wide range of content from the TIBET system.\n\n' +
 
-'Depending on the nature of the output you can associate a filter using the\n' +
-'--filter option. The filter is typically used in one of two ways. First,\n' +
-'it is checked against the list of valid TP.interface filter strings. If the\n' +
-'filter is of this form it is used to restrict the keys returned from the\n' +
-'target object. Second, it can be used as the body of a regular expression.\n' +
-'When used in this latter form the list of output is checked and only those\n' +
-'values which match the filter will be returned. A good example is to use\n\n' +
+'The [target] parameter can be any object reference TIBET can resolve\n' +
+'using TIBET\'s getObjectById() function. That means any namespace, type,\n' +
+'method, or publicly registed object such as window or a TIBET URI.\n\n' +
 
-'tibet reflect --methods --filter element\n\n' +
+'For objects which support it the --interface option lets you restrict\n' +
+'the results to a specific interface of the object. The values here must\n' +
+'be found in the TP.SLOT_FILTERS object as used by TP.interface(). Some\n' +
+'interesting options are \'known\', \'public\', and \'unique\'.\n\n' +
 
-'The above command will list all methods which match the string \'element\'\n';
+'Note that not all flags will work for every target object type. Namespace\n' +
+'objects don\'t support --owners for example. When a flag is ignored it is\n' +
+'not typically reported since working combinations are so target-dependant.\n' +
+'The best thing to do is experiment a little and see what reflect finds.\n\n' +
 
+'The --filter option allows you to refine your result data by checking the\n' +
+'keys returned against either a regular expression or string. The filter value\n' +
+'is always used as a RegExp if one can be created from the string. Full RegExp\n' +
+'syntax is possible to the extent your shell will allow it. For example, using\n' +
+'--filter \'/example/i\' will filter for example in a case-insensitive fashion.\n\n' +
+
+'\n';
 
 /**
  * Command argument parsing options.
@@ -90,8 +95,8 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['owners', 'methods', 'types', 'column'],
-        'string': ['filter', 'target'],
+        'boolean': ['owners', 'methods', 'slots', 'types'],
+        'string': ['filter', 'interface', 'target'],
         'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -101,7 +106,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet reflect [target] [--filter <filter>] [--types] [--methods] [--owners]';
+    'tibet reflect [target] [--interface <interface>] ' +
+        '[--filter <filter>] [--types] [--methods] [--owners] [--slots]';
 
 //  ---
 //  Instance Methods
@@ -116,20 +122,20 @@ Cmd.prototype.getScript = function() {
     var target,
         prefix;
 
-    //  Client command requires either a target, or --types or --methods to give
-    //  us something to actually list. If we don't get one of those there's no
-    //  point in calling on the client-side code.
-    if (CLI.isEmpty(this.options.target) &&
-            !this.options.types && !this.options.methods) {
-        return;
-    }
-
     if (CLI.notEmpty(this.options.target)) {
         target = this.options.target;
     } else {
         // The options._ object holds non-qualified parameters. [0] is the
         // command name (tsh in this case). [1] should be the "target" to run.
         target = this.options._[1];
+    }
+
+    //  Client command requires either a target, --types, --methods, or --slots
+    //  to give us something to list. If we don't get one of those there's no
+    //  point in calling on the client-side code.
+    if (CLI.isEmpty(target) && !this.options.types &&
+            !this.options.methods && !this.options.slots) {
+        return;
     }
 
     prefix = ':reflect ';
@@ -140,6 +146,11 @@ Cmd.prototype.getScript = function() {
         target = prefix + '\'' + target + '\'';
     } else {
         target = prefix;
+    }
+
+    if (this.options.interface) {
+        //  Quote the interface since it may contain spaces etc.
+        target += ' --interface=\'' + this.options.interface + '\'';
     }
 
     if (this.options.filter) {
@@ -159,9 +170,9 @@ Cmd.prototype.getScript = function() {
         target += ' --owners';
     }
 
-    //  Add column flag since we need column output for cli. Otherwise we'll end
-    //  up with a single block of text which PhantomJS 1.9.x has trouble with.
-    target += ' --column';
+    if (this.options.slots) {
+        target += ' --slots';
+    }
 
     return target;
 };

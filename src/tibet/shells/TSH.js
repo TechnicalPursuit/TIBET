@@ -2154,7 +2154,6 @@ function(aRequest) {
 
     var methods,
         results,
-        column,
         checklib,
         tags,
         aliases,
@@ -2217,7 +2216,6 @@ function(aRequest) {
     fileDict = TP.hc();
 
     checklib = this.getArgument(aRequest, 'tsh:checklib', false);
-    column = this.getArgument(aRequest, 'tsh:column', false);
 
     methods = TP.sys.getMetadata('methods');
     methods.perform(function(item) {
@@ -2781,15 +2779,10 @@ function(aRequest) {
     results.push(prefix + totalErrors + ' errors in ' + errorFiles +
             ' of ' + totalFiles + ' files.');
 
+    //  PhantomJS/CLI support requires output line-by-line.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
         results.forEach(function(result) {
             TP.sys.logTest(result);
-        });
-        return aRequest.complete();
-
-    } else if (column) {
-        results.forEach(function(result) {
-            aRequest.stdout(result);
         });
         return aRequest.complete();
     }
@@ -2821,16 +2814,18 @@ function(aRequest) {
         arg0,
         flag,
         obj,
+        re,
+        keys,
         types,
-        column,
         methods,
         owners,
+        slots,
         filter,
-        keys,
-        result;
+        interface,
+        results;
 
-    usage = 'Usage: :reflect [target] [--filter <filter>]' +
-        ' [--types] [--methods] [--owners] [--column]';
+    usage = 'Usage: :reflect [target] [--interface <interface>]' +
+        ' [-filter <filter> [--types] [--methods] [--owners] [--slots]';
 
     //  No arguments means we dump usage. Need at least a flag to list
     //  something like types.
@@ -2849,76 +2844,186 @@ function(aRequest) {
         filter = filter.unquoted();
     }
 
-    column = this.getArgument(aRequest, 'tsh:column', false);
+    interface = this.getArgument(aRequest, 'tsh:interface');
+    if (TP.isString(interface)) {
+        interface = interface.unquoted();
+    }
+
     types = this.getArgument(aRequest, 'tsh:types', false);
     methods = this.getArgument(aRequest, 'tsh:methods', false);
     owners = this.getArgument(aRequest, 'tsh:owners', false);
+    slots = this.getArgument(aRequest, 'tsh:slots', false);
 
+    //  We collect data based on potentially multiple flags so the best way to
+    //  start is with an empty array we can add to.
+    results = TP.ac();
 
     //  No specification for an object means we need a flag of some kind saying
     //  what we should list (types vs. methods).
     if (TP.isEmpty(arg0)) {
 
-        if (types) {
-            result = TP.sys.getTypes().getValues().collect(function(type) {
-                return TP.name(type);
-            });
-        } else if (methods) {
-            result = TP.sys.getMetadata('methods').getKeys();
-        } else {
+        //  Must have something to list or we just output usage.
+        if (!types && !methods && !slots) {
             aRequest.stdout(usage);
             return aRequest.complete();
         }
 
-        result = result.filter(function(item) {
-            return /(^TP\.|^APP\.)/.test(item);
-        });
-        result.sort();
+        if (types) {
+            results.addAll(
+                TP.sys.getTypes().getValues().collect(function(type) {
+                    return TP.name(type);
+                }));
+        }
 
-        if (column) {
-            result.forEach(function(item) {
-                aRequest.stdout(item);
+        if (methods) {
+            results.addAll(
+                TP.sys.getMetadata('methods').getKeys().collect(
+                function(key) {
+                    TP.regex.UNDERSCORES.index = 0;
+                    return key.replace(TP.regex.UNDERSCORES, '.');
+                }));
+        }
+
+        if (slots) {
+            results.addAll(
+                TP.sys.getMetadata('owners').getKeys().collect(
+                function(key) {
+                    TP.regex.UNDERSCORES.index = 0;
+                    return key.replace(TP.regex.UNDERSCORES, '.');
+                }));
+        }
+
+        results.sort();
+
+    } else {
+
+        //  First attempt to resolve the target as a specific object name.
+        obj = this.resolveObjectReference(arg0, aRequest);
+
+        if (TP.isValid(obj)) {
+            //  If we resolve the object reference our goal is to provide
+            //  reflection data appropriate to the nature of that object.
+
+            if (TP.isNamespace(obj)) {
+
+                //  Namespaces don't support getInterface so we ignore any
+                //  --interface value and focus on --slots, --methods, and
+                //  --types as the things we can list for a namespace.
+
+                if (slots) {
+                    results.addAll(TP.keys(obj));
+                } else {
+                    if (methods) {
+                        results.addAll(TP.keys(obj).filter(function(key) {
+                            if (TP.owns(obj, key)) {
+                                if (TP.isFunction(obj[key])) {
+                                    return true;
+                                }
+                            }
+                        }));
+                    } else if (types) {
+                        results.addAll(TP.keys(obj).filter(function(key) {
+                            if (TP.owns(obj, key)) {
+                                if (TP.isType(obj[key])) {
+                                    return true;
+                                }
+                            }
+                        }));
+                    }
+                }
+                results.sort();
+
+            } else if (TP.isType(obj)) {
+
+                //  Types can support getInterface so we let any --interface
+                //  value override any request for slots, methods, or types.
+
+                if (TP.notEmpty(interface)) {
+                    results.addAll(TP.interface(obj, interface));
+                } else {
+                    if (slots) {
+                        results.addAll(TP.keys(obj));
+                    } else {
+                        if (methods) {
+                            results.addAll(TP.keys(obj).filter(function(key) {
+                                if (TP.owns(obj, key)) {
+                                    if (TP.isFunction(obj[key])) {
+                                        return true;
+                                    }
+                                }
+                            }));
+                        } else {
+                            results.addAll(TP.keys(obj));
+                        }
+                    }
+                }
+                results.sort();
+
+            } else if (TP.isFunction(obj)) {
+
+                results.push(obj.getSignature());
+                results.push(obj.getCommentText());
+
+            } else if (!TP.isMutable(obj)) {
+
+                //  Simple values should just output as values.
+                results.push(TP.str(obj));
+
+            } else {
+                if (TP.notEmpty(interface)) {
+                    results.addAll(TP.interface(obj, interface));
+                } else {
+                    if (slots) {
+                        results.addAll(TP.keys(obj));
+                    } else {
+                        if (methods) {
+                            results.addAll(TP.keys(obj).filter(function(key) {
+                                if (TP.owns(obj, key)) {
+                                    if (TP.isFunction(obj[key])) {
+                                        return true;
+                                    }
+                                }
+                            }));
+                        } else {
+                            results.addAll(TP.keys(obj));
+                        }
+                    }
+                }
+                results.sort();
+            }
+        } else {
+            results.push(arg0 + ' not found.');
+        }
+    }
+
+    if (results.length > 0) {
+
+        //  If we have a filter try to apply it now.
+        if (TP.notEmpty(filter)) {
+
+            re = RegExp.construct(filter);
+
+            results = results.filter(function(result) {
+                if (TP.isValid(re)) {
+                    return re.test(result);
+                } else {
+                    return result.indexOf(filter) !== TP.NOT_FOUND;
+                }
             });
+        }
 
+        //  PhantomJS/CLI support requires output line-by-line.
+        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+            results.forEach(function(result) {
+                aRequest.stdout(result);
+            });
             return aRequest.complete();
         }
 
-        return aRequest.complete(result);
-    }
-
-    //  First attempt to resolve the target as a specific object name.
-    obj = this.resolveObjectReference(arg0, aRequest);
-
-    if (TP.isValid(obj)) {
-        //  If we resolve the object reference our goal is to provide
-        //  reflection data appropriate to the nature of that object.
-
-        //  Namespace objects should return their type lists.
-        if (TP.isNamespace(obj)) {
-            return aRequest.complete('namespace');
-        } else if (TP.isType(obj)) {
-            return aRequest.complete('type');
-        } else if (TP.isFunction(obj)) {
-            return aRequest.complete('method');
-        } else {
-            return aRequest.complete(TP.tname(obj));
-        }
-
-        if (TP.notEmpty(filter)) {
-            keys = TP.interface(obj, filter);
-            aRequest.stdout(keys);
-        }
-
+        return aRequest.complete(results);
+    } else {
         return aRequest.complete();
     }
-
-    //  TODO:
-    //  Not all input values are intended as full object references.
-    //  When we get anything we can't resolve we try to treat it as
-    //  a string to match within the context of our metadata provided we have
-    //  flag values that give us some raw data to filter.
-
-    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------

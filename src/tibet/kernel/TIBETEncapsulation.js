@@ -1437,6 +1437,7 @@ function(pattern, flags) {
 
     var restr,
         attrs,
+        tail,
         newinst,
         msg;
 
@@ -1446,6 +1447,17 @@ function(pattern, flags) {
 
     restr = TP.ifInvalid(pattern, '');
     attrs = TP.ifInvalid(flags, '');
+
+    if (restr.charAt(0) === '/') {
+        tail = restr.slice(restr.lastIndexOf('/') + 1);
+        if (TP.notEmpty(tail)) {
+            attrs += tail;
+        }
+        restr = restr.slice(1, restr.lastIndexOf('/'));
+    }
+
+    //  Don't duplicate flags or we get no regex back :(.
+    attrs = attrs.split('').unique().join('');
 
     try {
         newinst = new RegExp(restr, attrs);

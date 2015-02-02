@@ -349,6 +349,27 @@ function(anID, regOnly, nodeContext) {
         }
     }
 
+    //  seriously, at this point we should have found it. But amazingly we never
+    //  bothered with the simplest thing that could possibly work...
+    if (TP.regex.HAS_PERIOD.test(id)) {
+        parts = id.split('.');
+        obj = top[parts[0]];
+        parts.shift();
+        while (TP.isValid(obj) && parts.length) {
+            obj = TP.wrap(obj);
+            key = parts.shift();
+            if (TP.canInvoke(obj, 'get')) {
+                obj = obj.get(key);
+            } else {
+                obj = obj[key];
+            }
+        }
+
+        if (TP.isValid(obj)) {
+            return TP.wrap(obj);
+        }
+    }
+
     return;
 });
 
