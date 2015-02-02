@@ -2774,9 +2774,20 @@ function(targetObj) {
                 targetObj.vslice(head).perform(
                         function(index) {
 
+                            var itemVal;
+
                             thisType.startObservedAddress(index);
 
-                            val.push(targetObj.at(index));
+                            itemVal = targetObj.at(index);
+
+                            //  If the return value is a callable Function, then
+                            //  call it and reassign the return value to the
+                            //  result.
+                            if (TP.isCallable(itemVal)) {
+                                itemVal = itemVal(targetObj);
+                            }
+
+                            val.push(itemVal);
 
                             thisType.endObservedAddress();
                         });
@@ -2786,9 +2797,20 @@ function(targetObj) {
                 targetObj.vslice(head).perform(
                         function(index) {
 
+                            var itemVal;
+
                             thisType.startObservedAddress(index);
 
-                            val.push(targetObj.at(index).get(TP.apc(tail)));
+                            itemVal = targetObj.at(index);
+
+                            //  If the return value is a callable Function, then
+                            //  call it and reassign the return value to the
+                            //  result.
+                            if (TP.isCallable(itemVal)) {
+                                itemVal = itemVal(targetObj);
+                            }
+
+                            val.push(itemVal.get(TP.apc(tail)));
 
                             thisType.endObservedAddress();
                         });
@@ -2823,9 +2845,20 @@ function(targetObj) {
                 targetObj.performOver(
                         function(item, key) {
 
+                            var itemVal;
+
                             thisType.startObservedAddress(key);
 
-                            val.push(item);
+                            itemVal = item;
+
+                            //  If the return value is a callable Function, then
+                            //  call it and reassign the return value to the
+                            //  result.
+                            if (TP.isCallable(itemVal)) {
+                                itemVal = itemVal(targetObj);
+                            }
+
+                            val.push(itemVal);
 
                             thisType.endObservedAddress();
                         }, queryParts);
@@ -2835,15 +2868,27 @@ function(targetObj) {
                 targetObj.performOver(
                         function(item, key) {
 
+                            var itemVal;
+
                             thisType.startObservedAddress(key);
 
-                            if (TP.isValid(item)) {
-                                val.push(item.get(TP.apc(tail)));
+                            itemVal = item;
+
+                            //  If the return value is a callable Function, then
+                            //  call it and reassign the return value to the
+                            //  result.
+                            if (TP.isCallable(itemVal)) {
+                                itemVal = itemVal(targetObj);
+                            }
+
+                            if (TP.isValid(itemVal)) {
+                                val.push(itemVal.get(TP.apc(tail)));
                             } else {
-                                val.push(item);
+                                val.push(itemVal);
                             }
 
                             thisType.endObservedAddress();
+
                         }, queryParts);
             }
         }
@@ -2854,6 +2899,12 @@ function(targetObj) {
     //  call back in with first part of access path
     if (TP.notValid(val = targetObj.get(head))) {
         return val;
+    }
+
+    //  If the return value is a callable Function, then call it and reassign
+    //  the return value to the result.
+    if (TP.isCallable(val)) {
+        val = val(targetObj);
     }
 
     //  only continue if the tail is valid and the result object can
@@ -2925,9 +2976,19 @@ function(targetObj) {
             targetObj.performOver(
                     function(item, key) {
 
+                        var itemVal;
+
                         thisType.startObservedAddress(key);
 
-                        val.push(item);
+                        itemVal = item;
+
+                        //  If the return value is a callable Function, then
+                        //  call it and reassign the return value to the result.
+                        if (TP.isCallable(itemVal)) {
+                            itemVal = itemVal(targetObj);
+                        }
+
+                        val.push(itemVal);
 
                         thisType.endObservedAddress();
                     }, queryParts);
@@ -2937,12 +2998,22 @@ function(targetObj) {
             targetObj.performOver(
                     function(item, key) {
 
+                        var itemVal;
+
                         thisType.startObservedAddress(key);
 
-                        if (TP.isValid(item)) {
-                            val.push(item.get(TP.apc(tail)));
+                        itemVal = item;
+
+                        //  If the return value is a callable Function, then
+                        //  call it and reassign the return value to the result.
+                        if (TP.isCallable(itemVal)) {
+                            itemVal = itemVal(targetObj);
+                        }
+
+                        if (TP.isValid(itemVal)) {
+                            val.push(itemVal.get(TP.apc(tail)));
                         } else {
-                            val.push(item);
+                            val.push(itemVal);
                         }
 
                         thisType.endObservedAddress();
@@ -2960,6 +3031,12 @@ function(targetObj) {
             //  could be a hash key instead...
             return targetObj.getProperty(tail);
         }
+    }
+
+    //  If the return value is a callable Function, then call it and reassign
+    //  the return value to the result.
+    if (TP.isCallable(val)) {
+        val = val(targetObj);
     }
 
     //  only continue if the tail is valid and the result object can stay
@@ -3020,7 +3097,18 @@ function(targetObj) {
             targetObj.asArray().vslice(tail).perform(
                     function(index) {
 
-                        val.push(targetObj.at(index));
+                        var itemVal;
+
+                        itemVal = targetObj.at(index);
+
+                        //  If the return value is a callable Function, then
+                        //  call it and reassign the return value to the
+                        //  result.
+                        if (TP.isCallable(itemVal)) {
+                            itemVal = itemVal(targetObj);
+                        }
+
+                        val.push(itemVal);
                     });
         } else {
             //  Make sure to strip off the leading '[' and trailing ']'
