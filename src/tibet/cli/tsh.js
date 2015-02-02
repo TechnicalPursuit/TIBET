@@ -137,6 +137,9 @@ Cmd.prototype.execute = function() {
     // Access the argument list. Subtypes can adjust how they assemble this to
     // alter the default behavior.
     arglist = this.getPhantomArglist();
+    if (CLI.isEmpty(arglist)) {
+        return;
+    }
 
     // Finalize it, giving subtypes a chance to tweak the arguments as needed.
     arglist = this.finalizePhantomArglist(arglist);
