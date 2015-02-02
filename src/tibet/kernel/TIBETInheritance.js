@@ -8752,7 +8752,10 @@ function(target, name, track) {
 
     /**
      * @method method
-     * @summary Returns the named method on the target, if it exists.
+     * @summary Returns the named method on the target, if it exists. Note that
+     *     none of the parameters are defaulted. To get default values use the
+     *     getMethod() message on the target object which ultimately relies on
+     *     this call.
      * @param {Object} target The object to try to locate the method on.
      * @param {String} name The method name to locate.
      * @param {String} track The track to locate the method on.
@@ -8778,7 +8781,8 @@ function(target, track) {
 
     /**
      * @method methods
-     * @summary Returns the Array of methods on the target.
+     * @summary Returns the Array of methods on the target. The list of methods
+     *     is the result of invoking
      * @param {Object} target The object to try to locate the methods on.
      * @param {String} track The track to locate the method on.
      * @returns {Array} An Array of Function objects representing the methods.
@@ -8787,6 +8791,7 @@ function(target, track) {
     var names,
         methods;
 
+    TP.interface(target, 'methods');
     names = target.getInterface('methods');
 
     methods = names.collect(
@@ -8875,7 +8880,8 @@ function(aName, aTrack) {
      */
 
     var owner,
-        track;
+        track,
+        method;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
@@ -8886,7 +8892,16 @@ function(aName, aTrack) {
         //  If it is one of the 'Big 8' constructor Functions, then it's a
         //  'type local' method.
         owner = this;
-        track = TP.ifEmpty(aTrack, TP.TYPE_LOCAL_TRACK);
+        track = TP.ifEmpty(aTrack, TP.TYPE_TRACK);
+
+        //  Types can be tricky, particularly in terms of defaulting whether
+        //  something was added as a type method or a type local method. We
+        //  check both options here, preferring type methods over type locals.
+        method = TP.method(owner, aName, track);
+        if (TP.notValid(method)) {
+            track = TP.ifEmpty(aTrack, TP.TYPE_LOCAL_TRACK);
+            return TP.method(owner, aName, track);
+        }
     } else {
         //  Otherwise, it can be considered to be a 'local' method of the
         //  receiving Function object (which is usually a plain, anonymous
@@ -8912,7 +8927,8 @@ function(aTrack) {
      */
 
     var owner,
-        track;
+        track,
+        methods;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
@@ -8923,7 +8939,13 @@ function(aTrack) {
         //  If it is one of the 'Big 8' constructor Functions, then it's a
         //  'type local' method.
         owner = this;
+
+        track = TP.ifEmpty(aTrack, TP.TYPE_TRACK);
+        methods = TP.methods(owner, track);
         track = TP.ifEmpty(aTrack, TP.TYPE_LOCAL_TRACK);
+        methods.addAll(TP.methods(owner, track));
+
+        return methods;
     } else {
         //  Otherwise, it can be considered to be a 'local' method of the
         //  receiving Function object (which is usually a plain, anonymous

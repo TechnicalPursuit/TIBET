@@ -2813,6 +2813,7 @@ function(aRequest) {
     var usage,
         arg0,
         flag,
+        meta,
         obj,
         re,
         keys,
@@ -2899,6 +2900,33 @@ function(aRequest) {
 
         //  First attempt to resolve the target as a specific object name.
         obj = this.resolveObjectReference(arg0, aRequest);
+
+        //  Second attempt :) We try to support shortened input with respect to
+        //  method names in particular. If we find it via that name in the owner
+        //  list we can use that list to filter back through the method keys.
+        if (TP.notValid(obj)) {
+            // Query for owners, but just names. We don't want to ass_ume types.
+            results = TP.sys.getMethodOwners(arg0, true);
+            if (TP.notEmpty(results)) {
+                re = RegExp.construct('/\.' + arg0 + '$/');
+                if (TP.isValid(re)) {
+                    meta = TP.sys.getMetadata('methods');
+                    keys = meta.getKeys().filter(
+                        function(key) {
+                            return TP.notEmpty(re.match(key));
+                        });
+
+                    if (TP.notEmpty(keys) && keys.getSize() > 1) {
+                        results = keys.collect(function(key) {
+                            TP.regex.UNDERSCORES.index = 0;
+                            return key.replace(TP.regex.UNDERSCORES, '.');
+                        });
+                    } else {
+                        obj = meta.at(keys.first());
+                    }
+                }
+            }
+        }
 
         if (TP.isValid(obj)) {
             //  If we resolve the object reference our goal is to provide
@@ -2991,7 +3019,7 @@ function(aRequest) {
                 }
                 results.sort();
             }
-        } else {
+        } else if (TP.isEmpty(results)) {
             results.push(arg0 + ' not found.');
         }
     }
