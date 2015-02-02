@@ -725,6 +725,8 @@ TP.core.TagProcessor.Type.defineConstant(
     ));
 
 //  A set of phase types used when 'detaching' content from a visual DOM
+//  Note how these are reversed from the attach phases, to give things that rely
+//  on these phases chance to unwind in reverse order.
 TP.core.TagProcessor.Type.defineConstant(
     'DETACH_PHASES',
     TP.ac(
