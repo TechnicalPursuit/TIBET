@@ -706,6 +706,8 @@ function(aDocument) {
 
         selElem,
 
+        win,
+
         theSelection,
 
         selectionParentElement;
@@ -729,7 +731,11 @@ function(aDocument) {
         return null;
     }
 
-    theSelection = TP.nodeGetWindow(aDocument).getSelection();
+    if (!TP.isWindow(win = TP.nodeGetWindow(aDocument))) {
+        return null;
+    }
+
+    theSelection = win.getSelection();
 
     if (TP.notValid(theSelection)) {
         return null;
@@ -778,9 +784,9 @@ function(aDocument) {
     //  TP.SELECTION_NONE if the selection is null.
     selectionType = TP.documentGetSelectionType(aDocument);
 
-    //  If the selection type is a whole HTMLElement, then bail out here
-    //  by returning null. We want text.
-    if (selectionType === TP.SELECTION_ELEMENT) {
+    //  If the selection type isn't a whole chunk of text, then bail out here by
+    //  returning null. We want text.
+    if (selectionType !== TP.SELECTION_TEXT) {
         return null;
     }
 
@@ -814,14 +820,20 @@ function(aDocument) {
      *     the current selection is.
      */
 
-    var theSelection,
+    var win,
+
+        theSelection,
         theRange;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    theSelection = TP.nodeGetWindow(aDocument).getSelection();
+    if (!TP.isWindow(win = TP.nodeGetWindow(aDocument))) {
+        return TP.SELECTION_NONE;
+    }
+
+    theSelection = win.getSelection();
 
     //  If we didn't get a valid selection, or the selection is collapsed,
     //  then we have no selected content, so return TP.SELECTION_NONE
