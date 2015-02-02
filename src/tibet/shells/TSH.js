@@ -2154,7 +2154,8 @@ function(aRequest) {
 
     var methods,
         terms,
-        regex;
+        regex,
+        results;
 
     terms = this.getArgument(aRequest, 'ARGV');
 
@@ -2165,7 +2166,7 @@ function(aRequest) {
 
         //  Use a global regex so we can capture counts which form a kind of aid
         //  for determining which matches are the most relevant.
-        regex =  RegExp.construct(term.unquoted(), 'g');
+        regex = RegExp.construct(term.unquoted(), 'g');
         if (TP.notValid(regex)) {
             return term;
         }
@@ -2188,6 +2189,9 @@ function(aRequest) {
         count = 0;
 
         terms.forEach(function(term) {
+            var parts,
+                match;
+
             if (TP.isString(term)) {
                 //  Split the comment using the string. The number of parts
                 //  represents one more than the number of times that string was
@@ -2992,11 +2996,11 @@ function(aRequest) {
             results = TP.sys.getMethodOwners(arg0, true);
             if (TP.notEmpty(results)) {
                 regex = RegExp.construct('/\.' + arg0 + '$/');
-                if (TP.isValid(re)) {
+                if (TP.isValid(regex)) {
                     meta = TP.sys.getMetadata('methods');
                     keys = meta.getKeys().filter(
                         function(key) {
-                            return TP.notEmpty(re.match(key));
+                            return TP.notEmpty(regex.match(key));
                         });
 
                     if (TP.notEmpty(keys) && keys.getSize() > 1) {
@@ -3077,11 +3081,11 @@ function(aRequest) {
                     results = TP.sys.getMethodOwners(arg0, true);
                     if (TP.notEmpty(results)) {
                         regex = RegExp.construct('/\.' + arg0 + '$/');
-                        if (TP.isValid(re)) {
+                        if (TP.isValid(regex)) {
                             meta = TP.sys.getMetadata('methods');
                             keys = meta.getKeys().filter(
                                 function(key) {
-                                    return TP.notEmpty(re.match(key));
+                                    return TP.notEmpty(regex.match(key));
                                 });
 
                             if (TP.notEmpty(keys) && keys.getSize() > 1) {
@@ -3139,8 +3143,8 @@ function(aRequest) {
             regex = RegExp.construct(filter);
 
             results = results.filter(function(result) {
-                if (TP.isValid(re)) {
-                    return re.test(result);
+                if (TP.isValid(regex)) {
+                    return regex.test(result);
                 } else {
                     return result.indexOf(filter) !== TP.NOT_FOUND;
                 }
