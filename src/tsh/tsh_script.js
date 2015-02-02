@@ -685,7 +685,9 @@ function(source, shell, sibling, request) {
                             //  previous token must be a valid identifier
                             //  that could be an attribute name
                             last = arr[i - 1];
-                            if (!last || (last.name !== 'identifier')) {
+                            if (!last ||
+                                (last.name !== 'identifier' &&
+                                 last.name !== 'reserved')) {
                                 TP.ifWarn() ?
                                     TP.warn('Missing attribute name in' +
                                             ' tag input: ' + token.value,
@@ -740,7 +742,9 @@ function(source, shell, sibling, request) {
                             //  them prior to request execution.
                             next = arr[i + 1];
 
-                            if (next && next.name === 'identifier') {
+                            if (next &&
+                                (next.name === 'identifier' ||
+                                 next.name === 'reserved')) {
                                 more = arr[i + 2];
 
                                 if (more && more.value === '=') {
@@ -778,7 +782,7 @@ function(source, shell, sibling, request) {
                                     //  that's a syntax error
                                     TP.ifWarn() ?
                                         TP.warn('Missing flag name in tag' +
-                                                    ' input.',
+                                                    ' input: ' + source + '.',
                                                 TP.LOG) : 0;
                                     break;
                                 }
@@ -2448,7 +2452,8 @@ function(src, shell, request) {
                     continue;
                 }
 
-                if (next.name !== 'identifier') {
+                if (next.name !== 'identifier' &&
+                    next.name !== 'reserved') {
                     //  could be a comment...we handle PI and CDATA blocks
                     //  elsewhere since their opening syntax is not valid JS
                     //  but a comment's could be as in ( foo < ! --bar )
@@ -2699,7 +2704,8 @@ function(src, shell, request) {
                 //  since that will turn off processing of content for shell
                 //  sugars and make the content "literal" and preserve any
                 //  leading whitespace
-                while (token && (token.name !== 'identifier')) {
+                while (token && (token.name !== 'identifier' ||
+                            token.name !== 'reserved')) {
                     literal = (token.value === '\\');
                     preserve = (token.value === '-');
 
@@ -2709,7 +2715,9 @@ function(src, shell, request) {
 
                 //  have to see an identifier which will become our ending
                 //  delimiter when we see it again
-                if (token && (token.name === 'identifier')) {
+                if (token && (
+                        token.name === 'identifier' ||
+                        token.name === 'reserved')) {
                     //  capture the termination delimiter
                     term = token.value;
 
