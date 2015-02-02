@@ -782,6 +782,91 @@ function() {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Type.defineMethod('populateSubstitutionInfo',
+function(aRequest) {
+
+    /**
+     * @method populateSubstitutionInfo
+     * @summary Populates a hash of substitution information.
+     * @description This method populates the following variables into a hash
+     *     that it returns, useful for executing substitutions.
+     *
+     *          $REQUEST    ->  The request that triggered this processing.
+     *          $TAG        ->  The TP.core.ElementNode that contains this text
+     *                          node.
+     *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
+     *                          the result of this processing will be rendered
+     *                          into.
+     *          $SELECTION  ->  The current selection. This could be text or an
+     *                          Array of objects determined by the selection
+     *                          manager.
+     *          $*          ->  An alias for $SELECTION
+     *          $FOCUS      ->  The currently focused TP.core.ElementNode in the
+     *                          target TP.core.DocumentNode.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {TP.lang.Hash} The hash containing the substitution info as
+     *     detailed in the description.
+     */
+
+    var node,
+        parentNode,
+
+        selectionFunc,
+        focusFunc,
+
+        info,
+
+        result;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isNode(node = aRequest.at('node'))) {
+        return;
+    }
+
+    if (TP.isAttributeNode(node)) {
+        parentNode = TP.attributeGetOwnerElement(node);
+    } else {
+        parentNode = node.parentNode;
+    }
+
+    selectionFunc = function () {
+
+        var targetTPDoc;
+
+        if (TP.isValid(targetTPDoc = aRequest.at('target'))) {
+            return TP.wrap(
+                    TP.documentGetSelectionText(
+                        TP.unwrap(targetTPDoc)));
+        }
+    };
+
+    focusFunc = function () {
+
+        var targetTPDoc;
+
+        if (TP.isValid(targetTPDoc = aRequest.at('target'))) {
+            return TP.wrap(
+                    TP.documentGetFocusedElement(
+                        TP.unwrap(targetTPDoc)));
+        }
+    };
+
+    info = TP.hc(
+        '$REQUEST', aRequest,
+        '$TAG', TP.wrap(parentNode),
+        '$TARGET', aRequest.at('target'),
+        '$SELECTION', selectionFunc,
+        '$*', selectionFunc,            //  Alias for $SELECTION
+        '$FOCUS', focusFunc,
+        '$@', focusFunc                 //  Alias for $FOCUS
+        );
+
+    return info;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Type.defineMethod('tagPrecompile',
 function(aRequest) {
 
@@ -794,16 +879,28 @@ function(aRequest) {
      *     substitutions expressions:
      *
      *          $REQUEST    ->  The request that triggered this processing.
-     *          $TARGET     ->  The target document, if any, that the result of
-     *                          this processing will be rendered into.
+     *          $TAG        ->  The TP.core.ElementNode that contains this text
+     *                          node.
+     *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
+     *                          the result of this processing will be rendered
+     *                          into.
+     *          $SELECTION  ->  The current selection. This could be text or an
+     *                          Array of objects determined by the selection
+     *                          manager.
+     *          $*          ->  An alias for $SELECTION
+     *          $FOCUS      ->  The currently focused TP.core.ElementNode in the
+     *                          target TP.core.DocumentNode.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
     var node,
+        tpNode,
 
-        templateStr,
-        templateParams,
+        info,
+
+        str,
+        params,
 
         result;
 
@@ -812,15 +909,15 @@ function(aRequest) {
         return;
     }
 
-    templateStr = TP.nodeGetTextContent(node);
+    tpNode = TP.wrap(node);
 
-    templateParams = TP.hc(
-        '$REQUEST', aRequest,
-        '$TARGET', aRequest.at('target'));
+    info = this.populateSubstitutionInfo(aRequest);
 
-    result = templateStr.transform(TP.wrap(node), templateParams);
+    str = tpNode.getTextContent();
 
-    TP.nodeSetTextContent(node, result);
+    result = str.transform(tpNode, info);
+
+    tpNode.setTextContent(result);
 
     return;
 });
@@ -11830,62 +11927,6 @@ function(operation) {
 TP.core.Node.defineSubtype('AttributeNode');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
-//  Tag Phase Support
-//  ------------------------------------------------------------------------
-
-TP.core.AttributeNode.Type.defineMethod('tagPrecompile',
-function(aRequest) {
-
-    /**
-     * @method tagPrecompile
-     * @summary Precompiles the content by running any substitution expressions
-     *     in it.
-     * @description At this level, this method runs substitutions against the
-     *     text content of the node and supplies the following variables to the
-     *     substitutions expressions:
-     *
-     *          $REQUEST    ->  The request that triggered this processing.
-     *          $TAG        ->  The element that owns this attribute.
-     *          $TARGET     ->  The target document, if any, that the result of
-     *                          this processing will be rendered into.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var node,
-        parentNode,
-
-        templateStr,
-        templateParams,
-
-        result;
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isNode(node = aRequest.at('node'))) {
-        return;
-    }
-
-    parentNode = TP.attributeGetOwnerElement(node);
-
-    templateStr = TP.nodeGetTextContent(node);
-
-    templateParams = TP.hc(
-        '$REQUEST', aRequest,
-        '$TAG', TP.wrap(parentNode),
-        '$TARGET', aRequest.at('target'));
-
-    result = templateStr.transform(TP.wrap(node), templateParams);
-
-    TP.nodeSetTextContent(node, result);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -11924,62 +11965,6 @@ function() {
 //  ========================================================================
 
 TP.core.Node.defineSubtype('TextNode');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
-//  Tag Phase Support
-//  ------------------------------------------------------------------------
-
-TP.core.TextNode.Type.defineMethod('tagPrecompile',
-function(aRequest) {
-
-    /**
-     * @method tagPrecompile
-     * @summary Precompiles the content by running any substitution expressions
-     *     in it.
-     * @description At this level, this method runs substitutions against the
-     *     text content of the node and supplies the following variables to the
-     *     substitutions expressions:
-     *
-     *          $REQUEST    ->  The request that triggered this processing.
-     *          $TAG        ->  The element that wraps this text node.
-     *          $TARGET     ->  The target document, if any, that the result of
-     *                          this processing will be rendered into.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var node,
-        parentNode,
-
-        templateStr,
-        templateParams,
-
-        result;
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isNode(node = aRequest.at('node'))) {
-        return;
-    }
-
-    parentNode = node.parentNode;
-
-    templateStr = TP.nodeGetTextContent(node);
-
-    templateParams = TP.hc(
-        '$REQUEST', aRequest,
-        '$TAG', TP.wrap(parentNode),
-        '$TARGET', aRequest.at('target'));
-
-    result = templateStr.transform(TP.wrap(node), templateParams);
-
-    TP.nodeSetTextContent(node, result);
-
-    return;
-});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
