@@ -818,7 +818,7 @@ function(aRequest) {
         '$REQUEST', aRequest,
         '$TARGET', aRequest.at('target'));
 
-    result = templateStr.transform(null, templateParams);
+    result = templateStr.transform(TP.wrap(node), templateParams);
 
     TP.nodeSetTextContent(node, result);
 
@@ -11878,7 +11878,7 @@ function(aRequest) {
         '$TAG', TP.wrap(parentNode),
         '$TARGET', aRequest.at('target'));
 
-    result = templateStr.transform(null, templateParams);
+    result = templateStr.transform(TP.wrap(node), templateParams);
 
     TP.nodeSetTextContent(node, result);
 
@@ -11974,7 +11974,7 @@ function(aRequest) {
         '$TAG', TP.wrap(parentNode),
         '$TARGET', aRequest.at('target'));
 
-    result = templateStr.transform(null, templateParams);
+    result = templateStr.transform(TP.wrap(node), templateParams);
 
     TP.nodeSetTextContent(node, result);
 
