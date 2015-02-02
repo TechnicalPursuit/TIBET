@@ -60,9 +60,22 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
  * @type {String}
  */
 Cmd.prototype.HELP =
-'Runs the TSH :apropos command to find methods related to a specific topic.\n\n' +
+'Runs the TSH :apropos command to find methods related to one or more topics.\n\n' +
 
-'\n';
+'You can provide one or more search terms and the command will use them all\n' +
+'to construct a total match count which serves to sort results. Methods with\n' +
+'higher match counts are returned first. Match counts are provided behind\n' +
+'each result line so you have a sense of which methods are most relevant.\n\n' +
+
+'For example, you can find methods which may relate to \'clipping\' via:\n\n' +
+
+'$ tibet apropos clipping\n' +
+'...\n' +
+'TP_Primitive_elementGetClipRect (5)\n' +
+'TP_Primitive_elementSetClipRect (5)\n' +
+'TP_Primitive_elementWrapToContent (1)\n' +
+'TP.core.MultiTransition_Inst_step (1)\n' +
+'...\n\n';
 
 
 /**

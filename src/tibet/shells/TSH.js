@@ -2215,6 +2215,10 @@ function(aRequest) {
         return a[1] < b[1];
     });
 
+    results = results.map(function(result) {
+        return result[0] + ' (' + result[1] + ')';
+    });
+
     //  PhantomJS/CLI support requires output line-by-line.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
         results.forEach(function(result) {
