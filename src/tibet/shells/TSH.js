@@ -2989,8 +2989,32 @@ function(aRequest) {
 
             } else if (TP.isFunction(obj)) {
 
-                results.push(obj.getSignature());
-                results.push(obj.getCommentText());
+                if (owners) {
+                    // Query for owners, but just names.
+                    results = TP.sys.getMethodOwners(arg0, true);
+                    if (TP.notEmpty(results)) {
+                        re = RegExp.construct('/\.' + arg0 + '$/');
+                        if (TP.isValid(re)) {
+                            meta = TP.sys.getMetadata('methods');
+                            keys = meta.getKeys().filter(
+                                function(key) {
+                                    return TP.notEmpty(re.match(key));
+                                });
+
+                            if (TP.notEmpty(keys) && keys.getSize() > 1) {
+                                results = keys.collect(function(key) {
+                                    TP.regex.UNDERSCORES.index = 0;
+                                    return key.replace(TP.regex.UNDERSCORES, '.');
+                                });
+                            } else {
+                                obj = meta.at(keys.first());
+                            }
+                        }
+                    }
+                } else {
+                    results.push(obj.getSignature());
+                    results.push(obj.getCommentText());
+                }
 
             } else if (!TP.isMutable(obj)) {
 
