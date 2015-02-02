@@ -8791,8 +8791,7 @@ function(target, track) {
     var names,
         methods;
 
-    TP.interface(target, 'methods');
-    names = target.getInterface('methods');
+    names = TP.interface(target, 'methods');
 
     methods = names.collect(
         function(name) {
