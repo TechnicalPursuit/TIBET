@@ -2149,6 +2149,85 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Inst.defineMethod('executeApropos',
+function(aRequest) {
+
+    var methods,
+        terms,
+        regex;
+
+    terms = this.getArgument(aRequest, 'ARGV');
+
+    //  Convert terms into regular expressions if possible. Otherwise use the
+    //  original term and we'll try indexOf during checking.
+    terms = terms.map(function(term) {
+        var regex;
+
+        //  Use a global regex so we can capture counts which form a kind of aid
+        //  for determining which matches are the most relevant.
+        regex =  RegExp.construct(term.unquoted(), 'g');
+        if (TP.notValid(regex)) {
+            return term;
+        }
+        return regex;
+    });
+
+    results = TP.ac();
+
+    methods = TP.sys.getMetadata('methods');
+    methods.perform(function(item) {
+        var name,
+            func,
+            text,
+            count;
+
+        name = item.at(0);
+        func = item.at(1);
+        text = func.getCommentText();
+
+        count = 0;
+
+        terms.forEach(function(term) {
+            if (TP.isString(term)) {
+                //  Split the comment using the string. The number of parts
+                //  represents one more than the number of times that string was
+                //  in the text.
+                parts = text.split(term);
+                count += parts.length - 1;
+            } else {
+                //  Our regular expressions are global so they'll provide a
+                //  match count for the total string.
+                match = term.match(text);
+                if (TP.isValid(match)) {
+                    count += match.length;
+                }
+            }
+        });
+
+        //  If there were matches then push a name and count into the results.
+        if (count > 0) {
+            results.push(TP.ac(name, count));
+        }
+    });
+
+    //  Sort by "relevance" in terms of counts.
+    results = results.sort(function(a, b) {
+        return a[1] < b[1];
+    });
+
+    //  PhantomJS/CLI support requires output line-by-line.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        results.forEach(function(result) {
+            aRequest.stdout(result);
+        });
+        return aRequest.complete();
+    }
+
+    return aRequest.complete(results);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Inst.defineMethod('executeDoclint',
 function(aRequest) {
 
@@ -2170,7 +2249,7 @@ function(aRequest) {
 
     aRequest.atPut('cmdTAP', true);
 
-    results = [];
+    results = TP.ac();
 
     // The following tags allow duplicate entries for the same tag. This list is
     // not strictly exhaustive, but it should be adequate for now.
@@ -2243,7 +2322,7 @@ function(aRequest) {
         file = TP.objectGetSourcePath(func) || TP.objectGetLoadPath(func);
         lines = func.getCommentLines();
         source = func.getSourceText();
-        error = {file: file, name: name, errors: []};
+        error = {file: file, name: name, errors: TP.ac()};
 
         //  Create an entry for every file. This will let us count total files
         //  in addition to just error files.
@@ -2725,7 +2804,7 @@ function(aRequest) {
 
         errors = fileDict.at(result.file);
         if (TP.notValid(errors)) {
-            errors = [];
+            errors = TP.ac();
         }
         fileDict.atPut(result.file, errors);
 
@@ -2815,7 +2894,7 @@ function(aRequest) {
         flag,
         meta,
         obj,
-        re,
+        regex,
         keys,
         types,
         methods,
@@ -2908,7 +2987,7 @@ function(aRequest) {
             // Query for owners, but just names. We don't want to ass_ume types.
             results = TP.sys.getMethodOwners(arg0, true);
             if (TP.notEmpty(results)) {
-                re = RegExp.construct('/\.' + arg0 + '$/');
+                regex = RegExp.construct('/\.' + arg0 + '$/');
                 if (TP.isValid(re)) {
                     meta = TP.sys.getMetadata('methods');
                     keys = meta.getKeys().filter(
@@ -2993,7 +3072,7 @@ function(aRequest) {
                     // Query for owners, but just names.
                     results = TP.sys.getMethodOwners(arg0, true);
                     if (TP.notEmpty(results)) {
-                        re = RegExp.construct('/\.' + arg0 + '$/');
+                        regex = RegExp.construct('/\.' + arg0 + '$/');
                         if (TP.isValid(re)) {
                             meta = TP.sys.getMetadata('methods');
                             keys = meta.getKeys().filter(
@@ -3053,7 +3132,7 @@ function(aRequest) {
         //  If we have a filter try to apply it now.
         if (TP.notEmpty(filter)) {
 
-            re = RegExp.construct(filter);
+            regex = RegExp.construct(filter);
 
             results = results.filter(function(result) {
                 if (TP.isValid(re)) {
