@@ -9137,6 +9137,7 @@ TP.boot.$importComponents = function(loadSync) {
 
     TP.boot.$loadNode = null;
     TP.boot.$loadPath = null;
+    TP.boot.$srcPath = null;
 
     if (TP.boot.shouldStop()) {
         return;
@@ -9261,8 +9262,10 @@ TP.boot.$importComponents = function(loadSync) {
         if (srcpath) {
             TP.boot.$loadPath = srcpath;
             TP.boot.$$loadpaths.push(srcpath);
+            TP.boot.$srcPath = TP.boot.$uriInTIBETFormat(srcpath);
         } else {
             TP.boot.$loadPath = null;
+            TP.boot.$srcPath = null;
         }
 
         //  set the configuration values so the sourceImport call will have
