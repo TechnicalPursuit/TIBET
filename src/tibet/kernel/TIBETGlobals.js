@@ -1195,6 +1195,31 @@ TP.HTML_401_TAGS = {
 };
 
 //  ---
+//  xml support
+//  ---
+
+TP.XML_NCNAME = '[A-Za-z_]|[^\\x00-\\x7F]';
+TP.XML_NCNAMECHAR = '[A-Za-z0-9_.-]|[^\\x00-\\x7F]';
+
+TP.XML_NAMESTART = '[A-Za-z_:]|[^\\x00-\\x7F]';
+TP.XML_NAMECHAR = '[A-Za-z0-9_:.-]|[^\\x00-\\x7F]';
+TP.XML_ATTRVAL = '"[^<"]' + '*' + '"' + '|\'[^<\']*\'';
+
+TP.XML_NAME = '(' + TP.XML_NAMESTART + ')' + '(' + TP.XML_NAMECHAR + ')*';
+
+TP.CONTAINS_ELEM_MARKUP_DEF =
+        '<(' + TP.XML_NAMESTART + ')([^<>"\']+|' + TP.XML_ATTRVAL + ')*>';
+
+TP.XML_COMMENT_DEF =
+    '<!--(([^-]*)-([^-][^-]*-)*->?)?';
+
+TP.XML_CDATA_DEF =
+    '<!\\[CDATA\\[([^]]*]([^]]+])*]+([^]>][^]]*]([^]]+])*]+)*>)?';
+
+TP.XML_PI_DEF =
+    '<\\?(([A-Za-z_:]|[^\\x00-\\x7F])([A-Za-z0-9_:.-]|[^\\x00-\\x7F])*(\\?>|[\\n\\r\\t ][^?]*\\?+([^>?][^?]*\\?+)*>)?)?';
+
+//  ---
 //  css support
 //  ---
 
@@ -2406,23 +2431,12 @@ TP.regex.TEST_FUNCTION = /test[a-zA-Z0-9$_'"]+/;
 //  markup
 //  ---
 
-TP.XML_NCNAME = '[A-Za-z_]|[^\\x00-\\x7F]';
-TP.XML_NCNAMECHAR = '[A-Za-z0-9_.-]|[^\\x00-\\x7F]';
-
 TP.regex.XML_IDREF = new RegExp(
                         TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*');
-
-TP.XML_NAMESTART = '[A-Za-z_:]|[^\\x00-\\x7F]';
-TP.XML_NAMECHAR = '[A-Za-z0-9_:.-]|[^\\x00-\\x7F]';
-TP.XML_ATTRVAL = '"[^<"]' + '*' + '"' + '|\'[^<\']*\'';
-
-TP.XML_NAME = '(' + TP.XML_NAMESTART + ')' + '(' + TP.XML_NAMECHAR + ')*';
 
 TP.regex.IS_ELEM_MARKUP = new RegExp(
         '^(\\s)*<' + TP.XML_NAME + '>(\\s)*' + '([\\s\\S]*)' + '>(\\s)*$');
 
-TP.CONTAINS_ELEM_MARKUP_DEF =
-        '<(' + TP.XML_NAMESTART + ')([^<>"\']+|' + TP.XML_ATTRVAL + ')*>';
 TP.regex.CONTAINS_ELEM_MARKUP = new RegExp(TP.CONTAINS_ELEM_MARKUP_DEF);
 
 TP.regex.HAS_ELEMENT = /<\/|\/>/;
@@ -2461,8 +2475,6 @@ TP.regex.XHTML_10_EMPTY_ELEMENTS_STRIP = /<\/(area|base|basefont|bgsound|br|col|
 //  A RegExp that matches XML comments.
 
 //  The content of the comment can be found in group 2.
-TP.XML_COMMENT_DEF =
-    '<!--(([^-]*)-([^-][^-]*-)*->?)?';
 TP.regex.XML_COMMENT = new RegExp(TP.XML_COMMENT_DEF, 'g'); // needs reset
 
 //  A RegExp that matches an XML comment that must be the whole content
@@ -2470,8 +2482,6 @@ TP.regex.XML_COMMENT_WHOLE = new RegExp('^<!--(.+?)-->$');
 
 //  A RegExp that matches XML CDATA sections.
 
-TP.XML_CDATA_DEF =
-    '<!\\[CDATA\\[([^]]*]([^]]+])*]+([^]>][^]]*]([^]]+])*]+)*>)?';
 TP.regex.XML_CDATA = new RegExp(TP.XML_CDATA_DEF, 'g'); // needs reset
 
 //  A RegExp that matches an XML CDATA section that must be the whole content
@@ -2481,10 +2491,6 @@ TP.regex.XML_CDATA_WHOLE = new RegExp('^<!\\[CDATA\\[(.+?)\\]\\]>$');
 
 //  The content of the PI can be found in group 1 - including the trailing '?>'
 //  which may need to be sliced off
-/* eslint-disable max-len */
-TP.XML_PI_DEF =
-    '<\\?(([A-Za-z_:]|[^\\x00-\\x7F])([A-Za-z0-9_:.-]|[^\\x00-\\x7F])*(\\?>|[\\n\\r\\t ][^?]*\\?+([^>?][^?]*\\?+)*>)?)?';
-/* eslint-enable max-len */
 
 TP.regex.XML_PI = new RegExp(TP.XML_PI_DEF, 'g'); // needs reset
 
