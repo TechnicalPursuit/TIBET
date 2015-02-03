@@ -1515,6 +1515,9 @@ function(attributeName) {
         infoHash,
 
         attrNodes,
+        attrVal,
+
+        results,
         bindEntries,
 
         scopeVals;
@@ -1532,10 +1535,14 @@ function(attributeName) {
                         elem, '*:' + attributeName, TP.w3.Xmlns.BIND))) {
         return infoHash;
     } else {
-        //  Otherwise, grab the value and split it along ';' (and stripping
-        //  surrounding whitespace)
-        //  TODO: This needs to be much more sophisticated.
-        bindEntries = attrNodes[0].value.split(/\s*;\s*/);
+        //  Otherwise, grab the value and parse out each name: value pair using
+        //  this global RegExp.
+        attrVal = attrNodes[0].value;
+        bindEntries = TP.hc();
+        while (TP.notEmpty(
+                    results = TP.regex.BIND_ATTR_SPLITTER.exec(attrVal))) {
+            bindEntries.atPut(results.at(1), results.at(4));
+        }
     }
 
     //  Obtain the binding scope values by walking the DOM tree.
@@ -1554,13 +1561,8 @@ function(attributeName) {
                 allVals,
                 fullyExpandedVal;
 
-            //  Each entry will have a 'name: value' pair. We split them all out
-            //  by semicolon above - now we have to split each one into name and
-            //  value.
-            //  TODO: This needs to be much more sophisticated.
-            parts = bindEntry.match(/(\w+)\:\s*([^;]+)/);
-            bindName = parts.at(1);
-            bindVal = parts.at(2);
+            bindName = bindEntry.first();
+            bindVal = bindEntry.last();
 
             if (TP.notEmpty(scopeVals)) {
                 //  Concatenate the binding value onto the scope values array

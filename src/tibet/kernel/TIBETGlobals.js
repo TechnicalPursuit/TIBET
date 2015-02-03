@@ -2386,6 +2386,11 @@ TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 //  followed by 0-n whitespace, followed by 1-n any characters
 TP.regex.ACP_FORMAT = /([^\\]*?)\s*\.%\s*(.+)/;
 
+TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
+                                            '\\s*:\\s*' +
+                                            '(' + '[^;]+' + ');?',
+                                        'g'); // needs reset
+
 TP.regex.INLINE_BINDING_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
 
 TP.regex.TSH_VARSUB = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/;

@@ -15,7 +15,7 @@
 TP.bind.XMLNS.Type.describe('bind: parsing binds',
 function() {
 
-    this.it('binding attribute parsing tests', function(test, options) {
+    this.it('binding attribute parsing tests - non namespaced attributes', function(test, options) {
         var testMarkup,
             info;
 
@@ -91,6 +91,84 @@ function() {
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo.foo)');
         test.assert.hasKey(info, 'bar');
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(foo.bar)');
+    });
+
+    this.it('binding attribute parsing tests - namespaced attributes', function(test, options) {
+        var testMarkup,
+            info;
+
+        //  NB: These tests test only for 'bind:in', not 'bind:out' or
+        //  'bind:io', but they're all subject to the same rules.
+
+        //  Fully formed URI, no fragment, single value
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo');
+
+        //  Fully formed URI, with fragment, single value
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo#tibet(foo)"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+
+        //  Fully formed URI, no fragment, multiple values
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo; bar:moo: urn:tibet:bar"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo');
+        test.assert.hasKey(info, 'bar:moo');
+        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:bar');
+
+        //  Fully formed URI, with fragment, multiple values
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo#tibet(foo); bar:moo: urn:tibet:bar#tibet(bar)"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'bar:moo');
+        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:bar#tibet(bar)');
+
+        //  Partially formed URI, with fragment (specified pointer scheme), single value
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: #tibet(foo)"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+
+        //  Partially formed URI, with fragment (unspecified pointer scheme), single value
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: foo"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+
+        //  Partially formed URI, with fragment (specified pointer scheme), multiple values
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: #tibet(foo); bar:moo: #tibet(bar)"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'bar:moo');
+        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(bar)');
+
+        //  Partially formed URI, with fragment (unspecified pointer scheme), multiple values
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: foo; bar:moo: bar"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'bar:moo');
+        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(bar)');
+
+        //  Partially formed URI, with fragment (specified pointer scheme), single value, split path
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="bar:moo: bar"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'bar:moo');
+        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(foo.bar)');
+
+        //  Partially formed URI, with fragment (specified pointer scheme), multiple values, split path
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="foo:moo: foo; bar:moo: bar"/>');
+        info = testMarkup.getBindingInfoFrom('in');
+        test.assert.hasKey(info, 'foo:moo');
+        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo.foo)');
+        test.assert.hasKey(info, 'bar:moo');
+        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(foo.bar)');
     });
 });
 
