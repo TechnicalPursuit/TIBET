@@ -468,7 +468,7 @@ targets.rollup_base = function(make) {
         config: 'base',
         dir: './lib/src',
         prefix: 'tibet_',
-        headers: false,
+        headers: true,
         minify: false,
         zip: true
     }).then(function() {
@@ -477,7 +477,7 @@ targets.rollup_base = function(make) {
             config: 'base',
             dir: './lib/src',
             prefix: 'tibet_',
-            headers: false,
+            headers: true,
             minify: true,
             zip: true
         });
@@ -498,7 +498,7 @@ targets.rollup_developer = function(make) {
         config: 'developer',
         dir: './lib/src',
         prefix: 'tibet_',
-        headers: false,
+        headers: true,
         minify: false,
         zip: true
     }).then(function() {
@@ -507,7 +507,7 @@ targets.rollup_developer = function(make) {
             config: 'developer',
             dir: './lib/src',
             prefix: 'tibet_',
-            headers: false,
+            headers: true,
             minify: true,
             zip: true
         });
@@ -528,7 +528,7 @@ targets.rollup_full = function(make) {
         config: 'full',
         dir: './lib/src',
         prefix: 'tibet_',
-        headers: false,
+        headers: true,
         minify: false,
         zip: true
     }).then(function() {
@@ -537,7 +537,7 @@ targets.rollup_full = function(make) {
             config: 'full',
             dir: './lib/src',
             prefix: 'tibet_',
-            headers: false,
+            headers: true,
             minify: true,
             zip: true
         });
