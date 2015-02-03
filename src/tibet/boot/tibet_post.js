@@ -1991,13 +1991,12 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
 
     //  TODO: best to replace with a better list derived from reflection on the
     //  sys.cfg path.* properties.
-    path = aPath.replace(TP.boot.$uriExpandPath('~app_cfg'), '~app_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~lib_cfg'), '~lib_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~app_src'), '~app_src');
+    path = aPath.replace(TP.boot.$uriExpandPath('~lib_cfg'), '~lib_cfg');
     path = path.replace(TP.boot.$uriExpandPath('~lib_src'), '~lib_src');
-    path = path.replace(TP.boot.$uriExpandPath('~app'), '~app');
     path = path.replace(TP.boot.$uriExpandPath('~lib'), '~lib');
-    path = path.replace(TP.boot.$uriExpandPath('~tibet'), '~tibet');
+    path = path.replace(TP.boot.$uriExpandPath('~app_cfg'), '~app_cfg');
+    path = path.replace(TP.boot.$uriExpandPath('~app_src'), '~app_src');
+    path = path.replace(TP.boot.$uriExpandPath('~app'), '~app');
     path = path.replace(TP.boot.$uriExpandPath('~'), '~');
 
     TP.boot.$$tibetURIS[aPath] = path;
