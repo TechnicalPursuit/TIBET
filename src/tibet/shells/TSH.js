@@ -2392,7 +2392,11 @@ function(aRequest) {
                 keys.forEach(function(key) {
                     var value;
                     value = aliases[key];
-                    if (line.startsWith(key)) {
+                    // NOTE the trailing space. This ensures we don't match
+                    // @description and think it's @desc etc.
+                    if (line.startsWith(key + ' ')) {
+                        result = TP.ifInvalid(result, error);
+                        result.errors.push('prefer ' + value + ' to ' + key);
                         lines[index] = line.replace(key, value);
                     }
                 });
@@ -3009,12 +3013,13 @@ function(aRequest) {
         //  method names in particular. If we find it via that name in the owner
         //  list we can use that list to filter back through the method keys.
         if (TP.notValid(obj)) {
+            meta = TP.sys.getMetadata('methods');
+
             // Query for owners, but just names. We don't want to ass_ume types.
             results = TP.sys.getMethodOwners(arg0, true);
             if (TP.notEmpty(results)) {
                 regex = RegExp.construct('/\.' + arg0 + '$/');
                 if (TP.isValid(regex)) {
-                    meta = TP.sys.getMetadata('methods');
                     keys = meta.getKeys().filter(
                         function(key) {
                             return TP.notEmpty(regex.match(key));
@@ -3029,6 +3034,8 @@ function(aRequest) {
                         obj = meta.at(keys.first());
                     }
                 }
+            } else {
+                obj = meta.at(arg0);
             }
         }
 
@@ -4219,6 +4226,7 @@ function(command, abstract, usage, description) {
 
 TP.core.TSH.addHelpTopic(':about', 'Outputs a simple identification string.');
 TP.core.TSH.addHelpTopic(':alias', 'Define or display a command alias.');
+TP.core.TSH.addHelpTopic(':apropos', 'List methods related to a topic.');
 TP.core.TSH.addHelpTopic(':as', 'Transforms stdin and writes it to stdout.');
 TP.core.TSH.addHelpTopic(':break', 'Sets a debugger breakpoint.');
 TP.core.TSH.addHelpTopic(':builtins', 'Lists the available built-in functions.');
@@ -4227,6 +4235,7 @@ TP.core.TSH.addHelpTopic(':changedFS', 'Displays a list of pending FS changes.')
 TP.core.TSH.addHelpTopic(':clear', 'Clears the console output region.');
 TP.core.TSH.addHelpTopic(':colors', 'Generates a table of the 216 websafe colors.');
 TP.core.TSH.addHelpTopic(':counts', 'Generates a table of object creation counts.');
+TP.core.TSH.addHelpTopic(':doclint', 'Run a lint check on all method comments.');
 TP.core.TSH.addHelpTopic(':dump', 'Dumps a detailed version of stdout to stdout.');
 TP.core.TSH.addHelpTopic(':echo', 'Echoes the arguments provided for debugging.');
 TP.core.TSH.addHelpTopic(':edit', 'Generates an editor for the value at stdin.');
@@ -4251,7 +4260,7 @@ TP.core.TSH.addHelpTopic(':login', 'Logs in to a specific user profile.');
 TP.core.TSH.addHelpTopic(':logout', 'Logs out of a specific user profile.');
 TP.core.TSH.addHelpTopic(':ls', 'Lists the contents of the current path.');
 TP.core.TSH.addHelpTopic(':open', 'Opens a URI in a window/canvas.');
-TP.core.TSH.addHelpTopic(':reflect', 'Generates a table of object reflection data.');
+TP.core.TSH.addHelpTopic(':reflect', 'Output targeted reflection data/metadata.');
 TP.core.TSH.addHelpTopic(':save', 'Saves current data to the current user profile.');
 TP.core.TSH.addHelpTopic(':screen', 'Sets the canvas being viewed to a screen.');
 TP.core.TSH.addHelpTopic(':set', 'Sets a shell variable to a specified value.');
