@@ -102,6 +102,17 @@ Cmd.prototype.USAGE =
 //  ---
 
 /**
+ * Computes and returns the proper profile configuration to boot. This value is
+ * appended to the value from getProfileRoot() to produce the full boot profile
+ * value. Most commands use the same root but some will alter the configuration.
+ * @returns {String} The profile config ID.
+ */
+Cmd.prototype.getProfileConfig = function() {
+    return 'reflection';
+};
+
+
+/**
  * Computes and returns the TIBET Shell script command line to be run.
  * @returns {String} The TIBET Shell script command to execute.
  */

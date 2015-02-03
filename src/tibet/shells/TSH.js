@@ -2155,6 +2155,7 @@ function(aRequest) {
     var methods,
         terms,
         regex,
+        minified,
         results;
 
     terms = this.getArgument(aRequest, 'ARGV');
@@ -2181,7 +2182,6 @@ function(aRequest) {
             func,
             text,
             file,
-            minified,
             count;
 
         name = item.at(0);
@@ -2233,7 +2233,10 @@ function(aRequest) {
     });
 
     //  If we found any minified source along the way point that out.
-    results.unshift('NOTE: some package#config source files were minified.');
+    if (minified) {
+        results.unshift(
+            'Partial results. Some package#config files were minified.');
+    }
 
     //  PhantomJS/CLI support requires output line-by-line.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
