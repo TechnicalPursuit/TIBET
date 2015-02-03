@@ -30,7 +30,7 @@ kernel so we can reduce the amount of housekeeping required here.
 //  tibet_boot.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('tibet_boot.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/boot/tibet_boot.js';
 
 TP.boot.defineMethod('$$importAsync', TP.boot.$$importAsync);
 
@@ -263,7 +263,7 @@ TP.boot.defineMethod('initializeCanvas', TP.boot.initializeCanvas);
 //  TIBETGlobals.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETGlobals.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGlobals.js';
 
 TP.sys.defineMethod('defineGlobal', TP.sys.defineGlobal);
 TP.sys.defineMethod('getGlobals', TP.sys.getGlobals);
@@ -310,13 +310,13 @@ TP.definePrimitive('ELEMENT_SORT', TP.ELEMENT_SORT);
 //  TIBETVersion.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETVersion.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETVersion.js';
 
 //  ---
 //  TIBETPrimitivesPre.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesPre.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesPre.js';
 
 TP.definePrimitive('objectSetLoadNode', TP.objectSetLoadNode);
 
@@ -326,25 +326,25 @@ TP.sys.defineGlobal(TP.ID, null);
 //  TIBETPrimitivesBase.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesBase.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesBase.js';
 
 //  ---
 //  TIBETPrimitives[IE/Gecko/Webkit].js
 //  ---
 
 if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesGecko.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesGecko.js';
 } else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesIE.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesIE.js';
 } else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesWebkit.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesWebkit.js';
 }
 
 //  ---
 //  TIBETPrimitivesPost.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesPost.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesPost.js';
 
 //  This slot is used by TP.objectGlobalID() below, sometimes on a Window,
 //  which means that it needs to be tracked as a global.
@@ -358,91 +358,91 @@ TP.boot.defineMethod('$configurePluginEnvironment',
 //  TIBETDOMPrimitivesPre.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesPre.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesPre.js';
 
 //  ---
 //  TIBETDOMPrimitivesBase.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesBase.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesBase.js';
 
 //  ---
 //  TIBETDOMPrimitives[IE/Gecko/Webkit].js
 //  ---
 
 if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesGecko.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesGecko.js';
 } else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesIE.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesIE.js';
 } else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesWebkit.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesWebkit.js';
 }
 
 //  ---
 //  TIBETDOMPrimitivesPost.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesPost.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesPost.js';
 
 //  ---
 //  TIBETDevicePrimitivesPre.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesPre.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesPre.js';
 
 //  ---
 //  TIBETDevicePrimitivesBase.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesBase.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesBase.js';
 
 //  ---
 //  TIBETDevicePrimitives[IE/Gecko/Webkit].js
 //  ---
 
 if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesGecko.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesGecko.js';
 } else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesIE.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesIE.js';
 } else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesWebkit.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesWebkit.js';
 }
 
 //  ---
 //  TIBETDevicePrimitivesPost.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesPost.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesPost.js';
 
 //  ---
 //  TIBETDHTMLPrimitivesPre.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesPre.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPre.js';
 
 //  ---
 //  TIBETDHTMLPrimitivesBase.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesBase.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesBase.js';
 
 //  ---
 //  TIBETDHTMLPrimitives[IE/Gecko/Webkit].js
 //  ---
 
 if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesGecko.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesGecko.js';
 } else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesIE.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesIE.js';
 } else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesWebkit.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesWebkit.js';
 }
 
 //  ---
 //  TIBETDHTMLPrimitivesPost.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesPost.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPost.js';
 
 //  This slot is used by TP.windowIsInstrumented() below on a Window,
 //  which means that it needs to be tracked as a global.
@@ -452,20 +452,20 @@ TP.sys.defineGlobal('$$instrumented', null);
 //  TIBETGraphicsPrimitivesPre.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETGraphicsPrimitivesPre.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesPre.js';
 
 //  ---
 //  TIBETGraphicsPrimitivesBase.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETGraphicsPrimitivesBase.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesBase.js';
 
 //  ---
 //  TIBETGraphicsPrimitives[IE/Gecko/Webkit].js
 //  ---
 
 if (TP.sys.isUA('IE', 8, TP.UP)) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETGraphicsPrimitivesIE.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesIE.js';
 }
 
 //  ---
@@ -473,74 +473,74 @@ if (TP.sys.isUA('IE', 8, TP.UP)) {
 //  ---
 
 if (TP.sys.isUA('IE')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETStringPrimitivesIE.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETStringPrimitivesIE.js';
 }
 
 //  ---
 //  TIBETStringPrimitivesPost.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETStringPrimitivesPost.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETStringPrimitivesPost.js';
 
 //  ---
 //  TIBETCSSPrimitivesPre.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesPre.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesPre.js';
 
 //  ---
 //  TIBETCSSPrimitivesBase.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesBase.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesBase.js';
 
 //  ---
 //  TIBETCSSPrimitives[IE/Gecko/Webkit].js
 //  ---
 
 if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesGecko.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesGecko.js';
 } else if (TP.sys.isUA('IE', 8, TP.UP)) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesIE.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesIE.js';
 } else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesWebkit.js');
+    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesWebkit.js';
 }
 
 //  ---
 //  TIBETCSSPrimitivesPost.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesPost.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesPost.js';
 
 //  ---
 //  TIBETEncapsulation.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETEncapsulation.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETEncapsulation.js';
 
 //  ---
 //  TIBETRegistration.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETRegistration.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETRegistration.js';
 
 //  ---
 //  TIBETFoundation.js
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETFoundation.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETFoundation.js';
 
 //  ---
 //  TIBETImportExport :)
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETImportExport.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETImportExport.js';
 
 //  ---
 //  TIBETPrimitivesShortcuts
 //  ---
 
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesShortcuts.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 
 //  ------------------------------------------------------------------------
 //  BUILT-IN METHODS
@@ -548,6 +548,7 @@ TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesShortcuts.js');
 
 //  Faking out a load node here for the builtins
 TP.boot[TP.LOAD_NODE] = TP.BUILTIN_LOAD_NODE;
+TP.boot[TP.SOURCE_PATH] = '';
 
 Array.Type.defineMethod('isArray', Array.isArray);
 

@@ -115,6 +115,7 @@ TP.constructOrphanObject[TP.OWNER] = TP;
 TP.constructOrphanObject[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.constructOrphanObject[TP.DISPLAY] = 'TP.constructOrphanObject';
 TP.constructOrphanObject[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.constructOrphanObject[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  Create an alias
 TP.oc = TP.constructOrphanObject;
@@ -223,6 +224,7 @@ TP.defineNamespace[TP.OWNER] = TP;
 TP.defineNamespace[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.defineNamespace[TP.DISPLAY] = 'TP.defineNamespace';
 TP.defineNamespace[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.defineNamespace[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -251,6 +253,7 @@ TP.isNamespace[TP.OWNER] = TP;
 TP.isNamespace[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isNamespace[TP.DISPLAY] = 'TP.isNamespace';
 TP.isNamespace[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.isNamespace[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 //  GLOBAL SYMBOL DEFINITION
@@ -300,6 +303,7 @@ TP.sys.getGlobals[TP.OWNER] = TP.sys;
 TP.sys.getGlobals[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.sys.getGlobals[TP.DISPLAY] = 'TP.getGlobals';
 TP.sys.getGlobals[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.sys.getGlobals[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -321,6 +325,7 @@ TP.sys.release[TP.OWNER] = TP.sys;
 TP.sys.release[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.sys.release[TP.DISPLAY] = 'TP.release';
 TP.sys.release[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.sys.release[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 //  JAVASCRIPT LANGUAGE GLOBALS / KEYWORDS ETC.
