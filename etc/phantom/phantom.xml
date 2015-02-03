@@ -11,6 +11,11 @@
     <package src="~lib_cfg/TIBET.xml" config="test"/>
 </config>
 
+<config id="reflection">
+    <config ref="properties"/>
+    <package src="~lib_cfg/TIBET.xml" config="test"/>
+</config>
+
 <config id="selftest">
     <config ref="properties"/>
     <package src="~lib_cfg/TIBET.xml" config="developer"/>
