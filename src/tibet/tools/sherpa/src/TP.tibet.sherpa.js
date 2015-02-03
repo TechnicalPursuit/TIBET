@@ -56,7 +56,7 @@ function(aRequest) {
                     //  This performs some initial setup. The first time the
                     //  Sherpa is triggered, it will complete its setup
                     //  sequence.
-                    newSherpa = TP.core.sherpa.construct();
+                    newSherpa = TP.core.Sherpa.construct();
                     newSherpa.setID('Sherpa');
                     TP.sys.registerObject(newSherpa);
                 });

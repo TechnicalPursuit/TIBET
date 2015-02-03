@@ -70,6 +70,10 @@ function(varargs) {
             }
         } else if (TP.isElement(obj)) {
             return obj;
+        } else if (TP.isTextNode(obj) ||
+                    TP.isCDATASectionNode(obj) ||
+                    TP.isCommentNode(obj)) {
+            return obj.parentNode;
         } else if (TP.isNode(obj) || TP.isWindow(obj)) {
             doc = TP.doc(obj);
             if (TP.isDocument(doc)) {
