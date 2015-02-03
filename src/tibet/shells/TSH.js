@@ -3036,6 +3036,9 @@ function(aRequest) {
                 }
             } else {
                 obj = meta.at(arg0);
+                if (TP.notValid(obj)) {
+                    obj = meta.at(arg0.replace(/\./g, '_'));
+                }
             }
         }
 
