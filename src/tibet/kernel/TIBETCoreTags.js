@@ -268,7 +268,7 @@ function(aRequest) {
     //  Sherpa code), then exit here - the Sherpa does some special things to
     //  the 'tibet:root' tag.
     if (TP.sys.cfg('tibet.sherpa') === true &&
-        TP.isType(TP.sys.getTypeByName('TP.core.sherpa'))) {
+        TP.isType(TP.sys.getTypeByName('TP.core.Sherpa'))) {
         return;
     }
 
@@ -330,7 +330,7 @@ function(aRequest) {
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then turn the receiver into a 'tibet:sherpa' tag.
     if (TP.sys.cfg('tibet.sherpa') === true &&
-        TP.isType(TP.sys.getTypeByName('TP.core.sherpa'))) {
+        TP.isType(TP.sys.getTypeByName('TP.core.Sherpa'))) {
 
         //  Make sure that we have an element to work from.
         if (!TP.isElement(elem = aRequest.at('node'))) {

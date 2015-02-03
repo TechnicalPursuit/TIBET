@@ -9,20 +9,20 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.sherpa}
+ * @type {TP.core.Sherpa}
  */
 
 //  ============================================================================
-//  TP.core.sherpa
+//  TP.core.Sherpa
 //  ============================================================================
 
-TP.lang.Object.defineSubtype('core.sherpa');
+TP.lang.Object.defineSubtype('core.Sherpa');
 
 //  ----------------------------------------------------------------------------
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Type.defineMethod('initialize',
+TP.core.Sherpa.Type.defineMethod('initialize',
 function(aName) {
 
     /**
@@ -136,19 +136,19 @@ function(aName) {
 //  ------------------------------------------------------------------------
 
 //  the view window (i.e. the window containing the sherpa)
-TP.core.sherpa.Inst.defineAttribute('vWin');
+TP.core.Sherpa.Inst.defineAttribute('vWin');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('init',
+TP.core.Sherpa.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.core.Sherpa} The receiver.
      */
 
     var uiBootIFrameElem,
@@ -184,7 +184,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('finishSetup',
+TP.core.Sherpa.Inst.defineMethod('finishSetup',
 function() {
 
     var win,
@@ -241,7 +241,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('makeTile',
+TP.core.Sherpa.Inst.defineMethod('makeTile',
 function(anID) {
 
     var sherpaFrameBody,
@@ -261,7 +261,7 @@ function(anID) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('makeEditorTile',
+TP.core.Sherpa.Inst.defineMethod('makeEditorTile',
 function(anID) {
 
     var sherpaFrameBody,
@@ -281,7 +281,7 @@ function(anID) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('setupConsole',
+TP.core.Sherpa.Inst.defineMethod('setupConsole',
 function() {
     var sherpaSouthDrawer,
         consoleTPElem;
@@ -314,7 +314,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('setupHalo',
+TP.core.Sherpa.Inst.defineMethod('setupHalo',
 function() {
 
     var sherpaFrameBody,
@@ -335,7 +335,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('setupHUD',
+TP.core.Sherpa.Inst.defineMethod('setupHUD',
 function() {
 
     var sherpaFrameBody,
@@ -354,7 +354,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('setupWorld',
+TP.core.Sherpa.Inst.defineMethod('setupWorld',
 function() {
 
     var uiScreensWin,
@@ -437,7 +437,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('toggle',
+TP.core.Sherpa.Inst.defineMethod('toggle',
 function() {
 
     TP.byOID('SherpaHUD', this.get('vWin')).toggle('hidden');
