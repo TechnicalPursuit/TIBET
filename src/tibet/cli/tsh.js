@@ -299,13 +299,44 @@ Cmd.prototype.getPhantomArglist = function() {
     return arglist;
 };
 
-
 /**
- * Computes and returns the proper profile to boot in support of the TSH.
- * Profiles can vary based on project location (as can the URL).
- * @returns {String} The profile to boot.
+ * Computes and returns the full boot profile value, combining the profile
+ * package name with any profile config ID.
+ * @returns {String} The profile#config to boot.
  */
 Cmd.prototype.getProfile = function() {
+
+    var root,
+        config;
+
+    root = this.getProfileRoot();
+    config = this.getProfileConfig();
+
+    if (CLI.notEmpty(config)) {
+        return root + '#' + config;
+    }
+
+    return root;
+};
+
+
+/**
+ * Computes and returns the proper profile configuration to boot. This value is
+ * appended to the value from getProfileRoot() to produce the full boot profile
+ * value. Most commands use the same root but some will alter the configuration.
+ * @returns {String} The profile config ID.
+ */
+Cmd.prototype.getProfileConfig = function() {
+    return;
+};
+
+
+/**
+ * Computes and returns the proper profile to boot in support of the TSH. This
+ * is the name of the package file, minus any specific boot config ID.
+ * @returns {String} The profile root name.
+ */
+Cmd.prototype.getProfileRoot = function() {
 
     var profile;
 
