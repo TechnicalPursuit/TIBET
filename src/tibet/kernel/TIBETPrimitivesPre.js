@@ -186,6 +186,7 @@ TP.isCallable[TP.OWNER] = TP;
 TP.isCallable[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isCallable[TP.DISPLAY] = 'TP.isCallable';
 TP.isCallable[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.isCallable[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -246,6 +247,7 @@ TP.canInvoke[TP.OWNER] = TP;
 TP.canInvoke[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.canInvoke[TP.DISPLAY] = 'TP.canInvoke';
 TP.canInvoke[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.canInvoke[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -273,6 +275,7 @@ TP.isValid[TP.OWNER] = TP;
 TP.isValid[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isValid[TP.DISPLAY] = 'TP.isValid';
 TP.isValid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.isValid[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -299,6 +302,7 @@ TP.notValid[TP.OWNER] = TP;
 TP.notValid[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.notValid[TP.DISPLAY] = 'TP.notValid';
 TP.notValid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.notValid[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -328,6 +332,7 @@ TP.ifInvalid[TP.OWNER] = TP;
 TP.ifInvalid[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.ifInvalid[TP.DISPLAY] = 'TP.ifInvalid';
 TP.ifInvalid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.ifInvalid[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -358,6 +363,7 @@ TP.isDNU[TP.OWNER] = TP;
 TP.isDNU[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isDNU[TP.DISPLAY] = 'TP.isDNU';
 TP.isDNU[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.isDNU[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 // TODO: Remove after cleansing old name.
 TP.$$isDNU = TP.isDNU;
@@ -412,6 +418,7 @@ TP.isFunction[TP.OWNER] = TP;
 TP.isFunction[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isFunction[TP.DISPLAY] = 'TP.isFunction';
 TP.isFunction[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.isFunction[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -450,6 +457,7 @@ TP.isString[TP.OWNER] = TP;
 TP.isString[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isString[TP.DISPLAY] = 'TP.isString';
 TP.isString[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.isString[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -477,6 +485,7 @@ TP.owns[TP.OWNER] = TP;
 TP.owns[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.owns[TP.DISPLAY] = 'TP.owns';
 TP.owns[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.owns[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -511,6 +520,7 @@ TP.objectGetLoadNode[TP.OWNER] = TP;
 TP.objectGetLoadNode[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.objectGetLoadNode[TP.DISPLAY] = 'TP.objectGetLoadNode';
 TP.objectGetLoadNode[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.objectGetLoadNode[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -535,6 +545,7 @@ TP.objectSetLoadNode[TP.OWNER] = TP;
 TP.objectSetLoadNode[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.objectSetLoadNode[TP.DISPLAY] = 'TP.objectSetLoadNode';
 TP.objectSetLoadNode[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.objectSetLoadNode[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -616,6 +627,7 @@ TP.FunctionProto.asMethod[TP.OWNER] = Function;
 TP.FunctionProto.asMethod[TP.TRACK] = TP.INST_TRACK;
 TP.FunctionProto.asMethod[TP.DISPLAY] = 'Function.Inst.asMethod';
 TP.FunctionProto.asMethod[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.FunctionProto.asMethod[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -639,6 +651,7 @@ TP.StringProto.strip[TP.OWNER] = String;
 TP.StringProto.strip[TP.TRACK] = TP.INST_TRACK;
 TP.StringProto.strip[TP.DISPLAY] = 'String.Inst.strip';
 TP.StringProto.strip[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.StringProto.strip[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 //  OBJECT IDENTITY - PART I
@@ -690,6 +703,7 @@ TP.sys.constructOID[TP.OWNER] = TP.sys;
 TP.sys.constructOID[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.constructOID[TP.DISPLAY] = 'TP.sys.constructOID';
 TP.sys.constructOID[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.sys.constructOID[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ---
 
@@ -748,6 +762,7 @@ TP.getFunctionName[TP.OWNER] = TP;
 TP.getFunctionName[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.getFunctionName[TP.DISPLAY] = 'TP.getFunctionName';
 TP.getFunctionName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.getFunctionName[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -794,6 +809,7 @@ TP.FunctionProto.$getName[TP.OWNER] = Function;
 TP.FunctionProto.$getName[TP.TRACK] = TP.INST_TRACK;
 TP.FunctionProto.$getName[TP.DISPLAY] = 'Function.Inst.$getName';
 TP.FunctionProto.$getName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.FunctionProto.$getName[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -1799,6 +1815,7 @@ TP.objectGetMetadataName[TP.OWNER] = TP.sys;
 TP.objectGetMetadataName[TP.TRACK] = TP.LOCAL_TRACK;
 TP.objectGetMetadataName[TP.DISPLAY] = 'TP.objectGetMetadataName';
 TP.objectGetMetadataName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.objectGetMetadataName[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -1864,7 +1881,8 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
     }
 
     // source path is any path specified by the rollup logic, or the load path
-    // if that value isn't found (meaning we're not loading a resource bundle.
+    // if that value isn't found. that can happen if the bundle being loaded
+    // didn't specify headers during the rollup processing.
     spath = TP.boot[TP.SOURCE_PATH] || lpath;
 
     switch (itemClass) {
@@ -1988,6 +2006,7 @@ TP.sys.addMetadata[TP.OWNER] = TP.sys;
 TP.sys.addMetadata[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.addMetadata[TP.DISPLAY] = 'TP.sys.addMetadata';
 TP.sys.addMetadata[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.sys.addMetadata[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  -----------------------------------------------------------------------
 //  SLOT AND METHOD DEFINITION
@@ -2067,6 +2086,7 @@ TP.defineSlot[TP.OWNER] = TP;
 TP.defineSlot[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.defineSlot[TP.DISPLAY] = 'TP.defineSlot';
 TP.defineSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.defineSlot[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -2217,6 +2237,7 @@ TP.defineMethodSlot[TP.OWNER] = TP;
 TP.defineMethodSlot[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.defineMethodSlot[TP.DISPLAY] = 'TP.defineMethodSlot';
 TP.defineMethodSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.defineMethodSlot[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -11956,7 +11977,7 @@ function() {
 //  Add metadata for the 'bootstrap' methods that got us this far.
 
 //  Defined in TIBETGlobal.js
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETGlobals.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGlobals.js';
 
 TP.sys.addMetadata(TP, TP.constructOrphanObject, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.defineNamespace, TP.METHOD, TP.PRIMITIVE_TRACK);
@@ -11965,7 +11986,7 @@ TP.sys.addMetadata(TP.sys, TP.sys.getGlobals, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP.sys, TP.sys.release, TP.METHOD, TP.PRIMITIVE_TRACK);
 
 //  Defined in this file
-TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesPre.js');
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesPre.js';
 
 TP.sys.addMetadata(TP, TP.isCallable, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.canInvoke, TP.METHOD, TP.PRIMITIVE_TRACK);

@@ -12,4 +12,10 @@
     <package src="~app_cfg/app.xml" config="test"/>
 </config>
 
+<config id="reflection">
+    <config ref="properties"/>
+    <script src="~lib_build/tibet_developer.js" if="boot.phaseone"/>
+    <package src="~app_cfg/app.xml" config="test"/>
+</config>
+
 </package>

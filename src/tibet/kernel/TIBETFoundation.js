@@ -1288,7 +1288,7 @@ function(methodText, onsuccess, onfailure) {
         return;
     }
 
-    target = this.$srcPath;
+    target = TP.objectGetSourcePath(this);
     if (TP.isEmpty(target)) {
         TP.error('Unable to locate source path for function.');
         return;
