@@ -1434,7 +1434,7 @@ Package.prototype.getVirtualPath = function(aPath) {
     var path,
         app_root = this.getAppRoot(),
         lib_root = this.getLibRoot();
-
+console.log('aPath: ' + aPath);
     // Don't try to do this until we've computed the proper root paths.
     if (!app_root || !lib_root) {
       return aPath;
@@ -1442,13 +1442,15 @@ Package.prototype.getVirtualPath = function(aPath) {
 
     // TODO: best to replace with a better list derived from reflection on
     // the sys.cfg path.* properties.
-    path = aPath.replace(this.expandPath('~app_cfg'), '~app_cfg');
-    path = path.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
-    path = path.replace(this.expandPath('~app_src'), '~app_src');
+    path = aPath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
     path = path.replace(this.expandPath('~lib_src'), '~lib_src');
-    path = path.replace(this.expandPath('~app'), '~app');
     path = path.replace(this.expandPath('~lib'), '~lib');
+    path = path.replace(this.expandPath('~app_cfg'), '~app_cfg');
+    path = path.replace(this.expandPath('~app_src'), '~app_src');
+    path = path.replace(this.expandPath('~app'), '~app');
     path = path.replace(this.expandPath('~'), '~');
+
+console.log('path: ' + path);
 
     return path;
 };
