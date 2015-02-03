@@ -2180,11 +2180,20 @@ function(aRequest) {
         var name,
             func,
             text,
+            file,
+            minified,
             count;
 
         name = item.at(0);
         func = item.at(1);
+        file = TP.objectGetLoadPath(func);
         text = func.getCommentText();
+
+        if (TP.isEmpty(text)) {
+            if (TP.notEmpty(file) && file.match(/\.min\./)) {
+                minified = true;
+            }
+        }
 
         count = 0;
 
@@ -2222,6 +2231,9 @@ function(aRequest) {
     results = results.map(function(result) {
         return result[0] + ' (' + result[1] + ')';
     });
+
+    //  If we found any minified source along the way point that out.
+    results.unshift('NOTE: some package#config source files were minified.');
 
     //  PhantomJS/CLI support requires output line-by-line.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
@@ -2327,7 +2339,7 @@ function(aRequest) {
 
         name = item.at(0);
         func = item.at(1);
-        file = TP.objectGetSourcePath(func) || TP.objectGetLoadPath(func);
+        file = TP.objectGetLoadPath(func);
         lines = func.getCommentLines();
         source = func.getSourceText();
         error = {file: file, name: name, errors: TP.ac()};
@@ -2910,6 +2922,8 @@ function(aRequest) {
         slots,
         filter,
         interface,
+        text,
+        file,
         results;
 
     usage = 'Usage: :reflect [target] [--interface <interface>]' +
@@ -3099,8 +3113,23 @@ function(aRequest) {
                         }
                     }
                 } else {
+
                     results.push(obj.getSignature());
-                    results.push(obj.getCommentText());
+                    text = obj.getCommentText();
+
+                    if (TP.isEmpty(text)) {
+                        file = TP.objectGetLoadPath(obj);
+
+                        if (TP.notEmpty(file) && file.match(/\.min\./)) {
+                            results.push(
+                                'Source minified. No comment text available.');
+                        } else {
+                            results.push(
+                                'Uncommented :(. No comment text available.');
+                        }
+                    } else {
+                        results.push(text);
+                    }
                 }
 
             } else if (!TP.isMutable(obj)) {
