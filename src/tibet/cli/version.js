@@ -17,11 +17,15 @@ var CLI,
     Parent,
     Cmd,
     chalk,
+    path,
+    sh,
     beautify;
 
 
 CLI = require('./_cli');
 chalk = require('chalk');
+path = require('path');
+sh = require('shelljs');
 beautify = require('js-beautify').js_beautify;
 
 
@@ -91,13 +95,17 @@ Cmd.prototype.USAGE = 'tibet version [--check]';
 Cmd.prototype.execute = function() {
 
     var msg,
-        current,
+        project,
+        root,
+        fullpath,
+        library,
+        npm,
         http,
         options,
         url,
         host,
         port,
-        path,
+        urlpath,
         str,
         req,
         code;
@@ -105,8 +113,34 @@ Cmd.prototype.execute = function() {
     code = 0;
 
     msg = 'Unable to determine TIBET version.';
+
+    //  If we're in a project try to load the project version for reference.
+    if (CLI.inProject()) {
+        try {
+            project = CLI.getcfg('npm.version') || msg;
+        } catch (e) {
+            this.error(msg + ' ' + e.message);
+            throw new Error();
+        }
+    }
+
+    //  Library version is always at ~lib/package.json.
+    root = CLI.getLibRoot();
+    fullpath = path.join(root, CLI.NPM_FILE);
+    if (sh.test('-f', fullpath)) {
+        try {
+            npm = require(fullpath) || {tibet_project: false};
+        } catch (e) {
+            msg = 'Error loading TIBET package: ' + e.message;
+            if (this.options.stack === true) {
+                msg += ' ' + e.stack;
+            }
+            throw new Error(msg);
+        }
+    }
+
     try {
-        current = CLI.getcfg('npm.version') || msg;
+        library = npm.version;
     } catch (e) {
         this.error(msg + ' ' + e.message);
         throw new Error();
@@ -122,7 +156,7 @@ Cmd.prototype.execute = function() {
         if (url.indexOf('http://') !== -1) {
             url = url.slice(7);
         }
-        path = url.slice(url.indexOf('/'));
+        urlpath = url.slice(url.indexOf('/'));
         host = url.slice(0, url.indexOf('/'));
         if (host.indexOf(':') !== -1) {
             port = host.slice(host.indexOf(':') + 1);
@@ -130,7 +164,7 @@ Cmd.prototype.execute = function() {
             host = host.slice(0, host.indexOf(':'));
         }
 
-        options = {hostname: host, port: port, path: path};
+        options = {hostname: host, port: port, path: urlpath};
         this.debug('checking version at: ' +
             beautify(JSON.stringify(options)));
 
@@ -165,15 +199,15 @@ Cmd.prototype.execute = function() {
                     return;
                 }
 
-                if (obj.semver === current) {
+                if (obj.semver === library) {
                     console.log(chalk.green(
-                        'Your current version ' + current.split('+')[0] +
+                        'Your current version ' + library.split('+')[0] +
                         ' is the latest.'));
                 } else {
                     console.log(chalk.yellow(
                         'Version ' + obj.semver.split('+')[0] +
                         ' is available. You have ' +
-                        current.split('+')[0]));
+                        library.split('+')[0]));
                 }
             });
         });
@@ -185,7 +219,15 @@ Cmd.prototype.execute = function() {
 
         req.end();
     } else {
-        this.info(current.split('+')[0]);
+
+        msg = library.split('+')[0];
+        if (project && project !== library) {
+            msg = CLI.getcfg('npm.name') + ' ' + project.split('+')[0] +
+                ' running on TIBET ' + library.split('+')[0];
+        } else {
+            msg = library.split('+')[0];
+        }
+        this.info(msg);
     }
 };
 
