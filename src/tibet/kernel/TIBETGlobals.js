@@ -2510,8 +2510,11 @@ TP.regex.XML_EMPTY_TAG = /<([^\s<]*)([^<]*?)\/>/g;  //  needs reset
 TP.regex.ML_ENTITY = /&([a-zA-Z#0-9]+);/;
 
 //  A RegExp that matches "standalone" (outside of element) XML attribute
-//  expressions
-TP.regex.XML_ATTR = /^\s*([\w:]+)=['"](\w*)['"]/;
+//  expressions. The name is the 1st group and the value is the 4th group. Note
+//  that the value *contains the quotes* (for the most robust matching).
+TP.regex.XML_ATTR = new RegExp('^\\s*(' + TP.XML_NAME + ')' +
+                                '=' +
+                                '(' + TP.XML_ATTRVAL + ')');
 
 //  A RegExp that matches XML attribute expressions that contain *only* the
 //  word 'null' as a value

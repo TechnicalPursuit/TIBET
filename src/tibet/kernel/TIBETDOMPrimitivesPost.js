@@ -6498,7 +6498,10 @@ function(aString, defaultNS, shouldReport) {
     if (TP.regex.XML_ATTR.test(aString)) {
         attrParts = TP.regex.XML_ATTR.match(aString);
         newNode = TP.XML_FACTORY_DOCUMENT.createAttribute(attrParts.at(1));
-        newNode.value = attrParts.at(2);
+
+        //  Note that the value matched in the RegExp above contains the quotes
+        //  for the most robust matching. We need to slice them off here.
+        newNode.value = attrParts.at(4).slice(1, -1);
 
         return newNode;
     }
