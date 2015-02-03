@@ -3133,6 +3133,8 @@ function(aRequest) {
                     } else {
                         results.push(text);
                     }
+
+                    results.push(TP.objectGetSourcePath(obj) || '');
                 }
 
             } else if (!TP.isMutable(obj)) {
