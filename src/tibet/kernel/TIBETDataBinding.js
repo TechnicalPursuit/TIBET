@@ -732,6 +732,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                 targetAttr,
                 transform,
 
+                source,
                 newVal;
 
             TP.stop('break.bind_change');
@@ -766,7 +767,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                     //  If there was a transformation Function registered, then
                     //  execute it.
                     if (TP.isCallable(transform)) {
-                        newVal = transform(newVal);
+
+                        source = aSignal.getSource();
+                        newVal = transform(source, newVal);
                     }
 
                     this.refresh(
@@ -1292,10 +1295,13 @@ function() {
 
                 exprParts,
                 exprWithBrackets,
-                exprWithoutBrackets,
+
+                exprToExecute,
+
+                splitURI,
 
                 allVals,
-                fullyExpandedVal,
+                primaryScopedPath,
 
                 uris,
                 i;
@@ -1320,30 +1326,36 @@ function() {
                 //  We want the expression both with and without the surrounding
                 //  brackets ([[...]])
                 exprWithBrackets = exprParts.first();
-                exprWithoutBrackets = exprParts.last();
+                exprToExecute = exprParts.last();
 
-                //  Concatenate the expression without the brackets onto the
-                //  scope values array (thereby creating a new Array) and use it
-                //  to join all of the values together.
-                allVals = scopeVals.concat(exprWithoutBrackets);
-                fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+                //  If the expression to execute is a fully-formed URI, then we
+                //  don't take the scope values into consideration. We build a
+                //  primaryScopedPath consisting of the URI's primary href and a
+                //  'value' TIBET XPointer that will just return the value. We
+                //  then reset the expression to execute to be just the fragment
+                //  text.
+                if (TP.isURI(exprToExecute)) {
+                    splitURI = TP.uc(exprToExecute);
+                    primaryScopedPath = splitURI.getPrimaryHref() +
+                                        '#tibet(value)';
+                    exprToExecute = splitURI.getFragmentText();
+                } else {
+                    //  Concatenate a simple 'value' expression onto the scope
+                    //  values array (thereby creating a new Array) and use it
+                    //  to join all of the values together.
+                    allVals = scopeVals.concat('value');
+                    primaryScopedPath = TP.uriJoinFragments.apply(TP, allVals);
+                }
 
                 //  Replace the expression with the brackets with the expression
                 //  without the brackets surrounded by ACP brackets.
                 expandedExpr = expandedExpr.replace(
                                 exprWithBrackets,
-                                '{{' + fullyExpandedVal + '}}');
-
-                //  Make sure to trim off any format before pushing this into
-                //  the URI list that we set bindings up from.
-                if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
-                    fullyExpandedVal = fullyExpandedVal.slice(
-                                    0, fullyExpandedVal.indexOf('.%')).trim();
-                }
+                                '{{' + exprToExecute + '}}');
 
                 //  Add that value to the list of URIs to bind to this
                 //  expression.
-                uris.push(fullyExpandedVal);
+                uris.push(primaryScopedPath);
             }
 
             //  Loop over the URIs that this expression wants to be bound to and
@@ -1352,9 +1364,16 @@ function() {
                 /* eslint-disable no-loop-func */
                 this.defineBinding(
                         '@' + name, TP.uc(uris.at(i)), 'value', 'value',
-                        function() {
-                            return expandedExpr.transform();
-                        });
+                        function(source, newVal) {
+                            var params;
+
+                            params = TP.hc(
+                                        '$REQUEST', null,
+                                        '$TAG', this,
+                                        '$TARGET', this.getDocument());
+
+                            return expandedExpr.transform(source, params);
+                        }.bind(this));
 
                 //  Because sugared expressions act as 'bind:io' (two sided
                 //  binds), we have to establish a bind back the other way (if
@@ -1395,10 +1414,13 @@ function() {
                 value,
 
                 exprParts,
-                exprWithoutBrackets,
+
+                exprToExecute,
+
+                splitURI,
 
                 allVals,
-                fullyExpandedVal,
+                primaryScopedPath,
 
                 uris,
                 i;
@@ -1418,26 +1440,31 @@ function() {
             while (TP.isValid(exprParts =
                     TP.regex.INLINE_BINDING_EXTRACT.exec(value))) {
 
-                //  We're only interested in the expression without the
-                //  surrounding brackets ([[...]])
-                exprWithoutBrackets = exprParts.last();
+                //  We want the expression both with and without the surrounding
+                //  brackets ([[...]])
+                exprToExecute = exprParts.last();
 
-                //  Concatenate the expression without the brackets onto the
-                //  scope values array (thereby creating a new Array) and use it
-                //  to join all of the values together.
-                allVals = scopeVals.concat(exprWithoutBrackets);
-                fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
-
-                //  Make sure to trim off any format before pushing this into
-                //  the URI list that we set bindings up from.
-                if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
-                    fullyExpandedVal = fullyExpandedVal.slice(
-                                    0, fullyExpandedVal.indexOf('.%')).trim();
+                //  If the expression to execute is a fully-formed URI, then we
+                //  don't take the scope values into consideration. We build a
+                //  primaryScopedPath consisting of the URI's primary href and a
+                //  'value' TIBET XPointer that will just return the value. We
+                //  then reset the expression to execute to be just the fragment
+                //  text.
+                if (TP.isURI(exprToExecute)) {
+                    splitURI = TP.uc(exprToExecute);
+                    primaryScopedPath = splitURI.getPrimaryHref() +
+                                        '#tibet(value)';
+                } else {
+                    //  Concatenate a simple 'value' expression onto the scope
+                    //  values array (thereby creating a new Array) and use it
+                    //  to join all of the values together.
+                    allVals = scopeVals.concat('value');
+                    primaryScopedPath = TP.uriJoinFragments.apply(TP, allVals);
                 }
 
                 //  Add that value to the list of URIs to remove the binding for
                 //  this expression.
-                uris.push(fullyExpandedVal);
+                uris.push(primaryScopedPath);
             }
 
             //  Loop over the URIs that this expression wants to be bound to and
