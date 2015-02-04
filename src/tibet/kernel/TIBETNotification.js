@@ -2973,6 +2973,36 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Change.Inst.defineMethod('getSource',
+function() {
+
+    /**
+     * @method getSource
+     * @summary Returns the object to be used as the data source to retrieve the
+     *     receiver's value from.
+     * @returns {Object} The source to use as the data source to get this
+     *     signal's value.
+     */
+
+    var source;
+
+    //  Attempt to get the value using either the target or the origin and the
+    //  aspect.
+    if (!TP.isValid(source = this.at('target'))) {
+        source = this.getOrigin();
+        if (TP.isString(source)) {
+            source = TP.sys.getObjectById(source);
+            if (TP.notValid(source)) {
+                return;
+            }
+        }
+    }
+
+    return source;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Change.Inst.defineMethod('getValue',
 function() {
 
@@ -2991,23 +3021,14 @@ function() {
         return value;
     }
 
-    //  Attempt to get the value using either the target or the origin and the
-    //  aspect.
-    if (!TP.isValid(source = this.at('target'))) {
-        source = this.getOrigin();
-        if (TP.isString(source)) {
-            source = TP.sys.getObjectById(source);
-            if (TP.notValid(source)) {
-                return;
-            }
-        }
-    }
-
     //  If the payload has 'path', use that - otherwise use the aspect.
     aspect = this.at('path') || this.getAspect();
     if (TP.isEmpty(aspect)) {
         return;
     }
+
+    //  Get the source object that we will use to ask the value of
+    source = this.getSource();
 
     if (TP.canInvoke(source, 'get')) {
         return source.get(aspect);
