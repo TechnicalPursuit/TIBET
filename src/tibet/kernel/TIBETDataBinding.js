@@ -67,7 +67,7 @@ and some targetObject you want to keep updated, you might say:
         });
 
 Since this example observes TP.sig.Change, a fairly large-grained signal, the
-handler will be invoked any time the sourceObject changes any property.
+handler will be invoked any time the source object changes any property.
 
 If you were concerned with a particular aspect of the sourceObject you might
 adjust the name of the signal you observe to trigger your bind handler only when
@@ -84,13 +84,47 @@ that aspect of the source changes:
 The prior observation works because TIBET's change signaling computes a signal
 name from the aspect and signals [aspect]Change as well as Change. By observing
 only the [aspect]Change signal you keep overhead to a minimum and avoid having
-to test the aspect with each Change signal.
+to test the aspect with each Change signal. Note that the standard aspect is
+'value', so the large-grained observation on TP.sig.Change that is shown above
+first could have also been observing 'TP.sig.ValueChange'.
 
 TIBET's Change signal hierarchy provides getTarget(), getAspect(), and
 getAction() convenience methods. These help you access the originating object,
 the property name that changed, and the type of action. Action in this case is
 often TP.CREATE, TP.UPDATE, TP.DELETE, TP.INSERT, or a similar "crud" term. A
 getValue() method provides you with the newly changed value.
+
+//  ---
+//  Object Binds - aspect facets
+//  ---
+
+In TIBET, aspects can have different facets. These are what the XForms
+specification calls 'Model Item Properties'. Facets include: readonly, relevant,
+required, type, etc. In addition to observing the value of an aspect changing,
+we can also observe changes to facets of the aspect.
+
+TP.sig.Change
+
+TP.sig.FacetChange
+
+TP.sig.ValueChange
+SalaryChange
+
+TP.sig.ReadonlyChange
+SalaryReadonlyChange
+
+TP.sig.RequiredChange
+SalaryRequiredChange
+
+TP.sig.RelevantChange
+SalaryRelevantChange
+
+TP.sig.ValidityChange
+SalaryValidityChange
+
+//  ---
+//  Object Binds - defineBinding.
+//  ---
 
 Even with convenience methods however, setting up observations of this form for
 every binding can become tedious. To avoid a lot of boilerplate code TIBET
@@ -206,114 +240,12 @@ of authoring applications in 90% code and 10% markup you do 90% of your work in
 markup and augment that with 10% code. This new balance implies that the
 majority of binding should happen in markup, not JS.
 
-As it turns out, the TIBET shell (TSH) already has to deal with connecting data
-between markup elements. That's what a TSH pipe does. With that in mind we took
-a closer look at how to define markup-level bindings in a way that is compatible
-with the TSH and the rest of the TIBET tag processing system. What we found was
-that we could blend the two so you end up with a single, comprehensive way of
-defining how data should move through your tags.
-
-//  ---
-//  Standard I/O and Binding
-//  ---
-
-Taking the concept of standard I/O ('STDIO') and applying it to the concept of
-data binding might seem a little strange at first. The thing to keep in mind is
-that, to TIBET at least, markup is simply source code for the shell.
-
-If you were to look at the parsed source markup for a TSH script you'd see that
-initially each element in a pipe contains a tsh:pipe attribute whose content is
-the symbol you used at that location in the pipe.
-
-For example, a simple pipe like: 1 + 2 .| alert($_) initially becomes:
-
-    <tsh:cmd pipe=".|">1 + 2</tsh:cmd><tsh:cmd>alert($_)</tsh:cmd>
-
-The pipe attribute in this specific case tells the runtime machinery that the
-first command, the 1 + 2, should write to standard output or "stdout". During
-execution similar information is conveyed to the alert() command informing it
-that it should read from standard input or "stdin".
-
-In essence, the various pipe symbols act as shorthand for telling the shell how
-data between the various sources, commands, and sinks should flow.
-
-While data flow in a pipe isn't precisely the same as data binding there's an
-interesting opportunity for overlap here.
-
-Tags in TIBET know how to read stdin when they execute - it's necessary for them
-to function in pipes. If we map an object's bound resource_spec to be its stdin
-provider we've effectively unified binding with STDIO concepts.
-
-As an example, think about the <html:input type="text"/> tag. When that tag is
-run its tshExecute method is invoked. Most html-prefixed elements respond to
-that method by checking for input parameters, which includes checking for STDIN.
-The input they read during that stage is then used as their 'value'. This is
-precisely what you'd want for model-to-view data binding.
-
 For example, we might bind an input text field using the following:
 
-    <html:input type="text" tsh:in="resource_spec"/>
+    <html:input type="text" tsh:io="resource_spec"/>
 
-In the previous example we've added a simple attribute saying that this input
-tag should read STDIN from resource_spec. If we combine logic to read data
-based on the tsh:in attribute with logic to observe resource_spec for Change
-notifications we've effectively bound our input tag to resource_spec. All that's
-necessary is for our Change handler to trigger a "refresh" which includes
-reading from the input data source and updating as needed.
-
-That's fine for a one-way bind. What about two-way binds? It turns out that
-using a STDIO model gives us those and more.
-
-If you're familiar with UNIX Shells you probably recall that there are three
-standard components in the "STDIO" model: stdin, stdout, and stderr. Mapping
-those to attributes as we did with stdin (tsh:in) gives us three channels
-through which we can route data.
-
-Imagine:
-
-    <html:input type="text"
-        tsh:in="resource_spec"
-        tsh:out="resource_spec"
-        tsh:err="#errorDiv"/>
-
-In this case we've not only created a two-way binding but we've said that any
-errors which might occur while processing STDIO should be sent to the element
-whose ID is errorDiv.
-
-For brevity we can shorten that syntax to:
-
-    <html:input type="text"
-        tsh:io="resource_spec"
-        tsh:err="#errorDiv"/>
-
-Here we've used an attribute reference for 'stdio' of tsh:io rather than stdin
-or stdout. This sugared attribute name is shorthand for assigning stdin and
-stdout to the same resource.
-
-Since we're using simple markup attributes there's no limitation on the element
-types we can apply a binding to. Any markup element can contain one or more
-stdio attributes.
-
-As it turns out UI elements typically serve as data sources or data sinks. In
-other words, they act as the final output target when used as a pure "sink" and
-as an input "source" when bound at the start of a sequence. You can do much more
-when you add bindings for "action tags" into the mix.
-
-Action tags are tags whose primary purpose is to perform some type of processing
-rather than presenting some type of visual output. When you mix action tags with
-UI controls you literally "script your page" in shell terms.
-
-For example, you might start a "pipe" from a UI control and run it through a set
-of action tags to validate it, reformat it for storage, and then send it to a
-server. Error output can similarly be directed via the same mechanisms. Or, you
-might bind the output of a server call tag to a set of actions which receive the
-data, reformat it, and then pipe it to an html:table.
-
-At this point you're not binding using limited bidirectional "silos" of data,
-you're truly scripting your page in the Unix sense of a shell script.
-
-So how do you define stdin, stdout, and stderr resource_spec values for your
-tags? You make use of another central object in TIBET development -- a URI.
+All that's necessary is for our Change handler to trigger a "refresh" which
+includesreading from the input data source and updating as needed.
 
 //  ---
 //  Resource References
@@ -341,7 +273,7 @@ to sending/receiving JSON via HTTP(S) or another protocol).
 For local (offline) storage you can use file: URIs to access data on the local
 file system (subject to browser-specific security considerations). You can also
 use a localdb: URI, a TIBET-specific extension, to read and write data to and
-from any HTML5-compliant browser database.
+from any HTML5-compliant browser local storage.
 
 The often-overlooked urn: (Universal Resource Name) format is leveraged by TIBET
 to allow you to register any object in your application under a public name that
@@ -432,19 +364,19 @@ data referenced by the specific URIs fragment. The final data access process
 here is performed by the get() method of the primary resource so that different
 fragment processing can be highly specialized by resource.
 
-To bind data to a STDIO channel you simply provide the URI necessary to point to
-the data you need to reference.
+To bind data to an Element you simply provide the URI necessary to point to the
+data you need to reference.
 
 //  ---
 //  Binding Attributes
 //  ---
 
-TIBET's functional attributes for binding are tsh:in, tsh:out, and tsh:err.
-An optional tsh:io attribute sugars authoring for bi-directional binds
-where a repetitive tsh:in and tsh:out pair would otherwise be required. An
-additional sugar is the use of a tsh:base attribute which provides a way to
-define partial URI paths so that leaf elements can use scoped relative URIs.
-Think of the tsh:base attribute as xml:base for data bindings.
+TIBET's functional attributes for binding are bind:in and bind:out. An optional
+bind:io attribute sugars authoring for bi-directional binds where a repetitive
+bind:in and bind:out pair would otherwise be required. An additional sugar is
+the use of a bind:scope attribute which provides a way to define partial URI
+paths so that leaf elements can use scoped relative URIs. Think of the bind:scope
+attribute as xml:base for data bindings.
 
 To make things concrete let's look at some sample markup which provides a
 master/detail display of TIBET's current VCard data from vcards.xml.
@@ -459,7 +391,7 @@ master/detail display of TIBET's current VCard data from vcards.xml.
         ev:event="TP.sig.DOMContentLoaded" ev:target="#document"/>
 
     <!-- define a data source that has a parameterized query -->
-    <tsh:uri href="jsonp://ajax.googleapis.com/ajax/services/search/web?v=1.0&amp;q=${queryInput}" ev:event="TP.sig.DOMClick" ev:observer="query_button">
+    <tsh:uri href="jsonp://ajax.googleapis.com/ajax/services/search/web?v=1.0&amp;q={{queryInput}}" ev:event="TP.sig.DOMClick" ev:observer="query_button">
         <tsh:param name="queryInput" in="#query_field"/>
     </tsh:uri>
 
@@ -1121,6 +1053,8 @@ function(aSignalOrHash) {
     if (TP.notDefined(newVal)) {
         return this;
     }
+
+    //  TODO: Only if the (as yet unsupplied facet) is 'value' -- otherwise, call 'setFacet'
 
     this.set(aspect, newVal);
 
