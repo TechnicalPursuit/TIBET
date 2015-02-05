@@ -768,9 +768,11 @@ function(aPath) {
 
         path = TP.regex.TIBET_POINTER.match(path);
 
-        //  If it has 'TIBETan' access path characters, create a 'complex'
-        //  TIBET path to deal with it.
-        if (TP.regex.TIBET_PATH.test(path.at(1))) {
+        if (TP.regex.COMPOSITE_PATH.test(path.at(1))) {
+            return TP.core.CompositePath;
+        } else if (TP.regex.TIBET_PATH.test(path.at(1))) {
+            //  Otherwise, if it just has 'TIBETan' access path characters,
+            //  create a 'complex' TIBET path to deal with it.
             return TP.core.ComplexTIBETPath;
         } else {
             //  Otherwise, it's just a simple path
