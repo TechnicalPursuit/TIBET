@@ -6041,6 +6041,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.History.Type.defineMethod('back',
+function() {
+
+    /**
+     * @method back
+     * @summary Causes the receiver to go back a page in session history
+     */
+
+    this.getNativeWindow().history.back();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.History.Type.defineMethod('clearHistory',
 function() {
 
