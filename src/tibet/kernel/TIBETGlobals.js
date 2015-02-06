@@ -1061,6 +1061,10 @@ TP.BEST = 5;
 TP.SEND = 'SEND';
 TP.RECV = 'RECV';
 
+TP.IN = 'IN';
+TP.IO = 'IO';
+TP.OUT = 'OUT';
+
 //  ---
 //  file io
 //  ---
@@ -2386,12 +2390,16 @@ TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 //  followed by 0-n whitespace, followed by 1-n any characters
 TP.regex.ACP_FORMAT = /([^\\]*?)\s*\.%\s*(.+)/;
 
+TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$\w+/;
+
+
 TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
                                             '\\s*:\\s*' +
                                             '(' + '[^;]+' + ');?',
                                         'g'); // needs reset
 
-TP.regex.INLINE_BINDING_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
+TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
+
 
 TP.regex.TSH_VARSUB = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/;
 //  A global version of TP.regex.TSH_VARSUB

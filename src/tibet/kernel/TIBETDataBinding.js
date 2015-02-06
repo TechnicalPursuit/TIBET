@@ -726,6 +726,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                                     TP.ac(targetAttributeName,
                                             transformationFunc));
 
+    //  PERF
+
     //  If the resource is a URI and we can obtain the resource value of it,
     //  make sure that it is configured to signal Change notifications.
     if (TP.isURI(resource) &&
@@ -1196,228 +1198,252 @@ TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineAttribute('bindInfos');
-TP.core.ElementNode.Inst.defineAttribute('sugaredExprs');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('defineSugaredBindings',
-function() {
+TP.core.ElementNode.Inst.defineMethod('defineBindingsUsing',
+function(attrName, attrValue, scopeVals, direction) {
 
     /**
-     * @method defineSugaredBindings
-     * @summary Defines any bindings coming from the receivers's 'sugared
-     *     binding' expressions. These are normally registered by the 'bind:'
-     *     namespace when it processes the markup.
+     * @method defineBindingsUsing
+     * @summary Defines a binding between the data source as described in the
+     *     supplied attribute value and the receiver.
+     * @param {String} attrName The attribute name to install the binding under
+     *     in the receiver.
+     * @param {String} attrValue The attribute value to analyse to produce the
+     *     proper binding expression.
+     * @param {Array} scopeVals The list of scope values to use to qualify the
+     *     binding expression.
+     * @param {String} direction The binding 'direction' (i.e. which way to
+     *     establish the binding connection from the data source to the
+     *     receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var scopeVals;
+    var expandedExpr,
 
-    //  Obtain the binding scope values by walking the DOM tree.
-    scopeVals = this.getBindingScopeValues();
+        exprParts,
+        exprWithBrackets,
 
-    //  Loop over the sugared expressions and process them.
-    this.get('sugaredExprs').perform(
-        function(kvPair) {
+        exprToExecute,
 
-            var name,
-                value,
+        splitURI,
 
-                expandedExpr,
+        allVals,
+        primaryURIPath,
 
-                exprParts,
-                exprWithBrackets,
+        obsURI;
 
-                exprToExecute,
+    //  Grab the 'expanded expression here' - we'll expand it further below.
+    expandedExpr = attrValue;
 
-                splitURI,
+    //  While we can still extract binding expressions from the value, keep
+    //  looping. This allows us to have multiple expressions in a single value
+    //  (i.e. 'foo [[bar]] is called: [[baz]]')
+    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
+    while (TP.isValid(exprParts =
+            TP.regex.BINDING_STATEMENT_EXTRACT.exec(attrValue))) {
 
-                allVals,
-                primaryScopedPath,
+        //  We want the expression both with and without the surrounding
+        //  brackets ([[...]])
+        exprWithBrackets = exprParts.first();
+        exprToExecute = exprParts.last();
 
-                uris,
-                i;
+        //  If the expression to execute is a path that contains variables, then
+        //  we just set up an observation on the 'value' of the URI and leverage
+        //  the transformation function installed below to form a final value.
+        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(exprToExecute)) {
 
-            //  The name will be used as the 'target attribute name' of the
-            //  binding.
-            name = kvPair.first();
-            value = kvPair.last();
-
-            //  Grab the 'expanded expression here' - we'll expand it further
-            //  below.
-            expandedExpr = value;
-
-            uris = TP.ac();
-
-            //  While we can still extract binding expressions from the value,
-            //  keep looping. This allows us to have multiple expressions in a
-            //  single value (i.e. 'foo [[bar]] is called: [[baz]]')
-            while (TP.isValid(exprParts =
-                    TP.regex.INLINE_BINDING_EXTRACT.exec(value))) {
-
-                //  We want the expression both with and without the surrounding
-                //  brackets ([[...]])
-                exprWithBrackets = exprParts.first();
-                exprToExecute = exprParts.last();
-
-                //  If the expression to execute is a fully-formed URI, then we
-                //  don't take the scope values into consideration. We build a
-                //  primaryScopedPath consisting of the URI's primary href and a
-                //  'value' TIBET XPointer that will just return the value. We
-                //  then reset the expression to execute to be just the fragment
-                //  text.
-                if (TP.isURI(exprToExecute)) {
-                    splitURI = TP.uc(exprToExecute);
-                    primaryScopedPath = splitURI.getPrimaryHref() +
-                                        '#tibet(value)';
-                    exprToExecute = splitURI.getFragmentText();
-                } else {
-                    //  Concatenate a simple 'value' expression onto the scope
-                    //  values array (thereby creating a new Array) and use it
-                    //  to join all of the values together.
-                    allVals = scopeVals.concat('value');
-                    primaryScopedPath = TP.uriJoinFragments.apply(TP, allVals);
-                }
-
-                //  Replace the expression with the brackets with the expression
-                //  without the brackets surrounded by ACP brackets.
-                expandedExpr = expandedExpr.replace(
-                                exprWithBrackets,
-                                '{{' + exprToExecute + '}}');
-
-                //  Add that value to the list of URIs to bind to this
-                //  expression.
-                uris.push(primaryScopedPath);
+            //  If the expression to execute is a fully-formed URI, then we
+            //  don't take the scope values into consideration. We build a
+            //  primaryURIPath consisting of the URI's primary href and a
+            //  'value' TIBET XPointer that will just return the value. We then
+            //  reset the expression to execute to be just the fragment text.
+            if (TP.isURI(exprToExecute)) {
+                splitURI = TP.uc(exprToExecute);
+                primaryURIPath = splitURI.getPrimaryHref() +
+                                    '#tibet(value)';
+                exprToExecute = splitURI.getFragmentText();
+            } else {
+                //  Concatenate a simple 'value' expression onto the scope
+                //  values array (thereby creating a new Array) and use it to
+                //  join all of the values together.
+                allVals = scopeVals.concat('value');
+                primaryURIPath = TP.uriJoinFragments.apply(TP, allVals);
             }
+        } else {
+            //  Since the expression to execute didn't contain any variables, we
+            //  can use it as part of the URI to observe (thereby getting finer
+            //  grained control).
+            allVals = scopeVals.concat(exprToExecute);
+            primaryURIPath = TP.uriJoinFragments.apply(TP, allVals);
+        }
 
-            //  Loop over the URIs that this expression wants to be bound to and
-            //  define the bindings.
-            for (i = 0; i < uris.getSize(); i++) {
-                /* eslint-disable no-loop-func */
-                this.defineBinding(
-                        '@' + name, TP.uc(uris.at(i)), 'value', 'value',
-                        function(source, newVal) {
-                            var params;
+        //  If the 'expression to execute' is still set to what it was when we
+        //  entered this loop, then we didn't rewrite it or re-quality the
+        //  primary URI path above with a '#tibet(value)' fragment. Therefore,
+        //  we just use the whole primary path as our expression to replace the
+        //  brackets in.
+        if (exprToExecute === exprParts.last()) {
+            //  Replace the expression with the brackets with the expression
+            //  without the brackets surrounded by ACP brackets.
+            expandedExpr = expandedExpr.replace(
+                            exprWithBrackets,
+                            '{{' + primaryURIPath + '}}');
+        } else {
+            //  Otherwise, replace the expression with the brackets with the
+            //  'expression to execute' surrounded by ACP brackets.
+            expandedExpr = expandedExpr.replace(
+                            exprWithBrackets,
+                            '{{' + exprToExecute + '}}');
+        }
 
-                            params = TP.hc(
-                                        '$REQUEST', null,
-                                        '$TAG', this,
-                                        '$TARGET', this.getDocument());
+        //  Make sure to trim off any format before using this as the URI
+        if (TP.regex.ACP_FORMAT.test(primaryURIPath)) {
+            primaryURIPath = primaryURIPath.slice(
+                                0,
+                                primaryURIPath.indexOf('.%')).trim();
+        }
 
-                            return expandedExpr.transform(source, params);
-                        }.bind(this));
+        //  Create a URI from the primary path.
+        obsURI = TP.uc(primaryURIPath);
 
-                //  Because sugared expressions act as 'bind:io' (two sided
-                //  binds), we have to establish a bind back the other way (if
-                //  the receiver allows bidi bindings on that attribute).
-                if (this.getType().get('bidiAttrs').contains(name)) {
-                    TP.uc(uris.at(i)).defineBinding('value', this, 'value');
-                }
-                /* eslint-enable no-loop-func */
-            }
-    }.bind(this));
+        //  If we setting up a bind for either 'IN' or 'IO', then define the
+        //  binding from the data model to this object.
+        if (direction === TP.IN || direction === TP.IO) {
+
+            /* eslint-disable no-loop-func */
+            this.defineBinding(
+                    '@' + attrName, obsURI, 'value', 'value',
+                    function(source, newVal) {
+                        var params;
+
+                        params = TP.hc(
+                                    '$REQUEST', null,
+                                    '$TAG', this,
+                                    '$TARGET', this.getDocument());
+
+                        return expandedExpr.transform(null, params);
+                    }.bind(this));
+            /* eslint-enable no-loop-func */
+
+    //  PERF
+
+            //  Manually refresh the binding. This is necessary because the
+            //  binding has just been established and the resource won't know
+            //  that it has to signal change.
+            this.refresh(TP.hc(TP.NEWVAL, obsURI.getResource(),
+                                'aspect', 'value'));
+        }
+
+        //  If we are setting up a bind for either 'OUT' or 'IO', then we have
+        //  to establish a bind back the other way - from this object to the
+        //  data model.
+        if (direction === TP.OUT || direction === TP.IO) {
+            obsURI.defineBinding('value', this, 'value');
+        }
+    }
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('destroySugaredBindings',
-function() {
+TP.core.ElementNode.Inst.defineMethod('destroyBindingsUsing',
+function(attrName, attrValue, scopeVals, direction) {
 
     /**
-     * @method destroySugaredBindings
-     * @summary Destroys any bindings coming from the receivers's 'sugared
-     *     binding' expressions. These are normally registered by the 'bind:'
-     *     namespace when it processes the markup.
+     * @method destroyBindingsUsing
+     * @summary Destroys any binding between the data source as described in the
+     *     supplied attribute value and the receiver.
+     * @param {String} attrName The attribute name to use to remove the binding
+     *     from in the receiver.
+     * @param {String} attrValue The attribute value to analyse to produce the
+     *     proper binding expression.
+     * @param {Array} scopeVals The list of scope values to use to qualify the
+     *     binding expression.
+     * @param {String} direction The binding 'direction' (i.e. which way the
+     *     original binding connection was established from the data source to
+     *     the receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var scopeVals;
+    var exprParts,
 
-    //  Obtain the binding scope values by walking the DOM tree.
-    scopeVals = this.getBindingScopeValues();
+        exprToExecute,
 
-    //  Loop over the sugared expressions and process them.
-    this.get('sugaredExprs').perform(
-        function(kvPair) {
+        splitURI,
 
-            var name,
-                value,
+        allVals,
+        primaryURIPath,
 
-                exprParts,
+        obsURI;
 
-                exprToExecute,
+    //  While we can still extract binding expressions from the value, keep
+    //  looping. This allows us to have multiple expressions in a single value
+    //  (i.e. 'foo [[bar]] is called: [[baz]]')
+    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
+    while (TP.isValid(exprParts =
+            TP.regex.BINDING_STATEMENT_EXTRACT.exec(attrValue))) {
 
-                splitURI,
+        //  We only need the expression without the surrounding brackets
+        //  ([[...]])
+        exprToExecute = exprParts.last();
 
-                allVals,
-                primaryScopedPath,
+        //  If the expression to execute is a path that contains variables, then
+        //  we will have set up an observation on the 'value' of the URI in the
+        //  'defineBindingsUsing' method that we need to undo here.
+        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(exprToExecute)) {
 
-                uris,
-                i;
-
-            //  The name will be used as the 'target attribute name' of the
-            //  binding.
-            name = kvPair.first();
-            value = kvPair.last();
-
-            //  Grab the 'expanded expression here' - we'll expand it further
-            //  below.
-            uris = TP.ac();
-
-            //  While we can still extract binding expressions from the value,
-            //  keep looping. This allows us to have multiple expressions in a
-            //  single value (i.e. 'foo [[bar]] is called: [[baz]]')
-            while (TP.isValid(exprParts =
-                    TP.regex.INLINE_BINDING_EXTRACT.exec(value))) {
-
-                //  We want the expression both with and without the surrounding
-                //  brackets ([[...]])
-                exprToExecute = exprParts.last();
-
-                //  If the expression to execute is a fully-formed URI, then we
-                //  don't take the scope values into consideration. We build a
-                //  primaryScopedPath consisting of the URI's primary href and a
-                //  'value' TIBET XPointer that will just return the value. We
-                //  then reset the expression to execute to be just the fragment
-                //  text.
-                if (TP.isURI(exprToExecute)) {
-                    splitURI = TP.uc(exprToExecute);
-                    primaryScopedPath = splitURI.getPrimaryHref() +
-                                        '#tibet(value)';
-                } else {
-                    //  Concatenate a simple 'value' expression onto the scope
-                    //  values array (thereby creating a new Array) and use it
-                    //  to join all of the values together.
-                    allVals = scopeVals.concat('value');
-                    primaryScopedPath = TP.uriJoinFragments.apply(TP, allVals);
-                }
-
-                //  Add that value to the list of URIs to remove the binding for
-                //  this expression.
-                uris.push(primaryScopedPath);
+            //  If the expression to execute is a fully-formed URI, then we
+            //  don't take the scope values into consideration. We build a
+            //  primaryURIPath consisting of the URI's primary href and a
+            //  'value' TIBET XPointer that will just return the value. We then
+            //  reset the expression to execute to be just the fragment text.
+            if (TP.isURI(exprToExecute)) {
+                splitURI = TP.uc(exprToExecute);
+                primaryURIPath = splitURI.getPrimaryHref() +
+                                    '#tibet(value)';
+                exprToExecute = splitURI.getFragmentText();
+            } else {
+                //  Concatenate a simple 'value' expression onto the scope
+                //  values array (thereby creating a new Array) and use it
+                //  to join all of the values together.
+                allVals = scopeVals.concat('value');
+                primaryURIPath = TP.uriJoinFragments.apply(TP, allVals);
             }
+        } else {
+            //  Since the expression to execute didn't contain any variables, we
+            //  can use it as part of the URI to ignore (thereby getting finer
+            //  grained control).
+            allVals = scopeVals.concat(exprToExecute);
+            primaryURIPath = TP.uriJoinFragments.apply(TP, allVals);
+        }
 
-            //  Loop over the URIs that this expression wants to be bound to and
-            //  destroy the bindings.
-            for (i = 0; i < uris.getSize(); i++) {
-                /* eslint-disable no-loop-func */
-                this.destroyBinding(
-                        '@' + name, TP.uc(uris.at(i)), 'value', 'value');
+        //  Make sure to trim off any format before using this as the URI
+        if (TP.regex.ACP_FORMAT.test(primaryURIPath)) {
+            primaryURIPath = primaryURIPath.slice(
+                            0, primaryURIPath.indexOf('.%')).trim();
+        }
 
-                //  Because sugared expressions act as 'bind:io' (two sided
-                //  binds), we will have established a bind back the other way
-                //  (if the receiver allows bidi bindings on that attribute). We
-                //  need to remove it.
-                if (this.getType().get('bidiAttrs').contains(name)) {
-                    TP.uc(uris.at(i)).destroyBinding('value', this, 'value');
-                }
-                /* eslint-enable no-loop-func */
-            }
-    }.bind(this));
+        //  Create a URI from the primary path.
+        obsURI = TP.uc(primaryURIPath);
+
+        //  If we tearing down a bind for either 'IN' or 'IO', then destroy the
+        //  binding from the data model to this object.
+        if (direction === TP.IN || direction === TP.IO) {
+            this.destroyBinding('@' + attrName, obsURI, 'value', 'value');
+        }
+
+        //  If we are tearing down a bind for either 'OUT' or 'IO', then we
+        //  have to destroy the binding that we set up the other way - from this
+        //  object to the data model.
+        if (direction === TP.OUT || direction === TP.IO) {
+            obsURI.destroyBinding('value', this, 'value');
+        }
+    }
 
     return this;
 });
@@ -1716,6 +1742,11 @@ function(aSignalOrHash) {
         shouldDefine,
         shouldDestroy,
 
+        nonBindAttrNodes,
+
+        scopeVals,
+        bidiAttrs,
+
         bindingInfos,
         bindingInfo;
 
@@ -1735,6 +1766,7 @@ function(aSignalOrHash) {
     info = TP.isValid(aSignalOrHash) ? aSignalOrHash : TP.hc();
 
     goDeep = info.atIfInvalid('deep', true);
+
     shouldDefine = info.atIfInvalid('shouldDefine', true);
     shouldDestroy = info.atIfInvalid('shouldDestroy', true);
 
@@ -1744,6 +1776,22 @@ function(aSignalOrHash) {
         bindingInfos = TP.hc();
         this.set('bindInfos', bindingInfos);
     }
+
+    //  Grab all of the attribute nodes on the receiver that are *not* in the
+    //  TP.w3.Xmlns.BIND namespace but have bind sugar syntax ('[['...']]') as
+    //  part of their value.
+    nonBindAttrNodes = TP.nodeEvaluateXPath(
+                    this.getNativeNode(),
+                    '@*[namespace-uri() != "' + TP.w3.Xmlns.BIND + '"' +
+                    ' and ' +
+                    'contains(., "[[")]',
+                    TP.NODESET);
+
+    //  Obtain the binding scope values by walking the DOM tree.
+    scopeVals = this.getBindingScopeValues();
+
+    //  Obtain the names of any attributes that allow bi-directional binding.
+    bidiAttrs = this.getType().get('bidiAttrs');
 
     //  If the caller wants us to destroy bindings, then we do so here.
     if (shouldDestroy) {
@@ -1755,18 +1803,24 @@ function(aSignalOrHash) {
 
             bindingInfo.perform(
                 function(kvPair) {
+
                     var attrName,
+                        attrVal,
                         obsURI;
 
                     attrName = kvPair.first();
-                    obsURI = TP.uc(kvPair.last());
+                    attrVal = kvPair.last();
 
-                    //  Destroy the binding using the attribute name and 'value'
-                    //  as the source attribute name (any URI that we're
-                    //  observing - whether a URI pointing to a primary resource
-                    //  or one pointing to a subresource will have been sending
-                    //  a 'TP.sig.ValueChange').
-                    this.destroyBinding('@' + attrName, obsURI, 'value');
+                    if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
+                        attrVal = '[[' + attrVal + ']]';
+                    }
+
+                    this.destroyBindingsUsing(
+                            attrName,
+                            attrVal,
+                            scopeVals,
+                            TP.IN);
+
                 }.bind(this));
         }
 
@@ -1777,28 +1831,27 @@ function(aSignalOrHash) {
 
             bindingInfo.perform(
                 function(kvPair) {
+
                     var attrName,
-                        obsURI;
+                        attrVal,
+                        obsURI,
+
+                        isBidi;
 
                     attrName = kvPair.first();
-                    obsURI = TP.uc(kvPair.last());
+                    attrVal = kvPair.last();
 
-                    //  Destroy the binding using the attribute name and 'value'
-                    //  as the source attribute name (any URI that we're
-                    //  observing - whether a URI pointing to a primary resource
-                    //  or one pointing to a subresource will have been sending
-                    //  a 'TP.sig.ValueChange').
-                    this.destroyBinding('@' + attrName, obsURI, 'value');
-
-                    //  Since we're binding for 'io', we check to see if we can
-                    //  remove the binding in the other direction by asking the
-                    //  receiver. If so, remove it.
-
-                    if (this.getType().get('bidiAttrs').contains(attrName)) {
-
-                        //  Remove any binding from the control to the URI
-                        obsURI.destroyBinding('value', this, 'value');
+                    if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
+                        attrVal = '[[' + attrVal + ']]';
                     }
+
+                    isBidi = bidiAttrs.contains(attrName);
+
+                    this.destroyBindingsUsing(
+                            attrName,
+                            attrVal,
+                            scopeVals,
+                            isBidi ? TP.IO : TP.IN);
 
                 }.bind(this));
         }
@@ -1810,23 +1863,51 @@ function(aSignalOrHash) {
 
             bindingInfo.perform(
                 function(kvPair) {
+
                     var attrName,
+                        attrVal,
                         obsURI;
 
                     attrName = kvPair.first();
-                    obsURI = TP.uc(kvPair.last());
+                    attrVal = kvPair.last();
 
-                    //  Remove any binding from the control to the URI
-                    obsURI.destroyBinding('value', this, 'value');
+                    if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
+                        attrVal = '[[' + attrVal + ']]';
+                    }
+
+                    this.destroyBindingsUsing(
+                            attrName,
+                            attrVal,
+                            scopeVals,
+                            TP.OUT);
 
                 }.bind(this));
         }
 
-        //  'Inline expression' sugar
+        //  'sugared' attribute values
 
-        if (TP.notEmpty(this.get('sugaredExprs'))) {
-           this.destroySugaredBindings();
-        }
+        (function() {
+            var i,
+
+                attrName,
+                attrValue,
+
+                isBidi;
+
+            for (i = 0; i < nonBindAttrNodes.getSize(); i++) {
+
+                attrName = nonBindAttrNodes.at(i).name;
+                attrValue = nonBindAttrNodes.at(i).value;
+
+                isBidi = bidiAttrs.contains(attrName);
+
+                this.destroyBindingsUsing(
+                        attrName,
+                        attrValue,
+                        scopeVals,
+                        isBidi ? TP.IO : TP.IN);
+            }
+        }.bind(this)());
     }
 
     //  Empty out all of the stored binding information - we will repopulate
@@ -1843,24 +1924,22 @@ function(aSignalOrHash) {
 
             bindingInfo.perform(
                 function(kvPair) {
+
                     var attrName,
-                        obsURI;
+                        attrVal;
 
                     attrName = kvPair.first();
-                    obsURI = TP.uc(kvPair.last());
+                    attrVal = kvPair.last();
 
-                    //  Define the binding using the attribute name and 'value'
-                    //  as the source attribute name (any URI that we're
-                    //  observing - whether a URI pointing to a primary resource
-                    //  or one pointing to a subresource will send a
-                    //  'TP.sig.ValueChange').
-                    this.defineBinding('@' + attrName, obsURI, 'value');
+                    if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
+                        attrVal = '[[' + attrVal + ']]';
+                    }
 
-                    //  Manually refresh the binding. This is necessary because
-                    //  the binding has just been established and the resource
-                    //  won't know that it has to signal change.
-                    this.refresh(TP.hc(TP.NEWVAL, obsURI.getResource(),
-                                        'aspect', 'value'));
+                    this.defineBindingsUsing(
+                            attrName,
+                            attrVal,
+                            scopeVals,
+                            TP.IN);
 
                 }.bind(this));
 
@@ -1874,33 +1953,27 @@ function(aSignalOrHash) {
 
             bindingInfo.perform(
                 function(kvPair) {
+
                     var attrName,
-                        obsURI;
+                        attrVal,
+                        obsURI,
+
+                        isBidi;
 
                     attrName = kvPair.first();
-                    obsURI = TP.uc(kvPair.last());
+                    attrVal = kvPair.last();
 
-                    //  Define the binding using the attribute name and 'value'
-                    //  as the source attribute name (any URI that we're
-                    //  observing - whether a URI pointing to a primary resource
-                    //  or one pointing to a subresource will send a
-                    //  'TP.sig.ValueChange').
-                    this.defineBinding('@' + attrName, obsURI, 'value');
-
-                    //  Since we're binding for 'io', we check to see if we can
-                    //  add another binding in the other direction by asking the
-                    //  receiver. If so, establish one.
-
-                    if (this.getType().get('bidiAttrs').contains(attrName)) {
-                        //  Establish the binding from the control to the URI
-                        obsURI.defineBinding('value', this, 'value');
+                    if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
+                        attrVal = '[[' + attrVal + ']]';
                     }
 
-                    //  Manually refresh the binding. This is necessary because
-                    //  the binding has just been established and the resource
-                    //  won't know that it has to signal change.
-                    this.refresh(TP.hc(TP.NEWVAL, obsURI.getResource(),
-                                        'aspect', 'value'));
+                    isBidi = bidiAttrs.contains(attrName);
+
+                    this.defineBindingsUsing(
+                            attrName,
+                            attrVal,
+                            scopeVals,
+                            isBidi ? TP.IO : TP.IN);
 
                 }.bind(this));
 
@@ -1914,28 +1987,52 @@ function(aSignalOrHash) {
 
             bindingInfo.perform(
                 function(kvPair) {
+
                     var attrName,
-                        obsURI;
+                        attrVal;
 
                     attrName = kvPair.first();
-                    obsURI = TP.uc(kvPair.last());
+                    attrVal = kvPair.last();
 
-                        //  Establish the binding from the control to the URI
-                    obsURI.defineBinding('value', this, 'value');
+                    if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
+                        attrVal = '[[' + attrVal + ']]';
+                    }
 
-                    //  Note that manual binding refresh aren't necessary here
-                    //  since the UI doesn't need to be updated because it's
-                    //  pushing to the model, not being refreshed from it.
+                    this.defineBindingsUsing(
+                            attrName,
+                            attrVal,
+                            scopeVals,
+                            TP.OUT);
+
                 }.bind(this));
 
             bindingInfos.atPut('out', bindingInfo);
         }
 
-        //  'Inline expression' sugar
+        //  'sugared' attribute values
 
-        if (TP.notEmpty(this.get('sugaredExprs'))) {
-           this.defineSugaredBindings();
-        }
+        (function() {
+            var i,
+
+                attrName,
+                attrValue,
+
+                isBidi;
+
+            for (i = 0; i < nonBindAttrNodes.getSize(); i++) {
+
+                attrName = nonBindAttrNodes.at(i).name;
+                attrValue = nonBindAttrNodes.at(i).value;
+
+                isBidi = bidiAttrs.contains(attrName);
+
+                this.defineBindingsUsing(
+                        attrName,
+                        attrValue,
+                        scopeVals,
+                        isBidi ? TP.IO : TP.IN);
+            }
+        }.bind(this)());
     }
 
     if (TP.isTrue(info.at('deep'))) {
@@ -2456,12 +2553,14 @@ function(aNode, aResource, pathValues) {
             path = TP.uriJoinFragments.apply(TP, vals);
             textNode.updatePath = path;
 
+            //  TODO: Set up transform params here
             value = template.transform(aResource);
             TP.nodeSetTextContent(
                     textNode,
                     value);
 
         } else if (TP.isString(template = textNode.template)) {
+            //  TODO: Set up transform params here
             value = template.transform(aResource);
             TP.nodeSetTextContent(
                     textNode,
@@ -2520,33 +2619,6 @@ function(aSignalOrHash) {
         //this.$refreshBoundRoots(aSignalOrHash);
         void 0;
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('registerSugaredExpression',
-function(aName, aValue) {
-
-    /**
-     * @method registerSugaredExpression
-     * @summary Registers a 'sugared binding expression' for processing by the
-     *     binding engine.
-     * @param {String} aName The name to register the expression under. This
-     *     should be the name of the aspect that will be set on the target
-     *     object when the source(s) of the expression change.
-     * @returns {TP.core.ElementNode} The receiver.
-     */
-
-    var sugaredExprs;
-
-    if (!TP.isValid(sugaredExprs = this.get('sugaredExprs'))) {
-        sugaredExprs = TP.hc();
-        this.set('sugaredExprs', sugaredExprs);
-    }
-
-    sugaredExprs.atPut(aName, aValue);
 
     return this;
 });

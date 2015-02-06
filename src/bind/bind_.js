@@ -32,20 +32,9 @@ function(anElement) {
      * @returns {null}
      */
 
-    var tpElem,
-        attrNodes,
-
-        i;
-
-    attrNodes = TP.nodeEvaluateXPath(
-                    anElement, '@*[contains(., "[[")]', TP.NODESET);
+    var tpElem;
 
     tpElem = TP.wrap(anElement);
-
-    for (i = 0; i < attrNodes.getSize(); i++) {
-        tpElem.registerSugaredExpression(attrNodes.at(i).name,
-                                            attrNodes.at(i).value);
-    }
 
     tpElem.rebuild(TP.hc('shouldDefine', true, 'shouldDestroy', false));
 
