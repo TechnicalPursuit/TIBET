@@ -1459,7 +1459,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
-function(attributeName) {
+function(attributeName, wantsFullScope) {
 
     /**
      * @method getBindingInfoFrom
@@ -1467,13 +1467,13 @@ function(attributeName) {
      *     supplied attribute name on the receiver.
      * @param {String} attributeName The *local* name of the attribute to obtain
      *     the binding information from.
+     * @param {Boolean} [wantsFullScope=false] Whether or not to return 'fully
+           scoped values'.
      * @returns {TP.lang.Hash} A hash of binding information keyed by the
      *     binding target name.
      */
 
     var elem,
-
-        infoHash,
 
         attrNodes,
         attrVal,
@@ -1481,11 +1481,10 @@ function(attributeName) {
         results,
         bindEntries,
 
-        scopeVals;
+        scopeVals,
+        fullyScopedEntries;
 
     elem = this.getNativeNode();
-
-    infoHash = TP.hc();
 
     //  If there are no attributes on the receiver that belong to the
     //  TP.w3.Xmlns.BIND namespace, then just return an empty hash here - there
@@ -1494,7 +1493,7 @@ function(attributeName) {
 
     if (TP.isEmpty(attrNodes = TP.elementGetAttributeNodesInNS(
                         elem, '*:' + attributeName, TP.w3.Xmlns.BIND))) {
-        return infoHash;
+        return TP.hc();
     } else {
         //  Otherwise, grab the value and parse out each name: value pair using
         //  this global RegExp.
@@ -1506,8 +1505,14 @@ function(attributeName) {
         }
     }
 
+    if (TP.notTrue(wantsFullScope)) {
+        return bindEntries;
+    }
+
     //  Obtain the binding scope values by walking the DOM tree.
     scopeVals = this.getBindingScopeValues();
+
+    fullyScopedEntries = TP.hc();
 
     //  Iterate over all of the binding entries and qualify them with the values
     //  from the scope values array.
@@ -1540,7 +1545,7 @@ function(attributeName) {
                     return TP.BREAK;
                 }
 
-                infoHash.atPut(bindName, fullyExpandedVal);
+                fullyScopedEntries.atPut(bindName, fullyExpandedVal);
             } else {
                 //  Scope values is empty - this is (hopefully) a fully
                 //  qualified binding expression.
@@ -1553,11 +1558,11 @@ function(attributeName) {
                     return TP.BREAK;
                 }
 
-                infoHash.atPut(bindName, bindVal);
+                fullyScopedEntries.atPut(bindName, bindVal);
             }
         }.bind(this));
 
-    return infoHash;
+    return fullyScopedEntries;
 });
 
 //  ------------------------------------------------------------------------
