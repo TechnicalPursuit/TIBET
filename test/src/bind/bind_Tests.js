@@ -4902,6 +4902,219 @@ function() {
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: expressions with variables',
+function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.it('bind:io attributes - no literal expression content', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind41.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindCNAttr');
+                jsonField = TP.byOID('jsonBindCNAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'html:input');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'html:input');
+
+                xmlField = TP.byOID('xmlBindStdinAttr');
+                jsonField = TP.byOID('jsonBindStdinAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'SMITH');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'SMITH');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('bind:io attributes - literal expression content', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind42.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindAttr');
+                jsonField = TP.byOID('jsonBindAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The canonical name: html:input');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The canonical name: html:input');
+
+                xmlField = TP.byOID('xmlBindStdinAttr');
+                jsonField = TP.byOID('jsonBindStdinAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The data source\'s last name field value uppercased: SMITH');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The data source\'s last name field value uppercased: SMITH');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('embedded syntax - no literal expression content', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind43.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindAttr');
+                jsonField = TP.byOID('jsonBindAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'html:input');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'html:input');
+
+                xmlField = TP.byOID('xmlBindStdinAttr');
+                jsonField = TP.byOID('jsonBindStdinAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'SMITH');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'SMITH');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('embedded syntax - literal expression content', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind44.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindAttr');
+                jsonField = TP.byOID('jsonBindAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The canonical name: html:input');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The canonical name: html:input');
+
+                xmlField = TP.byOID('xmlBindStdinAttr');
+                jsonField = TP.byOID('jsonBindStdinAttr');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The data source\'s last name field value uppercased: SMITH');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The data source\'s last name field value uppercased: SMITH');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------

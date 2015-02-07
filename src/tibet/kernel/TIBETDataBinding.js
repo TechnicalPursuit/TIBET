@@ -1323,7 +1323,9 @@ function(attrName, attrValue, scopeVals, direction) {
                         params = TP.hc(
                                     '$REQUEST', null,
                                     '$TAG', this,
-                                    '$TARGET', this.getDocument());
+                                    '$TARGET', this.getDocument(),
+                                    '$_', source,
+                                    '$INPUT', source);
 
                         return expandedExpr.transform(null, params);
                     }.bind(this));
