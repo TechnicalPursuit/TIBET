@@ -808,6 +808,8 @@ function(aDataSource, transformParams) {
 
         params,
 
+        oldSource,
+
         retVal,
 
         isOrdered,
@@ -844,7 +846,7 @@ function(aDataSource, transformParams) {
 
     //  Supply the dataSource as $INPUT. This will be used in both iterating
     //  and non-iterating contexts.
-    params.atPut('$INPUT', dataSource);
+    params.atPutIfAbsent('$INPUT', dataSource);
 
     //  It's not a collection OR it is a collection, but the caller has not
     //  specified to repeat, we run ourself and return the results.
@@ -852,16 +854,18 @@ function(aDataSource, transformParams) {
         try {
 
             //  In a non-iterating context, '$_' is an alias for $INPUT
-            params.atPut('$_', dataSource);
+            params.atPutIfAbsent('$_', dataSource);
+
+            oldSource = params.at('$_');
 
             retVal = this(dataSource, params);
 
             //  In case any nested templates messed with the $INPUT, restore it
             //  to the value we set before template execution.
-            params.atPut('$INPUT', dataSource);
+            params.atPut('$INPUT', oldSource);
 
             //  In a non-iterating context, '$_' is an alias for $INPUT
-            params.atPut('$_', dataSource);
+            params.atPut('$_', oldSource);
 
             //  Make sure to return the primitive String
             return '' + retVal;
@@ -900,6 +904,8 @@ function(aDataSource, transformParams) {
     //  normalize iteration count to avoid running off end of data source
     len = (start + source.getSize()).min(start + limit);
 
+    oldSource = params.at('$INPUT');
+
     arr = TP.ac();
 
     for (i = start; i < len; i++) {
@@ -930,7 +936,7 @@ function(aDataSource, transformParams) {
     //  In case any nested templates messed with the $INPUT, restore it to the
     //  value we set before template execution and clear the others.
 
-    params.atPut('$INPUT', dataSource);
+    params.atPut('$INPUT', oldSource);
 
     params.atPut('$INDEX', null);
     params.atPut('$#', null);
