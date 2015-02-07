@@ -2654,7 +2654,7 @@ function() {
     var url;
 
     if (TP.notValid(url = this.$get('decoded'))) {
-        url = decodeURI(this.$get('uri'));
+        url = decodeURI(encodeURI(this.$get('uri')));
         this.$set('decoded', url);
     }
 
