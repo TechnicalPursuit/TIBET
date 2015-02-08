@@ -5931,7 +5931,8 @@ function(attrName, attrValue) {
     return TP.wrap(TP.nodeGetFirstAncestorByAttribute(
                                 this.getNativeNode(),
                                 attrName,
-                                attrValue));
+                                attrValue,
+                                true));
 });
 
 //  ------------------------------------------------------------------------
