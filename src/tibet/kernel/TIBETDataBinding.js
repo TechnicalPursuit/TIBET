@@ -1684,7 +1684,18 @@ function() {
     bindAttrNodes = TP.elementGetAttributeNodesInNS(
             this.getNativeNode(), /.*:(in|out|io|repeat)/, TP.w3.Xmlns.BIND);
 
-    return TP.notEmpty(bindAttrNodes);
+    if (TP.notEmpty(bindAttrNodes)) {
+        return true;
+    }
+
+    if (TP.isAttributeNode(
+            TP.nodeEvaluateXPath(this.getNativeNode(),
+                                    '@*[contains(., "[[")]',
+                                    TP.FIRST_NODE))) {
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -2238,7 +2249,9 @@ function(aResource) {
         newChildElements,
 
         j,
-        bindAttrNodes;
+
+        query,
+        needsScope;
 
     repeatAttrVal = this.getAttribute('bind:repeat');
 
@@ -2420,12 +2433,24 @@ function(aResource) {
         //  them.
         for (j = 0; j < newChildElements.getSize(); j++) {
 
-            bindAttrNodes = TP.elementGetAttributeNodesInNS(
-                                newChildElements.at(j),
-                                /.*:(in|out|io|repeat)/,
-                                TP.w3.Xmlns.BIND);
+            query = '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '" and ' +
+                        '(' +
+                        ' local-name() = "in"' +
+                        ' or local-name() = "out"' +
+                        ' or local-name() = "io"' +
+                        ' or local-name() = "repeat"' +
+                        ')' +
+                        ']' +
+                    ' or ' +
+                    '@*[contains(., "[[")]';
 
-            if (TP.notEmpty(bindAttrNodes)) {
+            //  NB: This returns a Boolean result.
+            needsScope = TP.nodeEvaluateXPath(
+                                    newChildElements.at(j),
+                                    query,
+                                    TP.NODESET);
+
+            if (needsScope) {
 
                 //  Make sure the element doesn't already have 'bind:scope' on
                 //  it.
