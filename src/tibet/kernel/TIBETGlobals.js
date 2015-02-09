@@ -2782,6 +2782,8 @@ TP.regex.TIBET_PATH =
 TP.regex.TIBET_PATH_CHAR = /[\.:,]+/;
 TP.regex.TIBET_PATH_TEMPLATE = /(^|\s+)(\w[\w\.:,]*)(\s+|$)/g; //  needs reset
 
+TP.regex.SIMPLE_NUMERIC_PATH = /^\[(\d+)\]$/;
+
 //  Node Path matching
 
 //  TIBET extensions that can be used in *node* paths

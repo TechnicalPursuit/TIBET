@@ -818,7 +818,7 @@ function(aPath) {
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
     if (TP.regex.JS_IDENTIFIER.test(path) ||
         TP.regex.ONLY_NUM.test(path) ||
-        /^\[\d+\]$/.test(path)) {
+        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
         return TP.core.SimpleTIBETPath;
     }
 
@@ -2140,7 +2140,7 @@ function(targetObj, varargs) {
 
     //  If the path is something like '[0]', then slice off the brackets to
     //  just produce '0'.
-    if (/^\[\d+\]$/.test(path)) {
+    if (TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
         path = path.slice(1, -1);
     }
 
@@ -2443,7 +2443,7 @@ function(aPath, shouldCollapse) {
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
     if (TP.regex.JS_IDENTIFIER.test(aPath) ||
         TP.regex.ONLY_NUM.test(aPath) ||
-        /^\[\d+\]$/.test(aPath)) {
+        TP.regex.SIMPLE_NUMERIC_PATH.test(aPath)) {
         return TP.core.SimpleTIBETPath.construct.apply(
                         TP.core.SimpleTIBETPath, arguments);
     }
