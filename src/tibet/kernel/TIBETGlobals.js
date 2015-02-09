@@ -2390,7 +2390,6 @@ TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 //  followed by 0-n whitespace, followed by 1-n any characters
 TP.regex.ACP_FORMAT = /([^\\]*?)\s*\.%\s*(.+)/;
 
-TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$\w+/;
 //  '$' followed by a word character (including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$(\w|\*|#)+/;
 
