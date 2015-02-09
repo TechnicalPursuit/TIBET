@@ -29,25 +29,25 @@
 	<br/>
 
     <label for="xmlBindAttr">Variable bound to XML data:</label>
-    <input type="text" id="xmlBindAttr" bind:io="value: The canonical name: [[urn:tibet:xmldata#tibet($TAG.canonicalName)]]" tabindex="0"/><br/>
+    <input type="text" id="xmlBindAttr" bind:io="value: The canonical name: [[urn:tibet:Bind42_person_xml#tibet($TAG.canonicalName)]]" tabindex="0"/><br/>
 
     <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
-    <input type="text" id="xmlBindStdinAttr" bind:io="value: The data source's last name field value uppercased: [[urn:tibet:xmldata#tibet($_.(.//lastname).value .% upperCase)]]" tabindex="0"/><br/>
+    <input type="text" id="xmlBindStdinAttr" bind:io="value: The data source's last name field value uppercased: [[urn:tibet:Bind42_person_xml#tibet($_.(.//lastname).value .% upperCase)]]" tabindex="0"/><br/>
 
     <label for="jsonBindAttr">Variable bound to JSON data:</label>
-    <input type="text" id="jsonBindAttr" bind:io="value: The canonical name: [[urn:tibet:jsondata#tibet($TAG.canonicalName)]]" tabindex="0"/><br/>
+    <input type="text" id="jsonBindAttr" bind:io="value: The canonical name: [[urn:tibet:Bind42_person_json#tibet($TAG.canonicalName)]]" tabindex="0"/><br/>
 
     <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
-    <input type="text" id="jsonBindStdinAttr" bind:io="value: The data source's last name field value uppercased: [[urn:tibet:jsondata#tibet($_.person.lastname .% upperCase)]]" tabindex="0"/><br/>
+    <input type="text" id="jsonBindStdinAttr" bind:io="value: The data source's last name field value uppercased: [[urn:tibet:Bind42_person_json#tibet($_.person.lastname .% upperCase)]]" tabindex="0"/><br/>
 
-    <tibet:data local="urn:tibet:xmldata">
+    <tibet:data local="urn:tibet:Bind42_person_xml">
         <person xmlns="">
             <lastname>Smith</lastname>
             <firstname>Joe</firstname>
         </person>
     </tibet:data>
 
-    <tibet:data local="urn:tibet:jsondata">
+    <tibet:data local="urn:tibet:Bind42_person_json">
         <![CDATA[
         {"person": {"lastname": "Smith", "firstname": "Joe"}}
         ]]>

@@ -29,25 +29,25 @@
 	<br/>
 
     <label for="xmlBindCNAttr">Binding to XML data with $TAG variable reference:</label>
-    <input type="text" id="xmlBindCNAttr" bind:io="value: urn:tibet:xmldata#tibet($TAG.canonicalName)" tabindex="0"/><br/>
+    <input type="text" id="xmlBindCNAttr" bind:io="value: urn:tibet:Bind41_person_xml#tibet($TAG.canonicalName)" tabindex="0"/><br/>
 
     <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
-    <input type="text" id="xmlBindStdinAttr" bind:io="value: urn:tibet:xmldata#tibet($_.(.//lastname).value .% upperCase)" tabindex="0"/><br/>
+    <input type="text" id="xmlBindStdinAttr" bind:io="value: urn:tibet:Bind41_person_xml#tibet($_.(.//lastname).value .% upperCase)" tabindex="0"/><br/>
 
     <label for="jsonBindCNAttr">Binding to JSON data with $TAG variable reference:</label>
-    <input type="text" id="jsonBindCNAttr" bind:io="value: urn:tibet:jsondata#tibet($TAG.canonicalName)" tabindex="0"/><br/>
+    <input type="text" id="jsonBindCNAttr" bind:io="value: urn:tibet:Bind41_person_json#tibet($TAG.canonicalName)" tabindex="0"/><br/>
 
     <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
-    <input type="text" id="jsonBindStdinAttr" bind:io="value: urn:tibet:jsondata#tibet($_.person.lastname .% upperCase)" tabindex="0"/><br/>
+    <input type="text" id="jsonBindStdinAttr" bind:io="value: urn:tibet:Bind41_person_json#tibet($_.person.lastname .% upperCase)" tabindex="0"/><br/>
 
-    <tibet:data local="urn:tibet:xmldata">
+    <tibet:data local="urn:tibet:Bind41_person_xml">
         <person xmlns="">
             <lastname>Smith</lastname>
             <firstname>Joe</firstname>
         </person>
     </tibet:data>
 
-    <tibet:data local="urn:tibet:jsondata">
+    <tibet:data local="urn:tibet:Bind41_person_json">
         <![CDATA[
         {"person": {"lastname": "Smith", "firstname": "Joe"}}
         ]]>
