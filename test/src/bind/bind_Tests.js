@@ -5113,6 +5113,497 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('bind:io attributes - no literal expression content - repeating context', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind45.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindStdinAttr1');
+                jsonField = TP.byOID('jsonBindStdinAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'JOE');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'SMITH');
+
+                xmlField = TP.byOID('xmlBindStdinAttr2');
+                jsonField = TP.byOID('jsonBindStdinAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'JOHN');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'JONES');
+
+                xmlField = TP.byOID('xmlBindIndexAttr1');
+                jsonField = TP.byOID('jsonBindIndexAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    '1');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    '0');
+
+                xmlField = TP.byOID('xmlBindIndexAttr2');
+                jsonField = TP.byOID('jsonBindIndexAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    '2');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    '1');
+
+                xmlField = TP.byOID('firstNameField1');
+                jsonField = TP.byOID('lastNameField0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'Joe');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'Smith');
+
+                xmlField = TP.byOID('firstNameField2');
+                jsonField = TP.byOID('lastNameField1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'John');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'Jones');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('bind:io attributes - literal expression content - repeating context', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind46.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindStdinAttr1');
+                jsonField = TP.byOID('jsonBindStdinAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: JOE');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: SMITH');
+
+                xmlField = TP.byOID('xmlBindStdinAttr2');
+                jsonField = TP.byOID('jsonBindStdinAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: JOHN');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: JONES');
+
+                xmlField = TP.byOID('xmlBindIndexAttr1');
+                jsonField = TP.byOID('jsonBindIndexAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The index: 1');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The index: 0');
+
+                xmlField = TP.byOID('xmlBindIndexAttr2');
+                jsonField = TP.byOID('jsonBindIndexAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The index: 2');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The index: 1');
+
+                xmlField = TP.byOID('firstNameField1');
+                jsonField = TP.byOID('lastNameField0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: Joe');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: Smith');
+
+                xmlField = TP.byOID('firstNameField2');
+                jsonField = TP.byOID('lastNameField1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: John');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: Jones');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+    //  ---
+
+    this.it('embedded syntax - no literal expression content - repeating context', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind47.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindStdinAttr1');
+                jsonField = TP.byOID('jsonBindStdinAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'JOE');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'SMITH');
+
+                xmlField = TP.byOID('xmlBindStdinAttr2');
+                jsonField = TP.byOID('jsonBindStdinAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'JOHN');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'JONES');
+
+                xmlField = TP.byOID('xmlBindIndexAttr1');
+                jsonField = TP.byOID('jsonBindIndexAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    '1');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    '0');
+
+                xmlField = TP.byOID('xmlBindIndexAttr2');
+                jsonField = TP.byOID('jsonBindIndexAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    '2');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    '1');
+
+                xmlField = TP.byOID('firstNameField1');
+                jsonField = TP.byOID('lastNameField0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'Joe');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'Smith');
+
+                xmlField = TP.byOID('firstNameField2');
+                jsonField = TP.byOID('lastNameField1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'John');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'Jones');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('embedded syntax - literal expression content - repeating context', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind48.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var xmlField,
+                    jsonField;
+
+                xmlField = TP.byOID('xmlBindStdinAttr1');
+                jsonField = TP.byOID('jsonBindStdinAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: JOE');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: SMITH');
+
+                xmlField = TP.byOID('xmlBindStdinAttr2');
+                jsonField = TP.byOID('jsonBindStdinAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: JOHN');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: JONES');
+
+                xmlField = TP.byOID('xmlBindIndexAttr1');
+                jsonField = TP.byOID('jsonBindIndexAttr0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The index: 1');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The index: 0');
+
+                xmlField = TP.byOID('xmlBindIndexAttr2');
+                jsonField = TP.byOID('jsonBindIndexAttr1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The index: 2');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The index: 1');
+
+                xmlField = TP.byOID('firstNameField1');
+                jsonField = TP.byOID('lastNameField0');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: Joe');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: Smith');
+
+                xmlField = TP.byOID('firstNameField2');
+                jsonField = TP.byOID('lastNameField1');
+
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The first name: John');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The last name: Jones');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Table - XML data source - repeating context', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind49.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var dataRows,
+                    dataCells;
+
+                dataRows = TP.byCSS('tr', TP.byId('people'));
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSS('td', TP.byId('people'));
+                test.assert.isEqualTo(dataCells.getSize(), 12);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    '1');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    '2');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    '3');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(8)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(9)),
+                    '4');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(10)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(11)),
+                    'Professional');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Table - JSON data source - repeating context', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind50.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var dataRows,
+                    dataCells;
+
+                dataRows = TP.byCSS('tr', TP.byId('people'));
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSS('td', TP.byId('people'));
+                test.assert.isEqualTo(dataCells.getSize(), 12);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    '0');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    '1');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    '2');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(8)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(9)),
+                    '3');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(10)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(11)),
+                    'Professional');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================

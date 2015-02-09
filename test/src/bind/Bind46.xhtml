@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+	<h2>Bind Test #46</h2><br/>
+	<br/>
+	<br/>
+	This test sets up a test in a 'repeating context' where elements bound with 'bind:io' attributes that have binding expressions in them with variables are used. There is surrounding literal content.
+	<br/>
+	<br/>
+    Since these expressions use variables, they won't be using data from their data source, but they will be re-evaluated when their data source changes.
+	<br/>
+	<br/>
+
+    <span bind:repeat="urn:tibet:Bind46_person_xml#xpath1(/people/person)">
+        <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
+        <input type="text" id="xmlBindStdinAttr" bind:io="value: The first name: [[$_.(.//firstname).value .% upperCase]]" tabindex="0"/><br/>
+
+        <label for="xmlBindIndexAttr">Binding to XML data with $INDEX variable reference:</label>
+        <input type="text" id="xmlBindIndexAttr" bind:io="value: The index: [[$INDEX]]" tabindex="0"/><br/>
+
+        <label for="firstNameField">First name: </label>
+        <input type="text" id="firstNameField" bind:io="value: The first name: [[firstname]]" tabindex="0"/><br/>
+    </span>
+
+    <span bind:repeat="urn:tibet:Bind46_person_json#tibet(people)">
+        <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
+        <input type="text" id="jsonBindStdinAttr" bind:io="value: The last name: [[$_.lastname .% upperCase]]" tabindex="0"/><br/>
+
+        <label for="jsonBindIndexAttr">Binding to JSON data with $INDEX variable reference:</label>
+        <input type="text" id="jsonBindIndexAttr" bind:io="value: The index: [[$INDEX]]" tabindex="0"/><br/>
+
+        <label for="lastNameField">Last name: </label>
+        <input type="text" id="lastNameField" bind:io="value: The last name: [[lastname]]" tabindex="0"/><br/>
+    </span>
+
+    <tibet:data local="urn:tibet:Bind46_person_xml">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+            </person>
+        </people>
+    </tibet:data>
+
+    <tibet:data local="urn:tibet:Bind46_person_json">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe"},
+                {"lastname": "Jones", "firstname": "John"}
+            ]}
+        ]]>
+    </tibet:data>
+
+</body>
+</html>
