@@ -1222,7 +1222,9 @@ function(attrName, attrValue, scopeVals, direction) {
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var expandedExpr,
+    var obsURIs,
+
+        expandedExpr,
 
         exprParts,
         exprWithBrackets,
@@ -1234,7 +1236,20 @@ function(attrName, attrValue, scopeVals, direction) {
         allVals,
         primaryURIPath,
 
-        obsURI;
+        obsURI,
+
+        transformFunc,
+        newVal,
+
+        repeatScopeVal,
+        repeatScopeValIndex,
+        repeatIndex,
+        repeatScopeURIPath,
+        repeatScopeURI,
+
+        i;
+
+    obsURIs = TP.ac();
 
     //  Grab the 'expanded expression here' - we'll expand it further below.
     expandedExpr = attrValue;
@@ -1258,93 +1273,204 @@ function(attrName, attrValue, scopeVals, direction) {
 
             //  If the expression to execute is a fully-formed URI, then we
             //  don't take the scope values into consideration. We build a
-            //  primaryURIPath consisting of the URI's primary href and a
-            //  'value' TIBET XPointer that will just return the value. We then
+            //  primaryURIPath consisting of the URI's primary href. We then
             //  reset the expression to execute to be just the fragment text.
             if (TP.isURI(exprToExecute)) {
+
                 splitURI = TP.uc(exprToExecute);
-                primaryURIPath = splitURI.getPrimaryHref() +
-                                    '#tibet(value)';
+
+                primaryURIPath = splitURI.getPrimaryHref();
                 exprToExecute = splitURI.getFragmentText();
             } else {
-                //  Concatenate a simple 'value' expression onto the scope
-                //  values array (thereby creating a new Array) and use it to
-                //  join all of the values together.
-                allVals = scopeVals.concat('value');
-                primaryURIPath = TP.uriJoinFragments.apply(TP, allVals);
+                //  Use the scope values array and join all of the values
+                //  together into a URI path.
+                primaryURIPath = TP.uriJoinFragments.apply(TP, scopeVals);
             }
         } else {
+
             //  Since the expression to execute didn't contain any variables, we
             //  can use it as part of the URI to observe (thereby getting finer
             //  grained control).
-            allVals = scopeVals.concat(exprToExecute);
-            primaryURIPath = TP.uriJoinFragments.apply(TP, allVals);
+
+            //  If the expression to execute is a fully-formed URI, then we
+            //  don't take the scope values into consideration. We build a
+            //  primaryURIPath consisting of the expression to execute.
+            if (TP.isURI(exprToExecute)) {
+                primaryURIPath = exprToExecute;
+            } else {
+                //  Concatenate the expression to execute onto the scope values
+                //  array and join all of the values together into a URI path.
+                allVals = scopeVals.concat(exprToExecute);
+                primaryURIPath = TP.uriJoinFragments.apply(TP, allVals);
+            }
+
+            //  If the expression to execute (surrounded by '[['...']]') is the
+            //  same as the whole attribute value, that means that there's not
+            //  any surrounding literal content, so we just set the expanded
+            //  expression to null and don't install any transformation function
+            //  below.
+            if ('[[' + exprToExecute + ']]' === attrValue) {
+                expandedExpr = null;
+            } else {
+                exprToExecute = primaryURIPath;
+            }
         }
 
-        //  If the 'expression to execute' is still set to what it was when we
-        //  entered this loop, then we didn't rewrite it or re-quality the
-        //  primary URI path above with a '#tibet(value)' fragment. Therefore,
-        //  we just use the whole primary path as our expression to replace the
-        //  brackets in.
-        if (exprToExecute === exprParts.last()) {
-            //  Replace the expression with the brackets with the expression
-            //  without the brackets surrounded by ACP brackets.
-            expandedExpr = expandedExpr.replace(
-                            exprWithBrackets,
-                            '{{' + primaryURIPath + '}}');
-        } else {
-            //  Otherwise, replace the expression with the brackets with the
-            //  'expression to execute' surrounded by ACP brackets.
+        //  Make sure that, if there is an expanded expression, to replace that
+        //  expression in the expression to execute with a 'formatting
+        //  expression', so that the templating function below will work.
+        if (TP.isValid(expandedExpr)) {
             expandedExpr = expandedExpr.replace(
                             exprWithBrackets,
                             '{{' + exprToExecute + '}}');
         }
 
-        //  Make sure to trim off any format before using this as the URI
+        //  Make sure to trim off any format before using this as the URI - note
+        //  how we need to append a ')' onto the end, since it's an XPointer and
+        //  we will have sliced off the trailing ')'.
         if (TP.regex.ACP_FORMAT.test(primaryURIPath)) {
             primaryURIPath = primaryURIPath.slice(
                                 0,
-                                primaryURIPath.indexOf('.%')).trim();
+                                primaryURIPath.indexOf('.%')).trim() + ')';
         }
 
         //  Create a URI from the primary path.
         obsURI = TP.uc(primaryURIPath);
 
+        //  Push it onto the list of URIs that will be observed to update the
+        //  overall expression.
+        obsURIs.push(obsURI);
+    }
+
+    //  If the receiver is under a 'bind:repeat', then we need to set up the
+    //  index, etc. properly.
+    if (TP.isValid(this.getFirstAncestorByAttribute('bind:repeat'))) {
+
+        //  Grab all of the scoping values that we computed earlier and
+        //  filter out the ones that are 'simple numeric paths' (i.e.
+        //  '[2]').
+        /* eslint-disable no-loop-func */
+        repeatScopeVal = allVals.select(
+            function(item) {
+                return TP.regex.SIMPLE_NUMERIC_PATH.test(item);
+            }).last();
+        /* eslint-enable no-loop-func */
+
+        //  Find the index to the *last* simple numeric scoping value and
+        //  slice off the '[' ']' and convert that to a Number. That will
+        //  become our '$INDEX' value.
+        repeatScopeValIndex = allVals.lastIndexOf(repeatScopeVal);
+        repeatIndex = repeatScopeVal.slice(1, -1).asNumber();
+
+        //  Now we join together a 'scoping path' that will be the path to
+        //  the *collection* that will act as our '$INPUT'. This is done by
+        //  slicing all scoping values to just before the index where we
+        //  found our simple numeric scoping value.
+        repeatScopeURIPath = TP.uriJoinFragments.apply(
+                                TP, allVals.slice(0, repeatScopeValIndex));
+
+        //  Compute a URI for that that will be used to retrieve the
+        //  '$INPUT' resource.
+        repeatScopeURI = TP.uc(repeatScopeURIPath);
+    }
+
+    //  If there is a valid expanded expression, then we install a
+    //  transformation Function that will tranform the data before handing it to
+    //  the setter.
+    if (TP.isValid(expandedExpr)) {
+
+        transformFunc = function(source, newVal) {
+            var expr,
+
+                index,
+                params,
+
+                repeatResource,
+                isXMLResource,
+
+                retVal;
+
+            expr = transformFunc.$$expandedExpr;
+
+            if (TP.isNumber(index = transformFunc.$$repeatIndex)) {
+
+                repeatResource =
+                    transformFunc.$$repeatInputURI.getResource();
+
+                //  Iterating context
+                params = TP.hc(
+                    '$REQUEST', null,
+                    '$TAG', this,
+                    '$TARGET', this.getDocument(),
+                    '$_', newVal,
+                    '$INPUT', repeatResource,
+                    '$INDEX', index,
+                    '$#', index);
+            } else {
+                //  Non-iterating context
+                params = TP.hc(
+                    '$REQUEST', null,
+                    '$TAG', this,
+                    '$TARGET', this.getDocument(),
+                    '$_', newVal,
+                    '$INPUT', newVal);
+            }
+
+            retVal = expr.transform(newVal, params);
+
+            return retVal;
+        }.bind(this);
+
+        transformFunc.$$expandedExpr = expandedExpr;
+
+        //  Capture 'repeat' data if it is available (because this expression is
+        //  inside a 'bind:repeat')
+        if (TP.isURI(repeatScopeURI)) {
+            transformFunc.$$repeatIndex = repeatIndex;
+            transformFunc.$$repeatInputURI = repeatScopeURI;
+        }
+    }
+
+    for (i = 0; i < obsURIs.getSize(); i++) {
+
+        /*
+        console.log('URI: ' + obsURIs.at(i).getLocation() +
+                    '    ATTRVAL: ' + attrValue +
+                    '   EXPR: ' + expandedExpr);
+        */
+
         //  If we setting up a bind for either 'IN' or 'IO', then define the
         //  binding from the data model to this object.
         if (direction === TP.IN || direction === TP.IO) {
 
-            /* eslint-disable no-loop-func */
-            this.defineBinding(
-                    '@' + attrName, obsURI, 'value', 'value',
-                    function(source, newVal) {
-                        var params;
+            if (TP.isCallable(transformFunc)) {
+                this.defineBinding(
+                    '@' + attrName, obsURIs.at(i),
+                    'value', 'value',
+                    transformFunc);
 
-                        params = TP.hc(
-                                    '$REQUEST', null,
-                                    '$TAG', this,
-                                    '$TARGET', this.getDocument(),
-                                    '$_', source,
-                                    '$INPUT', source);
+                newVal = transformFunc(
+                            obsURIs.at(i).getPrimaryURI().getResource(),
+                            obsURIs.at(i).getResource());
+            } else {
+                this.defineBinding(
+                    '@' + attrName, obsURIs.at(i),
+                    'value', 'value');
 
-                        return expandedExpr.transform(null, params);
-                    }.bind(this));
-            /* eslint-enable no-loop-func */
-
-    //  PERF
+                newVal = obsURIs.at(i).getResource();
+            }
 
             //  Manually refresh the binding. This is necessary because the
             //  binding has just been established and the resource won't know
             //  that it has to signal change.
-            this.refresh(TP.hc(TP.NEWVAL, obsURI.getResource(),
-                                'aspect', 'value'));
+            this.refresh(TP.hc(TP.NEWVAL, newVal, 'aspect', 'value'));
         }
 
         //  If we are setting up a bind for either 'OUT' or 'IO', then we have
         //  to establish a bind back the other way - from this object to the
         //  data model.
         if (direction === TP.OUT || direction === TP.IO) {
-            obsURI.defineBinding('value', this, 'value');
+            obsURIs.at(i).defineBinding('value', this, 'value');
         }
     }
 
