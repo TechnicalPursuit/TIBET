@@ -3822,7 +3822,7 @@ function(anObject, anAspect, autoCollapse) {
 
     //  if the object is empty but the aspect is a URI, try to get the value of
     //  the URI's resource.
-    if (TP.isEmpty(anObject) && TP.isURI(anAspect)) {
+    if (TP.isURI(anAspect)) {
         val = TP.val(TP.uc(anAspect).getResource());
     }
 
