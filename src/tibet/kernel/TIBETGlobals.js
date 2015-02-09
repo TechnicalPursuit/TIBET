@@ -2391,6 +2391,8 @@ TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 TP.regex.ACP_FORMAT = /([^\\]*?)\s*\.%\s*(.+)/;
 
 TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$\w+/;
+//  '$' followed by a word character (including '_') or '*' or '#'
+TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$(\w|\*|#)+/;
 
 
 TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +

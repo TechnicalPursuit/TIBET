@@ -2511,7 +2511,9 @@ function(aResource) {
             this.$refreshRepeatingTextNodes(
                     elemChildElements.at(i),
                     repeatResource.at(i),
-                    vals);
+                    vals,
+                    i,
+                    repeatResource);
         }
 
         return this;
@@ -2599,12 +2601,16 @@ function(aResource) {
             this.$refreshRepeatingTextNodes(
                     newNode,
                     repeatResource.at(index - 1),
-                    vals);
+                    vals,
+                    index - 1,
+                    repeatResource);
         } else {
             this.$refreshRepeatingTextNodes(
                     newNode,
                     repeatResource.at(index),
-                    vals);
+                    vals,
+                    index,
+                    repeatResource);
         }
 
         //  Append this new chunk of markup to the document fragment we're
@@ -2658,7 +2664,7 @@ function(aResource) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('$refreshRepeatingTextNodes',
-function(aNode, aResource, pathValues) {
+function(aNode, aResource, pathValues, anIndex, repeatResource) {
 
     /**
      * @method $refreshRepeatingTextNodes
@@ -2667,6 +2673,10 @@ function(aNode, aResource, pathValues) {
 
     var allTextNodes,
         isXMLResource,
+
+        index,
+
+        params,
 
         j,
 
@@ -2677,6 +2687,9 @@ function(aNode, aResource, pathValues) {
 
         localName,
         vals,
+
+        tagNode,
+
         path,
 
         value;
@@ -2684,6 +2697,17 @@ function(aNode, aResource, pathValues) {
     allTextNodes = TP.nodeGetDescendantsByType(aNode, Node.TEXT_NODE);
 
     isXMLResource = TP.isXMLNode(TP.unwrap(aResource));
+    index = isXMLResource ? anIndex + 1 : anIndex;
+
+    //  Iterating context
+    params = TP.hc(
+        '$REQUEST', null,
+        '$TAG', this,
+        '$TARGET', this.getDocument(),
+        '$_', aResource,
+        '$INPUT', repeatResource,
+        '$INDEX', index,
+        '$#', index);
 
     for (j = 0; j < allTextNodes.length; j++) {
         textNode = allTextNodes[j];
@@ -2696,25 +2720,33 @@ function(aNode, aResource, pathValues) {
         if (TP.regex.HAS_ACP.test(text)) {
             template = text;
 
-            if (isXMLResource && !template.startsWith('{{./')) {
-                template = '{{./' + template.slice(2, -2) + '/text()}}';
+            if (!TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(template) &&
+                isXMLResource &&
+                !template.startsWith('{{./')) {
+
+                vals = pathValues.concat(template.slice(2, -2));
+                template = '{{(./' + template.slice(2, -2) + ').value}}';
+            } else {
+                vals = pathValues;
+
+                if (/\$TAG/.test(template)) {
+                    tagNode = TP.nodeCloneNode(textNode.parentNode);
+                    params.atPut('$TAG', TP.wrap(tagNode));
+                }
             }
+
             textNode.template = template;
 
-            localName = /\{\{([^%]+).*\}\}/.exec(template)[1].trim();
-            vals = pathValues.concat(localName);
             path = TP.uriJoinFragments.apply(TP, vals);
             textNode.updatePath = path;
 
-            //  TODO: Set up transform params here
-            value = template.transform(aResource);
+            value = template.transform(aResource, params);
             TP.nodeSetTextContent(
                     textNode,
                     value);
 
         } else if (TP.isString(template = textNode.template)) {
-            //  TODO: Set up transform params here
-            value = template.transform(aResource);
+            value = template.transform(aResource, params);
             TP.nodeSetTextContent(
                     textNode,
                     value);
