@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+	<h2>Bind Test #51</h2><br/>
+	<br/>
+	<br/>
+	This test sets up a 'simple binding' to pieces of text containing binding expressions, from the &lt;tibet:data&gt; tag containing XML data, embedded in this document.
+	<br/>
+	<br/>
+
+    The first name is:
+    <br/>
+    [[urn:tibet:Bind51_person#xpath1(/person/firstname)]]
+    <br/>
+    <br/>
+
+    The last name is:
+    <br/>
+    [[urn:tibet:Bind51_person#xpath1(/person/lastname)]]
+    <br/>
+    <br/>
+
+    <tibet:data local="urn:tibet:Bind51_person">
+        <person xmlns="">
+            <lastname>Smith</lastname>
+            <firstname>Joe</firstname>
+        </person>
+    </tibet:data>
+
+</body>
+</html>

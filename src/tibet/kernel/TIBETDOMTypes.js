@@ -11974,6 +11974,81 @@ function() {
 TP.core.Node.defineSubtype('TextNode');
 
 //  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.core.TextNode.Type.defineMethod('tagAttachBinds',
+function(aRequest) {
+
+    /**
+     * @method tagAttachBinds
+     * @summary Awakens any binding expressions for the text node in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+
+        str,
+        index,
+
+        exprNode,
+
+        newSpan;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isNode(node = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    //  Grab the original text node's text content and compute the index to the
+    //  starting '[['
+    str = TP.nodeGetTextContent(node);
+    index = str.indexOf('[[');
+
+    //  Use the DOM to split the text node at that boundary. This creates a text
+    //  node with the content *after* the index and appends it as 'node's
+    //  nextSibling into the DOM.
+    exprNode = node.splitText(index);
+
+    //  Grab that text node's content and compute the index to the ']]' (plus 2
+    //  - we want to leave the expression end delimiter in exprNode)
+    str = TP.nodeGetTextContent(exprNode);
+    index = str.indexOf(']]') + 2;
+
+    //  We don't care about what's on the right hand side, so we don't grab the
+    //  return value here. This creates another text node to the right with
+    //  whatever text was there and appends it as 'exprNode's nextSibling into
+    //  the DOM.
+    exprNode.splitText(index);
+
+    //  Get the text of exprNode, which will now be the '[[...]]' expression.
+    str = TP.nodeGetTextContent(exprNode);
+
+    //  Create a new span and set a 'bind:in' attribute on it, binding it's
+    //  'content' property using the expression given (minus the leading and
+    //  trailing brackets).
+    newSpan = TP.documentCreateElement(TP.doc(node),
+                                        'span',
+                                        TP.w3.Xmlns.XHTML);
+    TP.elementSetAttribute(newSpan,
+                            'bind:in',
+                            'content: ' + str.slice(2, -2),
+                            true);
+
+    //  Replace that text node with the span, leaving the text nodes to the left
+    //  (the original) to the right (created by the 2nd 'splitText' above).
+    newSpan = TP.nodeReplaceChild(node.parentNode,
+                                    newSpan,
+                                    exprNode,
+                                    false);
+
+    return newSpan;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

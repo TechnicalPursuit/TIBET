@@ -5606,6 +5606,105 @@ function() {
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: standalone expressions',
+function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
+    //  ---
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.it('fully qualified expressions - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind51.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var fields;
+
+                fields = TP.wrap(TP.byCSS('span[bind|in]'));
+
+                test.assert.isEqualTo(
+                    fields.at(0).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(1).getValue(),
+                    'Smith');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('fully qualified expressions - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind52.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var fields;
+
+                fields = TP.wrap(TP.byCSS('span[bind|in]'));
+
+                test.assert.isEqualTo(
+                    fields.at(0).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(1).getValue(),
+                    'Smith');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------

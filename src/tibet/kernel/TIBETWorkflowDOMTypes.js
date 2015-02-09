@@ -1866,9 +1866,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  We're only interested in elements that either are in the 'bind:'
-    //  namespace or have attributes in the 'bind:' namespace (or have the
-    //  '[[...]]' sugar).
+    //  We're only interested in:
+    //      - elements that are in the 'bind:' namespace
+    //      - elements that have attributes in the 'bind:' namespace (or have
+    //          the '[[...]]' sugar)
+    //      - text nodes with [[...]] as their content (or part of their
+    //          content)
     query = 'descendant-or-self::*' +
             '[' +
             'namespace-uri() = "' + TP.w3.Xmlns.BIND + '"' +
@@ -1876,7 +1879,9 @@ function(aNode) {
             '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '"]' +
             ' or ' +
             '@*[contains(., "[[")]' +
-            ']';
+            ']' +
+            ' | ' +
+            './/text()[contains(., "[[")]';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
