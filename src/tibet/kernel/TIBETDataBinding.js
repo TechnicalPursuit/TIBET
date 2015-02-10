@@ -1273,13 +1273,17 @@ function(attrName, attrValue, scopeVals, direction) {
 
             //  If the expression to execute is a fully-formed URI, then we
             //  don't take the scope values into consideration. We build a
-            //  primaryURIPath consisting of the URI's primary href. We then
+            //  primaryURIPath consisting of the URI's primary href with a
+            //  '#tibet(...)' XPointer that will return the source object
+            //  itself. This is important in the transformation function when we
+            //  run the 'transform' call, because the expression is going to
+            //  expect to run against the core source object itself. We then
             //  reset the expression to execute to be just the fragment text.
             if (TP.isURI(exprToExecute)) {
 
                 splitURI = TP.uc(exprToExecute);
 
-                primaryURIPath = splitURI.getPrimaryHref();
+                primaryURIPath = splitURI.getPrimaryHref() + '#tibet(.)';
                 exprToExecute = splitURI.getFragmentText();
             } else {
                 //  Use the scope values array and join all of the values
