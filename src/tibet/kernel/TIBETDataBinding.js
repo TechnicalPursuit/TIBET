@@ -2529,6 +2529,10 @@ function(aResource) {
             }
         }
 
+        if (boundCount > 0) {
+            this.$triggerRepeatURIChanged();
+        }
+
         for (i = 0; i < resourceLength; i++) {
             vals = scopeVals.concat(
                         repeatAttrVal,
@@ -2619,26 +2623,6 @@ function(aResource) {
             }
         }
 
-        vals = scopeVals.concat(
-                    this.getAttribute('bind:repeat'),
-                    '[' + index + ']');
-
-        if (isXMLResource) {
-            this.$refreshRepeatingTextNodes(
-                    newNode,
-                    repeatResource.at(index - 1),
-                    vals,
-                    index - 1,
-                    repeatResource);
-        } else {
-            this.$refreshRepeatingTextNodes(
-                    newNode,
-                    repeatResource.at(index),
-                    vals,
-                    index,
-                    repeatResource);
-        }
-
         //  Append this new chunk of markup to the document fragment we're
         //  building up and then loop to the top to do it again.
         bodyFragment.appendChild(newNode);
@@ -2649,6 +2633,15 @@ function(aResource) {
 
     //  Bubble any xmlns attributes upward to avoid markup clutter.
     TP.elementBubbleXMLNSAttributes(elem);
+
+    //  Grab all of the elements with a 'bind scope' attribute and rebuild them.
+    TP.byCSS('[bind|scope]', elem).perform(
+            function(anElem) {
+                TP.wrap(anElem).rebuild(
+                        TP.hc('shouldDefine', true,
+                                'shouldDestroy', false,
+                                'refreshImmediately', true));
+            });
 
     //  TODO: This is a hack - needs cleanup - and this approach leaks.
 
@@ -2891,6 +2884,36 @@ function(aResource) {
     if (this.isRepeatElement()) {
         this.refreshRepeat(aResource);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$triggerRepeatURIChanged',
+function() {
+
+    /**
+     * @method $triggerRepeatURIChanged
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var repeatAttrVal,
+
+        refreshURI,
+        refreshScopeVals,
+        refreshURIPath;
+
+    repeatAttrVal = this.getAttribute('bind:repeat');
+
+    if (TP.notValid(refreshURI = TP.uc(repeatAttrVal))) {
+        refreshScopeVals = this.getBindingScopeValues();
+        refreshScopeVals.push(repeatAttrVal);
+        refreshURIPath = TP.uriJoinFragments.apply(TP, refreshScopeVals);
+        refreshURI = TP.uc(refreshURIPath);
+    }
+
+    refreshURI.$changed();
 
     return this;
 });
