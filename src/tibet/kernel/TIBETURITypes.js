@@ -3004,27 +3004,45 @@ function() {
      *     'sub URI's of the receiver.
      */
 
-    var registeredURIs,
+    var loc,
+        matchLoc,
+
+        registeredURIs,
         matcher,
 
         subURIKeys;
 
-    //  Do we have a fragment? Then we don't have sub URIs.
+    loc = this.getLocation();
+
     if (this.hasFragment()) {
-        return null;
+
+        //  Construct a RegExp looking for our location followed our full
+        //  location, including an XPointer (with the trailing ')' sliced off so
+        //  that we match any 'more specific' XPointer paths - thereby giving us
+        //  our 'subURIs').
+        matchLoc = loc;
+        if (matchLoc.charAt(matchLoc.getSize() - 1) === ')') {
+            matchLoc = matchLoc.slice(0, -1);
+        }
+        matchLoc = TP.regExpEscape(matchLoc);
+
+        matcher = TP.rc('^' + matchLoc);
+    } else {
+        //  Construct a RegExp looking for our location followed by a hash.
+        matcher = TP.rc('^' + loc + '#');
     }
 
     //  Get all of the registered URIs
     registeredURIs = this.getType().get('instances');
 
-    //  Construct a RegExp looking for our location followed by a hash.
-    matcher = TP.rc('^' + this.getLocation() + '#');
-
     //  Select the keys of the URIs that match our location plus a hash out of
-    //  all of the registered URIs keys.
+    //  all of the registered URIs keys. Note here how we compare to our own
+    //  location so that we don't return ourself in the list of subURIs (the
+    //  generated RegExp will match ourself because of it's open-endedness)
     subURIKeys = registeredURIs.getKeys().select(
                         function (uriLocation) {
-                            return matcher.test(uriLocation);
+                            return (matcher.test(uriLocation) &&
+                                    uriLocation !== loc);
                         });
 
     //  Iterate over the subURI keys and get the actual URI instance for them.
