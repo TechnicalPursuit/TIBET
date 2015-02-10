@@ -1350,7 +1350,7 @@ function(attrName, attrValue, scopeVals, direction) {
         //  filter out the ones that are 'simple numeric paths' (i.e.
         //  '[2]').
         /* eslint-disable no-loop-func */
-        repeatScopeVal = allVals.select(
+        repeatScopeVal = scopeVals.select(
             function(item) {
                 return TP.regex.SIMPLE_NUMERIC_PATH.test(item);
             }).last();
@@ -1359,7 +1359,7 @@ function(attrName, attrValue, scopeVals, direction) {
         //  Find the index to the *last* simple numeric scoping value and
         //  slice off the '[' ']' and convert that to a Number. That will
         //  become our '$INDEX' value.
-        repeatScopeValIndex = allVals.lastIndexOf(repeatScopeVal);
+        repeatScopeValIndex = scopeVals.lastIndexOf(repeatScopeVal);
         repeatIndex = repeatScopeVal.slice(1, -1).asNumber();
 
         //  Now we join together a 'scoping path' that will be the path to
@@ -1367,7 +1367,7 @@ function(attrName, attrValue, scopeVals, direction) {
         //  slicing all scoping values to just before the index where we
         //  found our simple numeric scoping value.
         repeatScopeURIPath = TP.uriJoinFragments.apply(
-                                TP, allVals.slice(0, repeatScopeValIndex));
+                                TP, scopeVals.slice(0, repeatScopeValIndex));
 
         //  Compute a URI for that that will be used to retrieve the
         //  '$INPUT' resource.
