@@ -1204,7 +1204,7 @@ TP.core.ElementNode.Inst.defineAttribute('bindInfos');
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('defineBindingsUsing',
-function(attrName, attrValue, scopeVals, direction) {
+function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
     /**
      * @method defineBindingsUsing
@@ -1219,6 +1219,8 @@ function(attrName, attrValue, scopeVals, direction) {
      * @param {String} direction The binding 'direction' (i.e. which way to
      *     establish the binding connection from the data source to the
      *     receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
+     * @param {Boolean} [refreshImmediately=false] Whether or not to refresh the
+     *     receiver immediately after the bind is established.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -1462,21 +1464,27 @@ function(attrName, attrValue, scopeVals, direction) {
                     'value', 'value',
                     transformFunc);
 
-                newVal = transformFunc(
-                            obsURIs.at(i).getPrimaryURI().getResource(),
-                            obsURIs.at(i).getResource());
+                if (refreshImmediately) {
+                    newVal = transformFunc(
+                                obsURIs.at(i).getPrimaryURI().getResource(),
+                                obsURIs.at(i).getResource());
+                }
             } else {
                 this.defineBinding(
                     '@' + attrName, obsURIs.at(i),
                     'value', 'value');
 
-                newVal = obsURIs.at(i).getResource();
+                if (refreshImmediately) {
+                    newVal = obsURIs.at(i).getResource();
+                }
             }
 
-            //  Manually refresh the binding. This is necessary because the
-            //  binding has just been established and the resource won't know
-            //  that it has to signal change.
-            this.refresh(TP.hc(TP.NEWVAL, newVal, 'aspect', 'value'));
+            if (refreshImmediately) {
+                //  Manually refresh the binding. This is necessary because the
+                //  binding has just been established and the resource won't
+                //  know that it has to signal change.
+                this.refresh(TP.hc(TP.NEWVAL, newVal, 'aspect', 'value'));
+            }
         }
 
         //  If we are setting up a bind for either 'OUT' or 'IO', then we have
@@ -2091,7 +2099,8 @@ function(aSignalOrHash) {
                             attrName,
                             attrVal,
                             scopeVals,
-                            TP.IN);
+                            TP.IN,
+                            aSignalOrHash.at('refreshImmediately'));
 
                 }.bind(this));
 
@@ -2125,7 +2134,8 @@ function(aSignalOrHash) {
                             attrName,
                             attrVal,
                             scopeVals,
-                            isBidi ? TP.IO : TP.IN);
+                            isBidi ? TP.IO : TP.IN,
+                            aSignalOrHash.at('refreshImmediately'));
 
                 }.bind(this));
 
@@ -2154,7 +2164,8 @@ function(aSignalOrHash) {
                             attrName,
                             attrVal,
                             scopeVals,
-                            TP.OUT);
+                            TP.OUT,
+                            aSignalOrHash.at('refreshImmediately'));
 
                 }.bind(this));
 
@@ -2182,7 +2193,8 @@ function(aSignalOrHash) {
                         attrName,
                         attrValue,
                         scopeVals,
-                        isBidi ? TP.IO : TP.IN);
+                        isBidi ? TP.IO : TP.IN,
+                        aSignalOrHash.at('refreshImmediately'));
             }
         }.bind(this)());
     }
