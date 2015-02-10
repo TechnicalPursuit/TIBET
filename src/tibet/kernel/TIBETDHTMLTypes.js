@@ -60,7 +60,7 @@ function(source) {
         obj = TP.core.Mouse;
     } else {
         //  Try to resolve the source as a DOM query of some form.
-        obj = TP.$(source);
+        obj = TP.wrap(TP.byPath(source));
 
         //  The source must resolve to a native element.
         obj = TP.elem(obj);
@@ -1042,7 +1042,7 @@ function(anElement) {
     actionElem = TP.unwrap(anElement);
     if (!TP.isElement(actionElem)) {
         //  Try to resolve the source as a DOM query of some form.
-        actionElem = TP.$(anElement);
+        actionElem = TP.wrap(TP.byPath(anElement));
 
         //  The source must resolve to a native element.
         actionElem = TP.elem(actionElem);

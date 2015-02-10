@@ -36,11 +36,11 @@ function(varargs) {
     /**
      * @method context
      * @summary Returns a useful context for constraining a search for one or
-     *     more elements. This operation is used during the various TP.by* and
-     *     TP.$() calls to try to optimize lookup times. Typical arguments
-     *     include windows, documents, or elements which might be used to root a
-     *     search. The first true element found is returned, followed by the
-     *     best documentElement possible.
+     *     more elements. This operation is used during the various TP.by*
+     *     calls to try to optimize lookup times. Typical arguments include
+     *     windows, documents, or elements which might be used to root a search.
+     *     The first true element found is returned, followed by the best
+     *     documentElement possible.
      * @param {Object|String} varargs Zero or more valid objects or IDs to
      *     choose between.
      * @returns {Document|Element} The best search root.
@@ -244,89 +244,6 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
 //  QUERY SHORTCUTS
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('$',
-function(anObject, nodeContext, collapse) {
-
-    /**
-     * @method $
-     * @summary Performs a variety of operations depending on the parameters
-     *     supplied. These include TP.wrap()ping non-String objects, generating
-     *     elements from markup, selecting objects based on aspect, CSS and
-     *     XPath queries and obtaining the content of URI objects.
-     * @description The parameters to this method vary greatly depending on what
-     *     the caller is trying to do with it: - If anObject is any Object other
-     *     than a String, then it is TP.wrap()'d and returned. - If
-     *     anObject is a URI, then a TP.core.URI is constructed from it and that
-     *     URI's resource is returned. - If anObject can be determined to be
-     *     markup, then an instance of TP.core.ElementNode (or a subtype) is
-     *     generated from it and returned. - If anObject is a 'query path' (i.e.
-     *     an aspect, CSS or XPath query), then the query is executed against
-     *     the supplied context and the resulting object is returned. - If the
-     *     context is not supplied and the query path is an aspect path, then
-     *     this function will return null. - If the context is not supplied and
-     *     the query path is a CSS path or XPath path, this function will obtain
-     *     a context via the TP.context() function and execute the query against
-     *     that. See that function for more information. Note that this method
-     *     will *always* TP.wrap() the results it gets.
-     * @param {Object} anObject The object to process via the supplied context
-     *     See the discussion for more information.
-     * @param {Object} nodeContext The context in which to resolve the query.
-     *     See the discussion for more information.
-     * @param {Object} collapse Should result lists be autocollapsed
-     *     (essentially sugaring for results.first()) or not. Default is true.
-     * @exception TP.sig.InvalidParameter
-     * @returns {Object} The result as detailed in this function's discussion.
-     */
-
-    var context,
-        result,
-        autocollapse;
-
-    if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter');
-    }
-
-    //  If anObject is not a String, then just return the TP.wrap()ped content.
-    if (!TP.isString(anObject)) {
-        return TP.wrap(anObject);
-    }
-
-    //  If anObject is the empty String, we can't query on that, so return
-    //  null.
-    if (TP.isEmpty(anObject)) {
-        return null;
-    }
-
-    //  If anObject is a URI, then construct a TP.core.URI with it and return
-    //  the content that that URI points to.
-    if (TP.isURI(anObject)) {
-        return TP.uc(anObject).getResource(TP.hc('async', false));
-    }
-
-    //  If anObject is markup, then create an Element from it and TP.wrap() it.
-    if (TP.regex.IS_ELEM_MARKUP.test(anObject)) {
-        return TP.wrap(TP.elem(anObject));
-    }
-
-    //  Compute a context from either the supplied context (which could be
-    //  any Object) or the return value from a TP.context() (which will
-    //  always compute Nodes as the context).
-    context = TP.context(nodeContext);
-
-    autocollapse = TP.ifInvalid(collapse, true);
-
-    //  Note here how we pass 'true' to auto-collapse single-item Arrays
-    //  into just the item.
-    result = TP.nodeEvaluatePath(context, anObject, null, autocollapse);
-    if (TP.isValid(result)) {
-        return TP.wrap(result);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('byContent',
 function(textOrRegExp, nodeContext, autoCollapse) {
 
@@ -459,7 +376,7 @@ function(anID, nodeContext) {
      *     NOTE: unlike the other TP.by* calls this function begins its search
      *     with the TIBET object registry and proceeds to check the UI
      *     canvas/context only after registrations and other sources have been
-     *     tested. Use TP.$() or TP.byId() if you are focused on the UI only.
+     *     tested. Use TP.byId() if you are focused on the UI only.
      * @param {String|Array} anID The ID to search for. NOTE: one advantage of
      *     this call is that the ID can be either a String or an Array. In
      *     String form a space-separated list becomes an array.

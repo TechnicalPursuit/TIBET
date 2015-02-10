@@ -57,6 +57,10 @@ if (Object.defineProperty) {
     //  types, and supporting variable data.
     Object.defineProperty(root, 'APP', {value: {}, writable: false});
 
+    //  No... just no. Get a copy of Mavis Beacon and practice.
+    Object.defineProperty(TP, '$', {value: null, writable: false});
+    Object.defineProperty(TP, '_', {value: null, writable: false});
+
     //  Node.js requires seeing the actual assignment.
     APP = root.APP;
 

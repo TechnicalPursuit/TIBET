@@ -289,6 +289,10 @@ if (self.TP == null) {
             //  The TP.sys object, which is responsible for system data,
             //  metadata, control parameters, etc.
             Object.defineProperty(TP, 'sys', {value: {}, writable: false});
+
+            //  No... just no. Get a copy of Mavis Beacon and practice.
+            Object.defineProperty(TP, '$', {value: null, writable: false});
+            Object.defineProperty(TP, '_', {value: null, writable: false});
         } else {
             TP = self.TP || {};
             TP.sys = TP.sys || {};

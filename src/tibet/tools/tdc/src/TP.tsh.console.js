@@ -2632,8 +2632,10 @@ function(anObject, aRequest) {
     if (!outputData.at('empty')) {
         inputNode = request.at('cmdInputNode');
         if (TP.isValid(inputNode)) {
-            TP.$('.stats', inputNode).setContent(outputData.at('stats'));
-            TP.$('.typeinfo', inputNode).setContent(outputData.at('resulttype'));
+            TP.wrap(TP.byCSS('.stats', inputNode)).setContent(
+                                                outputData.at('stats'));
+            TP.wrap(TP.byCSS('.typeinfo', inputNode)).setContent(
+                                                outputData.at('resulttype'));
         }
     }
 
