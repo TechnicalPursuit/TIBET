@@ -1307,8 +1307,8 @@ function(attrName, attrValue, scopeVals, direction) {
             //  If the expression to execute (surrounded by '[['...']]') is the
             //  same as the whole attribute value, that means that there's not
             //  any surrounding literal content, so we just set the expanded
-            //  expression to null and don't install any transformation function
-            //  below.
+            //  expression to null and just install a simple transformation
+            //  function below.
             if ('[[' + exprToExecute + ']]' === attrValue) {
                 expandedExpr = null;
             } else {
@@ -1429,6 +1429,15 @@ function(attrName, attrValue, scopeVals, direction) {
             transformFunc.$$repeatIndex = repeatIndex;
             transformFunc.$$repeatInputURI = repeatScopeURI;
         }
+    } else {
+
+        //  Otherwise, we install a simple transformation Function that will
+        //  just return the 'reduced value'. This is necessary especially for
+        //  XML where newVal will be an Element, but we want the text value of
+        //  the Element.
+        transformFunc = function(source, newVal) {
+            return TP.val(newVal);
+        };
     }
 
     for (i = 0; i < obsURIs.getSize(); i++) {
