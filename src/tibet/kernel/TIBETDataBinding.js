@@ -1056,7 +1056,8 @@ function(aSignalOrHash) {
         return this;
     }
 
-    //  TODO: Only if the (as yet unsupplied facet) is 'value' -- otherwise, call 'setFacet'
+    //  TODO: Only if the (as yet unsupplied facet) is 'value' -- otherwise,
+    //  call 'setFacet'
 
     this.set(aspect, newVal);
 
@@ -2402,7 +2403,7 @@ function(aResource) {
         j,
 
         query,
-        needsScope;
+        isBound;
 
     repeatAttrVal = this.getAttribute('bind:repeat');
 
@@ -2598,12 +2599,12 @@ function(aResource) {
                     '@*[contains(., "[[")]';
 
             //  NB: This returns a Boolean result.
-            needsScope = TP.nodeEvaluateXPath(
+            isBound = TP.nodeEvaluateXPath(
                                     newChildElements.at(j),
                                     query,
                                     TP.NODESET);
 
-            if (needsScope) {
+            if (isBound) {
 
                 //  Make sure the element doesn't already have 'bind:scope' on
                 //  it.
