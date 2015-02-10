@@ -742,6 +742,12 @@ function(aPath) {
         return TP.core.CompositePath;
     }
 
+    //  If the path is just '.', then that's the shortcut to just return the
+    //  target object itself.
+    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+        return TP.core.SimpleTIBETPath;
+    }
+
     //  Note that we only allow numeric ACP expressions in paths
     if (TP.regex.HAS_ACP.test(path)) {
 
@@ -2128,6 +2134,12 @@ function(targetObj, varargs) {
         args = TP.args(arguments, 1);
 
         path = path.transform(args);
+    }
+
+    //  If the path is just '.', then that's the shortcut to just return the
+    //  target object itself.
+    if (TP.regex.ONLY_PERIOD.test(path)) {
+        return targetObj;
     }
 
     //  Trigger the actual 'get' mechanism, tracking addresses as we go.
