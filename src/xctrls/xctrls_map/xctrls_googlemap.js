@@ -753,19 +753,19 @@ function(aMapType) {
     tpIFrame = this.get('tpIFrame');
 
     switch (aMapType) {
-        case    mapTypeConstants.at('ROAD'):
+        case mapTypeConstants.at('ROAD'):
 
             ourMap.setMapType(tpIFrame.get('G_NORMAL_MAP'));
 
         break;
 
-        case    mapTypeConstants.at('SATELLITE'):
+        case mapTypeConstants.at('SATELLITE'):
 
             ourMap.setMapType(tpIFrame.get('G_SATELLITE_MAP'));
 
         break;
 
-        case    mapTypeConstants.at('HYBRID'):
+        case mapTypeConstants.at('HYBRID'):
 
             ourMap.setMapType(tpIFrame.get('G_HYBRID_MAP'));
 

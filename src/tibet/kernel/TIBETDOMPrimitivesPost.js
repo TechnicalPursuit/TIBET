@@ -713,6 +713,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     allContentLoadedFunc =
         function() {
 
+            lastSourcedScript.onload = null;
+
             //  We only signal TP.sig.DOMContentLoaded if the system is
             //  configured for it.
             if (TP.sys.shouldSignalDOMLoaded()) {
@@ -6895,7 +6897,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
     thePathType = TP.ifInvalid(aPathType, TP.getPathType(aPath));
 
     switch (thePathType) {
-        case    TP.XPATH_PATH_TYPE:
+        case TP.XPATH_PATH_TYPE:
 
             //  because nodeEvaluateXPath() has its own logic around result
             //  reduction, we need to do this here by always capturing a
@@ -6916,17 +6918,17 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
 
             return result;
 
-        case    TP.XPOINTER_PATH_TYPE:
+        case TP.XPOINTER_PATH_TYPE:
 
             //  #xpointer(...), #xpath1(...) or #element(...) schemes
             return TP.nodeEvaluateXPointer(node, aPath, autoCollapse);
 
-        case    TP.XTENSION_POINTER_PATH_TYPE:
+        case TP.XTENSION_POINTER_PATH_TYPE:
 
             //  Other 'extended' schemes
             return TP.nodeEvaluateXTension(node, aPath, autoCollapse);
 
-        case    TP.CSS_PATH_TYPE:
+        case TP.CSS_PATH_TYPE:
 
             result = TP.nodeEvaluateCSS(node, aPath, autoCollapse);
 
@@ -6946,7 +6948,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
 
             return result;
 
-        case    TP.BARENAME_PATH_TYPE:
+        case TP.BARENAME_PATH_TYPE:
 
             return TP.nodeEvaluateBarename(
                             TP.nodeGetDocument(node), aPath, autoCollapse);

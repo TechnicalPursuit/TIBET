@@ -1974,34 +1974,34 @@ function(aWindow, objectName) {
     //  our own
     /* eslint-disable new-cap */
     switch (arguments.length) {
-        case    2:
+        case 2:
             $$newinst = new constructorObj();
             break;
-        case    3:
+        case 3:
             $$newinst = new constructorObj(arguments[2]);
             break;
-        case    4:
+        case 4:
             $$newinst = new constructorObj(arguments[2], arguments[3]);
             break;
-        case    5:
+        case 5:
             $$newinst = new constructorObj(arguments[2], arguments[3],
                                             arguments[4]);
             break;
-        case    6:
+        case 6:
             $$newinst = new constructorObj(arguments[2], arguments[3],
                                             arguments[4], arguments[5]);
             break;
-        case    7:
+        case 7:
             $$newinst = new constructorObj(arguments[2], arguments[3],
                                             arguments[4], arguments[5],
                                             arguments[6]);
             break;
-        case    8:
+        case 8:
             $$newinst = new constructorObj(arguments[2], arguments[3],
                                             arguments[4], arguments[5],
                                             arguments[6], arguments[7]);
             break;
-        case    9:
+        case 9:
             $$newinst = new constructorObj(arguments[2], arguments[3],
                                             arguments[4], arguments[5],
                                             arguments[6], arguments[7],

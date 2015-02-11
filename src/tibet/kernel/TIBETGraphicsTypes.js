@@ -5447,7 +5447,7 @@ function(anAngle) {
     //  Based on the gradient angle, we adjust x1, y1, x2, and y2
     //  appropriately.
     switch (gradientAngle) {
-        case    0:
+        case 0:
 
             x1 = '0%';
             y1 = '0%';
@@ -5456,7 +5456,7 @@ function(anAngle) {
 
         break;
 
-        case    45:
+        case 45:
 
             x1 = '0%';
             y1 = '0%';
@@ -5465,7 +5465,7 @@ function(anAngle) {
 
         break;
 
-        case    90:
+        case 90:
 
             x1 = '0%';
             y1 = '0%';
@@ -5474,7 +5474,7 @@ function(anAngle) {
 
         break;
 
-        case    135:
+        case 135:
 
             x1 = '100%';
             y1 = '0%';
@@ -5483,7 +5483,7 @@ function(anAngle) {
 
         break;
 
-        case    180:
+        case 180:
 
             x1 = '100%';
             y1 = '0%';
@@ -5492,7 +5492,7 @@ function(anAngle) {
 
         break;
 
-        case    225:
+        case 225:
 
             x1 = '100%';
             y1 = '100%';
@@ -5501,7 +5501,7 @@ function(anAngle) {
 
         break;
 
-        case    270:
+        case 270:
 
             x1 = '0%';
             y1 = '100%';
@@ -5510,7 +5510,7 @@ function(anAngle) {
 
         break;
 
-        case    315:
+        case 315:
 
             x1 = '0%';
             y1 = '100%';
@@ -7020,12 +7020,12 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
         start;
 
     switch (segmentOperator) {
-        case    'M':
-        case    'L':
-        case    'C':
-        case    'S':
-        case    'Q':
-        case    'T':
+        case 'M':
+        case 'L':
+        case 'C':
+        case 'S':
+        case 'Q':
+        case 'T':
 
             for (i = 0; i < segmentArgs.getSize(); i += 2) {
                 this.$updateBBoxData(trackingData,
@@ -7039,7 +7039,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'H':
+        case 'H':
 
             for (i = 0; i < segmentArgs.getSize(); ++i) {
                 this.$updateBBoxData(trackingData,
@@ -7052,7 +7052,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'V':
+        case 'V':
 
             for (i = 0; i < segmentArgs.getSize(); ++i) {
                 this.$updateBBoxData(trackingData,
@@ -7065,7 +7065,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'A':
+        case 'A':
 
             for (i = 0; i < segmentArgs.getSize(); i += 7) {
                 this.$updateBBoxData(trackingData,
@@ -7079,7 +7079,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'm':
+        case 'm':
 
             if (trackingPoint.get('x') === TP.NOT_FOUND) {
                 x = segmentArgs.at(0);
@@ -7108,8 +7108,8 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'l':
-        case    't':
+        case 'l':
+        case 't':
 
             x = trackingPoint.get('x');
             y = trackingPoint.get('y');
@@ -7127,7 +7127,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'h':
+        case 'h':
 
             x = trackingPoint.get('x');
             y = trackingPoint.get('y');
@@ -7143,7 +7143,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'v':
+        case 'v':
 
             x = trackingPoint.get('x');
             y = trackingPoint.get('y');
@@ -7159,7 +7159,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'c':
+        case 'c':
 
             x = trackingPoint.get('x');
             y = trackingPoint.get('y');
@@ -7186,8 +7186,8 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    's':
-        case    'q':
+        case 's':
+        case 'q':
 
             x = trackingPoint.get('x');
             y = trackingPoint.get('y');
@@ -7210,7 +7210,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
         break;
 
-        case    'a':
+        case 'a':
 
             x = trackingPoint.get('x');
             y = trackingPoint.get('y');

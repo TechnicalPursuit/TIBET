@@ -92,7 +92,7 @@ function(targetURI, aRequest) {
     }
 
     switch (action) {
-        case    'command':
+        case 'command':
 
             //  Send an ad-hoc XMPP command:
             //      Params: 'action'    [cancel|complete|execute|next|prev]
@@ -109,7 +109,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'disco':
+        case 'disco':
 
             //  Discover an XMPP service (not currently supported by TIBET):
             //      Params: 'request'   [info|items]
@@ -120,7 +120,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'invite':
+        case 'invite':
 
             //  Join a chatroom and invite other JIDs to that room (not
             //  currently supported by TIBET):
@@ -131,7 +131,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'join':
+        case 'join':
 
             //  Join a chatroom (not currently supported by TIBET):
             //      Params: 'password'
@@ -140,7 +140,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'message':
+        case 'message':
 
             //  Send a message.
             //      Params: 'subject',
@@ -170,7 +170,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'pubsub':
+        case 'pubsub':
 
             //  All pubsub actions have the following parameters:
 
@@ -188,7 +188,7 @@ function(targetURI, aRequest) {
                     'node', queryDict.at('node')));
 
             switch (pubsubAction) {
-                case    'subscribe':
+                case 'subscribe':
 
                     //  Subscribe to a pubsub node:
 
@@ -198,7 +198,7 @@ function(targetURI, aRequest) {
 
                 break;
 
-                case    'unsubscribe':
+                case 'unsubscribe':
 
                     //  Unsubscribe from a pubsub node:
 
@@ -208,7 +208,7 @@ function(targetURI, aRequest) {
 
                 break;
 
-                case    'publish':
+                case 'publish':
 
                     //  Publish an item to a pubsub node (not part of
                     //  XEP-147):
@@ -221,7 +221,7 @@ function(targetURI, aRequest) {
 
                 break;
 
-                case    'retract':
+                case 'retract':
 
                     //  Retract an item from a pubsub node (not part of
                     //  XEP-147):
@@ -234,7 +234,7 @@ function(targetURI, aRequest) {
 
                 break;
 
-                case    'delete':
+                case 'delete':
 
                     //  Delete a pubsub node (and all subscriptions) (not
                     //  part of XEP-147):
@@ -254,7 +254,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'recvfile':
+        case 'recvfile':
 
             //  Receive a file (not currently supported by TIBET):
             //      Params: 'mime-type',
@@ -266,7 +266,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'register':
+        case 'register':
 
             //  Register with server/service (not currently supported by
             //  TIBET):
@@ -276,7 +276,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'remove':
+        case 'remove':
 
             //  Remove a roster item:
 
@@ -289,7 +289,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'roster':
+        case 'roster':
 
             //  Add or edit a roster item:
             //      Params: 'group',
@@ -306,7 +306,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'sendfile':
+        case 'sendfile':
 
             //  Send a file (not currently supported by TIBET):
 
@@ -314,7 +314,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'subscribe':
+        case 'subscribe':
 
             //  Subscribe to a JID:
 
@@ -324,7 +324,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'unregister':
+        case 'unregister':
 
             //  Not supported by TIBET
 
@@ -335,7 +335,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'unsubscribe':
+        case 'unsubscribe':
 
             //  Unsubscribe from a JID:
 
@@ -345,7 +345,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'presence':
+        case 'presence':
 
             //  Change to a JID's presence (not part of XEP-147):
 
@@ -472,7 +472,7 @@ function(targetURI, aRequest) {
     queryDict = TP.ifInvalid(targetURI.get('queryDict'), TP.hc());
 
     switch (action) {
-        case    'command':
+        case 'command':
 
             if (TP.isEmpty(content = targetURI.getResourceNode(
                                 TP.hc('refresh', false, 'async', false)))) {
@@ -484,7 +484,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'message':
+        case 'message':
 
             if (TP.isEmpty(content = targetURI.getResourceText(
                                 TP.hc('refresh', false, 'async', false)))) {
@@ -496,7 +496,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'presence':
+        case 'presence':
 
             if (TP.isEmpty(content = targetURI.getResourceText(
                                 TP.hc('refresh', false, 'async', false)))) {
@@ -508,7 +508,7 @@ function(targetURI, aRequest) {
 
         break;
 
-        case    'publish':
+        case 'publish':
 
             if (TP.isEmpty(content = targetURI.getResource(
                                 TP.hc('refresh', false, 'async', false)))) {

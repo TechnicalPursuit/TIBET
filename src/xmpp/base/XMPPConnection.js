@@ -239,13 +239,13 @@ function(aJID, aPassword, aMethod) {
     }
 
     switch (method) {
-        case    TP.xmpp.XMLNS.DIGEST:
+        case TP.xmpp.XMLNS.DIGEST:
 
             authenticated = this.$authDigest(aJID, aPassword);
 
         break;
 
-        case    TP.xmpp.XMLNS.PLAINTEXT:
+        case TP.xmpp.XMLNS.PLAINTEXT:
 
             authenticated = this.$authPlainText(aJID, aPassword);
 

@@ -306,7 +306,7 @@ Cmd.prototype.prepTargets = function(targets) {
                         targets[name].reject = function(err) {
                             clearTimeout(timer);
                             cmd.debug('rejecting ' + name + '...');
-                            if (err !== void(0)) {
+                            if (err !== void 0) {
                                 cmd.error('' + err);
                             }
                             func.$$active = false;

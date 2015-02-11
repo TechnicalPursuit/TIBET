@@ -2163,7 +2163,7 @@ function(aRequest) {
 
     switch (aRequest.at('action')) {
         //  Send a command from the 'from' JID
-        case    'command':
+        case 'command':
 
             observeReq = true;
 
@@ -2176,7 +2176,7 @@ function(aRequest) {
         break;
 
         //  Just activate the connection
-        case    'connect':
+        case 'connect':
 
         //  There won't be a stanza - we're just activating the connection
 
@@ -2184,7 +2184,7 @@ function(aRequest) {
 
         //  Send a message from the 'from' JID
 
-        case    'message':
+        case 'message':
 
             stanza = this.sendMessage(
                             reqID,
@@ -2198,12 +2198,12 @@ function(aRequest) {
 
         //  Subscribe to a pubsub node
 
-        case    'pubsub':
+        case 'pubsub':
 
             observeReq = true;
 
             switch (aRequest.at('pubsub_action')) {
-                case    'create':
+                case 'create':
 
                     stanza = this.constructPubsubNode(
                                         reqID,
@@ -2214,7 +2214,7 @@ function(aRequest) {
 
                 break;
 
-                case    'subscribe':
+                case 'subscribe':
 
                     stanza = this.subscribeToPubsubNode(
                                         reqID,
@@ -2223,7 +2223,7 @@ function(aRequest) {
 
                 break;
 
-                case    'unsubscribe':
+                case 'unsubscribe':
 
                     stanza = this.unsubscribeFromPubsubNode(
                                         reqID,
@@ -2232,7 +2232,7 @@ function(aRequest) {
 
                 break;
 
-                case    'subscriptions':
+                case 'subscriptions':
 
                     stanza = this.retrievePubsubSubscriptions(
                                         reqID,
@@ -2240,7 +2240,7 @@ function(aRequest) {
 
                 break;
 
-                case    'publish':
+                case 'publish':
 
                     stanza = this.publishToPubsubNode(
                                         reqID,
@@ -2251,7 +2251,7 @@ function(aRequest) {
 
                 break;
 
-                case    'retract':
+                case 'retract':
 
                     stanza = this.retractFromPubsubNode(
                                         reqID,
@@ -2261,7 +2261,7 @@ function(aRequest) {
 
                 break;
 
-                case    'delete':
+                case 'delete':
 
                     stanza = this.deletePubsubNode(
                                         reqID,
@@ -2280,7 +2280,7 @@ function(aRequest) {
         break;
 
         //  Remove an entry from the 'from' JID's roster
-        case    'remove':
+        case 'remove':
 
             observeReq = true;
 
@@ -2291,7 +2291,7 @@ function(aRequest) {
         break;
 
         //  Add an entry from the 'from' JID's roster
-        case    'roster':
+        case 'roster':
 
             observeReq = true;
 
@@ -2303,7 +2303,7 @@ function(aRequest) {
         break;
 
         //  Subscribe to a JID
-        case    'subscribe':
+        case 'subscribe':
 
             stanza = this.subscribeTo(reqID,
                                         aRequest.at('toJID'));
@@ -2311,7 +2311,7 @@ function(aRequest) {
         break;
 
         //  Unsubscribe from a JID
-        case    'unsubscribe':
+        case 'unsubscribe':
 
             stanza = this.unsubscribeFrom(reqID,
                                             aRequest.at('toJID'));
@@ -2319,7 +2319,7 @@ function(aRequest) {
         break;
 
         //  Change the 'from' JID's presence
-        case    'presence':
+        case 'presence':
 
             stanza = this.setPresence(reqID,
                                         aRequest.at('show'),

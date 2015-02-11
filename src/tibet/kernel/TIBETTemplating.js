@@ -194,23 +194,23 @@ function(tokenList, templateName, sourceVarNames) {
      * @returns {Function} The compiled template Function.
      */
 
-    var     srcVars,
+    var srcVars,
 
-            inlineCount,
+        inlineCount,
 
-            ignoreNull,
-            formattedValue,
+        ignoreNull,
+        formattedValue,
 
-            generators,
-            commands,
+        generators,
+        commands,
 
-            funcParts,
-            funcBody,
+        funcParts,
+        funcBody,
 
-            templateFunc,
+        templateFunc,
 
-            scopedParams,
-            scopedSourceNames;
+        scopedParams,
+        scopedSourceNames;
 
     srcVars = TP.ifInvalid(sourceVarNames, TP.ac());
 

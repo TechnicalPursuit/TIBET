@@ -5019,7 +5019,7 @@ function() {
                     newNodeSet;
 
                 switch (ln) {
-                    case    'rowIndex':
+                    case 'rowIndex':
 
                         return new TP.extern.XPathParser.XNumber(100);
 

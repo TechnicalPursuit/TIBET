@@ -1106,7 +1106,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  'do the right thing', based on a property name if one was supplied.
     if (!TP.regex.CSS_UNIT.test(aValue)) {
         switch (aValue) {
-            case    'inherit':
+            case 'inherit':
 
                 //  We inherited the property - return whatever our *parent
                 //  node* ('inherit' *always* refers to the parent node) has
@@ -1120,30 +1120,30 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
             break;
 
-            case    'initial':
+            case 'initial':
                 //  TODO: This is a CSS3 value - what to do here?
                 return NaN;
 
-            case    'normal':
+            case 'normal':
                 //  TODO: Not sure what to do here
                 return NaN;
 
-            case    'thin':
-            case    'medium':
-            case    'thick':
+            case 'thin':
+            case 'medium':
+            case 'thick':
 
                 //  Could be border values... check further
                 if (/border.*?Width/.test(targetProperty)) {
                     switch (aValue) {
-                        case    'thin':
+                        case 'thin':
                             results = 2;
                         break;
 
-                        case    'medium':
+                        case 'medium':
                             results = 4;
                         break;
 
-                        case    'thick':
+                        case 'thick':
                             results = 6;
                         break;
                     }
@@ -1160,8 +1160,8 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
                 //  Otherwise, return NaN
             /* jshint -W086 */
-            case    'auto':
-            case    'none':
+            case 'auto':
+            case 'none':
             default:
                 return NaN;
             /* jshint +W086 */
@@ -1184,31 +1184,31 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
         //  Based on the units expressed, return the proper number of
         //  pixels.
         switch (unitPart) {
-            case    'pt':
+            case 'pt':
 
                 results = pixelsPerPoint * numericPart;
 
             break;
 
-            case    'in':
+            case 'in':
 
                 results = pixelsPerPoint * numericPart * 72;
 
             break;
 
-            case    'pc':
+            case 'pc':
 
                 results = pixelsPerPoint * numericPart * 12;
 
             break;
 
-            case    'mm':
+            case 'mm':
 
                 results = pixelsPerPoint * (numericPart / (7.2 / 2.54));
 
             break;
 
-            case    'cm':
+            case 'cm':
 
                 results = pixelsPerPoint * (numericPart / (72 / 2.54));
 

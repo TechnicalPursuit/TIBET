@@ -151,8 +151,8 @@ Cmd.prototype.parse = function(options) {
     }
 
     // Strings, numbers, etc. with explicit defaults also need to be handled.
-    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS['default']) {
-        Object.keys(this.PARSE_OPTIONS['default']).forEach(function(flag) {
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.default) {
+        Object.keys(this.PARSE_OPTIONS.default).forEach(function(flag) {
             if (process.argv.indexOf('--' + flag) === -1 &&
                 process.argv.indexOf('--no-' + flag) === -1) {
                 delete cmd.options[flag];
@@ -167,8 +167,8 @@ Cmd.prototype.parse = function(options) {
     }
 
     // Now we have to reverse that process...sigh...
-    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS['default']) {
-        this.options = CLI.blend(this.options, this.PARSE_OPTIONS['default']);
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.default) {
+        this.options = CLI.blend(this.options, this.PARSE_OPTIONS.default);
     }
 
     this.debug('process.argv: ' + JSON.stringify(process.argv));

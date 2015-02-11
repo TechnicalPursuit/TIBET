@@ -996,7 +996,7 @@ TP.hc(
         wantsInner = TP.ifInvalid(innerOnly, true);
 
         switch (elemTagName) {
-            case    'table':
+            case 'table':
 
                 if (wantsInner) {
                     fakeContainer.innerHTML = TP.join(
@@ -1011,9 +1011,9 @@ TP.hc(
 
                 break;
 
-            case    'thead':
-            case    'tbody':
-            case    'tfoot':
+            case 'thead':
+            case 'tbody':
+            case 'tfoot':
 
                 if (wantsInner) {
                     fakeContainer.innerHTML = TP.join(
@@ -1031,8 +1031,8 @@ TP.hc(
 
                 break;
 
-            case    'th':
-            case    'tr':
+            case 'th':
+            case 'tr':
 
                 if (wantsInner) {
                     fakeContainer.innerHTML = TP.join(
@@ -1055,7 +1055,7 @@ TP.hc(
 
                 break;
 
-            case    'td':
+            case 'td':
 
                 if (wantsInner) {
                     fakeContainer.innerHTML = TP.join(
@@ -1277,7 +1277,7 @@ TP.hc(
 
             //  Switch on the supplied side.
             switch (aSide) {
-                case    TP.TOP:
+                case TP.TOP:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                             anElement,
@@ -1285,7 +1285,7 @@ TP.hc(
                                             wantsTransformed);
                         break;
 
-                case    TP.RIGHT:
+                case TP.RIGHT:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                             anElement,
@@ -1293,7 +1293,7 @@ TP.hc(
                                             wantsTransformed);
                         break;
 
-                case    TP.BOTTOM:
+                case TP.BOTTOM:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                             anElement,
@@ -1301,7 +1301,7 @@ TP.hc(
                                             wantsTransformed);
                         break;
 
-                case    TP.LEFT:
+                case TP.LEFT:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                             anElement,
@@ -1393,25 +1393,25 @@ TP.hc(
 
             //  Switch on the supplied side.
             switch (aSide) {
-                case    TP.TOP:
+                case TP.TOP:
 
                     valueInPixels = pixelFunc('border-top-width');
 
                     break;
 
-                case    TP.RIGHT:
+                case TP.RIGHT:
 
                     valueInPixels = pixelFunc('border-right-width');
 
                     break;
 
-                case    TP.BOTTOM:
+                case TP.BOTTOM:
 
                     valueInPixels = pixelFunc('border-bottom-width');
 
                     break;
 
-                case    TP.LEFT:
+                case TP.LEFT:
 
                     valueInPixels = pixelFunc('border-left-width');
 
@@ -1481,7 +1481,7 @@ TP.hc(
 
             //  Switch on the supplied side.
             switch (aSide) {
-                case    TP.TOP:
+                case TP.TOP:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1489,7 +1489,7 @@ TP.hc(
                                                 wantsTransformed);
                         break;
 
-                case    TP.RIGHT:
+                case TP.RIGHT:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1497,7 +1497,7 @@ TP.hc(
                                                 wantsTransformed);
                         break;
 
-                case    TP.BOTTOM:
+                case TP.BOTTOM:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1505,7 +1505,7 @@ TP.hc(
                                                 wantsTransformed);
                         break;
 
-                case    TP.LEFT:
+                case TP.LEFT:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1600,25 +1600,25 @@ TP.hc(
 
             //  Switch on the supplied side.
             switch (aSide) {
-                case    TP.TOP:
+                case TP.TOP:
 
                     valueInPixels = pixelFunc('margin-top');
 
                     break;
 
-                case    TP.RIGHT:
+                case TP.RIGHT:
 
                     valueInPixels = pixelFunc('margin-right');
 
                     break;
 
-                case    TP.BOTTOM:
+                case TP.BOTTOM:
 
                     valueInPixels = pixelFunc('margin-bottom');
 
                     break;
 
-                case    TP.LEFT:
+                case TP.LEFT:
 
                     valueInPixels = pixelFunc('margin-left');
 
@@ -1791,7 +1791,7 @@ TP.hc(
 
             //  Switch on the supplied side.
             switch (aSide) {
-                case    TP.TOP:
+                case TP.TOP:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1799,7 +1799,7 @@ TP.hc(
                                                 wantsTransformed);
                         break;
 
-                case    TP.RIGHT:
+                case TP.RIGHT:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1807,7 +1807,7 @@ TP.hc(
                                                 wantsTransformed);
                         break;
 
-                case    TP.BOTTOM:
+                case TP.BOTTOM:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1815,7 +1815,7 @@ TP.hc(
                                                 wantsTransformed);
                         break;
 
-                case    TP.LEFT:
+                case TP.LEFT:
 
                         valueInPixels = TP.elementGetStyleValueInPixels(
                                                 anElement,
@@ -1909,25 +1909,25 @@ TP.hc(
 
             //  Switch on the supplied side.
             switch (aSide) {
-                case    TP.TOP:
+                case TP.TOP:
 
                     valueInPixels = pixelFunc('padding-top');
 
                     break;
 
-                case    TP.RIGHT:
+                case TP.RIGHT:
 
                     valueInPixels = pixelFunc('padding-right');
 
                     break;
 
-                case    TP.BOTTOM:
+                case TP.BOTTOM:
 
                     valueInPixels = pixelFunc('padding-bottom');
 
                     break;
 
-                case    TP.LEFT:
+                case TP.LEFT:
 
                     valueInPixels = pixelFunc('padding-left');
 
@@ -2544,28 +2544,28 @@ TP.hc(
         //  on the context window.
         /* eslint-disable no-eval */
         switch (arguments.length) {
-            case    2:
+            case 2:
                 eval('aWindow.$$newinst = new ' + objectName + '()');
                 break;
-            case    3:
+            case 3:
                 eval('aWindow.$$newinst = new ' + objectName + '(window.creationArgs[2])');
                 break;
-            case    4:
+            case 4:
                 eval('aWindow.$$newinst = new ' + objectName + '(window.creationArgs[2], window.creationArgs[3])');
                 break;
-            case    5:
+            case 5:
                 eval('aWindow.$$newinst = new ' + objectName + '(window.creationArgs[2], window.creationArgs[3], window.creationArgs[4])');
                 break;
-            case    6:
+            case 6:
                 eval('aWindow.$$newinst = new ' + objectName + '(window.creationArgs[2], window.creationArgs[3], window.creationArgs[4], window.creationArgs[5])');
                 break;
-            case    7:
+            case 7:
                 eval('aWindow.$$newinst = new ' + objectName + '(window.creationArgs[2], window.creationArgs[3], window.creationArgs[4], window.creationArgs[5], window.creationArgs[6])');
                 break;
-            case    8:
+            case 8:
                 eval('aWindow.$$newinst = new ' + objectName + '(window.creationArgs[2], window.creationArgs[3], window.creationArgs[4], window.creationArgs[5], window.creationArgs[6], window.creationArgs[7])');
                 break;
-            case    9:
+            case 9:
                 eval('aWindow.$$newinst = new ' + objectName + '(window.creationArgs[2], window.creationArgs[3], window.creationArgs[4], window.creationArgs[5], window.creationArgs[6], window.creationArgs[7], window.creationArgs[8])');
                 break;
             default:
@@ -2616,34 +2616,34 @@ TP.hc(
         //  on our own
         /* eslint-disable no-eval, new-cap */
         switch (arguments.length) {
-            case    2:
+            case 2:
                 $$newinst = new constructorObj();
                 break;
-            case    3:
+            case 3:
                 $$newinst = new constructorObj(arguments[2]);
                 break;
-            case    4:
+            case 4:
                 $$newinst = new constructorObj(arguments[2], arguments[3]);
                 break;
-            case    5:
+            case 5:
                 $$newinst = new constructorObj(arguments[2], arguments[3],
                                                 arguments[4]);
                 break;
-            case    6:
+            case 6:
                 $$newinst = new constructorObj(arguments[2], arguments[3],
                                                 arguments[4], arguments[5]);
                 break;
-            case    7:
+            case 7:
                 $$newinst = new constructorObj(arguments[2], arguments[3],
                                                 arguments[4], arguments[5],
                                                 arguments[6]);
                 break;
-            case    8:
+            case 8:
                 $$newinst = new constructorObj(arguments[2], arguments[3],
                                                 arguments[4], arguments[5],
                                                 arguments[6], arguments[7]);
                 break;
-            case    9:
+            case 9:
                 $$newinst = new constructorObj(arguments[2], arguments[3],
                                                 arguments[4], arguments[5],
                                                 arguments[6], arguments[7],

@@ -7411,7 +7411,7 @@ function(aspectName, facetName) {
                 } else if (TP.isString(facetValue)) {
                     val = facetValue;
                 }
-            } else  {
+            } else {
                 val = this.get(aspectName);
             }
 

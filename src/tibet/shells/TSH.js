@@ -3961,7 +3961,7 @@ function(aRequest) {
                 ext = url.getExtension();
 
                 switch (ext) {
-                    case    'js':
+                    case 'js':
                         if (TP.notValid(
                             src = url.getContent(
                                     TP.hc('refresh', true, 'async', false)))) {
@@ -3975,15 +3975,15 @@ function(aRequest) {
                         TP.boot.$sourceImport(src, null, file, null, true);
                     break;
 
-                    case    'css':
+                    case 'css':
 
                         TP.documentStyleHrefReload(TP.sys.uidoc(true),
                                                     url.getLocation());
 
                     break;
 
-                    case    'xhtml':
-                    case    'xml':
+                    case 'xhtml':
+                    case 'xml':
 
                         if (TP.notValid(
                             src = url.getContent(

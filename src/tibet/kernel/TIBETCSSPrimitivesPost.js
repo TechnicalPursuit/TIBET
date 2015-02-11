@@ -961,7 +961,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
     //  that we're targeting to get a real value from so that we multiply
     //  below against the supplied percentage.
     switch (aPropertyName) {
-        case    'fontSize':
+        case 'fontSize':
 
             //  When fontSize is a percentage, it is computed from the
             //  element's *parent node* fontSize.
@@ -973,7 +973,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
         break;
 
-        case    'lineHeight':
+        case 'lineHeight':
 
             //  When lineHeight is a percentage, it is computed from the
             //  element's fontSize.
@@ -983,7 +983,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
         break;
 
-        case    'verticalAlign':
+        case 'verticalAlign':
 
             //  When verticalAlign is a percentage, it is computed from the
             //  element's lineHeight.
@@ -992,12 +992,12 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
                                                         'lineHeight');
         break;
 
-        case    'height':
-        case    'minHeight':
-        case    'maxHeight':
+        case 'height':
+        case 'minHeight':
+        case 'maxHeight':
 
-        case    'top':
-        case    'bottom':
+        case 'top':
+        case 'bottom':
 
             //  These are all computed from the *height* of the
             //  offsetParent.
@@ -1020,26 +1020,26 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             theValue = targetElement.offsetHeight;
         break;
 
-        case    'width':
-        case    'minWidth':
-        case    'maxWidth':
+        case 'width':
+        case 'minWidth':
+        case 'maxWidth':
 
-        case    'left':
-        case    'right':
+        case 'left':
+        case 'right':
 
             //  Weird that margin/padding - top/bottom are computed from the
             //  containing block's *width*, but that's what the spec says...
-        case    'marginTop':
-        case    'marginRight':
-        case    'marginLeft':
-        case    'marginBottom':
+        case 'marginTop':
+        case 'marginRight':
+        case 'marginLeft':
+        case 'marginBottom':
 
-        case    'paddingTop':
-        case    'paddingRight':
-        case    'paddingLeft':
-        case    'paddingBottom':
+        case 'paddingTop':
+        case 'paddingRight':
+        case 'paddingLeft':
+        case 'paddingBottom':
 
-        case    'textIndent':
+        case 'textIndent':
 
             //  These are all computed from the *width* of the
             //  offsetParent.
@@ -2086,25 +2086,25 @@ function(aValueString) {
     origValues = aValueString.split(' ');
 
     switch (origValues.getSize()) {
-        case    1:
+        case 1:
 
             return TP.hc('top', origValues.at(0),
                             'right', origValues.at(0),
                             'bottom', origValues.at(0),
                             'left', origValues.at(0));
-        case    2:
+        case 2:
 
             return TP.hc('top', origValues.at(0),
                             'right', origValues.at(1),
                             'bottom', origValues.at(0),
                             'left', origValues.at(1));
-        case    3:
+        case 3:
 
             return TP.hc('top', origValues.at(0),
                             'right', origValues.at(1),
                             'bottom', origValues.at(2),
                             'left', origValues.at(1));
-        case    4:
+        case 4:
 
             return TP.hc('top', origValues.at(0),
                             'right', origValues.at(1),

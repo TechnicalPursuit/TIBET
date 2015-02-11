@@ -134,31 +134,31 @@ function(aRequest) {
         switch (aRequest.at('action')) {
             //  Reading, writing, deleting, moving and copying
 
-            case    'read':
+            case 'read':
 
                 httpObj = TP.httpGet(url, aRequest);
 
             break;
 
-            case    'write':
+            case 'write':
 
                 httpObj = TP.httpPut(url, aRequest);
 
             break;
 
-            case    'remove':
+            case 'remove':
 
                 httpObj = TP.httpDelete(url, aRequest);
 
             break;
 
-            case    'copy':
+            case 'copy':
 
                 httpObj = TP.webdavCopy(url, aRequest);
 
             break;
 
-            case    'move':
+            case 'move':
 
                 httpObj = TP.webdavMove(url, aRequest);
 
@@ -166,13 +166,13 @@ function(aRequest) {
 
             //      Collection management
 
-            case    'makecoll':
+            case 'makecoll':
 
                 httpObj = TP.webdavMkCol(url, aRequest);
 
             break;
 
-            case    'listcoll':
+            case 'listcoll':
 
                 httpObj = TP.webdavPropFind(url, aRequest);
 
@@ -180,31 +180,31 @@ function(aRequest) {
 
             //      Property management
 
-            case    'getprop':
+            case 'getprop':
 
                 httpObj = TP.webdavGetProperty(url, aRequest);
 
             break;
 
-            case    'getprops':
+            case 'getprops':
 
                 httpObj = TP.webdavGetAllProperties(url, aRequest);
 
             break;
 
-            case    'setprops':
+            case 'setprops':
 
                 httpObj = TP.webdavPropPatch(url, aRequest);
 
             break;
 
-            case    'setprop':
+            case 'setprop':
 
                 httpObj = TP.webdavSetProperty(url, aRequest);
 
             break;
 
-            case    'deleteprops':
+            case 'deleteprops':
 
                 httpObj = TP.webdavPropPatch(url, aRequest);
 
@@ -212,13 +212,13 @@ function(aRequest) {
 
             //      Lock management
 
-            case    'lock':
+            case 'lock':
 
                 httpObj = TP.webdavLock(url, aRequest);
 
             break;
 
-            case    'unlock':
+            case 'unlock':
 
                 httpObj = TP.webdavUnlock(url, aRequest);
 

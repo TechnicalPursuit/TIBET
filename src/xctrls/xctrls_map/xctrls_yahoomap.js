@@ -727,19 +727,19 @@ function(aMapType) {
     tpIFrame = this.get('tpIFrame');
 
     switch (aMapType) {
-        case    mapTypeConstants.at('ROAD'):
+        case mapTypeConstants.at('ROAD'):
 
             ourMap.setMapType(tpIFrame.get('YAHOO_MAP_REG'));
 
         break;
 
-        case    mapTypeConstants.at('SATELLITE'):
+        case mapTypeConstants.at('SATELLITE'):
 
             ourMap.setMapType(tpIFrame.get('YAHOO_MAP_SAT'));
 
         break;
 
-        case    mapTypeConstants.at('HYBRID'):
+        case mapTypeConstants.at('HYBRID'):
 
             ourMap.setMapType(tpIFrame.get('YAHOO_MAP_HYB'));
 

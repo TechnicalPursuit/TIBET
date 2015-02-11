@@ -4911,13 +4911,13 @@ TP.boot.$xmlEscape = function(aString) {
 
     result = aString.replace(/[<>'"]/g, function(aChar) {
         switch (aChar) {
-            case    '<':
+            case '<':
                 return '&lt;';
-            case    '>':
+            case '>':
                 return '&gt;';
-            case    '\'':
+            case '\'':
                 return '&apos;';
-            case    '"':
+            case '"':
                 return '&quot;';
             default:
                 break;
@@ -7557,7 +7557,7 @@ TP.boot.$getNextStage = function(aStage) {
     stage = aStage || TP.boot.$$stage;
     index = TP.boot.$$stageorder.indexOf(stage);
     if (index === TP.NOT_FOUND ||
-        (index + 1 === TP.boot.$$stageorder.length))  {
+        (index + 1 === TP.boot.$$stageorder.length)) {
         return;
     }
 
@@ -7573,7 +7573,7 @@ TP.boot.$getPriorStage = function(aStage) {
 
     stage = aStage || TP.boot.$$stage;
     index = TP.boot.$$stageorder.indexOf(stage);
-    if (index === TP.NOT_FOUND || index === 0)  {
+    if (index === TP.NOT_FOUND || index === 0) {
         return;
     }
 

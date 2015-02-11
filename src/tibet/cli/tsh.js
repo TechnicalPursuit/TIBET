@@ -260,7 +260,7 @@ Cmd.prototype.getPhantomArglist = function() {
 
     // Without a script we can't run so verify that we got something useful.
     script = this.getScript();
-    if (script === void(0)) {
+    if (script === void 0) {
         this.usage();
         return;
     }

@@ -1045,16 +1045,16 @@ function(aString, replaceSpaces) {
             function(aChar) {
 
                 switch (aChar) {
-                    case    '<':
+                    case '<':
                         return '&lt;';
 
-                    case    '>':
+                    case '>':
                         return '&gt;';
 
-                    case    '\'':
+                    case '\'':
                         return '&apos;';
 
-                    case    '"':
+                    case '"':
                         return '&quot;';
 
                     default:
@@ -1143,16 +1143,16 @@ function(aString, replaceSpaces) {
             function(aChar) {
 
                 switch (aChar) {
-                    case    '<':
+                    case '<':
                         return '&lt;';
 
-                    case    '>':
+                    case '>':
                         return '&gt;';
 
-                    case    '\'':
+                    case '\'':
                         return '&apos;';
 
-                    case    '"':
+                    case '"':
                         return '&quot;';
 
                     default:

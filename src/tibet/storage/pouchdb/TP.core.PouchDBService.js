@@ -119,7 +119,7 @@ function(aRequest) {
 
     switch (request.at('action')) {
 
-        case    'deleteDB':
+        case 'deleteDB':
 
             PouchDB.destroy(
                 dbName,
@@ -138,7 +138,7 @@ function(aRequest) {
 
         break;
 
-        case    'deleteItem':
+        case 'deleteItem':
 
             //  If request has a 'rev' in it, then we construct an Object and
             //  hand that in.
@@ -200,7 +200,7 @@ function(aRequest) {
 
         break;
 
-        case    'retrieveItem':
+        case 'retrieveItem':
 
             if (TP.isEmpty(id)) {
 
@@ -227,7 +227,7 @@ function(aRequest) {
 
         break;
 
-        case    'retrieveItemInfo':
+        case 'retrieveItemInfo':
 
             if (TP.isEmpty(id)) {
 
@@ -264,7 +264,7 @@ function(aRequest) {
 
         break;
 
-        case    'retrieveDBInfo':
+        case 'retrieveDBInfo':
 
             theDB.allDocs(
                 function(error, response) {
@@ -282,7 +282,7 @@ function(aRequest) {
 
         break;
 
-        case    'createItem':
+        case 'createItem':
 
             //  Convert the object into a TP.lang.Hash and then into a plain
             //  Object.
@@ -371,7 +371,7 @@ function(aRequest) {
 
         break;
 
-        case    'updateItem':
+        case 'updateItem':
 
             if (TP.isEmpty(id)) {
 

@@ -173,7 +173,7 @@ function(aRequest) {
     };
 
     switch (aRequest.at('action')) {
-        case    'deleteDB':
+        case 'deleteDB':
 
             if (TP.notValid(allDBs.at(dbName))) {
                 request.fail(
@@ -194,7 +194,7 @@ function(aRequest) {
 
         break;
 
-        case    'deleteItem':
+        case 'deleteItem':
 
             if (TP.notValid(theDB = allDBs.at(dbName))) {
                 request.fail(
@@ -223,7 +223,7 @@ function(aRequest) {
 
         break;
 
-        case    'retrieveItem':
+        case 'retrieveItem':
 
             if (TP.isValid(theDB = allDBs.at(dbName))) {
 
@@ -234,7 +234,7 @@ function(aRequest) {
 
         break;
 
-        case    'retrieveItemInfo':
+        case 'retrieveItemInfo':
 
             if (TP.isValid(theDB = allDBs.at(dbName))) {
                 resultData = theDB.at(id);
@@ -245,7 +245,7 @@ function(aRequest) {
 
         break;
 
-        case    'retrieveDBInfo':
+        case 'retrieveDBInfo':
 
             if (TP.isValid(theDB = allDBs.at(dbName))) {
                 resultData = TP.hc('total_rows', theDB.getSize());
@@ -259,7 +259,7 @@ function(aRequest) {
 
         break;
 
-        case    'createItem':
+        case 'createItem':
 
             if (TP.notValid(theDB = allDBs.at(dbName))) {
                 theDB = TP.hc();
@@ -299,7 +299,7 @@ function(aRequest) {
 
         break;
 
-        case    'updateItem':
+        case 'updateItem':
 
             if (TP.notValid(theDB = allDBs.at(dbName))) {
                 theDB = TP.hc();

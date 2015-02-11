@@ -293,10 +293,10 @@ function(aRequest) {
         case 'listBuckets':
             resource = '/';
             break;
-        case    'deleteItemFromBucket':
-        case    'getItemFromBucket':
-        case    'headItemInBucket':
-        case    'putItemInBucket':
+        case 'deleteItemFromBucket':
+        case 'getItemFromBucket':
+        case 'headItemInBucket':
+        case 'putItemInBucket':
             resource = TP.join('/', aRequest.at('bucketName'),
                 '/', aRequest.at('keyName'));
             break;

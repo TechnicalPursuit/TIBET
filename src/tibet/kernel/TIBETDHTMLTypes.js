@@ -663,7 +663,7 @@ function() {
         elemBox = TP.elementGetPageBox(actionElem, TP.CONTENT_BOX);
 
         switch (corner) {
-            case    TP.TOP:
+            case TP.TOP:
 
                 offsetX += elemBox.at('left') +
                             (elemBox.at('width') / 2) -
@@ -675,7 +675,7 @@ function() {
 
             break;
 
-            case    TP.TOP_RIGHT:
+            case TP.TOP_RIGHT:
 
                 offsetX += elemBox.at('left') +
                             elemBox.at('width') -
@@ -686,7 +686,7 @@ function() {
 
             break;
 
-            case    TP.RIGHT:
+            case TP.RIGHT:
 
                 offsetX += elemBox.at('left') +
                             elemBox.at('width') -
@@ -698,7 +698,7 @@ function() {
 
             break;
 
-            case    TP.BOTTOM_RIGHT:
+            case TP.BOTTOM_RIGHT:
 
                 offsetX += elemBox.at('left') +
                             elemBox.at('width') -
@@ -709,7 +709,7 @@ function() {
 
             break;
 
-            case    TP.BOTTOM:
+            case TP.BOTTOM:
 
                 offsetX += elemBox.at('left') +
                             (elemBox.at('width') / 2) -
@@ -721,7 +721,7 @@ function() {
 
             break;
 
-            case    TP.BOTTOM_LEFT:
+            case TP.BOTTOM_LEFT:
 
                 offsetX += elemBox.at('left') -
                             startX -
@@ -732,7 +732,7 @@ function() {
 
             break;
 
-            case    TP.LEFT:
+            case TP.LEFT:
 
                 offsetX += elemBox.at('left') -
                             startX -
@@ -744,7 +744,7 @@ function() {
 
             break;
 
-            case    TP.TOP_LEFT:
+            case TP.TOP_LEFT:
 
                 offsetX += elemBox.at('left') -
                             startX -
@@ -1915,7 +1915,7 @@ function() {
         borderYOffset = TP.elementGetBorderInPixels(actionElem, TP.TOP);
 
         switch (side) {
-            case    TP.TOP:
+            case TP.TOP:
 
                 offsetX += elemBox.at('left') +
                             (elemBox.at('width') / 2) -
@@ -1927,7 +1927,7 @@ function() {
 
             break;
 
-            case    TP.TOP_RIGHT:
+            case TP.TOP_RIGHT:
 
                 offsetX += elemBox.at('left') +
                             elemBox.at('width') -
@@ -1938,7 +1938,7 @@ function() {
 
             break;
 
-            case    TP.RIGHT:
+            case TP.RIGHT:
 
                 offsetX += elemBox.at('left') +
                             elemBox.at('width') -
@@ -1950,7 +1950,7 @@ function() {
 
             break;
 
-            case    TP.BOTTOM_RIGHT:
+            case TP.BOTTOM_RIGHT:
 
                 offsetX += elemBox.at('left') +
                             elemBox.at('width') -
@@ -1961,7 +1961,7 @@ function() {
 
             break;
 
-            case    TP.BOTTOM:
+            case TP.BOTTOM:
 
                 offsetX += elemBox.at('left') +
                             (elemBox.at('width') / 2) -
@@ -1973,7 +1973,7 @@ function() {
 
             break;
 
-            case    TP.BOTTOM_LEFT:
+            case TP.BOTTOM_LEFT:
 
                 offsetX += elemBox.at('left') -
                             startX -
@@ -1984,7 +1984,7 @@ function() {
 
             break;
 
-            case    TP.LEFT:
+            case TP.LEFT:
 
                 offsetX += elemBox.at('left') -
                             startX -
@@ -1996,7 +1996,7 @@ function() {
 
             break;
 
-            case    TP.TOP_LEFT:
+            case TP.TOP_LEFT:
 
                 offsetX += elemBox.at('left') -
                             startX -
@@ -2064,52 +2064,52 @@ function() {
     this.set('$parentOffsets', parentOffsets);
 
     switch (side) {
-        case    TP.TOP:
+        case TP.TOP:
 
             offsetY = offsetY - topDiff;
 
         break;
 
-        case    TP.TOP_RIGHT:
+        case TP.TOP_RIGHT:
 
             offsetX = elemBox.at('width') - rightDiff;
             offsetY = offsetY - topDiff;
 
         break;
 
-        case    TP.RIGHT:
+        case TP.RIGHT:
 
             offsetX = elemBox.at('width') - rightDiff;
 
         break;
 
-        case    TP.BOTTOM_RIGHT:
+        case TP.BOTTOM_RIGHT:
 
             offsetX = elemBox.at('width') - rightDiff;
             offsetY = elemBox.at('height') - bottomDiff;
 
         break;
 
-        case    TP.BOTTOM:
+        case TP.BOTTOM:
 
             offsetY = elemBox.at('height') - bottomDiff;
 
         break;
 
-        case    TP.BOTTOM_LEFT:
+        case TP.BOTTOM_LEFT:
 
             offsetX = offsetX - leftDiff;
             offsetY = elemBox.at('height') - bottomDiff;
 
         break;
 
-        case    TP.LEFT:
+        case TP.LEFT:
 
             offsetX = offsetX - leftDiff;
 
         break;
 
-        case    TP.TOP_LEFT:
+        case TP.TOP_LEFT:
 
             offsetX = offsetX - leftDiff;
             offsetY = offsetY - topDiff;
@@ -2204,7 +2204,7 @@ function(aSignal) {
         TP.elementGetBorderInPixels(actionElem, TP.BOTTOM);
 
     switch (side) {
-        case    TP.TOP:
+        case TP.TOP:
 
             computedY = currentY - offsetPoint.getY();
 
@@ -2223,7 +2223,7 @@ function(aSignal) {
 
         break;
 
-        case    TP.TOP_RIGHT:
+        case TP.TOP_RIGHT:
 
             computedY = currentY - offsetPoint.getY();
             computedX = currentX - elemBox.at('left') + offsetPoint.getX();
@@ -2246,7 +2246,7 @@ function(aSignal) {
 
         break;
 
-        case    TP.RIGHT:
+        case TP.RIGHT:
 
             computedX = currentX - elemBox.at('left') + offsetPoint.getX();
 
@@ -2258,7 +2258,7 @@ function(aSignal) {
 
         break;
 
-        case    TP.BOTTOM_RIGHT:
+        case TP.BOTTOM_RIGHT:
 
             computedX = currentX - elemBox.at('left') + offsetPoint.getX();
             computedY = currentY - elemBox.at('top') + offsetPoint.getY();
@@ -2274,7 +2274,7 @@ function(aSignal) {
 
         break;
 
-        case    TP.BOTTOM:
+        case TP.BOTTOM:
 
             computedY = currentY - elemBox.at('top') + offsetPoint.getY();
 
@@ -2286,7 +2286,7 @@ function(aSignal) {
 
         break;
 
-        case    TP.BOTTOM_LEFT:
+        case TP.BOTTOM_LEFT:
 
             computedX = currentX - offsetPoint.getX();
             computedY = currentY - elemBox.at('top') + offsetPoint.getY();
@@ -2309,7 +2309,7 @@ function(aSignal) {
 
         break;
 
-        case    TP.LEFT:
+        case TP.LEFT:
 
             computedX = currentX - offsetPoint.getX();
 
@@ -2328,7 +2328,7 @@ function(aSignal) {
 
         break;
 
-        case    TP.TOP_LEFT:
+        case TP.TOP_LEFT:
 
             computedX = currentX - offsetPoint.getX();
             computedY = currentY - offsetPoint.getY();
@@ -3004,46 +3004,46 @@ function() {
         elemBox = TP.elementGetPageBox(actionElem, TP.CONTENT_BOX);
 
         switch (corner) {
-            case    TP.TOP:
+            case TP.TOP:
 
             break;
 
-            case    TP.TOP_RIGHT:
+            case TP.TOP_RIGHT:
 
                 offsetX = elemBox.at('left') + elemBox.at('width') - startX;
 
             break;
 
-            case    TP.RIGHT:
+            case TP.RIGHT:
 
                 offsetX = elemBox.at('left') + elemBox.at('width') - startX;
 
             break;
 
-            case    TP.BOTTOM_RIGHT:
+            case TP.BOTTOM_RIGHT:
 
                 offsetX = elemBox.at('left') + elemBox.at('width') - startX;
                 offsetY = elemBox.at('top') + elemBox.at('height') - startY;
 
             break;
 
-            case    TP.BOTTOM:
+            case TP.BOTTOM:
 
                 offsetY = elemBox.at('top') + elemBox.at('height') - startY;
 
             break;
 
-            case    TP.BOTTOM_LEFT:
+            case TP.BOTTOM_LEFT:
 
                 offsetY = elemBox.at('top') + elemBox.at('height') - startY;
 
             break;
 
-            case    TP.LEFT:
+            case TP.LEFT:
 
             break;
 
-            case    TP.TOP_LEFT:
+            case TP.TOP_LEFT:
 
             break;
         }

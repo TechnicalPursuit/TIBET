@@ -2686,7 +2686,7 @@ function(anElement, boxType, wantsTransformed) {
     //  supplied other box types to return, add those values.
 
     switch (returnedBoxType) {
-        case    TP.CONTENT_BOX:
+        case TP.CONTENT_BOX:
 
                 //  TP.CONTENT_BOX means we subtract both the border and the
                 //  padding from both ends.
@@ -2708,7 +2708,7 @@ function(anElement, boxType, wantsTransformed) {
 
                 break;
 
-        case    TP.PADDING_BOX:
+        case TP.PADDING_BOX:
 
                 //  TP.PADDING_BOX means we add the border from both ends.
                 heightVal -= TP.elementGetBorderInPixels(anElement,
@@ -2720,13 +2720,13 @@ function(anElement, boxType, wantsTransformed) {
 
                 break;
 
-        case    TP.BORDER_BOX:
+        case TP.BORDER_BOX:
 
                 //  TP.BORDER_BOX means we do nothing
 
                 break;
 
-        case    TP.MARGIN_BOX:
+        case TP.MARGIN_BOX:
 
                 //  TP.MARGIN_BOX means we add the margin from both ends.
                 heightVal += TP.elementGetMarginInPixels(anElement,
@@ -2860,7 +2860,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     //  supplied other box types to return, add those values.
 
     switch (returnedBoxType) {
-        case    TP.CONTENT_BOX:
+        case TP.CONTENT_BOX:
 
                 //  TP.CONTENT_BOX means we inset both the border and the
                 //  padding from all sides
@@ -2905,7 +2905,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
                 break;
 
-        case    TP.PADDING_BOX:
+        case TP.PADDING_BOX:
 
                 //  TP.PADDING_BOX means we inset the border from all
                 //  sides.
@@ -2935,13 +2935,13 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
                 break;
 
-        case    TP.BORDER_BOX:
+        case TP.BORDER_BOX:
 
                 //  TP.BORDER_BOX means we do nothing
 
                 break;
 
-        case    TP.MARGIN_BOX:
+        case TP.MARGIN_BOX:
 
                 //  TP.MARGIN_BOX means we outset the margin from both ends.
                 offsets = TP.elementGetStyleValuesInPixels(
@@ -3035,7 +3035,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     //  supplied other box types to return, add those values.
 
     switch (returnedBoxType) {
-        case    TP.CONTENT_BOX:
+        case TP.CONTENT_BOX:
 
                 //  TP.CONTENT_BOX means we can have to add the border and
                 //  the padding
@@ -3047,7 +3047,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                                                             TP.LEFT);
                 break;
 
-        case    TP.PADDING_BOX:
+        case TP.PADDING_BOX:
 
                 //  TP.PADDING_BOX means we have to add the border
 
@@ -3056,13 +3056,13 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                                                             TP.LEFT);
                 break;
 
-        case    TP.BORDER_BOX:
+        case TP.BORDER_BOX:
 
                 //  TP.BORDER_BOX means we do nothing.
 
                 break;
 
-        case    TP.MARGIN_BOX:
+        case TP.MARGIN_BOX:
 
                 //  TP.MARGIN_BOX means we subtract the margin off of the
                 //  total
@@ -3130,7 +3130,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     //  supplied other box types to return, add those values.
 
     switch (returnedBoxType) {
-        case    TP.CONTENT_BOX:
+        case TP.CONTENT_BOX:
 
                 //  TP.CONTENT_BOX means we can have to add the border and
                 //  the padding
@@ -3142,7 +3142,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                                                         TP.TOP);
                 break;
 
-        case    TP.PADDING_BOX:
+        case TP.PADDING_BOX:
 
                 //  TP.PADDING_BOX means we have to add the border
 
@@ -3151,13 +3151,13 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                                                         TP.TOP);
                 break;
 
-        case    TP.BORDER_BOX:
+        case TP.BORDER_BOX:
 
                 //  TP.BORDER_BOX means we do nothing.
 
                 break;
 
-        case    TP.MARGIN_BOX:
+        case TP.MARGIN_BOX:
 
                 //  TP.MARGIN_BOX means we subtract the margin off of the
                 //  total
@@ -3230,7 +3230,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     //  supplied other box types to return, add those values.
 
     switch (returnedBoxType) {
-        case    TP.CONTENT_BOX:
+        case TP.CONTENT_BOX:
 
                 //  TP.CONTENT_BOX means we can have to add the border and
                 //  the padding
@@ -3248,7 +3248,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                                                             wantsTransformed);
                 break;
 
-        case    TP.PADDING_BOX:
+        case TP.PADDING_BOX:
 
                 //  TP.PADDING_BOX means we have to add the border
 
@@ -3260,13 +3260,13 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                                                             wantsTransformed);
                 break;
 
-        case    TP.BORDER_BOX:
+        case TP.BORDER_BOX:
 
                 //  TP.BORDER_BOX means we do nothing.
 
                 break;
 
-        case    TP.MARGIN_BOX:
+        case TP.MARGIN_BOX:
 
                 //  TP.MARGIN_BOX means we subtract the margin off of the
                 //  total
@@ -3719,7 +3719,7 @@ function(anElement, boxType, wantsTransformed) {
     //  supplied other box types to return, add those values.
 
     switch (returnedBoxType) {
-        case    TP.CONTENT_BOX:
+        case TP.CONTENT_BOX:
 
                 //  TP.CONTENT_BOX means we subtract both the border and the
                 //  padding from both ends.
@@ -3741,7 +3741,7 @@ function(anElement, boxType, wantsTransformed) {
 
                 break;
 
-        case    TP.PADDING_BOX:
+        case TP.PADDING_BOX:
 
                 //  TP.PADDING_BOX means we subtract the border from both
                 //  ends.
@@ -3754,13 +3754,13 @@ function(anElement, boxType, wantsTransformed) {
 
                 break;
 
-        case    TP.BORDER_BOX:
+        case TP.BORDER_BOX:
 
                 //  TP.BORDER_BOX means we do nothing
 
                 break;
 
-        case    TP.MARGIN_BOX:
+        case TP.MARGIN_BOX:
 
                 //  TP.MARGIN_BOX means we add the margin from both ends.
                 widthVal += TP.elementGetMarginInPixels(anElement,
@@ -6151,7 +6151,7 @@ function(anElement) {
 
     TP.nodeDepthTraversal(
         anElement,
-function(anElement) {
+        function(anElement) {
 
             //  The 'push' function for the depth traversal
 
@@ -6254,7 +6254,7 @@ function(anElement) {
                 }
 
                 switch (attrName) {
-                    case    'style':
+                    case 'style':
 
                         //  The best way (because of IE) to get the
                         //  attribute value of the 'style' attribute is to
@@ -6264,7 +6264,7 @@ function(anElement) {
                                         anElement).cssText.toLowerCase();
                     break;
 
-                    case    'class':
+                    case 'class':
 
                         //  The best way (because of IE) to get the
                         //  attribute value of the 'class' attribute is to
@@ -6272,35 +6272,35 @@ function(anElement) {
                         attrValue = anElement.className;
                     break;
 
-                    case    'http-equiv':
+                    case 'http-equiv':
                         attrValue = anElement.httpEquiv;
                     break;
 
-                    case    'name':
+                    case 'name':
                         attrValue = anElement.name;
                     break;
 
-                    case    'for':
+                    case 'for':
                         attrValue = anElement.htmlFor;
                     break;
 
-                    case    'xmlns':
+                    case 'xmlns':
                         hasXMLNS = true;
                     break;
 
-                    case    'lang':
-                    case    'xml:lang':
+                    case 'lang':
+                    case 'xml:lang':
                         hasLang = true;
                     break;
 
                     //  These attributes need a value in XHTML because
                     //  they're 'singular' in HTML (i.e. checked="checked")
-                    case    'noshade':
-                    case    'checked':
-                    case    'selected':
-                    case    'multiple':
-                    case    'nowrap':
-                    case    'disabled':
+                    case 'noshade':
+                    case 'checked':
+                    case 'selected':
+                    case 'multiple':
+                    case 'nowrap':
+                    case 'disabled':
                         attrValue = attrName;
                     break;
 
@@ -6369,7 +6369,7 @@ function(anElement) {
             //  Clear out any current namespace prefixes we are tracking.
             currentNSPrefixes.empty();
         },
-function(anElement) {
+        function(anElement) {
 
             //  The 'pop' function for the depth traversal
 
@@ -6384,7 +6384,7 @@ function(anElement) {
                                 anElement.tagName.toLowerCase(),
                                 '>');
         },
-function(nonElementNode) {
+        function(nonElementNode) {
 
             //  The content function for the depth traversal
 
@@ -6393,7 +6393,7 @@ function(nonElementNode) {
             //  Switch on the node type... we currently support TEXT_NODEs
             //  and COMMENT_NODEs.
             switch (nonElementNode.nodeType) {
-                case    Node.TEXT_NODE:
+                case Node.TEXT_NODE:
 
                     //  If we're supposed to escape the text, run the text
                     //  node's nodeValue through a conversion from literals
@@ -6411,7 +6411,7 @@ function(nonElementNode) {
 
                 break;
 
-                case    Node.COMMENT_NODE:
+                case Node.COMMENT_NODE:
 
                     //  Make sure that any embedded '--' are converted to
                     //  something benign.

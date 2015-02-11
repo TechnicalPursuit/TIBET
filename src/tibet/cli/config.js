@@ -212,7 +212,7 @@ Cmd.prototype.setConfig = function(path, value) {
         root = json;
         while (parts.length > 1) {
             key = parts.shift();
-            if (root[key] !== void(0)) {
+            if (root[key] !== void 0) {
                 // Watch out for potential scalars where we need an object.
                 if (typeof root[key] !== 'object') {
                     this.warn('replacing scalar on path: ' + path);

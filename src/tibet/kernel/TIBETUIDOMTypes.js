@@ -3187,13 +3187,13 @@ function(aTransformRecord) {
     transformArgs = aTransformRecord.at('args');
 
     switch (aTransformRecord.at('type')) {
-        case    TP.ROTATE:
+        case TP.ROTATE:
 
             str += 'rotate(' +
                     transformArgs + 'deg)';
 
         break;
-        case    TP.SKEW:
+        case TP.SKEW:
 
             str += 'skewX(' +
                     transformArgs.first() + 'deg) ' +
@@ -3201,7 +3201,7 @@ function(aTransformRecord) {
                     transformArgs.last() + 'deg)';
 
         break;
-        case    TP.SCALE:
+        case TP.SCALE:
 
             str += 'scaleX(' +
                     transformArgs.first() + ') ' +
@@ -3209,7 +3209,7 @@ function(aTransformRecord) {
                     transformArgs.last() + ')';
 
         break;
-        case    TP.TRANSLATE:
+        case TP.TRANSLATE:
 
             str += 'translateX(' +
                     transformArgs.first() + 'px) ' +
