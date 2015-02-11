@@ -350,14 +350,16 @@ function(target, options) {
      * effectively a "slice" of the system suite hash.
      * @param {Object} target The object whose test suites should be returned.
      * @param {TP.lang.Hash} options A dictionary of test options.
-     * @returns {TP.lang.Hash} The target's collection of test suites.
+     * @returns {TP.lang.Hash} A collection of test suites.
      */
 
     var suites,
-        suite,
         id,
+
         params,
-        name;
+        name,
+
+        allSuites;
 
     suites = TP.test.Suite.$get('suites');
 
@@ -370,7 +372,11 @@ function(target, options) {
             this.raise('InvalidID');
         }
 
-        suites = TP.hc(id, suites.at(id));
+        name = TP.notEmpty(params.at('suite')) ? params.at('suite') : 'all';
+
+        //  Set suites to a hash keyed by the target and all suites for that
+        //  target. We might filter this further below (maybe by suite name).
+        suites = TP.hc(id, TP.hc(name, suites.at(id)));
     }
 
     //  No options means no filtering criteria...
@@ -383,25 +389,43 @@ function(target, options) {
     //  TODO: if options includes things like inherited etc. we need to collect
     //  more suites rather than assuming a single slice.
 
+    //  If the suite name is supplied, then we get that suite for all targets in
+    //  the system.
     name = params.at('suite');
     if (TP.notEmpty(name)) {
 
-        suite = suites.getValues().filter(
+        suites = suites.getValues().filter(
                     function(item) {
                         return item.getKeys().contains(name);
                     }).collect(
                         function(item) {
                            return item.at(name);
-                    }).first();
+                    });
 
-        if (TP.isValid(suite)) {
-            return TP.hc(id || name, TP.hc(name, suite));
+        if (TP.isValid(suites)) {
+            return TP.hc(id || name, TP.hc(name, suites));
         } else {
             return;
         }
     } else {
-        return suites;
+
+        //  Otherwise, there's no target and no suite name which means we should
+        //  return all known suites in the system.
+
+        //  We need to return a hash keyed by the target and suites found for
+        //  that target.
+        allSuites = TP.hc();
+
+        suites.perform(
+                function(kvPair) {
+                    allSuites.atPut(TP.id(kvPair.first()),
+                                     kvPair.last());
+                });
+
+        return allSuites;
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -457,20 +481,30 @@ function(target, options) {
 
                 targetKeys.perform(
                     function(suiteName) {
-                        var suite;
+                        var suites;
 
-                        suite = targetSuites.at(suiteName);
-                        if (suite.isExclusive() && !params.at('ignore_only')) {
-                            exclusives = true;
+                        suites = targetSuites.at(suiteName);
+
+                        if (!TP.isArray(suites)) {
+                            suites = TP.ac(suites);
                         }
 
-                        if (TP.notEmpty(params.at('suite'))) {
-                            if (params.at('suite') === suiteName) {
-                                suitelist.push(suite);
-                            }
-                        } else {
-                            suitelist.push(suite);
-                        }
+                        suites.perform(
+                            function(suite) {
+
+                                if (suite.isExclusive() &&
+                                    !params.at('ignore_only')) {
+                                    exclusives = true;
+                                }
+
+                                if (TP.notEmpty(params.at('suite'))) {
+                                    if (params.at('suite') === suiteName) {
+                                        suitelist.push(suite);
+                                    }
+                                } else {
+                                    suitelist.push(suite);
+                                }
+                            });
                     });
             });
 
