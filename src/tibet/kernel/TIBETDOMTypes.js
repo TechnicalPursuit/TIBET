@@ -11331,12 +11331,9 @@ function(aValue, shouldSignal) {
      * @returns {TP.core.Node} The receiver.
      */
 
-    var newValue,
-        flag;
+    var flag;
 
-    newValue = this.produceValue(aValue);
-
-    this.setContent(newValue);
+    this.setContent(aValue);
 
     //  signal as needed
 
