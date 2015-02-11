@@ -554,12 +554,6 @@ function(aValue, shouldSignal) {
         return this;
     }
 
-    //  showas is the attribute we use to define formatting pipelines for
-    //  the UI controls, so if we have that attribute we have formatting
-    if (this.hasAttribute('xctrls:showas')) {
-        newValue = this.$formatValue(newValue, 'xctrls:showas');
-    }
-
     this.setDisplayValue(newValue);
 
     //  signal as needed
