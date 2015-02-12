@@ -518,51 +518,55 @@ function(aDate, sourceLocale, forceRefresh) {
      *     translation was found.
      */
 
-    var format;
+    var format,
+
+        i,
+        en,
+        str,
+
+        names;
 
     if (TP.notEmpty(format = this.getDateFormat())) {
-        return format.transformDate(aDate);
+        str = format.transformDate(aDate);
+    } else {
+        str = aDate.toString();
     }
-
-    return aDate;
 
     //  first pass always produces english since that's what JS works from,
     //  now we want to process that into an alternative based on the locale
 
-    //  TODO:   optimize this series, there has to be a better way. This is
-    //          pure brute force and pretty slow :(
+    //  TODO:   optimize this series by creating/escaping a RegExp and doing
+    //          replacement. This is pure brute force and pretty slow :(
 
-    /*
     en = TP.core.Locale.getLongMonthNames();
-    re = this.getLongMonthNames();
+    names = this.getLongMonthNames();
 
     for (i = 0; i < en.length; i++) {
-        str = str.replace(en.at(i), re.at(i));
-    };
+        str = str.replace(en.at(i), names.at(i));
+    }
 
     en = TP.core.Locale.getLongWeekdayNames();
-    re = this.getLongWeekdayNames();
+    names = this.getLongWeekdayNames();
 
     for (i = 0; i < en.length; i++) {
-        str = str.replace(en.at(i), re.at(i));
-    };
+        str = str.replace(en.at(i), names.at(i));
+    }
 
     en = TP.core.Locale.getShortMonthNames();
-    re = this.getShortMonthNames();
+    names = this.getShortMonthNames();
 
     for (i = 0; i < en.length; i++) {
-        str = str.replace(en.at(i), re.at(i));
-    };
+        str = str.replace(en.at(i), names.at(i));
+    }
 
     en = TP.core.Locale.getShortWeekdayNames();
-    re = this.getShortWeekdayNames();
+    names = this.getShortWeekdayNames();
 
     for (i = 0; i < en.length; i++) {
-        str = str.replace(en.at(i), re.at(i));
-    };
+        str = str.replace(en.at(i), names.at(i));
+    }
 
     return str;
-    */
 });
 
 //  ------------------------------------------------------------------------
