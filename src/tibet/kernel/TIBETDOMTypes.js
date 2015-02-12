@@ -11592,6 +11592,26 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getEventIds',
+function() {
+
+    /**
+     * @method getEventIds
+     * @summary Returns an array of the event IDs (origin IDs) for the
+     *     receiver, starting with the receiver and working out to the top-most
+     *     parent element.
+     * @description The returned Array is configured as an 'origin set' for use
+     *     by the TIBET notification system.
+     * @returns {Array} An Array containing the event IDs of the receiver.
+     */
+
+    //  The TP.elementGetEventIds() call's return value has already been
+    //  configured as an 'origin set'.
+    return TP.elementGetEventIds(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('observe',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
@@ -11686,7 +11706,9 @@ function(aValue, formats) {
         result,
 
         i,
-        len;
+        len,
+
+        format;
 
     TP.stop('break.bind_format');
 
@@ -11705,8 +11727,16 @@ function(aValue, formats) {
         if (!TP.regex.ACP_FORMAT_SEPARATOR.test(formats)) {
 
             //  one format
+            format = formats;
 
-            result = TP.format(value, formats, params);
+            if (/^\s*\*/.test(format)) {
+                format = format.slice(format.indexOf('*') + 1).trim();
+                params.atPut('repeat', true);
+            } else {
+                params.atPut('repeat', false);
+            }
+
+            result = TP.format(value, format, params);
             value = TP.notValid(result) ? value : result;
 
             return value;
@@ -11726,7 +11756,23 @@ function(aValue, formats) {
         //  one value, multiple formats -- second most common case,
         //  basically a format chain
         for (i = 0; i < len; i++) {
-            value = TP.format(value, formats.at(i), params);
+
+            format = formats.at(i);
+
+            //  Sometimes we can have a leading '.|' (or '.|*') in which case
+            //  the first item will be empty
+            if (TP.isEmpty(format)) {
+                continue;
+            }
+
+            if (/^\s*\*/.test(format)) {
+                format = format.slice(format.indexOf('*') + 1).trim();
+                params.atPut('repeat', true);
+            } else {
+                params.atPut('repeat', false);
+            }
+
+            value = TP.format(value, format, params);
         }
 
         value = TP.notValid(value) ? aValue : value;

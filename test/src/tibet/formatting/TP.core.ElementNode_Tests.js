@@ -328,6 +328,63 @@ function() {
                                             loadURI.getLocation()));
             });
     });
+
+    //  ---
+
+    this.it('set content - multiple formats - simple substitutions', function(test, options) {
+
+        var loadURI,
+
+            driver,
+
+            dataObj;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting3.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var elem;
+
+                //  ---
+
+                elem = TP.byOID('span');
+                test.assert.isElement(elem);
+
+                elem.set('value', 'Bill');
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    'bill');
+
+                //  ---
+
+                elem = TP.byOID('div');
+                test.assert.isElement(elem);
+
+                elem.set('value', TP.ac(1, 2, 3));
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    '&lt;html:li&gt;1&lt;/html:li&gt;&lt;html:li&gt;2&lt;/html:li&gt;&lt;html:li&gt;3&lt;/html:li&gt;');
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 });
 
 //  ========================================================================
