@@ -11678,29 +11678,12 @@ function(aValue, formats) {
     try {
         if (!TP.regex.ACP_FORMAT_SEPARATOR.test(formats)) {
 
-            //  one value, one format
-            if (!TP.isCollection(value)) {
+            //  one format
 
-                result = TP.format(value, formats, params);
-                value = TP.notValid(result) ? value : result;
+            result = TP.format(value, formats, params);
+            value = TP.notValid(result) ? value : result;
 
-                return value;
-            } else {
-
-                params = TP.hc('target', this);
-
-                //  multiple values but one format. iteration is easiest
-                return value.collect(
-                        function(item) {
-
-                            var val;
-
-                            val = TP.format(item, formats, params);
-                            val = TP.notValid(val) ? item : val;
-
-                            return val;
-                        });
-            }
+            return value;
         }
     } catch (e) {
         TP.ifError() ?
@@ -11714,34 +11697,15 @@ function(aValue, formats) {
     len = formats.getSize();
 
     try {
-        if (!TP.isCollection(value)) {
-            //  one value, multiple formats -- second most common case,
-            //  basically a format chain
-            for (i = 0; i < len; i++) {
-                value = TP.format(value, formats.at(i), params);
-            }
-
-            value = TP.notValid(value) ? aValue : value;
-
-            return value;
-        } else {
-            //  multiple values w/multiple formatters, rare but possible
-            value = value.collect(
-                    function(item) {
-
-                        var j,
-                            val;
-
-                        val = item;
-                        for (j = 0; j < len; j++) {
-                             val = TP.format(val, formats.at(j), params);
-                        }
-
-                        val = TP.notValid(val) ? item : val;
-
-                        return val;
-                    });
+        //  one value, multiple formats -- second most common case,
+        //  basically a format chain
+        for (i = 0; i < len; i++) {
+            value = TP.format(value, formats.at(i), params);
         }
+
+        value = TP.notValid(value) ? aValue : value;
+
+        return value;
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Formatting error.'),
