@@ -1383,10 +1383,15 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  NB: The attribute portion of this query does *not* pick attributes in
+    //  the TP.w3.Xmlns.UI namespace - they might contain runtime formatting
+    //  instructions (i.e. 'ui:display', etc.)
     queriedNodes = TP.nodeEvaluateXPath(
-                    aNode,
-                    './/@*[contains(.,"{{")] | .//text()[contains(.,"{{")]',
-                    TP.NODESET);
+    aNode,
+    './/@*[contains(.,"{{") and namespace-uri() != "' + TP.w3.Xmlns.UI + '"]' +
+    ' | ' +
+    './/text()[contains(.,"{{")]',
+    TP.NODESET);
 
     return queriedNodes;
 });
