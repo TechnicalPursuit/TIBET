@@ -2381,9 +2381,7 @@ function(aContentObject, aRequest) {
         len,
         i,
 
-        keys,
-
-        formats;
+        keys;
 
     input = aContentObject;
 
@@ -2451,12 +2449,6 @@ function(aContentObject, aRequest) {
         }
     } else {
         value = input;
-    }
-
-    //  If the receiver has a 'ui:display' attribute, then format the return
-    //  value according to the formats found there.
-    if (TP.notEmpty(formats = this.getAttribute('ui:display'))) {
-        value = this.$formatValue(value, formats);
     }
 
     return value;
@@ -11061,6 +11053,37 @@ function() {
     node = this.getNativeNode();
 
     return node.tagName;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('produceValue',
+function(aContentObject, aRequest) {
+
+    /**
+     * @method produceValue
+     * @summary Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
+     * @description This method works together with the 'isSingleValued()' and
+     *     'isScalarValued()' methods to produce the proper value for the
+     *     receiver. See the method description for isScalarValued() for more
+     *     information.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    var value,
+        formats;
+
+    value = this.callNextMethod();
+
+    //  If the receiver has a 'ui:display' attribute, then format the return
+    //  value according to the formats found there.
+    if (TP.notEmpty(formats = this.getAttribute('ui:display'))) {
+        value = this.$formatValue(value, formats);
+    }
+
+    return value;
 });
 
 //  ------------------------------------------------------------------------
