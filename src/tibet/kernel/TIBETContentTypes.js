@@ -197,17 +197,12 @@ function(aSignal) {
     /**
      * @method handleChange
      * @summary Handles changes to the receiver's resource.
-     * @description URIs listen for changes to their resource and invoke this
-     *     method when it changes. The supplied signal could have a
-     *     TP.CHANGE_PATHS property in its payload, which is an Array of path
-     *     Strings that referenced the resource at some point. If this property
-     *     is present, those paths are compared against any fragments of 'sub
-     *     URIs' of the receiver and, if a match is made, a Change is signaled
-     *     with that sub URI. In either case, this URI will signal an overall
-     *     Change from itself for the 'whole resource'.
+     * @description Content objects listen for changes to their data objects and
+     *     then, using their access path aliases, rebroadcast those changes to
+     *     listeners.
      * @param {TP.sig.Change} aSignal The signal indicating a change has
      *     happened in the resource.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.core.Content} The receiver.
      */
 
     var sigName,
