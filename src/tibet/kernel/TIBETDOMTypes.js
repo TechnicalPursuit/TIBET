@@ -2581,11 +2581,7 @@ function(aContentObject, aRequest) {
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      */
 
-    var content;
-
-    content = TP.str(this.produceContent(aContentObject, aRequest));
-
-    this.setTextContent(content);
+    this.setTextContent(aContentObject);
 
     return;
 });
