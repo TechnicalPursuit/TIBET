@@ -11075,12 +11075,15 @@ function(aContentObject, aRequest) {
     var value,
         formats;
 
-    value = this.callNextMethod();
+    value = aContentObject;
 
     //  If the receiver has a 'ui:display' attribute, then format the return
     //  value according to the formats found there.
     if (TP.notEmpty(formats = this.getAttribute('ui:display'))) {
         value = this.$formatValue(value, formats);
+        value = this.callNextMethod(value, aRequest);
+    } else {
+        value = this.callNextMethod();
     }
 
     return value;
