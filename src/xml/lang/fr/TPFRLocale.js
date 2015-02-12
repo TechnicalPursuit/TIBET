@@ -24,6 +24,9 @@ TP.core.Locale.defineSubtype('FRLocale');
 
 TP.core.FRLocale.Type.defineAttribute('langCode', 'fr');
 
+TP.core.FRLocale.Type.defineAttribute('thousandsSeparator', '.');
+TP.core.FRLocale.Type.defineAttribute('decimalPoint', ',');
+
 TP.core.Locale.registerLocale(TP.core.FRLocale);
 
 //  ------------------------------------------------------------------------

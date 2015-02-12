@@ -40,6 +40,9 @@ TP.core.DELocale.Type.defineAttribute('longWeekdayNames',
 TP.core.DELocale.Type.defineAttribute('shortWeekdayNames',
     TP.ac('Son', 'Mon', 'Die', 'Mit', 'Don', 'Fri', 'Sam'));
 
+TP.core.DELocale.Type.defineAttribute('thousandsSeparator', '.');
+TP.core.DELocale.Type.defineAttribute('decimalPoint', ',');
+
 //  TODO:   rework the locale registration process so this isn't necessary.
 TP.core.Locale.registerLocale(TP.core.DELocale);
 
