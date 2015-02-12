@@ -11658,8 +11658,11 @@ function(aValue, formats) {
      * @returns {String} The formatted value.
      */
 
-    var result,
-        value,
+    var value,
+        params,
+
+        result,
+
         i,
         len;
 
@@ -11672,6 +11675,8 @@ function(aValue, formats) {
 
     value = aValue;
 
+    params = TP.hc('target', this);
+
     //  If the formats represent a list we've got to do more work, but if not,
     //  we want to move fast on the most common case.
     try {
@@ -11680,13 +11685,13 @@ function(aValue, formats) {
             //  one value, one format
             if (!TP.isCollection(value)) {
 
-                result = TP.format(value,
-                                    formats,
-                                    TP.hc('target', this));
+                result = TP.format(value, formats, params);
                 value = TP.notValid(result) ? value : result;
 
                 return value;
             } else {
+
+                params = TP.hc('target', this);
 
                 //  multiple values but one format. iteration is easiest
                 return value.collect(
@@ -11694,9 +11699,7 @@ function(aValue, formats) {
 
                             var val;
 
-                            val = TP.format(item,
-                                            formats,
-                                            TP.hc('target', this));
+                            val = TP.format(item, formats, params);
                             val = TP.notValid(val) ? item : val;
 
                             return val;
@@ -11719,9 +11722,7 @@ function(aValue, formats) {
             //  one value, multiple formats -- second most common case,
             //  basically a format chain
             for (i = 0; i < len; i++) {
-                value = TP.format(value,
-                                    formats.at(i),
-                                    TP.hc('target', this));
+                value = TP.format(value, formats.at(i), params);
             }
 
             value = TP.notValid(value) ? aValue : value;
@@ -11737,9 +11738,7 @@ function(aValue, formats) {
 
                         val = item;
                         for (j = 0; j < len; j++) {
-                             val = TP.format(val,
-                                                formats.at(j),
-                                                TP.hc('target', this));
+                             val = TP.format(val, formats.at(j), params);
                         }
 
                         val = TP.notValid(val) ? item : val;
