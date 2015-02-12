@@ -2,7 +2,7 @@
 <tmx xmlns="http://www.lisa.org/tmx14" version="1.4"
   xmlns:xml="http://www.w3.org/XML/1998/namespace">
 
-<header creationtool="TIBET" 
+<header creationtool="TIBET"
   creationtoolversion="3.0"
   segtype="sentence"
   o-tmf=""
@@ -14,9 +14,9 @@
 <body>
 
   <tu tuid="hello">
-    <tuv xml:lang="en"><seg>Hello World</seg></tuv>
-    <tuv xml:lang="de"><seg>Hallo Welt</seg></tuv>
-    <tuv xml:lang="fr"><seg>Bonjour Monde</seg></tuv>
+    <tuv xml:lang="en"><seg>Hello</seg></tuv>
+    <tuv xml:lang="de"><seg>Hallo</seg></tuv>
+    <tuv xml:lang="fr"><seg>Bonjour</seg></tuv>
   </tu>
 
   <tu tuid="true">
