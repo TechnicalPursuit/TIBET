@@ -227,7 +227,7 @@ TP.core.Locale.Type.defineAttribute('dateFormat',
     //'%{dddd}, %{mmmm} %{dd}, %{yyyy} %{hhi}:%{mmn}:%{ss}'); // utc
 
 //  Number defaults
-TP.core.Locale.Type.defineAttribute('numberFormat', '#{#,###}');
+TP.core.Locale.Type.defineAttribute('numberFormat', '#{#,###.##########}');
 TP.core.Locale.Type.defineAttribute('thousandsMatcher', /,/g);
 TP.core.Locale.Type.defineAttribute('thousandsSeparator', ',');
 TP.core.Locale.Type.defineAttribute('decimalPoint', '.');
