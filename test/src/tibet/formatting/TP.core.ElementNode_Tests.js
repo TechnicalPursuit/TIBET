@@ -251,6 +251,83 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('set content - single format - templating', function(test, options) {
+
+        var loadURI,
+
+            driver,
+
+            dataObj;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting2.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var elem;
+
+                //  ---
+
+                elem = TP.byOID('span');
+                test.assert.isElement(elem);
+
+                elem.set('value', TP.hc('foo', 'bar'));
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    'bar');
+
+                //  ---
+
+                elem = TP.byOID('div');
+                test.assert.isElement(elem);
+
+                elem.set('value', TP.hc('foo', 'bar'));
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    'It is: bar');
+
+                //  ---
+
+                elem = TP.byOID('input_text');
+                test.assert.isElement(elem);
+
+                elem.set('value', TP.hc('foo', TP.hc('bar', 'baz')));
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    'baz');
+
+                //  ---
+
+                elem = TP.byOID('textarea');
+                test.assert.isElement(elem);
+
+                elem.set('value', TP.ac(1, 2, 3));
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    '3');
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
 });
 
 //  ========================================================================
