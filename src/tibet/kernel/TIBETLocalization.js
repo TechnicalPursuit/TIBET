@@ -673,13 +673,29 @@ function(aNumber, sourceLocale, forceRefresh) {
      *     translation was found.
      */
 
-    var format;
+    var oldLocale,
+        format,
+
+        retVal;
+
+    //  Because Number formatting relies on properties of the 'current locale'
+    //  such as 'thousandsSeparator', etc. and these properties are accessed on
+    //  *the current locale* as the Number is formatted, we must temporarily set
+    //  the current locale to ourself.
+
+    oldLocale = TP.sys.getLocale();
+    TP.sys.setLocale(this);
 
     if (TP.notEmpty(format = this.getNumberFormat())) {
-        return format.transformNumber(aNumber);
+        retVal = format.transformNumber(aNumber);
+    } else {
+        retVal = aNumber;
     }
 
-    return aNumber;
+    //  Restore the locale we came in with
+    TP.sys.setLocale(oldLocale);
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
