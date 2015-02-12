@@ -22,9 +22,9 @@ modules relies on TIBET "type clusters" which return a locale-specific subtype
 from a top-level type's construct() call.
 
 The TIBET object maintains the "current locale" while the various TP.core.Locale
-subtypes provide the actual functionality for localization. The language code for
-the current locale is used by "localized" types such as TP.core.PhoneNumber to
-determine the specific subtype to use.
+subtypes provide the actual functionality for localization. The language code
+for the current locale is used by "localized" types such as TP.core.PhoneNumber
+to determine the specific subtype to use.
 
 Methods on the TIBET hash for aqcuiring the current "source language" and the
 current "target language" provide the default values translation.
@@ -458,7 +458,7 @@ function(aBoolean, sourceLocale, forceRefresh) {
 
     var str;
 
-    str = aBoolean ? 'true' : 'false';
+    str = aBoolean.toString();
 
     return this.localizeString(str, sourceLocale, forceRefresh);
 });
