@@ -47,19 +47,19 @@ TP.xctrls.slidebar.Type.defineAttribute('defaultIncrement', 5);
 
 TP.xctrls.slidebar.Inst.defineAttribute(
         'thumb',
-        {'value': TP.cpc('*[tibet|pelem="thumb"]', true)});
+        {value: TP.cpc('*[tibet|pelem="thumb"]', true)});
 
 TP.xctrls.slidebar.Inst.defineAttribute(
         'decrementButton',
-        {'value': TP.cpc('.decrement', true)});
+        {value: TP.cpc('.decrement', true)});
 
 TP.xctrls.slidebar.Inst.defineAttribute(
         'incrementButton',
-        {'value': TP.cpc('.increment', true)});
+        {value: TP.cpc('.increment', true)});
 
 TP.xctrls.slidebar.Inst.defineAttribute(
         'dragger',
-        {'value': TP.cpc('*[tibet|pelem="drag"]', true)});
+        {value: TP.cpc('*[tibet|pelem="drag"]', true)});
 
 //  ------------------------------------------------------------------------
 

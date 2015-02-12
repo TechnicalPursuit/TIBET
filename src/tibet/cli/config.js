@@ -110,7 +110,7 @@ Cmd.prototype.execute = function() {
         option = this.options._[1];
     }
 
-    if (/=/.test(option)) {
+    if (/\=/.test(option)) {
         parts = option.split('=');
         return this.setConfig(parts[0], parts[1]);
     } else if (option === '~') {

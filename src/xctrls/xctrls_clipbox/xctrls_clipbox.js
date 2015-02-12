@@ -38,7 +38,7 @@ TP.xctrls.clipbox.finalizeTraits();
 
 TP.xctrls.clipbox.Inst.defineAttribute(
         'bodyElement',
-        {'value': TP.cpc('> xctrls|body', true)});
+        {value: TP.cpc('> xctrls|body', true)});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

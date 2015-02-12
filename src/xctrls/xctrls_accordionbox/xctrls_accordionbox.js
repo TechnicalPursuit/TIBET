@@ -39,20 +39,20 @@ TP.xctrls.accordionbox.finalizeTraits();
 
 TP.xctrls.accordionbox.Inst.defineAttribute(
         'subitems',
-        {'value': TP.cpc('xctrls|accordionitem', false)});
+        {value: TP.cpc('xctrls|accordionitem', false)});
 
 TP.xctrls.accordionbox.Inst.defineAttribute(
         'selectedItem',
-        {'value': TP.cpc('xctrls|accordionitem[pclass|selected]', true)});
+        {value: TP.cpc('xctrls|accordionitem[pclass|selected]', true)});
 
 TP.xctrls.accordionbox.Inst.defineAttribute(
         'itemWithValue',
-        {'value':
+        {value:
             TP.xpc('./xctrls:accordionitem/xctrls:value[text() = "{{1}}"]/..', true)});
 
 TP.xctrls.accordionbox.Inst.defineAttribute(
         'selectedValue',
-        {'value':
+        {value:
             TP.xpc('string(./xctrls:accordionitem' +
                         '[@pclass:selected = "true"]/xctrls:value)', true)});
 

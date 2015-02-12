@@ -82,6 +82,8 @@ Cmd.prototype.HELP =
  * for passing to that routine.
  * @type {Object}
  */
+
+/* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 {
     'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
@@ -93,6 +95,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     }
 },
 Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 /**
  * The command usage string.

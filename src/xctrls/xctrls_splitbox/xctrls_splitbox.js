@@ -37,15 +37,15 @@ TP.xctrls.splitbox.finalizeTraits();
 
 TP.xctrls.splitbox.Inst.defineAttribute(
         'splitbar',
-        {'value': TP.cpc('xctrls|splitbar', true)});
+        {value: TP.cpc('xctrls|splitbar', true)});
 
 TP.xctrls.splitbox.Inst.defineAttribute(
         'beforePanel',
-        {'value': TP.xpc('./xctrls:panel[1]', true)});
+        {value: TP.xpc('./xctrls:panel[1]', true)});
 
 TP.xctrls.splitbox.Inst.defineAttribute(
         'afterPanel',
-        {'value': TP.xpc('./xctrls:panel[2]', true)});
+        {value: TP.xpc('./xctrls:panel[2]', true)});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

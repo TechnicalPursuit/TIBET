@@ -257,20 +257,20 @@ function(tokenList, templateName, sourceVarNames) {
 
     generators = {
 
-        'defineUndefined': function (arg) {
+        defineUndefined: function (arg) {
             //  Returns an expression that returns an empty String if the
             //  argument is not defined.
 
             return 'if (!TP.isDefined(' + generators.escapedIdentifier(arg) + ')) { return \'\'; };';
         },
 
-        'escape': function (str) {
+        escape: function (str) {
             //  Returns any single quote within the str as escaped quotes.
 
             return str.replace(/'/ig, '\\\'');
         },
 
-        'escapedIdentifier': function (str) {
+        escapedIdentifier: function (str) {
             //  Returns any supplied identifier as a 'hashed number' if it can't
             //  be expressed as a JavaScript identifier
 
@@ -281,7 +281,7 @@ function(tokenList, templateName, sourceVarNames) {
             return str;
         },
 
-        'guardCollection': function (arg) {
+        guardCollection: function (arg) {
             //  Returns an expression that will tested the provided argument to
             //  see if it is defined. If so, it will be used - otherwise it will
             //  return an empty Array
@@ -289,7 +289,7 @@ function(tokenList, templateName, sourceVarNames) {
             return '!TP.isDefined(' + generators.escapedIdentifier(arg) + ') ? TP.ac() : ' + arg;
         },
 
-        'getFromArgs': function (propName) {
+        getFromArgs: function (propName) {
             //  Returns an expression that will try to extract a value for the
             //  property named by the propName parameter. The source object for
             //  this will either be the data source or the params handed to the
@@ -323,7 +323,7 @@ function(tokenList, templateName, sourceVarNames) {
             return retVal;
         },
 
-        'guardValue': function (arg) {
+        guardValue: function (arg) {
             //  Returns an expression that will tested the provided argument to
             //  see if it is defined. If so, it will be used - otherwise it will
             //  return a null.
@@ -333,7 +333,7 @@ function(tokenList, templateName, sourceVarNames) {
                     'null : ' + arg;
         },
 
-        'handle': function (item) {
+        handle: function (item) {
             //  Handles processing a particular kind of token
 
             var args,
@@ -354,7 +354,7 @@ function(tokenList, templateName, sourceVarNames) {
             return commands[command].apply(this, args);
         },
 
-        'loop': function (input, joinChar) {
+        loop: function (input, joinChar) {
             //  Loops over the stream of tokens represented by input, invokes
             //  'handle' on each one, and concats it all together into a single
             //  expression
@@ -362,21 +362,21 @@ function(tokenList, templateName, sourceVarNames) {
             return input.map(generators.handle).join(joinChar || ' + ');
         },
 
-        'returnWrap': function (code) {
+        returnWrap: function (code) {
             //  Returns an expression that returns whatever the supplied code
             //  returns.
 
             return generators.wrap('return ' + code);
         },
 
-        'wrap': function (code) {
+        wrap: function (code) {
             //  Wraps the supplied code into a Function closure that is then
             //  executed.
 
             return '(function() {' + code + '})()';
         },
 
-        'valueFrom': function (varName, formatName, isRepeating) {
+        valueFrom: function (varName, formatName, isRepeating) {
 
             var valueGet;
 
@@ -400,21 +400,22 @@ function(tokenList, templateName, sourceVarNames) {
         }
     };
 
+    /* eslint-disable no-reserved-keys */
     commands = {
-        'comment': function() {
+        comment: function() {
             //  For comments, just return a Function returning the empty string.
 
             return generators.returnWrap('\'\'');
         },
 
-        'text': function(text) {
+        text: function(text) {
             //  For comments, just return a Function returning a string with
             //  escaped text.
 
             return generators.returnWrap('\'' + generators.escape(text) + '\';');
         },
 
-        'value': function(wholeArg) {
+        value: function(wholeArg) {
 
             //  A substitution value
 
@@ -483,11 +484,11 @@ function(tokenList, templateName, sourceVarNames) {
                     generators.valueFrom(aspectName, formatName, isRepeating));
         },
 
-        'html': function(arg) {
+        html: function(arg) {
             return generators.returnWrap(generators.valueFrom(arg));
         },
 
-        'for': function(data, blocks) {
+        for: function(data, blocks) {
             //  For 'for' statements, generate an expression that does the
             //  looping and manages closured variables.
 
@@ -552,7 +553,7 @@ function(tokenList, templateName, sourceVarNames) {
             return retVal;
         },
 
-        'with': function(aspectName, blocks) {
+        with: function(aspectName, blocks) {
             //  For 'with' statements, generate an expression that manages
             //  closured variables.
 
@@ -577,7 +578,7 @@ function(tokenList, templateName, sourceVarNames) {
             return retVal;
         },
 
-        'if': function(aspectName, blocks, else_blocks) {
+        if: function(aspectName, blocks, else_blocks) {
             //  For 'if' statements, generate an expression that executes only
             //  if the data at the end of the aspect path exists
 
@@ -609,13 +610,14 @@ function(tokenList, templateName, sourceVarNames) {
             return retVal;
         },
 
-        'else': function(args, block) {
+        else: function(args, block) {
             //  For 'else' statements, we just generate what we need to fit up
             //  under an 'if' block
             return 'else if (' + args + ')' +
                         '{return ' + generators.loop(block) + '}';
         }
     };
+    /* eslint-enable no-reserved-keys */
 
     //  Loop over all of the tokens and generate expressions. Then take any
     //  newlines and returns and converted them to escaped newlines.

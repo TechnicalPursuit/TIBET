@@ -35,7 +35,7 @@ TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
 TP.sherpa.console.Inst.defineAttribute(
         'consoleInput',
-        {'value': TP.cpc('xctrls|codeeditor#SherpaConsoleInput', true)});
+        {value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput', true)});
 
 TP.sherpa.console.Inst.defineAttribute(
         'consoleOutput');
@@ -508,13 +508,13 @@ function(range, cssClass, promptText) {
         range.from,
         range.to,
         {
-            'atomic': true,
-            'readOnly': true,
-            'collapsed': true,
-            'replacedWith': elem,
-            'inclusiveLeft': true,      //  do not allow the cursor to be
+            atomic: true,
+            readOnly: true,
+            collapsed: true,
+            replacedWith: elem,
+            inclusiveLeft: true,      //  do not allow the cursor to be
                                         //  placed before the prompt mark
-            'inclusiveRight': false
+            inclusiveRight: false
         }
     );
 
@@ -565,8 +565,8 @@ function() {
     cursorRange = consoleInput.getCursor();
 
     markerRange = {
-                'from': {'line': cursorRange.line, 'ch': cursorRange.ch},
-                'to': {'line': cursorRange.line, 'ch': cursorRange.ch + 1}
+                from: {line: cursorRange.line, ch: cursorRange.ch},
+                to: {line: cursorRange.line, ch: cursorRange.ch + 1}
             };
 
     consoleInput.insertAtCursor(' ');
@@ -621,8 +621,8 @@ function(aPrompt, aCSSClass) {
         cursorRange = consoleInput.getCursor();
 
         range = {
-                    'from': {'line': cursorRange.line, 'ch': cursorRange.ch},
-                    'to': {'line': cursorRange.line, 'ch': cursorRange.ch + 1}
+                    from: {line: cursorRange.line, ch: cursorRange.ch},
+                    to: {line: cursorRange.line, ch: cursorRange.ch + 1}
                 };
 
         consoleInput.insertAtCursor(' ');
@@ -1030,12 +1030,12 @@ function(aRange) {
         aRange.anchor,
         aRange.head,
         {
-            'className': 'bordered-input',
-            'startStyle': 'bordered-input-left',
-            'endStyle': 'bordered-input-right',
-            'atomic': false,
-            'inclusiveLeft': true,
-            'inclusiveRight': true
+            className: 'bordered-input',
+            startStyle: 'bordered-input-left',
+            endStyle: 'bordered-input-right',
+            atomic: false,
+            inclusiveLeft: true,
+            inclusiveRight: true
         }
     );
 
@@ -1443,8 +1443,8 @@ function() {
         if (TP.isValid(
                 currentInputRange = this.get('currentInputMarker').find())) {
 
-            newEvalRange = {'anchor': currentInputRange.from,
-                            'head': currentInputRange.to};
+            newEvalRange = {anchor: currentInputRange.from,
+                            head: currentInputRange.to};
 
             this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
         }
@@ -1726,7 +1726,7 @@ function() {
         } else {
             //  Couldn't find a starting '>', so we just use the beginning of the
             //  editor
-            retVal = {'line': 0, 'ch': 0};
+            retVal = {line: 0, ch: 0};
         }
 
         //  See if there are any output marks between the anchor and head
@@ -1746,8 +1746,8 @@ function() {
         }
 
         if (retVal.ch === lineInfo.text.length) {
-            retVal = {'line': Math.min(retVal.line + 1, editor.lastLine()),
-                        'ch': 0};
+            retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
+                        ch: 0};
         }
     }
 
@@ -1783,7 +1783,7 @@ function() {
     } else {
         //  Couldn't find an ending '<', so we just use the end of the editor
         lineInfo = editor.lineInfo(editor.lastLine());
-        retVal = {'line': lineInfo.line, 'ch': lineInfo.text.length};
+        retVal = {line: lineInfo.line, ch: lineInfo.text.length};
     }
 
     /*
@@ -1828,8 +1828,8 @@ function() {
         return editor.listSelections()[0];
     }
 
-    range = {'anchor': this.computeEvalMarkRangeAnchor(),
-                'head': this.computeEvalMarkRangeHead()};
+    range = {anchor: this.computeEvalMarkRangeAnchor(),
+                head: this.computeEvalMarkRangeHead()};
 
     return range;
 });
@@ -1850,12 +1850,12 @@ function(range) {
         range.anchor,
         range.head,
         {
-            'className': 'bordered-eval',
-            'startStyle': 'bordered-eval-left',
-            'endStyle': 'bordered-eval-right',
-            'atomic': true,
-            'inclusiveLeft': false,
-            'inclusiveRight': false
+            className: 'bordered-eval',
+            startStyle: 'bordered-eval-left',
+            endStyle: 'bordered-eval-right',
+            atomic: true,
+            inclusiveLeft: false,
+            inclusiveRight: false
         }
     );
 

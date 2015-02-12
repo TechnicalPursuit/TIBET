@@ -37,19 +37,19 @@ TP.xctrls.tabbar.finalizeTraits();
 
 TP.xctrls.tabbar.Inst.defineAttribute(
         'tabs',
-        {'value': TP.cpc('xctrls|tabitem', false)});
+        {value: TP.cpc('xctrls|tabitem', false)});
 
 TP.xctrls.tabbar.Inst.defineAttribute(
         'selectedTab',
-        {'value': TP.cpc('xctrls|tabitem[pclass|selected]', true)});
+        {value: TP.cpc('xctrls|tabitem[pclass|selected]', true)});
 
 TP.xctrls.tabbar.Inst.defineAttribute(
         'tabWithValue',
-        {'value': TP.xpc('./xctrls:tabitem/xctrls:value[text() = "{{1}}"]/..', true)});
+        {value: TP.xpc('./xctrls:tabitem/xctrls:value[text() = "{{1}}"]/..', true)});
 
 TP.xctrls.tabbar.Inst.defineAttribute(
         'selectedValue',
-        {'value': TP.xpc('string(./xctrls:tabitem[@pclass:selected = "true"]/xctrls:value)', true)});
+        {value: TP.xpc('string(./xctrls:tabitem[@pclass:selected = "true"]/xctrls:value)', true)});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

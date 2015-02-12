@@ -82,6 +82,8 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
+
+/* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': [],
@@ -89,6 +91,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 /**
  * The command usage string.

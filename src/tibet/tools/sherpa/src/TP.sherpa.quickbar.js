@@ -34,15 +34,15 @@ TP.sherpa.quickbar.Inst.defineAttribute('searchers');
 
 TP.sherpa.quickbar.Inst.defineAttribute(
         'textInput',
-        {'value': TP.cpc('xctrls|codeeditor', true)});
+        {value: TP.cpc('xctrls|codeeditor', true)});
 
 TP.sherpa.quickbar.Inst.defineAttribute(
         'resultsList',
-        {'value': TP.cpc('.results_list', true)});
+        {value: TP.cpc('.results_list', true)});
 
 TP.sherpa.quickbar.Inst.defineAttribute(
         'resultDetail',
-        {'value': TP.cpc('.result_detail', true)});
+        {value: TP.cpc('.result_detail', true)});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

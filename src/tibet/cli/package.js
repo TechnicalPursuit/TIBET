@@ -111,12 +111,15 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
+
+/* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['all', 'scripts', 'styles', 'images', 'nodes', 'missing'],
         'string': ['package', 'config', 'include', 'exclude', 'phase']
     },
     Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 
 /**

@@ -51,6 +51,8 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * Command argument parsing options.
  * @type {Object}
  */
+
+/* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['link'],
@@ -59,6 +61,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         }
     },
     Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 
 /**

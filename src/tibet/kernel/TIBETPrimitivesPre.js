@@ -1752,21 +1752,21 @@ TP.phc = TP.hc;
 
 //  reusable ECMA property descriptor entries
 TP.CONSTANT_DESCRIPTOR = {
-    'writable': false,
-    'configurable': false
+    writable: false,
+    configurable: false
 };
 
 TP.DEFAULT_DESCRIPTOR = {};
 
 TP.HIDDEN_DESCRIPTOR = {
-    'enumerable': false,
-    'configurable': false
+    enumerable: false,
+    configurable: false
 };
 
 TP.HIDDEN_CONSTANT_DESCRIPTOR = {
-    'enumerable': false,
-    'writable': false,
-    'configurable': false
+    enumerable: false,
+    writable: false,
+    configurable: false
 };
 
 //  ------------------------------------------------------------------------
@@ -4167,7 +4167,7 @@ function(target, name, value, track, owner) {
         val = undefined;
     } else if (!TP.isPlainObject(value)) {
         //  Not a descriptor, so create one.
-        desc = {'value': value};
+        desc = {value: value};
         val = value;
     } else {
         //  Need to extract the value since we were handed a descriptor
@@ -4231,7 +4231,7 @@ function(target, name, value, track, owner) {
         val = undefined;
     } else if (!TP.isPlainObject(value)) {
         //  Not a descriptor, so create one.
-        desc = {'value': value};
+        desc = {value: value};
         val = value;
     } else {
         //  Need to extract the value since we were handed a descriptor

@@ -1173,29 +1173,29 @@ TP.JS_TEXT_ENCODED = 'text/javascript';
 //  ---
 
 TP.HTML_401_TAGS = {
-    'a': true, 'abbr': true, 'acronym': true, 'address': true,
-    'applet': true, 'area': true, 'b': true, 'base': true,
-    'basefont': true, 'bdo': true, 'big': true, 'blockquote': true,
-    'body': true, 'br': true, 'button': true, 'caption': true,
-    'center': true, 'cite': true, 'code': true, 'col': true,
-    'colgroup': true, 'dd': true, 'del': true, 'dfn': true,
-    'dir': true, 'div': true, 'dl': true, 'dt': true,
-    'em': true, 'embed': true, 'fieldset': true, 'font': true,
-    'form': true, 'frame': true, 'frameset': true, 'h1': true,
-    'h2': true, 'h3': true, 'h4': true, 'h5': true,
-    'h6': true, 'head': true, 'hr': true, 'html': true,
-    'i': true, 'iframe': true, 'img': true, 'input': true,
-    'isindex': true, 'kbd': true, 'label': true, 'legend': true,
-    'li': true, 'link': true, 'map': true, 'menu': true,
-    'meta': true, 'noframes': true, 'noscript': true, 'object': true,
-    'ol': true, 'optgroup': true, 'option': true, 'p': true,
-    'param': true, 'pre': true, 'q': true, 's': true,
-    'samp': true, 'script': true, 'select': true, 'small': true,
-    'span': true, 'strike': true, 'strong': true, 'style': true,
-    'sub': true, 'sup': true, 'table': true, 'tbody': true,
-    'td': true, 'textarea': true, 'tfoot': true, 'th': true,
-    'thead': true, 'title': true, 'tr': true, 'tt': true,
-    'u': true, 'ul': true, 'val': true
+    a: true, abbr: true, acronym: true, address: true,
+    applet: true, area: true, b: true, base: true,
+    basefont: true, bdo: true, big: true, blockquote: true,
+    body: true, br: true, button: true, caption: true,
+    center: true, cite: true, code: true, col: true,
+    colgroup: true, dd: true, del: true, dfn: true,
+    dir: true, div: true, dl: true, dt: true,
+    em: true, embed: true, fieldset: true, font: true,
+    form: true, frame: true, frameset: true, h1: true,
+    h2: true, h3: true, h4: true, h5: true,
+    h6: true, head: true, hr: true, html: true,
+    i: true, iframe: true, img: true, input: true,
+    isindex: true, kbd: true, label: true, legend: true,
+    li: true, link: true, map: true, menu: true,
+    meta: true, noframes: true, noscript: true, object: true,
+    ol: true, optgroup: true, option: true, p: true,
+    param: true, pre: true, q: true, s: true,
+    samp: true, script: true, select: true, small: true,
+    span: true, strike: true, strong: true, style: true,
+    sub: true, sup: true, table: true, tbody: true,
+    td: true, textarea: true, tfoot: true, th: true,
+    thead: true, title: true, tr: true, tt: true,
+    u: true, ul: true, val: true
 };
 
 //  ---
@@ -1414,22 +1414,22 @@ TP.XSLT_EXEC = 'XSLT_EXEC';
 TP.PRIVILEGE_FLAGS = {};
 
 TP.PRIVILEGE_DESCRIPTIONS = {
-    'SHOW_ABOUT': 'Show a special "about:" panel',
-    'READ_HISTORY': 'Read the browing history',
-    'READ_PREFERENCE': 'Read a preference',
-    'WRITE_PREFERENCE': 'Store a preference',
-    'MANIPULATE_WINDOW': 'Manipulate a window',
-    'READ_EXECUTION_STACK': 'Read the JavaScript execution stack',
-    'ACCESS_XDOMAIN_FRAME': 'Access a window from another domain',
-    'ACCESS_DOM_INSPECT': 'Inspect a DOM element',
+    SHOW_ABOUT: 'Show a special "about:" panel',
+    READ_HISTORY: 'Read the browing history',
+    READ_PREFERENCE: 'Read a preference',
+    WRITE_PREFERENCE: 'Store a preference',
+    MANIPULATE_WINDOW: 'Manipulate a window',
+    READ_EXECUTION_STACK: 'Read the JavaScript execution stack',
+    ACCESS_XDOMAIN_FRAME: 'Access a window from another domain',
+    ACCESS_DOM_INSPECT: 'Inspect a DOM element',
 
-    'ACCESS_XDOMAIN_XMLHTTP': 'Access data from another domain',
-    'HOST_XSLT_EXEC': 'Execute an XSLT stylesheet',
+    ACCESS_XDOMAIN_XMLHTTP: 'Access data from another domain',
+    HOST_XSLT_EXEC: 'Execute an XSLT stylesheet',
 
-    'HOST_FILE_ACCESS': 'General file system access',
-    'HOST_FILE_DELETE': 'Delete a file',
-    'HOST_FILE_SAVE': 'Save a file',
-    'HOST_CMD_EXEC': 'Execute a shell command'
+    HOST_FILE_ACCESS: 'General file system access',
+    HOST_FILE_DELETE: 'Delete a file',
+    HOST_FILE_SAVE: 'Save a file',
+    HOST_CMD_EXEC: 'Execute a shell command'
 };
 
 //  ------------------------------------------------------------------------
@@ -1461,148 +1461,150 @@ NOTE: the collection is sparse and relies on default values of:
             to get both.
 */
 
+/* eslint-disable no-reserved-keys */
 TP.SLOT_FILTERS =
     {
         //  Visibility
-        'public':
-            {'methods': true, 'scope': TP.ALL},
+        public:
+            {methods: true, scope: TP.ALL},
         hidden:
-            {'methods': true, 'hidden': true, 'scope': TP.ALL},
+            {methods: true, hidden: true, scope: TP.ALL},
         known:
-            {'methods': true, 'hidden': true, 'scope': TP.ALL, 'public': true},
+            {methods: true, hidden: true, scope: TP.ALL, public: true},
 
         //  Different scopes
         unique:
-            {'methods': true},
+            {methods: true},
         local:
-            {'methods': true, 'scope': TP.LOCAL},
+            {methods: true, scope: TP.LOCAL},
         introduced:
-            {'methods': true, 'scope': TP.INTRODUCED},
+            {methods: true, scope: TP.INTRODUCED},
         inherited:
-            {'methods': true, 'scope': TP.INHERITED},
+            {methods: true, scope: TP.INHERITED},
         overridden:
-            {'methods': true, 'scope': TP.OVERRIDDEN},
+            {methods: true, scope: TP.OVERRIDDEN},
 
         //  Attributes only
         attributes:
-            {'scope': TP.ALL},
+            {scope: TP.ALL},
         hidden_attributes:
-            {'hidden': true, 'scope': TP.ALL},
+            {hidden: true, scope: TP.ALL},
         known_attributes:
-            {'hidden': true, 'scope': TP.ALL, 'public': true},
+            {hidden: true, scope: TP.ALL, public: true},
 
         unique_attributes:
             {},  // default values
         local_attributes:
-            {'scope': TP.LOCAL},
+            {scope: TP.LOCAL},
         introduced_attributes:
-            {'scope': TP.INTRODUCED},
+            {scope: TP.INTRODUCED},
         inherited_attributes:
-            {'scope': TP.INHERITED},
+            {scope: TP.INHERITED},
         overridden_attributes:
-            {'scope': TP.OVERRIDDEN},
+            {scope: TP.OVERRIDDEN},
 
         hidden_unique_attributes:
-            {'hidden': true},
+            {hidden: true},
         hidden_local_attributes:
-            {'hidden': true, 'scope': TP.LOCAL},
+            {hidden: true, scope: TP.LOCAL},
         hidden_introduced_attributes:
-            {'hidden': true, 'scope': TP.INTRODUCED},
+            {hidden: true, scope: TP.INTRODUCED},
         hidden_inherited_attributes:
-            {'hidden': true, 'scope': TP.INHERITED},
+            {hidden: true, scope: TP.INHERITED},
         hidden_overridden_attributes:
-            {'hidden': true, 'scope': TP.OVERRIDDEN},
+            {hidden: true, scope: TP.OVERRIDDEN},
 
         known_unique_attributes:
-            {'hidden': true, 'public': true},
+            {hidden: true, public: true},
         known_local_attributes:
-            {'hidden': true, 'scope': TP.LOCAL, 'public': true},
+            {hidden: true, scope: TP.LOCAL, public: true},
         known_introduced_attributes:
-            {'hidden': true, 'scope': TP.INTRODUCED, 'public': true},
+            {hidden: true, scope: TP.INTRODUCED, public: true},
         known_inherited_attributes:
-            {'hidden': true, 'scope': TP.INHERITED, 'public': true},
+            {hidden: true, scope: TP.INHERITED, public: true},
         known_overridden_attributes:
-            {'hidden': true, 'scope': TP.OVERRIDDEN, 'public': true},
+            {hidden: true, scope: TP.OVERRIDDEN, public: true},
 
         //  Methods only
         methods:
-            {'attributes': false, 'methods': true, 'scope': TP.ALL},
+            {attributes: false, methods: true, scope: TP.ALL},
         hidden_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.ALL},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.ALL},
         known_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.ALL, 'public': true},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.ALL, public: true},
 
         unique_methods:
-            {'attributes': false, 'methods': true},
+            {attributes: false, methods: true},
         local_methods:
-            {'attributes': false, 'methods': true, 'scope': TP.LOCAL},
+            {attributes: false, methods: true, scope: TP.LOCAL},
         introduced_methods:
-            {'attributes': false, 'methods': true, 'scope': TP.INTRODUCED},
+            {attributes: false, methods: true, scope: TP.INTRODUCED},
         inherited_methods:
-            {'attributes': false, 'methods': true, 'scope': TP.INHERITED},
+            {attributes: false, methods: true, scope: TP.INHERITED},
         overridden_methods:
-            {'attributes': false, 'methods': true, 'scope': TP.OVERRIDDEN},
+            {attributes: false, methods: true, scope: TP.OVERRIDDEN},
 
         hidden_unique_methods:
-            {'attributes': false, 'methods': true, 'hidden': true},
+            {attributes: false, methods: true, hidden: true},
         hidden_local_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.LOCAL},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.LOCAL},
         hidden_introduced_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.INTRODUCED},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.INTRODUCED},
         hidden_inherited_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.INHERITED},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.INHERITED},
         hidden_overridden_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.OVERRIDDEN},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.OVERRIDDEN},
 
         known_unique_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'public': true},
+            {attributes: false, methods: true, hidden: true,
+                public: true},
         known_local_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.LOCAL, 'public': true},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.LOCAL, public: true},
         known_introduced_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.INTRODUCED, 'public': true},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.INTRODUCED, public: true},
         known_inherited_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.INHERITED, 'public': true},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.INHERITED, public: true},
         known_overridden_methods:
-            {'attributes': false, 'methods': true, 'hidden': true,
-                'scope': TP.OVERRIDDEN, 'public': true},
+            {attributes: false, methods: true, hidden: true,
+                scope: TP.OVERRIDDEN, public: true},
 
         //  Attributes and methods
         hidden_unique:
-            {'methods': true, 'hidden': true},
+            {methods: true, hidden: true},
         hidden_local:
-            {'methods': true, 'hidden': true, 'scope': TP.LOCAL},
+            {methods: true, hidden: true, scope: TP.LOCAL},
         hidden_introduced:
-            {'methods': true, 'hidden': true, 'scope': TP.INTRODUCED},
+            {methods: true, hidden: true, scope: TP.INTRODUCED},
         hidden_inherited:
-            {'methods': true, 'hidden': true, 'scope': TP.INHERITED},
+            {methods: true, hidden: true, scope: TP.INHERITED},
         hidden_overridden:
-            {'methods': true, 'hidden': true, 'scope': TP.OVERRIDDEN},
+            {methods: true, hidden: true, scope: TP.OVERRIDDEN},
 
         known_unique:
-            {'methods': true, 'hidden': true, 'public': true},
+            {methods: true, hidden: true, public: true},
         known_local:
-            {'methods': true, 'hidden': true, 'scope': TP.LOCAL,
-                'public': true},
+            {methods: true, hidden: true, scope: TP.LOCAL,
+                public: true},
         known_introduced:
-            {'methods': true, 'hidden': true, 'scope': TP.INTRODUCED,
-                'public': true},
+            {methods: true, hidden: true, scope: TP.INTRODUCED,
+                public: true},
         known_inherited:
-            {'methods': true, 'hidden': true, 'scope': TP.INHERITED,
-                'public': true},
+            {methods: true, hidden: true, scope: TP.INHERITED,
+                public: true},
         known_overridden:
-            {'methods': true, 'hidden': true, 'scope': TP.OVERRIDDEN,
-                'public': true}
+            {methods: true, hidden: true, scope: TP.OVERRIDDEN,
+                public: true}
     };
+/* eslint-enable no-reserved-keys */
 
 //  ------------------------------------------------------------------------
 //  PRE-BUILT FUNCTION PARAMETERS

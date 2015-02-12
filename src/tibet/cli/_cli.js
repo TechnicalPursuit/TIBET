@@ -144,6 +144,8 @@ CLI.NPM_FILE = 'package.json';
  * flags but can be overridden if the command needs to define specific ones.
  * @type {Object}
  */
+
+/* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
     'string': ['app_root', 'lib_root'],
@@ -151,6 +153,7 @@ CLI.PARSE_OPTIONS = {
         color: true
     }
 };
+/* eslint-enable quote-props */
 
 
 /**

@@ -3037,12 +3037,12 @@ function(anObj) {
         newObj;
 
     data = {
-            'xx': anObj[0][0],
-            'xy': anObj[0][1],
-            'yx': anObj[1][0],
-            'yy': anObj[1][1],
-            'dx': anObj[0][2],
-            'dy': anObj[1][2]
+            xx: anObj[0][0],
+            xy: anObj[0][1],
+            yx: anObj[1][0],
+            yy: anObj[1][1],
+            dx: anObj[0][2],
+            dy: anObj[1][2]
             };
 
     newObj = this.construct(data);

@@ -103,6 +103,8 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
+
+/* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['scan', 'stop', 'all', 'list', 'nodes', 'reset',
@@ -118,6 +120,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         }
     },
     Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 /**
  * A list of valid extensions for JavaScript source content.

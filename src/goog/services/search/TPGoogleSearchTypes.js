@@ -26,27 +26,27 @@ TP.core.JSONContent.defineSubtype('goog.GoogleSearchData');
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'results',
-        {'value':
+        {value:
                 TP.apc('responseData.results')});
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'resultsFromTo',
-        {'value':
+        {value:
                 TP.apc('responseData.results[{{0}}:{{1}}]')});
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'estimatedResultCount',
-        {'value':
+        {value:
                 TP.apc('responseData.cursor.estimatedResultCount', true)});
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'currentPageIndex',
-        {'value':
+        {value:
                 TP.apc('responseData.cursor.currentPageIndex', true)});
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'moreResultsUrl',
-        {'value':
+        {value:
                 TP.apc('responseData.cursor.moreResultsUrl', true)});
 
 //  ------------------------------------------------------------------------

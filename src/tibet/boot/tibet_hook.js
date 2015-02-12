@@ -508,48 +508,48 @@ if (TP.boot.$notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
     //  you change things here you'll want to keep the other version in
     //  sync
     TP.DOM_SIGNAL_TYPE_MAP = {
-        'abort': 'TP.sig.DOMAbort',
-        'blur': 'TP.sig.DOMBlur',
-        'change': 'TP.sig.DOMChange',
-        'click': 'TP.sig.DOMClick',
-        'copy': 'TP.sig.DOMCopy',
-        'contextmenu': 'TP.sig.DOMContextMenu',
-        'cut': 'TP.sig.DOMCut',
-        'dblclick': 'TP.sig.DOMDblClick',
-        'error': 'TP.sig.DOMError',
-        'focus': 'TP.sig.DOMFocus',
-        'keydown': 'TP.sig.DOMKeyDown',
-        'keypress': 'TP.sig.DOMKeyPress',
-        'keyup': 'TP.sig.DOMKeyUp',
-        'load': 'TP.sig.DOMLoad',
-        'mousedown': 'TP.sig.DOMMouseDown',
-        'mouseenter': 'TP.sig.DOMMouseEnter',
+        abort: 'TP.sig.DOMAbort',
+        blur: 'TP.sig.DOMBlur',
+        change: 'TP.sig.DOMChange',
+        click: 'TP.sig.DOMClick',
+        copy: 'TP.sig.DOMCopy',
+        contextmenu: 'TP.sig.DOMContextMenu',
+        cut: 'TP.sig.DOMCut',
+        dblclick: 'TP.sig.DOMDblClick',
+        error: 'TP.sig.DOMError',
+        focus: 'TP.sig.DOMFocus',
+        keydown: 'TP.sig.DOMKeyDown',
+        keypress: 'TP.sig.DOMKeyPress',
+        keyup: 'TP.sig.DOMKeyUp',
+        load: 'TP.sig.DOMLoad',
+        mousedown: 'TP.sig.DOMMouseDown',
+        mouseenter: 'TP.sig.DOMMouseEnter',
         //  a synthetic TIBET event
-        'mousehover': 'TP.sig.DOMMouseHover',
-        'mouseleave': 'TP.sig.DOMMouseLeave',
-        'mousemove': 'TP.sig.DOMMouseMove',
-        'mouseout': 'TP.sig.DOMMouseOut',
-        'mouseover': 'TP.sig.DOMMouseOver',
-        'mouseup': 'TP.sig.DOMMouseUp',
+        mousehover: 'TP.sig.DOMMouseHover',
+        mouseleave: 'TP.sig.DOMMouseLeave',
+        mousemove: 'TP.sig.DOMMouseMove',
+        mouseout: 'TP.sig.DOMMouseOut',
+        mouseover: 'TP.sig.DOMMouseOver',
+        mouseup: 'TP.sig.DOMMouseUp',
         //  a synthetic TIBET event
-        'dragdown': 'TP.sig.DOMDragDown',
+        dragdown: 'TP.sig.DOMDragDown',
         //  a synthetic TIBET event
-        'draghover': 'TP.sig.DOMDragHover',
+        draghover: 'TP.sig.DOMDragHover',
         //  a synthetic TIBET event
-        'dragmove': 'TP.sig.DOMDragMove',
+        dragmove: 'TP.sig.DOMDragMove',
         //  a synthetic TIBET event
-        'dragout': 'TP.sig.DOMDragOut',
+        dragout: 'TP.sig.DOMDragOut',
         //  a synthetic TIBET event
-        'dragover': 'TP.sig.DOMDragOver',
+        dragover: 'TP.sig.DOMDragOver',
         //  a synthetic TIBET event
-        'dragup': 'TP.sig.DOMDragUp',
-        'move': 'TP.sig.DOMMove',
-        'paste': 'TP.sig.DOMPaste',
-        'reset': 'TP.sig.DOMReset',
-        'resize': 'TP.sig.DOMResize',
-        'submit': 'TP.sig.DOMSubmit',
-        'transitionend': 'TP.sig.DOMTransitionEnd',
-        'unload': 'TP.sig.DOMUnload'
+        dragup: 'TP.sig.DOMDragUp',
+        move: 'TP.sig.DOMMove',
+        paste: 'TP.sig.DOMPaste',
+        reset: 'TP.sig.DOMReset',
+        resize: 'TP.sig.DOMResize',
+        submit: 'TP.sig.DOMSubmit',
+        transitionend: 'TP.sig.DOMTransitionEnd',
+        unload: 'TP.sig.DOMUnload'
     };
 
     if (TP.boot.$$isIE() || TP.boot.$$isWebkit()) {

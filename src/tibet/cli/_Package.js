@@ -196,7 +196,7 @@ Package.NUMBER_REGEX = /^\d*$/;
 Package.OBJECT_REGEX = /^\{.*\}$/;
 Package.REGEX_REGEX = /^\/.*\/$/;
 
-Package.KV_REGEX = /=/;
+Package.KV_REGEX = /\=/;
 
 /**
  * A map of element attributes that will be copied down during expansion.

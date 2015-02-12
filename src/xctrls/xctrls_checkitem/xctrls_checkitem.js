@@ -38,7 +38,7 @@ TP.xctrls.checkitem.finalizeTraits();
 
 TP.xctrls.checkitem.Inst.defineAttribute(
         'valuePElem',
-        {'value': TP.cpc('*[tibet|pelem="value"]', true)});
+        {value: TP.cpc('*[tibet|pelem="value"]', true)});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
