@@ -5989,7 +5989,7 @@ function(aDataSource, aKeySource, aScope) {
 
     //  exit hatch -- no more substitution entities
     if ((TP.notValid(String.$subsRe)) || !String.$subsRe.test(this)) {
-        return this;
+        return this.toString();
     }
 
     theDataSource = TP.ifInvalid(aDataSource, '');
