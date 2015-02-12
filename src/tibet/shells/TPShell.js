@@ -2859,9 +2859,6 @@ function(aRequest, anArgument) {
     var arg;
 
     arg = this.getArguments(aRequest, anArgument);
-
-
-
 });
 
 //  ------------------------------------------------------------------------

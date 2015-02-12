@@ -101,9 +101,6 @@ TP.regex.CUSTOM_DECLARATIONS_VALUE =
 TP.regex.CSS_PNG_IMAGE =
         /(^|\s+|;)(.+image:)\s*(url\()?['"]?(.*?\.png)['"]?(\))?;?/g;   // needs reset
 
-
-
-
 //  NB: This stuff should be removed when the CSS processor is redone
 //  Note that we need to use older 'new RegExp' syntax here because of
 //  bootstrapping issues.

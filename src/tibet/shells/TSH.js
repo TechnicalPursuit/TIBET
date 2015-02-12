@@ -2754,8 +2754,6 @@ function(aRequest) {
                 }
             });
 
-
-
             //  ---
             //  source checks
             //  ---

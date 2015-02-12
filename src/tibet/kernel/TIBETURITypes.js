@@ -8188,8 +8188,6 @@ function(targetURI, aRequest) {
         };
     };
 
-
-
     //  NOTE we dispatch the event used by XForms 1.1 to get things started
     //  so observers (listener registrations essentially) can be notified
     signal = this.dispatch('tsh-service-serialize', node, args);

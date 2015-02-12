@@ -433,7 +433,7 @@ function(anObject, optFormat) {
             output.push('<span data-name="value">',
                         Object.prototype.toString.call(anObject),
                         '</span>');
-        } catch (e2)  {
+        } catch (e2) {
             //  And some don't even like that... double sigh...
             output.push('<span data-name="value">',
                         '[object Object]',
