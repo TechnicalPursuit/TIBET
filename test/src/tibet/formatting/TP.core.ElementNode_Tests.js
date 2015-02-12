@@ -68,6 +68,41 @@ function() {
 
             //  ---
 
+            if (!TP.isType(TP.sys.getTypeByName('TP.test.Localizer'))) {
+
+                TP.lang.Object.defineSubtype('TP.test.Localizer');
+                TP.test.Localizer.Type.defineMethod(
+                    'fromString',
+                    function(aValue, params) {
+                        var tpTargetElem,
+                            contentLang;
+
+                        if (TP.notValid(tpTargetElem = params.at('target'))) {
+                            return aValue;
+                        }
+
+                        contentLang = tpTargetElem.getContentLanguage();
+
+                        return aValue.localize(contentLang);
+                    });
+                TP.test.Localizer.Type.defineMethod(
+                    'fromObject',
+                    function(aValue, params) {
+                        var tpTargetElem,
+                            contentLang;
+
+                        if (TP.notValid(tpTargetElem = params.at('target'))) {
+                            return aValue;
+                        }
+
+                        contentLang = tpTargetElem.getContentLanguage();
+
+                        return aValue.localize(contentLang);
+                    });
+            }
+
+            //  ---
+
             this.getDriver().showTestGUI();
         });
 
@@ -385,6 +420,98 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('set content - using type for localization', function(test, options) {
+
+        var loadURI,
+
+            driver,
+
+            dataObj;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting4.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var elem;
+
+                //  Note that the strings here are localized against the
+                //  'strings.xml' file in either the app (if available) or the
+                //  lib.
+
+                //  ---
+
+                elem = TP.byOID('span');
+                test.assert.isElement(elem);
+
+                elem.set('value', 'false');
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    'falsch');
+
+                //  ---
+
+                elem = TP.byOID('div');
+                test.assert.isElement(elem);
+
+                elem.set('value', 'Hello');
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    'Hallo');
+
+                //  ---
+
+                elem = TP.byOID('input_text');
+                test.assert.isElement(elem);
+
+                elem.set('value', 1000000.42);
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    '1.000.000,42');
+
+                //  ---
+
+                elem = TP.byOID('textarea');
+                test.assert.isElement(elem);
+
+                elem.set('value', Date.constructDayOne(1900));
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    '1900-01-01T06:00:00');
+
+                //  ---
+
+                elem = TP.byOID('select_single');
+                test.assert.isElement(elem);
+
+                elem.set('value', 'yes');
+
+                test.assert.isEqualTo(
+                    elem.getValue(),
+                    'ja');
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).only();
 });
 
 //  ========================================================================
