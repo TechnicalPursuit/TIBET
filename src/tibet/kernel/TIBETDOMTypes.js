@@ -2381,7 +2381,9 @@ function(aContentObject, aRequest) {
         len,
         i,
 
-        keys;
+        keys,
+
+        formats;
 
     input = aContentObject;
 
@@ -2449,6 +2451,12 @@ function(aContentObject, aRequest) {
         }
     } else {
         value = input;
+    }
+
+    //  If the receiver has a 'ui:display' attribute, then format the return
+    //  value according to the formats found there.
+    if (TP.notEmpty(formats = this.getAttribute('ui:display'))) {
+        value = this.$formatValue(value, formats);
     }
 
     return value;
@@ -11596,40 +11604,41 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 //  ------------------------------------------------------------------------
 
 /**
- * @The methods here provide support for display and storage formatting offield
- *     data as well as general-purpose data validation.
+ *     The methods here provide support for display and storage formatting of
+ *     field data as well as general-purpose data validation.
  *
  *     TIBET formatters work in chains, successively processing the value. This
- *     allows you to reuse formatters more effectively. The xctrls:saveas and
- *     xctrls:showas attributes accept whitespace-separated type names whichwill
- *     be used to format the output of the previous formatter in the list.
+ *     allows you to reuse formatters more effectively. The ui:display and
+ *     ui:storage namespaced attributes accept whitespace-separated format
+ *     expression values which will be used to format the output of the previous
+ *     formatter in the list.
  *
  *     The type validation process here is general purpose in the sense that
- *     sinceboth model and UI elements ultimately have TP.core.Node wrappers
- *     they canboth benefit from type checks. There are two mechanisms for
+ *     since both model and UI elements ultimately have TP.core.Node wrappers
+ *     they can both benefit from type checks. There are two mechanisms for
  *     validation: XMLSchema and TIBET-specific types. Both offer advantages and
- *     disadvantages butthe nice thing is you can mix them in the same
+ *     disadvantages but the nice thing is you can mix them in the same
  *     environment if you need to.
  *
  *     When using XML Schema simply put xsi:type attributes on the elements you
- *     wish to constrain, or use the xctrls:type attribute to access TIBET
- *     types.The xctrls:type attribute takes a list of types separated by either
- *     a spaceor vertical bar (|). When separated by spaces all types must agree
- *     the valueis valid, when separated by a vertical bar only one of the types
- *     must agree.
+ *     wish to constrain, or use the ui:type attribute to access TIBET types.
+ *     The ui:type attribute takes a list of types separated by either a
+ *     space or vertical bar (|). When separated by spaces all types must agree
+ *     the value is valid, when separated by a vertical bar only one of the
+ *     types must agree.
  */
 
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('$formatValue',
-function(aValue, attributeName) {
+function(aValue, formats) {
 
     /**
      * @method $formatValue
      * @summary Formats a value using the formatter list in the attribute
      *     provided.
      * @description The value provided is formatted based on the rules of the
-     *     formatter type(s) found in the attribute provided. Note that even
+     *     formatter value(s) found in the attribute provided. Note that even
      *     null values are formatted based on this rule such that you can cause
      *     a null to appear as '' or null or any other value your formatter
      *     cares to output. For that reason you can't "default" the value
@@ -11644,49 +11653,65 @@ function(aValue, attributeName) {
      *     a value "degrades" from a non-null to a null value. In that case the
      *     original value is returned.
      * @param {Object} aValue The value to format.
-     * @param {String} attributName An attribute name containing formatters.
+     * @param {String} formats A string of format expressions separated by a
+     *     '|.'
      * @returns {String} The formatted value.
      */
 
     var result,
         value,
-        formats,
         i,
         len;
 
     TP.stop('break.bind_format');
 
     //  nothing to do?
-    if (TP.isEmpty(formats = this.getAttribute(attributeName, true))) {
+    if (TP.isEmpty(formats)) {
         return aValue;
     }
 
     value = aValue;
 
-    //  if the formats represent a list we've got to do more work, but we
-    //  want to move fast on the most common case (1 value, 1 format)
-    if (!TP.regex.MULTI_VALUED.test(formats)) {
-        if (!TP.isCollection(value)) {
-            result = TP.format(value, formats);
-            value = TP.notValid(result) ? value : result;
+    //  If the formats represent a list we've got to do more work, but if not,
+    //  we want to move fast on the most common case.
+    try {
+        if (!TP.regex.ACP_FORMAT_SEPARATOR.test(formats)) {
 
-            return value;
-        } else {
-            //  multiple values but one format. iteration is easiest
-            return value.collect(
-                    function(item) {
+            //  one value, one format
+            if (!TP.isCollection(value)) {
 
-                        var val;
+                result = TP.format(value,
+                                    formats,
+                                    TP.hc('target', this));
+                value = TP.notValid(result) ? value : result;
 
-                        val = TP.format(item, formats);
-                        val = TP.notValid(val) ? item : val;
+                return value;
+            } else {
 
-                        return val;
-                    });
+                //  multiple values but one format. iteration is easiest
+                return value.collect(
+                        function(item) {
+
+                            var val;
+
+                            val = TP.format(item,
+                                            formats,
+                                            TP.hc('target', this));
+                            val = TP.notValid(val) ? item : val;
+
+                            return val;
+                        });
+            }
         }
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Formatting error.'),
+                        TP.LOG) : 0;
+
+        value = aValue;
     }
 
-    formats = formats.split(' ');
+    formats = formats.split(TP.regex.ACP_FORMAT_SEPARATOR);
     len = formats.getSize();
 
     try {
@@ -11694,7 +11719,9 @@ function(aValue, attributeName) {
             //  one value, multiple formats -- second most common case,
             //  basically a format chain
             for (i = 0; i < len; i++) {
-                value = TP.format(value, formats.at(i));
+                value = TP.format(value,
+                                    formats.at(i),
+                                    TP.hc('target', this));
             }
 
             value = TP.notValid(value) ? aValue : value;
@@ -11710,7 +11737,9 @@ function(aValue, attributeName) {
 
                         val = item;
                         for (j = 0; j < len; j++) {
-                             val = TP.format(val, formats.at(j));
+                             val = TP.format(val,
+                                                formats.at(j),
+                                                TP.hc('target', this));
                         }
 
                         val = TP.notValid(val) ? item : val;

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://www.technicalpursuit.com/2015/ui">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+</head>
+
+<body>
+
+	<h2>Formatting Test #1</h2><br/>
+	<br/>
+	<br/>
+
+    <span id="span" ui:display="@{@@@-@@@@}"/>
+
+    <div id="div" ui:display="#{##.00}"/>
+
+    <input type="text" name="input_text" id="input_text" ui:display="startUpper"/>
+
+    <textarea id="textarea" name="textarea" ui:display="YYYY"/>
+
+    <select name="select_single" id="select_single" ui:display="TP.test.PetConverter">
+        <option id="select_single_1" value="foo">Dog</option>
+        <option id="select_single_2" value="bar">Cat</option>
+        <option id="select_single_3" value="baz">Fish</option>
+    </select>
+
+    <select name="select_multiple" id="select_multiple" multiple="multiple" ui:display="TP.test.ColorConverter">
+        <option id="select_multiple_1" value="foo">Red</option>
+        <option id="select_multiple_2" value="bar">Blue</option>
+        <option id="select_multiple_3" value="baz">Yellow</option>
+    </select>
+
+    <input type="radio" name="input_radio" value="foo" id="input_radio_1" ui:display="TP.test.PetConverter"/><label for="input_radio_1">Dog</label>
+    <input type="radio" name="input_radio" value="bar" id="input_radio_2"/><label for="input_radio_2">Cat</label>
+    <input type="radio" name="input_radio" value="baz" id="input_radio_3"/><label for="input_radio_3">Fish</label>
+
+    <input type="checkbox" name="input_checkbox" value="foo" id="input_checkbox_1" ui:display="TP.test.ColorConverter"/><label for="input_checkbox_1">Red</label>
+    <input type="checkbox" name="input_checkbox" value="bar" id="input_checkbox_2"/><label for="input_checkbox_2">Blue</label>
+    <input type="checkbox" name="input_checkbox" value="baz" id="input_checkbox_3"/><label for="input_checkbox_3">Yellow</label>
+
+</body>
+</html>

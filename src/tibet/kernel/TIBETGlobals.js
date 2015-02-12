@@ -2390,6 +2390,9 @@ TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 //  followed by 0-n whitespace, followed by 1-n any characters
 TP.regex.ACP_FORMAT = /([^\\]*?)\s*\.%\s*(.+)/;
 
+//  Multiple formats in a 'ui:format' attribute can be separated by these.
+TP.regex.ACP_FORMAT_SEPARATOR = /\s*\.\|\s*/;
+
 //  '$' followed by a word character (including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$(\w|\*|#)+/;
 

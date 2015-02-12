@@ -1705,6 +1705,54 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('produceValue',
+function(aContentObject, aRequest) {
+
+    /**
+     * @method produceValue
+     * @summary Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
+     * @description This method is overridden here because (X)HTML checkboxes
+     *     and radio buttons are part of a 'group', as determined by their
+     *     'name' attribute. If one member of the group has a 'ui:display'
+     *     attribute, then setting the value on any of members of the group
+     *     should format the value according to that 'ui:display', even if it
+     *     wasn't present on the receiving element. Note that this will format
+     *     values using the first 'ui:display' setting found in the group and
+     *     then exit.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    var value,
+
+        tpElems,
+        i,
+
+        formats;
+
+    value = this.callNextMethod();
+
+    //  If the receiver has a 'ui:display' attribute, that means that the
+    //  super method would have formatted the value, so we just return it.
+    if (TP.notEmpty(this.getAttribute('ui:display'))) {
+        return value;
+    }
+
+    tpElems = TP.wrap(this.getElementArray());
+
+    for (i = 0; i < tpElems.getSize(); i++) {
+        if (TP.notEmpty(formats = tpElems.at(i).getAttribute('ui:display'))) {
+            value = this.$formatValue(value, formats);
+            break;
+        }
+    }
+
+    return value;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('removeSelection',
 function(aValue, elementProperty) {
 

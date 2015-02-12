@@ -1185,6 +1185,10 @@ TP.w3.Xmlns.Type.defineConstant(
         'http://www.technicalpursuit.com/1999/signals');
 
 TP.w3.Xmlns.Type.defineConstant(
+        'SHERPA',
+        'http://www.technicalpursuit.com/2014/sherpa');
+
+TP.w3.Xmlns.Type.defineConstant(
         'TIBET',
         'http://www.technicalpursuit.com/1999/tibet');
 
@@ -1193,8 +1197,8 @@ TP.w3.Xmlns.Type.defineConstant(
         'http://www.technicalpursuit.com/1999/tshell');
 
 TP.w3.Xmlns.Type.defineConstant(
-        'SHERPA',
-        'http://www.technicalpursuit.com/2014/sherpa');
+        'UI',
+        'http://www.technicalpursuit.com/2015/ui');
 
 TP.w3.Xmlns.Type.defineConstant(
         'XCONTROLS',
@@ -1469,6 +1473,11 @@ function() {
                             'prefix', 'rss',
                             'rootElement', 'rss',
                             'defaultNodeType', 'TP.core.RSSElement'),
+            TP.w3.Xmlns.SHERPA,
+                    TP.hc('uri', TP.w3.Xmlns.SHERPA,
+                            'mimetype', TP.ietf.Mime.XML,
+                            'prefix', 'sherpa',
+                            'rootElement', ''),
             TP.w3.Xmlns.SIGNALS,
                     TP.hc('uri', TP.w3.Xmlns.SIGNALS,
                             'mimetype', TP.ietf.Mime.XML,
@@ -1500,10 +1509,10 @@ function() {
                             'mimetype', TP.ietf.Mime.TSH,
                             'prefix', 'tsh',
                             'rootElement', 'script'),
-            TP.w3.Xmlns.SHERPA,
-                    TP.hc('uri', TP.w3.Xmlns.SHERPA,
+            TP.w3.Xmlns.UI,
+                    TP.hc('uri', TP.w3.Xmlns.UI,
                             'mimetype', TP.ietf.Mime.XML,
-                            'prefix', 'sherpa',
+                            'prefix', 'ui',
                             'rootElement', ''),
             TP.w3.Xmlns.XCONTROLS,
                     TP.hc('uri', TP.w3.Xmlns.XCONTROLS,
