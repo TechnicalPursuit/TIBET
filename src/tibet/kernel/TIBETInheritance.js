@@ -805,7 +805,10 @@ function(anObj) {
 
     //  strings are the most common so let's speed up that dispatch
     if (TP.isString(anObj)) {
-        return this.fromString.apply(this, arguments);
+        //  Note here how we make sure to convert the first argument (anObj) to
+        //  be a *primitive* String - it makes things a lot easier downstream.
+        return this.fromString.apply(
+                    this, TP.ac(arguments).atPut(0, TP.str(arguments[0])));
     }
 
     return this.callBestMethod(arguments, anObj,
