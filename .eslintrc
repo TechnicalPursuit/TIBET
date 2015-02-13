@@ -17,6 +17,7 @@
         "default-case": 0,
         "eol-last": 0,
         "guard-for-in": 2,
+        "indent": 2,
         "max-len": [0, 80, 4],
         "no-div-regex": 2,
         "no-eq-null": 0,

@@ -620,7 +620,7 @@ function(aRequest) {
                         //  notify any observers that we've logged in
                         shell.signal('TP.sig.TSH_Login');
 
-                     }).fork(20);
+                    }).fork(20);
                     /* eslint-enable no-wrap-func,no-extra-parens */
 
                     return;
@@ -1535,12 +1535,13 @@ function(aRequest) {
 
                     TP.stop('break.tsh_phase_exec');
                     try {
-                      result = type[funcName](aRequest);
+                        result = type[funcName](aRequest);
                     } catch (e) {
-                      message = 'Error running ' + TP.name(type) + '.' +
-                        funcName;
-                      TP.error(message + ': ' + e.message);
-                      return aRequest.fail(TP.ec(e, message));
+                        message = 'Error running ' + TP.name(type) + '.' +
+                            funcName;
+                        TP.error(message + ': ' + e.message);
+
+                        return aRequest.fail(TP.ec(e, message));
                     }
                 }
 
@@ -1715,11 +1716,12 @@ function(aRequest) {
 
                 TP.stop('break.tsh_phase_exec');
                 try {
-                  result = type[funcName](aRequest);
+                    result = type[funcName](aRequest);
                 } catch (e) {
-                  message = 'Error running ' + TP.name(type) + '.' + funcName;
-                  TP.error(message + ': ' + e.message);
-                  return aRequest.fail(TP.ec(e, message));
+                    message = 'Error running ' + TP.name(type) + '.' +
+                        funcName;
+                    TP.error(message + ': ' + e.message);
+                    return aRequest.fail(TP.ec(e, message));
                 }
 
                 if (TP.isArray(result)) {

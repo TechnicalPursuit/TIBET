@@ -1576,7 +1576,7 @@ function(anElement, anEvent) {
 
         //  Get the parent node for the element and loop again.
         theElement = theElement.parentNode;
-   }
+    }
 
     //  The looping will have terminated at a 'document' node - add it's ID.
     originArray.push(TP.gid(elementDoc));

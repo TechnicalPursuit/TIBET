@@ -320,7 +320,7 @@ function(aName, shouldFault) {
             if (TP.isType(type)) {
                 return type.getType();
             } else {
-              return;
+                return;
             }
         }
 
@@ -3149,18 +3149,18 @@ function(aFilter) {
 
         if (TP.isValid(params) && params.scope === TP.INHERITED) {
 
-                newParams = {};
+            newParams = {};
 
-                //  We need to query locally for the overridden slots (but with
-                //  all other parameters intact) so that we can remove them from
-                //  the list of 'inherited'.
-                newParams.hidden = params.hidden;
-                newParams.methods = params.methods;
-                newParams.public = params.public;
-                newParams.scope = TP.OVERRIDDEN;
+            //  We need to query locally for the overridden slots (but with
+            //  all other parameters intact) so that we can remove them from
+            //  the list of 'inherited'.
+            newParams.hidden = params.hidden;
+            newParams.methods = params.methods;
+            newParams.public = params.public;
+            newParams.scope = TP.OVERRIDDEN;
 
-                overriddens = this.getLocalInterface(newParams);
-                result.removeAll(overriddens);
+            overriddens = this.getLocalInterface(newParams);
+            result.removeAll(overriddens);
         }
     }
 
@@ -4049,7 +4049,7 @@ function() {
         str;
 
     if (TP.isWindow(this)) {
-         return TP.tname(this) + ' :: ' + TP.windowAsString(this);
+        return TP.tname(this) + ' :: ' + TP.windowAsString(this);
     }
 
     //  If this flag is set to true, that means that we're already trying to
@@ -4177,7 +4177,7 @@ function() {
         str;
 
     if (TP.isWindow(this)) {
-         return TP.tname(this) + ' :: ' + TP.windowAsString(this);
+        return TP.tname(this) + ' :: ' + TP.windowAsString(this);
     }
 
     //  If this flag is set to true, that means that we're already trying to
@@ -4210,7 +4210,7 @@ function() {
         len = keys.length;
 
         for (i = 0; i < len; i++) {
-              arr.push(
+            arr.push(
                 TP.join('<dt class="pretty key">', keys[i], '<\/dt>',
                         '<dd class="pretty value">',
                             TP.pretty(this[keys[i]]),
@@ -4774,42 +4774,43 @@ function(aHash, aLevel) {
     }
 
     //  note this is here to allow it to close around nullValue
-    sourceTransform = function(it) {
+    sourceTransform =
+        function(it) {
 
-                                if (TP.notDefined(it)) {
-                                    return 'null';
-                                }
+            if (TP.notDefined(it)) {
+                return 'null';
+            }
 
-                                if (TP.isNull(it)) {
-                                    return 'null';
-                                }
+            if (TP.isNull(it)) {
+                return 'null';
+            }
 
-                                if (it === this) {
-                                    return 'this';
-                                }
+            if (it === this) {
+                return 'this';
+            }
 
-                                if (it === TP.global) {
-                                    return 'self';
-                                }
+            if (it === TP.global) {
+                return 'self';
+            }
 
-                                if (it === window) {
-                                    return 'window';
-                                }
+            if (it === window) {
+                return 'window';
+            }
 
-                                if (it === document) {
-                                    return 'document';
-                                }
+            if (it === document) {
+                return 'document';
+            }
 
-                                if (TP.isNode(it)) {
-                                    return TP.src(it);
-                                }
+            if (TP.isNode(it)) {
+                return TP.src(it);
+            }
 
-                                if (TP.canInvoke(it, 'asString')) {
-                                    return it.asString().asSource();
-                                }
+            if (TP.canInvoke(it, 'asString')) {
+                return it.asString().asSource();
+            }
 
-                                return TP.str(it).asSource();
-                            };
+            return TP.str(it).asSource();
+        };
 
     //  and this references the sourceTransform :)
     valueTransform = TP.ifInvalid(params.at('valueTransform'),
@@ -5148,7 +5149,7 @@ function(aFilterName, aLevel) {
         str.push(src);
     }
 
-     str.push(';');
+    str.push(';');
 
     return str.join('');
 });
@@ -9114,11 +9115,13 @@ function() {
     //  implementations and those which are simply "backstops".
 
     thisName = this[TP.NAME];
-    dnuFunc = function () {
-                var ret;
-                ret = TP.sys.dnu(this, thisName, arguments, arguments);
-                return ret;
-    };
+    dnuFunc =
+        function () {
+            var ret;
+
+            ret = TP.sys.dnu(this, thisName, arguments, arguments);
+            return ret;
+        };
 
     dnuFunc[TP.NAME] = this[TP.NAME] || 'DoesNotUnderstand' +
                                                 this.getName();
@@ -9150,11 +9153,12 @@ function(aName) {
         this.raise('TP.sig.InvalidParameter');
     }
 
-    dnuFunc = function () {
-                var ret;
-                ret = TP.sys.dnu(this, aName, arguments, arguments);
-                return ret;
-    };
+    dnuFunc =
+        function () {
+            var ret;
+            ret = TP.sys.dnu(this, aName, arguments, arguments);
+            return ret;
+        };
 
     dnuFunc[TP.NAME] = aName;
     dnuFunc[TP.OWNER] = TP.NONE;

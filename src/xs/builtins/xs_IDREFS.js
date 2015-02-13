@@ -59,14 +59,14 @@ function(anObject) {
         function(item) {
 
             return item.as('TP.xs.IDREF');
-});
+        });
 
     //  trim out null values
     arr = arr.select(
         function(item) {
 
             return TP.isValid(item);
-});
+        });
 
     //  if all converted then join back into an IDREFS string
     return arr.join(' ');

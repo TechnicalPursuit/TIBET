@@ -2173,8 +2173,8 @@ function(aKey, anIndex) {
                 return;
             }
 
-        return TP.isValid(aKey.match(obj.at(index)));
-    });
+            return TP.isValid(aKey.match(obj.at(index)));
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -4009,8 +4009,8 @@ function(aKey, anIndex) {
                 return;
             }
 
-        return TP.isValid(aKey.match(obj.at(index)));
-    });
+            return TP.isValid(aKey.match(obj.at(index)));
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -7986,7 +7986,7 @@ function(aValue, aTest) {
             }
 
             return false;
-    });
+        });
 
     //  return the keys from our itemset, those are our 'indexes'
     return items.collect(function(item) {return item.first();});

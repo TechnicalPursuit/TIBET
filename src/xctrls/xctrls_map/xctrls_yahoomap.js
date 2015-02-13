@@ -366,7 +366,7 @@ function(anAddress) {
     tpIFrame.get('YEvent').Capture(
         ourMap,
         tpIFrame.get('EventsList').onEndGeoCode,
-function(response) {
+        function(response) {
 
             var responseLatLong;
 

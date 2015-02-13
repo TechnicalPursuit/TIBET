@@ -895,11 +895,11 @@ function(aString, sourceLocale, forceRefresh) {
 
     //  if the lang has a hyphen we can also search for the "root language"
     if (TP.regex.HAS_HYPHEN.test(lang)) {
-            xp = TP.join('string(./*[local-name() = "tuv" and @xml:lang = "',
-                            lang.split('-').first().toLowerCase(),
-                            '"]/*[local-name() = "seg"]/text())');
+        xp = TP.join('string(./*[local-name() = "tuv" and @xml:lang = "',
+                        lang.split('-').first().toLowerCase(),
+                        '"]/*[local-name() = "seg"]/text())');
 
-            str = TP.nodeEvaluateXPath(tu, xp, TP.FIRST_NODE, false);
+        str = TP.nodeEvaluateXPath(tu, xp, TP.FIRST_NODE, false);
     }
 
     if (TP.notEmpty(str)) {

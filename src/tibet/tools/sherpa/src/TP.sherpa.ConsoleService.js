@@ -424,7 +424,8 @@ function(anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod(
-        'handleHiddenChangeFromSherpaConsole', function(aSignal) {
+'handleHiddenChangeFromSherpaConsole',
+function(aSignal) {
 
     /**
      * @method handleHiddenChange

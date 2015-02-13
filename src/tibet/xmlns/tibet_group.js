@@ -207,10 +207,10 @@ function(moveAction) {
             moveAction === TP.PREVIOUS ||
             moveAction === TP.LAST_IN_GROUP ||
             moveAction === TP.PRECEDING) {
-                elementToFocus = focusableElements.last();
-            } else {
-                elementToFocus = focusableElements.first();
-            }
+            elementToFocus = focusableElements.last();
+        } else {
+            elementToFocus = focusableElements.first();
+        }
 
         elementToFocus.focus();
     }

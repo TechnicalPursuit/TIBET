@@ -84,18 +84,18 @@ function(aName) {
                     sherpaFinishSetupFunc.ignore(
                         drawerElement, 'TP.sig.DOMTransitionEnd');
 
-                        //  The basic Sherpa framing has been set up, but we
-                        //  complete the setup here (after the drawers
-                        //  animate in).
-                        sherpaInst.finishSetup();
+                    //  The basic Sherpa framing has been set up, but we
+                    //  complete the setup here (after the drawers
+                    //  animate in).
+                    sherpaInst.finishSetup();
 
-                        //  We add our 'south's 'no_transition' class so
-                        //  that during user interaction, resizing this
-                        //  drawer will be immediate.
-                        TP.elementAddClass(drawerElement, 'no_transition');
+                    //  We add our 'south's 'no_transition' class so
+                    //  that during user interaction, resizing this
+                    //  drawer will be immediate.
+                    TP.elementAddClass(drawerElement, 'no_transition');
 
-                        TP.byOID('SherpaHUD', TP.win('UIROOT')).setAttribute(
-                                                                'hidden', false);
+                    TP.byOID('SherpaHUD', TP.win('UIROOT')).setAttribute(
+                                                            'hidden', false);
 
                 }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 

@@ -622,10 +622,11 @@ function(aPoint, t) {
     data = this.$get('data');
     otherData = aPoint.$get('data');
 
-    interpFunc = function(a, b, t) {
+    interpFunc =
+        function(a, b, t) {
 
-                        return a + (b - a) * t;
-                    };
+            return a + (b - a) * t;
+        };
 
     return TP.core.Point.construct(
                     interpFunc(data.x, otherData.x, t),
@@ -797,7 +798,7 @@ function(points) {
                     (point2.get('y') - thisY).pow(2)).sqrt();
 
             return dist1 - dist2;
-    });
+        });
 
     return points;
 });
@@ -1847,10 +1848,11 @@ function(aRect, t) {
     data = this.$get('data');
     otherData = aRect.$get('data');
 
-    interpFunc = function(a, b, t) {
+    interpFunc =
+        function(a, b, t) {
 
-                        return a + (b - a) * t;
-                    };
+            return a + (b - a) * t;
+        };
 
     return TP.core.Rect.construct(
                     interpFunc(data.x, otherData.x, t),
@@ -8365,7 +8367,7 @@ function(aTarget, propertyName, aTransitionParams) {
             //  Cache the new animation job on the element, so that it can
             //  be shutdown in the future if necessary.
             aTarget['transition_' + propertyName] = transitionJob;
-    });
+        });
 
     //  Do the deed.
     aTransition.start(stepParams);

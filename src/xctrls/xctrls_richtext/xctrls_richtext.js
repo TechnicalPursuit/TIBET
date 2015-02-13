@@ -345,19 +345,17 @@ function(publishName) {
     msgReq = TP.sig.XMPPRequest.construct(requestParams);
     msgReq.defineMethod(
         'handleRequestSucceeded',
-function(aResponse) {
-
+        function(aResponse) {
             TP.info(aResponse.getResponseText(), TP.LOG);
-});
+        });
 
     msgReq.defineMethod(
         'handleRequestFailed',
-function(aResponse) {
-
+        function(aResponse) {
             TP.ifError() ?
                 TP.error(aResponse.getResponseText(),
                             TP.LOG) : 0;
-});
+        });
 
     msgReq.fire();
 });
@@ -404,19 +402,17 @@ function(shareFlag, shareName) {
     msgReq = TP.sig.XMPPRequest.construct(requestParams);
     msgReq.defineMethod(
         'handleRequestSucceeded',
-function(aResponse) {
-
+        function(aResponse) {
             TP.info(aResponse.getResponseText(), TP.LOG);
-});
+        });
 
     msgReq.defineMethod(
         'handleRequestFailed',
-function(aResponse) {
-
+        function(aResponse) {
             TP.ifError() ?
                 TP.error(aResponse.getResponseText(),
                             TP.LOG) : 0;
-});
+        });
 
     msgReq.fire();
 

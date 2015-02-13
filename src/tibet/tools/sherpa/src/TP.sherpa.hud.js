@@ -85,7 +85,7 @@ function(beHidden) {
 
                 //  We add our 'south's 'no_transition' class so that during
                 //  user interaction, resizing this drawer will be immediate.
-                TP.elementAddClass(drawerElement, 'no_transition');
+            TP.elementAddClass(drawerElement, 'no_transition');
         }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
         this.showAllHUDDrawers();

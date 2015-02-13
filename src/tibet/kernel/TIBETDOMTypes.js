@@ -2512,14 +2512,14 @@ function(theContent, anIndex) {
         len = result.getSize();
 
         try {
-        //  NB: We use 'native' syntax here as 'result' might be a NodeList
-        if (index > len) {
-            result = result.at(len - 1);
-        } else if (index < 0) {
-            result = result.at(0);
-        } else {
-            result = result.at(index);
-        }
+            //  NB: We use 'native' syntax here as 'result' might be a NodeList
+            if (index > len) {
+                result = result.at(len - 1);
+            } else if (index < 0) {
+                result = result.at(0);
+            } else {
+                result = result.at(index);
+            }
         } catch (e) {
             result = undefined;
         }
@@ -4323,7 +4323,7 @@ function(attributeName, attributeValue) {
     if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
         boolAttrs.containsString(attributeName) &&
         TP.isFalsey(attributeValue)) {
-            return this.removeAttribute(attributeName);
+        return this.removeAttribute(attributeName);
     }
 
     node = this.getNativeNode();
@@ -4399,7 +4399,7 @@ function(attributeName, attributeValue) {
         //  tibet: internal attribute (presuming change flagging is on)
         if (this.shouldFlagChanges() &&
             !TP.regex.TIBET_SCHEME.test(attributeName)) {
-                TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
+            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
         }
 
         //  seems like we're dealing with a prefixed attribute that isn't an
@@ -4841,17 +4841,19 @@ function(newContent, aRequest) {
     thisref = this;
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
-        loadFunc = function(aNode) {
+        loadFunc =
+            function(aNode) {
 
-                        reqLoadFunc(aNode);
-                        thisref.changed('content', TP.APPEND);
-                    };
+                reqLoadFunc(aNode);
+                thisref.changed('content', TP.APPEND);
+            };
     } else {
-        loadFunc = function(aNode) {
+        loadFunc =
+            function(aNode) {
 
-                        thisref.contentAppendCallback(aNode);
-                        thisref.changed('content', TP.APPEND);
-                    };
+                thisref.contentAppendCallback(aNode);
+                thisref.changed('content', TP.APPEND);
+            };
     }
 
     result = func(node,
@@ -5088,17 +5090,19 @@ function(newContent, aPositionOrPath, aRequest) {
     thisref = this;
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
-        loadFunc = function(aNode) {
+        loadFunc =
+            function(aNode) {
 
-                        reqLoadFunc(aNode);
-                        thisref.changed('content', TP.INSERT);
-                    };
+                reqLoadFunc(aNode);
+                thisref.changed('content', TP.INSERT);
+            };
     } else {
-        loadFunc = function(aNode) {
+        loadFunc =
+            function(aNode) {
 
-                        thisref.contentInsertCallback(aNode);
-                        thisref.changed('content', TP.INSERT);
-                    };
+                thisref.contentInsertCallback(aNode);
+                thisref.changed('content', TP.INSERT);
+            };
     }
 
     result = func(node,
@@ -5353,23 +5357,25 @@ function(newContent, aRequest) {
         };
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
-        loadFunc = function(aNode) {
+        loadFunc =
+            function(aNode) {
 
-                        reqLoadFunc(aNode);
+                reqLoadFunc(aNode);
 
-                        historyFunc(aNode);
+                historyFunc(aNode);
 
-                        thisref.changed('content', TP.UPDATE);
-                    };
+                thisref.changed('content', TP.UPDATE);
+            };
     } else {
-        loadFunc = function(aNode) {
+        loadFunc =
+            function(aNode) {
 
-                        thisref.contentReplaceCallback(aNode);
+                thisref.contentReplaceCallback(aNode);
 
-                        historyFunc(aNode);
+                historyFunc(aNode);
 
-                        thisref.changed('content', TP.UPDATE);
-                    };
+                thisref.changed('content', TP.UPDATE);
+            };
     }
 
     result = func(node,
@@ -10661,7 +10667,7 @@ function(attributeName, attributeValue, checkAttrNSURI) {
 
     if (this.shouldFlagChanges() &&
         !TP.regex.TIBET_SCHEME.test(attributeName)) {
-            TP.elementFlagChange(natNode, TP.ATTR + attributeName, op);
+        TP.elementFlagChange(natNode, TP.ATTR + attributeName, op);
     }
 
     this.changed('@' + attributeName,
@@ -14270,8 +14276,8 @@ function() {
                 function(aNode) {
                     if (TP.isElement(aNode) &&
                         TP.elementGetLocalName(aNode) === 'cmd') {
-                            return true;
-                        }
+                        return true;
+                    }
 
                     return false;
                 },
@@ -14299,8 +14305,8 @@ function() {
                 function(aNode) {
                     if (TP.isElement(aNode) &&
                         TP.elementGetLocalName(aNode) === 'cmd') {
-                            return true;
-                        }
+                        return true;
+                    }
 
                     return false;
                 },

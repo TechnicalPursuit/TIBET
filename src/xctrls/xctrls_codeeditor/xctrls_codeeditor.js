@@ -516,8 +516,8 @@ function(aHandlerFunc) {
     var cmHandlerFunc,
         editor;
 
-    cmHandlerFunc = function(editor, evt) {
-
+    cmHandlerFunc =
+        function(editor, evt) {
             aHandlerFunc(evt);
         };
 

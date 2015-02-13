@@ -306,9 +306,8 @@ function() {
     try {
         joinArr = this.collect(
             function(item, index) {
-
                 return TP.dump(item);
-        });
+            });
 
         joinStr = '[' + joinArr.join(joinCh) + ']';
     } catch (e) {

@@ -115,7 +115,7 @@ function(aValue, aPositionOrPath, templateName) {
             } else {
                 bodyElem.addProcessedContent(newItemElem);
             }
-});
+        });
 
     return this;
 });

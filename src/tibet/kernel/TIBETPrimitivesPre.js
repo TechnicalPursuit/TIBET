@@ -1791,8 +1791,7 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
                                 'methods', TP.sys.$$meta_methods,
                                 'owners', TP.sys.$$meta_owners,
                                 'pathinfo', TP.sys.$$meta_pathinfo);
-
- }());
+}());
 
 //  ------------------------------------------------------------------------
 
@@ -2379,7 +2378,7 @@ function(aValue) {
         if (TP.isValid(aValue) &&
             isNaN(aValue) &&
             aValue.constructor === Number) {
-                return true;
+            return true;
         }
     } catch (e) {
         //  This catch purposely left blank - we'll return false below
@@ -3216,7 +3215,7 @@ NativeTypeStub.prototype = {};
 //  ---
 
 NativeTypeStub.prototype.get =
-    function(attributeName) {
+function(attributeName) {
 
     /**
      * @method get
@@ -3232,7 +3231,7 @@ NativeTypeStub.prototype.get =
 //  ---
 
 NativeTypeStub.prototype.defineAttribute =
-    function(attributeName, attributeValue) {
+function(attributeName, attributeValue) {
 
     /**
      * @method defineAttribute
@@ -3252,7 +3251,7 @@ NativeTypeStub.prototype.defineAttribute =
 //  ---
 
 NativeTypeStub.prototype.defineConstant =
-    function(constantName, constantValue) {
+function(constantName, constantValue) {
 
     /**
      * @method defineConstant
@@ -3271,7 +3270,7 @@ NativeTypeStub.prototype.defineConstant =
 //  ---
 
 NativeTypeStub.prototype.defineMethod =
-    function(methodName, methodBody, desc) {
+function(methodName, methodBody, desc) {
 
     /**
      * @method defineMethod
@@ -3292,7 +3291,7 @@ NativeTypeStub.prototype.defineMethod =
 //  ---
 
 NativeTypeStub.prototype.set =
-    function(attributeName, attributeValue, shouldSignal) {
+function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @method set
@@ -3314,7 +3313,7 @@ NativeTypeStub.prototype.set =
 //  ---
 
 NativeTypeStub.prototype.getMethod =
-    function(aName, aTrack) {
+function(aName, aTrack) {
 
     /**
      * @method getMethod
@@ -3331,7 +3330,7 @@ NativeTypeStub.prototype.getMethod =
 //  ---
 
 NativeTypeStub.prototype.getMethods =
-    function(aTrack) {
+function(aTrack) {
 
     /**
      * @method getMethods
@@ -3347,7 +3346,7 @@ NativeTypeStub.prototype.getMethods =
 //  ---
 
 NativeTypeStub.prototype.getMethodInfoFor =
-    function(methodName) {
+function(methodName) {
 
     /**
      * @method getMethodInfoFor
@@ -3378,7 +3377,7 @@ NativeTypeStub.prototype.getMethodInfoFor =
 //  ---
 
 NativeTypeStub.prototype.describe =
-    function(suiteName, suiteFunc) {
+function(suiteName, suiteFunc) {
 
     /**
      * @method describe
@@ -3399,7 +3398,7 @@ NativeTypeStub.prototype.describe =
 //  ---
 
 NativeTypeStub.prototype.getTestFixture =
-    function() {
+function() {
 
     /**
      * Creates and returns test fixture data suitable for the receiver. This
@@ -3414,7 +3413,7 @@ NativeTypeStub.prototype.getTestFixture =
 //  ---
 
 NativeTypeStub.prototype.getTestSuites =
-    function(options) {
+function(options) {
 
     /**
      * Returns the dictionary containing test suites for the receiver.
@@ -3428,7 +3427,7 @@ NativeTypeStub.prototype.getTestSuites =
 //  ---
 
 NativeTypeStub.prototype.runTestSuites =
-    function(options) {
+function(options) {
 
     /**
      * Runs the test suites associated with the receiver. Options which help
@@ -3490,7 +3489,7 @@ NativeInstStub.prototype = {};
 //  ---
 
 NativeInstStub.prototype.get =
-    function(attributeName) {
+function(attributeName) {
 
     /**
      * @method get
@@ -3506,7 +3505,7 @@ NativeInstStub.prototype.get =
 //  ---
 
 NativeInstStub.prototype.defineAttribute =
-    function(attributeName, attributeValue) {
+function(attributeName, attributeValue) {
 
     /**
      * @method defineAttribute
@@ -3526,7 +3525,7 @@ NativeInstStub.prototype.defineAttribute =
 //  ---
 
 NativeInstStub.prototype.defineConstant =
-    function(constantName, constantValue) {
+function(constantName, constantValue) {
 
     /**
      * @method defineConstant
@@ -3545,7 +3544,7 @@ NativeInstStub.prototype.defineConstant =
 //  ---
 
 NativeInstStub.prototype.defineMethod =
-    function(methodName, methodBody, desc) {
+function(methodName, methodBody, desc) {
 
     /**
      * @method defineMethod
@@ -3567,7 +3566,7 @@ NativeInstStub.prototype.defineMethod =
 //  ---
 
 NativeInstStub.prototype.set =
-    function(attributeName, attributeValue, shouldSignal) {
+function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @method set
@@ -3589,7 +3588,7 @@ NativeInstStub.prototype.set =
 //  ---
 
 NativeInstStub.prototype.getMethod =
-    function(aName, aTrack) {
+function(aName, aTrack) {
 
     /**
      * @method getMethod
@@ -3606,7 +3605,7 @@ NativeInstStub.prototype.getMethod =
 //  ---
 
 NativeInstStub.prototype.getMethods =
-    function(aTrack) {
+function(aTrack) {
 
     /**
      * @method getMethods
@@ -3622,7 +3621,7 @@ NativeInstStub.prototype.getMethods =
 //  ---
 
 NativeInstStub.prototype.getMethodInfoFor =
-    function(methodName) {
+function(methodName) {
 
     /**
      * @method getMethodInfoFor
@@ -3653,7 +3652,7 @@ NativeInstStub.prototype.getMethodInfoFor =
 //  ---
 
 NativeInstStub.prototype.describe =
-    function(suiteName, suiteFunc) {
+function(suiteName, suiteFunc) {
 
     /**
      * @method describe
@@ -3674,7 +3673,7 @@ NativeInstStub.prototype.describe =
 //  ---
 
 NativeInstStub.prototype.getTestFixture =
-    function() {
+function() {
 
     /**
      * Creates and returns test fixture data suitable for the receiver. This
@@ -3689,7 +3688,7 @@ NativeInstStub.prototype.getTestFixture =
 //  ---
 
 NativeInstStub.prototype.getTestSuites =
-    function(options) {
+function(options) {
 
     /**
      * Returns the dictionary containing test suites for the receiver.
@@ -3703,7 +3702,7 @@ NativeInstStub.prototype.getTestSuites =
 //  ---
 
 NativeInstStub.prototype.runTestSuites =
-    function(options) {
+function(options) {
 
     /**
      * Runs the test suites associated with the receiver. Options which help
@@ -3945,8 +3944,8 @@ function(methodName, methodBody) {
         //  TP.META_TYPE_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
         if (TP.isMethod(existingMethod = target[methodName]) &&
-                existingMethod[TP.OWNER] !== TP.META_TYPE_OWNER) {
-                continue;
+            existingMethod[TP.OWNER] !== TP.META_TYPE_OWNER) {
+            continue;
         }
 
         TP.defineMethodSlot(
@@ -3999,8 +3998,8 @@ function(methodName, methodBody) {
         //  TP.META_INST_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
         if (TP.isMethod(existingMethod = target[methodName]) &&
-                existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
-                continue;
+            existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
+            continue;
         }
 
         TP.defineMethodSlot(
@@ -4103,8 +4102,8 @@ function(methodName, methodBody) {
         //  TP.META_INST_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
         if (TP.isMethod(existingMethod = target[methodName]) &&
-                existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
-                continue;
+            existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
+            continue;
         }
 
         TP.defineMethodSlot(
@@ -4339,16 +4338,16 @@ function(functionBodyOrTests) {
         //  Look up the function in the dictionary provided.
         theFunc = functionBodyOrTests.at(key);
         if (typeof theFunc === 'undefined') {
+
             //  If there's a TP.DEFAULT use that when the key isn't
             //  found in the dictionary.
             theFunc = functionBodyOrTests.at(TP.DEFAULT);
 
-                    //  No default might must mean we're doing a test that
-                    //  doesn't pass for the current platform which has no
-                    //  correlary.
-                    if (!theFunc) {
-                        return;
-                    }
+            //  No default might must mean we're doing a test that doesn't
+            //  pass for the current platform which has no correlary.
+            if (!theFunc) {
+                return;
+            }
         }
     } else {
         //  If the parameter _is_ a function we got the function already.
@@ -7094,7 +7093,7 @@ function(aValue) {
         aValue === null ||
         TP.isNaN(aValue)) {
 
-            return true;
+        return true;
     }
 
     return false;
@@ -9065,7 +9064,7 @@ function(anObject) {
             for (i = 0; i < len; i++) {
                 if (TP.$$isDNU(anObject[keys.at(i)]) ||
                     TP.regex.INTERNAL_SLOT.test(keys.at(i))) {
-                        continue;
+                    continue;
                 } else {
                     ownKeys.push(keys.at(i));
                 }
@@ -9179,10 +9178,10 @@ function(verbose) {
 
     if (TP.isWindow(this)) {
         if (wantsVerbose) {
-             return TP.windowAsString(this);
-         } else {
-             return TP.gid(this);
-         }
+            return TP.windowAsString(this);
+        } else {
+            return TP.gid(this);
+        }
     }
 
     if (!wantsVerbose) {

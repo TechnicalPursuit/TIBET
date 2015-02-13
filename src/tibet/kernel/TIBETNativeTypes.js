@@ -167,333 +167,328 @@ Date.Type.defineConstant('SHORT_MONTH_NAMES',
                             'Aug', 'Sep', 'Oct', 'Nov', 'Dec'));
 
 Date.Type.defineConstant('LOCALTIME_TOKENS',
-        TP.hc(
+    TP.hc(
     'd', function(target) {
 
-                return target.getDayOfMonth();
-            },
+        return target.getDayOfMonth();
+    },
     'dd', function(target) {
 
-                return '#{00}'.transformNumber(target.getDayOfMonth());
-            },
+        return '#{00}'.transformNumber(target.getDayOfMonth());
+    },
     'ddd', function(target) {
 
-                return target.getShortDayName();
-            },
+        return target.getShortDayName();
+    },
     'dddd', function(target) {
 
-                return target.getDayName();
-            },
+        return target.getDayName();
+    },
     'dw', function(target) {
 
-                return target.getISODayOfWeek();
-            },
+        return target.getISODayOfWeek();
+    },
     'dy', function(target) {
 
-                return '#{000}'.transformNumber(target.getDayOfYear());
-            },
+        return '#{000}'.transformNumber(target.getDayOfYear());
+    },
     'ww', function(target) {
 
-                return '#{00}'.transformNumber(target.getISOWeek());
-            },
+        return '#{00}'.transformNumber(target.getISOWeek());
+    },
     'm', function(target) {
 
-                return target.getISOMonth();
-            },
+        return target.getISOMonth();
+    },
     'mm', function(target) {
 
-                return '#{00}'.transformNumber(target.getISOMonth());
-            },
+        return '#{00}'.transformNumber(target.getISOMonth());
+    },
     'mmm', function(target) {
 
-                return target.getShortMonthName();
-            },
+        return target.getShortMonthName();
+    },
     'mmmm', function(target) {
 
-                return target.getMonthName();
-            },
+        return target.getMonthName();
+    },
     'yy', function(target) {
 
-                return target.getFullYear().asString().slice(2);
-            },
+        return target.getFullYear().asString().slice(2);
+    },
     'yyyy', function(target) {
 
-                return target.getFullYear();
-            },
+        return target.getFullYear();
+    },
     'h', function(target) {
 
-                var hours = target.getHours();
-                if (hours > 12) {
-                    hours -= 12;
-                }
-                return hours;
-            },
+        var hours = target.getHours();
+        if (hours > 12) {
+            hours -= 12;
+        }
+        return hours;
+    },
     'hi', function(target) {
 
-                var hours = target.getHours();
-                return hours;
-            },
+        var hours = target.getHours();
+        return hours;
+    },
     'hh', function(target) {
 
-                var hours = target.getHours();
-                if (hours > 12) {
-                    hours -= 12;
-                }
-                return '#{00}'.transformNumber(hours);
-            },
+        var hours = target.getHours();
+        if (hours > 12) {
+            hours -= 12;
+        }
+        return '#{00}'.transformNumber(hours);
+    },
     'hhi', function(target) {
 
-                var hours = target.getHours();
-                return '#{00}'.transformNumber(hours);
-            },
+        var hours = target.getHours();
+        return '#{00}'.transformNumber(hours);
+    },
     'mn', function(target) {
 
-                return target.getMinutes();
-            },
+        return target.getMinutes();
+    },
     'mmn', function(target) {
 
-                return '#{00}'.transformNumber(target.getMinutes());
-            },
+        return '#{00}'.transformNumber(target.getMinutes());
+    },
     's', function(target) {
 
-                return target.getSeconds();
-            },
+        return target.getSeconds();
+    },
     'ss', function(target) {
 
-                return '#{00}'.transformNumber(target.getSeconds());
-            },
+        return '#{00}'.transformNumber(target.getSeconds());
+    },
     'f', function(target) {
 
-                return '#{0}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{0}'.transformNumber(target.getMilliseconds());
+    },
     'ff', function(target) {
 
-                return '#{00}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{00}'.transformNumber(target.getMilliseconds());
+    },
     'fff', function(target) {
 
-                return '#{000}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{000}'.transformNumber(target.getMilliseconds());
+    },
     'ffff', function(target) {
 
-                return '#{0000}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{0000}'.transformNumber(target.getMilliseconds());
+    },
     'fffff', function(target) {
 
-                return '#{00000}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{00000}'.transformNumber(target.getMilliseconds());
+    },
     'ffffff', function(target) {
 
-                return '#{000000}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{000000}'.transformNumber(target.getMilliseconds());
+    },
     'fffffff', function(target) {
 
-                return '#{0000000}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{0000000}'.transformNumber(target.getMilliseconds());
+    },
     'ffffffff', function(target) {
 
-                return '#{00000000}'.transformNumber(target.getMilliseconds());
-            },
+        return '#{00000000}'.transformNumber(target.getMilliseconds());
+    },
     'fffffffff', function(target) {
 
-                return '#{000000000}'.transformNumber(
-                                                target.getMilliseconds());
-            },
+        return '#{000000000}'.transformNumber(target.getMilliseconds());
+    },
     'AMPM', function(target) {
 
-                if (target.getHours() > 12) {
-                    return 'PM';
-                }
-                return 'AM';
-            },
+        if (target.getHours() > 12) {
+            return 'PM';
+        }
+        return 'AM';
+    },
     'ampm', function(target) {
 
-                if (target.getHours() > 12) {
-                    return 'pm';
-                }
-                return 'am';
-            },
+        if (target.getHours() > 12) {
+            return 'pm';
+        }
+        return 'am';
+    },
     'AP', function(target) {
 
-                if (target.getHours() > 12) {
-                    return 'P';
-                }
-                return 'A';
-            },
+        if (target.getHours() > 12) {
+            return 'P';
+        }
+        return 'A';
+    },
     'ap', function(target) {
 
-                if (target.getHours() > 12) {
-                    return 'p';
-                }
-                return 'a';
-            }
-        ));
+        if (target.getHours() > 12) {
+            return 'p';
+        }
+        return 'a';
+    }
+    ));
 
 Date.Type.defineConstant('UTC_TOKENS',
         TP.hc(
     'd', function(target) {
 
-                return target.getUTCDayOfMonth();
-            },
+        return target.getUTCDayOfMonth();
+    },
     'dd', function(target) {
 
-                return '#{00}'.transformNumber(target.getUTCDayOfMonth());
-            },
+        return '#{00}'.transformNumber(target.getUTCDayOfMonth());
+    },
     'ddd', function(target) {
 
-                return target.getUTCShortDayName();
-            },
+        return target.getUTCShortDayName();
+    },
     'dddd', function(target) {
 
-                return target.getUTCDayName();
-            },
+        return target.getUTCDayName();
+    },
     'dw', function(target) {
 
-                return target.getUTCISODay();
-            },
+        return target.getUTCISODay();
+    },
     'dy', function(target) {
 
-                return '#{000}'.transformNumber(target.getUTCDayOfYear());
-            },
+        return '#{000}'.transformNumber(target.getUTCDayOfYear());
+    },
     'ww', function(target) {
 
-                return '#{00}'.transformNumber(target.getUTCISOWeek());
-            },
+        return '#{00}'.transformNumber(target.getUTCISOWeek());
+    },
     'm', function(target) {
 
-                return target.getUTCISOMonth();
-            },
+        return target.getUTCISOMonth();
+    },
     'mm', function(target) {
 
-                return '#{00}'.transformNumber(target.getUTCISOMonth());
-            },
+        return '#{00}'.transformNumber(target.getUTCISOMonth());
+    },
     'mmm', function(target) {
 
-                return target.getUTCShortMonthName();
-            },
+        return target.getUTCShortMonthName();
+    },
     'mmmm', function(target) {
 
-                return target.getUTCMonthName();
-            },
+        return target.getUTCMonthName();
+    },
     'yy', function(target) {
 
-                return target.getUTCFullYear().asString().slice(2);
-            },
+        return target.getUTCFullYear().asString().slice(2);
+    },
     'yyyy', function(target) {
 
-                return target.getUTCFullYear();
-            },
+        return target.getUTCFullYear();
+    },
     'h', function(target) {
 
-                var hours = target.getUTCHours();
-                if (hours > 12) {
-                    hours -= 12;
-                }
-                return hours;
-            },
+        var hours = target.getUTCHours();
+        if (hours > 12) {
+            hours -= 12;
+        }
+        return hours;
+    },
     'hi', function(target) {
 
-                var hours = target.getUTCHours();
-                return hours;
-            },
+        var hours = target.getUTCHours();
+        return hours;
+    },
     'hh', function(target) {
 
-                var hours = target.getUTCHours();
-                if (hours > 12) {
-                    hours -= 12;
-                }
-                return '#{00}'.transformNumber(hours);
-            },
+        var hours = target.getUTCHours();
+        if (hours > 12) {
+            hours -= 12;
+        }
+        return '#{00}'.transformNumber(hours);
+    },
     'hhi', function(target) {
 
-                var hours = target.getUTCHours();
-                return '#{00}'.transformNumber(hours);
-            },
+        var hours = target.getUTCHours();
+        return '#{00}'.transformNumber(hours);
+    },
     'mn', function(target) {
 
-                return target.getUTCMinutes();
-            },
+        return target.getUTCMinutes();
+    },
     'mmn', function(target) {
 
-                return '#{00}'.transformNumber(target.getUTCMinutes());
-            },
+        return '#{00}'.transformNumber(target.getUTCMinutes());
+    },
     's', function(target) {
 
-                return target.getUTCSeconds();
-            },
+        return target.getUTCSeconds();
+    },
     'ss', function(target) {
 
-                return '#{00}'.transformNumber(target.getUTCSeconds());
-            },
+        return '#{00}'.transformNumber(target.getUTCSeconds());
+    },
     'f', function(target) {
 
-                return '#{0}'.transformNumber(target.getUTCMilliseconds());
-            },
+        return '#{0}'.transformNumber(target.getUTCMilliseconds());
+    },
     'ff', function(target) {
 
-                return '#{00}'.transformNumber(target.getUTCMilliseconds());
-            },
+        return '#{00}'.transformNumber(target.getUTCMilliseconds());
+    },
     'fff', function(target) {
 
-                return '#{000}'.transformNumber(target.getUTCMilliseconds());
-            },
+        return '#{000}'.transformNumber(target.getUTCMilliseconds());
+    },
     'ffff', function(target) {
 
-                return '#{0000}'.transformNumber(target.getUTCMilliseconds());
-            },
+        return '#{0000}'.transformNumber(target.getUTCMilliseconds());
+    },
     'fffff', function(target) {
 
-                return '#{00000}'.transformNumber(target.getUTCMilliseconds());
-            },
+        return '#{00000}'.transformNumber(target.getUTCMilliseconds());
+    },
     'ffffff', function(target) {
 
-                return '#{000000}'.transformNumber(
-                                            target.getUTCMilliseconds());
-            },
+        return '#{000000}'.transformNumber(target.getUTCMilliseconds());
+    },
     'fffffff', function(target) {
 
-                return '#{0000000}'.transformNumber(
-                                            target.getUTCMilliseconds());
-            },
+        return '#{0000000}'.transformNumber(target.getUTCMilliseconds());
+    },
     'ffffffff', function(target) {
 
-                return '#{00000000}'.transformNumber(
-                                            target.getUTCMilliseconds());
-            },
+        return '#{00000000}'.transformNumber(target.getUTCMilliseconds());
+    },
     'fffffffff', function(target) {
 
-                return '#{000000000}'.transformNumber(
-                                            target.getUTCMilliseconds());
-            },
+        return '#{000000000}'.transformNumber(target.getUTCMilliseconds());
+    },
     'AMPM', function(target) {
 
-                if (target.getUTCHours() > 12) {
-                    return 'PM';
-                }
-                return 'AM';
-            },
+        if (target.getUTCHours() > 12) {
+            return 'PM';
+        }
+        return 'AM';
+    },
     'ampm', function(target) {
 
-                if (target.getUTCHours() > 12) {
-                    return 'pm';
-                }
-                return 'am';
-            },
+        if (target.getUTCHours() > 12) {
+            return 'pm';
+        }
+        return 'am';
+    },
     'AP', function(target) {
 
-                if (target.getUTCHours() > 12) {
-                    return 'P';
-                }
-                return 'A';
-            },
+        if (target.getUTCHours() > 12) {
+            return 'P';
+        }
+        return 'A';
+    },
     'ap', function(target) {
 
-                if (target.getUTCHours() > 12) {
-                    return 'p';
-                }
-                return 'a';
-            }
-        ));
+        if (target.getUTCHours() > 12) {
+            return 'p';
+        }
+        return 'a';
+    }
+    ));
 
 Date.Type.defineConstant('FORMATS',
     TP.hc('MMDDYY', '%{mm}%{dd}%{yy}',

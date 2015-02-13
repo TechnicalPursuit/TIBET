@@ -598,13 +598,13 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
             //  the query matches or not.
             mqHandler = function(aQuery) {
                             if (aQuery.matches) {
-                              TP.signal(originStr,
-                                        'TP.sig.CSSMediaActive',
-                                        aQuery.media);
+                                TP.signal(originStr,
+                                            'TP.sig.CSSMediaActive',
+                                            aQuery.media);
                             } else {
-                              TP.signal(originStr,
-                                        'TP.sig.CSSMediaInactive',
-                                        aQuery.media);
+                                TP.signal(originStr,
+                                            'TP.sig.CSSMediaInactive',
+                                            aQuery.media);
                             }
                         };
 
@@ -833,7 +833,7 @@ function() {
                     win.close();
                 }
             }
-    });
+        });
 
     return;
 });
@@ -871,7 +871,7 @@ function() {
             if (TP.isWindow(win) && !win.closed) {
                 arr.push(win);
             }
-    });
+        });
 
     return arr;
 });
@@ -1219,7 +1219,7 @@ function(aWindow) {
                     foundOne = true;
                 }
             }
-    });
+        });
 
     if (foundOne) {
         return this;
@@ -2074,25 +2074,29 @@ function(aProvider) {
 
     natWin = this.getNativeWindow();
 
-    natWin.TP.boot.$notify = function(anObject, aRequest) {
+    natWin.TP.boot.$notify =
+        function(anObject, aRequest) {
 
-                        return aProvider.notify(anObject, aRequest);
-                    };
+            return aProvider.notify(anObject, aRequest);
+        };
 
-    natWin.TP.stdin = function(aQuery, aDefault, aRequest) {
+    natWin.TP.stdin =
+        function(aQuery, aDefault, aRequest) {
 
-                        return aProvider.stdin(aQuery, aDefault, aRequest);
-                    };
+            return aProvider.stdin(aQuery, aDefault, aRequest);
+        };
 
-    natWin.TP.stdout = function(anObject, aRequest) {
+    natWin.TP.stdout =
+        function(anObject, aRequest) {
 
-                        return aProvider.stdout(anObject, aRequest);
-                    };
+            return aProvider.stdout(anObject, aRequest);
+        };
 
-    natWin.TP.stderr = function(anError, aRequest) {
+    natWin.TP.stderr =
+        function(anError, aRequest) {
 
-                        return aProvider.stderr(anError, aRequest);
-                    };
+            return aProvider.stderr(anError, aRequest);
+        };
 
     return this;
 });

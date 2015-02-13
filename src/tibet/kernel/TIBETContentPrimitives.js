@@ -293,7 +293,7 @@ function(anObject) {
                             TP.isArray(value) ||
                             TP.isBoolean(value) ||
                             TP.isNull(value)) {
-                                return value;
+                            return value;
                         }
 
                         //  Otherwise, handed back a JSONified String (which

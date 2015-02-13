@@ -59,14 +59,14 @@ function(anObject) {
         function(item) {
 
             return item.as('TP.xs.NMTOKEN');
-});
+        });
 
     //  trim out null values
     arr = arr.select(
         function(item) {
 
             return TP.isValid(item);
-});
+        });
 
     //  if all converted then join back into an NMTOKENS string
     return arr.join(' ');

@@ -119,10 +119,10 @@ function(aRequestID) {
 
     //  didn't find it? check the request queue for it then...
     queue = this.get('requestQueue');
-    req = queue.detect(function(item) {
-
-                        return item.getRequestID() === aRequestID;
-                    });
+    req = queue.detect(
+                function(item) {
+                    return item.getRequestID() === aRequestID;
+                });
 
     return req;
 });

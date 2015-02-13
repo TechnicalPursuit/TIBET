@@ -383,10 +383,10 @@ function(tokenList, templateName, sourceVarNames) {
             if (TP.notEmpty(scopedParams) &&
                 (scopedParams.last().contains(varName) ||
                  scopedParams.last().contains(TP.ALL))) {
-                     valueGet = '';
-                 } else {
-                     valueGet = generators.getFromArgs(varName);
-                 }
+                valueGet = '';
+            } else {
+                valueGet = generators.getFromArgs(varName);
+            }
 
             return 'function() {' +
                 valueGet +

@@ -497,10 +497,10 @@ function(aSignal) {
         aSignal.getButton() === TP.LEFT &&
         existingTPTarget.haloCanBlur(this, aSignal)) {
 
-            this.blur();
-            this.setAttribute('hidden', true);
+        this.blur();
+        this.setAttribute('hidden', true);
 
-            handledSignal = true;
+        handledSignal = true;
     } else if (aSignal.getButton() === TP.RIGHT) {
 
         if (TP.isValid(existingTPTarget) &&

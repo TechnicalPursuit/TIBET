@@ -414,7 +414,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  pubsub node to the user's list of remote subscriptions.
     subReq.defineMethod(
         'handleRequestSucceeded',
-function(aResponse) {
+        function(aResponse) {
 
             //  Make an entry for the pubsub node in the subscription
             //  entries.
@@ -423,13 +423,13 @@ function(aResponse) {
             //  Make sure that they're all unique entries (might have had
             //  multiple observations of the same node).
             subscriptionEntries.unique();
-});
+        });
 
     //  This will be called when the request fails. This may be because the
     //  node being subscribed to has not been created.
     subReq.defineMethod(
         'handleRequestFailed',
-function(aResponse) {
+        function(aResponse) {
 
             var errorTPElem,
                 errorCondition,
@@ -676,18 +676,18 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  pubsub node from the user's list of remote subscriptions.
     unsubReq.defineMethod(
         'handleRequestSucceeded',
-function(aResponse) {
+        function(aResponse) {
 
             //  Remove all entries for the pubsub node in the subscription
             //  entries (remove() ensures that all occurrences are removed).
             subscriptionEntries.remove(pubsubNodeID);
-});
+        });
 
     //  This will be called when the request fails. This may be because the
     //  node being unsubscribed from has not been created.
     unsubReq.defineMethod(
         'handleRequestFailed',
-function(aResponse) {
+        function(aResponse) {
 
             var errorTPElem,
                 errorCondition;

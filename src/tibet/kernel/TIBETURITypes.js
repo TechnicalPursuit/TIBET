@@ -3396,7 +3396,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     thisref = this;
 
     subrequest.defineMethod('completeJob',
-    function(aResult) {
+        function(aResult) {
 
             var result;
 
@@ -3418,10 +3418,10 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
             if (TP.canInvoke(aRequest, 'complete')) {
                 aRequest.complete(result);
             }
-    });
+        });
 
     subrequest.defineMethod('failJob',
-    function(aFaultString, aFaultCode, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultStack) {
 
             if (TP.canInvoke(thisref, failureFName)) {
                 thisref[failureFName](aFaultString, aFaultCode);
@@ -3431,7 +3431,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
             if (TP.canInvoke(aRequest, 'fail')) {
                 aRequest.fail(aFaultString, aFaultCode);
             }
-    });
+        });
 
     //  Remember this can run async, so any result here can be either data
     //  or a TP.sig.Response when async. We can safely ignore it.
@@ -3836,46 +3836,46 @@ function(aDataSource, aRequest) {
             'completeJob',
             function(aResult) {
 
-                    var resource,
-                        result;
+                var resource,
+                    result;
 
-                    if (TP.isDefined(aResult)) {
-                        //  In case aResult returned an Array (very likely if it
-                        //  ran some sort of 'getter path'), we collapse it here
-                        //  - can't transform from an Array of TP.core.Nodes.
-                        result = aResult.collapse();
-                        resource = TP.wrap(result);
+                if (TP.isDefined(aResult)) {
+                    //  In case aResult returned an Array (very likely if it
+                    //  ran some sort of 'getter path'), we collapse it here
+                    //  - can't transform from an Array of TP.core.Nodes.
+                    result = aResult.collapse();
+                    resource = TP.wrap(result);
+                }
+
+                if (TP.canInvoke(resource, 'transform')) {
+                    result = resource.transform(aDataSource, aRequest);
+
+                    //  rewrite the request result object so we hold on to
+                    //  the processed content rather than the inbound
+                    //  content.
+                    subrequest.set('result', result);
+                }
+
+                if (TP.canInvoke(aRequest, 'complete')) {
+                    //  Note that this could be null if there's no result,
+                    //  or if the transform call isn't supported, or if the
+                    //  transform simply produces a null result.
+                    if (TP.isValid(result)) {
+                        aRequest.complete(result);
+                    } else {
+                        aRequest.complete();
                     }
-
-                    if (TP.canInvoke(resource, 'transform')) {
-                        result = resource.transform(aDataSource, aRequest);
-
-                        //  rewrite the request result object so we hold on to
-                        //  the processed content rather than the inbound
-                        //  content.
-                        subrequest.set('result', result);
-                    }
-
-                    if (TP.canInvoke(aRequest, 'complete')) {
-                        //  Note that this could be null if there's no result,
-                        //  or if the transform call isn't supported, or if the
-                        //  transform simply produces a null result.
-                        if (TP.isValid(result)) {
-                            aRequest.complete(result);
-                        } else {
-                            aRequest.complete();
-                        }
-                    }
+                }
             });
 
     subrequest.defineMethod(
             'failJob',
             function(aFaultString, aFaultCode, aFaultStack) {
 
-                    if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultString, aFaultCode);
-                    }
-    });
+                if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail(aFaultString, aFaultCode);
+                }
+            });
 
     //  trigger the invocation and rely on the handlers for the rest.
     this.getResource(subrequest);
@@ -4834,28 +4834,28 @@ function(aRequest) {
             'completeJob',
             function(aResult) {
 
-                    var result;
+                var result;
 
-                    result = TP.isValid(aResult) ? TP.node(aResult) : aResult;
+                result = TP.isValid(aResult) ? TP.node(aResult) : aResult;
 
-                    subrequest.set('result', result);
+                subrequest.set('result', result);
 /*
-                    // TODO: verify that updateResourceCache is correct below.
-                    //thisref.set('resource', result);
-                    thisref.updateResourceCache(subrequest);
+                // TODO: verify that updateResourceCache is correct below.
+                //thisref.set('resource', result);
+                thisref.updateResourceCache(subrequest);
 */
-                    if (TP.canInvoke(aRequest, 'complete')) {
-                        aRequest.complete(result);
-                    }
+                if (TP.canInvoke(aRequest, 'complete')) {
+                    aRequest.complete(result);
+                }
             });
 
     subrequest.defineMethod(
             'failJob',
             function(aFaultString, aFaultCode, aFaultStack) {
 
-                    if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultString, aFaultCode);
-                    }
+                if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail(aFaultString, aFaultCode);
+                }
             });
 
     this.getResourceNode(subrequest);
@@ -5029,46 +5029,46 @@ function(aRequest, filterResult) {
             'completeJob',
             function(aResult) {
 
-                    var resultType,
-                        result;
+                var resultType,
+                    result;
 
-                    //  Default our result, and filter if requested. We do this
-                    //  here as well to ensure we don't complete() an incoming
-                    //  request with unfiltered result data.
-                    result = aResult;
+                //  Default our result, and filter if requested. We do this
+                //  here as well to ensure we don't complete() an incoming
+                //  request with unfiltered result data.
+                result = aResult;
 
-                    if (TP.isTrue(filterResult) && TP.isValid(aResult)) {
-                        resultType =
-                            TP.ifKeyInvalid(aRequest, 'resultType', null);
-                        result = thisref.$getFilteredResult(aResult,
-                                                            resultType,
-                                                            false);
+                if (TP.isTrue(filterResult) && TP.isValid(aResult)) {
+                    resultType =
+                        TP.ifKeyInvalid(aRequest, 'resultType', null);
+                    result = thisref.$getFilteredResult(aResult,
+                                                        resultType,
+                                                        false);
 
-                        //  rewrite the request result object so we hold on to
-                        //  the processed content rather than the inbound
-                        //  content.
-                        subrequest.set('result', result);
-                    } else {
-                        //  unfiltered results should update our resource cache.
-                        thisref.updateResourceCache(subrequest);
-                    }
+                    //  rewrite the request result object so we hold on to
+                    //  the processed content rather than the inbound
+                    //  content.
+                    subrequest.set('result', result);
+                } else {
+                    //  unfiltered results should update our resource cache.
+                    thisref.updateResourceCache(subrequest);
+                }
 
-                    //  TODO: if we set to a filtered value here we'll replace
-                    //  the main resource value...commented out for testing.
-                    //thisref.set('resource', result);
+                //  TODO: if we set to a filtered value here we'll replace
+                //  the main resource value...commented out for testing.
+                //thisref.set('resource', result);
 
-                    if (TP.canInvoke(aRequest, 'complete')) {
-                        aRequest.complete(result);
-                    }
+                if (TP.canInvoke(aRequest, 'complete')) {
+                    aRequest.complete(result);
+                }
             });
 
     subrequest.defineMethod(
             'failJob',
             function(aFaultString, aFaultCode, aFaultStack) {
 
-                    if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultString, aFaultCode);
-                    }
+                if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail(aFaultString, aFaultCode);
+                }
             });
 
     //  refresh will have been forced to true when we're not loaded, so
@@ -5433,57 +5433,57 @@ function(aRequest) {
             'completeJob',
             function(aResult) {
 
-                    var resource,
-                        result;
+                var resource,
+                    result;
 
-                    resource = TP.tpnode(aResult);
-                    if (TP.canInvoke(resource, 'transform')) {
-                        //  Force XMLBase and TIBET src attributes.
-                        thisref.$setPrimaryResource(resource);
+                resource = TP.tpnode(aResult);
+                if (TP.canInvoke(resource, 'transform')) {
+                    //  Force XMLBase and TIBET src attributes.
+                    thisref.$setPrimaryResource(resource);
 
-                        result = TP.process(resource, request);
+                    result = TP.process(resource, request);
 
-                        if (request.didFail()) {
-                            aRequest.fail(request.getFaultText(),
-                                          request.getFaultCode());
-                            subrequest.fail(request.getFaultText(),
-                                          request.getFaultCode());
-                            return;
-                        }
-
-                        //  rewrite the request result object so we hold on to
-                        //  the processed content rather than the inbound
-                        //  content.
-                        subrequest.set('result', result);
-
-                        //  TODO: verify this is correct in all cases, and
-                        //  decide if we need to assign a "save result" flag to
-                        //  control this.
-                        //  What if we wanted to reprocess each time? refresh
-                        //  seems like overhead to fetch source rather than
-                        //  reprocessing.
-
-                        //  the processed content should become the new resource
-                        thisref.set('resource', result);
+                    if (request.didFail()) {
+                        aRequest.fail(request.getFaultText(),
+                                      request.getFaultCode());
+                        subrequest.fail(request.getFaultText(),
+                                      request.getFaultCode());
+                        return;
                     }
 
-                    //  Inform any originally inbound request of our status.
-                    if (TP.canInvoke(aRequest, 'complete')) {
-                        //  Note that this could be null if there's no result,
-                        //  or if the transform call isn't supported, or if the
-                        //  transform simply produces a null result.
-                        aRequest.complete(result);
-                    }
+                    //  rewrite the request result object so we hold on to
+                    //  the processed content rather than the inbound
+                    //  content.
+                    subrequest.set('result', result);
+
+                    //  TODO: verify this is correct in all cases, and
+                    //  decide if we need to assign a "save result" flag to
+                    //  control this.
+                    //  What if we wanted to reprocess each time? refresh
+                    //  seems like overhead to fetch source rather than
+                    //  reprocessing.
+
+                    //  the processed content should become the new resource
+                    thisref.set('resource', result);
+                }
+
+                //  Inform any originally inbound request of our status.
+                if (TP.canInvoke(aRequest, 'complete')) {
+                    //  Note that this could be null if there's no result,
+                    //  or if the transform call isn't supported, or if the
+                    //  transform simply produces a null result.
+                    aRequest.complete(result);
+                }
             });
 
     subrequest.defineMethod('failJob',
-    function(aFaultString, aFaultCode, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultStack) {
 
             //  Inform any originally inbound request of our status.
             if (TP.canInvoke(aRequest, 'fail')) {
                 aRequest.fail(aFaultString, aFaultCode);
             }
-    });
+        });
 
     //  trigger the invocation and rely on the handlers for the rest.
     this.getResource(subrequest);
@@ -9028,44 +9028,44 @@ function(targetURI, aRequest) {
             'completeJob',
             function(aResult) {
 
-                    var dat;
+                var dat;
 
-                    //  update the target's header and content information, in
-                    //  that order so that any content change signaling happens
-                    //  after headers are current.
-                    targetURI.updateHeaders(subrequest);
-                    dat = targetURI.updateResourceCache(subrequest);
+                //  update the target's header and content information, in
+                //  that order so that any content change signaling happens
+                //  after headers are current.
+                targetURI.updateHeaders(subrequest);
+                dat = targetURI.updateResourceCache(subrequest);
 
-                    targetURI.isLoaded(true);
-                    targetURI.isDirty(false);
+                targetURI.isLoaded(true);
+                targetURI.isDirty(false);
 
-                    if (TP.canInvoke(aRequest, 'complete')) {
-                        //  Use the return value from cache update since it's
-                        //  the "best form" the cache/result check could
-                        //  produce. The data will be filtered higher up for
-                        //  requests that care.
-                        aRequest.complete(dat);
-                    }
+                if (TP.canInvoke(aRequest, 'complete')) {
+                    //  Use the return value from cache update since it's
+                    //  the "best form" the cache/result check could
+                    //  produce. The data will be filtered higher up for
+                    //  requests that care.
+                    aRequest.complete(dat);
+                }
             });
 
     subrequest.defineMethod(
             'failJob',
             function(aFaultString, aFaultCode, aFaultStack) {
 
-                    //  update the target's header and content information, in
-                    //  that order so that any content change signaling happens
-                    //  after headers are current.
-                    targetURI.updateHeaders(subrequest);
-                    targetURI.updateResourceCache(subrequest);
+                //  update the target's header and content information, in
+                //  that order so that any content change signaling happens
+                //  after headers are current.
+                targetURI.updateHeaders(subrequest);
+                targetURI.updateResourceCache(subrequest);
 
-                    //  updateResourceCache resets these, but when we fail we
-                    //  don't want them cleared
-                    targetURI.isLoaded(false);
-                    targetURI.isDirty(true);
+                //  updateResourceCache resets these, but when we fail we
+                //  don't want them cleared
+                targetURI.isLoaded(false);
+                targetURI.isDirty(true);
 
-                    if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultString, aFaultCode);
-                    }
+                if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail(aFaultString, aFaultCode);
+                }
             });
 
     //  do the work of loading content. for file operations this call is
@@ -9135,25 +9135,25 @@ function(targetURI, aRequest) {
             'completeJob',
             function(aResult) {
 
-                    if (TP.isTrue(aResult)) {
-                        targetURI.isDirty(false);
-                        targetURI.isLoaded(false);
+                if (TP.isTrue(aResult)) {
+                    targetURI.isDirty(false);
+                    targetURI.isLoaded(false);
 
-                        if (TP.canInvoke(aRequest, 'complete')) {
-                            aRequest.complete(aResult);
-                        }
-                    } else if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail();
+                    if (TP.canInvoke(aRequest, 'complete')) {
+                        aRequest.complete(aResult);
                     }
+                } else if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail();
+                }
             });
 
     subrequest.defineMethod(
             'failJob',
             function(aFaultString, aFaultCode, aFaultStack) {
 
-                    if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultString, aFaultCode);
-                    }
+                if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail(aFaultString, aFaultCode);
+                }
             });
 
     //  rewriting happens prior to handler lookup, so we just want the
@@ -9248,25 +9248,25 @@ function(targetURI, aRequest) {
             'completeJob',
             function(aResult) {
 
-                    if (TP.isTrue(aResult)) {
-                        targetURI.isDirty(false);
-                        targetURI.isLoaded(true);
+                if (TP.isTrue(aResult)) {
+                    targetURI.isDirty(false);
+                    targetURI.isLoaded(true);
 
-                        if (TP.canInvoke(aRequest, 'complete')) {
-                            aRequest.complete(aResult);
-                        }
-                    } else if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail();
+                    if (TP.canInvoke(aRequest, 'complete')) {
+                        aRequest.complete(aResult);
                     }
+                } else if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail();
+                }
             });
 
     subrequest.defineMethod(
             'failJob',
             function(aFaultString, aFaultCode, aFaultStack) {
 
-                    if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultString, aFaultCode);
-                    }
+                if (TP.canInvoke(aRequest, 'fail')) {
+                    aRequest.fail(aFaultString, aFaultCode);
+                }
             });
 
     //  do the work of saving content. for file operations this call is

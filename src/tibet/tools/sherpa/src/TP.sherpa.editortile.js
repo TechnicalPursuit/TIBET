@@ -124,7 +124,8 @@ function(aSignal) {
         } else if (TP.elementGetAttribute(elem, 'id', true) === 'saveButton') {
             if (TP.isValid(TP.$$targetMethod)) {
                 if (TP.notEmpty(val = textInput.getDisplayValue())) {
-val = 'TP.tibet.helloworld.defineMethod(\'tshCompile\',' + val + ');';
+                    val = 'TP.tibet.helloworld.defineMethod(\'tshCompile\',' +
+                            val + ');';
 
                     /* eslint-disable no-eval */
                     eval(val);  /* jshint ignore:line */

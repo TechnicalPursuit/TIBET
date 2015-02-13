@@ -11,7 +11,8 @@
  */
 //  ========================================================================
 
-/*eslint no-process-exit:0*/
+/*eslint no-process-exit:0, indent:0*/
+
 (function() {
 
 'use strict';

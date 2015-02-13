@@ -401,11 +401,11 @@ function(aResourceID, aRequest) {
     /* eslint-disable no-wrap-func,no-extra-parens */
     //  set up keyboard toggle to show/hide us
     (function () {
-            this.toggleConsole();
+        this.toggleConsole();
 
-            (function () {
-               TP.boot.$flushLog(true);
-            }).fork(2000);
+        (function () {
+            TP.boot.$flushLog(true);
+        }).fork(2000);
 
     }.bind(this)).observe(TP.core.Keyboard, key);
     /* eslint-enable no-wrap-func,no-extra-parens */

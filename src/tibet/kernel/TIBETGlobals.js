@@ -1626,17 +1626,19 @@ work with arrays and ordered pairs without requiring custom iterators.
 
 TP.LOG_ARGS = function() {
 
-        var args;
-        args = TP.args(arguments);
-        TP.ifTrace() ? TP.trace(args, TP.LOG) : 0;
-    };
+    var args;
+
+    args = TP.args(arguments);
+    TP.ifTrace() ? TP.trace(args, TP.LOG) : 0;
+};
 
 TP.NOTIFY_ARGS = function() {
 
-        var args;
-        args = TP.args(arguments);
-        TP.boot.$notify(args, 'ARGS');
-    };
+    var args;
+
+    args = TP.args(arguments);
+    TP.boot.$notify(args, 'ARGS');
+};
 
 //  ------------------------------------------------------------------------
 
@@ -1647,15 +1649,16 @@ when the handler is actually invoked.
 */
 TP.TEST_HANDLER = function(aSignal) {
 
-                        //  by having this here we can observe and break
-                        //  into the handler to check signal stack traces
-                        TP.stop('break.signal_handler');
+    //  by having this here we can observe and break
+    //  into the handler to check signal stack traces
 
-                        TP.info('TP.TEST_HANDLER fired for: ' +
-                                    aSignal.getSignalName() + ' @ ' +
-                                    aSignal.getSignalOrigin(),
-                                TP.SIGNAL_LOG);
-                    };
+    TP.stop('break.signal_handler');
+
+    TP.info('TP.TEST_HANDLER fired for: ' +
+                aSignal.getSignalName() + ' @ ' +
+                aSignal.getSignalOrigin(),
+            TP.SIGNAL_LOG);
+};
 
 TP.TEST_SETUP_NAME = 'Test_SetUp';      //  the method name of object-level test
                                         //  set up methods
@@ -1715,20 +1718,20 @@ Somewhat brute-force, but useful sort functions that come up often.
 //  case-sensitivity
 TP.CASE_INSENSITIVE_SORT = function(a, b) {
 
-        var aLower,
-            bLower;
+    var aLower,
+        bLower;
 
-        aLower = a.toLowerCase();
-        bLower = b.toLowerCase();
+    aLower = a.toLowerCase();
+    bLower = b.toLowerCase();
 
-        if (aLower < bLower) {
-            return -1;
-        } else if (aLower > bLower) {
-            return 1;
-        }
+    if (aLower < bLower) {
+        return -1;
+    } else if (aLower > bLower) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  a 'natural byte order' sort modified to meet TIBET coding standards from
 //  the following:
@@ -1765,434 +1768,434 @@ misrepresented as being the original software.
 
 TP.NATURAL_ORDER_SORT = function(a, b) {
 
-        var isWhitespaceChar,
-            isDigitChar,
-            compareRight,
+    var isWhitespaceChar,
+        isDigitChar,
+        compareRight,
 
-            ia,
-            ib,
-            nza,
-            nzb,
-            ca,
-            cb,
-            result;
+        ia,
+        ib,
+        nza,
+        nzb,
+        ca,
+        cb,
+        result;
 
-        isWhitespaceChar = function(a) {
+    isWhitespaceChar = function(a) {
 
-            var charCode;
+        var charCode;
 
-            charCode = a.charCodeAt(0);
+        charCode = a.charCodeAt(0);
 
-            if (charCode <= 32) {
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        isDigitChar = function(a) {
-
-            var charCode;
-            charCode = a.charCodeAt(0);
-
-            if (charCode >= 48 && charCode <= 57) {
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        compareRight = function(a, b) {
-
-            var bias,
-                ia2,
-                ib2,
-
-                ca2,
-                cb2;
-
-            bias = 0;
-            ia2 = 0;
-            ib2 = 0;
-
-            //  The longest run of digits wins.  That aside, the greatest
-            //  value wins, but we can't know that it will until we've
-            //  scanned both numbers to know that they have the same
-            //  magnitude, so we remember it in BIAS.
-            for (;; ia2++, ib2++) {
-                ca2 = a.charAt(ia2);
-                cb2 = b.charAt(ib2);
-
-                if (!isDigitChar(ca2) && !isDigitChar(cb2)) {
-                    return bias;
-                } else if (!isDigitChar(ca2)) {
-                    return -1;
-                } else if (!isDigitChar(cb2)) {
-                    return +1;
-                } else if (ca2 < cb2) {
-                    if (bias === 0) {
-                        bias = -1;
-                    }
-                } else if (ca2 > cb2) {
-                    if (bias === 0) {
-                        bias = +1;
-                    }
-                } else if (ca2 === 0 && cb2 === 0) {
-                    return bias;
-                }
-            }
-        };
-
-        ia = 0;
-        ib = 0;
-        nza = 0;
-        nzb = 0;
-
-        /* eslint-disable no-constant-condition */
-        while (true) {
-            //  only count the number of zeroes leading the last number
-            //  compared
-            nza = nzb = 0;
-
-            ca = a.charAt(ia);
-            cb = b.charAt(ib);
-
-            //  skip over leading spaces or zeros
-            while (isWhitespaceChar(ca) || ca === '0') {
-                if (ca === '0') {
-                    nza++;
-                } else {
-                    //  only count consecutive zeroes
-                    nza = 0;
-                }
-
-                ca = a.charAt(++ia);
-            }
-
-            while (isWhitespaceChar(cb) || cb === '0') {
-                if (cb === '0') {
-                    nzb++;
-                } else {
-                    //  only count consecutive zeroes
-                    nzb = 0;
-                }
-
-                cb = b.charAt(++ib);
-            }
-
-            //  process run of digits
-            if (isDigitChar(ca) && isDigitChar(cb)) {
-                if ((result = compareRight(a.substring(ia),
-                                            b.substring(ib))) !== 0) {
-                    return result;
-                }
-            }
-
-            if (ca === 0 && cb === 0) {
-                //  The strings compare the same.  Perhaps the caller
-                //  will want to call strcmp to break the tie.
-                return nza - nzb;
-            }
-
-            if (ca < cb) {
-                return -1;
-            } else if (ca > cb) {
-                return +1;
-            }
-
-            ++ia; ++ib;
+        if (charCode <= 32) {
+            return true;
+        } else {
+            return false;
         }
-        /* eslint-enable no-constant-condition */
     };
+
+    isDigitChar = function(a) {
+
+        var charCode;
+        charCode = a.charCodeAt(0);
+
+        if (charCode >= 48 && charCode <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    compareRight = function(a, b) {
+
+        var bias,
+            ia2,
+            ib2,
+
+            ca2,
+            cb2;
+
+        bias = 0;
+        ia2 = 0;
+        ib2 = 0;
+
+        //  The longest run of digits wins.  That aside, the greatest
+        //  value wins, but we can't know that it will until we've
+        //  scanned both numbers to know that they have the same
+        //  magnitude, so we remember it in BIAS.
+        for (;; ia2++, ib2++) {
+            ca2 = a.charAt(ia2);
+            cb2 = b.charAt(ib2);
+
+            if (!isDigitChar(ca2) && !isDigitChar(cb2)) {
+                return bias;
+            } else if (!isDigitChar(ca2)) {
+                return -1;
+            } else if (!isDigitChar(cb2)) {
+                return +1;
+            } else if (ca2 < cb2) {
+                if (bias === 0) {
+                    bias = -1;
+                }
+            } else if (ca2 > cb2) {
+                if (bias === 0) {
+                    bias = +1;
+                }
+            } else if (ca2 === 0 && cb2 === 0) {
+                return bias;
+            }
+        }
+    };
+
+    ia = 0;
+    ib = 0;
+    nza = 0;
+    nzb = 0;
+
+    /* eslint-disable no-constant-condition */
+    while (true) {
+        //  only count the number of zeroes leading the last number
+        //  compared
+        nza = nzb = 0;
+
+        ca = a.charAt(ia);
+        cb = b.charAt(ib);
+
+        //  skip over leading spaces or zeros
+        while (isWhitespaceChar(ca) || ca === '0') {
+            if (ca === '0') {
+                nza++;
+            } else {
+                //  only count consecutive zeroes
+                nza = 0;
+            }
+
+            ca = a.charAt(++ia);
+        }
+
+        while (isWhitespaceChar(cb) || cb === '0') {
+            if (cb === '0') {
+                nzb++;
+            } else {
+                //  only count consecutive zeroes
+                nzb = 0;
+            }
+
+            cb = b.charAt(++ib);
+        }
+
+        //  process run of digits
+        if (isDigitChar(ca) && isDigitChar(cb)) {
+            if ((result = compareRight(a.substring(ia),
+                                        b.substring(ib))) !== 0) {
+                return result;
+            }
+        }
+
+        if (ca === 0 && cb === 0) {
+            //  The strings compare the same.  Perhaps the caller
+            //  will want to call strcmp to break the tie.
+            return nza - nzb;
+        }
+
+        if (ca < cb) {
+            return -1;
+        } else if (ca > cb) {
+            return +1;
+        }
+
+        ++ia; ++ib;
+    }
+    /* eslint-enable no-constant-condition */
+};
 
 //  compareTo sort block which sorts based on "magnitude"
 TP.COMPARE_SORT = function(a, b) {
 
-        return a.compareTo(b);
-    };
+    return a.compareTo(b);
+};
 
 //  sort block that pushes "deleted" elements to the end for truncation
 TP.DELETION_SORT = function(a, b) {
 
-        if (a !== TP.DELETED && b === TP.DELETED) {
-            return -1;
-        } else if (a === TP.DELETED && b !== TP.DELETED) {
-            return 1;
-        }
+    if (a !== TP.DELETED && b === TP.DELETED) {
+        return -1;
+    } else if (a === TP.DELETED && b !== TP.DELETED) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  nodes can be sorted in document order using this sort
 TP.DOCUMENT_ORDER_SORT = function(a, b) {
 
-        /* jshint bitwise:false */
-        if (a.sourceIndex) {
-            return a.sourceIndex - b.sourceIndex;
-        } else if (a.compareDocumentPosition) {
-            return 3 - (a.compareDocumentPosition(b) & 6);
-        } else {
-            return 0;
-        }
-        /* jshint bitwise:true */
-    };
+    /* jshint bitwise:false */
+    if (a.sourceIndex) {
+        return a.sourceIndex - b.sourceIndex;
+    } else if (a.compareDocumentPosition) {
+        return 3 - (a.compareDocumentPosition(b) & 6);
+    } else {
+        return 0;
+    }
+    /* jshint bitwise:true */
+};
 
 //  elements can be sorted in tabindex order using this sort
 TP.TABINDEX_ORDER_SORT = function(a, b) {
 
-        var aVal,
-            bVal;
+    var aVal,
+        bVal;
 
-        aVal = parseInt(a.getAttribute('tabindex'), 10);
-        bVal = parseInt(b.getAttribute('tabindex'), 10);
+    aVal = parseInt(a.getAttribute('tabindex'), 10);
+    bVal = parseInt(b.getAttribute('tabindex'), 10);
 
-        //  Neither 'a' or 'b' has a tabindex value. Leave the elements in
-        //  document order.
-        if (isNaN(aVal) && isNaN(bVal)) {
+    //  Neither 'a' or 'b' has a tabindex value. Leave the elements in
+    //  document order.
+    if (isNaN(aVal) && isNaN(bVal)) {
+        return 0;
+    } else if (isNaN(aVal) && !isNaN(bVal)) {
+        //  'a' has no tabindex value and 'b's is either -1 or 0. Leave
+        //  elements in document order.
+        if (bVal <= 0) {
             return 0;
-        } else if (isNaN(aVal) && !isNaN(bVal)) {
-            //  'a' has no tabindex value and 'b's is either -1 or 0. Leave
-            //  elements in document order.
-            if (bVal <= 0) {
-                return 0;
-            }
-
-            //  'b' has a real, positive integer tabindex - it should come
-            //  before 'a'
-            return 1;
-        } else if (!isNaN(aVal) && isNaN(bVal)) {
-            //  'b' has no tabindex value and 'a's is either -1 or 0. Leave
-            //  elements in document order.
-            if (aVal <= 0) {
-                return 0;
-            }
-
-            //  'a' has a real, positive integer tabindex - it should come
-            //  before 'b'
-            return -1;
-        } else if (aVal <= 0 && bVal <= 0) {
-            //  Both 'a' and 'b' have a tabindex value that is either -1 or
-            //  0. Leave elements in document order.
-            return 0;
-        } else if (aVal <= 0 && bVal > 0) {
-            //  'a' has a tabindex value of either -1 or 0 and 'b' has a
-            //  real, positive integer tabindex - it should come before 'a'
-            return 1;
-        } else if (aVal > 0 && bVal <= 0) {
-            //  'b' has a tabindex value of either -1 or 0 and 'a' has a
-            //  real, positive integer tabindex - it should come before 'b'
-            return -1;
         }
 
-        //  'a' and 'b' both have real, positive integer tabindex values.
-        //  Sort ascending by that value.
-        return aVal - bVal;
-    };
+        //  'b' has a real, positive integer tabindex - it should come
+        //  before 'a'
+        return 1;
+    } else if (!isNaN(aVal) && isNaN(bVal)) {
+        //  'b' has no tabindex value and 'a's is either -1 or 0. Leave
+        //  elements in document order.
+        if (aVal <= 0) {
+            return 0;
+        }
+
+        //  'a' has a real, positive integer tabindex - it should come
+        //  before 'b'
+        return -1;
+    } else if (aVal <= 0 && bVal <= 0) {
+        //  Both 'a' and 'b' have a tabindex value that is either -1 or
+        //  0. Leave elements in document order.
+        return 0;
+    } else if (aVal <= 0 && bVal > 0) {
+        //  'a' has a tabindex value of either -1 or 0 and 'b' has a
+        //  real, positive integer tabindex - it should come before 'a'
+        return 1;
+    } else if (aVal > 0 && bVal <= 0) {
+        //  'b' has a tabindex value of either -1 or 0 and 'a' has a
+        //  real, positive integer tabindex - it should come before 'b'
+        return -1;
+    }
+
+    //  'a' and 'b' both have real, positive integer tabindex values.
+    //  Sort ascending by that value.
+    return aVal - bVal;
+};
 
 //  sort objects by their "equality values" often their string values
 TP.EQUALITY_SORT = function(a, b) {
 
-        var arep,
-            brep;
+    var arep,
+        brep;
 
-        if (TP.notValid(a)) {
-            arep = TP.str(a);
-        } else if (TP.canInvoke(a, '$getEqualityValue')) {
-            arep = TP.str(a.$getEqualityValue());
-        } else {
-            arep = TP.str(a);
-        }
+    if (TP.notValid(a)) {
+        arep = TP.str(a);
+    } else if (TP.canInvoke(a, '$getEqualityValue')) {
+        arep = TP.str(a.$getEqualityValue());
+    } else {
+        arep = TP.str(a);
+    }
 
-        if (TP.notValid(b)) {
-            brep = TP.str(b);
-        } else if (TP.canInvoke(b, '$getEqualityValue')) {
-            brep = TP.str(b.$getEqualityValue());
-        } else {
-            brep = TP.str(b);
-        }
+    if (TP.notValid(b)) {
+        brep = TP.str(b);
+    } else if (TP.canInvoke(b, '$getEqualityValue')) {
+        brep = TP.str(b.$getEqualityValue());
+    } else {
+        brep = TP.str(b);
+    }
 
-        if (arep < brep) {
-            return -1;
-        } else if (arep > brep) {
-            return 1;
-        }
+    if (arep < brep) {
+        return -1;
+    } else if (arep > brep) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  a simple sort for arrays containing ordered pairs by their "key" slot
 TP.FIRST_ITEM_SORT = function(a, b) {
 
-        if (!a && b) {
-            return 1;
-        } else if (a && !b) {
-            return -1;
-        } else if (a.at(0) < b.at(0)) {
-            return -1;
-        } else if (a.at(0) > b.at(0)) {
-            return 1;
-        }
+    if (!a && b) {
+        return 1;
+    } else if (a && !b) {
+        return -1;
+    } else if (a.at(0) < b.at(0)) {
+        return -1;
+    } else if (a.at(0) > b.at(0)) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  sort objects by their "identity values" (aka their IDs or pointers)
 TP.IDENTITY_SORT = function(a, b) {
 
-        var arep,
-            brep;
+    var arep,
+        brep;
 
-        if (TP.notValid(a)) {
-            arep = TP.str(a);
-        } else if (TP.canInvoke(a, '$getIdentityValue')) {
-            arep = TP.str(a.$getIdentityValue());
-        } else {
-            arep = TP.str(a);
-        }
+    if (TP.notValid(a)) {
+        arep = TP.str(a);
+    } else if (TP.canInvoke(a, '$getIdentityValue')) {
+        arep = TP.str(a.$getIdentityValue());
+    } else {
+        arep = TP.str(a);
+    }
 
-        if (TP.notValid(b)) {
-            brep = b;
-        } else if (TP.canInvoke(b, '$getIdentityValue')) {
-            brep = b.$getIdentityValue();
-        } else {
-            brep = b;
-        }
+    if (TP.notValid(b)) {
+        brep = b;
+    } else if (TP.canInvoke(b, '$getIdentityValue')) {
+        brep = b.$getIdentityValue();
+    } else {
+        brep = b;
+    }
 
-        if (arep < brep) {
-            return -1;
-        } else if (arep > brep) {
-            return 1;
-        }
+    if (arep < brep) {
+        return -1;
+    } else if (arep > brep) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  numerical sort block
 TP.NUMERIC_SORT = function(a, b) {
 
-        if (a < b) {
-            return -1;
-        } else if (a > b) {
-            return 1;
-        }
+    if (a < b) {
+        return -1;
+    } else if (a > b) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  a simple sort for arrays containing ordered pairs by their "value" slot
 TP.SECOND_ITEM_SORT = function(a, b) {
 
-        if (!a && b) {
-            return 1;
-        } else if (a && !b) {
-            return -1;
-        } else if (a.at(1) < b.at(1)) {
-            return -1;
-        } else if (a.at(1) > b.at(1)) {
-            return 1;
-        }
+    if (!a && b) {
+        return 1;
+    } else if (a && !b) {
+        return -1;
+    } else if (a.at(1) < b.at(1)) {
+        return -1;
+    } else if (a.at(1) > b.at(1)) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  sort to order a list by number of supertypes which effectively sorts
 //  from parent to child (across one or more branches)
 TP.SUBTYPE_SORT = function(a, b) {
 
-        var asize,
-            bsize;
+    var asize,
+        bsize;
 
-        asize = a.getSupertypeNames().getSize();
-        bsize = b.getSupertypeNames().getSize();
+    asize = a.getSupertypeNames().getSize();
+    bsize = b.getSupertypeNames().getSize();
 
-        if (asize < bsize) {
-            return -1;
-        } else if (asize > bsize) {
-            return 1;
-        }
+    if (asize < bsize) {
+        return -1;
+    } else if (asize > bsize) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  simple unicode-value sort
 TP.UNICODE_SORT = function(a, b) {
 
-        var au,
-            bu;
+    var au,
+        bu;
 
-        au = TP.str(a).unicodeEscaped();
-        bu = TP.str(b).unicodeEscaped();
+    au = TP.str(a).unicodeEscaped();
+    bu = TP.str(b).unicodeEscaped();
 
-        if (au < bu) {
-            return -1;
-        } else if (au > bu) {
-            return 1;
-        }
+    if (au < bu) {
+        return -1;
+    } else if (au > bu) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  simple element sort
 TP.ELEMENT_SORT = function(a, b) {
 
-        var atag,
-            btag;
+    var atag,
+        btag;
 
-        atag = a.tagName.toLowerCase();
-        btag = b.tagName.toLowerCase();
+    atag = a.tagName.toLowerCase();
+    btag = b.tagName.toLowerCase();
 
-        if (atag < btag) {
-            return -1;
-        } else if (atag > btag) {
-            return 1;
-        }
+    if (atag < btag) {
+        return -1;
+    } else if (atag > btag) {
+        return 1;
+    }
 
-        return 0;
-    };
+    return 0;
+};
 
 //  Sorts keymap XML elements by whether they have no qualifier, just
 //  'platform', just 'browser' or 'platform' AND 'browser'. This is considered
 //  'least to most specific' for keymaps.
 TP.KEYMAP_ELEMENT_SORT = function(a, b) {
 
-        var aHasPlatform,
-            aHasBrowser,
+    var aHasPlatform,
+        aHasBrowser,
 
-            bHasPlatform,
-            bHasBrowser,
+        bHasPlatform,
+        bHasBrowser,
 
-            aWeight,
-            bWeight;
+        aWeight,
+        bWeight;
 
-        aHasBrowser = a.hasAttribute('browser');
-        aHasPlatform = a.hasAttribute('platform');
+    aHasBrowser = a.hasAttribute('browser');
+    aHasPlatform = a.hasAttribute('platform');
 
-        bHasBrowser = b.hasAttribute('browser');
-        bHasPlatform = b.hasAttribute('platform');
+    bHasBrowser = b.hasAttribute('browser');
+    bHasPlatform = b.hasAttribute('platform');
 
-        //  If the element has both browser and platform, it is weighted most,
-        //  followed by only browser, followed by only platform, followed by
-        //  neither.
+    //  If the element has both browser and platform, it is weighted most,
+    //  followed by only browser, followed by only platform, followed by
+    //  neither.
 
-        if (aHasBrowser && aHasPlatform) {
-            aWeight = 10;
-        } else if (aHasBrowser && !aHasPlatform) {
-            aWeight = 5;
-        } else {
-            aWeight = 1;
-        }
+    if (aHasBrowser && aHasPlatform) {
+        aWeight = 10;
+    } else if (aHasBrowser && !aHasPlatform) {
+        aWeight = 5;
+    } else {
+        aWeight = 1;
+    }
 
-        if (bHasBrowser && bHasPlatform) {
-            bWeight = 10;
-        } else if (bHasBrowser && !bHasPlatform) {
-            bWeight = 5;
-        } else {
-            bWeight = 1;
-        }
+    if (bHasBrowser && bHasPlatform) {
+        bWeight = 10;
+    } else if (bHasBrowser && !bHasPlatform) {
+        bWeight = 5;
+    } else {
+        bWeight = 1;
+    }
 
-        //  Sort ascending by the weight
-        return aWeight - bWeight;
-    };
+    //  Sort ascending by the weight
+    return aWeight - bWeight;
+};
 
 //  ------------------------------------------------------------------------
 //  COMMON REGEXES

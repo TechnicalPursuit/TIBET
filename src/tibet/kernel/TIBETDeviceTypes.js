@@ -747,12 +747,12 @@ function() {
     //  look for a config parameter mapping the keyboard away from ~lib_dat
     path = TP.sys.cfg(fname + '.xml');
     if (!path) {
-      path = TP.uriExpandPath('~lib_dat/' + fname + '.xml');
+        path = TP.uriExpandPath('~lib_dat/' + fname + '.xml');
     }
 
     url = TP.uc(path);
     if (TP.notValid(xml = url.getNativeNode(req))) {
-      return this.raise('TP.sig.InvalidKeymap');
+        return this.raise('TP.sig.InvalidKeymap');
     }
 
     this.$set('mapuri', url);
@@ -2334,68 +2334,69 @@ TP.core.Mouse.Type.defineAttribute(
                 }
             }
 
-            func = function() {
+            func =
+                function() {
 
-                        var priorMove,
-                            doc,
-                            obs;
+                    var priorMove,
+                        doc,
+                        obs;
 
-                        priorMove = TP.core.Mouse.$get('lastMove');
+                    priorMove = TP.core.Mouse.$get('lastMove');
 
-                        //  If there was no 'last move' native event that we can
-                        //  leverage, then we can't do much so we exit here and
-                        //  don't reschedule the timer.
-                        if (!TP.isEvent(priorMove)) {
-                            return;
-                        }
+                    //  If there was no 'last move' native event that we can
+                    //  leverage, then we can't do much so we exit here and
+                    //  don't reschedule the timer.
+                    if (!TP.isEvent(priorMove)) {
+                        return;
+                    }
 
-                        //  If there are no mouse/drag hover subscriptions,
-                        //  then there is no point in continuing so we exit here
-                        //  and don't reschedule the timer.
-                        obs = TP.core.Mouse.get('observers');
-                        if (!obs.hasKey('TP.sig.DOMMouseHover') &&
-                            !obs.hasKey('TP.sig.DOMDragHover')) {
-                            return;
-                        }
+                    //  If there are no mouse/drag hover subscriptions,
+                    //  then there is no point in continuing so we exit here
+                    //  and don't reschedule the timer.
+                    obs = TP.core.Mouse.get('observers');
+                    if (!obs.hasKey('TP.sig.DOMMouseHover') &&
+                        !obs.hasKey('TP.sig.DOMDragHover')) {
+                        return;
+                    }
 
-                        //  If the document doesn't itself have focus or doesn't
-                        //  have an active element, then that probably means
-                        //  this window isn't in focus to the user, which means
-                        //  hover events don't mean much. So we exit here and
-                        //  don't reschedule the timer.
-                        doc = TP.eventGetWindow(priorMove).document;
-                        if (!doc.hasFocus() || !doc.activeElement) {
-                            return;
-                        }
+                    //  If the document doesn't itself have focus or doesn't
+                    //  have an active element, then that probably means
+                    //  this window isn't in focus to the user, which means
+                    //  hover events don't mean much. So we exit here and
+                    //  don't reschedule the timer.
+                    doc = TP.eventGetWindow(priorMove).document;
+                    if (!doc.hasFocus() || !doc.activeElement) {
+                        return;
+                    }
 
-                        //  If we're in a dragging state, then send invoke
-                        //  observers for 'draghover', otherwise invoke the ones
-                        //  for 'mousehover'.
-                        if (TP.core.Mouse.$$isDragging(priorMove)) {
-                            TP.eventSetType(priorMove, 'draghover');
+                    //  If we're in a dragging state, then send invoke
+                    //  observers for 'draghover', otherwise invoke the ones
+                    //  for 'mousehover'.
+                    if (TP.core.Mouse.$$isDragging(priorMove)) {
+                        TP.eventSetType(priorMove, 'draghover');
 
-                            TP.core.Mouse.invokeObservers(
-                                    'draghover',
-                                    priorMove);
-                        } else {
-                            TP.eventSetType(priorMove, 'mousehover');
+                        TP.core.Mouse.invokeObservers(
+                                'draghover',
+                                priorMove);
+                    } else {
+                        TP.eventSetType(priorMove, 'mousehover');
 
-                            TP.core.Mouse.invokeObservers(
-                                    'mousehover',
-                                    priorMove);
-                        }
+                        TP.core.Mouse.invokeObservers(
+                                'mousehover',
+                                priorMove);
+                    }
 
-                        //  reschedule the repeat timer
-                        TP.core.Mouse.$set(
-                            'hoverRepeatTimer',
-                            setTimeout(func, hoverRepeat));
-                    };
+                    //  reschedule the repeat timer
+                    TP.core.Mouse.$set(
+                        'hoverRepeatTimer',
+                        setTimeout(func, hoverRepeat));
+                };
 
             //  set up the hover repeat timer
             TP.core.Mouse.$set(
                 'hoverRepeatTimer',
                 setTimeout(func, hoverRepeat));
-});
+        });
 
 //  overall hash of observations made locally to a specific device
 TP.core.Mouse.Type.defineAttribute('observers', TP.hc());

@@ -314,53 +314,53 @@ function(aRequest) {
     //  handleRequestFailed and handleRequestSucceeded calls defined later.
 
     subrequest.defineMethod('cancelJob',
-function(aFaultString, aFaultCode) {
+        function(aFaultString, aFaultCode) {
 
             this.$wrapupJob('Cancelled', TP.CANCELLED,
                             aFaultString, aFaultCode);
 
             return aRequest.cancel(aFaultString, aFaultCode);
-});
+        });
     subrequest.defineMethod('completeJob',
-function(aResult) {
+        function(aResult) {
 
             this.$wrapupJob('Completed', TP.COMPLETED,
                             aResult || subrequest.getResult());
 
             return aRequest.complete(aResult || subrequest.getResult());
-});
+        });
     subrequest.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultStack) {
 
             this.$wrapupJob('Failed', TP.FAILED,
                             aFaultString, aFaultCode);
 
             return aRequest.fail(aFaultString, aFaultCode);
-});
+        });
 
     //  regardless of whether we failed or succeeded this method will be
     //  called when all processing has completed
     subrequest.defineMethod('handleRequestCompleted',
-function() {
+        function() {
             // TODO: real work?
             //window.alert('tsh:service completed');
             return;
-});
+        });
 
     //  If the fail() method is invoked we'll know about it and can process
     //  that here.
     subrequest.defineMethod('handleRequestFailed',
-function() {
+        function() {
 
             // TODO: real work?
             //window.alert('tsh:service failed');
             return;
-});
+        });
 
     //  If the complete() method is invoked we'll find out about it since
     //  this method will be invoked.
     subrequest.defineMethod('handleRequestSucceeded',
-function(aRequest) {
+        function(aRequest) {
 
             //window.alert('tsh:service succeeded');
             TP.ifInfo() ?
@@ -383,7 +383,7 @@ function(aRequest) {
             };
                         */
             return;
-});
+        });
 
     //  the rest is up to the handler :)
     handler.service(finalURL, subrequest);

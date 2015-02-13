@@ -488,10 +488,11 @@ function(aRequest) {
         //  TODO:   expand on capability here. currently the string has to
         //  be something the TP.objectValue() call can handle
 
-        testfunc = function(item) {
+        testfunc =
+            function(item) {
 
-                        return TP.isValid(TP.objectValue(item, str));
-                    };
+                return TP.isValid(TP.objectValue(item, str));
+            };
 
         //  if we're splatted then the return/output variable is expected to
         //  be a collection rather than a single item

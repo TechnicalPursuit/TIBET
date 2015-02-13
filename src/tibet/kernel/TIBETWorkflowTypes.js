@@ -867,7 +867,7 @@ function(aParamInfo, aRequest) {
             if (TP.isValid(paramValue)) {
                 aRequest.atPut(paramName, paramValue);
             }
-    });
+        });
 
     //  We must've modified the credential store above - tell the user object to
     //  save them to the credentials store.
@@ -3707,7 +3707,7 @@ function() {
             return accum;
         });
 
-     return keys;
+    return keys;
 });
 
 //  ========================================================================
@@ -5516,11 +5516,11 @@ function(resourceID, aRequest) {
 
             //  Still don't have a valid service URI.
             if (TP.isEmpty(serviceURI = paramDict.at('serviceURI'))) {
-                    aRequest.fail(
-                        TP.sc('Missing required URI parameter in request: ') +
-                            'serviceURI');
+                aRequest.fail(
+                    TP.sc('Missing required URI parameter in request: ') +
+                        'serviceURI');
 
-                    return;
+                return;
             }
         }
     }

@@ -195,7 +195,7 @@ function(aRequest) {
                         stdioResults.push({meta: 'stderr', data: anObject});
                     });
 
-     stdioProvider.defineMethod('report',
+    stdioProvider.defineMethod('report',
          function(aSignal, stdioResults) {
             stdioResults.forEach(function(item) {
                 if (TP.notValid(item)) {
@@ -1473,25 +1473,29 @@ function(aProvider) {
             'STDIO provider must implement stdin, stdout, and stderr');
     }
 
-    this.notify = function(anObject, aRequest) {
+    this.notify =
+            function(anObject, aRequest) {
 
-                        return aProvider.notify(anObject, aRequest);
-                    };
+                return aProvider.notify(anObject, aRequest);
+            };
 
-    this.stdin = function(aQuery, aDefault, aRequest) {
+    this.stdin =
+            function(aQuery, aDefault, aRequest) {
 
-                        return aProvider.stdin(aQuery, aDefault, aRequest);
-                    };
+                return aProvider.stdin(aQuery, aDefault, aRequest);
+            };
 
-    this.stdout = function(anObject, aRequest) {
+    this.stdout =
+            function(anObject, aRequest) {
 
-                        return aProvider.stdout(anObject, aRequest);
-                    };
+                return aProvider.stdout(anObject, aRequest);
+            };
 
-    this.stderr = function(anError, aRequest) {
+    this.stderr =
+            function(anError, aRequest) {
 
-                        return aProvider.stderr(anError, aRequest);
-                    };
+                return aProvider.stderr(anError, aRequest);
+            };
 
     // The first thing to attach "wins" in that it will be the one we default to
     // whenever we detach later.
@@ -2254,14 +2258,14 @@ function(anObjectSpec, aRequest) {
         //  it doesn't respond). This is to keep the same semantics that the
         //  rest of the shell has around dereference sugar.
         if (TP.regex.TSH_DEREF_SUGAR.test(anObjectSpec)) {
-          if (TP.canInvoke($$inst, 'cmdGetContent')) {
-              $$inst = $$inst.cmdGetContent(aRequest);
-          } else if (TP.canInvoke($$inst, 'getType')) {
-              instType = $$inst.getType();
-              if (TP.canInvoke(instType, 'cmdGetContent')) {
-                  $$inst = instType.cmdGetContent(aRequest);
-              }
-          }
+            if (TP.canInvoke($$inst, 'cmdGetContent')) {
+                $$inst = $$inst.cmdGetContent(aRequest);
+            } else if (TP.canInvoke($$inst, 'getType')) {
+                instType = $$inst.getType();
+                if (TP.canInvoke(instType, 'cmdGetContent')) {
+                    $$inst = instType.cmdGetContent(aRequest);
+                }
+            }
         }
 
     } catch (e) {
@@ -2433,7 +2437,7 @@ function(aRequest) {
     len = this.getType().POSITIONAL_MAX;
 
         //  clear any existing positional arguments in the scope...
-        for (i = 0; i < len; i++) {
+    for (i = 0; i < len; i++) {
         if (TP.notDefined(scope.at('$' + i))) {
             break;
         }
@@ -2827,7 +2831,7 @@ function(aRequest, allForms) {
 
                 dict.atPut(first, TP.ac(last, expandedVal));
             }
-    });
+        });
 
     //  Make sure there's at least an empty ARGV, if one hasn't been populated
     //  above.

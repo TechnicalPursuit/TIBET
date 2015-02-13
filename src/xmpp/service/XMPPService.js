@@ -2339,32 +2339,32 @@ function(aRequest) {
     //  stanza with the same 'ID' is returned, this handler will detect
     //  whether its an error and either fail the request or complete it.
     if (observeReq) {
-                handler = function(aSignal) {
+        handler = function(aSignal) {
 
-                    var tpNode;
+            var tpNode;
 
-                    //  Ignore the signal to avoid having lots of observations
-                    //  around. Note here how we specifically ignore
-                    //  'TP.sig.XMPPInput' in case the signal's signal name is a
-                    //  subtype of that.
-                    this.ignore(reqID, 'TP.sig.XMPPInput', handler);
+            //  Ignore the signal to avoid having lots of observations
+            //  around. Note here how we specifically ignore
+            //  'TP.sig.XMPPInput' in case the signal's signal name is a
+            //  subtype of that.
+            this.ignore(reqID, 'TP.sig.XMPPInput', handler);
 
-                    if (TP.isValid(tpNode = aSignal.getPayload().at('node'))) {
-                        aRequest.set('result', tpNode);
+            if (TP.isValid(tpNode = aSignal.getPayload().at('node'))) {
+                aRequest.set('result', tpNode);
 
-                        if (!aRequest.didComplete()) {
-                            if (tpNode.isError()) {
-                                aRequest.fail();
-                            } else {
-                                aRequest.complete();
-                            }
-                        }
+                if (!aRequest.didComplete()) {
+                    if (tpNode.isError()) {
+                        aRequest.fail();
                     } else {
-                        if (!aRequest.didComplete()) {
-                            aRequest.complete();
-                        }
+                        aRequest.complete();
                     }
-                }.bind(this);
+                }
+            } else {
+                if (!aRequest.didComplete()) {
+                    aRequest.complete();
+                }
+            }
+        }.bind(this);
 
         this.observe(
             reqID,

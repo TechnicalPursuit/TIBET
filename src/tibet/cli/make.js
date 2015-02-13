@@ -10,7 +10,8 @@
  */
 //  ========================================================================
 
-/*eslint no-process-exit:0, no-unused-vars:0*/
+/*eslint no-process-exit:0, no-unused-vars:0, indent:0*/
+
 (function() {
 
 'use strict';

@@ -399,8 +399,8 @@ function(target, options) {
                         return item.getKeys().contains(name);
                     }).collect(
                         function(item) {
-                           return item.at(name);
-                    });
+                            return item.at(name);
+                        });
 
         if (TP.isValid(suites)) {
             return TP.hc(id || name, TP.hc(name, suites));

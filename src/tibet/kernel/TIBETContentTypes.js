@@ -2275,9 +2275,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     if (traversalLevel === 0) {
 
         if (TP.isValid(shouldSignal)) {
-          sigFlag = shouldSignal;
+            sigFlag = shouldSignal;
         } else if (TP.isValid(targetObj)) {
-          sigFlag = targetObj.shouldSignalChange();
+            sigFlag = targetObj.shouldSignalChange();
         }
 
         if (sigFlag) {
@@ -2691,9 +2691,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     if (traversalLevel === 0) {
 
         if (TP.isValid(shouldSignal)) {
-          sigFlag = shouldSignal;
+            sigFlag = shouldSignal;
         } else if (TP.isValid(targetObj)) {
-          sigFlag = targetObj.shouldSignalChange();
+            sigFlag = targetObj.shouldSignalChange();
         }
 
         if (sigFlag) {
@@ -4103,9 +4103,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     targetTPDoc = TP.wrap(targetDoc);
 
     if (TP.isValid(shouldSignal)) {
-      signalChange = shouldSignal;
+        signalChange = shouldSignal;
     } else if (TP.isValid(targetTPDoc)) {
-      signalChange = targetTPDoc.shouldSignalChange();
+        signalChange = targetTPDoc.shouldSignalChange();
     }
 
     //  If the target object is flagging changes, then we set both flags to
@@ -6045,7 +6045,7 @@ function(childElementName, parentElementName) {
                 TP.isArray(childElems = groupElem.at('elements'))) {
                 return TP.BREAK;
             }
-    });
+        });
 
     if (TP.isEmpty(childElems)) {
         return false;

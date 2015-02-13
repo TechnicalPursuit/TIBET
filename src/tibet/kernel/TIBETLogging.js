@@ -1018,9 +1018,9 @@ function(aLevel, arglist) {
      * @returns {TP.log.Logger} The receiver.
      */
 
-     this.$logEntry(TP.log.Entry.construct(this, aLevel, arglist));
+    this.$logEntry(TP.log.Entry.construct(this, aLevel, arglist));
 
-     return this;
+    return this;
 });
 
 //  ----------------------------------------------------------------------------

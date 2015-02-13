@@ -313,9 +313,8 @@ function() {
     //  our observation array
     this.get('triggers').perform(
         function(item) {
-
             item.last().atPut(TP.sig.SignalCoalescer.SEEN_INDEX, 0);
-});
+        });
 
     return this;
 });

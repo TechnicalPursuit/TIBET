@@ -329,8 +329,7 @@ TP.hc(
             xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
         } catch (e) {
             if (TP.notFalse(report)) {
-                    errorRecord =
-                            TP.hc('reason', TP.str(e.message));
+                errorRecord = TP.hc('reason', TP.str(e.message));
                 TP.raise(this, 'TP.sig.DOMParseException',
                             errorRecord);
             }

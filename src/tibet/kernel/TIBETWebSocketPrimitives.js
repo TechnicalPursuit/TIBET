@@ -151,21 +151,21 @@ function(targetUrl, aRequest) {
     //  logging of the request data, and process the results easier
     wsObj.onmessage = function(closeEvt) {
 
-            //  close out the timeout job silently
-            job.kill(true);
+        //  close out the timeout job silently
+        job.kill(true);
 
-            TP.ifInfo() && TP.sys.shouldLogIO() ?
-                TP.sys.logIO(
-                        TP.hc('direction', TP.RECV,
-                                'message', 'WebSocket request completed.'),
-                        TP.INFO) : 0;
+        TP.ifInfo() && TP.sys.shouldLogIO() ?
+            TP.sys.logIO(
+                    TP.hc('direction', TP.RECV,
+                            'message', 'WebSocket request completed.'),
+                    TP.INFO) : 0;
 
-            //  Grab any data sent back by the server and shove it onto
-            //  websocket object as 'responseData'
-            wsObj.responseData = closeEvt.data;
+        //  Grab any data sent back by the server and shove it onto
+        //  websocket object as 'responseData'
+        wsObj.responseData = closeEvt.data;
 
-            TP.$webSocketWrapup(targetUrl, request, wsObj);
-        };
+        TP.$webSocketWrapup(targetUrl, request, wsObj);
+    };
 
     //  isolate the actual send call for finer-grained error handling
     try {

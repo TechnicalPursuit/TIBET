@@ -2587,13 +2587,13 @@ function(moveAction) {
         //  action, the event and the currently focused element (which is
         //  ourself since the signal was fired at us). This could be null if
         //  there is no successor element.
-		successorTPElem = this.computeSuccessorFocusElement(
-										currentTPElem, moveAction);
+        successorTPElem = this.computeSuccessorFocusElement(
+                                        currentTPElem, moveAction);
     } else {
         //  Otherwise, there was no currently focused element, so we compute
         //  the successor element in a different way.
-		successorTPElem = this.computeSuccessorFocusElement(
-										null, moveAction);
+        successorTPElem = this.computeSuccessorFocusElement(
+                                        null, moveAction);
     }
 
     //  If there's a real successor element, then focus it. This will cause
@@ -4079,11 +4079,11 @@ function(stateName) {
      * @returns {Boolean} The value of the piece of state after toggling it.
      */
 
-     if (TP.isTrue(TP.bc(this.getAttribute(stateName)))) {
-         this.setAttribute(stateName, false);
-     } else {
-         this.setAttribute(stateName, true);
-     }
+    if (TP.isTrue(TP.bc(this.getAttribute(stateName)))) {
+        this.setAttribute(stateName, false);
+    } else {
+        this.setAttribute(stateName, true);
+    }
 
     return TP.bc(this.getAttribute(stateName));
 });
@@ -5523,13 +5523,13 @@ isBubbling) {
 
     (function() {
 
-            return this.dispatch(
-                            aSignal,
-                            aPayload,
-                            aPolicy,
-                            isCancelable,
-                            isBubbling);
-        }.bind(this)).afterUnwind();
+        return this.dispatch(
+                        aSignal,
+                        aPayload,
+                        aPolicy,
+                        isCancelable,
+                        isBubbling);
+    }.bind(this)).afterUnwind();
 });
 
 //  ========================================================================

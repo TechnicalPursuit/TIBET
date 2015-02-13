@@ -465,7 +465,8 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesBase.js'
 //  ---
 
 if (TP.sys.isUA('IE', 8, TP.UP)) {
-TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesIE.js';
+    TP.boot[TP.SOURCE_PATH] =
+        '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesIE.js';
 }
 
 //  ---
@@ -473,7 +474,8 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesIE.js';
 //  ---
 
 if (TP.sys.isUA('IE')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETStringPrimitivesIE.js';
+    TP.boot[TP.SOURCE_PATH] =
+        '~lib_src/tibet/kernel/TIBETStringPrimitivesIE.js';
 }
 
 //  ---

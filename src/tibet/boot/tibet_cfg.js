@@ -326,30 +326,30 @@ TP.sys.setcfg('log.color.verbose', 'grey');
 // or a browser. Note these tests are unlikely to work in other contexts.
 if (typeof navigator === 'undefined') {
 
-  TP.sys.setcfg('boot.context', 'nodejs');
-  TP.sys.setcfg('boot.reporter', 'console');
+    TP.sys.setcfg('boot.context', 'nodejs');
+    TP.sys.setcfg('boot.reporter', 'console');
 
-  TP.sys.setcfg('log.color.mode', 'terminal');
-  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
+    TP.sys.setcfg('log.color.mode', 'terminal');
+    TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
 } else if (/PhantomJS/.test(navigator.userAgent)) {
 
-  TP.sys.setcfg('boot.context', 'phantomjs');
-  TP.sys.setcfg('boot.reporter', 'phantom');
+    TP.sys.setcfg('boot.context', 'phantomjs');
+    TP.sys.setcfg('boot.reporter', 'phantom');
 
-  TP.sys.setcfg('boot.level', 'WARN');
-  TP.sys.setcfg('log.level', 'WARN');
+    TP.sys.setcfg('boot.level', 'WARN');
+    TP.sys.setcfg('log.level', 'WARN');
 
-  TP.sys.setcfg('log.color.mode', 'terminal');
-  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
+    TP.sys.setcfg('log.color.mode', 'terminal');
+    TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
 } else {
 
-  TP.sys.setcfg('boot.context', 'browser');
-  TP.sys.setcfg('boot.reporter', 'bootui');
+    TP.sys.setcfg('boot.context', 'browser');
+    TP.sys.setcfg('boot.reporter', 'bootui');
 
-  TP.sys.setcfg('log.color.mode', 'browser');
-  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
+    TP.sys.setcfg('log.color.mode', 'browser');
+    TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 }
 
 //  ---

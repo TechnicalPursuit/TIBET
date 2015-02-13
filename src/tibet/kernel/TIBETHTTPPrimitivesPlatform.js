@@ -364,25 +364,25 @@ TP.hc(
             //  results easier
             httpObj.onreadystatechange = function() {
 
-                    //  the only state we bother with is "complete"
-                    if (httpObj.readyState !== 4) {
-                        return;
-                    }
+                //  the only state we bother with is "complete"
+                if (httpObj.readyState !== 4) {
+                    return;
+                }
 
-                    //  close out the timeout job silently
-                    job.kill(true);
+                //  close out the timeout job silently
+                job.kill(true);
 
-                    request.atPut('direction',
-                                    TP.RECV);
-                    request.atPut('message',
-                                    'HTTP request completed.');
+                request.atPut('direction',
+                                TP.RECV);
+                request.atPut('message',
+                                'HTTP request completed.');
 
-                    TP.ifInfo() && TP.sys.shouldLogIO() ?
-                        TP.sys.logIO(request, TP.INFO) :
-                        0;
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
+                    TP.sys.logIO(request, TP.INFO) :
+                    0;
 
-                    TP.$httpWrapup(targetUrl, request, httpObj);
-                };
+                TP.$httpWrapup(targetUrl, request, httpObj);
+            };
         }
 
         //  isolate the actual send call for finer-grained error
@@ -625,22 +625,22 @@ TP.hc(
             //  logging of the request data, and process the results easier
             httpObj.onreadystatechange = function() {
 
-                    //  the only state we bother with is "complete"
-                    if (httpObj.readyState !== 4) {
-                        return;
-                    }
+                //  the only state we bother with is "complete"
+                if (httpObj.readyState !== 4) {
+                    return;
+                }
 
-                    //  close out the timeout job silently
-                    job.kill(true);
+                //  close out the timeout job silently
+                job.kill(true);
 
-                    request.atPut('direction', TP.RECV);
-                    request.atPut('message', 'HTTP request completed.');
+                request.atPut('direction', TP.RECV);
+                request.atPut('message', 'HTTP request completed.');
 
-                    TP.ifInfo() && TP.sys.shouldLogIO() ?
-                        TP.sys.logIO(request, TP.INFO) : 0;
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
+                    TP.sys.logIO(request, TP.INFO) : 0;
 
-                    TP.$httpWrapup(targetUrl, request, httpObj);
-                };
+                TP.$httpWrapup(targetUrl, request, httpObj);
+            };
         }
 
         //  isolate the actual send call for finer-grained error handling
@@ -857,22 +857,22 @@ TP.hc(
             //  logging of the request data, and process the results easier
             httpObj.onreadystatechange = function() {
 
-                    //  the only state we bother with is "complete"
-                    if (httpObj.readyState !== 4) {
-                        return;
-                    }
+                //  the only state we bother with is "complete"
+                if (httpObj.readyState !== 4) {
+                    return;
+                }
 
-                    //  close out the timeout job silently
-                    job.kill(true);
+                //  close out the timeout job silently
+                job.kill(true);
 
-                    request.atPut('direction', TP.RECV);
-                    request.atPut('message', 'HTTP request completed.');
+                request.atPut('direction', TP.RECV);
+                request.atPut('message', 'HTTP request completed.');
 
-                    TP.ifInfo() && TP.sys.shouldLogIO() ?
-                        TP.sys.logIO(request, TP.INFO) : 0;
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
+                    TP.sys.logIO(request, TP.INFO) : 0;
 
-                    TP.$httpWrapup(targetUrl, request, httpObj);
-                };
+                TP.$httpWrapup(targetUrl, request, httpObj);
+            };
         }
 
         //  isolate the actual send call for finer-grained error handling

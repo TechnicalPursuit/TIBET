@@ -3152,8 +3152,8 @@ function(output, request) {
     //  Compute the tagtime from the cmdStart & cmdEnd
     if (TP.isNumber(start = req.at('cmdStart')) &&
         TP.isNumber(end = req.at('cmdEnd'))) {
-            this.$set('$tagtime', end - start);
-        }
+        this.$set('$tagtime', end - start);
+    }
 
     //  output to the standard error reporting function if we didn't return
     //  due to buffering check
@@ -3400,8 +3400,8 @@ function(output, request) {
     //  Compute the tagtime from the cmdStart & cmdEnd
     if (TP.isNumber(start = req.at('cmdStart')) &&
         TP.isNumber(end = req.at('cmdEnd'))) {
-            this.$set('$tagtime', end - start);
-        }
+        this.$set('$tagtime', end - start);
+    }
 
     //  we don't recheck output after whatever formatting we may have done,
     //  the shell/console routines will do that and complain as needed.

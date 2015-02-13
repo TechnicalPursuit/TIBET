@@ -111,10 +111,10 @@ function(aSignal) {
             .attr('dx', -6)
             .attr('dy', '.35em')
             .attr('text-anchor', 'end')
-            .text(function(d, i) {
-
-                        return String.fromCharCode(65 + i);
-                    });
+            .text(
+                function(d, i) {
+                    return String.fromCharCode(65 + i);
+                });
 
     rules = vis.selectAll('g.rule')
             .data(x.ticks(10))

@@ -147,20 +147,20 @@ TP.core.DragResponder.Type.defineConstant(
         'LOCK_X_TO_ELEMENT_X',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var target,
-                targetParent,
+    var target,
+        targetParent,
 
-                val;
+        val;
 
-            target = aDragResponder.get('actionElement');
-            targetParent = TP.elementGetOffsetParent(target);
+    target = aDragResponder.get('actionElement');
+    targetParent = TP.elementGetOffsetParent(target);
 
-            val = TP.elementGetPageX(targetParent) -
-                    TP.elementGetPageX(target);
+    val = TP.elementGetPageX(targetParent) -
+            TP.elementGetPageX(target);
 
-            xyPoint.setX(val);
+    xyPoint.setX(val);
 
-            return;
+    return;
 });
 
 //  ---
@@ -169,20 +169,20 @@ TP.core.DragResponder.Type.defineConstant(
         'LOCK_Y_TO_ELEMENT_Y',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var target,
-                targetParent,
+    var target,
+        targetParent,
 
-                val;
+        val;
 
-            target = aDragResponder.get('actionElement');
-            targetParent = TP.elementGetOffsetParent(target);
+    target = aDragResponder.get('actionElement');
+    targetParent = TP.elementGetOffsetParent(target);
 
-            val = TP.elementGetPageY(targetParent) -
-                    TP.elementGetPageY(target);
+    val = TP.elementGetPageY(targetParent) -
+            TP.elementGetPageY(target);
 
-            xyPoint.setY(val);
+    xyPoint.setY(val);
 
-            return;
+    return;
 });
 
 //  ---
@@ -191,10 +191,10 @@ TP.core.DragResponder.Type.defineConstant(
         'LOCK_X_TO_START_X',
 function(aDragResponder, aSignal, xyPoint) {
 
-            xyPoint.setX(aDragResponder.get('startSignal').getPageX() -
-                            aDragResponder.get('$offsetPoint').getX());
+    xyPoint.setX(aDragResponder.get('startSignal').getPageX() -
+                    aDragResponder.get('$offsetPoint').getX());
 
-            return;
+    return;
 });
 
 //  ---
@@ -203,10 +203,10 @@ TP.core.DragResponder.Type.defineConstant(
         'LOCK_Y_TO_START_Y',
 function(aDragResponder, aSignal, xyPoint) {
 
-            xyPoint.setY(aDragResponder.get('startSignal').getPageY() -
-                            aDragResponder.get('$offsetPoint').getY());
+    xyPoint.setY(aDragResponder.get('startSignal').getPageY() -
+                    aDragResponder.get('$offsetPoint').getY());
 
-            return;
+    return;
 });
 
 //  ---
@@ -215,22 +215,22 @@ TP.core.DragResponder.Type.defineConstant(
         'INCREMENT_X_BY',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var incrVal,
-                xVal,
-                kallee;
+    var incrVal,
+        xVal,
+        kallee;
 
-            kallee = TP.core.DragResponder.INCREMENT_X_BY;
+    kallee = TP.core.DragResponder.INCREMENT_X_BY;
 
-            /* eslint-disable no-extra-parens */
-            if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
-                xVal = xyPoint.getX();
-                xVal = (((xVal + incrVal) / incrVal).floor()) * incrVal;
+    /* eslint-disable no-extra-parens */
+    if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
+        xVal = xyPoint.getX();
+        xVal = (((xVal + incrVal) / incrVal).floor()) * incrVal;
 
-                xyPoint.setX(xVal);
-            }
-            /* eslint-enable no-extra-parens */
+        xyPoint.setX(xVal);
+    }
+    /* eslint-enable no-extra-parens */
 
-            return;
+    return;
 });
 
 //  ---
@@ -239,22 +239,22 @@ TP.core.DragResponder.Type.defineConstant(
         'INCREMENT_Y_BY',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var incrVal,
-                yVal,
-                kallee;
+    var incrVal,
+        yVal,
+        kallee;
 
-            kallee = TP.core.DragResponder.INCREMENT_Y_BY;
+    kallee = TP.core.DragResponder.INCREMENT_Y_BY;
 
-            /* eslint-disable no-extra-parens */
-            if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
-                yVal = xyPoint.getY();
-                yVal = (((yVal + incrVal) / incrVal).floor()) * incrVal;
+    /* eslint-disable no-extra-parens */
+    if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
+        yVal = xyPoint.getY();
+        yVal = (((yVal + incrVal) / incrVal).floor()) * incrVal;
 
-                xyPoint.setY(yVal);
-            }
-            /* eslint-enable no-extra-parens */
+        xyPoint.setY(yVal);
+    }
+    /* eslint-enable no-extra-parens */
 
-            return;
+    return;
 });
 
 //  ---
@@ -263,32 +263,32 @@ TP.core.DragResponder.Type.defineConstant(
         'INCREMENT_X_AND_Y_BY',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var incrXVal,
-                xVal,
+    var incrXVal,
+        xVal,
 
-                incrYVal,
-                yVal,
-                kallee;
+        incrYVal,
+        yVal,
+        kallee;
 
-            kallee = TP.core.DragResponder.INCREMENT_X_AND_Y_BY;
+    kallee = TP.core.DragResponder.INCREMENT_X_AND_Y_BY;
 
-            /* eslint-disable no-extra-parens */
-            if (TP.isNumber(incrXVal = kallee.modifierData.at('incrementX'))) {
-                xVal = xyPoint.getX();
-                xVal = (((xVal + incrXVal) / incrXVal).floor()) * incrXVal;
+    /* eslint-disable no-extra-parens */
+    if (TP.isNumber(incrXVal = kallee.modifierData.at('incrementX'))) {
+        xVal = xyPoint.getX();
+        xVal = (((xVal + incrXVal) / incrXVal).floor()) * incrXVal;
 
-                xyPoint.setX(xVal);
-            }
+        xyPoint.setX(xVal);
+    }
 
-            if (TP.isNumber(incrYVal = kallee.modifierData.at('incrementY'))) {
-                yVal = xyPoint.getY();
-                yVal = (((yVal + incrYVal) / incrYVal).floor()) * incrYVal;
+    if (TP.isNumber(incrYVal = kallee.modifierData.at('incrementY'))) {
+        yVal = xyPoint.getY();
+        yVal = (((yVal + incrYVal) / incrYVal).floor()) * incrYVal;
 
-                xyPoint.setY(yVal);
-            }
-            /* eslint-enable no-extra-parens */
+        xyPoint.setY(yVal);
+    }
+    /* eslint-enable no-extra-parens */
 
-            return;
+    return;
 });
 
 //  ---
@@ -297,22 +297,22 @@ TP.core.DragResponder.Type.defineConstant(
         'CLAMP_X_TO_OFFSET_PARENT',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var target,
-                targetParent,
+    var target,
+        targetParent,
 
-                xVal;
+        xVal;
 
-            target = aDragResponder.get('actionElement');
+    target = aDragResponder.get('actionElement');
 
-            targetParent = TP.elementGetOffsetParent(target);
+    targetParent = TP.elementGetOffsetParent(target);
 
-            xVal = xyPoint.getX();
+    xVal = xyPoint.getX();
 
-            xVal = xVal.max(0);
-            xVal = xVal.min(TP.elementGetWidth(targetParent) -
-                            TP.elementGetWidth(target));
+    xVal = xVal.max(0);
+    xVal = xVal.min(TP.elementGetWidth(targetParent) -
+                    TP.elementGetWidth(target));
 
-            xyPoint.setX(xVal);
+    xyPoint.setX(xVal);
 });
 
 //  ---
@@ -321,22 +321,22 @@ TP.core.DragResponder.Type.defineConstant(
         'CLAMP_Y_TO_OFFSET_PARENT',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var target,
-                targetParent,
+    var target,
+        targetParent,
 
-                yVal;
+        yVal;
 
-            target = aDragResponder.get('actionElement');
+    target = aDragResponder.get('actionElement');
 
-            targetParent = TP.elementGetOffsetParent(target);
+    targetParent = TP.elementGetOffsetParent(target);
 
-            yVal = xyPoint.getY();
+    yVal = xyPoint.getY();
 
-            yVal = yVal.max(0);
-            yVal = yVal.min(TP.elementGetHeight(targetParent) -
-                            TP.elementGetHeight(target));
+    yVal = yVal.max(0);
+    yVal = yVal.min(TP.elementGetHeight(targetParent) -
+                    TP.elementGetHeight(target));
 
-            xyPoint.setY(yVal);
+    xyPoint.setY(yVal);
 });
 
 //  ---
@@ -345,42 +345,42 @@ TP.core.DragResponder.Type.defineConstant(
         'CLAMP_X_AND_Y_TO_CONTAINER',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var maxFittedRect,
+    var maxFittedRect,
 
-                target,
-                targetContainer,
+        target,
+        targetContainer,
 
-                targetRect,
-                containerRect,
+        targetRect,
+        containerRect,
 
-                maxPoint,
-                kallee;
+        maxPoint,
+        kallee;
 
-            kallee = TP.core.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER;
+    kallee = TP.core.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER;
 
-            if (TP.notValid(maxFittedRect = kallee.tempData.at(
-                    'maxFittedRect'))) {
-                target = aDragResponder.get('actionElement');
+    if (TP.notValid(maxFittedRect = kallee.tempData.at(
+            'maxFittedRect'))) {
+        target = aDragResponder.get('actionElement');
 
-                targetContainer = TP.ifInvalid(kallee.modifierData.at(
-                                                            'container'),
-                                        TP.elementGetOffsetParent(target));
+        targetContainer = TP.ifInvalid(kallee.modifierData.at(
+                                                    'container'),
+                                TP.elementGetOffsetParent(target));
 
-                targetRect = TP.wrap(target).getPageRect();
-                containerRect = TP.wrap(targetContainer).getPageRect();
+        targetRect = TP.wrap(target).getPageRect();
+        containerRect = TP.wrap(targetContainer).getPageRect();
 
-                maxPoint = targetRect.maxFittedPoint(containerRect);
-                maxFittedRect =
-                        TP.rtc(0,
-                                0,
-                                maxPoint.getX(),
-                                maxPoint.getY());
+        maxPoint = targetRect.maxFittedPoint(containerRect);
+        maxFittedRect =
+                TP.rtc(0,
+                        0,
+                        maxPoint.getX(),
+                        maxPoint.getY());
 
-                kallee.tempData.atPut('maxFittedRect',
-                                                maxFittedRect);
-            }
+        kallee.tempData.atPut('maxFittedRect',
+                                        maxFittedRect);
+    }
 
-            xyPoint.clampToRect(maxFittedRect);
+    xyPoint.clampToRect(maxFittedRect);
 });
 
 //  ---
@@ -389,30 +389,30 @@ TP.core.DragResponder.Type.defineConstant(
         'CLAMP_X_TO_CSS_MINMAX',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var actionElem,
+    var actionElem,
 
-                styleVals,
+        styleVals,
 
-                minWidth,
-                maxWidth;
+        minWidth,
+        maxWidth;
 
-            actionElem = aDragResponder.get('actionElement');
-            styleVals = TP.elementGetStyleValuesInPixels(
-                            TP.ac('minWidth', 'maxWidth'));
+    actionElem = aDragResponder.get('actionElement');
+    styleVals = TP.elementGetStyleValuesInPixels(
+                    TP.ac('minWidth', 'maxWidth'));
 
-            if (!TP.isNumber(minWidth = styleVals.at('minWidth'))) {
-                minWidth = 0;
-            }
+    if (!TP.isNumber(minWidth = styleVals.at('minWidth'))) {
+        minWidth = 0;
+    }
 
-            if (!TP.isNumber(maxWidth = styleVals.at('maxWidth'))) {
-                //  Note here how we get the "content box", since that's
-                //  what we're using when we set 'width'.
-                maxWidth = TP.elementGetContentWidth(actionElem);
-            }
+    if (!TP.isNumber(maxWidth = styleVals.at('maxWidth'))) {
+        //  Note here how we get the "content box", since that's
+        //  what we're using when we set 'width'.
+        maxWidth = TP.elementGetContentWidth(actionElem);
+    }
 
-            xyPoint.clampXToMinMax(minWidth, maxWidth);
+    xyPoint.clampXToMinMax(minWidth, maxWidth);
 
-            return;
+    return;
 });
 
 //  ---
@@ -421,31 +421,31 @@ TP.core.DragResponder.Type.defineConstant(
         'CLAMP_Y_TO_CSS_MINMAX',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var actionElem,
+    var actionElem,
 
-                styleVals,
+        styleVals,
 
-                minHeight,
-                maxHeight;
+        minHeight,
+        maxHeight;
 
-            actionElem = aDragResponder.get('actionElement');
-            styleVals = TP.elementGetStyleValuesInPixels(
-                            actionElem,
-                            TP.ac('minHeight', 'maxHeight'));
+    actionElem = aDragResponder.get('actionElement');
+    styleVals = TP.elementGetStyleValuesInPixels(
+                    actionElem,
+                    TP.ac('minHeight', 'maxHeight'));
 
-            if (!TP.isNumber(minHeight = styleVals.at('minHeight'))) {
-                minHeight = 0;
-            }
+    if (!TP.isNumber(minHeight = styleVals.at('minHeight'))) {
+        minHeight = 0;
+    }
 
-            if (!TP.isNumber(maxHeight = styleVals.at('maxHeight'))) {
-                //  Note here how we get the "content box", since that's
-                //  what we're using when we set 'width'.
-                maxHeight = TP.elementGetContentHeight(actionElem);
-            }
+    if (!TP.isNumber(maxHeight = styleVals.at('maxHeight'))) {
+        //  Note here how we get the "content box", since that's
+        //  what we're using when we set 'width'.
+        maxHeight = TP.elementGetContentHeight(actionElem);
+    }
 
-            xyPoint.clampYToMinMax(minHeight, maxHeight);
+    xyPoint.clampYToMinMax(minHeight, maxHeight);
 
-            return;
+    return;
 });
 
 //  ---
@@ -454,34 +454,34 @@ TP.core.DragResponder.Type.defineConstant(
         'CLAMP_X_AND_Y_TO_RECT',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var clampRect,
-                kallee;
+    var clampRect,
+        kallee;
 
-            kallee = TP.core.DragResponder.CLAMP_X_AND_Y_TO_RECT;
+    kallee = TP.core.DragResponder.CLAMP_X_AND_Y_TO_RECT;
 
-            if (TP.notValid(clampRect = kallee.tempData.at('clampData'))) {
-                return;
-            }
+    if (TP.notValid(clampRect = kallee.tempData.at('clampData'))) {
+        return;
+    }
 
-            if (!TP.isKindOf(clampRect, TP.core.Rect)) {
-                if (TP.isElement(clampRect)) {
-                    clampRect = TP.wrap(clampRect);
-                }
+    if (!TP.isKindOf(clampRect, TP.core.Rect)) {
+        if (TP.isElement(clampRect)) {
+            clampRect = TP.wrap(clampRect);
+        }
 
-                if (TP.isKindOf(clampRect, TP.core.UIElementNode)) {
-                    clampRect = clampRect.getPageRect();
-                } else {
-                    clampRect = TP.core.Rect.construct(clampRect);
-                }
+        if (TP.isKindOf(clampRect, TP.core.UIElementNode)) {
+            clampRect = clampRect.getPageRect();
+        } else {
+            clampRect = TP.core.Rect.construct(clampRect);
+        }
 
-                if (!TP.isKindOf(clampRect, TP.core.Rect)) {
-                    clampRect = null;
-                }
+        if (!TP.isKindOf(clampRect, TP.core.Rect)) {
+            clampRect = null;
+        }
 
-                kallee.tempData.atPut('clampData', clampRect);
-            }
+        kallee.tempData.atPut('clampData', clampRect);
+    }
 
-            xyPoint.clampToRect(clampRect);
+    xyPoint.clampToRect(clampRect);
 });
 
 //  ------------------------------------------------------------------------
@@ -1698,36 +1698,36 @@ TP.core.ResizeResponder.Type.defineConstant(
         'CLAMP_RECT_TO_CONTAINER',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var containerRect,
-                target,
-                targetContainer,
-                targetRect,
-                containerOffsets,
-                kallee;
+    var containerRect,
+        target,
+        targetContainer,
+        targetRect,
+        containerOffsets,
+        kallee;
 
-            kallee = TP.core.ResizeResponder.CLAMP_RECT_TO_CONTAINER;
+    kallee = TP.core.ResizeResponder.CLAMP_RECT_TO_CONTAINER;
 
-            if (TP.notValid(containerRect = kallee.tempData.at(
-                                                        'containerRect'))) {
-                target = aDragResponder.get('actionElement');
+    if (TP.notValid(containerRect = kallee.tempData.at(
+                                                'containerRect'))) {
+        target = aDragResponder.get('actionElement');
 
-                targetContainer = TP.ifInvalid(kallee.modifierData.at(
-                                                            'container'),
-                                        TP.elementGetOffsetParent(target));
+        targetContainer = TP.ifInvalid(kallee.modifierData.at(
+                                                    'container'),
+                                TP.elementGetOffsetParent(target));
 
-                targetRect = TP.wrap(target).getPageRect();
-                containerRect = TP.wrap(targetContainer).getPageRect();
+        targetRect = TP.wrap(target).getPageRect();
+        containerRect = TP.wrap(targetContainer).getPageRect();
 
-                containerRect.setXY(0, 0);
-                containerOffsets = TP.elementGetOffsetFromContainer(target);
-                containerRect.shrink(containerOffsets.first(),
-                                        containerOffsets.last());
+        containerRect.setXY(0, 0);
+        containerOffsets = TP.elementGetOffsetFromContainer(target);
+        containerRect.shrink(containerOffsets.first(),
+                                containerOffsets.last());
 
-                kallee.tempData.atPut('containerRect',
-                                                containerRect);
-            }
+        kallee.tempData.atPut('containerRect',
+                                        containerRect);
+    }
 
-            xyPoint.clampToRect(containerRect);
+    xyPoint.clampToRect(containerRect);
 });
 
 //  ------------------------------------------------------------------------
@@ -2647,241 +2647,241 @@ TP.core.MoveResponder.defineSubtype('DNDResponder');
 //  ------------------------------------------------------------------------
 
 TP.core.DNDResponder.Type.defineConstant(
-        'CLAMP_X_AND_Y_TO_CONTAINER',
+'CLAMP_X_AND_Y_TO_CONTAINER',
 function(aDragResponder, aSignal, xyPoint) {
 
-            var maxFittedRect,
-                target,
-                targetContainer,
-                targetRect,
-                containerRect,
-                maxPoint,
-                kallee;
+    var maxFittedRect,
+        target,
+        targetContainer,
+        targetRect,
+        containerRect,
+        maxPoint,
+        kallee;
 
-            kallee = TP.core.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER;
+    kallee = TP.core.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER;
 
-            if (TP.notValid(maxFittedRect =
-                    kallee.tempData.at('maxFittedRect'))) {
-                target = aDragResponder.get('itemElement');
+    if (TP.notValid(maxFittedRect =
+            kallee.tempData.at('maxFittedRect'))) {
+        target = aDragResponder.get('itemElement');
 
-                targetContainer = TP.ifInvalid(
-                        kallee.modifierData.at('container'),
-                        TP.elementGetOffsetParent(target));
+        targetContainer = TP.ifInvalid(
+                kallee.modifierData.at('container'),
+                TP.elementGetOffsetParent(target));
 
-                targetRect = TP.wrap(target).getPageRect();
-                containerRect = TP.wrap(targetContainer).getPageRect();
+        targetRect = TP.wrap(target).getPageRect();
+        containerRect = TP.wrap(targetContainer).getPageRect();
 
-                maxPoint = targetRect.maxFittedPoint(containerRect);
-                maxFittedRect =
-                    TP.rtc(containerRect.getX(),
-                            containerRect.getY(),
-                            maxPoint.getX(),
-                            maxPoint.getY());
+        maxPoint = targetRect.maxFittedPoint(containerRect);
+        maxFittedRect =
+            TP.rtc(containerRect.getX(),
+                    containerRect.getY(),
+                    maxPoint.getX(),
+                    maxPoint.getY());
 
-                kallee.tempData.atPut('maxFittedRect', maxFittedRect);
-            }
+        kallee.tempData.atPut('maxFittedRect', maxFittedRect);
+    }
 
-            xyPoint.clampToRect(maxFittedRect);
+    xyPoint.clampToRect(maxFittedRect);
 });
 
 //  ---
 
 TP.core.DNDResponder.Type.defineConstant(
-        'FILTER_BY_STRING_OR',
+'FILTER_BY_STRING_OR',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
-            var acceptVal,
-                vendVal,
+    var acceptVal,
+        vendVal,
 
-                acceptVals,
-                vendVals;
+        acceptVals,
+        vendVals;
 
-            if (TP.isEmpty(acceptVal =
-                            targetTPElem.getAttribute('dnd:accept'))) {
-                return false;
-            }
+    if (TP.isEmpty(acceptVal =
+                    targetTPElem.getAttribute('dnd:accept'))) {
+        return false;
+    }
 
-            if (TP.notEmpty(vendVal =
-                            sourceTPElem.getAttribute('dnd:vend'))) {
-                acceptVals = acceptVal.split(' ');
-                vendVals = vendVal.split(' ');
+    if (TP.notEmpty(vendVal =
+                    sourceTPElem.getAttribute('dnd:vend'))) {
+        acceptVals = acceptVal.split(' ');
+        vendVals = vendVal.split(' ');
 
-                return acceptVals.containsAny(vendVals);
-            }
+        return acceptVals.containsAny(vendVals);
+    }
 
+    return false;
+});
+
+//  ---
+
+TP.core.DNDResponder.Type.defineConstant(
+'FILTER_BY_STRING_AND',
+function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
+
+    var acceptVal,
+        vendVal,
+
+        acceptVals,
+        vendVals;
+
+    if (TP.isEmpty(acceptVal =
+                    targetTPElem.getAttribute('dnd:accept'))) {
+        return false;
+    }
+
+    if (TP.notEmpty(vendVal =
+                    sourceTPElem.getAttribute('dnd:vend'))) {
+        acceptVals = acceptVal.split(' ');
+        vendVals = vendVal.split(' ');
+
+        return acceptVals.containsAll(vendVals);
+    }
+
+    return false;
+});
+
+//  ---
+
+TP.core.DNDResponder.Type.defineConstant(
+'FILTER_BY_TYPE',
+function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
+
+    var acceptVal,
+        vendVal,
+
+        sig,
+
+        acceptVals,
+        vendVals;
+
+    //  If there is no value for 'dnd:accept', then we can early
+    //  exit here with false. 'Nothing to see here'...
+    if (TP.isEmpty(acceptVal =
+                    targetTPElem.getAttribute('dnd:accept'))) {
+        return false;
+    }
+
+    if (TP.notEmpty(vendVal =
+                    sourceTPElem.getAttribute('dnd:vend'))) {
+        //  Grab 1...n type names from the vend values and try to
+        //  compute TIBET type names from them.
+        vendVals = vendVal.split(' ');
+
+        //  Manufacture a DOMDNDWillVend signal
+        sig = TP.sig.DOMDNDWillVend.construct(null);
+
+        //  Manually call 'handle' against any type names that can
+        //  be derived from each vend value
+        vendVals.perform(
+            function(aVal) {
+
+                var typ;
+
+                if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {
+                    typ.handle(sig);
+                }
+            });
+
+        //  If the signal has been 'prevent default'ed, then return
+        //  false
+        if (sig.shouldPrevent()) {
             return false;
-});
+        }
 
-//  ---
+        //  Now fire the signal, using the source as the 'signal
+        //  source'
+        sig = sourceTPElem.signal(sig);
 
-TP.core.DNDResponder.Type.defineConstant(
-        'FILTER_BY_STRING_AND',
-function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
-
-            var acceptVal,
-                vendVal,
-
-                acceptVals,
-                vendVals;
-
-            if (TP.isEmpty(acceptVal =
-                            targetTPElem.getAttribute('dnd:accept'))) {
-                return false;
-            }
-
-            if (TP.notEmpty(vendVal =
-                            sourceTPElem.getAttribute('dnd:vend'))) {
-                acceptVals = acceptVal.split(' ');
-                vendVals = vendVal.split(' ');
-
-                return acceptVals.containsAll(vendVals);
-            }
-
+        //  If the signal has been 'prevent default'ed, then return
+        //  false
+        if (sig.shouldPrevent()) {
             return false;
-});
+        }
 
-//  ---
+        //  Grab 1...n type names from the accept values and try to
+        //  compute TIBET type names from them.
+        acceptVals = acceptVal.split(' ');
 
-TP.core.DNDResponder.Type.defineConstant(
-        'FILTER_BY_TYPE',
-function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
+        //  Manufacture a DOMDNDWillAccept signal
+        sig = TP.sig.DOMDNDWillAccept.construct(null);
 
-            var acceptVal,
-                vendVal,
+        //  Manually call 'handle' against any type names that can
+        //  be derived from each accept value
+        acceptVals.perform(
+            function(aVal) {
 
-                sig,
+                var typ;
 
-                acceptVals,
-                vendVals;
-
-            //  If there is no value for 'dnd:accept', then we can early
-            //  exit here with false. 'Nothing to see here'...
-            if (TP.isEmpty(acceptVal =
-                            targetTPElem.getAttribute('dnd:accept'))) {
-                return false;
-            }
-
-            if (TP.notEmpty(vendVal =
-                            sourceTPElem.getAttribute('dnd:vend'))) {
-                //  Grab 1...n type names from the vend values and try to
-                //  compute TIBET type names from them.
-                vendVals = vendVal.split(' ');
-
-                //  Manufacture a DOMDNDWillVend signal
-                sig = TP.sig.DOMDNDWillVend.construct(null);
-
-                //  Manually call 'handle' against any type names that can
-                //  be derived from each vend value
-                vendVals.perform(
-                    function(aVal) {
-
-                        var typ;
-
-                        if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {
-                            typ.handle(sig);
-                        }
-                    });
-
-                //  If the signal has been 'prevent default'ed, then return
-                //  false
-                if (sig.shouldPrevent()) {
-                    return false;
+                if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {
+                    typ.handle(sig);
                 }
+            });
 
-                //  Now fire the signal, using the source as the 'signal
-                //  source'
-                sig = sourceTPElem.signal(sig);
-
-                //  If the signal has been 'prevent default'ed, then return
-                //  false
-                if (sig.shouldPrevent()) {
-                    return false;
-                }
-
-                //  Grab 1...n type names from the accept values and try to
-                //  compute TIBET type names from them.
-                acceptVals = acceptVal.split(' ');
-
-                //  Manufacture a DOMDNDWillAccept signal
-                sig = TP.sig.DOMDNDWillAccept.construct(null);
-
-                //  Manually call 'handle' against any type names that can
-                //  be derived from each accept value
-                acceptVals.perform(
-                    function(aVal) {
-
-                        var typ;
-
-                        if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {
-                            typ.handle(sig);
-                        }
-                    });
-
-                //  If the signal has been 'prevent default'ed, then return
-                //  false
-                if (sig.shouldPrevent()) {
-                    return false;
-                }
-
-                //  Now fire the signal, using the target as the 'signal
-                //  source'
-                sig = targetTPElem.signal(sig);
-
-                //  If the signal has been 'prevent default'ed, then return
-                //  false
-                if (sig.shouldPrevent()) {
-                    return false;
-                }
-
-                //  Otherwise, return true
-                return true;
-            }
-
+        //  If the signal has been 'prevent default'ed, then return
+        //  false
+        if (sig.shouldPrevent()) {
             return false;
-});
+        }
 
-//  ---
+        //  Now fire the signal, using the target as the 'signal
+        //  source'
+        sig = targetTPElem.signal(sig);
 
-TP.core.DNDResponder.Type.defineConstant(
-        'FILTER_BY_PATH',
-function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
-
-            var vendVal,
-                matchedElems;
-
-            //  The target element only needs to have a 'dnd:accept' value.
-            //  We don't pay attention to the actual value.
-            if (!targetTPElem.hasAttribute('dnd:accept')) {
-                return false;
-            }
-
-            if (TP.notEmpty(vendVal =
-                            sourceTPElem.getAttribute('dnd:vend'))) {
-                if (TP.notEmpty(matchedElems = sourceTPElem.get(vendVal))) {
-                    return matchedElems.contains(
-                                sourceTPElem.getNativeNode(), TP.IDENTITY);
-                }
-            }
-
+        //  If the signal has been 'prevent default'ed, then return
+        //  false
+        if (sig.shouldPrevent()) {
             return false;
+        }
+
+        //  Otherwise, return true
+        return true;
+    }
+
+    return false;
 });
 
 //  ---
 
 TP.core.DNDResponder.Type.defineConstant(
-        'FILTER_BY_DTD',
+'FILTER_BY_PATH',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
-            //  The target element only needs to have a 'dnd:accept' value.
-            //  We don't pay attention to the actual value.
-            if (!targetTPElem.hasAttribute('dnd:accept')) {
-                return false;
-            }
+    var vendVal,
+        matchedElems;
 
-            return TP.w3.DocType.HTML_401_STRICT.get(
-                        'dtdInfo').elementIsValidChildOf(
-                                itemTPElem.getTagName().toLowerCase(),
-                                targetTPElem.getTagName().toLowerCase());
+    //  The target element only needs to have a 'dnd:accept' value.
+    //  We don't pay attention to the actual value.
+    if (!targetTPElem.hasAttribute('dnd:accept')) {
+        return false;
+    }
+
+    if (TP.notEmpty(vendVal =
+                    sourceTPElem.getAttribute('dnd:vend'))) {
+        if (TP.notEmpty(matchedElems = sourceTPElem.get(vendVal))) {
+            return matchedElems.contains(
+                        sourceTPElem.getNativeNode(), TP.IDENTITY);
+        }
+    }
+
+    return false;
+});
+
+//  ---
+
+TP.core.DNDResponder.Type.defineConstant(
+'FILTER_BY_DTD',
+function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
+
+    //  The target element only needs to have a 'dnd:accept' value.
+    //  We don't pay attention to the actual value.
+    if (!targetTPElem.hasAttribute('dnd:accept')) {
+        return false;
+    }
+
+    return TP.w3.DocType.HTML_401_STRICT.get(
+                'dtdInfo').elementIsValidChildOf(
+                        itemTPElem.getTagName().toLowerCase(),
+                        targetTPElem.getTagName().toLowerCase());
 });
 
 //  ------------------------------------------------------------------------

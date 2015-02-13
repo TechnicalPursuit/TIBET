@@ -118,15 +118,15 @@ function(usingText) {
 //    if (usingText.startsWith('TP')) {
  //       results.push('TP.sys', 'TP.boot');
   //  } else {
-        searchRegExp = TP.rc(TP.regExpEscape(usingText));
+    searchRegExp = TP.rc(TP.regExpEscape(usingText));
 
-        customTypeNames = TP.sys.getMetadata('types').getKeys();
-        customTypeNames.perform(
-            function(aTypeName) {
-                if (searchRegExp.test(aTypeName)) {
-                    results.push(aTypeName);
-                }
-            });
+    customTypeNames = TP.sys.getMetadata('types').getKeys();
+    customTypeNames.perform(
+        function(aTypeName) {
+            if (searchRegExp.test(aTypeName)) {
+                results.push(aTypeName);
+            }
+        });
    // }
 
     return results;
@@ -171,30 +171,30 @@ function(usingText) {
 //    if (usingText.startsWith('TP')) {
  //       results.push('TP.sys', 'TP.boot');
   //  } else {
-        searchRegExp = TP.rc(TP.regExpEscape(usingText));
+    searchRegExp = TP.rc(TP.regExpEscape(usingText));
 
-        methodNames = TP.sys.getMetadata('methods').getKeys();
-        methodNames.perform(
-            function(aMethodName) {
-                var methodName,
-                    ownerName;
+    methodNames = TP.sys.getMetadata('methods').getKeys();
+    methodNames.perform(
+        function(aMethodName) {
+            var methodName,
+                ownerName;
 
-                methodName = aMethodName.slice(aMethodName.lastIndexOf('_') + 1);
+            methodName = aMethodName.slice(aMethodName.lastIndexOf('_') + 1);
 
-                if (searchRegExp.test(methodName)) {
-                    ownerName = aMethodName.slice(0, aMethodName.indexOf('_'));
-                    results.push(methodName + ' (' + ownerName + ')');
+            if (searchRegExp.test(methodName)) {
+                ownerName = aMethodName.slice(0, aMethodName.indexOf('_'));
+                results.push(methodName + ' (' + ownerName + ')');
 
-                    /*
-                    trackName = aMethodName.slice(aMethodName.indexOf('_') + 1,
-                                                aMethodName.lastIndexOf('_'));
+                /*
+                trackName = aMethodName.slice(aMethodName.indexOf('_') + 1,
+                                            aMethodName.lastIndexOf('_'));
 
-                    results.push(
-                        methodName + ' (' + ownerName + ' - ' + trackName + ')');
-                    results.push(methodName);
-                    */
-                }
-            });
+                results.push(
+                    methodName + ' (' + ownerName + ' - ' + trackName + ')');
+                results.push(methodName);
+                */
+            }
+        });
    // }
 
     return results;

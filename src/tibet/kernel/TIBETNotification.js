@@ -63,7 +63,8 @@ TP.core.Annotation.Inst.defineAttribute('message');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Annotation.Inst.defineMethod('init', function(anObject, aMessage) {
+TP.core.Annotation.Inst.defineMethod('init',
+function(anObject, aMessage) {
 
     /**
      * @method init
@@ -89,7 +90,7 @@ TP.core.Annotation.Inst.defineMethod('init', function(anObject, aMessage) {
 //  ----------------------------------------------------------------------------
 
 TP.core.Annotation.Inst.defineMethod('as',
-        function(typeOrFormat, formatParams) {
+function(typeOrFormat, formatParams) {
 
     /**
      * @method as
@@ -129,7 +130,8 @@ TP.core.Annotation.Inst.defineMethod('as',
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Annotation.Inst.defineMethod('asHTMLString', function() {
+TP.core.Annotation.Inst.defineMethod('asHTMLString',
+function() {
 
     /**
      * @method asHTMLString
@@ -150,7 +152,8 @@ TP.core.Annotation.Inst.defineMethod('asHTMLString', function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Annotation.Inst.defineMethod('asJSONSource', function() {
+TP.core.Annotation.Inst.defineMethod('asJSONSource',
+function() {
 
     /**
      * @method asJSONSource
@@ -167,7 +170,8 @@ TP.core.Annotation.Inst.defineMethod('asJSONSource', function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Annotation.Inst.defineMethod('asString', function() {
+TP.core.Annotation.Inst.defineMethod('asString',
+function() {
 
     /**
      * @method asString
@@ -181,7 +185,8 @@ TP.core.Annotation.Inst.defineMethod('asString', function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Annotation.Inst.defineMethod('asXMLString', function() {
+TP.core.Annotation.Inst.defineMethod('asXMLString',
+function() {
 
     /**
      * @method asXMLString
@@ -198,7 +203,8 @@ TP.core.Annotation.Inst.defineMethod('asXMLString', function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Annotation.Inst.defineMethod('toString', function() {
+TP.core.Annotation.Inst.defineMethod('toString',
+function() {
 
     /**
      * @method toString
@@ -214,7 +220,8 @@ TP.core.Annotation.Inst.defineMethod('toString', function() {
 //  TP Primitive
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('annotate', function(anObject, aMessage) {
+TP.definePrimitive('annotate',
+function(anObject, aMessage) {
 
     /**
      * @method annotate
@@ -229,7 +236,8 @@ TP.definePrimitive('annotate', function(anObject, aMessage) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('isAnnotation', function(anObject) {
+TP.definePrimitive('isAnnotation',
+function(anObject) {
 
     /**
      * @method isAnnotation
@@ -3558,11 +3566,11 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
                     //  child of an observer to match. Also, we can just use
                     //  origin as target and not worry about splitting
                     //  observer separately if necessary.
-                            entry = TP.constructOrphanObject();
-                            entry.target = origin;
+                    entry = TP.constructOrphanObject();
+                    entry.target = origin;
                 } else {
                     if (anObserver.indexOf(' ') === TP.NOT_FOUND) {
-                                entry = TP.constructOrphanObject();
+                        entry = TP.constructOrphanObject();
 
                         //  anObserver is a single value, no split required.
                         //  one special case here is that when the origin is
@@ -3583,7 +3591,7 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
                         for (k = 0; k < observers.getSize(); k++) {
                             observer = observers.at(k);
 
-                                    entry = TP.constructOrphanObject();
+                            entry = TP.constructOrphanObject();
 
                             entry.target = observer;
                             entry.xml_target = origin;
@@ -4726,11 +4734,11 @@ aSigEntry, checkTarget) {
 
         aSignal.setOrigin(originalOrigin);
     } catch (e) {
-            TP.ifError() ?
-                TP.error(
-                    TP.ec(e, TP.join('Problem executing handlers for: ',
-                                    TP.str(aSignal))),
-                    TP.SIGNAL_LOG) : 0;
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e, TP.join('Problem executing handlers for: ',
+                                TP.str(aSignal))),
+                TP.SIGNAL_LOG) : 0;
     } finally {
         //  "pop" the signal stack, throwing away the last signal
         //  and making the current signal the one at the end of the

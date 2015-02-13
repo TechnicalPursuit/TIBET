@@ -1422,37 +1422,39 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
     //  so, try to derive a namespaceURI from that.
     if (TP.isEmpty(toXMLNS = newXmlns)) {
         if (TP.regex.HAS_COLON.test(tagName)) {
-          prefix = tagName.split(':').first();
+            prefix = tagName.split(':').first();
 
-          //  First, try to get the namespace declaration from the element
-          //  itself
-          if (TP.isEmpty(toXMLNS = TP.elementGetAttribute(
+            //  First, try to get the namespace declaration from the element
+            //  itself
+            if (TP.isEmpty(toXMLNS = TP.elementGetAttribute(
                                       anElement, 'xmlns:' + prefix))) {
-              //  Next, try to get an ancestor that declared it
-              if (!TP.isElement(
+                //  Next, try to get an ancestor that declared it
+                if (!TP.isElement(
                           elemWithNS =
                               TP.nodeGetFirstAncestorByAttribute(
                                           anElement, 'xmlns:' + prefix))) {
-                  //  Couldn't find one - use TIBET's meta information
-                  toXMLNS = TP.w3.Xmlns.getPrefixURI(prefix);
-              } else {
-                  //  Get it from the ancestor that declared it
-                  toXMLNS = TP.elementGetAttribute(elemWithNS,
+                    //  Couldn't find one - use TIBET's meta information
+                    toXMLNS = TP.w3.Xmlns.getPrefixURI(prefix);
+                } else {
+                    //  Get it from the ancestor that declared it
+                    toXMLNS = TP.elementGetAttribute(elemWithNS,
                                                       'xmlns:' + prefix);
-              }
-          }
+                }
+            }
 
-          // Still empty? Default based on prefix then.
-          if (TP.isEmpty(toXMLNS)) {
-              toXMLNS = 'urn:' + prefix;
-              TP.w3.Xmlns.registerNSInfo(toXMLNS,
-                TP.hc('uri', toXMLNS, 'prefix', prefix));
-          }
+            //  Still empty? Default based on prefix then.
+            if (TP.isEmpty(toXMLNS)) {
+                toXMLNS = 'urn:' + prefix;
+
+                TP.w3.Xmlns.registerNSInfo(
+                        toXMLNS,
+                        TP.hc('uri', toXMLNS, 'prefix', prefix));
+            }
         } else {
-          // No prefix. Bare elements should default to XHTML.
-          if (TP.isEmpty(toXMLNS)) {
-              toXMLNS = TP.w3.Xmlns.XHTML;
-          }
+            //  No prefix. Bare elements should default to XHTML.
+            if (TP.isEmpty(toXMLNS)) {
+                toXMLNS = TP.w3.Xmlns.XHTML;
+            }
         }
     }
 
@@ -1474,11 +1476,14 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
 
     prefix = TP.notEmpty(prefix) ? ':' + prefix : '';
     tagstr = TP.join('<', tagName, ' xmlns' + prefix + '="', toXMLNS, '"',
-      (prefix === ':tibet' ? '' : ' xmlns:tibet="' + TP.w3.Xmlns.TIBET + '" ') +
+                        (prefix === ':tibet' ?
+                                '' :
+                                ' xmlns:tibet="' + TP.w3.Xmlns.TIBET + '" ') +
                         sourceTagStr,
                         ' ', attrStr,
                         '>',
                     '</', tagName, '>');
+
     newElem = TP.elem(tagstr);
 
     if (TP.notValid(newElem)) {
@@ -2143,13 +2148,13 @@ function(anElement, includeDefault) {
         //  problems setting the namespaceURI of Attribute nodes).
         if (fromAttr.namespaceURI === TP.w3.Xmlns.XMLNS ||
             fromAttr.prefix === 'xmlns') {
-                if (fromAttr.name === 'xmlns') {
-                    if (TP.isTrue(includeDefault)) {
-                        xmlnsAttrs.atPut('xmlns', fromAttr.value);
-                    }
-                } else {
-                    xmlnsAttrs.atPut(fromAttr.name, fromAttr.value);
+            if (fromAttr.name === 'xmlns') {
+                if (TP.isTrue(includeDefault)) {
+                    xmlnsAttrs.atPut('xmlns', fromAttr.value);
                 }
+            } else {
+                xmlnsAttrs.atPut(fromAttr.name, fromAttr.value);
+            }
         }
     }
 
@@ -6237,8 +6242,8 @@ function(aNode) {
             }
             if (node.nodeType === 3) {
                 while (node.nextSibling && node.nextSibling.nodeType === 3) {
-                node.nodeValue += node.nextSibling.nodeValue;
-                node.parentNode.removeChild(node.nextSibling);
+                    node.nodeValue += node.nextSibling.nodeValue;
+                    node.parentNode.removeChild(node.nextSibling);
                 }
             } else {
                 normalizeFunc(node.firstChild);
@@ -8005,7 +8010,7 @@ function(aNode, attrPrefix, attrValue, breadthFirst) {
 
     return TP.nodeSelectDescendantElements(
         aNode,
-function(node) {
+        function(node) {
 
             var attrs,
                 len,
@@ -8550,10 +8555,11 @@ function(aNode, aTagName, aNamespaceURI) {
 
                     //  NOTE that since we're in HTML here we ignore the
                     //  namespace URI question
-                    if (matcher.test(TP.qname(node))) {
-                        return true;
-                    }
-                };
+            if (matcher.test(TP.qname(node))) {
+                return true;
+            }
+        };
+
         return TP.nodeSelectDescendantElements(aNode, func);
     }
 
@@ -8577,15 +8583,15 @@ function(aNode, aTagName, aNamespaceURI) {
         matcher = TP.getQNameRegex(aTagName);
         func = function(node) {
 
-                    if (matcher.test(TP.qname(node))) {
-                        if (TP.isString(aNamespaceURI)) {
-                            if (TP.nodeGetNSURI(node) !== aNamespaceURI) {
-                                return false;
-                            }
-                        }
-                        return true;
+            if (matcher.test(TP.qname(node))) {
+                if (TP.isString(aNamespaceURI)) {
+                    if (TP.nodeGetNSURI(node) !== aNamespaceURI) {
+                        return false;
                     }
-                };
+                }
+                return true;
+            }
+        };
 
         return TP.nodeSelectDescendantElements(aNode, func);
     }

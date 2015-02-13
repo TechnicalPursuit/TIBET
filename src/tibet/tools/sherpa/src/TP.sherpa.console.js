@@ -1512,18 +1512,18 @@ function(direction, endPoint) {
         if (endPoint === TP.HEAD) {
             if (cimRange.anchor.line === cimRange.head.line &&
                 cimRange.head.ch === cimRange.anchor.ch + 1) {
-                    return this;
+                return this;
             }
         } else {
 
             if (cimRange.anchor.line === 0 &&
                 cimRange.anchor.ch === 0) {
-                    return this;
+                return this;
             }
 
             if (cimRange.anchor.line === cimRange.head.line &&
                 cimRange.anchor.ch === cimRange.head.ch + 1) {
-                    return this;
+                return this;
             }
         }
 
@@ -1548,17 +1548,17 @@ function(direction, endPoint) {
         if (endPoint === TP.HEAD) {
             if (cimRange.head.line === lastLineInfo.line &&
                 cimRange.head.ch === lastLineInfo.ch) {
-                    return this;
+                return this;
             }
 
             if (cimRange.anchor.line === cimRange.head.line &&
                 cimRange.head.ch === cimRange.anchor.ch - 1) {
-                    return this;
+                return this;
             }
         } else {
             if (cimRange.anchor.line === cimRange.head.line &&
                 cimRange.anchor.ch === cimRange.head.ch - 1) {
-                    return this;
+                return this;
             }
         }
 

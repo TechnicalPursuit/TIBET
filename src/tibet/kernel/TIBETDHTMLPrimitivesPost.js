@@ -1940,8 +1940,8 @@ function(anElement, wantsTransformed) {
 
             if (offsetAncestor !== elementDoc.body &&
                 offsetAncestor !== elementDoc.documentElement) {
-                    offsetX -= offsetAncestor.scrollLeft;
-                    offsetY -= offsetAncestor.scrollTop;
+                offsetX -= offsetAncestor.scrollLeft;
+                offsetY -= offsetAncestor.scrollTop;
             }
 
             offsetAncestor = TP.elementGetOffsetParent(offsetAncestor);
@@ -5039,16 +5039,16 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     //  detached when the busy element is hidden to avoid memory leaks.
     busyElement.busyResizeFunction = function() {
 
-            busyWidth = TP.isNumber(width) ?
-                            width :
-                            anElement.offsetWidth;
-            busyElemStyleObj.width = busyWidth + 'px';
+        busyWidth = TP.isNumber(width) ?
+                        width :
+                        anElement.offsetWidth;
+        busyElemStyleObj.width = busyWidth + 'px';
 
-            busyHeight = TP.isNumber(height) ?
-                            height :
-                            anElement.offsetHeight;
-            busyElemStyleObj.height = busyHeight + 'px';
-        };
+        busyHeight = TP.isNumber(height) ?
+                        height :
+                        anElement.offsetHeight;
+        busyElemStyleObj.height = busyHeight + 'px';
+    };
 
     anElement.ownerDocument.defaultView.addEventListener(
         'resize',

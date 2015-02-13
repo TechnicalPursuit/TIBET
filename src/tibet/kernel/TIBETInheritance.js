@@ -731,7 +731,7 @@ function() {
             }
 
             return false;
-    });
+        });
 
     return subtype;
 });
@@ -2130,117 +2130,117 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         if (TP.sys.$$shouldInvokeInferences()) {
             //if (TP.isCallable(anOrigin[asMethodName]))
             //{
-                TP.sys.logInference(
-                            'Invoking ' +
-                            TP.id(anOrigin) +
-                            '.' +
-                            asMethodName +
-                            //'()' +
-                            '.' +
-                            aMethodName +
-                            '();!',
-                            TP.INFO);
+            TP.sys.logInference(
+                    'Invoking ' +
+                    TP.id(anOrigin) +
+                    '.' +
+                    asMethodName +
+                    //'()' +
+                    '.' +
+                    aMethodName +
+                    '();!',
+                    TP.INFO);
 
-                //      The ability to make the engine actually generate
-                //      functions and then install them on the receiver is
-                //      analogous to the sort of 'hotspot' activity a JVM
-                //      undergoes with the difference that the code didn't exist
-                //      in the case of TIBET's inferencing. In a JVM the hotspot
-                //      engine is simply compiling code the programmer had to
-                //      write. In TIBET the engine is writing code for the
-                //      programmer, then installing it to avoid future calls to
-                //      the inferencing engine. The results are finally added to
-                //      a change log which can be written via CGI etc to a
-                //      server responsible for acting as a source code
-                //      repository for the application. The result is a system
-                //      which truly figures out what you wanted to do, writes
-                //      code to help you do it, installs the code on the proper
-                //      objects, and saves the change to the server so the next
-                //      time you run the application you never invoke the
-                //      inferencer for that function again.
+            //      The ability to make the engine actually generate
+            //      functions and then install them on the receiver is
+            //      analogous to the sort of 'hotspot' activity a JVM
+            //      undergoes with the difference that the code didn't exist
+            //      in the case of TIBET's inferencing. In a JVM the hotspot
+            //      engine is simply compiling code the programmer had to
+            //      write. In TIBET the engine is writing code for the
+            //      programmer, then installing it to avoid future calls to
+            //      the inferencing engine. The results are finally added to
+            //      a change log which can be written via CGI etc to a
+            //      server responsible for acting as a source code
+            //      repository for the application. The result is a system
+            //      which truly figures out what you wanted to do, writes
+            //      code to help you do it, installs the code on the proper
+            //      objects, and saves the change to the server so the next
+            //      time you run the application you never invoke the
+            //      inferencer for that function again.
 
-                //  HERE is a simple, non-hotspot version that works
+            //  HERE is a simple, non-hotspot version that works
 
-                //  do this in two parts for now to ensure proper
-                //  binding as we move along the path...if you don't
-                //  split this out the binding doesn't work properly
-                //inst = anOrigin[asMethodName]();
-                //return inst[aMethodName].apply(inst, anArgArray);
+            //  do this in two parts for now to ensure proper
+            //  binding as we move along the path...if you don't
+            //  split this out the binding doesn't work properly
+            //inst = anOrigin[asMethodName]();
+            //return inst[aMethodName].apply(inst, anArgArray);
 
-                //  here's the hotspot version
-                s = 'var inst;\n' +
-                    'var res;\n' +
-                    'inst=this.' + asMethodName + ';\n' + //'();\n' +
-                    'if (TP.notValid(inst)) return;\n' +
-                    'res=inst.' + aMethodName +
-                        '.apply(inst, arguments);\n' +
-                    'if (TP.notValid(res)) return;\n' +
-                    'return res;\n';
-                //  "return res.as('" + anOrigin.getTypeName() + "');\n";
+            //  here's the hotspot version
+            s = 'var inst;\n' +
+                'var res;\n' +
+                'inst=this.' + asMethodName + ';\n' + //'();\n' +
+                'if (TP.notValid(inst)) return;\n' +
+                'res=inst.' + aMethodName +
+                    '.apply(inst, arguments);\n' +
+                'if (TP.notValid(res)) return;\n' +
+                'return res;\n';
+            //  "return res.as('" + anOrigin.getTypeName() + "');\n";
 
-                //  Original version...no return type reconvert.
-                //s = 'var inst;\n' +
-                //  'inst=this.' + asMethodName + '();\n' +
-                //  'return inst.' + aMethodName +
-                //    '.apply(inst, arguments);';
+            //  Original version...no return type reconvert.
+            //s = 'var inst;\n' +
+            //  'inst=this.' + asMethodName + '();\n' +
+            //  'return inst.' + aMethodName +
+            //    '.apply(inst, arguments);';
 
-                TP.sys.logInference('Generating inferred ' + aMethodName +
-                                    ' method:\n' + s,
-                                    TP.DEBUG);
+            TP.sys.logInference('Generating inferred ' + aMethodName +
+                                ' method:\n' + s,
+                                TP.DEBUG);
 
-                f = TP.fc(s);
+            f = TP.fc(s);
 
-                //f = new Function(s);
+            //f = new Function(s);
 
-                //  install our new function on the receiver...next
-                //  time there won't be any inferencing it will just
-                //  fire.
+            //  install our new function on the receiver...next
+            //  time there won't be any inferencing it will just
+            //  fire.
 
-                //  TODO: for now we don't go further to do
-                //  this at the type or instance method level but
-                //  leave it at the local level. some performance
-                //  might be gained by altering that so a function
-                //  that's constantly targeting new instances of the
-                //  same time would only infer() on the first
-                //  instance.
-                if (TP.isMutable(anOrigin)) {
-                    anOrigin.addLocalMethod(aMethodName, f);
-                } else if (TP.isType(anOrigin)) {
-                    anOrigin.Type.defineMethod(aMethodName, f);
+            //  TODO: for now we don't go further to do
+            //  this at the type or instance method level but
+            //  leave it at the local level. some performance
+            //  might be gained by altering that so a function
+            //  that's constantly targeting new instances of the
+            //  same time would only infer() on the first
+            //  instance.
+            if (TP.isMutable(anOrigin)) {
+                anOrigin.addLocalMethod(aMethodName, f);
+            } else if (TP.isType(anOrigin)) {
+                anOrigin.Type.defineMethod(aMethodName, f);
+            } else {
+                anOrigin.getType().Inst.defineMethod(aMethodName, f);
+            }
+
+            //  here's the fun part...save the change to the
+            //  change log if active so next time we don't even
+            //  do the infer() to begin with!
+            if (TP.sys.shouldLogCodeChanges()) {
+                str = '//\tInference generated method\n';
+                str += anOrigin.getTypeName() + '.add';
+                if (TP.isType(anOrigin)) {
+                    str += 'TypeMethod(\'';
                 } else {
-                    anOrigin.getType().Inst.defineMethod(aMethodName, f);
+                    str += 'InstMethod(\'';
                 }
+                str += aMethodName + '\',' +
+                    f.toString().strip(' anonymous') + ');\n';
 
-                //  here's the fun part...save the change to the
-                //  change log if active so next time we don't even
-                //  do the infer() to begin with!
-                if (TP.sys.shouldLogCodeChanges()) {
-                    str = '//\tInference generated method\n';
-                    str += anOrigin.getTypeName() + '.add';
-                    if (TP.isType(anOrigin)) {
-                        str += 'TypeMethod(\'';
-                    } else {
-                        str += 'InstMethod(\'';
-                    }
-                    str += aMethodName + '\',' +
-                        f.toString().strip(' anonymous') + ');\n';
+                TP.sys.logCodeChange(str, TP.DEBUG);
+            }
 
-                    TP.sys.logCodeChange(str, TP.DEBUG);
-                }
-
-                //  go ahead and run it to resolve this invocation
-                switch (anArgArray.length) {
-                    case 0:
-                        return anOrigin[aMethodName]();
-                    case 1:
-                        return anOrigin[aMethodName](anArgArray[0]);
-                    case 2:
-                        return anOrigin[aMethodName](anArgArray[0],
-                                                        anArgArray[1]);
-                    default:
-                        return anOrigin[aMethodName].apply(anOrigin,
-                                                        anArgArray);
-                }
+            //  go ahead and run it to resolve this invocation
+            switch (anArgArray.length) {
+                case 0:
+                    return anOrigin[aMethodName]();
+                case 1:
+                    return anOrigin[aMethodName](anArgArray[0]);
+                case 2:
+                    return anOrigin[aMethodName](anArgArray[0],
+                                                    anArgArray[1]);
+                default:
+                    return anOrigin[aMethodName].apply(anOrigin,
+                                                    anArgArray);
+            }
         }
     }
 
@@ -4496,8 +4496,8 @@ function(targetType, conflictedTraits, track) {
                                                         return aType.getName();
                                                     }).join(', ') + ')',
                                         TP.LOG) : 0;
-                                    }
                         }
+                    }
                 });
     } else {
 
@@ -6083,7 +6083,7 @@ function(verbose) {
             function(item, index) {
 
                 return TP.str(item, false);
-        });
+            });
 
         joinStr = joinArr.join(joinCh);
     } catch (e) {
@@ -8683,7 +8683,7 @@ function() {
                             'Initialization error for type: ' + item, e);
                     }
                 };
-        });
+            });
     }
 
     return TP.ac();

@@ -77,37 +77,37 @@ function(aWindow) {
     if (TP.notValid(aWindow.dclListener)) {
         dclListener = function(anEvent) {
 
-                        if (anEvent.target !== aWindow.document) {
-                            if (TP.$$DEBUG) {
-                                TP.boot.$stdout(
-                                    'Ignoring DOMContentLoaded from target: ' +
-                                    anEvent.target + '.', TP.DEBUG);
-                            }
-                            return;
-                        }
+            if (anEvent.target !== aWindow.document) {
+                if (TP.$$DEBUG) {
+                    TP.boot.$stdout(
+                        'Ignoring DOMContentLoaded from target: ' +
+                        anEvent.target + '.', TP.DEBUG);
+                }
+                return;
+            }
 
-                        //  NOTE that this signal is only triggered in
-                        //  response to a location change. altering the DOM
-                        //  of the document element won't trigger it.
-                        if (TP.$$DEBUG) {
-                            TP.boot.$stdout('DOMContentLoaded at: ' +
-                                TP.str(anEvent.target), TP.DEBUG);
-                        }
+            //  NOTE that this signal is only triggered in
+            //  response to a location change. altering the DOM
+            //  of the document element won't trigger it.
+            if (TP.$$DEBUG) {
+                TP.boot.$stdout('DOMContentLoaded at: ' +
+                    TP.str(anEvent.target), TP.DEBUG);
+            }
 
 
-                        //  remove so we don't trigger again due to
-                        //  processDocumentLoaded invocation(s)
-                        aWindow.removeEventListener(
-                                'DOMContentLoaded',
-                                dclListener,
-                                false);
+            //  remove so we don't trigger again due to
+            //  processDocumentLoaded invocation(s)
+            aWindow.removeEventListener(
+                    'DOMContentLoaded',
+                    dclListener,
+                    false);
 
-                        //  writing handler is false, we're the location
-                        //  handler
-                        tibetWin.TP.$$processDocumentLoaded(aWindow);
+            //  writing handler is false, we're the location
+            //  handler
+            tibetWin.TP.$$processDocumentLoaded(aWindow);
 
-                        aWindow.dclListener = null;
-                    };
+            aWindow.dclListener = null;
+        };
         aWindow.dclListener = dclListener;
 
         aWindow.addEventListener('DOMContentLoaded', dclListener, false);
@@ -116,32 +116,32 @@ function(aWindow) {
     if (TP.notValid(aWindow.unloadListener)) {
         unloadListener = function(anEvent) {
 
-                            if (anEvent.target !== aWindow.document) {
-                                if (TP.$$DEBUG) {
-                                    TP.boot.$stdout(
-                                        'Ignoring unload from target: ' +
-                                        anEvent.target + '.', TP.DEBUG);
-                                }
-                                return;
-                            }
+            if (anEvent.target !== aWindow.document) {
+                if (TP.$$DEBUG) {
+                    TP.boot.$stdout(
+                        'Ignoring unload from target: ' +
+                        anEvent.target + '.', TP.DEBUG);
+                }
+                return;
+            }
 
-                            //  NOTE that this signal is only triggered in
-                            //  response to a location change. altering the DOM
-                            //  of the document element won't trigger it.
-                            if (TP.$$DEBUG) {
-                                TP.boot.$stdout('unload at: ' +
-                                    TP.str(anEvent.target), TP.DEBUG);
-                            }
+            //  NOTE that this signal is only triggered in
+            //  response to a location change. altering the DOM
+            //  of the document element won't trigger it.
+            if (TP.$$DEBUG) {
+                TP.boot.$stdout('unload at: ' +
+                    TP.str(anEvent.target), TP.DEBUG);
+            }
 
-                            aWindow.removeEventListener(
-                                    'unload',
-                                    unloadListener,
-                                    false);
+            aWindow.removeEventListener(
+                    'unload',
+                    unloadListener,
+                    false);
 
-                            tibetWin.TP.$$processDocumentUnloaded(aWindow);
+            tibetWin.TP.$$processDocumentUnloaded(aWindow);
 
-                            aWindow.unloadListener = null;
-                        };
+            aWindow.unloadListener = null;
+        };
         aWindow.unloadListener = unloadListener;
 
         aWindow.addEventListener('unload', unloadListener, false);

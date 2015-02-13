@@ -1321,7 +1321,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
                 if (aTPElem.isBoundElement() &&
                     TP.notEmpty(bindInfo = aTPElem.getBindingInfoFrom('io')) &&
                     bindInfo.hasKey('checked')) {
-                       return false;
+                    return false;
                 }
 
                 return true;
@@ -1423,7 +1423,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
                 if (aTPElem.isBoundElement() &&
                     TP.notEmpty(bindInfo = aTPElem.getBindingInfoFrom('io')) &&
                     bindInfo.hasKey('checked')) {
-                       return false;
+                    return false;
                 }
 
                 return true;

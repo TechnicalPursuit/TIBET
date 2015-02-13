@@ -319,8 +319,8 @@ TP.hc(
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
-			spec = TP.hc();
-		}
+            spec = TP.hc();
+        }
 
         doc = TP.ifInvalid(aDocument,
                             TP.sys.getUICanvas().getNativeDocument());
@@ -551,8 +551,8 @@ TP.hc(
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
-			spec = TP.hc();
-		}
+            spec = TP.hc();
+        }
 
         doc = TP.ifInvalid(aDocument,
                             TP.sys.getUICanvas().getNativeDocument());
@@ -770,8 +770,8 @@ TP.hc(
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
-			spec = TP.hc();
-		}
+            spec = TP.hc();
+        }
 
         doc = TP.ifInvalid(aDocument,
                             TP.sys.getUICanvas().getNativeDocument());

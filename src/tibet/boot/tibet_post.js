@@ -27,7 +27,7 @@
           $STATUS:true
 */
 
-/* eslint-disable new-cap, no-alert */
+/*eslint new-cap:0, no-alert:0, indent:0*/
 
 //  ----------------------------------------------------------------------------
 
