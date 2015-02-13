@@ -378,7 +378,7 @@ function() {
     //  NOTE that this can't be cached effectively so we always iterate
 
     ancestor = this.getNativeNode();    //  start with this element's node
-    while (TP.isElement(ancestor) && (ancestor.nodeType !== Node.DOCUMENT_NODE)) {
+    while (TP.isElement(ancestor) && ancestor.nodeType !== Node.DOCUMENT_NODE) {
         //  explicit authoring can define this without a bind
         val = TP.elementGetAttribute(ancestor, 'xctrls:readonly');
         if (TP.notEmpty(val)) {
@@ -510,7 +510,7 @@ function(aDirection) {
     //  that and split off the source or sink end of the pipe to get URI.
     if (TP.regex.TSH_PIPE.test(script)) {
         parts = script.split(TP.regex.TSH_PIPE);
-        fname = (aDirection === TP.STDIN) ? 'first' : 'last';
+        fname = aDirection === TP.STDIN ? 'first' : 'last';
         loc = parts[fname]().trim();
         pipe = true;
     } else {
@@ -1377,7 +1377,10 @@ function(cacheName, isID, useGOBI) {
         //  if the string appears to be true or false then convert to a
         //  Boolean instance.
         if (TP.regex.BOOLEAN_ID.test(attr)) {
+
+            /* eslint-disable no-extra-parens */
             return (attr === 'true');
+            /* eslint-enable no-extra-parens */
         }
 
         return attr;

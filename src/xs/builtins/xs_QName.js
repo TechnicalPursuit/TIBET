@@ -91,7 +91,7 @@ function(anObject) {
 
     if (TP.isString(anObject)) {
         str = anObject.stripWhitespace();
-        if ((str.first() !== '{') || (str.last() !== '}')) {
+        if (str.first() !== '{' || str.last() !== '}') {
             return false;
         }
 
@@ -113,8 +113,10 @@ function(anObject) {
         pair = anObject;
     }
 
-    return (('TP.xs.anyURI'.asType().validate(pair.first())) &&
-            ('TP.xs.NCName'.asType().validate().pair.last()));
+    /* eslint-disable no-extra-parens */
+    return ('TP.xs.anyURI'.asType().validate(pair.first()) &&
+            'TP.xs.NCName'.asType().validate().pair.last());
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

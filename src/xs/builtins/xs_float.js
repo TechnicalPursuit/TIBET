@@ -16,8 +16,6 @@
 //  ------------------------------------------------------------------------
 
 TP.xs.anySimpleType.defineSubtype('float');
-
-//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -43,9 +41,7 @@ function(anObject) {
 
     //  certain strings are valid floats even though they're "not numbers"
     s = anObject.asString();
-    if ((s === 'INF') ||
-        (s === '-INF') ||
-        (s === 'NaN')) {
+    if (s === 'INF' || s === '-INF' || s === 'NaN') {
         return true;
     }
 

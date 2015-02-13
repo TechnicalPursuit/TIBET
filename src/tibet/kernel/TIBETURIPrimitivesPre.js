@@ -234,7 +234,7 @@ function(aPath) {
     }
 
     //  variable expansions can sometimes create additional ~ paths
-    if ((path !== start) && (path.indexOf('~') === 0)) {
+    if (path !== start && path.indexOf('~') === 0) {
         return TP.boot.$uriExpandPath(path);
     }
 
@@ -428,9 +428,9 @@ function(aPath) {
 
     //  On Windows we can be drive:\something or \\something. All others
     //  need a /something path for this test to work
-    if ((TP.sys.isWin() &&
+    if (TP.sys.isWin() &&
             (TP.regex.WINDOWS_PATH.test(aPath) ||
-                TP.regex.UNC_PATH.test(aPath))) ||
+                TP.regex.UNC_PATH.test(aPath)) ||
         TP.regex.ROOT_PATH.test(aPath)) {
         return window.unescape(aPath);
     }
@@ -974,7 +974,9 @@ function(aPath) {
 
     //  If the path doesn't start with the launch root, then we can assume
     //  that it needs special security privileges.
+    /* eslint-disable no-extra-parens */
     return (aPath.indexOf(TP.sys.getLaunchRoot()) !== 0);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1085,7 +1087,7 @@ function(firstPath, secondPath, filePath) {
     second = TP.uriCollapsePath(TP.uriExpandPath(secondPath));
 
     //  get the first path normalized
-    if ((first.length > 1) && (first.lastIndexOf('/') === first.length - 1)) {
+    if (first.length > 1 && first.lastIndexOf('/') === first.length - 1) {
         //  if the first path ended in a '/' we can safely remove it since
         //  it's the same directory path with or without the trailing /
         first = first.slice(0, -1);
@@ -1098,12 +1100,15 @@ function(firstPath, secondPath, filePath) {
         //  any / in the second path we use that as the point of trimming
         //  the last segment
         if ((ndx = second.lastIndexOf('/')) !== TP.NOT_FOUND) {
+
+            /* eslint-disable no-extra-parens */
             if (second.lastIndexOf('/') === (second.length - 1)) {
                 second = second.slice(0, -1);
                 second = second.slice(0, second.lastIndexOf('/'));
             } else {
                 second = second.slice(0, second.lastIndexOf('/'));
             }
+            /* eslint-enable no-extra-parens */
         } else {
             //  entire second path is a file name, so our example is
             //  something like file:///thisdir relative to foo.xml. We can't
@@ -1124,13 +1129,18 @@ function(firstPath, secondPath, filePath) {
     } else if (TP.isFalse(filePath)) {
         //  not able to alter second path too much, we're being forced to
         //  interpret it as a directory no matter what, but
+
+        /* eslint-disable no-extra-parens */
         if (second.lastIndexOf('/') === (second.length - 1)) {
             second = second.slice(0, -1);
         }
+        /* eslint-enable no-extra-parens */
     } else {
         //  try to determine if the second path is a file path or a
         //  directory path...the easiest check is does it end with a '/',
         //  after which we can check for an extension on the last portion
+
+        /* eslint-disable no-extra-parens */
         if (second.lastIndexOf('/') === (second.length - 1)) {
             file = false;
             second = second.slice(0, -1);
@@ -1144,6 +1154,7 @@ function(firstPath, secondPath, filePath) {
                 file = false;
             }
         }
+        /* eslint-enable no-extra-parens */
     }
 
     //  after normalization we run our quick checks again
@@ -1331,8 +1342,8 @@ function(aRootPath, aRelativePath, filePath) {
                 //  special case which strips host and/or drive spec
                 prefix = TP.sys.getScheme();
 
-                return (prefix.last() === ':') ? prefix + first :
-                                            prefix + ':' + first;
+                return prefix.last() === ':' ? prefix + first :
+                                                prefix + ':' + first;
             } else if (first.indexOf('/') === 0) {
                 //  a leading slash is actually relative to the launch root
                 //  which with http is the server root and with files is
@@ -1369,8 +1380,8 @@ function(aRootPath, aRelativePath, filePath) {
             //  special case which strips host and/or drive spec
             prefix = TP.sys.getScheme();
 
-            return (prefix.last() === ':') ? prefix + second :
-                                        prefix + ':' + second;
+            return prefix.last() === ':' ? prefix + second :
+                                            prefix + ':' + second;
         } else if (second.indexOf('/') === 0) {
             //  a leading slash is actually relative to the launch root
             //  which with http is the server root and with files is
@@ -1409,7 +1420,7 @@ function(aRootPath, aRelativePath, filePath) {
 
                 //  didn't resolve? then we can consider the first URI
                 //  invalid
-                if (TP.isEmpty(first) || (first.indexOf('~') === 0)) {
+                if (TP.isEmpty(first) || first.indexOf('~') === 0) {
                     return TP.raise(this, 'TP.sig.InvalidURI',
                             'First URI must resolve to absolute path.');
                 }
@@ -1417,8 +1428,8 @@ function(aRootPath, aRelativePath, filePath) {
                 //  special case which strips host and/or drive spec
                 prefix = TP.sys.getScheme();
 
-                first = (prefix.last() === ':') ? prefix + first :
-                                            prefix + ':' + first;
+                first = prefix.last() === ':' ? prefix + first :
+                                                prefix + ':' + first;
             } else if (first.indexOf('/') === 0) {
                 //  a leading slash is actually relative to the launch root
                 //  which with http is the server root and with files is
@@ -1580,7 +1591,7 @@ function(aPath, resourceOnly) {
         //  elements here if it isn't already in place to ensure the proper
         //  context is used - but only if it's not the codeframe spec
         if (path.indexOf('javascript:' + canvas) !== 0 &&
-            (canvas !== TP.gid(window).strip(/tibet:\/\//))) {
+            canvas !== TP.gid(window).strip(/tibet:\/\//)) {
             path = path.replace('javascript:',
                                 'javascript:' + canvas + '.');
         }
@@ -1591,7 +1602,7 @@ function(aPath, resourceOnly) {
     //  if we had tibet:/// with no canvas spec we allow that to be removed,
     //  but all other cases where a canvas is defined we must preserve
 
-    if (TP.notTrue(resourceOnly) && (url.indexOf('tibet:') === 0)) {
+    if (TP.notTrue(resourceOnly) && url.indexOf('tibet:') === 0) {
         parts = url.match(TP.regex.TIBET_URL_SPLITTER);
         if (TP.isArray(parts) && TP.notEmpty(parts.at(3))) {
             return 'tibet:' + parts.at(1) + '/' + parts.at(2) + '/' +
@@ -1653,7 +1664,7 @@ function(text, type, report) {
     }
 
     //  watch out for "empty documents"
-    if (TP.isDocument(doc) && (doc.childNodes.length > 0)) {
+    if (TP.isDocument(doc) && doc.childNodes.length > 0) {
         return doc;
     }
 
@@ -1747,7 +1758,7 @@ function(aPath, aSeparator) {
     sep = TP.ifInvalid(aSeparator, '.');
     ndx = name.lastIndexOf(sep);
 
-    if ((ndx === TP.NOT_FOUND) || (ndx === 0)) {
+    if (ndx === TP.NOT_FOUND || ndx === 0) {
         return '';
     } else {
         return name.slice(ndx + 1);

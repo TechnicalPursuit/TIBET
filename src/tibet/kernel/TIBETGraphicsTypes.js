@@ -1455,12 +1455,14 @@ function(aPoint) {
     data = this.$get('data');
     pointData = aPoint.$get('data');
 
-    if ((pointData.x >= data.x) &&
-        (pointData.y >= data.y) &&
-        (pointData.x <= (data.x + data.width)) &&
-        (pointData.y <= (data.y + data.height))) {
+    /* eslint-disable no-extra-parens */
+    if (pointData.x >= data.x &&
+        pointData.y >= data.y &&
+        pointData.x <= (data.x + data.width) &&
+        pointData.y <= (data.y + data.height)) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     return false;
 });
@@ -1489,12 +1491,14 @@ function(aRect) {
     data = this.$get('data');
     otherData = aRect.$get('data');
 
-    if ((otherData.x >= data.x) &&
-        ((data.x + data.width) >= (otherData.x + otherData.width)) &&
-        (otherData.y >= data.y) &&
-        ((data.y + data.height) >= (otherData.y + otherData.height))) {
+    /* eslint-disable no-extra-parens */
+    if (otherData.x >= data.x &&
+        (data.x + data.width >= otherData.x + otherData.width) &&
+        otherData.y >= data.y &&
+        (data.y + data.height >= otherData.y + otherData.height)) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     return false;
 });
@@ -1548,8 +1552,8 @@ function(aRect) {
     intersectingRect = this.intersection(aRect);
 
     if (TP.notValid(intersectingRect) ||
-        (intersectingRect.$get('data').width <= 0) ||
-        (intersectingRect.$get('data').height <= 0)) {
+        intersectingRect.$get('data').width <= 0 ||
+        intersectingRect.$get('data').height <= 0) {
 
         return TP.ac(this.copy());
     }
@@ -1650,8 +1654,10 @@ function() {
 
     data = this.$get('data');
 
+    /* eslint-disable no-extra-parens */
     return TP.core.Point.construct(data.x + (data.width / 2),
                                     data.y + (data.height / 2));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1991,7 +1997,9 @@ function(aPoint, offset) {
             val = val * distanceFromCorner;
         }
 
+        /* eslint-disable no-extra-parens */
         result = (distanceFromCenter >= val);
+        /* eslint-enable no-extra-parens */
     }
 
     return result;
@@ -4969,7 +4977,10 @@ function() {
 
                 //  Compute the stop value by dividing the stop number by
                 //  the total number of stops.
+
+                /* eslint-disable no-extra-parens */
                 return (stopNum / numStops);
+                /* eslint-enable no-extra-parens */
             });
 
         //  Go ahead and prepend a '0' as the first stop value.
@@ -8334,7 +8345,7 @@ function(aTarget, propertyName, aTransitionParams) {
                 //  elements.
                 if (TP.isValid(stepParams = prevJob.$get('parameters')) &&
                     TP.isArray(allElems = stepParams.at('target')) &&
-                    (allElems.length > 1)) {
+                    allElems.length > 1) {
                     for (i = 0; i < allElems.length; i++) {
                         if (allElems[i] === aTarget) {
                             //  Remove the element from the job's 'target'

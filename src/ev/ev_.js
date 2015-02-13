@@ -445,10 +445,10 @@ function(anElement, shouldRegister) {
                         TP.sys.require('TP.sig.DOMKeySignal') :
                         TP.sig.Signal;
 
-        if ((TP.isType(signalType = TP.sig.SignalMap.$getSignalType(
-                                        signalName, defaultType))) &&
+        if (TP.isType(signalType = TP.sig.SignalMap.$getSignalType(
+                                        signalName, defaultType)) &&
             TP.canInvoke(signalType, 'getDefaultPolicy') &&
-            (signalType.getDefaultPolicy() !== TP.DOM_FIRING)) {
+            signalType.getDefaultPolicy() !== TP.DOM_FIRING) {
             //  a target is defined
             if (TP.notEmpty(target)) {
                 //  but not an observer, so we copy it.
@@ -508,11 +508,11 @@ function(anElement, shouldRegister) {
                         thesigname :
                         aSignalName;
 
-                if ((TP.isType(signalType =
+                if (TP.isType(signalType =
                                 TP.sig.SignalMap.$getSignalType(
-                                        theSignalName, TP.sig.Signal))) &&
+                                        theSignalName, TP.sig.Signal)) &&
                     TP.canInvoke(signalType, 'getDefaultPolicy') &&
-                    (signalType.getDefaultPolicy() !== TP.DOM_FIRING)) {
+                    signalType.getDefaultPolicy() !== TP.DOM_FIRING) {
                     nondomFirers.push(theSignalName);
                 } else {
                     domFirers.push(theSignalName);

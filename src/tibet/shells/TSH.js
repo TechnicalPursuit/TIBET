@@ -507,9 +507,11 @@ function(aRequest) {
 
             //  if the response wasn't adequate we can deal with that by simply
             //  reporting via an output request
+            /* eslint-disable no-extra-parens */
             if (TP.notValid(res) ||
-                (res.getSize() < TP.core.Shell.MIN_USERNAME_LEN)) {
+                res.getSize() < TP.core.Shell.MIN_USERNAME_LEN) {
                 shell.isRunning(false);
+            /* eslint-enable no-extra-parens */
 
                 req = TP.sig.UserOutputRequest.construct(
                             TP.hc('output', 'Invalid username. Must be ' +
@@ -610,7 +612,7 @@ function(aRequest) {
                     //  if we're logged in, initiate the run sequence which will
                     //  load any startup files but allow the login output
                     //  message to display by forking the call here
-                    /* eslint-disable no-wrap-func */
+                    /* eslint-disable no-wrap-func,no-extra-parens */
                     (function() {
 
                         shell.initProfile();
@@ -619,7 +621,7 @@ function(aRequest) {
                         shell.signal('TP.sig.TSH_Login');
 
                      }).fork(20);
-                    /* eslint-enable no-wrap-func */
+                    /* eslint-enable no-wrap-func,no-extra-parens */
 
                     return;
                 });
@@ -1308,13 +1310,13 @@ function(aRequest) {
 
             aRequest.atPut('cmdPhase', nextPhase);
         }
-        while ((cycles < cyclemax) &&
+        while (cycles < cyclemax &&
                 TP.isValid(nextPhase) &&
                 aRequest.isRunnable());
     }
 
     //  make sure we ended the loop the right way, otherwise warn/exit
-    if (TP.notEmpty(phases) && (cycles >= cyclemax)) {
+    if (TP.notEmpty(phases) && cycles >= cyclemax) {
         return aRequest.fail(
             'Terminated content processing: content.phase_max exceeded.');
     } else if (aRequest.didComplete()) {
@@ -3616,8 +3618,8 @@ function(aRequest) {
             function(key) {
 
                 if (TP.isFunction(window[key]) &&
-                    ((window[key][TP.TRACK] === 'Global') ||
-                    (window[key][TP.TRACK] === 'Local'))) {
+                    (window[key][TP.TRACK] === 'Global' ||
+                        window[key][TP.TRACK] === 'Local')) {
                     return true;
                 }
 
@@ -3678,10 +3680,10 @@ function(aRequest) {
     keys = keys.select(
             function(key) {
 
-                if ((key.indexOf('$') === 0) &&
+                if (key.indexOf('$') === 0 &&
                     TP.isFunction(window[key]) &&
-                    ((window[key][TP.TRACK] === 'Global') ||
-                    (window[key][TP.TRACK] === 'Local'))) {
+                    (window[key][TP.TRACK] === 'Global' ||
+                        window[key][TP.TRACK] === 'Local')) {
                     return true;
                 }
 

@@ -113,6 +113,7 @@ function(anObject) {
         return false;
     }
 
+    /* eslint-disable no-extra-parens */
     //  if there's a T, there has to be at least one of H, M, or S
     if (TP.notEmpty(m.at(Date.DURATION_T_INDEX))) {
         return (TP.notEmpty(m.at(Date.DURATION_HOUR_INDEX)) ||
@@ -123,6 +124,7 @@ function(anObject) {
                 TP.isEmpty(m.at(Date.DURATION_MINUTE_INDEX)) &&
                 TP.isEmpty(m.at(Date.DURATION_SECOND_INDEX)));
     }
+    /* eslint-enable no-extra-parens */
 
     //  default to invalid
     return false;
@@ -170,6 +172,7 @@ function(aValue, aFacet) {
 
     test = this.fromObject(TP.elementGetAttribute(aFacet, 'value'));
 
+    /* eslint-disable no-extra-parens */
     if ((this.COMPARISON_DATE_ONE.addDuration(test).getTime() >
         this.COMPARISON_DATE_ONE.addDuration(aValue).getTime()) &&
         (this.COMPARISON_DATE_TWO.addDuration(test).getTime() >
@@ -180,6 +183,7 @@ function(aValue, aFacet) {
         this.COMPARISON_DATE_FOUR.addDuration(aValue).getTime())) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     return false;
 });
@@ -202,6 +206,7 @@ function(aValue, aFacet) {
 
     test = this.fromObject(TP.elementGetAttribute(aFacet, 'value'));
 
+    /* eslint-disable no-extra-parens */
     if ((this.COMPARISON_DATE_ONE.addDuration(test).getTime() >=
         this.COMPARISON_DATE_ONE.addDuration(aValue).getTime()) &&
         (this.COMPARISON_DATE_TWO.addDuration(test).getTime() >=
@@ -212,6 +217,7 @@ function(aValue, aFacet) {
         this.COMPARISON_DATE_FOUR.addDuration(aValue).getTime())) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     return false;
 });
@@ -234,6 +240,7 @@ function(aValue, aFacet) {
 
     test = this.fromObject(TP.elementGetAttribute(aFacet, 'value'));
 
+    /* eslint-disable no-extra-parens */
     if ((this.COMPARISON_DATE_ONE.addDuration(test).getTime() <
         this.COMPARISON_DATE_ONE.addDuration(aValue).getTime()) &&
         (this.COMPARISON_DATE_TWO.addDuration(test).getTime() <
@@ -244,6 +251,7 @@ function(aValue, aFacet) {
         this.COMPARISON_DATE_FOUR.addDuration(aValue).getTime())) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     return false;
 });
@@ -266,6 +274,7 @@ function(aValue, aFacet) {
 
     test = this.fromObject(TP.elementGetAttribute(aFacet, 'value'));
 
+    /* eslint-disable no-extra-parens */
     if ((this.COMPARISON_DATE_ONE.addDuration(test).getTime() <=
         this.COMPARISON_DATE_ONE.addDuration(aValue).getTime()) &&
         (this.COMPARISON_DATE_TWO.addDuration(test).getTime() <=
@@ -276,6 +285,7 @@ function(aValue, aFacet) {
         this.COMPARISON_DATE_FOUR.addDuration(aValue).getTime())) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     return false;
 });

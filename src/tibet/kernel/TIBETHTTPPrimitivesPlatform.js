@@ -414,7 +414,7 @@ TP.hc(
                         estr = 'The URL needs privileges and' +
                                     ' couldn\'t obtain them. Bad' +
                                     ' CORS request?';
-                    } else if ((httpObj.status === 0) &&
+                    } else if (httpObj.status === 0 &&
                         TP.isEmpty(estr =
                                     TP.$httpObtainSecurityInfo(
                                         httpObj))) {

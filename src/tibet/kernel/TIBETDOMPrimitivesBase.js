@@ -65,7 +65,7 @@ function(anElement, expandVirtuals) {
     //  Make sure the 'xml:base' is expanded and if its not, set the
     //  attribute's value back to the fully expanded value.
     expandedBase = TP.uriExpandPath(base);
-    if ((base !== expandedBase) && shouldExpand) {
+    if (base !== expandedBase && shouldExpand) {
         TP.elementSetAttributeInNS(elem, 'xml:base', expandedBase,
                                     TP.w3.Xmlns.XML);
     }
@@ -87,7 +87,7 @@ function(anElement, expandVirtuals) {
             //  Make sure the 'xml:base' is expanded and if its not, set the
             //  attribute's value back to the fully expanded value.
             expandedBase = TP.uriExpandPath(base);
-            if ((base !== expandedBase) && shouldExpand) {
+            if (base !== expandedBase && shouldExpand) {
                 TP.elementSetAttributeInNS(elem,
                                             'xml:base',
                                             expandedBase,

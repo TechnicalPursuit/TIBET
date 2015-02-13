@@ -651,9 +651,9 @@ function(aSignal) {
             }
 
             uor.atPut('output',
-                    ((TP.$DEBUG && TP.$VERBOSE) ?
+                    TP.$DEBUG && TP.$VERBOSE ?
                         'Invalid input. Validator is: ' + func :
-                        err));
+                        err);
 
             uor.atPut('messageType', 'failure');
 

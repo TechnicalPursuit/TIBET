@@ -220,11 +220,11 @@ function() {
     }
 
     //  set up keyboard toggle to show/hide us
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function () {
         this.toggle();
     }).bind(this).observe(TP.core.Keyboard, toggleKey);
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     /*
     (function () {
@@ -412,7 +412,7 @@ function() {
     //  If there are not enough screens, according to the number configured by
     //  the user, create more.
     if (configNumIFrames > numIFrames) {
-        for (i = 0; i < (configNumIFrames - numIFrames); i++) {
+        for (i = 0; i < configNumIFrames - numIFrames; i++) {
             screenElem = TP.documentCreateElement(uiDoc,
                                                     'screen',
                                                     TP.w3.Xmlns.SHERPA);

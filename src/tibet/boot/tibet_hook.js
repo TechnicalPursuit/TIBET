@@ -73,7 +73,7 @@ $$getNextWindow = function(aWindow, aTimestamp) {
         siblings,
         i;
 
-    win = (aWindow == null) ? window : aWindow;
+    win = aWindow == null ? window : aWindow;
 
     //  before we start going up, can we go 'sideways'?
     if (win.parent != null && win.parent !== win) {
@@ -167,7 +167,7 @@ $$findTIBET = function(aWindow) {
     }
 
     //  start at the current window, or the window provided
-    win = (aWindow == null) ? window : aWindow;
+    win = aWindow == null ? window : aWindow;
 
     ts = (new Date()).getTime();
 
@@ -331,7 +331,9 @@ TP.boot.$isElement = function(anObj) {
      * @returns {Boolean}
      */
 
+    /* eslint-disable no-extra-parens */
     return (anObj != null && anObj.nodeType === Node.ELEMENT_NODE);
+    /* eslint-enable no-extra-parens */
 };
 
 //  ------------------------------------------------------------------------
@@ -345,7 +347,9 @@ TP.boot.$isEmpty = function(anObj) {
      * @returns {Boolean}
      */
 
+    /* eslint-disable no-extra-parens */
     return (anObj == null || anObj === '' || anObj.length === 0);
+    /* eslint-enable no-extra-parens */
 };
 
 //  ------------------------------------------------------------------------
@@ -359,9 +363,11 @@ TP.boot.$isEvent = function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is an Event object.
      */
 
+    /* eslint-disable no-extra-parens */
     return (anObj != null &&
             anObj.clientX !== undefined &&
             anObj.clientY !== undefined);
+    /* eslint-enable no-extra-parens */
 };
 
 //  ------------------------------------------------------------------------
@@ -387,7 +393,9 @@ TP.boot.$isTrue = function(aValue) {
         return false;
     }
 
+    /* eslint-disable no-extra-parens */
     return (typeof aValue === 'boolean' && aValue.valueOf() === true);
+    /* eslint-enable no-extra-parens */
 };
 
 //  ------------------------------------------------------------------------
@@ -717,11 +725,11 @@ if (window.onerror.failedlaunch !== true &&
         }
 
         cooky = aName + '=' + encodeURI(aValue);
-        cooky += (expiresAt == null) ? '' : '; expires=' +
+        cooky += expiresAt == null ? '' : '; expires=' +
                                                     expiresAt.toGMTString();
-        cooky += (wantsSecurity !== true) ? '' : '; secure';
-        cooky += (aDomain == null) ? '' : '; domain=' + aDomain;
-        cooky += (aPath == null) ? '' : '; path=' + aPath;
+        cooky += wantsSecurity !== true ? '' : '; secure';
+        cooky += aDomain == null ? '' : '; domain=' + aDomain;
+        cooky += aPath == null ? '' : '; path=' + aPath;
 
         try {
             document.cookie = cooky;
@@ -1255,6 +1263,7 @@ if (window.onerror.failedlaunch !== true &&
                     i = btoaData[f];
 
                     /* jshint bitwise:false */
+                    /* eslint-disable no-extra-parens */
                     if (f >= 0 && f < 128 && i !== -1) {
                         if (n % 4 === 0) {
                             c = i << 2;
@@ -1267,6 +1276,7 @@ if (window.onerror.failedlaunch !== true &&
                         } else {
                             e = e | i;
                         }
+                    /* eslint-enable no-extra-parens */
                     /* jshint bitwise:true */
 
                         n++;
@@ -1357,7 +1367,7 @@ if (window.onerror.failedlaunch !== true &&
                     target = this.target;
 
                     if (target && target.nodeType !== Node.DOCUMENT_NODE) {
-                        target = (target.nodeType === Node.TEXT_NODE) ?
+                        target = target.nodeType === Node.TEXT_NODE ?
                                                     target.parentNode :
                                                     target;
 
@@ -1402,7 +1412,7 @@ if (window.onerror.failedlaunch !== true &&
                     target = this.target;
 
                     if (target && target.nodeType !== Node.DOCUMENT_NODE) {
-                        target = (target.nodeType === Node.TEXT_NODE) ?
+                        target = target.nodeType === Node.TEXT_NODE ?
                                                     target.parentNode :
                                                     target;
 
@@ -1717,12 +1727,14 @@ if (window.onerror.failedlaunch !== true &&
 
         var win;
 
-        win = (aWindow != null) ? aWindow : window;
+        win = aWindow != null ? aWindow : window;
 
         //  the things we'll use are the things we care about the most here
+        /* eslint-disable no-extra-parens */
         return (win.$$instrumented === true &&
                 win.$$tibet != null &&
                 win.TP != null);
+        /* eslint-enable no-extra-parens */
     };
 
     //  ------------------------------------------------------------------------
@@ -2006,7 +2018,7 @@ if (window.onerror.failedlaunch !== true &&
 
         theEventName = eventName;
 
-        if (TP.boot.$$isMoz() && (eventName === 'mousewheel')) {
+        if (TP.boot.$$isMoz() && eventName === 'mousewheel') {
             theEventName = 'DOMMouseScroll';
         }
 
@@ -2048,7 +2060,7 @@ if (window.onerror.failedlaunch !== true &&
             return;
         }
 
-        if (TP.boot.$$isMoz() && (eventName === 'mousewheel')) {
+        if (TP.boot.$$isMoz() && eventName === 'mousewheel') {
             theEventName = 'DOMMouseScroll';
         }
 

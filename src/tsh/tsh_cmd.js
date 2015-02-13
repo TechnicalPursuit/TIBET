@@ -420,7 +420,9 @@ function(aString, aShell, aRequest, asTokens) {
     //  complete the token processing. this may "reprocess" the initial
     //  token if it didn't signify something particular to the start of a
     //  line such as an alias or ^-based substitution.
+    /* eslint-disable no-extra-parens */
     while ((token = arr[i])) {
+    /* eslint-enable no-extra-parens */
         switch (token.name) {
             case 'substitution':
 
@@ -534,7 +536,7 @@ function(aString, aShell, aRequest, asTokens) {
                                 }
                             }
 
-                            if ((last === ';') &&
+                            if (last === ';' &&
                                 TP.notDefined(TP.global[token.value])) {
                                 //  assignment, rewrite the identifier.
                                 result.push('$SCOPE', '.');
@@ -643,7 +645,7 @@ function(aliasString, aTokenArray) {
         if (TP.$is_identifier(token.name)) {
             next = aTokenArray[i + 1];
             while (next &&
-                    (next.value !== '=') &&
+                    next.value !== '=' &&
                     !TP.$is_whitespace(next.name)) {
                 i += 1;
                 token.value += next.value;
@@ -664,7 +666,7 @@ function(aliasString, aTokenArray) {
     while (token) {
         if (TP.$is_identifier(token.name)) {
             next = tokens[i + 1];
-            if ((next) && (next.value === '=')) {
+            if (next && next.value === '=') {
                 value = tokens[i + 2];
                 if (value) {
                     params.atPut(token.value,
@@ -697,8 +699,8 @@ function(aliasString, aTokenArray) {
     result = TP.ac();
 
     while (token) {
-        if ((token.name === 'substitution') &&
-            (token.value.charAt(0) === '$')) {
+        if (token.name === 'substitution' &&
+            token.value.charAt(0) === '$') {
             //  Slice off the leading '${' and trailing '}'
             name = token.value.slice(2, token.value.length - 1);
 
@@ -788,7 +790,7 @@ function(aTokenArray) {
 
     //  Only worry about access path rewrites for paths with at least 2
     //  tokens, otherwise it's a standalone identifer at most.
-    if (TP.isEmpty(arr = aTokenArray) || (arr.getSize() < 2)) {
+    if (TP.isEmpty(arr = aTokenArray) || arr.getSize() < 2) {
         return false;
     }
 
@@ -923,8 +925,8 @@ function(REQUEST$$) {
 
     //  if the command text started (originally) with an escape then literal
     //  will be set to true so we don't attempt desugaring
-    if (($NODE.getAttribute('tsh:literal') !== 'true') &&
-        ($REQUEST.at('cmdLiteral') !== true)) {
+    if ($NODE.getAttribute('tsh:literal') !== 'true' &&
+        $REQUEST.at('cmdLiteral') !== true) {
         $SCRIPT = this.$desugarTSH($SCRIPT, $SHELL, $REQUEST);
 
         //  certain desugaring attempts can recognize that the request is
@@ -1153,8 +1155,8 @@ function(REQUEST$$, CMDTYPE$$) {
     }
 
     //  convert to expand any aliases etc. unless literal text is forced
-    if (($NODE.getAttribute('tsh:literal') !== 'true') &&
-        ($REQUEST.at('cmdLiteral') !== true)) {
+    if ($NODE.getAttribute('tsh:literal') !== 'true' &&
+        $REQUEST.at('cmdLiteral') !== true) {
         $SCRIPT = this.$desugarTSH($SCRIPT, $SHELL, $REQUEST);
 
         //  certain desugaring attempts can recognize that the request is
@@ -1249,8 +1251,11 @@ function(REQUEST$$, CMDTYPE$$) {
                                             true, true, true);
 
                 //  all literal token representations are single tokens
+
+                /* eslint-disable no-extra-parens */
                 if (TOKENS$$.length === 1) {
                     QUERY$$ = (PIPE$$.indexOf('?') !== TP.NOT_FOUND);
+                /* eslint-enable no-extra-parens */
 
                     TOKEN$$ = TOKENS$$[0];
                     switch (TOKEN$$.name) {
@@ -1484,7 +1489,10 @@ function(REQUEST$$, CMDTYPE$$) {
                     //  since that's not accurate...we're doing
                     //  interactive input here.
                     ERR$$ = e.message;
+
+                    /* eslint-disable no-extra-parens */
                     ERR$$ = (ERR$$.indexOf(':: file:') === TP.NOT_FOUND) ?
+                    /* eslint-enable no-extra-parens */
                         TP.trim(ERR$$) :
                         TP.trim(ERR$$.slice(0, ERR$$.indexOf(':: file:')));
                     if (/[sS]yntax/.test(ERR$$)) {
@@ -1919,7 +1927,10 @@ function(aString, aShell, aRequest) {
                 //  NOTE we slice off the file reference at the tail since that's
                 //  not accurate...we're doing interactive input here.
                 err = e.message;
+
+                /* eslint-disable no-extra-parens */
                 err = (err.indexOf(':: file:') === TP.NOT_FOUND) ?
+                /* eslint-enable no-extra-parens */
                     TP.trim(err) :
                     TP.trim(err.slice(0, err.indexOf(':: file:')));
                 err = err.endsWith('.') ? err : err + '.';

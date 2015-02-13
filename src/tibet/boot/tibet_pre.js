@@ -990,7 +990,7 @@ TP.sys.defineGlobal = function(aName, aValue, force) {
     //  when this is converted to a hash during finalization
     TP.sys.$globals.push(aName);
 
-    wasUndefined = (typeof TP.global[aName] === 'undefined');
+    wasUndefined = typeof TP.global[aName] === 'undefined';
 
     //  if the slot was truly undefined, then we go ahead and do a
     //  'defineProperty' here. Note that we don't otherwise, since it may be
@@ -1270,7 +1270,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
 
     //  we'll use "tmp" as the default category when none is provided
     if (TP.boot.$$PROP_KEY_REGEX.test(aKey) === false) {
-        key = (aPrefix) ? aPrefix + '.' + aKey : 'tmp.' + aKey;
+        key = aPrefix ? aPrefix + '.' + aKey : 'tmp.' + aKey;
     } else {
         key = aKey;
     }

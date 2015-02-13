@@ -179,9 +179,11 @@ TP.$is_ioend = function(anOperator) {
     @return     Boolean
     */
 
-    return (anOperator === '.;') ||
-            (anOperator === '.||') ||
-            (anOperator === '.&&');
+    /* eslint-disable no-extra-parens */
+    return (anOperator === '.;' ||
+            anOperator === '.||' ||
+            anOperator === '.&&');
+    /* eslint-enable no-extra-parens */
 };
 
 //  ------------------------------------------------------------------------
@@ -221,7 +223,9 @@ TP.$is_terminator = function(anOperator) {
     @return     Boolean
     */
 
-    return (anOperator === ';') || (TP.boot.$tshOpRegex.test(anOperator));
+    /* eslint-disable no-extra-parens */
+    return (anOperator === ';' || TP.boot.$tshOpRegex.test(anOperator));
+    /* eslint-enable no-extra-parens */
 };
 
 //  ------------------------------------------------------------------------
@@ -235,9 +239,11 @@ TP.$is_whitespace = function(tokenType) {
     @return     Boolean     True for whitespace token subtypes.
     */
 
-    return tokenType === 'space' ||
+    /* eslint-disable no-extra-parens */
+    return (tokenType === 'space' ||
             tokenType === 'tab' ||
-            tokenType === 'newline';
+            tokenType === 'newline');
+    /* eslint-enable no-extra-parens */
 };
 
 //  ------------------------------------------------------------------------
@@ -322,8 +328,8 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
     //  can use 'dereferencing sugar', but the system will strip this before it
     //  tries to evaluate it.
 
-    identHead = (args === true) ? /[@$_a-zA-Z{]/ : /[@$_a-zA-Z]/;
-    identBody = (args === true) ? /[{$_a-zA-Z0-9}]/ : /[$_a-zA-Z0-9]/;
+    identHead = args === true ? /[@$_a-zA-Z{]/ : /[@$_a-zA-Z]/;
+    identBody = args === true ? /[{$_a-zA-Z0-9}]/ : /[$_a-zA-Z0-9]/;
 
     //  easily tested strings used for identifier/operator testing
     keywords = TP.boot.$keywordString;
@@ -405,11 +411,11 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
         from = i;
 
         //  a bit nasty, but seems to work even with &nbsp;
-        if ((c <= ' ') || (c.charCodeAt(0) === 160)) {
+        if (c <= ' ' || c.charCodeAt(0) === 160) {
             //  control characters are largely stripped when found but we do
             //  handle certain forms of whitespace to preserve semantics.
 
-            if ((c === ' ') || (c.charCodeAt(0) === 160)) {
+            if (c === ' ' || c.charCodeAt(0) === 160) {
                 result.push(new_token('space', c));
             } else if (c === '\t') {
                 result.push(new_token('tab', c));
@@ -430,18 +436,23 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
             i += 1;
             c = src.charAt(i);
         } else if (identHead.test(c) ||
+
+                /* eslint-disable no-extra-parens */
                 (tsh && (c === '~' ||
                          c === '#' ||
                         (c === '.' && src.charAt(i + 1) === '/') ||
                         (c === '.' && src.charAt(i + 1) === '.' &&
                             src.charAt(i + 2) === '/')
                         ))) {
+                /* eslint-enable no-extra-parens */
 
             //  identifiers start with $, _, or a-zA-Z, then allow 0-9
             str = c;
             i += 1;
 
+            /* eslint-disable no-extra-parens */
             startsTemplate = (str === '{' && src.charAt(i) === '{');
+            /* eslint-enable no-extra-parens */
 
             if (tsh && startsTemplate) {
 
@@ -494,13 +505,15 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                 c = src.charAt(i);
 
                 //  '#', '~', '/', './' or '../' starts a URI
+
+                /* eslint-disable no-extra-parens */
                 startsURI =
                     (str === '#' && !digit.test(c)) ||
                     (str === '~') ||
                     (str === '.' && c === '/') ||
                     (str === '.' && c === '.' && src.charAt(i + 1) === '/');
 
-                if ((identBody.test(c) === true) ||
+                if (identBody.test(c) === true ||
                     (tsh && startsURI)) {
                     str += c;
                     i += 1;
@@ -513,13 +526,13 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                         str += c;
                         i += 1;
                     }
+                    /* eslint-enable no-extra-parens */
 
                     //  in the TSH we have special cases for URI syntax so
                     //  you can type http://www.tibet.com and not lose the
                     //  tail as a comment. the one caveat is that we rely on a
                     //  strict list of schemes and only support those here.
-                    if (tsh && ((c === ':' && TP.$is_scheme(str)) ||
-                                startsURI)) {
+                    if (tsh && (c === ':' && TP.$is_scheme(str) || startsURI)) {
 
                         //  if we get into a paren, note it... that means
                         //  this is an XPointer of some sort, which means it
@@ -584,14 +597,14 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
 
                                 //  TSH pipe/redirection symbol is a
                                 //  terminator
-                                if ((c === '.') &&
+                                if (c === '.' &&
                                     '|&<>({['.indexOf(src.charAt(i + 1)) >= 0) {
                                     break;
                                 }
 
                                 //  If aliasing then substitutions are a
                                 //  terminator.
-                                if (alias && (c === '$') &&
+                                if (alias && c === '$' &&
                                     '{'.indexOf(src.charAt(i + 1)) >= 0) {
                                     break;
                                 }
@@ -640,9 +653,12 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
 
             //  NOTE that the character which triggered failure of our inner
             //  for-loop will be in c, so we don't need to adjust index/char
+
+        /* eslint-disable no-extra-parens */
         } else if (digit.test(c) ||
                 (c === '-' && digit.test(src.charAt(i + 1))) ||
                 (c === '+' && digit.test(src.charAt(i + 1)))) {
+        /* eslint-enable no-extra-parens */
             err = false;
 
             //  number: 0xblah for Hex, optional e/E exponent, etc.
@@ -738,7 +754,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
 
                     //  check for optional +/- sign for exponent
                     //  should only be digits after optional +/-
-                    if ((digit.test(c) !== true) && c !== '-' && c !== '+') {
+                    if (digit.test(c) !== true && c !== '-' && c !== '+') {
                         err = true;
                         TP.boot.$stderr('Bad exponent: ' +
                             TP.boot.$dump(new_token('number', str + c),
@@ -816,7 +832,10 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                         TP.boot.$dump(new_token('number', str), ', '));
                 }
             }
-        } else if (c === '\'' || c === '"' || (tsh && (c === '`'))) {
+
+        /* eslint-disable no-extra-parens */
+        } else if (c === '\'' || c === '"' || (tsh && c === '`')) {
+        /* eslint-enable no-extra-parens */
             //  quoted string...and TSH command-substitutions. these are
             //  all treated as "quoting characters", but we tokenize the
             //  command substitution as such rather than as a string when
@@ -990,9 +1009,9 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                     //  haveto either be assigned to a variable or passed to
                     //  a function like split or replace.
                     if (exp && last &&
-                        (last.value !== '=') &&
-                        (last.value !== '(') &&
-                        (last.value !== ',')) {
+                        last.value !== '=' &&
+                        last.value !== '(' &&
+                        last.value !== ',') {
                         result.push(new_token('operator', '/'));
                         i += 1;
                         c = src.charAt(i);
@@ -1011,7 +1030,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                             //  character (newline or end of stream) so it's
                             //  _not_ a regular expression...could be either
                             //  a / or /= operator
-                            str = (src.charAt(i + 1) === '=') ? '/=' : '/';
+                            str = src.charAt(i + 1) === '=' ? '/=' : '/';
                             result.push(new_token('operator', str));
                             i += str.length;
                             c = src.charAt(i);
@@ -1021,7 +1040,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                         //  forward brackets inside character classes don't
                         //  have to be escaped...so we don't want to count
                         //  them twice
-                        if ((c === '[') && (block < 1)) {
+                        if (c === '[' && block < 1) {
                             //  if not escaped...count it
                             k = j - 1;
                             count = 0;
@@ -1038,7 +1057,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                         //  reverse brackets inside character classes don't
                         //  have to be escaped...so we don't want to count
                         //  them twice
-                        if ((c === ']') && (block > 0)) {
+                        if (c === ']' && block > 0) {
                             //  if not escaped...count it
                             k = j - 1;
                             count = 0;
@@ -1056,7 +1075,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                         //  class we're at the end of the regex. we'll need
                         //  to increment the c to keep the outer loop
                         //  running properly
-                        if (c === '/' && (block === 0)) {
+                        if (c === '/' && block === 0) {
                             //  bit tricky since you can have multiple
                             //  \'s and we need to know if the number is
                             //  odd or even to determine whether we're
@@ -1105,7 +1124,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                     }
                     break;
             }
-        } else if (tsh && (c === '<') && (src.charAt(i + 1) === '/')) {
+        } else if (tsh && c === '<' && src.charAt(i + 1) === '/') {
             //  XML tag closing operator
             result.push(new_token('operator', '</'));
             i += 2;
@@ -1205,7 +1224,7 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
                 /* jshint -W041, eqeqeq:false */
                 if (newlines == null || newlines === false) {
                 /* jshint +W041, eqeqeq:true */
-                    if (!last || (last.name === 'newline')) {
+                    if (!last || last.name === 'newline') {
                         continue;
                     }
 
@@ -1220,14 +1239,17 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
                     //  newlines after } in most cases.
                     if (last &&
                         last.name === 'operator' && last.value === '}') {
+
+                        /* eslint-disable no-extra-parens */
                         if ((next = arr[i + 1])) {
+                        /* eslint-enable no-extra-parens */
                             //  common syntax where we can be sure that
                             //  removing the newline won't create a bug
-                            if ((next.value === 'else') ||
-                                (next.value === 'catch') ||
-                                (next.value === 'finally') ||
-                                (next.value === '}') ||
-                                (next.value === ')')) {
+                            if (next.value === 'else' ||
+                                next.value === 'catch' ||
+                                next.value === 'finally' ||
+                                next.value === '}' ||
+                                next.value === ')') {
                                 continue;
                             }
                         }
@@ -1244,7 +1266,7 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
 
                 //  if spaces is explicity false then we skip removal
                 /* jshint -W041, eqeqeq:false */
-                if ((spaces != null) && (spaces === false)) {
+                if (spaces != null && spaces === false) {
                 /* jshint +W041, eqeqeq:true */
                     result.push(tokens ? token : token.value);
                     last = token;
@@ -1254,7 +1276,10 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
                 //  trim leading or repeating sequences of whitespace since
                 //  that can't alter semantics while we're preserving at
                 //  least one space or tab between other tokens
+
+                /* eslint-disable no-extra-parens */
                 if (!last || (last && TP.$is_whitespace(last.name))) {
+                /* eslint-enable no-extra-parens */
                     break;
                 }
 
@@ -1263,17 +1288,20 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
                 //  to confuse things...as in foo - -bar which transforms
                 //  into foo--bar aka foo-- bar (oops).
                 next = arr[i + 1];
-                if ((last && (last.name === 'operator')) ||
-                    (next && (next.name === 'operator'))) {
+
+                /* eslint-disable no-extra-parens */
+                if ((last && last.name === 'operator') ||
+                    (next && next.name === 'operator')) {
                     //  tsh terminators should preserve space
                     if ((last && TP.boot.$tshOpRegex.test(last.value)) ||
                         (next && TP.boot.$tshOpRegex.test(next.value))) {
                         result.push(tokens ? token : token.value);
                         last = token;
                     }
+                /* eslint-enable no-extra-parens */
 
                     //  other bugs are ++ and -- combinations
-                    if ((last && next) &&
+                    if (last && next &&
                         (/[-+]$/.test(last.value) &&
                         /^[-+]/.test(next.value))) {
                         result.push(tokens ? token : token.value);
@@ -1301,7 +1329,7 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
     }
 
     //  join and add a proper final newline as needed (vim-friendly :))
-    return result.join('') + ((last && last.name !== 'newline') ? '\n' : '');
+    return result.join('') + (last && last.name !== 'newline' ? '\n' : '');
 };
 
 //  ------------------------------------------------------------------------

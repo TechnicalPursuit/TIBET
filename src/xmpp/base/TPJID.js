@@ -76,11 +76,13 @@ function(aString) {
 
     hostInd = aString.lastIndexOf('@');
 
+    /* eslint-disable no-extra-parens */
     //  the @ has to be between two actual values, not at the end
-    if ((aString.indexOf('@') === 0) ||
-        (hostInd === (aString.getSize() - 1))) {
+    if (aString.indexOf('@') === 0 ||
+        hostInd === (aString.getSize() - 1)) {
         return this.raise('TP.sig.InvalidJID', aString);
     }
+    /* eslint-enable no-extra-parens */
 
     //  Grab the 'node identifier' and 'host identifier' portions of the
     //  JID.
@@ -574,7 +576,9 @@ function() {
             return true;
         }
 
+        /* eslint-disable no-extra-parens */
         return (show === 'chat' || show === 'normal');
+        /* eslint-enable no-extra-parens */
     }
 });
 

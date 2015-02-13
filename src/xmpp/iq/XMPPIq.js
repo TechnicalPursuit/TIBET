@@ -72,7 +72,7 @@ function() {
         query;
 
     //  we only build for 'get' or 'set' stanzas
-    if ((this.get('tagType') === 'get') || (this.get('tagType') === 'set')) {
+    if (this.get('tagType') === 'get' || this.get('tagType') === 'set') {
         inst = this.getType().construct(null, 'result', this.get('from'));
     } else {
         return;
@@ -80,7 +80,7 @@ function() {
 
     //  add a query tag for any query-embedded namespace we carry
     if (TP.isValid(query = this.getPayload('query')) &&
-        (query.getSize() > 0)) {
+        query.getSize() > 0) {
         inst.addQuery(this.getNamespaceURI());
     }
 
@@ -124,7 +124,7 @@ function(aStanza) {
     payload = this.get('payload');
 
     //  if we have only one packet, let it determine the signal name
-    if (TP.isValid(payload) && (payload.getSize() === 1)) {
+    if (TP.isValid(payload) && payload.getSize() === 1) {
         //  Note how we pass ourself along as the 'stanza'.
         return payload.at(0).getSignalName(this);
     }

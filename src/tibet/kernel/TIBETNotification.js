@@ -239,8 +239,10 @@ TP.definePrimitive('isAnnotation', function(anObject) {
      * @returns {Boolean} True if the object is any form of annotation.
      */
 
+    /* eslint-disable no-extra-parens */
     return (anObject instanceof TP.boot.Annotation) ||
         TP.isKindOf(anObject, TP.core.Annotation);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ========================================================================
@@ -3428,8 +3430,8 @@ function(anOrigin) {
 
     var orgid;
 
-    orgid = (TP.isValid(anOrigin)) ? TP.id(anOrigin) : TP.ANY;
-    if ((orgid === '*') || (orgid === '')) {
+    orgid = TP.isValid(anOrigin) ? TP.id(anOrigin) : TP.ANY;
+    if (orgid === '*' || orgid === '') {
         orgid = TP.ANY;
     }
 
@@ -3443,8 +3445,8 @@ function(aSignal) {
 
     var signame;
 
-    signame = (TP.isValid(aSignal)) ? aSignal.getSignalName() : TP.ANY;
-    if (TP.notValid(signame) || (signame === '*') || (signame === '')) {
+    signame = TP.isValid(aSignal) ? aSignal.getSignalName() : TP.ANY;
+    if (TP.notValid(signame) || signame === '*' || signame === '') {
         signame = TP.ANY;
     }
 
@@ -3518,14 +3520,14 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
 
     TP.stop('break.signal_register');
 
-    if ((TP.isEmpty(anOrigin)) || (anOrigin === '*')) {
+    if (TP.isEmpty(anOrigin) || anOrigin === '*') {
         origins = TP.ANY;
     } else {
         origins = anOrigin;
     }
     origins = origins.split(' ');
 
-    if (TP.isEmpty(aSignal) || (aSignal === '*')) {
+    if (TP.isEmpty(aSignal) || aSignal === '*') {
         events = TP.ANY;
     } else {
         events = aSignal;
@@ -3697,7 +3699,7 @@ function(aHandlerEntry, quiet) {
     if (TP.canInvoke(type, 'getSignalOwner') &&
         TP.isValid(owner = type.getSignalOwner())) {
 
-        if ((owner !== origin) && TP.canInvoke(owner, 'addObserver')) {
+        if (owner !== origin && TP.canInvoke(owner, 'addObserver')) {
             owner.addObserver(orgid, signame);
         }
     }
@@ -3936,7 +3938,7 @@ function(aHandlerEntry) {
     if (TP.canInvoke(type, 'getSignalOwner') &&
         TP.isValid(owner = type.getSignalOwner())) {
 
-        if ((owner !== origin) && TP.canInvoke(owner, 'removeObserver')) {
+        if (owner !== origin && TP.canInvoke(owner, 'removeObserver')) {
             owner.removeObserver(orgid, signame);
         }
     }
@@ -4383,7 +4385,7 @@ function(anOrigin, aSignal, captureState) {
 
         //  if the specific handler is suspended or flagged for removal
         //  then just skip it
-        if ((item.suspend === true) || (item.remove === true)) {
+        if (item.suspend === true || item.remove === true) {
             continue;
         }
 
@@ -4556,7 +4558,7 @@ aSigEntry, checkTarget) {
 
             //  if the specific handler is suspended or flagged for
             //  removal then just skip it
-            if ((item.suspend === true) || (item.remove === true)) {
+            if (item.suspend === true || item.remove === true) {
                 TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                         TP.trace('Listener ' + i +
                                  ' is suspended or removed.',
@@ -4588,9 +4590,9 @@ aSigEntry, checkTarget) {
                 xml_target = item.xml_target;
                 observer = item.observer;
 
-                if (TP.notEmpty(xml_target) && (xml_target !== TP.ANY)) {
-                    if ((xml_target !== targetID) &&
-                        (xml_target !== observer)) {
+                if (TP.notEmpty(xml_target) && xml_target !== TP.ANY) {
+                    if (xml_target !== targetID &&
+                        xml_target !== observer) {
                         TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                                 TP.trace(TP.join('DOM target check ',
                                 ' wanted: ', xml_target,
@@ -4849,8 +4851,10 @@ function(anOrigin, signalSet, aPayload, aType) {
     policy = TP.sig.SignalMap.FIRE_ONE;
 
     //  deal with possibility that origin IS an array
+    /* eslint-disable no-extra-parens */
     if ((TP.isArray(anOrigin) && !anOrigin.isOriginSet()) ||
         (!TP.isArray(anOrigin))) {
+    /* eslint-enable no-extra-parens */
         //  work with a consistent ID
         orgid = TP.id(anOrigin);
 
@@ -5959,7 +5963,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
         if (TP.isType(type) &&
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
-            if ((owner !== origin) && TP.canInvoke(owner, 'removeObserver')) {
+            if (owner !== origin && TP.canInvoke(owner, 'removeObserver')) {
                 adjustMap = owner.removeObserver(anOrigin, typename,
                                                     aHandler, aPolicy);
                 if (!adjustMap) {
@@ -6017,8 +6021,10 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
         j;
 
     //  deal with possibility that origin IS an array
+    /* eslint-disable no-extra-parens */
     if ((TP.isArray(origins) && !origins.isOriginSet()) ||
-        (!TP.isArray(origins))) {
+        !TP.isArray(origins)) {
+    /* eslint-enable no-extra-parens */
         //  only one origin
         if (TP.isArray(signals)) {
             //  array of signals but only the array as an origin
@@ -6164,7 +6170,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
         if (TP.isType(type) &&
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
-            if ((owner !== origin) && TP.canInvoke(owner, 'addObserver')) {
+            if (owner !== origin && TP.canInvoke(owner, 'addObserver')) {
                 adjustMap = owner.addObserver(anOrigin, typename,
                                                 aHandler, aPolicy);
                 if (!adjustMap) {
@@ -6307,7 +6313,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
         if (TP.isType(type) &&
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
-            if ((owner !== origin) && TP.canInvoke(owner, 'resumeObserver')) {
+            if (owner !== origin && TP.canInvoke(owner, 'resumeObserver')) {
                 adjustMap = owner.resumeObserver(anOrigin, typename);
                 if (!adjustMap) {
                     return;
@@ -6439,7 +6445,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
         if (TP.isType(type) &&
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
-            if ((owner !== origin) &&
+            if (owner !== origin &&
                 TP.canInvoke(owner, 'suspendObserver')) {
                 adjustMap = owner.suspendObserver(anOrigin, typename);
                 if (!adjustMap) {
@@ -6597,7 +6603,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
 
     if (TP.canInvoke(type, 'getSignalOwner') &&
         TP.isValid(owner = type.getSignalOwner())) {
-        if ((owner !== origin) && TP.canInvoke(owner, 'signalObservers')) {
+        if (owner !== origin && TP.canInvoke(owner, 'signalObservers')) {
             shouldSignalMap = owner.signalObservers(
                                                 anOrigin, aSignal,
                                                 aPayload, aPolicy, aType,
@@ -6611,7 +6617,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  watch out for DOMFocus signals trying to work between the tools and
     //  the debugger...basically unusable in that mode
     TP.stop(TP.sys.cfg('break.signal') &&
-                (TP.name(aSignal).indexOf('DOMFocus') !== 0));
+            TP.name(aSignal).indexOf('DOMFocus') !== 0);
 
     if (TP.sys.cfg('break.signal_exception')) {
         if (/Invalid|Exception/.test(aSignal) ||

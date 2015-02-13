@@ -198,7 +198,7 @@ Date.Type.defineConstant('LOCALTIME_TOKENS',
             },
     'm', function(target) {
 
-                return (target.getISOMonth());
+                return target.getISOMonth();
             },
     'mm', function(target) {
 
@@ -361,7 +361,7 @@ Date.Type.defineConstant('UTC_TOKENS',
             },
     'm', function(target) {
 
-                return (target.getUTCISOMonth());
+                return target.getUTCISOMonth();
             },
     'mm', function(target) {
 
@@ -802,7 +802,9 @@ function(aYear) {
     //  should override this method and provide the correct end day for DST
     //  (Summer) time.
 
+    /* eslint-disable no-extra-parens */
     endDay = (31 - (((aYear * 5) / 4).floor() + 1) % 7);
+    /* eslint-enable no-extra-parens */
 
     //  DST ends on the last Sunday in October at 02:00 in the U.S.
 
@@ -845,7 +847,9 @@ function(aYear) {
     //  should override this method and provide the correct start day for
     //  DST (Summer) time.
 
+    /* eslint-disable no-extra-parens */
     startDay = (2 + (6 * aYear) - (aYear / 4).floor()) % 7 + 1;
+    /* eslint-enable no-extra-parens */
 
     //  DST starts on the first Sunday in April at 02:00 in the U.S.
 
@@ -1064,6 +1068,8 @@ function(aYear) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable no-extra-parens */
+
     //  multiples of 400 are always a leap year
     if ((aYear % 400) === 0) {
         return true;
@@ -1079,6 +1085,8 @@ function(aYear) {
     if ((aYear % 100) === 0) {
         return false;
     }
+
+    /* eslint-enable no-extra-parens */
 
     return true;
 });
@@ -1186,7 +1194,9 @@ function(aDuration) {
 
     secs = Date.getSecondsInDuration(aDuration);
 
+    /* eslint-disable no-extra-parens */
     return TP.dc(aDate.getTime() + (secs * 1000));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1316,9 +1326,11 @@ function() {
         days += Date.DAYS_PER_MONTH[index];
     }
 
+    /* eslint-disable no-extra-parens */
     if (Date.isLeapYear(this.getFullYear()) && (month > 1)) {
         days += 1;
     }
+    /* eslint-enable no-extra-parens */
 
     return days;
 });
@@ -1408,6 +1420,8 @@ function() {
     ms = this.getTime();
     sunday = ms - offset;
 
+    /* eslint-disable no-extra-parens */
+
     //  construct array of ms values for that week
     weekdays = TP.ac();
     weekdays.add(sunday);
@@ -1417,6 +1431,8 @@ function() {
     weekdays.add(sunday + (4 * Date.MSPERDAY));
     weekdays.add(sunday + (5 * Date.MSPERDAY));
     weekdays.add(sunday + (6 * Date.MSPERDAY));
+
+    /* eslint-enable no-extra-parens */
 
     //  convert ms values into date instances
     weekdays.convert(
@@ -1448,8 +1464,10 @@ function() {
 
     day = this.getDay();
 
+    /* eslint-disable no-extra-parens */
     //  If it's Sunday, return 7
     return (day === 0) ? 7 : day;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1583,12 +1601,16 @@ function() {
 
     julianDay = this.getJulianDay().round();
 
+    /* eslint-disable no-extra-parens */
+
     d4 = (julianDay + 31741 - (julianDay % 7)) % 146097 % 36524 % 1461;
 
     L = (d4 / 1460).floor();
     d1 = ((d4 - L) % 365) + L;
 
     weekNum = (d1 / 7).floor() + 1;
+
+    /* eslint-enable no-extra-parens */
 
     return weekNum;
 });
@@ -1841,7 +1863,7 @@ function() {
         days += Date.DAYS_PER_MONTH[index];
     }
 
-    if (Date.isLeapYear(this.getUTCFullYear()) && (month > 1)) {
+    if (Date.isLeapYear(this.getUTCFullYear()) && month > 1) {
         days += 1;
     }
 
@@ -1936,6 +1958,8 @@ function() {
     ms = this.getTime();
     sunday = ms - offset;
 
+    /* eslint-disable no-extra-parens */
+
     //  construct array of ms values for that week
     weekdays = TP.ac();
     weekdays.add(sunday);
@@ -1945,6 +1969,8 @@ function() {
     weekdays.add(sunday + (4 * Date.MSPERDAY));
     weekdays.add(sunday + (5 * Date.MSPERDAY));
     weekdays.add(sunday + (6 * Date.MSPERDAY));
+
+    /* eslint-enable no-extra-parens */
 
     //  convert ms values into date instances
     weekdays.convert(
@@ -1976,8 +2002,10 @@ function() {
 
     day = this.getUTCDay();
 
+    /* eslint-disable no-extra-parens */
     //  If it's Sunday, return 7
     return (day === 0) ? 7 : day;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2076,12 +2104,16 @@ function() {
 
     julianDay = this.getUTCJulianDay().round();
 
+    /* eslint-disable no-extra-parens */
+
     d4 = (julianDay + 31741 - (julianDay % 7)) % 146097 % 36524 % 1461;
 
     L = (d4 / 1460).floor();
     d1 = ((d4 - L) % 365) + L;
 
     weekNum = (d1 / 7).floor() + 1;
+
+    /* eslint-enable no-extra-parens */
 
     return weekNum;
 });
@@ -2411,7 +2443,7 @@ function() {
     //  date's MS count, then it falls within the half of the year that is
     //  considered to be 'Daylight Saving Time' (or 'Summer Time' in some
     //  places).
-    if ((aDateMS >= startDateMS) && (aDateMS <= endDateMS)) {
+    if (aDateMS >= startDateMS && aDateMS <= endDateMS) {
         return true;
     } else {
         return false;
@@ -2483,7 +2515,7 @@ function() {
     //  date's MS count, then it falls within the half of the year that is
     //  considered to be 'Daylight Saving Time' (or 'Summer Time' in some
     //  places).
-    if ((aDateMS >= startDateMS) && (aDateMS <= endDateMS)) {
+    if (aDateMS >= startDateMS && aDateMS <= endDateMS) {
         return true;
     } else {
         return false;
@@ -2508,9 +2540,11 @@ function(aDate) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    return ((this.getUTCFullYear() === aDate.getUTCFullYear()) &&
-            (this.getUTCMonth() === aDate.getUTCMonth()) &&
-            (this.getUTCDate() === aDate.getUTCDate()));
+    /* eslint-disable no-extra-parens */
+    return (this.getUTCFullYear() === aDate.getUTCFullYear() &&
+            this.getUTCMonth() === aDate.getUTCMonth() &&
+            this.getUTCDate() === aDate.getUTCDate());
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2531,8 +2565,10 @@ function(aDate) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    return ((this.getUTCFullYear() === aDate.getUTCFullYear()) &&
-            (this.getUTCMonth() === aDate.getUTCMonth()));
+    /* eslint-disable no-extra-parens */
+    return (this.getUTCFullYear() === aDate.getUTCFullYear() &&
+            this.getUTCMonth() === aDate.getUTCMonth());
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2553,9 +2589,11 @@ function(aDate) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    return ((aDate.getTime() >= this.getUTCStartOfWeek()) &&
-            (aDate.getTime() <= (this.getUTCStartOfWeek() +
-                                                (Date.MSPERDAY * 7))));
+    /* eslint-disable no-extra-parens */
+    return (aDate.getTime() >= this.getUTCStartOfWeek() &&
+            aDate.getTime() <= (this.getUTCStartOfWeek() +
+                                                (Date.MSPERDAY * 7)));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2576,7 +2614,9 @@ function(aDate) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable no-extra-parens */
     return (this.getUTCFullYear() === aDate.getUTCFullYear());
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2878,7 +2918,9 @@ function(aDuration) {
 
     secs = Date.getSecondsInDuration(aDuration);
 
+    /* eslint-disable no-extra-parens */
     return TP.dc(aDate.getTime() - (secs * 1000));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ========================================================================
@@ -3017,7 +3059,9 @@ function(min, max) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable no-extra-parens */
     div = (max - min) + 1;
+    /* eslint-enable no-extra-parens */
     randNum = Math.random();
 
     for (i = 0; i <= div - 1; i++) {
@@ -3226,8 +3270,7 @@ function() {
 
     msFraction = (this + 0) / 1000;
 
-    if ((msFraction < 1) &&
-        (msFraction.toString().charAt(0) !== '0')) {
+    if (msFraction < 1 && msFraction.toString().charAt(0) !== '0') {
         res += '0';
     }
 
@@ -3424,7 +3467,9 @@ function() {
      * @returns {Number} The receiver's value in radians.
      */
 
+    /* eslint-disable no-extra-parens */
     return (this * Math.PI) / 180;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3555,7 +3600,9 @@ function(minValue, maxValue) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    return ((this > minValue) && (this < maxValue));
+    /* eslint-disable no-extra-parens */
+    return (this > minValue && this < maxValue);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3580,7 +3627,9 @@ function(minValue, maxValue) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    return ((this >= minValue) && (this <= maxValue));
+    /* eslint-disable no-extra-parens */
+    return (this >= minValue && this <= maxValue);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3594,7 +3643,9 @@ function() {
      * @returns {Boolean} Whether or not the receiver is even.
      */
 
+    /* eslint-disable no-extra-parens */
     return (this % 2 === 0);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3609,7 +3660,9 @@ function() {
      * @returns {Boolean} Whether or not the receiver is negative.
      */
 
+    /* eslint-disable no-extra-parens */
     return (this < 0);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3623,7 +3676,9 @@ function() {
      * @returns {Boolean} Whether or not the receiver is odd.
      */
 
+    /* eslint-disable no-extra-parens */
     return (this % 2 === 1);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3639,7 +3694,9 @@ function() {
      * @returns {Boolean} Whether or not the receiver is positive.
      */
 
+    /* eslint-disable no-extra-parens */
     return (this >= 0);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3798,7 +3855,9 @@ function(aDivisor) {
 
     remainder = this % aDivisor;
 
+    /* eslint-disable no-extra-parens */
     return (remainder * aDivisor < 0) ? remainder + aDivisor : remainder;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3851,7 +3910,9 @@ function() {
      * @returns {Number} The receiver's value in degrees.
      */
 
+    /* eslint-disable no-extra-parens */
     return (this * 180) / Math.PI;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -4254,6 +4315,7 @@ function() {
      */
 
     /* jshint bitwise:false */
+    /* eslint-disable no-extra-parens */
     return this.split('').reduce(
                 function(a, b) {
                     var retVal;
@@ -4262,6 +4324,7 @@ function() {
                     return retVal & retVal;
                 },
                 0);
+    /* eslint-enable no-extra-parens */
     /* jshint bitwise:true */
 });
 
@@ -4532,7 +4595,9 @@ function(aSuffix) {
         return false;
     }
 
+    /* eslint-disable no-extra-parens */
     return ind === (this.length - aSuffix.length);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -4921,7 +4986,7 @@ function(aSource, aSide) {
     //  characters ('#'), then nothing is going to come out anyway, so just
     //  return the empty string here.
     String.$allHashMarker.lastIndex = 0;
-    if ((parseInt(aSource, 10) === 0) && String.$allHashMarker.test(this)) {
+    if (parseInt(aSource, 10) === 0 && String.$allHashMarker.test(this)) {
         return '';
     }
 
@@ -5045,7 +5110,10 @@ function(aSource, aSide) {
             if (parseInt(sourceStr.at(patStrLength), 10) > 4) {
                 lastDigit = parseInt(sourceStr.at(patStrLength - 1), 10);
                 str = sourceStr.slice(0, patStrLength - 1);
+
+                /* eslint-disable no-extra-parens */
                 str += (lastDigit + 1);
+                /* eslint-enable no-extra-parens */
             }
 
             return str;
@@ -5225,9 +5293,9 @@ function(aQuoteChar) {
 
     //  if we're quoted already (make sure to check we're not a 1 character
     //  String), we're already ok.
-    if ((this.first() === quote) &&
-        (this.last() === quote) &&
-        (this.length > 1)) {
+    if (this.first() === quote &&
+        this.last() === quote &&
+        this.length > 1) {
         //  Make sure to force the conversion to a primitive string.
         return this.toString();
     }
@@ -5399,7 +5467,7 @@ function(delimiter, inclusive, last) {
 
     str = this.toString();
 
-    ind = (last === true) ?
+    ind = last === true ?
             this.lastIndexOf(delimiter) :
             this.indexOf(delimiter);
 
@@ -5408,7 +5476,9 @@ function(delimiter, inclusive, last) {
     }
     len = delimiter.getSize();
 
+    /* eslint-disable no-extra-parens */
     return (inclusive === true) ? str.slice(ind) : str.slice(ind + len);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -5432,7 +5502,7 @@ function(delimiter, inclusive, last) {
 
     str = this.toString();
 
-    ind = (last === true) ?
+    ind = last === true ?
             this.lastIndexOf(delimiter) :
             this.indexOf(delimiter);
 
@@ -5591,7 +5661,7 @@ function(aWidth, justified, forRendering, joinChar, splitMark) {
                 if (TP.notEmpty(it)) {
                     //TP.alert('it: ' + it);
 
-                    if ((it.first() === '<') && (it.last() === '>')) {
+                    if (it.first() === '<' && it.last() === '>') {
                         //TP.alert('ignoring markup: ' + it);
                         resarr[resarr.length - 1] += it;
                     } else {
@@ -5692,7 +5762,7 @@ function(stripSingle, stripMulti) {
             continue;
         } else if (inMulti) {
             //  end will be '*' + '/'
-            if ((last === '*') && (ch === '/')) {
+            if (last === '*' && ch === '/') {
                 inMulti = false;
             }
 
@@ -5727,7 +5797,7 @@ function(stripSingle, stripMulti) {
                             inApos = false;
                         }
                     }
-                } else if (!inQuote && (last !== '\\')) {
+                } else if (!inQuote && last !== '\\') {
                     //  starting an apos string
                     inApos = true;
                 }
@@ -5757,7 +5827,7 @@ function(stripSingle, stripMulti) {
                             inQuote = false;
                         }
                     }
-                } else if (!inApos && (last !== '\\')) {
+                } else if (!inApos && last !== '\\') {
                     //  starting a quote string
                     inQuote = true;
                 }
@@ -5786,20 +5856,20 @@ function(stripSingle, stripMulti) {
                 }
 
                 //  not quoted, could be lead-in to a comment
-                if ((src.charAt(i + 1) === '*') ||
-                    (src.charAt(i + 1) === '/')) {
+                if (src.charAt(i + 1) === '*' ||
+                    src.charAt(i + 1) === '/') {
                     //  the regex /\//g inspired this check
                     if (src.charAt(i - 1) === '\\') {
                         //  we're escaped, not a comment lead-in
                         last = null;
-                    } else if ((stripMulti !== false) &&
-                        (src.charAt(i + 1) === '*')) {
+                    } else if (stripMulti !== false &&
+                                src.charAt(i + 1) === '*') {
                         //  multi-line comment lead in...capture it and
                         //  don't push to result
                         last = ch;
                         break;
-                    } else if ((stripSingle !== false) &&
-                        (src.charAt(i + 1) === '/')) {
+                    } else if (stripSingle !== false &&
+                                src.charAt(i + 1) === '/') {
                         //  single-line comment lead in...capture it and
                         //  don't push to result
                         last = ch;
@@ -5988,7 +6058,7 @@ function(aDataSource, aKeySource, aScope) {
     TP.stop('break.content_substitute');
 
     //  exit hatch -- no more substitution entities
-    if ((TP.notValid(String.$subsRe)) || !String.$subsRe.test(this)) {
+    if (TP.notValid(String.$subsRe) || !String.$subsRe.test(this)) {
         return this.toString();
     }
 
@@ -6082,9 +6152,12 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
         //  index to 'wrap around' if there are more pattern expressions
         //  than there are data source values.
         if (TP.isArray(data)) {
+
+            /* eslint-disable no-extra-parens */
             sourceIndex = counter - ((counter / data.getSize()).
                                                             integer() *
                                     data.getSize());
+            /* eslint-enable no-extra-parens */
 
             //  Call the substitution's handler with the pattern expression
             //  found and the data at the sourceIndex in aDataSource.
@@ -6460,8 +6533,8 @@ function(aQuoteChar) {
 
     if (TP.notEmpty(aQuoteChar)) {
         len = aQuoteChar.length;
-        if ((this.first(len) === aQuoteChar) &&
-            (this.last(len) === aQuoteChar)) {
+        if (this.first(len) === aQuoteChar &&
+            this.last(len) === aQuoteChar) {
             str = this.slice(len, this.getSize() - len);
             re = TP.rc('\\' + aQuoteChar, 'g');
 
@@ -6471,13 +6544,13 @@ function(aQuoteChar) {
         return this.toString();
     }
 
-    if ((this.first() === '"') && (this.last() === '"')) {
+    if (this.first() === '"' && this.last() === '"') {
         str = this.slice(1, this.getSize() - 1);
 
         return str.replace(/\\"/g, '"');
     }
 
-    if ((this.first() === '\'') && (this.last() === '\'')) {
+    if (this.first() === '\'' && this.last() === '\'') {
         str = this.slice(1, this.getSize() - 1);
 
         return str.replace(/\\'/g, '\'');

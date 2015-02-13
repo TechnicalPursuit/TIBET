@@ -109,7 +109,7 @@ function(test, shellInput, valueTestFunction) {
                     rejector(errMsg);
 
                     //  Set the faultText to that content as well.
-                    test.set('faultText', (errMsg || ''));
+                    test.set('faultText', errMsg || '');
                 }));
         });
 

@@ -278,6 +278,7 @@ function(screenRowNum, screenColNum) {
     gapWidth = 0;
     gapHeight = 0;
 
+    /* eslint-disable no-extra-parens */
     translateX = (screenWidth * screenColNum) + (gapWidth * screenColNum);
     translateY = (screenHeight * screenRowNum) + (gapHeight * screenRowNum);
 
@@ -286,6 +287,7 @@ function(screenRowNum, screenColNum) {
 
     hudHorizOffset = (30 + 5);
     hudVertOffset = (50 + 5);
+    /* eslint-enable no-extra-parens */
 
     if (TP.isValid(hud = TP.byOID('SherpaHUD', this.getNativeWindow())) &&
         TP.notTrue(hud.get('hidden'))) {
@@ -397,11 +399,13 @@ function(aPoint) {
     windowWidth = TP.documentGetViewableWidth(nativeDoc);
     windowHeight = TP.documentGetViewableHeight(nativeDoc);
 
+    /* eslint-disable no-extra-parens */
     newRect = TP.rtc(
         (aPoint.getX() - (windowWidth / 2)).max(0),
         (aPoint.getY() - (windowHeight / 2)).max(0),
         windowWidth,
         windowHeight);
+    /* eslint-enable no-extra-parens */
 
     this.setView(newRect);
 
@@ -441,6 +445,7 @@ function(aRect) {
 
     newRect = aRect.copy();
 
+    /* eslint-disable no-extra-parens */
     if ((windowWidth / windowHeight) > (rectWidth / rectHeight)) {
         newRect.setWidth(rectHeight * (windowWidth / windowHeight));
     } else {
@@ -452,6 +457,7 @@ function(aRect) {
 
     newRect.setX(centerPoint.getX() - (rectWidth / 2));
     newRect.setY(centerPoint.getY() - (rectHeight / 2));
+    /* eslint-enable no-extra-parens */
 
     scale = windowWidth / rectWidth;
 
@@ -489,12 +495,14 @@ function(aValue) {
 
     currentViewRect = this.get('viewRect');
 
+    /* eslint-disable no-extra-parens */
     cx = currentViewRect.getX() + (currentViewRect.getWidth() / 2);
     cy = currentViewRect.getY() + (currentViewRect.getHeight() / 2);
 
     newViewRect = TP.rtc(0, 0, windowWidth / aValue, windowHeight / aValue);
     newViewRect.setX(cx - (newViewRect.getWidth() / 2));
     newViewRect.setY(cy - (newViewRect.getHeight() / 2));
+    /* eslint-enable no-extra-parens */
 
     this.setView(newViewRect);
 

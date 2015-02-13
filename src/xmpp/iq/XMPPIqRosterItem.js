@@ -110,7 +110,9 @@ function() {
 
     ask = this.getAttribute('ask');
 
+    /* eslint-disable no-extra-parens */
     return TP.isValid(ask) && (ask !== '');
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

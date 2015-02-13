@@ -1823,7 +1823,7 @@ function(includeBody) {
     }
 
     if (TP.notTrue(includeBody) &&
-         (currentElement === TP.documentGetBody(currentDoc))) {
+         currentElement === TP.documentGetBody(currentDoc)) {
 
         //  The caller doesn't want the body back
         return null;

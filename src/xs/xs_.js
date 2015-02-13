@@ -87,7 +87,7 @@ function(aValue, aNode) {
         TP.ifTrace() && TP.$DEBUG ?
             TP.trace('xsi:type ' + typeName + ' not available',
                         TP.LOG) : 0;
-    } else if ((node.namespaceURI === TP.w3.Xmlns.XFORMS) &&
+    } else if (node.namespaceURI === TP.w3.Xmlns.XFORMS &&
                 TP.notEmpty(typeName =
                                 TP.elementGetAttribute(node, 'type'))) {
         TP.ifTrace() && TP.$DEBUG ?

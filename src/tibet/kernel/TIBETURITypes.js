@@ -2808,7 +2808,7 @@ function(aRequest) {
     //  simple and just defer to $getPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
-        ((frag = this.getFragment()) === 'document')) {
+        (frag = this.getFragment()) === 'document') {
         return this.$getPrimaryResource(aRequest, true);
     }
 
@@ -3041,8 +3041,10 @@ function() {
     //  generated RegExp will match ourself because of it's open-endedness)
     subURIKeys = registeredURIs.getKeys().select(
                         function (uriLocation) {
+                            /* eslint-disable no-extra-parens */
                             return (matcher.test(uriLocation) &&
                                     uriLocation !== loc);
+                            /* eslint-enable no-extra-parens */
                         });
 
     //  Iterate over the subURI keys and get the actual URI instance for them.
@@ -3663,7 +3665,7 @@ function(aResource, aRequest) {
     //  simple and just defer to $setPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
-        ((frag = this.getFragment()) === 'document')) {
+        (frag = this.getFragment()) === 'document') {
         return this.$setPrimaryResource(aResource, aRequest);
     }
 
@@ -4538,7 +4540,9 @@ function(aResource, aRequest) {
 
     //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
     //  same as it's OID), we're going to set it to our 'name'.
+    /* eslint-disable no-extra-parens */
     hasID = (aResource[TP.ID] !== aResource.$$oid);
+    /* eslint-enable no-extra-parens */
 
     if (!hasID) {
         if (TP.canInvoke(aResource, 'setID')) {
@@ -5194,7 +5198,7 @@ function(aRequest) {
 
     //  capture the raw result data from the request. This is typically
     //  a string, node, or pair based on the original request parameters.
-    if (TP.isArray(result) && (result.getSize() === 2)) {
+    if (TP.isArray(result) && result.getSize() === 2) {
         dat = result.first();
         dom = result.last();
 
@@ -7051,9 +7055,9 @@ function() {
 
     if (TP.isEmpty(name)) {
         name = '';  //  leave empty, this URI doesn't specify a canvas.
-    } else if ((name === 'uicanvas') || (name === 'UICANVAS')) {
+    } else if (name === 'uicanvas' || name === 'UICANVAS') {
         return TP.sys.getUICanvasName();
-    } else if ((name === 'uiroot') || (name === 'UIROOT')) {
+    } else if (name === 'uiroot' || name === 'UIROOT') {
         return TP.sys.getUIRootName();
     }
 
@@ -7474,7 +7478,7 @@ function(aRequest, filterResult) {
 
                 //  path with/without pointer?
                 if (TP.notEmpty(path) &&
-                    ((url = this.getPrimaryURI()) !== this)) {
+                    (url = this.getPrimaryURI()) !== this) {
                     //  If our path matches the current document location or our
                     //  pointer is '#document', return the wrapped Document.
                     if (TP.documentGetLocation(win.document) === path ||

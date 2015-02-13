@@ -216,7 +216,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     //  If there weren't any arguments in the arg array, then we have only
     //  to call the func.
-    if (TP.notValid(anArgArray) || (anArgArray.length === 0)) {
+    if (TP.notValid(anArgArray) || anArgArray.length === 0) {
         //  Return the execution of the func
         return the2DContext.func();
     }

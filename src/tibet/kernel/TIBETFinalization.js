@@ -444,7 +444,7 @@ function() {
         //  TP.sig.AppStart for the system once the app tag awakens. Note how we
         //  fork the call so that all child awaken processing has occurred
         //  first.
-        /* eslint-disable no-wrap-func */
+        /* eslint-disable no-wrap-func,no-extra-parens */
         (function() {
 
                 var didStartHandler;
@@ -486,7 +486,7 @@ function() {
                 //  Make sure to null out 'elem' to avoid a leak.
                 elem = null;
             }).afterUnwind();
-        /* eslint-enable no-wrap-func */
+        /* eslint-enable no-wrap-func,no-extra-parens */
     });
 
     request.atPut(TP.ONFAIL, function(req) {
@@ -527,13 +527,13 @@ function() {
         bootframe = TP.wrap(TP.byId('UIBOOT', top));
         bootframe.getContentDocument().getBody().addClass('full_console');
 
-        /* eslint-disable no-wrap-func */
+        /* eslint-disable no-wrap-func,no-extra-parens */
         //  set up keyboard toggle to show/hide the boot UI
         (function () {
             TP.boot.toggleUI();
             TP.boot.$scrollLog();
         }).observe(TP.core.Keyboard, toggleKey);
-        /* eslint-enable no-wrap-func */
+        /* eslint-enable no-wrap-func,no-extra-parens */
     }
 
     //  Set the location of the window (wrapping it to be a TP.core.Window).

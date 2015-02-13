@@ -118,14 +118,16 @@ function(code, params) {
     '+I', '+J', '+K', '+L', '+M', '+N', '+O', '+P', '+Q', '+R', '+S', '+T', '+U', '+V',
     '+W', '+X', '+Y', '+Z', '%P', '%Q', '%R', '%S', '%T');
 
+    /* eslint-disable no-extra-parens */
     codeok = (code !== '');
 
     if (codeok === true) {
-        codeok = ((type === 'CODE39') ||
-                    (type === 'CODE39_CHECKSUM') ||
-                    (type === 'CODE39_EXTENDED') ||
-                    (type === 'CODE39_EXTENDED_CHECKSUM'));
+        codeok = (type === 'CODE39' ||
+                    type === 'CODE39_CHECKSUM' ||
+                    type === 'CODE39_EXTENDED' ||
+                    type === 'CODE39_EXTENDED_CHECKSUM');
     }
+    /* eslint-enable no-extra-parens */
 
     if (codeok === false) {
         astr = type + ' ??';
@@ -134,8 +136,8 @@ function(code, params) {
         codestr = '';
 
         // Transform Extended Code39
-        if ((type === 'CODE39_EXTENDED') ||
-            (type === 'CODE39_EXTENDED_CHECKSUM')) {
+        if (type === 'CODE39_EXTENDED' ||
+            type === 'CODE39_EXTENDED_CHECKSUM') {
             for (i = 0; i < codeAsStr.length; i++) {
                 codestr += codeAsStr.charAt(i);
                 thecode += codeX[valueX.indexOf(codeAsStr.charAt(i))];
@@ -157,8 +159,8 @@ function(code, params) {
         // Checksum
         checkstr = '';
 
-        if ((type === 'CODE39_CHECKSUM') ||
-            (type === 'CODE39_EXTENDED_CHECKSUM')) {
+        if (type === 'CODE39_CHECKSUM' ||
+            type === 'CODE39_EXTENDED_CHECKSUM') {
             check = 0;
             for (i = 0; i < thecode.length; i++) {
                 check += value.indexOf(thecode.charAt(i));

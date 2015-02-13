@@ -562,7 +562,7 @@ function(job, params) {
     //  If we're not animating 'a set of values', then we go ahead and
     //  append a length unit onto the stepping value, if available.
     if (TP.notValid(params.at('values'))) {
-        if ((stepval < 0) && TP.isTrue(params.at('nonnegvalues'))) {
+        if (stepval < 0 && TP.isTrue(params.at('nonnegvalues'))) {
             stepval = params.at('from') + stepval;
         }
 

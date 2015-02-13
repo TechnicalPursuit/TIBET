@@ -61,7 +61,7 @@ function() {
 
     inst.set('from', this.get('to'));
 
-    if (TP.isString(msgID = this.get('msgID')) && (msgID !== '')) {
+    if (TP.isString(msgID = this.get('msgID')) && msgID !== '') {
         inst.set('msgID', msgID);
     }
 

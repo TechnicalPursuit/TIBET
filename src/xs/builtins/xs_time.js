@@ -80,7 +80,7 @@ function(anObject) {
         return false;
     } else if (hour === 24) {
         //  hours can't be 24 unless mins and secs are 0
-        if ((min !== 0) || (sec !== '00')) {
+        if (min !== 0 || sec !== '00') {
             return false;
         }
     }

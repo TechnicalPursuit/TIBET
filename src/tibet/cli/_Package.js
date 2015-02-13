@@ -39,11 +39,13 @@ parser = new dom.DOMParser();
 serializer = new dom.XMLSerializer();
 
 isEmpty = function(aReference) {
+    /* eslint-disable no-extra-parens */
     return aReference === null ||
-        aReference === undefined ||
-        aReference.length === 0 ||
-        (typeof aReference === 'object' &&
-        Object.keys(aReference).length === 0);
+            aReference === undefined ||
+            aReference.length === 0 ||
+            (typeof aReference === 'object' &&
+            Object.keys(aReference).length === 0);
+    /* eslint-enable no-extra-parens */
 };
 
 isValid = function(aReference) {
@@ -93,7 +95,7 @@ require.searchCache = function (moduleName, callback) {
 
     // Check if the module has been resolved and found within
     // the cache
-    if (mod && ((mod = require.cache[mod]) !== undefined)) {
+    if (mod && (mod = require.cache[mod]) !== undefined) {
         // Recursively go over the results
         (function run(mod) {
             // Go over each of the module's children and
@@ -445,9 +447,11 @@ Package.prototype.expandAll = function(aPath) {
         pkg,        //
         msg;
 
+    /* eslint-disable no-extra-parens */
     expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
-        this.getcfg('boot.package') ||
-        Package.PACKAGE);
+                                            this.getcfg('boot.package') ||
+                                            Package.PACKAGE);
+    /* eslint-enable no-extra-parens */
 
     // Default to ~app_cfg/{package}[.xml] as needed.
     if (!this.isAbsolutePath(expanded)) {
@@ -787,9 +791,11 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
         package,    // The package node from the XML doc.
         msg;        // Error message construction variable.
 
+    /* eslint-disable no-extra-parens */
     expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
-        this.getcfg('boot.package') ||
-        Package.PACKAGE);
+                                            this.getcfg('boot.package') ||
+                                            Package.PACKAGE);
+    /* eslint-enable no-extra-parens */
 
     // Default to ~app_cfg/{package}[.xml] as needed.
     if (!this.isAbsolutePath(expanded)) {
@@ -1742,9 +1748,11 @@ Package.prototype.listAllAssets = function(aPath, aList) {
         pkg,
         msg;
 
+    /* eslint-disable no-extra-parens */
     expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
-        this.getcfg('boot.package') ||
-        Package.PACKAGE);
+                                            this.getcfg('boot.package') ||
+                                            Package.PACKAGE);
+    /* eslint-enable no-extra-parens */
 
     // Default to ~app_cfg/{package}[.xml] as needed.
     if (!this.isAbsolutePath(expanded)) {
@@ -1972,9 +1980,11 @@ Package.prototype.listPackageAssets = function(aPath, aConfig, aList) {
         result,
         msg;
 
+    /* eslint-disable no-extra-parens */
     expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
-        this.getcfg('boot.package') ||
-        Package.PACKAGE);
+                                            this.getcfg('boot.package') ||
+                                            Package.PACKAGE);
+    /* eslint-enable no-extra-parens */
 
     // Default to ~app_cfg/{package}[.xml] as needed.
     if (!this.isAbsolutePath(expanded)) {

@@ -1984,14 +1984,14 @@ function(aFunction, anException) {
                 this.assert(
                     false,
                     TP.sc('Expected function to raise',
-                                (TP.notEmpty(name) ? ' ' + name : '.'),
+                                TP.notEmpty(name) ? ' ' + name : '.',
                             ' but raised ', TP.str(exception)));
             }
         } else {
             this.assert(
                 false,
                 TP.sc('Expected function to raise',
-                        (TP.notEmpty(name) ? ' ' + name : '.')));
+                        TP.notEmpty(name) ? ' ' + name : '.'));
         }
     } finally {
         TP.raise.restore();
@@ -2040,14 +2040,14 @@ function(aFunction, aSignal) {
             this.assert(
                 false,
                 TP.sc('Expected function to signal',
-                            (TP.notEmpty(name) ? ' ' + name : '.'),
+                            TP.notEmpty(name) ? ' ' + name : '.',
                         ' but signaled ' + TP.str(signal)));
         }
     } else {
         this.assert(
             false,
             TP.sc('Expected function to signal',
-                    (TP.notEmpty(name) ? ' ' + name : '.')));
+                    TP.notEmpty(name) ? ' ' + name : '.'));
     }
 
     return;
@@ -2079,7 +2079,7 @@ function(aFunction, anError) {
         this.assert(
             false,
             TP.sc('Expected function to throw',
-                    (TP.notEmpty(name) ? ' ' + name : '.')));
+                    TP.notEmpty(name) ? ' ' + name : '.'));
     } catch (e) {
         //  success if e matches what's expected
         if (e instanceof type) {
@@ -2089,7 +2089,7 @@ function(aFunction, anError) {
             this.assert(
                 false,
                 TP.sc('Expected function to throw',
-                            (TP.notEmpty(name) ? ' ' + name : ' Error'),
+                            TP.notEmpty(name) ? ' ' + name : ' Error',
                         ' but threw ' + TP.tname(e)));
         }
     }
@@ -3234,7 +3234,7 @@ function(aKey) {
         retVal = testKeys.contains(aKey);
     } else {
         //  There has to be an exact match here.
-        retVal = (testKeys.getSize() === 1 && testKeys.first() === aKey);
+        retVal = testKeys.getSize() === 1 && testKeys.first() === aKey;
     }
 
     if (!retVal) {
@@ -3278,8 +3278,8 @@ function(aKeyArray) {
         retVal = testKeys.containsAll(aKeyArray);
     } else {
         //  There has to be an exact match here.
-        retVal = (testKeys.getSize() === aKeyArray.getSize() &&
-                    testKeys.containsAll(aKeyArray));
+        retVal = testKeys.getSize() === aKeyArray.getSize() &&
+                    testKeys.containsAll(aKeyArray);
     }
 
     if (!retVal) {
@@ -3621,7 +3621,7 @@ function(aName, aValue) {
     retVal = TP.isOwnProperty(testVal, aName);
 
     if (TP.isTrue(retVal) && TP.notEmpty(aValue)) {
-        retVal = (TP.val(testVal, aName) === aValue);
+        retVal = TP.val(testVal, aName) === aValue;
     }
 
     if (!retVal) {
@@ -3676,7 +3676,7 @@ function(aName, aValue) {
     retVal = TP.isProperty(testVal, aName);
 
     if (TP.isTrue(retVal) && TP.notEmpty(aValue)) {
-        retVal = (TP.val(testVal, aName) === aValue);
+        retVal = TP.val(testVal, aName) === aValue;
     }
 
     if (!retVal) {
@@ -3891,7 +3891,7 @@ function(errorConstructor, errMsg, comment) {
         testObj();
     } catch (err) {
         if (TP.isValid(desiredError)) {
-            retVal = (err === desiredError);
+            retVal = err === desiredError;
             if (!retVal) {
                 faultStr = TP.sc('Expected ', TP.id(testObj),
                                     ' to throw ',
@@ -3900,7 +3900,7 @@ function(errorConstructor, errMsg, comment) {
                                     TP.str(err));
             }
         } else if (TP.isValid(TheConstructor)) {
-            retVal = (err instanceof TheConstructor);
+            retVal = err instanceof TheConstructor;
             if (!retVal) {
                 faultStr = TP.sc('Expected ', TP.id(testObj),
                                     ' to throw ',
@@ -4034,7 +4034,9 @@ function(start, finish) {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    retVal = (testVal >= start) && (testVal <= finish);
+    /* eslint-disable no-extra-parens */
+    retVal = (testVal >= start && testVal <= finish);
+    /* eslint-enable no-extra-parens */
 
     if (!retVal) {
         if (TP.isTrue(this.get('$negate'))) {

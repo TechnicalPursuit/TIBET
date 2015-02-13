@@ -3195,7 +3195,7 @@ function(aName) {
             //  note that nodes.getSize() - 1 points to the last element,
             //  and back should be backing up one slot from that so we
             //  remove 2 here
-            ndx = (nodes.getSize() - 2);
+            ndx = nodes.getSize() - 2;
         } else {
             //  remove one from current index
             ndx = ndx - 1;
@@ -3260,7 +3260,7 @@ function(anAspect, anAction, aDescription) {
     //  the nodes after the current node, but when the aspect is current
     //  index itself we skip this since what's happening is just a forward
     //  or back call shifting the current "visible" node data
-    if (TP.isEmpty(anAspect) || (anAspect !== 'currentIndex')) {
+    if (TP.isEmpty(anAspect) || anAspect !== 'currentIndex') {
         this.discardCheckpointNodes();
     }
 
@@ -4742,7 +4742,7 @@ function(newContent, aRequest, stdinContent) {
     var request,
         content;
 
-    if (TP.notValid(newContent) || (newContent === '')) {
+    if (TP.notValid(newContent) || newContent === '') {
         return this.getNativeNode();
     }
 
@@ -4814,7 +4814,7 @@ function(newContent, aRequest) {
 
     node = this.getNativeNode();
 
-    if (TP.notValid(newContent) || (newContent === '')) {
+    if (TP.notValid(newContent) || newContent === '') {
         return node;
     }
 
@@ -4984,7 +4984,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
     var request,
         content;
 
-    if (TP.notValid(newContent) || (newContent === '')) {
+    if (TP.notValid(newContent) || newContent === '') {
         return this.getNativeNode();
     }
 
@@ -5061,7 +5061,7 @@ function(newContent, aPositionOrPath, aRequest) {
 
     node = this.getNativeNode();
 
-    if (TP.notValid(newContent) || (newContent === '')) {
+    if (TP.notValid(newContent) || newContent === '') {
         return node;
     }
 
@@ -5341,7 +5341,7 @@ function(newContent, aRequest) {
             //  TP.core.History's history-tracking mechanism as well.
             if (TP.isDocument(aNode) &&
                 TP.isWindow(win = TP.nodeGetWindow(aNode)) &&
-                (TP.gid(win) === TP.sys.getUICanvasName())) {
+                TP.gid(win) === TP.sys.getUICanvasName()) {
                 docTitle = TP.documentGetTitleContent(aNode);
 
                 TP.documentSetTitleContent(document, docTitle);
@@ -5840,7 +5840,7 @@ function(aNode) {
     //  TODO: Need to detect if we're at a place where there are multiple
     //  occurrences of the same named element and then generate an index
     //  predicate onto that step in the path.
-    while (TP.isNode(theNode) && (theNode !== stopNode)) {
+    while (TP.isNode(theNode) && theNode !== stopNode) {
         pathStr = '/' + theNode.tagName + pathStr;
         theNode = theNode.parentNode;
     }
@@ -7853,12 +7853,12 @@ function(anObject, anIndex, aPosition) {
             return this;
         }
 
-        if ((node.childNodes.length < anIndex) || (anIndex < 0)) {
+        if (node.childNodes.length < anIndex || anIndex < 0) {
             return this.raise('TP.sig.IndexOutOfRange');
         }
 
         //  empty? then we insert, or iterate and insert as needed
-        if ((node.childNodes.length === 0) && (anIndex === 0)) {
+        if (node.childNodes.length === 0 && anIndex === 0) {
             if (TP.isNodeList(obj)) {
                 objLen = obj.length;
 
@@ -9442,7 +9442,7 @@ function(anObject, aRequest) {
             //  We're at 'level 0'
             levelInfo = theRequest;
         } else if (TP.notValid(infos = theRequest.at('infos')) ||
-            (TP.notValid(levelInfo = infos.at(currentLevel - 1)))) {
+            TP.notValid(levelInfo = infos.at(currentLevel - 1))) {
             levelInfo = TP.hc();
         }
     } else {
@@ -9766,11 +9766,10 @@ function(aNode) {
     }
 
     //  tag is how we can override the natural tag's lookup model
-    if (TP.notEmpty(
-            name = TP.elementGetAttribute(aNode,
-                                            'tibet:tag',
-                                            true)) &&
-        (name !== last)) {
+    if (TP.notEmpty(name = TP.elementGetAttribute(
+                                    aNode,
+                                    'tibet:tag',
+                                    true)) && name !== last) {
         last = name;
         //  name wins if we have a type with that precise name
         if (TP.isType(type = TP.sys.require(name))) {
@@ -9824,7 +9823,7 @@ function(aNode) {
     //  shouldn't exist anyway)
     last = name;
     name = TP.elementGetFullName(aNode, true);
-    if ((name !== last) && TP.isType(type = TP.sys.require(name))) {
+    if (name !== last && TP.isType(type = TP.sys.require(name))) {
 
         //  Sometime local tag names are also native types in the system - don't
         //  return those
@@ -9844,7 +9843,7 @@ function(aNode) {
     //  shouldn't exist anyway)
     last = name;
     name = TP.elementGetCanonicalName(aNode, true);
-    if ((name !== last) && TP.isType(type = TP.sys.require(name))) {
+    if (name !== last && TP.isType(type = TP.sys.require(name))) {
         //  Only set the slot if its an HTML node... see above.
         TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
 
@@ -14421,7 +14420,7 @@ function() {
     while (TP.isElement(node = node.parentNode) &&
             TP.isCallable(node.getAttribute)) {
         tag = TP.elementGetAttribute(node, 'tibet:tag', true);
-        if ((tag === 'xctrls:action') || (tag === 'ev:listener')) {
+        if (tag === 'xctrls:action' || tag === 'ev:listener') {
             return false;
         }
     }
@@ -15990,7 +15989,7 @@ function(aNode) {
             tagChild = TP.nodeGetChildElementAt(node, 0);
 
             if (TP.isNode(tagChild) &&
-                (TP.elementGetLocalName(tagChild) === 'data')) {
+                TP.elementGetLocalName(tagChild) === 'data') {
                 //  valid data structure embedded in array tag...append
                 //  each child element of the 'data' tag (which will be
                 //  value tags containing data of various formats) into
@@ -16035,7 +16034,7 @@ function(aNode) {
 
         case 'boolean':
 
-            return TP.isNode(tagChild) ? (tagChild.nodeValue === 1) : null;
+            return TP.isNode(tagChild) ? tagChild.nodeValue === 1 : null;
 
         case 'dateTime.iso8601':
 

@@ -673,7 +673,7 @@ function() {
 
     //  don't continue if we didnt' find a type or we'd recurse due to
     //  finding the receiver and trying to restart at construct
-    if (TP.notValid(type) || (type === this)) {
+    if (TP.notValid(type) || type === this) {
         this.raise('TP.sig.NoConcreteType');
         return;
     }
@@ -2413,9 +2413,9 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                         scope = targetType.getPropertyScope(
                                                     'from' + superName);
 
-                        if ((scope === TP.OVERRIDDEN) ||
-                            (scope === TP.INTRODUCED) ||
-                            (scope === TP.LOCAL)) {
+                        if (scope === TP.OVERRIDDEN ||
+                            scope === TP.INTRODUCED ||
+                            scope === TP.LOCAL) {
                             TP.sys.logInference('Invoking ' +
                                                 typeName + '.from(\'' +
                                                 superName + '\')',
@@ -2559,7 +2559,7 @@ function(aFunction, millisecondCount, stackNames) {
     fn = aFunction.getName();
     fo = TP.name(aFunction[TP.OWNER]);
 
-    if (TP.notValid(fn) || TP.notValid(fo) || (fo === TP.NONE)) {
+    if (TP.notValid(fn) || TP.notValid(fo) || fo === TP.NONE) {
         return;
     }
 
@@ -3141,7 +3141,7 @@ function(anInterface, anObject, shouldForce) {
     //  on Moz there's no reason to build dnu methods at the top level
     //  unless we're being asked to force overlaying a method we find. the
     //  built-in backstop will do what we need otherwise
-    if (TP.sys.isUA('GECKO') && (target === TP.ObjectProto)) {
+    if (TP.sys.isUA('GECKO') && target === TP.ObjectProto) {
         return 0;
     }
 
@@ -3226,7 +3226,7 @@ function(anInterface, anObject) {
     //  on Moz there's no real backstop method installation, so the only
     //  thing we could do would be to install a method whose goal is to
     //  "deaden" the backstop in this location
-    if (TP.sys.isUA('GECKO') && (target === TP.ObjectProto)) {
+    if (TP.sys.isUA('GECKO') && target === TP.ObjectProto) {
         deaden = true;
     }
 
@@ -5480,7 +5480,9 @@ function(anObject, constraints) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Invalid object: ' + constraint);
                 } else {
+                    /* eslint-disable no-extra-parens */
                     result = (TP.val(anObject) === constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5504,7 +5506,9 @@ function(anObject, constraints) {
                     //  work from a number first...
                     if (!TP.isNaN(num = parseFloat(anObject))) {
                         str = num.fraction().asString().split('.').last();
+                        /* eslint-disable no-extra-parens */
                         result = (str.getSize() <= constraint);
+                        /* eslint-enable no-extra-parens */
                     }
                 }
 
@@ -5523,7 +5527,9 @@ function(anObject, constraints) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Invalid number: ' + constraint);
                 } else {
+                    /* eslint-disable no-extra-parens */
                     result = (TP.size(anObject) === constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5542,7 +5548,9 @@ function(anObject, constraints) {
                                 'Invalid number: ' + constraint);
                 } else {
                     num = TP.nc(anObject);
+                    /* eslint-disable no-extra-parens */
                     result = (num < constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5561,7 +5569,9 @@ function(anObject, constraints) {
                                 'Invalid number: ' + constraint);
                 } else {
                     num = TP.nc(anObject);
+                    /* eslint-disable no-extra-parens */
                     result = (num <= constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5579,7 +5589,9 @@ function(anObject, constraints) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Invalid number: ' + constraint);
                 } else {
+                    /* eslint-disable no-extra-parens */
                     result = (TP.size(TP.str(anObject)) <= constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5597,7 +5609,9 @@ function(anObject, constraints) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Invalid number: ' + constraint);
                 } else {
+                    /* eslint-disable no-extra-parens */
                     result = (TP.nc(anObject) <= constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5616,7 +5630,9 @@ function(anObject, constraints) {
                                 'Invalid number: ' + constraint);
                 } else {
                     num = TP.nc(anObject);
+                    /* eslint-disable no-extra-parens */
                     result = (num > constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5635,7 +5651,9 @@ function(anObject, constraints) {
                                 'Invalid number: ' + constraint);
                 } else {
                     num = TP.nc(anObject);
+                    /* eslint-disable no-extra-parens */
                     result = (num >= constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5653,7 +5671,9 @@ function(anObject, constraints) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Invalid number: ' + constraint);
                 } else {
+                    /* eslint-disable no-extra-parens */
                     result = (TP.size(TP.str(anObject)) >= constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5671,7 +5691,9 @@ function(anObject, constraints) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Invalid number: ' + constraint);
                 } else {
+                    /* eslint-disable no-extra-parens */
                     result = (TP.nc(anObject) >= constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5689,7 +5711,9 @@ function(anObject, constraints) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Invalid object: ' + constraint);
                 } else {
+                    /* eslint-disable no-extra-parens */
                     result = (TP.val(anObject) !== constraint);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (!result) {
@@ -5731,7 +5755,9 @@ function(anObject, constraints) {
                     //  work from a number first...
                     if (!TP.isNaN(num = parseFloat(anObject))) {
                         str = num.asString();
+                        /* eslint-disable no-extra-parens */
                         result = (str.getSize() <= constraint);
+                        /* eslint-enable no-extra-parens */
                     }
                 }
 
@@ -5991,7 +6017,7 @@ function() {
      * @returns {Number}
      */
 
-    if ((this.getSize() === 1) && (TP.isValid(this.at(0)))) {
+    if (this.getSize() === 1 && TP.isValid(this.at(0))) {
         return this.at(0).asNumber();
     }
 
@@ -6326,7 +6352,9 @@ function() {
      */
 
     //  if we're 'Invalid Date' we're false
+    /* eslint-disable no-extra-parens */
     return (this.toString() !== TP.DateProto.toString());
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -8736,8 +8764,8 @@ function() {
     lastProto = null;
 
     //  watch for circularities on the native types
-    while ((proto !== TP.ObjectProto) &&
-            (proto !== proto.constructor.prototype)) {
+    while (proto !== TP.ObjectProto &&
+            proto !== proto.constructor.prototype) {
         lastProto = proto;
         proto = proto.getPrototype();
         protos.add(proto);
@@ -8769,7 +8797,7 @@ function(target, name, track) {
 
     method = target[name];
     if (TP.isMethod(method)) {
-        if (TP.notEmpty(track) && (method[TP.TRACK] === track)) {
+        if (TP.notEmpty(track) && method[TP.TRACK] === track) {
             return method;
         }
     }
@@ -8803,7 +8831,7 @@ function(target, track) {
 
             method = target[name];
             if (TP.isMethod(method)) {
-                if (TP.notEmpty(track) && (method[TP.TRACK] === track)) {
+                if (TP.notEmpty(track) && method[TP.TRACK] === track) {
                     return method;
                 }
             }
@@ -9274,7 +9302,9 @@ function(anObj) {
      * @returns {Boolean}
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj[TP.OWNER]) && anObj[TP.TRACK] === TP.GLOBAL_TRACK);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -9290,7 +9320,9 @@ function(anObj) {
      * @returns {Boolean}
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj[TP.OWNER]) && anObj[TP.TRACK] === TP.INST_TRACK);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -9312,8 +9344,10 @@ function(anObj) {
     owner = anObj[TP.OWNER];
     track = anObj[TP.TRACK];
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(owner) &&
-             (track === TP.TYPE_LOCAL_TRACK) || track === TP.LOCAL_TRACK);
+             track === TP.TYPE_LOCAL_TRACK || track === TP.LOCAL_TRACK);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -9329,7 +9363,9 @@ function(anObj) {
      * @returns {Boolean}
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj[TP.OWNER]) && anObj[TP.TRACK] === TP.TYPE_TRACK);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

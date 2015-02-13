@@ -266,7 +266,7 @@ function(targetUrl, openCallback) {
     //  If the URL already has an open WebSocket connection, we just return
     //  it.
     if (TP.isValid(wsObj = url.get('webSocketObj'))) {
-        if ((wsObj.readyState !== WebSocket.OPEN) &&
+        if (wsObj.readyState !== WebSocket.OPEN &&
                 TP.isCallable(openCallback)) {
             wsObj.socketOpenCallback = openCallback;
         }

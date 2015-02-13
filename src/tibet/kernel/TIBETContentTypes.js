@@ -1319,9 +1319,12 @@ function(aReturnValue, targetObj) {
     if (TP.isValid(retVal = aReturnValue)) {
 
         //  If we're configured to collapse, then do it.
+
+        /* eslint-disable no-extra-parens */
         if ((shouldCollapse = this.get('shouldCollapse'))) {
             retVal = TP.collapse(retVal);
         }
+        /* eslint-enable no-extra-parens */
 
         //  If we're configured to extract with either an aspect name or a
         //  Function, then do that. Note that if we have a collection then we
@@ -4162,7 +4165,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 TP.ATTR + content.name);
         }
 
+        /* eslint-disable no-extra-parens */
         createdStructure = (changeAction === TP.CREATE);
+        /* eslint-enable no-extra-parens */
     } else {
         createdStructure =
             TP.isValid(
@@ -5260,7 +5265,7 @@ function(aPath) {
         parser;
 
     //  have we been here before for this path?
-    if ((aPath === this.$get('srcPath')) &&
+    if (aPath === this.$get('srcPath') &&
         TP.isValid(this.$get('$tpContext'))) {
         return this;
     }
@@ -5464,7 +5469,7 @@ function(aTPNode) {
 
     //  If there were no results, there probably wasn't a valid XPath.
     //  Exit here.
-    if (TP.notValid(results) || (results.getSize() === 0)) {
+    if (TP.notValid(results) || results.getSize() === 0) {
         return this;
     }
 

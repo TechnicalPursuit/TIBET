@@ -42,7 +42,9 @@ function() {
      * @returns {Boolean}
      */
 
+    /* eslint-disable no-extra-parens */
     return (this.get('index') === 0);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -61,7 +63,9 @@ function() {
     //  note the focus on elements here, not nodes
     arr = TP.nodeGetChildElements(this.get('stream'));
 
-    return ((arr.getSize() === 0) || (this.get('index') >= arr.getSize()));
+    /* eslint-disable no-extra-parens */
+    return (arr.getSize() === 0 || this.get('index') >= arr.getSize());
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

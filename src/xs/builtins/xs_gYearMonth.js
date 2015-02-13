@@ -66,7 +66,7 @@ function(anObject) {
     }
 
     year = m.at(this.get('YEAR_INDEX'));
-    if ((year.getSize() > 4) && year.startsWith('0')) {
+    if (year.getSize() > 4 && year.startsWith('0')) {
         //  year can't start with 0 if longer than 4 digits
         return false;
     }

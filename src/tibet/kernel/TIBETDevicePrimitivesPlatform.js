@@ -65,8 +65,8 @@ TP.hc(
         //  In case keyCode === 0, check for charCode.
         anEvent.$$keyCode = anEvent.keyCode || anEvent.charCode;
 
-        if ((anEvent.$$type === 'DOMMouseScroll') ||
-            (anEvent.type === 'DOMMouseScroll')) {
+        if (anEvent.$$type === 'DOMMouseScroll' ||
+            anEvent.type === 'DOMMouseScroll') {
             wheelVal = anEvent.detail;
 
             //  Sometimes Mozilla will supply a really large number - we
@@ -143,8 +143,8 @@ TP.hc(
         //  version - make sure its copied here.
         anEvent.$$keyCode = anEvent.keyCode;
 
-        if ((anEvent.$$type === 'mousewheel') ||
-            (anEvent.type === 'mousewheel')) {
+        if (anEvent.$$type === 'mousewheel' ||
+            anEvent.type === 'mousewheel') {
             wheelVal = -anEvent.wheelDelta / 40;
 
             deltaX = 0;
@@ -210,8 +210,8 @@ TP.hc(
         //  version - make sure its copied here.
         anEvent.$$keyCode = anEvent.keyCode;
 
-        if ((anEvent.$$type === 'mousewheel') ||
-            (anEvent.type === 'mousewheel')) {
+        if (anEvent.$$type === 'mousewheel' ||
+            anEvent.type === 'mousewheel') {
             wheelVal = -anEvent.wheelDelta / 40;
 
             deltaX = -anEvent.wheelDeltaX / 40;

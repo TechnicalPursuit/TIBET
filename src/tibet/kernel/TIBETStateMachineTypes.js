@@ -461,7 +461,9 @@ function() {
      */
 
     //  If its in any state other than TP.READY, then its active.
+    /* eslint-disable no-extra-parens */
     return (this.get('state') !== TP.READY);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -607,7 +609,7 @@ function(signalOrParams) {
         //  See if the new state is also a "terminal state" meaning nowhere
         //  to go from here...if so we can wrap up with one more call...
         stateOptions = this.get('stateHash').at(newState);
-        if (TP.isEmpty(stateOptions) && (newState !== TP.SUCCEEDED)) {
+        if (TP.isEmpty(stateOptions) && newState !== TP.SUCCEEDED) {
             //  Preserve the new state we just signaled as our old state,
             //  which allows us to signal the next transition pair
             //  correctly, and to have the final deactivation use the true

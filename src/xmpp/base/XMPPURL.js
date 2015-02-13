@@ -340,7 +340,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {
-        if ((signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged') &&
+        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged' &&
             !TP.isSubtypeOf(signals.at(i).asType(),
                             'TP.sig.XMPPPubsubNodeChanged')) {
             //  One of the signals supplied wasn't a type of
@@ -601,7 +601,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {
-        if ((signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged') &&
+        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged' &&
             !TP.isSubtypeOf(signals.at(i).asType(),
                             'TP.sig.XMPPPubsubNodeChanged')) {
             //  One of the signals supplied wasn't a type of
@@ -782,7 +782,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType,
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {
-        if ((signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged') &&
+        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged' &&
             !TP.isSubtypeOf(signals.at(i).asType(),
                             'TP.sig.XMPPPubsubNodeChanged')) {
             //  One of the signals supplied wasn't a type of

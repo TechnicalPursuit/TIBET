@@ -253,7 +253,7 @@ Cmd.prototype.shexec = function(cmd) {
     sh = require('shelljs');
 
     result = sh.exec(cmd, {
-        silent: (CLI.options.silent !== true)
+        silent: CLI.options.silent !== true
     });
 
     if (result.code !== 0) {

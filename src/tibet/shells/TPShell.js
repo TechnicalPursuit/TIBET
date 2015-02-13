@@ -1036,7 +1036,7 @@ function(aRequest) {
     dups = TP.ifInvalid(this.getVariable('HISTDUP'), 'prev');
     dups.toLowerCase();
 
-    if ((dups === 'prev') && (list.getSize() > 0)) {
+    if (dups === 'prev' && list.getSize() > 0) {
         if (list.last().at('cmd') === cmd) {
             return list.getSize() - 1;
         }
@@ -1859,7 +1859,7 @@ function(aPath) {
     schemes.perform(
         function(item) {
 
-            if (TP.isValid(item) && (item !== '') && url.startsWith(item)) {
+            if (TP.isValid(item) && item !== '' && url.startsWith(item)) {
                 isURI = true;
             }
         });
@@ -2697,8 +2697,10 @@ function(aRequest, allForms) {
                 //  throw away spaces and tabs
                 parts = parts.select(
                             function(item) {
-                                return ((item.name !== 'space') &&
-                                        (item.name !== 'tab'));
+                                /* eslint-disable no-extra-parens */
+                                return (item.name !== 'space' &&
+                                        item.name !== 'tab');
+                                /* eslint-enable no-extra-parens */
                             });
 
                 //  resolve substitutions for double-quoted strings, but
@@ -2735,8 +2737,8 @@ function(aRequest, allForms) {
                                 } else {
                                     expandedVal = item.value.unquoted();
                                 }
-                            } else if ((item.name === 'substitution') ||
-                                        (item.name === 'identifier')) {
+                            } else if (item.name === 'substitution' ||
+                                        item.name === 'identifier') {
                                 val = item.value.unquoted();
                                 if (val.startsWith('${') && val.endsWith('}')) {
                                     // This might not find a value, but if it
@@ -2975,7 +2977,8 @@ function(aRequest) {
                                                             true))) {
                 name = TP.nodeGetChildTextContent(item, 'tsh:name');
                 if (TP.isEmpty(name)) {
-                    if ((child = TP.nodeGetFirstElementChildByTagName(
+                    if (TP.isElement(
+                                child = TP.nodeGetFirstElementChildByTagName(
                                                         item, 'tsh:name'))) {
                         name = TP.wrap(child).getBoundInput();
                     }
@@ -2994,7 +2997,8 @@ function(aRequest) {
                                                             true))) {
                 value = TP.nodeGetChildTextContent(item, 'tsh:value');
                 if (TP.isEmpty(value)) {
-                    if ((child = TP.nodeGetFirstElementChildByTagName(
+                    if (TP.isElement(
+                                child = TP.nodeGetFirstElementChildByTagName(
                                                         item, 'tsh:value'))) {
                         value = TP.wrap(child).getBoundInput();
                     }

@@ -1025,7 +1025,7 @@ function(aContent, aURI, defaultMIME) {
             mime = TP.ietf.Mime.getExtensionType(ext);
         }
 
-        if (TP.isEmpty(mime) || (mime === TP.ietf.Mime.PLAIN)) {
+        if (TP.isEmpty(mime) || mime === TP.ietf.Mime.PLAIN) {
             if (/xml/.test(defaultMIME)) {
                 mime = defaultMIME;
             } else {
@@ -1052,7 +1052,7 @@ function(aContent, aURI, defaultMIME) {
         //  If we still haven't found a valid MIME type, then just set it to
         //  either the supplied 'defaultMIME' or TP.ietf.Mime.PLAIN if that's
         //  not been supplied.
-        if (TP.isEmpty(mime) || (mime === TP.ietf.Mime.PLAIN)) {
+        if (TP.isEmpty(mime) || mime === TP.ietf.Mime.PLAIN) {
             mime = defaultMIME || TP.ietf.Mime.PLAIN;
         }
     }
@@ -1323,12 +1323,12 @@ TP.w3.Xmlns.Type.defineConstant(
                 bWeight;
 
             if (TP.notValid(aWeight = TP.w3.Xmlns.get('info').at(a)) ||
-                (TP.notValid(aWeight = aWeight.at('procPriority')))) {
+                TP.notValid(aWeight = aWeight.at('procPriority'))) {
                 return -1;
             }
 
             if (TP.notValid(bWeight = TP.w3.Xmlns.get('info').at(b)) ||
-                (TP.notValid(bWeight = bWeight.at('procPriority')))) {
+                TP.notValid(bWeight = bWeight.at('procPriority'))) {
                 return 1;
             }
 

@@ -116,8 +116,8 @@ Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <s
  */
 Cmd.prototype.finalizePhantomArglist = function(arglist) {
 
-    if ((arglist.indexOf('--tap') === -1) &&
-            (arglist.indexOf('--no-tap') === -1)) {
+    if (arglist.indexOf('--tap') === -1 &&
+            arglist.indexOf('--no-tap') === -1) {
         arglist.push('--tap');
     }
 

@@ -3535,7 +3535,9 @@ function() {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    /* eslint-disable no-extra-parens */
     return (node.type === 'select-multiple');
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

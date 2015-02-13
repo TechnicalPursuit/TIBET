@@ -583,7 +583,7 @@ function(anIndex, aValue) {
 
     var index;
 
-    index = (anIndex > 0) ? anIndex : this.normalizeIndex(anIndex);
+    index = anIndex > 0 ? anIndex : this.normalizeIndex(anIndex);
 
     //  no translation...just direct set/change notification - note that by
     //  passing 'null' for the 'shouldSignal' parameter here, we let the
@@ -714,7 +714,7 @@ function(anIndex, varargs, aValue) {
         if (val != varargs) {
         /* eslint-enable eqeqeq */
         /* jshint eqeqeq:true */
-            op = (val === undefined) ? TP.CREATE : TP.UPDATE;
+            op = val === undefined ? TP.CREATE : TP.UPDATE;
 
             //  Still subject to whether the object has 'shouldSignalChange()'
             //  set -- usually false.
@@ -818,7 +818,7 @@ function(anIndex, aValue) {
     //  NB: Because we're not changing the original String, there is no change
     //  notification here.
 
-    index = (anIndex > 0) ? anIndex : this.normalizeIndex(anIndex);
+    index = anIndex > 0 ? anIndex : this.normalizeIndex(anIndex);
 
     //  basically slicing on both sides of the index and opening a hole for
     //  the new content the size of the content...effectively replacing one
@@ -1123,7 +1123,7 @@ function(anObject) {
 
     kallee = Boolean.construct;
 
-    if ((anObject === true) || (anObject === false)) {
+    if (anObject === true || anObject === false) {
         return anObject;
     }
 
@@ -1226,8 +1226,8 @@ function() {
     //  have to watch out for "valid" data that's really saying the Date
     //  parameters didn't produce a valid date.
     if (TP.notValid($$newinst) ||
-            ($$newinst.toString() === 'Invalid Date') || //  mozilla
-            ($$newinst.toString() === 'NaN')) {            //  IE
+            $$newinst.toString() === 'Invalid Date' || //  mozilla
+            $$newinst.toString() === 'NaN') {            //  IE
         //  any 'construct' that calls a 'from' needs a recursion trap
         if (TP.notTrue(kallee.$$onStack)) {
             kallee.$$onStack = true;

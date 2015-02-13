@@ -71,7 +71,7 @@ function(anObject, optFormat) {
     colcount = 1;
 
     for (i = 0; i < len; i++) {
-        if (count > (colcount - 1)) {
+        if (count > colcount - 1) {
             count = 0;
         }
 

@@ -287,7 +287,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     //  If there weren't any arguments in the arg array, then we have
     //  only to call the func.
-    if (TP.notValid(anArgArray) || (anArgArray.length === 0)) {
+    if (TP.notValid(anArgArray) || anArgArray.length === 0) {
         //  Return the execution of the func
         return win.func();
     }
@@ -829,7 +829,7 @@ function() {
 
             if (TP.isWindow(win)) {
                 //  don't operate on the codebase window or its children
-                if ((win !== top) && (win.parent !== top)) {
+                if (win !== top && win.parent !== top) {
                     win.close();
                 }
             }
@@ -1102,6 +1102,8 @@ function(url, aName, aSpec, shouldReplace) {
 
     //  NOTE that our TP.open() call will convert the spec for us, and that
     //  we ignore the URI for now so the open will be synchronous
+
+    /* eslint-disable no-extra-parens */
     if ((win = TP.open('', theName, aSpec, shouldReplace))) {
         //  we have to have a valid win reference here or the construct call
         //  will call back to TP.open() and we'll recurse
@@ -1110,6 +1112,7 @@ function(url, aName, aSpec, shouldReplace) {
 
         return newWindow;
     }
+    /* eslint-enable no-extra-parens */
 
     //  Couldn't get a real native window so there's no sense in creating a
     //  wrapper. Return null here.

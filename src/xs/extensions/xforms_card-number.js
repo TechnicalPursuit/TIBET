@@ -68,7 +68,7 @@ function(anObject) {
         return false;
     }
 
-    if ((anObject.getSize() < 12) || (anObject.getSize() > 19)) {
+    if (anObject.getSize() < 12 || anObject.getSize() > 19) {
         return false;
     }
 

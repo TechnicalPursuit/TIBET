@@ -1808,8 +1808,8 @@ function(fromElement, toElement) {
         //  'http://www.w3.org/2000/xmlns/'. We check for that, or (if its
         //  missing) we also check for the 'xmlns' prefix (IE seems to have
         //  problems setting the namespaceURI of Attribute nodes).
-        if ((fromAttr.namespaceURI === TP.w3.Xmlns.XMLNS) ||
-            (fromAttr.prefix === 'xmlns')) {
+        if (fromAttr.namespaceURI === TP.w3.Xmlns.XMLNS ||
+            fromAttr.prefix === 'xmlns') {
             //  NB: We only add prefixed namespaces here, not default
             //  namespaces.
             if (/xmlns:/g.test(fromAttr.name)) {
@@ -2141,8 +2141,8 @@ function(anElement, includeDefault) {
         //  'http://www.w3.org/2000/xmlns/'. We check for that, or (if its
         //  missing) we also check for the 'xmlns' prefix (IE seems to have
         //  problems setting the namespaceURI of Attribute nodes).
-        if ((fromAttr.namespaceURI === TP.w3.Xmlns.XMLNS) ||
-            (fromAttr.prefix === 'xmlns')) {
+        if (fromAttr.namespaceURI === TP.w3.Xmlns.XMLNS ||
+            fromAttr.prefix === 'xmlns') {
                 if (fromAttr.name === 'xmlns') {
                     if (TP.isTrue(includeDefault)) {
                         xmlnsAttrs.atPut('xmlns', fromAttr.value);
@@ -2496,7 +2496,7 @@ function(anElement, attributeName, stripPrefixes) {
         if (stripPrefixes) {
             attrName = attrName.slice(attrName.indexOf(':') + 1);
             dict.atPut(attrName, attrs[i].value);
-        } else if ((attrName.indexOf(':')) !== -1) {
+        } else if (attrName.indexOf(':') !== -1) {
             //  Otherwise, if we have a prefix, then put in one entry with the
             //  prefixed named
             dict.atPut(attrName, attrs[i].value);
@@ -3045,7 +3045,7 @@ function(anElement, ignoreSourcetag) {
     }
 
     //  tag is fastest if it exists and we're allowed to use it
-    if ((!ignoreSourcetag) &&
+    if (!ignoreSourcetag &&
         TP.notEmpty(tag = anElement.getAttribute('tibet:tag')) &&
         !TP.regex.HAS_ACP.test(tag)) {
         return tag;
@@ -3147,7 +3147,7 @@ function(anElement, joinChar) {
     //  parent index. Note how we pass 'true' so that only Element nodes are
     //  considered at each level.
     while (TP.isElement(elem) &&
-            ((index = TP.nodeGetIndexInParent(elem, true)) !== TP.NOT_FOUND)) {
+            (index = TP.nodeGetIndexInParent(elem, true)) !== TP.NOT_FOUND) {
         path.push(index + 1);
         elem = elem.parentNode;
     }
@@ -3217,7 +3217,7 @@ function(anElement, ignoreSourcetag) {
     }
 
     //  tag is fastest if it exists
-    if ((!ignoreSourcetag) &&
+    if (!ignoreSourcetag &&
         TP.notEmpty(tag = anElement.getAttribute('tibet:tag'))) {
         return tag;
     }
@@ -3355,8 +3355,8 @@ function(anElement, attributeName, checkAttrNSURI) {
             //  If the prefixes weren't empty, but there was only one and it
             //  was the one we already checked, then bail out here.
             if (TP.notEmpty(prefixes) &&
-                (prefixes.getSize() === 1) &&
-                (prefixes.at(0) === prefix)) {
+                prefixes.getSize() === 1 &&
+                prefixes.at(0) === prefix) {
                 return null;
             }
 
@@ -3367,8 +3367,8 @@ function(anElement, attributeName, checkAttrNSURI) {
             len = attributes.length;
             for (i = 0; i < len; i++) {
                 attrNode = attributes[i];
-                if ((TP.attributeGetLocalName(attrNode) === lname) &&
-                    (TP.nodeGetNSURI(attrNode) === nsuri)) {
+                if (TP.attributeGetLocalName(attrNode) === lname &&
+                    TP.nodeGetNSURI(attrNode) === nsuri) {
                     return attrNode;
                 }
             }
@@ -5373,7 +5373,7 @@ function(aNode, aDescendant) {
     //  the document and still attached to a viable branch of the
     //  documentElement tree
     if (TP.isDocument(aNode) && TP.isElement(aDescendant)) {
-        if ((TP.nodeGetDocument(aDescendant) !== aNode) ||
+        if (TP.nodeGetDocument(aDescendant) !== aNode ||
             TP.notValid(aNode.documentElement)) {
             return false;
         }
@@ -5517,7 +5517,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
     }
 
     while (TP.isElement(node) &&
-            ((index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND)) {
+            (index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND) {
         path.push(index);
         node = node.parentNode;
     }
@@ -5536,7 +5536,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
 
     arr = TP.ac();
     while (path.length > 0) {
-        arr.push(prefix + (path.join(joinChar || '.')));
+        arr.push(prefix + path.join(joinChar || '.'));
         path.length = path.length - 1;
     }
 
@@ -5653,7 +5653,7 @@ function(aNode, joinChar) {
     }
 
     while (TP.isElement(node) &&
-            ((index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND)) {
+            (index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND) {
         path.push(index);
         node = node.parentNode;
     }
@@ -6546,7 +6546,7 @@ function(aString, defaultNS, shouldReport) {
     //  string without valid markup?...text node
     if (TP.isEmpty(aString) ||
         !aString.trim().startsWith('<') ||
-        (aString.length < '<a/>'.length)) {
+        aString.length < '<a/>'.length) {
         //  make sure we provide '' or this call will fail
         return TP.XML_FACTORY_DOCUMENT.createTextNode(aString || '');
     }
@@ -6890,7 +6890,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
         //  don't return '' here, return null if we can't find a real value
         result = TP.elementGetAttribute(node, path);
 
-        return (TP.isEmpty(result)) ? null : result;
+        return TP.isEmpty(result) ? null : result;
     }
 
     //  If the path type wasn't supplied, compute it.
@@ -6939,12 +6939,15 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
             //  We're gonna retry with the node's document node as the
             //  context node. Note how we check for either 'not valid' or
             //  'is empty', because we may be autocollapsing or not.
+
+            /* eslint-disable no-extra-parens */
             if (TP.notValid(result) ||
                 (TP.isArray(result) && TP.isEmpty(result))) {
                 return TP.nodeEvaluateCSS(TP.nodeGetDocument(node),
                                             aPath,
                                             autoCollapse);
             }
+            /* eslint-enable no-extra-parens */
 
             return result;
 
@@ -7380,7 +7383,7 @@ function(aNode) {
 
     ancestor = aNode.parentNode;
     while (TP.isElement(ancestor) &&
-            (ancestor.nodeType !== Node.DOCUMENT_NODE)) {
+            ancestor.nodeType !== Node.DOCUMENT_NODE) {
         arr.push(ancestor);
         ancestor = ancestor.parentNode;
     }
@@ -7502,7 +7505,7 @@ function(aNode, anIndex) {
     count = 0;
 
     for (i = 0; i < len; i++) {
-        ind = (anIndex === TP.LAST) ? len - i - 1 : i;
+        ind = anIndex === TP.LAST ? len - i - 1 : i;
         node = nodes[ind];
 
         try {
@@ -8229,7 +8232,7 @@ function(aNode) {
     //  ownerDocument pointers...so we iterate just in case.
     ancestor = aNode.parentNode;
     while (TP.isElement(ancestor) &&
-            (ancestor.nodeType !== Node.DOCUMENT_NODE)) {
+            ancestor.nodeType !== Node.DOCUMENT_NODE) {
         //  NB: This assignment should *not* be moved into the looping logic. We
         //  want 'ancestor' to remain what it is if its parent node is null.
         //  This means it is the document itself and we want to use it below.
@@ -8350,9 +8353,12 @@ function(aNode, anID, retryWithPath) {
     //  W3C-compliant browsers. We leverage this fact around common XML
     //  metadata in Gecko and Webkit
     if (TP.canInvoke(doc, 'getElementById')) {
+
+        /* eslint-disable no-extra-parens */
         if ((result = doc.getElementById(realID))) {
             return result;
         }
+        /* eslint-enable no-extra-parens */
     }
 
     //  we force retry to false on our metadata XHTML files so we don't
@@ -8525,7 +8531,7 @@ function(aNode, aTagName, aNamespaceURI) {
         //  If name is '*', then we use our TP.nodeGetDescendantElements()
         //  call, since on IE it properly filters out COMMENT_NODEs which
         //  getElementsByTagName('*') puts in.
-        if ((aTagName === '*') || (aTagName === '*:*')) {
+        if (aTagName === '*' || aTagName === '*:*') {
             return TP.nodeGetDescendantElements(aNode, false);
         }
 
@@ -8554,7 +8560,7 @@ function(aNode, aTagName, aNamespaceURI) {
     //  If we're being asked for '*', then that's all elements no matter
     //  what. Therefore, the XPath is simple and we don't need to take
     //  anything else into account.
-    if ((aTagName === '*') || (aTagName === '*:*')) {
+    if (aTagName === '*' || aTagName === '*:*') {
         if (TP.notEmpty(aNamespaceURI)) {
             return TP.nodeEvaluateXPath(
                         aNode,
@@ -9029,7 +9035,7 @@ function(aNode) {
 
     for (i = 0; i < len; i++) {
         type = children[i].nodeType;
-        if ((type === Node.TEXT_NODE) || (type === Node.CDATA_SECTION_NODE)) {
+        if (type === Node.TEXT_NODE || type === Node.CDATA_SECTION_NODE) {
             return children[i];
         }
     }
@@ -9391,7 +9397,7 @@ function(aNode, direction) {
 
     dir = TP.ifInvalid(direction, TP.NEXT);
 
-    sibProp = (dir === TP.NEXT) ? 'nextSibling' : 'previousSibling';
+    sibProp = dir === TP.NEXT ? 'nextSibling' : 'previousSibling';
 
     theNode = aNode[sibProp];
     while (TP.isValid(theNode) && !TP.isElement(theNode)) {
@@ -9437,7 +9443,7 @@ function(aNode, nodeType) {
 
     next = aNode.nextSibling;
     while (next) {
-        if (TP.notValid(nodeType) || (next.nodeType === nodeType)) {
+        if (TP.notValid(nodeType) || next.nodeType === nodeType) {
             return next;
         }
 
@@ -9451,7 +9457,7 @@ function(aNode, nodeType) {
         next = ancestor.nextSibling;
 
         while (next) {
-            if (TP.notValid(nodeType) || (next.nodeType === nodeType)) {
+            if (TP.notValid(nodeType) || next.nodeType === nodeType) {
                 return next;
             }
 
@@ -9760,8 +9766,7 @@ function(firstNode, secondNode) {
 
     if (!TP.isNode(firstNode) ||
         !TP.isNode(secondNode) ||
-        (TP.nodeGetDocument(firstNode) !==
-             TP.nodeGetDocument(secondNode))) {
+        TP.nodeGetDocument(firstNode) !== TP.nodeGetDocument(secondNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
@@ -9889,7 +9894,11 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
 
     //  Each entry in the list is either an array (when it's the root entry)
     //  or a nodelist, so "outer" is something we have to iterate over.
+
+    /* eslint-disable no-extra-parens */
     while ((outer = list.shift())) {
+    /* eslint-enable no-extra-parens */
+
         //  NOTE the iteration here does NOT cache length so the list can be
         //  modified as we work
 
@@ -9911,7 +9920,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
 
                 if (enterFunc) {
                     repcount = 0;
-                    while ((repcount < repmax) &&
+                    while (repcount < repmax &&
                         (TP.isNode(ret = enterFunc(currentNode)) ||
                         TP.isArray(ret))) {
                         //  update return values when we got back an array
@@ -9926,7 +9935,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                         //  if the same node was returned we're done, just
                         //  break out of the while so we can move forward.
                         if (!TP.isNode(newNode) ||
-                            (newNode === currentNode)) {
+                            newNode === currentNode) {
                             break;
                         }
 
@@ -9938,18 +9947,18 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
 
                         currentNode = newNode;
 
-                        if ((ret === TP.BREAK) ||
-                            (ret === TP.CONTINUE) ||
-                            (ret === TP.DESCEND)) {
+                        if (ret === TP.BREAK ||
+                            ret === TP.CONTINUE ||
+                            ret === TP.DESCEND) {
                             break;
                         }
 
                         repcount += 1;
                     }
 
-                    if ((ret !== TP.BREAK) &&
-                        (ret !== TP.CONTINUE) &&
-                        (ret !== TP.DESCEND) &&
+                    if (ret !== TP.BREAK &&
+                        ret !== TP.CONTINUE &&
+                        ret !== TP.DESCEND &&
                         TP.nodeIsDetached(currentNode, rootNode)) {
                         TP.stop('break.node_detachment');
 
@@ -10121,7 +10130,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
 
             if (enterFunc) {
                 repcount = 0;
-                while ((repcount < repmax) &&
+                while (repcount < repmax &&
                         (TP.isNode(ret = enterFunc(currentNode)) ||
                         TP.isArray(ret))) {
                     //  update return values when we got back an array
@@ -10135,7 +10144,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     //  if newNode isn't a node (it's TP.BREAK etc) or if
                     //  the same node was returned we're done, just break
                     //  out of the while so we can move forward.
-                    if (!TP.isNode(newNode) || (newNode === currentNode)) {
+                    if (!TP.isNode(newNode) || newNode === currentNode) {
                         break;
                     }
 
@@ -10146,20 +10155,20 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
 
                     currentNode = newNode;
 
-                    if ((ret === TP.BREAK) ||
-                        (ret === TP.CONTINUE) ||
-                        (ret === TP.REPEAT) ||
-                        (ret === TP.DESCEND)) {
+                    if (ret === TP.BREAK ||
+                        ret === TP.CONTINUE ||
+                        ret === TP.REPEAT ||
+                        ret === TP.DESCEND) {
                         break;
                     }
 
                     repcount += 1;
                 }
 
-                if ((ret !== TP.BREAK) &&
-                    (ret !== TP.CONTINUE) &&
-                    (ret !== TP.REPEAT) &&
-                    (ret !== TP.DESCEND) &&
+                if (ret !== TP.BREAK &&
+                    ret !== TP.CONTINUE &&
+                    ret !== TP.REPEAT &&
+                    ret !== TP.DESCEND &&
                     TP.nodeIsDetached(currentNode, rootNode)) {
                     TP.stop('break.node_detachment');
 
@@ -10375,7 +10384,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
             currentNode = next;
         }
     }
-    while (TP.isNode(currentNode) && (currentNode !== terminal));
+    while (TP.isNode(currentNode) && currentNode !== terminal);
 
     return;
 });
@@ -10540,14 +10549,14 @@ function(aNode, aFunction, shouldReverse) {
     ancestor = aNode.parentNode;
 
     while (TP.isElement(ancestor) &&
-            (ancestor.nodeType !== Node.DOCUMENT_NODE)) {
+            ancestor.nodeType !== Node.DOCUMENT_NODE) {
         if (instrument) {
             //  update iteration edge flags so our function can tell when
             //  its at the start/end of the overall collection
-            aFunction.atStart((count === 0) ? true : false);
+            aFunction.atStart(count === 0 ? true : false);
 
             if (TP.isElement(ancestor.parentNode) &&
-                    (!TP.isDocument(ancestor.parentNode))) {
+                    !TP.isDocument(ancestor.parentNode)) {
                 aFunction.atEnd(false);
             } else {
                 aFunction.atEnd(true);
@@ -10684,8 +10693,11 @@ function(aNode, aFunction, shouldReverse) {
             //  NOTE: These very well might be invoked when the current item
             //  isn't an Element, but that's ok since the semantic is still
             //  'start' or 'end'.
-            aFunction.atStart((i === 0) ? true : false);
+            aFunction.atStart(i === 0 ? true : false);
+
+            /* eslint-disable no-extra-parens */
             aFunction.atEnd((i === len - 1) ? true : false);
+            /* eslint-enable no-extra-parens */
         }
 
         //  skip non-element children
@@ -10803,8 +10815,11 @@ function(aNode, aFunction, shouldReverse) {
         if (instrument) {
             //  update iteration edge flags so our function can tell when
             //  its at the start/end of the overall collection
-            aFunction.atStart((i === 0) ? true : false);
+            aFunction.atStart(i === 0 ? true : false);
+
+            /* eslint-disable no-extra-parens */
             aFunction.atEnd((i === len - 1) ? true : false);
+            /* eslint-enable no-extra-parens */
         }
 
         if (aFunction(children[ind], ind) === TP.BREAK) {
@@ -11142,7 +11157,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
             node = aNode.previousSibling;
             while (node) {
                 if (instrument) {
-                    aFunction.atStart((count === 0) ? true : false);
+                    aFunction.atStart(count === 0 ? true : false);
                     aFunction.atEnd(!node.previousSibling);
                 }
 
@@ -11160,7 +11175,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
             node = aNode.nextSibling;
             while (node) {
                 if (instrument) {
-                    aFunction.atStart((count === 0) ? true : false);
+                    aFunction.atStart(count === 0 ? true : false);
                     aFunction.atEnd(!node.nextSibling);
                 }
 
@@ -11187,8 +11202,11 @@ function(aNode, aFunction, aSubset, shouldReverse) {
                 }
 
                 if (instrument) {
-                    aFunction.atStart((count === 0) ? true : false);
+                    aFunction.atStart(count === 0 ? true : false);
+
+                    /* eslint-disable no-extra-parens */
                     aFunction.atEnd((i + 1 === len) ? true : false);
+                    /* eslint-enable no-extra-parens */
                 }
 
                 if (aFunction(node, count++) === TP.BREAK) {

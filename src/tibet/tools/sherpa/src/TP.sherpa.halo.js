@@ -40,7 +40,7 @@ function() {
      * @method setup
      */
 
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function (aSignal) {
         if (aSignal.getShiftKey()) {
             //  Make sure to prevent default to avoid having the context menu
@@ -62,7 +62,7 @@ function() {
             return;
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
 
     return this;
 });

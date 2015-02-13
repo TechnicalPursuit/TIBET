@@ -155,8 +155,10 @@ function(aSide, incrementValue) {
 
     existingVal = TP.elementGetStyleValueInPixels(bodyElem, 'top');
 
+    /* eslint-disable no-extra-parens */
     TP.elementGetStyleObj(bodyElem).top =
                                 (existingVal + increment) + 'px';
+    /* eslint-enable no-extra-parens */
 
     return this;
 });

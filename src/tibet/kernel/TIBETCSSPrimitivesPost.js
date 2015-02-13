@@ -427,6 +427,7 @@ function(m1, m2, aHue) {
         return m1 + (m2 - m1) * hue6;
     }
 
+    /* eslint-disable no-extra-parens */
     if ((hue * 2) < 1) {
         return m2;
     }
@@ -434,6 +435,7 @@ function(m1, m2, aHue) {
     if ((hue * 3) < 2) {
         return m1 + (m2 - m1) * (2 / 3 - hue) * 6;
     }
+    /* eslint-enable no-extra-parens */
 
     return m1;
 });
@@ -479,6 +481,8 @@ function(aHue, aSaturation, aLightness, anAlpha) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable no-extra-parens */
+
     theHue = ((aHue % 360) + 360) % 360 / 360;
 
     if (aLightness <= 0.5) {
@@ -497,6 +501,8 @@ function(aHue, aSaturation, aLightness, anAlpha) {
 
     //  Green value
     greenVal = TP.convertHueToRGB(m1, m2, theHue - (1 / 3)) * 256;
+
+    /* eslint-enable no-extra-parens */
 
     rgbVal = TP.ac(redVal, blueVal, greenVal);
 
@@ -553,7 +559,7 @@ function(aString) {
         } else if (strSize === 6) {
             //  Otherwise, its just missing its '#' character
             colorString = '#' + aString;
-        } else if ((strSize === 3) || (strSize === 4)) {
+        } else if (strSize === 3 || strSize === 4) {
             //  Grab the result of the second grouping (since this isn't a
             //  'full' CSS value, there won't be anything in the first
             //  grouping) and split it into individual characters.
@@ -821,11 +827,11 @@ function(aLongNumber) {
     str = '#';
 
     /* jshint bitwise:false */
-    /* eslint-disable no-constant-condition */
+    /* eslint-disable no-constant-condition,no-extra-parens */
     for (i = 24; (i -= 4) >= 0;) {
         str += hexChars.charAt((aLongNumber >> i) & 0xF);
     }
-    /* eslint-enable no-constant-condition */
+    /* eslint-enable no-constant-condition,no-extra-parens */
     /* jshint bitwise:true */
 
     return str;
@@ -869,14 +875,14 @@ function(color1, color2, aPercentage) {
     n = 0;
 
     /* jshint bitwise:false */
-    /* eslint-disable no-constant-condition */
+    /* eslint-disable no-constant-condition,no-extra-parens */
     for (i = 24; (i -= 8) >= 0;) {
         ca = (color1 >> i) & 0xFF;
         cb = (color2 >> i) & 0xFF;
         cc = Math.floor(ca * (1 - aPercentage) + cb * aPercentage);
         n |= cc << i;
     }
-    /* eslint-enable no-constant-condition */
+    /* eslint-enable no-constant-condition,no-extra-parens */
     /* jshint bitwise:true */
 
     return n;
@@ -2624,7 +2630,7 @@ function(strSelectorText, strictPseudos) {
 
         if (currentToken === TP.SELECTOR_IDENTIFIER ||
             currentToken === TP.SELECTOR_ASTERISK) {
-            lastMatch = (currentToken === TP.SELECTOR_ASTERISK) ?
+            lastMatch = currentToken === TP.SELECTOR_ASTERISK ?
                                         '*' : parseRecord.getLastMatch();
 
             currentToken = parseRecord.fetchNextToken();
@@ -2642,7 +2648,7 @@ function(strSelectorText, strictPseudos) {
 
                 if (currentToken === TP.SELECTOR_IDENTIFIER ||
                     currentToken === TP.SELECTOR_ASTERISK) {
-                    lastMatch = (currentToken === TP.SELECTOR_ASTERISK) ?
+                    lastMatch = currentToken === TP.SELECTOR_ASTERISK ?
                                         '*' : parseRecord.getLastMatch();
 
                     simpleSelectorEntry.atPut('tagName', lastMatch);
@@ -2837,9 +2843,9 @@ function(strSelectorText, strictPseudos) {
                             startParenOffset =
                                 parseRecord.getCurrentOffset() - 1;
 
-                            while ((currentToken !==
-                                                TP.SELECTOR_RIGHT_PAREN) &&
-                                    (currentToken !== TP.SELECTOR_EOF)) {
+                            while (currentToken !==
+                                                TP.SELECTOR_RIGHT_PAREN &&
+                                    currentToken !== TP.SELECTOR_EOF) {
                                 currentToken =
                                     parseRecord.fetchNextNonWSToken();
                             }

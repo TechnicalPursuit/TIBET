@@ -213,7 +213,7 @@ function(aJID, aPassword, aMethod) {
     var method,
         authenticated;
 
-    if (TP.notValid(aJID) || (TP.isEmpty(aPassword))) {
+    if (TP.notValid(aJID) || TP.isEmpty(aPassword)) {
         this.raise('TP.sig.InvalidParameter');
 
         return false;
@@ -311,7 +311,7 @@ function(aJID, aPassword) {
 
         responseChallengeTest;
 
-    if (TP.notValid(aJID) || (TP.isEmpty(aPassword))) {
+    if (TP.notValid(aJID) || TP.isEmpty(aPassword)) {
         this.raise('TP.sig.InvalidParameter');
 
         return false;
@@ -360,8 +360,8 @@ function(aJID, aPassword) {
     //  TP.xmpp.XMLNS.SASL. This 'challenge' contains base64 encoded
     //  challenge information that we will use in the next step of
     //  authentication.
-    if ((res.getLocalName() !== 'challenge') ||
-        (TP.nodeGetNSURI(res.getNativeNode()) !== TP.xmpp.XMLNS.SASL)) {
+    if (res.getLocalName() !== 'challenge' ||
+        TP.nodeGetNSURI(res.getNativeNode()) !== TP.xmpp.XMLNS.SASL) {
         this.raise('TP.sig.UnsupportedXMPPAuthMethod',
                     'SASL DIGEST-MD5 not supported');
 
@@ -534,8 +534,8 @@ function(aJID, aPassword) {
 
     //  Look for either the 'success' or 'failure' element around
     //  authentication.
-    if ((res.getLocalName() !== 'success') ||
-        (TP.nodeGetNSURI(res.getNativeNode()) !== TP.xmpp.XMLNS.SASL)) {
+    if (res.getLocalName() !== 'success' ||
+        TP.nodeGetNSURI(res.getNativeNode()) !== TP.xmpp.XMLNS.SASL) {
         this.raise('TP.sig.XMPPAuthException',
                     'SASL DIGEST-MD5 did not successfully authenticate');
 
@@ -584,7 +584,7 @@ function(aJID, aPassword) {
         authenticated,
         featuresElement;
 
-    if (TP.notValid(aJID) || (TP.isEmpty(aPassword))) {
+    if (TP.notValid(aJID) || TP.isEmpty(aPassword)) {
         this.raise('TP.sig.InvalidParameter');
 
         return false;
@@ -1287,8 +1287,8 @@ function(anElement) {
     //  Make sure that we got a 'features' element back. It will tell us
     //  whether the server wants to use resource binding and/or session
     //  creation.
-    if ((TP.elementGetLocalName(anElement) !== 'features') ||
-        (TP.nodeGetNSURI(anElement) !== TP.xmpp.XMLNS.STREAM)) {
+    if (TP.elementGetLocalName(anElement) !== 'features' ||
+        TP.nodeGetNSURI(anElement) !== TP.xmpp.XMLNS.STREAM) {
         this.raise('TP.sig.XMPFeatureNegotiationException',
                     'Server did not return supported features list');
 

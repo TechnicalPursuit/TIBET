@@ -2499,7 +2499,7 @@ function(aResource) {
             if (childTPElem.isBoundElement()) {
 
                 //  If we've reached our group size, kick the scope number once.
-                if ((boundCount % groupSize) === 0) {
+                if (boundCount % groupSize === 0) {
                     scopeNum++;
                 }
 

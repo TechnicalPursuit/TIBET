@@ -40,10 +40,13 @@ TP.hc(
         //  Gecko likes to throw component exceptions which don't respond
         //  correctly as instances of Error so we use a different check than
         //  the common routine.
+
+        /* eslint-disable no-extra-parens */
         return (TP.isValid(anObj) &&
                 anObj.message !== undefined &&
                 (anObj.stack !== undefined ||
                     anObj.QueryInterface !== undefined));
+        /* eslint-enable no-extra-parens */
     },
     TP.DEFAULT,
     function(anObj) {
@@ -64,9 +67,11 @@ TP.hc(
             return true;
         }
 
+        /* eslint-disable no-extra-parens */
         return (TP.isValid(anObj) &&
                 anObj.message !== undefined &&
                 anObj.stack !== undefined);
+        /* eslint-enable no-extra-parens */
     }
 ));
 
@@ -220,9 +225,12 @@ TP.hc(
             //  Snapshot the time... if more than threshold, then a dialog
             //  was shown to the user.
             endTime = new Date();
+
+            /* eslint-disable no-extra-parens */
             if ((endTime - startTime) > dialogShownThreshold) {
                 dialogShown = true;
             }
+            /* eslint-enable no-extra-parens */
 
             permissionObtained = true;
 
@@ -267,9 +275,12 @@ TP.hc(
             //  Snapshot the time... if more than threshold, then a dialog
             //  was shown to the user.
             endTime = new Date();
+
+            /* eslint-disable no-extra-parens */
             if ((endTime - startTime) > dialogShownThreshold) {
                 dialogShown = true;
             }
+            /* eslint-enable no-extra-parens */
 
             //  Permission couldn't be obtained.
 
@@ -482,9 +493,11 @@ TP.hc(
             //  Snapshot the time... if more than threshold, then a dialog
             //  was shown to the user.
             endTime = new Date();
+            /* eslint-disable no-extra-parens */
             if ((endTime - startTime) > dialogShownThreshold) {
                 dialogShown = true;
             }
+            /* eslint-enable no-extra-parens */
 
             permissionObtained = true;
 
@@ -507,9 +520,11 @@ TP.hc(
             //  Snapshot the time... if more than threshold, then a dialog
             //  was shown to the user.
             endTime = new Date();
+            /* eslint-disable no-extra-parens */
             if ((endTime - startTime) > dialogShownThreshold) {
                 dialogShown = true;
             }
+            /* eslint-enable no-extra-parens */
 
             //  Permission couldn't be obtained.
 
@@ -1346,9 +1361,11 @@ TP.hc(
                 //  NB: Do *not* rewrite as "TP.name('anObject')" or this call
                 //  will endlessly recurse.
 
+                /* eslint-disable no-extra-parens */
                 if ((match = str.match(/function (\w+)/))) {
                     str = match[1];
                 }
+                /* eslint-enable no-extra-parens */
             }
 
             return str;
@@ -1484,9 +1501,11 @@ TP.hc(
                 //  NB: Do *not* rewrite as "TP.name('anObject')" or this call
                 //  will endlessly recurse.
 
+                /* eslint-disable no-extra-parens */
                 if ((match = str.match(/function (\w+)/))) {
                     str = match[1];
                 }
+                /* eslint-enable no-extra-parens */
             }
 
             return str;
@@ -1624,9 +1643,11 @@ TP.hc(
                 //  NB: Do *not* rewrite as "TP.name('anObject')" or this call
                 //  will endlessly recurse.
 
+                /* eslint-disable no-extra-parens */
                 if ((match = str.match(/function (\w+)/))) {
                     str = match[1];
                 }
+                /* eslint-enable no-extra-parens */
             }
 
             return str;

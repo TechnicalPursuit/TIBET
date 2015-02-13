@@ -1809,7 +1809,7 @@ function(aSignal) {
     //  the originating request will be the response signal's answer to
     //  getRequest. if that's not us then we shouldn't do anything
     request = aSignal.getRequest();
-    if (TP.notValid(request) || (request !== this)) {
+    if (TP.notValid(request) || request !== this) {
         return;
     }
 
@@ -2822,9 +2822,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode) {
 
     //  now we ensure we don't have duplicate objects to notify, request and
     //  requestor will often default to the same request instance.
-    responder = (responder === request) ? null : responder;
-    requestor = (requestor === request) ? null : requestor;
-    requestor = (requestor === responder) ? null : requestor;
+    responder = responder === request ? null : responder;
+    requestor = requestor === request ? null : requestor;
+    requestor = requestor === responder ? null : requestor;
 
     id = this.getRequestID();
 
@@ -3504,7 +3504,7 @@ function (onFulfilled, onRejected) {
 
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
-                /* eslint-disable no-wrap-func */
+                /* eslint-disable no-wrap-func,no-extra-parens */
                 (function () {
                     try {
                         //  Go ahead and run the onFulfilled
@@ -3530,7 +3530,7 @@ function (onFulfilled, onRejected) {
                         newReq.fail(TP.sc('Promise failure: ') + TP.str(e));
                     }
                 }).afterUnwind();
-                /* eslint-enable no-wrap-func */
+                /* eslint-enable no-wrap-func,no-extra-parens */
             } else {
                 //  No onFulfilled handler - complete the new request, passing
                 //  along the result of this response.
@@ -3550,7 +3550,7 @@ function (onFulfilled, onRejected) {
 
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
-                /* eslint-disable no-wrap-func */
+                /* eslint-disable no-wrap-func,no-extra-parens */
                 (function () {
                     try {
                         //  Go ahead and run the onRejected
@@ -3584,7 +3584,7 @@ function (onFulfilled, onRejected) {
                         newReq.fail(TP.sc('Promise failure: ') + TP.str(e));
                     }
                 }).afterUnwind();
-                /* eslint-enable no-wrap-func */
+                /* eslint-enable no-wrap-func,no-extra-parens */
             } else {
                 //  No onRejected handler - fail the new request, passing along
                 //  the fault code and fault text of this response.
@@ -4942,9 +4942,11 @@ function() {
 
     pollingJob = this.get('$pollingJob');
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(pollingJob) &&
             pollingJob.isActive() &&
             !pollingJob.isPaused());
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

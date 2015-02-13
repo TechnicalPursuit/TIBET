@@ -752,10 +752,10 @@ TP.hc(
                 //  error codes, then log a warning with our nicer error
                 //  message.
                 if (TP.isArray(exceptionMsgParts) &&
-                    (exceptionMsgParts.getSize() > 1) &&
-                    (TP.isString(exceptionWarningMsg =
+                    exceptionMsgParts.getSize() > 1 &&
+                    TP.isString(exceptionWarningMsg =
                                 TP.MOZ_XSLT_ERROR_CODES.at(
-                                                exceptionMsgParts.at(1))))) {
+                                                exceptionMsgParts.at(1)))) {
                     if (TP.notEmpty(srcURI =
                                     TP.elementGetAttribute(
                                         styleDoc.documentElement,
@@ -860,10 +860,10 @@ TP.hc(
             //  position 1, and if that can be found in our list of error
             //  codes, then log a warning with our nicer error message.
             if (TP.isArray(exceptionMsgParts) &&
-                (exceptionMsgParts.getSize() > 1) &&
-                (TP.isString(exceptionWarningMsg =
+                exceptionMsgParts.getSize() > 1 &&
+                TP.isString(exceptionWarningMsg =
                                     TP.MOZ_XSLT_ERROR_CODES.at(
-                                        exceptionMsgParts.at(1))))) {
+                                        exceptionMsgParts.at(1)))) {
                 if (TP.notEmpty(srcURI = TP.elementGetAttribute(
                                             styleDoc.documentElement,
                                             'tibet:src',

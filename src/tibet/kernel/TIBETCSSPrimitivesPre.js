@@ -204,7 +204,9 @@ function(aNode) {
 
                     name = TP.elementGetLocalName(elem).toLowerCase();
 
-                    return ((name === 'link') || (name === 'style'));
+                    /* eslint-disable no-extra-parens */
+                    return (name === 'link' || name === 'style');
+                    /* eslint-enable no-extra-parens */
                 });
 
     if (TP.notValid(found)) {

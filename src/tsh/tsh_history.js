@@ -330,7 +330,10 @@ function(aString, aRequest, aShell) {
                 if (TP.isNaN(parseInt(ndx, 10))) {
                     //  might be a #-2.doMore() where the .doMore() is being
                     //  added to the history reference
+
+                    /* eslint-disable no-extra-parens */
                     if ((found = ndx.match(/[^0-9]/))) {
+                    /* eslint-enable no-extra-parens */
                         //  have to split at boundary between numbers and
                         //  text
                         ndx = ndx.slice(0, found);
@@ -370,7 +373,10 @@ function(aString, aRequest, aShell) {
             if (TP.isNaN(parseInt(ref, 10))) {
                 //  might be a #23.doMore() where the .doMore() is being
                 //  added to the history reference
+
+                /* eslint-disable no-extra-parens */
                 if ((found = ndx.match(/[^0-9]/))) {
+                /* eslint-enable no-extra-parens */
                     //  have to split at boundary between numbers and text
                     ndx = ndx.slice(0, found);
                     rest = ndx.slice(found);
@@ -424,7 +430,9 @@ function(aString, aRequest, aShell) {
     if (TP.isNaN(parseInt(tail, 10))) {
         //  might be a #23:1.doMore() where the .doMore() is being
         //  added to the history reference
+        /* eslint-disable no-extra-parens */
         if ((found = tail.match(/[^0-9]/))) {
+        /* eslint-enable no-extra-parens */
             //  have to split at boundary between numbers and text
             ndx = tail.slice(0, found);
             rest = tail.slice(found);

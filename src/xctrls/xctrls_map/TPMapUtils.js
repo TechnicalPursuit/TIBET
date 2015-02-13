@@ -100,8 +100,10 @@ function(aLatLong) {
     //  Radians per degree
     dr = Math.PI * 2 / 360.0;
 
+    /* eslint-disable no-extra-parens */
     d = (aLatLong.get('long') * dr - (this.get('long') * dr)).cos() *
             (aLatLong.get('lat') * dr - (this.get('lat') * dr)).cos();
+    /* eslint-enable no-extra-parens */
 
     return d.acos() * 6378.137;
 });

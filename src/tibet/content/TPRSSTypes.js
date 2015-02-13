@@ -190,8 +190,10 @@ function(aChannelElement) {
 
     //  If the XML data's channel version number is the same as ours, then
     //  we can return true.
+    /* eslint-disable no-extra-parens */
     return (TP.elementGetAttribute(elems.first(), 'version') ===
                                         this.get('channelVersion'));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -613,8 +615,10 @@ function(anItemElement) {
 
     //  If the XML data's channel version number is the same as ours, then
     //  we can return true.
+    /* eslint-disable no-extra-parens */
     return (TP.elementGetAttribute(elems.first(), 'version') ===
                                         this.get('itemVersion'));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

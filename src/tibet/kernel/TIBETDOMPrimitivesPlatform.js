@@ -161,7 +161,7 @@ TP.hc(
         //  String without valid markup? Not XML then.
         if (aString === '' ||
             !/^[\s\w]*</.test(aString) ||
-            (aString.length < '<a/>'.length)) {
+            aString.length < '<a/>'.length) {
             return;
         }
 
@@ -299,7 +299,7 @@ TP.hc(
         //  String without valid markup? Not XML then.
         if (aString === '' ||
             !/^[\s\w]*</.test(aString) ||
-            (aString.length < '<a/>'.length)) {
+            aString.length < '<a/>'.length) {
             return;
         }
 
@@ -417,7 +417,7 @@ TP.hc(
         //  String without valid markup? Not XML then.
         if (aString === '' ||
             !/^[\s\w]*</.test(aString) ||
-            (aString.length < '<a/>'.length)) {
+            aString.length < '<a/>'.length) {
             return;
         }
 

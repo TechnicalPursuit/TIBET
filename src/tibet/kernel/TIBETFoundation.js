@@ -355,7 +355,7 @@ function(aName, shouldFault) {
     //  if fault flag is off and this is a proxy then return as if we've
     //  never seen it. this is typically only called by the proxy type
     //  itself during proxy construction to avoid recursive behavior
-    if (TP.$$isTypeProxy(type) && (type !== TP.lang.Proxy)) {
+    if (TP.$$isTypeProxy(type) && type !== TP.lang.Proxy) {
         if (!fault) {
             return;
         }
@@ -1764,11 +1764,14 @@ function(anObject, aType) {
     if (TP.isNonFunctionConstructor(anObject)) {
         //  The object is created by non Function constructors and has a
         //  constructor name for us to use.
+
+        /* eslint-disable no-extra-parens */
         if ((result = anObject.$$nonFunctionConstructorConstructorName)) {
             return result;
         }
 
         return (aType === 'Object' || aType === Object);
+        /* eslint-enable no-extra-parens */
     }
 
     typeName = TP.isType(aType) ? TP.name(aType) : aType;
@@ -1778,19 +1781,24 @@ function(anObject, aType) {
     //  last test in this method will get confused and return 'true' for things
     //  like TP.isMemberOf(String, 'String'), which is seriously incorrect.
     if (TP.isType(anObject) && !TP.isNativeType(anObject)) {
+
+        /* eslint-disable no-extra-parens */
         return (anObject.getType() === aType ||
                 anObject.getTypeName() === typeName);
+        /* eslint-enable no-extra-parens */
     }
 
     //  direct instance of a native type? fast exit, but not all constructors
     //  respond to getName
     try {
+        /* eslint-disable no-extra-parens */
         if ((aType !== Object) &&
             ((anObject.constructor === aType) ||
                 (TP.isCallable(anObject.constructor.getName) &&
                 (anObject.constructor.getName() === aType)))) {
             return true;
         }
+        /* eslint-enable no-extra-parens */
     } catch (e) {
         void 0;
     }
@@ -2005,7 +2013,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
     }
 
     //  don't need to use activations here, only care about length
-    if (TP.isArray(stackInfo) && (stackInfo.length > depth)) {
+    if (TP.isArray(stackInfo) && stackInfo.length > depth) {
         if (doNotify) {
             TP.boot.$stderr('RecursionException', stackInfo, TP.log.ERROR);
         }
@@ -2982,7 +2990,10 @@ function(aFilter) {
         return TP.ac();
     }
 
+    /* eslint-disable no-extra-parens */
     unique = (scope === TP.UNIQUE);
+    /* eslint-enable no-extra-parens */
+
     if (!unique) {
         //  warn for any non-unique scans. when it's a unique scan we can
         //  leverage hasOwnProperty to avoid too much overhead, otherwise we
@@ -3037,7 +3048,7 @@ function(aFilter) {
 
         //  is it a global/window slot?
         try {
-            if ((window[key] === it) && (TP.ObjectProto[key] !== it)) {
+            if (window[key] === it && TP.ObjectProto[key] !== it) {
                 continue;
             }
         } catch (e) {
@@ -3062,9 +3073,9 @@ function(aFilter) {
             propScope = this.getPropertyScope(key, true);
             if (scope === TP.UNIQUE) {
                 //  looking for unique (introduced, local, overridden)
-                if ((propScope !== TP.INTRODUCED) &&
-                    (propScope !== TP.LOCAL) &&
-                    (propScope !== TP.OVERRIDDEN)) {
+                if (propScope !== TP.INTRODUCED &&
+                    propScope !== TP.LOCAL &&
+                    propScope !== TP.OVERRIDDEN) {
                     //  must be a dnu, none, global, or inherited
                     continue;
                 }
@@ -3654,7 +3665,9 @@ function() {
      *     ordered pair.
      */
 
+    /* eslint-disable no-extra-parens */
     return (this.getSize() === 2) && TP.isValid(this.at(0));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3706,7 +3719,9 @@ function(aNumber) {
         return this.slice(0, aNumber);
     }
 
+    /* eslint-disable no-extra-parens */
     return (this.length > 0) ? this.at(0) : null;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3728,7 +3743,9 @@ function(aNumber) {
         return this.slice(0, aNumber);
     }
 
+    /* eslint-disable no-extra-parens */
     return (this.length > 0) ? this.charAt(0) : null;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3780,7 +3797,9 @@ function(aNumber) {
         return this.slice(this.length - aNumber);
     }
 
+    /* eslint-disable no-extra-parens */
     return (this.length > 0) ? this.at(this.length - 1) : null;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3802,7 +3821,9 @@ function(aNumber) {
         return this.slice(this.length - aNumber);
     }
 
+    /* eslint-disable no-extra-parens */
     return (this.length > 0) ? this.at(this.length - 1) : null;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -3875,7 +3896,7 @@ function(aSelectFunction) {
 
     //  deal with case where array appears to contain a list of ordered
     //  pairs. in those cases we collect all objects that are pairs
-    if ((len > 0) && TP.isPair(this.first())) {
+    if (len > 0 && TP.isPair(this.first())) {
         for (i = 0; i < len; i++) {
             if (TP.isValid(this.at(i)) && TP.isPair(this.at(i))) {
                 //  if we've got a filtering function and it doesn't return
@@ -4858,7 +4879,10 @@ function(aHash, aLevel) {
         result.push(itemSuffix);
 
         //  separate pairs as needed
+
+        /* eslint-disable no-extra-parens */
         if (i < (k.getSize() - 1)) {
+        /* eslint-enable no-extra-parens */
             result.push(itemSeparator);
         }
     }
@@ -5516,7 +5540,9 @@ function(that) {
     }
 
     //  force primitive comparison
+    /* eslint-disable no-extra-parens */
     return (this - 0) === (that - 0);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -5538,7 +5564,9 @@ function(that) {
     }
 
     //  force primitive comparison
+    /* eslint-disable no-extra-parens */
     return ('' + this) === ('' + that);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -5598,7 +5626,9 @@ function(that) {
     }
 
     //  force primitive comparison
+    /* eslint-disable no-extra-parens */
     return ('' + this) === ('' + that);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7220,8 +7250,11 @@ function(aFunction, shouldReverse) {
         if (instrument) {
             //  update iteration edge flags so our function can tell
             //  when its at the start/end of the overall collection
-            aFunction.atStart((i === 0) ? true : false);
+            aFunction.atStart(i === 0 ? true : false);
+
+            /* eslint-disable no-extra-parens */
             aFunction.atEnd((i === len - 1) ? true : false);
+            /* eslint-enable no-extra-parens */
         }
 
         //  second parameter is location of data, so it will vary based on
@@ -7287,8 +7320,11 @@ function(aFunction, shouldReverse) {
         if (instrument) {
             //  update iteration edge flags so our function can tell when
             //  its at the start/end of the overall collection.
-            aFunction.atStart((i === 0) ? true : false);
+            aFunction.atStart(i === 0 ? true : false);
+
+            /* eslint-disable no-extra-parens */
             aFunction.atEnd((i === len - 1) ? true : false);
+            /* eslint-enable no-extra-parens */
         }
 
         //  second parameter is location of data, so it will vary
@@ -7344,8 +7380,11 @@ function(aFunction, shouldReverse) {
         if (instrument) {
             //  update iteration edge flags so our function can tell
             //  when its at the start/end of the overall collection
-            aFunction.atStart((i === 0) ? true : false);
+            aFunction.atStart(i === 0 ? true : false);
+
+            /* eslint-disable no-extra-parens */
             aFunction.atEnd((i === this - 1) ? true : false);
+            /* eslint-enable no-extra-parens */
         }
 
         //  since we're using a number as our iteration control the
@@ -7405,8 +7444,11 @@ function(aFunction, shouldReverse) {
         if (instrument) {
             //  update iteration edge flags so our function can tell
             //  when its at the start/end of the overall collection
-            aFunction.atStart((i === 0) ? true : false);
+            aFunction.atStart(i === 0 ? true : false);
+
+            /* eslint-disable no-extra-parens */
             aFunction.atEnd((i === this - 1) ? true : false);
+            /* eslint-enable no-extra-parens */
         }
 
         //  since we're iterating on a string here we'll pass the
@@ -7838,7 +7880,7 @@ function(keyCriteria, selectionCriteria) {
 
                     //  when starting a new break we push a new entry in the
                     //  list
-                    if ((index % keyCriteria) === 0) {
+                    if (index % keyCriteria === 0) {
                         arr = TP.ac();
                         list.push(arr);
                     } else {
@@ -8630,7 +8672,7 @@ function(aStep, aFunction) {
     this.perform(
         function(item, index) {
 
-            if ((index % aStep) === 0) {
+            if (index % aStep === 0) {
                 count++;
                 aFunction(item, index);
             }

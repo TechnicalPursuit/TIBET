@@ -171,8 +171,8 @@ function() {
     //  Now we make sure that we didn't get an error or something.
     bodyElement = TP.nodeGetFirstChildElement(xmlResult);
 
-    if ((TP.elementGetLocalName(bodyElement) !== 'body') ||
-        (TP.nodeGetNSURI(bodyElement) !== TP.xmpp.XMLNS.HTTP_BIND)) {
+    if (TP.elementGetLocalName(bodyElement) !== 'body' ||
+        TP.nodeGetNSURI(bodyElement) !== TP.xmpp.XMLNS.HTTP_BIND) {
         //  the response was not a 'body' element
         return this.raise('TP.sig.XMPPTransportException',
                             'No valid "body" element found.');
@@ -344,6 +344,7 @@ function() {
     if (!TP.isNumber(lastRID = this.get('lastRID'))) {
         lastRID = (Number.random() * 1000000).floor();
 
+        /* eslint-disable no-extra-parens */
         //  Make sure that, even after we increment the RID a
         //  'MAXIMUM_PACKET' number of times, we don't exceed the limit on
         //  IEEE Standard 754 Doubles.
@@ -359,6 +360,7 @@ function() {
                 lastRID = 0;
             }
         }
+        /* eslint-enable no-extra-parens */
     }
 
     lastRID += 1;

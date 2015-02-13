@@ -663,7 +663,7 @@ function(anObject, optFormat) {
 
                 //  Collapse a brace followed by a comma with a brace coming
                 //  next to a single line
-                if ((text === '{') && str.slice(-7) === '},<br/>') {
+                if (text === '{' && str.slice(-7) === '},<br/>') {
                     str = str.slice(0, -5) + '&#160;';
                 } else if (str.slice(-5) === '<br/>') {
                     //  Otherwise, if we're starting a new line, 'tab in' the

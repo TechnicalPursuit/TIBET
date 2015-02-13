@@ -257,7 +257,9 @@ function(commands, aRequest) {
 
         //  NOTE we have to be careful here because a negative index can
         //  result in wrapping back on ourselves. so we use slice notation.
+        /* eslint-disable no-extra-parens */
         last = (i > 0) ? commands.at(i - 1) : null;
+        /* eslint-enable no-extra-parens */
 
         prereqs = TP.isValid(last) ? last.get('outs') : null;
 
@@ -613,7 +615,7 @@ function(source, shell, sibling, request) {
     //  respect overall escape syntax, which is a leading =. in that case we
     //  strip off the first token and return the rest in a standard tsh:cmd
     //  tag for source/script evaluation as a chunk.
-    if (token && (token.value === '=')) {
+    if (token && token.value === '=') {
         //  a leading = doesn't affect further parsing, but it does signify
         //  that the literal flag should be observed for the entire request
         if (TP.isValid(request)) {
@@ -622,7 +624,7 @@ function(source, shell, sibling, request) {
 
         i += 1;
         token = arr[i];
-    } else if (token && (token.value === ';')) {
+    } else if (token && token.value === ';') {
         //  a leading ; doesn't affect other parsing, but it does cause the
         //  rest of the command buffer to be flagged as producing no console
         //  output (although errors always produce console output).
@@ -657,7 +659,7 @@ function(source, shell, sibling, request) {
                     //  parse for is the "CDATA operator" which forces what
                     //  follows to be tag content rather than a new segment.
                     if (TP.$is_terminator(token.value) &&
-                        (token.value !== '.[[')) {
+                        token.value !== '.[[') {
                         //  when the terminator is a TSH pipe/redirect we
                         //  put that information on the tag so it can
                         //  process correctly when executing.
@@ -685,6 +687,7 @@ function(source, shell, sibling, request) {
                             //  previous token must be a valid identifier
                             //  that could be an attribute name
                             last = arr[i - 1];
+                            /* eslint-disable no-extra-parens */
                             if (!last ||
                                 (last.name !== 'identifier' &&
                                  last.name !== 'reserved')) {
@@ -698,6 +701,7 @@ function(source, shell, sibling, request) {
 
                                 continue;
                             }
+                            /* eslint-enable no-extra-parens */
 
                             //  if the next token is a "string" then the
                             //  attribute value is already quoted, otherwise
@@ -734,8 +738,8 @@ function(source, shell, sibling, request) {
                                 i += 2;
                                 token = arr[i];
                             }
-                        } else if ((token.value === '--') ||
-                                    (token.value === '-')) {
+                        } else if (token.value === '--' ||
+                                    token.value === '-') {
                             //  flag of some kind. flags are effectively
                             //  just attributes but they're special in terms
                             //  of prefixing and how the shell allocates
@@ -876,7 +880,7 @@ function(source, shell, sibling, request) {
                         }
                     } else if (TP.$is_identifier(token.name) &&
                                 TP.isValid(arr[i + 1]) &&
-                                (arr[i + 1].value === ':')) {
+                                arr[i + 1].value === ':') {
                         //  namespace-qualified attribute. for sugaring
                         //  reasons we allow the attribute to be simply
                         //  named (for css existence testing) in which case
@@ -919,8 +923,8 @@ function(source, shell, sibling, request) {
                         //  the consuming tag can treat as the "arguments"
                         last = arr[i - 1];
                         next = arr[i + 1];
-                        if ((token.name !== 'space') &&
-                            (token.name !== 'tab') &&
+                        if (token.name !== 'space' &&
+                            token.name !== 'tab' &&
                             (last && last.value !== ':') &&
                             (TP.notValid(next) || next.value !== '=')) {
                             chunk.length = 0;
@@ -1037,19 +1041,22 @@ function(source, shell, sibling, request) {
                                 //  text starts with sugared tag text
                                 //  either prefix: or just :tag
                                 j = 1;
+
+                                /* eslint-disable no-extra-parens */
                                 while ((next = arr[i + j])) {
                                     if (!TP.$is_whitespace(next.name)) {
                                         break;
                                     }
                                     j++;
                                 }
+                                /* eslint-enable no-extra-parens */
 
                                 if (next) {
                                     if (next.value === ':') {
                                         break;
                                     } else if (TP.$is_identifier(next.name)) {
                                         more = arr[i + j + 1];
-                                        if (more && (more.value === ':')) {
+                                        if (more && more.value === ':') {
                                             break;
                                         }
                                     }
@@ -1148,12 +1155,12 @@ function(source, shell, sibling, request) {
                         //  namespace"
                         next = arr[i + 1];
 
-                        if (next && (next.value === ':')) {
+                        if (next && next.value === ':') {
                             //  have to try to determine if this is a URI or
                             //  a tag prefix
                             more = arr[i + 2];
 
-                            if (more && (more.value === '/')) {
+                            if (more && more.value === '/') {
                                 //  URI...http:/...file:/...etc.
                                 command.push('<tsh:uri');
                                 args.push(token.value);
@@ -1313,9 +1320,11 @@ function(source, shell, sibling, request) {
                                 //  would be legal JS, but the odds of that
                                 //  are slim so we require an escape \~23.
                                 next = arr[i + 1];
+
+                                /* eslint-disable no-extra-parens */
                                 if (next &&
                                     (TP.$is_whitespace(next.name) ||
-                                    (next.value === '(') ||
+                                    next.value === '(' ||
                                     (!TP.$is_identifier(next.name) &&
                                     (next.value.indexOf('/') !== 0)))) {
                                     command.push('<tsh:cmd',
@@ -1323,6 +1332,7 @@ function(source, shell, sibling, request) {
                                     mode = 'src';
                                     break;
                                 }
+                                /* eslint-enable no-extra-parens */
 
                                 command.push('<tsh:uri');
                                 prefix = token.value;
@@ -1366,7 +1376,7 @@ function(source, shell, sibling, request) {
                                 next = arr[i + 1];
                                 if (next &&
                                     (TP.$is_whitespace(next.name) ||
-                                    (next.value === '('))) {
+                                    next.value === '(')) {
                                     command.push('<tsh:cmd',
                                         '><![CDATA[', token.value);
                                     mode = 'src';
@@ -2028,11 +2038,13 @@ function(aRequest) {
     //  request which started the whole thing.
     rootRequest = TP.ifInvalid(aRequest.at('rootRequest'), aRequest);
 
+    /* eslint-disable no-extra-parens */
     while ((child = children[i])) {
+    /* eslint-enable no-extra-parens */
         nodetype = child.nodeType;
 
-        if ((nodetype !== Node.ELEMENT_NODE) &&
-            (nodetype !== Node.PROCESSING_INSTRUCTION_NODE)) {
+        if (nodetype !== Node.ELEMENT_NODE &&
+            nodetype !== Node.PROCESSING_INSTRUCTION_NODE) {
             i += 1;
             continue;
         }
@@ -2084,7 +2096,7 @@ function(aRequest) {
         //  and the overall pipe while loop when we reach a terminator.
         outer: while (TP.notEmpty(pipe)) {
             next = TP.nodeGetFirstSiblingElement(child);
-            if (TP.notValid(next) && !nested && (pipe !== '.;')) {
+            if (TP.notValid(next) && !nested && pipe !== '.;') {
                 rootRequest.stderr('Unexpected end of pipe at: ' +
                     TP.str(child), aRequest);
                 return TP.BREAK;
@@ -2458,8 +2470,8 @@ function(src, shell, request) {
                     //  elsewhere since their opening syntax is not valid JS
                     //  but a comment's could be as in ( foo < ! --bar )
                     //  which is admittedly pretty obscure but possible
-                    if ((next.value === '!') && (arr[i + 2] !== null) &&
-                        (arr[i + 2].value === '--')) {
+                    if (next.value === '!' && arr[i + 2] !== null &&
+                        arr[i + 2].value === '--') {
                         tag.push('<!--');
                         i += 3;
 
@@ -2469,8 +2481,8 @@ function(src, shell, request) {
                                 break;
                             }
 
-                            if ((token.value === '--') &&
-                                (arr[i + 1] === '>')) {
+                            if (token.value === '--' &&
+                                arr[i + 1] === '>') {
                                 tag.push('-->');
                                 i += 1;
                                 break;
@@ -2519,8 +2531,8 @@ function(src, shell, request) {
                         //  even then the logic below here doesn't make sure
                         //  they are found without intervening whitespace.
 
-                        if ((token.value === '>') ||
-                            (token.value === '/>')) {
+                        if (token.value === '>' ||
+                            token.value === '/>') {
                             //  closing the tag
                             mode = 'tag';
                             break;
@@ -2529,15 +2541,15 @@ function(src, shell, request) {
                             //  names, particularly XSLT and XForms
                             i += 1;
                             continue;
-                        } else if ((token.value !== ':') &&
-                                (token.value !== '=')) {
+                        } else if (token.value !== ':' &&
+                                token.value !== '=') {
                             //  can't be a tag, invalid operator
                             mode = 'content';
                             break;
                         }
-                    } else if ((token.name === 'string') ||
-                            TP.$is_identifier(token.name) ||
-                            TP.$is_whitespace(token.name)) {
+                    } else if (token.name === 'string' ||
+                                TP.$is_identifier(token.name) ||
+                                TP.$is_whitespace(token.name)) {
                         //  could be more discriminating here based on
                         //  last/next but for now assume operator check
                         //  will catch the majority of bad tag forms
@@ -2585,7 +2597,10 @@ function(src, shell, request) {
                     tag.length = 0;
 
                     mode = 'content';
+
+                    /* eslint-disable no-extra-parens */
                     intag = (token.value === '<');
+                    /* eslint-enable no-extra-parens */
 
                     i += 1;
                 }
@@ -2609,7 +2624,7 @@ function(src, shell, request) {
                         break;
                     }
 
-                    if ((token.value === ']') &&
+                    if (token.value === ']' &&
                         arr.slice(i, i + 2).join('') === ']]>') {
                         tag.push(']]>');
                         i += 2;
@@ -2634,13 +2649,13 @@ function(src, shell, request) {
                 i += 1;
 
                 token = arr[i];
-                while (token && (token.value !== '?>')) {
+                while (token && token.value !== '?>') {
                     tag.push(token.value);
                     i += 1;
                     token = arr[i];
                 }
 
-                if (token && (token.value === '?>')) {
+                if (token && token.value === '?>') {
                     tag.push(token.value);
                 }
 
@@ -2706,8 +2721,11 @@ function(src, shell, request) {
                 //  leading whitespace
                 while (token && (token.name !== 'identifier' ||
                             token.name !== 'reserved')) {
+
+                    /* eslint-disable no-extra-parens */
                     literal = (token.value === '\\');
                     preserve = (token.value === '-');
+                    /* eslint-enable no-extra-parens */
 
                     i += 1;
                     token = arr[i];
@@ -2789,8 +2807,8 @@ function(src, shell, request) {
 
             default:
 
-                if ((token.name === 'string') ||
-                    (token.name === 'operator')) {
+                if (token.name === 'string' ||
+                    token.name === 'operator') {
                     //  xmlify string and token content to avoid issues
                     token.value = TP.xmlLiteralsToEntities(token.value);
 
@@ -2957,7 +2975,7 @@ function(aFaultString, aFaultCode) {
         return;
     }
 
-    if ((arguments.length > 0) && TP.notTrue(this.at('cmdSilent'))) {
+    if (arguments.length > 0 && TP.notTrue(this.at('cmdSilent'))) {
         switch (arguments.length) {
             case 1:
                 this.stderr(aFaultString);
@@ -3035,7 +3053,7 @@ function(aFaultString, aFaultCode, anException) {
         this.raise(anException, TP.ifInvalid(aFaultString, aFaultCode));
     }
 
-    if ((arguments.length > 0) && TP.notTrue(this.at('cmdSilent'))) {
+    if (arguments.length > 0 && TP.notTrue(this.at('cmdSilent'))) {
         switch (arguments.length) {
             case 1:
                 this.stderr(aFaultString);
@@ -3466,8 +3484,8 @@ function(aRequest) {
 
     //  make sure we're processing the right kind of node...element or PI.
     nodetype = node.nodeType;
-    if ((nodetype !== Node.ELEMENT_NODE) &&
-        (nodetype !== Node.PROCESSING_INSTRUCTION_NODE)) {
+    if (nodetype !== Node.ELEMENT_NODE &&
+        nodetype !== Node.PROCESSING_INSTRUCTION_NODE) {
         aRequest.fail();
         return;
     }

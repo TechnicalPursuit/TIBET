@@ -820,7 +820,7 @@ function(aString, sourceLocale, forceRefresh) {
 
     lang = this.getISOKey();
 
-    if (!source || !lang || (source === lang)) {
+    if (!source || !lang || source === lang) {
         return aString;
     }
 

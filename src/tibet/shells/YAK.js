@@ -282,7 +282,7 @@ function(aRequest) {
                         var val;
 
                         if (TP.notValid(response) ||
-                            (response.getSize() < 'http://'.getSize()) ||
+                            response.getSize() < 'http://'.getSize() ||
                             TP.notValid(val = TP.uc(response))) {
                             return false;
                         }
@@ -319,7 +319,7 @@ function(aRequest) {
                 function(response, request) {
 
                     //  need a valid server name
-                    if (TP.notValid(response) || (response.getSize() < 1)) {
+                    if (TP.notValid(response) || response.getSize() < 1) {
                         return false;
                     }
 
@@ -357,8 +357,8 @@ function(aRequest) {
                 function(response, request) {
 
                     if (TP.notValid(response) ||
-                        (response.getSize() <
-                                 TP.core.Shell.MIN_PASSWORD_LEN)) {
+                        response.getSize() <
+                                 TP.core.Shell.MIN_PASSWORD_LEN) {
                         return false;
                     }
 
@@ -610,7 +610,7 @@ function(aRequest) {
                         var val;
 
                         if (TP.notValid(response) ||
-                            (response.getSize() < 'http://'.getSize()) ||
+                            response.getSize() < 'http://'.getSize() ||
                             TP.notValid(val = TP.uc(response))) {
                             return false;
                         }
@@ -649,7 +649,7 @@ function(aRequest) {
 
                         //  need a valid server name
                         if (TP.notValid(response) ||
-                            (response.getSize() < 1)) {
+                            response.getSize() < 1) {
                             return false;
                         }
 
@@ -826,8 +826,8 @@ function(aRegistrationNode) {
                 function(response, request) {
 
                     if (TP.notValid(response) ||
-                        (response.getSize() <
-                             TP.core.Shell.MIN_PASSWORD_LEN)) {
+                        response.getSize() <
+                             TP.core.Shell.MIN_PASSWORD_LEN) {
                         return false;
                     }
 
@@ -849,8 +849,8 @@ function(aRegistrationNode) {
 
             //  Skip fields where the key is either 'username' or
             //  'password' - we took care of those above.
-            if ((kvPair.first() === 'username') ||
-                (kvPair.first() === 'password')) {
+            if (kvPair.first() === 'username' ||
+                kvPair.first() === 'password') {
                 return;
             }
 

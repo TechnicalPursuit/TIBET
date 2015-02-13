@@ -95,12 +95,12 @@ function(httpObj) {
         stat = httpObj.status;
 
         //  OK, Created, and Accepted are considered success codes
-        if ((stat >= 200) && (stat <= 207) || (stat === 304)) {
+        if (stat >= 200 && stat <= 207 || stat === 304) {
             return true;
         }
 
         //  file access often returns status of 0 (improperly we realize)
-        if ((stat === 0) && (httpObj.responseXML || httpObj.responseText)) {
+        if (stat === 0 && (httpObj.responseXML || httpObj.responseText)) {
             return true;
         }
     } catch (e) {
@@ -144,9 +144,12 @@ function(httpObj) {
         stat = httpObj.status;
 
         //  from Multiple Choices to Temporary Redirect
-        if ((stat >= 300) && (stat <= 307)) {
+        if (stat >= 300 && stat <= 307) {
+
             //  Not Modified will be false, all others are true.
+            /* eslint-disable no-extra-parens */
             return (stat !== 304);
+            /* eslint-enable no-extra-parens */
         }
     } catch (e) {
         TP.ifError() ?
@@ -919,7 +922,7 @@ function(targetUrl, aRequest, httpObj) {
     }
 
     if (TP.notDefined(headers.at('X-HTTP-Method-Override'))) {
-        if ((request.at('verb') === TP.HTTP_POST) &&
+        if (request.at('verb') === TP.HTTP_POST &&
                 TP.notEmpty(method = request.at('method'))) {
             headers.atPut('X-HTTP-Method-Override', method);
         }

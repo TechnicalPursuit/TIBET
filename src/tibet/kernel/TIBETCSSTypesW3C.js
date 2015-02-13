@@ -225,6 +225,8 @@ function(aCanvas) {
     //  capability. Therefore we need to multiply by the canvas width and
     //  height to derive the proper values for a Canvas.
 
+    /* eslint-disable no-extra-parens */
+
     if (/%/.test(x1 = this.get('x1'))) {
         x1 = (parseFloat(x1) / 100) * aCanvas.width;
     }
@@ -240,6 +242,8 @@ function(aCanvas) {
     if (/%/.test(y2 = this.get('y2'))) {
         y2 = (parseFloat(y2) / 100) * aCanvas.height;
     }
+
+    /* eslint-enable no-extra-parens */
 
     canvasGradient = the2DContext.createLinearGradient(x1, y1, x2, y2);
 
@@ -361,6 +365,8 @@ function(aCanvas) {
     //  height (or by a precomputed 'viewport value' in the case of radius)
     //  to derive the proper values for a Canvas.
 
+    /* eslint-disable no-extra-parens */
+
     if (/%/.test(cx = this.get('cx'))) {
         cx = (parseFloat(cx) / 100) * aCanvas.width;
     }
@@ -377,6 +383,8 @@ function(aCanvas) {
 
         radius = (parseFloat(radius) / 100) * viewportVal;
     }
+
+    /* eslint-enable no-extra-parens */
 
     canvasGradient = the2DContext.createRadialGradient(
                                             cx, cy, 0, cx, cy, radius);

@@ -612,7 +612,7 @@ function(aDocument, trimFile) {
     }
 
     //  watch out for Moz et. al. and the empty location "file://[/]"
-    if ((loc === 'file:///') || (loc === 'file://')) {
+    if (loc === 'file:///' || loc === 'file://') {
         return '';
     }
 
@@ -1481,16 +1481,17 @@ insetLeft) {
     boxBottom = boxTop + elemCoords.at('height');
 
     //  Outside the box? Forget it.
-    if ((pointX < boxLeft) ||
-        (pointX > boxRight) ||
-        (pointY < boxTop) ||
-        (pointY > boxBottom)) {
+    if (pointX < boxLeft ||
+        pointX > boxRight ||
+        pointY < boxTop ||
+        pointY > boxBottom) {
         return null;
     }
 
     xSide = null;
     ySide = null;
 
+    /* eslint-disable no-extra-parens */
     if (pointX > boxLeft && pointX < (boxLeft + insetLeft)) {
         xSide = 'LEFT';
     } else if (pointX > (boxRight - insetRight) && pointX < boxRight) {
@@ -1502,6 +1503,7 @@ insetLeft) {
     } else if (pointY > (boxBottom - insetBottom) && pointY < boxBottom) {
         ySide = 'BOTTOM';
     }
+    /* eslint-enable no-extra-parens */
 
     if (TP.isString(xSide) && TP.notValid(ySide)) {
         return TP[xSide];
@@ -1646,7 +1648,7 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
 
         //  Compute the initial X to try, based on the current
         //  corner that we're testing.
-        if ((corner === TP.TOP_LEFT) || (corner === TP.BOTTOM_LEFT)) {
+        if (corner === TP.TOP_LEFT || corner === TP.BOTTOM_LEFT) {
             initialX = preferredX + desiredOffsetX;
         } else {
             initialX = preferredX -
@@ -1656,7 +1658,7 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
 
         //  Compute the initial Y to try, based on the current
         //  corner that we're testing.
-        if ((corner === TP.TOP_LEFT) || (corner === TP.TOP_RIGHT)) {
+        if (corner === TP.TOP_LEFT || corner === TP.TOP_RIGHT) {
             initialY = preferredY + desiredOffsetY;
         } else {
             initialY = preferredY -
@@ -1794,12 +1796,15 @@ function(anElement, x, y) {
 
     //  If the X and Y fall within the coordinates of the element, then
     //  return true.
-    if ((x >= elemCoords.at('left')) &&
-        (y >= elemCoords.at('top')) &&
-        (x <= elemCoords.at('left') + anElement.offsetWidth) &&
-        (y <= elemCoords.at('top') + anElement.offsetHeight)) {
+
+    /* eslint-disable no-extra-parens */
+    if (x >= elemCoords.at('left') &&
+        y >= elemCoords.at('top') &&
+        x <= (elemCoords.at('left') + anElement.offsetWidth) &&
+        y <= (elemCoords.at('top') + anElement.offsetHeight)) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     return false;
 });
@@ -1933,8 +1938,8 @@ function(anElement, wantsTransformed) {
             offsetY += offsetAncestor.offsetTop +
                          borderVals.at('borderTopWidth');
 
-            if ((offsetAncestor !== elementDoc.body) &&
-                (offsetAncestor !== elementDoc.documentElement)) {
+            if (offsetAncestor !== elementDoc.body &&
+                offsetAncestor !== elementDoc.documentElement) {
                     offsetX -= offsetAncestor.scrollLeft;
                     offsetY -= offsetAncestor.scrollTop;
             }
@@ -1999,8 +2004,8 @@ function(anElement, anAttrName, anAttrValue) {
 
     //  Starting at the supplied element, traverse up the parent chain to
     //  the Document node.
-    while ((theElement.nodeType !== Node.DOCUMENT_NODE) &&
-            (theElement.nodeType !== Node.DOCUMENT_FRAGMENT_NODE)) {
+    while (theElement.nodeType !== Node.DOCUMENT_NODE &&
+            theElement.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
         //  If the element at this level is 'disabled', then nothing we do
         //  here matters, so we bail out.
         if (TP.elementHasAttribute(theElement, 'disabled')) {
@@ -2013,8 +2018,8 @@ function(anElement, anAttrName, anAttrValue) {
         //  this level to be the return element.
         if (TP.notValid(retElement)) {
             if (hasAttrValue &&
-                (TP.elementGetAttribute(theElement, anAttrName, true) ===
-                                                        anAttrValue)) {
+                TP.elementGetAttribute(theElement, anAttrName, true) ===
+                                                        anAttrValue) {
                 retElement = theElement;
             } else if (TP.elementHasAttribute(theElement, anAttrName, true)) {
                 retElement = theElement;
@@ -2688,6 +2693,8 @@ function(anElement, boxType, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
+                /* eslint-disable no-extra-parens */
+
                 //  TP.CONTENT_BOX means we subtract both the border and the
                 //  padding from both ends.
                 heightVal -=
@@ -2705,6 +2712,8 @@ function(anElement, boxType, wantsTransformed) {
                         TP.elementGetBorderInPixels(anElement,
                                                      TP.BOTTOM,
                                                      wantsTransformed));
+
+                /* eslint-enable no-extra-parens */
 
                 break;
 
@@ -3497,7 +3506,7 @@ function(anElement, anAncestor, wantsTransformed) {
     }
 
     ancestor = anElement.parentNode;
-    while (TP.isElement(ancestor) && (ancestor !== stopAncestor)) {
+    while (TP.isElement(ancestor) && ancestor !== stopAncestor) {
 
         if (TP.isTrue(wantsTransformed)) {
             vals = TP.elementLocalToGlobalXY(ancestor,
@@ -3564,8 +3573,8 @@ function(anElement, wantsTransformed) {
             return TP.raise(this, 'TP.sig.InvalidStyle');
         }
 
-        if ((computedStyle.position === 'absolute') ||
-            (computedStyle.position === 'relative')) {
+        if (computedStyle.position === 'absolute' ||
+            computedStyle.position === 'relative') {
             break;
         }
 
@@ -3661,8 +3670,11 @@ function(anElement, xCoord, yCoord) {
     elementHeight = TP.elementGetHeight(anElement, TP.BORDER_BOX);
 
     //  Compute the center of the element
+
+    /* eslint-disable no-extra-parens */
     elementCenterX = pageXY.first() + (elementWidth / 2);
     elementCenterY = pageXY.last() + (elementHeight / 2);
+    /* eslint-enable no-extra-parens */
 
     //  If the supplied X coordinate is less than the center, then its on
     //  the left side, otherwise the right side.
@@ -3721,6 +3733,8 @@ function(anElement, boxType, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
+                /* eslint-disable no-extra-parens */
+
                 //  TP.CONTENT_BOX means we subtract both the border and the
                 //  padding from both ends.
                 widthVal -=
@@ -3738,6 +3752,8 @@ function(anElement, boxType, wantsTransformed) {
                         TP.elementGetBorderInPixels(anElement,
                                                      TP.RIGHT,
                                                      wantsTransformed));
+
+                /* eslint-enable no-extra-parens */
 
                 break;
 
@@ -3822,8 +3838,10 @@ function(anElement) {
      *     document.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.documentGetFocusedElement(
                             TP.nodeGetDocument(anElement)) === anElement);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -4201,8 +4219,10 @@ function(anElement, deltaX, deltaY) {
 
     styleObj = TP.elementGetStyleObj(anElement);
 
+    /* eslint-disable no-extra-parens */
     styleObj.left = (pageXY.first() + deltaX) + 'px';
     styleObj.top = (pageXY.last() + deltaY) + 'px';
+    /* eslint-enable no-extra-parens */
 
     return;
 });
@@ -4417,7 +4437,7 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
 
         //  Compute the preferred X to try, based on the current
         //  corner that we're testing.
-        if ((corner === TP.TOP_LEFT) || (corner === TP.BOTTOM_LEFT)) {
+        if (corner === TP.TOP_LEFT || corner === TP.BOTTOM_LEFT) {
             preferredX = elementBoxX;
         } else {
             preferredX = elementBoxX + elementBoxWidth;
@@ -4425,7 +4445,7 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
 
         //  Compute the preferred Y to try, based on the current
         //  corner that we're testing.
-        if ((corner === TP.TOP_LEFT) || (corner === TP.TOP_RIGHT)) {
+        if (corner === TP.TOP_LEFT || corner === TP.TOP_RIGHT) {
             preferredY = elementBoxY;
         } else {
             preferredY = elementBoxY + elementBoxHeight;
@@ -4836,12 +4856,16 @@ function(anElement, top, right, bottom, left) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
+    /* eslint-disable no-extra-parens */
+
     TP.elementGetStyleObj(anElement).clip =
         'rect(' + ((!TP.isNaN(top)) ? top + 'px ' : top) +
                     ((!TP.isNaN(right)) ? right + 'px ' : right) +
                     ((!TP.isNaN(bottom)) ? bottom + 'px ' : bottom) +
                     ((!TP.isNaN(left)) ? left + 'px' : left) +
                     ')';
+
+    /* eslint-enable no-extra-parens */
 
     return;
 });
@@ -5153,7 +5177,7 @@ function(anElement, propName, useOffsetAncestors) {
     }
 
     while (TP.isElement(ancestor) &&
-            (ancestor.nodeType !== Node.DOCUMENT_NODE)) {
+            ancestor.nodeType !== Node.DOCUMENT_NODE) {
         if (TP.isNumber(ancestorVal = ancestor[propName])) {
             totalPropertyValue += ancestorVal;
         }
@@ -5491,8 +5515,8 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
                 //  NOTE: IE-ONLY DEFINED CALL HERE!!
 
-                if ((thePosition === TP.AFTER_BEGIN) ||
-                    (thePosition === TP.BEFORE_END)) {
+                if (thePosition === TP.AFTER_BEGIN ||
+                    thePosition === TP.BEFORE_END) {
                     childContainer = TP.$$buildTableDOM(elemTagName,
                                                         doc,
                                                         strContent,
@@ -6664,12 +6688,14 @@ function(anElement, aContent) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable no-extra-parens */
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
             TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
         return TP.raise(this, 'TP.sig.InvalidElement',
                             'Element must be an iframe.');
     }
+    /* eslint-enable no-extra-parens */
 
     //  Grab the document from the iframe and write a blank document into it
     //  to prep the document (making sure it has 'head' and 'body'
@@ -6713,12 +6739,14 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable no-extra-parens */
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
             TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
         return TP.raise(this, 'TP.sig.InvalidElement',
                             'Element must be an iframe.');
     }
+    /* eslint-enable no-extra-parens */
 
     //  Grab the document from the iframe and write a blank document into it
     //  to prep the document (making sure it has 'head' and 'body'
@@ -7179,7 +7207,9 @@ function(aString) {
 
             comments.push(commentExpr);
 
+            /* eslint-disable no-extra-parens */
             return TP.join('<!--', (comments.getSize() - 1), '-->');
+            /* eslint-enable no-extra-parens */
         });
 
     //  Replace any XHTML 'empty' tags, with the equivalent HTML markup
@@ -7677,6 +7707,8 @@ function(angle, numIncrements, centerInIncrement) {
     //  This algorithm taken from:
     //  http://en.wikipedia.org/wiki/Boxing_the_compass#Compass_points
 
+    /* eslint-disable no-extra-parens */
+
     theAngle = angle;
     if (TP.isNumber(numIncrements) && center) {
         //  'Center' the point in increment by adding half of the value
@@ -7699,6 +7731,8 @@ function(angle, numIncrements, centerInIncrement) {
     if (TP.isNumber(numIncrements)) {
         cornerVal -= ((cornerVal - 1) % (32 / numIncrements));
     }
+
+    /* eslint-enable no-extra-parens */
 
     return cornerVal;
 });
@@ -8226,7 +8260,7 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     TP.signal('tibet://' + winID, 'TP.sig.DocumentUnloaded');
 
     //  close open windows if we're unloading the code frame
-    if ((TP.$$processDocumentUnloaded.codeframe === aWindow) &&
+    if (TP.$$processDocumentUnloaded.codeframe === aWindow &&
             TP.sys.isUA('GECKO')) {
         TP.core.Window.closeRegisteredWindows();
 
@@ -8879,7 +8913,7 @@ function(aWindow) {
 
     //  NB: This function needs to be forked in order to be 'outside' of the
     //  window stoppage procedure above.
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
 
         var loc,
@@ -8929,7 +8963,7 @@ function(aWindow) {
                                         'tibet:settinglocation');
                         }));
     }).afterUnwind();
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -8958,8 +8992,8 @@ function(aWindow) {
         'keypress',
         function(anEvent) {
 
-            if ((anEvent.keyCode === TP.BACK_SPACE_KEY) &&
-                (anEvent.target === this)) {
+            if (anEvent.keyCode === TP.BACK_SPACE_KEY &&
+                anEvent.target === this) {
                 anEvent.preventDefault();
             }
         }, false);

@@ -1541,7 +1541,7 @@ function(anItem, aTest) {
 
     deleted = 0;
     if (wi < len) {
-        deleted = (len) - wi;
+        deleted = len - wi;
         this.length = wi;
 
         this.changed('length', TP.DELETE,
@@ -1827,7 +1827,9 @@ function(anItem, anIndex) {
         return this.raise('TP.sig.InvalidIndex');
     }
 
+    /* eslint-disable no-extra-parens */
     index = (index > 0) ? index : this.normalizeIndex(index);
+    /* eslint-enable no-extra-parens */
 
     len = this.length;
 
@@ -1886,7 +1888,9 @@ function(aCollection, anIndex) {
     }
 
     tmparr = TP.ac();
+    /* eslint-disable no-extra-parens */
     index = (index > 0) ? index : this.normalizeIndex(index);
+    /* eslint-enable no-extra-parens */
 
     len = this.length;
 
@@ -2307,7 +2311,10 @@ function(anIndex) {
 
     this.$sortIfNeeded();
 
+    /* eslint-disable no-extra-parens */
     index = (index > 0) ? index : this.normalizeIndex(index);
+    /* eslint-enable no-extra-parens */
+
     len = this.length;
 
     this.splice(index, 1);
@@ -3227,7 +3234,9 @@ function(startIndex, aStep) {
     start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
     step = TP.ifInvalid(aStep, 1);
 
+    /* eslint-disable no-extra-parens */
     return (start).to(this).by(step);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -4224,9 +4233,12 @@ function(aString) {
 
                 //  don't make keys of undefined, and don't let trailing ;
                 //  mess things up if the regex matched to that separator
+
+                /* eslint-disable no-extra-parens */
                 if ((key = key.strip(';').asDOMName())) {
                     dict.atPut(key, value);
                 }
+                /* eslint-enable no-extra-parens */
             }, aString);
     } else {
         //  We don't match a style string.
@@ -8537,6 +8549,8 @@ function(aFunction) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
+
+    /* eslint-disable no-extra-parens */
     if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
     }
@@ -8573,6 +8587,7 @@ function(aFunction) {
             count++;
         }
     }
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
@@ -8624,6 +8639,8 @@ function(aFunction, terminateFunction) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
+
+    /* eslint-disable no-extra-parens */
     if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
     }
@@ -8664,6 +8681,7 @@ function(aFunction, terminateFunction) {
             count++;
         }
     }
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
@@ -8705,6 +8723,8 @@ function(aFunction, terminateFunction) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
+
+    /* eslint-disable no-extra-parens */
     if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
     }
@@ -8744,6 +8764,7 @@ function(aFunction, terminateFunction) {
             count++;
         }
     }
+    /* eslint-enable no-extra-parens */
 
     return this;
 });

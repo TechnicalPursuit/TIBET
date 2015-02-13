@@ -194,7 +194,7 @@ function(hasPan, zoomType, hasOverview, hasScale, hasMapType) {
     //  Remove all existing controls
     this.removeAllControls();
 
-    if (TP.isValid(zoomType) || (TP.isTrue(hasPan))) {
+    if (TP.isValid(zoomType) || TP.isTrue(hasPan)) {
         this.$addControl('GLargeMapControl');
     } else {
         this.$addControl('GSmallMapControl');
@@ -670,8 +670,8 @@ function(aLatLong) {
 
     //  If we're already at the center point, exit here and avoid possible
     //  signaling recursion (if we have maps that are observing each other).
-    if ((currentCenter.get('lat') === theLatLong.get('lat')) &&
-        (currentCenter.get('long') === theLatLong.get('long'))) {
+    if (currentCenter.get('lat') === theLatLong.get('lat') &&
+        currentCenter.get('long') === theLatLong.get('long')) {
         return this;
     }
 

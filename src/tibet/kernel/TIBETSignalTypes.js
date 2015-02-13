@@ -564,7 +564,7 @@ TP.core.ResizeMonitor.Type.defineAttribute(
             return false;
         }
 
-        if ((oldHeight !== newHeight) || (oldWidth !== newWidth)) {
+        if (oldHeight !== newHeight || oldWidth !== newWidth) {
             return true;
         }
 
@@ -2130,7 +2130,9 @@ function() {
      * @returns {TP.UP|TP.DOWN}
      */
 
+    /* eslint-disable no-extra-parens */
     return (this.getWheelDelta() > 0) ? TP.UP : TP.DOWN;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

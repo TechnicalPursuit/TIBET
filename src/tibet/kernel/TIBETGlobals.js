@@ -244,7 +244,9 @@ TP.isNamespace = function(namespaceObj) {
         return false;
     }
 
+    /* eslint-disable no-extra-parens */
     return (typeof namespaceObj.$$isNamespace !== 'undefined');
+    /* eslint-enable no-extra-parens */
 };
 
 //  Manual setup
@@ -1912,9 +1914,9 @@ TP.COMPARE_SORT = function(a, b) {
 //  sort block that pushes "deleted" elements to the end for truncation
 TP.DELETION_SORT = function(a, b) {
 
-        if ((a !== TP.DELETED) && (b === TP.DELETED)) {
+        if (a !== TP.DELETED && b === TP.DELETED) {
             return -1;
-        } else if ((a === TP.DELETED) && (b !== TP.DELETED)) {
+        } else if (a === TP.DELETED && b !== TP.DELETED) {
             return 1;
         }
 
@@ -2172,7 +2174,7 @@ TP.KEYMAP_ELEMENT_SORT = function(a, b) {
         //  followed by only browser, followed by only platform, followed by
         //  neither.
 
-        if ((aHasBrowser && aHasPlatform)) {
+        if (aHasBrowser && aHasPlatform) {
             aWeight = 10;
         } else if (aHasBrowser && !aHasPlatform) {
             aWeight = 5;
@@ -2180,7 +2182,7 @@ TP.KEYMAP_ELEMENT_SORT = function(a, b) {
             aWeight = 1;
         }
 
-        if ((bHasBrowser && bHasPlatform)) {
+        if (bHasBrowser && bHasPlatform) {
             bWeight = 10;
         } else if (bHasBrowser && !bHasPlatform) {
             bWeight = 5;

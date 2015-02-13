@@ -220,7 +220,7 @@ Cmd.prototype.execute = function() {
         var msg;
 
         if (code !== 0) {
-            msg = ('Execution stopped with status: ' + code);
+            msg = 'Execution stopped with status: ' + code;
             if (!cmd.options.debug || !cmd.options.verbose) {
                 msg += ' Retry with --debug --verbose for more information.';
             }

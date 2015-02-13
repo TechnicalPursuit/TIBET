@@ -632,8 +632,10 @@ function(aDocument) {
 
     //  If the selection is collapsed or its 'toString()' representation is
     //  empty, then its collapsed.
+    /* eslint-disable no-extra-parens */
     return (theSelection.isCollapsed ||
             TP.isEmpty(theSelection.toString()));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -852,11 +854,14 @@ function(aDocument) {
         //  selection does not span nodes. Then we just have to check the
         //  nodeType of the current selection to make sure its not a
         //  Node.TEXT_NODE.
-        if ((theRange.startContainer === theRange.endContainer) &&
-            ((theRange.endOffset - theRange.startOffset) === 1) &&
-            (!TP.isTextNode(theRange.startContainer))) {
+
+        /* eslint-disable no-extra-parens */
+        if (theRange.startContainer === theRange.endContainer &&
+            (theRange.endOffset - theRange.startOffset) === 1 &&
+            !TP.isTextNode(theRange.startContainer)) {
             return TP.SELECTION_ELEMENT;
         }
+        /* eslint-enable no-extra-parens */
     }
 
     //  Otherwise, its not null, not collapsed and not a Node.ELEMENT_NODE,
@@ -991,8 +996,10 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
+    /* eslint-disable no-extra-parens */
     return (anElement.scrollWidth > anElement.clientWidth ||
             anElement.scrollHeight > anElement.clientHeight);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1109,8 +1116,8 @@ function(anElement) {
      */
 
     if (!TP.isElement(anElement) ||
-        (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
-            TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
+            TP.elementGetLocalName(anElement).toLowerCase() !== 'object') {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
@@ -1137,11 +1144,13 @@ function(anElement) {
 
     var iframeWindow;
 
+    /* eslint-disable no-extra-parens */
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
             TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
+    /* eslint-enable no-extra-parens */
 
     //  Note that here we set the window's name to the id of the element, if
     //  it doesn't already have a name. This facilitates observing
@@ -1487,6 +1496,8 @@ function(anElement) {
 
     atan2 = Math.atan2;
 
+    /* eslint-disable no-extra-parens */
+
     combine = function(a, b, ascl, bscl) {
         return [
             (ascl * a[0]) + (bscl * b[0]),
@@ -1510,6 +1521,8 @@ function(anElement) {
     if ((a * d - b * c) === 0) {
         return null;
     }
+
+    /* eslint-enable no-extra-parens */
 
     // Take care of translation
 
@@ -1577,14 +1590,18 @@ function(anElement, includeElement) {
     //  Grab the element name
     elementName = TP.elementGetLocalName(anElement).toLowerCase();
 
+    /* eslint-disable no-extra-parens */
+
     //  If it's one of the 'input type' elements (i.e. 'input' or
     //  'textarea'), then we can use a special call and exit here.
     if ((elementName === 'input' && anElement.type === 'text') ||
-        (elementName === 'textarea')) {
+        elementName === 'textarea') {
         anElement.setSelectionRange(0, anElement.value.length);
 
         return;
     }
+
+    /* eslint-enable no-extra-parens */
 
     //  Grab the selection object and make sure its real
     theSelection = TP.nodeGetWindow(anElement).getSelection();
@@ -1740,7 +1757,7 @@ function(anElement, aContent) {
     }
 
     elementName = TP.elementGetLocalName(anElement).toLowerCase();
-    if ((elementName !== 'textarea') &&
+    if (elementName !== 'textarea' &&
         (elementName !== 'input' || anElement.type !== 'text')) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
@@ -1802,7 +1819,7 @@ function(anElement, aContent) {
     }
 
     elementName = TP.elementGetLocalName(anElement).toLowerCase();
-    if ((elementName !== 'textarea') &&
+    if (elementName !== 'textarea' &&
         (elementName !== 'input' || anElement.type !== 'text')) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }

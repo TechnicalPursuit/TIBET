@@ -289,7 +289,7 @@ function(aRequest) {
 
     //  If the action is PutAttributes or DeleteAttributes repackage any
     //  'names', 'values' or 'replaces' keys.
-    if ((action === 'PutAttributes') || (action === 'DeleteAttributes')) {
+    if (action === 'PutAttributes' || action === 'DeleteAttributes') {
         this.repackageAttributes(aRequest);
     }
 
@@ -405,7 +405,7 @@ function(aRequest) {
 
     //  'DeleteAttributes' allows an empty 'Names' list - it will just
     //  delete all attributes.
-    if (TP.isEmpty(names) && (anAction === 'DeleteAttributes')) {
+    if (TP.isEmpty(names) && anAction === 'DeleteAttributes') {
         return;
     }
 

@@ -38,6 +38,7 @@ function(anObject) {
 
     str = TP.tostr(anObject);
 
+    /* eslint-disable no-extra-parens */
     return TP.isTrue(str) ||
             (str === 'true') ||
             TP.isFalse(str) ||
@@ -46,6 +47,7 @@ function(anObject) {
             (str === '0') ||
             (str === 1) ||
             (str === '1');
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

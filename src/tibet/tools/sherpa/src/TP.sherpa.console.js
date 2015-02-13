@@ -1167,7 +1167,7 @@ function(aSignal) {
             }
         }
 
-        if (TP.isEmpty(str) || (str === 'ready')) {
+        if (TP.isEmpty(str) || str === 'ready') {
             str = 'Object';
         }
     } else if (TP.isNull(val)) {

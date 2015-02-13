@@ -198,7 +198,7 @@ function(aRequest) {
     request = TP.request(aRequest);
 
     param = request.atIfInvalid('bodyarray', 'single');
-    list = (param === 'list') ? true : false;
+    list = param === 'list' ? true : false;
 
     arr = TP.ac();
 

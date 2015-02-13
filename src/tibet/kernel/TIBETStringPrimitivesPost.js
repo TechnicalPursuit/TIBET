@@ -141,6 +141,8 @@ TP.definePrimitive('atob',
             f = arr[ndx++].charCodeAt(0);
             i = TP.$$btoaData[f];
 
+            /* eslint-disable no-extra-parens */
+
             if ((f >= 0) && (f < 128) && (i !== -1)) {
                 if (n % 4 === 0) {
                     c = i << 2;
@@ -162,6 +164,9 @@ TP.definePrimitive('atob',
                             String.fromCharCode(e);
                 }
             }
+
+            /* eslint-enable no-extra-parens */
+
         }
         while (TP.isDefined(arr[ndx]));
 
@@ -236,7 +241,7 @@ TP.definePrimitive('btoa',
         out = '';
         end = 0;
 
-        /* eslint-disable no-constant-condition, no-nested-ternary */
+        /* eslint-disable no-constant-condition,no-nested-ternary,no-extra-parens */
         while (end === 0) {
             c = TP.isDefined(arr[++ndx]) ? arr[ndx].charCodeAt(0) :
                                         ((end = 1) ? 0 : 0);
@@ -253,7 +258,7 @@ TP.definePrimitive('btoa',
             if (end === 2) { w = '='; }
             if (end < 3) { out += u + v + w + x; }
         }
-        /* eslint-enable no-constant-condition, no-nested-ternary */
+        /* eslint-enable no-constant-condition,no-nested-ternary,no-extra-parens */
 
         //  Don't do 76 step as a) Mozilla doesn't and b) the XML Schema
         //  spec doesn't allow for it... just return 'out'.
@@ -303,6 +308,8 @@ function(utf8) {
     str = '';
     i = 0;
 
+    /* eslint-disable no-extra-parens */
+
     while (i < utf8.length) {
         b1 = utf8.charCodeAt(i);
         if (b1 < 0x80) {
@@ -324,6 +331,8 @@ function(utf8) {
         }
     }
 
+    /* eslint-enable no-extra-parens */
+
     return str;
 });
 
@@ -343,7 +352,7 @@ function(str) {
      * @returns {String} A decoded Javascript string.
      */
 
-    if ((str.length > 0) && (str.charCodeAt(0) === 0x9D)) {
+    if (str.length > 0 && str.charCodeAt(0) === 0x9D) {
         return TP.utf82unicode(str.substring(1));
     }
 
@@ -377,8 +386,8 @@ function(str) {
     necessary = false;
 
     for (i = 0; i < str.length; i++) {
-        if ((str.charCodeAt(i) === 0x9D) ||
-            (str.charCodeAt(i) > 0xFF)) {
+        if (str.charCodeAt(i) === 0x9D ||
+            str.charCodeAt(i) > 0xFF) {
             necessary = true;
 
             break;
@@ -414,6 +423,8 @@ function(str) {
     for (n = 0; n < str.length; n++) {
         c = str.charCodeAt(n);
 
+        /* eslint-disable no-extra-parens */
+
         if (c <= 0x7F) {
             //  0x00 - 0x7F:  Emit as single byte, unchanged
             utf8 += String.fromCharCode(c);
@@ -430,6 +441,8 @@ function(str) {
             utf8 += String.fromCharCode(((c >> 6) & 0x3F) | 0x80);
             utf8 += String.fromCharCode((c & 0x3F) | 0x80);
         }
+
+        /* eslint-enable no-extra-parens */
     }
 
     return utf8;
@@ -513,8 +526,8 @@ function(aStr, startDelim, endDelim, startPos) {
             //  end delimiter that we found. Loop until a) we can no longer
             //  find end delimiters and b) there are still start delimiters
             //  left.
-            while (((ind = aStr.indexOf(endDelim, newStart)) !== -1) &&
-                    (startCount > 0)) {
+            while ((ind = aStr.indexOf(endDelim, newStart)) !== -1 &&
+                    startCount > 0) {
                 //  We found an end delimiter, so decrease the number of
                 //  start delimiters.
                 startCount--;
@@ -577,6 +590,7 @@ function(aString, left, right, flags) {
     do {
         remaining = 0;
 
+        /* eslint-disable no-extra-parens */
         while ((result = iterator.exec(aString))) {
             if (theLeft.test(result.at(0))) {
                 if (!(remaining++)) {
@@ -591,8 +605,9 @@ function(aString, left, right, flags) {
                 }
             }
         }
+        /* eslint-enable no-extra-parens */
     }
-    while ((remaining > 0) && (iterator.lastIndex = theLastIndex));
+    while (remaining > 0 && (iterator.lastIndex = theLastIndex));
 
     return matches;
 });

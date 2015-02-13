@@ -177,7 +177,9 @@ TP.isCallable = function(anObj) {
 
     //  NB: Do not replace this logic - it has been optimized to primitives
     //  because this method gets called so much.
+    /* eslint-disable no-extra-parens */
     return (anObj && anObj.apply && anObj.$$dnu !== true);
+    /* eslint-enable no-extra-parens */
 };
 
 //  Manual setup
@@ -226,7 +228,9 @@ TP.canInvoke = function(anObj, anInterface) {
     //  because this method (with a String parameter) gets called so much.
     if (anInterface.charAt !== undefined) {
         obj = anObj[anInterface];
+        /* eslint-disable no-extra-parens */
         return (obj !== undefined && obj.apply && obj.$$dnu !== true);
+        /* eslint-enable no-extra-parens */
     } else if (TP.isArray(anInterface)) {
         len = anInterface.length;
         for (i = 0; i < len; i++) {
@@ -691,7 +695,7 @@ if (!TP.sys.constructOID) {
 
         //  NOTE that starting with anything other than a number allows
         //  these to work as ID[REF] values when no prefix is provided
-        return ((aPrefix) ? aPrefix + TP.OID_PREFIX : TP.OID_PREFIX) +
+        return (aPrefix ? aPrefix + TP.OID_PREFIX : TP.OID_PREFIX) +
                 Math.random().toString(32).replace('0.',
                         Date.now().toString(32));
     };
@@ -997,7 +1001,9 @@ TP.PHash = function() {
          *     a subtype.
          */
 
-        return ((aType === 'TP.lang.Hash') || (aType === TP.lang.Hash));
+        /* eslint-disable no-extra-parens */
+        return (aType === 'TP.lang.Hash' || aType === TP.lang.Hash);
+        /* eslint-enable no-extra-parens */
     };
 
     //  register with TIBET by hand
@@ -1025,7 +1031,7 @@ TP.PHash = function() {
          * @returns {Object} An instance of aType.
          */
 
-        if ((aType === 'TP.lang.Hash') || (aType === TP.lang.Hash)) {
+        if (aType === 'TP.lang.Hash' || aType === TP.lang.Hash) {
             return this.asTP_lang_Hash();
         }
 
@@ -1067,7 +1073,7 @@ TP.PHash = function() {
 
         for (j = 0; j < length; j++) {
             arr.push(TP.src(keys[j]), ', ', TP.src(this.$$hash[keys[j]]));
-            if ((j + 1) < length) {
+            if (j + 1 < length) {
                 arr.push(', ');
             }
         }
@@ -1552,8 +1558,8 @@ TP.PHash = function() {
         for (j = 0; j < length; j++) {
             //  update iteration edge flags so our function can tell when
             //  its at the start/end of the overall collection
-            aFunction.$first = (j === 0) ? true : false;
-            aFunction.$last = (j === length - 1) ? true : false;
+            aFunction.$first = j === 0 ? true : false;
+            aFunction.$last = j === length - 1 ? true : false;
 
             item[0] = keys[j];
             item[1] = this.$$hash[keys[j]];
@@ -1873,7 +1879,9 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
     }
 
     //  some things (most notably 'traited' methods) won't have a load node.
+    /* eslint-disable no-extra-parens */
     if ((node = TP.boot[TP.LOAD_NODE])) {
+    /* eslint-enable no-extra-parens */
         lpath = node.src || node.source || '';
         lpath = TP.boot.$uriInTIBETFormat(lpath);
     } else {
@@ -2126,7 +2134,7 @@ function(target, name, value, track, desc, display, owner) {
         if (value === TP.REQUIRED) {
 
             TP.defineSlot(target, name, value, TP.METHOD, trk,
-                    (desc && desc.$$isPDC ? desc : TP.DEFAULT_DESCRIPTOR));
+                    desc && desc.$$isPDC ? desc : TP.DEFAULT_DESCRIPTOR);
 
         } else {
             TP.ifError() ?
@@ -2149,8 +2157,10 @@ function(target, name, value, track, desc, display, owner) {
     //  to true which means that the system will definitely not install a patch,
     //  even if the RegExp passes or 'wantsCalleePatch' to true which forces the
     //  system to install a patch, even if the RegExp fails.
+    /* eslint-disable no-extra-parens */
     if ((TP.NEEDS_CALLEE.test(value.toString()) && !value.noCalleePatch) ||
         value.wantsCalleePatch === true) {
+    /* eslint-enable no-extra-parens */
         method = function () {
             var oldCallee,
                 oldArgs,
@@ -2209,8 +2219,10 @@ function(target, name, value, track, desc, display, owner) {
         method = value;
     }
 
+    /* eslint-disable no-extra-parens */
     TP.defineSlot(target, name, method, TP.METHOD, trk,
             (desc && desc.$$isPDC ? desc : TP.DEFAULT_DESCRIPTOR));
+    /* eslint-enable no-extra-parens */
 
     //  we don't wrap 'self' level methods so we need to patch on the load node
     //  manually. All others get it done via addMetadata.
@@ -2292,7 +2304,7 @@ function(name, bodyOrConditionals, desc, display, owner) {
             //  When provided a string if it's a test name we run that test
             //  and get back either true or false, which presumably is the
             //  proper key for one of our method options below.
-            if ((typeof test === 'string') && TP.sys.hasFeatureTest(test)) {
+            if (typeof test === 'string' && TP.sys.hasFeatureTest(test)) {
                 key = TP.sys.hasFeature(test);
             } else {
                 //  If the test isn't a string, or isn't a known test name
@@ -2477,7 +2489,9 @@ function(aSuspectValue, aDefaultValue) {
      * @returns {Object} One of the two values provided.
      */
 
+    /* eslint-disable no-extra-parens */
     return (aSuspectValue === null) ? aDefaultValue : aSuspectValue;
+    /* eslint-enable no-extra-parens */
 }, false, 'TP.ifNull');
 
 //  ------------------------------------------------------------------------
@@ -2500,7 +2514,9 @@ function(aSuspectValue, aDefaultValue) {
      * @returns {Object} One of the two values provided.
      */
 
+    /* eslint-disable no-extra-parens */
     return (aSuspectValue === undefined) ? aDefaultValue : aSuspectValue;
+    /* eslint-enable no-extra-parens */
 }, false, 'TP.ifUndefined');
 
 //  ------------------------------------------------------------------------
@@ -2756,19 +2772,21 @@ function(anObj) {
         return TP.isNonFunctionConstructor(anObj);
     }
 
+    /* eslint-disable no-extra-parens */
     if ((anObj === Function) ||
                 (TP.isValid(anObj[TP.TYPE]) &&
                 (anObj[TP.TYPE] !== TP.FunctionProto[TP.TYPE]))) {
         return true;
     }
+    /* eslint-enable no-extra-parens */
 
     //  native types are tricksy since they'll just say Function...we need
     //  their actual name to see if it starts with an uppercase character
     //  and we need to avoid instance names which all say Function*
     if (tname === 'Function') {
         //  owner and track can't be NONE, which implies a bound function
-        if ((anObj[TP.OWNER] === TP.NONE) ||
-            (anObj[TP.TRACK] === TP.NONE)) {
+        if (anObj[TP.OWNER] === TP.NONE ||
+            anObj[TP.TRACK] === TP.NONE) {
             return false;
         }
 
@@ -2781,8 +2799,11 @@ function(anObj) {
 
         //  unfortunately our last option is a bit error prone, but we'll
         //  say types have to match a certain naming standard
+
+        /* eslint-disable no-extra-parens */
         return (name.indexOf('Function' + TP.OID_PREFIX) !== 0) &&
                 TP.regex.NATIVE_TYPENAME.test(name);
+        /* eslint-enable no-extra-parens */
     }
 
     return false;
@@ -2814,9 +2835,11 @@ function(anObj) {
         return false;
     }
 
+    /* eslint-disable no-extra-parens */
     return ((TP.isFunction(anObj) || TP.isNonFunctionConstructor(anObj)) &&
                  TP.isType(anObj)) ||
             (anObj === Function);
+    /* eslint-enable no-extra-parens */
 }, false, 'TP.isNativeType');
 
 //  ------------------------------------------------------------------------
@@ -2842,7 +2865,9 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is a frame.
      */
 
-    return (TP.isValid(anObj) && (anObj.moveBy !== undefined));
+    /* eslint-disable no-extra-parens */
+    return (TP.isValid(anObj) && anObj.moveBy !== undefined);
+    /* eslint-enable no-extra-parens */
 }, false, 'TP.isWindow');
 
 //  ------------------------------------------------------------------------
@@ -2878,7 +2903,7 @@ function(anObject) {
 
     if (TP.isValid(anObject) &&
         TP.owns(anObject, '$$prototype') &&
-        (anObject.$$prototype === anObject)) {
+        anObject.$$prototype === anObject) {
 
         return true;
     }
@@ -2951,10 +2976,10 @@ function(anObj) {
 
     //  Strings, Numbers, Booleans are *not* mutable (but their prototypes are)
 
-    if ((typeof anObj.charAt === 'function' && anObj !== TP.StringProto) ||
-        (typeof anObj.toPrecision === 'function' && anObj !== TP.NumberProto) ||
-        (anObj === true) ||
-        (anObj === false)) {
+    if (typeof anObj.charAt === 'function' && anObj !== TP.StringProto ||
+        typeof anObj.toPrecision === 'function' && anObj !== TP.NumberProto ||
+        anObj === true ||
+        anObj === false) {
         return false;
     }
 
@@ -3047,6 +3072,7 @@ function () {
      */
 
     /* jshint bitwise:false */
+    /* eslint-disable no-extra-parens */
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
             /[xy]/g,
             function(c) {
@@ -3054,6 +3080,7 @@ function () {
                     r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
+    /* eslint-enable no-extra-parens */
     /* jshint bitwise:true */
 }, false, 'TP.genUUID');
 
@@ -3097,7 +3124,7 @@ function(anObject) {
     }
 
     //  owner and track can't be NONE, which implies a bound function
-    if ((anObject[TP.OWNER] === TP.NONE) || (anObject[TP.TRACK] === TP.NONE)) {
+    if (anObject[TP.OWNER] === TP.NONE || anObject[TP.TRACK] === TP.NONE) {
         return false;
     }
 
@@ -4300,7 +4327,7 @@ function(functionBodyOrTests) {
             //  When provided a string if it's a test name we run that test
             //  and get back either true or false, which presumably is the
             //  proper key for one of our function options below.
-            if ((typeof test === 'string') && TP.sys.hasFeatureTest(test)) {
+            if (typeof test === 'string' && TP.sys.hasFeatureTest(test)) {
                 key = TP.sys.hasFeature(test);
             } else {
                 //  If the test isn't a string, or isn't a known test name
@@ -4490,9 +4517,11 @@ function() {
     if ((str = TP.ObjectProto.toString.call(this)) &&
             TP.regex.NATIVE_TYPENAME_MATCH.test(str)) {
 
+        /* eslint-disable no-extra-parens */
         if ((name = str.match(TP.regex.NATIVE_TYPENAME_EXTRACT))) {
             return name[1];
         }
+        /* eslint-enable no-extra-parens */
     }
 
     return TP.isWindow(this) ? 'Window' : 'Object';
@@ -4613,13 +4642,13 @@ function(aPrefix) {
     }
 
     //  if it doesn't exist we can create it and bail out
-    if ((this.$$oid === undefined) && !TP.isNode(this)) {
+    if (this.$$oid === undefined && !TP.isNode(this)) {
         //  some native objects will complain bitterly about this
         try {
             this.$$oid = TP.sys.constructOID(prefix);
         } catch (e) {
         }
-    } else if ((this.$$oid === this.getPrototype().$$oid) && !TP.isNode(this)) {
+    } else if (this.$$oid === this.getPrototype().$$oid && !TP.isNode(this)) {
         //  watch out for TP.FunctionProto :). Endless recursion is possible if
         //  this test isn't performed.
         if (this !== this.getPrototype()) {
@@ -7036,7 +7065,9 @@ function(aValue) {
         return false;
     }
 
-    return (TP.isBoolean(aValue) && (aValue.valueOf() === false));
+    /* eslint-disable no-extra-parens */
+    return (TP.isBoolean(aValue) && aValue.valueOf() === false);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7097,7 +7128,9 @@ function(aValue) {
         return false;
     }
 
-    return (TP.isBoolean(aValue) && (aValue.valueOf() === true));
+    /* eslint-disable no-extra-parens */
+    return (TP.isBoolean(aValue) && aValue.valueOf() === true);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7223,8 +7256,10 @@ function(anObj) {
      *     array.
      */
 
-    return TP.isValid(anObj) && (
-        TP.ObjectProto.toString.call(anObj) === '[object Arguments]');
+    /* eslint-disable no-extra-parens */
+    return (TP.isValid(anObj) &&
+            TP.ObjectProto.toString.call(anObj) === '[object Arguments]');
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7263,7 +7298,7 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is a boolean.
      */
 
-    if ((anObj === true) || (anObj === false)) {
+    if (anObj === true || anObj === false) {
         return true;
     }
 
@@ -7275,9 +7310,11 @@ function(anObj) {
     //  Boolean objects won't say so unless we check, and if the object
     //  is in another window the constructor test will fail so we have to go
     //  even further.
-    return (TP.isValid(anObj) && ((anObj.constructor === Boolean) ||
+    /* eslint-disable no-extra-parens */
+    return (TP.isValid(anObj) && (anObj.constructor === Boolean ||
                                 TP.regex.BOOLEAN_CONSTRUCTOR.test(
                                     '' + anObj.constructor)));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7312,8 +7349,11 @@ function(anObj) {
     }
 
     //  last chance is constructor
-    return ((anObj.constructor === Date) ||
+
+    /* eslint-disable no-extra-parens */
+    return (anObj.constructor === Date ||
             TP.regex.DATE_CONSTRUCTOR.test('' + anObj.constructor));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7389,9 +7429,12 @@ function(anObj) {
     }
 
     //  constructor checks are next best option
-    return (TP.isValid(anObj) && ((anObj.constructor === RegExp) ||
+
+    /* eslint-disable no-extra-parens */
+    return (TP.isValid(anObj) && (anObj.constructor === RegExp ||
                                 TP.regex.REGEXP_CONSTRUCTOR.test(
                                     '' + anObj.constructor)));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7543,8 +7586,10 @@ function(anObj, includeScannedGlobals) {
 
         case 'function':
             if (TP.isTrue(includeScannedGlobals)) {
-                return (anObj[TP.TRACK] === 'Global') ||
-                        TP.sys.$windowglobals.contains(TP.name(anObj));
+                /* eslint-disable no-extra-parens */
+                return (anObj[TP.TRACK] === 'Global' ||
+                        TP.sys.$windowglobals.contains(TP.name(anObj)));
+                /* eslint-enable no-extra-parens */
             } else {
                 return anObj[TP.TRACK] === 'Global';
             }
@@ -7600,7 +7645,9 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is a proxy.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && TP.isCallable(anObj.$$fault));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7713,7 +7760,9 @@ function(anObj) {
      *     node.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && anObj.nodeType === Node.ATTRIBUTE_NODE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7735,7 +7784,9 @@ function(anObj) {
      *     node.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && anObj.nodeType === Node.CDATA_SECTION_NODE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7762,10 +7813,12 @@ function(anObj) {
      *     Document.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) &&
-            ((anObj.nodeType === Node.ELEMENT_NODE) ||
-            (anObj.nodeType === Node.DOCUMENT_NODE) ||
-            (anObj.nodeType === Node.DOCUMENT_FRAGMENT_NODE)));
+            (anObj.nodeType === Node.ELEMENT_NODE ||
+            anObj.nodeType === Node.DOCUMENT_NODE ||
+            anObj.nodeType === Node.DOCUMENT_FRAGMENT_NODE));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7786,7 +7839,9 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is an Comment node.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && anObj.nodeType === Node.COMMENT_NODE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7812,7 +7867,9 @@ function(anObj) {
 
     //  both html and xml documents still report node type as document, but
     //  an xml document won't have an applets property
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && anObj.nodeType === Node.DOCUMENT_NODE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7835,7 +7892,9 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is an Element.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && anObj.nodeType === Node.ELEMENT_NODE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7852,9 +7911,11 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is an Event object.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) &&
-            (typeof anObj.stopPropagation === 'function') &&
+            typeof anObj.stopPropagation === 'function' &&
             TP.isValid(anObj.timeStamp));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7872,8 +7933,10 @@ function(anObj) {
      *     fragment.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) &&
-        anObj.nodeType === Node.DOCUMENT_FRAGMENT_NODE);
+            anObj.nodeType === Node.DOCUMENT_FRAGMENT_NODE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -7939,7 +8002,7 @@ function(anObj) {
 
     //  Last check is to see if the '.tagName' property preserves case
     //  sensitivity. If it doesn't, then it's HTML not XHTML.
-    anObj.isXHTML = (anObj.createElement('foo').tagName === 'FOO') ?
+    anObj.isXHTML = anObj.createElement('foo').tagName === 'FOO' ?
                     false :
                     true;
 
@@ -8071,8 +8134,7 @@ function(anObj) {
     }
 
     //  have to watch out for other things with matches, like RegExps
-    return anObj.matches !== undefined &&
-            anObj.media !== undefined;
+    return anObj.matches !== undefined && anObj.media !== undefined;
 });
 
 //  ------------------------------------------------------------------------
@@ -8168,8 +8230,10 @@ function(anObj) {
      *     instruction node.
      */
 
+    /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && anObj.nodeType ===
             Node.PROCESSING_INSTRUCTION_NODE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -8197,8 +8261,9 @@ function(anObj) {
         return false;
     }
 
-    return ((anObj.length !== undefined) &&
-            (anObj.cssText !== undefined));
+    /* eslint-disable no-extra-parens */
+    return (anObj.length !== undefined && anObj.cssText !== undefined);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -8227,8 +8292,10 @@ function(anObj) {
         return false;
     }
 
-    return ((anObj.parentStyleSheet !== undefined) &&
-            (anObj.cssText !== undefined));
+    /* eslint-disable no-extra-parens */
+    return (anObj.parentStyleSheet !== undefined &&
+            anObj.cssText !== undefined);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -8256,8 +8323,10 @@ function(anObj) {
         return false;
     }
 
-    return ((anObj.parentStyleSheet !== undefined) &&
-            (anObj.ownerNode !== undefined));
+    /* eslint-disable no-extra-parens */
+    return (anObj.parentStyleSheet !== undefined &&
+            anObj.ownerNode !== undefined);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -8366,7 +8435,7 @@ function(anObj) {
 
     //  Last check is to see if the '.tagName' property preserves case
     //  sensitivity. If it doesn't, then it's HTML not XHTML.
-    anObj.isXHTML = (anObj.createElement('foo').tagName === 'FOO') ?
+    anObj.isXHTML = anObj.createElement('foo').tagName === 'FOO' ?
                     false :
                     true;
 
@@ -8611,7 +8680,7 @@ function(anObj) {
     }
 
     //  if its either a boolean or a number, it can't be empty.
-    if ((type === 'boolean') || (type === 'number')) {
+    if (type === 'boolean' || type === 'number') {
         return false;
     }
 
@@ -8636,7 +8705,9 @@ function(anObj) {
     //  Nodes as this returns a better measure of emptiness for Attribute
     //  Nodes.
     if (TP.isAttributeNode(anObj)) {
-        return (TP.notValid(anObj.value) || (anObj.value === ''));
+        /* eslint-disable no-extra-parens */
+        return (TP.notValid(anObj.value) || anObj.value === '');
+        /* eslint-enable no-extra-parens */
     }
 
     //  If the object is a DOM Node, then its empty if it has no child
@@ -8783,7 +8854,7 @@ function(anObj) {
      * @returns {Boolean} True if the object is blank.
      */
 
-    if ((anObj === null) || (anObj === undefined)) {
+    if (anObj === null || anObj === undefined) {
         return true;
     }
 
@@ -9249,9 +9320,11 @@ function(aSize, aChar, aSide) {
     }
 
     //  Make sure to force the conversion to a primitive string.
-    return (theSide === TP.LEFT) ?
+    /* eslint-disable no-extra-parens */
+    return (theSide === TP.LEFT ?
                 arr.join('') + this.toString() :
-                this.toString() + arr.join('');
+                this.toString() + arr.join(''));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -9486,7 +9559,7 @@ function(includeDate, includeMillis, includeNonNum) {
     inD = TP.isBoolean(includeDate) ? includeDate : true;
     inM = TP.isBoolean(includeMillis) ? includeMillis : true;
 
-    s = (inD) ? this.getFullYear().toString().pad(4, p) +
+    s = inD ? this.getFullYear().toString().pad(4, p) +
                         (this.getMonth() + 1).toString().pad(2, p) +
                         this.getDate().toString().pad(2, p) +
                         'T' : '';
@@ -11545,16 +11618,21 @@ functions are really only useful when TP.sys.$httpBased is true.
 */
 
 //  first define whether we were loaded from file url or a web server
+/* eslint-disable no-extra-parens */
 TP.sys.$httpBased = (window.location.protocol.indexOf('file') !== 0);
+/* eslint-enable no-extra-parens */
 
 TP.sys.$scheme = window.location.protocol.slice(0, -1);
 TP.sys.$pathname = decodeURI(window.location.pathname);
 
 if (TP.sys.$httpBased) {
     TP.sys.$host = window.location.hostname;
+
+    /* eslint-disable no-extra-parens */
     TP.sys.$port = (TP.isEmpty(window.location.port) ||
                     TP.notValid(window.location.port)) ?
                     80 : window.location.port;
+    /* eslint-enable no-extra-parens */
 } else {
     TP.sys.$host = '';
     TP.sys.$port = '';
@@ -11613,7 +11691,7 @@ function() {
         //  on http uris you need the host:port portion as a root
         str = TP.sys.getScheme() + '://' + TP.sys.getHost();
         if (TP.isValid(port = TP.sys.getPort()) &&
-            (port.toString() !== '80')) {
+            port.toString() !== '80') {
             str += ':' + port;
         }
     } else if (TP.sys.isWin()) {

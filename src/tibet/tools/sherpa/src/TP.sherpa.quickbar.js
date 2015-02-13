@@ -80,7 +80,7 @@ function() {
 
     this.observe(this.get('resultsList'), 'TP.sig.DOMClick');
 
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function () {
 
         this.set('searchMode', false);
@@ -114,8 +114,7 @@ function() {
 
     }).bind(this).observe(TP.core.Keyboard,
         'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
-
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return this;
 });

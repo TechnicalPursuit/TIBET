@@ -190,11 +190,13 @@ Cmd.prototype.execute = function() {
         throw new Error();
     }
 
+    /* eslint-disable no-extra-parens */
     if ((this.options.enable && this.options.disable) ||
         ((this.options.enable || this.options.disable) && this.options.status)) {
         this.error('Incompatible command flags.');
         throw new Error();
     }
+    /* eslint-enable no-extra-parens */
 
     if (this.options.missing && this.options.rebuild) {
         this.error('Incompatible command flags.');
@@ -515,9 +517,11 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             this.warn('Obsolete/misspelled files:\n' + obsolete.join('\n'));
         }
 
+        /* eslint-disable no-extra-parens */
         this.info('saving ' +
             ((changed - 1) + appMissing.length + libMissing.length) +
             ' appcache changes...');
+        /* eslint-enable no-extra-parens */
 
         newLines.join('\n').to(cachefile);
 

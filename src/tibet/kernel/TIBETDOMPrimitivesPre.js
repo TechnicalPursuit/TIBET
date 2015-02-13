@@ -246,7 +246,7 @@ function(aDocument) {
         //  that attribute is 'Content-Type', then return the value of the
         //  attribute named 'content', which should be the MIME type.
         metaName = TP.getAttr(metaTags[i], 'http-equiv');
-        if (TP.notEmpty(metaName) && (metaName === 'Content-Type')) {
+        if (TP.notEmpty(metaName) && metaName === 'Content-Type') {
             metaValue = TP.getAttr(metaTags[i], 'content');
 
             TP.regex.MIME_TYPE.lastIndex = 0;

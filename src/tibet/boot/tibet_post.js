@@ -161,7 +161,9 @@ TP.sys.hasFeatureTest = function(aFeatureName) {
      * @returns {Boolean} True if the feature test is defined.
      */
 
+    /* eslint-disable no-extra-parens */
     return (typeof TP.sys.$featureTests[aFeatureName] === 'function');
+    /* eslint-enable no-extra-parens */
 };
 
 //  ----------------------------------------------------------------------------
@@ -327,6 +329,7 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
             break;
         case 2:
             //  object/string + either an annotation/context or log level
+            /* eslint-disable no-extra-parens */
             if (TP.boot.$isNumber(obj) ||
                     (TP.boot.$isString(obj) &&
                     TP.boot.LOG_NAMES.indexOf(obj) !== -1)) {
@@ -334,6 +337,7 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
             } else {
                 ann = obj;
             }
+            /* eslint-enable no-extra-parens */
             break;
         default:
             //  all three, or more but we ignore past 3.
@@ -443,7 +447,8 @@ TP.boot.STDIN_PROMPT = function(msg, def) {
 
     var input;
 
-    input = window.prompt(msg == null ? '?' : msg, (def == null ? '' : def));
+    input = window.prompt(msg == null ? '?' : msg,
+                            def == null ? '' : def);
     if (input == null || input === '') {
         return null;
     } else {
@@ -590,7 +595,7 @@ TP.boot.$$log = function(argList, aLogLevel) {
     //  TODO: Convert argument list into a single message object we can output.
     message = argList[0];
 
-    if ((level >= TP.boot.ERROR) && (level < TP.boot.SYSTEM)) {
+    if (level >= TP.boot.ERROR && level < TP.boot.SYSTEM) {
         return TP.boot.$stderr(message, level);
     } else {
         return TP.boot.$stdout(message, level);
@@ -627,7 +632,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
 
     try {
         file = TP.boot.$$onerrorURL;
-        path = (file == null) ? url : file;
+        path = file == null ? url : file;
 
         str = msg || 'Error';
         str += ' in file: ' + path + ' line: ' + line + ' column: ' + column;
@@ -719,11 +724,11 @@ TP.$$assignBrowser = function(aString) {
 
     TP.$browserIdent = aString;
 
-    TP.$browserMajor = parseInt((parts[0] == null) ? 0 : parts[0], 10);
-    TP.$browserMinor = parseInt((parts[1] == null) ? 0 : parts[1], 10);
-    TP.$browserBuild = parseInt((parts[2] == null) ? 0 : parts[2], 10);
+    TP.$browserMajor = parseInt(parts[0] == null ? 0 : parts[0], 10);
+    TP.$browserMinor = parseInt(parts[1] == null ? 0 : parts[1], 10);
+    TP.$browserBuild = parseInt(parts[2] == null ? 0 : parts[2], 10);
 
-    TP.$browserPatch = (parts[3] == null) ? 0 : parts[3];
+    TP.$browserPatch = parts[3] == null ? 0 : parts[3];
 };
 
 TP.$$assignBrowserUI = function(aString) {
@@ -738,11 +743,11 @@ TP.$$assignBrowserUI = function(aString) {
 
     TP.$browserUIIdent = aString;
 
-    TP.$browserUIMajor = parseInt((parts[0] == null) ? 0 : parts[0], 10);
-    TP.$browserUIMinor = parseInt((parts[1] == null) ? 0 : parts[1], 10);
-    TP.$browserUIBuild = parseInt((parts[2] == null) ? 0 : parts[2], 10);
+    TP.$browserUIMajor = parseInt(parts[0] == null ? 0 : parts[0], 10);
+    TP.$browserUIMinor = parseInt(parts[1] == null ? 0 : parts[1], 10);
+    TP.$browserUIBuild = parseInt(parts[2] == null ? 0 : parts[2], 10);
 
-    TP.$browserUIPatch = (parts[3] == null) ? 0 : parts[3];
+    TP.$browserUIPatch = parts[3] == null ? 0 : parts[3];
 };
 
 //  ----------------------------------------------------------------------------
@@ -1174,7 +1179,7 @@ TP.sys.isUA = function(browser, varargs) {
             break;
     }
 
-    comparison = (comparison != null) ? comparison.toUpperCase() : null;
+    comparison = comparison != null ? comparison.toUpperCase() : null;
 
     //  do the comparison. the basic idea here is that a match is valid as
     //  long as each step from major to minor patch release is consistent.
@@ -1338,8 +1343,8 @@ TP.sys.isObsolete = function() {
      */
 
     //  simple check for rough ECMAScript 5 compliance.
-    if ((typeof Object.keys !== 'function') ||
-        (typeof Object.defineProperty !== 'function')) {
+    if (typeof Object.keys !== 'function' ||
+        typeof Object.defineProperty !== 'function') {
         return true;
     }
 
@@ -1399,17 +1404,19 @@ which were used to load TIBET, as well as the 'launch path'.
 */
 
 //  first define whether we were loaded from file url or a web server
-TP.sys.$httpBased = (window.location.protocol.indexOf('file') !== 0);
+TP.sys.$httpBased = window.location.protocol.indexOf('file') !== 0;
 
 TP.sys.$scheme = window.location.protocol.slice(0, -1);
 TP.sys.$pathname = decodeURI(window.location.pathname);
 
 if (TP.sys.$httpBased) {
     TP.sys.$host = window.location.hostname;
-    TP.sys.$port = ((window.location.port === '') ||
-                    (window.location.port == null)) ?
+    /* eslint-disable no-extra-parens */
+    TP.sys.$port = (window.location.port === '' ||
+                    window.location.port == null) ?
                             80 :
                             window.location.port;
+    /* eslint-enable no-extra-parens */
 } else {
     TP.sys.$host = '';
     TP.sys.$port = '';
@@ -1578,7 +1585,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
 
     //  same domain? if not we'll need permission to do this
     if (TP.sys.isUA('GECKO') &&
-        (targetUrl.indexOf(TP.sys.getLaunchRoot()) !== 0)) {
+        targetUrl.indexOf(TP.sys.getLaunchRoot()) !== 0) {
         try {
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.boot.$stdout('Privilege request at TP.boot.$httpCall',
@@ -1601,7 +1608,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
         //  the MIME type to 'text/plain' to avoid parsing errors due to
         //  Moz trying to turn everything into XML and then complaining
         if (TP.sys.isUA('GECKO') &&
-            (TP.boot.$uriResultType(targetUrl) !== TP.DOM)) {
+            TP.boot.$uriResultType(targetUrl) !== TP.DOM) {
             httpObj.overrideMimeType('text/plain');
         }
     } catch (e) {
@@ -1645,7 +1652,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
             TP.boot.$stdout('TP.boot.$httpCall() callType: ' +
                 callType, TP.DEBUG);
             TP.boot.$stdout('TP.boot.$httpCall() callUri: ' +
-                ((callUri != null) ? callUri : 'n/a'), TP.DEBUG);
+                (callUri != null ? callUri : 'n/a'), TP.DEBUG);
         }
 
         httpObj.send(callUri);
@@ -1897,7 +1904,7 @@ TP.boot.$uriExpandPath = function(aPath) {
         }
     }
 
-    if (path.lastIndexOf('/') === (path.length - 1)) {
+    if (path.lastIndexOf('/') === path.length - 1) {
         path = path.slice(0, -1);
     }
 
@@ -2326,7 +2333,7 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
     second = TP.boot.$uriExpandPath(secondPath);
 
     //  get the first path normalized
-    if (first.length > 1 && (first.lastIndexOf('/') === first.length - 1)) {
+    if (first.length > 1 && first.lastIndexOf('/') === first.length - 1) {
         //  if the first path ended in a '/' we can safely remove it since
         //  it's the same directory path with or without the trailing /
         first = first.slice(0, -1);
@@ -2339,7 +2346,7 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
         //  any / in the second path we use that as the point of trimming
         //  the last segment
         if ((index = second.lastIndexOf('/')) !== TP.NOT_FOUND) {
-            if (second.lastIndexOf('/') === (second.length - 1)) {
+            if (second.lastIndexOf('/') === second.length - 1) {
                 second = second.slice(0, -1);
                 second = second.slice(0, second.lastIndexOf('/'));
             } else {
@@ -2365,14 +2372,14 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
     } else if (filePath === false) {
         //  not able to alter second path too much, we're being forced to
         //  interpret it as a directory no matter what, but
-        if (second.lastIndexOf('/') === (second.length - 1)) {
+        if (second.lastIndexOf('/') === second.length - 1) {
             second = second.slice(0, -1);
         }
     } else {
         //  try to determine if the second path is a file path or a
         //  directory path...the easiest check is does it end with a '/',
         //  after which we can check for an extension on the last portion
-        if (second.lastIndexOf('/') === (second.length - 1)) {
+        if (second.lastIndexOf('/') === second.length - 1) {
             file = false;
             second = second.slice(0, -1);
         } else {
@@ -2691,7 +2698,9 @@ TP.boot.$uriLastModified = function(targetUrl) {
         } else if (TP.sys.isUA('WEBKIT')) {
             //  can't access file system on safari so we assume the file was
             //  recently modified to ensure current data on loads
+            /* eslint-disable no-extra-parens */
             return (new Date());
+            /* eslint-enable no-extra-parens */
         }
     } else {
         return TP.boot.$uriLastModifiedHttp(fname);
@@ -3185,7 +3194,7 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
-    if (TP.sys.isUA('GECKO') && (resultType !== TP.DOM)) {
+    if (TP.sys.isUA('GECKO') && resultType !== TP.DOM) {
         httpObj.overrideMimeType('text/plain');
     }
 
@@ -3451,7 +3460,7 @@ TP.boot.$uriResult = function(text, type) {
     doc = TP.boot.$documentFromString(text);
 
     //  watch out for "empty documents"
-    if (TP.boot.$isValid(doc) && (doc.childNodes.length > 0)) {
+    if (TP.boot.$isValid(doc) && doc.childNodes.length > 0) {
         return doc;
     }
 
@@ -6156,7 +6165,7 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
     date = new Date();
     delta = 0;
 
-    level = (typeof aLogLevel === 'string') ? TP.boot[aLogLevel] : aLogLevel;
+    level = typeof aLogLevel === 'string' ? TP.boot[aLogLevel] : aLogLevel;
 
     if (TP.boot.$$loglevel === TP.boot.TRACE) {
         if (this.messages.length > 1) {
@@ -6352,7 +6361,7 @@ TP.boot.log = function(anObject, aLogLevel) {
 
     var level;
 
-    level = (aLogLevel == null) ? TP.INFO : aLogLevel;
+    level = aLogLevel == null ? TP.INFO : aLogLevel;
 
     TP.sys.$bootlog.log(anObject,
                             TP.BOOT_LOG,
@@ -7557,7 +7566,7 @@ TP.boot.$getNextStage = function(aStage) {
     stage = aStage || TP.boot.$$stage;
     index = TP.boot.$$stageorder.indexOf(stage);
     if (index === TP.NOT_FOUND ||
-        (index + 1 === TP.boot.$$stageorder.length)) {
+        index + 1 === TP.boot.$$stageorder.length) {
         return;
     }
 
@@ -7706,7 +7715,7 @@ TP.boot.getURLArguments = function(url) {
         value = parts[1];
 
         if (parts.length > 1) {
-            if ((value.length > 1) &&
+            if (value.length > 1 &&
                     (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
                 value = value.slice(1, -1);
             }
@@ -9162,7 +9171,7 @@ TP.boot.$importComponents = function(loadSync) {
     }
 
     //  default the first time through to whatever might be configured
-    sync = (loadSync == null) ? TP.sys.cfg('tibet.sync') : loadSync;
+    sync = loadSync == null ? TP.sys.cfg('tibet.sync') : loadSync;
 
     //  keep our value so we're consistent in phase two if we're twophase
     TP.boot.$$loadsync = sync;

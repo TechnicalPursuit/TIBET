@@ -101,8 +101,12 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  receiver's device name then we just want to set up a "redirect"
     //  handler that pushes the signal to the notification system where
     //  things like policy and origin targeting can be processed.
+
+    /* eslint-disable no-extra-parens */
     if (TP.notEmpty(aPolicy) ||
-        ((anOrigin !== this) && (anOrigin !== this.getName()))) {
+        (anOrigin !== this && anOrigin !== this.getName())) {
+    /* eslint-enable no-extra-parens */
+
         //  we have to track observe/ignore stats more closely when we set
         //  up redirections since each ignore says to remove the redirector,
         //  but we need to keep at least one as long as we've got more
@@ -160,7 +164,10 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  if the handler we registered was not the original one then we
     //  swapped it out for the redirector and we want the notification
     //  center to go ahead and register it.
+
+    /* eslint-disable no-extra-parens */
     return (handler !== aHandler);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -275,8 +282,11 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     len = signals.getSize();
 
+    /* eslint-disable no-extra-parens */
     if (TP.notEmpty(aPolicy) ||
-        ((anOrigin !== this) && (anOrigin !== this.getName()))) {
+        (anOrigin !== this && anOrigin !== this.getName())) {
+    /* eslint-enable no-extra-parens */
+
         map = this.get('redirections');
 
         for (i = 0; i < len; i++) {
@@ -320,7 +330,10 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  If we've changed the handler to the redirector we need to make sure
     //  the notification center removes it as well.
+
+    /* eslint-disable no-extra-parens */
     return (handler !== aHandler);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -386,7 +399,7 @@ isCancelable, isBubbling) {
     //  with a signal that somehow didn't originate from the lower-level
     //  device traps...perhaps it's a synthetic key/mouse event.
 
-    if ((anOrigin !== this) && (anOrigin !== this.getName())) {
+    if (anOrigin !== this && anOrigin !== this.getName()) {
         return true;
     }
 
@@ -787,7 +800,7 @@ function(attributeName) {
 
     //  check the root TP.core.Keyboard type in case it's a 'shared'
     //  variable
-    if (TP.notValid(value) && (this !== TP.core.Keyboard)) {
+    if (TP.notValid(value) && this !== TP.core.Keyboard) {
         value = TP.core.Keyboard.get(attributeName);
     }
 
@@ -1489,19 +1502,19 @@ function(normalizedEvent, keyName, shift) {
 
     //  Modifier keys are prefixes which effectively start with optional
     //  Ctrl, Alt, or Meta followed by optional Shift state.
-    if (shift && (sigkey !== 'Shift')) {
+    if (shift && sigkey !== 'Shift') {
         signame = 'Shift_' + signame;
     }
 
-    if (TP.eventGetAltKey(normalizedEvent) && (sigkey !== 'Alt')) {
+    if (TP.eventGetAltKey(normalizedEvent) && sigkey !== 'Alt') {
         signame = 'Alt_' + signame;
     }
 
-    if (TP.eventGetCtrlKey(normalizedEvent) && (sigkey !== 'Control')) {
+    if (TP.eventGetCtrlKey(normalizedEvent) && sigkey !== 'Control') {
         signame = 'Ctrl_' + signame;
     }
 
-    if (TP.eventGetMetaKey(normalizedEvent) && (sigkey !== 'Meta')) {
+    if (TP.eventGetMetaKey(normalizedEvent) && sigkey !== 'Meta') {
         signame = 'Meta_' + signame;
     }
 
@@ -2147,7 +2160,7 @@ function(normalizedEvent) {
             //  due to ascii offsets of 32 etc.
             lastDown = TP.core.Keyboard.get('lastDown');
             if (TP.isEvent(lastDown) &&
-                ((lastKey = TP.eventGetKeyCode(lastDown)) !== 0)) {
+                (lastKey = TP.eventGetKeyCode(lastDown)) !== 0) {
                 normalizedEvent.$$keyCode = lastKey;
             }
         }
@@ -2185,7 +2198,7 @@ function(normalizedEvent) {
         key = TP.eventGetKeyCode(normalizedEvent);
         if (key === 0) {
             if (TP.isEvent(lastEvent) &&
-                ((lastKey = TP.eventGetKeyCode(lastEvent)) !== 0)) {
+                (lastKey = TP.eventGetKeyCode(lastEvent)) !== 0) {
                 normalizedEvent.$$keyCode = lastKey;
             }
         }
@@ -2242,7 +2255,7 @@ function(anEvent) {
     var key;
 
     key = TP.eventGetKeyCode(anEvent);
-    if ((key >= 32) && (key <= 127) && TP.notTrue(anEvent.$special)) {
+    if (key >= 32 && key <= 127 && TP.notTrue(anEvent.$special)) {
         return true;
     }
 
@@ -3264,7 +3277,9 @@ function(normalizedEvent) {
         elapsedTime = TP.eventGetTime(normalizedEvent) -
                         TP.eventGetTime(lastDown);
 
+        /* eslint-disable no-extra-parens */
         return (distance >= dragDistance && elapsedTime >= dragDelay);
+        /* eslint-enable no-extra-parens */
     }
 
     return false;
@@ -3286,7 +3301,7 @@ function(normalizedEvent) {
 
     button = TP.button(normalizedEvent);
 
-    value = (normalizedEvent.type === 'mousedown') ? true : false;
+    value = normalizedEvent.type === 'mousedown' ? true : false;
 
     switch (button) {
         case TP.LEFT:

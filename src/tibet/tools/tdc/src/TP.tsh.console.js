@@ -398,7 +398,7 @@ function(aResourceID, aRequest) {
         key = 'TP.sig.' + key;
     }
 
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     //  set up keyboard toggle to show/hide us
     (function () {
             this.toggleConsole();
@@ -408,7 +408,7 @@ function(aResourceID, aRequest) {
             }).fork(2000);
 
     }.bind(this)).observe(TP.core.Keyboard, key);
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return this;
 });
@@ -683,7 +683,7 @@ function(aSignal) {
             }
         }
 
-        if (TP.isEmpty(str) || (str === 'ready')) {
+        if (TP.isEmpty(str) || str === 'ready') {
             str = 'Object';
         }
     } else if (TP.isNull(val)) {
@@ -880,7 +880,9 @@ function(aFlag) {
         this.$set('awaitingInput', aFlag);
     }
 
-    return (this.$get('awaitingInput') || (TP.notEmpty(inputCell.value)));
+    /* eslint-disable no-extra-parens */
+    return (this.$get('awaitingInput') || TP.notEmpty(inputCell.value));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1211,11 +1213,11 @@ function(aSignal) {
      */
 
     //  Invoked by fork()ing because of browser reflow...
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         this.adjustInputCellSize();
     }).bind(this).fork();
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return;
 });
@@ -1232,11 +1234,11 @@ function(aSignal) {
      */
 
     //  Invoked by fork()ing because of browser reflow...
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         this.adjustInputCellSize();
     }).bind(this).fork();
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return;
 });
@@ -1253,11 +1255,11 @@ function(aSignal) {
      */
 
     //  Invoked by fork()ing because of browser reflow...
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         this.adjustInputCellSize();
     }).bind(this).fork();
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return;
 });
@@ -1394,8 +1396,8 @@ function(aRequest) {
         response;
 
     //  consoles only work in response to their model's ID
-    if ((aRequest.get('requestor') !== this.getModel()) &&
-        (aRequest.getOrigin() !== this.getModel())) {
+    if (aRequest.get('requestor') !== this.getModel() &&
+        aRequest.getOrigin() !== this.getModel()) {
 
         return;
     }
@@ -1438,7 +1440,7 @@ function(aRequest) {
      */
 
     if (!this.isSystemConsole()) {
-        if (TP.isValid(aRequest) && (!aRequest.at('cmdInput'))) {
+        if (TP.isValid(aRequest) && !aRequest.at('cmdInput')) {
             this.clearInputCell();
 
             //  this will default to either the model's prompt or our
@@ -1561,8 +1563,8 @@ function(aSignal) {
 
     //  consoles only work in response to their model's ID as either the
     //  origin or the requestor
-    if ((aSignal.get('requestor') !== model) &&
-        (aSignal.getOrigin() !== model)) {
+    if (aSignal.get('requestor') !== model &&
+        aSignal.getOrigin() !== model) {
         return;
     }
 
@@ -1639,8 +1641,8 @@ function(aRequest) {
 
     //  consoles only work in response to their model's ID as either the
     //  origin or the requestor
-    if ((aRequest.get('requestor') !== this.getModel()) &&
-        (aRequest.getOrigin() !== this.getModel())) {
+    if (aRequest.get('requestor') !== this.getModel() &&
+        aRequest.getOrigin() !== this.getModel()) {
         return;
     }
 
@@ -2214,8 +2216,10 @@ function(aPrompt, aCSSClass) {
 
     promptRightMargin = this.getType().PROMPT_RIGHT_MARGIN;
 
+    /* eslint-disable no-extra-parens */
     TP.byId('tdc_cmdline_input', this.get('vWin')).style.left =
         (contentWidth + promptRightMargin) + 'px';
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
@@ -2733,7 +2737,7 @@ function() {
 
     this.set('consoleDisplayed', true);
 
-    /* eslint-disable no-wrap-func */
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         //  We set the prompt here to reset the left position of the div
         //  wrapping the textarea, which won't get set when the console is first
@@ -2743,7 +2747,7 @@ function() {
         this.focusInputCell();
         this.setCursorToEnd();
     }).bind(this).afterUnwind();
-    /* eslint-enable no-wrap-func */
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return this;
 });

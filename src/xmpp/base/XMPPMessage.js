@@ -49,11 +49,11 @@ function() {
                                         this.get('from'));
     inst.set('from', this.get('to'));
 
-    if (TP.isValid(msgID = this.get('msgID')) && (msgID !== '')) {
+    if (TP.isValid(msgID = this.get('msgID')) && msgID !== '') {
         inst.set('msgID', msgID);
     }
 
-    if (TP.isValid(thread = this.get('thread')) && (thread !== '')) {
+    if (TP.isValid(thread = this.get('thread')) && thread !== '') {
         inst.set('thread', thread);
     }
 

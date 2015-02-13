@@ -755,7 +755,7 @@ shouldRaise) {
                 //  after 1 second after this function is called (which is
                 //  called after the callback function whose reference is
                 //  embedded in the JSON).
-                /* eslint-disable no-wrap-func */
+                /* eslint-disable no-wrap-func,no-extra-parens */
                 (function() {
 
                     if (TP.isCallable(contextWin[callbackID])) {
@@ -764,7 +764,7 @@ shouldRaise) {
                         contextWin[callbackID] = null;
                     }
                 }).fork(TP.sys.cfg('jsonp.delay'));
-                /* eslint-enable no-wrap-func */
+                /* eslint-enable no-wrap-func,no-extra-parens */
             });
 
     //  adding the elem to the 'head' will start the loading process

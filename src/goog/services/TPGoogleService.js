@@ -236,7 +236,8 @@ function(aRequest) {
     //  NB: Make sure the request wasn't the login request itself - that's
     //  gonna be us trying to get the token...
     if (TP.isEmpty(this.get('authToken')) &&
-        (aRequest.at('action') !== 'login')) {
+        aRequest.at('action') !== 'login') {
+
         aRequest.cancel(
             TP.sc('No authToken available. Refiring after token fetched.'));
 

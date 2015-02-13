@@ -696,7 +696,7 @@ function(aFilterName, aLevel) {
     //  The only way to discern between Function objects that are one of the
     //  native constructors (types) and a regular Function object.
     if (TP.isNativeType(this)) {
-        supertypeName = (this !== Object) ? '"Object"' : '""';
+        supertypeName = this !== Object ? '"Object"' : '""';
 
         return '{"type":"NativeType",' +
                 '"data":{"name":' + this.getName().quoted('"') + ',' +

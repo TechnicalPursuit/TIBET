@@ -391,9 +391,11 @@ function(aRequest) {
                                     str = TP.str(item);
                                     arr = TP.ac();
 
+                                    /* eslint-disable no-extra-parens */
                                     while ((match = re.exec(str))) {
                                         arr.push(match);
                                     }
+                                    /* eslint-enable no-extra-parens */
 
                                     return arr;
                                 } else {
@@ -417,9 +419,11 @@ function(aRequest) {
                 str = TP.str(content);
                 arr = TP.ac();
 
+                /* eslint-disable no-extra-parens */
                 while ((match = re.exec(str))) {
                     arr.push(match);
                 }
+                /* eslint-enable no-extra-parens */
 
                 aRequest.stdout(arr);
             } else {

@@ -3855,7 +3855,7 @@ function(anObject, anAspect, autoCollapse) {
     }
 
     if (TP.isValid(val)) {
-        return TP.isArray(val) && (val.getSize() === 1) &&
+        return TP.isArray(val) && val.getSize() === 1 &&
                                                 TP.isTrue(autoCollapse) ?
                 val.at(0) : val;
     }
@@ -5213,7 +5213,7 @@ function(aPath) {
     }
 
     //  strip any id/fragment prefix
-    path = (path.charAt(0) === '#') ? path.slice(1) : path;
+    path = path.charAt(0) === '#' ? path.slice(1) : path;
 
     //  XPath is typically ./elem, //elem, @attr, or ./elem[predicate], all
     //  of which are going to include a slash (other than 'standalone' attr

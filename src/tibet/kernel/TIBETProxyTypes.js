@@ -86,10 +86,12 @@ function(aType) {
      *     named type.
      */
 
-    return ((aType === 'TP.lang.Proxy') ||
-            (aType === TP.lang.Proxy) ||
-            (aType === 'String') ||
-            (aType === String));
+    /* eslint-disable no-extra-parens */
+    return (aType === 'TP.lang.Proxy' ||
+            aType === TP.lang.Proxy ||
+            aType === 'String' ||
+            aType === String);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

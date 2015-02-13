@@ -1453,7 +1453,7 @@ function(anElement, effectName, effectParams, nodeContext) {
                 //  elements.
                 if (TP.isValid(params = prevJob.$get('parameters')) &&
                     TP.isArray(allElems = params.at('target')) &&
-                    (allElems.length > 1)) {
+                    allElems.length > 1) {
                     for (i = 0; i < allElems.length; i++) {
                         if (allElems[i] === anElement) {
                             //  Remove the element from the job's 'target'

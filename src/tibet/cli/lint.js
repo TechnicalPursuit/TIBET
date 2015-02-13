@@ -652,7 +652,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
         msg += 'Line ' + aMessage.line;
         msg += ':' + aMessage.col;
 
-        msg = (/undefined/.test(msg)) ? 'General' : msg;
+        msg = /undefined/.test(msg) ? 'General' : msg;
         msg += ' - ' + aMessage.message;
 
         return msg;

@@ -241,7 +241,9 @@ function(aFlag) {
         this.set('statusCode', aFlag ? TP.ACTIVE : TP.READY);
     }
 
+    /* eslint-disable no-extra-parens */
     return (this.get('statusCode') === TP.ACTIVE);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1013,7 +1015,9 @@ function(job, params) {
     //  note that we need a from/to for this model
     delta = params.at('delta');
 
+    /* eslint-disable no-extra-parens */
     return (percent * delta) + params.at('from');
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1144,7 +1148,9 @@ function(aJob) {
 
     //  NOTE that we test for 0 here since the first iteration is #0 to
     //  support indexing via iteration
+    /* eslint-disable no-extra-parens */
     return (aJob.get('iteration') > 0);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1822,7 +1828,9 @@ function() {
 
     //  NOTE that we also remove pause time here so we're only showing
     //  actual time the job could have been running
+    /* eslint-disable no-extra-parens */
     return (end - start - this.totalPause);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2062,7 +2070,7 @@ function() {
             //  run long enough? then we're limited
             active = this.getActiveTime();
 
-            return (active >= this.$limitms);
+            return active >= this.$limitms;
 
         case 'function':
 
@@ -2230,7 +2238,7 @@ function() {
     }
 
     //  when we've got a real delay
-    if (TP.isNumber(delay) && (delay > 0)) {
+    if (TP.isNumber(delay) && delay > 0) {
         //  if we're using requestAnimationFrame, set it up
         if (this.$get('$useRAF')) {
             timer = window.requestAnimFrame(this.$timedWork);
@@ -3001,6 +3009,8 @@ function() {
     //  pre-compute delta value for from/to parameter blocks, default
     //  compute and limit functions based on params
 
+    /* eslint-disable no-extra-parens */
+
     if (TP.isTrue(params.at('stats')) ||
         (!TP.isFalse(params.at('stats')) && TP.sys.shouldTrackJobStats())) {
         this.$stats = TP.ac();
@@ -3009,6 +3019,8 @@ function() {
         this.$stats = null;
         this.$steps = null;
     }
+
+    /* eslint-enable no-extra-parens */
 
     //  two basic parameter passing models for most jobs, 'from/to/by' and
     //  'values' (iteration). here we try to default those cases so you
@@ -3158,10 +3170,13 @@ function() {
     //  early, so "mind the gap" before going any further... ;)
     if (this.$useHeartbeat && TP.isValid(this.$lastWork)) {
         gap = Date.now() - this.$lastWork;
+
+        /* eslint-disable no-extra-parens */
         if ((gap + (TP.sys.cfg('job.heartbeat_interval') / 2)) <
                                                         this.$intervalms) {
             return this;
         }
+        /* eslint-enable no-extra-parens */
     }
 
     try {

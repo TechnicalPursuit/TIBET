@@ -591,6 +591,7 @@ function(aMapBounds) {
         northEastInPixels = tpIFrame.get('convertLatLonXY_Yahoo')(
                                             northEastYLatLong, zoomFactor);
 
+        /* eslint-disable no-extra-parens */
         /* jshint bitwise:false */
         if (southWestInPixels.x > northEastInPixels.x) {
             southWestInPixels.x -= (1 << (26 - zoomFactor));
@@ -605,6 +606,7 @@ function(aMapBounds) {
                                                 zoomFactor);
             break;
         }
+        /* eslint-enable no-extra-parens */
     }
 
     return this;
@@ -640,8 +642,8 @@ function(aLatLong) {
 
     //  If we're already at the center point, exit here and avoid possible
     //  signaling recursion (if we have maps that are observing each other).
-    if ((currentCenter.get('lat') === theLatLong.get('lat')) &&
-        (currentCenter.get('long') === theLatLong.get('long'))) {
+    if (currentCenter.get('lat') === theLatLong.get('lat') &&
+        currentCenter.get('long') === theLatLong.get('long')) {
         return this;
     }
 

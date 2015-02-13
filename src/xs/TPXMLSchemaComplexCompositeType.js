@@ -82,8 +82,10 @@ function(aValue, choiceElem) {
         //  TP.xs.choice element.
         numValidElems = this.validateElements(aValue, choiceElem);
 
+        /* eslint-disable no-extra-parens */
         //  The underlying elements are only valid if one and only one is valid.
         elemsAreValid = (numValidElems === 1);
+        /* eslint-enable no-extra-parens */
     }
 
     //  Validate against any nested compositors. If there are no nested
@@ -102,8 +104,7 @@ function(aValue, choiceElem) {
 
     //  'TP.xs.choice' is a mutually exclusive construct, so only one of these
     //  can be true - the other must be false.
-    if ((elemsAreValid && !compsAreValid) ||
-        (compsAreValid && !elemsAreValid)) {
+    if (elemsAreValid && !compsAreValid || compsAreValid && !elemsAreValid) {
         return true;
     }
 
@@ -216,7 +217,9 @@ function(aValue, anElem) {
     //  Make sure the value is wrapped.
     value = TP.wrap(aValue);
 
+    /* eslint-disable no-extra-parens */
     isSequence = (TP.name(anElem) === 'xs:sequence');
+    /* eslint-enable no-extra-parens */
 
     //  NB: We use nodeEvaluateXPath() here instead of
     //  nodeGetElementsByTagName() to avoid getting descendants - we want a
@@ -321,8 +324,10 @@ function(aValue, sequenceElem) {
         //  TP.xs.sequence element.
         numValidElems = this.validateElements(aValue, sequenceElem);
 
+        /* eslint-disable no-extra-parens */
         //  The underlying elements are only valid if all of them are.
         elemsAreValid = (numValidElems === allElems.getSize());
+        /* eslint-enable no-extra-parens */
     }
 
     //  Validate against any nested compositors. If there are no nested
@@ -337,8 +342,10 @@ function(aValue, sequenceElem) {
         return compsAreValid;
     }
 
+    /* eslint-disable no-extra-parens */
     //  We had both
     return (elemsAreValid && compsAreValid);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

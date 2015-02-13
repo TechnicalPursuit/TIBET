@@ -154,9 +154,11 @@ function(aRequest) {
                 //  presumably we should get viable data...if we don't (or
                 //  we get a String that matches TP.regex.JSON_ERRMSG)
                 //  consider that to be a failure.
+                /* eslint-disable no-extra-parens */
                 if (TP.notValid(resultData) ||
                     (TP.isString(resultData) &&
                         TP.regex.JSON_ERRMSG.test(resultData))) {
+                /* eslint-enable no-extra-parens */
                     response.setSignalName('TP.sig.IOFailed');
                     response.fire();
 

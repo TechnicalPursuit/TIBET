@@ -280,11 +280,13 @@ CLI.success = function(msg) {
 //  ---
 
 CLI.isEmpty = function(aReference) {
+    /* eslint-disable no-extra-parens */
     return aReference === null ||
         aReference === undefined ||
         aReference.length === 0 ||
         (typeof aReference === 'object' &&
         Object.keys(aReference).length === 0);
+    /* eslint-enable no-extra-parens */
 };
 
 CLI.isFalse = function(aReference) {
@@ -724,6 +726,7 @@ CLI.logItems = function(aList) {
     buffer = '';
     if (aList && aList.length > 0) {
         line = '\t';
+        /* eslint-disable no-extra-parens */
         while ((cmd = aList.shift())) {
             if (line.length + cmd.length > limit) {
                 buffer += line + '\n';
@@ -731,6 +734,7 @@ CLI.logItems = function(aList) {
             }
             line += cmd + ' ';
         }
+        /* eslint-enable no-extra-parens */
         buffer += line;
     }
 

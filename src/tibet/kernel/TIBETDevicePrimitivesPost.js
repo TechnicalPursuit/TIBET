@@ -330,8 +330,8 @@ function(anEvent) {
     ancestor = target;
 
     while (ancestor &&
-            (ancestor.nodeType !== Node.DOCUMENT_NODE) &&
-            (ancestor.nodeType !== Node.DOCUMENT_FRAGMENT_NODE)) {
+            ancestor.nodeType !== Node.DOCUMENT_NODE &&
+            ancestor.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
         //  Make sure to skip over Node.TEXT_NODE nodes.
         if (!TP.isElement(ancestor)) {
             ancestor = ancestor.parentNode;
@@ -989,7 +989,7 @@ isBubbling) {
     //  converted into an origin set for the DOM "V". we'll also want to
     //  ensure we tell the notification system to use TP.sig.DOMSignal so we
     //  get proper capture/bubble resolution.
-    if ((policy === TP.DOM_FIRING) && TP.isElement(anElement)) {
+    if (policy === TP.DOM_FIRING && TP.isElement(anElement)) {
         //  The return value of TP.elementGetEventOrigins() is configured to
         //  return an origin set.
         origin = TP.elementGetEventOrigins(anElement, argsOrEvent);
@@ -1142,7 +1142,7 @@ function(nativeEvt) {
     //  signal. Therefore, we treat the 'tr' as an 'opaque node' and signal
     //  as if the event came from the 'tr'.
     if (TP.isEmpty(sourceElement.id) &&
-        (sourceElement !== sourceWindow.document)) {
+        sourceElement !== sourceWindow.document) {
         sourceElement = currentElement;
     }
 
@@ -1155,10 +1155,10 @@ function(nativeEvt) {
         //  meant to be a catch all (it was placed as an individual handler
         //  on document) and IE automatically bubbled the event here. In any
         //  case, we don't want it.
-        if ((currentElement === sourceWindow.document) &&
-            (sourceElement !== TP.documentGetBody(sourceWindow.document)) &&
-            (!sourceWindow.$$allElementEvents.containsString(
-                                TP.DOM_SIGNAL_TYPE_MAP.at(nativeEvt.type)))) {
+        if (currentElement === sourceWindow.document &&
+            sourceElement !== TP.documentGetBody(sourceWindow.document) &&
+            !sourceWindow.$$allElementEvents.containsString(
+                                TP.DOM_SIGNAL_TYPE_MAP.at(nativeEvt.type))) {
             return;
         }
     }
@@ -1177,8 +1177,8 @@ function(nativeEvt) {
     }
 
     //  If we have a valid firing policy, use that policy to fire the signal
-    if ((TP.isValid(firingPolicy = sourceElement.firingPolicy)) &&
-        (firingPolicy !== TP.DOM_FIRING)) {
+    if (TP.isValid(firingPolicy = sourceElement.firingPolicy) &&
+        firingPolicy !== TP.DOM_FIRING) {
         TP.ifTrace() && TP.sys.shouldLogSignals() ?
             TP.trace('Sending ' + eventName +
                         ' to TIBET with supertype ' + eventSuper,
@@ -1426,7 +1426,7 @@ function(anElement, invalidateIdCache) {
         while (TP.isElement(theElement)) {
             //  without an ID we can't have been a target or observer so we
             //  can't be part of the DOM tree that matters
-            if ((theElement !== elementDoc) &&
+            if (theElement !== elementDoc &&
                 TP.isEmpty(TP.elementGetAttribute(theElement, 'id'))) {
                 theElement = theElement.parentNode;
                 continue;
@@ -1443,8 +1443,8 @@ function(anElement, invalidateIdCache) {
                 eventIdArray.push(TP.gid(theElement));
             }
 
-            if ((theElement === elementDoc) &&
-                (TP.isWindow(elementWin = TP.nodeGetWindow(elementDoc)))) {
+            if (theElement === elementDoc &&
+                TP.isWindow(elementWin = TP.nodeGetWindow(elementDoc))) {
                 //  If the window is an iframe's window, then set theElement
                 //  to be that iframe element, effectively 'jumping out of
                 //  the window', so to speak :-).
@@ -1536,7 +1536,7 @@ function(anElement, anEvent) {
 
         //  without an ID we can't have been a target or observer so we can't be
         //  part of the DOM tree that matters
-        if ((theElement !== elementDoc) &&
+        if (theElement !== elementDoc &&
             TP.isEmpty(TP.elementGetAttribute(theElement, 'id')) &&
             TP.isEmpty(TP.elementGetAttribute(theElement, 'on:' + eventType))) {
 
@@ -1556,8 +1556,8 @@ function(anElement, anEvent) {
             originArray.push(theElement);
         }
 
-        if ((theElement === elementDoc) &&
-            (TP.isWindow(elementWin = TP.nodeGetWindow(elementDoc)))) {
+        if (theElement === elementDoc &&
+            TP.isWindow(elementWin = TP.nodeGetWindow(elementDoc))) {
             //  If the window is an iframe's window, then set the element to be
             //  that iframe element, effectively 'jumping out of the window',
             //  so to speak :-).

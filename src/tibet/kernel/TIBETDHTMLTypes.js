@@ -221,12 +221,14 @@ function(aDragResponder, aSignal, xyPoint) {
 
             kallee = TP.core.DragResponder.INCREMENT_X_BY;
 
+            /* eslint-disable no-extra-parens */
             if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
                 xVal = xyPoint.getX();
                 xVal = (((xVal + incrVal) / incrVal).floor()) * incrVal;
 
                 xyPoint.setX(xVal);
             }
+            /* eslint-enable no-extra-parens */
 
             return;
 });
@@ -243,12 +245,14 @@ function(aDragResponder, aSignal, xyPoint) {
 
             kallee = TP.core.DragResponder.INCREMENT_Y_BY;
 
+            /* eslint-disable no-extra-parens */
             if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
                 yVal = xyPoint.getY();
                 yVal = (((yVal + incrVal) / incrVal).floor()) * incrVal;
 
                 xyPoint.setY(yVal);
             }
+            /* eslint-enable no-extra-parens */
 
             return;
 });
@@ -268,6 +272,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
             kallee = TP.core.DragResponder.INCREMENT_X_AND_Y_BY;
 
+            /* eslint-disable no-extra-parens */
             if (TP.isNumber(incrXVal = kallee.modifierData.at('incrementX'))) {
                 xVal = xyPoint.getX();
                 xVal = (((xVal + incrXVal) / incrXVal).floor()) * incrXVal;
@@ -281,6 +286,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
                 xyPoint.setY(yVal);
             }
+            /* eslint-enable no-extra-parens */
 
             return;
 });
@@ -662,6 +668,8 @@ function() {
         //  box* when measuring.
         elemBox = TP.elementGetPageBox(actionElem, TP.CONTENT_BOX);
 
+        /* eslint-disable no-extra-parens */
+
         switch (corner) {
             case TP.TOP:
 
@@ -755,6 +763,8 @@ function() {
 
             break;
         }
+
+        /* eslint-enable no-extra-parens */
     }
 
     //  Create a TP.core.Point and use it for the offset point.
@@ -1914,6 +1924,7 @@ function() {
         borderXOffset = TP.elementGetBorderInPixels(actionElem, TP.LEFT);
         borderYOffset = TP.elementGetBorderInPixels(actionElem, TP.TOP);
 
+        /* eslint-disable no-extra-parens */
         switch (side) {
             case TP.TOP:
 
@@ -2007,6 +2018,8 @@ function() {
 
             break;
         }
+
+        /* eslint-enable no-extra-parens */
     }
 
     //  If the action element's offset parent is the document element, then
@@ -2048,8 +2061,12 @@ function() {
 
             topDiff = startY -
                         (totalElemOffsets.last() + borderHeightTotal);
+
+            /* eslint-disable no-extra-parens */
             rightDiff = startX - (totalElemOffsets.first());
             bottomDiff = startY - (totalElemOffsets.last());
+            /* eslint-enable no-extra-parens */
+
             leftDiff = startX -
                         (totalElemOffsets.first() + borderWidthTotal);
         }

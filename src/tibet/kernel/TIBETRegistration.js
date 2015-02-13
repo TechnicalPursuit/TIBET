@@ -175,9 +175,9 @@ function(anID, regOnly, nodeContext) {
     //  anything that looks like a URI can be processed next since the test
     //  is pretty quick, and doing it now helps avoid confusion with later
     //  tests looking for dot-separated window/object paths
-    if ((id.indexOf('~') === 0) ||
-            TP.regex.HAS_SCHEME.test(id) ||
-            TP.regex.JS_SCHEME.test(id)) {
+    if (id.indexOf('~') === 0 ||
+        TP.regex.HAS_SCHEME.test(id) ||
+        TP.regex.JS_SCHEME.test(id)) {
         //  if we're not looking at a barename we need to check for a
         //  URI-style ID and see if we can locate the data using a URI. note
         //  that this may cause the URI to call back to this routine with

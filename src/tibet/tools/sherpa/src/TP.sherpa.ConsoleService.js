@@ -230,7 +230,9 @@ function(aFlag) {
         this.$set('awaitingInput', aFlag);
     }
 
+    /* eslint-disable no-extra-parens */
     return (this.$get('awaitingInput') || TP.notEmpty(val));
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -756,8 +758,8 @@ function(aRequest) {
         response;
 
     //  consoles only work in response to their model's ID
-    if ((aRequest.get('requestor') !== this.getModel()) &&
-        (aRequest.getOrigin() !== this.getModel())) {
+    if (aRequest.get('requestor') !== this.getModel() &&
+        aRequest.getOrigin() !== this.getModel()) {
 
         return;
     }
@@ -800,7 +802,7 @@ function(aRequest) {
      */
 
     if (!this.isSystemConsole()) {
-        if (TP.isValid(aRequest) && (!aRequest.at('cmdInput'))) {
+        if (TP.isValid(aRequest) && !aRequest.at('cmdInput')) {
 
             //  this will default to the GUI's prompt if the model (TSH) doesn't
             //  have one.
@@ -929,8 +931,8 @@ function(aSignal) {
 
     //  consoles only work in response to their model's ID as either the
     //  origin or the requestor
-    if ((aSignal.get('requestor') !== model) &&
-        (aSignal.getOrigin() !== model)) {
+    if (aSignal.get('requestor') !== model &&
+        aSignal.getOrigin() !== model) {
         return;
     }
 
@@ -1007,8 +1009,8 @@ function(aRequest) {
 
     //  consoles only work in response to their model's ID as either the
     //  origin or the requestor
-    if ((aRequest.get('requestor') !== this.getModel()) &&
-        (aRequest.getOrigin() !== this.getModel())) {
+    if (aRequest.get('requestor') !== this.getModel() &&
+        aRequest.getOrigin() !== this.getModel()) {
         return;
     }
 

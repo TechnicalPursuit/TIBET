@@ -279,13 +279,13 @@ function(targetTPElement, cornerTPElement) {
 
         input = theTile.get('textInput');
 
-        /* eslint-disable no-wrap-func */
+        /* eslint-disable no-wrap-func,no-extra-parens */
         (function () {
             theTile.setHeader(targetTPElement.getID());
             theTile.focusOn(targetTPElement);
             theTile.setAttribute('hidden', false);
         }).observe(input, 'TP.sig.DOMReady');
-        /* eslint-enable no-wrap-func */
+        /* eslint-enable no-wrap-func,no-extra-parens */
 
     } else {
         if (TP.isTrue(TP.bc(theTile.getAttribute('hidden')))) {

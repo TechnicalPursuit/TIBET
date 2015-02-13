@@ -70,7 +70,7 @@ function(anElement, attributeName, checkAttrNSURI) {
         //  Note that this returns 'null' if this attribute is retrieved
         //  via getAttributeNode() above, which is why it fails that test.
         if (TP.isString(attr = anElement.getAttribute(attributeName)) &&
-            (TP.isString(attr.value))) {
+            TP.isString(attr.value)) {
             return attr.value;
         }
     } catch (e) {
@@ -97,7 +97,7 @@ function(anElement, attributeName, checkAttrNSURI) {
                 val = anElement.getAttribute(pclassName);
                 if (TP.isString(attr =
                                 anElement.getAttribute(attributeName)) &&
-                    (TP.isString(attr.value))) {
+                    TP.isString(attr.value)) {
                     return attr.value;
                 }
             } catch (e) {
@@ -446,8 +446,8 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if ((TP.elementGetLocalName(anElement).toLowerCase() !== 'link') ||
-        (TP.elementGetAttribute(anElement, 'rel') !== 'stylesheet')) {
+    if (TP.elementGetLocalName(anElement).toLowerCase() !== 'link' ||
+        TP.elementGetAttribute(anElement, 'rel') !== 'stylesheet') {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
@@ -464,9 +464,9 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
                                                             'link');
 
         for (i = 0; i < existingLinkElements.getSize(); i++) {
-            if ((existingLinkElements.at(i).rel === 'stylesheet') &&
-                (TP.elementGetAttribute(
-                        existingLinkElements.at(i), 'href') === linkHref)) {
+            if (existingLinkElements.at(i).rel === 'stylesheet' &&
+                TP.elementGetAttribute(
+                        existingLinkElements.at(i), 'href') === linkHref) {
                 return existingLinkElements.at(i);
             }
         }
@@ -636,10 +636,10 @@ function(aDocument) {
     res = linkElems.select(
         function(aLinkElement) {
 
-            if ((TP.elementGetAttribute(aLinkElement, 'rel') ===
-                                                    'stylesheet') &&
-                (TP.elementGetAttribute(aLinkElement, 'type') ===
-                                                    TP.CSS_TEXT_ENCODED)) {
+            if (TP.elementGetAttribute(aLinkElement, 'rel') ===
+                                                    'stylesheet' &&
+                TP.elementGetAttribute(aLinkElement, 'type') ===
+                                                    TP.CSS_TEXT_ENCODED) {
                 return true;
             }
 
@@ -1457,7 +1457,7 @@ function(anElement) {
 
     //  Make sure we were handed a 'link' element.
     if (!TP.isElement(anElement) ||
-        (TP.elementGetLocalName(anElement).toLowerCase() !== 'link')) {
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'link') {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
@@ -1537,7 +1537,7 @@ function(anElement) {
      */
 
     if (!TP.isElement(anElement) ||
-        (TP.elementGetLocalName(anElement).toLowerCase() !== 'style')) {
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'style') {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
@@ -1567,7 +1567,7 @@ function(anElement, styleText) {
     var styleTextNode;
 
     if (!TP.isElement(anElement) ||
-        (TP.elementGetLocalName(anElement).toLowerCase() !== 'style')) {
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'style') {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
@@ -1886,7 +1886,7 @@ function(anElement) {
 
     localName = TP.elementGetLocalName(anElement).toLowerCase();
 
-    if ((localName !== 'link') && (localName !== 'style')) {
+    if (localName !== 'link' && localName !== 'style') {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 

@@ -117,7 +117,7 @@ helpers.rollup = function(make, options) {
 
     make.log('executing ' + cmd);
     result = sh.exec(cmd, {
-        silent: (CLI.options.silent !== false)
+        silent: CLI.options.silent !== false
     });
 
     if (result.code !== 0) {

@@ -423,7 +423,7 @@ function() {
         //  serverName, then we close it and return null
 
         if (conn.isOpen() &&
-            (conn.get('serverName') === this.get('serverName'))) {
+            conn.get('serverName') === this.get('serverName')) {
             return conn;
         } else if (conn.isOpen()) {
             conn.close();
@@ -1285,8 +1285,8 @@ function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
     //  Note that we *must* do this before attaching the
     //  TP.xmpp.PubsubCreate node as the payload, since the underlying node
     //  references will change once that is done.
-    if ((subscriberModel !== TP.xmpp.Pubsub.OPEN) ||
-        (publisherModel !== TP.xmpp.Pubsub.PUBLISHERS)) {
+    if (subscriberModel !== TP.xmpp.Pubsub.OPEN ||
+        publisherModel !== TP.xmpp.Pubsub.PUBLISHERS) {
         //  Construct a 'form' to hold the config data
         configureData = TP.xmpp.XData.construct();
         configureData.set('formType', TP.xmpp.XData.SUBMIT);

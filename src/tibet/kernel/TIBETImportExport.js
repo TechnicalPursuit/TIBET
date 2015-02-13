@@ -271,7 +271,7 @@ function() {
 
         //  trim out non-path values like inline, and adjust any relative
         //  paths to the overall application root.
-        if (TP.notEmpty(path) && (path !== 'inline')) {
+        if (TP.notEmpty(path) && path !== 'inline') {
             scripts.push(TP.uriJoinPaths('~app/', path));
         }
     }
