@@ -2099,7 +2099,7 @@ function() {
      * @returns {String} The value in string form.
      */
 
-    return this.getContent();
+    return this.getTextContent();
 });
 
 //  ------------------------------------------------------------------------
@@ -2749,8 +2749,8 @@ TP.core.Node.Inst.defineMethod('setTextContent',
 function(aValue, shouldSignal) {
 
     /**
-     * @method setValue
-     * @summary Sets the text value of the receiver's first text node to
+     * @method setContent
+     * @summary Sets the text content of the receiver's first text node to
      *     aValue. For general node types this method sets the value/content of
      *     the node.
      * @description For common nodes the standard attribute list and the type of

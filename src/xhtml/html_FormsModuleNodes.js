@@ -917,7 +917,6 @@ function(aTargetElem, anEvent) {
     var tpElem;
 
     tpElem = TP.wrap(aTargetElem);
-    //tpElem.setBoundOutput(tpElem.getValue());
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
     }
