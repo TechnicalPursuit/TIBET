@@ -26,10 +26,10 @@ function() {
 
             //  ---
 
-            if (!TP.isType(TP.sys.getTypeByName('TP.test.PetConverter'))) {
+            if (!TP.isType(TP.sys.getTypeByName('TP.test.PetDisplayConverter'))) {
 
-                TP.lang.Object.defineSubtype('TP.test.PetConverter');
-                TP.test.PetConverter.Type.defineMethod(
+                TP.lang.Object.defineSubtype('TP.test.PetDisplayConverter');
+                TP.test.PetDisplayConverter.Type.defineMethod(
                                         'fromString',
                                         function(aValue, params) {
                                             switch (aValue) {
@@ -47,10 +47,10 @@ function() {
 
             //  ---
 
-            if (!TP.isType(TP.sys.getTypeByName('TP.test.ColorConverter'))) {
+            if (!TP.isType(TP.sys.getTypeByName('TP.test.ColorDisplayConverter'))) {
 
-                TP.lang.Object.defineSubtype('TP.test.ColorConverter');
-                TP.test.ColorConverter.Type.defineMethod(
+                TP.lang.Object.defineSubtype('TP.test.ColorDisplayConverter');
+                TP.test.ColorDisplayConverter.Type.defineMethod(
                                         'fromTP_core_Color',
                                         function(aValue, params) {
                                             switch (TP.str(aValue)) {
