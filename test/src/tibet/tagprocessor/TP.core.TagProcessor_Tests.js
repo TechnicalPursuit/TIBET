@@ -142,11 +142,14 @@ function() {
                                                 TP.w3.Xmlns.XHTML);
                         TP.elementSetAttribute(
                                 newElem, 'tibet:tag',
-                                'test:morecontentchange', 'true');
+                                'test:morecontentchange',
+                                'true');
                         TP.elementSetAttribute(
-                                newElem, 'donttransform', 'true');
+                                newElem, 'donttransform',
+                                'true');
                         TP.elementSetAttribute(
-                                newElem, 'allNodesMark2', 'true');
+                                newElem, 'allNodesMark2',
+                                'true');
 
                         TP.nodeAppendChild(node, newElem, false);
 
@@ -213,7 +216,7 @@ TP.core.TagProcessor.Type.defineMethod('getTestFixture',
 function(options) {
 
     switch (options) {
-        case    'allNodes':
+        case 'allNodes':
             return TP.core.TagProcessorFixtureBuilder.buildAllNodesProcessor();
         default:
             return null;

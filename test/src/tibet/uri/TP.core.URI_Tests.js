@@ -19,27 +19,27 @@ function() {
 
     this.it('TIBETURL: URL with virtual URI', function(test, options) {
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('tibet:///~').getLocation(),
             TP.uc('~').getLocation(),
             TP.sc('tibet:///~ and ~ should be equivalent paths.'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('tibet:///~').getLocation(),
             TP.sys.getAppRoot(),
             TP.sc('tibet:///~ and app root should be equivalent paths.'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('tibet:///~tibet').getLocation(),
             TP.uc('~tibet').getLocation(),
             TP.sc('tibet:///~tibet and ~tibet should be equivalent paths.'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('tibet:///~tibet').getLocation(),
             TP.sys.getLibRoot(),
             TP.sc('tibet:///~tibet and lib root should be equivalent paths.'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('tibet:///~app_lib').getLocation(),
             TP.uc('~app_lib').getLocation(),
             TP.sc('tibet:///~app_lib and ~app_lib should be' +
@@ -99,12 +99,12 @@ function() {
 
     this.it('TIBETURL: Retrieve global objects', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet:///urn:tibet:TP').getResource(params),
             TP,
             TP.sc('tibet:///urn:tibet:TP should find the named instance "TP".'));
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet:///javascript:TP').getResource(params),
             TP,
             TP.sc('tibet:///javascript:TP should find the named instance "TP".'));
@@ -114,7 +114,7 @@ function() {
 
     this.it('TIBETURL: Retrieve type object', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet:///urn:tibet:TP.sig.Signal').getResource(params),
             TP.sig.Signal,
             TP.sc('tibet:///urn:tibet:TP.sig.Signal should find the named' +
@@ -130,7 +130,7 @@ function() {
         foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet:///urn:tibet:FOO').getResource(params),
             foo,
             TP.sc('tibet:///urn:tibet:FOO should refer to the FOO object' +
@@ -141,7 +141,7 @@ function() {
 
     this.it('TIBETURL: Retrieve object nested in iframe', function(test, options) {
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('tibet:///javascript:top.UIROOT.$$globalID').getResource(
                                                                     params),
             TP.$$topWindowName + '.UIROOT',
@@ -149,7 +149,7 @@ function() {
                     ' object at "', TP.$$topWindowName,
                     '".UIROOT.$$globalID".'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('tibet://top.UIROOT/javascript:$$globalID').getResource(
                                                                     params),
             TP.$$topWindowName + '.UIROOT',
@@ -162,7 +162,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of the top-level window - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top/').getResource(params),
             TP.byOID('top'),
             TP.sc('tibet://top/ should find the top-level Window.'));
@@ -172,7 +172,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of the top-level window', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top').getResource(params),
             TP.byOID('top'),
             TP.sc('tibet://top should find the top-level Window.'));
@@ -182,7 +182,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the top-level window - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top/#document').getResource(params),
             TP.byOID('top').getDocument(),
             TP.sc('tibet://top/#document should find the document of the' +
@@ -193,7 +193,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the top-level window', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top#document').getResource(params),
             TP.byOID('top').getDocument(),
             TP.sc('tibet://top#document should find the document of the' +
@@ -205,7 +205,7 @@ function() {
     this.it('TIBETURL: Retrieve nested TP.html.iframe in top-level window - extra slash', function(test, options) {
 
         //  Get the <iframe> element that has an id of UIROOT
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top/#UIROOT').getResource(params).getNativeNode(),
             TP.byId('UIROOT', TP.win('top')),
             TP.sc('tibet://top/#UIROOT should find the iframe element with' +
@@ -217,7 +217,7 @@ function() {
     this.it('TIBETURL: Retrieve nested TP.html.iframe in top-level window', function(test, options) {
 
         //  Get the <iframe> element that has an id of UIROOT
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top#UIROOT').getResource(params).getNativeNode(),
             TP.byId('UIROOT', TP.win('top')),
             TP.sc('tibet://top/#UIROOT should find the iframe element with' +
@@ -228,7 +228,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of UIROOT - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/').getResource(params),
             TP.core.Window.construct('UIROOT'),
             TP.sc('tibet://UIROOT/ should find the Window named "UIROOT".'));
@@ -238,7 +238,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of UIROOT', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT').getResource(params),
             TP.core.Window.construct('UIROOT'),
             TP.sc('tibet://UIROOT should find the Window named "UIROOT".'));
@@ -248,7 +248,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of UIROOT - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/#document').getResource(params),
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/#document should find the' +
@@ -259,7 +259,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of UIROOT', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT#document').getResource(params),
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT#document should find the' +
@@ -270,7 +270,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of named window - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT/').getResource(params),
             TP.core.Window.construct('top.UIROOT'),
             TP.sc('tibet://top.UIROOT/ should find the Window named' +
@@ -281,7 +281,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of named window', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT').getResource(params),
             TP.core.Window.construct('top.UIROOT'),
             TP.sc('tibet://top.UIROOT should find the Window named' +
@@ -292,7 +292,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1 - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT/#document').getResource(params),
             TP.core.Window.construct('top.UIROOT').getDocument(),
             TP.sc('tibet://top.UIROOT/#document should find the' +
@@ -303,7 +303,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT#document').getResource(params),
             TP.core.Window.construct('top.UIROOT').getDocument(),
             TP.sc('tibet://top.UIROOT#document should find the' +
@@ -316,7 +316,7 @@ function() {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/future_path/').getResource(params),
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/future_path/ should find the document of' +
@@ -328,7 +328,7 @@ function() {
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #2', function(test, options) {
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/future_path').getResource(params),
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/future_path should find the document of' +
@@ -341,7 +341,7 @@ function() {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/future_path/#document').getResource(params),
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/future_path/#document should find the ' +
@@ -354,7 +354,7 @@ function() {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/future_path#document').getResource(params),
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/future_path#document should find the ' +
@@ -365,7 +365,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of the current UI canvas - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/').getResource(params),
             TP.sys.getUICanvas(),
             TP.sc('tibet://uicanvas/ should find the current UI canvas Window.'));
@@ -375,7 +375,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.Window of the current UI canvas', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas').getResource(params),
             TP.sys.getUICanvas(),
             TP.sc('tibet://uicanvas should find the current UI canvas Window.'));
@@ -385,7 +385,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#document').getResource(params),
             TP.sys.getUICanvas().getDocument(),
             TP.sc('tibet://uicanvas/#document should find the document of the' +
@@ -396,7 +396,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas - extra tibet://uicanvas/', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#document').getResource(params),
             TP.sys.getUICanvas().getDocument(),
             TP.sc('tibet://uicanvas#document should find the document of the' +
@@ -407,7 +407,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#document').getResource(params),
             TP.sys.getUICanvas().getDocument(),
             TP.sc('#document should find the document of the' +
@@ -418,7 +418,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#top_background').getResource(params).getNativeNode(),
             TP.byId('top_background'),
             TP.sc('tibet://uicanvas/#top_background should find the element with' +
@@ -429,7 +429,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename - extra tibet://uicanvas/', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#top_background').getResource(params).getNativeNode(),
             TP.byId('top_background'),
             TP.sc('tibet://uicanvas#top_background should find the element with' +
@@ -440,7 +440,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#top_background').getResource(params).getNativeNode(),
             TP.byId('top_background'),
             TP.sc('#top_background should find the element with' +
@@ -456,7 +456,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#top_background').getResource(newParams),
             TP.byId('top_background'),
             TP.sc('tibet://uicanvas/#top_background should find the element with' +
@@ -472,7 +472,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#top_background').getResource(newParams),
             TP.byId('top_background'),
             TP.sc('tibet://uicanvas#top_background should find the element with' +
@@ -488,7 +488,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#top_background').getResource(newParams),
             TP.byId('top_background'),
             TP.sc('#top_background should find the element with' +
@@ -499,7 +499,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(/1/2)').getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas/#element(/1/2) should find the body element' +
@@ -510,7 +510,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme - extra tibet://uicanvas/', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(/1/2)').getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas#element(/1/2) should find the body element' +
@@ -521,7 +521,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#element(/1/2)').getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('#element(/1/2) should find the body element' +
@@ -537,7 +537,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(/1/2)').getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas/#element(/1/2) should find the body element' +
@@ -553,7 +553,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(/1/2)').getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas#element(/1/2) should find the body element' +
@@ -569,7 +569,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#element(/1/2)').getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('#element(/1/2) should find the body element' +
@@ -580,7 +580,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(top_background/1)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -593,7 +593,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID - extra tibet://uicanvas/', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(top_background/1)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -606,7 +606,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#element(top_background/1)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -624,7 +624,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(top_background/1)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -642,7 +642,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(top_background/1)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -660,7 +660,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#element(top_background/1)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -673,7 +673,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpath1(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -685,7 +685,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme - extra tibet://uicanvas/', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#xpath1(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -697,7 +697,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#xpath1(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -714,7 +714,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpath1(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -731,7 +731,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#xpath1(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -748,7 +748,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#xpath1(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -760,7 +760,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpointer(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -772,7 +772,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme - extra tibet://uicanvas/', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#xpointer(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -784,7 +784,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#xpointer(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -801,7 +801,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpointer(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -818,7 +818,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#xpointer(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -835,7 +835,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#xpointer(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -847,7 +847,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme - extra slash', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -860,7 +860,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme - extra tibet://uicanvas/', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#css(#top_background > *:first-child)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -873,7 +873,7 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#css(#top_background > *:first-child)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -891,7 +891,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -909,7 +909,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#css(#top_background > *:first-child)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -927,7 +927,7 @@ function() {
         newParams = params.copy();
         newParams.atPut('resultType', TP.DOM);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('#css(#top_background > *:first-child)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -958,7 +958,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer barename - extra slash', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top/#fluffy').getResource(params),
             TP.sc('tibet://top/#fluffy should return null.'));
     });
@@ -967,7 +967,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer barename', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top#fluffy').getResource(params),
             TP.sc('tibet://top#fluffy should return null.'));
     });
@@ -976,7 +976,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer xpath1() query - extra slash', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top/#xpath1(fluffy)').getResource(params),
             TP.sc('tibet://top/#xpath1(fluffy) should return the empty Array.'));
     });
@@ -985,7 +985,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer xpath1() query', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top#xpath1(fluffy)').getResource(params),
             TP.sc('tibet://top#xpath1(fluffy) should return the empty Array.'));
     });
@@ -994,7 +994,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer element() query - extra slash', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top/#element(fluffy)').getResource(params),
             TP.sc('tibet://top/#element(fluffy) should return the empty Array.'));
     });
@@ -1003,7 +1003,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer element() query', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top#element(fluffy)').getResource(params),
             TP.sc('tibet://top#element(fluffy) should return the empty Array.'));
     });
@@ -1012,7 +1012,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer css() query - extra slash', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top/#css(fluffy)').getResource(params),
             TP.sc('tibet://top/#css(fluffy) should return the empty Array.'));
     });
@@ -1021,7 +1021,7 @@ function() {
 
     this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer css() query', function(test, options) {
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             TP.uc('tibet://top#css(fluffy)').getResource(params),
             TP.sc('tibet://top#css(fluffy) should return the empty Array.'));
     });
@@ -1054,7 +1054,7 @@ function() {
 
     this.it('TIBETURN: Retrieve global objects', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('urn:tibet:TP').getResource(params),
             TP,
             TP.sc('urn:tibet:TP should find the named instance "TP".'));
@@ -1064,7 +1064,7 @@ function() {
 
     this.it('TIBETURN: Retrieve type object', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('urn:tibet:TP.sig.Signal').getResource(params),
             TP.sig.Signal,
             TP.sc('urn:tibet:TP.sig.Signal should find the named type' +
@@ -1080,7 +1080,7 @@ function() {
         foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('urn:tibet:FOO').getResource(params),
             foo,
             TP.sc('urn:tibet:FOO should refer to the FOO object in top.'));
@@ -1108,12 +1108,12 @@ function() {
 
     this.it('JSURI: Retrieve global objects', function(test, options) {
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('javascript:TP').getResource(params),
             TP,
             TP.sc('javascript:TP should find the named instance "TP".'));
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             TP.uc('javascript:TP.sys').getResource(params),
             TP.sys,
             TP.sc('javascript:TP.sys should find the named instance' +
@@ -1124,7 +1124,7 @@ function() {
 
     this.it('JSURI: Retrieve object nested in iframe', function(test, options) {
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             TP.uc('javascript:top.UIROOT.$$globalID').getResource(params),
             TP.$$topWindowName + '.UIROOT',
             TP.sc('javascript:top.UIROOT.$$globalID should find the',
@@ -1252,7 +1252,7 @@ function() {
                     aResult,
                     TP.sc('Expected valid result but got none.'));
 
-                    TP.uc(locStr).unregister();
+                TP.uc(locStr).unregister();
             });
 
         url.getResource(request);
@@ -1282,14 +1282,14 @@ function() {
 
             storageStr = TP.js2json(
                     {
-                        'local_test': {
-                                'author_info': {
-                                        '_id': 'author_info',
-                                        '_date_created': TP.dc(),
-                                        '_date_modified': TP.dc(),
-                                        '_body': {
-                                                'firstName': 'Bill',
-                                                'lastName': 'Edney'
+                        local_test: {
+                                author_info: {
+                                        _id: 'author_info',
+                                        _date_created: TP.dc(),
+                                        _date_modified: TP.dc(),
+                                        _body: {
+                                                firstName: 'Bill',
+                                                lastName: 'Edney'
                                             }
                                     }
                             }
@@ -1318,23 +1318,23 @@ function() {
         //  automatically.
         obj = url.getResource().at('_body');
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('firstName'),
             TP.sc('Expected that result would have a key of \'firstName\' and',
                     ' it doesn\'t'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj.at('firstName'),
                 'Bill',
                 TP.sc('Expected: ', '"Bill"',
                         ' and got instead: ', obj.at('firstName'), '.'));
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('lastName'),
             TP.sc('Expected that result would have a key of \'lastName\' and',
                     ' it doesn\'t'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj.at('lastName'),
                 'Edney',
                 TP.sc('Expected: ', '"Edney"',
@@ -1363,12 +1363,12 @@ function() {
         //  request to 'refresh' automatically.
         obj = url.getResource(TP.hc('verb', TP.HTTP_HEAD));
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('_date_created'),
             TP.sc('Expected that result would have a key of \'_date_created\'',
                     ' and it doesn\'t'));
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('_date_modified'),
             TP.sc('Expected that result would have a key of \'_date_modified\'',
                     ' and it doesn\'t'));
@@ -1397,18 +1397,18 @@ function() {
         //  automatically.
         obj = url.getResource();
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('total_rows'),
             TP.sc('Expected that result would have a key of \'total_rows\' and',
                     ' it doesn\'t'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             obj.at('total_rows'),
             1,
             TP.sc('Expected: ', '1',
                     ' and got instead: ', obj.at('total_rows'), '.'));
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('rows'),
             TP.sc('Expected that result would have a key of \'rows\' and',
                     ' it doesn\'t'));
@@ -1448,13 +1448,13 @@ function() {
 
                     pouchPromise = testDb.put(
                         {
-                            '_id': 'author_info',
-                            'date_created': now,
-                            'date_modified': now,
-                            'body':
+                            _id: 'author_info',
+                            date_created: now,
+                            date_modified: now,
+                            body:
                                 {
-                                    'firstName': 'Bill',
-                                    'lastName': 'Edney'
+                                    firstName: 'Bill',
+                                    lastName: 'Edney'
                                 }
                         });
 
@@ -1468,172 +1468,172 @@ function() {
 
     this.it('PouchDBURL: Retrieve resource', function(test, options) {
 
-            var url;
+        var url;
 
-            //  A GET request here using the ID causes a RETRIEVE
-            url = TP.uc('pouchdb://pouch_test/author_info');
+        //  A GET request here using the ID causes a RETRIEVE
+        url = TP.uc('pouchdb://pouch_test/author_info');
 
-            //  Mark the URL as 'not loaded' to ensure that it will try
-            //  to reload from the underlying source.
-            url.isLoaded(false);
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
+        url.isLoaded(false);
 
-            test.thenPromise(
-                function(resolver, rejector) {
-                    var pouchRequest;
+        test.thenPromise(
+            function(resolver, rejector) {
+                var pouchRequest;
 
-                    //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
-                    //  URLs are asynchronous and configure their request to
-                    //  'refresh' automatically.
-                    pouchRequest = TP.request(TP.hc('uri', url,
-                                                    'async', true));
+                //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'async', true));
 
-                    pouchRequest.defineMethod('handleRequestSucceeded',
-                        function(aResponse) {
+                pouchRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
 
-                            var result;
+                        var result;
 
-                            result = aResponse.getResult().at('body');
+                        result = aResponse.getResult().at('body');
 
-                            test.assert.isTrue(
-                                result.hasKey('firstName'),
-                                TP.sc('Expected that result would have a key of',
-                                        ' \'firstName\' and it doesn\'t'));
+                        test.assert.isTrue(
+                            result.hasKey('firstName'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'firstName\' and it doesn\'t'));
 
-                            test.assert.isEqualTo(
-                                    result.at('firstName'),
-                                    'Bill',
-                                    TP.sc('Expected: ', '"Bill"',
-                                            ' and got instead: ',
-                                            result.at('firstName'), '.'));
+                        test.assert.isEqualTo(
+                                result.at('firstName'),
+                                'Bill',
+                                TP.sc('Expected: ', '"Bill"',
+                                        ' and got instead: ',
+                                        result.at('firstName'), '.'));
 
-                            test.assert.isTrue(
-                                result.hasKey('lastName'),
-                                TP.sc('Expected that result would have a key of',
-                                        ' \'lastName\' and it doesn\'t'));
+                        test.assert.isTrue(
+                            result.hasKey('lastName'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'lastName\' and it doesn\'t'));
 
-                            test.assert.isEqualTo(
-                                    result.at('lastName'),
-                                    'Edney',
-                                    TP.sc('Expected: ', '"Edney"',
-                                            ' and got instead: ',
-                                            result.at('lastName'), '.'));
+                        test.assert.isEqualTo(
+                                result.at('lastName'),
+                                'Edney',
+                                TP.sc('Expected: ', '"Edney"',
+                                        ' and got instead: ',
+                                        result.at('lastName'), '.'));
 
-                            url.unregister();
+                        url.unregister();
 
-                            resolver();
-                        });
+                        resolver();
+                    });
 
-                    url.getResource(pouchRequest);
-                });
-        });
+                url.getResource(pouchRequest);
+            });
+    });
 
     //  ---
 
     this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
-            var url;
+        var url;
 
-            //  A GET request here using the ID causes a RETRIEVE
-            url = TP.uc('pouchdb://pouch_test/author_info');
+        //  A GET request here using the ID causes a RETRIEVE
+        url = TP.uc('pouchdb://pouch_test/author_info');
 
-            //  Mark the URL as 'not loaded' to ensure that it will try
-            //  to reload from the underlying source.
-            url.isLoaded(false);
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
+        url.isLoaded(false);
 
-            test.thenPromise(
-                function(resolver, rejector) {
-                    var pouchRequest;
+        test.thenPromise(
+            function(resolver, rejector) {
+                var pouchRequest;
 
-                    //  Implied verb here is TP.HTTP_GET, which means we need to
-                    //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
-                    //  URLs are asynchronous and configure their request to
-                    //  'refresh' automatically.
-                    pouchRequest = TP.request(TP.hc('uri', url,
-                                                    'verb', TP.HTTP_HEAD,
-                                                    'async', true));
+                //  Implied verb here is TP.HTTP_GET, which means we need to
+                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'verb', TP.HTTP_HEAD,
+                                                'async', true));
 
-                    pouchRequest.defineMethod('handleRequestSucceeded',
-                        function(aResponse) {
+                pouchRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
 
-                            var result;
+                        var result;
 
-                            result = aResponse.getResult();
+                        result = aResponse.getResult();
 
-                            test.assert.isTrue(
-                                result.hasKey('date_created'),
-                                TP.sc('Expected that result would have a key of',
-                                        ' \'date_created\' and it doesn\'t'));
+                        test.assert.isTrue(
+                            result.hasKey('date_created'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'date_created\' and it doesn\'t'));
 
-                            test.assert.isTrue(
-                                result.hasKey('date_modified'),
-                                TP.sc('Expected that result would have a key of',
-                                        ' \'date_modified\' and it doesn\'t'));
+                        test.assert.isTrue(
+                            result.hasKey('date_modified'),
+                            TP.sc('Expected that result would have a key of',
+                                    ' \'date_modified\' and it doesn\'t'));
 
-                            url.unregister();
+                        url.unregister();
 
-                            resolver();
-                        });
+                        resolver();
+                    });
 
-                    url.getResource(pouchRequest);
-                });
-        });
+                url.getResource(pouchRequest);
+            });
+    });
 
     //  ---
 
     this.it('PouchDBURL: Retrieve listing of all documents in db', function(test, options) {
 
-            var url;
+        var url;
 
-            //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
-            //  of all documents in the DB
-            url = TP.uc('pouchdb://pouch_test/_all_docs');
+        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
+        //  of all documents in the DB
+        url = TP.uc('pouchdb://pouch_test/_all_docs');
 
-            //  Mark the URL as 'not loaded' to ensure that it will try
-            //  to reload from the underlying source.
-            url.isLoaded(false);
+        //  Mark the URL as 'not loaded' to ensure that it will try
+        //  to reload from the underlying source.
+        url.isLoaded(false);
 
-            test.thenPromise(
-                function(resolver, rejector) {
-                    var pouchRequest;
+        test.thenPromise(
+            function(resolver, rejector) {
+                var pouchRequest;
 
-                    //  Implied verb here is TP.HTTP_GET, which means we need to
-                    //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
-                    //  URLs are asynchronous and configure their request to
-                    //  'refresh' automatically.
-                    pouchRequest = TP.request(TP.hc('uri', url,
-                                                    'async', true));
+                //  Implied verb here is TP.HTTP_GET, which means we need to
+                //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                //  URLs are asynchronous and configure their request to
+                //  'refresh' automatically.
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'async', true));
 
-                    pouchRequest.defineMethod('handleRequestSucceeded',
-                        function(aResponse) {
+                pouchRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
 
-                            var result;
+                        var result;
 
-                            result = aResponse.getResult();
+                        result = aResponse.getResult();
 
-                            test.assert.isTrue(
-                                result.hasKey('total_rows'),
-                                TP.sc('Expected that result would have a key of \'total_rows\' and',
-                                        ' it doesn\'t'));
+                        test.assert.isTrue(
+                            result.hasKey('total_rows'),
+                            TP.sc('Expected that result would have a key of \'total_rows\' and',
+                                    ' it doesn\'t'));
 
-                            test.assert.isEqualTo(
-                                    result.at('total_rows'),
-                                    1,
-                                    TP.sc('Expected: ', '1',
-                                            ' and got instead: ', result.at('total_rows'), '.'));
+                        test.assert.isEqualTo(
+                                result.at('total_rows'),
+                                1,
+                                TP.sc('Expected: ', '1',
+                                        ' and got instead: ', result.at('total_rows'), '.'));
 
-                            test.assert.isTrue(
-                                result.hasKey('rows'),
-                                TP.sc('Expected that result would have a key of \'rows\' and',
-                                        ' it doesn\'t'));
+                        test.assert.isTrue(
+                            result.hasKey('rows'),
+                            TP.sc('Expected that result would have a key of \'rows\' and',
+                                    ' it doesn\'t'));
 
-                            url.unregister();
+                        url.unregister();
 
-                            resolver();
-                        });
+                        resolver();
+                    });
 
-                    url.getResource(pouchRequest);
-                });
-        });
+                url.getResource(pouchRequest);
+            });
+    });
 
     //  ---
 
@@ -1668,7 +1668,7 @@ function() {
         obj = TP.ac(1, 2, 3);
 
         //  For now, the ID and OID of the source object should be the same
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 val = obj.getID(),
                 obj.$getOID(),
                 TP.sc('Expected: ', '"', val, '"',
@@ -1679,7 +1679,7 @@ function() {
         //  Now, we set the ID of the source object
         obj.setID(val);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj.getID(),
                 val,
                 TP.sc('Expected: ', '"', val, '"',
@@ -1709,7 +1709,7 @@ function() {
         obj = TP.ac(1, 2, 3);
 
         //  For now, the ID and OID of the source object should be the same
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 val = obj.getID(),
                 obj.$getOID(),
                 TP.sc('Expected: ', '"', val, '"',
@@ -1723,7 +1723,7 @@ function() {
 
         //  The object's ID should still be the same as it's OID - the URN shouldn't
         //  have altered it
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 val = obj.getID(),
                 obj.$getOID(),
                 TP.sc('Expected: ', '"', obj.$getOID(), '"',
@@ -1773,7 +1773,7 @@ function() {
 
         obj = url.getResource();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj,
                 'foo',
                 TP.sc('Expected: ', '"foo"',
@@ -2211,7 +2211,7 @@ function() {
         url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
         saveResult = url.save(TP.hc('verb', TP.HTTP_PUT)).get('result');
 
-        this.assert.isValid(
+        test.assert.isValid(
             saveResult.at('ok'),
             TP.sc('Expected a result with an \'ok\' property'));
 
@@ -2221,23 +2221,23 @@ function() {
 
         obj = url.getResource().at('_body');
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('firstName'),
             TP.sc('Expected that result would have a key of \'firstName\' and',
                     ' it doesn\'t'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj.at('firstName'),
                 'Scott',
                 TP.sc('Expected: ', '"Scott"',
                         ' and got instead: ', obj.at('firstName'), '.'));
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('lastName'),
             TP.sc('Expected that result would have a key of \'lastName\' and',
                     ' it doesn\'t'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj.at('lastName'),
                 'Shattuck',
                 TP.sc('Expected: ', '"Shattuck"',
@@ -2264,7 +2264,7 @@ function() {
         url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
         saveResult = url.save().get('result');
 
-        this.assert.isValid(
+        test.assert.isValid(
             saveResult.at('ok'),
             TP.sc('Expected a result with an \'ok\' property'));
 
@@ -2273,23 +2273,23 @@ function() {
 
         obj = url.getResource().at('_body');
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('firstName'),
             TP.sc('Expected that result would have a key of \'firstName\' and',
                     ' it doesn\'t'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj.at('firstName'),
                 'Another',
                 TP.sc('Expected: ', '"Another"',
                         ' and got instead: ', obj.at('firstName'), '.'));
 
-        this.assert.isTrue(
+        test.assert.isTrue(
             obj.hasKey('lastName'),
             TP.sc('Expected that result would have a key of \'lastName\' and',
                     ' it doesn\'t'));
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                 obj.at('lastName'),
                 'Hacker',
                 TP.sc('Expected: ', '"Hacker"',
@@ -2316,7 +2316,7 @@ function() {
         url.setResource(null);
         nukeResult = url.nuke(TP.hc('verb', TP.HTTP_DELETE)).get('result');
 
-        this.assert.isValid(
+        test.assert.isValid(
             nukeResult.at('ok'),
             TP.sc('Expected a result with an \'ok\' property'));
 
@@ -2351,7 +2351,7 @@ function() {
         url.setResource(null);
         nukeResult = url.nuke(TP.hc('verb', TP.HTTP_DELETE)).get('result');
 
-        this.assert.isValid(
+        test.assert.isValid(
             nukeResult.at('ok'),
             TP.sc('Expected a result with an \'ok\' property'));
 
@@ -2393,13 +2393,13 @@ function() {
 
                     pouchPromise = testDb.put(
                         {
-                            '_id': 'author_info',
-                            'date_created': now,
-                            'date_modified': now,
-                            'body':
+                            _id: 'author_info',
+                            date_created: now,
+                            date_modified: now,
+                            body:
                                 {
-                                    'firstName': 'Bill',
-                                    'lastName': 'Edney'
+                                    firstName: 'Bill',
+                                    lastName: 'Edney'
                                 }
                         });
 
@@ -2416,33 +2416,33 @@ function() {
         var url,
             pouchRequest;
 
-            //  A PUT request here using the ID causes an UPDATE
+        //  A PUT request here using the ID causes an UPDATE
 
-            url = TP.uc('pouchdb://pouch_test/author_info');
+        url = TP.uc('pouchdb://pouch_test/author_info');
 
-            //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url,
-                                            'verb', TP.HTTP_PUT,
-                                            'async', true));
+        //  pouchdb:// URLs are asynchronous
+        pouchRequest = TP.request(TP.hc('uri', url,
+                                        'verb', TP.HTTP_PUT,
+                                        'async', true));
 
-            url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
+        url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
 
-            pouchRequest.defineMethod('handleRequestSucceeded',
-                function (aResponse) {
+        pouchRequest.defineMethod('handleRequestSucceeded',
+            function (aResponse) {
 
-                    var result;
+                var result;
 
-                    result = aResponse.getResult();
+                result = aResponse.getResult();
 
-                    test.assert.isValid(
-                        result.at('ok'),
-                        TP.sc('Expected a result with an \'ok\' property'));
+                test.assert.isValid(
+                    result.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
 
-                    url.unregister();
-                });
+                url.unregister();
+            });
 
-            url.save(pouchRequest);
-        });
+        url.save(pouchRequest);
+    });
 
     //  ---
 
@@ -2454,102 +2454,102 @@ function() {
             //  A POST request here without the ID causes a CREATE and an
             //  auto-generated ID
 
-            url = TP.uc('pouchdb://pouch_test');
+        url = TP.uc('pouchdb://pouch_test');
 
-            //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url,
-                                            'verb', TP.HTTP_POST,
-                                            'async', true));
+        //  pouchdb:// URLs are asynchronous
+        pouchRequest = TP.request(TP.hc('uri', url,
+                                        'verb', TP.HTTP_POST,
+                                        'async', true));
 
-            url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
+        url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
 
-            pouchRequest.defineMethod('handleRequestSucceeded',
-                function (aResponse) {
+        pouchRequest.defineMethod('handleRequestSucceeded',
+            function (aResponse) {
 
-                    var result;
+                var result;
 
-                    result = aResponse.getResult();
+                result = aResponse.getResult();
 
-                    test.assert.isValid(
-                        result.at('ok'),
-                        TP.sc('Expected a result with an \'ok\' property'));
+                test.assert.isValid(
+                    result.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
 
-                    url.unregister();
-                });
+                url.unregister();
+            });
 
-            url.save(pouchRequest);
-        });
+        url.save(pouchRequest);
+    });
 
     //  ---
 
     this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
 
-            var url,
-                pouchRequest;
+        var url,
+            pouchRequest;
 
-            //  A DELETE request here with the ID causes a DELETE
+        //  A DELETE request here with the ID causes a DELETE
 
-            url = TP.uc('pouchdb://pouch_test/author_info');
+        url = TP.uc('pouchdb://pouch_test/author_info');
 
-            //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url,
-                                            'verb', TP.HTTP_DELETE,
-                                            'async', true));
+        //  pouchdb:// URLs are asynchronous
+        pouchRequest = TP.request(TP.hc('uri', url,
+                                        'verb', TP.HTTP_DELETE,
+                                        'async', true));
 
-            url.setResource(null);
+        url.setResource(null);
 
-            pouchRequest.defineMethod('handleRequestSucceeded',
-                function (aResponse) {
+        pouchRequest.defineMethod('handleRequestSucceeded',
+            function (aResponse) {
 
-                    var result;
+                var result;
 
-                    result = aResponse.getResult();
+                result = aResponse.getResult();
 
-                    test.assert.isValid(
-                        result.at('ok'),
-                        TP.sc('Expected a result with an \'ok\' property'));
+                test.assert.isValid(
+                    result.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
 
-                    url.unregister();
-                });
+                url.unregister();
+            });
 
-            url.nuke(pouchRequest);
-        });
+        url.nuke(pouchRequest);
+    });
 
     //  ---
 
     this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
 
-            var url,
-                pouchRequest;
+        var url,
+            pouchRequest;
 
-            //  A DELETE request here without the ID causes a DELETE (of the
-            //  whole DB)
+        //  A DELETE request here without the ID causes a DELETE (of the
+        //  whole DB)
 
-            url = TP.uc('pouchdb://pouch_test');
+        url = TP.uc('pouchdb://pouch_test');
 
-            //  pouchdb:// URLs are asynchronous
-            pouchRequest = TP.request(TP.hc('uri', url,
-                                            'verb', TP.HTTP_DELETE,
-                                            'async', true));
+        //  pouchdb:// URLs are asynchronous
+        pouchRequest = TP.request(TP.hc('uri', url,
+                                        'verb', TP.HTTP_DELETE,
+                                        'async', true));
 
-            url.setResource(null);
+        url.setResource(null);
 
-            pouchRequest.defineMethod('handleRequestSucceeded',
-                function (aResponse) {
+        pouchRequest.defineMethod('handleRequestSucceeded',
+            function (aResponse) {
 
-                    var result;
+                var result;
 
-                    result = aResponse.getResult();
+                result = aResponse.getResult();
 
-                    test.assert.isValid(
-                        result.at('ok'),
-                        TP.sc('Expected a result with an \'ok\' property'));
+                test.assert.isValid(
+                    result.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
 
-                    url.unregister();
-                });
+                url.unregister();
+            });
 
-            url.nuke(pouchRequest);
-        });
+        url.nuke(pouchRequest);
+    });
 
     //  ---
 
@@ -2607,14 +2607,14 @@ function() {
         jsonValueObsFunction =
                 function (aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         jsonValueObsFunction.observe(jsonURI1, 'ValueChange');
 
         jsonStructureObsFunction =
                 function (aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         jsonStructureObsFunction.observe(jsonURI1, 'StructureChange');
     });
@@ -2627,10 +2627,10 @@ function() {
         jsonURI2.setResource('goo');
 
         //  The value path results should have the path for jsonURI2
-        this.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
 
         //  The structure path results should have the path for jsonURI2
-        this.assert.contains(structurePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI2.getFragmentText());
 
         //  But *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
@@ -2649,14 +2649,14 @@ function() {
         jsonURI3.setResource(TP.ac());
 
         //  The value path results should have the path for jsonURI3
-        this.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
 
         //  The structure path results should have the path for jsonURI3
-        this.assert.contains(structurePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentText());
 
         //  And the value path results for jsonURI2 (because and we replaced the
         //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
-        this.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
 
         //  But not the structure path results for jsonURI2 (we created no new
         //  structure there).
@@ -2682,10 +2682,10 @@ function() {
         jsonURI5.setResource(42);
 
         //  The value path results should have the path for jsonURI5
-        this.assert.contains(valuePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI5
-        this.assert.contains(structurePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI5.getFragmentText());
 
         //  And *not* for jsonURI4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -2693,10 +2693,10 @@ function() {
         this.refute.contains(structurePathResults, jsonURI4.getFragmentText());
 
         //  The value path results should have the path for jsonURI3
-        this.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI3
-        this.assert.contains(structurePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentText());
 
         //  And *not* for jsonURI2 for either set of results (it's too high up
         //  in the chain)
@@ -2720,39 +2720,39 @@ function() {
         jsonURI6.setResource('fluffy');
 
         //  The value path results should have the path for jsonURI6
-        this.assert.contains(valuePathResults, jsonURI6.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI6.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI6 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonURI6.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI6.getFragmentText());
 
         //  And for jsonURI5 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI5 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI5.getFragmentText());
 
         //  And for jsonURI4 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonURI4.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI4.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI4 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonURI4.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI4.getFragmentText());
 
         //  And for jsonURI3 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI3 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentText());
 
         //  And for jsonURI2 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI2 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI2.getFragmentText());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
@@ -2771,10 +2771,10 @@ function() {
         jsonURI7.setResource(TP.ac());
 
         //  The value path results should have the path for jsonURI7
-        this.assert.contains(valuePathResults, jsonURI7.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI7.getFragmentText());
 
         //  And the structure path results should have the path for jsonURI7
-        this.assert.contains(structurePathResults, jsonURI7.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI7.getFragmentText());
 
         //  But *not* for jsonURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -2821,7 +2821,7 @@ function() {
         //  path results, not the structure path results. The individual
         //  fragment URIs will have been told of a 'structure' change to their
         //  individual values.
-        this.assert.contains(valuePathResults, 'value');
+        test.assert.contains(valuePathResults, 'value');
         this.refute.contains(structurePathResults, 'value');
 
         jsonURI1.setResource(modelObj);
@@ -2838,31 +2838,31 @@ function() {
         this.refute.contains(valuePathResults, jsonURI7.getFragmentText());
 
         //  The value path results should have the path for jsonURI6
-        this.assert.contains(valuePathResults, jsonURI6.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI6.getFragmentText());
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonURI6.getFragmentText());
 
         //  And for jsonURI5
-        this.assert.contains(valuePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentText());
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonURI5.getFragmentText());
 
         //  And for jsonURI4
-        this.assert.contains(valuePathResults, jsonURI4.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI4.getFragmentText());
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonURI4.getFragmentText());
 
         //  And for jsonURI3
-        this.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonURI3.getFragmentText());
 
         //  And for jsonURI2
-        this.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonURI2.getFragmentText());
@@ -2921,14 +2921,14 @@ function() {
         xmlValueObsFunction =
                 function (aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         xmlValueObsFunction.observe(xmlURI1, 'ValueChange');
 
         xmlStructureObsFunction =
                 function (aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         xmlStructureObsFunction.observe(xmlURI1, 'StructureChange');
     });
@@ -2941,7 +2941,7 @@ function() {
         xmlURI3.setResource('Shattuck');
 
         //  The value path should have the path for xmlURI3
-        this.assert.contains(valuePathResults, xmlURI3.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentText());
 
         //  But not the structure path results for xmlURI3 (we created no new
         //  structure there).
@@ -2964,7 +2964,7 @@ function() {
         xmlURI4.setResource(false);
 
         //  The value path should have the path for xmlURI4
-        this.assert.contains(valuePathResults, xmlURI4.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI4.getFragmentText());
 
         //  But not the structure path results for xmlURI4 (we created no
         //  new structure there).
@@ -2987,11 +2987,11 @@ function() {
         xmlURI5.setResource(false);
 
         //  The value path should have the path for xmlURI5
-        this.assert.contains(valuePathResults, xmlURI5.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI5.getFragmentText());
 
         //  And the structure path results for xmlURI5 (we created new
         //  structure there).
-        this.assert.contains(structurePathResults, xmlURI5.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI5.getFragmentText());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
@@ -3010,11 +3010,11 @@ function() {
         xmlURI6.setResource('Scott');
 
         //  The value path should have the path for xmlURI6
-        this.assert.contains(valuePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentText());
 
         //  And the structure path results for xmlURI6 (we created new
         //  structure there).
-        this.assert.contains(structurePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentText());
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -3038,11 +3038,11 @@ function() {
         xmlURI7.setResource('555-55-5555');
 
         //  The value path should have the path for xmlURI7
-        this.assert.contains(valuePathResults, xmlURI7.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentText());
 
         //  And the structure path results for xmlURI7 (we created new
         //  structure there).
-        this.assert.contains(structurePathResults, xmlURI7.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentText());
 
         //  But *not* for xmlURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -3072,20 +3072,20 @@ function() {
         //  All paths will have changed
 
         //  Both results should have the path for xmlURI7
-        this.assert.contains(valuePathResults, xmlURI7.getFragmentText());
-        this.assert.contains(structurePathResults, xmlURI7.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentText());
 
         //  And for xmlURI6 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, xmlURI6.getFragmentText());
-        this.assert.contains(structurePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentText());
 
         //  And for xmlURI3 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, xmlURI3.getFragmentText());
-        this.assert.contains(structurePathResults, xmlURI3.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI3.getFragmentText());
 
         //  And for xmlURI2 (because it's the same path as xmlURI2)
-        this.assert.contains(valuePathResults, xmlURI2.getFragmentText());
-        this.assert.contains(structurePathResults, xmlURI2.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI2.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI2.getFragmentText());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -3102,8 +3102,8 @@ function() {
 
         //  Both results should have the path for xmlURI8 (it's for all
         //  elements)
-        this.assert.contains(valuePathResults, xmlURI8.getFragmentText());
-        this.assert.contains(structurePathResults, xmlURI8.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI8.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI8.getFragmentText());
 
         //  But *not* for xmlURI7 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -3112,8 +3112,8 @@ function() {
 
         //  Both results should have the path for xmlURI6 (we created new
         //  structure there).
-        this.assert.contains(valuePathResults, xmlURI6.getFragmentText());
-        this.assert.contains(structurePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentText());
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -3140,7 +3140,7 @@ function() {
         //  path results, not the structure path results. The individual
         //  fragment URIs will have been told of a 'structure' change to their
         //  individual values.
-        this.assert.contains(valuePathResults, 'value');
+        test.assert.contains(valuePathResults, 'value');
         this.refute.contains(structurePathResults, 'value');
 
         xmlURI1.setResource(modelObj);

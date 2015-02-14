@@ -23,37 +23,37 @@
 
 Array.describe('Array local suite',
 function() {
-    this.it('passes explicitly', function() {
+    this.it('passes explicitly', function(test, options) {
         this.pass();
     });
 
-    this.it('fails explicitly', function() {
+    this.it('fails explicitly', function(test, options) {
         this.fail();
     });
 
-    this.it('errors explicitly', function() {
+    this.it('errors explicitly', function(test, options) {
         this.error();
     });
 });
 
 Array.Inst.describe('Array.Inst suite',
 function() {
-    this.it('passes implicitly', function() {
+    this.it('passes implicitly', function(test, options) {
     });
 
-    this.it('passes implicitly with assert(true)', function() {
-        this.assert.assert(true);
+    this.it('passes implicitly with assert(true)', function(test, options) {
+        test.assert.assert(true);
     });
 
-    this.it('fails implicitly', function() {
+    this.it('fails implicitly', function(test, options) {
         throw new AssertionFailed('epic');
     });
 
-    this.it('errors implicitly via throw', function() {
+    this.it('errors implicitly via throw', function(test, options) {
         throw new Error('oops');
     });
 
-    this.it('errors implicitly via syntax or other error', function() {
+    this.it('errors implicitly via syntax or other error', function(test, options) {
         /* eslint-disable */
         foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
@@ -65,13 +65,13 @@ function() {
         /* eslint-disable */
         foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
-    this.it('slices and dices', function() {
+    this.it('slices and dices', function(test, options) {
     });
 });
 
 Array.Inst.describe('slice (syntax error in it())',
 function() {
-    this.it('makes julienne fries (syntax error)', function() {
+    this.it('makes julienne fries (syntax error)', function(test, options) {
         /* eslint-disable */
         foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
@@ -88,7 +88,7 @@ function() {
         });
     });
 
-    this.it('fails async via rejector', function() {
+    this.it('fails async via rejector', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 rejector();
@@ -96,8 +96,7 @@ function() {
         });
     });
 
-    this.it('passes async via test.pass', function() {
-        var test = this;
+    this.it('passes async via test.pass', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
@@ -106,8 +105,7 @@ function() {
         });
     });
 
-    this.it('fails async via test.fail', function() {
-        var test = this;
+    this.it('fails async via test.fail', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.fail();
@@ -116,8 +114,7 @@ function() {
         });
     });
 
-    this.it('fails async via timeout', function() {
-        var test = this;
+    this.it('fails async via timeout', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 console.log('# say something to keep idle timer happy');
@@ -129,14 +126,14 @@ function() {
         });
     });
 
-    this.it('passes sync via resolver', function() {
+    this.it('passes sync via resolver', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             //  Don't really need a promise, but we can use them anyway :)
             resolver();
         });
     });
 
-    this.it('fails sync via rejector', function() {
+    this.it('fails sync via rejector', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             //  Don't really need a promise, but we can use them anyway :)
             rejector();
@@ -148,17 +145,17 @@ function() {
 //  ignore_only set to true.
 TP.sig.Signal.Type.describe('fire',
 function() {
-    this.it('fails at signal type stuff', function() {
+    this.it('fails at signal type stuff', function(test, options) {
         this.fail();
     });
 });
 
 TP.sig.Signal.Type.describe('getSignalName',
 function() {
-    this.it('does signal type stuff only', function() {
+    this.it('does signal type stuff only', function(test, options) {
         this.pass();
     });
-    this.it('does more signal type stuff only', function() {
+    this.it('does more signal type stuff only', function(test, options) {
         this.pass();
     });
 }).only();
@@ -167,10 +164,10 @@ function() {
 //  ignore_only set to true due to the first test case below.
 TP.sig.Signal.Inst.describe('sig.Signal Inst suite',
 function() {
-    this.it('fails at signal inst stuff', function() {
+    this.it('fails at signal inst stuff', function(test, options) {
         this.fail();
     });
-    this.it('does more signal inst stuff only', function() {
+    this.it('does more signal inst stuff only', function(test, options) {
         this.pass();
     }).only();
 });
@@ -179,10 +176,10 @@ function() {
 //  ignore_skip set to true.
 TP.lang.Object.Type.describe('lang.Object Type suite',
 function() {
-    this.it('fails at object type stuff', function() {
+    this.it('fails at object type stuff', function(test, options) {
         this.fail();
     });
-    this.it('fails at object type stuff again', function() {
+    this.it('fails at object type stuff again', function(test, options) {
         this.fail();
     });
 }).skip();
@@ -191,27 +188,27 @@ function() {
 //  ignore_skip set to true.
 TP.lang.Object.Inst.describe('lang.Object Inst suite',
 function() {
-    this.it('fails at object inst stuff', function() {
+    this.it('fails at object inst stuff', function(test, options) {
         this.fail();
     }).skip();
-    this.it('does object inst stuff', function() {
+    this.it('does object inst stuff', function(test, options) {
         this.pass();
     });
 });
 
 TP.lang.Object.describe('lang.Object Local suite',
 function() {
-    this.it('will eventually do object local stuff', function() {
+    this.it('will eventually do object local stuff', function(test, options) {
         this.fail();
     }).todo();
 });
 
 String.describe('String local suite',
 function() {
-    this.it('passes simple test 1', function() {
+    this.it('passes simple test 1', function(test, options) {
         this.pass();
     });
-    this.it('passes simple test 2', function() {
+    this.it('passes simple test 2', function(test, options) {
         this.pass();
     });
 });

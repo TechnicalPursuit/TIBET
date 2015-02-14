@@ -1407,7 +1407,7 @@ function() {
         test.assert.isEqualTo(value, 'foo');
 
         //  Object
-        tpElem.set('value', {'foo': 'baz'});
+        tpElem.set('value', {foo: 'baz'});
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 
@@ -1548,7 +1548,7 @@ function() {
         test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
 
         //  Object
-        tpElem.set('value', {'foo': 'baz'});
+        tpElem.set('value', {foo: 'baz'});
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
 
@@ -1684,7 +1684,7 @@ function() {
         test.assert.isEqualTo(value, 'foo');
 
         //  Object
-        tpElem.set('value', {'foo': 'baz'});
+        tpElem.set('value', {foo: 'baz'});
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 
@@ -1825,7 +1825,7 @@ function() {
         test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
 
         //  Object
-        tpElem.set('value', {'foo': 'baz'});
+        tpElem.set('value', {foo: 'baz'});
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
 
@@ -2358,7 +2358,7 @@ function() {
         //  cause the value of 'salary' on the observer to update
         modelObj.set('salary', 42000);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('salary'),
                     tpElem.get('value').asNumber());
 
@@ -2400,7 +2400,7 @@ function() {
 
         tpElem.getValue();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get(path),
                     tpElem.get('value').asNumber());
 

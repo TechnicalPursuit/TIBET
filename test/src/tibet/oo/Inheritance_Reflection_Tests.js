@@ -316,7 +316,7 @@ function() {
         //  For TIBET *Type objects*, their type name is their name
         //  ('TP.core.Node') with the word 'meta' inserted as a special
         //  namespace (so, 'TP.meta.core.Node')
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             typeName,
             'TP.meta.lang.RootObject',
             TP.sc('Typename value: should be "TP.meta.lang.RootObject"',
@@ -334,7 +334,7 @@ function() {
         //  For TIBET *Type objects*, their type name is their name
         //  ('TP.core.Node') with the word 'meta' inserted as a special
         //  namespace (so, 'TP.meta.core.Node')
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             typeName,
             'TP.meta.lang.Object',
             TP.sc('Typename value: should be "TP.meta.lang.Object"',
@@ -352,7 +352,7 @@ function() {
         //  For TIBET *Type objects*, their type name is their name
         //  ('TP.core.Node') with the word 'meta' inserted as a special
         //  namespace (so, 'TP.meta.core.Node')
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             typeName,
             'TP.meta.core.XMLElementNode',
             TP.sc('Typename value: should be "TP.meta.core.XMLElementNode"',
@@ -369,7 +369,7 @@ function() {
 
         typeName = function () {return;}.getTypeName();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             typeName,
             'Function',
             TP.sc('Typename value: should be "Function"',
@@ -384,7 +384,7 @@ function() {
 
         typeName = [].getTypeName();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             typeName,
             'Array',
             TP.sc('Typename value: should be "Array"',
@@ -399,7 +399,7 @@ function() {
 
         typeName = TP.lang.Object.construct().getTypeName();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             typeName,
             'TP.lang.Object',
             TP.sc('Typename value: should be "TP.lang.Object"',
@@ -411,7 +411,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -438,7 +438,7 @@ function() {
         obj = TP.test.Domesticated;
         correctVal = TP.test.Animal;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val = obj.getSupertype(),
             correctVal,
             TP.sc('Supertype for: ', TP.name(obj),
@@ -450,7 +450,7 @@ function() {
         obj = TP.test.Dog;
         correctVal = TP.test.Domesticated;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val = obj.getSupertype(),
             correctVal,
             TP.sc('Supertype for: ', TP.name(obj),
@@ -469,15 +469,15 @@ function() {
 
             //  ---
 
-            obj = TP.test.Dog.construct();
-            correctVal = TP.test.Domesticated;
+        obj = TP.test.Dog.construct();
+        correctVal = TP.test.Domesticated;
 
-            this.assert.isIdenticalTo(
-                val = obj.getSupertype(),
-                correctVal,
-                TP.sc('Supertype for: ', TP.name(obj),
-                        ' should be: ', TP.name(correctVal),
-                        ' not: ', val, '.'));
+        test.assert.isIdenticalTo(
+            val = obj.getSupertype(),
+            correctVal,
+            TP.sc('Supertype for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
     });
 
     //  ---
@@ -494,7 +494,7 @@ function() {
         obj = Object;
         correctVal = undefined;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val = obj.getSupertype(),
             correctVal,
             TP.sc('Supertype for: ', TP.name(obj),
@@ -506,7 +506,7 @@ function() {
         obj = Function;
         correctVal = Object;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val = obj.getSupertype(),
             correctVal,
             TP.sc('Supertype for: ', TP.name(obj),
@@ -518,7 +518,7 @@ function() {
         obj = Array;
         correctVal = Object;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val = obj.getSupertype(),
             correctVal,
             TP.sc('Supertype for: ', TP.name(obj),
@@ -540,7 +540,7 @@ function() {
         obj = function () {return true;};
         correctVal = Object;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val = obj.getSupertype(),
             correctVal,
             TP.sc('Supertype for: ', TP.name(obj),
@@ -552,7 +552,7 @@ function() {
         obj = [];
         correctVal = Object;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val = obj.getSupertype(),
             correctVal,
             TP.sc('Supertype for: ', TP.name(obj),
@@ -565,7 +565,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -592,7 +592,7 @@ function() {
         obj = TP.test.Domesticated;
         correctVal = 'TP.test.Animal';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -604,7 +604,7 @@ function() {
         obj = TP.test.Dog;
         correctVal = 'TP.test.Domesticated';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -626,7 +626,7 @@ function() {
         obj = TP.test.Dog.construct();
         correctVal = 'TP.test.Domesticated';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -648,7 +648,7 @@ function() {
         obj = Object;
         correctVal = undefined;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -660,7 +660,7 @@ function() {
         obj = Function;
         correctVal = 'Object';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -672,7 +672,7 @@ function() {
         obj = Array;
         correctVal = 'Object';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -694,7 +694,7 @@ function() {
         obj = function () {return true;};
         correctVal = 'Object';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -706,7 +706,7 @@ function() {
         obj = [];
         correctVal = 'Object';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeName(),
             correctVal,
             TP.sc('Supertype name for: ', TP.name(obj),
@@ -719,7 +719,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -747,7 +747,7 @@ function() {
         correctVal = TP.ac(TP.test.Domesticated, TP.test.Animal, TP.lang.Object,
                             TP.lang.RootObject, Object);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypes(),
             correctVal,
             TP.sc('Supertypes for: ', TP.name(obj),
@@ -770,7 +770,7 @@ function() {
         correctVal = TP.ac(TP.test.Domesticated, TP.test.Animal, TP.lang.Object,
                             TP.lang.RootObject, Object);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypes(),
             correctVal,
             TP.sc('Supertypes for: ', TP.name(obj),
@@ -792,7 +792,7 @@ function() {
         obj = Object;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypes(),
             correctVal,
             TP.sc('Supertypes for: ', TP.name(obj),
@@ -804,7 +804,7 @@ function() {
         obj = Function;
         correctVal = TP.ac(Object);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypes(),
             correctVal,
             TP.sc('Supertypes for: ', TP.name(obj),
@@ -816,7 +816,7 @@ function() {
         obj = Array;
         correctVal = TP.ac(Object);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypes(),
             correctVal,
             TP.sc('Supertypes for: ', TP.name(obj),
@@ -838,7 +838,7 @@ function() {
         obj = function () {return true;};
         correctVal = TP.ac(Object);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypes(),
             correctVal,
             TP.sc('Supertypes for: ', TP.name(obj),
@@ -850,7 +850,7 @@ function() {
         obj = [];
         correctVal = TP.ac(Object);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypes(),
             correctVal,
             TP.sc('Supertypes for: ', TP.name(obj),
@@ -863,7 +863,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -891,7 +891,7 @@ function() {
         correctVal = TP.ac('TP.test.Animal', 'TP.lang.Object',
                             'TP.lang.RootObject', 'Object');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -904,7 +904,7 @@ function() {
         correctVal = TP.ac('TP.test.Domesticated', 'TP.test.Animal',
                             'TP.lang.Object', 'TP.lang.RootObject', 'Object');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -927,7 +927,7 @@ function() {
         correctVal = TP.ac('TP.test.Domesticated', 'TP.test.Animal',
                             'TP.lang.Object', 'TP.lang.RootObject', 'Object');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -949,7 +949,7 @@ function() {
         obj = Object;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -961,7 +961,7 @@ function() {
         obj = Function;
         correctVal = TP.ac('Object');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -973,7 +973,7 @@ function() {
         obj = Array;
         correctVal = TP.ac('Object');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -995,7 +995,7 @@ function() {
         obj = function () {return true;};
         correctVal = TP.ac('Object');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -1007,7 +1007,7 @@ function() {
         obj = [];
         correctVal = TP.ac('Object');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSupertypeNames(),
             correctVal,
             TP.sc('Supertype names for: ', TP.name(obj),
@@ -1020,7 +1020,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -1047,7 +1047,7 @@ function() {
         obj = TP.test.Animal;
         correctVal = TP.ac(TP.test.Domesticated);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1059,7 +1059,7 @@ function() {
         obj = TP.test.Animal;
         correctVal = TP.ac(TP.test.Domesticated, TP.test.Dog);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1071,7 +1071,7 @@ function() {
         obj = TP.test.Domesticated;
         correctVal = TP.ac(TP.test.Dog);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1083,7 +1083,7 @@ function() {
         obj = TP.test.Domesticated;
         correctVal = TP.ac(TP.test.Dog);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1095,7 +1095,7 @@ function() {
         obj = TP.test.Dog;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1107,7 +1107,7 @@ function() {
         obj = TP.test.Dog;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1136,7 +1136,7 @@ function() {
         obj = TP.test.Dog.construct();
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1148,7 +1148,7 @@ function() {
         obj = TP.test.Dog.construct();
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1171,7 +1171,7 @@ function() {
         correctVal = TP.ac(Array, Boolean, Date, Function,
                             Number, RegExp, String);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1184,7 +1184,7 @@ function() {
         correctVal = TP.ac(Array, Boolean, Date, Function,
                             Number, RegExp, String);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1196,7 +1196,7 @@ function() {
         obj = Function;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1208,7 +1208,7 @@ function() {
         obj = Function;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1220,7 +1220,7 @@ function() {
         obj = Array;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1232,7 +1232,7 @@ function() {
         obj = Array;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1254,7 +1254,7 @@ function() {
         obj = function () {return true;};
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1266,7 +1266,7 @@ function() {
         obj = function () {return true;};
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1278,7 +1278,7 @@ function() {
         obj = [];
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1290,7 +1290,7 @@ function() {
         obj = [];
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypes(true),
             correctVal,
             TP.sc('Subtypes for: ', TP.name(obj),
@@ -1303,7 +1303,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -1330,7 +1330,7 @@ function() {
         obj = TP.test.Animal;
         correctVal = TP.ac('TP.test.Domesticated');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1342,7 +1342,7 @@ function() {
         obj = TP.test.Animal;
         correctVal = TP.ac('TP.test.Domesticated', 'TP.test.Dog');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1354,7 +1354,7 @@ function() {
         obj = TP.test.Domesticated;
         correctVal = TP.ac('TP.test.Dog');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1366,7 +1366,7 @@ function() {
         obj = TP.test.Domesticated;
         correctVal = TP.ac('TP.test.Dog');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1378,7 +1378,7 @@ function() {
         obj = TP.test.Dog;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1390,7 +1390,7 @@ function() {
         obj = TP.test.Dog;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1418,7 +1418,7 @@ function() {
         obj = TP.test.Dog.construct();
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1430,7 +1430,7 @@ function() {
         obj = TP.test.Dog.construct();
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1453,7 +1453,7 @@ function() {
         correctVal = TP.ac('Array', 'Boolean', 'Date', 'Function', 'Number',
                             'RegExp', 'String');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1466,7 +1466,7 @@ function() {
         correctVal = TP.ac('Array', 'Boolean', 'Date', 'Function', 'Number',
                             'RegExp', 'String');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1478,7 +1478,7 @@ function() {
         obj = Function;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1490,7 +1490,7 @@ function() {
         obj = Function;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1502,7 +1502,7 @@ function() {
         obj = Array;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1514,7 +1514,7 @@ function() {
         obj = Array;
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1537,7 +1537,7 @@ function() {
         obj = function () {return true;};
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1549,7 +1549,7 @@ function() {
         obj = function () {return true;};
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1561,7 +1561,7 @@ function() {
         obj = [];
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1573,7 +1573,7 @@ function() {
         obj = [];
         correctVal = TP.ac();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getSubtypeNames(true),
             correctVal,
             TP.sc('Subtype names for: ', TP.name(obj),
@@ -1586,7 +1586,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -1616,7 +1616,7 @@ function() {
         propName = 'breathes';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1629,7 +1629,7 @@ function() {
         propName = 'makesNoise';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1642,7 +1642,7 @@ function() {
         propName = 'needsLeash';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1655,7 +1655,7 @@ function() {
         propName = 'breathes';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1668,7 +1668,7 @@ function() {
         propName = 'makesNoise';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1681,7 +1681,7 @@ function() {
         propName = 'catChaseProbability';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1694,7 +1694,7 @@ function() {
         propName = 'needsLeash';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1722,7 +1722,7 @@ function() {
         propName = 'generateNoise';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1738,7 +1738,7 @@ function() {
         propName = 'live';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1754,7 +1754,7 @@ function() {
         propName = 'visitVet';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1768,7 +1768,7 @@ function() {
         propName = 'die';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1782,7 +1782,7 @@ function() {
         propName = 'visitVet';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1796,7 +1796,7 @@ function() {
         propName = 'bark';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1810,7 +1810,7 @@ function() {
         propName = 'generateNoise';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1837,7 +1837,7 @@ function() {
         propName = 'breathes';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1852,7 +1852,7 @@ function() {
         propName = 'needsLeash';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1868,7 +1868,7 @@ function() {
         propName = 'chaseCatProbability';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1883,7 +1883,7 @@ function() {
         propName = 'dance';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1910,7 +1910,7 @@ function() {
         propName = 'die';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1927,7 +1927,7 @@ function() {
         propName = 'visitVet';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1942,7 +1942,7 @@ function() {
         propName = 'bark';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1957,7 +1957,7 @@ function() {
         propName = 'dance';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1983,7 +1983,7 @@ function() {
         propName = 'call';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -1996,7 +1996,7 @@ function() {
         propName = 'construct';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2010,7 +2010,7 @@ function() {
         propName = 'create';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2025,7 +2025,7 @@ function() {
         propName = 'call';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2038,7 +2038,7 @@ function() {
         propName = 'fromString';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2052,7 +2052,7 @@ function() {
         propName = 'isArray';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2078,7 +2078,7 @@ function() {
         propName = 'hasOwnProperty';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2092,7 +2092,7 @@ function() {
         propName = 'toString';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2106,7 +2106,7 @@ function() {
         propName = 'push';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2137,7 +2137,7 @@ function() {
         propName = 'test7TypeMethod';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2150,7 +2150,7 @@ function() {
         propName = 'test7TypeMethod';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2175,7 +2175,7 @@ function() {
         propName = 'test7TypeMethod2';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2195,7 +2195,7 @@ function() {
         propName = 'test7TypeMethod2';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2210,7 +2210,7 @@ function() {
         propName = 'test7LocalMethod';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2225,7 +2225,7 @@ function() {
         propName = 'test7LocalMethod';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2251,7 +2251,7 @@ function() {
         propName = 'unshift';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2266,7 +2266,7 @@ function() {
         propName = 'doThis';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2290,7 +2290,7 @@ function() {
         propName = 'speciesName';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2303,7 +2303,7 @@ function() {
         propName = 'tailWagFactor';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2316,7 +2316,7 @@ function() {
         propName = 'extinctionCategory';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2343,7 +2343,7 @@ function() {
         propName = 'lifeTicks';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2359,7 +2359,7 @@ function() {
         propName = 'petName';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2373,7 +2373,7 @@ function() {
         propName = 'lifeTicks';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2387,7 +2387,7 @@ function() {
         propName = 'vetVisits';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2401,7 +2401,7 @@ function() {
         propName = 'fleaCount';
         correctVal = TP.INTRODUCED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2428,7 +2428,7 @@ function() {
         propName = 'speciesName';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2443,7 +2443,7 @@ function() {
         propName = 'tailWagFactor';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2459,7 +2459,7 @@ function() {
         propName = 'chaseCat';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2486,7 +2486,7 @@ function() {
         propName = 'lifeTicks';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2502,7 +2502,7 @@ function() {
         propName = 'petName';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2517,7 +2517,7 @@ function() {
         propName = 'fleaCount';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2533,7 +2533,7 @@ function() {
         propName = 'barkCount';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2559,7 +2559,7 @@ function() {
         propName = 'constructor';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2574,7 +2574,7 @@ function() {
         propName = 'fluffy';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2589,7 +2589,7 @@ function() {
         propName = 'constructor';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2604,7 +2604,7 @@ function() {
         propName = 'fluffy';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2633,7 +2633,7 @@ function() {
         propName = 'fluffy';
         correctVal = TP.INHERITED;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2651,7 +2651,7 @@ function() {
         propName = 'fluffy';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2667,7 +2667,7 @@ function() {
         propName = 'goofy';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2696,7 +2696,7 @@ function() {
         propName = 'test15TypeAttribute';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2710,7 +2710,7 @@ function() {
         propName = 'test15TypeAttribute';
         correctVal = TP.OVERRIDDEN;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2736,7 +2736,7 @@ function() {
         propName = 'test15TypeAttribute2';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2758,7 +2758,7 @@ function() {
         propName = 'test15TypeAttribute2';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2774,7 +2774,7 @@ function() {
         propName = 'test15LocalAttribute';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2790,7 +2790,7 @@ function() {
         propName = 'test15LocalAttribute';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2816,7 +2816,7 @@ function() {
         propName = 'unshift';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2832,7 +2832,7 @@ function() {
         propName = 'doThis';
         correctVal = TP.LOCAL;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val = obj.getPropertyScope(propName),
             correctVal,
             TP.sc('Scope for: ', propName, ' should be: ', correctVal,
@@ -2844,7 +2844,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -2972,7 +2972,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -2989,7 +2989,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3006,7 +3006,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3023,7 +3023,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3040,7 +3040,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3158,7 +3158,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3175,7 +3175,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3192,7 +3192,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3209,7 +3209,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3226,7 +3226,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3337,7 +3337,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3354,7 +3354,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3371,7 +3371,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3388,7 +3388,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3488,7 +3488,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3505,7 +3505,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3522,7 +3522,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3539,7 +3539,7 @@ function() {
 
         val = keys.difference(val);
 
-        this.assert.isEmpty(
+        test.assert.isEmpty(
             val,
             TP.sc('There were remaining properties when querying for: "',
                     filter,
@@ -3551,7 +3551,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -3581,7 +3581,7 @@ function() {
         val = TP.core.Node.get('testTypeAttribute1');
         correctVal = 'testTypeAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testTypeAttribute1',
@@ -3596,7 +3596,7 @@ function() {
         val = TP.core.ElementNode.Type.get('testTypeAttribute1');
         correctVal = 'testTypeAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testTypeAttribute1',
@@ -3613,7 +3613,7 @@ function() {
         val = TP.core.Node.get('testTypeLocalAttribute1');
         correctVal = 'testTypeLocalAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testTypeLocalAttribute1',
@@ -3657,7 +3657,7 @@ function() {
         val = obj.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testSharedInstAttribute1',
@@ -3669,7 +3669,7 @@ function() {
         val = obj2.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testSharedInstAttribute1',
@@ -3688,7 +3688,7 @@ function() {
         val = obj.get('testInstAttribute1');
         correctVal = 'testInstAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testInstAttribute1',
@@ -3705,7 +3705,7 @@ function() {
         val = obj.get('testLocalAttribute1');
         correctVal = 'testLocalAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testLocalAttribute1',
@@ -3734,7 +3734,7 @@ function() {
         val = Array.get('testTypeAttribute1');
         correctVal = 'testTypeAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testTypeAttribute1',
@@ -3751,7 +3751,7 @@ function() {
         val = Array.get('testTypeLocalAttribute1');
         correctVal = 'testTypeLocalAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testTypeLocalAttribute1',
@@ -3781,7 +3781,7 @@ function() {
         val = obj.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testSharedInstAttribute1',
@@ -3793,7 +3793,7 @@ function() {
         val = obj2.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testSharedInstAttribute1',
@@ -3812,7 +3812,7 @@ function() {
         val = obj.get('testInstAttribute1');
         correctVal = 'testInstAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testInstAttribute1',
@@ -3829,7 +3829,7 @@ function() {
         val = obj.get('testLocalAttribute1');
         correctVal = 'testLocalAttVal1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('value for: ', 'testLocalAttribute1',
@@ -3842,7 +3842,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -3873,7 +3873,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = TP.core.Node;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -3883,7 +3883,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.TYPE_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -3893,7 +3893,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = 'TP.core.Node.Type.testTypeMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -3909,7 +3909,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = TP.core.Node;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -3919,7 +3919,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.TYPE_LOCAL_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -3929,7 +3929,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = 'TP.core.Node.testTypeLocalMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -3957,7 +3957,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = TP.core.Point;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -3967,7 +3967,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.INST_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -3977,7 +3977,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = 'TP.core.Point.Inst.testInstMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -3995,7 +3995,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = inst;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -4005,7 +4005,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.LOCAL_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -4015,7 +4015,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = TP.id(inst) + '.testLocalMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -4043,7 +4043,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = Array;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -4053,7 +4053,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.TYPE_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -4063,7 +4063,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = 'Array.Type.testTypeMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -4079,7 +4079,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = Array;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -4089,7 +4089,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.TYPE_LOCAL_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -4099,7 +4099,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = 'Array.testTypeLocalMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -4118,7 +4118,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = Function;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -4128,7 +4128,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.INST_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -4138,7 +4138,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = 'Function.Inst.testInstMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -4159,7 +4159,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = inst;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -4169,7 +4169,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.LOCAL_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -4179,7 +4179,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = TP.id(inst) + '.testLocalMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -4207,7 +4207,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = Array;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -4217,7 +4217,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.INST_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -4227,7 +4227,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = 'Array.Inst.testInstMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -4245,7 +4245,7 @@ function() {
         val = obj[TP.OWNER];
         correctVal = inst;
 
-        this.assert.isIdenticalTo(
+        test.assert.isIdenticalTo(
             val,
             correctVal,
             TP.sc('TP.OWNER for: ', TP.name(obj),
@@ -4255,7 +4255,7 @@ function() {
         val = obj[TP.TRACK];
         correctVal = TP.LOCAL_TRACK;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.TRACK for: ', TP.name(obj),
@@ -4265,7 +4265,7 @@ function() {
         val = obj[TP.DISPLAY];
         correctVal = TP.id(inst) + '.testInstLocalMethod1';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('TP.DISPLAY for: ', TP.name(obj),
@@ -4278,7 +4278,7 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -4408,7 +4408,7 @@ function() {
         //  implementation of 'equals' this should return a defined object.
         obj = TP.test.Triangle.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Triangle" should be valid'));
     });
@@ -4432,7 +4432,7 @@ function() {
         val = TP.OOTests.get('circleEqualsCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "circleEqualsCount"',
@@ -4447,7 +4447,7 @@ function() {
         val = TP.OOTests.get('greaterCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "greaterCount"',
@@ -4462,7 +4462,7 @@ function() {
         val = TP.OOTests.get('smallerCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "smallerCount"',
@@ -4477,7 +4477,7 @@ function() {
         val = TP.OOTests.get('differsCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "differsCount"',
@@ -4491,7 +4491,7 @@ function() {
         val = TP.OOTests.get('circleEqualsCount');
         correctVal = 2;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "circleEqualsCount"',
@@ -4554,7 +4554,7 @@ function() {
         //  implementation of 'getRgb' this should return a defined object.
         obj = TP.test.Square.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Square" should be valid'));
 
@@ -4568,7 +4568,7 @@ function() {
         val = TP.OOTests.get('colorGetRGBCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "colorGetRGBCount"',
@@ -4621,7 +4621,7 @@ function() {
         //  implementation of 'getRgb' this should return a defined object.
         obj = TP.test.Rectangle.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Rectangle" should be valid'));
 
@@ -4636,7 +4636,7 @@ function() {
         val = TP.OOTests.get('colorGetRGBCount');
         correctVal = 0;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "colorGetRGBCount"',
@@ -4649,7 +4649,7 @@ function() {
         val = inlineCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for the inline count',
@@ -4713,7 +4713,7 @@ function() {
         //  implementation of 'getRgb' this should return a defined object.
         obj = TP.test.Octogon.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Octogon" should be valid'));
 
@@ -4730,7 +4730,7 @@ function() {
         val = TP.OOTests.get('colorGetRGBCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "colorGetRGBCount"',
@@ -4767,7 +4767,7 @@ function() {
         //  implementation of 'getRgb' this should return a defined object.
         obj = TP.test.Hexagon.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Hexagon" should be valid'));
 
@@ -4782,7 +4782,7 @@ function() {
         val = TP.OOTests.get('colorGetRGBCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "colorGetRGBCount"',
@@ -4793,7 +4793,7 @@ function() {
         val = inlineCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for the inline count',
@@ -4830,7 +4830,7 @@ function() {
         //  implementation of 'getRgb' this should return a defined object.
         obj = TP.test.Pentagon.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Pentagon" should be valid'));
 
@@ -4845,7 +4845,7 @@ function() {
         val = TP.OOTests.get('colorGetRGBCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "colorGetRGBCount"',
@@ -4858,7 +4858,7 @@ function() {
         val = inlineCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for the inline count',
@@ -4907,7 +4907,7 @@ function() {
         //  'TP.test.Color' type.
         obj = TP.test.Diamond.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Diamond" should be valid'));
 
@@ -4921,7 +4921,7 @@ function() {
         val = TP.OOTests.get('colorGetRGBCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "colorGetRGBCount"',
@@ -5015,7 +5015,7 @@ function() {
         //  implementation of 'equals' this should return a defined object.
         obj = TP.test.Quadrangle.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Quadrangle" should be valid'));
     });
@@ -5072,7 +5072,7 @@ function() {
         //  resolution for 'doesDiffer' this should return a defined object.
         obj = TP.test.Ellipsis.construct();
 
-        this.assert.isValid(
+        test.assert.isValid(
             obj,
             TP.sc('This instance of "TP.test.Ellipsis" should be valid'));
 
@@ -5081,7 +5081,7 @@ function() {
         val = obj.get('doesDiffer');
         correctVal = false;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "doesDiffer"',
@@ -5098,7 +5098,7 @@ function() {
             TP.sys.shouldThrowExceptions(shouldThrowSetting);
 
             TP.sys.setcfg('tibet.traits.resolve', autoResolveSetting);
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -5165,67 +5165,66 @@ function() {
 
     this.it('TP.lang.RootObject callNextMethod()', function(test, options) {
 
-            var newBar,
-                nameVal,
+        var newBar,
+            nameVal,
 
-                newBaz,
+            newBaz,
 
-                speciesVal;
+            speciesVal;
 
-            //  ---
-            //  Type-level callNextMethod
-            //  ---
+        //  ---
+        //  Type-level callNextMethod
+        //  ---
 
-            TP.test.BarType.giveSpecies('human');
+        TP.test.BarType.giveSpecies('human');
 
-            speciesVal = TP.test.BarType.get('species');
+        speciesVal = TP.test.BarType.get('species');
 
-            this.assert.isEqualTo(
-                speciesVal,
-                'human',
-                TP.sc('\'species\' should be "human"', ' not: ', speciesVal, '.'));
+        test.assert.isEqualTo(
+            speciesVal,
+            'human',
+            TP.sc('\'species\' should be "human"', ' not: ', speciesVal, '.'));
 
-            //  ---
+        //  ---
 
-            TP.test.BazType.giveSpecies('human');
+        TP.test.BazType.giveSpecies('human');
 
-            speciesVal = TP.test.BazType.get('species');
+        speciesVal = TP.test.BazType.get('species');
 
-            //  BazType will always have its species set to 'feline', no matter
-            //  what we supplied.
-            this.assert.isEqualTo(
-                speciesVal,
-                'feline',
-                TP.sc('\'species\' should be "feline"', ' not: ',
-                        speciesVal, '.'));
+        //  BazType will always have its species set to 'feline', no matter
+        //  what we supplied.
+        test.assert.isEqualTo(
+            speciesVal,
+            'feline',
+            TP.sc('\'species\' should be "feline"', ' not: ',
+                    speciesVal, '.'));
 
-            //  ---
-            //  Instance-level callNextMethod
-            //  ---
+        //  ---
+        //  Instance-level callNextMethod
+        //  ---
 
-            newBar = TP.test.BarType.construct();
-            newBar.giveName('Fred');
+        newBar = TP.test.BarType.construct();
+        newBar.giveName('Fred');
 
-            nameVal = newBar.get('theName');
+        nameVal = newBar.get('theName');
 
-            this.assert.isEqualTo(
-                nameVal,
-                'Fred',
-                TP.sc('\'name\' should be "Fred"', ' not: ', nameVal, '.'));
+        test.assert.isEqualTo(
+            nameVal,
+            'Fred',
+            TP.sc('\'name\' should be "Fred"', ' not: ', nameVal, '.'));
 
-            newBaz = TP.test.BazType.construct();
-            newBaz.giveName('Frank');
+        newBaz = TP.test.BazType.construct();
+        newBaz.giveName('Frank');
 
-            nameVal = newBaz.get('theName');
+        nameVal = newBaz.get('theName');
 
-            //  Instances of BazType will always have their name set to 'fluffy',
-            //  no matter what we supplied.
-            this.assert.isEqualTo(
-                nameVal,
-                'fluffy',
-                TP.sc('\'name\' should be "fluffy"', ' not: ', nameVal, '.'));
-
-            });
+        //  Instances of BazType will always have their name set to 'fluffy',
+        //  no matter what we supplied.
+        test.assert.isEqualTo(
+            nameVal,
+            'fluffy',
+            TP.sc('\'name\' should be "fluffy"', ' not: ', nameVal, '.'));
+    });
 
     //  ---
 
@@ -5247,7 +5246,7 @@ function() {
             metadata.removeKey('TP.test.FooType');
             metadata.removeKey('TP.test.BarType');
             metadata.removeKey('TP.test.BazType');
-    });
+        });
 });
 
 //  ------------------------------------------------------------------------

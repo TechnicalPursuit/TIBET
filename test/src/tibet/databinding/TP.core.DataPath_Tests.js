@@ -16,69 +16,69 @@ function() {
 
     this.it('Simple TIBET path', function(test, options) {
         path = TP.apc('foo');
-        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
 
         path = TP.apc('1');
-        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
     });
 
     this.it('Complex TIBET path', function(test, options) {
         path = TP.apc('foo.hi');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.hi.boo');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('2.1');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('2.1.2');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.hi[boo,moo]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.hi[boo,moo].gar');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('2[1,2]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[0:2]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[:2]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[2:]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[:-2]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[2:-1]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[1:6:2]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[6:1:-2]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.1');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[0,2].fname');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('0.aliases[1:2]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('0.aliases[:-1]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('3.1[1:4]');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
     });
 });
 
@@ -91,7 +91,7 @@ function() {
 
     this.it('SimpleXML path', function(test, options) {
         path = TP.apc('@foo');
-        this.assert.isKindOf(path, TP.core.SimpleXMLPath);
+        test.assert.isKindOf(path, TP.core.SimpleXMLPath);
     });
 });
 
@@ -104,88 +104,88 @@ function() {
 
     this.it('XPath path', function(test, options) {
         path = TP.apc('/author');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./author');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname|/author/fname');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname@foo');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname@foo|/author/fname@baz');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('//*');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('//author');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('.//author');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('book[/bookstore/@specialty=@style]');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('author/*');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('author/first-name');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore//title');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore/*/title');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('*/*');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/bookstore//book/excerpt//author');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./*[@foo]');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./@foo');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore/@foo');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore/@foo/bar');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./bookstore[name][2]');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('@*');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('@foo:*');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('*/bar[@foo]');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/goo/bar[@foo]');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/goo/bar[@foo="baz"]');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('//foo[text()=../../following-sibling::*//foo/text()]');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./foo:*');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
     });
 });
 
@@ -198,97 +198,97 @@ function() {
 
     this.it('CSSPath path', function(test, options) {
         path = TP.apc('*');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         /*
         Won't work because of 'barename path' check (although it produces the
         same result)
 
         path = TP.apc('#id');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         /*
         Won't work because of 'TIBET path' check
 
         path = TP.apc('mytag');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         path = TP.apc('.myclass');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         /*
         Won't work because of 'barename path' check (although it produces the
         same result)
 
         path = TP.apc('#id.myclass');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         /*
         Won't work because of 'TIBET path' check
 
         path = TP.apc('mytag.myclass');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         path = TP.apc('mytag mytag');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('myns|*');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('myns|mytag');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('.myclass .myclass');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('.myclass.myclass');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag:visited');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag + mysibling');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('myparent > mytag');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag ~ mysibling');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr="myval"]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr*="myval"]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr^="myval"]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr$="myval"]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr~="myval"]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr|="myval"]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag:not([myattr])');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr="myval"][myattr^="myval"]');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('myparent > *, #myid');
-        this.assert.isKindOf(path, TP.core.CSSPath);
+        test.assert.isKindOf(path, TP.core.CSSPath);
     });
 });
 
@@ -301,196 +301,196 @@ function() {
 
     this.it('Composite path with TIBET Simple Paths', function(test, options) {
         path = TP.apc('foo.(bar).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('(bar).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(bar)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 
     this.it('Composite path with TIBET Simple paths and embedded TIBET Complex Paths', function(test, options) {
         path = TP.apc('foo.(foo.hi).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(2.1).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(foo.hi[boo,moo]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(foo.hi[boo,moo].gar).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(2[1,2]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.([0:2]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.([0:]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.([:2]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.([-1:]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.([:-1]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.([0:2].fname).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(0.aliases[:-1]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 
     this.it('Composite path with TIBET Simple paths and embedded XPath Paths', function(test, options) {
         path = TP.apc('foo.(/author).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(./author).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(/author/lname).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(/author/lname|author/fname).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(/author/lname@foo).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(/author/lname@foo|/author/fname@foo).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(//*).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(//author).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(.//author).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(book[/bookstore/@specialty=@style]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(author/*).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(author/first-name).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(bookstore//title).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(bookstore/*/title).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(*/*).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(/bookstore//book/excerpt//author).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(./*[@foo]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(./@foo).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(bookstore/@foo).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(bookstore/@foo/bar).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(./bookstore[name][2]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(@*).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(@foo:*).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(*/bar[@foo]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(/goo/bar[@foo]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(/goo/bar[@foo="baz"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(//foo[text()=../../following-sibling::*//foo/text()]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(./foo:*).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 
     this.it('Composite path with TIBET Simple paths and embedded CSS Paths', function(test, options) {
         path = TP.apc('foo.(.myclass).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag mytag).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(myns|mytag).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(.myclass .myclass).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(.myclass.myclass).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag:visited).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag + mysibling).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(myparent > mytag).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag ~ mysibling).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr="myval"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr*="myval"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr^="myval"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr$="myval"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr~="myval"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr|="myval"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag:not([myattr])).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(mytag[myattr="myval"][myattr^="myval"]).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('foo.(myparent > *, #myid).baz');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 });
 
@@ -503,24 +503,24 @@ function() {
 
     this.it('Simple TIBET path', function(test, options) {
         path = TP.apc('#tibet(foo)');
-        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
 
         path = TP.apc('#tibet(1)');
-        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
     });
 
     this.it('Complex TIBET path', function(test, options) {
         path = TP.apc('#tibet(foo.hi)');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('#tibet(foo.hi.boo)');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('#tibet(2.1)');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('#tibet(2.1.2)');
-        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
     });
 });
 
@@ -533,28 +533,28 @@ function() {
 
     this.it('XPath path', function(test, options) {
         path = TP.apc('#xpath1(/emp)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(./emp)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname|/emp/fname)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname@foo)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname@foo|/emp/fname@baz)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(//*)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(@foo)');
-        this.assert.isKindOf(path, TP.core.XPathPath);
+        test.assert.isKindOf(path, TP.core.XPathPath);
     });
 });
 
@@ -567,64 +567,64 @@ function() {
 
     this.it('CSS path', function(test, options) {
         path = TP.apc('#css(*)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(.myclass)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag mytag)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(myns|*)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(myns|mytag)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(.myclass .myclass)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag:visited)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag + mysibling)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(myparent > mytag)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag ~ mysibling)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr="myval"])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr*="myval"])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr^="myval"])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr$="myval"])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr~="myval"])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr|="myval"])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag:not([myattr]))');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr="myval"][myattr^="myval"])');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(myparent > *, #myid)');
-        this.assert.isKindOf(path, TP.core.XTensionPath);
+        test.assert.isKindOf(path, TP.core.XTensionPath);
     });
 });
 
@@ -637,234 +637,234 @@ function() {
 
     this.it('Composite path with TIBET Simple Paths', function(test, options) {
         path = TP.apc('#tibet(foo.(bar).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet((bar).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(bar))');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 
     this.it('Composite path with TIBET Simple Paths', function(test, options) {
         path = TP.apc('#tibet(foo.(foo.hi).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(2.1).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo].gar).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(2[1,2]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([0:2]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([0:]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([:2]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([-1:]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([:-1]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([0:2].fname).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(0.aliases[:-1]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 
     this.it('Composite path with TIBET Simple paths and embedded TIBET Complex Paths', function(test, options) {
         path = TP.apc('#tibet(foo.(foo.hi).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(2.1).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(foo.hi[boo,moo].gar).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(2[1,2]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([0:2]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([0:]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([:2]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([-1:]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([:-1]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.([0:2].fname).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(0.aliases[:-1]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 
     this.it('Composite path with TIBET Simple paths and embedded XPath Paths', function(test, options) {
         path = TP.apc('#tibet(foo.(/author).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(./author).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(/author/lname).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(/author/lname|author/fname).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(/author/lname@foo).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(/author/lname@foo|/author/fname@foo).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(//*).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(//author).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(.//author).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(book[/bookstore/@specialty=@style]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(author/*).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(author/first-name).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(bookstore//title).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(bookstore/*/title).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(*/*).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(/bookstore//book/excerpt//author).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(./*[@foo]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(./@foo).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(bookstore/@foo).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(bookstore/@foo/bar).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(./bookstore[name][2]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(@*).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(@foo:*).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(*/bar[@foo]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(/goo/bar[@foo]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(/goo/bar[@foo="baz"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(//foo[text()=../../following-sibling::*//foo/text()]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(./foo:*).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 
     this.it('Composite path with TIBET Simple paths and embedded CSS Paths', function(test, options) {
         path = TP.apc('#tibet(foo.(.myclass).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag mytag).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(myns|mytag).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(.myclass .myclass).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(.myclass.myclass).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag:visited).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag + mysibling).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(myparent > mytag).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag ~ mysibling).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr="myval"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr*="myval"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr^="myval"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr$="myval"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr~="myval"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr|="myval"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag:not([myattr])).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(mytag[myattr="myval"][myattr^="myval"]).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
 
         path = TP.apc('#tibet(foo.(myparent > *, #myid).baz)');
-        this.assert.isKindOf(path, TP.core.CompositePath);
+        test.assert.isKindOf(path, TP.core.CompositePath);
     });
 });
 
@@ -893,7 +893,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        this.assert.isEqualTo(val, 'there');
+        test.assert.isEqualTo(val, 'there');
     });
 
     this.it('single level set', function(test, options) {
@@ -905,7 +905,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at('foo').at('hi');
 
-        this.assert.isEqualTo(val, 'folks');
+        test.assert.isEqualTo(val, 'folks');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -913,7 +913,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -925,7 +925,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at('foo').at('hi').at('boo');
 
-        this.assert.isEqualTo(val, 'foofy');
+        test.assert.isEqualTo(val, 'foofy');
     });
 });
 
@@ -954,7 +954,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        this.assert.isEqualTo(val, 'b');
+        test.assert.isEqualTo(val, 'b');
     });
 
     this.it('single level set', function(test, options) {
@@ -966,7 +966,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at(2).at(1);
 
-        this.assert.isEqualTo(val, 'z');
+        test.assert.isEqualTo(val, 'z');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -974,7 +974,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        this.assert.isEqualTo(val, '8');
+        test.assert.isEqualTo(val, '8');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -986,7 +986,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at(2).at(1).at(2);
 
-        this.assert.isEqualTo(val, '9');
+        test.assert.isEqualTo(val, '9');
     });
 });
 
@@ -1016,7 +1016,7 @@ function() {
 
         val = tailResultsPath.executeGet(tailResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('goo', 'too'));
+        test.assert.isEqualTo(val, TP.ac('goo', 'too'));
     });
 
     this.it('tail results set', function(test, options) {
@@ -1028,11 +1028,11 @@ function() {
         //  validation of 'path' execution code.
         val = tailResultsModel.at('foo').at('hi').at('boo');
 
-        this.assert.isEqualTo(val, 'zoo');
+        test.assert.isEqualTo(val, 'zoo');
 
         val = tailResultsModel.at('foo').at('hi').at('moo');
 
-        this.assert.isEqualTo(val, 'zoo');
+        test.assert.isEqualTo(val, 'zoo');
     });
 
     this.it('middle results get', function(test, options) {
@@ -1040,7 +1040,7 @@ function() {
 
         val = middleResultsPath.executeGet(middleResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('bar', 'tar'));
+        test.assert.isEqualTo(val, TP.ac('bar', 'tar'));
     });
 
     this.it('middle results set', function(test, options) {
@@ -1052,11 +1052,11 @@ function() {
         //  validation of 'path' execution code.
         val = middleResultsModel.at('foo').at('hi').at('boo').at('gar');
 
-        this.assert.isEqualTo(val, 'car');
+        test.assert.isEqualTo(val, 'car');
 
         val = middleResultsModel.at('foo').at('hi').at('moo').at('gar');
 
-        this.assert.isEqualTo(val, 'car');
+        test.assert.isEqualTo(val, 'car');
     });
 });
 
@@ -1085,7 +1085,7 @@ function() {
 
         val = tailResultsPath.executeGet(tailResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac(TP.ac('6', '7', '8'), 'c'));
+        test.assert.isEqualTo(val, TP.ac(TP.ac('6', '7', '8'), 'c'));
     });
 
     this.it('tail results set', function(test, options) {
@@ -1098,11 +1098,11 @@ function() {
         //  validation of 'path' execution code.
         val = tailResultsModel.at(2).at(1);
 
-        this.assert.isEqualTo(val, TP.ac('4', '5', '6'));
+        test.assert.isEqualTo(val, TP.ac('4', '5', '6'));
 
         val = tailResultsModel.at(2).at(2);
 
-        this.assert.isEqualTo(val, TP.ac('4', '5', '6'));
+        test.assert.isEqualTo(val, TP.ac('4', '5', '6'));
     });
 
     this.it('middle results get', function(test, options) {
@@ -1110,7 +1110,7 @@ function() {
 
         val = middleResultsPath.executeGet(middleResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('6', '6'));
+        test.assert.isEqualTo(val, TP.ac('6', '6'));
     });
 
     this.it('middle results set', function(test, options) {
@@ -1122,11 +1122,11 @@ function() {
         //  validation of 'path' execution code.
         val = middleResultsModel.at(2).at(1).at(2);
 
-        this.assert.isEqualTo(val, 'hi');
+        test.assert.isEqualTo(val, 'hi');
 
         val = middleResultsModel.at(2).at(2).at(2);
 
-        this.assert.isEqualTo(val, 'hi');
+        test.assert.isEqualTo(val, 'hi');
     });
 });
 
@@ -1149,7 +1149,7 @@ function() {
         path = TP.apc('[0:2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('one', 'two'));
+        test.assert.isEqualTo(val, TP.ac('one', 'two'));
     });
 
     this.it('slicing get #2', function(test, options) {
@@ -1159,7 +1159,7 @@ function() {
         path = TP.apc('[:2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('one', 'two'));
+        test.assert.isEqualTo(val, TP.ac('one', 'two'));
     });
 
     this.it('slicing get #3', function(test, options) {
@@ -1169,7 +1169,7 @@ function() {
         path = TP.apc('[2:]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37, 'hi'));
+        test.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37, 'hi'));
     });
 
     this.it('slicing get #4', function(test, options) {
@@ -1179,7 +1179,7 @@ function() {
         path = TP.apc('[-2:]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac(37, 'hi'));
+        test.assert.isEqualTo(val, TP.ac(37, 'hi'));
     });
 
     this.it('slicing get #5', function(test, options) {
@@ -1189,7 +1189,7 @@ function() {
         path = TP.apc('[:-2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6', '7', '8'), 'c')));
+        test.assert.isEqualTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6', '7', '8'), 'c')));
     });
 
     this.it('slicing get #6', function(test, options) {
@@ -1199,7 +1199,7 @@ function() {
         path = TP.apc('[2:-1]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37));
+        test.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37));
     });
 
     this.it('slicing get #7', function(test, options) {
@@ -1209,7 +1209,7 @@ function() {
         path = TP.apc('[1:6:2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('two', 37));
+        test.assert.isEqualTo(val, TP.ac('two', 37));
     });
 
     this.it('slicing get #8', function(test, options) {
@@ -1219,7 +1219,7 @@ function() {
         path = TP.apc('[6:1:-2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac(undefined, 37));
+        test.assert.isEqualTo(val, TP.ac(undefined, 37));
     });
 });
 
@@ -1247,7 +1247,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        this.assert.isEqualTo(val, '2nd');
+        test.assert.isEqualTo(val, '2nd');
     });
 
     this.it('single level set', function(test, options) {
@@ -1259,7 +1259,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at('foo').at(1);
 
-        this.assert.isEqualTo(val, '3rd');
+        test.assert.isEqualTo(val, '3rd');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -1267,7 +1267,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        this.assert.isEqualTo(val, 'there');
+        test.assert.isEqualTo(val, 'there');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -1279,7 +1279,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at('foo').at('2').at('hi');
 
-        this.assert.isEqualTo(val, 'boo boo');
+        test.assert.isEqualTo(val, 'boo boo');
     });
 });
 
@@ -1311,12 +1311,22 @@ function() {
             path4 = TP.apc('0.aliases[:-1]');
         });
 
+    this.after(
+        function() {
+            model1 = null;
+
+            path1 = null;
+            path2 = null;
+            path3 = null;
+            path4 = null;
+        });
+
     this.it('tail results get', function(test, options) {
         var val;
 
         val = path1.executeGet(model1);
 
-        this.assert.isEqualTo(val, 'bill');
+        test.assert.isEqualTo(val, 'bill');
     });
 
     this.it('tail results set', function(test, options) {
@@ -1328,7 +1338,7 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('fname');
 
-        this.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'William');
     });
 
     this.it('middle results get', function(test, options) {
@@ -1336,7 +1346,7 @@ function() {
 
         val = path2.executeGet(model1);
 
-        this.assert.isEqualTo(val, TP.ac('William', 'jim'));
+        test.assert.isEqualTo(val, TP.ac('William', 'jim'));
     });
 
     this.it('middle results single value set', function(test, options) {
@@ -1348,11 +1358,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        this.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'William');
 
         val = model1.at(2).at('fname');
 
-        this.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'William');
     });
 
     this.it('middle results multi value set', function(test, options) {
@@ -1364,11 +1374,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        this.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
+        test.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
 
         val = model1.at(2).at('fname');
 
-        this.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
+        test.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
     });
 
     this.it('tail results slicing get', function(test, options) {
@@ -1376,7 +1386,7 @@ function() {
 
         val = path3.executeGet(model1, true);
 
-        this.assert.isEqualTo(val, TP.ac('willy'));
+        test.assert.isEqualTo(val, TP.ac('willy'));
     });
 
     this.it('tail results slicing set', function(test, options) {
@@ -1388,7 +1398,7 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(1);
 
-        this.assert.isEqualTo(val, TP.ac('willy', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('willy', 'jimmy'));
     });
 
     this.it('tail results multi-value slicing get', function(test, options) {
@@ -1396,7 +1406,7 @@ function() {
 
         val = path4.executeGet(model1, true);
 
-        this.assert.isEqualTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
+        test.assert.isEqualTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
     });
 
     this.it('tail results multi-value slicing set', function(test, options) {
@@ -1408,11 +1418,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(0);
 
-        this.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
 
         val = model1.at('0').at('aliases').at(1);
 
-        this.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
     });
 });
 
@@ -1458,7 +1468,7 @@ function() {
 
         val = model1.at('bar').at('moo');
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1478,7 +1488,7 @@ function() {
 
         val = model1.at('bar').at('moo');
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
 
         val = model1.at('bar').at('too');
 
@@ -1498,7 +1508,7 @@ function() {
 
         val = model1.at('bar').at('moo').at('noo');
 
-        this.assert.isEqualTo(val, 'boo');
+        test.assert.isEqualTo(val, 'boo');
     });
 });
 
@@ -1546,7 +1556,7 @@ function() {
 
         val = model1.at(3).at(1);
 
-        this.assert.isEqualTo(val, 'four');
+        test.assert.isEqualTo(val, 'four');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1563,11 +1573,11 @@ function() {
 
         val = model1.at(3).at(1).at(0);
 
-        this.assert.isEqualTo(val, 'f');
+        test.assert.isEqualTo(val, 'f');
 
         val = model1.at(3).at(1).at(4);
 
-        this.assert.isEmpty(val);
+        test.assert.isEmpty(val);
     });
 
     this.it('multi level set with creation', function(test, options) {
@@ -1583,11 +1593,11 @@ function() {
 
         val = model1.at(3).at(1).at(0);
 
-        this.assert.isEqualTo(val, 'stuff');
+        test.assert.isEqualTo(val, 'stuff');
 
         val = model1.at(3).at(1).at(4);
 
-        this.assert.isEqualTo(val, 'stuff');
+        test.assert.isEqualTo(val, 'stuff');
     });
 
     this.it('slicing results set without creation', function(test, options) {
@@ -1606,21 +1616,21 @@ function() {
         //  require 'structure creating' - the values should have been set.
         val = model1.at(3).at(1).at(1);
 
-        this.assert.isEqualTo(val, 'foofy');
+        test.assert.isEqualTo(val, 'foofy');
 
         val = model1.at(3).at(1).at(2);
 
-        this.assert.isEqualTo(val, 'foofy');
+        test.assert.isEqualTo(val, 'foofy');
 
         val = model1.at(3).at(1).at(3);
 
-        this.assert.isEqualTo(val, 'foofy');
+        test.assert.isEqualTo(val, 'foofy');
 
         //  This value should still be 'stuff' - the '1:4' range means items
         //  1-3.
         val = model1.at(3).at(1).at(4);
 
-        this.assert.isEqualTo(val, 'stuff');
+        test.assert.isEqualTo(val, 'stuff');
     });
 
     this.it('slicing results set with creation', function(test, options) {
@@ -1670,7 +1680,7 @@ function() {
 
         val = model1.at('foo').at(3).at('bar');
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1686,7 +1696,7 @@ function() {
         //  shouldn't be one at 'moo' or 'too'.
         val = model1.at('foo').at(3).at('bar');
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
 
         val = model1.at('foo').at(3).at('moo');
 
@@ -1710,15 +1720,15 @@ function() {
 
         val = model1.at('foo').at(3).at('bar').at('roo');
 
-        this.assert.isArray(val);
+        test.assert.isArray(val);
 
         val = model1.at('foo').at(3).at('moo').at('roo');
 
-        this.assert.isArray(val);
+        test.assert.isArray(val);
 
         val = model1.at('foo').at(3).at('too').at('roo');
 
-        this.assert.isArray(val);
+        test.assert.isArray(val);
     });
 });
 
@@ -1747,7 +1757,7 @@ function() {
 
         val = path1.executeGet(model1, 1);
 
-        this.assert.isEqualTo(val, '2nd');
+        test.assert.isEqualTo(val, '2nd');
     });
 
     this.it('single level get slice', function(test, options) {
@@ -1755,7 +1765,7 @@ function() {
 
         val = path2.executeGet(model1, 1, 4);
 
-        this.assert.isEqualTo(val, TP.ac('2nd', '3rd', '4th'));
+        test.assert.isEqualTo(val, TP.ac('2nd', '3rd', '4th'));
     });
 
     this.it('multi level get', function(test, options) {
@@ -1763,7 +1773,7 @@ function() {
 
         val = path3.executeGet(model1, 4, 0);
 
-        this.assert.isEqualTo(val, 'A');
+        test.assert.isEqualTo(val, 'A');
     });
 
     this.it('multi level get slice', function(test, options) {
@@ -1771,7 +1781,7 @@ function() {
 
         val = path4.executeGet(model1, 4, 6, 0);
 
-        this.assert.isEqualTo(val, TP.ac('A', 'X'));
+        test.assert.isEqualTo(val, TP.ac('A', 'X'));
     });
 
     this.it('single level set', function(test, options) {
@@ -1785,7 +1795,7 @@ function() {
 
         val = model1.at('foo').at(1);
 
-        this.assert.isEqualTo(val, 'boo');
+        test.assert.isEqualTo(val, 'boo');
     });
 
     this.it('single level set slice', function(test, options) {
@@ -1800,11 +1810,11 @@ function() {
 
         val = model1.at('foo').at(1);
 
-        this.assert.isEqualTo(val, 'bar');
+        test.assert.isEqualTo(val, 'bar');
 
         val = model1.at('foo').at(2);
 
-        this.assert.isEqualTo(val, 'bar');
+        test.assert.isEqualTo(val, 'bar');
     });
 
     this.it('multi level set', function(test, options) {
@@ -1819,7 +1829,7 @@ function() {
 
         val = model1.at('foo').at(4).at(0);
 
-        this.assert.isEqualTo(val, 'baz');
+        test.assert.isEqualTo(val, 'baz');
     });
 
     this.it('multi level get slice', function(test, options) {
@@ -1834,11 +1844,11 @@ function() {
 
         val = model1.at('foo').at(4).at(0);
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
 
         val = model1.at('foo').at(5).at(0);
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
     });
 });
 
@@ -1870,7 +1880,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.isEqualTo(val, 'Edney');
+        test.assert.isEqualTo(val, 'Edney');
     });
 
     this.it('single value set', function(test, options) {
@@ -1889,7 +1899,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.isEqualTo(val, 'Smith');
+        test.assert.isEqualTo(val, 'Smith');
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1901,11 +1911,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.isEqualTo(val, 'Edney');
+        test.assert.isEqualTo(val, 'Edney');
 
         val = TP.val(result.at(1));
 
-        this.assert.isEqualTo(val, '47');
+        test.assert.isEqualTo(val, '47');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1924,11 +1934,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.isEqualTo(val, 'fluffy');
+        test.assert.isEqualTo(val, 'fluffy');
 
         val = TP.val(result.at(1));
 
-        this.assert.isEqualTo(val, 'fluffy');
+        test.assert.isEqualTo(val, 'fluffy');
     });
 });
 
@@ -1960,7 +1970,7 @@ function() {
 
         val = path1.executeGet(model1);
 
-        this.assert.isEqualTo(val, TP.elem('<lname>Edney</lname>'));
+        test.assert.isEqualTo(val, TP.elem('<lname>Edney</lname>'));
     });
 
     this.it('single value set', function(test, options) {
@@ -1975,7 +1985,7 @@ function() {
         val = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fooname', null, true);
 
-        this.assert.isEqualTo(val, TP.elem('<fooname>Foodney</fooname>'));
+        test.assert.isEqualTo(val, TP.elem('<fooname>Foodney</fooname>'));
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1983,9 +1993,9 @@ function() {
 
         val = path2.executeGet(model2);
 
-        this.assert.isEqualTo(val.at(0), TP.elem('<lname>Edney</lname>'));
+        test.assert.isEqualTo(val.at(0), TP.elem('<lname>Edney</lname>'));
 
-        this.assert.isEqualTo(val.at(1), TP.elem('<age>47</age>'));
+        test.assert.isEqualTo(val.at(1), TP.elem('<age>47</age>'));
     });
 
     this.it('multiple value set', function(test, options) {
@@ -2000,9 +2010,9 @@ function() {
         val = TP.nodeEvaluatePath(
                     TP.unwrap(model2), '/emp/barname|/emp/barage', null, true);
 
-        this.assert.isEqualTo(val.at(0), TP.elem('<barname>Bardney</barname>'));
+        test.assert.isEqualTo(val.at(0), TP.elem('<barname>Bardney</barname>'));
 
-        this.assert.isEqualTo(val.at(1), TP.elem('<barage>470</barage>'));
+        test.assert.isEqualTo(val.at(1), TP.elem('<barage>470</barage>'));
     });
 });
 
@@ -2050,7 +2060,7 @@ function() {
         //  This will return its text value - a null
         val = TP.val(result);
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         //  Turn ON creation
         path1.set('shouldMake', true);
@@ -2068,7 +2078,7 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        this.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'William');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -2103,7 +2113,7 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result);
 
-        this.assert.isEqualTo(val, 'Bill');
+        test.assert.isEqualTo(val, 'Bill');
 
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/nickname', null, true);
@@ -2111,7 +2121,7 @@ function() {
         //  This will return the text value for '/emp/nickname' - a null
         val = TP.val(result);
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         //  Turn ON creation
         path2.set('shouldMake', true);
@@ -2129,12 +2139,12 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result.at(0));
 
-        this.assert.isEqualTo(val, 'Bill');
+        test.assert.isEqualTo(val, 'Bill');
 
         //  This will return the text value for '/emp/nickname'
         val = TP.val(result.at(1));
 
-        this.assert.isEqualTo(val, 'Bill');
+        test.assert.isEqualTo(val, 'Bill');
     });
 });
 
@@ -2182,7 +2192,7 @@ function() {
         //  This will return its text value - a null
         val = TP.val(result);
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         //  Turn ON creation
         path1.set('shouldMake', true);
@@ -2197,7 +2207,7 @@ function() {
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/vitals/bp', null, true);
 
-        this.assert.isEqualTo(result, TP.elem('<bp>110/70</bp>'));
+        test.assert.isEqualTo(result, TP.elem('<bp>110/70</bp>'));
     });
 
     this.it('multiple value set', function(test, options) {
@@ -2238,7 +2248,7 @@ function() {
 
         val = result;
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         //  This will return the value for shipping address - a null
         result = TP.nodeEvaluatePath(
@@ -2246,7 +2256,7 @@ function() {
 
         val = result;
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         //  Turn ON creation
         path2.set('shouldMake', true);
@@ -2266,11 +2276,11 @@ function() {
 
         val = TP.nodeListAsFragment(result.at(0).childNodes);
 
-        this.assert.isEqualTo(val, testFrag);
+        test.assert.isEqualTo(val, testFrag);
 
         val = TP.nodeListAsFragment(result.at(1).childNodes);
 
-        this.assert.isEqualTo(val, testFrag);
+        test.assert.isEqualTo(val, testFrag);
     });
 });
 
@@ -2299,7 +2309,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.isEqualTo(val, 'bar');
+        test.assert.isEqualTo(val, 'bar');
     });
 
     this.it('single value set', function(test, options) {
@@ -2318,7 +2328,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.isEqualTo(val, 'fluffy');
+        test.assert.isEqualTo(val, 'fluffy');
     });
 
     this.it('multiple value get', function(test, options) {
@@ -2330,11 +2340,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.isEqualTo(val, 'fluffy');
+        test.assert.isEqualTo(val, 'fluffy');
 
         val = TP.val(result.at(1));
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -2356,11 +2366,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.isEqualTo(val, 'barfy');
+        test.assert.isEqualTo(val, 'barfy');
 
         val = TP.val(result.at(1));
 
-        this.assert.isEqualTo(val, 'barfy');
+        test.assert.isEqualTo(val, 'barfy');
     });
 });
 
@@ -2410,7 +2420,7 @@ function() {
         //  This will return its text value - a null
         val = TP.val(result);
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         //  Turn ON creation
         path1.set('shouldMake', true);
@@ -2428,7 +2438,7 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        this.assert.isEqualTo(val, 'moo');
+        test.assert.isEqualTo(val, 'moo');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -2463,7 +2473,7 @@ function() {
         //  This will return the text value for '/emp/fname/@foo' - a null
         val = TP.val(result);
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model2), '/emp/age/@bar', null, true);
@@ -2471,7 +2481,7 @@ function() {
         //  This will return the text value for '/emp/age/@bar' - a null
         val = TP.val(result);
 
-        this.assert.isNull(val);
+        test.assert.isNull(val);
 
         //  path2 = TP.apc('/emp/fname/@foo|/emp/age/@bar');
 
@@ -2494,12 +2504,12 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result.at(0));
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
 
         //  This will return the text value for '/emp/nickname'
         val = TP.val(result.at(1));
 
-        this.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'goo');
     });
 });
 

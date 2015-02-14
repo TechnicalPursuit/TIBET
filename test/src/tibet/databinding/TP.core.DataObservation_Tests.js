@@ -35,14 +35,14 @@ function() {
         jsonValueObsFunction =
                 function (aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         jsonValueObsFunction.observe(modelObj, 'ValueChange');
 
         jsonStructureObsFunction =
                 function (aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         jsonStructureObsFunction.observe(modelObj, 'StructureChange');
 
@@ -59,10 +59,10 @@ function() {
         jsonPath2.executeSet(modelObj, 'goo', true);
 
         //  The value path results should have the path for jsonPath2
-        this.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
 
         //  The structure path results should have the path for jsonPath2
-        this.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
 
         //  But *not* for jsonPath1 for either set of results (it's too high up
         //  in the chain)
@@ -81,14 +81,14 @@ function() {
         jsonPath3.executeSet(modelObj, TP.ac(), true);
 
         //  The value path results should have the path for jsonPath3
-        this.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
 
         //  The structure path results should have the path for jsonPath3
-        this.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And the value path results for jsonPath2 (because and we replaced the
         //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
-        this.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
 
         //  But not the structure path results for jsonPath2 (we created no new
         //  structure there).
@@ -113,10 +113,10 @@ function() {
         jsonPath5.executeSet(modelObj, 42, true);
 
         //  The value path results should have the path for jsonPath5
-        this.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath5
-        this.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
 
         //  And *not* for jsonPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -124,10 +124,10 @@ function() {
         this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
 
         //  The value path results should have the path for jsonPath3
-        this.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath3
-        this.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And *not* for jsonPath2 for either set of results (it's too high up
         //  in the chain)
@@ -150,39 +150,39 @@ function() {
         jsonPath6.executeSet(modelObj, 'fluffy', true);
 
         //  The value path results should have the path for jsonPath6
-        this.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath6 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
 
         //  And for jsonPath5 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath5 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
 
         //  And for jsonPath4 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath4 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
 
         //  And for jsonPath3 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath3 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath2 as
         //  well (structure was changed).
-        this.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
 
         //  And *not* for jsonPath1 for either set of results (it's too high up
         //  in the chain)
@@ -201,10 +201,10 @@ function() {
         jsonPath7.executeSet(modelObj, TP.ac(), true);
 
         //  The value path results should have the path for jsonPath7
-        this.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
 
         //  And the structure path results should have the path for jsonPath7
-        this.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
 
         //  But *not* for jsonPath6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -249,32 +249,32 @@ function() {
         //  All paths will have changed
 
         //  Both results should have the path for jsonPath7
-        this.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
-        this.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
 
         //  And for jsonPath6
-        this.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
-        this.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
 
         //  And for jsonPath5
-        this.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
-        this.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
 
         //  And for jsonPath4
-        this.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
-        this.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
 
         //  And for jsonPath3
-        this.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
-        this.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2
-        this.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
-        this.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
 
         //  And for jsonPath1
-        this.assert.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.assert.contains(structurePathResults, jsonPath1.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath1.get('srcPath'));
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -288,31 +288,31 @@ function() {
         this.refute.contains(valuePathResults, jsonPath7.get('srcPath'));
 
         //  The value path results should have the path for jsonPath6
-        this.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
 
         //  And for jsonPath5
-        this.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
 
         //  And for jsonPath4
-        this.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
 
         //  And for jsonPath3
-        this.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2
-        this.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
 
         //  But not for the structural path result
         this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
@@ -362,14 +362,14 @@ function() {
         xmlValueObsFunction =
                 function (aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         xmlValueObsFunction.observe(modelObj, 'ValueChange');
 
         xmlStructureObsFunction =
                 function (aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
-            };
+                };
 
         xmlStructureObsFunction.observe(modelObj, 'StructureChange');
 
@@ -386,7 +386,7 @@ function() {
         xmlPath2.executeSet(modelObj, 'Shattuck', true);
 
         //  The value path should have the path for xmlPath2
-        this.assert.contains(valuePathResults, xmlPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath2.get('srcPath'));
 
         //  But not the structure path results for xmlPath2 (we created no new
         //  structure there).
@@ -409,7 +409,7 @@ function() {
         xmlPath3.executeSet(modelObj, false, true);
 
         //  The value path should have the path for xmlPath3
-        this.assert.contains(valuePathResults, xmlPath3.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath3.get('srcPath'));
 
         //  But not the structure path results for xmlPath3 (we created no
         //  new structure there).
@@ -432,11 +432,11 @@ function() {
         xmlPath4.executeSet(modelObj, false, true);
 
         //  The value path should have the path for xmlPath4
-        this.assert.contains(valuePathResults, xmlPath4.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath4.get('srcPath'));
 
         //  And the structure path results for xmlPath4 (we created new
         //  structure there).
-        this.assert.contains(structurePathResults, xmlPath4.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath4.get('srcPath'));
 
         //  And *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
@@ -455,11 +455,11 @@ function() {
         xmlPath5.executeSet(modelObj, 'Scott', true);
 
         //  The value path should have the path for xmlPath5
-        this.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
 
         //  And the structure path results for xmlPath5 (we created new
         //  structure there).
-        this.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
 
         //  But *not* for xmlPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -483,11 +483,11 @@ function() {
         xmlPath6.executeSet(modelObj, '555-55-5555', true);
 
         //  The value path should have the path for xmlPath6
-        this.assert.contains(valuePathResults, xmlPath6.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath6.get('srcPath'));
 
         //  And the structure path results for xmlPath6 (we created new
         //  structure there).
-        this.assert.contains(structurePathResults, xmlPath6.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath6.get('srcPath'));
 
         //  But *not* for xmlPath5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -517,20 +517,20 @@ function() {
         //  All paths will have changed
 
         //  Both results should have the path for xmlPath6
-        this.assert.contains(valuePathResults, xmlPath6.get('srcPath'));
-        this.assert.contains(structurePathResults, xmlPath6.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath6.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath6.get('srcPath'));
 
         //  And for xmlPath5 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
-        this.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
 
         //  And for xmlPath2 (because it's ancestor's structure changed)
-        this.assert.contains(valuePathResults, xmlPath2.get('srcPath'));
-        this.assert.contains(structurePathResults, xmlPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath2.get('srcPath'));
 
         //  And for xmlPath1 (because it's the same path as xmlPath1)
-        this.assert.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.assert.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath1.get('srcPath'));
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -547,8 +547,8 @@ function() {
 
         //  Both results should have the path for xmlPath7 (it's for all
         //  elements)
-        this.assert.contains(valuePathResults, xmlPath7.get('srcPath'));
-        this.assert.contains(structurePathResults, xmlPath7.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath7.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath7.get('srcPath'));
 
         //  But *not* for xmlPath6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -557,8 +557,8 @@ function() {
 
         //  Both results should have the path for xmlPath5 (we created new
         //  structure there).
-        this.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
-        this.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
 
         //  But *not* for xmlPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -601,10 +601,10 @@ function() {
         //  These paths assume a root instance property of 'data'
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
                 'lastName',
-                {'value': TP.apc('privateData.public_info.lastName')});
+                {value: TP.apc('privateData.public_info.lastName')});
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
                 'firstName',
-                {'value': TP.apc('privateData.public_info.firstName')});
+                {value: TP.apc('privateData.public_info.firstName')});
 
         //  ---
 
@@ -612,9 +612,9 @@ function() {
 
         //  These paths assume a chunk of XML has been set on the native node.
         TP.test.XPathPathEmployee.Inst.defineAttribute(
-                'lastName', {'value': TP.apc('//emp/lname')});
+                'lastName', {value: TP.apc('//emp/lname')});
         TP.test.XPathPathEmployee.Inst.defineAttribute(
-                'firstName', {'value': TP.apc('//emp/fname')});
+                'firstName', {value: TP.apc('//emp/fname')});
     });
 
     this.it('Type defined aspect change notification', function(test, options) {
@@ -632,7 +632,7 @@ function() {
                 function (aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
                     valueChangedResults.push(aSignal.getValue());
-            };
+                };
 
         newEmployee = TP.test.SimpleEmployee.construct();
         aspectObsFunction.observe(newEmployee, 'FirstNameChange');
@@ -641,10 +641,10 @@ function() {
         newEmployee.set('firstName', 'Bill');
 
         //  This should contain firstName, because we just changed it.
-        this.assert.contains(aspectChangedResults, 'firstName');
+        test.assert.contains(aspectChangedResults, 'firstName');
 
         //  And the value should be 'Bill'
-        this.assert.contains(valueChangedResults, 'Bill');
+        test.assert.contains(valueChangedResults, 'Bill');
 
         //  But not lastName, because we didn't change it.
         this.refute.contains(aspectChangedResults, 'lastName');
@@ -652,10 +652,10 @@ function() {
         newEmployee.set('lastName', 'Edney');
 
         //  And now it should contain lastName, because we just changed it.
-        this.assert.contains(aspectChangedResults, 'lastName');
+        test.assert.contains(aspectChangedResults, 'lastName');
 
         //  And the value should be 'Edney'
-        this.assert.contains(valueChangedResults, 'Edney');
+        test.assert.contains(valueChangedResults, 'Edney');
 
         aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
@@ -676,7 +676,7 @@ function() {
                 function (aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
                     valueChangedResults.push(aSignal.getValue());
-            };
+                };
 
         newEmployee = TP.test.ComplexPathEmployee.construct();
         newEmployee.set('privateData',
@@ -688,10 +688,10 @@ function() {
         newEmployee.set('firstName', 'Bill');
 
         //  This should contain firstName, because we just changed it.
-        this.assert.contains(aspectChangedResults, 'firstName');
+        test.assert.contains(aspectChangedResults, 'firstName');
 
         //  And the value should be 'Bill'
-        this.assert.contains(valueChangedResults, 'Bill');
+        test.assert.contains(valueChangedResults, 'Bill');
 
         //  But not lastName, because we didn't change it.
         this.refute.contains(aspectChangedResults, 'lastName');
@@ -699,10 +699,10 @@ function() {
         newEmployee.set('lastName', 'Edney');
 
         //  And now it should contain lastName, because we just changed it.
-        this.assert.contains(aspectChangedResults, 'lastName');
+        test.assert.contains(aspectChangedResults, 'lastName');
 
         //  And the value should be 'Edney'
-        this.assert.contains(valueChangedResults, 'Edney');
+        test.assert.contains(valueChangedResults, 'Edney');
 
         aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
@@ -724,7 +724,7 @@ function() {
                     aspectChangedResults.push(aSignal.at('aspect'));
                     valueChangedResults.push(
                         aSignal.getValue().first().getTextContent());
-            };
+                };
 
         newEmployee = TP.test.XPathPathEmployee.construct(
                         TP.doc('<emp><lname></lname><fname></fname></emp>'));
@@ -735,10 +735,10 @@ function() {
         newEmployee.set('firstName', 'Bill');
 
         //  This should contain firstName, because we just changed it.
-        this.assert.contains(aspectChangedResults, 'firstName');
+        test.assert.contains(aspectChangedResults, 'firstName');
 
         //  And the value should be 'Bill'
-        this.assert.contains(valueChangedResults, 'Bill');
+        test.assert.contains(valueChangedResults, 'Bill');
 
         //  But not lastName, because we didn't change it.
         this.refute.contains(aspectChangedResults, 'lastName');
@@ -746,10 +746,10 @@ function() {
         newEmployee.set('lastName', 'Edney');
 
         //  And now it should contain lastName, because we just changed it.
-        this.assert.contains(aspectChangedResults, 'lastName');
+        test.assert.contains(aspectChangedResults, 'lastName');
 
         //  And the value should be 'Edney'
-        this.assert.contains(valueChangedResults, 'Edney');
+        test.assert.contains(valueChangedResults, 'Edney');
 
         aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
@@ -793,7 +793,7 @@ function() {
 
         modelObj.set('salary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('salary'),
                     observerObj.get('salary'));
 
@@ -803,7 +803,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -846,7 +846,7 @@ function() {
 
         modelObj.set('salary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('salary'),
                     observerObj.get('salary'));
 
@@ -856,7 +856,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -900,7 +900,7 @@ function() {
 
         modelObj.set('salary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('salary'),
                     observerObj.get('salary'));
 
@@ -910,7 +910,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -932,7 +932,7 @@ function() {
         //  cause the value of 'salary' on the observer to update
         modelObj.set('salary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('salary'),
                     observerObj.get('salary'));
 
@@ -943,7 +943,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -971,7 +971,7 @@ function() {
         //  cause the value of 'salary' on the observer to update
         modelObj.set('salary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('salary'),
                     observerObj.get('salary'));
 
@@ -982,7 +982,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -1011,7 +1011,7 @@ function() {
         //  cause the value of 'salary' on the observer to update
         modelObj.set('salary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('salary'),
                     observerObj.get('salary'));
 
@@ -1022,7 +1022,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -1044,7 +1044,7 @@ function() {
         //  cause the value of 'salary' on the observer to update
         modelObj.set('averageSalary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('averageSalary'),
                     observerObj.get('salary'));
 
@@ -1055,7 +1055,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -1083,7 +1083,7 @@ function() {
         //  cause the value of 'salary' on the observer to update
         modelObj.set('averageSalary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('averageSalary'),
                     observerObj.get('salary'));
 
@@ -1094,7 +1094,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });
@@ -1123,7 +1123,7 @@ function() {
         //  cause the value of 'salary' on the observer to update
         modelObj.set('averageSalary', 42);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     modelObj.get('averageSalary'),
                     observerObj.get('salary'));
 
@@ -1134,7 +1134,7 @@ function() {
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
     });

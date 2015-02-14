@@ -319,6 +319,7 @@ function(aRequest) {
     tpAnnotation = TP.annotate('A String', 'This is a message');
     tpBootLog = TP.sys.get('$bootlog');
 
+    /* eslint-disable no-multi-spaces */
     objValues = TP.hc(
     TP.NULL,                    nullVal,                //  null
     'Array',                    arrayVal,               //  Array
@@ -417,6 +418,7 @@ function(aRequest) {
     'TP.boot.Annotation',       tpBootAnnotation,       //  TP.boot.Annotation
     'TP.core.Annotation',       tpAnnotation            //  TP.core.Annotation
     );
+    /* eslint-enable no-multi-spaces */
 
     //  In order to get an 'undefined' value into our hash, we have to play some
     //  trickery with the underlying hash... TODO: clean this up
@@ -647,6 +649,7 @@ function(aRequest) {
     tpBootAnnotation = TP.ac(TP.boot.Annotation, Object);
     tpAnnotation = TP.ac(TP.core.Annotation, TP.lang.Object, TP.lang.RootObject, Object);
 
+    /* eslint-disable no-multi-spaces */
     objTypes = TP.hc(
     TP.NULL,                    nullVal,                //  null
     'Array',                    arrayVal,               //  Array
@@ -745,6 +748,7 @@ function(aRequest) {
     'TP.boot.Annotation',       tpBootAnnotation,       //  TP.boot.Annotation
     'TP.core.Annotation',       tpAnnotation            //  TP.core.Annotation
     );
+    /* eslint-enable no-multi-spaces */
 
     //  In order to get an 'undefined' value into our hash, we have to play some
     //  trickery with the underlying hash... TODO: clean this up

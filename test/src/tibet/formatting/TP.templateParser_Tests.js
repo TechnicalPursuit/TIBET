@@ -36,7 +36,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -79,7 +79,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -102,7 +102,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -125,7 +125,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -156,7 +156,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -199,7 +199,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -242,7 +242,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -265,7 +265,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -288,7 +288,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -311,7 +311,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -339,7 +339,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -371,7 +371,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -429,7 +429,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -479,7 +479,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -530,7 +530,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -580,7 +580,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -609,8 +609,8 @@ function() {
                [
                   'for',
                   {
-                     'args': 'a,b',
-                     'data': 'words'
+                     args: 'a,b',
+                     data: 'words'
                   },
                   [
                      [
@@ -633,7 +633,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -653,7 +653,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -681,7 +681,7 @@ function() {
                ]
             ];
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));

@@ -12,7 +12,7 @@
 //  TP.core.ElementNode
 //  ========================================================================
 
-TP.core.ElementNode.Inst.describe('TP.core.ElementNode: formatting values',
+TP.core.ElementNode.Inst.describe('TP.core.ElementNode: ui:display attribute',
 function() {
 
     var unloadURI;
@@ -511,7 +511,103 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).only();
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.describe('TP.core.ElementNode: ui:storage attribute',
+function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.it('simple binding with text fields - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting5.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var modelObj,
+                    lastNameField;
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind1_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind1_person#xpath1(/person/firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind1_person#xpath1(/person/lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:Bind1_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/person/lastname')),
+                    'Smith');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField = TP.byOID('lastNameField');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
+                    sendKeys('Jones', lastNameField).
+                    sendEvent(TP.hc('type', 'change'), lastNameField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField.get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/person/lastname')),
+                            'Jones');
+                    });
+
+                //  firstNameField is just another text field - same logic
+                //  should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 });
 
 //  ========================================================================

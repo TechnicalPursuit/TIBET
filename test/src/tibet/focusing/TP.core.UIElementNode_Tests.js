@@ -2397,7 +2397,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2446,7 +2446,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2498,7 +2498,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2568,7 +2568,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2594,7 +2594,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2646,7 +2646,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2717,7 +2717,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2742,7 +2742,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2803,7 +2803,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2870,7 +2870,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  ---
 
@@ -2956,7 +2956,7 @@ function() {
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
                         TP.signal.reset();
-                });
+                    });
 
                 //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);

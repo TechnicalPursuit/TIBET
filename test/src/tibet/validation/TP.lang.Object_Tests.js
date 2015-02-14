@@ -54,34 +54,34 @@ TP.lang.Object.defineSubtype('test.SimpleTestType');
 TP.test.SimpleTestType.Inst.defineAttribute(
         'lastName',
         {
-            'valid': {
-                'dataType': String
+            valid: {
+                dataType: String
             }
         });
 
 TP.test.SimpleTestType.Inst.defineAttribute(
         'firstName',
         {
-            'valid': {
-                'dataType': String
+            valid: {
+                dataType: String
             }
         });
 
 TP.test.SimpleTestType.Inst.defineAttribute(
         'age',
         {
-            'valid': {
-                'dataType': Number
+            valid: {
+                dataType: Number
             }
         });
 
 TP.test.SimpleTestType.Inst.defineAttribute(
         'SSN',
         {
-            'valid': {
-                'dataType': 'TP.test.SSN'
+            valid: {
+                dataType: 'TP.test.SSN'
             },
-            'required': true
+            required: true
         });
 
 //  ========================================================================
@@ -94,21 +94,21 @@ TP.test.SimpleTestType.defineSubtype('test.ComplexTestType');
 TP.test.ComplexTestType.Inst.defineAttribute(
         'age',
         {
-            'valid': {
-                'dataType': Number,
-                'minValue': 1,
-                'maxValue': 120,
-                'minLength': 1,
-                'maxLength': 3
+            valid: {
+                dataType: Number,
+                minValue: 1,
+                maxValue: 120,
+                minLength: 1,
+                maxLength: 3
             }
         });
 
 TP.test.ComplexTestType.Inst.defineAttribute(
         'gender',
         {
-            'valid': {
-                'dataType': String,
-                'enumeration': TP.ac('male', 'female')
+            valid: {
+                dataType: String,
+                enumeration: TP.ac('male', 'female')
             }
         });
 
@@ -381,38 +381,38 @@ TP.core.JSONContent.defineSubtype('test.SimpleJSONContentType');
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'lastName',
         {
-            'value': TP.tpc('lastName'),
-            'valid': {
-                'dataType': String
+            value: TP.tpc('lastName'),
+            valid: {
+                dataType: String
             }
         });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'firstName',
         {
-            'value': TP.tpc('firstName'),
-            'valid': {
-                'dataType': String
+            value: TP.tpc('firstName'),
+            valid: {
+                dataType: String
             }
         });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'age',
         {
-            'value': TP.tpc('age'),
-            'valid': {
-                'dataType': Number
+            value: TP.tpc('age'),
+            valid: {
+                dataType: Number
             }
         });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'SSN',
         {
-            'value': TP.tpc('SSN'),
-            'valid': {
-                'dataType': 'TP.test.SSN'
+            value: TP.tpc('SSN'),
+            valid: {
+                dataType: 'TP.test.SSN'
             },
-            'required': true
+            required: true
         });
 
 //  ========================================================================
@@ -589,39 +589,39 @@ TP.core.XMLContent.defineSubtype('test.SimpleXMLContentType');
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'lastName',
         {
-            'value': TP.xpc('/emp/lastName', true).set('extractWith', 'value'),
-            'valid': {
-                'dataType': String
+            value: TP.xpc('/emp/lastName', true).set('extractWith', 'value'),
+            valid: {
+                dataType: String
             }
         });
 
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'firstName',
         {
-            'value': TP.xpc('/emp/firstName', true).set('extractWith', 'value'),
-            'valid': {
-                'dataType': String
+            value: TP.xpc('/emp/firstName', true).set('extractWith', 'value'),
+            valid: {
+                dataType: String
             }
         });
 
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'age',
         {
-            'value': TP.xpc('/emp/age', true).set('extractWith', 'value'),
-            'valid': {
-                'dataType': Number
+            value: TP.xpc('/emp/age', true).set('extractWith', 'value'),
+            valid: {
+                dataType: Number
             }
         });
 
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'SSN',
         {
-            'value': TP.xpc('/emp/SSN', true).set('extractWith', 'value').
+            value: TP.xpc('/emp/SSN', true).set('extractWith', 'value').
                                                 set('shouldMake', true),
-            'valid': {
-                'dataType': 'TP.test.SSN'
+            valid: {
+                dataType: 'TP.test.SSN'
             },
-            'required': true
+            required: true
         });
 
 //  ========================================================================
@@ -799,55 +799,55 @@ TP.lang.Object.defineSubtype('test.Employee');
 TP.test.Employee.Inst.defineAttribute(
         'lastname',
         {
-            'valid': {
-                'dataType': 'TP.tibet.alpha'    //  Defined as XML Schema type
+            valid: {
+                dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
             },
-            'required': true
+            required: true
         });
 
 TP.test.Employee.Inst.defineAttribute(
         'firstname',
         {
-            'valid': {
-                'dataType': 'TP.tibet.alpha'    //  Defined as XML Schema type
+            valid: {
+                dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
             },
-            'required': true
+            required: true
         });
 
 TP.test.Employee.Inst.defineAttribute(
         'age',
         {
-            'valid': {
-                'dataType': 'xs:decimal'
+            valid: {
+                dataType: 'xs:decimal'
             },
-            'required': true
+            required: true
         });
 
 TP.test.Employee.Inst.defineAttribute(
         'address',
         {
-            'valid': {
-                'dataType': 'TP.tibet.address'  //  Defined as JSON Schema type
+            valid: {
+                dataType: 'TP.tibet.address'  //  Defined as JSON Schema type
             },
-            'required': true
+            required: true
         });
 
 TP.test.Employee.Inst.defineAttribute(
         'gender',
         {
-            'valid': {
-                'dataType': 'TP.tibet.gender'   //  Defined as JSON Schema type
+            valid: {
+                dataType: 'TP.tibet.gender'   //  Defined as JSON Schema type
             },
-            'required': true
+            required: true
         });
 
 TP.test.Employee.Inst.defineAttribute(
         'SSN',
         {
-            'valid': {
-                'dataType': 'TP.test.SSN'
+            valid: {
+                dataType: 'TP.test.SSN'
             },
-            'required': true
+            required: true
         });
 
 //  ========================================================================

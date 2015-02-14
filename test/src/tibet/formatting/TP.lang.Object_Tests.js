@@ -22,7 +22,7 @@ function() {
 
         correctRep = '458-2022';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -33,7 +33,7 @@ function() {
 
         correctRep = '22.00';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -44,7 +44,7 @@ function() {
 
         correctRep = 'Bill';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -55,7 +55,7 @@ function() {
 
         correctRep = TP.dc().getFullYear().toString();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -76,7 +76,7 @@ function() {
 
         correctRep = 'His age is: 22';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -91,7 +91,7 @@ function() {
 
         correctRep = 'The value is: 22';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -108,7 +108,7 @@ function() {
 
         correctRep = 'This is a Number: 22';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -119,7 +119,7 @@ function() {
 
         correctRep = 'This is a Date: ' + dateVal.toString();
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -139,12 +139,12 @@ function() {
         //  Need to generate an ID for elements for reporting purposes.
         TP.elemGenID(testElem, true);
 
-        this.assert.isElement(testElem);
+        test.assert.isElement(testElem);
 
         testRep = TP.str(testElem);
         correctRep = '<array id="' + TP.elementGetAttribute(testElem, 'id') + '"><data><value><double>1</double></value><value><double>2</double></value><value><struct><member><name>foo</name><value><string>bar</string></value></member></struct></value></data></array>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -161,7 +161,7 @@ function() {
 
         correctRep = 'The number is: $ 200.00';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -173,7 +173,7 @@ function() {
 
         correctRep = 'The number is: $ 10,000.00';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -184,7 +184,7 @@ function() {
 
         correctRep = '200.00';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -197,7 +197,7 @@ function() {
         correctRep =
             'The item at: 0 is: 1 The item at: 1 is: 2 The item at: 2 is: 3 ';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -210,7 +210,7 @@ function() {
 
         correctRep = 'It is: bar';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -219,7 +219,7 @@ function() {
 
         correctRep = 'It is: bar';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -230,7 +230,7 @@ function() {
 
         correctRep = 'It is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -259,7 +259,7 @@ function() {
 
         correctRep = 'This is a value: 3 for row #: 2';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -277,7 +277,7 @@ function() {
         testRep = dataElem.as('myXMLTemplate');
         correctRep = 'The element with a bar attribute is: <baz bar="moo"/>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -293,7 +293,7 @@ function() {
         testRep = dataElem.as('myXMLTemplate');
         correctRep = 'The name of the element with a bar attribute is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -311,7 +311,7 @@ function() {
 
         correctRep = 'Here is some row data This is a row value: 1\n\nHere is some row data This is a row value: 2\n\nHere is some row data This is a row value: 3\n\n';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -329,7 +329,7 @@ function() {
 
         correctRep = 'This is a row value: 1 for row #: 0\nThis is a row value: 2 for row #: 1\nThis is a row value: 3 for row #: 2\n';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -352,7 +352,7 @@ function() {
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -364,7 +364,7 @@ function() {
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -375,7 +375,7 @@ function() {
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="rowTemplate"><tr class="googleResultRow"><td>http://en.wikipedia.org/wiki/Dog</td><td><b>Dog</b> - Wikipedia, the free encyclopedia</td><td>The domestic <b>dog</b> (Canis lupus familiaris) is a subspecies of the gray wolf (Canis lupus), a member of the Canidae family of the mammalian order Carnivora.</td></tr></span>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -387,7 +387,7 @@ function() {
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="rowTemplate"><tr class="googleResultRow"><td>http://en.wikipedia.org/wiki/Dog</td><td><b>Dog</b> - Wikipedia, the free encyclopedia</td><td>The domestic <b>dog</b> (Canis lupus familiaris) is a subspecies of the gray wolf (Canis lupus), a member of the Canidae family of the mammalian order Carnivora.</td></tr></span>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -420,7 +420,7 @@ function() {
         //  Strip non-essential whitespace before comparing
         testRep = testRep.strip(/\n/g).replace(/>\s+</g, '><');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -443,7 +443,7 @@ function() {
                         '<html:li>that\'s cool</html:li>' +
                         '</html:ul>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -460,7 +460,7 @@ function() {
                         '<html:li baz="goo">that\'s cool</html:li>' +
                         '</html:ul>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -490,7 +490,7 @@ function() {
                '</html:form>';
 
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -511,7 +511,7 @@ function() {
 
         correctRep = '<ul><li>googoo</li><li>moomoo</li></ul>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -524,7 +524,7 @@ function() {
 
         correctRep = '<ul><li>googoo</li><li>moomoo</li></ul> and then there\'s: moomoo';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -538,7 +538,7 @@ function() {
 
         correctRep = '<ul></ul> and then there\'s: {{foo.bar.moo}}';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -551,7 +551,7 @@ function() {
 
         correctRep = '<ul><li>This is goo: googoo</li></ul>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -566,7 +566,7 @@ function() {
 
         correctRep = '<ul><li>This is moo: moomoo</li></ul>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -579,7 +579,7 @@ function() {
 
         correctRep = '<span haslabel="true"><span>More stuff</span></span>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -592,7 +592,7 @@ function() {
 
         correctRep = '<ul><li><span>googoo1</span><span>moomoo1</span></li><li><span>googoo2</span><span>moomoo2</span></li></ul>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -605,7 +605,7 @@ function() {
 
         correctRep = 'Hello Earth. Where is at: 0 will is at: 1 we is at: 2 go? is at: 3 ';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -618,7 +618,7 @@ function() {
 
         correctRep = 'Hello Earth. Where is at: 0 will is at: 1 we is at: 2 go? is at: 3 ';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -643,7 +643,7 @@ function() {
 
         correctRep = 'The item is: lastName => Edney';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -657,7 +657,7 @@ function() {
 
         correctRep = 'The item is: lastName => Edney';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -671,7 +671,7 @@ function() {
 
         correctRep = 'The item is: <foo><baz bar="moo"/></foo>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -688,7 +688,7 @@ function() {
 
         correctRep = 'The item is: <foo><baz bar="moo"/></foo>';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -702,7 +702,7 @@ function() {
 
         correctRep = 'The item is: foo';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -717,7 +717,7 @@ function() {
 
         correctRep = 'The item is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -732,7 +732,7 @@ function() {
 
         correctRep = 'The item is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -747,7 +747,7 @@ function() {
 
         correctRep = 'The item is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -761,7 +761,7 @@ function() {
 
         correctRep = 'The item is: foo';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -775,7 +775,7 @@ function() {
 
         correctRep = 'The item is: foo';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -789,7 +789,7 @@ function() {
 
         correctRep = 'The item is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -803,7 +803,7 @@ function() {
 
         correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
 
-        this.assert.matches(
+        test.assert.matches(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -817,7 +817,7 @@ function() {
 
         correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
 
-        this.assert.matches(
+        test.assert.matches(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -831,7 +831,7 @@ function() {
 
         correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
 
-        this.assert.matches(
+        test.assert.matches(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -845,7 +845,7 @@ function() {
 
         correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
 
-        this.assert.matches(
+        test.assert.matches(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -859,7 +859,7 @@ function() {
 
         correctRep = 'The item is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -873,7 +873,7 @@ function() {
 
         correctRep = 'The item is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
@@ -890,7 +890,7 @@ function() {
 
         correctRep = 'The item is: baz';
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));

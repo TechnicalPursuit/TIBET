@@ -99,12 +99,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -117,12 +117,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -135,12 +135,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -153,12 +153,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -171,12 +171,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -189,12 +189,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -207,12 +207,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -225,12 +225,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -244,12 +244,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -262,12 +262,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -280,12 +280,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -298,12 +298,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -316,12 +316,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -334,12 +334,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -352,12 +352,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isKindOf(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -385,8 +385,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" foo="\'\'" bar="\'hi\'" baz="\'hi {{x}}\'"',
-            function(test, options) {
+    this.it(':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" foo="\'\'" bar="\'hi\'" baz="\'hi {{x}}\'"', function(test, options) {
 
         inputVal = ':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" foo="\'\'" bar="\'hi\'" baz="\'hi {{x}}\'"';
         correctResult =
@@ -438,8 +437,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "2" "2{{x}}" bar="2" baz="2{{x}}"',
-            function(test, options) {
+    this.it(':testCmd "2" "2{{x}}" bar="2" baz="2{{x}}"', function(test, options) {
 
         inputVal = ':testCmd "2" "2{{x}}" bar="2" baz="2{{x}}"';
         correctResult =
@@ -477,8 +475,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"',
-            function(test, options) {
+    this.it(':testCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"', function(test, options) {
 
         inputVal = ':testCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"';
         correctResult =
@@ -530,8 +527,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"',
-            function(test, options) {
+    this.it(':testCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"', function(test, options) {
 
         inputVal = ':testCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"';
         correctResult =
@@ -583,8 +579,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "function() {}" "function(x) {window.alert(x);}" "function() {window.alert({{x}});}" foo="function() {}" bar="function(x) {window.alert(x);}" baz="function() {window.alert({{x}});}"',
-            function(test, options) {
+    this.it(':testCmd "function() {}" "function(x) {window.alert(x);}" "function() {window.alert({{x}});}" foo="function() {}" bar="function(x) {window.alert(x);}" baz="function() {window.alert({{x}});}"', function(test, options) {
 
         inputVal = ':testCmd "function() {}" "function(x) {window.alert(x);}" "function() {window.alert({{x}});}" foo="function() {}" bar="function(x) {window.alert(x);}" baz="function() {window.alert({{x}});}"';
         correctResult =
@@ -636,8 +631,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"',
-            function(test, options) {
+    this.it(':testCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"', function(test, options) {
 
         inputVal = ':testCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"';
         correctResult =
@@ -675,8 +669,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"',
-            function(test, options) {
+    this.it(':testCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"', function(test, options) {
 
         inputVal = ':testCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"';
         correctResult =
@@ -742,8 +735,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"',
-            function(test, options) {
+    this.it(':testCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"', function(test, options) {
 
         inputVal = ':testCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"';
         correctResult =
@@ -796,7 +788,7 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', '{\'foo\':\'bar\'}',
                         'Resolved value tname', 'Object',
-                        'Resolved value', {'foo': 'bar'}),
+                        'Resolved value', {foo: 'bar'}),
                 'eighth',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"[1,2,3]"',
@@ -843,12 +835,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -862,12 +854,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -881,12 +873,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -900,12 +892,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -919,12 +911,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -939,12 +931,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -959,12 +951,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -980,12 +972,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -1001,12 +993,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -1022,12 +1014,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -1042,12 +1034,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -1063,17 +1055,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it(':testCmd foo bar baz',
-            function(test, options) {
+    this.it(':testCmd foo bar baz', function(test, options) {
 
         inputVal = ':testCmd foo bar baz';
         correctResult =
@@ -1104,8 +1095,7 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd first=foo second=bar third=baz',
-            function(test, options) {
+    this.it(':testCmd first=foo second=bar third=baz', function(test, options) {
 
         inputVal = ':testCmd first=foo second=bar third=baz';
         correctResult =
@@ -1825,8 +1815,7 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd \'{{x .% #{##.00}}}\'',
-            function(test, options) {
+    this.it(':testCmd \'{{x .% #{##.00}}}\'', function(test, options) {
 
         inputVal = ':testCmd \'{{x .% #{##.00}}}\'';
         shellDriver.execOutputTest(
@@ -1842,8 +1831,7 @@ function() {
                         'Resolved value', '{{x .% #{##.00}}}')));
     });
 
-    this.it(':testCmd "{{x .% #{##.00}}}"',
-            function(test, options) {
+    this.it(':testCmd "{{x .% #{##.00}}}"', function(test, options) {
 
         inputVal = ':testCmd "{{x .% #{##.00}}}"';
         shellDriver.execOutputTest(
@@ -1875,8 +1863,7 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff={{x .% #{##.00}}}',
-            function(test, options) {
+    this.it(':testCmd stuff={{x .% #{##.00}}}', function(test, options) {
 
         inputVal = ':testCmd stuff={{x .% #{##.00}}}';
         shellDriver.execOutputTest(
@@ -1892,8 +1879,7 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=\'{{x .% #{##.00}}}\'',
-            function(test, options) {
+    this.it(':testCmd stuff=\'{{x .% #{##.00}}}\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'{{x .% #{##.00}}}\'';
         shellDriver.execOutputTest(
@@ -1909,8 +1895,7 @@ function() {
                         'Resolved value', '{{x .% #{##.00}}}')));
     });
 
-    this.it(':testCmd stuff="{{x .% #{##.00}}}"',
-            function(test, options) {
+    this.it(':testCmd stuff="{{x .% #{##.00}}}"', function(test, options) {
 
         inputVal = ':testCmd stuff="{{x .% #{##.00}}}"';
         shellDriver.execOutputTest(
@@ -1927,8 +1912,7 @@ function() {
 
     });
 
-    this.it(':testCmd stuff=`{{x .% #{##.00}}}`',
-            function(test, options) {
+    this.it(':testCmd stuff=`{{x .% #{##.00}}}`', function(test, options) {
 
         inputVal = ':testCmd stuff=`{{x .% #{##.00}}}`';
         shellDriver.execOutputTest(
@@ -1981,12 +1965,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2000,12 +1984,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2021,12 +2005,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2040,12 +2024,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2061,12 +2045,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2080,12 +2064,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2101,12 +2085,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2120,12 +2104,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2141,12 +2125,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2160,12 +2144,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2182,12 +2166,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2201,12 +2185,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2222,12 +2206,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2240,12 +2224,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2261,12 +2245,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2279,12 +2263,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2301,12 +2285,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2319,12 +2303,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2341,12 +2325,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2359,12 +2343,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2380,12 +2364,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2398,12 +2382,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2420,12 +2404,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -2438,12 +2422,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isEqualTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -3994,12 +3978,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4012,12 +3996,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4030,12 +4014,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4048,12 +4032,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4074,12 +4058,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4099,12 +4083,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4118,12 +4102,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
     /* eslint-enable no-script-url */
@@ -4136,12 +4120,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4155,18 +4139,17 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
     /* eslint-enable no-script-url */
 
-    this.it('tibet:///javascript:top.UIROOT.$$globalID',
-            function(test, options) {
+    this.it('tibet:///javascript:top.UIROOT.$$globalID', function(test, options) {
 
         inputVal = 'tibet:///javascript:top.UIROOT.$$globalID';
         correctResult = TP.$$topWindowName + '.UIROOT';
@@ -4175,17 +4158,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://top.UIROOT/javascript:$$globalID',
-            function(test, options) {
+    this.it('tibet://top.UIROOT/javascript:$$globalID', function(test, options) {
 
         inputVal = 'tibet://top.UIROOT/javascript:$$globalID';
         correctResult = TP.$$topWindowName + '.UIROOT';
@@ -4194,12 +4176,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4212,12 +4194,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4231,12 +4213,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4249,12 +4231,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4268,12 +4250,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4287,12 +4269,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4305,12 +4287,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4325,12 +4307,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4343,12 +4325,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4362,12 +4344,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4380,12 +4362,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4399,12 +4381,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4417,12 +4399,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4436,12 +4418,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4454,12 +4436,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4473,12 +4455,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4492,12 +4474,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4510,12 +4492,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4529,12 +4511,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4548,17 +4530,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas/#element(top_background/1)',
-            function(test, options) {
+    this.it('tibet://uicanvas/#element(top_background/1)', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
@@ -4567,17 +4548,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas#element(top_background/1)',
-            function(test, options) {
+    this.it('tibet://uicanvas#element(top_background/1)', function(test, options) {
 
         inputVal = 'tibet://uicanvas#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
@@ -4586,12 +4566,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4605,17 +4585,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas/#xpath1(/$def:html/$def:body)',
-            function(test, options) {
+    this.it('tibet://uicanvas/#xpath1(/$def:html/$def:body)', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#xpath1(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
@@ -4624,17 +4603,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas#xpath1(/$def:html/$def:body)',
-            function(test, options) {
+    this.it('tibet://uicanvas#xpath1(/$def:html/$def:body)', function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#xpath1(/$def:html/$def:body)';
@@ -4644,17 +4622,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('#xpath1(/$def:html/$def:body)',
-            function(test, options) {
+    this.it('#xpath1(/$def:html/$def:body)', function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#xpath1(/$def:html/$def:body)';
@@ -4664,17 +4641,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas/#xpointer(/$def:html/$def:body)',
-            function(test, options) {
+    this.it('tibet://uicanvas/#xpointer(/$def:html/$def:body)', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#xpointer(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
@@ -4683,17 +4659,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas#xpointer(/$def:html/$def:body)',
-            function(test, options) {
+    this.it('tibet://uicanvas#xpointer(/$def:html/$def:body)', function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#xpointer(/$def:html/$def:body)';
@@ -4703,12 +4678,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -4722,17 +4697,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas/#css(#top_background > *:first-child)',
-           function(test, options) {
+    this.it('tibet://uicanvas/#css(#top_background > *:first-child)', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#css(#top_background > *:first-child)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
@@ -4741,17 +4715,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('tibet://uicanvas#css(#top_background > *:first-child)',
-           function(test, options) {
+    this.it('tibet://uicanvas#css(#top_background > *:first-child)', function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#css(#top_background > *:first-child)';
@@ -4761,17 +4734,16 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
-    this.it('#css(#top_background > *:first-child)',
-           function(test, options) {
+    this.it('#css(#top_background > *:first-child)', function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#css(#top_background > *:first-child)';
@@ -4781,12 +4753,12 @@ function() {
             test,
             inputVal,
             function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
+                test.assert.isIdenticalTo(
+                    testResult.getNativeNode(),
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
             });
     });
 
@@ -5268,17 +5240,17 @@ function() {
 
         storageStr = TP.js2json(
                 {
-                    'local_test':
+                    local_test:
                         {
-                            'author_info':
+                            author_info:
                                 {
-                                    '_id': 'author_info',
-                                    '_date_created': TP.dc(),
-                                    '_date_modified': TP.dc(),
-                                    '_body':
+                                    _id: 'author_info',
+                                    _date_created: TP.dc(),
+                                    _date_modified: TP.dc(),
+                                    _body:
                                         {
-                                            'firstName': 'Bill',
-                                            'lastName': 'Edney'
+                                            firstName: 'Bill',
+                                            lastName: 'Edney'
                                         }
                                 }
                         }
@@ -5351,15 +5323,15 @@ function() {
             inputVal,
             function(testResult) {
 
-            test.assert.isTrue(
-                testResult.hasKey('_date_created'),
-                TP.sc('Expected that result would have a key of \'_date_created\'',
-                        ' and it doesn\'t'));
+                test.assert.isTrue(
+                    testResult.hasKey('_date_created'),
+                    TP.sc('Expected that result would have a key of \'_date_created\'',
+                            ' and it doesn\'t'));
 
-            test.assert.isTrue(
-                testResult.hasKey('_date_modified'),
-                TP.sc('Expected that result would have a key of \'_date_modified\'',
-                        ' and it doesn\'t'));
+                test.assert.isTrue(
+                    testResult.hasKey('_date_modified'),
+                    TP.sc('Expected that result would have a key of \'_date_modified\'',
+                            ' and it doesn\'t'));
 
                 TP.uc(locStr).unregister();
             });
@@ -5533,7 +5505,7 @@ function() {
                         TP.uc(locStr).unregister();
                     });
             });
-        });
+    });
 
     //  ---
 
@@ -5559,7 +5531,7 @@ function() {
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
-                    TP.uc(locStr).unregister();
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5586,7 +5558,7 @@ function() {
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
-                    TP.uc(locStr).unregister();
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5625,13 +5597,13 @@ function() {
 
                 pouchPromise = testDb.put(
                     {
-                        '_id': 'author_info',
-                        'date_created': now,
-                        'date_modified': now,
-                        'body':
+                        _id: 'author_info',
+                        date_created: now,
+                        date_modified: now,
+                        body:
                             {
-                                'firstName': 'Bill',
-                                'lastName': 'Edney'
+                                firstName: 'Bill',
+                                lastName: 'Edney'
                             }
                     });
 
@@ -5883,7 +5855,7 @@ function() {
                         TP.uc(locStr).unregister();
                     });
             });
-        });
+    });
 
     //  ---
 
@@ -5909,7 +5881,7 @@ function() {
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
-                    TP.uc(locStr).unregister();
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5936,7 +5908,7 @@ function() {
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
-                    TP.uc(locStr).unregister();
+                TP.uc(locStr).unregister();
             });
     });
 
