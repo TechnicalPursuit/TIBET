@@ -16,24 +16,8 @@ development, advanced OO, and immersive development tools to JavaScript.
 
 # Installation
 
-### Install Node.js
-
-TIBET relies on Node.js and npm for command line tooling and integration of
-today's best JavaScript modules. To install TIBET properly first make sure
-you have Node.js version 0.10 or greater.
-
-To install Node.js follow the instructions at <a href="http://nodejs.org"
-   target="_blank">nodejs.org</a>.
-
-### Install PhantomJS (optional)
-
-A few commands in the TIBET CLI rely on PhantomJS to operate properly (test,
-tsh, reflect). <em>You can skip this step for now if you like</em>, those
-commands will simply prompt you to install PhantomJS if you run them
-without PhantomJS installed.
-
-To install PhantomJS follow the instructions at <a
-target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
+If you don't have `Node.js` and `npm` installed start with the <a
+href="#prereqs">Prerequisites</a>.
 
 ### Installing TIBET via npm
 
@@ -209,7 +193,7 @@ to clone, initialize, and start your first TIBET application.
 
 </pre>
 
-### More...
+### Your First Project
 
 The <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Getting-Started"
@@ -227,6 +211,43 @@ API documentation is generated from within TIBET itself via `tibet reflect` at
 the command line and via `:reflect` from within the TIBET shell/Sherpa.
 
 For information on TIBET-related services see <a href="http://www.technicalpursuit.com" target="_blank">www.technicalpursuit.com</a>.
+
+<a name="prereqs" href="#"></a>
+# Prerequisites
+
+### Install Node.js
+
+TIBET relies on Node.js and npm for command line tooling and integration of
+today's best JavaScript modules. To install TIBET properly first make sure
+you have Node.js <b>version 0.10.x</b>. _TIBET is not yet certified for Node
+0.12_.
+
+To install Node.js follow the instructions at <a href="http://nodejs.org"
+   target="_blank">nodejs.org</a>.
+
+### Update npm (optional)
+
+If you already have a recent version of Node.js installed you should have a
+valid version of `npm`. Unfortunately some older versions of `npm` suffer from
+race condition errors. On \*nix variants update `npm` by running:<br/>
+<pre>
+    npm install -g npm@latest
+</pre>
+
+If you see errors from any npm-based operations mentioning `cb() never called!`
+you'll want to perform the step above, or the appropriate step for your
+operating system. See <a target="_blank"
+href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
+
+### Install PhantomJS (optional)
+
+A few commands in the TIBET CLI rely on PhantomJS to operate properly (test,
+tsh, reflect). <em>You can skip this step for now if you like</em>, those
+commands will simply prompt you to install PhantomJS if you run them
+without PhantomJS installed.
+
+To install PhantomJS follow the instructions at <a
+target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
 
 # Feedback
 
