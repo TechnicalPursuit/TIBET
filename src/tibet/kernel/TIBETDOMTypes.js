@@ -4145,6 +4145,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @method getValue
+     * @summary Returns the value of the receiver. Unless overridden by a
+     *     custom subtype this method will return the text value of the
+     *     receiving node.
+     * @returns {String} The value in string form.
+     */
+
+    return this.getContent();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('hasAttribute',
 function(attributeName) {
 
