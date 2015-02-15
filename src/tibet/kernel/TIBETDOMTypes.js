@@ -11062,6 +11062,42 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getTextContent',
+function() {
+
+    /**
+     * @method getTextContent
+     * @summary Returns the normalized text content of the receiver.
+     * @returns {String} The receiver's text value.
+     */
+
+    var content,
+        type,
+        formats;
+
+    content = TP.nodeGetTextContent(this.getNativeNode());
+
+    //  If the receiver has a 'ui:type' attribute, then try first to convert the
+    //  content to that type before trying to format it.
+    if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
+        if (!TP.isType(type = TP.sys.getTypeByName(type))) {
+            return this.raise('TP.sig.InvalidType');
+        } else {
+            content = type.fromString(content);
+        }
+    }
+
+    //  If the receiver has a 'ui:storage' attribute, then format the return
+    //  value according to the formats found there.
+    if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
+        content = this.$formatValue(content, formats);
+    }
+
+    return content;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('produceValue',
 function(aContentObject, aRequest) {
 
