@@ -2749,7 +2749,7 @@ TP.core.Node.Inst.defineMethod('setTextContent',
 function(aValue, shouldSignal) {
 
     /**
-     * @method setContent
+     * @method setTextContent
      * @summary Sets the text content of the receiver's first text node to
      *     aValue. For general node types this method sets the value/content of
      *     the node.
@@ -2760,7 +2760,7 @@ function(aValue, shouldSignal) {
      *     manipulated. When no value attribute is found the content of the node
      *     is changed. The type of node and input can alter how this actually is
      *     done. See the setContent call for more information.
-     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Object} aValue The value to set the 'content' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
