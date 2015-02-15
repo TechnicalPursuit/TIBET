@@ -302,14 +302,35 @@ function() {
 
     /**
      * @method getValue
-     * @summary Returns the value of the receiver. This is a synonym for
-     *     returning the current display value. If the receiver is a bound
-     *     element that value should be in sync (other than differences due to
-     *     formatters) with the bound value.
+     * @summary Returns the value of the receiver. For a UI element this method
+     *     will ensure any storage formatters are invoked.
      * @returns {String} The value in string form.
      */
 
-    return this.getDisplayValue();
+    var value,
+
+        type,
+        formats;
+
+    value = this.getDisplayValue();
+
+    //  If the receiver has a 'ui:type' attribute, then try first to convert the
+    //  content to that type before trying to format it.
+    if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
+        if (!TP.isType(type = TP.sys.getTypeByName(type))) {
+            return this.raise('TP.sig.InvalidType');
+        } else {
+            value = type.fromString(value);
+        }
+    }
+
+    //  If the receiver has a 'ui:storage' attribute, then format the return
+    //  value according to the formats found there.
+    if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
+        value = this.$formatValue(value, formats);
+    }
+
+    return value;
 });
 
 //  ------------------------------------------------------------------------
@@ -1607,14 +1628,53 @@ function() {
 
     /**
      * @method getValue
-     * @summary Returns the value of the receiver. This is a synonym for
-     *     returning the current display value. If the receiver is a bound
-     *     element that value should be in sync (other than differences due to
-     *     formatters) with the bound value.
+     * @summary Returns the value of the receiver. For a UI element this method
+     *     will ensure any storage formatters are invoked.
      * @returns {String} The value in string form.
      */
 
-    return this.getDisplayValue();
+    var value,
+
+        type,
+        formats,
+
+        tpElems,
+        i;
+
+    value = this.getDisplayValue();
+
+    //  Given that this type can represent multiple items, it will return an
+    //  Array. We should check to make sure the Array isn't empty before doing
+    //  any more work.
+    if (TP.notEmpty(value)) {
+
+        //  If the receiver has a 'ui:type' attribute, then try first to convert
+        //  the content to that type before trying to format it.
+        if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
+            if (!TP.isType(type = TP.sys.getTypeByName(type))) {
+                return this.raise('TP.sig.InvalidType');
+            } else {
+                value = type.fromString(value);
+            }
+        }
+
+        //  If the receiver has a 'ui:storage' attribute, then format the return
+        //  value according to the formats found there.
+
+        //  NB: We find the first element in the receiver's 'element Array' that
+        //  has a 'ui:storage' attribute and use that value as the formats we
+        //  should use.
+        tpElems = TP.wrap(this.getElementArray());
+
+        for (i = 0; i < tpElems.getSize(); i++) {
+            if (TP.notEmpty(formats = tpElems.at(i).getAttribute('ui:storage'))) {
+                value = this.$formatValue(value, formats);
+                break;
+            }
+        }
+    }
+
+    return value;
 });
 
 //  ------------------------------------------------------------------------
@@ -3811,14 +3871,35 @@ function() {
 
     /**
      * @method getValue
-     * @summary Returns the value of the receiver. This is a synonym for
-     *     returning the current display value. If the receiver is a bound
-     *     element that value should be in sync (other than differences due to
-     *     formatters) with the bound value.
+     * @summary Returns the value of the receiver. For a UI element this method
+     *     will ensure any storage formatters are invoked.
      * @returns {String} The value in string form.
      */
 
-    return this.getDisplayValue();
+    var value,
+
+        type,
+        formats;
+
+    value = this.getDisplayValue();
+
+    //  If the receiver has a 'ui:type' attribute, then try first to convert the
+    //  content to that type before trying to format it.
+    if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
+        if (!TP.isType(type = TP.sys.getTypeByName(type))) {
+            return this.raise('TP.sig.InvalidType');
+        } else {
+            value = type.fromString(value);
+        }
+    }
+
+    //  If the receiver has a 'ui:storage' attribute, then format the return
+    //  value according to the formats found there.
+    if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
+        value = this.$formatValue(value, formats);
+    }
+
+    return value;
 });
 
 //  ------------------------------------------------------------------------
