@@ -2768,7 +2768,6 @@ function(aValue, shouldSignal) {
 
     var node,
         oldValue,
-        newValue,
         flag;
 
     //  fetch the value without preserving changes so we can test against
@@ -2783,14 +2782,12 @@ function(aValue, shouldSignal) {
         return this;
     }
 
-    newValue = this.produceValue(aValue);
-
     //  refetch the true native node, preserving crud/deletes so the new
     //  value really sticks
     node = this.getNativeNode();
 
     //  set the text value if it appears it will change
-    TP.nodeSetTextContent(node, newValue);
+    TP.nodeSetTextContent(node, aValue);
 
     //  signal as needed
 
@@ -2812,7 +2809,7 @@ function(aValue, shouldSignal) {
         if (TP.sys.shouldSignalDOMLoaded()) {
             TP.signal(TP.gid(node),
                         'TP.sig.DOMContentLoaded',
-                        newValue);
+                        aValue);
         }
     } catch (e) {
         TP.ifError() ?
@@ -2864,7 +2861,11 @@ function(aValue, shouldSignal) {
      * @returns {TP.core.Node} The receiver.
      */
 
-    return this.setTextContent(aValue, shouldSignal);
+    var newValue;
+
+    newValue = this.produceValue(aValue);
+
+    return this.setTextContent(newValue, shouldSignal);
 });
 
 //  ------------------------------------------------------------------------
@@ -11418,9 +11419,13 @@ function(aValue, shouldSignal) {
      * @returns {TP.core.Node} The receiver.
      */
 
-    var flag;
+    var flag,
 
-    this.setContent(aValue);
+        newValue;
+
+    newValue = this.produceValue(aValue);
+
+    this.setContent(newValue);
 
     //  signal as needed
 
