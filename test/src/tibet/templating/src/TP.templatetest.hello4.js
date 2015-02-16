@@ -1,1 +1,1 @@
-TP.core.TemplatedApplicationTag.defineSubtype('TP.templatetest:hello4');
+TP.core.TemplatedTag.defineSubtype('TP.templatetest:hello4');

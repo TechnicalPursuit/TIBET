@@ -18,6 +18,7 @@
 
 <config id="app_img">
     <script src="~app_src/APP.{{appname}}.js" />
+    <script src="~app_src/APP.{{appname}}.Application.js" />
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
 </config>
 

@@ -144,7 +144,7 @@ function(anElement) {
                 //  NB: This might be empty and that's ok, because the
                 //  "get('controller')" call will default the type.
                 ctrlTypeName = TP.elementGetAttribute(
-                                    docElem, 'tibet:uricontroller', true);
+                                    docElem, 'tibet:urictrl', true);
 
                 controller = TP.uc(tibetSrc).get('controller', ctrlTypeName);
 

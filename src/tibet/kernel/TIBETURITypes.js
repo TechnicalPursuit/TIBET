@@ -1196,7 +1196,7 @@ function(url, entry, key) {
                 //  handler or controller then skip to next one
                 if (TP.isEmpty(hash.at('tibet:urihandler')) &&
                     TP.isEmpty(hash.at('tibet:contenthandler')) &&
-                    TP.isEmpty(hash.at('tibet:uricontroller'))) {
+                    TP.isEmpty(hash.at('tibet:urictrl'))) {
                     continue;
                 }
 
@@ -2303,10 +2303,10 @@ function(aTypeName) {
                 if (TP.isValid(map)) {
                     if (TP.isValid(item = map.at('mapping'))) {
                         mappedType = TP.sys.getTypeByName(
-                                        item.at('tibet:uricontroller'));
+                                        item.at('tibet:urictrl'));
                     } else if (TP.isValid(item = map.at('delegate'))) {
                         mappedType = TP.sys.getTypeByName(
-                                        item.at('tibet:uricontroller'));
+                                        item.at('tibet:urictrl'));
                     }
                 }
 

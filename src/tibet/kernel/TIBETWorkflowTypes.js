@@ -5686,28 +5686,38 @@ function(aRequest) {
 });
 
 //  ========================================================================
+//  TP.core.Controller
+//  ========================================================================
+
+/**
+ * @type {TP.core.Controller}
+ * @summary This type is a common supertype for all 'TIBET controllers',
+ *     objects which form the top layers of the TIBET responder chain.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.Controller');
+
+//  ========================================================================
 //  TP.core.Application
 //  ========================================================================
 
 /**
  * @type {TP.core.Application}
- * @summary This type acts as the 'main type' for the application. It handles
- *     such things as starting the 'main GUI' for the application and handles
- *     application-level signals, such as 'location changes' as the user
- *     interacts with the browser controls.
+ * @summary TIBET's primary application controller type. All TIBET applications
+ *     have an instance of Application as the root of their responder chain. The
+ *     main application type is also responsible for handling the various
+ *     signals involved in application startup such as AppStart
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Application');
+TP.core.Controller.defineSubtype('core.Application');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
-
-//  what signals will trigger this resource/service?
-//TP.core.Application.Type.defineAttribute('triggerSignals',
-//                                      'TP.sig.UserIORequest');
 
 //  The 'singleton' of this application's 'application object', normally
 //  accessed through 'TP.sys.getApplication()'
@@ -5745,19 +5755,24 @@ function(aSignal) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    var appType,
+    var typeName,
+        appType,
         newAppInst;
 
     //  Turn off future notifications of this signal/origin pair.
     this.ignore(aSignal.getSignalOrigin(), aSignal.getSignalName());
 
-    //  Allocate and initialize a (singleton) instance of the specified
-    //  application controller type. If that type isn't provided, or it can't
-    //  be loaded, then we default to TP.core.Application and WARN.
-    appType = aSignal.at('ApplicationType');
+    typeName = TP.sys.cfg('project.apptype');
+    if (TP.isEmpty(typeName)) {
+        typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
+    }
+
+    appType = TP.sys.require(typeName);
+
     if (TP.notValid(appType)) {
         TP.ifWarn() ?
-            TP.warn('Unable to locate application controller type.' +
+            TP.warn('Unable to locate application controller type: ' +
+                    typeName + '. ' +
                     'Defaulting to TP.core.Application.',
                     TP.LOG) : 0;
         appType = TP.sys.require('TP.core.Application');
@@ -5765,7 +5780,7 @@ function(aSignal) {
 
     //  Create the new instance and define it as our singleton for any future
     //  application instance requests.
-    newAppInst = appType.construct('AppSingleton', null);
+    newAppInst = appType.construct('Application', null);
     TP.core.Application.set('singleton', newAppInst);
 
     //  Tell our new singleton instance to start :).
@@ -5935,6 +5950,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Application.Inst.defineMethod('isResponderFor',
+function(aSignal, isCapturing) {
+
+    return TP.notTrue(isCapturing);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Application.Inst.defineMethod('start',
 function(aSignal) {
 
@@ -5979,7 +6002,15 @@ function() {
      * @returns {TP.core.Application} The receiver.
      */
 
-    return TP.core.Application.get('singleton');
+    var inst;
+
+    //  Don't let this return null. Always build a default instance.
+    inst = TP.core.Application.get('singleton');
+    if (TP.notValid(inst)) {
+        inst = TP.core.Application.construct();
+    }
+
+    return inst;
 });
 
 //  ========================================================================
@@ -6322,21 +6353,6 @@ function(histValue) {
 
     return this;
 });
-
-//  ========================================================================
-//  TP.core.Controller
-//  ========================================================================
-
-/**
- * @type {TP.core.Controller}
- * @summary This type is a common supertype for all 'TIBET controllers'.
- *     Controllers are objects that typically control some GUI or application
- *     workflow.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.lang.Object.defineSubtype('core.Controller');
 
 //  ========================================================================
 //  TP.core.URIController

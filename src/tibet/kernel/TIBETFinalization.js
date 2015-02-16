@@ -411,8 +411,7 @@ function() {
     //  requires changing everywhere that expects TP.ONLOAD as a key (many DOM
     //  and DHTML primitives (ack TP.ONLOAD for the list).
     request.atPut(TP.ONLOAD, function(aDocument) {
-        var appType,
-            bodyElem,
+        var bodyElem,
             elem,
             tpElem;
 
@@ -420,24 +419,6 @@ function() {
         if (TP.boot.shouldStop()) {
             request.at(TP.ONFAIL)(request);
             return;
-        }
-
-        //  Initially set type to TP.core.Application
-        appType = TP.sys.require('TP.core.Application');
-
-        //  Go to the body and see what element is the first
-        //  child under it.
-        if (TP.isElement(bodyElem = TP.documentGetBody(aDocument))) {
-            //  If the first child element is real and we can
-            //  get a matching TIBET type for it, try to message
-            //  it to find out the application type.
-            if (TP.isElement(elem = TP.nodeGetFirstChildElement(bodyElem))) {
-                tpElem = TP.wrap(elem);
-
-                if (TP.canInvoke(tpElem, 'getApplicationType')) {
-                    appType = tpElem.getApplicationType();
-                }
-            }
         }
 
         //  Signal TP.sig.AppWillStart and then, if not cancelled,
@@ -480,8 +461,7 @@ function() {
             TP.signal(
                 TP.sys,
                 'TP.sig.AppStart',
-                TP.hc('ApplicationType', appType,
-                        'ApplicationTag', elem));
+                TP.hc('ApplicationTag', elem));
 
             //  Make sure to null out 'elem' to avoid a leak.
             elem = null;

@@ -12,56 +12,92 @@
  */
 
 //  ========================================================================
-//  TP.core.ApplicationTag
+//  TP.core.CompiledTag
 //  ========================================================================
 
 /**
- * @type {TP.core.ApplicationTag}
- * @summary TP.core.ApplicationTag is the common supertype of the
- *     TP.tibet.app and TP.tibet.sherpa tag types.
+ * @type {TP.core.CompiledTag}
+ * @summary A common supertype for compiled UI tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('ApplicationTag');
+TP.core.UIElementNode.defineSubtype('TP.core.CompiledTag');
+
+TP.core.CompiledTag.addTraits(TP.core.NonNativeUIElementNode);
+
+TP.core.CompiledTag.Type.resolveTraits(
+        TP.ac('getStyleURI'),
+        TP.core.UIElementNode);
+
+TP.core.CompiledTag.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+
+TP.core.CompiledTag.finalizeTraits();
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
 
-TP.core.ApplicationTag.Inst.defineMethod('getApplicationType',
-function() {
+TP.core.CompiledTag.Type.defineMethod('tagCompile',
+function(aRequest) {
 
     /**
-     * @method getApplicationType
-     * @summary Returns the application type that the singleton Application
-     *     instance will be created from.
-     * @description This method looks for a 'tibet:appctrl' attribute on the
-     *     receiver and, if present, will try to resolve the value of that
-     *     attribute to a TIBET type. If the attribute is missing or a type
-     *     cannot be found, the standard TP.core.Application type will be
-     *     returned
-     * @returns {TP.lang.RootObject.<TP.core.Application>} A
-     *     TP.core.Application subtype type object to create the singleton
-     *     Application object from or TP.core.Application if none can be found.
+     * @method tagCompile
+     * @summary Convert instances of the tag into their HTML representation.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
-    var typeName,
-        type;
+    var elem,
+        newElem;
 
-    if (TP.notEmpty(typeName = this.getAttribute('tibet:appctrl'))) {
-        if (TP.isType(type = TP.sys.require(typeName))) {
-            return type;
-        } else {
-            TP.ifWarn() ?
-                TP.warn('Unable to load application controller type: ' +
-                            typeName,
-                        TP.LOG) : 0;
-        }
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
     }
 
-    return TP.sys.require('TP.core.Application');
+    // NOTE that we produce output which prompts for overriding and providing a
+    // proper implementation here.
+    newElem = TP.xhtmlnode(
+        '<a onclick="alert(\'Update tagCompile!\')" href="#" tibet:tag="' +
+            this.getCanonicalName() + '">' +
+            '&lt;' + this.getCanonicalName() + '/&gt;' +
+            '</a>');
+
+    TP.elementReplaceWith(elem, newElem);
+
+    return;
 });
+
+//  ========================================================================
+//  TP.core.TemplatedTag
+//  ========================================================================
+
+/**
+ * @type {TP.core.TemplatedTag}
+ * @summary A common supertype for templated UI tags. This type provides an
+ * inheritance root for templated tags by mixing in TemplatedNode properly.
+ */
+
+TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
+
+//  ------------------------------------------------------------------------
+
+// Mix in templating behavior, resolving compile in favor of templating.
+TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
+TP.core.TemplatedTag.addTraits(TP.core.NonNativeUIElementNode);
+
+TP.core.TemplatedTag.Type.resolveTraits(
+        TP.ac('getStyleURI', 'getTemplateURI', 'tagCompile'),
+        TP.core.TemplatedNode);
+
+TP.core.TemplatedTag.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+
+TP.core.TemplatedTag.finalizeTraits();
+
 
 //  ========================================================================
 //  TP.tibet.app
@@ -76,7 +112,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ApplicationTag.defineSubtype('tibet:app');
+TP.core.CompiledTag.defineSubtype('tibet:app');
 
 //  ------------------------------------------------------------------------
 
@@ -177,7 +213,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('tibet:root');
+TP.core.CompiledTag.defineSubtype('tibet:root');
 
 //  ------------------------------------------------------------------------
 
@@ -348,119 +384,6 @@ function(aRequest) {
 
     return;
 });
-
-//  ========================================================================
-//  TP.core.CompiledTag
-//  ========================================================================
-
-/**
- * @type {TP.core.CompiledTag}
- * @summary A common supertype for compiled UI tags.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.defineSubtype('TP.core.CompiledTag');
-
-TP.core.CompiledTag.addTraits(TP.core.NonNativeUIElementNode);
-
-TP.core.CompiledTag.Type.resolveTraits(
-        TP.ac('getStyleURI'),
-        TP.core.UIElementNode);
-
-TP.core.CompiledTag.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.core.CompiledTag.finalizeTraits();
-
-//  ------------------------------------------------------------------------
-
-TP.core.CompiledTag.Type.defineMethod('tagCompile',
-function(aRequest) {
-
-    /**
-     * @method tagCompile
-     * @summary Convert instances of the tag into their HTML representation.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        newElem;
-
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    // NOTE that we produce output which prompts for overriding and providing a
-    // proper implementation here.
-    newElem = TP.xhtmlnode(
-        '<a onclick="alert(\'Update tagCompile!\')" href="#" tibet:tag="' +
-            this.getCanonicalName() + '">' +
-            '&lt;' + this.getCanonicalName() + '/&gt;' +
-            '</a>');
-
-    TP.elementReplaceWith(elem, newElem);
-
-    return;
-});
-
-
-//  ========================================================================
-//  TP.core.TemplatedTag
-//  ========================================================================
-
-/**
- * @type {TP.core.TemplatedTag}
- * @summary A common supertype for templated UI tags. This type provides an
- * inheritance root for templated tags by mixing in TemplatedNode properly.
- */
-
-TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
-
-//  ------------------------------------------------------------------------
-
-// Mix in templating behavior, resolving compile in favor of templating.
-TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
-TP.core.TemplatedTag.addTraits(TP.core.NonNativeUIElementNode);
-
-TP.core.TemplatedTag.Type.resolveTraits(
-        TP.ac('getStyleURI', 'getTemplateURI', 'tagCompile'),
-        TP.core.TemplatedNode);
-
-TP.core.TemplatedTag.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.core.TemplatedTag.finalizeTraits();
-
-
-//  ========================================================================
-//  TP.core.TemplatedApplicationTag
-//  ========================================================================
-
-/**
- * @type {TP.core.TemplatedApplicationTag}
- * @summary TP.core.TemplatedApplicationTag is the common supertype for
- *     applications whose root tag uses a template to render. This is the
- *     type used by most TIBET dna by default.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.core.ApplicationTag.defineSubtype('TP.core.TemplatedApplicationTag');
-
-/* Mix in templating behavior */
-TP.core.TemplatedApplicationTag.addTraits(TP.core.TemplatedNode);
-
-TP.core.TemplatedApplicationTag.Type.resolveTraits(
-        TP.ac('getStyleURI', 'getTemplateURI'),
-        TP.core.TemplatedNode);
-
-TP.core.TemplatedApplicationTag.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end
