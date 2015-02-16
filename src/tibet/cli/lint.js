@@ -21,6 +21,7 @@ var CLI,
     beautify,
     chalk,
     dom,
+    path,
     sh,
     eslint,
     Parent,
@@ -29,6 +30,7 @@ var CLI,
 
 CLI = require('./_cli');
 
+path = require('path');
 beautify = require('js-beautify').js_beautify;
 chalk = require('chalk');
 dom = require('xmldom');
@@ -86,7 +88,7 @@ Cmd.prototype.HELP =
 'config (usually #base) so your typical configuration is linted.\n' +
 'See help on the \'tibet package\' command for more information.\n\n' +
 
-'[eslint-opts] refers to --esconfig, --esrules, and --esformat which\n' +
+'[eslint-opts] refers to --esconfig, --esrules, and --esignore which\n' +
 'let you configure eslint to meet your specific needs. The linter will\n' +
 'automatically take advantage of a .eslintrc file in your project.\n\n' +
 
@@ -110,7 +112,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['scan', 'stop', 'all', 'list', 'nodes', 'reset',
             'csslint', 'eslint', 'jsonlint', 'xmllint', 'quiet'],
-        'string': ['esconfig', 'esrules', 'esformat', 'cssconfig',
+        'string': ['esconfig', 'esrules', 'esignore', 'cssconfig',
             'package', 'config', 'phase'],
         'default': {
             cssslint: true,
@@ -225,31 +227,26 @@ Cmd.prototype.configureCSSLintOptions = function() {
  */
 Cmd.prototype.configureEslintOptions = function() {
 
-    var args;
+    var opts;
 
-    args = ['node', 'eslint'];
+    opts = {};
 
     if (this.options.esconfig) {
-        args.push('-c ' + this.options.esconfig);
-    }
-
-    if (this.options.esformat) {
-        args.push('-f ' + this.options.esformat);
+        opts.configFile = this.options.esconfig;
+        opts.configFile = CLI.expandPath('~/.eslintrc');
     }
 
     if (this.options.esrules) {
-        args.push('-r ' + this.options.esrules);
+        opts.rulePaths = this.options.esrules.split(' ');
     }
 
-    if (this.options.quiet) {
-        args.push('--quiet true');
+    if (this.options.esignore) {
+        opts.ignorePath = this.options.esignore;
+    } else {
+        opts.ignorePath = CLI.expandPath('~/.eslintignore');
     }
 
-    if (this.options.reset) {
-        args.push('--reset');
-    }
-
-    return args;
+    return opts;
 };
 
 
@@ -354,7 +351,7 @@ Cmd.prototype.executeForEach = function(list) {
             var src,
                 ext;
                 /*
-                args,
+                opts,
                 engine,
                 result;
                 */
@@ -401,9 +398,9 @@ Cmd.prototype.executeForEach = function(list) {
                  * form of a full source file of content.
                  */
                 /*
-                args = cmd.configureEslintOptions();
+                opts = cmd.configureEslintOptions();
 
-                engine = new eslint.CLIEngine(args);
+                engine = new eslint.CLIEngine(opts);
                 result = engine.executeOnText(item.textContent);
 
                 cmd.processEslintResult(result);
@@ -428,11 +425,20 @@ Cmd.prototype.executeForEach = function(list) {
 Cmd.prototype.getScannedAssetList = function() {
 
     var dir,
+        file,
+        ignores,
         list;
 
     this.verbose('scanning directory tree...');
 
     dir = CLI.getAppHead();
+
+    file = CLI.expandPath('~/.eslintignore');
+    if (sh.test('-e', file)) {
+        ignores = sh.cat(file);
+    } else {
+        ignores = '';
+    }
 
     list = sh.find(dir).filter(function(file) {
         return !sh.test('-d', file) &&
@@ -777,22 +783,28 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
 Cmd.prototype.validateSourceFiles = function(files, results) {
 
     var cmd,
-        args,
-        engine;
+        opts,
+        engine,
+        root;
 
     cmd = this;
-    args = this.configureEslintOptions();
-    engine = new eslint.CLIEngine(args);
+    opts = this.configureEslintOptions();
+    engine = new eslint.CLIEngine(opts);
 
     results = results || {checked: 0, errors: 0, warnings: 0, files: 0};
 
     files = Array.isArray(files) ? files : [files];
     results.files += files.length;
+    root = CLI.getAppHead() + path.sep;
 
     try {
         files.some(function(file) {
             var result,
                 summary;
+
+            if (engine.isPathIgnored(file.replace(root, ''))) {
+                return;
+            }
 
             result = engine.executeOnFiles([file]);
             results.checked += 1;
