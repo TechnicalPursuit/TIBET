@@ -4420,33 +4420,12 @@ function(targetType, conflictedTraits, track) {
                     resolvedType = null;
 
                     if (TP.isArray(sources = kvPair.last())) {
-                        candidateTypes = sources.collect(
-                            function(aType) {
-                                var proto,
-                                    val;
-
-                                if (track === TP.TYPE_TRACK) {
-                                    proto = aType.getPrototype();
-                                } else {
-                                    proto = aType.getInstPrototype();
-                                }
-
-                                val = proto[propName];
-
-                                if (TP.isMethod(val)) {
-                                    //  Important for processing purposes
-                                    //  to actually find the owner.
-                                    return val[TP.OWNER];
-                                }
-
-                                return aType;
-                            });
 
                         lowestIndex = c3TypeList.getSize() - 1;
 
                         //  If we got real candidate types for the conflicts,
                         //  then try to resolve using them.
-                        if (TP.notEmpty(candidateTypes)) {
+                        if (TP.notEmpty(sources)) {
 
                             //  Iterate over the candidate types and find the
                             //  one with the *lowest* index in c3TypeList. The
@@ -4454,10 +4433,9 @@ function(targetType, conflictedTraits, track) {
                             //  *least* specific - therefore, the one with the
                             //  lowest index is the one
                             //  we want.
-                            for (i = 0; i < candidateTypes.getSize(); i++) {
+                            for (i = 0; i < sources.getSize(); i++) {
                                 candidateIndex =
-                                    c3TypeList.indexOf(
-                                                candidateTypes.at(i).getName());
+                                    c3TypeList.indexOf(sources.at(i).getName());
                                 lowestIndex = lowestIndex.min(candidateIndex);
                             }
 
@@ -4491,7 +4469,7 @@ function(targetType, conflictedTraits, track) {
                                         ' ON TARGET: ' + TP.name(targetType) +
                                         ' TO TYPE: ' + TP.name(resolvedType) +
                                         ' (CONFLICTED BETWEEN: ' +
-                                                candidateTypes.collect(
+                                                sources.collect(
                                                     function(aType) {
                                                         return aType.getName();
                                                     }).join(', ') + ')',
