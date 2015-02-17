@@ -486,7 +486,9 @@ function() {
 
                 test.assert.isEqualTo(
                     elem.getValue(),
-                    '1900-01-01T06:00:00');
+                    '1900-01-01T' +
+                    TP.dc().getUTCHours().toString().pad(2, '0') +
+                    ':00:00');
 
                 //  ---
 
