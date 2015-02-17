@@ -355,7 +355,11 @@ function(aNode) {
     //  collections (nodes with a content model) are ok, but we need to work
     //  with element nodes when possible
     if (TP.isDocument(aNode)) {
-        node = aNode.documentElement;
+        if (TP.elementGetLocalName(aNode.documentElement) === 'struct') {
+            node = aNode.documentElement;
+        } else {
+            node = aNode;
+        }
     } else if (TP.isElement(aNode) || TP.isFragment(aNode)) {
         node = aNode;
     } else if (TP.isAttributeNode(aNode)) {
@@ -375,13 +379,9 @@ function(aNode) {
         if (TP.elementGetLocalName(node) === 'struct') {
             return TP.core.XMLRPCNode.objectFromNode(node);
         }
-
-        if (TP.isXMLDocument(doc = TP.doc(TP.str(node), null, true))) {
-            return TP.extern.jxon.xmlToJs(doc);
-        }
     }
 
-    return null;
+    return TP.extern.jxon.xmlToJs(node);
 });
 
 //  ------------------------------------------------------------------------
