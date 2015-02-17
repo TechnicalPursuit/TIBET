@@ -1800,8 +1800,10 @@ function(aPath, config) {
         paths.push(TP.apc(pathStrs.at(i), TP.hc('shouldCollapse', true)));
     }
 
-    //  Configure the 'last path' to honor the shouldCollapse flag.
-    paths.last().set('shouldCollapse', config.at('shouldCollapse'));
+    if (TP.isValid(config)) {
+        //  Configure the 'last path' to honor the shouldCollapse flag.
+        paths.last().set('shouldCollapse', config.at('shouldCollapse'));
+    }
 
     this.set('paths', paths);
 
