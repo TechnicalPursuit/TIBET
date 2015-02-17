@@ -1598,10 +1598,16 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
         return;
     }
 
+    orig = TP.ifInvalid(aSignal.getOrigin(), '');
+    orig = TP.gid(orig).split('#').last();
+
+    hasOrigin = TP.isEmpty(orig) ? false : true;
+
     key = aSignal.getSignalName() + '.' +
                 aSignal.getTypeName() + '.' +
-                dontTraverseSpoofs + '.' +
-                startSignalName;
+                TP.ifEmpty(orig, TP.ANY) + '.' +
+                (dontTraverseSpoofs || false) + '.' +
+                startSignalName || aSignal.getSignalName();
 
     handlers = this.$get('$$handlers');
     if (TP.notValid(handlers)) {
@@ -1615,11 +1621,6 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             return handler;
         }
     }
-
-    orig = TP.ifInvalid(aSignal.getOrigin(), '');
-    orig = TP.gid(orig).split('#').last();
-
-    hasOrigin = TP.isEmpty(orig) ? false : true;
 
     //  If the startSignalName wasn't supplied or it's the same as the signal's
     //  'direct' signal name, then go ahead and consider that the receiver may

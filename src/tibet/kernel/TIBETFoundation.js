@@ -2497,6 +2497,9 @@ function(aHandlerName, aHandler) {
         return this.raise('InvalidHandlerName', aHandlerName);
     }
 
+    //  Throw out any handler cache, we just defined a new one.
+    this.$set('$$handlers', null);
+
     // Simple method definition.
     this.defineMethod(name, aHandler);
 });
