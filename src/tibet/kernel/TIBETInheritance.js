@@ -5315,15 +5315,7 @@ function(anObject, aspectNames) {
     //  No aspect names supplied - use all of the aspects of the supplied
     //  object.
     if (TP.isEmpty(aspectNames)) {
-
-        aspectsToCheck = anObject.getKeys();
-
-        //  We want to filter out slots holding facet values
-        aspectsToCheck = aspectsToCheck.reject(
-                            function(aspectName) {
-                                return TP.regex.FACET_SLOT_NAME_MATCH.test(
-                                                                    aspectName);
-                            });
+        aspectsToCheck = anObject.getValidatingAspectNames();
     } else {
         aspectsToCheck = aspectNames;
     }
@@ -7489,6 +7481,33 @@ function(aspectName, facetName) {
     }
 
     return facetValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getValidatingAspectNames',
+function() {
+
+    /**
+     * @method getValidatingAspectNames
+     * @summary Returns an Array of the names of the aspects to validate on the
+     *     receiver.
+     * @returns {Array} A list of the names of aspects to validate on the
+     *     receiver.
+     */
+
+    var aspectsToCheck;
+
+    aspectsToCheck = this.getKeys();
+
+    //  We want to filter out slots holding facet values
+    aspectsToCheck = aspectsToCheck.reject(
+                        function(aspectName) {
+                            return TP.regex.FACET_SLOT_NAME_MATCH.test(
+                                                                aspectName);
+                        });
+
+    return aspectsToCheck;
 });
 
 //  ------------------------------------------------------------------------
