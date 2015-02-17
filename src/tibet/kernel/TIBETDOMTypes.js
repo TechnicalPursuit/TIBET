@@ -10358,9 +10358,16 @@ function(aSignal) {
     //  then we can leverage that, otherwise we shouldn't have been targeted
     observer = this.getNativeObserver(aSignal);
 
+    //  Shouldn't have been targeted if we can't find an observer.
     if (TP.notValid(observer)) {
         return this.raise('TP.sig.InvalidHandler',
-                            'Unable to obtain observer.');
+            'Unable to obtain observer.');
+    }
+
+    //  Guard against recursion by invoking this indirectly again.
+    if (observer === this) {
+        return this.raise('TP.sig.InvalidHandler',
+            'Recursive observer definition.');
     }
 
     return TP.handle(observer, aSignal);

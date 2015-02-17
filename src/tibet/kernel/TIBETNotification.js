@@ -306,7 +306,7 @@ function() {
      * @method getDefaultPolicy
      * @summary Returns the default firing policy to use for signals of this
      *     type when no other policy is provided.
-     * @returns {String} The firing policy name such as TP.INHERITANCE_FIRING.
+     * @returns {String} The firing policy name such as TP.DEFAULT_FIRING.
      */
 
     return this.$get('defaultPolicy');
@@ -1351,7 +1351,6 @@ function() {
     var targetElem;
 
     if (!TP.isElement(targetElem = this.getTarget())) {
-        // TODO: add support for controller chain lookup here.
         return null;
     }
 
@@ -4417,6 +4416,48 @@ function(anOrigin, aSignal, captureState) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.SignalMap.Type.defineMethod('notifyControllers',
+function(anOrigin, aSignalName, aSignal, checkPropagation, captureState,
+aSigEntry, checkTarget) {
+
+    /**
+     * @method notifyControllers
+     * @summary Notifies any controllers in the controller chain managed by the
+     *     current application instance. This method is the link between the
+     *     standard observe/ignore signal notification process and the
+     *     larger-scale application responder-chain notification sequence.
+     */
+
+    var app,
+        controllers,
+        len,
+        i,
+        check,
+        controller,
+        handler;
+
+    app = TP.sys.getApplication();
+    controllers = app.get('controllers');
+    check = TP.ifInvalid(checkPropagation, true);
+
+    len = controllers.getSize();
+    for (i = 0; i < len; i++) {
+        if (check && aSignal.shouldStop()) {
+            return;
+        }
+
+        controller = controllers.at(i);
+
+        if (TP.isCallable(handler = controller.getHandler(aSignal))) {
+            handler.call(controller, aSignal);
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.SignalMap.Type.defineMethod('notifyHandlers',
 function(anOrigin, aSignalName, aSignal, checkPropagation, captureState,
 aSigEntry, checkTarget) {
@@ -4480,18 +4521,16 @@ aSigEntry, checkTarget) {
     //  should we respect stopPropagation calls?
     check = TP.ifInvalid(checkPropagation, true);
 
+    //  if we're asked to respect propagation check then check it
+    if (check && aSignal.shouldStop()) {
+        return;
+    }
+
     //  don't let signals get passed with TP.ANY as an origin, but ensure
     //  we can put things back the way they were once we're finished
     originalOrigin = aSignal.getOrigin();
     if (originalOrigin === TP.ANY) {
         aSignal.setOrigin(null);
-    }
-
-    //  if we're asked to respect propagation check then check it
-    if (check && aSignal.shouldStop()) {
-        aSignal.setOrigin(originalOrigin);
-
-        return;
     }
 
     //  set our capture state flag so we can test as needed
@@ -4824,6 +4863,9 @@ function(anOrigin, aSignal, aPayload, aType) {
         TP.sig.SignalMap.notifyHandlers(null, signame, sig, true);
     }
 
+    //  Final step is to notify controllers which completes the responder chain.
+    TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+
     //  once the signal has been fired we can clear it for reuse
     sig.isRecyclable(true);
 
@@ -5142,6 +5184,8 @@ function(originSet, aSignal, aPayload, aType) {
             if (TP.elementGetAttributeNames(origin).detect(detector)) {
                 // Found an on: mapping for this origin...
                 signame = TP.elementGetAttribute(origin, onstar);
+
+                sig.setSignalName(signame);
             }
         }
 
@@ -5236,6 +5280,9 @@ function(originSet, aSignal, aPayload, aType) {
                                     false, false,
                                     null, true);
 
+    //  Final step is to notify controllers which completes the responder chain.
+    TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+
     return sig;
 });
 
@@ -5262,6 +5309,7 @@ function(originSet, aSignal, aPayload, aType) {
      */
 
     var sig,
+        origin,
         signame,
         firstResponder,
         respChain,
@@ -5345,6 +5393,7 @@ function(originSet, aSignal, aPayload, aType) {
         //  valid responder), then set the phase to TP.AT_TARGET and
         //  execute the handler.
         if (TP.unwrap(respChain.first()) === TP.unwrap(firstResponder)) {
+
             sig.setPhase(TP.AT_TARGET);
 
             //  be sure to update the signal with the origin
@@ -5396,6 +5445,10 @@ function(originSet, aSignal, aPayload, aType) {
     //  notification process by making it the original target ID
     sig.setOrigin(firstResponder);
 
+    //  final check is for controllers which may want to handle this.
+    TP.sig.SignalMap.notifyControllers(
+        TP.lid(firstResponder), sig.getSignalName(), sig, true);
+
     return sig;
 });
 
@@ -5424,7 +5477,8 @@ function(anOrigin, signalSet, aPayload, aType) {
         signame,
         aSignal,
         orig,
-        aSet;
+        aSet,
+        fixedName;
 
     //  if no signal provided then bail out since we don't want to
     //  'infer' an exception
@@ -5454,6 +5508,7 @@ function(anOrigin, signalSet, aPayload, aType) {
                                 aSignal,
                                 aPayload,
                                 TP.ifInvalid(aType, TP.sig.Exception));
+
     if (!TP.isKindOf(sig, TP.sig.Signal)) {
         return;
     }
@@ -5497,6 +5552,20 @@ function(anOrigin, signalSet, aPayload, aType) {
                 break;
             }
         }
+
+        //  For controller notification we want to ensure the signal instance
+        //  has the actual signal name for this iteration. We set it back after
+        //  attempting invocation.
+        try {
+            fixedName = sig.getSignalName();
+            sig.setSignalName(signame);
+
+            TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+        } catch (e) {
+            void 0;     //  TODO: verify we want to do this here.
+        } finally {
+            sig.setSignalName(fixedName);
+        }
     }
 
     return sig;
@@ -5521,19 +5590,15 @@ function(anOrigin, aSignal, aPayload, aType) {
      */
 
     var aSig,
-
         orig,
         sig,
         orgid,
-
         type,
-
         signames,
         len,
         i,
-
         signame,
-
+        fixedName,
         isSpoofed;
 
     aSig = aSignal;
@@ -5613,6 +5678,20 @@ function(anOrigin, aSignal, aPayload, aType) {
             }
         }
 
+        //  For controller notification we want to ensure the signal instance
+        //  has the actual signal name for this iteration. We set it back after
+        //  attempting invocation.
+        try {
+            fixedName = sig.getSignalName();
+            sig.setSignalName(signame);
+
+            TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+        } catch (e) {
+            void 0;     //  TODO: verify we want to do this here.
+        } finally {
+            sig.setSignalName(fixedName);
+        }
+
         isSpoofed = sig.isSpoofed();
 
         //  is the signal a root (and not a spoofed) signal? we can stop
@@ -5632,6 +5711,63 @@ function(anOrigin, aSignal, aPayload, aType) {
             type = type.getSupertype();
         }
     }
+
+    return sig;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('CRUD_FIRING',
+function(originSet, aSignal, aPayload, aType) {
+
+
+    /**
+     * @method CRUD_FIRING
+     * @summary
+     * @param {Array|Object} originSet The originator(s) of the signal. Unused
+     *     for this firing policy.
+     * @param {String|TP.sig.Signal} aSignal The signal to fire.
+     * @param {Object} aPayload Optional argument object.
+     * @param {String|TP.sig.Signal} aType A default type to use when the signal
+     *     type itself isn't found and a new signal subtype must be created.
+     *     Defaults to TP.sig.Signal.
+     * @returns {TP.sig.Signal} The signal.
+     */
+
+    var sig,
+        orgid,
+        signame;
+
+    TP.stop('break.signal_crudfiring');
+
+    if (TP.notValid(aSignal)) {
+        return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
+    }
+
+    //  get a valid signal instance configured
+    sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
+    if (!TP.isKindOf(sig, TP.sig.Signal)) {
+        return;
+    }
+
+    //  set up the signal name, using TP.ANY if we can't get one
+    if (TP.isEmpty(signame = sig.getSignalName())) {
+        signame = TP.ANY;
+    }
+
+    orgid = sig.getOrigin();
+
+    //  TODO:
+    /*
+     *  Try for an element origin. If we get one does it have a "bind scope" on
+     *  an ancestor or any other aspect we can use to determine what model is
+     *  being targeted? Does it have a target in the payload? Is the "origin" a
+     *  target reference?
+    */
+
+
+    //  final check is for controllers which may want to handle this.
+    TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
 
     return sig;
 });

@@ -5735,63 +5735,23 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    this.observe(TP.sys, 'TP.sig.AppStart');
+    //this.observe(TP.sys, 'TP.sig.AppStart');
 
     return;
 });
 
 //  ------------------------------------------------------------------------
-
-TP.core.Application.Type.defineMethod('handleAppStart',
-function(aSignal) {
-
-    /**
-     * @method handleAppStart
-     * @summary A handler that is called when the system has set up everything
-     *     required to run a TIBET application and is ready to start the GUI.
-     * @description At this level, this type does nothing.
-     * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
-     *     trip.
-     * @returns {TP.core.Application} The receiver.
-     */
-
-    var typeName,
-        appType,
-        newAppInst;
-
-    //  Turn off future notifications of this signal/origin pair.
-    this.ignore(aSignal.getSignalOrigin(), aSignal.getSignalName());
-
-    typeName = TP.sys.cfg('project.apptype');
-    if (TP.isEmpty(typeName)) {
-        typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
-    }
-
-    appType = TP.sys.require(typeName);
-
-    if (TP.notValid(appType)) {
-        TP.ifWarn() ?
-            TP.warn('Unable to locate application controller type: ' +
-                    typeName + '. ' +
-                    'Defaulting to TP.core.Application.',
-                    TP.LOG) : 0;
-        appType = TP.sys.require('TP.core.Application');
-    }
-
-    //  Create the new instance and define it as our singleton for any future
-    //  application instance requests.
-    newAppInst = appType.construct('Application', null);
-    TP.core.Application.set('singleton', newAppInst);
-
-    //  Tell our new singleton instance to start :).
-    newAppInst.start(aSignal);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
+
+/**
+ * An array of controller instances which represent the current controller
+ * stack. The list always ends with an Application instance which represents the
+ * final controller in the responder/controller chain.
+ * @type {TP.core.Controller[]}
+ */
+TP.core.Application.Inst.defineAttribute('controllers');
+
 
 TP.core.Application.Inst.defineAttribute('currentTheme');
 
@@ -5813,9 +5773,13 @@ function(aResourceID, aRequest) {
 
     this.callNextMethod();
 
-    this.observe(TP.core.History, 'TP.sig.LocationBack');
-    this.observe(TP.core.History, 'TP.sig.LocationChanged');
-    this.observe(TP.core.History, 'TP.sig.LocationNext');
+    //this.observe(TP.core.History, 'TP.sig.LocationBack');
+    //this.observe(TP.core.History, 'TP.sig.LocationChanged');
+    //this.observe(TP.core.History, 'TP.sig.LocationNext');
+
+    //  Initialize the controller list, ensuring this instance is always in the
+    //  list.
+    this.$set('controllers', TP.ac(this));
 
     return this;
 });
@@ -5864,6 +5828,52 @@ function() {
     theme = TP.ifEmpty(theme, this.$get('currentTheme'));
 
     return TP.ifEmpty(theme, '');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('handleAppStart',
+function(aSignal) {
+
+    /**
+     * @method handleAppStart
+     * @summary A handler that is called when the system has set up everything
+     *     required to run a TIBET application and is ready to start the GUI.
+     * @description At this level, this type does nothing.
+     * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
+     *     trip.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    var typeName,
+        appType,
+        newAppInst;
+
+    typeName = TP.sys.cfg('project.apptype');
+    if (TP.isEmpty(typeName)) {
+        typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
+    }
+
+    appType = TP.sys.require(typeName);
+
+    if (TP.notValid(appType)) {
+        TP.ifWarn() ?
+            TP.warn('Unable to locate application controller type: ' +
+                    typeName + '. ' +
+                    'Defaulting to TP.core.Application.',
+                    TP.LOG) : 0;
+        appType = TP.sys.require('TP.core.Application');
+    }
+
+    //  Create the new instance and define it as our singleton for any future
+    //  application instance requests.
+    newAppInst = appType.construct('Application', null);
+    TP.core.Application.set('singleton', newAppInst);
+
+    //  Tell our new singleton instance to start :).
+    newAppInst.start(aSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -5953,7 +5963,52 @@ function(aSignal) {
 TP.core.Application.Inst.defineMethod('isResponderFor',
 function(aSignal, isCapturing) {
 
+    /**
+     * @method isResponderFor
+     * @summary Whether or not the receiver is a responder for the supplied
+     *     signal and capturing mode.
+     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
+     *     receiver is an appropriate responder.
+     * @param {Boolean} isCapturing Whether or not the responder computation
+     *     machinery is computing the chain for the 'capturing' phase of the
+     *     event dispatch.
+     * @returns {Boolean} Whether or not the receiver is a valid responder for
+     *     the supplied signal and capturing mode.
+     */
+
+    //  The application instance is the backstop responder for all signals, but
+    //  does not involve itself in capturing mode by default.
     return TP.notTrue(isCapturing);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('popController', function() {
+
+    var controllers;
+
+    controllers = this.$get('controllers');
+
+    //  You can't remove the Application instance from the chain.
+    if (controllers.getSize() > 1) {
+        return controllers.shift();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('pushController', function(aController) {
+
+    if (TP.notValid(aController)) {
+        return this.raise('InvalidController');
+    }
+
+    //  TODO: should we unique these?
+    this.$get('controllers').unshift(aController);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

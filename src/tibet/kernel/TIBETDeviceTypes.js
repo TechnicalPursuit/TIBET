@@ -2593,7 +2593,7 @@ function(singletonName, normalizedEvent, aSignal) {
 
         signal,
         redirector,
-
+        redirected,
         dict,
 
         handlers,
@@ -2657,6 +2657,10 @@ function(singletonName, normalizedEvent, aSignal) {
     //  capture the information we'll need to see about redirections
     redirector = this.REDIRECTOR;
 
+    //  we force redirection but we only want to do it once. this flag keeps us
+    //  from dispatching the same signal to the redirector twice.
+    redirected = false;
+
     dict = this.get('observers');
 
     //  We process both the specific signal and the overall signal type so
@@ -2677,6 +2681,8 @@ function(singletonName, normalizedEvent, aSignal) {
             //  it to the receiver (since observe is for the device).
             if (handler !== redirector) {
                 signal.set('origin', this);
+            } else {
+                redirected = true;
             }
 
             try {
@@ -2685,6 +2691,9 @@ function(singletonName, normalizedEvent, aSignal) {
                 TP.raise(this, 'TP.sig.HandlerException', TP.ec(e));
             }
         }
+    } else {
+        redirected = true;
+        TP.handle(redirector, signal);
     }
 
     //  If the signal name wasn't the same as the signal's signal name then
@@ -2722,6 +2731,9 @@ function(singletonName, normalizedEvent, aSignal) {
                                 TP.ec(e));
                 }
             }
+        } else if (!redirected) {
+            signal.setSignalName(typename);
+            TP.handle(redirector, signal);
         }
     }
 

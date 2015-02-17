@@ -2503,23 +2503,6 @@ function(aHandlerName, aHandler) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getHandlers',
-function() {
-
-    /**
-     * @method getHandlers
-     * @summary Returns a hash containing any handlers defined on the receiver.
-     *     Note that handler definitions are local to the receiver and are not
-     *     inherited.
-     * @returns {TP.lang.Hash} The receiver's local handler dictionary.
-     */
-
-    // TODO: work on reflection aspect to let us find inherited handlers.
-    return this.get('$$handlers');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sys.defineMethod('fireNextSignal',
 function() {
 

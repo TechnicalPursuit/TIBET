@@ -600,6 +600,32 @@ TP.sig.ApplicationSignal.defineSubtype('TargetIn');
 TP.sig.ApplicationSignal.defineSubtype('TargetOut');
 
 //  ========================================================================
+//  CRUD SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('CrudSignal');
+
+// Don't rotate above CrudSignal for signal names.
+TP.sig.CrudSignal.isSignalingRoot(true);
+
+TP.sig.CrudSignal.Type.defineAttribute('defaultPolicy', TP.CRUD_FIRING);
+
+TP.sig.CrudSignal.Type.defineAttribute('bubbling', true);
+TP.sig.CrudSignal.Type.defineAttribute('cancelable', true);
+
+TP.sig.CrudSignal.defineSubtype('CrudItemSignal');
+
+TP.sig.CrudItemSignal.defineSubtype('CreateItem');
+TP.sig.CrudItemSignal.defineSubtype('RetrieveItem');
+TP.sig.CrudItemSignal.defineSubtype('UpdateItem');
+TP.sig.CrudItemSignal.defineSubtype('DeleteItem');
+
+TP.sig.CrudSignal.defineSubtype('CrudSelectionSignal');
+
+TP.sig.CrudSelectionSignal.defineSubtype('UpdateSelection');
+TP.sig.CrudSelectionSignal.defineSubtype('DeleteSelection');
+
+//  ========================================================================
 //  RESPONDER SIGNALS
 //  ========================================================================
 

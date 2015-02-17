@@ -2140,9 +2140,7 @@ function(aSignal, isCapturing) {
         }
     }
 
-    //  If we can't compute a URI controller and there is no iframe above
-    //  us, then return the Application singleton object
-    return TP.sys.getApplication();
+    return;
 });
 
 //  ------------------------------------------------------------------------
