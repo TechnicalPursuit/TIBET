@@ -1344,6 +1344,8 @@ function(aReturnValue, targetObj) {
         keys,
 
         packageWith,
+        packageType,
+
         fallbackWith;
 
     if (TP.isValid(retVal = aReturnValue)) {
@@ -1375,15 +1377,21 @@ function(aReturnValue, targetObj) {
         }
 
         //  If we have a 'packageWith' configured, then it's either a Function
-        //  or a Type (or String type name). Use it to package the results.
+        //  or a Type (or String type name or format). Use it to package the
+        //  results.
         if (TP.isValid(packageWith = this.get('packageWith'))) {
             if (TP.isCallable(packageWith)) {
                 retVal = packageWith(retVal);
             } else if (TP.isType(packageWith)) {
                 retVal = packageWith.construct(retVal);
-            } else if (TP.isString(packageWith) &&
-                        TP.isType(packageWith = packageWith.asType())) {
-                retVal = packageWith.construct(retVal);
+            } else if (TP.isString(packageWith)) {
+                if (TP.isType(packageType = packageWith.asType())) {
+                    retVal = packageType.construct(retVal);
+                } else {
+                    retVal = TP.format(retVal,
+                                        packageWith,
+                                        TP.hc('shouldWrap', true));
+                }
             }
         }
     } else if (TP.isCallable(fallbackWith = this.get('fallbackWith'))) {
