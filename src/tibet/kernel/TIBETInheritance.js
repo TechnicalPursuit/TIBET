@@ -1584,7 +1584,8 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
      */
 
     var key,
-        orig,
+        orgid,
+        signame,
         hasOrigin,
         handlers,
         handler,
@@ -1598,16 +1599,28 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
         return;
     }
 
-    orig = TP.ifInvalid(aSignal.getOrigin(), '');
-    orig = TP.gid(orig).split('#').last();
+    //  Process the origin. Origins that are "generated" such as TIBET OIDs or
+    //  DOM paths aren't observable so they're not relevant for.handler names.
+    orgid = TP.ifInvalid(aSignal.getOrigin(), '');
+    orgid = TP.gid(orgid).split('#').last();
 
-    hasOrigin = TP.isEmpty(orig) ? false : true;
+    if (TP.regex.JS_IDENTIFIER.test(orgid)) {
+        //  Not all valid IDs are still useful. Watch for OIDs in particular.
+        if (TP.regex.INSTANCE_OID.test(orgid)) {
+            orgid = '';
+        }
+    } else {
+        orgid = '';
+    }
 
-    key = aSignal.getSignalName() + '.' +
-                aSignal.getTypeName() + '.' +
-                TP.ifEmpty(orig, TP.ANY) + '.' +
+    hasOrigin = TP.isEmpty(orgid) ? false : true;
+
+    signame = aSignal.getSignalName();
+
+    key = signame + '.' + aSignal.getTypeName() + '.' +
+                TP.ifEmpty(orgid, TP.ANY) + '.' +
                 (dontTraverseSpoofs || false) + '.' +
-                startSignalName || aSignal.getSignalName();
+                (startSignalName || signame);
 
     handlers = this.$get('$$handlers');
     if (TP.notValid(handlers)) {
@@ -1622,26 +1635,26 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
         }
     }
 
+    sigType = aSignal.getType();
+
     //  If the startSignalName wasn't supplied or it's the same as the signal's
     //  'direct' signal name, then go ahead and consider that the receiver may
     //  have the handler directly on it without traversing the type chain.
-    if (TP.isEmpty(startSignalName) ||
-        startSignalName === aSignal.getSignalName()) {
+    if (TP.isEmpty(startSignalName) || startSignalName === signame) {
 
         //  check first for explicit one to avoid overhead when the handler
         //  is specific to the signal
 
         if (hasOrigin) {
-            fName = aSignal.getType().getHandlerName(orig, false, aSignal);
 
+            fName = sigType.getHandlerName(orgid, false, aSignal);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = aSignal.getType().getHandlerName(orig, true, aSignal);
-
+            fName = sigType.getHandlerName(orgid, true, aSignal);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
@@ -1649,14 +1662,14 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             }
         }
 
-        fName = aSignal.getType().getHandlerName(null, false, aSignal);
+        fName = sigType.getHandlerName(null, false, aSignal);
         if (TP.canInvoke(this, fName)) {
             handler = this[fName];
             handlers.atPut(key, handler);
             return handler;
         }
 
-        fName = aSignal.getType().getHandlerName(null, true, aSignal);
+        fName = sigType.getHandlerName(null, true, aSignal);
         if (TP.canInvoke(this, fName)) {
             handler = this[fName];
             handlers.atPut(key, handler);
@@ -1703,14 +1716,14 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             //  instance.
 
             if (hasOrigin) {
-                fName = sigType.getHandlerName(orig, false);
+                fName = sigType.getHandlerName(orgid, false);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
-                fName = sigType.getHandlerName(orig, true);
+                fName = sigType.getHandlerName(orgid, true);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
