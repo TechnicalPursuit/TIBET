@@ -2262,7 +2262,7 @@ TP.regex.META_TYPENAME = /\.meta\./;
 
 TP.regex.INTERNAL_TYPENAME = /^(Inst|Type|Local)$/i;
 
-TP.regex.INSTANCE_OID = /^([a-zA-Z_$]{1}[a-zA-Z0-9_$]*?)\$([a-zA-Z0-9]+)$/;
+TP.regex.INSTANCE_OID = /^([a-zA-Z_$]{1}[a-zA-Z0-9_$]*?)\$([a-zA-Z0-9]{12,})$/;
 
 TP.regex.LOCAL_TRACK = /Local/;
 TP.regex.ROOT_OBJECTS = /Object|TP.lang.RootObject|TP.lang.Object/;
