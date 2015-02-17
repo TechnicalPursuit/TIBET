@@ -39,33 +39,33 @@ TP.xctrls.listbox.finalizeTraits();
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'items',
-        {value: TP.cpc('*[class~="item"]', false)});
+        {value: TP.cpc('*[class~="item"]', TP.hc('shouldCollapse', false))});
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'selectedItem',
-        {value: TP.cpc('xctrls|textitem[pclass|selected]', true)});
+        {value: TP.cpc('xctrls|textitem[pclass|selected]', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'itemWithValue',
-        {value: TP.xpc('./html:div/xctrls:textitem/xctrls:value[text() = "{{1}}"]/..', true)});
+        {value: TP.xpc('./html:div/xctrls:textitem/xctrls:value[text() = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'selectedValue',
-        {value: TP.xpc('string(./html:div/xctrls:textitem[@pclass:selected = "true"]/xctrls:value)', true)});
+        {value: TP.xpc('string(./html:div/xctrls:textitem[@pclass:selected = "true"]/xctrls:value)', TP.hc('shouldCollapse', true))});
 
 //  TP.xctrls.MultiItemElement getters
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'body',
-        {value: TP.xpc('.//xctrls:body', true)});
+        {value: TP.xpc('.//xctrls:body', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'firstTransform',
-        {value: TP.xpc('.//tsh:transform[1]', true)});
+        {value: TP.xpc('.//tsh:transform[1]', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'transformWithName',
-        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{1}}"]/..', true)});
+        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 

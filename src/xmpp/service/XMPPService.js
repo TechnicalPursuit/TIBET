@@ -129,8 +129,9 @@ TP.core.XMPPService.Type.defineAttribute('mode',
 //  XMPP 'connection type' ('BINDING' or another type)
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'conntype',
-        {value: TP.xpc('./$def:X-XMPP-CONN-TYPE', true).
-                                set('extractWith', 'value')});
+        {value: TP.xpc('./$def:X-XMPP-CONN-TYPE',
+                                TP.hc('shouldCollapse', true,
+                                        'extractWith', 'value'))});
 
 TP.core.XMPPService.register();
 

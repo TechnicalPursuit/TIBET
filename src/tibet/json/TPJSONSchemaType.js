@@ -68,6 +68,13 @@ function(aValue) {
         valJSON,
         valJS,
 
+        schemaStr,
+        results,
+        typeName,
+
+        type,
+        func,
+
         errors;
 
     if (TP.notValid(aValue)) {
@@ -105,6 +112,43 @@ function(aValue) {
         valJS = valJS.data;
     }
 
+    //  Stringify the schema JSON and use a global regexp to loop through it
+    //  looking for 'type: <typename>' constructs. If the typename isn't one
+    //  that JSON Schema considers to be a built in, register a custom type
+    //  handler with the validator that knows how to validate occurrences of
+    //  that type.
+    schemaStr = TP.json(jsonSchema);
+
+    //  Global regexp needs a reset
+    TP.regex.JSON_SCHEMA_TYPENAME_EXTRACT.lastIndex = 0;
+    while (TP.isValid(results = TP.regex.JSON_SCHEMA_TYPENAME_EXTRACT.exec(
+                                                                schemaStr))) {
+        typeName = results.at(1);
+
+        //  If the extracted type name is a JSON Schema built in, move on.
+        if (/array|boolean|integer|number|null|object|string/.test(typeName)) {
+            continue;
+        }
+
+        //  Make sure that we got a valid type that the system knows about.
+        if (!TP.isType(type = TP.sys.getTypeByName(typeName))) {
+            this.raise('TP.sig.InvalidType', typeName);
+            return false;
+        }
+
+        /* eslint-disable no-loop-func */
+        func = function(val) {
+            return func.type.validate(val);
+        };
+        /* eslint-enable no-loop-func */
+
+        //  We need a reference to our type inside of the function (to avoid
+        //  closure problems).
+        func.type = type;
+
+        schemaValidator.addType(typeName, func);
+    }
+
     //  Invoke the schema validator. It will return a non-empty 'errors' object
     //  if there are errors.
     errors = schemaValidator.validate(jsonSchema, valJS);
@@ -121,7 +165,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Type.defineMethod('setSchema',
+TP.json.JSONSchemaType.Type.defineMethod('setSchema',
 function(aSchema) {
 
     /**
@@ -138,7 +182,10 @@ function(aSchema) {
 
     //  Because the validator we use expects a JS object that's a 'plain object'
     //  we use the low-level JSON.parse() here.
-    this.set('schema', JSON.parse(schemaJSON));
+
+    //  NB: We use '$set' here because we don't want to recurse back into this
+    //  method.
+    this.$set('schema', JSON.parse(schemaJSON));
 
     return this;
 });

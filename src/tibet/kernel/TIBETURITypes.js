@@ -3756,7 +3756,7 @@ function(aRequest, aResult, aResource) {
                 TP.regex.BARENAME.test(fragment)) {
             fragment = fragment;
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
-            fragment = TP.apc(fragment, true);
+            fragment = TP.apc(fragment, TP.hc('shouldCollapse', true));
             fragment.set('shouldMake', this.get('shouldCreateContent'));
         }
 

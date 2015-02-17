@@ -18,11 +18,11 @@ TP.sherpa.Element.defineSubtype('sherpa:logview');
 
 TP.sherpa.logview.Inst.defineAttribute(
         'body',
-        {value: TP.cpc('.body', true)});
+        {value: TP.cpc('.body', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.logview.Inst.defineAttribute(
         'entryList',
-        {value: TP.cpc('#entryList', true)});
+        {value: TP.cpc('#entryList', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

@@ -7,7 +7,7 @@
       "properties": {
         "street_address": { "type": "string" },
         "city":           { "type": "string" },
-        "state":          { "type": "string" }
+        "state":          { "type": "TP.tibet.usstatecodes" }
       },
       "required": ["street_address", "city", "state"]
     },

@@ -2279,6 +2279,9 @@ TP.regex.JS_ASSIGNMENT =
 TP.regex.FACET_SLOT_NAME_MATCH = new RegExp('\\$(\\w+)_(' +
                                             TP.FACET_NAMES.join('|') +
                                             ')');
+
+TP.regex.JSON_SCHEMA_TYPENAME_EXTRACT = /"type":"([^"]+)"/g;    //  needs reset
+
 //  ---
 //  character testing
 //  ---

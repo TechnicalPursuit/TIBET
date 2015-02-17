@@ -191,6 +191,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('getValidatingAspectNames',
+function() {
+
+    /**
+     * @method getValidatingAspectNames
+     * @summary Returns an Array of the names of the aspects to validate on the
+     *     receiver.
+     * @returns {Array} A list of the names of aspects to validate on the
+     *     receiver.
+     */
+
+    var aspectsToCheck,
+        index;
+
+    aspectsToCheck = this.callNextMethod();
+
+    //  We want to filter out the 'data' slot
+    if ((index = aspectsToCheck.indexOf('data')) !== TP.NOT_FOUND) {
+        aspectsToCheck.splice(index, 1);
+    }
+
+    return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('handleChange',
 function(aSignal) {
 
@@ -599,6 +625,8 @@ function(data) {
             return;
         }
     } else {
+
+        //  TODO: Make sure this is a TP.core.DocumentNode
         xmlData = data;
     }
 
@@ -658,19 +686,17 @@ TP.core.AccessPath.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('apc',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method apc
      * @summary Returns a newly initialized access path instance.
      * @param {String} aPath The path as a String.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.AccessPath} The new instance.
      */
 
-    return TP.core.AccessPath.construct(aPath, shouldCollapse);
+    return TP.core.AccessPath.construct(aPath, config);
 });
 
 //  ------------------------------------------------------------------------
@@ -1016,23 +1042,27 @@ TP.core.AccessPath.Inst.defineAttribute('$addressesToRemove');
 //  ------------------------------------------------------------------------
 
 TP.core.AccessPath.Inst.defineMethod('init',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.AccessPath} The receiver.
      */
 
     this.callNextMethod();
 
     this.set('srcPath', aPath);
-    this.set('shouldMake', false);
-    this.set('shouldCollapse', TP.ifInvalid(shouldCollapse, false));
+
+    if (TP.isKindOf(config, TP.lang.Hash)) {
+        this.set('shouldMake', config.atIfInvalid('shouldMake', false));
+        this.set('packageWith', config.atIfInvalid('packageWith', null));
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', false));
+        this.set('extractWith', config.atIfInvalid('extractWith', null));
+        this.set('fallbackWith', config.atIfInvalid('fallbackWith', null));
+    }
 
     this.set('$invalidatedPaths', TP.ac());
     this.set('$addressesToRemove', TP.ac());
@@ -1764,16 +1794,13 @@ TP.core.CompositePath.Inst.defineAttribute('paths');
 //  ------------------------------------------------------------------------
 
 TP.core.CompositePath.Inst.defineMethod('init',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false. Note that
-     *     this type configures it's 'last path' with this flag.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.CompositePath} The receiver.
      */
 
@@ -1782,7 +1809,7 @@ function(aPath, shouldCollapse) {
 
         paths;
 
-    this.callNextMethod('value', shouldCollapse);
+    this.callNextMethod('value', config);
 
     //  Split along '.(' or ').' and then convert the results by stripping off
     //  any extraneous '(' or ')' (which will sometimes occur on the 'start' or
@@ -1798,11 +1825,13 @@ function(aPath, shouldCollapse) {
     //  2.
     paths = TP.ac();
     for (i = 0; i < pathStrs.getSize(); i += 2) {
-        paths.push(TP.apc(pathStrs.at(i), true));
+        paths.push(TP.apc(pathStrs.at(i), TP.hc('shouldCollapse', true)));
     }
 
-    //  Configure the 'last path' to honor the shouldCollapse flag.
-    paths.last().set('shouldCollapse', shouldCollapse);
+    if (TP.isValid(config)) {
+        //  Configure the 'last path' to honor the shouldCollapse flag.
+        paths.last().set('shouldCollapse', config.at('shouldCollapse'));
+    }
 
     this.set('paths', paths);
 
@@ -2060,15 +2089,13 @@ function(addressPart) {
 //  ------------------------------------------------------------------------
 
 TP.core.SimpleTIBETPath.Inst.defineMethod('init',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
@@ -2081,7 +2108,7 @@ function(aPath, shouldCollapse) {
         path = aPath;
     }
 
-    this.callNextMethod(path, shouldCollapse);
+    this.callNextMethod(path, config);
 
     return this;
 });
@@ -2433,16 +2460,14 @@ TP.core.SimpleTIBETPath.defineSubtype('ComplexTIBETPath');
 
 //  avoid binding and apply issues by creating our alias as a wrapper
 TP.definePrimitive('tpc',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method tpc
      * @summary Returns a newly initialized TIBETSimplePath or
      *     TIBETComplexPath instance.
      * @param {String} aPath The path as a String.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.SimpleTIBETPath|TP.core.ComplexTIBETPath} The new
      *     instance.
      */
@@ -3303,7 +3328,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(tail).set('shouldMake', shouldMake),
+                        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
                                 attributeValue,
                                 false);
 
@@ -3409,7 +3434,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(tail).set('shouldMake', shouldMake),
+                        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
                                 attributeValue,
                                 false);
 
@@ -3438,7 +3463,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(head).set('shouldMake', shouldMake),
+        targetObj.set(TP.apc(head, TP.hc('shouldMake', shouldMake)),
                          val,
                          false);
     }
@@ -3454,7 +3479,7 @@ function(targetObj, attributeValue, shouldSignal) {
         thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(tail).set('shouldMake', shouldMake),
+        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
                 attributeValue,
                 false);
 
@@ -3605,7 +3630,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                     //  This 'set' call will take care of registering the
                     //  changed address.
-                    val.set(TP.apc(tail).set('shouldMake', shouldMake),
+                    val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
                             attributeValue,
                             false);
 
@@ -3633,7 +3658,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(head).set('shouldMake', shouldMake),
+        targetObj.set(TP.apc(head, TP.hc('shouldMake', shouldMake)),
                          val,
                          false);
     }
@@ -3649,7 +3674,7 @@ function(targetObj, attributeValue, shouldSignal) {
         thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(tail).set('shouldMake', shouldMake),
+        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
                 attributeValue,
                 false);
 
@@ -4592,12 +4617,13 @@ TP.core.XTensionPath.defineSubtype('CSSPath');
 
 //  avoid binding and apply issues by creating our alias as a wrapper
 TP.definePrimitive('cpc',
-function() {
+function(aPath, config) {
 
     /**
      * @method cpc
      * @summary Returns a newly initialized CSSPath instance.
      * @param {String} aPath The CSS path as a String.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.CSSPath} The new instance.
      */
 
@@ -4635,15 +4661,13 @@ TP.core.XMLPath.defineSubtype('BarenamePath');
 //  ------------------------------------------------------------------------
 
 TP.core.BarenamePath.Inst.defineMethod('init',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.BarenamePath} The receiver.
      */
 
@@ -4772,7 +4796,7 @@ TP.core.XMLPath.defineSubtype('XPathPath');
 
 //  avoid binding and apply issues by creating our alias as a wrapper
 TP.definePrimitive('xpc',
-function() {
+function(aPath, config, forceNative) {
 
     /**
      * @method xpc
@@ -4781,6 +4805,7 @@ function() {
      *     loaded. The default is a native path, unless namespace-qualified
      *     extension functions are found.
      * @param {String} aPath The XPath as a String.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @param {Boolean} forceNative Whether or not the path should be 'forced'
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
@@ -5063,7 +5088,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.XPathPath.Inst.defineMethod('init',
-function(aPath, shouldCollapse, forceNative) {
+function(aPath, config, forceNative) {
 
     /**
      * @method init
@@ -5072,9 +5097,7 @@ function(aPath, shouldCollapse, forceNative) {
      *     default is a native path, unless namespace-qualified extension
      *     functions are found.
      * @param {String} aPath The XPath as a String.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @param {Boolean} forceNative Whether or not the path should be 'forced'
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
@@ -5104,7 +5127,7 @@ function(aPath, shouldCollapse, forceNative) {
     //  Note here how we pass the modified path so that 'srcPath' gets properly
     //  set (even though 'setPath' did that above, our supertype won't know
     //  that).
-    this.callNextMethod(thePath, shouldCollapse);
+    this.callNextMethod(thePath, config);
 
     return this;
 });
@@ -5998,7 +6021,7 @@ function() {
 
 TP.w3.DTDInfo.Inst.defineAttribute(
         'elements',
-        {value: TP.apc('element', true)});
+        {value: TP.apc('element', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

@@ -589,7 +589,9 @@ TP.core.XMLContent.defineSubtype('test.SimpleXMLContentType');
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'lastName',
         {
-            value: TP.xpc('/emp/lastName', true).set('extractWith', 'value'),
+            value: TP.xpc('/emp/lastName',
+                       TP.hc('shouldCollapse', true,
+                                'extractWith', 'value')),
             valid: {
                 dataType: String
             }
@@ -598,7 +600,9 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute(
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'firstName',
         {
-            value: TP.xpc('/emp/firstName', true).set('extractWith', 'value'),
+            value: TP.xpc('/emp/firstName',
+                       TP.hc('shouldCollapse', true,
+                                'extractWith', 'value')),
             valid: {
                 dataType: String
             }
@@ -607,7 +611,9 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute(
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'age',
         {
-            value: TP.xpc('/emp/age', true).set('extractWith', 'value'),
+            value: TP.xpc('/emp/age',
+                       TP.hc('shouldCollapse', true,
+                                'extractWith', 'value')),
             valid: {
                 dataType: Number
             }
@@ -616,8 +622,10 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute(
 TP.test.SimpleXMLContentType.Inst.defineAttribute(
         'SSN',
         {
-            value: TP.xpc('/emp/SSN', true).set('extractWith', 'value').
-                                                set('shouldMake', true),
+            value: TP.xpc('/emp/SSN',
+                       TP.hc('shouldCollapse', true,
+                                'extractWith', 'value',
+                                'shouldMake', true)),
             valid: {
                 dataType: 'TP.test.SSN'
             },
@@ -922,7 +930,7 @@ function() {
         testObj.set('address',
                     TP.hc('street_address', '111 Main St.',
                             'city', 'Anytown',
-                            'state', 'Anystate'));
+                            'state', 'WA'));
 
         testObj.set('age', 48);
         testObj.set('gender', 'male');

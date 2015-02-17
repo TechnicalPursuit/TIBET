@@ -99,6 +99,63 @@ types.
 		</xs:restriction>
 	</xs:simpleType>
 
+	<!-- US state codes -->
+	<xs:simpleType name="tibet:usstatecodes">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AL"/>
+			<xs:enumeration value="AK"/>
+			<xs:enumeration value="AZ"/>
+			<xs:enumeration value="AR"/>
+			<xs:enumeration value="CA"/>
+			<xs:enumeration value="CO"/>
+			<xs:enumeration value="CT"/>
+			<xs:enumeration value="DE"/>
+			<xs:enumeration value="DC"/>
+			<xs:enumeration value="FL"/>
+			<xs:enumeration value="GA"/>
+			<xs:enumeration value="HI"/>
+			<xs:enumeration value="IL"/>
+			<xs:enumeration value="IN"/>
+			<xs:enumeration value="IA"/>
+			<xs:enumeration value="KS"/>
+			<xs:enumeration value="KY"/>
+			<xs:enumeration value="LA"/>
+			<xs:enumeration value="ME"/>
+			<xs:enumeration value="MD"/>
+			<xs:enumeration value="MA"/>
+			<xs:enumeration value="MI"/>
+			<xs:enumeration value="MN"/>
+			<xs:enumeration value="MS"/>
+			<xs:enumeration value="MO"/>
+			<xs:enumeration value="MT"/>
+			<xs:enumeration value="NE"/>
+			<xs:enumeration value="NV"/>
+			<xs:enumeration value="NH"/>
+			<xs:enumeration value="NJ"/>
+			<xs:enumeration value="NM"/>
+			<xs:enumeration value="NY"/>
+			<xs:enumeration value="NC"/>
+			<xs:enumeration value="ND"/>
+			<xs:enumeration value="OH"/>
+			<xs:enumeration value="OK"/>
+			<xs:enumeration value="OR"/>
+			<xs:enumeration value="PA"/>
+			<xs:enumeration value="RI"/>
+			<xs:enumeration value="SC"/>
+			<xs:enumeration value="SD"/>
+			<xs:enumeration value="TN"/>
+			<xs:enumeration value="TX"/>
+			<xs:enumeration value="UT"/>
+			<xs:enumeration value="VT"/>
+			<xs:enumeration value="VA"/>
+			<xs:enumeration value="WA"/>
+			<xs:enumeration value="WN"/>
+			<xs:enumeration value="WV"/>
+			<xs:enumeration value="WI"/>
+			<xs:enumeration value="WY"/>
+		</xs:restriction>
+	</xs:simpleType>
+
 	<!-- US census bureau regions -->
 	<xs:simpleType name="tibet:usregions">
 		<xs:restriction base="xs:string">
@@ -106,6 +163,23 @@ types.
 			<xs:enumeration value="Midwest"/>
 			<xs:enumeration value="South"/>
 			<xs:enumeration value="West"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Missouri Driver License -->
+	<xs:simpleType name="tibet:mo_license">
+		<xs:restriction base="xs:string">
+            <xs:pattern value="^[a-zA-Z]\d{5,9}$|^\d{9}$"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Credit card providers -->
+	<xs:simpleType name="tibet:cc_providers">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Visa"/>
+			<xs:enumeration value="MasterCard"/>
+			<xs:enumeration value="Discover"/>
+			<xs:enumeration value="American Express"/>
 		</xs:restriction>
 	</xs:simpleType>
 

@@ -41,6 +41,13 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/jxon-tpi.js" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.jxon = JXON;
+        ]]>
+    </script>
+
     <script src="~lib_deps/forge-tpi.min.js" no-minify="true" no-lint="true"/>
     <script>
         <![CDATA[

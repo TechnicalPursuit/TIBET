@@ -22,20 +22,20 @@ TP.sherpa.tile.defineSubtype('sherpa:editortile');
 
 TP.sherpa.editortile.Inst.defineAttribute(
         'headerText',
-        {value: TP.cpc('.header_text', true)});
+        {value: TP.cpc('.header_text', TP.hc('shouldCollapse', true))});
 
 //  'path' object back
 TP.sherpa.editortile.Inst.defineAttribute(
         'textInput',
-        {value: TP.cpc('xctrls|codeeditor', true)});
+        {value: TP.cpc('xctrls|codeeditor', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.editortile.Inst.defineAttribute(
         'propertyList',
-        {value: TP.cpc('.editortile_property_list', true)});
+        {value: TP.cpc('.editortile_property_list', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.editortile.Inst.defineAttribute(
         'headers',
-        {value: TP.cpc('h1', true)});
+        {value: TP.cpc('h1', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.editortile.Inst.defineAttribute('currentTPElement');
 

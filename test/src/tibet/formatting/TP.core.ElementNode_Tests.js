@@ -482,11 +482,13 @@ function() {
                 elem = TP.byOID('textarea');
                 test.assert.isElement(elem);
 
+                TP.core.DELocale.set('dateFormat', '%{mmmm}');
+
                 elem.set('value', Date.constructDayOne(1900));
 
                 test.assert.isEqualTo(
                     elem.getValue(),
-                    '1900-01-01T06:00:00');
+                    'Januar');
 
                 //  ---
 

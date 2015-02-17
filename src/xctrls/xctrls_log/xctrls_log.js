@@ -39,15 +39,15 @@ TP.xctrls.log.finalizeTraits();
 
 TP.xctrls.log.Inst.defineAttribute(
         'body',
-        {value: TP.cpc('*[tibet|pelem="body"]', true)});
+        {value: TP.cpc('*[tibet|pelem="body"]', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.log.Inst.defineAttribute(
         'firstTransform',
-        {value: TP.xpc('.//tsh:transform[1]', true)});
+        {value: TP.xpc('.//tsh:transform[1]', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.log.Inst.defineAttribute(
         'transformWithName',
-        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{1}}"]/..', true)});
+        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Type Methods
