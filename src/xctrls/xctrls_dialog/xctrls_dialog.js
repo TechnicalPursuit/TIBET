@@ -37,11 +37,11 @@ TP.xctrls.dialog.finalizeTraits();
 
 TP.xctrls.dialog.Inst.defineAttribute(
         'body',
-        {value: TP.cpc('*[tibet|pelem="body"]', true)});
+        {value: TP.cpc('*[tibet|pelem="body"]', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.dialog.Inst.defineAttribute(
         'curtain',
-        {value: TP.xpc('//xctrls:curtain[1]', true).
+        {value: TP.xpc('//xctrls:curtain[1]', TP.hc('shouldCollapse', true)).
             set('fallbackWith',
                 function(windowContext) {
                     var curtainElem,

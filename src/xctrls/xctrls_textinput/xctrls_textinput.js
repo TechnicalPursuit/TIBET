@@ -37,7 +37,7 @@ TP.xctrls.textinput.finalizeTraits();
 
 TP.xctrls.textinput.Inst.defineAttribute(
         'valuePElem',
-        {value: TP.cpc('*[tibet|pelem="value"]', true)});
+        {value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

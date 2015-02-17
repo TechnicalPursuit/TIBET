@@ -37,17 +37,23 @@ TP.goog.GoogleSearchData.Inst.defineAttribute(
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'estimatedResultCount',
         {value:
-                TP.apc('responseData.cursor.estimatedResultCount', true)});
+                TP.apc('responseData.cursor.estimatedResultCount',
+                        TP.hc('shouldCollapse', true))
+        });
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'currentPageIndex',
         {value:
-                TP.apc('responseData.cursor.currentPageIndex', true)});
+                TP.apc('responseData.cursor.currentPageIndex',
+                        TP.hc('shouldCollapse', true)
+        )});
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'moreResultsUrl',
         {value:
-                TP.apc('responseData.cursor.moreResultsUrl', true)});
+                TP.apc('responseData.cursor.moreResultsUrl',
+                        TP.hc('shouldCollapse', true))
+        });
 
 //  ------------------------------------------------------------------------
 //  end

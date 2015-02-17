@@ -198,73 +198,101 @@ function(forceRefresh) {
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'version',
-        {value: TP.xpc('./$def:VERSION', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:VERSION',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'fullname',
-        {value: TP.xpc('./$def:FN', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:FN',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'shortname',
-        {value: TP.xpc('./$def:N', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:N',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'jid',
-        {value: TP.xpc('./$def:JABBERID', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:JABBERID',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'url',
-        {value: TP.xpc('./$def:URL', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:URL',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'role',
-        {value: TP.xpc('./$def:ROLE', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:ROLE',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'orgname',
-        {value: TP.xpc('./$def:ORG/$def:ORGNAME', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:ORG/$def:ORGNAME',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'orgunit',
-        {value: TP.xpc('./$def:ORG/$def:ORGUNIT', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:ORG/$def:ORGUNIT',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'key',
-        {value: TP.xpc('./$def:KEY', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:KEY',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'secretkey',
-        {value: TP.xpc('./$def:X-SECRET-KEY', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:X-SECRET-KEY',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'username',
-        {value: TP.xpc('./$def:X-USERNAME', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:X-USERNAME',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'password',
-        {value: TP.xpc('./$def:X-PASSWORD', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:X-PASSWORD',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'auth',
-        {value: TP.xpc('./$def:X-AUTH', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:X-AUTH',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 TP.vcard_temp.vCard.Inst.defineAttribute(
         'iswebdav',
-        {value: TP.xpc('./$def:X-IS-WEBDAV', true).
-                                    set('extractWith', 'value')});
+        {value: TP.xpc('./$def:X-IS-WEBDAV',
+                        TP.hc('shouldCollapse', true,
+                                'extractWith', 'value'))
+        });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

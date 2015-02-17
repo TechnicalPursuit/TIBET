@@ -37,19 +37,19 @@ TP.xctrls.tabbox.finalizeTraits();
 
 TP.xctrls.tabbox.Inst.defineAttribute(
         'tabbar',
-        {value: TP.cpc('xctrls|tabbar', true)});
+        {value: TP.cpc('xctrls|tabbar', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.tabbox.Inst.defineAttribute(
         'panels',
-        {value: TP.cpc('xctrls|panel', false)});
+        {value: TP.cpc('xctrls|panel', TP.hc('shouldCollapse', false))});
 
 TP.xctrls.tabbox.Inst.defineAttribute(
         'selectedPanel',
-        {value: TP.cpc('xctrls|panel[pclass|selected]', true)});
+        {value: TP.cpc('xctrls|panel[pclass|selected]', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.tabbox.Inst.defineAttribute(
         'panelWithValue',
-        {value: TP.xpc('./xctrls:panel/xctrls:value[text() = "{{1}}"]/..', true)});
+        {value: TP.xpc('./xctrls:panel/xctrls:value[text() = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

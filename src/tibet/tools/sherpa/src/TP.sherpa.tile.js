@@ -18,19 +18,19 @@ TP.sherpa.Element.defineSubtype('sherpa:tile');
 
 TP.sherpa.tile.Inst.defineAttribute(
         'header',
-        {value: TP.cpc('.header', true)});
+        {value: TP.cpc('.header', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
         'headerText',
-        {value: TP.cpc('.header_text', true)});
+        {value: TP.cpc('.header_text', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
         'closeMark',
-        {value: TP.cpc('.close_mark', true)});
+        {value: TP.cpc('.close_mark', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
         'body',
-        {value: TP.cpc('.body', true)});
+        {value: TP.cpc('.body', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
