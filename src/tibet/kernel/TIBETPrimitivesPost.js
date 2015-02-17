@@ -3820,9 +3820,9 @@ function(anObject, anAspect, autoCollapse) {
 
     val = null;
 
-    //  if the object is empty but the aspect is a URI, try to get the value of
-    //  the URI's resource.
-    if (TP.isURI(anAspect)) {
+    //  if the aspect is a URI (but only if it's an absolute URI with a scheme),
+    //  try to get the value of the URI's resource.
+    if (TP.isURI(anAspect) && TP.regex.HAS_SCHEME.test(TP.str(anAspect))) {
         val = TP.val(TP.uc(anAspect).getResource());
     }
 
