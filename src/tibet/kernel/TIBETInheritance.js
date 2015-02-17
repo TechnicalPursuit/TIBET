@@ -1583,18 +1583,37 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
      *     was) invoked.
      */
 
-    var orig,
+    var key,
+        orig,
         hasOrigin,
-
+        handlers,
+        handler,
         fName,
         sigTypeNames,
         startNameIndex,
-
         i,
         sigType;
 
     if (TP.notValid(aSignal)) {
         return;
+    }
+
+    key = aSignal.getSignalName() + '.' +
+                aSignal.getTypeName() + '.' +
+                dontTraverseSpoofs + '.' +
+                startSignalName;
+
+    handlers = this.$get('$$handlers');
+    if (TP.notValid(handlers)) {
+        handlers = TP.hc();
+        this.$set('$$handlers', handlers);
+    } else {
+        handler = handlers.at(key);
+        if (handler === TP.NO_RESULT) {
+            return;
+        } else if (TP.isValid(handler)) {
+            return handler;
+        }
     }
 
     orig = TP.ifInvalid(aSignal.getOrigin(), '');
@@ -1615,24 +1634,32 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             fName = aSignal.getType().getHandlerName(orig, false, aSignal);
 
             if (TP.canInvoke(this, fName)) {
-                return this[fName];
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
             }
 
             fName = aSignal.getType().getHandlerName(orig, true, aSignal);
 
             if (TP.canInvoke(this, fName)) {
-                return this[fName];
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
             }
         }
 
         fName = aSignal.getType().getHandlerName(null, false, aSignal);
         if (TP.canInvoke(this, fName)) {
-            return this[fName];
+            handler = this[fName];
+            handlers.atPut(key, handler);
+            return handler;
         }
 
         fName = aSignal.getType().getHandlerName(null, true, aSignal);
         if (TP.canInvoke(this, fName)) {
-            return this[fName];
+            handler = this[fName];
+            handlers.atPut(key, handler);
+            return handler;
         }
     }
 
@@ -1643,6 +1670,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
     //  and we want that to be considered as well.
     if (aSignal.isSpoofed()) {
         if (dontTraverseSpoofs) {
+            handlers.atPut(key, TP.NO_RESULT);
             return;
         }
 
@@ -1676,26 +1704,36 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             if (hasOrigin) {
                 fName = sigType.getHandlerName(orig, false);
                 if (TP.canInvoke(this, fName)) {
-                    return this[fName];
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
                 }
 
                 fName = sigType.getHandlerName(orig, true);
                 if (TP.canInvoke(this, fName)) {
-                    return this[fName];
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
                 }
             }
 
             fName = sigType.getHandlerName(null, false);
             if (TP.canInvoke(this, fName)) {
-                return this[fName];
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
             }
 
             fName = sigType.getHandlerName(null, true);
             if (TP.canInvoke(this, fName)) {
-                return this[fName];
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
             }
         }
     }
+
+    handlers.atPut(key, TP.NO_RESULT);
 
     return;
 });
@@ -1731,7 +1769,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
 
     if (TP.isCallable(handlerFunc = this.getHandler(
                             aSignal, dontTraverseSpoofs, startSignalName))) {
-        return handlerFunc.apply(this, TP.ac(aSignal));
+        return handlerFunc.call(this, aSignal);
     }
 
     return;

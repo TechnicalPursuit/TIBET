@@ -73,6 +73,10 @@ TP.sys.setcfg('project.rootpage', null);
 //  the project's default home page. The default value is home.xhtml.
 TP.sys.setcfg('project.homepage', null);
 
+//  the application type used for this project. default is to build the name
+//  from APP.{{appname}}.Application and fall back to TP.core.Application.
+TP.sys.setcfg('project.apptype', null);
+
 
 //  ---
 //  phase control

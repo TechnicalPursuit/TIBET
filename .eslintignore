@@ -1,4 +1,4 @@
-node_modules/*
+node_modules/**
 deps/**
-lib/src/*
+lib/src/**
 **/*.__appname__.*.js

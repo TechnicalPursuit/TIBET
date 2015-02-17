@@ -5,7 +5,7 @@
  *     for handling events which reach the application controller (this type).
  */
 
-TP.core.TemplatedApplicationTag.defineSubtype('APP.{{appname}}:app');
+TP.core.TemplatedTag.defineSubtype('APP.{{appname}}:app');
 
 /*
  * For information on how to expand the functionality in this type visit:
