@@ -60,6 +60,7 @@
         "js-beautify": "*",
         "jsDAV": "*",
         "jshint": "*",
+        "jxon": "TechnicalPursuit/jxon",
         "mocha": "*",
         "morgan": "*",
         "minimist": "*",

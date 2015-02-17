@@ -137,6 +137,7 @@ targets.build_deps = function(make) {
         targets.rollup_forge).then(
         targets.rollup_jjv).then(
         targets.rollup_jquery).then(
+        targets.rollup_jxon).then(
         targets.rollup_pouchdb).then(
         targets.rollup_q).then(
         targets.rollup_sinon).then(
@@ -275,6 +276,21 @@ targets.rollup_jquery = function(make) {
     // TODO: build and copy jquery build output to the proper location(s)
 
     targets.rollup_jquery.resolve();
+};
+
+/**
+ */
+targets.rollup_jxon = function(make) {
+    var npmdir;
+
+    sh.exec('npm update jxon');
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'jxon'));
+    sh.exec('npm install -d');
+    sh.exec('cp -f index.js  ../../deps/jxon-tpi.js');
+
+    targets.rollup_jxon.resolve();
 };
 
 /**
