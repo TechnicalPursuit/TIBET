@@ -930,7 +930,7 @@ function() {
         testObj.set('address',
                     TP.hc('street_address', '111 Main St.',
                             'city', 'Anytown',
-                            'state', 'Anystate'));
+                            'state', 'WA'));
 
         testObj.set('age', 48);
         testObj.set('gender', 'male');
