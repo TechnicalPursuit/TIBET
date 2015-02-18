@@ -1399,7 +1399,9 @@ function(aReturnValue, targetObj) {
             } else if (TP.isType(packageWith)) {
                 retVal = packageWith.construct(retVal);
             } else if (TP.isString(packageWith)) {
-                if (TP.isType(packageType = packageWith.asType())) {
+                if (TP.isType(packageType =
+                            TP.sys.getTypeByName(packageWith))
+                        && packageType !== Object) {
                     retVal = packageType.construct(retVal);
                 } else {
                     retVal = TP.format(retVal,
