@@ -229,6 +229,7 @@ function(anObject) {
 
     /**
      * @method js2json
+     * @alias json
      * @summary Transforms an object into a representation in a JSON string.
      * @description Since JSON is a limited subset of JavaScript this
      *     representation may not be a complete copy of the object (in
@@ -279,6 +280,10 @@ function(anObject) {
 
     return str;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('json', TP.js2json);
 
 //  ------------------------------------------------------------------------
 //  XML source conversions

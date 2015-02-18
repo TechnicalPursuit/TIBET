@@ -436,7 +436,7 @@ function(anObject) {
 
     //  First, check to make sure that it's even valid JSON. If it is, then call
     //  next method to check facets, etc.
-    str = TP.json(anObj);
+    str = TP.js2json(anObj);
 
     if (TP.isValid(TP.json2js(str))) {
         return this.callNextMethod();

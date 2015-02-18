@@ -741,7 +741,7 @@ function() {
     try {
         str = '{"type":' + this.getTypeName().quoted('"') + ',' +
                 '"data":{"signame":' + this.getSignalName().quoted('"') + ',' +
-                '"payload":' + TP.json(this.getPayload()) + '}}';
+                '"payload":' + TP.jsonsrc(this.getPayload()) + '}}';
     } catch (e) {
         str = this.toString();
     }
@@ -2587,14 +2587,14 @@ function() {
                     '"data":{' +
                         '"signame":' +
                              this.getSignalName().quoted('"') + ',' +
-                        '"payload":' + TP.json(err) +
+                        '"payload":' + TP.jsonsrc(err) +
                     '}}';
         } else {
             str = '{"type":' + this.getTypeName().quoted('"') + ',' +
                     '"data":{' +
                         '"signame":' +
                              this.getSignalName().quoted('"') + ',' +
-                        '"payload":{"message":' + TP.json(msg) + '}' +
+                        '"payload":{"message":' + TP.jsonsrc(msg) + '}' +
                     '}}';
         }
 

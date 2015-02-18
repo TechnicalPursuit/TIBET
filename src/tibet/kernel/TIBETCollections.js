@@ -4857,7 +4857,7 @@ function() {
             joinArr.push(
                     TP.join(keys.at(i).quoted('"'),
                             ':',
-                            TP.json(this.at(keys.at(i)))));
+                            TP.jsonsrc(this.at(keys.at(i)))));
         }
 
         joinStr = '{' + joinArr.join(',') + '}';

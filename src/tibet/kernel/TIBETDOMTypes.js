@@ -1152,7 +1152,7 @@ function() {
 
     try {
         str = '{"type":' + TP.tname(this).quoted('"') + ',' +
-                '"data":' + TP.json(this.getNativeNode()) + '}';
+                '"data":' + TP.jsonsrc(this.getNativeNode()) + '}';
     } catch (e) {
         str = this.toString();
     }

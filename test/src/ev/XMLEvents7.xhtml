@@ -35,22 +35,22 @@
 	<br/>
 	<br/>
 
-    This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_Y_Up' (the TIBET way of observing the 'Y' - shift y - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert the JSON representation of the signal that triggered the script.<br/>
+    This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_Y_Up' (the TIBET way of observing the 'Y' - shift y - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert the 'JSON source' representation of the signal that triggered the script.<br/>
 
 	<ev:script event="TP.sig.DOM_Y_Up" observer="#document">
 		<![CDATA[
-        $SIGNAL .> TP.byOID('testResults').setAttribute('shiftYkey_fired', TP.json($INPUT));
+        $SIGNAL .> TP.byOID('testResults').setAttribute('shiftYkey_fired', TP.jsonsrc($INPUT));
 		]]>
 	</ev:script>
 
 	<br/>
 	<br/>
 
-    This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_Z_Up' (the TIBET way of observing the 'Z' - shift z - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert the JSON representation of the target of the signal that triggered the script.<br/>
+    This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_Z_Up' (the TIBET way of observing the 'Z' - shift z - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert the 'JSON source' representation of the target of the signal that triggered the script.<br/>
 
 	<ev:script event="TP.sig.DOM_Z_Up" observer="#document">
 		<![CDATA[
-        $SIGNAL.typeName .> TP.byOID('testResults').setAttribute('shiftZkey_fired', TP.json($INPUT));
+        $SIGNAL.typeName .> TP.byOID('testResults').setAttribute('shiftZkey_fired', TP.jsonsrc($INPUT));
 		]]>
 	</ev:script>
 

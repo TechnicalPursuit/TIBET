@@ -1540,7 +1540,7 @@ function(eventObj) {
 
     for (i = 0; i < len; i++) {
         try {
-            arr.push(keys[i].quoted('"'), ':', TP.json(eventObj[keys[i]]));
+            arr.push(keys[i].quoted('"'), ':', TP.jsonsrc(eventObj[keys[i]]));
         } catch (e) {
             arr.push(keys[i].quoted('"'), ':"undefined"');
         } finally {
@@ -3027,14 +3027,14 @@ TP.definePrimitive('htmlstr', TP.objectHTMLString);
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('objectJSONString',
+TP.definePrimitive('objectJSONSource',
 function(anObject) {
 
     /**
-     * @method objectJSONString
-     * @alias json
+     * @method objectJSONSource
+     * @alias jsonsrc
      * @summary Returns a best-possible JSON representation of the object. NOTE
-     *     that the TP.json() function is aliased to this function as a
+     *     that the TP.jsonsrc() function is aliased to this function as a
      *     'shorthand'.
      * @description This function is used to avoid type checking an object or
      *     duplicating test code when you're not sure of the return type of some
@@ -3072,7 +3072,7 @@ function(anObject) {
         return '{"type":"XHR",' +
                 '"data":{' +
                     '"status":' + anObject.status.quoted('"') + ',' +
-                    '"content":' + TP.json(anObject.responseText) + '}}';
+                    '"content":' + TP.jsonsrc(anObject.responseText) + '}}';
     }
 
     //  native nodes are the next-most likely object being passed to this
@@ -3125,7 +3125,7 @@ function(anObject) {
 
         len = anObject.length;
         for (i = 0; i < len; i++) {
-            arr.push(TP.json(anObject[i]),
+            arr.push(TP.jsonsrc(anObject[i]),
                         ',');
         }
 
@@ -3167,7 +3167,7 @@ function(anObject) {
 
         len = rules.length;
         for (i = 0; i < len; i++) {
-            arr.push(TP.json(rules[i]));
+            arr.push(TP.jsonsrc(rules[i]));
         }
 
         return '{"type":"Stylesheet","data":[' + arr.join(',') + ']}';
@@ -3189,7 +3189,7 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('json', TP.objectJSONString);
+TP.definePrimitive('jsonsrc', TP.objectJSONSource);
 
 //  ------------------------------------------------------------------------
 
@@ -4264,7 +4264,7 @@ function(windowObj) {
 
     for (i = 0; i < len; i++) {
         try {
-            arr.push(keys[i].quoted('"'), ':', TP.json(windowObj[keys[i]]));
+            arr.push(keys[i].quoted('"'), ':', TP.jsonsrc(windowObj[keys[i]]));
         } catch (e) {
             arr.push(keys[i].quoted('"'), ':"undefined"');
         } finally {

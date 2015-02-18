@@ -1612,7 +1612,7 @@ function() {
 
     try {
         str = '{"type":' + TP.tname(this).quoted('"') + ',' +
-                '"data":{' + TP.json(this.getNativeWindow()) + '}}';
+                '"data":{' + TP.jsonsrc(this.getNativeWindow()) + '}}';
     } catch (e) {
         str = this.toString();
     }

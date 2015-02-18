@@ -5218,7 +5218,7 @@ function() {
                 stops +=
                      '{' +
                         '"value":"' + aStopValue + '",' +
-                        '"color":' + TP.json(aColorValue) +
+                        '"color":' + TP.jsonsrc(aColorValue) +
                     '},';
             },
             this.get('colors'));
@@ -5682,7 +5682,7 @@ function() {
                 stops +=
                      '{' +
                         '"value":"' + aStopValue + '",' +
-                        '"color":' + TP.json(aColorValue) +
+                        '"color":' + TP.jsonsrc(aColorValue) +
                     '},';
             },
             this.get('colors'));
@@ -6545,7 +6545,7 @@ function() {
 
     return '{"type":' + TP.tname(this).quoted('"') + ',' +
              '"data":{' +
-                 '"segments":' + TP.json(this.get('pathSegments')) +
+                 '"segments":' + TP.jsonsrc(this.get('pathSegments')) +
                  '}}';
 });
 

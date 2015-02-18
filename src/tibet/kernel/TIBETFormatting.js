@@ -1240,7 +1240,7 @@ function() {
             joinArr.push(
                     TP.join(keys.at(i).quoted('"'),
                             ':',
-                            TP.json(this.get(keys.at(i)))));
+                            TP.jsonsrc(this.get(keys.at(i)))));
         }
 
         joinStr = '{"type":"' + TP.tname(this) + '",' +
