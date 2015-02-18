@@ -1165,11 +1165,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asPlainObject',
+TP.core.Node.Inst.defineMethod('asObject',
 function() {
 
     /**
-     * @method asPlainObject
+     * @method asObject
      * @summary Returns a 'plain JavaScript object' version of the receiver.
      *     This uses the JXON standard to convert the receiver's DOM structure
      *     to one or more JavaScript objects.
