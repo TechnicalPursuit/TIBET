@@ -1338,6 +1338,20 @@ function(typeOrFormat, formatParams) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('asObject',
+function() {
+
+    /**
+     * @method asObject
+     * @summary Returns a 'plain JavaScript object' version of the receiver.
+     * @returns {Object} The receiver as a plain JavaScript object.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('format',
 function(aFormat, formatParams) {
 

@@ -4878,9 +4878,9 @@ function() {
 
     /**
      * @method asObject
-     * @summary Returns the receiver as an array of key/value pairs. For
-     *     example TP.hc('a',1,'b',2).asObject() returns the equivalent of {a:
-     *     1, b: 2}.
+     * @summary Returns a 'plain JavaScript object' version of the receiver - in
+     *     this case an array of key/value pairs. For example
+     *     TP.hc('a',1,'b',2).asObject() returns the equivalent of {a: 1, b: 2}.
      * @returns {Object} The receiver as an Object.
      */
 
@@ -4889,7 +4889,9 @@ function() {
 
         obj,
 
-        i;
+        i,
+
+        val;
 
     //  If this flag is set to true, that means that we're already trying to
     //  format this object as part of larger object set and we may have an
@@ -4910,7 +4912,14 @@ function() {
     obj = {};
 
     for (i = 0; i < len; i++) {
-        obj[keys[i]] = this.at(keys[i]);
+        val = this.at(keys[i]);
+
+        //  Make sure to recurse in so that we end up with plain Object versions
+        //  of all values.
+        if (TP.canInvoke(val, 'asObject')) {
+            val = val.asObject();
+        }
+        obj[keys[i]] = val;
     }
 
     //  We're done - we can set the recursion flag back off.
