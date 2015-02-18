@@ -363,6 +363,8 @@ function(target, options) {
 
     suites = TP.test.Suite.$get('suites');
 
+    params = TP.hc(options);
+
     //  If we have a specific target restrict our hash down to just that
     //  target's suites as a first step.
     if (TP.isValid(target)) {
@@ -374,17 +376,20 @@ function(target, options) {
 
         name = TP.notEmpty(params.at('suite')) ? params.at('suite') : 'all';
 
-        //  Set suites to a hash keyed by the target and all suites for that
-        //  target. We might filter this further below (maybe by suite name).
-        suites = TP.hc(id, TP.hc(name, suites.at(id)));
+        if (TP.isValid(suites.at(id))) {
+            //  Set suites to a hash keyed by the target and all suites for that
+            //  target. We might filter this further below (maybe by suite
+            //  name).
+            suites = TP.hc(id, TP.hc(name, suites.at(id).getValues()));
+        } else {
+            suites = TP.hc(id, TP.hc());
+        }
     }
 
     //  No options means no filtering criteria...
     if (TP.notValid(options)) {
         return suites;
     }
-
-    params = TP.hc(options);
 
     //  TODO: if options includes things like inherited etc. we need to collect
     //  more suites rather than assuming a single slice.
