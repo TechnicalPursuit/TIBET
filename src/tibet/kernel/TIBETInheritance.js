@@ -1347,7 +1347,7 @@ function() {
      * @returns {Object} The receiver as a plain JavaScript object.
      */
 
-    return this;
+    return this.valueOf();
 });
 
 //  ------------------------------------------------------------------------
