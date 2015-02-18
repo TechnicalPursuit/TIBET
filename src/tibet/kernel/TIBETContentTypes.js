@@ -385,6 +385,20 @@ function(aFlag) {
     return this.callNextMethod();
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('toJSON',
+function() {
+
+    /**
+     * @method toJSON
+     * @summary Returns the object to use in JSON representations.
+     * @returns {Object} The object to use in a JSON representation.
+     */
+
+    return this.getData().toJSON();
+});
+
 //  ========================================================================
 //  TP.core.JSONContent
 //  ========================================================================

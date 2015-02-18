@@ -1181,6 +1181,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('toJSON',
+function() {
+
+    /**
+     * @method toJSON
+     * @summary Returns the object to use in JSON representations.
+     * @returns {Object} The object to use in a JSON representation.
+     */
+
+    return this.asObject();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('asPrettyString',
 function() {
 

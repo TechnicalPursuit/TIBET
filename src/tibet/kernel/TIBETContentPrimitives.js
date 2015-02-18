@@ -241,22 +241,24 @@ function(anObject) {
      */
 
     var str,
-        objToJSON;
 
-    //  Call the 'stringify' method on the 'JSON' object supplied from:
-    //  http://www.JSON.org/json2.js
+        debugKey,
+        debugVal;
 
-    //  Make sure that TP.lang.Hashes get converted into regular Objects.
-    if (TP.isMemberOf(anObject, TP.lang.Hash)) {
-        objToJSON = anObject.asObject();
-    } else {
-        objToJSON = anObject;
+    if (!TP.isValid(anObject)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
+
+    debugKey = null;
+    debugVal = null;
 
     try {
         str = JSON.stringify(
-                    objToJSON,
+                    anObject,
                     function(key, value) {
+
+                        debugKey = key;
+                        debugVal = value;
 
                         //  Make sure there are no internal slots we don't want
                         //  to expose.
@@ -264,29 +266,15 @@ function(anObject) {
                             return;
                         }
 
-                        //  Make sure that TP.lang.Hashes get converted into
-                        //  regular Objects.
-                        if (TP.isMemberOf(value, TP.lang.Hash)) {
-                            return value.asObject();
-                        }
-
-                        //  The natively supported JSON types just hand
-                        //  themselves back.
-                        if (TP.isString(value) ||
-                            TP.isNumber(value) ||
-                            TP.isMemberOf(value, Object) ||
-                            TP.isArray(value) ||
-                            TP.isBoolean(value) ||
-                            TP.isNull(value)) {
-                            return value;
-                        }
-
-                        //  Otherwise, handed back a JSONified String (which
-                        //  very well may recurse into this routine).
-                        return TP.json(value);
+                        return value;
                     });
     } catch (e) {
-        return TP.raise(this, 'TP.sig.JSONSerializationException', TP.ec(e));
+        return TP.raise(this,
+                        'TP.sig.JSONSerializationException',
+                        TP.ec(
+                            e,
+                            'key: ' + debugKey +
+                            ' value: ' + TP.id(debugVal)));
     }
 
     return str;

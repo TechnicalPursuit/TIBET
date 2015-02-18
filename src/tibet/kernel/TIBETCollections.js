@@ -4930,6 +4930,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Hash.Inst.defineMethod('toJSON',
+function() {
+
+    /**
+     * @method toJSON
+     * @summary Returns the object to use in JSON representations.
+     * @returns {Object} The object to use in a JSON representation.
+     */
+
+    //  Return the plain JS object version of this object.
+    return this.asObject();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Hash.Inst.defineMethod('asPrettyString',
 function() {
 
