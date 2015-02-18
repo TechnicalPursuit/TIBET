@@ -3955,7 +3955,9 @@ function() {
         instResolutions,
 
         unresolvedTypeTraits,
+        resolvedTypeTraits,
         unresolvedInstTraits,
+        resolvedInstTraits,
 
         errStr;
 
@@ -3975,6 +3977,7 @@ function() {
     //  Type-side
 
     unresolvedTypeTraits = TP.hc();
+    resolvedTypeTraits = TP.hc();
 
     if (TP.notEmpty(typeResolutions)) {
 
@@ -4041,6 +4044,9 @@ function() {
                         unresolvedTypeTraits.atPut(propName, TP.ac());
                         unresolvedTypeTraits.at(propName).push(TP.REQUIRED);
                     }
+                } else {
+                    //  Otherwise, there was no conflict.
+                    resolvedTypeTraits.atPut(propName, entry);
                 }
             });
 
@@ -4057,6 +4063,7 @@ function() {
     instResolutions = this.get('$traitsInstResolutions');
 
     unresolvedInstTraits = TP.hc();
+    resolvedInstTraits = TP.hc();
 
     if (TP.notEmpty(instResolutions)) {
 
@@ -4122,11 +4129,16 @@ function() {
                     }
                 }
 
+                //  If we don't have a 'resolvesTo', then we need to use the
+                //  conflict detection machinery
                 if (TP.notValid(entry.at('resolvesTo'))) {
                     if (TP.notValid(unresolvedInstTraits.at(propName))) {
                         unresolvedInstTraits.atPut(propName, TP.ac());
                         unresolvedInstTraits.at(propName).push(TP.REQUIRED);
                     }
+                } else {
+                    //  Otherwise, there was no conflict.
+                    resolvedInstTraits.atPut(propName, entry);
                 }
             });
 
@@ -4142,6 +4154,30 @@ function() {
 
     //  Type-side
 
+    //  First, the ones that resolved properly with no conflicts
+    if (TP.notEmpty(resolvedTypeTraits)) {
+        keys = resolvedTypeTraits.getKeys();
+        keys.forEach(
+            function(propName) {
+                var resolution;
+
+                resolution = resolvedTypeTraits.at(propName).at('resolvesTo');
+
+                //  Note here how we do *not* install a slot if it already
+                //  represented on the receiving object (this.Inst) unless the
+                //  value for that slot is TP.REQUIRED.
+                if (TP.isType(resolution) &&
+                     this.Inst[propName] !== TP.REQUIRED &&
+                     resolution.Inst[propName] === this.Type[propName]) {
+                    return;
+                }
+
+                this.$populateTraitedSlot(resolution, propName, this.Type, false);
+            }.bind(this));
+    }
+
+    //  Then, the ones that had to get resolved either manually or through the
+    //  auto-resolver.
     if (TP.notEmpty(typeResolutions)) {
         keys = typeResolutions.getKeys();
         keys.forEach(
@@ -4167,6 +4203,30 @@ function() {
 
     //  Instance-side
 
+    //  First, the ones that resolved properly with no conflicts
+    if (TP.notEmpty(resolvedInstTraits)) {
+        keys = resolvedInstTraits.getKeys();
+        keys.forEach(
+            function(propName) {
+                var resolution;
+
+                resolution = resolvedInstTraits.at(propName).at('resolvesTo');
+
+                //  Note here how we do *not* install a slot if it already
+                //  represented on the receiving object (this.Inst) unless the
+                //  value for that slot is TP.REQUIRED.
+                if (TP.isType(resolution) &&
+                     this.Inst[propName] !== TP.REQUIRED &&
+                     resolution.Inst[propName] === this.Inst[propName]) {
+                    return;
+                }
+
+                this.$populateTraitedSlot(resolution, propName, this.Inst, true);
+            }.bind(this));
+    }
+
+    //  Then, the ones that had to get resolved either manually or through the
+    //  auto-resolver.
     if (TP.notEmpty(instResolutions)) {
         keys = instResolutions.getKeys();
         keys.forEach(
