@@ -5837,45 +5837,6 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-String.Inst.defineMethod('test',
-function(aString) {
-
-    /**
-     * @method test
-     * @summary Mirrors the test call on RegExp instances so we can use either
-     *     a string or regular expression interchangeably.
-     * @param {String} aString The string to test against. The value of the
-     *     receiver is used as the regular expression.
-     * @returns {Boolean} True if the regular expression represented by the
-     *     receiver matches the incoming string.
-     */
-
-    var testRegex,
-        str;
-
-    str = TP.str(aString);
-
-    //  simplest case is non-wildcarded content, so we can invert and test
-    if (str.indexOf(this.toString()) !== TP.NOT_FOUND) {
-        return true;
-    }
-
-    //  we can fallback to trying to construct a regex from our value
-    try {
-        testRegex = TP.rc(this.toString());
-        if (TP.isRegExp(testRegex)) {
-            return testRegex.test(aString);
-        }
-    } catch (e) {
-        //  unable to construct as a regular expression and string wasn't
-        //  found in the original as a substring...other syntaxes?
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('match',
 function(aSelector, anObject) {
 
