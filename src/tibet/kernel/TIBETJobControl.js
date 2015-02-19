@@ -557,7 +557,7 @@ function(aFaultString, aFaultCode) {
     this.set('statusCode', TP.ERRORING);
 
     hash = this.checkFaultArguments(aFaultString,
-        TP.ifUndefined(aFaultCode, TP.ERRORED));
+                                    TP.ifUndefined(aFaultCode, TP.ERRORED));
 
     code = hash.at('code');
     text = hash.at('text');
@@ -604,7 +604,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * @method fail
@@ -615,6 +615,9 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
@@ -633,21 +636,23 @@ function(aFaultString, aFaultCode) {
     this.set('statusCode', TP.FAILING);
 
     hash = this.checkFaultArguments(aFaultString,
-        TP.ifUndefined(aFaultCode, TP.FAILED));
+                                    TP.ifUndefined(aFaultCode, TP.FAILED));
 
     code = hash.at('code');
     text = hash.at('text');
 
-    //  If aFaultCode wasn't an Error object, then the 'stack' property of the
-    //  hash will not be populated. Try to populate it here.
-    if (!TP.isError(aFaultCode)) {
-        try {
-            throw new Error('Stack Trace');
-        } catch (e) {
-            stack = TP.getStackInfo(e);
+    if (TP.notValid(stack = aFaultStack)) {
+        //  If aFaultCode wasn't an Error object, then the 'stack' property of
+        //  the hash will not be populated. Try to populate it here.
+        if (!TP.isError(aFaultCode)) {
+            try {
+                throw new Error('Stack Trace');
+            } catch (e) {
+                stack = TP.getStackInfo(e);
+            }
+        } else {
+            stack = hash.at('stack');
         }
-    } else {
-        stack = hash.at('stack');
     }
 
     this.set('faultCode', code);
@@ -3614,7 +3619,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobGroup.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * @method fail
@@ -3627,10 +3632,13 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.core.JobGroup} The receiver.
      */
 
-    this.$performOverChildren('fail', aFaultString, aFaultCode);
+    this.$performOverChildren('fail', aFaultString, aFaultCode, aFaultStack);
 
     if (TP.isValid(aFaultCode)) {
         //  note we don't signal change here
@@ -3640,6 +3648,11 @@ function(aFaultString, aFaultCode) {
     if (TP.isString(aFaultString)) {
         //  note we don't signal change here
         this.set('faultText', aFaultString);
+    }
+
+    if (TP.isValid(aFaultStack)) {
+        //  note we don't signal change here
+        this.set('faultStack', aFaultStack);
     }
 
     this.set('statusCode', TP.FAILED);

@@ -1274,6 +1274,10 @@ TP.sig.Request.Inst.defineAttribute('faultCode', null);
 //  the fault/failure message, providing a textual message about a failure.
 TP.sig.Request.Inst.defineAttribute('faultText');
 
+//  the fault/failure stack, providing an Array of stack information about where
+//  the failure occurred
+TP.sig.Request.Inst.defineAttribute('faultStack');
+
 //  if the current signal is part of a thread of messages the threadID
 //  should be set to the requestID of the initial (root) signal.
 TP.sig.Request.Inst.defineAttribute('threadID');
@@ -2293,7 +2297,7 @@ function(aChildRequest, aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('$failJoin',
-function(aChildRequest, aFaultString, aFaultCode) {
+function(aChildRequest, aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * @method $failJoin
@@ -2304,6 +2308,9 @@ function(aChildRequest, aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.sig.Request} The receiver.
      */
 
@@ -2315,6 +2322,7 @@ function(aChildRequest, aFaultString, aFaultCode) {
     //  propagate child results upward
     this.$set('faultText', aChildRequest.getFaultText(), false);
     this.$set('faultCode', aChildRequest.getFaultCode(), false);
+    this.$set('faultStack', aChildRequest.getFaultStack(), false);
 
     //  don't push empty values into the argument list or we risk creating
     //  'undefined' as one of the values inappropriately.
@@ -2323,6 +2331,8 @@ function(aChildRequest, aFaultString, aFaultCode) {
             return this.fail(aFaultString);
         case 3:
             return this.fail(aFaultString, aFaultCode);
+        case 4:
+            return this.fail(aFaultString, aFaultCode, aFaultStack);
         default:
             return this.fail();
     }
@@ -2742,6 +2752,10 @@ function(aFaultString, aFaultCode, aFaultStack) {
         case 2:
             return this.$wrapupJob('Failed', TP.FAILED, aFaultString,
                                     aFaultCode);
+        case 3:
+            return this.$wrapupJob('Failed', TP.FAILED, aFaultString,
+                                    aFaultCode,
+                                    aFaultStack);
         default:
             return this.$wrapupJob('Failed', TP.FAILED);
     }
@@ -2750,7 +2764,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('$wrapupJob',
-function(aSuffix, aState, aResultOrFault, aFaultCode) {
+function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
 
     /**
      * @method $wrapupJob
@@ -2769,6 +2783,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode) {
      *     non-failure state and a fault string when in a failure state.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.sig.Request} The receiver.
      */
 
@@ -2946,6 +2963,11 @@ function(aSuffix, aState, aResultOrFault, aFaultCode) {
                     case 4:
                         ancestor.$failJoin(this, aResultOrFault,
                                                 aFaultCode);
+                        break;
+                    case 5:
+                        ancestor.$failJoin(this, aResultOrFault,
+                                                aFaultCode,
+                                                aFaultStack);
                         break;
                     default:
                         ancestor.$failJoin(this);
@@ -3236,6 +3258,28 @@ function() {
     request = this.get('request');
     if (TP.canInvoke(request, 'getFaultCode')) {
         return request.getFaultCode();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('getFaultStack',
+function() {
+
+    /**
+     * @method getFaultStack
+     * @summary Returns the fault stack (array of stack frame information) of
+     *     the receiver.
+     * @returns {Array} An Array of stack frame descriptions.
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getFaultStack')) {
+        return request.getFaultStack();
     }
 
     return;
