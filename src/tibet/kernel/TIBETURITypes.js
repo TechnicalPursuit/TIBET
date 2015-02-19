@@ -3628,8 +3628,10 @@ function(aResource, aRequest) {
     //  value for future use.
     this.$set('resource', newResource);
 
-    //  Observe the new resource object for changes.
-    this.observe(newResource, 'Change');
+    if (TP.isValid(newResource)) {
+        //  Observe the new resource object for changes.
+        this.observe(newResource, 'Change');
+    }
 
     //  Once we have a value, in any form, we're both dirty and loaded from
     //  a state perspective.
