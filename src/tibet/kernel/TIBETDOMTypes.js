@@ -11567,6 +11567,10 @@ function(aFlag) {
     //  sorts of recursion issues.
     natElem = this.$$getNativeNodeFast();
 
+    if (TP.notValid(natElem)) {
+        return;
+    }
+
     if (TP.isBoolean(aFlag)) {
         if (TP.notTrue(aFlag)) {
             delete natElem[TP.SHOULD_SIGNAL_CHANGE];
