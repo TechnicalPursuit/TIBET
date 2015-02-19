@@ -377,13 +377,24 @@ function(target, options) {
         name = TP.notEmpty(params.at('suite')) ? params.at('suite') : 'all';
 
         if (TP.isValid(suites.at(id))) {
-            //  Set suites to a hash keyed by the target and all suites for that
-            //  target. We might filter this further below (maybe by suite
-            //  name).
-            suites = TP.hc(id, TP.hc(name, suites.at(id).getValues()));
+            if (name === 'all') {
+                //  set suites to a hash keyed by the target and all suites for
+                //  that target. we might filter this further below (maybe by
+                //  suite name).
+                suites = suites.at(id).getValues();
+            } else {
+                suites = suites.at(id).getValues().filter(
+                            function(item) {
+                                return item.get('suiteName') === name;
+                            });
+            }
+
+            suites = TP.hc(id, TP.hc(name, suites));
         } else {
             suites = TP.hc(id, TP.hc());
         }
+
+        return suites;
     }
 
     //  No options means no filtering criteria...

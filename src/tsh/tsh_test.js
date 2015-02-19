@@ -99,7 +99,7 @@ function(aRequest) {
             return;
         }
 
-    } else if (TP.notEmpty(suiteName)) {
+    } else if (TP.isEmpty(target) && TP.notEmpty(suiteName)) {
 
         aRequest.stdout('');
 
