@@ -5922,7 +5922,7 @@ function() {
                 var pouchPromise,
                     promise;
 
-                pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
+                pouchPromise = testDb.destroy();
 
                 promise = TP.extern.Promise.resolve(pouchPromise);
 
