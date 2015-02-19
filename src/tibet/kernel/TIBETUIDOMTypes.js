@@ -2105,40 +2105,37 @@ function(aSignal, isCapturing) {
      */
 
     var node,
-
         parentNode,
         ancestorControl,
-
         controller,
-
         elementWin,
+        frame,
         frameElem;
 
     node = this.getNativeNode();
 
+    //  Check for a parent node or node controller we can wrap.
     parentNode = node.parentNode;
     if (TP.isElement(parentNode) &&
-        TP.isElement(ancestorControl =
-                            TP.nodeGetControlElement(parentNode))) {
+            TP.isElement(ancestorControl = TP.nodeGetControlElement(parentNode))) {
         return TP.wrap(ancestorControl);
     }
 
-    //  We couldn't find a parent control above us, so we return the URI
-    //  controller for the document that contains us.
-    if (TP.isValid(controller = TP.elementGetURIController(node))) {
-        return controller;
-    }
-
-    //  We couldn't compute a URI controller, so return a 'wrapped' iframe
-    //  if we're in an iframe.
-    if (TP.isIFrameWindow(elementWin = TP.nodeGetWindow(
-                                                this.getNativeDocument()))) {
+    //  Check for a containing iframe element we can leverage as a "screen". We
+    //  only return the iframe if it has a specific handler, otherwise we
+    //  continue searching upward from the iframe.
+    elementWin = TP.nodeGetWindow(this.getNativeDocument());
+    if (TP.isIFrameWindow(elementWin)) {
         frameElem = elementWin.frameElement;
         if (TP.isElement(frameElem)) {
-            //  Recurse, calling the iframe's 'getNextResponder' method to
-            //  work our way 'up' the tree.
-            return TP.wrap(frameElem).getNextResponder(aSignal,
-                                                        isCapturing);
+            frame = TP.wrap(frameElem);
+            if (frame.isResponderFor(aSignal, isCapturing)) {
+                return frame;
+            } else {
+                //  Recurse, calling the iframe's 'getNextResponder' method to
+                //  work our way 'up' the tree.
+                return frame.getNextResponder(aSignal, isCapturing);
+            }
         }
     }
 
