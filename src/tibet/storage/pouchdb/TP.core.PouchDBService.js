@@ -152,8 +152,6 @@ function(aRequest) {
                 info,
                 function(error, response) {
 
-                    var deleteInfo;
-
                     //  If the DB had an error, report it.
                     if (TP.isValid(error)) {
                         return request.fail(
@@ -173,15 +171,10 @@ function(aRequest) {
                                         id, ' in database:', dbName, '.'));
                     }
 
-                    deleteInfo = TP.hc('_id', id, '_rev', response._rev);
-
-                    //  Make sure to convert it to a POJO before handing it to
-                    //  PouchDB.
-                    deleteInfo = deleteInfo.asObject();
-
                     //  Go ahead and try to 'remove' the data.
                     theDB.remove(
-                        deleteInfo,
+                        id,
+                        response._rev,
                         function(error, response) {
 
                             //  There was an error - fail the request.
