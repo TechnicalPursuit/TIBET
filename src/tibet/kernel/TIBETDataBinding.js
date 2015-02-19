@@ -2882,11 +2882,15 @@ function(aResource) {
      *     it's an element that has a 'bind:repeat' on it).
      * @param {Object} aResource The object that will be used as the repeat
      *     value. This object should be a collection.
+     *     Note that in this version of this method, this value is not passed
+     *     along, forcing the repeat to refresh from its bound source.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
+    //  Note that we don't use aResource here - we force the repeat to refresh
+    //  from it's bound content.
     if (this.isRepeatElement()) {
-        this.refreshRepeat(aResource);
+        this.refreshRepeat();
     }
 
     return this;
