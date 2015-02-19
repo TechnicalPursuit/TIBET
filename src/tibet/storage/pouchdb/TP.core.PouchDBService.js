@@ -130,7 +130,8 @@ function(aRequest) {
                         return request.fail(
                                 TP.sc('Trying to delete database:',
                                         dbName, ' but had an error: ',
-                                        TP.str(error)));
+                                        TP.str(error)),
+                                error);
                     }
 
                     request.complete(TP.json2js(TP.js2json(response)));
@@ -160,7 +161,8 @@ function(aRequest) {
                                 TP.sc('Trying to delete item with id: ', id,
                                         ' from database:',
                                         dbName, ' but had an error: ',
-                                        TP.str(error)));
+                                        TP.str(error)),
+                                error);
                     }
 
                     //  If there wasn't a valid response or there was but it
@@ -189,7 +191,8 @@ function(aRequest) {
                                     TP.sc('Trying to delete item with id: ', id,
                                             ' from database:',
                                             dbName, ' but had an error: ',
-                                            TP.str(error)));
+                                            TP.str(error)),
+                                    error);
                             }
 
                             //  We succeeded! Complete the request with the
@@ -219,7 +222,8 @@ function(aRequest) {
                         return request.fail(
                             TP.sc('Trying to retrieve an item from database:',
                                     dbName, ' but had an error: ',
-                                    TP.str(error)));
+                                    TP.str(error)),
+                            error);
                     }
 
                     request.complete(TP.json2js(TP.js2json(response)));
@@ -249,7 +253,8 @@ function(aRequest) {
                         return request.fail(
                             TP.sc('Trying to retrieve item info from database:',
                                     dbName, ' but had an error: ',
-                                    TP.str(error)));
+                                    TP.str(error)),
+                            error);
                     }
 
                     resultData = TP.json2js(TP.js2json(response));
@@ -274,7 +279,8 @@ function(aRequest) {
                         return request.fail(
                             TP.sc('Trying to retrieve information about the',
                                     ' database:', dbName, ' but had an error: ',
-                                    TP.str(error)));
+                                    TP.str(error)),
+                            error);
                     }
 
                     request.complete(TP.json2js(TP.js2json(response)));
@@ -310,7 +316,8 @@ function(aRequest) {
                                 TP.sc('Trying to create an item in the',
                                         ' database:', dbName,
                                         ' but had an error: ',
-                                        TP.str(error)));
+                                        TP.str(error)),
+                                error);
                         }
 
                         //  We succeeded! Complete the request with the
@@ -337,7 +344,8 @@ function(aRequest) {
                                     TP.sc('Trying to create an item in the',
                                             ' database:', dbName,
                                             ' but had an error: ',
-                                            TP.str(error)));
+                                            TP.str(error)),
+                                    error);
                         }
 
                         //  If there was a response and it had a proper revision
@@ -359,7 +367,8 @@ function(aRequest) {
                                         TP.sc('Trying to create an item in the',
                                                 ' database:', dbName,
                                                 ' but had an error: ',
-                                                TP.str(error)));
+                                                TP.str(error)),
+                                        error);
                                 }
 
                                 //  We succeeded! Complete the request with the
@@ -397,7 +406,8 @@ function(aRequest) {
                                     TP.sc('Trying to update an item in the',
                                             ' database:', dbName,
                                             ' but had an error: ',
-                                            TP.str(error)));
+                                            TP.str(error)),
+                                    error);
                         }
 
                         //  If there wasn't a valid response or there was but it
@@ -431,7 +441,8 @@ function(aRequest) {
                                         TP.sc('Trying to create an item in the',
                                                 ' database:', dbName,
                                                 ' but had an error: ',
-                                                TP.str(error)));
+                                                TP.str(error)),
+                                        error);
                                 }
 
                                 //  We succeeded! Complete the request with the
