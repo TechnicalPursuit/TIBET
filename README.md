@@ -196,8 +196,8 @@ to clone, initialize, and start your first TIBET application.
 ### Your First Project
 
 The <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Getting-Started"
-target="_blank">Getting Started Guide</a> is the best place to continue your
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
+target="_blank">Quickstart Guide</a> is the best place to continue your
 journey with TIBET.
 
 
