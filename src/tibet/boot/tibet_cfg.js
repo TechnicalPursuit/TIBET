@@ -1488,6 +1488,11 @@ TP.sys.setcfg('signal.stats_max', 1000);
 //  uri/url
 //  ---
 
+//  should uri computations rely on fallbacks. default is false so you have to
+//  either use a configuration parameter for a path.* variable, use an
+//  attribute, or implement a resource uri method.
+TP.sys.setcfg('uri.fallbacks', false);
+
 //  the default type used to handle URI load/save operations.
 TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');
 

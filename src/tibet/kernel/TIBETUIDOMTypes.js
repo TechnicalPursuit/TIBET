@@ -316,7 +316,9 @@ function(mimeType) {
             }
         });
 
-    return TP.uc(url);
+    if (TP.isValid(url)) {
+        return TP.uc(url);
+    }
 });
 
 //  ------------------------------------------------------------------------

@@ -9175,7 +9175,7 @@ TP.core.ElementNode.Type.defineAttribute('template');
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('computeResourceURI',
-function(resource, mimeType) {
+function(resource, mimeType, fallback) {
 
     /**
      * @method computeResourceURI
@@ -9213,6 +9213,8 @@ function(resource, mimeType) {
      *     theme, etc. but it could be essentially anything except the word
      *     'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
+     * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
+     *     value of 'uri.fallbacks'.
      * @returns {String} A properly computed URL in string form.
      */
 
@@ -9308,10 +9310,18 @@ function(resource, mimeType) {
         return value;
     }
 
-    //  If we couldn't compute a URI, default it to the receiver's load
-    //  location and use the extension computed earlier.
-    return TP.objectGetSourceCollectionPath(this) +
-        '/' + this.getName() + '.' + ext;
+    //  If forced false nothing else matters...we're done.
+    if (TP.isFalse(fallback)) {
+        return;
+    }
+
+    //  If forced true, or the flag is true, we'll compute a fallback value.
+    if (TP.isTrue(fallback) || TP.isTrue(TP.sys.cfg('uri.fallbacks'))) {
+        //  If we couldn't compute a URI, default it to the receiver's load
+        //  location and use the extension computed earlier.
+        return TP.objectGetSourceCollectionPath(this) +
+            '/' + this.getName() + '.' + ext;
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -15358,7 +15368,7 @@ function(mimeType) {
         return TP.uc(uri);
     }
 
-    uri = this.computeResourceURI('template', mimeType);
+    uri = this.computeResourceURI('template', mimeType, true);
     if (TP.isValid(uri)) {
         return TP.uc(uri);
     }
