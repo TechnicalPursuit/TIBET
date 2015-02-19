@@ -1278,23 +1278,14 @@ Package.prototype.getcfg = function(property) {
         // Simple conversions from dotted to underscore should be checked first.
         name = property.replace(/\./g, '_');
         value = this.cfg[name];
-
-        // If the converted value isn't correct then we attempt to drill down
-        // into the configuration data directly.
-        if (notValid(value)) {
-            parts = property.split('.');
-            name = parts.shift();
-            value = this.tibet[name];
-            while (parts.length > 0 && isValid(value)) {
-                name = parts.shift();
-                value = value[name];
-            }
+        if (isValid(value)) {
+            return value;
         }
-        return value;
+    } else {
+        name = property;
     }
 
-    // When no '.' indicating a prefix we find all keys with a matching
-    // prefix and return them.
+    //  Didn't find it yet. Try it as a prefix of some length.
     cfg = {};
     pkg = this;
 
@@ -1310,6 +1301,9 @@ Package.prototype.getcfg = function(property) {
     if (Object.keys(cfg).length < 2) {
         if (Object.keys(cfg)[0] === name) {
             return this.cfg[name];
+        } else {
+            //  Empty wasn't it. Return empty.
+            return;
         }
     }
 
@@ -2065,6 +2059,46 @@ Package.prototype.loadTIBETProperties = function() {
     require(lib_path);
 };
 
+/**
+ * Recursively traverses a potentially nested set of properties and values and
+ * ensures they are set as the current config values. Typically called with the
+ * tibet.json and package.json content to overlay tibet_cfg baseline settings.
+ * @param {Object} dict The dictionary of key/value pairs in primitive object
+ *     form.
+ * @param {String} prefix An optional prefix for any properties being set.
+ */
+Package.prototype.overlayProperties = function(dict, prefix) {
+    var pkg;
+
+    pkg = this;
+
+    Object.keys(dict).forEach(function(key) {
+        var value,
+            name;
+
+        value = dict[key];
+        if (prefix) {
+            name = prefix + '.' + key;
+        } else {
+            name = key;
+        }
+
+        if (Object.prototype.toString.call(value) === '[object Object]') {
+            pkg.overlayProperties(value, name);
+        } else {
+            TP.sys.setcfg(name, value);
+        }
+    });
+
+/*
+            Object.keys(value).forEach(function(subkey) {
+                var name;
+
+                name = 'npm.' + key + '.' + subkey;
+                TP.sys.setcfg(name, value[subkey]);
+            });
+*/
+};
 
 /**
  * Pops an entry off the current stack of packages which are being processed as
@@ -2125,8 +2159,7 @@ Package.prototype.quote = function(value) {
  */
 Package.prototype.setProjectOptions = function() {
 
-    var pkg,
-        msg,
+    var msg,
         root,
         fullpath;
 
@@ -2172,49 +2205,9 @@ Package.prototype.setProjectOptions = function() {
         }
     }
 
-    pkg = this;
-
-    Object.keys(this.tibet).forEach(function(key) {
-        var value;
-
-        value = pkg.tibet[key];
-
-        // If the value isn't a primitive it means the key was initially
-        // provided with a prefix. We'll need to recreate that to store the
-        // data properly.
-        if (Object.prototype.toString.call(value) === '[object Object]') {
-
-            Object.keys(value).forEach(function(subkey) {
-                var name;
-
-                name = key + '.' + subkey;
-                TP.sys.setcfg(name, value[subkey]);
-            });
-        } else {
-            TP.sys.setcfg(key, value);
-        }
-    });
-
-    Object.keys(this.npm).forEach(function(key) {
-        var value;
-
-        value = pkg.npm[key];
-
-        // If the value isn't a primitive it means the key was initially
-        // provided with a prefix. We'll need to recreate that to store the
-        // data properly.
-        if (Object.prototype.toString.call(value) === '[object Object]') {
-
-            Object.keys(value).forEach(function(subkey) {
-                var name;
-
-                name = 'npm.' + key + '.' + subkey;
-                TP.sys.setcfg(name, value[subkey]);
-            });
-        } else {
-            TP.sys.setcfg('npm.' + key, value);
-        }
-    });
+    //  Blend in the values from npm and TIBET configuration files.
+    this.overlayProperties(this.npm, 'npm');
+    this.overlayProperties(this.tibet);
 
     // Clear this so the value from above doesn't affect our next steps.
     root = null;

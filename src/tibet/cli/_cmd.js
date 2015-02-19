@@ -127,7 +127,8 @@ Cmd.prototype.help = function() {
  */
 Cmd.prototype.parse = function(options) {
     var command,
-        cmd;
+        cmd,
+        cfg;
 
     // Note we use the command's own version of PARSE_OPTIONS here.
     this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS || {});
@@ -164,8 +165,9 @@ Cmd.prototype.parse = function(options) {
 
     // Now overlay any options missing but provided by the CLI.PROJECT_FILE.
     command = CLI.options._[0];
-    if (CLI.config.tibet.cli && CLI.config.tibet.cli[command]) {
-        this.options = CLI.blend(this.options, CLI.config.tibet.cli[command]);
+    cfg = CLI.getcfg('tibet.cli');
+    if (cfg && cfg[command]) {
+        this.options = CLI.blend(this.options, cfg[command]);
     }
 
     // Now we have to reverse that process...sigh...

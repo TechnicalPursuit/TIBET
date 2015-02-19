@@ -19,12 +19,13 @@
 
 var CLI,
     beautify,
+    sh,
     Parent,
     Cmd;
 
-
 CLI = require('./_cli');
 beautify = require('js-beautify').js_beautify;
+sh = require('shelljs');
 
 
 //  ---
@@ -197,6 +198,7 @@ Cmd.prototype.setConfig = function(path, value) {
         file,
         parts,
         root,
+        text,
         key;
 
     file = CLI.expandPath('~tibet_file');
@@ -240,6 +242,16 @@ Cmd.prototype.setConfig = function(path, value) {
     }
 
     beautify(JSON.stringify(json)).to(file);
+
+    //  Read the JSON back in. But we can't use require without a bunch of noise
+    //  around cache cleansing etc.
+    text = sh.cat(file);
+    if (text) {
+        json = JSON.parse(text);
+        /*eslint no-eval:0*/
+        this.info(eval('json.' + path));
+        /*eslint no-eval:1*/
+    }
 };
 
 
