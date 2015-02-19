@@ -4364,7 +4364,7 @@ function() {
             shouldThrowSetting = TP.sys.shouldThrowExceptions();
             TP.sys.shouldThrowExceptions(false);
 
-            autoResolveSetting = TP.sys.get('tibet.traits.resolve');
+            autoResolveSetting = TP.sys.cfg('tibet.traits.resolve');
             TP.sys.setcfg('tibet.traits.resolve', false);
         });
 
