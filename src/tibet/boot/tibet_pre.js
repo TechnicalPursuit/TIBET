@@ -1170,7 +1170,8 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         return aDefault;
     }
 
-    //  no keys or prefixes? whole catalog then unless we've got a default
+    //  Build a key from any key and prefix provided. If no key or prefix is
+    //  given the entire catalog of values is returned.
     if (!aKey) {
         if (!aPrefix) {
             if (aDefault !== undefined) {
@@ -1179,62 +1180,66 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
 
             return aHash;
         } else {
-            //  no key but a prefix, return all for that prefix
-            arr = [];
-            if (typeof aHash.getKeys === 'function') {
-                keys = aHash.getKeys();
-                len = keys.length;
-                for (i = 0; i < len; i++) {
-                    if (keys[i].indexOf(aPrefix + '.') === 0) {
-                        arr.push(keys[i]);
-                    }
-                }
-            } else {
-                for (i in aHash) {
-                    if (aHash.hasOwnProperty(i)) {
-                        if (i.indexOf(aPrefix + '.') === 0) {
-                            arr.push(i);
-                        }
-                    }
-                }
-            }
+            key = aPrefix;
+        }
+    } else {
+        if (!aPrefix) {
+            key = aKey;
+        } else {
+            key = aPrefix + '.' + aKey;
+        }
+    }
 
-            //  if we found at least one key then return the set, otherwise
-            //  we're going to return the default value rather than an empty
-            //  array since that seems the most semantically consistent
-            if (arr.length > 0) {
-                //  NOTE that we rely on having at least gotten past the
-                //  initial boot sequence before entering this branch so
-                //  we're certain of having at least primitive hash objects.
-                obj = {};
-                obj.at = function(aKey) {return this[aKey];};
-                obj.atPut = function(aKey, aValue) {this[aKey] = aValue;};
+    //  If the key accesses a real value return it. Otherwise we've got a bit
+    //  more work to do.
+    val = aHash.at(key);
+    if (val !== undefined) {
+        return val;
+    }
 
-                len = arr.length;
-                for (i = 0; i < len; i++) {
-                    obj.atPut(arr[i], aHash.at(arr[i]));
-                }
-
-                return obj;
-            } else {
-                return aDefault;
+    //  If the key didn't access a direct value it may be a prefix in the sense
+    //  that it's intended to access a subset of values. Try to collect them.
+    arr = [];
+    if (typeof aHash.getKeys === 'function') {
+        keys = aHash.getKeys();
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            if (keys[i].indexOf(key + '.') === 0) {
+                arr.push(keys[i]);
             }
         }
-    } else if (TP.boot.$$PROP_KEY_REGEX.test(aKey) === false) {
-        //  default for the prefix is 'tmp' to match up with $setprop
-        prefix = aPrefix || 'tmp';
-        key = prefix + '.' + key;
     } else {
-        //  key has a separator, use it as-is
-        key = aKey;
+        for (i in aHash) {
+            if (aHash.hasOwnProperty(i)) {
+                if (i.indexOf(key + '.') === 0) {
+                    arr.push(i);
+                }
+            }
+        }
     }
 
-    val = aHash.at(key);
-    if (val === undefined) {
+    //  if we found at least one key then return the set, otherwise
+    //  we're going to return the default value rather than an empty
+    //  array since that seems the most semantically consistent
+    if (arr.length > 0) {
+
+        if (typeof TP.hc === 'function') {
+            obj = TP.hc();
+        } else {
+            obj = {};
+            obj.at = function(aKey) {return this[aKey];};
+            obj.atPut = function(aKey, aValue) {this[aKey] = aValue;};
+        }
+
+        len = arr.length;
+        for (i = 0; i < len; i++) {
+            obj.atPut(arr[i], aHash.at(arr[i]));
+        }
+
+        return obj;
+    } else {
         return aDefault;
     }
-
-    return val;
 };
 
 //  ----------------------------------------------------------------------------
