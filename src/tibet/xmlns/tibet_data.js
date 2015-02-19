@@ -37,6 +37,7 @@ function(aRequest) {
      */
 
     var elem,
+        tpElem,
 
         localHref,
         localURI,
@@ -46,6 +47,8 @@ function(aRequest) {
         cdatas,
 
         resourceStr,
+
+        resultType,
 
         thisTPDoc,
         loadedHandler,
@@ -59,46 +62,60 @@ function(aRequest) {
         return;
     }
 
+    tpElem = TP.wrap(elem);
+
     //  If we're not empty, then we use our child content as our 'local'
     //  resource's content and ignore any 'remote' URI attribute.
     if (TP.notEmpty(childNodes = elem.childNodes)) {
 
-        if (TP.notEmpty(localHref = TP.elementGetAttribute(elem, 'local'))) {
+        if (TP.notEmpty(localHref = tpElem.getAttribute('local'))) {
             if (!TP.isURI(localURI = TP.uc(localHref))) {
                 //  Raise an exception
                 return this.raise('TP.sig.InvalidURI');
             }
         }
 
+        //  NOTE: Many of these calls use the native node, since we want to
+        //  manipulate native node objects here.
+
         //  Normalize the node to try to get the best representation
         TP.nodeNormalize(elem);
 
-        cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
+        //  Get a result type for the data (either defined on the receiver
+        //  element itself or from a supplied MIME type), construct an instance
+        //  of that type and set it as the local URI's resource.
 
         //  If there is a CDATA section, then we grab it's text value.
+        cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
         if (TP.notEmpty(cdatas)) {
+
+            //  The string we'll use is from the first CDATA.
             resourceStr = TP.nodeGetTextContent(cdatas.first());
 
-            //  If we can determine that it's JSON data, then we make JavaScript
-            //  data from it and set that as the local URI's resource.
+            //  If we can determine that it's JSON data, then we get a result
+            //  type using the TP.JSON_ENCODED MIME type.
             if (TP.isJSONString(resourceStr)) {
-                localURI.setResource(TP.json2js(resourceStr));
-            } else {
-                localURI.setResource(resourceStr);
+                resultType = tpElem.getResultType(TP.JSON_ENCODED);
             }
         } else {
             //  Otherwise, if the first child element is an XML element
             children = TP.nodeGetChildElements(elem);
-            if (TP.isXMLNode(children.first())) {
 
+            if (TP.isXMLNode(children.first())) {
                 //  Stringify the XML.
                 resourceStr = TP.str(children.first());
 
-                //  Create a TP.core.DocumentNode wrapper around it and set it
-                //  as the local URI's resource.
-                localURI.setResource(TP.tpdoc(resourceStr));
+                //  Get a result type using the TP.XML_ENCODED MIME type.
+                resultType = tpElem.getResultType(TP.XML_ENCODED);
             }
         }
+
+        //  If a result type couldn't be determined, then just use String.
+        if (!TP.isType(resultType)) {
+            resultType = String;
+        }
+
+        localURI.setResource(resultType.construct(resourceStr));
 
         //  Get this element's document wrapper.
         thisTPDoc = TP.wrap(elem).getDocument();
@@ -182,23 +199,20 @@ TP.tibet.data.Inst.defineAttribute('refreshSource');
 //  ------------------------------------------------------------------------
 
 TP.tibet.data.Inst.defineMethod('getResultType',
-function(resultData, resultURI) {
+function(mimeType) {
 
     /**
      * @method getResultType
-     * @summary Returns a result type object for the supplied result data and
-     *     URI.
-     * @param {Object} resultData The result data to try to obtain a result type
-     *     for.
-     * @param {TP.core.URI} resultURI The URI object the result data was
-     *     obtained from. This will be used to try to compute a result type.
+     * @summary Returns a result type that will either be a TIBET type from the
+     *     name specified by the 'resultType' attribute on the receiver or, if
+     *     that's not defined, the MIME type supplied to this method.
+     * @param {String} mimeType
      * @returns {TP.meta.lang.RootObject|String} The type object (or a String as
      *     a fallback) to create for the supplied result data.
      */
 
     var resultType,
-        tibetType,
-        mimeType;
+        tibetType;
 
     //  See if the user has define a 'resultType' attribute on us. If so, try to
     //  see if TIBET really has a Type matching that.
@@ -206,12 +220,9 @@ function(resultData, resultURI) {
         tibetType = TP.sys.getTypeByName(resultType);
     }
 
-    //  We still don't have a type for the result. Use the guessMIMEType()
-    //  method, which tries a combination of tasting the resultData and looking
-    //  at the resultURI to determine a MIME type.
+    //  We still don't have a type for the result. If a MIME type was supplied,
+    //  switch off of that.
     if (!TP.isType(tibetType)) {
-
-        mimeType = TP.ietf.Mime.guessMIMEType(resultData, resultURI);
 
         //  Depending on the MIME type, return a TIBET (or JS) type object that
         //  the result can be constructed with.
@@ -226,7 +237,7 @@ function(resultData, resultURI) {
 
             case TP.XML_ENCODED:
 
-                tibetType = TP.core.DocumentNode;
+                tibetType = TP.core.XMLContent;
 
                 break;
 
@@ -308,16 +319,21 @@ function() {
         function(aResponse) {
 
             var resultType,
-                result;
+                result,
+
+                mimeType;
 
             //  Grab the result from the response.
             result = aResponse.getResult();
 
             //  If the result is a String, try to turn it into more
             if (TP.isString(result)) {
-                //  Obtain a result type for the result and construct an
-                //  instance from it.
-                resultType = this.getResultType(result, remoteURI);
+
+                //  Obtain a MIME type for the result and use it to obtain a
+                //  result type.
+                mimeType = TP.ietf.Mime.guessMIMEType(result, remoteURI);
+
+                resultType = this.getResultType(mimeType);
                 result = resultType.construct(result);
             }
 
