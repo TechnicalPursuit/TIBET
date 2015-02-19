@@ -1389,6 +1389,8 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
         transformFunc = function(source, newVal) {
             var expr,
 
+                wrappedNewVal,
+
                 index,
                 params,
 
@@ -1398,6 +1400,8 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 retVal;
 
             expr = transformFunc.$$expandedExpr;
+
+            wrappedNewVal = TP.wrap(newVal);
 
             if (TP.isNumber(index = transformFunc.$$repeatIndex)) {
 
@@ -1409,7 +1413,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     '$REQUEST', null,
                     '$TAG', this,
                     '$TARGET', this.getDocument(),
-                    '$_', newVal,
+                    '$_', wrappedNewVal,
                     '$INPUT', repeatResource,
                     '$INDEX', index,
                     '$#', index);
@@ -1419,7 +1423,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     '$REQUEST', null,
                     '$TAG', this,
                     '$TARGET', this.getDocument(),
-                    '$_', newVal,
+                    '$_', wrappedNewVal,
                     '$INPUT', newVal);
             }
 
