@@ -1518,9 +1518,19 @@ function() {
                                         ' and got instead: ',
                                         result.at('lastName'), '.'));
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                pouchRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.getResource(pouchRequest);
@@ -1569,9 +1579,19 @@ function() {
                             TP.sc('Expected that result would have a key of',
                                     ' \'date_modified\' and it doesn\'t'));
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                pouchRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.getResource(pouchRequest);
@@ -1626,9 +1646,19 @@ function() {
                             TP.sc('Expected that result would have a key of \'rows\' and',
                                     ' it doesn\'t'));
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                pouchRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.getResource(pouchRequest);
@@ -1646,7 +1676,7 @@ function() {
                     var pouchPromise,
                         promise;
 
-                    pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
+                    pouchPromise = testDb.destroy();
 
                     promise = TP.extern.Promise.resolve(pouchPromise);
 
@@ -1825,9 +1855,19 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from PUT');
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                putRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                putRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.setResource(testBody);
@@ -1880,9 +1920,19 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from POST');
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                postRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.setResource(testBody);
@@ -1937,9 +1987,19 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from FORM POST');
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                postRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.setResource(testBody);
@@ -1996,9 +2056,19 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from MULTIPART FORM TEXT POST');
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                postRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.setResource(testBody);
@@ -2055,9 +2125,19 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from MULTIPART FORM XML POST');
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                postRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.setResource(testBody);
@@ -2118,9 +2198,19 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from MULTIPART RELATED MIXED POST');
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                postRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                postRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.setResource(testBody);
@@ -2169,9 +2259,19 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from DELETE');
 
-                        url.unregister();
-
                         resolver();
+                    });
+
+                deleteRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                deleteRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
                     });
 
                 url.nuke(deleteRequest);
@@ -2420,28 +2520,43 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        //  pouchdb:// URLs are asynchronous
-        pouchRequest = TP.request(TP.hc('uri', url,
-                                        'verb', TP.HTTP_PUT,
-                                        'async', true));
+        test.thenPromise(
+            function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'verb', TP.HTTP_PUT,
+                                                'async', true));
 
-        url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
+                url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
 
-        pouchRequest.defineMethod('handleRequestSucceeded',
-            function (aResponse) {
+                pouchRequest.defineMethod('handleRequestSucceeded',
+                    function (aResponse) {
 
-                var result;
+                        var result;
 
-                result = aResponse.getResult();
+                        result = aResponse.getResult();
 
-                test.assert.isValid(
-                    result.at('ok'),
-                    TP.sc('Expected a result with an \'ok\' property'));
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
 
-                url.unregister();
+                        resolver();
+                    });
+
+                pouchRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.save(pouchRequest);
             });
-
-        url.save(pouchRequest);
     });
 
     //  ---
@@ -2456,28 +2571,43 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        //  pouchdb:// URLs are asynchronous
-        pouchRequest = TP.request(TP.hc('uri', url,
-                                        'verb', TP.HTTP_POST,
-                                        'async', true));
+        test.thenPromise(
+            function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'verb', TP.HTTP_POST,
+                                                'async', true));
 
-        url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
+                url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
 
-        pouchRequest.defineMethod('handleRequestSucceeded',
-            function (aResponse) {
+                pouchRequest.defineMethod('handleRequestSucceeded',
+                    function (aResponse) {
 
-                var result;
+                        var result;
 
-                result = aResponse.getResult();
+                        result = aResponse.getResult();
 
-                test.assert.isValid(
-                    result.at('ok'),
-                    TP.sc('Expected a result with an \'ok\' property'));
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
 
-                url.unregister();
+                        resolver();
+                    });
+
+                pouchRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.save(pouchRequest);
             });
-
-        url.save(pouchRequest);
     });
 
     //  ---
@@ -2491,28 +2621,43 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        //  pouchdb:// URLs are asynchronous
-        pouchRequest = TP.request(TP.hc('uri', url,
-                                        'verb', TP.HTTP_DELETE,
-                                        'async', true));
+        test.thenPromise(
+            function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'verb', TP.HTTP_DELETE,
+                                                'async', true));
 
-        url.setResource(null);
+                url.setResource(null);
 
-        pouchRequest.defineMethod('handleRequestSucceeded',
-            function (aResponse) {
+                pouchRequest.defineMethod('handleRequestSucceeded',
+                    function (aResponse) {
 
-                var result;
+                        var result;
 
-                result = aResponse.getResult();
+                        result = aResponse.getResult();
 
-                test.assert.isValid(
-                    result.at('ok'),
-                    TP.sc('Expected a result with an \'ok\' property'));
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
 
-                url.unregister();
+                        resolver();
+                    });
+
+                pouchRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.nuke(pouchRequest);
             });
-
-        url.nuke(pouchRequest);
     });
 
     //  ---
@@ -2527,28 +2672,43 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        //  pouchdb:// URLs are asynchronous
-        pouchRequest = TP.request(TP.hc('uri', url,
-                                        'verb', TP.HTTP_DELETE,
-                                        'async', true));
+        test.thenPromise(
+            function(resolver, rejector) {
+                //  pouchdb:// URLs are asynchronous
+                pouchRequest = TP.request(TP.hc('uri', url,
+                                                'verb', TP.HTTP_DELETE,
+                                                'async', true));
 
-        url.setResource(null);
+                url.setResource(null);
 
-        pouchRequest.defineMethod('handleRequestSucceeded',
-            function (aResponse) {
+                pouchRequest.defineMethod('handleRequestSucceeded',
+                    function (aResponse) {
 
-                var result;
+                        var result;
 
-                result = aResponse.getResult();
+                        result = aResponse.getResult();
 
-                test.assert.isValid(
-                    result.at('ok'),
-                    TP.sc('Expected a result with an \'ok\' property'));
+                        test.assert.isValid(
+                            result.at('ok'),
+                            TP.sc('Expected a result with an \'ok\' property'));
 
-                url.unregister();
+                        resolver();
+                    });
+
+                pouchRequest.defineMethod('handleRequestFailed',
+                    function(aResponse) {
+                        test.failUsingResponse(aResponse);
+
+                        rejector();
+                    });
+
+                pouchRequest.defineMethod('handleRequestCompleted',
+                    function(aResponse) {
+                        url.unregister();
+                    });
+
+                url.nuke(pouchRequest);
             });
-
-        url.nuke(pouchRequest);
     });
 
     //  ---
@@ -2562,7 +2722,7 @@ function() {
                     var pouchPromise,
                         promise;
 
-                    pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
+                    pouchPromise = testDb.destroy();
 
                     promise = TP.extern.Promise.resolve(pouchPromise);
 
