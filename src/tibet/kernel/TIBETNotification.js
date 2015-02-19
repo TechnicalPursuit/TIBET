@@ -3023,7 +3023,9 @@ function() {
 
     var value,
         source,
-        aspect;
+        aspect,
+
+        retVal;
 
     value = this.at(TP.NEWVAL);
     if (TP.isValid(value)) {
@@ -3039,11 +3041,19 @@ function() {
     //  Get the source object that we will use to ask the value of
     source = this.getSource();
 
+    //  If we can invoke 'get' on that source, see if we get a valid value by
+    //  doing a 'get' on it. If we don't get a valid value, try again by
+    //  creating an access path from the aspect.
     if (TP.canInvoke(source, 'get')) {
-        return source.get(aspect);
+
+        retVal = source.get(aspect);
+
+        if (TP.notValid(retVal)) {
+            retVal = source.get(TP.apc(aspect));
+        }
     }
 
-    return;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
