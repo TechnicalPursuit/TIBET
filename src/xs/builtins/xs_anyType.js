@@ -320,7 +320,7 @@ function(aValue, aFacet) {
     //  get the value's string representation (as it would like to see it)
     str = aValue.asString();
 
-    regexp = TP.rc(TP.regExpEscape(reVal));
+    regexp = TP.rc(reVal);
 
     return regexp.test(str);
 });
