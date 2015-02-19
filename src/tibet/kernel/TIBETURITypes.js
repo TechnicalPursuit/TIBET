@@ -1136,7 +1136,7 @@ function(url, entry, key) {
             //  for our purposes a <uri> entry becomes a regex built from
             //  the profile key for the entry and the uri to use if that
             //  profile is a match
-            if (arr.at(i).at(0).test(key)) {
+            if (TP.rc(arr.at(i).at(0)).test(key)) {
                 //  found one...store the element hash so we can find it,
                 //  using a key that'll tell us what kind it is
                 map.atPut('mapping', arr.at(i).at(1));
@@ -1158,7 +1158,7 @@ function(url, entry, key) {
             //  from the profile key for the entry and a test which should
             //  match the URI string. when both match we have a valid
             //  rewrite rule for this URI and profile
-            if (arr.at(i).at(0).test(key)) {
+            if (TP.rc(arr.at(i).at(0)).test(key)) {
                 hash = arr.at(i).at(1);
                 if (TP.notEmpty(str = hash.at('uriStartString'))) {
                     if (url.indexOf(str) === 0) {
@@ -1189,7 +1189,7 @@ function(url, entry, key) {
             //  from the profile key for the entry and a regex which should
             //  match the URI string. when both match we have a valid
             //  delegation rule for this URI and profile
-            if (arr.at(i).at(0).test(key)) {
+            if (TP.rc(arr.at(i).at(0)).test(key)) {
                 hash = arr.at(i).at(1);
 
                 //  if this delegation rule isn't about mapping some kind of
