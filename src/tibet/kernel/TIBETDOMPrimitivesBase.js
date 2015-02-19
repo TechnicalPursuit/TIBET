@@ -107,60 +107,6 @@ function(anElement, expandVirtuals) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetURIController',
-function(anElement) {
-
-    /**
-     * @method elementGetURIController
-     * @summary Returns the URI controller that is acting as the main
-     *     controller for the document containing the supplied element.
-     * @description This method looks for a 'tibet:src' attribute on the
-     *     document element of the document of the supplied element. If it can
-     *     find one, it uses that to look up a URI controller that matches that
-     *     URI.
-     * @param {Element} anElement The element node to retrieve the URI
-     *     controller for.
-     * @returns {TP.core.URIController}
-     * @exception TP.sig.InvalidElement Raised when an invalid element is provided
-     *     to the method.
-     */
-
-    var doc,
-        docElem,
-
-        tibetSrc,
-        ctrlTypeName,
-
-        controller;
-
-    if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
-    }
-
-    if (TP.isDocument(doc = TP.nodeGetDocument(anElement))) {
-        if (TP.isElement(docElem = doc.documentElement)) {
-            if (TP.notEmpty(tibetSrc = TP.elementGetAttribute(
-                                    docElem, 'tibet:src', true))) {
-                //  NB: This might be empty and that's ok, because the
-                //  "get('controller')" call will default the type.
-                ctrlTypeName = TP.elementGetAttribute(
-                                    docElem, 'tibet:urictrl', true);
-
-                controller = TP.uc(tibetSrc).get('controller', ctrlTypeName);
-
-                //  Set the window currently displaying this URL to the
-                //  document's window. This is needed when computing the
-                //  responder chain.
-                controller.set('currentWindow', TP.nodeGetWindow(doc));
-            }
-        }
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('elementResolveXMLBase',
 function(anElement, uriAttrNames, aPrefix, aSuffix) {
 

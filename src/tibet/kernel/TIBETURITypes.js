@@ -1195,8 +1195,7 @@ function(url, entry, key) {
                 //  if this delegation rule isn't about mapping some kind of
                 //  handler or controller then skip to next one
                 if (TP.isEmpty(hash.at('tibet:urihandler')) &&
-                    TP.isEmpty(hash.at('tibet:contenthandler')) &&
-                    TP.isEmpty(hash.at('tibet:urictrl'))) {
+                    TP.isEmpty(hash.at('tibet:contenthandler'))) {
                     continue;
                 }
 
@@ -2245,82 +2244,6 @@ function(aRequest) {
     request.atPut('resultType', TP.TEXT);
 
     return this.getContent(request);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getController',
-function(aTypeName) {
-
-    /**
-     * @method getController
-     * @summary Returns the URI controller associated with the receiver.
-     * @param {String} aTypeName The type name of the controller to use. This is
-     *     an optional parameter and, if not supplied and the receiver is a
-     *     'mapped' URI then this method will attempt to use the URI map to
-     *     determine the controller type.
-     * @returns {Object} The receiver's URI controller object.
-     */
-
-    var controller,
-        controllerType,
-
-        entry,
-        key,
-        path,
-        map,
-
-        item,
-
-        mappedType;
-
-    if (TP.notValid(controller = this.$get('controller'))) {
-        //  First, check to see if the supplied type name is a real TIBET
-        //  type. If it is not, then we default the type and check the URI
-        //  map.
-        if (!TP.isType(controllerType = TP.sys.getTypeByName(aTypeName))) {
-            //  Set the controller type to the base type. If we fail to find
-            //  a map entry below, we'll just use this type.
-            controllerType = TP.core.URIController;
-
-            //  check on uri mapping to see if the URI maps define a wrapper
-            if (TP.notFalse(this.isMappedURI())) {
-                entry = TP.core.URI.$getURIEntry(this);
-
-                //  the entry for the URI caches lookup results by 'profile'
-                //  key so we need to get that to see if a content handler
-                //  was defined. by passing no profile we get the one for
-                //  the current runtime environment, and we turn off
-                //  wildcard generation to get explicit values
-                key = TP.core.URI.$getURIProfileKey(null, false);
-
-                if (TP.notValid(map = entry.at(key))) {
-                    path = TP.uriExpandPath(
-                                    this.asString()).split('#').at(0);
-                    map = TP.core.URI.$getURIMapForKey(path, entry, key);
-                }
-
-                if (TP.isValid(map)) {
-                    if (TP.isValid(item = map.at('mapping'))) {
-                        mappedType = TP.sys.getTypeByName(
-                                        item.at('tibet:urictrl'));
-                    } else if (TP.isValid(item = map.at('delegate'))) {
-                        mappedType = TP.sys.getTypeByName(
-                                        item.at('tibet:urictrl'));
-                    }
-                }
-
-                if (TP.isType(mappedType)) {
-                    controllerType = mappedType;
-                }
-            }
-        }
-
-        controller = controllerType.construct();
-        this.set('controller', controller);
-    }
-
-    return controller;
 });
 
 //  ------------------------------------------------------------------------
