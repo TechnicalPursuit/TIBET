@@ -121,8 +121,7 @@ function(aRequest) {
 
         case 'deleteDB':
 
-            PouchDB.destroy(
-                dbName,
+            theDB.destroy(
                 function(error, response) {
 
                     //  There was an error - fail the request.
