@@ -3032,33 +3032,30 @@ function(aSignal) {
 
     var resource,
 
-        paths,
-
         subURIs,
 
         path,
 
         i,
 
-        fragText;
+        fragText,
+
+        primaryAspect;
 
     resource = this.getResource();
 
     //  If TP.CHANGE_PATHS were supplied in the signal, filter them against any
     //  'sub URI's of the receiver and signal a change from those URIs.
 
-    if (TP.notEmpty(paths = aSignal.at(TP.CHANGE_PATHS))) {
+    //  SubURIs are URIs that have the same primary resource as us, but also
+    //  have a fragment, indicating that they also have a secondary resource
+    //  pointed to by the fragment.
+    subURIs = this.getSubURIs();
 
-        //  SubURIs are URIs that have the same primary resource as us, but also
-        //  have a fragment, indicating that they also have a secondary resource
-        //  pointed to by the fragment.
-        subURIs = this.getSubURIs();
+    if (TP.notEmpty(aSignal.at(TP.CHANGE_PATHS))) {
 
         if (TP.notEmpty(subURIs)) {
 
-            //  Iterate over the paths and compare them against any 'fragments
-            //  without the pointer indicator' (i.e. just the path) of sub URIs
-            //  to see if any of the subURIs have that path as their fragment.
             path = aSignal.at('aspect');
 
             //  Note that we change the 'aspect' here to 'value' - because the
@@ -3092,7 +3089,40 @@ function(aSignal) {
         //  Now that any of the appropriate subURIs have signaled from
         //  themselves, we signal from ourself.
         this.signal(aSignal.getSignalName(), aSignal.getPayload());
+
     } else {
+
+        if (TP.notEmpty(subURIs)) {
+
+            for (i = 0; i < subURIs.getSize(); i++) {
+
+                //  Note that we change the 'aspect' here to 'value' (after
+                //  capturing the original aspect used by the primary URI) -
+                //  because the 'entire value' of the subURI itself has changed.
+                //  We also include a 'path' for convenience, so that observers
+                //  can use that against the primary URI to obtain this URI's
+                //  value, if they wish.
+                primaryAspect = aSignal.at('aspect');
+                aSignal.atPut('aspect', 'value');
+
+                aSignal.atPut('path', subURIs.at(i).getFragmentText());
+
+                aSignal.atPut('facet', 'value');
+                aSignal.atPut('target', resource);
+
+                subURIs.at(i).signal(
+                        aSignal.getSignalName(),
+                        aSignal.getPayload());
+            }
+
+            //  Put the signal back to what it was before we mucked with it
+            //  above.
+            aSignal.atPut('aspect', primaryAspect);
+            aSignal.removeKey('path');
+            aSignal.removeKey('facet');
+            aSignal.removeKey('target');
+        }
+
         //  If we didn't have any paths, then just signal from ourself.
         this.signal(aSignal.getSignalName(), aSignal.getPayload());
     }
