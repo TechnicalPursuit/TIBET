@@ -310,15 +310,19 @@ function(aValue, aFacet) {
      * @returns {Boolean}
      */
 
-    var regex,
-        str;
+    var reVal,
+        str,
 
-    regex = TP.elementGetAttribute(aFacet, 'value');
+        regexp;
+
+    reVal = TP.elementGetAttribute(aFacet, 'value');
 
     //  get the value's string representation (as it would like to see it)
     str = aValue.asString();
 
-    return regex.test(str);
+    regexp = TP.rc(TP.regExpEscape(reVal));
+
+    return regexp.test(str);
 });
 
 //  ------------------------------------------------------------------------
