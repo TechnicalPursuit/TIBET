@@ -147,7 +147,6 @@
     <script src="tsh/tsh_lint.js"/>
     <script src="tsh/tsh_pp.js"/>
     <script src="tsh/tsh_script.js"/>
-    <script src="tsh/tsh_service.js"/>
     <script src="tsh/tsh_template.js"/>
     <script src="tsh/tsh_test.js"/>
     <script src="tsh/tsh_transform.js"/>

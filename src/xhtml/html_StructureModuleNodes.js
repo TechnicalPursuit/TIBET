@@ -169,21 +169,6 @@ TP.html.Attrs.defineSubtype('html');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.html.html.Type.defineMethod('tagAttachData',
-function(aRequest) {
-
-    var cmdDoc;
-
-    cmdDoc = TP.nodeGetDocument(aRequest.at('node'));
-
-    TP.signal(cmdDoc, 'TP.sig.DOMModelConstruct');
-    TP.signal(cmdDoc, 'TP.sig.DOMModelConstructDone');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.html.Type.defineMethod('tagTidy',
 function(aRequest) {
 
