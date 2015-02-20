@@ -1355,6 +1355,20 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$$handleLoad',
+function(anEvent) {
+
+    /**
+     * @method $$handleLoad
+     * @summary Document-level load handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$$handleTransitionEnd',
 function(anEvent) {
 

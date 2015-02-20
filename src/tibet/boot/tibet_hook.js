@@ -2272,6 +2272,10 @@ if (window.onerror.failedlaunch !== true &&
                                 TP.core.Keyboard.$$handleKeyEvent);
 
         TP.boot.$$addUIHandler(aDocument,
+                                'load',
+                                TP.$$handleLoad);
+
+        TP.boot.$$addUIHandler(aDocument,
                                 'change',
                                 TP.$$handleChange);
 
@@ -2329,6 +2333,8 @@ if (window.onerror.failedlaunch !== true &&
 
         TP.boot.$$removeUIHandler(aDocument, 'keydown');
         TP.boot.$$removeUIHandler(aDocument, 'keypress');
+
+        TP.boot.$$removeUIHandler(aDocument, 'load');
 
         TP.boot.$$removeUIHandler(aDocument, 'change');
 

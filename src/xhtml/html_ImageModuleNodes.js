@@ -70,5 +70,35 @@ function(aURI) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.html.img.Type.defineMethod('onload',
+function(aTargetElem, anEvent) {
+
+    /**
+     * @method onload
+     * @summary Handles a 'load' native event that was dispatched against
+     *     the supplied native element.
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @param {Event} anEvent The native event that was triggered.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.html.img} The receiver.
+     */
+
+    var evtTargetTPElem;
+
+    if (!TP.isElement(aTargetElem)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  Grab the event target element and wrap it
+    evtTargetTPElem = TP.wrap(aTargetElem);
+
+    evtTargetTPElem.signal('TP.sig.DOMReady');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
