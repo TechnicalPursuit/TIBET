@@ -6860,20 +6860,18 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
      *     now, due to the nature of the various types of paths, this only
      *     applies for the TP.CSS_PATH_TYPE path.
      * @returns {Object} The value of evaluating the path.
-     * @exception TP.sig.InvalidPath Raised when an invalid path is provided to the
-     *     method.
+     * @exception TP.sig.InvalidPath Raised when an invalid path is provided to
+     *      the method.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
 
-    var node,
-        path,
+    var path,
         result,
 
         thePathType;
 
-    //  normalize for document nodes etc.
-    if (TP.notValid(aNode) || !TP.isElement(node = TP.elem(aNode))) {
+    if (TP.notValid(aNode)) {
         TP.raise(this, 'TP.sig.InvalidNode',
                     'Node does not have path interface.');
 
@@ -6893,7 +6891,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
         path = aPath.slice(1);
 
         //  don't return '' here, return null if we can't find a real value
-        result = TP.elementGetAttribute(node, path);
+        result = TP.elementGetAttribute(aNode, path);
 
         return TP.isEmpty(result) ? null : result;
     }
@@ -6908,7 +6906,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
             //  reduction, we need to do this here by always capturing a
             //  full nodeset and then returning the node if the result set
             //  has only one node and the caller wants auto collapse.
-            result = TP.nodeEvaluateXPath(node, aPath, TP.NODESET);
+            result = TP.nodeEvaluateXPath(aNode, aPath, TP.NODESET);
 
             //  If autoCollapse was turned on, we need to either return the
             //  first result (if there is only one) or null if the result is
@@ -6926,16 +6924,16 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
         case TP.XPOINTER_PATH_TYPE:
 
             //  #xpointer(...), #xpath1(...) or #element(...) schemes
-            return TP.nodeEvaluateXPointer(node, aPath, autoCollapse);
+            return TP.nodeEvaluateXPointer(aNode, aPath, autoCollapse);
 
         case TP.XTENSION_POINTER_PATH_TYPE:
 
             //  Other 'extended' schemes
-            return TP.nodeEvaluateXTension(node, aPath, autoCollapse);
+            return TP.nodeEvaluateXTension(aNode, aPath, autoCollapse);
 
         case TP.CSS_PATH_TYPE:
 
-            result = TP.nodeEvaluateCSS(node, aPath, autoCollapse);
+            result = TP.nodeEvaluateCSS(aNode, aPath, autoCollapse);
 
             if (TP.notTrue(retryWithDocument)) {
                 return result;
@@ -6948,7 +6946,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
             /* eslint-disable no-extra-parens */
             if (TP.notValid(result) ||
                 (TP.isArray(result) && TP.isEmpty(result))) {
-                return TP.nodeEvaluateCSS(TP.nodeGetDocument(node),
+                return TP.nodeEvaluateCSS(TP.nodeGetDocument(aNode),
                                             aPath,
                                             autoCollapse);
             }
@@ -6959,7 +6957,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
         case TP.BARENAME_PATH_TYPE:
 
             return TP.nodeEvaluateBarename(
-                            TP.nodeGetDocument(node), aPath, autoCollapse);
+                            TP.nodeGetDocument(aNode), aPath, autoCollapse);
 
         default:
 
