@@ -2835,6 +2835,8 @@ TP.regex.ELEMENT_POINTER = /element\((.+)\)/;
 
 TP.regex.XPATH_HAS_ID = /id\((.+)\)/;
 
+TP.regex.XPATH_HAS_SCALAR_CONVERSION = /^(?:string|number|boolean)\((.+)\)$/;
+
 //  /, @, . followed by . or /, x( where x isn't . (all from start of line) OR
 //  a 'full axis name' followed by a double colon ('::')
 /* eslint-disable max-len */

@@ -3857,6 +3857,18 @@ function(aNode) {
             action = TP.UPDATE;
         }
 
+    } else if (TP.isTextNode(aNode)) {
+
+        elem = aNode.parentNode;
+
+        //  We need to test the owner element to see if it already has an
+        //  appropriate action (i.e. TP.CREATE if this text node has just been
+        //  created). Otherwise, we set it to TP.UPDATE.
+
+        if (TP.notValid(action = TP.elementGetChangeAction(elem, TP.SELF))) {
+            action = TP.UPDATE;
+        }
+
     } else if (TP.isElement(elem = aNode)) {
 
         //  We need to flag changes on the content element, but not if the
@@ -4212,6 +4224,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             changeAction = TP.elementGetChangeAction(
                                 TP.attributeGetOwnerElement(content),
                                 TP.ATTR + content.name);
+        } else if (TP.isTextNode(content)) {
+            changeAction = TP.elementGetChangeAction(
+                                content.parentNode,
+                                TP.SELF);
         }
 
         /* eslint-disable no-extra-parens */
@@ -4264,7 +4280,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         tpcontent = TP.wrap(content);
         tpcontent.setProcessedContent(value);
 
-        //  99% is single value targeting a single element or attribute node
+        //  99% is single value targeting a single element, attribute node or
+        //  text node
         if (TP.isElement(content)) {
             //  If we're gonna signal a change, then add the element's address
             //  to the list of changed addresses.
@@ -4303,7 +4320,27 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 //  content.name address on this element.
                 TP.elementFlagChange(
                         ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
+            }
+        } else if (TP.isTextNode(content)) {
+            //  If we're gonna signal a change, then add the element's address
+            //  to the list of changed addresses.
+            if (signalChange) {
+                ownerElem = content.parentNode;
+                affectedElems.push(ownerElem);
 
+                //  Note here how we pass in 'false', because we don't want to
+                //  overwrite any existing change flag record for the TP.ATTR +
+                //  content.name address on this element.
+                TP.elementFlagChange(
+                        ownerElem, TP.SELF, TP.UPDATE, false);
+
+                this.$addChangedAddressFromNode(content);
+            } else if (flagChanges) {
+                //  Note here how we pass in 'false', because we don't want to
+                //  overwrite any existing change flag record for the TP.ATTR +
+                //  content.name address on this element.
+                TP.elementFlagChange(
+                        ownerElem, TP.SELF, TP.UPDATE, false);
             }
         }
     } else if (TP.isArray(content)) {
@@ -4370,6 +4407,35 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         TP.elementFlagChange(
                                 ownerElem,
                                 TP.ATTR + contentnode.name,
+                                TP.UPDATE,
+                                false);
+                    }
+                } else if (TP.isTextNode(contentnode)) {
+                    //  If we're gonna signal a change, then add the
+                    //  attribute's address to the list of changed addresses.
+                    if (signalChange) {
+                        ownerElem = contentnode.parentNode;
+                        affectedElems.push(ownerElem);
+
+                        //  Note here how we pass in 'false', because we don't
+                        //  want to overwrite any existing change flag record
+                        //  for the TP.ATTR + contentnode.name address on this
+                        //  element.
+                        TP.elementFlagChange(
+                                ownerElem,
+                                TP.SELF,
+                                TP.UPDATE,
+                                false);
+
+                        this.$addChangedAddressFromNode(contentnode);
+                    } else if (flagChanges) {
+                        //  Note here how we pass in 'false', because we don't
+                        //  want to overwrite any existing change flag record
+                        //  for the TP.ATTR + contentnode.name address on this
+                        //  element.
+                        TP.elementFlagChange(
+                                ownerElem,
+                                TP.SELF,
                                 TP.UPDATE,
                                 false);
                     }
@@ -5587,6 +5653,8 @@ function(aNode, flagChanges) {
 
     var shouldMake,
 
+        newPath,
+
         results,
 
         path,
@@ -5600,8 +5668,22 @@ function(aNode, flagChanges) {
 
     shouldMake = this.get('shouldMake');
 
-    //  We pass 'false' to not log errors here - we may be constructing.
-    results = this.execOnNative(aNode, TP.NODESET, false, flagChanges);
+    if (TP.notValid(path = this.get('$transformedPath'))) {
+        path = this.get('srcPath');
+    }
+
+    if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(path)) {
+        newPath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(
+                    this.get('srcPath')).at(1);
+
+        if (TP.notEmpty(newPath)) {
+            results = TP.xpc(newPath).execOnNative(
+                                    aNode, TP.NODESET, false, flagChanges);
+        }
+    } else {
+        //  We pass 'false' to not log errors here - we may be constructing.
+        results = this.execOnNative(aNode, TP.NODESET, false, flagChanges);
+    }
 
     //  If we found content by executing ourself against the target object,
     //  then most other concerns are moot - we got at least one targeted node
@@ -5609,10 +5691,6 @@ function(aNode, flagChanges) {
 
     //  If we didn't, well we've more work to do.
     if (TP.isEmpty(results)) {
-
-        if (TP.notValid(path = this.get('$transformedPath'))) {
-            path = this.get('srcPath');
-        }
 
         //  only support build on demand behavior if the flag is set
         if (TP.notTrue(shouldMake)) {
