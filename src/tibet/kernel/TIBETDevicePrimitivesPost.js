@@ -1218,9 +1218,7 @@ function(anEvent) {
 
     /**
      * @method $$handleFocus
-     * @summary Document-level focus handler, installed by tibet_hook and
-     *     leveraged by IE event wrapper code to ensure capture semantics are
-     *     preserved even on IE.
+     * @summary Document-level focus handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
@@ -1234,9 +1232,7 @@ function(anEvent) {
 
     /**
      * @method $$handleBlur
-     * @summary Document-level blur handler, installed by tibet_hook and
-     *     leveraged by IE event wrapper code to ensure capture semantics are
-     *     preserved even on IE.
+     * @summary Document-level blur handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
@@ -1250,9 +1246,7 @@ function(anEvent) {
 
     /**
      * @method $$handleChange
-     * @summary Document-level change handler, installed by tibet_hook and
-     *     leveraged by IE event wrapper code to ensure capture semantics are
-     *     preserved even on IE.
+     * @summary Document-level change handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
@@ -1266,9 +1260,7 @@ function(anEvent) {
 
     /**
      * @method $$handleCut
-     * @summary Document-level cut handler, installed by tibet_hook and
-     *     leveraged by IE event wrapper code to ensure capture semantics are
-     *     preserved even on IE.
+     * @summary Document-level cut handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
@@ -1282,9 +1274,7 @@ function(anEvent) {
 
     /**
      * @method $$handleCopy
-     * @summary Document-level copy handler, installed by tibet_hook and
-     *     leveraged by IE event wrapper code to ensure capture semantics are
-     *     preserved even on IE.
+     * @summary Document-level copy handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
@@ -1298,9 +1288,7 @@ function(anEvent) {
 
     /**
      * @method $$handlePaste
-     * @summary Document-level paste handler, installed by tibet_hook and
-     *     leveraged by IE event wrapper code to ensure capture semantics are
-     *     preserved even on IE.
+     * @summary Document-level paste handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
@@ -1372,9 +1360,7 @@ function(anEvent) {
 
     /**
      * @method $$handleTransitionEnd
-     * @summary Document-level transitionend handler, installed by tibet_hook
-     *     and leveraged by IE event wrapper code to ensure capture semantics
-     *     are preserved even on IE.
+     * @summary Document-level transitionend handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
