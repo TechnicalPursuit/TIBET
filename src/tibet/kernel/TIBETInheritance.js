@@ -7624,7 +7624,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
     //  If the facet is 'value', then use the standard 'set' mechanism.
     if (facetName === 'value') {
-        return this.set(aspectName, facetValue);
+        return this.set(aspectName, facetValue, shouldSignal);
     }
 
     //  The internal facet slot name will always be something like
