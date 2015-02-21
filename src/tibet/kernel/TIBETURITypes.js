@@ -608,16 +608,6 @@ function(anInstance) {
         }
     }
 
-    /*
-    var floofy;
-
-    if (TP.isValid(floofy = anInstance.get('nestedURI')) &&
-        floofy !== anInstance) {
-        this.removeInstance(floofy);
-        floofy = null;
-    }
-    */
-
     dict.removeKey(anInstance.getLocation());
 
     return this;
