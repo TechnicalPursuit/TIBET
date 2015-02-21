@@ -1639,7 +1639,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
     handlers = this.$get('$$handlers');
     if (TP.notValid(handlers)) {
         handlers = TP.hc();
-        this.$set('$$handlers', handlers);
+        this.$set('$$handlers', handlers, false);
     } else {
         handler = handlers.at(key);
         if (handler === TP.NO_RESULT) {
