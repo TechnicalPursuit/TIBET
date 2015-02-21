@@ -3639,7 +3639,7 @@ together.
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('$isInState',
-function(stateAttribute, stateFlag) {
+function(stateAttribute, stateFlag, shouldSignal) {
 
     /**
      * @method $isInState
@@ -3649,20 +3649,31 @@ function(stateAttribute, stateFlag) {
      *     this state.
      * @param {Boolean} stateFlag Optional parameter which defines the whether
      *     the state is in effect.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
      * @returns {Boolean} Whether the receiver's state is active.
      */
+
+    var flag;
 
     //  NB: we use the '$' versions of setAttribute/getAttribute here or
     //  otherwise we'll endlessly recurse.
 
     if (TP.isBoolean(stateFlag)) {
         if (stateFlag) {
-            this.$setAttribute(stateAttribute, 'true');
+            this.$setAttribute(stateAttribute, 'true', false);
         } else {
             this.$removeAttribute(stateAttribute);
         }
 
-        this.changed(stateAttribute.slice(7), TP.UPDATE);
+        //  NB: Use this construct this way for better performance
+        if (TP.notValid(flag = shouldSignal)) {
+            flag = this.shouldSignalChange();
+        }
+
+        if (flag) {
+            this.changed(stateAttribute.slice(7), TP.UPDATE);
+        }
     }
 
     return this.hasAttribute(stateAttribute);
