@@ -608,6 +608,16 @@ function(anInstance) {
         }
     }
 
+    /*
+    var floofy;
+
+    if (TP.isValid(floofy = anInstance.get('nestedURI')) &&
+        floofy !== anInstance) {
+        this.removeInstance(floofy);
+        floofy = null;
+    }
+    */
+
     dict.removeKey(anInstance.getLocation());
 
     return this;
@@ -3486,6 +3496,44 @@ function(contentData, aRequest) {
                                 '$setResultContent',
                                 null,
                                 contentData);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('$setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @method $setFacet
+     * @summary Sets the value of the named facet of the named aspect to the
+     *     value provided. This method should be called from any 'custom facet
+     *     setter' in order to a) set the property and b) signal a change, if
+     *     configured.
+     * @description For this type and its subtypes, this method only operates on
+     *     facets named 'value'.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The receiver.
+     */
+
+    //  We have no notion of any other facet for URIs.
+    if (facetName !== 'value') {
+        return this;
+    }
+
+    //  If this isn't a primary URI, then we won't use any supplied aspect, but
+    //  we'll use the fragment text instead.
+    if (!this.isPrimaryURI()) {
+        this.getPrimaryURI().getResource().set(
+                    this.getFragmentText(), facetValue, shouldSignal);
+    } else {
+        this.getResource().set(aspectName, facetValue, shouldSignal);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
