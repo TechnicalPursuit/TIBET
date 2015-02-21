@@ -4343,7 +4343,7 @@ function(attributeName) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('$setAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @method setAttribute
@@ -4353,6 +4353,9 @@ function(attributeName, attributeValue) {
      *     nodes as well as proper namespace management.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {null} Null according to the spec for DOM 'setAttribute'.
      */
 
     var boolAttrs,
@@ -4362,6 +4365,9 @@ function(attributeName, attributeValue) {
         oldValue,
 
         attr,
+
+        flag,
+
         nameParts,
         prefix,
         name,
@@ -4385,6 +4391,11 @@ function(attributeName, attributeValue) {
     //  of the same name but different namespace URIs
     attr = node.getAttributeNode(attributeName);
 
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (TP.isAttributeNode(attr)) {
         //  Capture the current value
         oldValue = attr.value;
@@ -4401,10 +4412,12 @@ function(attributeName, attributeValue) {
 
             attr.value = attributeValue;
 
-            this.changed('@' + attributeName,
-                            TP.UPDATE,
-                            TP.hc(TP.OLDVAL, oldValue,
-                                    TP.NEWVAL, attributeValue));
+            if (flag) {
+                this.changed('@' + attributeName,
+                                TP.UPDATE,
+                                TP.hc(TP.OLDVAL, oldValue,
+                                        TP.NEWVAL, attributeValue));
+            }
 
             return;
         }
@@ -4436,7 +4449,9 @@ function(attributeName, attributeValue) {
 
             //  NB: We don't 'flag changes' for setting an 'xmlns:*' attribute
 
-            this.changed('@' + attributeName, TP.CREATE);
+            if (flag) {
+                this.changed('@' + attributeName, TP.CREATE);
+            }
 
             return;
         }
@@ -4472,10 +4487,12 @@ function(attributeName, attributeValue) {
         TP.elementSetAttribute(node, attributeName, attributeValue);
     }
 
-    this.changed('@' + attributeName,
-                    TP.CREATE,
-                    TP.hc('oldValue', oldValue,
-                            'newValue', attributeValue));
+    if (flag) {
+        this.changed('@' + attributeName,
+                        TP.CREATE,
+                        TP.hc('oldValue', oldValue,
+                                'newValue', attributeValue));
+    }
 
     //  setAttribute returns void according to the spec
     return;

@@ -2746,7 +2746,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('$setAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @method $setAttribute
@@ -2756,12 +2756,16 @@ function(attributeName, attributeValue) {
      *     object's native node is an on-screen control.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
      * @returns {null} Null according to the spec for DOM 'setAttribute'.
      */
 
     var node,
 
         hadAttribute,
+
+        flag,
 
         nameParts,
         prefix,
@@ -2772,6 +2776,11 @@ function(attributeName, attributeValue) {
     node = this.getNativeNode();
 
     hadAttribute = TP.elementHasAttribute(node, attributeName, true);
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
 
     //  if this is a prefixed attribute then we'll attempt to "do the right
     //  thing" by finding the registered namespace and placing the attribute
@@ -2797,7 +2806,9 @@ function(attributeName, attributeValue) {
                                     prefix + ':' + name,
                                     attributeValue);
 
-            this.changed('@' + attributeName, TP.UPDATE);
+            if (flag) {
+                this.changed('@' + attributeName, TP.UPDATE);
+            }
 
             return;
         }
@@ -2819,12 +2830,14 @@ function(attributeName, attributeValue) {
         TP.elementSetAttribute(node, attributeName, attributeValue);
     }
 
-    this.changed('attribute',
-                hadAttribute ? TP.UPDATE : TP.CREATE,
-                TP.hc(TP.OLDVAL,
-                        TP.elementGetAttribute(node, attributeName, true),
-                        TP.NEWVAL,
-                        attributeValue));
+    if (flag) {
+        this.changed('attribute',
+                    hadAttribute ? TP.UPDATE : TP.CREATE,
+                    TP.hc(TP.OLDVAL,
+                            TP.elementGetAttribute(node, attributeName, true),
+                            TP.NEWVAL,
+                            attributeValue));
+    }
 
     //  setAttribute returns void according to the spec
     return;
