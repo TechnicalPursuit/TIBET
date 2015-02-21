@@ -540,8 +540,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will bound to. If not
+     *     specified, this will default to 'value'.
      * @param {Function} transformationFunc A Function to transform the value
      *     before it is supplied to the observer of the binding. It takes one
      *     parameter, the new value from the model and returns the
@@ -561,7 +562,10 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
         handler,
 
-        resourceValue;
+        resourceValue,
+
+        i,
+        allFacets;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter',
@@ -592,13 +596,17 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     //  'value'.
     if (TP.notValid(facetName = sourceFacetName)) {
         facetName = 'value';
-    } else {
-        facetName = facetName.toLowerCase();
     }
 
     //  Choose the correct subtype of TP.sig.FacetSignal to use, depending on
     //  facet.
     switch (facetName) {
+
+        //  Specifying TP.ALL means that we use the supertype of all facet
+        //  signals.
+        case TP.ALL:
+            signalName = 'TP.sig.FacetChange';
+            break;
 
         case 'readonly':
             signalName = 'TP.sig.ReadonlyChange';
@@ -638,12 +646,6 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
             signalName = sourceAttr.asStartUpper() + 'Change';
         }
     }
-
-    //  The key into the aspect map is the global ID of the resource, the source
-    //  attr name and the source facet name all joined together.
-    aspectKey = TP.gid(resource) + TP.JOIN +
-                TP.str(sourceAttr) + TP.JOIN +
-                facetName;
 
     //  Make sure that target object has a local method to handle the change
     methodName = 'handle' + TP.escapeTypeName(signalName);
@@ -704,12 +706,10 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                         newVal = transform(source, newVal);
                     }
 
-                    this.refresh(
-                            TP.hc(TP.NEWVAL, newVal,
-                                    'aspect', targetAttr));
+                    this.setFacet(targetAttr, facet, newVal, false);
                 }
             } catch (e) {
-                this.raise('TP.sig.InvalidBinding');
+                this.raise('TP.sig.InvalidBinding', TP.ec(e));
             }
         };
 
@@ -720,11 +720,35 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         target.defineMethod(methodName, handler);
     }
 
-    //  Add an entry to make a mapping between a source aspect and a target
-    //  aspect.
-    handler.$observationsMap.atPut(aspectKey,
-                                    TP.ac(targetAttributeName,
-                                            transformationFunc));
+    if (facetName !== TP.ALL) {
+
+        //  The key into the aspect map is the global ID of the resource, the
+        //  source attr name and the source facet name all joined together.
+        aspectKey = TP.gid(resource) + TP.JOIN +
+                    TP.str(sourceAttr) + TP.JOIN +
+                    facetName;
+
+        //  Add an entry to make a mapping between a source aspect and a target
+        //  aspect.
+        handler.$observationsMap.atPut(aspectKey,
+                                        TP.ac(targetAttributeName,
+                                                transformationFunc));
+    } else {
+
+        //  TP.ALL was specified - set up an entry for each facet.
+
+        allFacets = TP.FACET_NAMES.concat('value');
+        for (i = 0; i < allFacets.getSize(); i++) {
+
+            aspectKey = TP.gid(resource) + TP.JOIN +
+                        TP.str(sourceAttr) + TP.JOIN +
+                        allFacets.at(i);
+
+            handler.$observationsMap.atPut(aspectKey,
+                                            TP.ac(targetAttributeName,
+                                                    transformationFunc));
+        }
+    }
 
     //  PERF
 
@@ -754,8 +778,9 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will bound to. If not
+     *     specified, this will default to 'value'.
      * @param {Function} transformationFunc A Function to transform the value
      *     before it is supplied to the observer of the binding. It takes one
      *     parameter, the new value from the model and returns the
@@ -781,8 +806,9 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will bound to. If not
+     *     specified, this will default to 'value'.
      * @param {Function} transformationFunc A Function to transform the value
      *     before it is supplied to the observer of the binding. It takes one
      *     parameter, the new value from the model and returns the
@@ -808,8 +834,9 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will bound to. If not
+     *     specified, this will default to 'value'.
      * @param {Function} transformationFunc A Function to transform the value
      *     before it is supplied to the observer of the binding. It takes one
      *     parameter, the new value from the model and returns the
@@ -830,14 +857,15 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     /**
      * @method destroyBinding
-     * @summary Adds a binding to the supplied target object.
-     * @param {Object} target The target object to define the binding on.
+     * @summary Removes a binding from the supplied target object.
+     * @param {Object} target The target object to remove the binding from.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will be unbound. If not
+     *     specified, this will default to 'value'.
      * @returns {Object} The target object.
      */
 
@@ -850,7 +878,10 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
         methodName,
 
-        handler;
+        handler,
+
+        i,
+        allFacets;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter',
@@ -881,13 +912,17 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     //  'value'.
     if (TP.notValid(facetName = sourceFacetName)) {
         facetName = 'value';
-    } else {
-        facetName = facetName.toLowerCase();
     }
 
     //  Choose the correct subtype of TP.sig.FacetSignal to use, depending on
     //  facet.
     switch (facetName) {
+
+        //  Specifying TP.ALL means that we use the supertype of all facet
+        //  signals.
+        case TP.ALL:
+            signalName = 'TP.sig.FacetChange';
+            break;
 
         case 'readonly':
             signalName = 'TP.sig.ReadonlyChange';
@@ -920,21 +955,38 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         }
     }
 
-    //  The key into the aspect map is the global ID of the resource, the source
-    //  attr name and the source facet name all joined together.
-    aspectKey = TP.gid(resource) + TP.JOIN +
-                TP.str(sourceAttr) + TP.JOIN +
-                facetName;
-
     //  Make sure that target object has a local method to handle the change
     methodName = 'handle' + TP.escapeTypeName(signalName);
 
     if (TP.isValid(handler = target.getMethod(methodName)) &&
         TP.isValid(handler.$observationsMap)) {
 
-        //  There was a valid handler and a valid key map - remove our source
-        //  aspect from it.
-        handler.$observationsMap.removeKey(aspectKey);
+        if (facetName !== TP.ALL) {
+
+            //  The key into the aspect map is the global ID of the resource,
+            //  the source attr name and the source facet name all joined
+            //  together.
+            aspectKey = TP.gid(resource) + TP.JOIN +
+                        TP.str(sourceAttr) + TP.JOIN +
+                        facetName;
+
+            //  There was a valid handler and a valid key map - remove our
+            //  source aspect from it.
+            handler.$observationsMap.removeKey(aspectKey);
+        } else {
+
+            //  TP.ALL was specified - remove the entry for each facet.
+
+            allFacets = TP.FACET_NAMES.concat('value');
+            for (i = 0; i < allFacets.getSize(); i++) {
+
+                aspectKey = TP.gid(resource) + TP.JOIN +
+                            TP.str(sourceAttr) + TP.JOIN +
+                            allFacets.at(i);
+
+                handler.$observationsMap.removeKey(aspectKey);
+            }
+        }
     }
 
     //  Ignore the target.
@@ -956,8 +1008,9 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will be unbound. If not
+     *     specified, this will default to 'value'.
      * @returns {Object} The receiver.
      */
 
@@ -979,8 +1032,9 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will be unbound. If not
+     *     specified, this will default to 'value'.
      * @returns {Object} The receiver.
      */
 
@@ -1002,8 +1056,9 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
+     * @param {String} sourceFacetName The source facet name. If TP.ALL is
+     *     specified, then all facets from the source will be unbound. If not
+     *     specified, this will default to 'value'.
      * @returns {Object} The receiver.
      */
 
@@ -1466,7 +1521,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
             if (TP.isCallable(transformFunc)) {
                 this.defineBinding(
                     '@' + attrName, obsURIs.at(i),
-                    'value', 'value',
+                    'value', TP.ALL,
                     transformFunc);
 
                 if (refreshImmediately) {
@@ -1477,7 +1532,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
             } else {
                 this.defineBinding(
                     '@' + attrName, obsURIs.at(i),
-                    'value', 'value');
+                    'value', TP.ALL);
 
                 if (refreshImmediately) {
                     newVal = obsURIs.at(i).getResource();
@@ -1588,7 +1643,7 @@ function(attrName, attrValue, scopeVals, direction) {
         //  If we tearing down a bind for either 'IN' or 'IO', then destroy the
         //  binding from the data model to this object.
         if (direction === TP.IN || direction === TP.IO) {
-            this.destroyBinding('@' + attrName, obsURI, 'value', 'value');
+            this.destroyBinding('@' + attrName, obsURI, 'value', TP.ALL);
         }
 
         //  If we are tearing down a bind for either 'OUT' or 'IO', then we
