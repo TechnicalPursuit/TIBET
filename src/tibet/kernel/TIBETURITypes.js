@@ -3088,7 +3088,10 @@ function(aSignal) {
 
         //  Now that any of the appropriate subURIs have signaled from
         //  themselves, we signal from ourself.
-        this.signal(aSignal.getSignalName(), aSignal.getPayload());
+        this.signal(aSignal.getSignalName(),
+                    aSignal.getPayload(),
+                    TP.INHERITANCE_FIRING,
+                    aSignal.getType());
 
     } else {
 
@@ -3107,24 +3110,27 @@ function(aSignal) {
 
                 aSignal.atPut('path', subURIs.at(i).getFragmentText());
 
-                aSignal.atPut('facet', 'value');
                 aSignal.atPut('target', resource);
 
                 subURIs.at(i).signal(
                         aSignal.getSignalName(),
-                        aSignal.getPayload());
+                        aSignal.getPayload(),
+                        TP.INHERITANCE_FIRING,
+                        aSignal.getType());
             }
 
             //  Put the signal back to what it was before we mucked with it
             //  above.
             aSignal.atPut('aspect', primaryAspect);
             aSignal.removeKey('path');
-            aSignal.removeKey('facet');
             aSignal.removeKey('target');
         }
 
         //  If we didn't have any paths, then just signal from ourself.
-        this.signal(aSignal.getSignalName(), aSignal.getPayload());
+        this.signal(aSignal.getSignalName(),
+                    aSignal.getPayload(),
+                    TP.INHERITANCE_FIRING,
+                    aSignal.getType());
     }
 
     return this;
