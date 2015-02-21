@@ -2864,6 +2864,91 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('$setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @method $setFacet
+     * @summary Sets the value of the named facet of the named aspect to the
+     *     value provided. This method should be called from any 'custom facet
+     *     setter' in order to a) set the property and b) signal a change, if
+     *     configured.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The receiver.
+     */
+
+    var signalName;
+
+    //  If the facet is 'value', then use the standard 'set' mechanism.
+    if (facetName === 'value') {
+        //  NB: This will signal the standard TP.sig.ValueChange
+        return this.set(aspectName, facetValue, shouldSignal);
+    }
+
+    //  Otherwise, if it is one of the other common facets, then generate a
+    //  proper signal name based on the facet name and whether the value is true
+    //  or false
+
+    switch (facetName) {
+
+        case 'readonly':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIReadonly';
+            } else {
+                signalName = 'TP.sig.UIReadwrite';
+            }
+
+            break;
+
+        case 'relevant':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIEnabled';
+            } else {
+                signalName = 'TP.sig.UIDisabled';
+            }
+
+            break;
+
+        case 'required':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIRequired';
+            } else {
+                signalName = 'TP.sig.UIOptional';
+            }
+
+            break;
+
+        case 'valid':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIValid';
+            } else {
+                signalName = 'TP.sig.UIInvalid';
+            }
+
+            break;
+
+        default:
+            break;
+    }
+
+    //  Signal the signal name - because the signals above are all responder
+    //  policy signals, this will trigger this object's handler as part of the
+    //  responder chain.
+    this.signal(signalName);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('setGroupElement',
 function(aTPElem) {
 
