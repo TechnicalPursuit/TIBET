@@ -5673,8 +5673,7 @@ function(aNode, flagChanges) {
     }
 
     if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(path)) {
-        newPath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(
-                    this.get('srcPath')).at(1);
+        newPath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(path).at(1);
 
         if (TP.notEmpty(newPath)) {
             results = TP.xpc(newPath).execOnNative(
