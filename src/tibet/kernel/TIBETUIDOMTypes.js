@@ -3931,7 +3931,7 @@ function(beActive) {
      * @returns {Boolean} Whether the receiver's state is active.
      */
 
-    this.$isInState('pclass:active', beActive, false);
+    this.$isInState('pclass:active', beActive);
 
     if (TP.isTrue(beActive)) {
         this.signalAfterUnwind('TP.sig.UIDidActivate');
@@ -3955,7 +3955,7 @@ function(beBusy, busyMsg) {
      * @returns {Boolean} Whether the receiver's state is busy.
      */
 
-    this.$isInState('pclass:busy', beBusy, false);
+    this.$isInState('pclass:busy', beBusy);
 
     if (TP.isTrue(beBusy)) {
         this.displayBusy(busyMsg);
@@ -3983,7 +3983,7 @@ function(beClosed) {
      * @returns {Boolean} Whether the receiver's state is closed.
      */
 
-    this.$isInState('pclass:closed', beClosed, false);
+    this.$isInState('pclass:closed', beClosed);
 
     if (TP.isTrue(beClosed)) {
         this.signalAfterUnwind('TP.sig.UIDidClose');
@@ -4007,7 +4007,7 @@ function(beCollapsed) {
      * @returns {Boolean} Whether the receiver's state is collapsed.
      */
 
-    this.$isInState('pclass:collapsed', beCollapsed, false);
+    this.$isInState('pclass:collapsed', beCollapsed);
 
     if (TP.isTrue(beCollapsed)) {
         this.signalAfterUnwind('TP.sig.UIDidCollapse');
@@ -4070,7 +4070,7 @@ function(beFocused) {
      * @returns {Boolean} Whether the receiver's state is focused.
      */
 
-    return this.$isInState('pclass:focus', beFocused, false);
+    return this.$isInState('pclass:focus', beFocused);
 });
 
 //  ------------------------------------------------------------------------
@@ -4086,7 +4086,7 @@ function(beHidden) {
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
-    this.$isInState('pclass:hidden', beHidden, false);
+    this.$isInState('pclass:hidden', beHidden);
 
     if (TP.isTrue(beHidden)) {
         this.signalAfterUnwind('TP.sig.UIDidHide');
@@ -4110,7 +4110,7 @@ function(beInvalid) {
      * @returns {Boolean} Whether the receiver's state is invalid.
      */
 
-    return this.$isInState('pclass:invalid', beInvalid, false);
+    return this.$isInState('pclass:invalid', beInvalid);
 });
 
 //  ------------------------------------------------------------------------
@@ -4126,7 +4126,7 @@ function(beOutOfRange) {
      * @returns {Boolean} Whether the receiver's state is out-of-range.
      */
 
-    return this.$isInState('pclass:out-of-range', beOutOfRange, false);
+    return this.$isInState('pclass:out-of-range', beOutOfRange);
 });
 
 //  ------------------------------------------------------------------------
@@ -4142,7 +4142,7 @@ function(beReadonly) {
      * @returns {Boolean} Whether the receiver's state is readonly.
      */
 
-    return this.$isInState('pclass:readonly', beReadonly, false);
+    return this.$isInState('pclass:readonly', beReadonly);
 });
 
 //  ------------------------------------------------------------------------
@@ -4158,7 +4158,7 @@ function(beRequired) {
      * @returns {Boolean} Whether the receiver's state is required.
      */
 
-    return this.$isInState('pclass:required', beRequired, false);
+    return this.$isInState('pclass:required', beRequired);
 });
 
 //  ------------------------------------------------------------------------
@@ -4174,7 +4174,7 @@ function(beSelected) {
      * @returns {Boolean} Whether the receiver's state is selected.
      */
 
-    return this.$isInState('pclass:selected', beSelected, false);
+    return this.$isInState('pclass:selected', beSelected);
 });
 
 //  ------------------------------------------------------------------------
