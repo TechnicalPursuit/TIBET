@@ -4107,6 +4107,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         createdStructure,
         changeAction,
 
+        sigFlag,
+
         content,
 
         mutatedStructure,
@@ -4209,6 +4211,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         return this;
     }
+
+    //  Turn off 'DOMContentLoaded' signaling here - but capture the current
+    //  setting to restore it before we exit this method.
+    sigFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
 
     //  At this point, content will always be a TP.NODESET... see if we can
     //  collapse it down to a single node. Our tests later are optimized for
@@ -4450,6 +4457,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                     ' Unable to set value.'),
                                 TP.LOG) : 0;
 
+                    //  Make sure to put the 'shouldSignalDOMLoaded' flag back
+                    //  to it's prior setting before exiting.
+                    TP.sys.shouldSignalDOMLoaded(sigFlag);
+
                     return;
                 }
             }
@@ -4464,6 +4475,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         'Path probably points to scalar value.' +
                         ' Unable to set value.'),
                     TP.LOG) : 0;
+
+        //  Make sure to put the 'shouldSignalDOMLoaded' flag back to it's prior
+        //  setting before exiting.
+        TP.sys.shouldSignalDOMLoaded(sigFlag);
 
         return;
     }
@@ -4511,6 +4526,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                     });
         }
     }
+
+    //  Make sure to put the 'shouldSignalDOMLoaded' flag back to it's prior
+    //  setting before exiting.
+    TP.sys.shouldSignalDOMLoaded(sigFlag);
 
     return this;
 });
