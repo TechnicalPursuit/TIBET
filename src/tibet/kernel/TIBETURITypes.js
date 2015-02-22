@@ -3505,7 +3505,9 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @param {String} facetName The name of the facet to set.
      * @param {Boolean} facetValue The value to set the facet to.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
+     *     this.shouldSignalChange(). Note that we *ignore* this value for
+     *     TP.core.URIs and always let the resource decide whether it will
+     *     broadcast change or not.
      * @returns {Object} The receiver.
      */
 
@@ -3514,13 +3516,16 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         return this;
     }
 
+    //  NOTE: We ignore the shouldSignal flag here on purpose - the resource
+    //  will decide if it wants to signal change.
+
     //  If this isn't a primary URI, then we won't use any supplied aspect, but
     //  we'll use the fragment text instead.
     if (!this.isPrimaryURI()) {
         this.getPrimaryURI().getResource().set(
-                    this.getFragmentText(), facetValue, shouldSignal);
+                    this.getFragmentText(), facetValue);
     } else {
-        this.getResource().set(aspectName, facetValue, shouldSignal);
+        this.getResource().set(aspectName, facetValue);
     }
 
     return this;
