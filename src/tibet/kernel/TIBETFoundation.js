@@ -4809,6 +4809,10 @@ function(aHash, aLevel) {
         //  get keys using same filter...and pass along 'include
         //  defined' as a true in case we're processing an array.
         k = this.getKeys(filter, true);
+
+        //  Make sure we don't leave the 'length' key in the Array - it will
+        //  mess up our sort:
+        k.splice(k.indexOf('length'), 1);
     } else {
         //  keys for anything here that's got a unique value
         k = this.getLocalInterface(filter);
@@ -4817,9 +4821,9 @@ function(aHash, aLevel) {
     if (TP.isDefined(sorter = params.at('useSort'))) {
         if (TP.isCallable(sorter)) {
             k.sort(sorter);
-        } else {
+        } else if (TP.notFalse(sorter)) {
             if (TP.isValid(k.at(0))) {
-                if (k.at(0) === 0) {
+                if (TP.isArray(this)) {
                     k.sort(TP.NUMERIC_SORT);
                 } else {
                     k.sort();
@@ -4828,7 +4832,7 @@ function(aHash, aLevel) {
         }
     } else {
         if (TP.isValid(k.at(0))) {
-            if (k.at(0) === 0) {
+            if (TP.isArray(this)) {
                 k.sort(TP.NUMERIC_SORT);
             } else {
                 k.sort();

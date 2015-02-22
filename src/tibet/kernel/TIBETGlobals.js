@@ -2072,14 +2072,7 @@ TP.IDENTITY_SORT = function(a, b) {
 
 //  numerical sort block
 TP.NUMERIC_SORT = function(a, b) {
-
-    if (a < b) {
-        return -1;
-    } else if (a > b) {
-        return 1;
-    }
-
-    return 0;
+    return a - b;
 };
 
 //  a simple sort for arrays containing ordered pairs by their "value" slot
