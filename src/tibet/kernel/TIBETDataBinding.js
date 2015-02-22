@@ -2406,7 +2406,7 @@ function(aSignalOrHash) {
         if (TP.notEmpty(obsURI.getResource()) &&
             (TP.notEmpty(oldObsURI) || !obsURI.isPrimaryURI())) {
 
-            this.refreshRepeat(obsURI.getResource());
+            this.updateRepeat(obsURI.getResource());
         }
     }
 
@@ -2415,11 +2415,11 @@ function(aSignalOrHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('refreshRepeat',
+TP.core.ElementNode.Inst.defineMethod('updateRepeat',
 function(aResource) {
 
     /**
-     * @method refreshRepeat
+     * @method updateRepeat
      * @summary Refreshes the repeat and it's children content from the
      *     supplied resource.
      * @param {Object} aResource The object that will be used as the repeat
@@ -2600,7 +2600,7 @@ function(aResource) {
                         repeatAttrVal,
                         '[' + (i + startIndex) + ']');
 
-            this.$refreshRepeatingTextNodes(
+            this.$updateRepeatingTextNodes(
                     elemChildElements.at(i),
                     repeatResource.at(i),
                     vals,
@@ -2744,11 +2744,11 @@ function(aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$refreshRepeatingTextNodes',
+TP.core.ElementNode.Inst.defineMethod('$updateRepeatingTextNodes',
 function(aNode, aResource, pathValues, anIndex, repeatResource) {
 
     /**
-     * @method $refreshRepeatingTextNodes
+     * @method $updateRepeatingTextNodes
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -2903,7 +2903,7 @@ function(index) {
 
     this.$setAttribute('bind:repeatindex', index);
 
-    this.refreshRepeat();
+    this.updateRepeat();
 
     //  setting an attribute returns void according to the spec
     return;
@@ -2923,7 +2923,7 @@ function(size) {
 
     this.$setAttribute('bind:repeatsize', size);
 
-    this.refreshRepeat();
+    this.updateRepeat();
 
     //  setting an attribute returns void according to the spec
     return;
@@ -2944,7 +2944,7 @@ function(aResource) {
      */
 
     if (this.isRepeatElement()) {
-        this.refreshRepeat(aResource);
+        this.updateRepeat(aResource);
     }
 
     return this;
