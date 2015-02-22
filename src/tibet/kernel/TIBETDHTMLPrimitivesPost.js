@@ -8186,10 +8186,7 @@ function(aWindow) {
     try {
         //  We signal TP.sig.DocumentLoaded using the GID of the window as
         //  the origin.
-        TP.signal(TP.gid(aWindow),
-                    'TP.sig.DocumentLoaded');
-        TP.signal('tibet://' + TP.gid(aWindow),
-                    'TP.sig.DocumentLoaded');
+        TP.signal(TP.gid(aWindow), 'TP.sig.DocumentLoaded');
 
         //  We only signal DOMContentLoaded if the system is configured for
         //  it.
@@ -8202,9 +8199,6 @@ function(aWindow) {
             //  it's really loaded and need to wait for the onload
             //  triggering of this handler.
             TP.signal(TP.gid(aWindow.document),
-                        'TP.sig.DOMContentLoaded',
-                        aWindow.document.documentElement);
-            TP.signal('tibet://' + TP.gid(aWindow) + '/#document',
                         'TP.sig.DOMContentLoaded',
                         aWindow.document.documentElement);
         }
@@ -8257,7 +8251,6 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     winID = TP.gid(aWindow);
 
     TP.signal(winID, 'TP.sig.DocumentUnloaded');
-    TP.signal('tibet://' + winID, 'TP.sig.DocumentUnloaded');
 
     //  close open windows if we're unloading the code frame
     if (TP.$$processDocumentUnloaded.codeframe === aWindow &&
