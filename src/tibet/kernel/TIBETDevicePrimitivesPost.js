@@ -1105,7 +1105,7 @@ function(nativeEvt) {
     //  something like DOMKeyPress etc.
     eventName = TP.DOM_SIGNAL_TYPE_MAP.at(nativeEvt.type);
 
-    //  key and mouse events are routed directly to their respective device
+    //  key and mouse events are sent directly to their respective device
     //  objects in the rare occasions when this handler is triggered.
     if (nativeEvt.type.indexOf('key') === 0) {
         return TP.sys.getTypeByName('TP.core.Keyboard').$$handleKeyEvent(

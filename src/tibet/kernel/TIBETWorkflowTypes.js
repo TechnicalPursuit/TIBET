@@ -5743,6 +5743,70 @@ function(aRequest) {
 
 TP.lang.Object.defineSubtype('core.Controller');
 
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * An optional state machine for the receiver. When a controller has a state
+ * machine that instance's current state can be leveraged during signal handling
+ * to filter which handlers will be invoked.
+ * @type {TP.core.StateMachine}
+ */
+TP.core.Controller.Inst.defineAttribute('stateMachine');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Controller.Inst.defineMethod('getStateName',
+function() {
+
+    /**
+     * Returns the string name for the receiver's current state. If the
+     * controller has no state machine this value will be undefined.
+     * @return {String} The current controller state.
+     */
+
+    var stateMachine;
+
+    stateMachine = this.$get('stateMachine');
+    if (TP.isValid(stateMachine)) {
+        return stateMachine.getStateName();
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Controller.Inst.defineMethod('getStateMachine',
+function() {
+
+    /**
+     * Returns the receiver's state machine, if it has one.
+     * @return {TP.core.StateMachine} The receiver's state machine instance.
+     */
+
+    return this.$get('stateMachine');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Controller.Inst.defineMethod('setStateMachine',
+function(aStateMachine) {
+
+    /**
+     * Assigns a state machine instance to the receiver. Controllers which have
+     *     state machines can leverage the current state as part of their signal
+     *     processing to filter handlers based on state.
+     * @param {TP.core.StateMachine} aStateMachine The new state machine
+     *     instance.
+     */
+
+    this.$set('stateMachine', aStateMachine);
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.core.Application
 //  ========================================================================
@@ -5752,7 +5816,7 @@ TP.lang.Object.defineSubtype('core.Controller');
  * @summary TIBET's primary application controller type. All TIBET applications
  *     have an instance of Application as the root of their responder chain. The
  *     main application type is also responsible for handling the various
- *     signals involved in application startup such as AppStart
+ *     signals involved in application startup such as AppStart.
  */
 
 //  ------------------------------------------------------------------------
@@ -5768,23 +5832,6 @@ TP.core.Controller.defineSubtype('core.Application');
 TP.core.Application.Type.defineAttribute('singleton');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    //this.observe(TP.sys, 'TP.sig.AppStart');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -5796,8 +5843,18 @@ function() {
  */
 TP.core.Application.Inst.defineAttribute('controllers');
 
-
+/**
+ * A reference to the current theme name being used for application styling.
+ * @type {String}
+ */
 TP.core.Application.Inst.defineAttribute('currentTheme');
+
+
+/**
+ * The router type whose route method is used to process client-side routes.
+ * @type {TP.core.URIRouter}
+ */
+TP.core.Application.Inst.defineAttribute('router');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -5872,6 +5929,27 @@ function() {
     theme = TP.ifEmpty(theme, this.$get('currentTheme'));
 
     return TP.ifEmpty(theme, '');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('getURIRouter',
+function() {
+
+    var type,
+        name;
+
+    type = this.$get('router');
+    if (TP.canInvoke(type, 'route')) {
+        return type;
+    }
+
+    name = TP.sys.cfg('uri.router');
+    type = TP.sys.require(name);
+    if (TP.canInvoke(type, 'route')) {
+        this.$set('router', type);
+        return type;
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -5961,23 +6039,17 @@ function(aSignal) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    var tpUICanvasWin,
-        uriStr;
+    var router;
 
     TP.ifInfo() ?
         TP.info('Got to TP.core.Application::handleLocationChanged',
                     TP.LOG) : 0;
 
-    if (TP.notValid(tpUICanvasWin = TP.sys.getUICanvas())) {
-        //  TODO: Raise an exception?
-        return this;
-    }
 
-    if (TP.notEmpty(uriStr = aSignal.getPayload())) {
-        tpUICanvasWin.setContent(TP.uc(uriStr));
+    router = this.getURIRouter();
+    if (TP.canInvoke(router, 'route')) {
+        router.route(top.location.toString(), aSignal);
     }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6029,6 +6101,12 @@ function(aSignal, isCapturing) {
 
 TP.core.Application.Inst.defineMethod('popController', function() {
 
+    /**
+     * Pops the current top controller off the controller stack. The application
+     * instance will not be removed if it is the only controller remaining.
+     * @return {TP.core.Controller} The controller that was popped.
+     */
+
     var controllers;
 
     controllers = this.$get('controllers');
@@ -6045,12 +6123,34 @@ TP.core.Application.Inst.defineMethod('popController', function() {
 
 TP.core.Application.Inst.defineMethod('pushController', function(aController) {
 
+    /**
+     * Pushes a new controller onto the controller stack. The controller stack
+     * is a built-in part of TIBET's "signal responder chain" so managing the
+     * controller stack is a key part of managing application event processing.
+     * @param {TP.core.Controller} aController The controller to push.
+     * @return {TP.core.Application} The receiver.
+     */
+
     if (TP.notValid(aController)) {
         return this.raise('InvalidController');
     }
 
     //  TODO: should we unique these?
     this.$get('controllers').unshift(aController);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('setURIRouter',
+function(aRouter) {
+
+    if (TP.canInvoke(aRouter, 'route')) {
+        this.$set('router', aRouter);
+    } else {
+        return this.raise('InvalidRouter');
+    }
 
     return this;
 });
@@ -6163,6 +6263,11 @@ function() {
         this.onhashchange(evt);
     }.bind(this);
 
+    //  Install a popstate handler to catch changes due to history changes.
+    top.onpopstate = function(evt) {
+        this.onpopstate(evt);
+    }.bind(this);
+
     //  Prime the pump with the top location, but don't use setLocation()
     //  since we don't want the hash to actually change
     this.get('historyList').add(TP.btoa(top.location.href));
@@ -6184,20 +6289,6 @@ function() {
     this.getNativeWindow().history.back();
 
     return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.History.Type.defineMethod('clearHistory',
-function() {
-
-    /**
-     * @method clearHistory
-     * @summary Empties the receiver's history list.
-     * @returns {TP.core.History} The receiver.
-     */
-
-    return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
@@ -6369,6 +6460,22 @@ function(anEvent) {
 
     //  In any case, the location changed, so let all observers know.
     this.signal('TP.sig.LocationChanged', decodedVal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('onpopstate',
+function(anEvent) {
+
+    //  The popstate and hashchange handlers can both signal depending on where
+    //  the change took place. We only want to process one. The easy way is to
+    //  just check to see if we're being asked to handle the same location as
+    //  the last one we did.
+
+
+    this.signal('TP.sig.LocationChanged', top.location.toString());
 
     return this;
 });

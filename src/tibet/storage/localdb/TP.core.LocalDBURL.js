@@ -173,9 +173,7 @@ function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
-     * @summary Return the default URI handler type for this URI type. The
-     *     returned type must respond to the route() method to be a valid
-     *     handler.
+     * @summary Return the default URI handler type for this URI type.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform

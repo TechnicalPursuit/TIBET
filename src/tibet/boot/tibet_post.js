@@ -579,7 +579,7 @@ TP.boot.$$log = function(argList, aLogLevel) {
 
     /**
      * @method $$log
-     * @summary Routes logging output to either stderr or stdout based on
+     * @summary Directs logging output to either stderr or stdout based on
      *     logging level.
      * @param {Arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
@@ -1403,6 +1403,10 @@ This set of functions provides access to the host, port, protocol, and pathname
 which were used to load TIBET, as well as the 'launch path'.
 */
 
+//  Store the full launch url so we know the starting point prior to pushState
+//  invocations which might alter it.
+TP.sys.$launchURL = window.location.toString();
+
 //  first define whether we were loaded from file url or a web server
 TP.sys.$httpBased = window.location.protocol.indexOf('file') !== 0;
 
@@ -1478,6 +1482,19 @@ TP.sys.getLaunchRoot = function() {
     TP.sys.$launchRoot = str;
 
     return str;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.getLaunchURL = function() {
+
+    /**
+     * @method getLaunchURL
+     * Returns the full URL string the application initially used to launch.
+     * @returns {String} The original launch URL.
+     */
+
+    return TP.sys.$launchURL;
 };
 
 //  ----------------------------------------------------------------------------
@@ -5151,7 +5168,7 @@ TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
     //  if we got here we're either talking to a type that can't tell us
     //  what its name is (not good) or the receiver doesn't implement a
     //  decent as() variant for that type. In either case however all we can
-    //  do is hope the type implements from() and we'll try that route.
+    //  do is hope the type implements from() and we'll try that approach.
     if (TP.canInvoke(type, 'from')) {
         switch (arguments.length) {
             case 1:
@@ -6939,7 +6956,7 @@ TP.sys.showBootLog = function(reporter, level) {
     /**
      * @method showBootLog
      * @summary Dump the bootlog to the current target location. By default this
-     *     is routed to the consoleReporter.
+     *     is directed to the consoleReporter.
      * @returns {null}
      */
 
@@ -7659,6 +7676,10 @@ TP.boot.$getArgumentPrimitive = function(value) {
         return value;
     }
 
+    if (typeof value !== 'string') {
+        return value;
+    }
+
     //  Try to convert to number, boolean, regex,
     if (TP.boot.NUMBER_REGEX.test(value)) {
         return 1 * value;
@@ -7675,6 +7696,36 @@ TP.boot.$getArgumentPrimitive = function(value) {
     } else {
         return value;
     }
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.getBootParamString = function(url) {
+
+    /**
+     * @method getBootParamString
+     * @summary Parses the URL for boot parameters, parameters on the fragment
+     *     portion of the launch url.
+     * @param {string} url The url string to decode for arguments.
+     * @returns {string} The parameter portion of the url, if any.
+     */
+
+    var hash;
+
+    //  Process the hash portion of the URL string.
+    if (!/#/.test(url)) {
+        return;
+    }
+    hash = url.slice(url.indexOf('#') + 1);
+
+    //  Any part of the hash which is formatted to match server-side parameter
+    //  syntax will be treated as client-side parameters. The bookmark portion
+    //  of the hash must be non-empty.
+    if (/\?/.test(hash)) {
+        hash = hash.slice(0, hash.indexOf('?'));
+    }
+
+    return hash;
 };
 
 //  ----------------------------------------------------------------------------
@@ -7704,17 +7755,24 @@ TP.boot.getURLArguments = function(url) {
     hash = decodeURIComponent(hash);
 
     args = {};
-    params = hash.split('&');
+    if (hash.indexOf('?') === -1) {
+        return args;
+    } else {
+        params = hash.slice(hash.indexOf('?') + 1);
+        params = params.split('&');
+    }
+
     params.forEach(function(item) {
         var parts,
             key,
             value;
 
-        parts = item.split('=');
-        key = parts[0];
-        value = parts[1];
+        if (/\=/.test(item)) {
+            parts = item.split('=');
+            key = parts[0];
+            value = parts[1];
 
-        if (parts.length > 1) {
+            //  Strip any external quoting off value.
             if (value.length > 1 &&
                     (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
                 value = value.slice(1, -1);
@@ -7728,35 +7786,6 @@ TP.boot.getURLArguments = function(url) {
     });
 
     return args;
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.getURLBookmark = function(url) {
-
-    /**
-     * @method getURLBookmark
-     * @summary Parses the URL for a bootable bookmark hash reference.
-     * @param {string} url The url string to decode for arguments.
-     * @returns {string} The bookmark, if any.
-     */
-
-    var hash;
-
-    //  Process the hash portion of the URL string.
-    if (!/#/.test(url)) {
-        return;
-    }
-    hash = url.slice(url.indexOf('#'));
-
-    //  Any part of the hash which is formatted to match server-side parameter
-    //  syntax will be treated as client-side parameters. The bookmark portion
-    //  of the hash must be non-empty.
-    if (/&/.test(hash)) {
-        hash = hash.slice(0, hash.indexOf('&'));
-    }
-
-    return hash;
 };
 
 //  ============================================================================

@@ -376,7 +376,7 @@ function(anObject, sourceLocale, forceRefresh) {
     /**
      * @method localize
      * @summary Returns a localized version of the object provided. This method
-     *     serves as a top-level dispatcher which routes the object to a proper
+     *     serves as a top-level dispatcher which directs the object to a proper
      *     handler function by type. NOTE that no localization is attempted by
      *     the TP.core.Locale type itself, so unless a locale is installed via
      *     TP.sys.setLocale() this method will return the original object.

@@ -8896,7 +8896,7 @@ function(aWindow) {
      *     doing so. This method is used by the hook file to (re)process
      *     navigations using links, etc.
      * @description The tibet_hook.js file captures all inbound locations and
-     *     routes them to this call so that all TIBET-enabled pages which find
+     *     directs them to this call so that all TIBET-enabled pages which find
      *     their way into a window are properly processed for CSS and/or markup
      *     extensions. This allows TIBET to work effectively with content
      *     containing links, or with bookmarked pages, etc.

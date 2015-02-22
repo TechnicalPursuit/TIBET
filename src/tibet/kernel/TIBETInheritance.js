@@ -1317,7 +1317,7 @@ function(typeOrFormat, formatParams) {
     //  if we got here we're either talking to a type that can't tell us
     //  what its name is (not good) or the receiver doesn't implement a
     //  decent as() variant for that type. In either case however all we can
-    //  do is hope the type implements from() and we'll try that route.
+    //  do is hope the type implements from() and we'll try that approach.
     if (TP.canInvoke(type, 'from')) {
         switch (arguments.length) {
             case 1:

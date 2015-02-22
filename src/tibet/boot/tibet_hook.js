@@ -2396,7 +2396,7 @@ if (window.onerror.failedlaunch !== true &&
     /*
     When TIBET isn't found the hook file will try to launch the application the
     containing file appears to be a part of, marking the current page's URI in
-    the location so TIBET can route the home page to that location if possible.
+    the location so TIBET can direct the home page to that location if possible.
 
     When TIBET is found, the canvas is initialized -- configured so that the
     page is a well-behaved participant in the application.
@@ -2676,7 +2676,7 @@ if (window.onerror.failedlaunch !== true &&
                     self, 'TP', {value: window.TP, writable: false});
         }
 
-        if (TP.boot.getURLBookmark()) {
+        if (TP.boot.getBootParamString()) {
             TP.boot.bootFromBookmark();
         } else if (TP.sys.hasLoaded() === false &&
                     TP.sys.cfg('boot.twophase') === true) {

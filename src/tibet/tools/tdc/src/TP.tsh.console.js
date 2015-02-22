@@ -2558,7 +2558,7 @@ function(anObject, aRequest) {
 
     request = TP.request(aRequest);
 
-    // TODO: replace this hack with an update to route to the proper
+    // TODO: replace this hack with an update to direct to the proper
     // Logger/Appender so we get the output we want via layout/appender.
     tap = request.at('cmdTAP');
 

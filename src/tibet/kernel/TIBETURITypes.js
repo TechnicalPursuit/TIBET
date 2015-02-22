@@ -101,9 +101,9 @@ virtual URIs:
  *     approach to support your own custom data formats as you require by
  *     pairing the MIME type your server sends with a client-side handler.
  *
- *     For flexibility, TP.core.URI uses a combination of URI "routers" and URI
+ *     For flexibility, TP.core.URI uses a combination of URI "mappers" and URI
  *     "handlers". Certain operations on a URI such as load, save, or 'nuke'
- *     (delete), are first "routed" meaning they look in TIBET's URI map for a
+ *     (delete), are first "mapped" meaning they look in TIBET's URI map for a
  *     mapping which defines a URI handler based on that URIs values and on
  *     current application state. The resulting handler type is then assigned to
  *     do the low-level work for the operation in question. This approach allows
@@ -140,7 +140,7 @@ TP.core.URI.Type.defineConstant('SCHEME');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  default catalog for URI rewrite/route operations
+//  default catalog for URI rewrite/mapping operations
 TP.core.URI.Type.defineAttribute('uriCatalog');
 
 //  most URI access is synchronous (javascript:, file:, urn:, etc) so we
@@ -619,7 +619,7 @@ function(anInstance) {
 
 /**
  * URI rewriting is common on the server, where patterns like FrontController
- * are used to route requests in the form of URIs to the proper controller type.
+ * are used to map requests in the form of URIs to the proper controller type.
  * In TIBET's case URI rewriting is used as a way of "virtualizing" URIs to
  * avoid hard-coded references to specific servers/resources. It also can be
  * used to good effect to switch URIs when moving between online and offline
@@ -913,7 +913,7 @@ function(aURI) {
      *     populated with all <uri>, <delegateURI>, and <rewriteURI> nodes which
      *     match at the URI level. Any items with delegateURI filters in place
      *     will be trimmed if they don't match the concrete URI to ensure that
-     *     by the time a rewrite or route call is invoked no additional
+     *     by the time a rewrite or mapping call is invoked no additional
      *     filtering is required other than checking the current runtime
      *     profile.
      * @param {TP.core.URI|String} aURI A URI to obtain the catalog entry for.
@@ -1429,6 +1429,46 @@ function(aProfile, useWildcards) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Type.defineMethod('map',
+function(aURI, aRequest) {
+
+    /**
+     * @method map
+     * @summary Directs the operation implied by any data in aRequest to a
+     *     viable handler for the URI and request.
+     * @description This typically results in the request being passed to a
+     *     TP.core.URIHandler type/subtype. Note that the URI is expected to
+     *     have been rewritten as needed prior to this call so that the
+     *     operation is appropriate for the concrete URI being accessed.
+     * @param {TP.core.URI|String} aURI The URI to map.
+     * @param {TP.sig.Request} aRequest The request whose values should inform
+     *     the routing assignment.
+     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     *     subtype type object that can handle the request for the supplied URI.
+     */
+
+    var mapper,
+        type;
+
+    TP.stop('break.uri_mapping');
+
+    mapper = TP.sys.cfg('uri.mapper');
+    type = TP.sys.require(mapper);
+
+    if (TP.canInvoke(type, 'map')) {
+        return type.map(aURI, aRequest);
+    } else {
+        TP.ifWarn() ?
+            TP.warn('URI mapper: ' + mapper +
+                    ' does not support map(); using default.',
+                    TP.IO_LOG) : 0;
+
+        return TP.core.URIMapper.map(aURI, aRequest);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Type.defineMethod('rewrite',
 function(aURI, aRequest) {
 
@@ -1463,46 +1503,6 @@ function(aURI, aRequest) {
                     TP.IO_LOG) : 0;
 
         return TP.core.URIRewriter.rewrite(aURI, aRequest);
-    }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Type.defineMethod('route',
-function(aURI, aRequest) {
-
-    /**
-     * @method route
-     * @summary Routes the operation implied by any data in aRequest to a
-     *     viable handler for the URI and request.
-     * @description This typically results in the request being passed to a
-     *     TP.core.URIHandler type/subtype. Note that the URI is expected to
-     *     have been rewritten as needed prior to this call so that the route is
-     *     appropriate for the concrete URI being accessed.
-     * @param {TP.core.URI|String} aURI The URI to route.
-     * @param {TP.sig.Request} aRequest The request whose values should inform
-     *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
-     *     subtype type object that can handle the request for the supplied URI.
-     */
-
-    var router,
-        type;
-
-    TP.stop('break.uri_route');
-
-    router = TP.sys.cfg('uri.router');
-    type = TP.sys.require(router);
-
-    if (TP.canInvoke(type, 'route')) {
-        return type.route(aURI, aRequest);
-    } else {
-        TP.ifWarn() ?
-            TP.warn('URI router: ' + router +
-                    ' does not support route(); using default.',
-                    TP.IO_LOG) : 0;
-
-        return TP.core.URIRouter.route(aURI, aRequest);
     }
 });
 
@@ -2255,10 +2255,9 @@ function(aRequest) {
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. This is
      *     typically the type defined by TP.sys.cfg('uri.handler'), which
-     *     defaults to TP.core.URIHandler. The returned type must respond to the
-     *     route method to be a valid handler.
+     *     defaults to TP.core.URIHandler.
      * @param {TP.sig.Request} aRequest The request whose values should inform
-     *     the routing assignment.
+     *     the handler assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object or a type object conforming to that interface.
      */
@@ -3289,6 +3288,31 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('map',
+function(aRequest) {
+
+    /**
+     * @method map
+     * @summary Directs the operation implied by any data in aRequest to a
+     *     viable handler for the URI. This typically results in the request
+     *     being passed to a TP.core.URIHandler type/subtype. Note that the URI
+     *     is expected to have been rewritten as needed prior to this call so
+     *     that the handler is appropriate for the concrete URI being accessed.
+     * @param {TP.sig.Request} aRequest The request whose values should inform
+     *     the routing assignment.
+     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     *     subtype type object that can handle the request for the supplied URI.
+     */
+
+    if (TP.isFalse(this.isMappedURI())) {
+        return this.$getDefaultHandler(aRequest);
+    }
+
+    return this.getType().map(this, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$requestContent',
 function(aRequest, contentFName, successFName, failureFName, aResource) {
 
@@ -3438,31 +3462,6 @@ function(aRequest) {
     }
 
     return this.getType().rewrite(this, aRequest);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('route',
-function(aRequest) {
-
-    /**
-     * @method route
-     * @summary Routes the operation implied by any data in aRequest to a
-     *     viable handler for the URI. This typically results in the request
-     *     being passed to a TP.core.URIHandler type/subtype. Note that the URI
-     *     is expected to have been rewritten as needed prior to this call so
-     *     that the route is appropriate for the concrete URI being accessed.
-     * @param {TP.sig.Request} aRequest The request whose values should inform
-     *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
-     *     subtype type object that can handle the request for the supplied URI.
-     */
-
-    if (TP.isFalse(this.isMappedURI())) {
-        return this.$getDefaultHandler(aRequest);
-    }
-
-    return this.getType().route(this, aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -4350,7 +4349,7 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('route', 'load');
+    request.atPut('operation', 'load');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
@@ -4386,7 +4385,7 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('route', 'nuke');
+    request.atPut('operation', 'nuke');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
@@ -4422,7 +4421,7 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('route', 'save');
+    request.atPut('operation', 'save');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
@@ -5513,13 +5512,13 @@ function(aRequest) {
     /**
      * @method load
      * @summary Loads the content of the receiver from whatever is the
-     *     currently routed storage location. This method relies on both
+     *     currently mapped storage location. This method relies on both
      *     rewriting and routing which ultimately hand off to a
      *     TP.core.URIHandler of some type to perform the actual load.
      * @description This method is rarely called directly, it's typically
      *     invoked by the get*Content() calls when the receiver has not yet been
      *     loaded, or when a refresh is being requested. Note that this is a
-     *     "routed" action, meaning the URI undergoes rewriting and routing as
+     *     "mapped" action, meaning the URI undergoes rewriting and mapping as
      *     part of the load process.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -5549,10 +5548,10 @@ function(aRequest) {
     //  fails we don't want the old data to be mistaken for the new stuff.
     this.$set('resource', null, false);
 
-    //  route the load operation so we get the right handler based on any
+    //  map the load operation so we get the right handler based on any
     //  rewriting and routing logic in place for the original URI
-    request.atPut('route', 'load');
-    handler = url.route(this, request);
+    request.atPut('operation', 'load');
+    handler = url.map(this, request);
 
     return handler.load(url, request);
 });
@@ -5566,7 +5565,7 @@ function(aRequest) {
      * @method nuke
      * @summary Destroys the target URL at the storage location. We'd have
      *     called this delete but that's a JS keyword.
-     * @description This method is a "routed" action, meaning the URI undergoes
+     * @description This method is a "mapped" action, meaning the URI undergoes
      *     rewriting and routing as part of the nuke process. This may, as you
      *     might expect, alter the physical location being targeted for
      *     destruction. You should probably verify these targets before invoking
@@ -5590,8 +5589,8 @@ function(aRequest) {
 
     url = this.rewrite(request);
 
-    request.atPut('route', 'nuke');
-    handler = url.route(this, request);
+    request.atPut('operation', 'nuke');
+    handler = url.map(this, request);
 
     return handler.nuke(url, request);
 });
@@ -5606,7 +5605,7 @@ function(aRequest) {
      * @summary Saves the receiver's content to its URI path. The request's
      *     fileMode key defaults to 'w' so that any existing content is replaced
      *     when operating on file URIs.
-     * @description This method is a "routed" action, meaning the URI undergoes
+     * @description This method is a "mapped" action, meaning the URI undergoes
      *     rewriting and routing as part of the save process. This may, as you
      *     might expect, alter the physical location in which the data is
      *     stored.
@@ -5631,8 +5630,8 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('route', 'save');
-    handler = url.route(this, request);
+    request.atPut('operation', 'save');
+    handler = url.map(this, request);
 
     return handler.save(url, request);
 });
@@ -6399,7 +6398,7 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('route', 'load');
+    request.atPut('operation', 'load');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
@@ -6435,7 +6434,7 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('route', 'nuke');
+    request.atPut('operation', 'nuke');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
@@ -6471,7 +6470,7 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('route', 'save');
+    request.atPut('operation', 'save');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
@@ -7998,7 +7997,7 @@ function(aRequest) {
  * @summary TP.core.URIHandler provides a top-level supertype for URI-specific
  *     handler classes.
  * @description When TIBET attempts to operate on a URI for load or save
- *     operations it first rewrites the URI and then routes the URI/operation
+ *     operations it first rewrites the URI and then directs the URI/operation
  *     pair to a handler type. The handler types are responsible for managing
  *     the URI's data in a scheme-specific way that can also respect request and
  *     URI parameter content as needed. One reason for URI handlers in TIBET is
@@ -8089,7 +8088,7 @@ function(targetURI, aRequest) {
      *     method for most URI content.
      * @description By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
-     *     URI instances. See TP.core.URIRewriter and TP.core.URIRouter for more
+     *     URI instances. See TP.core.URIRewriter and TP.core.URIMapper for more
      *     information. Important keys include 'append', 'body', and 'backup',
      *     which define whether this save should append or write new content,
      *     what content is being saved, and whether a backup should be created
@@ -8369,41 +8368,41 @@ function(aURI, aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.URIRouter
+//  TP.core.URIMapper
 //  ========================================================================
 
 /**
- * @type {TP.core.URIRouter}
- * @summary TP.core.URIRouter types manage routing requests for URI operations
+ * @type {TP.core.URIMapper}
+ * @summary TP.core.URIMapper types manage mapping requests for URI operations
  *     to appropriate handlers. This is somewhat analogous to server-side
  *     front-controllers which examine a URI and determine which class should be
  *     invoked to perform the actual processing. The actual action processing in
  *     TIBET is done by TP.core.URIHandler subtypes.
  *
- *     Note that routing rules in TIBET are processed much like those in other
+ *     Note that mapping rules in TIBET are processed much like those in other
  *     environments, too many can slow things down -- and the first match wins.
- *     The data used for routing is the same URI catalog data used by rewriting,
- *     however routing makes use of a specific tibet:urihandler attribute to
- *     define a mapping's route.
+ *     The data used for mapping is the same URI catalog data used by rewriting,
+ *     however mapping makes use of a specific tibet:urihandler attribute to
+ *     define a mapping's result.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.URIRouter');
+TP.lang.Object.defineSubtype('core.URIMapper');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('route',
+TP.core.URIMapper.Type.defineMethod('map',
 function(aURI, aRequest) {
 
     /**
-     * @method route
+     * @method map
      * @summary Locates and returns the proper TP.core.URIHandler type for the
      *     URI and request pair provided. The handler type defaults to the type
      *     returned by the uri's getDefaultHandler method.
-     * @param {TP.core.URI} aURI The URI to route the request for.
+     * @param {TP.core.URI} aURI The URI to map the request for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
@@ -8417,12 +8416,12 @@ function(aURI, aRequest) {
         url,
         map,
 
-        route,
+        mapping,
         item,
 
         handler;
 
-    TP.stop('break.uri_route');
+    TP.stop('break.uri_mapping');
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
@@ -8464,8 +8463,8 @@ function(aURI, aRequest) {
         //  it had one and we've cached it in the map for this profile
         if (TP.isEmpty(map)) {
             return uri.$getDefaultHandler(aRequest);
-        } else if (TP.isValid(route = map.at('route'))) {
-            return route;
+        } else if (TP.isValid(mapping = map.at('mapping'))) {
+            return mapping;
         }
 
         //  fall through to after the IF/ELSE so we can process the map
@@ -8480,14 +8479,14 @@ function(aURI, aRequest) {
     //  a hash of the element that was mapped, so the keys are the attribute
     //  names from the original element
     if (TP.isValid(item = map.at('mapping'))) {
-        route = item.at('tibet:urihandler');
+        mapping = item.at('tibet:urihandler');
     } else if (TP.isValid(item = map.at('delegate'))) {
-        route = item.at('tibet:urihandler');
+        mapping = item.at('tibet:urihandler');
     }
 
-    //  should have found a route in the item if routing is applicable,
+    //  should have found a mapping in the item if routing is applicable,
     //  otherwise we'll continue to default
-    if (TP.isEmpty(route)) {
+    if (TP.isEmpty(mapping)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Returning default handler type: TP.core.URIHandler',
                         TP.LOG) : 0;
@@ -8495,10 +8494,10 @@ function(aURI, aRequest) {
         return uri.$getDefaultHandler(aRequest);
     }
 
-    handler = TP.sys.require(route);
+    handler = TP.sys.require(mapping);
     if (TP.notValid(handler)) {
         TP.ifWarn() ?
-            TP.warn('Unable to load route handler: ' + route,
+            TP.warn('Unable to load handler: ' + mapping,
                     TP.LOG) : 0;
 
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
@@ -8509,13 +8508,40 @@ function(aURI, aRequest) {
     }
 
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-        TP.trace('Found route \'' + route + '\' for uri: ' + url,
+        TP.trace('Found mapping \'' + mapping + '\' for uri: ' + url,
                     TP.LOG) : 0;
 
     //  went to some trouble to come up with this, so cache it for next time
-    map.atPut('route', handler);
+    map.atPut('mapping', handler);
 
     return handler;
+});
+
+//  ========================================================================
+//  TP.core.URIRouter
+//  ========================================================================
+
+/**
+ * @type {TP.core.URIRouter}
+ * @summary TP.core.URIRouter types process changes to the client URL and
+ *     respond by triggering an appropriate handler either directly or
+ *     indirectly via signaling. A URIRouter is typically triggered via
+ *     onhashchange or popstate event handlers built into TIBET but they can
+ *     also be invoked directly via route(url).
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.URIRouter');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('route',
+function(aURI, aRequest) {
+
+    TP.info('routing: ' + aURI + '!!!');
 });
 
 //  ========================================================================
@@ -8747,7 +8773,7 @@ function(targetURI, aRequest) {
      *     method for most URI content.
      * @description By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
-     *     URI instances. See TP.core.URIRewriter and TP.core.URIRouter for more
+     *     URI instances. See TP.core.URIRewriter and TP.core.URIMapper for more
      *     information. Important keys include 'append', 'body', and 'backup',
      *     which define whether this save should append or write new content,
      *     what content is being saved, and whether a backup should be created

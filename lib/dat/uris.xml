@@ -43,8 +43,7 @@
 
   To support type-based URI handling we add a tibet:urihandler attribute
   which should name a TIBET type responsible for operations related to
-  this URI. This data is used by the TP.core.URIRouter type and optionally
-  by its subtypes as part of URI routing.
+  this URI.
 
   A tibet:contenthandler attribute can be used to provide type mappings to
   manage the actual content to be found at the end of a URI. It should

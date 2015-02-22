@@ -758,6 +758,7 @@ TP.sys.setcfg('break.uri_fragment', false);     //  URI fragment access
 TP.sys.setcfg('break.uri_headers', false);      //  URI header access
 TP.sys.setcfg('break.uri_load', false);         //  URI loading
 TP.sys.setcfg('break.uri_map', false);          //  URI map access
+TP.sys.setcfg('break.uri_mapping', false);      //  URI mapping to a handler
 TP.sys.setcfg('break.uri_mime', false);         //  URI mime detection
 TP.sys.setcfg('break.uri_nuke', false);         //  URI delete
 TP.sys.setcfg('break.uri_pack', false);         //  URI packing/condensing
@@ -767,9 +768,9 @@ TP.sys.setcfg('break.uri_profile', false);      //  URI profile lookup
 TP.sys.setcfg('break.uri_rewrite', false);      //  URI rewrite
 TP.sys.setcfg('break.uri_resolve', false);      //  URI join/expand
 TP.sys.setcfg('break.uri_resource', false);     //  URI resource acquisition
-TP.sys.setcfg('break.uri_route', false);            //  URI routing to a handler
+TP.sys.setcfg('break.uri_routing', false);      //  URI routing of path
 TP.sys.setcfg('break.uri_save', false);         //  URI save
-TP.sys.setcfg('break.uri_transform', false);        //  URI transformations
+TP.sys.setcfg('break.uri_transform', false);    //  URI transformations
 TP.sys.setcfg('break.uri_virtual', false);      //  URI expansion
 
 //  window
@@ -1499,8 +1500,14 @@ TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');
 //  the default type used to handle URI rewriting decisions.
 TP.sys.setcfg('uri.rewriter', 'TP.core.URIRewriter');
 
+//  the default type used to handle URI mapping decisions.
+TP.sys.setcfg('uri.mapper', 'TP.core.URIMapper');
+
 //  the default type used to handle URI routing decisions.
 TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
+
+//  which portion of the url will trigger routing, fragment or base.
+TP.sys.setcfg('uri.routes', 'fragment');
 
 //  ---
 //  xpath/xslt

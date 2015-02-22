@@ -2156,7 +2156,7 @@ function(argList, aLogLevel) {
 
     /**
      * @method $$log
-     * @summary Routes an incoming set of logging parameters to the appropriate
+     * @summary Directs an incoming set of logging parameters to the appropriate
      *     logger for processing.
      * @param {Arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
@@ -2199,7 +2199,7 @@ function(argList, aLogLevel) {
 
     /**
      * @method $$log
-     * @summary Routes an incoming set of logging parameters to the appropriate
+     * @summary Directs an incoming set of logging parameters to the appropriate
      *     logger for processing.
      * @param {Arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.

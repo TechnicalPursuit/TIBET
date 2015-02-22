@@ -2601,7 +2601,7 @@ function(moveAction) {
         this.getType().set('$focusingTPElement', successorTPElem);
 
         //  We do this to match the native focusing behavior that haven't
-        //  been routed through this computation routine (i.e. clicks, etc.)
+        //  been sent through this computation routine (i.e. clicks, etc.)
 
         //  Note that we pass the moveAction here - if this is a group, it will
         //  act as a hint as to where to put the focus within the group.
