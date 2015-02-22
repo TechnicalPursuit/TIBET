@@ -1574,10 +1574,12 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.test.Suite.Inst.defineMethod('startTrackingSignals',
-function() {
+function(captureStackTraces) {
 
     /**
      * Starts tracking signals for usage by assertion methods.
+     * @param {Boolean} captureStackTraces Whether or not to capture stack
+     *     traces. This can impact test performance. The default is false.
      * @returns {TP.test.Suite} The receiver.
      */
 
@@ -1585,9 +1587,12 @@ function() {
 
     this.set('$capturingSignals', true);
 
-    func = TP.signal;
+    //  If we're capturing stack traces, then we actually install a stub to do
+    //  so.
+    if (captureStackTraces) {
+        func = TP.signal;
 
-    TP.signal = TP.signal.asStub(
+        TP.signal = TP.signal.asStub(
             function() {
 
                 var stack;
@@ -1598,14 +1603,19 @@ function() {
                     stack = TP.getStackInfo(e);
                 }
 
-                //  Note how we slice the first 3 off of the stack, since those
-                //  are stacks inside of SinonJS that we're not interested in
-                //  and this is important so that these stacks are synchronized
-                //  with the call data accessible from Sinon.
+                //  Note how we slice the first 3 off of the stack, since
+                //  those are stacks inside of SinonJS that we're not
+                //  interested in and this is important so that these stacks
+                //  are synchronized with the call data accessible from
+                //  Sinon.
                 TP.signal.args.last().stack = stack.slice(3);
 
                 return func.apply(TP, arguments);
             });
+    } else {
+        //  Otherwise, just install a simple spy.
+        TP.signal = TP.signal.asSpy();
+    }
 
     return this;
 });
