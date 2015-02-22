@@ -2025,32 +2025,32 @@ function(anObject, assignIfAbsent) {
     }
 
     if (TP.isNode(obj)) {
-        if (TP.isAttributeNode(obj)) {
-            globalID = 'xpath1(./@' + TP.attributeGetLocalName(obj) + ')';
-            if (TP.isElement(elem = TP.attributeGetOwnerElement(obj))) {
-                globalID = TP.lid(elem) + globalID;
-            }
+        elem = obj.parentNode;
 
-            //  return early here since what we do for the rest of these is not
-            //  applicable to Attribute nodes
-            return globalID;
+        if (TP.isAttributeNode(obj)) {
+            globalID = '#xpath1(./@' + TP.attributeGetLocalName(obj) + ')';
+            //  Reset the element here to the attribute's owner element.
+            elem = TP.attributeGetOwnerElement(obj);
         } else if (TP.isTextNode(obj)) {
-            globalID = 'xpath1(./text()[contains(.,\'' +
+            globalID = '#xpath1(./text()[contains(.,\'' +
                 TP.nodeGetTextContent(obj) + '\')])';
         } else if (TP.isCDATASectionNode(obj)) {
-            globalID = 'xpath1(./text()[contains(.,\'' +
+            globalID = '#xpath1(./text()[contains(.,\'' +
                 TP.nodeGetTextContent(obj) + '\')])';
         } else if (TP.isPINode(obj)) {
-            globalID = 'xpath1(./processing-instruction(\'' +
+            globalID = '#xpath1(./processing-instruction(\'' +
                 TP.name(obj) + '\'))';
         } else if (TP.isCommentNode(obj)) {
-            globalID = 'xpath1(./comment()[1])';
+            globalID = '#xpath1(./comment()[1])';
         } else if (TP.isFragment(obj)) {
             globalID = '#document-fragment';
         }
 
-        if (TP.isElement(elem = obj.parentNode)) {
-            globalID = TP.gid(elem) + globalID;
+        if (TP.isElement(elem)) {
+            //  Note here how we pass true to assign an ID to the element if it
+            //  doesn't have one. We're trying to avoid getting an '#element()'
+            //  path.
+            globalID = TP.gid(elem, true) + globalID;
         }
 
         return globalID;
