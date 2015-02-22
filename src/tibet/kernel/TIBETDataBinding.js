@@ -1766,6 +1766,76 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getBoundChildren',
+function() {
+
+    /**
+     * @method getBoundChildren
+     * @summary Returns the children of the receiver that have data bindings.
+     * @returns {Array} An Array of the *children* that are bound (i.e. a
+     *     shallow query).
+     */
+
+    var query,
+        result;
+
+    //  Note that this gives us the bound *children*, not descendants (i.e. this
+    //  is a shallow query).
+
+    query = './*[@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '" and ' +
+                '(' +
+                ' local-name() = "in"' +
+                ' or local-name() = "out"' +
+                ' or local-name() = "io"' +
+                ' or local-name() = "repeat"' +
+                ')' +
+                ']]' +
+            ' | ' +
+            './*[@*[contains(., "[[")]]';
+
+    result = TP.wrap(
+                TP.nodeEvaluateXPath(this.getNativeNode(), query, TP.NODESET));
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBoundDescendants',
+function() {
+
+    /**
+     * @method getBoundDescendants
+     * @summary Returns the descendants of the receiver that have data bindings.
+     * @returns {Array} An Array of the *descendants* that are bound (i.e. a
+     *     deep query).
+     */
+
+    var query,
+        result;
+
+    //  Note that this gives us the bound *descendants* (i.e. this is a deep
+    //  query).
+
+    query = './/*[@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '" and ' +
+                '(' +
+                ' local-name() = "in"' +
+                ' or local-name() = "out"' +
+                ' or local-name() = "io"' +
+                ' or local-name() = "repeat"' +
+                ')' +
+                ']]' +
+            ' | ' +
+            './/*[@*[contains(., "[[")]]';
+
+    result = TP.wrap(
+                TP.nodeEvaluateXPath(this.getNativeNode(), query, TP.NODESET));
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('isBoundElement',
 function() {
 
@@ -2747,18 +2817,104 @@ function(aSignalOrHash) {
      *     method is used to update the former from the latter, typically in
      *     response to a Change notification from the underlying bound content.
      * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
-     *     which triggered this action or a hash. If this is a signal, this
-     *     method will try first to use 'getValue()' to get the value from the
-     *     binding. If there is no value there, or this is a hash, this method
-     *     will look under a key of TP.NEWVAL.
+     *     which triggered this action or a hash.
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    if (TP.isTrue(aSignalOrHash.at('deep'))) {
-        //this.$refreshBoundRoots(aSignalOrHash);
-        void 0;
+    var bindingInfos,
+        infoEntries,
+
+        scopeVals,
+
+        boundDescendants;
+
+    TP.stop('break.bind_refresh');
+
+    //  If we're not a bound element, then there's nothing to do here.
+    if (!this.isBoundElement()) {
+        return this;
+    }
+
+    //  If our binding information is empty, then we haven't been set up yet, so
+    //  there's nothing more to do here
+    if (TP.isEmpty(bindingInfos = this.get('bindInfos'))) {
+        return this;
+    }
+
+    //  Obtain the binding scope values by walking the DOM tree.
+    scopeVals = this.getBindingScopeValues();
+
+    //  Iterate over each binding entry, join paths to give us a full URI, and
+    //  then send a 'change' from that URI
+
+    //  First, process the 'in' bindings
+    if (TP.notEmpty(infoEntries = bindingInfos.at('in'))) {
+        infoEntries.perform(
+            function(kvPair) {
+                var bindingVal,
+                    allVals,
+
+                    uriPath,
+                    uri;
+
+                bindingVal = kvPair.last();
+
+                allVals = scopeVals.concat(bindingVal);
+                uriPath = TP.uriJoinFragments.apply(TP, allVals);
+                uri = TP.uc(uriPath);
+
+                //  NB: An explicit test for TP.core.URI here - we want to make
+                //  sure we have that type of object, not just a String.
+                if (TP.isKindOf(uri, TP.core.URI)) {
+                    uri.$changed();
+                }
+            });
+    }
+
+    //  Then, process the 'io' bindings
+    if (TP.notEmpty(infoEntries = bindingInfos.at('io'))) {
+        infoEntries.perform(
+            function(kvPair) {
+                var bindingVal,
+                    allVals,
+
+                    uriPath,
+                    uri;
+
+                bindingVal = kvPair.last();
+
+                allVals = scopeVals.concat(bindingVal);
+                uriPath = TP.uriJoinFragments.apply(TP, allVals);
+                uri = TP.uc(uriPath);
+
+                //  NB: An explicit test for TP.core.URI here - we want to make
+                //  sure we have that type of object, not just a String.
+                if (TP.isKindOf(uri, TP.core.URI)) {
+                    uri.$changed();
+                }
+            });
+    }
+
+    //  NB: We don't process 'out' bindings here - we don't refresh from them
+    //  ;-).
+
+    if (TP.isValid(aSignalOrHash) && TP.isTrue(aSignalOrHash.at('deep'))) {
+
+        //  Get the bound descendants and refresh them.
+        boundDescendants = this.getBoundDescendants();
+
+        //  *Make sure to set the 'deep' flag to false* - otherwise, we'll do a
+        //  lot of extra work in our descendants as they traverse.
+        aSignalOrHash.atPut('deep', false);
+
+        boundDescendants.perform(
+                function(aTPElement) {
+                    aTPElement.refresh(aSignalOrHash);
+                });
+
+        aSignalOrHash.atPut('deep', true);
     }
 
     return this;
