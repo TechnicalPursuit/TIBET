@@ -49,8 +49,6 @@ function() {
 
                 test.assert.didSignal(TP.gid(win),
                                         'TP.sig.DocumentLoaded');
-                test.assert.didSignal('tibet://' + TP.gid(win),
-                                        'TP.sig.DocumentLoaded');
             });
     });
 
@@ -65,8 +63,6 @@ function() {
             function() {
 
                 test.assert.didSignal(TP.gid(win),
-                                        'TP.sig.DocumentUnloaded');
-                test.assert.didSignal('tibet://' + TP.gid(win),
                                         'TP.sig.DocumentUnloaded');
             });
     });

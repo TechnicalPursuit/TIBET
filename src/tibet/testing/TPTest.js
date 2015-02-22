@@ -1574,16 +1574,48 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.test.Suite.Inst.defineMethod('startTrackingSignals',
-function() {
+function(captureStackTraces) {
 
     /**
      * Starts tracking signals for usage by assertion methods.
+     * @param {Boolean} captureStackTraces Whether or not to capture stack
+     *     traces. This can impact test performance. The default is false.
      * @returns {TP.test.Suite} The receiver.
      */
 
+    var func;
+
     this.set('$capturingSignals', true);
 
-    TP.signal = TP.signal.asSpy();
+    //  If we're capturing stack traces, then we actually install a stub to do
+    //  so.
+    if (captureStackTraces) {
+        func = TP.signal;
+
+        TP.signal = TP.signal.asStub(
+            function() {
+
+                var stack;
+
+                try {
+                    throw new Error('Stack Trace');
+                } catch (e) {
+                    stack = TP.getStackInfo(e);
+                }
+
+                //  Note how we slice the first 3 off of the stack, since
+                //  those are stacks inside of SinonJS that we're not
+                //  interested in and this is important so that these stacks
+                //  are synchronized with the call data accessible from
+                //  Sinon.
+                TP.signal.args.last().stack = stack.slice(3);
+
+                return func.apply(TP, arguments);
+            });
+    } else {
+        //  Otherwise, just install a simple spy.
+        TP.signal = TP.signal.asSpy();
+    }
 
     return this;
 });
@@ -2166,16 +2198,77 @@ function(suite, caseName, caseFunc) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Case.Inst.defineMethod('getAllFiredSignalsInfo',
+function(wantsRequests) {
+
+    /**
+     * Returns an Array of hashes of information about the argument sets of the
+     *     signals fired using the TP.signal spy since it was last reset.
+     * @param {Boolean} wantsRequests Whether or not to include all of the sets
+     *     of signal arguments, including TP.sig.Requests, fired since the spy
+     *     was last reset when retrieving the information. The default is false.
+     * @returns {Array} A list of hashes of information about the argument sets
+     *     of the signals fired using the TP.signal spy.
+     */
+
+    var info;
+
+    info = TP.ac();
+
+    this.getFiredSignals(wantsRequests).perform(
+            function(entry, index) {
+                info.push(this.getFiredSignalInfoAt(index, wantsRequests));
+            }.bind(this));
+
+    return info;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getAllFiredSignalInfosString',
+function(wantsRequests) {
+
+    /**
+     * Returns a String representation of the Array of hashes of information
+     *     about the argument sets of the signals fired using the TP.signal spy
+     *     since it was last reset.
+     * @param {Boolean} wantsRequests Whether or not to include all of the sets
+     *     of signal arguments, including TP.sig.Requests, fired since the spy
+     *     was last reset when retrieving the information. The default is false.
+     * @returns {String} A String representation of the list of hashes of
+     *     information about the argument sets of the signals fired using the
+     *     TP.signal spy.
+     */
+
+    var str;
+
+    str = this.getAllFiredSignalsInfo().asDisplayString(
+                TP.hc('itemSeparator', '\n',
+                        'kvSeparator', '  :  ',
+                        'valueTransform', function(it) {
+                                                if (TP.isArray(it)) {
+                                                    return it.join(', ');
+                                                }
+
+                                                return TP.str(it);
+                                            }));
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Case.Inst.defineMethod('getFiredSignals',
 function(wantsRequests) {
 
     /**
-     * Returns an Array of the signals fired using the TP.signal spy since it
-     *     was last reset.
-     * @param {Boolean} wantsRequests Whether or not to return all of the
-     *     signals, including TP.sig.Requests, fired since the spy was last
-     *     reset. The default is false.
-     * @returns {Array} A list of the signals fired using the TP.signal spy.
+     * Returns an Array of the set of arguments of the signals fired using the
+     *     TP.signal spy since it was last reset.
+     * @param {Boolean} wantsRequests Whether or not to return all of the sets
+     *     of signal arguments, including TP.sig.Requests, fired since the spy
+     *     was last reset. The default is false.
+     * @returns {Array} A list of sets of signal arguments fired using the
+     *     TP.signal spy.
      */
 
     //  If the caller wants TP.sig.Requests as well (false by default), then we
@@ -2187,51 +2280,62 @@ function(wantsRequests) {
     //  Normally, though, they're interested in just non-TP.sig.Request signals
     return TP.signal.args.reject(
                 function(entry) {
-                    return /TP\.sig\.Request/.test(entry.first());
+                    return /TP\.sig\.(\w*)Request/.test(entry.first());
                 });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('getFiredSignalAt',
+TP.test.Case.Inst.defineMethod('getFiredSignalInfoAt',
 function(signalIndex, wantsRequests) {
 
     /**
-     * Returns a hash of information about the signal at signalIndex within the
-     *     Array of signals fired using the TP.signal spy since it was last
-     *     reset.
-     * @param {Boolean} wantsRequests Whether or not to return all of the
-     *     signal names, including those of TP.sig.Requests, fired since the spy
-     *     was last reset. The default is false.
-     * @returns {TP.lang.Hash} A hash of information about the signal at the
-     *     given index.
+     * Returns a hash of information about the argument set of the signal at
+     *     signalIndex within the Array of signals fired using the TP.signal spy
+     *     since it was last reset.
+     * @param {Boolean} wantsRequests Whether or not to include all of the sets
+     *     of signal arguments, including TP.sig.Requests, fired since the spy
+     *     was last reset when retrieving the information. The default is false.
+     * @returns {TP.lang.Hash} A hash of information about the argument set of
+     *     the signal at the given index.
      */
 
-    var sigEntry,
+    var signalArgs,
         info,
 
-        sigType;
+        sigOrigin,
+        sigType,
 
-    sigEntry = this.getFiredSignals(wantsRequests).at(signalIndex);
-    if (!TP.isArray(sigEntry)) {
+        typeName;
+
+    signalArgs = this.getFiredSignals(wantsRequests).at(signalIndex);
+    if (!TP.isArray(signalArgs)) {
         return null;
     }
 
     info = TP.hc();
 
-    info.atPut('origin', TP.id(sigEntry.at(0)));
-    info.atPut('signame', TP.str(sigEntry.at(1)));
-    info.atPut('payload', sigEntry.at(2));
-    info.atPut('policy', TP.str(sigEntry.at(3)));
-
-    if (!TP.isType(sigType = TP.sys.getTypeByName(info.at('signame')))) {
-        sigType = TP.sys.getTypeByName(TP.str(sigEntry.at(4)));
+    if (TP.isArray(sigOrigin = signalArgs.at(0))) {
+        sigOrigin = sigOrigin.collect(function(item) {
+                                            return TP.id(item);
+                                        });
+    } else {
+        sigOrigin = TP.id(sigOrigin);
     }
 
-    info.atPut('sigtype', sigType);
+    info.atPut('origin', sigOrigin);
+    info.atPut('signame', TP.str(signalArgs.at(1)));
+    info.atPut('payload', signalArgs.at(2));
+    info.atPut('policy', TP.str(signalArgs.at(3)));
+
+    if (!TP.isType(sigType = TP.sys.getTypeByName(info.at('signame')))) {
+        if (TP.notEmpty(typeName = TP.str(signalArgs.at(4)))) {
+            sigType = TP.sys.getTypeByName(typeName);
+        }
+    }
 
     if (TP.isType(sigType)) {
-        info.atPut('sigtypesupers', sigType.getSupertypeNames());
+        info.atPut('sigtype', TP.name(sigType));
     }
 
     return info;
@@ -2245,15 +2349,37 @@ function(wantsRequests) {
     /**
      * Returns an Array of the names of the signals fired using the TP.signal
      *     spy since it was last reset.
-     * @param {Boolean} wantsRequests Whether or not to return all of the
-     *     signal names, including those of TP.sig.Requests, fired since the spy
-     *     was last reset. The default is false.
+     * @param {Boolean} wantsRequests Whether or not to include all of the sets
+     *     of signal arguments, including TP.sig.Requests, fired since the spy
+     *     was last reset when retrieving the names. The default is false.
      * @returns {Array} A list of the signal names fired using the TP.signal spy.
      */
 
     return this.getFiredSignals(wantsRequests).collect(
                 function(entry) {
                     return entry.at(1);
+                });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getFiredSignalStacks',
+function(wantsRequests) {
+
+    /**
+     * Returns an Array of the stack traces of the signals fired using the
+     *     TP.signal spy since it was last reset.
+     * @param {Boolean} wantsRequests Whether or not to include all of the sets
+     *     of signal arguments, including TP.sig.Requests, fired since the spy
+     *     was last reset when retrieving the stack traces. The default is
+     *     false.
+     * @returns {Array} A list of the signal stack traces fired using the
+     *     TP.signal spy.
+     */
+
+    return this.getFiredSignals(wantsRequests).collect(
+                function(entry) {
+                    return entry.stack;
                 });
 });
 

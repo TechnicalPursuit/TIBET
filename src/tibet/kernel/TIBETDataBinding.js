@@ -1067,114 +1067,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceAttributeName, sourceFacetName);
 });
 
-//  ------------------------------------------------------------------------
-
-TP.defineMetaInstMethod('refresh',
-function(aSignalOrHash) {
-
-    /**
-     * @method refresh
-     * @summary Updates the receiver to reflect the current value of any data
-     *     binding it may have.
-     * @param {TP.sig.Signal|TP.lang.Hash} aSignalOrHash An optional signal
-     *     which triggered this action or a hash. If this is a signal, this
-     *     method will try first to use 'getValue()' to get the value from the
-     *     binding. If there is no value there, or this is a hash, this method
-     *     will look under a key of TP.NEWVAL.
-     * @returns {Object} The receiver.
-     */
-
-    var aspect,
-
-        newVal;
-
-    //  We definitely need to have an aspect to proceed further.
-    if (TP.isEmpty(aspect = aSignalOrHash.at('aspect'))) {
-        return this;
-    }
-
-    //  If this is a TP.sig.Signal, the best thing to try to obtain a value is
-    //  the 'getValue()' call.
-    if (TP.isKindOf(aSignalOrHash, TP.sig.Signal)) {
-        newVal = aSignalOrHash.getValue();
-    }
-
-    //  If we couldn't get a value (even null), or it's a hash, then try
-    //  whatever is under TP.NEWVAL.
-    if (TP.notDefined(newVal)) {
-        newVal = aSignalOrHash.at(TP.NEWVAL);
-    }
-
-    //  If we still couldn't get a value (even null), then no sense in doing the
-    //  'set'.
-    if (TP.notDefined(newVal)) {
-        return this;
-    }
-
-    //  TODO: Only if the (as yet unsupplied facet) is 'value' -- otherwise,
-    //  call 'setFacet'
-
-    this.set(aspect, newVal);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-//  TP.core.URI
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('refresh',
-function(aSignalOrHash) {
-
-    /**
-     * @method refresh
-     * @summary Updates the receiver to reflect the current value of any data
-     *     binding it may have.
-     * @param {TP.sig.Signal|TP.lang.Hash} aSignalOrHash An optional signal
-     *     which triggered this action or a hash. If this is a signal, this
-     *     method will try first to use 'getValue()' to get the value from the
-     *     binding. If there is no value there, or this is a hash, this method
-     *     will look under a key of TP.NEWVAL.
-     * @returns {TP.core.URI} The receiver.
-     */
-
-    var newVal,
-        aspect;
-
-    //  If this is a TP.sig.Signal, the best thing to try to obtain a value is
-    //  the 'getValue()' call.
-    if (TP.isKindOf(aSignalOrHash, TP.sig.Signal)) {
-        newVal = aSignalOrHash.getValue();
-    }
-
-    //  If we couldn't get a value (even null), or it's a hash, then try
-    //  whatever is under TP.NEWVAL.
-    if (TP.notDefined(newVal)) {
-        newVal = aSignalOrHash.at(TP.NEWVAL);
-    }
-
-    //  If we still couldn't get a value (even null), then no sense in doing the
-    //  'set'.
-    if (TP.notDefined(newVal)) {
-        return this;
-    }
-
-    //  If this isn't a primary URI, then we won't use any supplied aspect, but
-    //  we'll use the fragment text instead.
-    if (!this.isPrimaryURI()) {
-        this.getPrimaryURI().getResource().set(
-                    this.getFragmentText(), newVal);
-    } else {
-
-        //  We definitely need to have an aspect to proceed further.
-        if (TP.notEmpty(aspect = aSignalOrHash.at('aspect'))) {
-            this.getResource().set(aspect, newVal);
-        }
-    }
-
-    return this;
-});
-
 //  ========================================================================
 //  MARKUP BINDING
 //  ========================================================================
@@ -1543,7 +1435,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 //  Manually refresh the binding. This is necessary because the
                 //  binding has just been established and the resource won't
                 //  know that it has to signal change.
-                this.refresh(TP.hc(TP.NEWVAL, newVal, 'aspect', 'value'));
+                this.set('value', newVal, false);
             }
         }
 
@@ -2406,7 +2298,7 @@ function(aSignalOrHash) {
         if (TP.notEmpty(obsURI.getResource()) &&
             (TP.notEmpty(oldObsURI) || !obsURI.isPrimaryURI())) {
 
-            this.refreshRepeat(obsURI.getResource());
+            this.updateRepeat(obsURI.getResource());
         }
     }
 
@@ -2415,11 +2307,11 @@ function(aSignalOrHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('refreshRepeat',
+TP.core.ElementNode.Inst.defineMethod('updateRepeat',
 function(aResource) {
 
     /**
-     * @method refreshRepeat
+     * @method updateRepeat
      * @summary Refreshes the repeat and it's children content from the
      *     supplied resource.
      * @param {Object} aResource The object that will be used as the repeat
@@ -2600,7 +2492,7 @@ function(aResource) {
                         repeatAttrVal,
                         '[' + (i + startIndex) + ']');
 
-            this.$refreshRepeatingTextNodes(
+            this.$updateRepeatingTextNodes(
                     elemChildElements.at(i),
                     repeatResource.at(i),
                     vals,
@@ -2744,11 +2636,11 @@ function(aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$refreshRepeatingTextNodes',
+TP.core.ElementNode.Inst.defineMethod('$updateRepeatingTextNodes',
 function(aNode, aResource, pathValues, anIndex, repeatResource) {
 
     /**
-     * @method $refreshRepeatingTextNodes
+     * @method $updateRepeatingTextNodes
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -2864,23 +2756,6 @@ function(aSignalOrHash) {
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var newVal,
-        aspect;
-
-    if (TP.isKindOf(aSignalOrHash, TP.sig.Signal)) {
-        newVal = aSignalOrHash.getValue();
-    } else {
-        newVal = aSignalOrHash.at(TP.NEWVAL);
-    }
-
-    if (TP.notValid(newVal)) {
-        return this;
-    }
-
-    if (TP.notEmpty(aspect = aSignalOrHash.at('aspect'))) {
-        this.set(aspect, newVal, false);
-    }
-
     if (TP.isTrue(aSignalOrHash.at('deep'))) {
         //this.$refreshBoundRoots(aSignalOrHash);
         void 0;
@@ -2903,7 +2778,7 @@ function(index) {
 
     this.$setAttribute('bind:repeatindex', index);
 
-    this.refreshRepeat();
+    this.updateRepeat();
 
     //  setting an attribute returns void according to the spec
     return;
@@ -2923,7 +2798,7 @@ function(size) {
 
     this.$setAttribute('bind:repeatsize', size);
 
-    this.refreshRepeat();
+    this.updateRepeat();
 
     //  setting an attribute returns void according to the spec
     return;
@@ -2944,7 +2819,7 @@ function(aResource) {
      */
 
     if (this.isRepeatElement()) {
-        this.refreshRepeat(aResource);
+        this.updateRepeat(aResource);
     }
 
     return this;
