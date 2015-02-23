@@ -199,9 +199,10 @@ function(aSignal) {
      * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specified a
      *     'deep' refresh then descendant elements are also updated.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action. This signal should include a key of 'deep' and a value of
-     *     true to cause a deep refresh that updates all nodes.
+     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or a hash.
+     *     This signal or hash should include a key of 'deep' and a value
+     *     of true to cause a deep refresh that updates all nodes.
      */
 
     /*
