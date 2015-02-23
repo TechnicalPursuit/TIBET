@@ -5913,6 +5913,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Application.Inst.defineMethod('getRouter',
+function() {
+
+    var type,
+        name;
+
+    type = this.$get('router');
+    if (TP.canInvoke(type, 'route')) {
+        return type;
+    }
+
+    name = TP.sys.cfg('uri.router');
+    type = TP.sys.require(name);
+    if (TP.canInvoke(type, 'route')) {
+        this.$set('router', type);
+        return type;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Application.Inst.defineMethod('getTheme',
 function() {
 
@@ -5936,27 +5957,6 @@ function() {
     theme = TP.ifEmpty(theme, this.$get('theme'));
 
     return TP.ifEmpty(theme, '');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('getURIRouter',
-function() {
-
-    var type,
-        name;
-
-    type = this.$get('router');
-    if (TP.canInvoke(type, 'route')) {
-        return type;
-    }
-
-    name = TP.sys.cfg('uri.router');
-    type = TP.sys.require(name);
-    if (TP.canInvoke(type, 'route')) {
-        this.$set('router', type);
-        return type;
-    }
 });
 
 //  ------------------------------------------------------------------------
@@ -6022,7 +6022,7 @@ function(aSignal) {
 
     var router;
 
-    router = this.getURIRouter();
+    router = this.getRouter();
     if (TP.canInvoke(router, 'route')) {
         router.route(this.getHistory().getNativeLocation(), aSignal);
     }

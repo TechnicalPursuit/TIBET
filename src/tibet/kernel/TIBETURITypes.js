@@ -8622,9 +8622,9 @@ function(aURI, aRequest) {
  * @type {TP.core.URIRouter}
  * @summary TP.core.URIRouter types process changes to the client URL and
  *     respond by triggering an appropriate handler either directly or
- *     indirectly via signaling. A URIRouter is typically triggered via
- *     onhashchange or popstate event handlers built into TIBET but they can
- *     also be invoked directly via route(url).
+ *     indirectly via signaling. A URIRouter is typically triggered from the
+ *     current application history object via onhashchange or popstate event
+ *     handlers but they can also be invoked directly via route(url).
  */
 
 //  ------------------------------------------------------------------------
@@ -8632,13 +8632,306 @@ function(aURI, aRequest) {
 TP.lang.Object.defineSubtype('core.URIRouter');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * An array of path-matching patterns to be processed coupled to a function
+ * to use for translating matched URLs and any token names for parameters.
+ * @type {Array[RegExp, Function, String[]]}
+ */
+TP.core.URIRouter.Type.defineAttribute('paths');
+
+/**
+ * A list of token patterns used for parsing token values found in routes.
+ * @type {TP.lang.Hash}
+ */
+TP.core.URIRouter.Type.defineAttribute('patterns');
+
+/**
+ * The route name to use for the "Root" or "/" route. Default is 'Home'.
+ * @type {String}
+ */
+TP.core.URIRouter.Type.defineAttribute('rootName', 'Home');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.$set('patterns', TP.hc());
+    this.$set('paths', TP.ac());
+
+    //  Always need a route to match "anything" as our backstop. If no routes
+    //  are ever defined this routine should still produce something reasonable.
+    this.definePath(/.*/, this.processRoute);
+
+    //  Define the root pattern route for "empty paths".
+    this.definePath(/^\/$/, function() {
+        return this.get('rootName');
+    }.bind(this));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('definePath',
+function(pattern, processor) {
+
+    /**
+     * @method definePath
+     * @summary Associates a route pattern with a pattern processor which should
+     *     return a signal instance to be fired.
+     * @param {String|RegExp} pattern The string or regular expression to match.
+     * @param {Function} [processor] A function taking a path, match result, and
+     *     token names which should return an Array containing a signal name and
+     *     parameter hash to use as a signal payload. Defaults to the receiver's
+     *     processRoute function.
+     */
+
+    var result,
+        regex,
+        names,
+        func;
+
+    //  We need patterns to be in regex form and to watch for tokens so we
+    //  process any string values into regular expression form.
+    result = this.processPattern(pattern);
+    regex = result.at(0);
+    names = result.at(1);
+
+    //  Exception will have raised during processing, just exit.
+    if (TP.notValid(regex)) {
+        return;
+    }
+
+    //  Default the processor function to our standard one.
+    func = TP.ifInvalid(processor, this.processRoute);
+
+    //  NOTE we push the new route onto the front so we iterate from most recent
+    //  to oldest route definition.
+    this.get('paths').unshift(TP.ac(regex, func, names));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('definePattern',
+function(token, pattern) {
+
+    /**
+     * @method definePattern
+     * @summary Associates a token name with a pattern used to match the value
+     *     for that token.
+     * @param {String} token The name of the token being described.
+     * @param {String|RegExp} pattern The string or regular expression to match.
+     */
+
+    if (!TP.isString(token)) {
+        this.raise('InvalidToken', token);
+    }
+
+    if (!TP.isRegExp(pattern)) {
+        this.raise('InvalidPattern', pattern);
+    }
+
+    this.get('patterns').atPut(token, pattern);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('processPath',
+function(path) {
+
+    /**
+     * @method processPath
+     * @summary Processes the path, searching for the first route which matches.
+     *     If the path matches a route pattern that route's processor function
+     *     is invoked to convert the path into a signal name/payload pair.
+     * @param {String} path The URL path segment to process.
+     * @return {Array[String, TP.core.Hash]} The signal name/payload pair.
+     */
+
+    var paths,
+        result;
+
+    paths = this.get('paths');
+    paths.detect(function(route) {
+        var pattern,
+            processor,
+            names,
+            match;
+
+        pattern = route[0];
+        processor = route[1];
+        names = route[2];
+
+        match = pattern.match(path);
+        if (TP.isValid(match)) {
+            // NOTE we update the outer variable here.
+            result = processor(path, match, names);
+            return true;
+        }
+
+        return false;
+    });
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('processPattern',
+function(pattern) {
+
+    /**
+     * @method processPattern
+     * @summary Converts a pattern into a fully-functional regular expression
+     *     for use in route matching and returns the pattern and a list of token
+     *     names to assign to matched positions.
+     * @param {String|RegExp} pattern The pattern to process.
+     * @return {Array} An array containing the pattern and zero or more string
+     *     names for embedded token values being matched.
+     */
+
+    var str,
+        parts,
+        patterns,
+        names;
+
+    if (TP.isRegExp(pattern)) {
+        return TP.ac(pattern, TP.ac());
+    }
+
+    if (!TP.isString(pattern)) {
+        this.raise('InvalidParameter', pattern);
+    }
+
+    patterns = this.get('patterns');
+    names = TP.hc();
+
+    str = pattern.slice(1);
+    parts = str.split('/');
+
+    parts = parts.map(function(item, index) {
+        var pattern,
+            str;
+
+        //  Check for a token pattern of this name.
+        if (item.charAt(0) === ':') {
+            names.atPut(index, item.slice(1));
+            pattern = patterns.at(item.slice(1));
+            if (TP.isValid(pattern)) {
+                str = TP.str(pattern);
+                return '(' + str.slice(1, str.lastIndexOf('/') + ')');
+            } else {
+                return '(.*?)';
+            }
+        }
+
+        return '(' + item + ')';
+    });
+
+    str = '\\/' + parts.join('\\/');
+
+    return TP.ac(RegExp.construct(str), names);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('processRoute',
+function(path, match, names) {
+
+    var parts,
+        name,
+        params;
+
+    params = TP.hc();
+
+    //  Only a full match value, no parameterized/captured sections.
+    if (match.length === 1) {
+        parts = match[0].slice(1).split('/');
+        name = parts.reduce(function(prev, current, index, array) {
+
+            //  Treat identifiers as signal name segments.
+            if (TP.regex.JS_IDENTIFIER.test(current)) {
+                return prev + current.asTitleCase();
+            }
+
+            //  Treat everything else with a real value like an argument.
+            params.atPut('arg' + params.getSize(), current);
+            return prev;
+
+        }, '');
+    } else {
+        //  Throw away the full-match portion. This will also shift the list so
+        //  our naming indexes should resolve correctly.
+        match.shift();
+
+        name = match.reduce(function(prev, current, index, array) {
+            var token;
+
+            token = names.at(index);
+            if (TP.notEmpty(token)) {
+                //  Found a named parameter segment.
+                params.atPut(token, current);
+            } else if (TP.regex.JS_IDENTIFIER.test(current)) {
+                return prev + current.asTitleCase();
+            } else {
+                params.atPut('arg' + params.getSize(), current);
+            }
+            return prev;
+
+        }, '');
+    }
+
+    return TP.ac(name, params);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('route',
 function(aURI, aRequest) {
 
-    TP.info('routing: ' + aURI + '!!!');
+    var url,
+        trigger,
+        path,
+        routes,
+        result;
+
+    TP.info('routing: ' + aURI);
+
+    url = TP.uc(aURI);
+
+    if (TP.notValid(url)) {
+        return this.raise('InvalidURI', aURI);
+    }
+
+    trigger = TP.sys.cfg('uri.routing.trigger');
+    switch (trigger) {
+        case 'popstate':
+            path = url.getPath();
+            break;
+        default:
+            path = url.getFragmentPath();
+            break;
+    }
+
+    result = this.processPath(path);
+
+    TP.info('signaling: ' + TP.str(result.at(0)) + ' with: ' +
+        TP.str(result.at(1)));
 });
 
 //  ========================================================================
