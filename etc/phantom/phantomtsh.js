@@ -706,7 +706,7 @@
         PhantomTSH.url = argv.url || PhantomTSH.DEFAULT_URL;
         PhantomTSH.url = fs.absolute(PhantomTSH.url);
 
-        PhantomTSH.url += '#boot.profile="' +
+        PhantomTSH.url += '#?boot.profile="' +
             (argv.profile || PhantomTSH.DEFAULT_PROFILE) + '"';
 
         if (argv.params) {
