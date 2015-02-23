@@ -6007,27 +6007,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleLocationBack',
-function(aSignal) {
-
-    /**
-     * @method handleLocationBack
-     * @summary A handler that is called when the user has advanced backward in
-     *     history via the 'backward' button of the browser.
-     * @param {TP.sig.LocationBack} aSignal The signal that caused this handler
-     *     to trip.
-     * @returns {TP.core.Application} The receiver.
-     */
-
-    TP.ifInfo() ?
-        TP.info('Got to TP.core.Application::handleLocationBack',
-                    TP.LOG) : 0;
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Application.Inst.defineMethod('handleLocationChanged',
 function(aSignal) {
 
@@ -6043,37 +6022,10 @@ function(aSignal) {
 
     var router;
 
-    TP.ifInfo() ?
-        TP.info('Got to TP.core.Application::handleLocationChanged',
-                    TP.LOG) : 0;
-
-
     router = this.getURIRouter();
     if (TP.canInvoke(router, 'route')) {
-        router.route(top.location.toString(), aSignal);
+        router.route(this.getHistory().getNativeLocation(), aSignal);
     }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('handleLocationNext',
-function(aSignal) {
-
-    /**
-     * @method handleLocationNext
-     * @summary A handler that is called when the user has advanced forward in
-     *     history either via the 'forward' button of the browser or by
-     *     specifying a new location to navigate to.
-     * @param {TP.sig.LocationNext} aSignal The signal that caused this handler
-     *     to trip.
-     * @returns {TP.core.Application} The receiver.
-     */
-
-    TP.ifInfo() ?
-        TP.info('Got to TP.core.Application::handleLocationNext',
-                    TP.LOG) : 0;
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6376,6 +6328,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.History.Type.defineMethod('getNativeLocation',
+function() {
+
+    /**
+     * @method getNativeLocation
+     * @summary Retrieves the native window location.
+     * @returns {String} The current native window location.
+     */
+
+    return this.getNativeWindow().location.toString();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.History.Type.defineMethod('getNativeWindow',
 function() {
 
@@ -6507,8 +6473,7 @@ function(anEvent) {
 
     this.updateIndex(anEvent);
 
-    this.signal('TP.sig.LocationChanged',
-        this.getNativeWindow().location.toString());
+    this.signal('TP.sig.LocationChanged', this.getNativeLocation());
 
     return this;
 });
@@ -6533,8 +6498,7 @@ function(anEvent) {
 
     this.updateIndex(anEvent);
 
-    this.signal('TP.sig.LocationChanged',
-        this.getNativeWindow().location.toString());
+    this.signal('TP.sig.LocationChanged', this.getNativeLocation());
 
     return this;
 });
@@ -6568,15 +6532,29 @@ function(stateObj, title, aURL) {
      * @returns {TP.core.History} The receiver.
      */
 
-    var url;
+    var url,
+        current,
+        result;
 
     url = TP.str(aURL);
 
-    this.set('index', this.get('index') + 1);
-    this.get('history').push(url);
+    //  Capture this before the replace so we have something to compare.
+    current = this.getCurrentLocation();
 
     //  TODO: do we want to do some simulation of this if not implemented?
-    return this.getNativeWindow().history.pushState(stateObj, title, url);
+    result = this.getNativeWindow().history.pushState(stateObj, title, url);
+
+    url = this.getNativeLocation();
+
+    this.get('history').push(url);
+    this.set('index', this.get('index') + 1);
+
+    //  If the url changed our API should trigger a routing event.
+    if (url !== current) {
+        this.signal('TP.sig.LocationChanged', url);
+    }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -6608,15 +6586,29 @@ function(stateObj, title, aURL) {
      * @returns {TP.core.History} The receiver.
      */
 
-    var url;
+    var url,
+        current,
+        history;
 
     url = TP.str(aURL);
 
-    this.get('history').pop();
-    this.get('history').push(url);
+    //  Capture this before the replace so we have something to compare.
+    current = this.getCurrentLocation();
 
     //  TODO: do we want to do some simulation of this if not implemented?
-    return this.getNativeWindow().history.replaceState(stateObj, title, url);
+    result = this.getNativeWindow().history.replaceState(stateObj, title, url);
+
+    url = this.getNativeLocation();
+
+    history = this.get('history');
+    history[this.get('index')] = url;
+
+    //  If the url changed our API should trigger a routing event.
+    if (url !== current) {
+        this.signal('TP.sig.LocationChanged', url);
+    }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -6668,7 +6660,7 @@ function(anEvent) {
     //  Capture the entries ahead and behind for comparison.
     last = this.getLastLocation();
     next = this.getNextLocation();
-    current = this.getNativeWindow().location.toString();
+    current = this.getNativeLocation();
 
     //  Adjust based on what URL we're shifting to (if we recognize it).
     if (current === last) {
@@ -6678,7 +6670,7 @@ function(anEvent) {
         }
         this.set('index', this.get('index') - 1);
     } else if (current === next) {
-        this.set('index', this.get('index') - 1);
+        this.set('index', this.get('index') + 1);
     } else {
         //  Never seen it...must be forward.
         this.get('history').push(current);
@@ -6686,6 +6678,22 @@ function(anEvent) {
     }
 
     return this.get('index');
+});
+
+//  ------------------------------------------------------------------------
+//  TIBET convenience method
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getHistory',
+function() {
+
+    /**
+     * @method getHistory
+     * @summary Retrieves the application history object.
+     * @returns {TP.core.History} The TIBET history object.
+     */
+
+    return this.getApplication().getHistory();
 });
 
 //  ------------------------------------------------------------------------
