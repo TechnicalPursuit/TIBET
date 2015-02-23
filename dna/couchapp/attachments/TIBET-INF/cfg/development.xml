@@ -34,6 +34,11 @@
     <package src="standard.xml" config="developer"/>
 </config>
 
+<config id="contributor">
+    <config ref="properties"/>
+    <package src="standard.xml" config="contributor"/>
+</config>
+
 <config id="test">
     <config ref="properties"/>
     <package src="standard.xml" config="test"/>
