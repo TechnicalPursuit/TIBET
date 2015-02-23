@@ -6287,7 +6287,7 @@ function() {
      */
 
     //  Don't run off the end.
-    if (this.get('index') >= (this.get('history').getSize() - 1)) {
+    if (this.get('index') >= this.get('history').getSize() - 1) {
         return;
     }
 
@@ -6448,7 +6448,7 @@ function() {
     local = this.get('history').getSize();
     offset = this.get('offset');
 
-    return native === (local + offset);
+    return native === local + offset;
 });
 
 //  ------------------------------------------------------------------------
@@ -6588,7 +6588,8 @@ function(stateObj, title, aURL) {
 
     var url,
         current,
-        history;
+        history,
+        result;
 
     url = TP.str(aURL);
 
@@ -6627,7 +6628,7 @@ function(anIndex) {
         return this.raise('InvalidParameter');
     }
 
-    if (anIndex < 0 || (anIndex > this.getSize() - 1)) {
+    if (anIndex < 0 || anIndex > this.getSize() - 1) {
         return this.raise('InvalidIndex');
     }
 
