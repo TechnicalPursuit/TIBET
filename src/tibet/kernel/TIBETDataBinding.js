@@ -1234,7 +1234,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 splitURI = TP.uc(exprToExecute);
 
                 primaryURIPath = splitURI.getPrimaryHref() + '#tibet(.)';
-                exprToExecute = splitURI.getFragmentText();
+                exprToExecute = splitURI.getFragmentExpr();
             } else {
                 //  Use the scope values array and join all of the values
                 //  together into a URI path.
@@ -1507,7 +1507,7 @@ function(attrName, attrValue, scopeVals, direction) {
                 splitURI = TP.uc(exprToExecute);
                 primaryURIPath = splitURI.getPrimaryHref() +
                                     '#tibet(value)';
-                exprToExecute = splitURI.getFragmentText();
+                exprToExecute = splitURI.getFragmentExpr();
             } else {
                 //  Concatenate a simple 'value' expression onto the scope
                 //  values array (thereby creating a new Array) and use it

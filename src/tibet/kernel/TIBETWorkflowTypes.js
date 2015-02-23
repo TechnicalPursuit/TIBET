@@ -5837,24 +5837,23 @@ TP.core.Application.Type.defineAttribute('singleton');
 
 /**
  * An array of controller instances which represent the current controller
- * stack. The list always ends with an Application instance which represents the
- * final controller in the responder/controller chain.
+ * stack. The list always ends with an Application instance which represents
+ * the final controller in the responder chain.
  * @type {TP.core.Controller[]}
  */
 TP.core.Application.Inst.defineAttribute('controllers');
-
-/**
- * A reference to the current theme name being used for application styling.
- * @type {String}
- */
-TP.core.Application.Inst.defineAttribute('currentTheme');
-
 
 /**
  * The router type whose route method is used to process client-side routes.
  * @type {TP.core.URIRouter}
  */
 TP.core.Application.Inst.defineAttribute('router');
+
+/**
+ * A reference to the current theme name being used for application styling.
+ * @type {String}
+ */
+TP.core.Application.Inst.defineAttribute('theme');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -5874,12 +5873,7 @@ function(aResourceID, aRequest) {
 
     this.callNextMethod();
 
-    //this.observe(TP.core.History, 'TP.sig.LocationBack');
-    //this.observe(TP.core.History, 'TP.sig.LocationChanged');
-    //this.observe(TP.core.History, 'TP.sig.LocationNext');
-
-    //  Initialize the controller list, ensuring this instance is always in the
-    //  list.
+    //  Initialize controller list with application as the root controller.
     this.$set('controllers', TP.ac(this));
 
     return this;
@@ -5905,16 +5899,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('getCurrentTheme',
+TP.core.Application.Inst.defineMethod('getHistory',
 function() {
 
     /**
-     * @method getCurrentTheme
+     * Returns the current object responsible for managing history for the
+     * application, which focuses on history for the UICANVAS window.
+     * @return {TP.core.History} A History object.
+     */
+
+    return TP.core.History;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('getTheme',
+function() {
+
+    /**
+     * @method getTheme
      * @summary Returns the current UI theme. The value here is taken from any
      *     setting data-theme attribute on the current UICANVAS body element, or
-     *     the value of the application's currentTheme attribute. The value
-     *     returned by this method is used as part of computations for loading
-     *     CSS style sheets.
+     *     the value of the application's theme attribute. The value returned by
+     *     this method is used as part of computations for loading CSS sheets.
      * @returns {String} The name of the current UI theme.
      */
 
@@ -5926,7 +5933,7 @@ function() {
     body = TP.documentGetBody(doc);
     theme = TP.elementGetAttribute(body, 'data-theme');
 
-    theme = TP.ifEmpty(theme, this.$get('currentTheme'));
+    theme = TP.ifEmpty(theme, this.$get('theme'));
 
     return TP.ifEmpty(theme, '');
 });
@@ -6029,11 +6036,6 @@ function(aSignal) {
      * @summary A handler that is called when the user has changed the location
      *     and changed history in some way, either by using the forward or
      *     backward controls in the browser or by attempting to load a bookmark.
-     *     The default implementation that this type supplies attempts to load
-     *     the URI that the user is navigating to into the current 'UI canvas'.
-     * @description If a 'direction' (forward or backward) can be determined a
-     *     'TP.sig.LocationBack' or 'TP.sig.LocationNext' signal is *also*
-     *     signaled, in addition to this signal.
      * @param {TP.sig.LocationChanged} aSignal The signal that caused this
      *     handler to trip.
      * @returns {TP.core.Application} The receiver.
@@ -6143,6 +6145,33 @@ TP.core.Application.Inst.defineMethod('pushController', function(aController) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Application.Inst.defineMethod('setTheme',
+function(themeName) {
+
+    /**
+     * @method setTheme
+     * @summary Defines the current application theme. The value provided is
+     *     placed on the UICANVAS's body element as the value for data-theme
+     *     and an appropriate change signal is triggered for observers to update
+     *     if they respond to changes in theme.
+     * @param {String} themeName The name of the new theme.
+     * @return {TP.core.Application} The receiver.
+     */
+
+    var doc,
+        body;
+
+    doc = TP.sys.getUICanvas().getNativeDocument();
+    body = TP.documentGetBody(doc);
+    TP.elementSetAttribute(body, 'data-theme', themeName);
+
+    //  Set the value internally so we trigger a change notification.
+    this.$set('theme', themeName);
+
+    return this;
+});
+//  ------------------------------------------------------------------------
+
 TP.core.Application.Inst.defineMethod('setURIRouter',
 function(aRouter) {
 
@@ -6218,10 +6247,10 @@ function() {
 
 /**
  * @type {TP.core.History}
- * @summary This type manages the browser history by trapping back & forward
- *     behavior and bookmark navigations and allowing TIBET to manage them. It
- *     also ensures that the user cannot back up into 'main TIBET top-level
- *     window'.
+ * @summary This type provides an interface to the window history for use
+ *     in managing history-related events and activities. Its most important
+ *     role is in handling onhashchange and onpopstate events and triggering
+ *     the application URI routing machinery.
  */
 
 //  ------------------------------------------------------------------------
@@ -6232,17 +6261,15 @@ TP.lang.Object.defineSubtype('core.History');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  the title of the 'root' document
-TP.core.History.Type.defineAttribute('rootDocTitle');
+//  the current index in the history list. Note this value may not correspond to
+//  the actual browser's view of the world if low-level API has been used.
+TP.core.History.Type.defineAttribute('index', 0);
 
-//  the current index in the history list.
-TP.core.History.Type.defineAttribute('historyIndex', 0);
+//  the offset between existing history size and our sense of it (which is 0).
+TP.core.History.Type.defineAttribute('offset', 0);
 
 //  a list of the locations which this object has traversed.
-TP.core.History.Type.defineAttribute('historyList', TP.ac());
-
-//  whether or not this object is setting the hash itself
-TP.core.History.Type.defineAttribute('addingHistory', false);
+TP.core.History.Type.defineAttribute('history');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -6256,22 +6283,22 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    //  Install an 'onhashchange' event handler onto the top-level window
-    //  (the 'tibet' window) that informs us when the user changes the hash,
-    //  either via using the back/forward buttons or by using a bookmark.
+    //  Install a popstate handler to catch changes due to hash changes.
     top.onhashchange = function(evt) {
         this.onhashchange(evt);
     }.bind(this);
 
-    //  Install a popstate handler to catch changes due to history changes.
+    //  Install a popstate handler to catch changes due to history API.
     top.onpopstate = function(evt) {
         this.onpopstate(evt);
     }.bind(this);
 
-    //  Prime the pump with the top location, but don't use setLocation()
-    //  since we don't want the hash to actually change
-    this.get('historyList').add(TP.btoa(top.location.href));
-    this.set('rootDocTitle', TP.documentGetTitleContent(top.document));
+    //  Capture startup history and window title information.
+    this.$set('history', TP.ac());
+    this.get('history').add(TP.sys.getLaunchURL());
+
+    //  Capture the current history size offset for sanity checking.
+    this.$set('offset', this.getNativeWindow().history.length - 1);
 
     return;
 });
@@ -6283,9 +6310,15 @@ function() {
 
     /**
      * @method back
-     * @summary Causes the receiver to go back a page in session history
+     * @summary Causes the receiver to go back a page in browser history.
      */
 
+    //  Don't back up into the negatives.
+    if (this.get('index') < 1) {
+        return;
+    }
+
+    this.set('index', this.get('index') - 1);
     this.getNativeWindow().history.back();
 
     return;
@@ -6293,48 +6326,163 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.History.Type.defineMethod('getIndexForHash',
-function(hashValue) {
+TP.core.History.Type.defineMethod('forward',
+function() {
 
     /**
-     * @method getIndexForHash
-     * @summary Returns the numeric 'index' within the history list of the
-     *     hashValue or null if one can't be determined.
-     * @description If the hashValue occurs more than once in the history list
-     *     (i.e. the location has been navigated to more than once), this
-     *     routine will examine entries 'around' (front and back) of each of
-     *     those entries in the real history list to try to determine the 'best
-     *     fit' for the hash being queried for.
-     * @param {TP.core.URI|String} hashValue The TP.core.URI or String to use.
-     * @returns {Number}
+     * @method forward
+     * @summary Causes the receiver to go forward a page in browser history.
      */
 
-    var hashIndices;
-
-    hashIndices = this.get('historyList').getPositions(hashValue);
-
-    //  Return null if the hash isn't found - this must mean that we haven't
-    //  added this hash before.
-    if (TP.isEmpty(hashIndices)) {
-        return null;
+    //  Don't run off the end.
+    if (this.get('index') >= (this.get('history').getSize() - 1)) {
+        return;
     }
 
-    //  Return the index if the hash is found only once.
-    if (hashIndices.getSize() === 1) {
-        return hashIndices.first();
+    this.set('index', this.get('index') + 1);
+    this.getNativeWindow().history.forward();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('getCurrentLocation',
+function() {
+
+    /**
+     * @method getCurrentLocation
+     * @summary Returns the current location in the history list.
+     * @return {String} The location at the current history index.
+     */
+
+    return this.get('history').at(this.get('index'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('getLastLocation',
+function() {
+
+    /**
+     * @method getLastLocation
+     * @summary Returns the previous location in the history list, if any.
+     * @return {String} The location at the prior history index.
+     */
+
+    //  NOTE we can't use "at()" here since it supports negative indexes.
+    return this.get('history')[this.get('index') - 1];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('getNativeWindow',
+function() {
+
+    /**
+     * @method getNativeWindow
+     * @summary Retrieves the native window the history object manages.
+     * @returns {Window} The native window instance.
+     */
+
+    return top;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('getNextLocation',
+function() {
+
+    /**
+     * @method getNextLocation
+     * @summary Returns the next location in the history list, if any.
+     * @return {String} The location at the next history index.
+     */
+
+    return this.get('history').at(this.get('index') + 1);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('getSize',
+function() {
+
+    /**
+     * @method getSize
+     * @summary Returns the number of entries in the history list.
+     * @return {Number} The number of entries in the local history list.
+     */
+
+    return this.get('history').getSize();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('getState',
+function() {
+
+    /**
+     * Returns any state object associated with the current history location.
+     * @returns {Object} Any state object associated via pushState or
+     *     replaceState for the current location.
+     */
+
+    return this.getNativeWindow().history.state;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('go',
+function(anIndex) {
+
+    /**
+     * @method go
+     * @summary Causes the receiver to go to a specific offset from the current
+     *     location in window history.
+     * @param {Number} anIndex A positive or negative number of pages to go in
+     *     the browser history.
+     */
+
+    var index;
+
+    //  Null, undefined, or 0 will exit here.
+    if (!anIndex) {
+        return;
     }
 
-    //  TODO:
-    //  If the hash is found more than once, then we need to:
-    //      a. 'Unhook' the onhashchange handler
-    //      b. Do a back(), capture the hash value into 'backhash'
-    //      c. Do a forward() twice, capture the hash value into
-    //          'forwardhash'
-    //      d. Do a back() to get back to our hash
-    //      e. 'Rehook' the onhashchange handler
-    //      f. Search by 3's 'around' the indicies where the hash was found
+    index = this.get('index');
+    index = index + anIndex;
 
-    return null;
+    //  This should throw if the index won't be valid.
+    this.set('index', index);
+
+    this.getNativeWindow().history.go(anIndex);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('isSynced',
+function() {
+
+    /**
+     * @method isSynced
+     * @summary Returns true if the size of the local and native history lists
+     *     are the same. This doesn't entirely ensure they are in sync but it's
+     *     a decent substitute since they'll drift if the local API isn't used.
+     * @returns {Boolean} True if the history appears to be in sync.
+     */
+
+    var native,
+        local,
+        offset;
+
+    native = this.getNativeWindow().history.length;
+    local = this.get('history').getSize();
+    offset = this.get('offset');
+
+    return native === (local + offset);
 });
 
 //  ------------------------------------------------------------------------
@@ -6353,113 +6501,14 @@ function(anEvent) {
      * @returns {TP.core.History} The receiver.
      */
 
-    var hashVal,
-
-        encodedVal,
-
-        entryIndex,
-
-        oldOnHashChange,
-        forcedBackPageTitle,
-
-        decodedVal;
-
-    //  If we're already 'adding history', that means that the location is
-    //  being set because one of our handlers below is setting it. We set a
-    //  flag in the setLocation() routine to avoid endless looping, so we
-    //  detect that here, clear the flag and return.
-    if (TP.isTrue(this.get('addingHistory'))) {
-        this.set('addingHistory', false);
-
+    if (TP.sys.cfg('uri.routing.trigger') !== 'hashchange') {
         return this;
     }
 
-    //  If the hash is empty, that must mean that we're at the first 'main
-    //  page', which is the location of our top-level window. We have the
-    //  encoded value, etc. here, so we just set it.
-    if (TP.isEmpty(hashVal = top.location.hash)) {
-        //  Must be the top-level page
-        encodedVal = this.get('historyList').at(0);
+    this.updateIndex(anEvent);
 
-        decodedVal = TP.atob(encodedVal);
-
-        entryIndex = 0;
-    } else {
-        //  Otherwise, we grab the hash value, make sure it doesn't have a
-        //  leading '#', and get its index in our history list.
-        if (hashVal.startsWith('#')) {
-            encodedVal = hashVal.slice(1);
-        } else {
-            encodedVal = hashVal;
-        }
-
-        entryIndex = this.getIndexForHash(encodedVal);
-    }
-
-    //  If the encoded value matches the first value in our history, then
-    //  the user has navigated to our 'root' location - a no no. We initiate
-    //  a procedure to get the browser history, location and document title
-    //  back to the location that they navigated from.
-    if (encodedVal === this.get('historyList').at(0)) {
-        //  Grab the old 'onhashchange' handler. We'll need it when we're
-        //  done.
-        oldOnHashChange = top.onhashchange;
-
-        //  The document title is current that of the page we came from, but
-        //  we're gonna set the document title to that of the 'root doc' and
-        //  we need to capture this before it goes away.
-        forcedBackPageTitle = TP.documentGetTitleContent(top.document);
-
-        //  Set the new onhashchange handler to one that will set the title
-        //  of the document to the 'forced back to' page and restores the
-        //  regular 'onhashchange' handler. This not only sets the document
-        //  title properly, it avoids endless loops by calling this routine
-        //  when we do a 'go()' below.
-        top.onhashchange =
-            function() {
-
-                TP.documentSetTitleContent(top.document,
-                                            forcedBackPageTitle);
-                top.onhashchange = oldOnHashChange;
-            };
-
-        //  Set the document's title to the root document title we captured
-        //  on initialization before we leave this location.
-        TP.documentSetTitleContent(top.document,
-                                    this.get('rootDocTitle'));
-
-        //  Go back to the page that the user was trying to navigate away
-        //  from by using the historyIndex (our own index that hasn't
-        //  changed).
-        top.history.go(this.get('historyIndex'));
-
-        return this;
-    }
-
-    //  If the encoded value is the same as the value at our current index,
-    //  we just return here - we're probably being called because one of our
-    //  handlers for TP.sig.LocationChanged is setting the content of the
-    //  URI and sending us back the same URI.
-
-    if (encodedVal === this.get('historyList').at(this.get('historyIndex'))) {
-        return this;
-    }
-
-    //  If a valid entry index was computed, then compare it against the
-    //  current history index and send the proper back/next signals if a
-    //  direction can be determined.
-    if (TP.isNumber(entryIndex)) {
-        if (entryIndex < this.get('historyIndex')) {
-            this.signal('TP.sig.LocationBack', decodedVal);
-        } else if (entryIndex > this.get('historyIndex')) {
-            this.signal('TP.sig.LocationNext', decodedVal);
-        }
-
-        this.set('historyIndex', entryIndex);
-    }
-
-    //  In any case, the location changed, so let all observers know.
-    this.signal('TP.sig.LocationChanged', decodedVal);
+    this.signal('TP.sig.LocationChanged',
+        this.getNativeWindow().location.toString());
 
     return this;
 });
@@ -6469,21 +6518,71 @@ function(anEvent) {
 TP.core.History.Type.defineMethod('onpopstate',
 function(anEvent) {
 
-    //  The popstate and hashchange handlers can both signal depending on where
-    //  the change took place. We only want to process one. The easy way is to
-    //  just check to see if we're being asked to handle the same location as
-    //  the last one we did.
+    /**
+     * @method onpopstate
+     * @summary A native browser-level event handler that is called when the
+     *     user has changed the top-level window URL through back(), forward(),
+     *     or go() calls.
+     * @param {Event} anEvent The native event that caused this handler to trip.
+     * @returns {TP.core.History} The receiver.
+     */
 
+    if (TP.sys.cfg('uri.routing.trigger') !== 'popstate') {
+        return this;
+    }
 
-    this.signal('TP.sig.LocationChanged', top.location.toString());
+    this.updateIndex(anEvent);
+
+    this.signal('TP.sig.LocationChanged',
+        this.getNativeWindow().location.toString());
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
+TP.core.History.Type.defineMethod('pushLocation',
+function(aURL) {
+
+    /**
+     * @method pushLocation
+     * @summary Pushes a new URL onto the history stack using the native
+     *     pushState operation while keeping a local version of the stack.
+     * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @returns {TP.core.History} The receiver.
+     */
+
+    return this.pushState({}, '', aURL);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('pushState',
+function(stateObj, title, aURL) {
+
+    /**
+     * @method pushState
+     * @summary Replaces the current location of the browser and sets it to an
+     *     encoded version of the supplied history value.
+     * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @returns {TP.core.History} The receiver.
+     */
+
+    var url;
+
+    url = TP.str(aURL);
+
+    this.set('index', this.get('index') + 1);
+    this.get('history').push(url);
+
+    //  TODO: do we want to do some simulation of this if not implemented?
+    return this.getNativeWindow().history.pushState(stateObj, title, url);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.History.Type.defineMethod('replaceLocation',
-function(histValue) {
+function(aURL) {
 
     /**
      * @method replaceLocation
@@ -6493,71 +6592,100 @@ function(histValue) {
      * @returns {TP.core.History} The receiver.
      */
 
-    return TP.todo();
+    return this.replaceState({}, '', aURL);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.History.Type.defineMethod('setLocation',
-function(histValue) {
+TP.core.History.Type.defineMethod('replaceState',
+function(stateObj, title, aURL) {
 
     /**
-     * @method setLocation
-     * @summary Sets the current location of the browser to an encoded version
-     *     of the supplied history value.
+     * @method replaceLocation
+     * @summary Replaces the current location of the browser and sets it to an
+     *     encoded version of the supplied history value.
      * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
      * @returns {TP.core.History} The receiver.
      */
 
-    var encodedVal,
+    var url;
 
-        histIndex,
+    url = TP.str(aURL);
 
-        currentHashVal;
+    this.get('history').pop();
+    this.get('history').push(url);
 
-    if (TP.isEmpty(histValue)) {
-        return this.raise('TP.sig.InvalidURI');
+    //  TODO: do we want to do some simulation of this if not implemented?
+    return this.getNativeWindow().history.replaceState(stateObj, title, url);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('setIndex',
+function(anIndex) {
+
+    /**
+     * @method setIndex
+     * @summary Updates the receiver's internal history index to a new offset.
+     * @raises {TP.sig.InvalidParameter} If index in not a number.
+     * @raises {TP.sig.InvalidIndex} If index would be out of range.
+     */
+
+    if (!TP.isNumber(anIndex)) {
+        return this.raise('InvalidParameter');
     }
 
-    encodedVal = TP.btoa(histValue.asString());
+    if (anIndex < 0 || (anIndex > this.getSize() - 1)) {
+        return this.raise('InvalidIndex');
+    }
 
-    //  If the encoded value is the same as the value at our current index,
-    //  we just return here - we're probably being called because one of our
-    //  handlers for TP.sig.LocationChanged is setting the content of the
-    //  URI and sending us back the same URI.
-    if (encodedVal === this.get('historyList').at(this.get('historyIndex'))) {
+    this.$set('index', anIndex);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('updateIndex',
+function(anEvent) {
+
+    /**
+     * @method updateIndex
+     * @summary Updates the current history index by comparing data for the
+     *     current location with known history entries.
+     * @param {Event} anEvent The hashchange or popstate event triggering this
+     *     update request.
+     * @returns {Number} The new index.
+     */
+
+    var last,
+        next,
+        current;
+
+    //  Ensure it's for the window we're watching.
+    if (!anEvent || anEvent.target !== this.getNativeWindow()) {
         return this;
     }
 
-    histIndex = this.get('historyIndex');
+    //  Capture the entries ahead and behind for comparison.
+    last = this.getLastLocation();
+    next = this.getNextLocation();
+    current = this.getNativeWindow().location.toString();
 
-    this.set('historyList',
-                this.get('historyList').slice(0, histIndex + 1));
-
-    this.get('historyList').add(encodedVal);
-
-    //  note that we point to the current entry, which should be visible
-    this.set('historyIndex', histIndex + 1);
-
-    //  We only set this flag if the hash isn't already the encoded
-    //  value (sometimes we're called as part of the hash changing, in
-    //  which case it already has - we don't want to set this flag
-    //  because onhashchange() will not be called to reset it and we'll
-    //  be out of sync for the next time the hash changes).
-
-    currentHashVal = top.location.hash;
-    if (currentHashVal.startsWith('#')) {
-        currentHashVal = currentHashVal.slice(1);
+    //  Adjust based on what URL we're shifting to (if we recognize it).
+    if (current === last) {
+        //  Obscure, but just in case...
+        if (current === next) {
+            TP.warn('Ambiguous history change. Defaulting to back().');
+        }
+        this.set('index', this.get('index') - 1);
+    } else if (current === next) {
+        this.set('index', this.get('index') - 1);
+    } else {
+        //  Never seen it...must be forward.
+        this.get('history').push(current);
+        this.set('index', this.get('index') + 1);
     }
 
-    if (currentHashVal !== encodedVal) {
-        this.set('addingHistory', true);
-    }
-
-    // TODO: revisit this in the context of routing and url-to-hash mapping.
-    //top.location.hash = encodedVal;
-
-    return this;
+    return this.get('index');
 });
 
 //  ------------------------------------------------------------------------

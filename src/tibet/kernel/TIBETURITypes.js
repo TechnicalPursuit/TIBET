@@ -1989,7 +1989,7 @@ function(anAspect, anAction, aDescription) {
     if (TP.isEmpty(subURIs = this.getSubURIs())) {
 
         desc = TP.isValid(aDescription) ? aDescription : TP.hc();
-        desc.atPutIfAbsent('path', this.getFragmentText());
+        desc.atPutIfAbsent('path', this.getFragmentExpr());
         desc.atPutIfAbsent('target', primaryResource);
 
         return this.callNextMethod(anAspect, anAction, desc);
@@ -2003,7 +2003,7 @@ function(anAspect, anAction, aDescription) {
                             'aspect', 'value',
                             'facet', 'value',
                             'target', primaryResource,
-                            'path', subURIs.at(i).getFragmentText()
+                            'path', subURIs.at(i).getFragmentExpr()
                             );
 
             //  Note here how we signal TP.sig.StructureChange. This is
@@ -2424,11 +2424,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getFragmentText',
+TP.core.URI.Inst.defineMethod('getFragmentExpr',
 function() {
 
     /**
-     * @method getFragmentText
+     * @method getFragmentExpr
      * @summary Returns the fragment text of the receiver as a String without
      *     the fragment scheme portion.
      * @returns {String} The fragment string.
@@ -2450,6 +2450,98 @@ function() {
     }
 
     return '';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getFragmentParameters',
+function() {
+
+    /**
+     * @method getFragmentParameters
+     * @summary Returns any "parameters" from the receiver's fragment string.
+     *     The parameter set is derived by treating a fragment as a potential
+     *     URI and processing it using normal parsing based on ?, &, and =.
+     * @returns {TP.lang.Hash} The fragment parameters if any.
+     */
+
+    var text,
+        hash,
+        params;
+
+    text = this.getFragment();
+    hash = TP.hc();
+
+    //  don't bother if fragment is a pointer of some kind.
+    if (TP.regex.ANY_POINTER.test(text)) {
+        return hash;
+    }
+
+    if (!/\?/.test(text)) {
+        return hash;
+    }
+
+    params = text.slice(text.indexOf('?') + 1);
+    params = params.split('&');
+    params.forEach(function(item) {
+        var parts,
+            key,
+            value;
+
+        if (/\=/.test(item)) {
+            parts = item.split('=');
+            key = parts[0];
+            value = parts[1];
+
+            //  Strip any external quoting off value.
+            if (value.length > 1 &&
+                    (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
+                value = value.slice(1, -1);
+            }
+        } else {
+            key = item;
+            value = true;
+        }
+
+        hash.atPut(key, TP.boot.$getArgumentPrimitive(value));
+    });
+
+    return hash;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getFragmentPath',
+function() {
+
+    /**
+     * @method getFragmentPath
+     * @summary Returns any "path portion" of a fragment string. The path
+     *     portion is based on treating a fragment as a potential URI itself and
+     *     processing it using normal parsing for path vs. parameter data. Note
+     *     that the path value is always prefixed with a '/' for consistency
+     *     with base URL path values.
+     * @returns {String} The fragment path if any.
+     */
+
+    var text;
+
+    text = this.getFragment();
+
+    //  don't confuse xpointer prefix with path content.
+    if (TP.regex.ANY_POINTER.test(text)) {
+        return;
+    }
+
+    if (/\?/.test(text)) {
+        text = text.slice(0, text.indexOf('?'));
+    }
+
+    if (text.charAt(0) !== '/') {
+        text = '/' + text;
+    }
+
+    return text;
 });
 
 //  ------------------------------------------------------------------------
@@ -3066,7 +3158,7 @@ function(aSignal) {
 
             for (i = 0; i < subURIs.getSize(); i++) {
 
-                fragText = subURIs.at(i).getFragmentText();
+                fragText = subURIs.at(i).getFragmentExpr();
 
                 //  If the fragment without the 'pointer indicator' matches the
                 //  path, then signal from the subURI. Note here that we just
@@ -3107,7 +3199,7 @@ function(aSignal) {
                 primaryAspect = aSignal.at('aspect');
                 aSignal.atPut('aspect', 'value');
 
-                aSignal.atPut('path', subURIs.at(i).getFragmentText());
+                aSignal.atPut('path', subURIs.at(i).getFragmentExpr());
 
                 aSignal.atPut('target', resource);
 
@@ -3522,7 +3614,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     //  we'll use the fragment text instead.
     if (!this.isPrimaryURI()) {
         this.getPrimaryURI().getResource().set(
-                    this.getFragmentText(), facetValue);
+                    this.getFragmentExpr(), facetValue);
     } else {
         this.getResource().set(aspectName, facetValue);
     }
@@ -4591,7 +4683,7 @@ function(aResource, aRequest) {
         //  definitely changed).
         for (i = 0; i < subURIs.getSize(); i++) {
 
-            fragText = subURIs.at(i).getFragmentText();
+            fragText = subURIs.at(i).getFragmentExpr();
 
             //  The 'action' here is TP.DELETE, since the entire resource got
             //  changed. This very well may mean structural changes occurred and

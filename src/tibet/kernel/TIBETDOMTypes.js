@@ -5415,7 +5415,7 @@ function(newContent, aRequest) {
                 TP.documentSetTitleContent(document, docTitle);
 
                 if (TP.notEmpty(docURI = request.at('uri'))) {
-                    TP.core.History.setLocation(docURI, win);
+                    TP.core.History.pushLocation(docURI);
                 }
             }
         };

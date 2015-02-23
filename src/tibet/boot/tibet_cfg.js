@@ -1506,8 +1506,8 @@ TP.sys.setcfg('uri.mapper', 'TP.core.URIMapper');
 //  the default type used to handle URI routing decisions.
 TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
 
-//  which portion of the url will trigger routing, fragment or base.
-TP.sys.setcfg('uri.routes', 'fragment');
+//  are we routing on hashchange or popstate?
+TP.sys.setcfg('uri.routing.trigger', 'hashchange');
 
 //  ---
 //  xpath/xslt

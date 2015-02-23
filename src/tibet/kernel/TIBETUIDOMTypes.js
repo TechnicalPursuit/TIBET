@@ -123,7 +123,7 @@ function(aDocument) {
     // and setContent methods when those alter either the theme or the UICANVAS
     // document body.
 
-    themeName = TP.sys.getApplication().getCurrentTheme();
+    themeName = TP.sys.getApplication().getTheme();
     if (TP.notEmpty(themeName)) {
 
         themeID = ourID + '_' + themeName;
@@ -288,7 +288,7 @@ function(mimeType) {
                             'Must supply a valid TP.ietf.Mime reference.');
     }
 
-    themeName = TP.sys.getApplication().getCurrentTheme();
+    themeName = TP.sys.getApplication().getTheme();
     if (TP.isEmpty(themeName)) {
         return;
     }

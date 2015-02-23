@@ -1525,7 +1525,7 @@ function(aURL, wantsHistoryEntry, onloadFunction) {
             TP.windowSetupFocusHandlers(theWindow);
 
             if (TP.notFalse(wantsHistoryEntry)) {
-                TP.core.History.setLocation(aURL);
+                TP.core.History.pushLocation(aURL);
             }
         });
 

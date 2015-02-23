@@ -2787,15 +2787,15 @@ function() {
         jsonURI2.setResource('goo');
 
         //  The value path results should have the path for jsonURI2
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
 
         //  The structure path results should have the path for jsonURI2
-        test.assert.contains(structurePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  But *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -2809,23 +2809,23 @@ function() {
         jsonURI3.setResource(TP.ac());
 
         //  The value path results should have the path for jsonURI3
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
 
         //  The structure path results should have the path for jsonURI3
-        test.assert.contains(structurePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
         //  And the value path results for jsonURI2 (because and we replaced the
         //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
 
         //  But not the structure path results for jsonURI2 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentText());
+        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -2842,31 +2842,31 @@ function() {
         jsonURI5.setResource(42);
 
         //  The value path results should have the path for jsonURI5
-        test.assert.contains(valuePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI5
-        test.assert.contains(structurePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI5.getFragmentExpr());
 
         //  And *not* for jsonURI4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI4.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI4.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
         //  The value path results should have the path for jsonURI3
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI3
-        test.assert.contains(structurePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
         //  And *not* for jsonURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI2.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -2880,44 +2880,44 @@ function() {
         jsonURI6.setResource('fluffy');
 
         //  The value path results should have the path for jsonURI6
-        test.assert.contains(valuePathResults, jsonURI6.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI6 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI6.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI6.getFragmentExpr());
 
         //  And for jsonURI5 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI5 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI5.getFragmentExpr());
 
         //  And for jsonURI4 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI4.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI4 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI4.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
         //  And for jsonURI3 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI3 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
         //  And for jsonURI2 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI2 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -2931,40 +2931,40 @@ function() {
         jsonURI7.setResource(TP.ac());
 
         //  The value path results should have the path for jsonURI7
-        test.assert.contains(valuePathResults, jsonURI7.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI7.getFragmentExpr());
 
         //  And the structure path results should have the path for jsonURI7
-        test.assert.contains(structurePathResults, jsonURI7.getFragmentText());
+        test.assert.contains(structurePathResults, jsonURI7.getFragmentExpr());
 
         //  But *not* for jsonURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI6.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI6.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI6.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
 
         //  And *not* for jsonURI5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI5.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI5.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI5.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
 
         //  And *not* for jsonURI4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI4.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI4.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
         //  And *not* for jsonURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI3.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI3.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
         //  And *not* for jsonURI2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI2.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentText());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -2995,37 +2995,37 @@ function() {
 
         //  The path has should *not* have the path for jsonURI7 (it's at a
         //  similar level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI7.getFragmentText());
+        this.refute.contains(valuePathResults, jsonURI7.getFragmentExpr());
 
         //  The value path results should have the path for jsonURI6
-        test.assert.contains(valuePathResults, jsonURI6.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI6.getFragmentText());
+        this.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
 
         //  And for jsonURI5
-        test.assert.contains(valuePathResults, jsonURI5.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI5.getFragmentText());
+        this.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
 
         //  And for jsonURI4
-        test.assert.contains(valuePathResults, jsonURI4.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI4.getFragmentText());
+        this.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
         //  And for jsonURI3
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI3.getFragmentText());
+        this.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
         //  And for jsonURI2
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentText());
+        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentText());
+        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 (it's too high up in the chain)
         this.refute.contains(valuePathResults, 'value');
@@ -3101,16 +3101,16 @@ function() {
         xmlURI3.setResource('Shattuck');
 
         //  The value path should have the path for xmlURI3
-        test.assert.contains(valuePathResults, xmlURI3.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
 
         //  But not the structure path results for xmlURI3 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentText());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -3124,16 +3124,16 @@ function() {
         xmlURI4.setResource(false);
 
         //  The value path should have the path for xmlURI4
-        test.assert.contains(valuePathResults, xmlURI4.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI4.getFragmentExpr());
 
         //  But not the structure path results for xmlURI4 (we created no
         //  new structure there).
-        this.refute.contains(structurePathResults, xmlURI4.getFragmentText());
+        this.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -3147,16 +3147,16 @@ function() {
         xmlURI5.setResource(false);
 
         //  The value path should have the path for xmlURI5
-        test.assert.contains(valuePathResults, xmlURI5.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI5.getFragmentExpr());
 
         //  And the structure path results for xmlURI5 (we created new
         //  structure there).
-        test.assert.contains(structurePathResults, xmlURI5.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI5.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -3170,21 +3170,21 @@ function() {
         xmlURI6.setResource('Scott');
 
         //  The value path should have the path for xmlURI6
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
 
         //  And the structure path results for xmlURI6 (we created new
         //  structure there).
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -3198,25 +3198,25 @@ function() {
         xmlURI7.setResource('555-55-5555');
 
         //  The value path should have the path for xmlURI7
-        test.assert.contains(valuePathResults, xmlURI7.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
 
         //  And the structure path results for xmlURI7 (we created new
         //  structure there).
-        test.assert.contains(structurePathResults, xmlURI7.getFragmentText());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
 
         //  But *not* for xmlURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI6.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI6.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
 
         //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
         //  a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -3232,20 +3232,20 @@ function() {
         //  All paths will have changed
 
         //  Both results should have the path for xmlURI7
-        test.assert.contains(valuePathResults, xmlURI7.getFragmentText());
-        test.assert.contains(structurePathResults, xmlURI7.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
 
         //  And for xmlURI6 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentText());
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
 
         //  And for xmlURI3 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, xmlURI3.getFragmentText());
-        test.assert.contains(structurePathResults, xmlURI3.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And for xmlURI2 (because it's the same path as xmlURI2)
-        test.assert.contains(valuePathResults, xmlURI2.getFragmentText());
-        test.assert.contains(structurePathResults, xmlURI2.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
@@ -3262,28 +3262,28 @@ function() {
 
         //  Both results should have the path for xmlURI8 (it's for all
         //  elements)
-        test.assert.contains(valuePathResults, xmlURI8.getFragmentText());
-        test.assert.contains(structurePathResults, xmlURI8.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
 
         //  But *not* for xmlURI7 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI7.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI7.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
 
         //  Both results should have the path for xmlURI6 (we created new
         //  structure there).
-        test.assert.contains(valuePathResults, xmlURI6.getFragmentText());
-        test.assert.contains(structurePathResults, xmlURI6.getFragmentText());
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentText());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentText());
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         valuePathResults.empty();
         structurePathResults.empty();
