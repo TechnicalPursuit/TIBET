@@ -7510,11 +7510,13 @@ function(aspectName, facetName) {
         val;
 
     //  First, make sure that the aspect has a facet named by the facetName. If
-    //  not, just return null
+    //  not, just return *undefined*. The reason we return undefined here is so
+    //  that the value will be exactly the same as when there is no facet for
+    //  the aspect at all.
     if (TP.notValid(facetSetting = this.getType().getInstFacetSettingFor(
                                                     aspectName,
                                                     facetName))) {
-        return null;
+        return;
     }
 
     //  We compute the facet value differently depending on whether we're
