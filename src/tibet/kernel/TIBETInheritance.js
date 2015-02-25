@@ -7483,6 +7483,40 @@ function(anAspect, aFacet, aDescription) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Inst.defineMethod('getFacet',
+function(aspectName, facetName) {
+
+    /**
+     * @method getFacet
+     * @summary Gets the value of the named facet of the named aspect. Note that
+     *     this method also creates the private facet tracking slot to hold the
+     *     current value of the facet if it wasn't already created.
+     * @param {String} aspectName The name of the aspect to get.
+     * @param {String} facetName The name of the facet to get.
+     * @returns {Object} The value of the facet of the aspect.
+     */
+
+    var facetValue,
+        facetSlotName;
+
+    //  Get the current value of the aspect/facet pair.
+    facetValue = this.getFacetValueFor(aspectName, facetName);
+
+    //  The private facet tracking facet slot name will always be something like
+    //  '$SSN_required'.
+    facetSlotName = '$' + aspectName + '_' + facetName;
+
+    //  If there was a valid value, but it didn't have a private facet tracking
+    //  slot, then call *$set()* to set it (this will create the slot as well).
+    if (TP.isValid(facetValue) && TP.notDefined(this[facetSlotName])) {
+        this.$setFacet(aspectName, facetName, facetValue, false);
+    }
+
+    return facetValue;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('getFacetValueFor',
 function(aspectName, facetName) {
 
