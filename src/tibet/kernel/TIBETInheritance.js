@@ -7636,7 +7636,10 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     //  Grab the current value of the internal slot and compare it to the
     //  supplied value. Only go through the act of setting it and signaling a
     //  change if they're different.
-    currentFacetVal = this.get(facetSlotName);
+
+    //  NB: Make sure to use $get() here. Otherwise, we end up doing path
+    //  lookups, etc. for private facet slot values.
+    currentFacetVal = this.$get(facetSlotName);
     if (currentFacetVal !== facetValue) {
 
         //  If the internal slot is not defined on the receiver, define it.
