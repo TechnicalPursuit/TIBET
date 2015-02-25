@@ -4677,6 +4677,29 @@ function(aResource, aRequest) {
 
     if (TP.notEmpty(subURIs)) {
 
+        //  The 'action' here is TP.DELETE, since the entire resource got
+        //  changed. This very well may mean structural changes occurred and
+        //  the resource that the subURI pointed to doesn't even exist anymore.
+
+        //  The 'aspect' here is 'value' - because the 'entire value' of the
+        //  subURI itself has changed. We also include a 'path' for convenience,
+        //  so that observers can use that against the primary URI to obtain
+        //  this URI's value, if they wish.
+
+        //  The 'target' here is computed by running the fragment against
+        //  the resource.
+        description = TP.hc(
+                'action', TP.DELETE,
+                'aspect', 'value',
+                'facet', 'value',
+                'target', aResource,
+
+                //  NB: We supply the old resource and the fragment text
+                //  here for ease of obtaining values.
+                'oldTarget', resource,
+                'path', fragText
+                );
+
         //  If we have sub URIs, then observers of them will be expecting to get
         //  a TP.sig.StructureChange with 'value' as the aspect that changed (we
         //  swapped out the entire resource, so the values of those will have
@@ -4685,27 +4708,7 @@ function(aResource, aRequest) {
 
             fragText = subURIs.at(i).getFragmentExpr();
 
-            //  The 'action' here is TP.DELETE, since the entire resource got
-            //  changed. This very well may mean structural changes occurred and
-            //  the resource that the subURI pointed to doesn't even exist
-            //  anymore.
-            //  The 'aspect' here is 'value' - because the 'entire value' of the
-            //  subURI itself has changed. We also include a 'path' for
-            //  convenience, so that observers can use that against the primary
-            //  URI to obtain this URI's value, if they wish.
-            //  The 'target' here is computed by running the fragment against
-            //  the resource.
-            description = TP.hc(
-                    'action', TP.DELETE,
-                    'aspect', 'value',
-                    'facet', 'value',
-                    'target', aResource,
-
-                    //  NB: We supply the old resource and the fragment text
-                    //  here for ease of obtaining values.
-                    'oldTarget', resource,
-                    'path', fragText
-                    );
+            description.atPut('path', fragText);
 
             subURIs.at(i).signal(
                     'TP.sig.StructureChange',
@@ -4734,12 +4737,15 @@ function(aResource, aRequest) {
         //  If we don't have subURIs, we invoke the standard 'changed' mechanism
         //  (which signals 'TP.sig.ValueChange' from ourself). Note here that we
         //  invoke '$changed()' since, by default, we do *not* signal change (we
-        //  don't signal change for our 'properties' since we don't want
-        //  observers to get notified about all of that).
+        //  don't signal change for our 'properties' (i.e. hash, URL, params,
+        //  etc.) since we don't want observers to get notified about all of
+        //  that).
         this.$changed('value',
                         TP.UPDATE,
-                        TP.hc('target', aResource, 'oldTarget', resource,
-                                TP.OLDVAL, resource, TP.NEWVAL, aResource));
+                        TP.hc('target', aResource,
+                                'oldTarget', resource,
+                                TP.OLDVAL, resource,
+                                TP.NEWVAL, aResource));
     }
 
     return this;
