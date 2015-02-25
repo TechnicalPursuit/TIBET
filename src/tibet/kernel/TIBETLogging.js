@@ -3269,7 +3269,10 @@ function(anEntry) {
             str += TP.str(item);
             str += ' ';
         });
-        str = str.trim() + '.';
+        str = str.trim();
+        if (str.charAt(str.length - 1) !== '.') {
+            str += '.';
+        }
     }
 
     return str;
