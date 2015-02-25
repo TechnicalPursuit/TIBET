@@ -8643,16 +8643,16 @@ TP.lang.Object.defineSubtype('core.URIRouter');
 TP.core.URIRouter.Type.defineAttribute('paths');
 
 /**
- * A list of token patterns used for parsing token values found in routes.
- * @type {TP.lang.Hash}
- */
-TP.core.URIRouter.Type.defineAttribute('patterns');
-
-/**
  * The route name to use for the "Root" or "/" route. Default is 'Home'.
  * @type {String}
  */
 TP.core.URIRouter.Type.defineAttribute('rootName', 'Home');
+
+/**
+ * A list of token patterns used for parsing token values found in routes.
+ * @type {TP.lang.Hash}
+ */
+TP.core.URIRouter.Type.defineAttribute('tokens');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -8666,7 +8666,7 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    this.$set('patterns', TP.hc());
+    this.$set('tokens', TP.hc());
     this.$set('paths', TP.ac());
 
     //  Always need a route to match "anything" as our backstop. If no routes
@@ -8675,7 +8675,7 @@ function() {
 
     //  Define the root pattern route for "empty paths".
     this.definePath(/^\/$/, function() {
-        return this.get('rootName');
+        return TP.ac(this.get('rootName'), TP.ac());
     }.bind(this));
 
     return;
@@ -8725,11 +8725,11 @@ function(pattern, processor) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('definePattern',
+TP.core.URIRouter.Type.defineMethod('defineToken',
 function(token, pattern) {
 
     /**
-     * @method definePattern
+     * @method defineToken
      * @summary Associates a token name with a pattern used to match the value
      *     for that token.
      * @param {String} token The name of the token being described.
@@ -8744,7 +8744,7 @@ function(token, pattern) {
         this.raise('InvalidPattern', pattern);
     }
 
-    this.get('patterns').atPut(token, pattern);
+    this.get('tokens').atPut(token, pattern);
 
     return this;
 });
@@ -8760,7 +8760,7 @@ function(path) {
      *     If the path matches a route pattern that route's processor function
      *     is invoked to convert the path into a signal name/payload pair.
      * @param {String} path The URL path segment to process.
-     * @return {Array[String, TP.core.Hash]} The signal name/payload pair.
+     * @returns {Array[String, TP.core.Hash]} The signal name/payload pair.
      */
 
     var paths,
@@ -8801,13 +8801,13 @@ function(pattern) {
      *     for use in route matching and returns the pattern and a list of token
      *     names to assign to matched positions.
      * @param {String|RegExp} pattern The pattern to process.
-     * @return {Array} An array containing the pattern and zero or more string
+     * @returns {Array} An array containing the pattern and zero or more string
      *     names for embedded token values being matched.
      */
 
     var str,
         parts,
-        patterns,
+        tokens,
         names;
 
     if (TP.isRegExp(pattern)) {
@@ -8818,7 +8818,7 @@ function(pattern) {
         this.raise('InvalidParameter', pattern);
     }
 
-    patterns = this.get('patterns');
+    tokens = this.get('tokens');
     names = TP.hc();
 
     str = pattern.slice(1);
@@ -8831,7 +8831,7 @@ function(pattern) {
         //  Check for a token pattern of this name.
         if (item.charAt(0) === ':') {
             names.atPut(index, item.slice(1));
-            pattern = patterns.at(item.slice(1));
+            pattern = tokens.at(item.slice(1));
             if (TP.isValid(pattern)) {
                 str = TP.str(pattern);
                 return '(' + str.slice(1, str.lastIndexOf('/') + ')');
@@ -8905,33 +8905,70 @@ TP.core.URIRouter.Type.defineMethod('route',
 function(aURI, aRequest) {
 
     var url,
+        direction,
+        last,
+        lastUrl,
+        lastPath,
         trigger,
         path,
         routes,
-        result;
+        result,
+        signal;
 
-    TP.info('routing: ' + aURI);
+    //  The direction of change determines whether we compare our URL to the
+    //  "next" or "last" URL in the history list to see if it really changed the
+    //  routable portion or not.
+    direction = TP.sys.getHistory().get('direction');
+    if (direction === 'back') {
+        last = TP.sys.getHistory().getNextLocation();
+    } else if (direction === 'forward') {
+        last = TP.sys.getHistory().getLastLocation();
+    }
+
+    if (last === aURI) {
+        return;
+    }
 
     url = TP.uc(aURI);
-
     if (TP.notValid(url)) {
         return this.raise('InvalidURI', aURI);
     }
+
+    lastUrl = TP.uc(last);
 
     trigger = TP.sys.cfg('uri.routing.trigger');
     switch (trigger) {
         case 'popstate':
             path = url.getPath();
+            lastPath = TP.isValid(lastUrl) ? lastUrl.getPath() : '';
             break;
         default:
             path = url.getFragmentPath();
+            lastPath = TP.isValid(lastUrl) ? lastUrl.getFragmentPath() : '';
             break;
     }
 
-    result = this.processPath(path);
+    //  Is this a routable change?
+    if (path === lastPath) {
+        //  Likely a parameter change since path didn't shift. If the boot
+        //  parameters did change then we'll request a restart.
+        this.signal('BootConfigChange', url.getFragmentParameters());
+    } else {
+        //  Routable path change. In this case we ignore boot param shifts since
+        //  that could simply be failure to duplicate them during pushState.
+        result = this.processPath(path);
 
-    TP.info('signaling: ' + TP.str(result.at(0)) + ' with: ' +
-        TP.str(result.at(1)));
+        signal = TP.sig.RouteChange.construct(TP.str(result.at(1)));
+        signal.setOrigin(TP.sys.getHistory().getNativeWindow());
+        signal.setSignalName(TP.str(result.at(0)));
+
+        if (TP.sys.cfg('log.routes')) {
+            TP.info('route change: ' + signal.getSignalName() + ' with: ' +
+                TP.str(signal.getPayload() || '{}'));
+        }
+
+        signal.fire();
+    }
 });
 
 //  ========================================================================

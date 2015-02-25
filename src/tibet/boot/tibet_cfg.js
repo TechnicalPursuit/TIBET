@@ -1018,6 +1018,9 @@ TP.sys.setcfg('log.dom_loaded_signals', false);
 //  output?
 TP.sys.setcfg('log.errors', true);
 
+//  should we log history changes?
+TP.sys.setcfg('log.history', true);
+
 //  should the inferencer log its activity?
 TP.sys.setcfg('log.inferences', false);
 
@@ -1065,6 +1068,9 @@ TP.sys.setcfg('log.raise', true);
 //  should request-related signals be logged? normally not since there are
 //  quite a few of them. this is primarily a debugging flag for internal use
 TP.sys.setcfg('log.request_signals', false);
+
+//  should we log route (url path) changes?
+TP.sys.setcfg('log.routes', true);
 
 //  should scans of object properties be logged/warned?
 TP.sys.setcfg('log.scans', false);
@@ -1505,6 +1511,9 @@ TP.sys.setcfg('uri.mapper', 'TP.core.URIMapper');
 
 //  the default type used to handle URI routing decisions.
 TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
+
+//  should we try to route any initial path content on startup?
+TP.sys.setcfg('uri.routing.onstart', true);
 
 //  are we routing on hashchange or popstate?
 TP.sys.setcfg('uri.routing.trigger', 'hashchange');
