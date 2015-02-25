@@ -328,7 +328,9 @@ function(attributeName, attributeValue, shouldSignal) {
 
     retVal = this.callNextMethod();
 
-    this.checkFacets(attributeName);
+    if (attributeName !== 'data') {
+        this.checkFacets(attributeName);
+    }
 
     return retVal;
 });
