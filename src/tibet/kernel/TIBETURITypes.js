@@ -4715,6 +4715,8 @@ function(aResource, aRequest) {
             subURIs.at(i).signal(
                     'TP.sig.StructureChange',
                     description);
+
+            aResource.checkFacets(fragText);
         }
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
