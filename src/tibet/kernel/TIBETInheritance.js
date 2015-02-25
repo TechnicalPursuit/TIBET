@@ -7369,6 +7369,24 @@ function(attributeName, includeSupertypes) {
 //  Attribute Facets
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Inst.defineMethod('checkAllFacetsOfAllAspects',
+function() {
+
+    /**
+     * @method checkAllFacetsOfAllAspects
+     * @summary Check all of the facets of all of the aspects of the receiver.
+     *     If the facet values of the aspects are different, a facet change will
+     *     be signaled for that facet of that aspect.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    this.checkFacets(this.getValidatingAspectNames());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('checkFacets',
 function(aspectNames, facetList) {
 
