@@ -1998,13 +1998,15 @@ function(anAspect, anAction, aDescription) {
         //  Otherwise, this is a primary URI and we need to send change
         //  notifications from all of it's subURIs, if it has any.
 
+        subDesc = TP.hc('action', anAction,
+                        'aspect', 'value',
+                        'facet', 'value',
+                        'target', primaryResource
+                        );
+
         for (i = 0; i < subURIs.getSize(); i++) {
-            subDesc = TP.hc('action', anAction,
-                            'aspect', 'value',
-                            'facet', 'value',
-                            'target', primaryResource,
-                            'path', subURIs.at(i).getFragmentExpr()
-                            );
+
+            subDesc.atPut('path', subURIs.at(i).getFragmentExpr());
 
             //  Note here how we signal TP.sig.StructureChange. This is
             //  because the whole value of the primary URI has changed so,
