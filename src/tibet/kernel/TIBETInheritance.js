@@ -7387,6 +7387,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.defineCommonMethod('checkFacets',
+function(aspectNames, facetList) {
+
+    /**
+     * @method checkFacets
+     * @summary Checks the facets of the supplied aspect on the receiver
+     *     according to the list of facets supplied (or TP.FACET_NAMES if one
+     *     isn't supplied). If a valid facet value can be computed for a
+     *     particular aspect, that facet value is set for that aspect.
+     * @description At this level, this method simply returns.
+     * @param {String|Array} aspectNames The name of the aspect to check the
+     *     facets for.
+     * @param {Array} facetList The list of facets to check. This is an optional
+     *     parameter.
+     * @returns {Object} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('checkFacets',
 function(aspectNames, facetList) {
 
