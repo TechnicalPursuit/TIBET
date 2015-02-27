@@ -2495,177 +2495,183 @@ function(aResource) {
 
     //  If we've already built all of the repeating elements, we can just rebind
     //  the individual elements here.
-    if (elemChildElements.getSize() ===
+    if (elemChildElements.getSize() !==
         repeatChildElements.getSize() * totalDisplaySize) {
 
-        //  We subtract 1 from the startIndex because the first time through the
-        //  loop below, when the mod succeeds, it will kick it by 1.
-        scopeNum = startIndex - 1;
+        //  Empty out whatever content we used to have.
+        this.empty();
 
-        //  This expression gets all of the child descendants that have a
-        //  'bind:scope' attribute on them, but *not* if they're under an
-        //  element that has a 'bind:repeat' - we're only interested in our
-        //  descendants, not any nested repeat's descendants.
-        scopedDescendants = TP.byCSS(
-            '> *[bind|scope], *:not(*[bind|repeat]) *[bind|scope]',
-            this.getNativeNode());
+        bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
 
-        //  The grouping size is the number of *scoped* descendants we have
-        //  divided by the totalDisplaySize.
-        groupSize = scopedDescendants.getSize() / totalDisplaySize;
+        //  Iterate over the resource and build out a chunk of markup for each
+        //  item in the resource.
+        for (i = startIndex; i < endIndex; i++) {
 
-        boundCount = 0;
+            //  Make sure to clone the content.
+            newNode = TP.nodeCloneNode(repeatContent);
 
-        for (i = 0; i < elemChildElements.getSize(); i++) {
-            childTPElem = TP.wrap(elemChildElements.at(i));
-
-            //  Obviously, only rebind if the child is a bound element.
-            if (childTPElem.isBoundElement()) {
-
-                //  If we've reached our group size, kick the scope number once.
-                if (boundCount % groupSize === 0) {
-                    scopeNum++;
-                }
-
-                //  Have the child destroy it's current bindings (before we
-                //  change its scope).
-                childTPElem.rebuild(
-                        TP.hc('shouldDefine', false, 'shouldDestroy', true));
-
-                //  Have to adjust for the fact that XPaths are 1-based.
-                if (isXMLResource) {
-                    childTPElem.setAttribute(
-                                    'bind:scope', '[' + (scopeNum + 1) + ']');
-                } else {
-                    childTPElem.setAttribute(
-                                    'bind:scope', '[' + scopeNum + ']');
-                }
-
-                //  Have the child define it's bindings now that its scope has
-                //  been changed.
-                childTPElem.rebuild(
-                        TP.hc('shouldDefine', true, 'shouldDestroy', false));
-
-                //  Bubble any xmlns attributes upward to avoid markup clutter.
-                TP.elementBubbleXMLNSAttributes(elemChildElements.at(i));
-
-                boundCount++;
+            //  If the resource is XML, then we need to adjust the index (XPaths
+            //  are 1-based).
+            if (isXMLResource) {
+                index = i + 1;
+            } else {
+                index = i;
             }
+
+            //  If there are elements inside of the new chunk we're building
+            //  that have 'ids', we need to adjust them.
+            //  TODO: We might not want to do this - it's presumptuous.
+            elemsWithIds = TP.nodeGetDescendantElementsByAttribute(
+                                                            newNode, 'id');
+            /* eslint-disable no-loop-func */
+            elemsWithIds.perform(
+                    function(anElem) {
+                        TP.elementSetAttribute(
+                            anElem,
+                            'id',
+                            TP.elementGetAttribute(anElem, 'id') + index);
+                    });
+            /* eslint-enable no-loop-func */
+
+            //  Grab the child *Elements* in the new content (the cloned repeat
+            //  content).
+            newChildElements = TP.nodeGetChildElements(newNode);
+
+            //  Iterate over them and, if they're bound, then add a 'bind:scope'
+            //  to them.
+            for (j = 0; j < newChildElements.getSize(); j++) {
+
+                query = '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '" and ' +
+                            '(' +
+                            ' local-name() = "in"' +
+                            ' or local-name() = "out"' +
+                            ' or local-name() = "io"' +
+                            ' or local-name() = "repeat"' +
+                            ')' +
+                            ']' +
+                        ' or ' +
+                        '@*[contains(., "[[")]';
+
+                //  NB: This returns a Boolean result.
+                isBound = TP.nodeEvaluateXPath(
+                                        newChildElements.at(j),
+                                        query,
+                                        TP.NODESET);
+
+                if (isBound) {
+
+                    //  Make sure the element doesn't already have 'bind:scope'
+                    //  on it.
+                    if (!TP.elementHasAttribute(
+                                newChildElements.at(j), 'bind:scope', true)) {
+                        TP.elementSetAttributeInNS(
+                                        newChildElements.at(j),
+                                        'bind:scope',
+                                        '[' + index + ']',
+                                        TP.w3.Xmlns.BIND);
+                    }
+                }
+            }
+
+            //  Append this new chunk of markup to the document fragment we're
+            //  building up and then loop to the top to do it again.
+            bodyFragment.appendChild(newNode);
         }
 
-        if (boundCount > 0) {
-            this.$triggerRepeatURIChanged();
-        }
+        //  Finally, append the whole fragment under the receiver element
+        TP.nodeAppendChild(elem, bodyFragment, false);
 
-        for (i = 0; i < resourceLength; i++) {
-            vals = scopeVals.concat(
-                        repeatAttrVal,
-                        '[' + (i + startIndex) + ']');
+        //  Bubble any xmlns attributes upward to avoid markup clutter.
+        TP.elementBubbleXMLNSAttributes(elem);
 
-            this.$updateRepeatingTextNodes(
-                    elemChildElements.at(i),
-                    repeatResource.at(i),
-                    vals,
-                    i,
-                    repeatResource);
-        }
-
-        return this;
-    }
-
-    //  Empty out whatever content we used to have.
-    this.empty();
-
-    bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
-
-    //  Iterate over the resource and build out a chunk of markup for each item
-    //  in the resource.
-    for (i = startIndex; i < endIndex; i++) {
-
-        //  Make sure to clone the content.
-        newNode = TP.nodeCloneNode(repeatContent);
-
-        //  If the resource is XML, then we need to adjust the index (XPaths are
-        //  1-based).
-        if (isXMLResource) {
-            index = i + 1;
-        } else {
-            index = i;
-        }
-
-        //  If there are elements inside of the new chunk we're building that
-        //  have 'ids', we need to adjust them.
-        //  TODO: We might not want to do this - it's presumptuous.
-        elemsWithIds = TP.nodeGetDescendantElementsByAttribute(newNode, 'id');
-        /* eslint-disable no-loop-func */
-        elemsWithIds.perform(
-                function(anElem) {
-                    TP.elementSetAttribute(
-                                anElem,
-                                'id',
-                                TP.elementGetAttribute(anElem, 'id') + index);
-                });
-        /* eslint-enable no-loop-func */
-
-        //  Grab the child *Elements* in the new content (the cloned repeat
-        //  content).
-        newChildElements = TP.nodeGetChildElements(newNode);
-
-        //  Iterate over them and, if they're bound, then add a 'bind:scope' to
+        //  Grab all of the elements with a 'bind scope' attribute and rebuild
         //  them.
-        for (j = 0; j < newChildElements.getSize(); j++) {
+        TP.byCSS('[bind|scope]', elem).perform(
+                function(anElem) {
+                    TP.wrap(anElem).rebuild(
+                            TP.hc('shouldDefine', true,
+                                    'shouldDestroy', false,
+                                    'refreshImmediately', true));
+                });
 
-            query = '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '" and ' +
-                        '(' +
-                        ' local-name() = "in"' +
-                        ' or local-name() = "out"' +
-                        ' or local-name() = "io"' +
-                        ' or local-name() = "repeat"' +
-                        ')' +
-                        ']' +
-                    ' or ' +
-                    '@*[contains(., "[[")]';
-
-            //  NB: This returns a Boolean result.
-            isBound = TP.nodeEvaluateXPath(
-                                    newChildElements.at(j),
-                                    query,
-                                    TP.NODESET);
-
-            if (isBound) {
-
-                //  Make sure the element doesn't already have 'bind:scope' on
-                //  it.
-                if (!TP.elementHasAttribute(
-                            newChildElements.at(j), 'bind:scope', true)) {
-                    TP.elementSetAttributeInNS(
-                                    newChildElements.at(j),
-                                    'bind:scope',
-                                    '[' + index + ']',
-                                    TP.w3.Xmlns.BIND);
-                }
-            }
-        }
-
-        //  Append this new chunk of markup to the document fragment we're
-        //  building up and then loop to the top to do it again.
-        bodyFragment.appendChild(newNode);
+        //  Requery for child elements that we can refresh. This should now
+        //  contain all of the child elements that we need.
+        elemChildElements = TP.nodeGetChildElements(elem);
     }
 
-    //  Finally, append the whole fragment under the receiver element
-    TP.nodeAppendChild(elem, bodyFragment, false);
+    //  We subtract 1 from the startIndex because the first time through the
+    //  loop below, when the mod succeeds, it will kick it by 1.
+    scopeNum = startIndex - 1;
 
-    //  Bubble any xmlns attributes upward to avoid markup clutter.
-    TP.elementBubbleXMLNSAttributes(elem);
+    //  This expression gets all of the child descendants that have a
+    //  'bind:scope' attribute on them, but *not* if they're under an
+    //  element that has a 'bind:repeat' - we're only interested in our
+    //  descendants, not any nested repeat's descendants.
+    scopedDescendants = TP.byCSS(
+        '> *[bind|scope], *:not(*[bind|repeat]) *[bind|scope]',
+        this.getNativeNode());
 
-    //  Grab all of the elements with a 'bind scope' attribute and rebuild them.
-    TP.byCSS('[bind|scope]', elem).perform(
-            function(anElem) {
-                TP.wrap(anElem).rebuild(
-                        TP.hc('shouldDefine', true,
-                                'shouldDestroy', false,
-                                'refreshImmediately', true));
-            });
+    //  The grouping size is the number of *scoped* descendants we have
+    //  divided by the totalDisplaySize.
+    groupSize = scopedDescendants.getSize() / totalDisplaySize;
+
+    boundCount = 0;
+
+    for (i = 0; i < elemChildElements.getSize(); i++) {
+        childTPElem = TP.wrap(elemChildElements.at(i));
+
+        //  Obviously, only rebind if the child is a bound element.
+        if (childTPElem.isBoundElement()) {
+
+            //  If we've reached our group size, kick the scope number once.
+            if (boundCount % groupSize === 0) {
+                scopeNum++;
+            }
+
+            //  Have the child destroy it's current bindings (before we
+            //  change its scope).
+            childTPElem.rebuild(
+                    TP.hc('shouldDefine', false, 'shouldDestroy', true));
+
+            //  Have to adjust for the fact that XPaths are 1-based.
+            if (isXMLResource) {
+                childTPElem.setAttribute(
+                                'bind:scope', '[' + (scopeNum + 1) + ']');
+            } else {
+                childTPElem.setAttribute(
+                                'bind:scope', '[' + scopeNum + ']');
+            }
+
+            //  Have the child define it's bindings now that its scope has
+            //  been changed.
+            childTPElem.rebuild(
+                    TP.hc('shouldDefine', true, 'shouldDestroy', false));
+
+            //  Bubble any xmlns attributes upward to avoid markup clutter.
+            TP.elementBubbleXMLNSAttributes(elemChildElements.at(i));
+
+            boundCount++;
+        }
+    }
+
+    if (boundCount > 0) {
+        this.$triggerRepeatURIChanged();
+    }
+
+    for (i = 0; i < resourceLength; i++) {
+        vals = scopeVals.concat(
+                    repeatAttrVal,
+                    '[' + (i + startIndex) + ']');
+
+        this.$updateRepeatingTextNodes(
+                elemChildElements.at(i),
+                repeatResource.at(i),
+                vals,
+                i,
+                repeatResource);
+    }
+
+    return this;
 
     //  TODO: This is a hack - needs cleanup - and this approach leaks.
 
@@ -2700,8 +2706,6 @@ function(aResource) {
         };
     };
 */
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
