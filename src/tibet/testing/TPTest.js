@@ -2018,34 +2018,6 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode, aFaultStack) {
-
-    /**
-     * @method fail
-     * @summary Tells the receiver to fail, meaning it failed due to some form
-     *     of exception. If the receiver has specific behavior to implement it
-     *     should override the failJob() method invoked as part of this method's
-     *     operation.
-     * @param {String} aFaultString A string description of the fault.
-     * @param {Object} aFaultCode A code providing additional information on the
-     *     reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
-     * @returns {TP.core.JobStatus} The receiver.
-     */
-
-    //  We need to set the status code back to TP.ACTIVE here - the test thinks
-    //  it has completed, but if there was an asynchronous callback and it
-    //  failed, then we 'reactivate' the test and fail it.
-    this.set('statusCode', TP.ACTIVE);
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.test.Case.Inst.defineMethod('failJob',
 function(aFaultString, aFaultCode, aFaultStack) {
 
@@ -2100,6 +2072,11 @@ function(aResponse) {
     var req;
 
     req = aResponse.getRequest();
+
+    //  We need to set the status code back to TP.ACTIVE here - the test thinks
+    //  it has completed, but since this is being called from an asynchronous
+    //  callback and it failed, then need to 'reactivate' the test and fail it.
+    this.set('statusCode', TP.ACTIVE);
 
     return this.fail(req.getFaultText(),
                         req.getFaultCode(),
