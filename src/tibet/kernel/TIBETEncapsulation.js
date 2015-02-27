@@ -1086,9 +1086,11 @@ function() {
         case 0:
             return [];
         case 1:
-            // Flatten nodelists and argument lists.
+            // Flatten argument lists, node lists and named node maps.
             arg = arguments[0];
-            if (TP.isArgArray(arg) || TP.isNodeList(arg)) {
+            if (TP.isArgArray(arg) ||
+                TP.isNodeList(arg) ||
+                TP.isNamedNodeMap(arg)) {
                 return TP.ArrayProto.slice.call(arg, 0);
             }
             arr = [];
