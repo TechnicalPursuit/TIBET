@@ -706,6 +706,7 @@ TP.SHOULD_SIGNAL_CHANGE = 'shouldSignalChange';
 TP.SHOULD_SUSPEND_SIGNALING = 'shouldSuspendSignaling';
 TP.WRAPPER = 'wrapper';
 TP.GENERATOR = 'generator';
+TP.IS_XHTML = 'isXHTML';
 
 //  meta owners and their target objects
 

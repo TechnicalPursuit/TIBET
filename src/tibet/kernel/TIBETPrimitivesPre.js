@@ -7968,18 +7968,18 @@ function(anObj) {
 
     //  We may have already been through the test below and captured that
     //  value, so return it if we have.
-    if (TP.isDefined(anObj.isXHTML)) {
-        return !anObj.isXHTML;
+    if (TP.isDefined(anObj[TP.IS_XHTML])) {
+        return !anObj[TP.IS_XHTML];
     }
 
     //  If the document has a contentType then we test for either HTML or XHTML.
     //  Note here how we make the tests explicit - otherwise, we drop down into
     //  more complex logic.
     if (anObj.contentType === TP.HTML_TEXT_ENCODED) {
-        anObj.isXHTML = false;
+        anObj[TP.IS_XHTML] = false;
         return true;
     } else if (anObj.contentType === TP.XHTML_ENCODED) {
-        anObj.isXHTML = true;
+        anObj[TP.IS_XHTML] = true;
         return false;
     }
 
@@ -7990,22 +7990,22 @@ function(anObj) {
 
     //  Sometimes we get a Document that doesn't have a document element
     if (!TP.isElement(anObj.documentElement)) {
-        anObj.isXHTML = false;
+        anObj[TP.IS_XHTML] = false;
         return false;
     }
 
     if (anObj.documentElement.tagName.toLowerCase() !== 'html') {
-        anObj.isXHTML = false;
+        anObj[TP.IS_XHTML] = false;
         return false;
     }
 
     //  Last check is to see if the '.tagName' property preserves case
     //  sensitivity. If it doesn't, then it's HTML not XHTML.
-    anObj.isXHTML = anObj.createElement('foo').tagName === 'FOO' ?
+    anObj[TP.IS_XHTML] = anObj.createElement('foo').tagName === 'FOO' ?
                     false :
                     true;
 
-    return !anObj.isXHTML;
+    return !anObj[TP.IS_XHTML];
 });
 
 //  ------------------------------------------------------------------------
@@ -8400,23 +8400,23 @@ function(anObj) {
 
     //  We may have already been through the test below and captured that
     //  value, so return it if we have.
-    if (TP.isDefined(anObj.isXHTML)) {
-        return anObj.isXHTML;
+    if (TP.isDefined(anObj[TP.IS_XHTML])) {
+        return anObj[TP.IS_XHTML];
     }
 
     //  If the document has a contentType and that contentType is
     //  TP.XHTML_ENCODED, then we know it's HTML
     if (anObj.contentType === TP.XHTML_ENCODED) {
-        anObj.isXHTML = true;
+        anObj[TP.IS_XHTML] = true;
         return true;
     } else if (anObj.contentType === TP.HTML_TEXT_ENCODED) {
-        anObj.isXHTML = false;
+        anObj[TP.IS_XHTML] = false;
         return false;
     }
 
     //  Sometimes we get a Document that doesn't have a document element
     if (!TP.isElement(anObj.documentElement)) {
-        anObj.isXHTML = false;
+        anObj[TP.IS_XHTML] = false;
         return false;
     }
 
@@ -8428,17 +8428,17 @@ function(anObj) {
     }
 
     if (anObj.documentElement.tagName !== 'html') {
-        anObj.isXHTML = false;
+        anObj[TP.IS_XHTML] = false;
         return false;
     }
 
     //  Last check is to see if the '.tagName' property preserves case
     //  sensitivity. If it doesn't, then it's HTML not XHTML.
-    anObj.isXHTML = anObj.createElement('foo').tagName === 'FOO' ?
+    anObj[TP.IS_XHTML] = anObj.createElement('foo').tagName === 'FOO' ?
                     false :
                     true;
 
-    return anObj.isXHTML;
+    return anObj[TP.IS_XHTML];
 });
 
 //  ------------------------------------------------------------------------
