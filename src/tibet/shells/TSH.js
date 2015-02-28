@@ -2356,11 +2356,10 @@ function(aRequest) {
         //  in addition to just error files.
         fileDict.atPut(file, null);
 
-        //  This doesn't mask off all lib code since additions to native types
-        //  won't be caught here.
-        if ((name.startsWith('TP') || name.startsWith('MetaInst')) &&
-                TP.isFalse(checklib)) {
-            return;
+        if (TP.isFalse(checklib)) {
+            if (TP.boot.$uriInTIBETFormat(file).startsWith('~lib')) {
+                return;
+            }
         }
 
         if (TP.notValid(lines)) {
