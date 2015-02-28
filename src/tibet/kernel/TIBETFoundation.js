@@ -4307,7 +4307,9 @@ TP.$changed = function(anAspect, anAction, aDescription) {
 
     var sig,
         asp,
-        desc;
+        desc,
+
+        baseSignalType;
 
     //  If this method is invoked before signaling is ready then exit.
     if (!TP.sys.hasInitialized()) {
@@ -4345,12 +4347,15 @@ TP.$changed = function(anAspect, anAction, aDescription) {
     desc.atPutIfAbsent('facet', 'value');
     desc.atPutIfAbsent('target', this);
 
+    baseSignalType = TP.ifInvalid(desc.at('baseSignalType'),
+                                        TP.sig.ValueChange);
+
     //  Fire the signal. Note that we force the firing policy here. This allows
     //  observers of a generic Change to see 'aspect'Change notifications, even
     //  if those 'aspect'Change signals haven't been defined as being subtypes
     //  of Change (although we also supply 'TP.sig.ValueChange' as the default
     //  signal type here so that undefined aspect signals will use that type).
-    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.ValueChange');
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, baseSignalType);
 
     return this;
 };

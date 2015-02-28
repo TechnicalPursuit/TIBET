@@ -52,7 +52,6 @@
 
     <config ref="bind"/>
     <config ref="ev"/>
-    <config ref="sig"/>
     <config ref="html"/>
 
     <config ref="shell"/>
@@ -137,10 +136,6 @@
 
 <config id="ev">
     <script src="~lib_tst/src/ev/ev_Tests.js" />
-</config>
-
-<config id="sig">
-    <script src="~lib_tst/src/sig/sig_Tests.js" />
 </config>
 
 <config id="html">

@@ -7373,8 +7373,26 @@ function(attributeName, includeSupertypes) {
 //  Attribute Facets
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Inst.defineMethod('checkFacets',
-function(aspectName, facetList) {
+TP.lang.RootObject.Inst.defineMethod('checkAllFacetsOfAllAspects',
+function() {
+
+    /**
+     * @method checkAllFacetsOfAllAspects
+     * @summary Check all of the facets of all of the aspects of the receiver.
+     *     If the facet values of the aspects are different, a facet change will
+     *     be signaled for that facet of that aspect.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    this.checkFacets(this.getValidatingAspectNames());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineCommonMethod('checkFacets',
+function(aspectNames, facetList) {
 
     /**
      * @method checkFacets
@@ -7382,36 +7400,89 @@ function(aspectName, facetList) {
      *     according to the list of facets supplied (or TP.FACET_NAMES if one
      *     isn't supplied). If a valid facet value can be computed for a
      *     particular aspect, that facet value is set for that aspect.
-     * @param {String} aspectName The name of the aspect to check the facets
-     *     for.
+     * @description At this level, this method simply returns.
+     * @param {String|Array} aspectNames The name of the aspect to check the
+     *     facets for.
+     * @param {Array} facetList The list of facets to check. This is an optional
+     *     parameter.
+     * @returns {Object} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('checkFacets',
+function(aspectNames, facetList) {
+
+    /**
+     * @method checkFacets
+     * @summary Checks the facets of the supplied aspect on the receiver
+     *     according to the list of facets supplied (or TP.FACET_NAMES if one
+     *     isn't supplied). If a valid facet value can be computed for a
+     *     particular aspect, that facet value is set for that aspect.
+     * @param {String|Array} aspectNames The name of the aspect to check the
+     *     facets for.
      * @param {Array} facetList The list of facets to check. This is an optional
      *     parameter.
      * @returns {TP.lang.RootObject} The receiver.
      */
 
-    var facets,
+    var aspects,
+        facets,
 
-        len,
+        aspectsLen,
         i,
 
+        facetsLen,
+        j,
+
+        aspectName,
         facetName,
-        result;
+
+        oldVal,
+        newVal;
+
+    if (!TP.isArray(aspects = aspectNames)) {
+        aspects = TP.ac(aspectNames);
+    }
 
     //  Default the set of facets to check to TP.FACET_NAMES, which are the list
     //  of standard facets for all TIBET attributes.
     facets = TP.ifInvalid(facetList, TP.FACET_NAMES);
 
-    len = facets.getSize();
-    for (i = 0; i < len; i++) {
+    aspectsLen = aspects.getSize();
+    facetsLen = facets.getSize();
 
-        facetName = facets.at(i);
+    for (i = 0; i < aspectsLen; i++) {
 
-        //  Grab the facet value (which is different than the facet setting -
-        //  the facet value could be a computed value).
-        if (TP.isValid(result = this.getFacetValueFor(aspectName, facetName))) {
+        aspectName = aspects.at(i);
 
-            //  We got a valid value - set it.
-            this.setFacet(aspectName, facetName, result);
+        for (j = 0; j < facetsLen; j++) {
+
+            facetName = facets.at(j);
+
+            //  Grab the facet value (which is different than the facet setting
+            //  - the facet value could be a computed value).
+
+            //  NOTE: We *must* use getFacetValueFor() here rather than
+            //  getFacet(). This is important because, if the private facet
+            //  tracking slot is undefined and we want to set it for the first
+            //  time, the getFacet() call does that automatically and then when
+            //  we check it below, the values will be equal and 'setFacet()
+            //  won't happen (as it should that first time around).
+            if (TP.isValid(
+                newVal = this.getFacetValueFor(aspectName, facetName))) {
+
+                //  Get any existing value
+                oldVal = this.$get('$' + aspectName + '_' + facetName);
+
+                if (oldVal !== newVal) {
+                    //  We got a valid value - set it.
+                    this.setFacet(aspectName, facetName, newVal);
+                }
+            }
         }
     }
 
@@ -7487,6 +7558,40 @@ function(anAspect, aFacet, aDescription) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Inst.defineMethod('getFacet',
+function(aspectName, facetName) {
+
+    /**
+     * @method getFacet
+     * @summary Gets the value of the named facet of the named aspect. Note that
+     *     this method also creates the private facet tracking slot to hold the
+     *     current value of the facet if it wasn't already created.
+     * @param {String} aspectName The name of the aspect to get.
+     * @param {String} facetName The name of the facet to get.
+     * @returns {Object} The value of the facet of the aspect.
+     */
+
+    var facetValue,
+        facetSlotName;
+
+    //  Get the current value of the aspect/facet pair.
+    facetValue = this.getFacetValueFor(aspectName, facetName);
+
+    //  The private facet tracking facet slot name will always be something like
+    //  '$SSN_required'.
+    facetSlotName = '$' + aspectName + '_' + facetName;
+
+    //  If there was a valid value, but it didn't have a private facet tracking
+    //  slot, then call *$set()* to set it (this will create the slot as well).
+    if (TP.isValid(facetValue) && TP.notDefined(this[facetSlotName])) {
+        this.$setFacet(aspectName, facetName, facetValue, false);
+    }
+
+    return facetValue;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('getFacetValueFor',
 function(aspectName, facetName) {
 
@@ -7514,11 +7619,13 @@ function(aspectName, facetName) {
         val;
 
     //  First, make sure that the aspect has a facet named by the facetName. If
-    //  not, just return null
+    //  not, just return *undefined*. The reason we return undefined here is so
+    //  that the value will be exactly the same as when there is no facet for
+    //  the aspect at all.
     if (TP.notValid(facetSetting = this.getType().getInstFacetSettingFor(
                                                     aspectName,
                                                     facetName))) {
-        return null;
+        return;
     }
 
     //  We compute the facet value differently depending on whether we're
@@ -7638,7 +7745,10 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     //  Grab the current value of the internal slot and compare it to the
     //  supplied value. Only go through the act of setting it and signaling a
     //  change if they're different.
-    currentFacetVal = this.get(facetSlotName);
+
+    //  NB: Make sure to use $get() here. Otherwise, we end up doing path
+    //  lookups, etc. for private facet slot values.
+    currentFacetVal = this.$get(facetSlotName);
     if (currentFacetVal !== facetValue) {
 
         //  If the internal slot is not defined on the receiver, define it.

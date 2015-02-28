@@ -328,7 +328,9 @@ function(attributeName, attributeValue, shouldSignal) {
 
     retVal = this.callNextMethod();
 
-    this.checkFacets(attributeName);
+    if (attributeName !== 'data') {
+        this.checkFacets(attributeName);
+    }
 
     return retVal;
 });
@@ -3966,6 +3968,8 @@ function(targetObj, varargs) {
         nodes,
         finalValue,
 
+        nodePath,
+
         addresses,
 
         doc,
@@ -4013,16 +4017,29 @@ function(targetObj, varargs) {
     //  returned (because we forced false on autoCollapse).
     if (!TP.isArray(nodes)) {
 
-        //  Capture the final value - we want to return this.
+        //  Capture the scalar as the final value - we want to return this.
         finalValue = nodes;
+
+        //  Compute a 'node path' by starting with the path source.
+        nodePath = pathSrc;
+
+        //  If there's a 'wrapping scalar conversion' (i.e. 'string(...)'), then
+        //  we need to strip it off of the path so that we can get to nodes, not
+        //  scalar values.
+        if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(nodePath)) {
+            nodePath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(
+                                                        nodePath).at(1);
+        }
 
         //  If the path ends with some sort of attribute path, then we
         //  reevaluate, using a construct at the end that will return an
         //  Attribute *node*.
-        if (TP.regex.ATTRIBUTE_ENDS.test(pathSrc)) {
+        if (TP.regex.ATTRIBUTE_ENDS.test(nodePath)) {
             nodes = TP.nodeEvaluatePath(
                         natTargetObj,
-                        pathSrc + '/../' + pathSrc.slice(pathSrc.indexOf('@')),
+                        nodePath +
+                            '/../' +
+                            nodePath.slice(nodePath.indexOf('@')),
                         this.getPathType(),
                         false);
         } else {
@@ -4030,7 +4047,7 @@ function(targetObj, varargs) {
             //  the result.
             nodes = TP.nodeEvaluatePath(
                         natTargetObj,
-                        pathSrc + '/..',
+                        nodePath + '/..',
                         this.getPathType(),
                         false);
         }

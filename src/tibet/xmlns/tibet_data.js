@@ -115,8 +115,6 @@ function(aRequest) {
             resultType = String;
         }
 
-        localURI.setResource(resultType.construct(resourceStr));
-
         //  Get this element's document wrapper.
         thisTPDoc = TP.wrap(elem).getDocument();
 
@@ -125,8 +123,11 @@ function(aRequest) {
         //  has changed (this allows page-level bindings to be set up before the
         //  notifications go out that their data has changed).
         loadedHandler = function(aSig) {
+            var newResource;
+
             loadedHandler.ignore(thisTPDoc, 'TP.sig.DOMContentLoaded');
-            localURI.$changed();
+            newResource = resultType.construct(resourceStr);
+            localURI.setResource(newResource);
         };
 
         //  Tell the handler to observe this element's document wrapper.

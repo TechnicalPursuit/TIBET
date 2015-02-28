@@ -1998,13 +1998,15 @@ function(anAspect, anAction, aDescription) {
         //  Otherwise, this is a primary URI and we need to send change
         //  notifications from all of it's subURIs, if it has any.
 
+        subDesc = TP.hc('action', anAction,
+                        'aspect', 'value',
+                        'facet', 'value',
+                        'target', primaryResource
+                        );
+
         for (i = 0; i < subURIs.getSize(); i++) {
-            subDesc = TP.hc('action', anAction,
-                            'aspect', 'value',
-                            'facet', 'value',
-                            'target', primaryResource,
-                            'path', subURIs.at(i).getFragmentExpr()
-                            );
+
+            subDesc.atPut('path', subURIs.at(i).getFragmentExpr());
 
             //  Note here how we signal TP.sig.StructureChange. This is
             //  because the whole value of the primary URI has changed so,
@@ -3186,22 +3188,25 @@ function(aSignal) {
 
     } else {
 
+        //  If we didn't have any paths, then just signal from our subURIs (if
+        //  we have any) and ourself.
+
         if (TP.notEmpty(subURIs)) {
+
+            //  Note that we change the 'aspect' here to 'value' (after
+            //  capturing the original aspect used by the primary URI) -
+            //  because the 'entire value' of the subURI itself has changed.
+            //  We also include a 'path' for convenience, so that observers
+            //  can use that against the primary URI to obtain this URI's
+            //  value, if they wish.
+            primaryAspect = aSignal.at('aspect');
+            aSignal.atPut('aspect', 'value');
+
+            aSignal.atPut('target', resource);
 
             for (i = 0; i < subURIs.getSize(); i++) {
 
-                //  Note that we change the 'aspect' here to 'value' (after
-                //  capturing the original aspect used by the primary URI) -
-                //  because the 'entire value' of the subURI itself has changed.
-                //  We also include a 'path' for convenience, so that observers
-                //  can use that against the primary URI to obtain this URI's
-                //  value, if they wish.
-                primaryAspect = aSignal.at('aspect');
-                aSignal.atPut('aspect', 'value');
-
                 aSignal.atPut('path', subURIs.at(i).getFragmentExpr());
-
-                aSignal.atPut('target', resource);
 
                 subURIs.at(i).signal(
                         aSignal.getSignalName(),
@@ -3217,7 +3222,6 @@ function(aSignal) {
             aSignal.removeKey('target');
         }
 
-        //  If we didn't have any paths, then just signal from ourself.
         this.signal(aSignal.getSignalName(),
                     aSignal.getPayload(),
                     TP.INHERITANCE_FIRING,
@@ -4678,6 +4682,29 @@ function(aResource, aRequest) {
 
     if (TP.notEmpty(subURIs)) {
 
+        //  The 'action' here is TP.DELETE, since the entire resource got
+        //  changed. This very well may mean structural changes occurred and
+        //  the resource that the subURI pointed to doesn't even exist anymore.
+
+        //  The 'aspect' here is 'value' - because the 'entire value' of the
+        //  subURI itself has changed. We also include a 'path' for convenience,
+        //  so that observers can use that against the primary URI to obtain
+        //  this URI's value, if they wish.
+
+        //  The 'target' here is computed by running the fragment against
+        //  the resource.
+        description = TP.hc(
+                'action', TP.DELETE,
+                'aspect', 'value',
+                'facet', 'value',
+                'target', aResource,
+
+                //  NB: We supply the old resource and the fragment text
+                //  here for ease of obtaining values.
+                'oldTarget', resource,
+                'path', fragText
+                );
+
         //  If we have sub URIs, then observers of them will be expecting to get
         //  a TP.sig.StructureChange with 'value' as the aspect that changed (we
         //  swapped out the entire resource, so the values of those will have
@@ -4686,31 +4713,13 @@ function(aResource, aRequest) {
 
             fragText = subURIs.at(i).getFragmentExpr();
 
-            //  The 'action' here is TP.DELETE, since the entire resource got
-            //  changed. This very well may mean structural changes occurred and
-            //  the resource that the subURI pointed to doesn't even exist
-            //  anymore.
-            //  The 'aspect' here is 'value' - because the 'entire value' of the
-            //  subURI itself has changed. We also include a 'path' for
-            //  convenience, so that observers can use that against the primary
-            //  URI to obtain this URI's value, if they wish.
-            //  The 'target' here is computed by running the fragment against
-            //  the resource.
-            description = TP.hc(
-                    'action', TP.DELETE,
-                    'aspect', 'value',
-                    'facet', 'value',
-                    'target', aResource,
-
-                    //  NB: We supply the old resource and the fragment text
-                    //  here for ease of obtaining values.
-                    'oldTarget', resource,
-                    'path', fragText
-                    );
+            description.atPut('path', fragText);
 
             subURIs.at(i).signal(
                     'TP.sig.StructureChange',
                     description);
+
+            aResource.checkFacets(fragText);
         }
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
@@ -4735,12 +4744,15 @@ function(aResource, aRequest) {
         //  If we don't have subURIs, we invoke the standard 'changed' mechanism
         //  (which signals 'TP.sig.ValueChange' from ourself). Note here that we
         //  invoke '$changed()' since, by default, we do *not* signal change (we
-        //  don't signal change for our 'properties' since we don't want
-        //  observers to get notified about all of that).
+        //  don't signal change for our 'properties' (i.e. hash, URL, params,
+        //  etc.) since we don't want observers to get notified about all of
+        //  that).
         this.$changed('value',
                         TP.UPDATE,
-                        TP.hc('target', aResource, 'oldTarget', resource,
-                                TP.OLDVAL, resource, TP.NEWVAL, aResource));
+                        TP.hc('target', aResource,
+                                'oldTarget', resource,
+                                TP.OLDVAL, resource,
+                                TP.NEWVAL, aResource));
     }
 
     return this;
