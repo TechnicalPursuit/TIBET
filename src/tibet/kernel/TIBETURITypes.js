@@ -8624,7 +8624,8 @@ function(aURI, aRequest) {
  *     respond by triggering an appropriate handler either directly or
  *     indirectly via signaling. A URIRouter is typically triggered from the
  *     current application history object via onhashchange or popstate event
- *     handlers but they can also be invoked directly via route(url).
+ *     handlers but they can also be invoked directly via route(url) or by
+ *     signaling LocationChange.
  */
 
 //  ------------------------------------------------------------------------
@@ -8646,7 +8647,7 @@ TP.core.URIRouter.Type.defineAttribute('paths');
  * The route name to use for the "Root" or "/" route. Default is 'Home'.
  * @type {String}
  */
-TP.core.URIRouter.Type.defineAttribute('rootName', 'Home');
+TP.core.URIRouter.Type.defineAttribute('root', 'Home');
 
 /**
  * A list of token patterns used for parsing token values found in routes.
@@ -8671,11 +8672,11 @@ function() {
 
     //  Always need a route to match "anything" as our backstop. If no routes
     //  are ever defined this routine should still produce something reasonable.
-    this.defineRoute(/.*/, this.processPath);
+    this.definePath(/.*/, this.processMatch.bind(this));
 
     //  Define the root pattern route for "empty paths".
-    this.defineRoute(/^\/$/, function() {
-        return TP.ac(this.get('rootName'), TP.hc());
+    this.definePath(/^\/$/, function() {
+        return TP.ac(this.get('root'), TP.hc());
     }.bind(this));
 
     return;
@@ -8683,19 +8684,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('defineRoute',
+TP.core.URIRouter.Type.defineMethod('definePath',
 function(pattern, processor) {
 
     /**
-     * @method defineRoute
+     * @method definePath
      * @summary Expresses interest in a specific URL pattern, optionally
      *     defining a function used to produce the signal and payload values to
      *     be fired when the pattern is matched by the routing engine.
      * @param {String|RegExp} pattern The string or regular expression to match.
      * @param {Function} [processor] A function taking a path, match result, and
-     *     token names used to produce an Array containing a signal name and
-     *     dictionary to use as a signal payload. Defaults to the receiver's
-     *     processPath function.
+     *     token names which should function as a replacement for the default
+     *     processMatch function of the router for this path.
+     * @return {TP.core.URIRouter} The receiver.
      */
 
     var result,
@@ -8716,7 +8717,7 @@ function(pattern, processor) {
     }
 
     //  Default the processor function to our standard one.
-    func = TP.ifInvalid(processor, this.processPath.bind(this));
+    func = TP.ifInvalid(processor, this.processMatch.bind(this));
 
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
@@ -8733,7 +8734,9 @@ function(token, pattern) {
     /**
      * @method defineToken
      * @summary Associates a token name with a pattern used to match the value
-     *     for that token.
+     *     for that token. Any time that token is used in a route the pattern
+     *     will be substituted for the token and any matched value will be
+     *     provided to the route under the token name.
      * @param {String} token The name of the token being described.
      * @param {String|RegExp} pattern The string or regular expression to match.
      */
@@ -8753,8 +8756,23 @@ function(token, pattern) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('processPath',
+TP.core.URIRouter.Type.defineMethod('processMatch',
 function(path, match, names) {
+
+    /**
+     * @method processMatch
+     * @summary Invoked when a defined path is matched. This function provides a
+     *     default processor for definePath which can produce a signal name and
+     *     payload for the majority of use cases.
+     * @param {String} path The full URL path being processed.
+     * @param {Object} match The "match" object returned by RegExp.match calls.
+     *     The first slot is the "full match" while any parenthesized capture
+     *     portions will populate slots 1 through N.
+     * @param {String[]} names An array of token names for any named path
+     *     segments in the pattern which matched the path.
+     * @returns {Array[String, TP.lang.Hash]} An ordered pair containing the
+     *     signal name and signal payload the parameters imply.
+     */
 
     var parts,
         name,
@@ -8811,7 +8829,9 @@ function(pattern) {
      * @method processPattern
      * @summary Converts a pattern into a fully-functional regular expression
      *     for use in route matching and returns the pattern and a list of token
-     *     names to assign to matched positions.
+     *     names to assign to matched positions. The resulting data is used to
+     *     detect matching routes and to process them to ensure proper names are
+     *     assigned to any token segments.
      * @param {String|RegExp} pattern The pattern to process.
      * @returns {Array} An array containing the pattern and zero or more string
      *     names for embedded token values being matched.
@@ -8865,14 +8885,14 @@ function(pattern) {
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('processRoute',
-function(path) {
+function(route) {
 
     /**
      * @method processRoute
      * @summary Processes a route, searching for the first matching handler.
-     *     If the path matches a route pattern that route's processor function
-     *     is invoked to convert the path into a signal name/payload pair.
-     * @param {String} path The URL path segment to process.
+     *     If the route matches a path pattern the associated processor function
+     *     is invoked to convert the route into a signal name/payload pair.
+     * @param {String} route The URL path segment (route) to process.
      * @returns {Array[String, TP.core.Hash]} The signal name/payload pair.
      */
 
@@ -8880,20 +8900,20 @@ function(path) {
         result;
 
     paths = this.get('paths');
-    paths.detect(function(route) {
+    paths.detect(function(path) {
         var pattern,
             processor,
             names,
             match;
 
-        pattern = route[0];
-        processor = route[1];
-        names = route[2];
+        pattern = path[0];
+        processor = path[1];
+        names = path[2];
 
-        match = pattern.match(path);
+        match = pattern.match(route);
         if (TP.isValid(match)) {
             // NOTE we update the outer variable here.
-            result = processor(path, match, names);
+            result = processor(route, match, names);
             return true;
         }
 
@@ -8906,7 +8926,20 @@ function(path) {
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('route',
-function(aURI, aRequest) {
+function(aURI) {
+
+    /**
+     * @method route
+     * @summary Checks a URI for potentially routable changes and triggers the
+     *     appropriate response to any changes found. If the only changes were
+     *     to fragment parameters this method will signal a BootConfigChange
+     *     which can cause a restart of the application. If the path changes
+     *     represent a routable event the processRoute call is invoked to look
+     *     for a matching route handler.
+     * @param {String} aURI The full URI which should be routed.
+     * @fires {RouteChange} If the URI has changed path values.
+     * @fires {BootConfigChange} If the URI has changed fragment parameters.
+     */
 
     var url,
         direction,
@@ -8991,7 +9024,7 @@ function(aURI, aRequest) {
         signal.setOrigin(TP.ANY);
 
         if (TP.sys.cfg('log.routes')) {
-            TP.info('route change: ' + signal.getSignalName() + ' with: ' +
+            TP.info('RouteChange: ' + signal.getSignalName() + ' with: ' +
                 TP.str(signal.getPayload() || '{}'));
         }
 
