@@ -2519,9 +2519,6 @@ function(aSignal, isCapturing) {
      *     the supplied signal and capturing mode.
      */
 
-    var origin,
-        sigType;
-
     //  The default is that we don't participate in capturing responder
     //  chains unless there is an 'ev:phase' attribute on us that says
     //  otherwise.
@@ -2529,20 +2526,7 @@ function(aSignal, isCapturing) {
         return false;
     }
 
-    origin = this.getGlobalID();
-
-    sigType = aSignal.getType();
-
-    //  Then we check that we're a responder for any signals that we have a
-    //  handler for.
-    return TP.canInvoke(
-                this, sigType.getHandlerName(origin, aSignal, null, false)) ||
-            TP.canInvoke(
-                this, sigType.getHandlerName(origin, aSignal, null, true)) ||
-            TP.canInvoke(
-                this, sigType.getHandlerName(null, aSignal, null, false)) ||
-            TP.canInvoke(
-                this, sigType.getHandlerName(null, aSignal, null, true));
+    return TP.isFunction(this.getHandler(aSignal));
 });
 
 //  ------------------------------------------------------------------------
