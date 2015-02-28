@@ -1602,6 +1602,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
     var key,
         orgid,
         signame,
+        state,
         hasOrigin,
         handlers,
         handler,
@@ -1633,11 +1634,18 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
 
     signame = aSignal.getSignalName();
 
+    state = TP.sys.getApplication().getStateName();
+
+    //  Create a key we can use for cache lookups to avoid name generation
+    //  overhead for repeated queries.
     key = signame + '.' + aSignal.getTypeName() + '.' +
                 TP.ifEmpty(orgid, TP.ANY) + '.' +
+                TP.ifEmpty(state, TP.ANY) + '.' +
                 (dontTraverseSpoofs || false) + '.' +
+                (dontTraverse || false) + '.' +
                 (startSignalName || signame);
 
+    //  Check the receiver's handler cache.
     handlers = this.$get('$$handlers');
     if (TP.notValid(handlers)) {
         handlers = TP.hc();
@@ -1663,6 +1671,20 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
 
         if (hasOrigin) {
 
+            fName = sigType.getHandlerName(orgid, aSignal, state, false);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
+            }
+
+            fName = sigType.getHandlerName(orgid, aSignal, state, true);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
+            }
+
             fName = sigType.getHandlerName(orgid, aSignal, null, false);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
@@ -1676,6 +1698,20 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
                 handlers.atPut(key, handler);
                 return handler;
             }
+        }
+
+        fName = sigType.getHandlerName(null, aSignal, state, false);
+        if (TP.canInvoke(this, fName)) {
+            handler = this[fName];
+            handlers.atPut(key, handler);
+            return handler;
+        }
+
+        fName = sigType.getHandlerName(null, aSignal, state, true);
+        if (TP.canInvoke(this, fName)) {
+            handler = this[fName];
+            handlers.atPut(key, handler);
+            return handler;
         }
 
         fName = sigType.getHandlerName(null, aSignal, null, false);
@@ -1694,6 +1730,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
     }
 
     if (dontTraverse) {
+        handlers.atPut(key, TP.NO_RESULT);
         return;
     }
 
@@ -1736,6 +1773,21 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
             //  instance.
 
             if (hasOrigin) {
+
+                fName = sigType.getHandlerName(orgid, null, state, false);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+
+                fName = sigType.getHandlerName(orgid, null, state, true);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+
                 fName = sigType.getHandlerName(orgid, null, null, false);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
@@ -1749,6 +1801,20 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
                     handlers.atPut(key, handler);
                     return handler;
                 }
+            }
+
+            fName = sigType.getHandlerName(null, null, state, false);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
+            }
+
+            fName = sigType.getHandlerName(null, null, state, true);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
             }
 
             fName = sigType.getHandlerName(null, null, null, false);
