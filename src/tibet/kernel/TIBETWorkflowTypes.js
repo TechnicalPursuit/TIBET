@@ -574,7 +574,7 @@ function(aSignal) {
 
     //  look up a handler, forcing lookup to find only handlers that
     //  properly match custom signal name overrides
-    handler = this.getHandler(request, true);
+    handler = this.getHandler(request, null, true);
     if (TP.isCallable(handler)) {
         try {
             this.acceptRequest(request);
@@ -1819,7 +1819,7 @@ function(aSignal) {
 
     //  look up a handler, forcing lookup to find only handlers that
     //  properly match custom signal name overrides
-    handler = this.getHandler(aSignal, true);
+    handler = this.getHandler(aSignal, null, true);
     if (TP.isCallable(handler)) {
         try {
             return handler.apply(this, arguments);

@@ -4525,7 +4525,7 @@ function(anOrigin, aSignalName, aSignal, captureState, aSigEntry, checkTarget) {
 
         //  Look for handlers, but only explicit ones. This routing is called by
         //  policies which handle all looping of inheritance chains etc for us.
-        handler = controller.getHandler(aSignal, true, null, true);
+        handler = controller.getHandler(aSignal, null, true, true);
         if (TP.isCallable(handler)) {
             try {
                 handler.call(controller, aSignal);
@@ -4779,7 +4779,7 @@ aSigEntry, checkTarget) {
 
                     //  run the handler, making sure we can catch any
                     //  exceptions that are signaled
-                    handler.handle(aSignal, false, signame);
+                    handler.handle(aSignal, signame, false);
                 }
             } else {
                 try {
@@ -4797,7 +4797,7 @@ aSigEntry, checkTarget) {
 
                         //  run the handler, making sure we can catch
                         //  any exceptions that are signaled
-                        handler.handle(aSignal, false, signame);
+                        handler.handle(aSignal, signame, false);
                     }
 
                     //  TODO:   add check here regarding removal of the
