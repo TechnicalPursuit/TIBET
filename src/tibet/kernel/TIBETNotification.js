@@ -546,6 +546,10 @@ TP.sig.Signal.Inst.defineAttribute('$shouldPrevent', false);
 //  for which isCancelable is false this value is ignored
 TP.sig.Signal.Inst.defineAttribute('$shouldStop', false);
 
+//  has the signal been asked to stop propagation immediately? Ignored if
+//  the signal is not cancellable.
+TP.sig.Signal.Inst.defineAttribute('$shouldStopImmediately', false);
+
 //  DOM/UI target
 //  TODO:   needed in certain subtype, but declared here for now. perhaps
 //  to ensure it's always reachable
@@ -2191,6 +2195,7 @@ function(aSignalName, clearIgnores) {
 
     this.shouldPrevent(false);
     this.shouldStop(false);
+    this.shouldStopImmediately(false);
 
     return this;
 });
@@ -2261,6 +2266,57 @@ function(aFlag) {
     }
 
     return this.$shouldStop;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('shouldStopImmediately',
+function(aFlag) {
+
+    /**
+     * @method shouldStopImmediately
+     * @summary Returns true if the signal should stop propagating immediately.
+     *     If a flag is provided this flag is used to set the propagation state.
+     * @description Note that this method does not signal 'Change', even if it's
+     *     'shouldSignalChange' attribute is true.
+     * @param {Boolean} aFlag Stop propagating immedidately: yes or no?
+     * @returns {Boolean} True if the signal should stop propagation
+     *     immediately.
+     */
+
+    //  if we're not cancelable this is a no-op
+    if (!this.isCancelable()) {
+        return false;
+    }
+
+    if (TP.isDefined(aFlag)) {
+        this.$shouldStopImmediately = aFlag;
+    }
+
+    return this.$shouldStopImmediately;
+});
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('stopImmediatePropagation',
+function(aFlag) {
+
+    /**
+     * @method stopImmediatePropagation
+     * @summary Tells the signal to stop propagation immediately. This call is
+     *     similar to stopPropagation for DOM-oriented signals but will cause
+     *     propagation to stop within a specific set of handlers for a
+     *     particular node even if all handlers at that level have not fired.
+     * @description Note that this method does not signal 'Change', even if it's
+     *     'shouldSignalChange' attribute is true.
+     * @param {Boolean} aFlag Stop propagating immediately: yes or no?
+     * @returns {Boolean} True if the signal should stop propagation.
+     */
+
+    var flag;
+
+    flag = TP.ifInvalid(aFlag, true);
+
+    return this.shouldStopImmediately(flag);
 });
 
 //  ------------------------------------------------------------------------
@@ -4439,8 +4495,7 @@ function(anOrigin, aSignal, captureState) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.Type.defineMethod('notifyControllers',
-function(anOrigin, aSignalName, aSignal, checkPropagation, captureState,
-aSigEntry, checkTarget) {
+function(anOrigin, aSignalName, aSignal, captureState, aSigEntry, checkTarget) {
 
     /**
      * @method notifyControllers
@@ -4454,24 +4509,32 @@ aSigEntry, checkTarget) {
         controllers,
         len,
         i,
-        check,
         controller,
         handler;
 
     app = TP.sys.getApplication();
     controllers = app.get('controllers');
-    check = TP.ifInvalid(checkPropagation, true);
 
     len = controllers.getSize();
     for (i = 0; i < len; i++) {
-        if (check && aSignal.shouldStop()) {
+        if (aSignal.shouldStop() || aSignal.shouldStopImmediately()) {
             return;
         }
 
         controller = controllers.at(i);
 
-        if (TP.isCallable(handler = controller.getHandler(aSignal))) {
-            handler.call(controller, aSignal);
+        //  Look for handlers, but only explicit ones. This routing is called by
+        //  policies which handle all looping of inheritance chains etc for us.
+        handler = controller.getHandler(aSignal, true, null, true);
+        if (TP.isCallable(handler)) {
+            try {
+                handler.call(controller, aSignal);
+            } catch (e) {
+                //  TODO: handler exception
+                //  TODO: Add a callback check at the handler/owner level?
+                TP.error('HandlerException: ' + e.message + ' in: ' +
+                    TP.name(handler));
+            }
         }
     }
 
@@ -4543,8 +4606,9 @@ aSigEntry, checkTarget) {
     //  should we respect stopPropagation calls?
     check = TP.ifInvalid(checkPropagation, true);
 
-    //  if we're asked to respect propagation check then check it
-    if (check && aSignal.shouldStop()) {
+    //  two variant here. if check and "standard shouldStop" are true then we
+    //  stop OR if shouldStopImmediately is true, regarless of check state.
+    if ((check && aSignal.shouldStop()) || aSignal.shouldStopImmediately()) {
         return;
     }
 
@@ -4616,10 +4680,13 @@ aSigEntry, checkTarget) {
         targetID = aSignal.getTargetGlobalID();
 
         for (i = 0; i < items.length; i++) {
-            //  if we're asked to respect propagation check then check it
-            if (check && aSignal.shouldStop()) {
+            //  two variant here. if check and "standard shouldStop" are true
+            //  then we stop OR if shouldStopImmediately is true, regardless of
+            //  check state since shouldStopImmediately implied we check after
+            //  each and every handler invocation regardless.
+            if ((check && aSignal.shouldStop()) ||
+                    aSignal.shouldStopImmediately()) {
                 aSignal.setOrigin(originalOrigin);
-
                 return;
             }
 
@@ -4744,6 +4811,10 @@ aSigEntry, checkTarget) {
                     //          it is skipped rather than removing the
                     //          node
                 } catch (e) {
+
+                    //  TODO: handler exception
+                    //  TODO: Add a callback check at the handler/owner level?
+
                     try {
                         //  see if we can get the actual function in
                         //  question so we have better debugging
@@ -4861,9 +4932,8 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     //  if any of the handlers at this "level" said to stop then
     //  we stop now before traversing
-    if (sig.shouldStop()) {
+    if (sig.shouldStop() || sig.shouldStopImmediately()) {
         sig.isRecyclable(true);
-
         return sig;
     }
 
@@ -4874,9 +4944,8 @@ function(anOrigin, aSignal, aPayload, aType) {
     //  notify observers of the signal from TP.ANY origin (unless we just
     //  if any of the handlers at this "level" said to stop then
     //  we stop now before traversing
-    if (sig.shouldStop()) {
+    if (sig.shouldStop() || sig.shouldStopImmediately()) {
         sig.isRecyclable(true);
-
         return sig;
     }
 
@@ -4886,7 +4955,7 @@ function(anOrigin, aSignal, aPayload, aType) {
     }
 
     //  Final step is to notify controllers which completes the responder chain.
-    TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+    TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
 
     //  once the signal has been fired we can clear it for reuse
     sig.isRecyclable(true);
@@ -5177,7 +5246,7 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
-        if (sig.shouldStop()) {
+        if (sig.shouldStop() || sig.shouldStopImmediately()) {
             return sig;
         }
 
@@ -5265,7 +5334,7 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
-        if (sig.shouldStop()) {
+        if (sig.shouldStop() || sig.shouldStopImmediately()) {
             return sig;
         }
 
@@ -5294,7 +5363,7 @@ function(originSet, aSignal, aPayload, aType) {
                                     false, true,
                                     null, true);
 
-    if (sig.shouldStop()) {
+    if (sig.shouldStop() || sig.shouldStopImmediately()) {
         return sig;
     }
 
@@ -5303,7 +5372,7 @@ function(originSet, aSignal, aPayload, aType) {
                                     null, true);
 
     //  Final step is to notify controllers which completes the responder chain.
-    TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+    TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
 
     return sig;
 });
@@ -5395,7 +5464,7 @@ function(originSet, aSignal, aPayload, aType) {
 
             //  if any of the handlers at this origin "level" said to stop
             //  then we stop now before traversing to a new level
-            if (sig.shouldStop()) {
+            if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 return sig;
             }
         }
@@ -5426,7 +5495,7 @@ function(originSet, aSignal, aPayload, aType) {
 
             //  if any of the handlers at this origin "level" said to stop
             //  then we stop now before executing the bubbling handlers.
-            if (sig.shouldStop()) {
+            if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 return sig;
             }
 
@@ -5457,7 +5526,7 @@ function(originSet, aSignal, aPayload, aType) {
 
             //  if any of the handlers at this origin "level" said to stop
             //  then we stop now before traversing to a new level
-            if (sig.shouldStop()) {
+            if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 return sig;
             }
         }
@@ -5469,7 +5538,7 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  final check is for controllers which may want to handle this.
     TP.sig.SignalMap.notifyControllers(
-        TP.lid(firstResponder), sig.getSignalName(), sig, true);
+        TP.lid(firstResponder), sig.getSignalName(), sig);
 
     return sig;
 });
@@ -5550,7 +5619,7 @@ function(anOrigin, signalSet, aPayload, aType) {
 
         //  notify specific observers for the signal/origin combo
         TP.sig.SignalMap.notifyHandlers(orgid, signame, sig, true);
-        if (sig.shouldStop()) {
+        if (sig.shouldStop() || sig.shouldStopImmediately()) {
             break;
         }
 
@@ -5561,7 +5630,7 @@ function(anOrigin, signalSet, aPayload, aType) {
             //  observation results won't change as we iterate)
             if (i === 0) {
                 TP.sig.SignalMap.notifyHandlers(orgid, null, sig, true);
-                if (sig.shouldStop()) {
+                if (sig.shouldStop() || sig.shouldStopImmediately()) {
                     break;
                 }
             }
@@ -5570,7 +5639,7 @@ function(anOrigin, signalSet, aPayload, aType) {
         //  notify observers of the signal from any origin
         if (orgid !== TP.ANY) {
             TP.sig.SignalMap.notifyHandlers(null, signame, sig, true);
-            if (sig.shouldStop()) {
+            if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 break;
             }
         }
@@ -5582,7 +5651,7 @@ function(anOrigin, signalSet, aPayload, aType) {
             fixedName = sig.getSignalName();
             sig.setSignalName(signame);
 
-            TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+            TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
         } catch (e) {
             void 0;     //  TODO: verify we want to do this here.
         } finally {
@@ -5675,7 +5744,7 @@ function(anOrigin, aSignal, aPayload, aType) {
 
         //  notify specific observers for the signal/origin combo
         TP.sig.SignalMap.notifyHandlers(orgid, signame, sig, true);
-        if (sig.shouldStop()) {
+        if (sig.shouldStop() || sig.shouldStopImmediately()) {
             break;
         }
 
@@ -5686,7 +5755,7 @@ function(anOrigin, aSignal, aPayload, aType) {
             //  observation results won't change as we iterate)
             if (i === 0) {
                 TP.sig.SignalMap.notifyHandlers(orgid, null, sig, true);
-                if (sig.shouldStop()) {
+                if (sig.shouldStop() || sig.shouldStopImmediately()) {
                     break;
                 }
             }
@@ -5695,7 +5764,7 @@ function(anOrigin, aSignal, aPayload, aType) {
         //  notify observers of the signal from any origin
         if (orgid !== TP.ANY) {
             TP.sig.SignalMap.notifyHandlers(null, signame, sig, true);
-            if (sig.shouldStop()) {
+            if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 break;
             }
         }
@@ -5707,7 +5776,7 @@ function(anOrigin, aSignal, aPayload, aType) {
             fixedName = sig.getSignalName();
             sig.setSignalName(signame);
 
-            TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+            TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
         } catch (e) {
             void 0;     //  TODO: verify we want to do this here.
         } finally {
@@ -5789,7 +5858,7 @@ function(originSet, aSignal, aPayload, aType) {
 
 
     //  final check is for controllers which may want to handle this.
-    TP.sig.SignalMap.notifyControllers(orgid, signame, sig, true);
+    TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
 
     return sig;
 });
