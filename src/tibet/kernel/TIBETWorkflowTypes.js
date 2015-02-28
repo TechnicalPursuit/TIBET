@@ -6805,6 +6805,7 @@ function(anIndex) {
     var index,
         entry,
         native,
+        local,
         method;
 
     native = this.getNativeLocation();
