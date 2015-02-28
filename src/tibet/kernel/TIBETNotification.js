@@ -1268,9 +1268,10 @@ function(anOrigin, aPayload, aPolicy) {
     //  don't prevent default unless told (again)
     this.preventDefault(false);
 
-    //  default our origin to self, which is part of what makes "fire"
-    //  different from simple signaling
-    origin = TP.ifInvalid(anOrigin, this);
+    //  default our origin to whatever may already have been set, or to the
+    //  receiver itself, which is part of what makes "fire" different from
+    //  simple signaling
+    origin = TP.ifInvalid(anOrigin, TP.ifInvalid(this.getOrigin(), this));
     this.setOrigin(origin);
 
     //  instrument with current firing time
