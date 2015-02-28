@@ -1572,7 +1572,7 @@ event handlers.
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getHandler',
-function(aSignal, dontTraverseSpoofs, startSignalName) {
+function(aSignal, dontTraverseSpoofs, startSignalName, dontTraverse) {
 
     /**
      * @method getHandler
@@ -1614,7 +1614,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
     }
 
     //  Process the origin. Origins that are "generated" such as TIBET OIDs or
-    //  DOM paths aren't observable so they're not relevant for.handler names.
+    //  DOM paths aren't observable so they're not relevant for handler names.
     orgid = TP.ifInvalid(aSignal.getOrigin(), '');
     orgid = TP.gid(orgid).split('#').last();
 
@@ -1689,6 +1689,10 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             handlers.atPut(key, handler);
             return handler;
         }
+    }
+
+    if (dontTraverse) {
+        return;
     }
 
     //  If the signal is spoofed, then we want all of the signal names based on
