@@ -9025,7 +9025,7 @@ function(aURI) {
 
         if (TP.sys.cfg('log.routes')) {
             TP.info('RouteChange: ' + signal.getSignalName() + ' with: ' +
-                TP.str(signal.getPayload() || '{}'));
+                TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
         }
 
         signal.fire();
