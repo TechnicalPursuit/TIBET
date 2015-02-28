@@ -520,7 +520,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
             if (TP.isValid(win.navigator.geolocation)) {
 
                 //  Set up the 'watch' with a success callback that signals a
-                //  GeoPositionChanged and an error callback that signals a
+                //  GeoPositionChange and an error callback that signals a
                 //  GeoPositionError
                 geoWatch = win.navigator.geolocation.watchPosition(
                     function(position) {
@@ -543,7 +543,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
                                 );
 
                         TP.signal(originStr,
-                                    'TP.sig.GeoPositionChanged',
+                                    'TP.sig.GeoPositionChange',
                                     data);
                     },
                     function(error) {

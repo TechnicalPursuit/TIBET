@@ -6026,15 +6026,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleLocationChanged',
+TP.core.Application.Inst.defineMethod('handleLocationChange',
 function(aSignal) {
 
     /**
-     * @method handleLocationChanged
+     * @method handleLocationChange
      * @summary A handler that is called when the user has changed the location
      *     and changed history in some way, either by using the forward or
      *     backward controls in the browser or by attempting to load a bookmark.
-     * @param {TP.sig.LocationChanged} aSignal The signal that caused this
+     * @param {TP.sig.LocationChange} aSignal The signal that caused this
      *     handler to trip.
      * @returns {TP.core.Application} The receiver.
      */
@@ -6637,7 +6637,7 @@ function(anEvent) {
 
     this.updateIndex(anEvent);
 
-    this.signal('TP.sig.LocationChanged', this.getNativeLocation());
+    this.signal('TP.sig.LocationChange', this.getNativeLocation());
 
     return this;
 });
@@ -6662,7 +6662,7 @@ function(anEvent) {
 
     this.updateIndex(anEvent);
 
-    this.signal('TP.sig.LocationChanged', this.getNativeLocation());
+    this.signal('TP.sig.LocationChange', this.getNativeLocation());
 
     return this;
 });
@@ -6724,7 +6724,7 @@ function(stateObj, title, aURL) {
 
     //  If the url changed our API should trigger a routing event.
     if (url !== current && TP.sys.hasStarted()) {
-        this.signal('TP.sig.LocationChanged', url);
+        this.signal('TP.sig.LocationChange', url);
     }
 
     if (TP.sys.cfg('log.history')) {
@@ -6783,7 +6783,7 @@ function(stateObj, title, aURL) {
 
     //  If the url changed our API should trigger a routing event.
     if (url !== current) {
-        this.signal('TP.sig.LocationChanged', url);
+        this.signal('TP.sig.LocationChange', url);
     }
 
     if (TP.sys.cfg('log.history')) {

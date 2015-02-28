@@ -1290,7 +1290,7 @@ TP.sys.setcfg('tds.secret', 'change this in your TIBET config');
 TP.sys.setcfg('tds.404', 'NotFound');
 TP.sys.setcfg('tds.500', 'ServerError');
 
-TP.sys.setcfg('tds.watch_event', 'fileChanged');
+TP.sys.setcfg('tds.watch_event', 'fileChange');
 TP.sys.setcfg('tds.watch_root', '~app_src');
 TP.sys.setcfg('tds.watch_uri', '/tds/watcher');
 

@@ -3898,21 +3898,21 @@ function(aRequest) {
 //  FILE SYSTEM WATCH
 //  ------------------------------------------------------------------------
 
-TP.sig.SourceSignal.defineSubtype('FileChangedEvent');
+TP.sig.SourceSignal.defineSubtype('FileChangeEvent');
 
-TP.sig.FileChangedEvent.Type.defineConstant('NATIVE_NAME',
+TP.sig.FileChangeEvent.Type.defineConstant('NATIVE_NAME',
     TP.sys.cfg('tds.watch_event'));
 
-TP.sig.FileChangedEvent.Type.defineAttribute('pending', TP.hc());
+TP.sig.FileChangeEvent.Type.defineAttribute('pending', TP.hc());
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeChangedFS',
+TP.core.TSH.Inst.defineMethod('executeChangeFS',
 function(aRequest) {
 
     var dict;
 
-    dict = TP.sig.FileChangedEvent.get('pending');
+    dict = TP.sig.FileChangeEvent.get('pending');
 
     aRequest.stdout(TP.str(dict));
 
@@ -3928,7 +3928,7 @@ function(aRequest) {
         files,
         loaded;
 
-    dict = TP.sig.FileChangedEvent.get('pending');
+    dict = TP.sig.FileChangeEvent.get('pending');
 
     loaded = TP.ac();
     files = dict.getKeys();
@@ -4050,7 +4050,7 @@ function(aRequest) {
         this.set('watcherSSESource', watcher);
     }
 
-    this.observe(watcher, 'TP.sig.FileChangedEvent');
+    this.observe(watcher, 'TP.sig.FileChangeEvent');
 
     aRequest.stdout('File system change monitoring active.');
 
@@ -4079,7 +4079,7 @@ function(aRequest) {
         watcher = TP.core.SSESignalSource.construct(url);
     }
 
-    this.ignore(watcher, 'TP.sig.FileChangedEvent');
+    this.ignore(watcher, 'TP.sig.FileChangeEvent');
 
     aRequest.stdout('File system change monitoring ended.');
 
@@ -4112,7 +4112,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('handleFileChangedEvent',
+TP.core.TSH.Inst.defineMethod('handleFileChangeEvent',
 function(aSignal) {
 
     var payload,

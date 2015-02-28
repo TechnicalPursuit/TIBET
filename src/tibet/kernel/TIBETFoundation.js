@@ -4329,7 +4329,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
         sig = asp.toString().asStartUpper() + sig;
     }
 
-    //  Convert nChanged to IndexNChanged signals.
+    //  Convert nChange to IndexNChange signals.
     if (/^[0-9]+/.test(sig)) {
         sig = 'Index' + sig;
     }

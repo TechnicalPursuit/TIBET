@@ -278,7 +278,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     this.observe(TP.uri('xmpp:' + this.asString() +
                         '?;node=' + signal.getSignalName()),
-                    'TP.sig.XMPPPubsubNodeChanged');
+                    'TP.sig.XMPPPubsubNodeChange');
 
     return true;
 });
@@ -481,13 +481,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.JID.Inst.defineMethod('handleXMPPPubsubNodeChanged',
+TP.xmpp.JID.Inst.defineMethod('handleXMPPPubsubNodeChange',
 function(aSignal) {
 
     /**
-     * @method handleXMPPPubsubNodeChanged
+     * @method handleXMPPPubsubNodeChange
      * @summary Responds to notification that a pubsub node has changed.
-     * @param {TP.sig.XMPPPubsubNodeChanged} aSignal The triggering signal.
+     * @param {TP.sig.XMPPPubsubNodeChange} aSignal The triggering signal.
      */
 
     var sigURI,
@@ -511,7 +511,7 @@ function(aSignal) {
         return this.raise('TP.sig.InvalidSignal');
     }
 
-    //  TP.sig.XMPPPubsubNodeChanged signals always have an Array as their
+    //  TP.sig.XMPPPubsubNodeChange signals always have an Array as their
     //  payload - since there may be more than one 'item' that is being
     //  sent. We only use the first one.
     if (TP.isArray(sigPayload = aSignal.getPayload())) {
@@ -647,7 +647,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     this.ignore(TP.uri('xmpp:' + this.asString() +
                         '?;node=' + signal.getSignalName()),
-                    'TP.sig.XMPPPubsubNodeChanged');
+                    'TP.sig.XMPPPubsubNodeChange');
 
     return true;
 });
@@ -786,14 +786,14 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType,
     }
 
     if (!TP.isString(sigInst)) {
-        //  The payload of the XMPPPubsubNodeChanged signal is the fully
+        //  The payload of the XMPPPubsubNodeChange signal is the fully
         //  serialized signal that we're signalling.
         sigPayload = TP.xmpp.SignalPayload.fromTP_sig_Signal(sigInst);
     } else {
         sigPayload = TP.xmlnode(aPayload);
     }
 
-    sigURI.signal('TP.sig.XMPPPubsubNodeChanged', sigPayload);
+    sigURI.signal('TP.sig.XMPPPubsubNodeChange', sigPayload);
 
     //  We never signal the local observers - signalling with us as an
     //  origin is meant to go out over the wire.

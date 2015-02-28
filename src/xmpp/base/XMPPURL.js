@@ -338,15 +338,15 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {
-        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged' &&
+        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChange' &&
             !TP.isSubtypeOf(signals.at(i).asType(),
-                            'TP.sig.XMPPPubsubNodeChanged')) {
+                            'TP.sig.XMPPPubsubNodeChange')) {
             //  One of the signals supplied wasn't a type of
-            //  TP.sig.XMPPPubsubNodeChanged, so we bail out and don't
+            //  TP.sig.XMPPPubsubNodeChange, so we bail out and don't
             //  handle any of them (note here that we return 'true' because
             //  these might very well be signals that the URL is trying to
             //  observe that have nothing to do with
-            //  'TP.sig.XMPPPubsubNodeChanged' and we want to give the main
+            //  'TP.sig.XMPPPubsubNodeChange' and we want to give the main
             //  notification center a crack at them).
             return true;
         }
@@ -531,7 +531,7 @@ function(aSignal) {
         //  however.
         this.set('ignoreRemoteObservers', true);
 
-        this.signal('TP.sig.XMPPPubsubNodeChanged', contents);
+        this.signal('TP.sig.XMPPPubsubNodeChange', contents);
 
         //  Unset the flag
         this.set('ignoreRemoteObservers', false);
@@ -599,15 +599,15 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {
-        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged' &&
+        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChange' &&
             !TP.isSubtypeOf(signals.at(i).asType(),
-                            'TP.sig.XMPPPubsubNodeChanged')) {
+                            'TP.sig.XMPPPubsubNodeChange')) {
             //  One of the signals supplied wasn't a type of
-            //  TP.sig.XMPPPubsubNodeChanged, so we bail out and don't
+            //  TP.sig.XMPPPubsubNodeChange, so we bail out and don't
             //  handle any of them (note here that we return 'true' because
             //  these might very well be signals that the URL is trying to
             //  ignore that have nothing to do with
-            //  'TP.sig.XMPPPubsubNodeChanged' and we want to give the main
+            //  'TP.sig.XMPPPubsubNodeChange' and we want to give the main
             //  notification center a crack at them).
             return true;
         }
@@ -780,14 +780,14 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType,
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {
-        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChanged' &&
+        if (signals.at(i) !== 'TP.sig.XMPPPubsubNodeChange' &&
             !TP.isSubtypeOf(signals.at(i).asType(),
-                            'TP.sig.XMPPPubsubNodeChanged')) {
+                            'TP.sig.XMPPPubsubNodeChange')) {
             //  One of the signals supplied wasn't a type of
-            //  TP.sig.XMPPPubsubNodeChanged, so we bail out and don't
+            //  TP.sig.XMPPPubsubNodeChange, so we bail out and don't
             //  handle any of them (note here that we return 'true' because
             //  these might very be signals that the URL is trying to ignore
-            //  that have nothing to do with 'TP.sig.XMPPPubsubNodeChanged'
+            //  that have nothing to do with 'TP.sig.XMPPPubsubNodeChange'
             //  and we want to give the main notification center a crack at
             //  them).
             return true;

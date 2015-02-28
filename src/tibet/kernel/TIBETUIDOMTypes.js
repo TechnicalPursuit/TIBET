@@ -5380,12 +5380,12 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIValueChanged',
+TP.core.UIElementNode.Inst.defineMethod('handleUIValueChange',
 function(aSignal) {
 
     /**
-     * @method handleUIValueChanged
-     * @param {TP.sig.UIValueChanged} aSignal The signal that caused this
+     * @method handleUIValueChange
+     * @param {TP.sig.UIValueChange} aSignal The signal that caused this
      *     handler to trip.
      */
 

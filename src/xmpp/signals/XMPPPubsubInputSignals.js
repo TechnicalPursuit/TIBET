@@ -18,7 +18,7 @@ TP.sig.XMPPInput.defineSubtype('XMPPPubsubInput');
 
 TP.sig.XMPPPubsubInput.defineSubtype('XMPPPubsubEventInput');
 
-TP.sig.XMPPSignal.defineSubtype('XMPPPubsubNodeChanged');
+TP.sig.XMPPSignal.defineSubtype('XMPPPubsubNodeChange');
 
 //  ------------------------------------------------------------------------
 //  end
