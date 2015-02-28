@@ -2352,14 +2352,16 @@ function(aRequest) {
         source = func.getSourceText();
         error = {file: file, name: name, errors: TP.ac()};
 
-        //  Create an entry for every file. This will let us count total files
-        //  in addition to just error files.
-        fileDict.atPut(file, null);
-
         if (TP.isFalse(checklib)) {
             if (TP.boot.$uriInTIBETFormat(file).startsWith('~lib')) {
                 return;
             }
+        }
+
+        //  Create an entry for every file. This will let us count total files
+        //  in addition to just error files.
+        if (TP.notEmpty(file)) {
+            fileDict.atPut(file, null);
         }
 
         if (TP.notValid(lines)) {
