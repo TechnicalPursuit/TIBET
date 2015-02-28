@@ -4608,7 +4608,7 @@ aSigEntry, checkTarget) {
 
     //  two variant here. if check and "standard shouldStop" are true then we
     //  stop OR if shouldStopImmediately is true, regarless of check state.
-    if ((check && aSignal.shouldStop()) || aSignal.shouldStopImmediately()) {
+    if (check && aSignal.shouldStop() || aSignal.shouldStopImmediately()) {
         return;
     }
 
@@ -4684,7 +4684,7 @@ aSigEntry, checkTarget) {
             //  then we stop OR if shouldStopImmediately is true, regardless of
             //  check state since shouldStopImmediately implied we check after
             //  each and every handler invocation regardless.
-            if ((check && aSignal.shouldStop()) ||
+            if (check && aSignal.shouldStop() ||
                     aSignal.shouldStopImmediately()) {
                 aSignal.setOrigin(originalOrigin);
                 return;
