@@ -5404,6 +5404,7 @@ function(originSet, aSignal, aPayload, aType) {
         signame,
         firstResponder,
         respChain,
+        responder,
         i;
 
     TP.stop('break.signal_responderfiring');
@@ -5460,7 +5461,10 @@ function(originSet, aSignal, aPayload, aType) {
             sig.setOrigin(TP.gid(respChain.at(i)));
 
             //  execute the handler
-            TP.handle(respChain.at(i), sig);
+            responder = respChain.at(i);
+            if (TP.canInvoke(responder, 'handle')) {
+                responder.handle(sig);
+            }
 
             //  if any of the handlers at this origin "level" said to stop
             //  then we stop now before traversing to a new level
@@ -5491,7 +5495,10 @@ function(originSet, aSignal, aPayload, aType) {
             sig.setOrigin(TP.gid(respChain.first()));
 
             //  execute the handler
-            TP.handle(respChain.first(), sig);
+            responder = respChain.first();
+            if (TP.canInvoke(responder, 'handle')) {
+                responder.handle(sig);
+            }
 
             //  if any of the handlers at this origin "level" said to stop
             //  then we stop now before executing the bubbling handlers.
@@ -5522,7 +5529,10 @@ function(originSet, aSignal, aPayload, aType) {
             sig.setOrigin(TP.gid(respChain.at(i)));
 
             //  execute the handler
-            TP.handle(respChain.at(i), sig);
+            responder = respChain.at(i);
+            if (TP.canInvoke(responder, 'handle')) {
+                responder.handle(sig);
+            }
 
             //  if any of the handlers at this origin "level" said to stop
             //  then we stop now before traversing to a new level
