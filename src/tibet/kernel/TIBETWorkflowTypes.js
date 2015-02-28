@@ -5961,16 +5961,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleAppStart',
+TP.core.Application.Inst.defineMethod('handleAppWillStart',
 function(aSignal) {
 
     /**
-     * @method handleAppStart
+     * @method handleAppWillStart
      * @summary A handler that is called when the system has set up everything
-     *     required to run a TIBET application and is ready to start the GUI.
-     * @description At this level, this type does nothing.
-     * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
-     *     trip.
+     *     required to run a TIBET application.
+     * @param {TP.sig.AppWillStart} aSignal The startup signal.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -5978,11 +5976,13 @@ function(aSignal) {
         appType,
         newAppInst;
 
+    //  Configure the application type setting, defaulting the value as needed.
     typeName = TP.sys.cfg('project.apptype');
     if (TP.isEmpty(typeName)) {
         typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
     }
 
+    //  If we're supposed to grab a different type that'll happen here.
     appType = TP.sys.require(typeName);
 
     if (TP.notValid(appType)) {
@@ -5999,7 +5999,7 @@ function(aSignal) {
     newAppInst = appType.construct('Application', null);
     TP.core.Application.set('singleton', newAppInst);
 
-    //  Tell our new singleton instance to start :).
+    //  Tell our new singleton instance to start and provide the signal.
     newAppInst.start(aSignal);
 
     return this;
@@ -6177,32 +6177,50 @@ function(aSignal) {
      * @method start
      * @summary Starts the application, performing any initialization necessary
      *     for startup.
-     * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
-     *     trip.
+     * @param {TP.sig.AppWillStart} aSignal The "will start" signal that
+     *     triggered our startup sequence.
      * @returns {TP.core.Application} The receiver.
      */
-
-    var elem,
-        rootWin;
 
     // Do any final steps to ensure the UI is ready for operation.
     this.finalizeGUI();
 
-    if (TP.isElement(elem = aSignal.at('ApplicationTag'))) {
-        //  Grab the UI root window and focus it.
-        if (TP.isWindow(rootWin = TP.nodeGetWindow(elem))) {
-            rootWin.focus();
+    (function(signal) {
+
+        var elem,
+            rootWin;
+
+        //  Grab the UI root window and focus it if possible.
+        if (TP.isElement(elem = signal.at('ApplicationTag'))) {
+            if (TP.isWindow(rootWin = TP.nodeGetWindow(elem))) {
+                rootWin.focus();
+            }
         }
-    }
 
-    //  If we're asked to trigger routing on startup do that to properly set the
-    //  initial path context.
-    if (TP.sys.cfg('uri.routing.onstart')) {
-        this.getRouter().route(TP.sys.getLaunchURL());
-    }
+        //  Signal that we are starting. This provides a hook point for extensions
+        //  etc. to tap into the startup sequence before routing or other behaviors
+        //  but after we're sure the UI has been finalized.
+        this.signal('TP.sig.AppStart');
 
-    //  Signal that everything is ready and that the application did start.
-    this.signal('TP.sig.AppDidStart');
+        //  If we're asked to trigger routing on startup do that to properly set
+        //  the initial path context.
+        if (TP.sys.cfg('uri.routing.onstart')) {
+            this.getRouter().route(TP.sys.getLaunchURL());
+        }
+
+        try {
+            TP.boot.$setStage('liftoff');
+        } finally {
+            //  Set our final stage/state flags so dependent
+            //  pieces of logic can switch to their "started"
+            //  states (ie. no more boot log usage etc.)
+            TP.sys.hasStarted(true);
+        }
+
+        //  Signal that everything is ready and that the application did start.
+        this.signal('TP.sig.AppDidStart');
+
+    }.bind(this).afterUnwind(aSignal));
 
     return this;
 });
