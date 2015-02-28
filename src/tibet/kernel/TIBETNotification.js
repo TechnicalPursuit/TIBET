@@ -5663,7 +5663,9 @@ function(anOrigin, signalSet, aPayload, aType) {
 
             TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
         } catch (e) {
-            void 0;     //  TODO: verify we want to do this here.
+            //  Catch is required for older IE versions and void is needed to
+            //  keep lint happy. The notify call handles error reporting.
+            void 0;
         } finally {
             sig.setSignalName(fixedName);
         }

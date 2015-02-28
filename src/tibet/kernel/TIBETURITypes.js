@@ -4586,7 +4586,8 @@ function(aName) {
             try {
                 result = TP.global[str];
             } catch (e) {
-                //  ignore errors attempting lookup.
+                //  Ignore errors attempting lookup.
+                void 0;
             }
         }
     }
