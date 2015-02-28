@@ -8671,11 +8671,11 @@ function() {
 
     //  Always need a route to match "anything" as our backstop. If no routes
     //  are ever defined this routine should still produce something reasonable.
-    this.definePath(/.*/, this.processRoute);
+    this.defineRoute(/.*/, this.processPath);
 
     //  Define the root pattern route for "empty paths".
-    this.definePath(/^\/$/, function() {
-        return TP.ac(this.get('rootName'), TP.ac());
+    this.defineRoute(/^\/$/, function() {
+        return TP.ac(this.get('rootName'), TP.hc());
     }.bind(this));
 
     return;
@@ -8683,18 +8683,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('definePath',
+TP.core.URIRouter.Type.defineMethod('defineRoute',
 function(pattern, processor) {
 
     /**
-     * @method definePath
-     * @summary Associates a route pattern with a pattern processor which should
-     *     return a signal instance to be fired.
+     * @method defineRoute
+     * @summary Expresses interest in a specific URL pattern, optionally
+     *     defining a function used to produce the signal and payload values to
+     *     be fired when the pattern is matched by the routing engine.
      * @param {String|RegExp} pattern The string or regular expression to match.
      * @param {Function} [processor] A function taking a path, match result, and
-     *     token names which should return an Array containing a signal name and
-     *     parameter hash to use as a signal payload. Defaults to the receiver's
-     *     processRoute function.
+     *     token names used to produce an Array containing a signal name and
+     *     dictionary to use as a signal payload. Defaults to the receiver's
+     *     processPath function.
      */
 
     var result,
@@ -8710,11 +8711,12 @@ function(pattern, processor) {
 
     //  Exception will have raised during processing, just exit.
     if (TP.notValid(regex)) {
-        return;
+        return this.raise('InvalidRoute', 'Unable to produce RegExp for ' +
+            pattern);
     }
 
     //  Default the processor function to our standard one.
-    func = TP.ifInvalid(processor, this.processRoute);
+    func = TP.ifInvalid(processor, this.processPath.bind(this));
 
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
@@ -8752,11 +8754,122 @@ function(token, pattern) {
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('processPath',
+function(path, match, names) {
+
+    var parts,
+        name,
+        params;
+
+    params = TP.hc();
+
+    //  Only a full match value, no parameterized/captured sections.
+    if (match.length === 1) {
+        parts = match[0].slice(1).split('/');
+        name = parts.reduce(function(prev, current, index, array) {
+
+            //  Treat identifiers as signal name segments.
+            if (TP.regex.JS_IDENTIFIER.test(current)) {
+                return prev + current.asTitleCase();
+            }
+
+            //  Treat everything else with a real value like an argument.
+            params.atPut('arg' + params.getSize(), current);
+            return prev;
+
+        }, 'Route');
+    } else {
+        //  Throw away the full-match portion. This will also shift the list so
+        //  our naming indexes should resolve correctly.
+        match.shift();
+
+        name = match.reduce(function(prev, current, index, array) {
+            var token;
+
+            token = names.at(index);
+            if (TP.notEmpty(token)) {
+                //  Found a named parameter segment.
+                params.atPut(token, current);
+            } else if (TP.regex.JS_IDENTIFIER.test(current)) {
+                return prev + current.asTitleCase();
+            } else {
+                params.atPut('arg' + params.getSize(), current);
+            }
+            return prev;
+
+        }, 'Route');
+    }
+
+    return TP.ac(name, params);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('processPattern',
+function(pattern) {
+
+    /**
+     * @method processPattern
+     * @summary Converts a pattern into a fully-functional regular expression
+     *     for use in route matching and returns the pattern and a list of token
+     *     names to assign to matched positions.
+     * @param {String|RegExp} pattern The pattern to process.
+     * @returns {Array} An array containing the pattern and zero or more string
+     *     names for embedded token values being matched.
+     */
+
+    var str,
+        parts,
+        tokens,
+        names;
+
+    if (TP.isRegExp(pattern)) {
+        return TP.ac(pattern, TP.ac());
+    }
+
+    if (!TP.isString(pattern)) {
+        this.raise('InvalidParameter', pattern);
+    }
+
+    tokens = this.get('tokens');
+    names = TP.hc();
+
+    str = pattern.slice(1);
+    //  TODO:   need to parse rather than split to avoid embedded / impact. Done
+    //  properly we could potentially mix regex, token, and "normal" segments.
+    parts = str.split('/');
+
+    parts = parts.map(function(item, index) {
+        var pattern,
+            str;
+
+        //  Check for a token pattern of this name.
+        if (item.charAt(0) === ':') {
+            names.atPut(index, item.slice(1));
+            pattern = tokens.at(item.slice(1));
+            if (TP.isValid(pattern)) {
+                str = TP.str(pattern);
+                return '(' + str.slice(1, str.lastIndexOf('/') + ')');
+            } else {
+                return '(.*?)';
+            }
+        }
+
+        return '(' + item + ')';
+    });
+
+    str = '\\/' + parts.join('\\/');
+
+    return TP.ac(RegExp.construct(str), names);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('processRoute',
 function(path) {
 
     /**
-     * @method processPath
-     * @summary Processes the path, searching for the first route which matches.
+     * @method processRoute
+     * @summary Processes a route, searching for the first matching handler.
      *     If the path matches a route pattern that route's processor function
      *     is invoked to convert the path into a signal name/payload pair.
      * @param {String} path The URL path segment to process.
@@ -8792,115 +8905,6 @@ function(path) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('processPattern',
-function(pattern) {
-
-    /**
-     * @method processPattern
-     * @summary Converts a pattern into a fully-functional regular expression
-     *     for use in route matching and returns the pattern and a list of token
-     *     names to assign to matched positions.
-     * @param {String|RegExp} pattern The pattern to process.
-     * @returns {Array} An array containing the pattern and zero or more string
-     *     names for embedded token values being matched.
-     */
-
-    var str,
-        parts,
-        tokens,
-        names;
-
-    if (TP.isRegExp(pattern)) {
-        return TP.ac(pattern, TP.ac());
-    }
-
-    if (!TP.isString(pattern)) {
-        this.raise('InvalidParameter', pattern);
-    }
-
-    tokens = this.get('tokens');
-    names = TP.hc();
-
-    str = pattern.slice(1);
-    parts = str.split('/');
-
-    parts = parts.map(function(item, index) {
-        var pattern,
-            str;
-
-        //  Check for a token pattern of this name.
-        if (item.charAt(0) === ':') {
-            names.atPut(index, item.slice(1));
-            pattern = tokens.at(item.slice(1));
-            if (TP.isValid(pattern)) {
-                str = TP.str(pattern);
-                return '(' + str.slice(1, str.lastIndexOf('/') + ')');
-            } else {
-                return '(.*?)';
-            }
-        }
-
-        return '(' + item + ')';
-    });
-
-    str = '\\/' + parts.join('\\/');
-
-    return TP.ac(RegExp.construct(str), names);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIRouter.Type.defineMethod('processRoute',
-function(path, match, names) {
-
-    var parts,
-        name,
-        params;
-
-    params = TP.hc();
-
-    //  Only a full match value, no parameterized/captured sections.
-    if (match.length === 1) {
-        parts = match[0].slice(1).split('/');
-        name = parts.reduce(function(prev, current, index, array) {
-
-            //  Treat identifiers as signal name segments.
-            if (TP.regex.JS_IDENTIFIER.test(current)) {
-                return prev + current.asTitleCase();
-            }
-
-            //  Treat everything else with a real value like an argument.
-            params.atPut('arg' + params.getSize(), current);
-            return prev;
-
-        }, '');
-    } else {
-        //  Throw away the full-match portion. This will also shift the list so
-        //  our naming indexes should resolve correctly.
-        match.shift();
-
-        name = match.reduce(function(prev, current, index, array) {
-            var token;
-
-            token = names.at(index);
-            if (TP.notEmpty(token)) {
-                //  Found a named parameter segment.
-                params.atPut(token, current);
-            } else if (TP.regex.JS_IDENTIFIER.test(current)) {
-                return prev + current.asTitleCase();
-            } else {
-                params.atPut('arg' + params.getSize(), current);
-            }
-            return prev;
-
-        }, '');
-    }
-
-    return TP.ac(name, params);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.URIRouter.Type.defineMethod('route',
 function(aURI, aRequest) {
 
@@ -8911,6 +8915,9 @@ function(aURI, aRequest) {
         lastPath,
         trigger,
         path,
+        name,
+        payload,
+        type,
         routes,
         result,
         signal;
@@ -8956,11 +8963,32 @@ function(aURI, aRequest) {
     } else {
         //  Routable path change. In this case we ignore boot param shifts since
         //  that could simply be failure to duplicate them during pushState.
-        result = this.processPath(path);
+        result = this.processRoute(path);
 
-        signal = TP.sig.RouteChange.construct(TP.str(result.at(1)));
-        signal.setOrigin(TP.sys.getHistory().getNativeWindow());
-        signal.setSignalName(TP.str(result.at(0)));
+        if (TP.isEmpty(result)) {
+            return;
+        }
+
+        name = TP.str(result.at(0));
+        payload = result.at(1);
+
+        //  Try to find a custom route change subtype for the named route.
+        type = TP.sys.getTypeByName('TP.sig.' + name);
+        if (TP.notValid(type)) {
+            type = TP.sys.getTypeByName('APP.sig.' + name);
+        }
+
+        //  Build the signal instance we'll fire and set its name as needed.
+        if (TP.isValid(type)) {
+            signal = type.construct(payload);
+        } else {
+            signal = TP.sig.RouteChange.construct(payload);
+            signal.setSignalName(name);
+        }
+
+        //  For origin we use ANY since all routes are from 'top' anyway. This
+        //  also helps avoid multiple dispatch for origin differences.
+        signal.setOrigin(TP.ANY);
 
         if (TP.sys.cfg('log.routes')) {
             TP.info('route change: ' + signal.getSignalName() + ' with: ' +
