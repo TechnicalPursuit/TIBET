@@ -1661,14 +1661,14 @@ function(aSignal, dontTraverseSpoofs, startSignalName, dontTraverse) {
 
         if (hasOrigin) {
 
-            fName = sigType.getHandlerName(orgid, false, aSignal);
+            fName = sigType.getHandlerName(orgid, aSignal, null, false);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = sigType.getHandlerName(orgid, true, aSignal);
+            fName = sigType.getHandlerName(orgid, aSignal, null, true);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
@@ -1676,14 +1676,14 @@ function(aSignal, dontTraverseSpoofs, startSignalName, dontTraverse) {
             }
         }
 
-        fName = sigType.getHandlerName(null, false, aSignal);
+        fName = sigType.getHandlerName(null, aSignal, null, false);
         if (TP.canInvoke(this, fName)) {
             handler = this[fName];
             handlers.atPut(key, handler);
             return handler;
         }
 
-        fName = sigType.getHandlerName(null, true, aSignal);
+        fName = sigType.getHandlerName(null, aSignal, null, true);
         if (TP.canInvoke(this, fName)) {
             handler = this[fName];
             handlers.atPut(key, handler);
@@ -1734,14 +1734,14 @@ function(aSignal, dontTraverseSpoofs, startSignalName, dontTraverse) {
             //  instance.
 
             if (hasOrigin) {
-                fName = sigType.getHandlerName(orgid, false);
+                fName = sigType.getHandlerName(orgid, null, null, false);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
-                fName = sigType.getHandlerName(orgid, true);
+                fName = sigType.getHandlerName(orgid, null, null, true);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
@@ -1749,14 +1749,14 @@ function(aSignal, dontTraverseSpoofs, startSignalName, dontTraverse) {
                 }
             }
 
-            fName = sigType.getHandlerName(null, false);
+            fName = sigType.getHandlerName(null, null, null, false);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = sigType.getHandlerName(null, true);
+            fName = sigType.getHandlerName(null, null, null, true);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);

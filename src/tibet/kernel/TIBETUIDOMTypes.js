@@ -2536,13 +2536,13 @@ function(aSignal, isCapturing) {
     //  Then we check that we're a responder for any signals that we have a
     //  handler for.
     return TP.canInvoke(
-                this, sigType.getHandlerName(origin, false, aSignal)) ||
+                this, sigType.getHandlerName(origin, aSignal, null, false)) ||
             TP.canInvoke(
-                this, sigType.getHandlerName(origin, true, aSignal)) ||
+                this, sigType.getHandlerName(origin, aSignal, null, true)) ||
             TP.canInvoke(
-                this, sigType.getHandlerName(null, false, aSignal)) ||
+                this, sigType.getHandlerName(null, aSignal, null, false)) ||
             TP.canInvoke(
-                this, sigType.getHandlerName(null, true, aSignal));
+                this, sigType.getHandlerName(null, aSignal, null, true));
 });
 
 //  ------------------------------------------------------------------------

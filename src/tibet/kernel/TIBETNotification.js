@@ -315,7 +315,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Type.defineMethod('getHandlerName',
-function(anOrigin, wantsFullName, aSignal, aState) {
+function(anOrigin, aSignal, aState, wantsFullName) {
 
     /**
      * @method getHandlerName
@@ -327,11 +327,11 @@ function(anOrigin, wantsFullName, aSignal, aState) {
      *     state value.
      * @param {String} anOrigin An origin ID that should be used as part
      *     of the handler computation.
-     * @param {Boolean} wantsFullName Whether or not to use the signal's 'full
-     *     name' when computing the handler name. Defaults to false.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
      * @param {String} aState The application state to use. Defaults to the
      *     current application controller state.
+     * @param {Boolean} wantsFullName Whether or not to use the signal's 'full
+     *     name' when computing the handler name. Defaults to false.
      * @returns {String}
      */
 

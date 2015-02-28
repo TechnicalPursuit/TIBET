@@ -177,12 +177,12 @@ function(aRequest) {
                             req.getTypeName());
     }
 
-    fname = reqType.getHandlerName(null, false, aRequest);
+    fname = reqType.getHandlerName(null, aRequest, null, false);
     if (TP.isMethod(this[fname])) {
         return this[fname](req);
     }
 
-    fname = reqType.getHandlerName(null, true, aRequest);
+    fname = reqType.getHandlerName(null, aRequest, null, true);
     if (TP.isMethod(this[fname])) {
         return this[fname](req);
     }

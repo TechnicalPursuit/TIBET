@@ -2877,8 +2877,10 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
                 continue;
             }
 
-            shortHandler = sigType.getHandlerName(null, false) + suffix;
-            fullHandler = sigType.getHandlerName(null, true) + suffix;
+            shortHandler = sigType.getHandlerName(null, null, null, false) +
+                suffix;
+            fullHandler = sigType.getHandlerName(null, null, null, true) +
+                suffix;
 
             response.setSignalName(signame + suffix);
 
