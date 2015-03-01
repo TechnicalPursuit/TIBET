@@ -191,6 +191,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('getFacetedAspectNames',
+function() {
+
+    /**
+     * @method getFacetedAspectNames
+     * @summary Returns an Array of the names of the aspects that are faceted on
+     *     the receiver.
+     * @returns {Array} A list of the names of aspects that are faceted on the
+     *     receiver.
+     */
+
+    var aspectsToCheck,
+        index;
+
+    aspectsToCheck = this.callNextMethod();
+
+    //  We want to filter out the 'data' slot
+    if ((index = aspectsToCheck.indexOf('data')) !== TP.NOT_FOUND) {
+        aspectsToCheck.splice(index, 1);
+    }
+
+    return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('getValidatingAspectNames',
 function() {
 

@@ -7380,7 +7380,7 @@ function() {
      * @returns {TP.lang.RootObject} The receiver.
      */
 
-    this.checkFacets(this.getValidatingAspectNames());
+    this.checkFacets(this.getFacetedAspectNames());
 
     return this;
 });
@@ -7550,6 +7550,41 @@ function(anAspect, aFacet, aDescription) {
     TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, baseSig);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getFacetedAspectNames',
+function() {
+
+    /**
+     * @method getFacetedAspectNames
+     * @summary Returns an Array of the names of the aspects that are faceted on
+     *     the receiver.
+     * @returns {Array} A list of the names of aspects that are faceted on the
+     *     receiver.
+     */
+
+    var aspectsToCheck,
+        thisType;
+
+    aspectsToCheck = this.getKeys();
+
+    //  We want to filter out slots holding facet values
+    aspectsToCheck = aspectsToCheck.reject(
+            function(aspectName) {
+                return TP.regex.FACET_SLOT_NAME_MATCH.test(aspectName);
+            });
+
+    thisType = this.getType();
+
+    //  Next filter out slots that don't have property descriptors
+    aspectsToCheck = aspectsToCheck.select(
+            function(aspectName) {
+                return TP.isValid(thisType.getInstDescriptorFor(aspectName));
+            });
+
+    return aspectsToCheck;
 });
 
 //  ------------------------------------------------------------------------
