@@ -1092,6 +1092,21 @@ function(anOrigin, aPayload, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.WorkflowSignal.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @method getValue
+     * @summary Returns the receiving signal's value, typically the 'result'
+     *     data from either then request and/or response.
+     * @returns {Object}
+     */
+
+    return this.get('result');
+});
+
+//  ------------------------------------------------------------------------
+
 //  Resolve the traits right away as subtypes of this type are used during the
 //  booting process.
 TP.sig.WorkflowSignal.finalizeTraits();
