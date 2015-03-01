@@ -3087,6 +3087,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @method getValue
+     * @summary Returns the immediate value of the URI, bypassing any attempts
+     *     to load the URI if it hasn't yet been loaded.
+     * @return {Object} The value of the receiver's resource.
+     */
+
+    return this.$get('resource');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getWebPath',
 function() {
 
