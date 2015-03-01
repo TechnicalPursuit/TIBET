@@ -7691,16 +7691,25 @@ function() {
      *     receiver.
      */
 
-    var aspectsToCheck;
+    var aspectsToCheck,
+        thisType;
 
     aspectsToCheck = this.getKeys();
 
     //  We want to filter out slots holding facet values
     aspectsToCheck = aspectsToCheck.reject(
-                        function(aspectName) {
-                            return TP.regex.FACET_SLOT_NAME_MATCH.test(
-                                                                aspectName);
-                        });
+                function(aspectName) {
+                    return TP.regex.FACET_SLOT_NAME_MATCH.test(aspectName);
+                });
+
+    thisType = this.getType();
+
+    //  Next filter out slots that only have validation constraints
+    aspectsToCheck = aspectsToCheck.select(
+                function(aspectName) {
+                    return TP.isValid(thisType.getInstFacetSettingFor(
+                                                        aspectName, 'valid'));
+                });
 
     return aspectsToCheck;
 });
