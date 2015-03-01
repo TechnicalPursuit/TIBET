@@ -284,7 +284,8 @@ function(aURI, resultType) {
      *     available as the value of the returned promise.
      * @param {TP.core.URI} The URI to fetch the resource for.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.gui.Driver} The receiver.
+     * @returns {TP.extern.Promise} A Promise which completes when the resource
+     *     is available.
      */
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
@@ -294,7 +295,7 @@ function(aURI, resultType) {
     //  'Then' a Function onto our internal Promise that will itself return a
     //  Promise when called upon. That Promise will await the 'RequestSucceeded'
     //  signal and resolve the Promise with the result.
-    this.get('promiseProvider').then(
+    return this.get('promiseProvider').then(
         function() {
             var promise;
 
@@ -325,8 +326,6 @@ function(aURI, resultType) {
 
             return promise;
         });
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -388,9 +387,7 @@ function(aURI, aWindow) {
     }
 
     //  Fetch the result and then set the Window's body to the result.
-    this.fetchResource(aURI, TP.DOM);
-
-    this.get('promiseProvider').then(
+    this.fetchResource(aURI, TP.DOM).then(
         function(result) {
             var tpWin,
                 tpDoc,
@@ -427,22 +424,16 @@ function(aURI, aWindow) {
      * @returns {TP.gui.Driver} The receiver.
      */
 
-    var provider;
-
     if (!TP.isKindOf(aURI, TP.core.URI)) {
         return this.raise('TP.sig.InvalidURI');
     }
 
     //  Fetch the result and then set the Window's body to the result.
-    this.fetchResource(aURI, TP.DOM);
-
-    provider = this.get('promiseProvider');
-
     //  'Then' a Function onto our internal Promise that will itself return a
     //  Promise when called upon. That Promise will await the 'onload' to fire
     //  from setting the content, wait 100ms (to give the GUI a chance to draw)
     //  and then resolve the Promise.
-    provider.then(
+    this.fetchResource(aURI, TP.DOM).then(
         function(result) {
             var tpWin,
                 tpDoc,

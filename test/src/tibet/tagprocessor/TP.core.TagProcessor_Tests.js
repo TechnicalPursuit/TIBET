@@ -252,9 +252,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#nochange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM);
-
-        test.then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
                 var processor,
 
@@ -286,9 +284,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM);
-
-        test.then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
                 var processor;
 
@@ -311,9 +307,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM);
-
-        test.then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
                 var processor;
 
@@ -338,9 +332,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM);
-
-        test.then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
                 var processor;
 
@@ -364,9 +356,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM);
-
-        test.then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
                 var processor;
 
@@ -516,9 +506,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM);
-
-        test.then(
+        test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
 
                 var usingDebugger,
