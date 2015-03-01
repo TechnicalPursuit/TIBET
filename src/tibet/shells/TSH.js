@@ -2300,7 +2300,7 @@ function(aRequest) {
          '@version'];
 
     aliases = {'@virtual': '@abstract',
-        '@returns': '@return',
+        '@return': '@returns',
         '@extends': '@augments',
         '@const': '@constant',
         '@defaultvalue': '@default',
