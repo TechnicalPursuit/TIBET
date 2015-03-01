@@ -111,6 +111,11 @@ TP.sys.setcfg('boot.nourlargs', false);
 //  process control
 //  ---
 
+//  should we log boot output to the console as well? normally false but if
+//  you're going to be pausing during startup it helps since you can avoid
+//  having to poke at the UI to see the log.
+TP.sys.setcfg('boot.consolelog', false);
+
 //  overall deferred loading flag. when false the defer attribute is ignored
 //  and all script nodes are loaded. when true the nodes are captured in the
 //  manifest but their code isn't actually loaded during initial startup.
