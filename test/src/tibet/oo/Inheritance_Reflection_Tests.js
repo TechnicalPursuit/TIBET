@@ -4873,11 +4873,7 @@ function() {
         var obj,
 
             val,
-            correctVal,
-
-            oldLogLevel,
-
-            inlineCount;
+            correctVal;
 
         //  For this particular test, we undo the behavior we have in the
         //  before() / after() and turn trait autoresolution on

@@ -553,8 +553,7 @@ function(aTypeName, shouldReload, isProxy) {
 
     var reload,
         proxy,
-        type,
-        typeinfo;
+        type;
 
     TP.stop('break.require');
 
@@ -587,7 +586,7 @@ function(aTypeName, shouldReload, isProxy) {
         } else {
             //  if the type is already loaded then we don't need to do
             //  anything to get new metadata, we can use what's in place
-            typeinfo = TP.sys.getMetadata('types');
+            void 0;
         }
     }
 

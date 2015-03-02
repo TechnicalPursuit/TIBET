@@ -29,7 +29,9 @@
 /**
  * The namespace responsible for all framework logging.
  */
+/* eslint-disable no-unused-vars */
 TP.defineNamespace('log', 'TP');
+/* eslint-enable no-unused-vars */
 
 //  ============================================================================
 //  Manager

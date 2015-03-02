@@ -551,7 +551,6 @@ function(source, shell, sibling, request) {
     var requote,
 
         arr,
-        len,
 
         command,
         result,
@@ -599,8 +598,6 @@ function(source, shell, sibling, request) {
                 TP.$condenseJS(source, false, false,
                                 this.$tshOperators,
                                 true, true, true);
-
-    len = arr.length;
 
     cmdns = 'tsh';
 
@@ -1893,7 +1890,6 @@ function(aRequest) {
         root,
         shell,
         nested,
-        cmdns,
         cmdID,
 
         src,
@@ -1902,7 +1898,6 @@ function(aRequest) {
         req,
 
         debug,
-        trace,
 
         i,
         children,
@@ -1942,10 +1937,6 @@ function(aRequest) {
     //  nested scripts have to handle their stdio with respect to the outer
     //  request in certain circumstances, so track that state.
     nested = TP.elementIsNested(node);
-
-    //  can't change command xmlns defaults in mid-script, whatever's set at
-    //  the time the script starts is what the entire script gets.
-    cmdns = shell.getType().get('commandPrefix');
 
     cmdID = aRequest.at('cmdID');
 
@@ -2024,7 +2015,6 @@ function(aRequest) {
     }
 
     debug = TP.sys.cfg('break.tsh_tag_exec');
-    trace = TP.sys.cfg('tsh.trace_commands');
 
     i = 0;
     children = node.childNodes;
@@ -2418,7 +2408,6 @@ function(src, shell, request) {
         tag,
         term,
         here,
-        intag,
         str,
         literal,
         preserve;
@@ -2442,7 +2431,6 @@ function(src, shell, request) {
     token = arr[i];
 
     mode = 'content';
-    intag = false;
 
     result = TP.ac();
     here = TP.ac();
@@ -2589,7 +2577,6 @@ function(src, shell, request) {
                     result.push(TP.xmlLiteralsToEntities(tag.join('')));
                     tag.length = 0;
 
-                    intag = false;
                 } else {
                     //  tag, no additional processing necessary, should
                     //  be in valid markup format already
@@ -2597,10 +2584,6 @@ function(src, shell, request) {
                     tag.length = 0;
 
                     mode = 'content';
-
-                    /* eslint-disable no-extra-parens */
-                    intag = (token.value === '<');
-                    /* eslint-enable no-extra-parens */
 
                     i += 1;
                 }
@@ -2670,7 +2653,6 @@ function(src, shell, request) {
                 //  equivalent tag we can wait for the full desugaring pass
                 //  to handle the rest
                 result.push('<tsh:script>');
-                intag = true;
 
                 i += 1;
                 break;
@@ -2679,7 +2661,6 @@ function(src, shell, request) {
 
                 //  close of nested script tag.
                 result.push('</tsh:script>');
-                intag = false;
 
                 i += 1;
                 break;
@@ -2689,7 +2670,6 @@ function(src, shell, request) {
                 //  equivalent tag we can wait for the full desugaring pass
                 //  to handle the rest
                 result.push('<tsh:script subshell="true">');
-                intag = true;
 
                 i += 1;
                 break;
@@ -2698,7 +2678,6 @@ function(src, shell, request) {
 
                 //  close of nested script tag.
                 result.push('</tsh:script>');
-                intag = false;
 
                 i += 1;
                 break;
@@ -3348,7 +3327,6 @@ function(output, request) {
         asIs,
         buffer,
         buffered,
-        shell,
 
         start,
         end;
@@ -3380,10 +3358,6 @@ function(output, request) {
         //  output here is input for a downstream process/command.
         return;
     }
-
-    //  output to the standard error reporting function if we didn't return
-    //  due to buffering check
-    shell = this.at('cmdShell');
 
     //  second "common flag" is the -asis flag telling us to skip
     //  formatting the output any further

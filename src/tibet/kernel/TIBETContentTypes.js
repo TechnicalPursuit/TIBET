@@ -1378,7 +1378,6 @@ function(aReturnValue, targetObj) {
 
     var retVal,
 
-        shouldCollapse,
         extractWith,
 
         keys,
@@ -1393,7 +1392,7 @@ function(aReturnValue, targetObj) {
         //  If we're configured to collapse, then do it.
 
         /* eslint-disable no-extra-parens */
-        if ((shouldCollapse = this.get('shouldCollapse'))) {
+        if (this.get('shouldCollapse')) {
             retVal = TP.collapse(retVal);
         }
         /* eslint-enable no-extra-parens */
@@ -4140,7 +4139,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     var args,
         oldVal,
 
-        shouldCollapse,
         newVal,
 
         natTargetObj,
@@ -4202,7 +4200,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     newVal = attributeValue;
 
     /* eslint-disable no-extra-parens */
-    if ((shouldCollapse = this.get('shouldCollapse'))) {
+    if (this.get('shouldCollapse')) {
         newVal = TP.collapse(newVal);
     }
     /* eslint-enable no-extra-parens */
@@ -5632,8 +5630,6 @@ function(aTPNode) {
 
     var node,
 
-        pathStr,
-
         oldMakeStruct,
         results,
 
@@ -5643,10 +5639,6 @@ function(aTPNode) {
         elem;
 
     node = aTPNode.getNativeNode();
-
-    if (TP.notValid(pathStr = this.get('$transformedPath'))) {
-        pathStr = this.get('srcPath');
-    }
 
     oldMakeStruct = this.get('shouldMake');
     this.set('shouldMake', false);
@@ -5941,12 +5933,11 @@ function() {
      *     referenced by expression in the receiver.
      */
 
-    var context,
-        locationSteps;
+    var locationSteps;
 
     //  force creation of a non-native path processing context, which will
     //  ensure that we get a parsed path set in the tpPath attribute
-    if (TP.notValid(context = this.$get('$tpContext'))) {
+    if (TP.notValid(this.$get('$tpContext'))) {
         this.$createNonNativeParserContext();
     }
 

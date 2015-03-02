@@ -469,7 +469,6 @@ function(aSignal) {
      */
 
     var sigTarget,
-        targetWin,
 
         handledSignal,
 
@@ -477,13 +476,6 @@ function(aSignal) {
         targetTPElem;
 
     sigTarget = aSignal.getTarget();
-
-    //  Compute the 'target window' - that is, the window that the event's
-    //  target is in... this may be different than the signals' window (weird, I
-    //  know).
-    if (TP.isValid(this.get('currentTargetTPElem'))) {
-        targetWin = this.get('currentTargetTPElem').getNativeWindow();
-    }
 
     handledSignal = false;
 

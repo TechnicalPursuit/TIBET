@@ -1408,9 +1408,7 @@ function(target, type, args, callback, currentElement) {
      * @returns {TP.gui.Sequence} The receiver.
      */
 
-    var sequenceEntries,
-
-        populateSynArgs,
+    var populateSynArgs,
 
         syn,
 
@@ -1418,8 +1416,6 @@ function(target, type, args, callback, currentElement) {
 
         doc,
         newEvent;
-
-    sequenceEntries = this.get('sequenceEntries');
 
     //  An 'args' normalization routine that makes sure that some of Syn's
     //  arguments are set properly to deal with the fact that Syn's defaults

@@ -2818,13 +2818,11 @@ function(aRequest) {
      * @returns {Object} The resource or TP.sig.Response when async.
      */
 
-    var frag;
-
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $getPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
-        (frag = this.getFragment()) === 'document') {
+        this.getFragment() === 'document') {
         return this.$getPrimaryResource(aRequest, true);
     }
 
@@ -3433,8 +3431,6 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
 
     var fragment,
 
-        resultType,
-        refresh,
         async,
 
         subrequest,
@@ -3456,13 +3452,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
         fragment = fragment.indexOf('#') === 0 ? fragment : '#' + fragment;
     }
 
-    //  capture result type early, it can be defaulted by load() and other
-    //  low-level calls and we want the original value for later use. NOTE
-    //  that we don't set a value here, null avoids forcing a result type.
-    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
-
-    //  we'll need these to help decide which branch to take below.
-    refresh = TP.ifKeyInvalid(aRequest, 'refresh', null);
+    //  we'll need this to help decide which branch to take below.
     async = this.rewriteRequestMode(aRequest);
 
     //  If we're going to have to request the data then the key thing we
@@ -3758,13 +3748,11 @@ function(aResource, aRequest) {
      *     setting any fragment value.
      */
 
-    var frag;
-
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
-        (frag = this.getFragment()) === 'document') {
+        this.getFragment() === 'document') {
         return this.$setPrimaryResource(aResource, aRequest);
     }
 
@@ -4932,11 +4920,9 @@ function(aRequest) {
      */
 
     var subrequest,
-        async,
-        thisref;
+        async;
 
     subrequest = this.constructSubRequest(aRequest);
-    thisref = this;
 
     subrequest.defineMethod(
             'completeJob',
@@ -5521,7 +5507,6 @@ function(aRequest) {
 
     var request,
         subrequest,
-        fragment,
         thisref,
         async;
 
@@ -5534,7 +5519,6 @@ function(aRequest) {
     //  The subrequest here is used for content acquisition.
     subrequest = this.constructSubRequest(aRequest);
 
-    fragment = this.getFragment();
     thisref = this;
 
     subrequest.defineMethod(
@@ -6946,11 +6930,9 @@ function(parts) {
      * @returns {TP.core.URI} The receiver.
      */
 
-    var id;
-
     //  force ID expansion if it didn't already happen. this will also force
     //  our parts to be encached for us
-    id = this.getID();
+    this.getID();
 
     return this;
 });
@@ -8964,7 +8946,6 @@ function(aURI) {
         name,
         payload,
         type,
-        routes,
         result,
         signal;
 
@@ -9072,8 +9053,6 @@ function(targetURI, aRequest) {
 
     var subrequest,
         targetLoc,
-        loaded,
-        result,
         response;
 
     TP.stop('break.uri_load');
@@ -9104,8 +9083,6 @@ function(targetURI, aRequest) {
     //  rewriting happens prior to handler lookup, so we just want the
     //  concrete resource URI location so we can load it.
     targetLoc = targetURI.getLocation();
-
-    loaded = targetURI.isLoaded();
 
     subrequest.atPutIfAbsent('async', false);
     subrequest.atPutIfAbsent('shouldReport', false);
@@ -9159,7 +9136,7 @@ function(targetURI, aRequest) {
 
     //  do the work of loading content. for file operations this call is
     //  synchronous and returns the actual data
-    result = TP.$fileLoad(targetLoc, subrequest);
+    TP.$fileLoad(targetLoc, subrequest);
 
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
@@ -9193,7 +9170,6 @@ function(targetURI, aRequest) {
 
     var subrequest,
         targetLoc,
-        result,
         response;
 
     TP.stop('break.uri_nuke');
@@ -9249,7 +9225,7 @@ function(targetURI, aRequest) {
     //  concrete resource URI location so we can save it.
     targetLoc = targetURI.getLocation();
 
-    result = TP.$fileDelete(targetLoc, subrequest);
+    TP.$fileDelete(targetLoc, subrequest);
 
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
@@ -9290,7 +9266,6 @@ function(targetURI, aRequest) {
     var subrequest,
         targetLoc,
         content,
-        result,
         response;
 
     TP.stop('break.uri_save');
@@ -9360,7 +9335,7 @@ function(targetURI, aRequest) {
 
     //  do the work of saving content. for file operations this call is
     //  synchronous and returns a boolean for success (true/false)
-    result = TP.$fileSave(targetLoc, subrequest);
+    TP.$fileSave(targetLoc, subrequest);
 
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again

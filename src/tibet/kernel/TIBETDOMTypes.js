@@ -906,7 +906,6 @@ function(aRequest) {
         info,
 
         str,
-        params,
 
         result;
 
@@ -3073,9 +3072,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     native node.
      */
 
-    var node;
-
-    if (!TP.isNode(node = this.getNativeNode())) {
+    if (!TP.isNode(this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode');
     }
 
@@ -3187,16 +3184,13 @@ function(aName) {
      * @returns {TP.core.Node} The receiver.
      */
 
-    var node,
-        nodes,
+    var nodes,
         points,
         ndx;
 
     if (!this.isTransactional()) {
         return this;
     }
-
-    node = this.getNativeNode();
 
     if (TP.notValid(nodes = this.get('nodes'))) {
         //  no-op since we've never checkpointed
@@ -3543,12 +3537,9 @@ function(aName) {
      * @returns {TP.core.Node} The receiver.
      */
 
-    var node,
-        nodes,
+    var nodes,
         ndx,
         points;
-
-    node = this.getNativeNode();
 
     if (!this.isTransactional()) {
         return this;
@@ -3638,16 +3629,13 @@ function(aName) {
      * @returns {TP.core.Node} The receiver.
      */
 
-    var node,
-        nodes,
+    var nodes,
         point,
         points;
 
     if (!this.isTransactional()) {
         return this;
     }
-
-    node = this.getNativeNode();
 
     //  if we don't have nodes then we don't have anything to roll back to
     if (TP.notValid(nodes = this.get('nodes'))) {
@@ -3719,10 +3707,6 @@ function() {
      *     the node.
      * @returns {TP.core.Node} The receiver.
      */
-
-    var node;
-
-    node = this.getNativeNode();
 
     if (!this.isTransactional()) {
         return this;
@@ -9239,7 +9223,6 @@ function(resource, mimeType, fallback) {
         uri,
         location,
         ext,
-        namespace,
         mime,
         extensions,
         name,
@@ -9496,7 +9479,6 @@ function(anObject, aRequest) {
         attrInfo,
         attrStr,
 
-        tagName,
         itemFormat,
         formatArgs,
 
@@ -9538,8 +9520,6 @@ function(anObject, aRequest) {
     } else {
         theRequest.atPut('currentLevel', theRequest.at('currentLevel') + 1);
     }
-
-    tagName = this.getCanonicalName();
 
     //  Note that for these configuration parameters, 'levelInfo' very well
     //  maybe be an empty TP.lang.Hash.
@@ -13977,10 +13957,9 @@ function(aRequest) {
      * @returns {Object} The input data.
      */
 
-    var node,
-        input;
+    var input;
 
-    if (!TP.isNode(node = aRequest.at('cmdNode'))) {
+    if (!TP.isNode(aRequest.at('cmdNode'))) {
         return;
     }
 
@@ -15901,7 +15880,6 @@ function(anObj, filter, useNil) {
 
     var nullVal,
 
-        dataElem,
         structElem,
 
         aFilter,
@@ -15932,7 +15910,6 @@ function(anObj, filter, useNil) {
         return nullVal;
     }
 
-    dataElem = TP.XML_FACTORY_DOCUMENT.createElement('data');
     structElem = TP.XML_FACTORY_DOCUMENT.createElement('struct');
 
     aFilter = TP.ifInvalid(filter, 'unique_attributes');

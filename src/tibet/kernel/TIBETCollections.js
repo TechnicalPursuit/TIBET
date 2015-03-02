@@ -5467,8 +5467,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
         query,
         fname,
         defval,
-        newval,
-        value;
+        newval;
 
     keys = TP.keys(propertyHash);
     len = keys.getSize();
@@ -5476,7 +5475,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
     for (i = 0; i < len; i++) {
         key = keys.at(i);
 
-        if (TP.isDefined(value = this.at(key)) && TP.notFalse(onlyMissing)) {
+        if (TP.isDefined(this.at(key)) && TP.notFalse(onlyMissing)) {
             continue;
         }
 

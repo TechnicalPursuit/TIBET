@@ -32,15 +32,14 @@ function(anObject) {
      * @returns {Boolean}
      */
 
-    var n,
-        s;
+    var s;
 
     if (!'TP.xs.integer'.asType().validate(anObject)) {
         return false;
     }
 
     try {
-        if (!TP.isNumber(n = parseInt(anObject, 10))) {
+        if (!TP.isNumber(parseInt(anObject, 10))) {
             return false;
         }
     } catch (e) {

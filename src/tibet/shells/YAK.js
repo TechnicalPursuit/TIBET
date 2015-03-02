@@ -279,11 +279,9 @@ function(aRequest) {
                 'validator',
                     function(response, request) {
 
-                        var val;
-
                         if (TP.notValid(response) ||
                             response.getSize() < 'http://'.getSize() ||
-                            TP.notValid(val = TP.uc(response))) {
+                            TP.notValid(TP.uc(response))) {
                             return false;
                         }
 
@@ -607,11 +605,9 @@ function(aRequest) {
                     'validator',
                     function(response, request) {
 
-                        var val;
-
                         if (TP.notValid(response) ||
                             response.getSize() < 'http://'.getSize() ||
-                            TP.notValid(val = TP.uc(response))) {
+                            TP.notValid(TP.uc(response))) {
                             return false;
                         }
 

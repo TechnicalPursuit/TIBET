@@ -1416,7 +1416,6 @@ function(aSignal) {
         responder,
 
         req,
-        result,
 
         response;
 
@@ -1432,7 +1431,7 @@ function(aSignal) {
     req.set('requestor', this);
 
     try {
-        result = TP.handle(this, req);
+        TP.handle(this, req);
     } catch (e) {
     } finally {
         //  if there was a responder let it know we're done
@@ -1552,10 +1551,7 @@ function(anObject, aRequest) {
      * @returns {TP.core.Shell} The receiver.
      */
 
-    var message,
-
-        name,
-        raw;
+    var message;
 
     if (TP.isString(anObject)) {
         message = anObject;
@@ -1574,8 +1570,8 @@ function(anObject, aRequest) {
         message = TP.str(anObject);
     }
 
-    name = TP.ifKeyInvalid(aRequest, 'cmdNotifier', null);
-    raw = TP.ifKeyInvalid(aRequest, 'cmdAsIs', false);
+    //name = TP.ifKeyInvalid(aRequest, 'cmdNotifier', null);
+    //raw = TP.ifKeyInvalid(aRequest, 'cmdAsIs', false);
 
     TP.boot.$alert(message);
 
@@ -2862,9 +2858,9 @@ function(aRequest, anArgument) {
      * @returns {Boolean} True if the argument exists.
      */
 
-    var arg;
+    this.todo();
 
-    arg = this.getArguments(aRequest, anArgument);
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -2928,9 +2924,7 @@ function(aRequest) {
 
     var dict,
 
-        node,
-
-        shell;
+        node;
 
     TP.stop('break.tsh_params');
 
@@ -2947,7 +2941,6 @@ function(aRequest) {
         return;
     }
 
-    shell = this;
     dict = TP.hc();
 
     //  TODO:   restructure what's here to simply ask the tsh:param tag
@@ -3161,14 +3154,10 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
-    var node,
-
-        name,
+    var name,
         value,
 
         hash;
-
-    node = aRequest.at('cmdNode');
 
     name = this.getArgument(aRequest, 'ARG0');
     value = this.getArgument(aRequest, 'ARG1');

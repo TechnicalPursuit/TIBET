@@ -1302,14 +1302,10 @@ function(options) {
         result,
         suite,
 
-        beforeMaybe,
-
         params,
         wantsOnly,
 
-        firstPromise,
-        currentPromise,
-        nextPromise;
+        firstPromise;
 
     //  Make sure to clear out any previous state.
     this.reset(options);

@@ -494,12 +494,10 @@ function(aRequest) {
         function(aSignal) {
 
             var req,
-                res,
-                responder;
+                res;
 
             //  do this so the triggering request clears the queue
-            if (TP.isValid(responder =
-                            aSignal.getRequest().get('responder'))) {
+            if (TP.isValid(aSignal.getRequest().get('responder'))) {
                 aSignal.getRequestID().signal('TP.sig.RequestCompleted');
             }
 
@@ -545,12 +543,11 @@ function(aRequest) {
 
                     var req,
                         res,
-                        thread,
-                        responder;
+                        thread;
 
                     //  do this so the current request clears the queue
-                    if (TP.isValid(responder =
-                        anotherSignal.getRequest().get('responder'))) {
+                    if (TP.isValid(
+                            anotherSignal.getRequest().get('responder'))) {
                         anotherSignal.getRequestID().signal(
                             'TP.sig.RequestCompleted');
                     }
@@ -1407,8 +1404,7 @@ function(aRequest) {
         phase,
         node,
         rootDoc,
-        funcName,
-        shell;
+        funcName;
 
     //  list of phases is needed to ensure processed nodes aren't
     //  reprocessed.
@@ -1436,9 +1432,6 @@ function(aRequest) {
 
     //  capture a root document we can use for detachment detection
     rootDoc = TP.nodeGetDocument(node);
-
-    //  hold a reference for traversal entry function
-    shell = this;
 
     //  All phase methods for the TP.core.TSH are prefixed as such.
     funcName = 'tsh' + phase;
@@ -2158,7 +2151,6 @@ function(aRequest) {
 
     var methods,
         terms,
-        regex,
         minified,
         results;
 
@@ -2264,7 +2256,6 @@ function(aRequest) {
         tags,
         aliases,
         keys,
-        dict,
         dups,
         fileDict,
         totalErrors,
@@ -2330,7 +2321,6 @@ function(aRequest) {
             func,
             file,
             lines,
-            line,
             names,
             match,
             found,
@@ -2656,7 +2646,6 @@ function(aRequest) {
             //  sure that a) all items are accounted for, and b) the order of
             //  the items (not including "nested properties") is consistent.
             fParams.forEach(function(pname, index) {
-                var next;
 
                 //  Does the parameter exist?
                 if (cParams.indexOf(pname) === TP.NOT_FOUND) {
@@ -2922,7 +2911,6 @@ function(aRequest) {
 
     var usage,
         arg0,
-        flag,
         meta,
         obj,
         regex,
@@ -3332,11 +3320,7 @@ function(aRequest) {
      */
 
 
-    var node,
-        shell,
-        root,
-
-        input,
+    var input,
 
         len,
         i,
@@ -3357,12 +3341,9 @@ function(aRequest) {
         urlTypeName,
         urlType;
 
-    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+    if (TP.notValid(aRequest.at('cmdNode'))) {
         return aRequest.fail();
     }
-
-    shell = aRequest.at('cmdShell');
-    root = aRequest.at('rootRequest');
 
     //  NB: We supply 'null' as the default value if 'tsh:href' wasn't
     //  specified.
@@ -3475,11 +3456,7 @@ function(aRequest) {
      * @returns {TP.sig.ShellRequest} The request.
      */
 
-    var node,
-        shell,
-        root,
-
-        input,
+    var input,
 
         len,
         i,
@@ -3500,12 +3477,9 @@ function(aRequest) {
 
         type;
 
-    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+    if (TP.notValid(aRequest.at('cmdNode'))) {
         return aRequest.fail();
     }
-
-    shell = aRequest.at('cmdShell');
-    root = aRequest.at('rootRequest');
 
     //  NB: We supply 'null' as the default value if 'tsh:ref' wasn't
     //  specified.
@@ -3715,17 +3689,12 @@ function(aRequest) {
      * @returns {TP.sig.ShellRequest} The request.
      */
 
-    var node,
-
-        shell,
-        includeNatives,
+    var includeNatives,
         typesKeys;
 
-    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+    if (TP.notValid(aRequest.at('cmdNode'))) {
         return aRequest.fail();
     }
-
-    shell = aRequest.at('cmdShell');
 
     typesKeys = TP.sys.getCustomTypes().getKeys();
 
@@ -3822,8 +3791,7 @@ function(aRequest) {
         args,
         argv,
         url,
-        req,
-        res;
+        req;
 
     //  TODO: sanity check them for non-alphanumeric 'command line' chars.
 
@@ -3891,7 +3859,7 @@ function(aRequest) {
         aRequest.complete();
     });
 
-    res = req.fire();
+    req.fire();
 });
 
 //  ------------------------------------------------------------------------
@@ -4038,9 +4006,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeWatchFS',
 function(aRequest) {
     var watcher,
-        url,
-
-        autoReload;
+        url;
 
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
@@ -4055,8 +4021,7 @@ function(aRequest) {
     aRequest.stdout('File system change monitoring active.');
 
     //  If the '--auto' flag was specified, then we're 'auto refreshing'.
-    if (TP.notEmpty(
-            autoReload = this.getArgument(aRequest, 'tsh:auto', null, true))) {
+    if (TP.notEmpty(this.getArgument(aRequest, 'tsh:auto', null, true))) {
         this.set('autoReload', true);
     }
 

@@ -38,9 +38,6 @@ function(test, shellInput, valueTestFunction) {
 
     this.get('promiseProvider').thenPromise(
         function(resolver, rejector) {
-            var threwMsg;
-
-            threwMsg = '';
 
             //  Flip the flag on to ignore eval() errors in the TSH. We'll test
             //  for undefined values here.

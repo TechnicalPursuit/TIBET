@@ -276,15 +276,13 @@ function(aSignal) {
             function(aSignal) {
 
                 var res,
-                    msg,
-                    responder;
+                    msg;
 
                 //  turn off our observation to avoid leaking, note that
                 //  this relies on a closure around the uir symbol
                 uir.ignore(null, 'TP.sig.UserInput');
 
-                if (TP.isValid(responder =
-                        aSignal.getRequest().get('responder'))) {
+                if (TP.isValid(aSignal.getRequest().get('responder'))) {
                     aSignal.getRequestID().signal(
                                         'TP.sig.RequestCompleted');
                 }

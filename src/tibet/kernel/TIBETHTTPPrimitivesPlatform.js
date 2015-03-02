@@ -245,7 +245,6 @@ TP.hc(
             username,
             password,
 
-            headers,
             job,
             estr;
 
@@ -332,7 +331,7 @@ TP.hc(
 
         //  configure headers based on URI and header collection
         try {
-            headers = TP.httpSetHeaders(url, request, httpObj);
+            TP.httpSetHeaders(url, request, httpObj);
         } catch (e) {
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
@@ -508,7 +507,6 @@ TP.hc(
             password,
 
             httpObj,
-            headers,
             job;
 
         //  ensure we've got a default request object to avoid problems
@@ -594,7 +592,7 @@ TP.hc(
 
         //  configure headers based on URI and header collection
         try {
-            headers = TP.httpSetHeaders(url, request, httpObj);
+            TP.httpSetHeaders(url, request, httpObj);
         } catch (e) {
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
@@ -726,7 +724,6 @@ TP.hc(
             password,
 
             httpObj,
-            headers,
             job;
 
         //  ensure we've got a default request object to avoid problems
@@ -826,7 +823,7 @@ TP.hc(
 
         //  configure headers based on URI and header collection
         try {
-            headers = TP.httpSetHeaders(url, request, httpObj);
+            TP.httpSetHeaders(url, request, httpObj);
         } catch (e) {
             request.atPut('object', e);
             request.atPut('message', TP.str(e));

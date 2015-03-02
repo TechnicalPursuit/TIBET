@@ -3845,7 +3845,6 @@ function(errorConstructor, errMsg, comment) {
 
         testObj,
 
-        thrown,
         desiredError,
         name,
         thrownError,
@@ -3857,7 +3856,6 @@ function(errorConstructor, errMsg, comment) {
     expectedErrMsg = errMsg;
     TheConstructor = errorConstructor;
 
-    thrown = false;
     desiredError = null;
     name = null;
     thrownError = null;

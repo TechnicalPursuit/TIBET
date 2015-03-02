@@ -151,7 +151,6 @@ function(aRequest) {
 
         tpBootAnnotation,
         tpAnnotation,
-        tpBootLog,
 
         objValues;
 
@@ -317,7 +316,6 @@ function(aRequest) {
 
     tpBootAnnotation = TP.boot.$annotate('A String', 'This is a message');
     tpAnnotation = TP.annotate('A String', 'This is a message');
-    tpBootLog = TP.sys.get('$bootlog');
 
     /* eslint-disable no-multi-spaces */
     objValues = TP.hc(
@@ -422,7 +420,7 @@ function(aRequest) {
 
     //  In order to get an 'undefined' value into our hash, we have to play some
     //  trickery with the underlying hash... TODO: clean this up
-    objValues.$get('$$hash')[TP.UNDEF] = undefined;
+    objValues.$get('$$hash')[TP.UNDEF] = undefVal;
 
     TP.defineAttributeSlot(TP, '$$commonObjectValues', objValues);
 });
@@ -752,7 +750,7 @@ function(aRequest) {
 
     //  In order to get an 'undefined' value into our hash, we have to play some
     //  trickery with the underlying hash... TODO: clean this up
-    objTypes.$get('$$hash')[TP.UNDEF] = TP.ac();
+    objTypes.$get('$$hash')[TP.UNDEF] = undefVal;
 
     TP.defineAttributeSlot(TP, '$$commonObjectTypes', objTypes);
 });

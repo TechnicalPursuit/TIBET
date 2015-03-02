@@ -664,7 +664,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         queryCount,
 
         originParts,
-        winID,
         win,
 
         handlers,
@@ -693,8 +692,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         if (originParts.getSize() !== 2) {
             return this.raise('TP.sig.InvalidQuery');
         }
-
-        winID = originParts.first();
 
         //  If we're the last handler interested in this query, then go to
         //  the trouble of unregistering it, etc.

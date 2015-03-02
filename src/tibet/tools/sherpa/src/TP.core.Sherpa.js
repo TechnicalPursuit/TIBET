@@ -187,15 +187,9 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('finishSetup',
 function() {
 
-    var win,
-        doc,
-
-        worldTPElem,
+    var worldTPElem,
 
         toggleKey;
-
-    win = this.get('vWin');
-    doc = TP.doc(win);
 
     //  Set up the HUD
     this.setupHUD();

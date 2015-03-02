@@ -625,10 +625,7 @@ TP.hc(
          * @returns {Node} The transformed Node.
          */
 
-        var url,
-            hash,
-
-            gotDoc,
+        var gotDoc,
             inputDoc,
             resultDoc,
             processor,
@@ -682,24 +679,6 @@ TP.hc(
             fixupXMLNSAttrs = TP.ifKeyInvalid(paramHash,
                                                 'xmlns:fixup',
                                                 true);
-        }
-
-        //  default the hash value so we can use it without testing later
-        hash = '0';
-
-        //  no src url means a dynamically built XSLT, but all others can
-        //  potentially be cached...
-        if (TP.notEmpty(url = TP.elementGetAttribute(
-                            styleDoc.documentElement, 'tibet:src', true))) {
-            //  we want to cache processors as much as possible to avoid
-            //  having to recreate/reparse continually. to be successful we
-            //  need to ensure we don't reuse a processor whose parameters
-            //  have been set to something we can't reuse (don't ask me why
-            //  they store them on the processor...or why you can't clear
-            //  them)
-            if (TP.notEmpty(paramHash)) {
-                hash = TP.hash(paramHash);
-            }
         }
 
         if (TP.notValid(processor)) {
@@ -939,8 +918,6 @@ TP.hc(
             theOutputElement,
 
             node,
-            url,
-            hash,
 
             versions,
             i,
@@ -1036,25 +1013,6 @@ TP.hc(
             node.appendChild(TP.nodeCloneNode(inputNode, true));
         } else {
             node = inputNode;
-        }
-
-        //  default the hash value so we can use it without testing later
-        hash = '0';
-
-        //  no src url means a dynamically built XSLT, but all others can
-        //  potentially be cached...
-        if (TP.notEmpty(
-                    url = TP.elementGetAttribute(
-                            styleDoc.documentElement, 'tibet:src', true))) {
-            //  we want to cache processors as much as possible to avoid
-            //  having to recreate/reparse continually. To be successful we
-            //  need to ensure we don't reuse a processor whose parameters
-            //  have been set to something we can't reuse (don't ask me why
-            //  they store them on the processor...or why you can't clear
-            //  them)
-            if (TP.notEmpty(paramHash)) {
-                hash = TP.hash(paramHash);
-            }
         }
 
         //  if we don't have a cached processor then go ahead and build one
@@ -1271,10 +1229,7 @@ TP.hc(
          * @returns {Node} The transformed Node.
          */
 
-        var url,
-            hash,
-
-            gotDoc,
+        var gotDoc,
             inputDoc,
             resultDoc,
             processor,
@@ -1324,24 +1279,6 @@ TP.hc(
             fixupXMLNSAttrs = TP.ifKeyInvalid(paramHash,
                                                 'xmlns:fixup',
                                                 true);
-        }
-
-        //  default the hash value so we can use it without testing later
-        hash = '0';
-
-        //  no src url means a dynamically built XSLT, but all others can
-        //  potentially be cached...
-        if (TP.notEmpty(url = TP.elementGetAttribute(
-                            styleDoc.documentElement, 'tibet:src', true))) {
-            //  we want to cache processors as much as possible to avoid
-            //  having to recreate/reparse continually. to be successful we
-            //  need to ensure we don't reuse a processor whose parameters
-            //  have been set to something we can't reuse (don't ask me why
-            //  they store them on the processor...or why you can't clear
-            //  them)
-            if (TP.notEmpty(paramHash)) {
-                hash = TP.hash(paramHash);
-            }
         }
 
         if (TP.notValid(processor)) {

@@ -895,7 +895,6 @@ function(REQUEST$$) {
         TOKENS$$,
         ERR$$,
         SCRIPT$$,
-        ACCESS$$,
         TYPE$$,
 
     //  standard "special variables" we're willing to expose to scripts
@@ -944,7 +943,6 @@ function(REQUEST$$) {
                                 true, true, true);
 
     if (this.isAccessPath(TOKENS$$)) {
-        ACCESS$$ = true;
 
         //  first token in an access path is the object reference,
         //  the rest can be wrapped into a string access path...

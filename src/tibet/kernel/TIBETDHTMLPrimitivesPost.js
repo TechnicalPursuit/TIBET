@@ -2801,15 +2801,11 @@ function(anElement, wantsTransformed) {
      *     position and the Y amount in the second position.
      */
 
-    var elemDoc,
-
-        positionedAncestor;
+    var positionedAncestor;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
-
-    elemDoc = TP.nodeGetDocument(anElement);
 
     positionedAncestor = TP.elementGetOffsetParent(anElement);
 
@@ -3020,9 +3016,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @returns {Number} The page X coordinate of the element in pixels.
      */
 
-    var elemDoc,
-
-        position,
+    var position,
 
         returnedBoxType,
 
@@ -3031,8 +3025,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
-
-    elemDoc = TP.nodeGetDocument(anElement);
 
     //  This call automatically takes scrolling, both the document and the
     //  'offset chain' scrolling offsets, into account.
@@ -3115,9 +3107,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @returns {Number} The page Y coordinate of the element in pixels.
      */
 
-    var elemDoc,
-
-        position,
+    var position,
 
         returnedBoxType,
 
@@ -3126,8 +3116,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
-
-    elemDoc = TP.nodeGetDocument(anElement);
 
     //  This call automatically takes scrolling, both the document and the
     //  'offset chain' scrolling offsets, into account.
@@ -3211,9 +3199,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @returns {Array} The page X and Y coordinates of the element in pixels.
      */
 
-    var elemDoc,
-
-        positions,
+    var positions,
         xPosition,
         yPosition,
 
@@ -3224,8 +3210,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
-
-    elemDoc = TP.nodeGetDocument(anElement);
 
     //  This call automatically takes scrolling, both the document and the
     //  'offset chain' scrolling offsets, into account.
@@ -4983,7 +4967,6 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
 
     var busyElement,
         busyMessageElement,
-        busyControlImageElement,
 
         busyElemStyleObj,
 
@@ -5002,7 +4985,6 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
 
     busyElement = anElement.busyElement;
     busyMessageElement = anElement.busyMessageElement;
-    busyControlImageElement = anElement.busyControlImageElement;
 
     busyElemStyleObj = TP.elementGetStyleObj(busyElement);
 
@@ -7075,7 +7057,6 @@ function(aString, aDocument) {
         grabFrame,
         grabDoc,
 
-        htmlStr,
         headStr,
         bodyStr,
 
@@ -7105,7 +7086,6 @@ function(aString, aDocument) {
 
         //  grab the 'html' string from the content
         TP.regex.HTML_HTML_ELEM.lastIndex = 0;
-        htmlStr = str.replace(TP.regex.HTML_HTML_ELEM, '$3');
 
         //  grab the 'head' string from the 'html' string
         TP.regex.HTML_HEAD_ELEM.lastIndex = 0;
@@ -7355,8 +7335,7 @@ function(aNode, startIndex, endIndex) {
         theEndIndex,
         i,
         childNode,
-        doc,
-        win;
+        doc;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -7384,7 +7363,7 @@ function(aNode, startIndex, endIndex) {
         return;
     }
 
-    if (TP.notValid(win = TP.nodeGetWindow(doc))) {
+    if (TP.notValid(TP.nodeGetWindow(doc))) {
         return;
     }
 

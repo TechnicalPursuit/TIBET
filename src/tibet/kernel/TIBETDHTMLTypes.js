@@ -1422,8 +1422,6 @@ function(aSignal) {
 
         actionElem,
 
-        elemBox,
-
         offsetPoint,
 
         computedPoint,
@@ -1446,8 +1444,6 @@ function(aSignal) {
 
     currentX = currentPoint.getX();
     currentY = currentPoint.getY();
-
-    elemBox = TP.elementGetBorderBox(actionElem);
 
     offsetPoint = this.get('$offsetPoint');
 
@@ -1701,7 +1697,6 @@ function(aDragResponder, aSignal, xyPoint) {
     var containerRect,
         target,
         targetContainer,
-        targetRect,
         containerOffsets,
         kallee;
 
@@ -1715,7 +1710,6 @@ function(aDragResponder, aSignal, xyPoint) {
                                                     'container'),
                                 TP.elementGetOffsetParent(target));
 
-        targetRect = TP.wrap(target).getPageRect();
         containerRect = TP.wrap(targetContainer).getPageRect();
 
         containerRect.setXY(0, 0);
@@ -3088,9 +3082,7 @@ function(aSignal) {
      */
 
     var actionElem,
-        dndElem,
-
-        acceptElems;
+        dndElem;
 
     //  Do this *first* before setting up the rest of the state machine
 
@@ -3105,10 +3097,6 @@ function(aSignal) {
 
     this.set('$realActionElem', actionElem);
     this.set('actionElement', dndElem);
-
-    acceptElems = TP.nodeGetDescendantElementsByAttribute(
-                        TP.nodeGetDocument(actionElem),
-                        'dnd:accept');
 
     //  Now go ahead and 'call up' - this starts up the manipulator's state
     //  machine

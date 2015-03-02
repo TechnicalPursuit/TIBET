@@ -39,15 +39,13 @@ function(aRequest) {
      * @abstract
      */
 
-    var node,
-        shell,
+    var shell,
         target,
 
         obj;
 
     TP.stop('break.tsh_lint');
 
-    node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
 
     target = shell.getArgument(aRequest, 'ARG0');

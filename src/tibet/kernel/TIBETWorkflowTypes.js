@@ -2066,10 +2066,8 @@ function(aResult) {
      * @returns {Object}
      */
 
-    var response;
-
     //  calling constructResponse will construct/get the response as needed
-    response = this.constructResponse(aResult);
+    this.constructResponse(aResult);
 
     return this;
 });
@@ -2789,8 +2787,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
      * @returns {TP.sig.Request} The receiver.
      */
 
-    var start,
-        end,
+    var end,
 
         response,
         request,
@@ -2823,7 +2820,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
 
     //  consider this to be "end of processing" time since what follows is
     //  largely about notifying rather than "real work" for the request
-    if (TP.isValid(start = this.at('cmdStart'))) {
+    if (TP.isValid(this.at('cmdStart'))) {
         end = Date.now();
         this.atPut('cmdEnd', end);
     }
@@ -4358,13 +4355,12 @@ function() {
      * @returns {TP.core.User} The receiver.
      */
 
-    var credentialsPW,
-        credentialsStorage;
+    var credentialsStorage;
 
     //  If the user was already prompted to enter a password for the credentials
     //  DB, but didn't, the password is set to TP.NULL. If this is the case,
     //  there is no sense in continuing.
-    if ((credentialsPW = this.get('credentialsPassword')) === TP.NULL) {
+    if (this.get('credentialsPassword') === TP.NULL) {
         //  TODO: Should we warn?
         return this;
     }
@@ -6273,10 +6269,6 @@ function() {
      * @method initialize
      * @summary Performs one-time type initialization.
      */
-
-    var size,
-        index,
-        location;
 
     //  Install a popstate handler to catch changes due to hash changes.
     top.onhashchange = function(evt) {

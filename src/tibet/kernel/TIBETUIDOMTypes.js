@@ -69,10 +69,6 @@ function(aDocument) {
 
         existingStyleElems,
 
-        themeElems,
-
-        i,
-        len,
         themeName,
         themeID;
 
@@ -337,8 +333,7 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
-        blurSignal;
+    var evtTargetTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -351,7 +346,7 @@ function(aTargetElem, anEvent) {
     //  Note that this does *not* blur this element - the normal browser
     //  machinery will do that if we don't prevent the default behavior
     //  here.
-    blurSignal = evtTargetTPElem.signal('TP.sig.UIBlur');
+    evtTargetTPElem.signal('TP.sig.UIBlur');
 
     //  It doesn't matter if the system cancelled the TIBET signal here - the
     //  low-level blur signals are not cancelable anyway... although, against
@@ -377,8 +372,7 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
-        focusSignal;
+    var evtTargetTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -391,7 +385,7 @@ function(aTargetElem, anEvent) {
     //  Note that this does *not* focus this element - the normal browser
     //  machinery will do that if we don't prevent the default behavior
     //  here.
-    focusSignal = evtTargetTPElem.signal('TP.sig.UIFocus');
+    evtTargetTPElem.signal('TP.sig.UIFocus');
 
     //  It doesn't matter if the system cancelled the TIBET signal here - the
     //  low-level focus signals are not cancelable anyway... although, against
@@ -2107,7 +2101,6 @@ function(aSignal, isCapturing) {
     var node,
         parentNode,
         ancestorControl,
-        controller,
         elementWin,
         frame,
         frameElem;

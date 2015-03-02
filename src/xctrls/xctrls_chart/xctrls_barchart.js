@@ -36,8 +36,6 @@ function(aSignal) {
 
         body,
 
-        d3,
-
         w,
         h,
         x,
@@ -58,8 +56,6 @@ function(aSignal) {
     }
 
     TP.nodeEmptyContent(body);
-
-    d3 = this.$getD3Inst();
 
     //var data = TP.extern.d3.range(10).map(Math.random);
 

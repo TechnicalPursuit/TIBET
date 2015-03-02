@@ -1902,14 +1902,11 @@ function() {
 TP.html.XMLNS.Type.describe('html: selection management of standard elements',
 function() {
 
-    var testData;
-
     this.before(function() {
         var testDataLoc,
             loadURI;
 
         TP.$$setupCommonObjectValues();
-        testData = TP.$$commonObjectValues;
 
         testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
         loadURI = TP.uc(testDataLoc);

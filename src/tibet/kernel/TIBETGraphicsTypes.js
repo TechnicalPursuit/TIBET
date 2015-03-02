@@ -6134,10 +6134,7 @@ function() {
      * @returns {String} The receiver's 'pretty print' String representation.
      */
 
-    var data,
-        str;
-
-    data = this.$get('data');
+    var str;
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
@@ -6738,8 +6735,7 @@ occurrenceCount) {
 
         insPointSegmentOperator,
 
-        index,
-        path;
+        index;
 
     if (TP.isValid(segmentInfo = this.getType().at(
                             'SEGMENT_INFO').at(segmentOpConstant)) &&
@@ -6762,7 +6758,6 @@ occurrenceCount) {
                                         occurrenceCount);
 
         if (index > -1) {
-            path = this.get('pathSegments');
 
             //  Splice in at 'index', removing 0, and inserting the segment
             //  operator and arguments.

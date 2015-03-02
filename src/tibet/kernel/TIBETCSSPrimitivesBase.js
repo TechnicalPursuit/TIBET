@@ -215,9 +215,7 @@ function(targetDoc, cssHref, inlineRuleText) {
      * @returns {HTMLElement} The new link or style element that was added.
      */
 
-    var targetHead,
-
-        cssText,
+    var cssText,
 
         newNativeElem;
 
@@ -225,9 +223,9 @@ function(targetDoc, cssHref, inlineRuleText) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  Make sure that the target document has a valid 'head' element or
-    //  we're going nowhere.
-    targetHead = TP.documentEnsureHeadElement(targetDoc);
+    //  Make sure that the target document has a valid 'head' element or we're
+    //  going nowhere.
+    TP.documentEnsureHeadElement(targetDoc);
 
     if (TP.isTrue(inlineRuleText)) {
         //  If inlineRuleText is true, then we load the style rule text

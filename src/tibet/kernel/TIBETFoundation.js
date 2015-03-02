@@ -886,7 +886,6 @@ function() {
 
     var text,
         example,
-        tokens,
         lines,
         clean,
         len,
@@ -2474,11 +2473,7 @@ function(aHandlerName, aHandler) {
      */
 
     var name,
-        match,
-        handler,
-        signal,
-        origin,
-        state;
+        match;
 
     if (!TP.isString(aHandlerName)) {
         return this.raise('InvalidHandlerName', aHandlerName);

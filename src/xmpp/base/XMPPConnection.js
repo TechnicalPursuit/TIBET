@@ -273,7 +273,6 @@ function(aJID, aPassword) {
 
     var theJID,
 
-        instr,
         outstr,
 
         auth,
@@ -322,9 +321,6 @@ function(aJID, aPassword) {
 
     //  make sure that aJID is a JID
     theJID = aJID.asJID();
-
-    //  get a handle to our input stream so we can read
-    instr = this.getInputStream();
 
     //  get a handle to our output stream so we can write
     outstr = this.getOutputStream();

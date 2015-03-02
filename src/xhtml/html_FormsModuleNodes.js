@@ -851,11 +851,8 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
      *     iterating over its items.
      */
 
-    var tagName,
-        template,
+    var template,
         str;
-
-    tagName = this.getCanonicalName();
 
     //  We use the abstract 'TP.html.input' type here for 'item formatting'.
     //  It will taste the object its receiving and return the 'correct
@@ -1530,7 +1527,7 @@ function() {
      * @exception TP.sig.InvalidNode
      */
 
-    var node,
+    var
         elementArray,
         selectionArray,
         len,
@@ -1538,7 +1535,7 @@ function() {
 
         val;
 
-    if (TP.notValid(node = this.getNativeNode())) {
+    if (TP.notValid(this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode');
     }
 
@@ -2826,9 +2823,7 @@ function(aValue) {
      * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
+    if (TP.notValid(this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode');
     }
 
