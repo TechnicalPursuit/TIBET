@@ -101,6 +101,7 @@
  * Initial version: June 14, 2004
  */
 
+/*eslint-disable */
 !function () {
 // XPathParser ///////////////////////////////////////////////////////////////
 
@@ -4519,3 +4520,4 @@ XPathParser.XBoolean = XBoolean;
 
 self.XPathParser = XPathParser;
 }();
+/*eslint-enable */
