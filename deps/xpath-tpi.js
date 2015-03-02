@@ -1865,8 +1865,11 @@ PathExpr.prototype.evaluate = function(c) {
 
 						if ((pushed == false) &&
 							(xpc.shouldCreateNodes == true)) {
-							var newNode,
-								ownerDoc;
+							var ownerDoc,
+
+                                flagNode,
+                                newNode,
+                                action;
 
 							//  when the root portion of the path doesn't
 							//  match you end up at the document element and
@@ -1876,11 +1879,35 @@ PathExpr.prototype.evaluate = function(c) {
 								ownerDoc = xpc.contextNode;
 							}
 
-							newNode = ownerDoc.createElement(
-										step.nodeTest.value);
+                            switch(step.nodeTest.type) {
+                                case NodeTest.COMMENT:
+                                    flagNode = xpc.contextNode;
+                                    newNode = ownerDoc.createComment(
+                                                        step.nodeTest.value);
+                                    action = TP.UPDATE;
+                                    break;
+                                case NodeTest.TEXT:
+                                    flagNode = xpc.contextNode;
+                                    newNode = ownerDoc.createTextNode(
+                                                        step.nodeTest.value);
+                                    action = TP.UPDATE;
+                                    break;
+                                case NodeTest.PI:
+                                    flagNode = xpc.contextNode;
+                                    newNode =
+                                        ownerDoc.createProcessingInstruction(
+                                                        step.nodeTest.value);
+                                    action = TP.UPDATE;
+                                    break;
+                                default:
+                                    newNode = ownerDoc.createElement(
+                                                step.nodeTest.value);
+                                    flagNode = newNode;
+                                    action = TP.CREATE;
+                            }
+
 							if (xpc.shouldFlagNodes == true) {
-								TP.elementFlagChange(
-										newNode, TP.SELF, TP.CREATE);
+								TP.elementFlagChange(flagNode, TP.SELF, action);
 							}
 
 							xpc.contextNode.appendChild(newNode);
