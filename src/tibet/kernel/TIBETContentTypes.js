@@ -5719,12 +5719,7 @@ function(aNode, flagChanges) {
 
         path,
         lastSegment,
-        ndx,
-
-        targetsAttr,
-        attrPath,
-
-        xPath;
+        ndx;
 
     shouldMake = this.get('shouldMake');
 
@@ -5736,7 +5731,8 @@ function(aNode, flagChanges) {
         newPath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(path).at(1);
 
         if (TP.notEmpty(newPath)) {
-            results = TP.xpc(newPath).execOnNative(
+            newPath = TP.xpc(newPath);
+            results = newPath.execOnNative(
                                     aNode, TP.NODESET, false, flagChanges);
         }
     } else {
@@ -5778,17 +5774,6 @@ function(aNode, flagChanges) {
                 lastSegment = path.slice(ndx + 1);
             }
 
-            //  If the first character of the last segment is a '@', or the
-            //  last segment starts with 'attribute::' then we're dealing with
-            //  an attribute path after all
-            if (lastSegment.charAt(0) === '@') {
-                targetsAttr = true;
-                attrPath = lastSegment.slice(1);
-            } else if (lastSegment.startsWith('attribute::')) {
-                targetsAttr = true;
-                attrPath = lastSegment.slice(11);
-            }
-
             //  We have a choice here based on how we want to deal with
             //  attribute-targeting paths where the nodes don't exist yet. If
             //  we only want to process those nodes that exist we leave the
@@ -5798,13 +5783,23 @@ function(aNode, flagChanges) {
             //  portion of the path and run it to get the elements being
             //  targeted. As it turns out we always build them for binding
             //  support so we have to strip off the tail and run with that.
-            if (targetsAttr) {
-                xPath = TP.xpc(path.slice(0, ndx));
+
+            //  If the first character of the last segment is a '@', or the
+            //  last segment starts with 'attribute::' then we're dealing with
+            //  an attribute path after all
+            if (lastSegment.charAt(0) === '@') {
+                newPath = TP.xpc(path.slice(0, ndx));
+            } else if (lastSegment.startsWith('attribute::')) {
+                newPath = TP.xpc(path.slice(0, ndx));
             }
         }
 
+        if (TP.notValid(newPath)) {
+            newPath = this;
+        }
+
         //  Note that results will always be a TP.NODESET
-        results = this.$$createNodesForPath(aNode, flagChanges);
+        results = newPath.$$createNodesForPath(aNode, flagChanges);
 
         if (TP.isEmpty(results)) {
             //  unable to build nodes... path may not be specific enough
