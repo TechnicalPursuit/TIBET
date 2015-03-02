@@ -1534,7 +1534,9 @@ function() {
         elementArray,
         selectionArray,
         len,
-        i;
+        i,
+
+        val;
 
     if (TP.notValid(node = this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode');
@@ -1551,7 +1553,21 @@ function() {
     len = elementArray.getSize();
     for (i = 0; i < len; i++) {
         if (elementArray.at(i).checked) {
-            selectionArray.push(elementArray.at(i).value);
+            //  NB: We check the value *attribute* here because we want to see
+            //  if the author specified a 'value=' attribute - some platforms
+            //  will return Strings like 'on' if the author has not. We don't
+            //  want to consider those.
+            if (TP.isEmpty(val = elementArray.at(i).getAttribute('value'))) {
+                val = true;
+            }
+            selectionArray.push(val);
+        } else {
+            //  If it's not checked, *and doesn't have a 'value=' attribute*,
+            //  then we go ahead and add a "false" at that spot in the Array (to
+            //  keep things consistent with the logic above.
+            if (TP.isEmpty(val = elementArray.at(i).getAttribute('value'))) {
+                selectionArray.push(false);
+            }
         }
     }
 
