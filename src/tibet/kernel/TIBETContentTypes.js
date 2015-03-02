@@ -191,6 +191,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('getFacetedAspectNames',
+function() {
+
+    /**
+     * @method getFacetedAspectNames
+     * @summary Returns an Array of the names of the aspects that are faceted on
+     *     the receiver.
+     * @returns {Array} A list of the names of aspects that are faceted on the
+     *     receiver.
+     */
+
+    var aspectsToCheck,
+        index;
+
+    aspectsToCheck = this.callNextMethod();
+
+    //  We want to filter out the 'data' slot
+    if ((index = aspectsToCheck.indexOf('data')) !== TP.NOT_FOUND) {
+        aspectsToCheck.splice(index, 1);
+    }
+
+    return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('getValidatingAspectNames',
 function() {
 
@@ -730,16 +756,14 @@ TP.core.AccessPath.Type.defineAttribute('$changedAddresses');
 //  ------------------------------------------------------------------------
 
 TP.core.AccessPath.Type.defineMethod('construct',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method construct
      * @summary Returns a new instance of an access path or aPath if it is
      *     already a path.
      * @param {String} aPath The String to build the instance from.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.AccessPath} A new instance or aPath if it's already a
      *     path.
      */
@@ -4042,6 +4066,12 @@ function(targetObj, varargs) {
                             nodePath.slice(nodePath.indexOf('@')),
                         this.getPathType(),
                         false);
+        } else if (TP.regex.TEXT_NODE_ENDS.test(nodePath)) {
+            nodes = TP.nodeEvaluatePath(
+                        natTargetObj,
+                        nodePath.slice(0, -7),
+                        this.getPathType(),
+                        false);
         } else {
             //  Otherwise, reevaluate and just try to capture the Node above
             //  the result.
@@ -4107,7 +4137,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      * @returns {TP.core.XPathPath} The receiver.
      */
 
-    var oldVal,
+    var args,
+        oldVal,
+
+        shouldCollapse,
+        newVal,
 
         natTargetObj,
         targetDoc,
@@ -4119,7 +4153,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         leaveFlaggedChanges,
 
         path,
-        args,
 
         createdStructure,
         changeAction,
@@ -4166,11 +4199,19 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         oldVal = this.executeGet(targetObj);
     }
 
+    newVal = attributeValue;
+
+    /* eslint-disable no-extra-parens */
+    if ((shouldCollapse = this.get('shouldCollapse'))) {
+        newVal = TP.collapse(newVal);
+    }
+    /* eslint-enable no-extra-parens */
+
     //  If the old value is equal to the value that we're setting, then there
     //  is nothing to do here and we exit. This is important to avoid endless
     //  recursion when doing a 'two-ended bind' to data referenced by this path
     //  and to avoid a lot of unnecessary signaling.
-    if (this.checkValueEquality(oldVal, attributeValue)) {
+    if (this.checkValueEquality(oldVal, newVal)) {
         return oldVal;
     }
 
@@ -4276,8 +4317,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  normalize inbound nodes to elements so we don't try to put a document
     //  where it can't be appended
-    attrValue = TP.isDocument(attributeValue) ?
-            TP.elem(attributeValue) : attributeValue;
+    attrValue = TP.isDocument(newVal) ? TP.elem(newVal) : newVal;
 
     mutatedStructure = TP.isNode(attrValue);
 
@@ -5695,12 +5735,7 @@ function(aNode, flagChanges) {
 
         path,
         lastSegment,
-        ndx,
-
-        targetsAttr,
-        attrPath,
-
-        xPath;
+        ndx;
 
     shouldMake = this.get('shouldMake');
 
@@ -5712,7 +5747,8 @@ function(aNode, flagChanges) {
         newPath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(path).at(1);
 
         if (TP.notEmpty(newPath)) {
-            results = TP.xpc(newPath).execOnNative(
+            newPath = TP.xpc(newPath);
+            results = newPath.execOnNative(
                                     aNode, TP.NODESET, false, flagChanges);
         }
     } else {
@@ -5754,17 +5790,6 @@ function(aNode, flagChanges) {
                 lastSegment = path.slice(ndx + 1);
             }
 
-            //  If the first character of the last segment is a '@', or the
-            //  last segment starts with 'attribute::' then we're dealing with
-            //  an attribute path after all
-            if (lastSegment.charAt(0) === '@') {
-                targetsAttr = true;
-                attrPath = lastSegment.slice(1);
-            } else if (lastSegment.startsWith('attribute::')) {
-                targetsAttr = true;
-                attrPath = lastSegment.slice(11);
-            }
-
             //  We have a choice here based on how we want to deal with
             //  attribute-targeting paths where the nodes don't exist yet. If
             //  we only want to process those nodes that exist we leave the
@@ -5774,13 +5799,23 @@ function(aNode, flagChanges) {
             //  portion of the path and run it to get the elements being
             //  targeted. As it turns out we always build them for binding
             //  support so we have to strip off the tail and run with that.
-            if (targetsAttr) {
-                xPath = TP.xpc(path.slice(0, ndx));
+
+            //  If the first character of the last segment is a '@', or the
+            //  last segment starts with 'attribute::' then we're dealing with
+            //  an attribute path after all
+            if (lastSegment.charAt(0) === '@') {
+                newPath = TP.xpc(path.slice(0, ndx));
+            } else if (lastSegment.startsWith('attribute::')) {
+                newPath = TP.xpc(path.slice(0, ndx));
             }
         }
 
+        if (TP.notValid(newPath)) {
+            newPath = this;
+        }
+
         //  Note that results will always be a TP.NODESET
-        results = this.$$createNodesForPath(aNode, flagChanges);
+        results = newPath.$$createNodesForPath(aNode, flagChanges);
 
         if (TP.isEmpty(results)) {
             //  unable to build nodes... path may not be specific enough

@@ -5068,10 +5068,10 @@ function(originSet, aSignal, aPayload, aType) {
         target,
         i,
         entry,
-        event,
+        evt,
         eventType,
         eventTarget,
-        onstar,
+        onstarEvtName,
         detector,
         origins,
         origin,
@@ -5085,16 +5085,23 @@ function(originSet, aSignal, aPayload, aType) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidDOMSignal');
     }
 
-    // DOMUISignal types can give us their event (and that's what is typically
-    // fired via DOM_FIRING). We leverage the event to support on: remapping.
+    //  DOMUISignal types can give us their event (and that's what is typically
+    //  fired via DOM_FIRING). We leverage the event to support on: remapping.
     if (TP.canInvoke(aSignal, 'getEvent')) {
-        event = aSignal.getEvent();
-        if (TP.isValid(event)) {
+
+        evt = aSignal.getEvent();
+
+        if (TP.isEvent(evt)) {
             eventTarget = aSignal.getTarget();
             eventType = aSignal.getEventType();
-            onstar = 'on:' + eventType;
-            detector = function(name) {
-                return name === onstar;
+
+            onstarEvtName = eventType;
+
+            detector = function(attrNode) {
+                /* eslint-disable no-extra-parens */
+                return (TP.attributeGetLocalName(attrNode) === onstarEvtName &&
+                        attrNode.namespaceURI === TP.w3.Xmlns.ON);
+                /* eslint-enable no-extra-parens */
             };
         }
     }
@@ -5142,8 +5149,8 @@ function(originSet, aSignal, aPayload, aType) {
         //  check each one as we pass for any on: remapping. if found we need to
         //  ensure that element is in our origin list for the bubbling phase.
         if (TP.isCallable(detector) && TP.isElement(origin)) {
-            if (TP.elementGetAttributeNames(origin).detect(detector)) {
-                // Found an on: mapping for this origin...
+            if (TP.elementGetAttributeNodes(origin).detect(detector)) {
+                //  Found an on: mapping for this origin...
                 originArray.push(origin);
             }
         }
@@ -5272,9 +5279,9 @@ function(originSet, aSignal, aPayload, aType) {
         origin = originArray.at(i);
 
         if (TP.isCallable(detector) && TP.isElement(origin)) {
-            if (TP.elementGetAttributeNames(origin).detect(detector)) {
-                // Found an on: mapping for this origin...
-                signame = TP.elementGetAttribute(origin, onstar);
+            if (TP.elementGetAttributeNodes(origin).detect(detector)) {
+                //  Found an on: mapping for this origin...
+                signame = TP.elementGetAttribute(origin, onstarEvtName, true);
 
                 sig.setSignalName(signame);
             }

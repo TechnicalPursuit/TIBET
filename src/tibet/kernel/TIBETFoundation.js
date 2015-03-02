@@ -6213,6 +6213,7 @@ function(attributeName) {
      */
 
     var path,
+        pathStr,
 
         funcName,
 
@@ -6221,6 +6222,20 @@ function(attributeName) {
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
+
+        //  If the path's String representation is a simple JS_IDENTIFIER, then
+        //  we need to check to see if this is just a TIBET path with a name to
+        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
+        //  So, here we check to see if there is an access path for this simple
+        //  identifier and, if there is, we use *that* path as the way to access
+        //  the underlying data.
+        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
+            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+                //  There wasn't a valid access path aliased to that identifier,
+                //  so just use the path we were originally going to use.
+                path = attributeName;
+            }
+        }
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
         path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
     }
@@ -6371,6 +6386,7 @@ function(attributeName) {
      */
 
     var path,
+        pathStr,
 
         funcName,
 
@@ -6381,6 +6397,20 @@ function(attributeName) {
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
+
+        //  If the path's String representation is a simple JS_IDENTIFIER, then
+        //  we need to check to see if this is just a TIBET path with a name to
+        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
+        //  So, here we check to see if there is an access path for this simple
+        //  identifier and, if there is, we use *that* path as the way to access
+        //  the underlying data.
+        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
+            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+                //  There wasn't a valid access path aliased to that identifier,
+                //  so just use the path we were originally going to use.
+                path = attributeName;
+            }
+        }
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
         path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
     }
@@ -6452,6 +6482,7 @@ function(attributeName) {
      */
 
     var path,
+        pathStr,
 
         funcName,
 
@@ -6460,6 +6491,20 @@ function(attributeName) {
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
+
+        //  If the path's String representation is a simple JS_IDENTIFIER, then
+        //  we need to check to see if this is just a TIBET path with a name to
+        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
+        //  So, here we check to see if there is an access path for this simple
+        //  identifier and, if there is, we use *that* path as the way to access
+        //  the underlying data.
+        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
+            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+                //  There wasn't a valid access path aliased to that identifier,
+                //  so just use the path we were originally going to use.
+                path = attributeName;
+            }
+        }
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
         path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
     }
@@ -6650,6 +6695,7 @@ function(attributeName, attributeValue, shouldSignal) {
      */
 
     var path,
+        pathStr,
 
         funcName,
 
@@ -6667,6 +6713,20 @@ function(attributeName, attributeValue, shouldSignal) {
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
+
+        //  If the path's String representation is a simple JS_IDENTIFIER, then
+        //  we need to check to see if this is just a TIBET path with a name to
+        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
+        //  So, here we check to see if there is an access path for this simple
+        //  identifier and, if there is, we use *that* path as the way to access
+        //  the underlying data.
+        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
+            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+                //  There wasn't a valid access path aliased to that identifier,
+                //  so just use the path we were originally going to use.
+                path = attributeName;
+            }
+        }
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
         path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
     }
@@ -6745,6 +6805,7 @@ function(attributeName, attributeValue, shouldSignal) {
      */
 
     var path,
+        pathStr,
 
         funcName,
 
@@ -6759,6 +6820,20 @@ function(attributeName, attributeValue, shouldSignal) {
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
+
+        //  If the path's String representation is a simple JS_IDENTIFIER, then
+        //  we need to check to see if this is just a TIBET path with a name to
+        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
+        //  So, here we check to see if there is an access path for this simple
+        //  identifier and, if there is, we use *that* path as the way to access
+        //  the underlying data.
+        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
+            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+                //  There wasn't a valid access path aliased to that identifier,
+                //  so just use the path we were originally going to use.
+                path = attributeName;
+            }
+        }
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
         path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
     }

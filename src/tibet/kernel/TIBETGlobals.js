@@ -706,6 +706,7 @@ TP.SHOULD_SIGNAL_CHANGE = 'shouldSignalChange';
 TP.SHOULD_SUSPEND_SIGNALING = 'shouldSuspendSignaling';
 TP.WRAPPER = 'wrapper';
 TP.GENERATOR = 'generator';
+TP.IS_XHTML = 'isXHTML';
 
 //  meta owners and their target objects
 
@@ -2805,6 +2806,9 @@ TP.regex.ATTRIBUTE_ENDS = /@\w+$/;
 
 //  Detect starts with @*
 TP.regex.ATTRIBUTE_ALL = /^@\*/;
+
+//  Detect text() at end
+TP.regex.TEXT_NODE_ENDS = /\/text\(\)$/;
 
 //  Detect starts with #, followed by word characters
 TP.regex.BARENAME = new RegExp(
