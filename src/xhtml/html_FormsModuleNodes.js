@@ -1577,20 +1577,32 @@ function() {
      */
 
     var node,
-        name;
+        name,
+
+        results;
 
     if (TP.notValid(node = this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If we don't have a 'name' attribute, at least return an Array with 1
+    //  item - our native node.
     if (TP.isEmpty(name = this.getAttribute('name'))) {
-        return TP.ac();
+        return TP.ac(node);
     }
 
     //  Run a CSS selector, which will return an Array of all of the elements
     //  (including the receiver's native node) that share the same name as the
     //  receiver.
-    return TP.byCSS('input[name="' + name + '"]', this.getNativeDocument());
+    results = TP.byCSS('input[name="' + name + '"]', this.getNativeDocument());
+
+    //  If we didn't get any nodes back from our query, at least return an Array
+    //  with 1 item - our native node.
+    if (TP.isEmpty(results)) {
+        results = TP.ac(node);
+    }
+
+    return results;
 });
 
 //  ------------------------------------------------------------------------
