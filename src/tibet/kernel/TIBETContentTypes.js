@@ -1497,7 +1497,7 @@ function(targetObj) {
     //  Now, we need to go through the invalidated paths and rerun their 'get'
     //  to re-execute and re-register their path.
     invalidatedPaths.perform(
-            function (aPath) {
+            function(aPath) {
                 TP.apc(aPath).executeGet(targetObj);
             });
 
@@ -1552,7 +1552,7 @@ function(targetObj) {
     addressesToRemove = this.get('$addressesToRemove');
 
     changedAddresses.perform(
-            function (locAddrPair) {
+            function(locAddrPair) {
                 var anAddress,
 
                     i,
@@ -1689,7 +1689,7 @@ function(targetObj) {
     changedPaths = TP.hc();
 
     observedAddresses.perform(
-        function (addressPair) {
+        function(addressPair) {
             var observedAddress,
                 interestedPaths,
 
@@ -2784,7 +2784,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                         TP.id(targetObj));
 
                 executedPaths.perform(
-                        function (pathEntry) {
+                        function(pathEntry) {
                             TP.apc(pathEntry.first()).executeGet(targetObj);
                         });
             }
@@ -4089,7 +4089,7 @@ function(targetObj, varargs) {
     //  TP.nodeGetAncestorPositions() returns an Array of positions all the way
     //  down
     nodes.perform(
-            function (aNode) {
+            function(aNode) {
                 addresses = addresses.concat(
                             TP.nodeGetAncestorPositions(aNode, true));
             });
@@ -4104,7 +4104,7 @@ function(targetObj, varargs) {
     sourceObjectID = TP.wrap(doc).getID();
 
     addresses.perform(
-            function (anAddress) {
+            function(anAddress) {
                 TP.core.AccessPath.registerObservedAddress(
                     anAddress, sourceObjectID, pathSrc);
             });
@@ -4302,7 +4302,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         createdStructure =
             TP.isValid(
                     content.detect(
-                        function (item) {
+                        function(item) {
                             if (TP.isElement(item)) {
                                 return TP.elementGetChangeAction(
                                             item, TP.SELF) === TP.CREATE;
@@ -4557,7 +4557,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
                                                     targetTPDoc.getID()))) {
                 executedPaths.perform(
-                        function (pathEntry) {
+                        function(pathEntry) {
                             TP.apc(pathEntry.first()).executeGet(targetObj);
                         });
             }
@@ -4578,7 +4578,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  strip it out.
         if (!leaveFlaggedChanges) {
             affectedElems.perform(
-                    function (anElem) {
+                    function(anElem) {
                         TP.elementStripChangeFlags(anElem);
                     });
         }

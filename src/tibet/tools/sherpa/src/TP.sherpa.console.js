@@ -85,7 +85,7 @@ function() {
                 aSignal.getOrigin(), aSignal.getSignalName());
 
         consoleInputTPElem.setEditorEventHandler('viewportChange',
-                function () {
+                function() {
                     this.adjustInputSize();
                 }.bind(this));
 

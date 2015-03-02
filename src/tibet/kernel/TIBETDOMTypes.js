@@ -831,7 +831,7 @@ function(aRequest) {
         parentNode = node.parentNode;
     }
 
-    selectionFunc = function () {
+    selectionFunc = function() {
 
         var targetTPDoc;
 
@@ -842,7 +842,7 @@ function(aRequest) {
         }
     };
 
-    focusFunc = function () {
+    focusFunc = function() {
 
         var targetTPDoc;
 
@@ -4553,7 +4553,7 @@ function(attributeHash) {
      */
 
     attributeHash.perform(
-        function (kvPair) {
+        function(kvPair) {
             this.setAttribute(kvPair.first(), kvPair.last());
         }.bind(this));
 });

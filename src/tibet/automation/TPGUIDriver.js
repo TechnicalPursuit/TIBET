@@ -1319,7 +1319,7 @@ function() {
                     //  work function, but only after a delay to give the GUI a
                     //  chance to refresh.
                     count = 0;
-                    workFunc = function () {
+                    workFunc = function() {
 
                         var seqEntry,
                             currentElement,

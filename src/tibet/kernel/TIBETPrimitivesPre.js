@@ -133,16 +133,16 @@ APP[TP.TNAME] = 'Object';
 //  -----------------------------------------------------------------------
 
 //  Needed during boot
-TP.getID = function () {return TP[TP.ID];};
-TP.sys.getID = function () {return TP.sys[TP.ID];};
-TP.boot.getID = function () {return TP.boot[TP.ID];};
-APP.getID = function () {return APP[TP.ID];};
+TP.getID = function() {return TP[TP.ID];};
+TP.sys.getID = function() {return TP.sys[TP.ID];};
+TP.boot.getID = function() {return TP.boot[TP.ID];};
+APP.getID = function() {return APP[TP.ID];};
 
 //  Needed during boot
-TP.getName = function () {return TP[TP.NAME];};
-TP.sys.getName = function () {return TP.sys[TP.NAME];};
-TP.boot.getName = function () {return TP.boot[TP.NAME];};
-APP.getName = function () {return APP[TP.NAME];};
+TP.getName = function() {return TP[TP.NAME];};
+TP.sys.getName = function() {return TP.sys[TP.NAME];};
+TP.boot.getName = function() {return TP.boot[TP.NAME];};
+APP.getName = function() {return APP[TP.NAME];};
 
 //  ------------------------------------------------------------------------
 
@@ -2160,7 +2160,7 @@ function(target, name, value, track, desc, display, owner) {
     if ((TP.NEEDS_CALLEE.test(value.toString()) && !value.noCalleePatch) ||
         value.wantsCalleePatch === true) {
     /* eslint-enable no-extra-parens */
-        method = function () {
+        method = function() {
             var oldCallee,
                 oldArgs,
 
@@ -3017,7 +3017,7 @@ function(anObj) {
      *          <samp>false</samp>
      *          TP.isReferenceType(Date.now());
      *          <samp>false</samp>
-     *          TP.isReferenceType(function () {alert('hi'));
+     *          TP.isReferenceType(function() {alert('hi'));
      *          <samp>false</samp>
      *          TP.isReferenceType(/foo/);
      *          <samp>false</samp>
@@ -3059,7 +3059,7 @@ function(anObj) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('genUUID',
-function () {
+function() {
 
     /**
      * @method genUUID
@@ -5530,7 +5530,7 @@ function(methodName, methodBody, desc) {
 
 //  We need to define this here, since it's needed by 'Type.defineMethod' below.
 //  But then we register it right away as soon as we can.
-Window.getName = function () {
+Window.getName = function() {
 
     /**
      * @method getName
@@ -5582,7 +5582,7 @@ if (!TP.isFunction(Window.getID)) {
 }
 
 Window.Inst.defineMethod('$getName',
-function () {
+function() {
 
     /**
      * @method $getName
@@ -5601,7 +5601,7 @@ function () {
 //  ------------------------------------------------------------------------
 
 Window.Inst.defineMethod('getName',
-function () {
+function() {
 
     /**
      * @method getName
@@ -5620,7 +5620,7 @@ function () {
 //  ------------------------------------------------------------------------
 
 Window.Inst.defineMethod('$getOID',
-function (aPrefix) {
+function(aPrefix) {
 
     /**
      * @method $getOID
@@ -5647,7 +5647,7 @@ function (aPrefix) {
 //  ------------------------------------------------------------------------
 
 Window.Inst.defineMethod('getID',
-function (aPrefix) {
+function(aPrefix) {
 
     /**
      * @method getID
@@ -5677,7 +5677,7 @@ function (aPrefix) {
 //  ------------------------------------------------------------------------
 
 Window.Inst.defineMethod('setID',
-function (anID) {
+function(anID) {
 
     /**
      * @method setID
@@ -9593,7 +9593,7 @@ function(includeDate, includeMillis, includeNonNum) {
 //  stub for early calls, replaced later in kernel
 
 TP.defineMetaInstMethod('changed',
-function (anAspect, anAction, aDescription) {
+function(anAspect, anAction, aDescription) {
 
     /**
      * @method changed

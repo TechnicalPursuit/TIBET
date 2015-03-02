@@ -2150,7 +2150,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup1 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2161,7 +2161,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup1 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 
@@ -2173,7 +2173,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup2 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2184,7 +2184,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup2 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 
@@ -2196,7 +2196,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup3 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2208,7 +2208,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup3 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 
@@ -2221,7 +2221,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup4 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2233,7 +2233,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup4 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 

@@ -4424,7 +4424,7 @@ function(anElement) {
 
     //  Remove it from them too
     descendantsWithCRUD.perform(
-        function (anElem) {
+        function(anElem) {
             TP.elementRemoveAttribute(anElem, 'tibet:crud', true);
         });
 
@@ -7101,17 +7101,17 @@ function(aNode, anXPath, resultType, logErrors) {
 
                 newEvaluator = new TP.extern.XPathJS.XPathEvaluator();
                 TP.$$xpathForIE_CreateExpression =
-                        function () {
+                        function() {
                             return newEvaluator.createExpression.apply(
                                             newEvaluator, arguments);
                         };
                 TP.$$xpathForIE_CreateNSResolver =
-                        function () {
+                        function() {
                             return newEvaluator.createNSResolver.apply(
                                             newEvaluator, arguments);
                         };
                 TP.$$xpathForIE_Evaluate =
-                        function () {
+                        function() {
                             return newEvaluator.evaluate.apply(
                                             newEvaluator, arguments);
                         };
@@ -7709,7 +7709,7 @@ function(aNode, aType, breadthFirst) {
      *          <samp>[object Text], [object Text], [object Text]</samp>
      *          // Get the string value of each node to see what we
      *          // have.
-     *          result.collect(function (aNode) {return TP.str(aNode)});
+     *          result.collect(function(aNode) {return TP.str(aNode)});
      *          <samp>Some text, More text, Yet more text</samp>
      *          // Do the same process, but return the results
      *          // 'breadth first'.
@@ -7719,7 +7719,7 @@ function(aNode, aType, breadthFirst) {
      *          <samp>[object Text], [object Text], [object Text]</samp>
      *          // Get the string value of each node to see what we
      *          // have.
-     *          result.collect(function (aNode) {return TP.str(aNode)});
+     *          result.collect(function(aNode) {return TP.str(aNode)});
      *          <samp>Yet more text, Some text, More text</samp>
      *     </code>
      * @example Get all of the descendant Text nodes of an HTML element:
@@ -9505,7 +9505,7 @@ function(aNode, aSubset) {
      *         Element]</samp>
      *          // Get the local name of each node of the result to see what we
      *         have.
-     *          result.collect(function (aNode) {return
+     *          result.collect(function(aNode) {return
      *         TP.elementGetLocalName(aNode)});
      *          <samp>bar, boo, goo</samp>
      *     </code>
@@ -9522,7 +9522,7 @@ function(aNode, aSubset) {
      *          <samp>[object Element]</samp>
      *          // Get the local name of each node of the result to see what we
      *         have.
-     *          result.collect(function (aNode) {return
+     *          result.collect(function(aNode) {return
      *         TP.elementGetLocalName(aNode)});
      *          <samp>bar</samp>
      *     </code>
@@ -9539,7 +9539,7 @@ function(aNode, aSubset) {
      *          <samp>[object Element], [object Element]</samp>
      *          // Get the local name of each node of the result to see what we
      *         have.
-     *          result.collect(function (aNode) {return
+     *          result.collect(function(aNode) {return
      *         TP.elementGetLocalName(aNode)});
      *          <samp>boo, goo</samp>
      *     </code>

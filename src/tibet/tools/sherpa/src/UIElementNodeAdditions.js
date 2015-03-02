@@ -280,7 +280,7 @@ function(targetTPElement, cornerTPElement) {
         input = theTile.get('textInput');
 
         /* eslint-disable no-wrap-func,no-extra-parens */
-        (function () {
+        (function() {
             theTile.setHeader(targetTPElement.getID());
             theTile.focusOn(targetTPElement);
             theTile.setAttribute('hidden', false);

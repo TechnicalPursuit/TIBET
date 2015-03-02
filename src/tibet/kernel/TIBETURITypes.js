@@ -3056,7 +3056,7 @@ function() {
     //  location so that we don't return ourself in the list of subURIs (the
     //  generated RegExp will match ourself because of it's open-endedness)
     subURIKeys = registeredURIs.getKeys().select(
-                        function (uriLocation) {
+                        function(uriLocation) {
                             /* eslint-disable no-extra-parens */
                             return (matcher.test(uriLocation) &&
                                     uriLocation !== loc);
@@ -3065,7 +3065,7 @@ function() {
 
     //  Iterate over the subURI keys and get the actual URI instance for them.
     return subURIKeys.collect(
-                function (aKey) {
+                function(aKey) {
                     return registeredURIs.at(aKey);
                 });
 });

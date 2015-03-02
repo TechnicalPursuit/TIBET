@@ -156,7 +156,7 @@ function(aRequest) {
 
     resultData = null;
 
-    produceResultOutput = function (aRecord) {
+    produceResultOutput = function(aRecord) {
         var output,
             outBody;
 
@@ -251,7 +251,7 @@ function(aRequest) {
                 resultData = TP.hc('total_rows', theDB.getSize());
                 rowData = TP.ac();
                 theDB.perform(
-                        function (kvPair) {
+                        function(kvPair) {
                             rowData.push(produceResultOutput(kvPair.last()));
                         });
                 resultData.atPut('rows', rowData);

@@ -2684,7 +2684,7 @@ function() {
     //  already been pushed at some point.
 
     foundContext = $focus_stack.detect(
-            function (aTPElement) {
+            function(aTPElement) {
                 return aTPElement.getFocusContextElement().identicalTo(
                                                         newFocusContext);
             });
@@ -2710,7 +2710,7 @@ function() {
         //  See 'acceptFocusedResponder' for more information.
         this.getType().set('$focusingTPElement', tpElementToFocus);
 
-        (function () {
+        (function() {
             //  Clear the $focusingTPElement property so that the focusing on
             //  this element will succeed.
             this.getType().set('$focusingTPElement', null);

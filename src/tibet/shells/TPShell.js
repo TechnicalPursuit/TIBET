@@ -179,19 +179,19 @@ function(aRequest) {
     //  get a time-ordered collection of all output from the request.
     stdioProvider = TP.lang.Object.construct();
     stdioProvider.defineMethod('notify',
-                    function (anObject, aRequest) {
+                    function(anObject, aRequest) {
                         stdioResults.push({meta: 'notify', data: anObject});
                     });
     stdioProvider.defineMethod('stdin',
-                    function (anObject, aDefault, aRequest) {
+                    function(anObject, aDefault, aRequest) {
                         stdioResults.push({meta: 'stdin', data: anObject});
                     });
     stdioProvider.defineMethod('stdout',
-                    function (anObject, aRequest) {
+                    function(anObject, aRequest) {
                         stdioResults.push({meta: 'stdout', data: anObject});
                     });
     stdioProvider.defineMethod('stderr',
-                    function (anObject, aRequest) {
+                    function(anObject, aRequest) {
                         stdioResults.push({meta: 'stderr', data: anObject});
                     });
 
@@ -233,7 +233,7 @@ function(aRequest) {
             success = function() {};
         }
     }
-    successHandler = function (aSignal) {
+    successHandler = function(aSignal) {
         shell.detachSTDIO();
 
         //  Note that we have to ignore *both* of the handlers so that when one
@@ -255,7 +255,7 @@ function(aRequest) {
             failure = function() {};
         }
     }
-    failureHandler = function (aSignal) {
+    failureHandler = function(aSignal) {
         shell.detachSTDIO();
 
         //  Note that we have to ignore *both* of the handlers so that when one
@@ -2308,7 +2308,7 @@ function(aString) {
     if (TP.regex.TSH_VARSUB.test(str)) {
         str = str.replace(
                 TP.regex.TSH_VARSUB,
-                function (wholeMatch, varName) {
+                function(wholeMatch, varName) {
                     var value;
                     value = this.getExecutionInstance().at('$' + varName);
 
@@ -2515,12 +2515,12 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
         if (argumentName === 'ARGV') {
             if (wantsOriginal) {
                 value = value.collect(
-                        function (item) {
+                        function(item) {
                             return item.first();
                         });
             } else {
                 value = value.collect(
-                        function (item) {
+                        function(item) {
                             return item.last();
                         });
             }

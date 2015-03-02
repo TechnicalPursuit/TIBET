@@ -7777,7 +7777,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     }
 
     sigTypes = sigTypes.collect(
-            function (aSignalType) {
+            function(aSignalType) {
                 var sigType,
                     subs;
 
@@ -7945,7 +7945,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     }
 
     sigTypes = sigTypes.collect(
-            function (aSignalType) {
+            function(aSignalType) {
                 var sigType,
                     subs;
 
@@ -8014,7 +8014,7 @@ function(signalTypes) {
     //  Loop over the signal types (or their names) and see if they need a
     //  custom handler registered for them.
     signalTypes.perform(
-        function (aSignalType) {
+        function(aSignalType) {
             var customName,
                 signalName,
 
@@ -8033,7 +8033,7 @@ function(signalTypes) {
 
                 signalName = aSignalType.getSignalName();
 
-                handlerFunc = function (evt) {
+                handlerFunc = function(evt) {
                     var payload;
 
                     payload = TP.hc(
@@ -8085,7 +8085,7 @@ function() {
     //  opened.
     eventSource.addEventListener(
         'open',
-        function (evt) {
+        function(evt) {
             var payload;
 
             payload = TP.hc(
@@ -8105,7 +8105,7 @@ function() {
     //  custom handlers).
     eventSource.addEventListener(
         'message',
-        function (evt) {
+        function(evt) {
             var payload;
 
             payload = TP.hc(
@@ -8124,7 +8124,7 @@ function() {
     //  Set up the event listener that will trigger when there is an error.
     eventSource.addEventListener(
         'error',
-        function (evt) {
+        function(evt) {
             var payload;
 
             //  If the readyState is set to EventSource.CLOSED, then the browser
@@ -8197,7 +8197,7 @@ function(signalTypes) {
     //  Loop over the signal types (or their names) and see if they need a
     //  custom handler registered for them.
     signalTypes.perform(
-        function (aSignalType) {
+        function(aSignalType) {
             var customName,
                 signalName,
 

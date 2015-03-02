@@ -54,7 +54,7 @@ function(aName) {
 
     /* eslint-disable no-wrap-func */
     //  set up keyboard toggle to show/hide the boot UI
-    (sherpaSetupFunc = function () {
+    (sherpaSetupFunc = function() {
 
         var sherpaInst,
 
@@ -118,7 +118,7 @@ function(aName) {
 
                 //  Show the drawers.
                 TP.byCSS('.north, .south, .east, .west', win).perform(
-                            function (anElem) {
+                            function(anElem) {
                                 TP.elementRemoveAttribute(
                                             anElem, 'pclass:hidden', true);
                             });
@@ -173,7 +173,7 @@ function() {
     if (TP.sys.cfg('boot.show_ide')) {
         TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
         TP.byCSS('.north, .south, .east, .west', win).perform(
-                    function (anElem) {
+                    function(anElem) {
                         TP.elementRemoveAttribute(
                                     anElem, 'pclass:hidden', true);
                     });
@@ -221,7 +221,7 @@ function() {
 
     //  set up keyboard toggle to show/hide us
     /* eslint-disable no-wrap-func,no-extra-parens */
-    (function () {
+    (function() {
         this.toggle();
     }).bind(this).observe(TP.core.Keyboard, toggleKey);
     /* eslint-enable no-wrap-func,no-extra-parens */

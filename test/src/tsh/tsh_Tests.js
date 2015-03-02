@@ -98,7 +98,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -116,7 +116,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -134,7 +134,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -152,7 +152,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -170,7 +170,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -188,7 +188,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -206,7 +206,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -224,7 +224,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -243,7 +243,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -261,7 +261,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -279,7 +279,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -297,7 +297,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -315,7 +315,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -333,7 +333,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -343,15 +343,15 @@ function() {
             });
     });
 
-    this.it('function () {window.alert("hi")}', function(test, options) {
+    this.it('function() {window.alert("hi")}', function(test, options) {
 
-        inputVal = 'function () {window.alert("hi")}';
+        inputVal = 'function() {window.alert("hi")}';
         correctResult = 'Function';
 
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isKindOf(
                     testResult,
                     correctResult,
@@ -590,7 +590,7 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', 'function() {}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function () {}),
+                        'Resolved value', function() {}),
                 'bar',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"function(x) {window.alert(x);}"',
@@ -611,7 +611,7 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', 'function() {}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function () {}),
+                        'Resolved value', function() {}),
                 'ARG1',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"function(x) {window.alert(x);}"',
@@ -834,7 +834,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -853,7 +853,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -872,7 +872,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -891,7 +891,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -910,7 +910,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -930,7 +930,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -950,7 +950,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -971,7 +971,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -992,7 +992,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -1013,7 +1013,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -1033,7 +1033,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -1054,7 +1054,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -1964,7 +1964,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -1983,7 +1983,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2004,7 +2004,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2023,7 +2023,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2044,7 +2044,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2063,7 +2063,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2084,7 +2084,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2103,7 +2103,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2124,7 +2124,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2143,7 +2143,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2165,7 +2165,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2184,7 +2184,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2205,7 +2205,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2223,7 +2223,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2244,7 +2244,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2262,7 +2262,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2284,7 +2284,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2302,7 +2302,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2324,7 +2324,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2342,7 +2342,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2363,7 +2363,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2381,7 +2381,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2403,7 +2403,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -2421,7 +2421,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isEqualTo(
                     testResult,
                     correctResult,
@@ -3977,7 +3977,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -3995,7 +3995,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4013,7 +4013,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4031,7 +4031,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4057,7 +4057,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4082,7 +4082,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4101,7 +4101,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4119,7 +4119,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4138,7 +4138,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4157,7 +4157,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4175,7 +4175,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4193,7 +4193,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4212,7 +4212,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4230,7 +4230,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4249,7 +4249,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4268,7 +4268,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4286,7 +4286,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4306,7 +4306,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4324,7 +4324,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4343,7 +4343,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4361,7 +4361,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4380,7 +4380,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4398,7 +4398,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4417,7 +4417,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult,
                     correctResult,
@@ -4435,7 +4435,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4454,7 +4454,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4473,7 +4473,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4491,7 +4491,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4510,7 +4510,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4529,7 +4529,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4547,7 +4547,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4565,7 +4565,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4584,7 +4584,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4602,7 +4602,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4621,7 +4621,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4640,7 +4640,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4658,7 +4658,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4677,7 +4677,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4696,7 +4696,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4714,7 +4714,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4733,7 +4733,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,
@@ -4752,7 +4752,7 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function (testResult) {
+            function(testResult) {
                 test.assert.isIdenticalTo(
                     testResult.getNativeNode(),
                     correctResult,

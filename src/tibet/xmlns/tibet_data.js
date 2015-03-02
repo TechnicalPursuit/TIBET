@@ -527,7 +527,7 @@ function() {
     newSource = TP.core.SSESignalSource.construct(
                     'http://127.0.0.1:5984/goodata/_changes?feed=eventsource');
 
-    refreshHandler = function (aSignal) {
+    refreshHandler = function(aSignal) {
         var payload;
 
         if (TP.isValid(payload = aSignal.getPayload())) {

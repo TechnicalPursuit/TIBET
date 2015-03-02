@@ -3088,14 +3088,14 @@ function(stepNames, endName) {
         //  We wrap this entire chunk that installs an ECMAE5 getter on the
         //  prototype in an anonymous function to leverage closure behavior
         //  around the 'startGetter'.
-        (function () {
+        (function() {
             var startGetter;
 
             //  Write a getter that resets the $$methodChainNames array, sets
             //  the '$realThis' property to be used 'down the chain' and returns
             //  the existing method.
             startGetter =
-                function () {
+                function() {
 
                     this.set('$$methodChainNames', TP.ac(startGetter.theName));
                     startGetter.realMethod.$realThis = this;
@@ -3127,7 +3127,7 @@ function(stepNames, endName) {
         //  We wrap this entire chunk that installs an ECMAE5 getter on the
         //  prototype in an anonymous function to leverage closure behavior
         //  around the 'stepGetter'.
-        (function () {
+        (function() {
             var stepGetter;
 
             //  Build a getter that will instrument the proper properties on the
@@ -3137,7 +3137,7 @@ function(stepNames, endName) {
             //  'end method' can access that upon invocation to see 'how it got
             //  here' (i.e. the names used in the traversal chain).
             stepGetter =
-                function () {
+                function() {
                     var ourMethod,
                         chainNames;
 
@@ -3217,7 +3217,7 @@ function(methodInfoDict) {
         //  We wrap this entire chunk that installs an ECMAE5 getter on the
         //  prototype in an anonymous function to leverage closure behavior
         //  around 'originalEndMethod' and 'endMethod'.
-        (function () {
+        (function() {
             var originalEndMethod,
                 endMethod;
 
@@ -3231,7 +3231,7 @@ function(methodInfoDict) {
                 originalEndMethod = TP.RETURN_THIS;
             }
 
-            endMethod = function () {
+            endMethod = function() {
                 var theThis;
 
                 if (TP.isValid(theThis = endMethod.$realThis)) {

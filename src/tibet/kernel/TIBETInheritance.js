@@ -278,7 +278,7 @@ function(name) {
     //  put a custom 'getName' function on the typeConstructor that will return
     //  'TP.meta.<nsName>.<subtypeName>' as the 'public name' of this object
     //  (i.e. the type's 'meta type')
-    typeConstructor.getName = function () {
+    typeConstructor.getName = function() {
         return 'TP.meta.' + nsName + '.' + subtypeName;
     };
 
@@ -3571,11 +3571,11 @@ function() {
             });
         };
 
-        empty = function (s) {
+        empty = function(s) {
             return s.length;
         };
 
-        merge = function (seqs) {
+        merge = function(seqs) {
             var results,
                 candidate,
                 nonEmptySeqs,
@@ -3620,7 +3620,7 @@ function() {
             }
         };
 
-        run = function (name) {
+        run = function(name) {
             var mergeResult;
 
             mergeResult = merge([[name]].concat(processMap[name].map(run)));
@@ -4447,7 +4447,7 @@ function(resolution, propName, targetObject, forInstances) {
                 } else if (TP.isString(resolutionOption)) {
                     switch (resolutionOption) {
                         case TP.BEFORE:
-                            dispatchFunc = function () {
+                            dispatchFunc = function() {
                                     dispatchFunc.$resolutionMethod.apply(
                                             this, arguments);
                                     return dispatchFunc.$mainMethod.apply(
@@ -4459,7 +4459,7 @@ function(resolution, propName, targetObject, forInstances) {
                             installName = propName;
                             break;
                         case TP.AFTER:
-                            dispatchFunc = function () {
+                            dispatchFunc = function() {
                                     dispatchFunc.$mainMethod.apply(
                                             this, arguments);
                                     return dispatchFunc.$resolutionMethod.apply(
@@ -4539,7 +4539,7 @@ function(resolution, propName, targetObject, forInstances) {
         //  If we didn't assign a dispatch Function earlier, that means that we
         //  are doing a 'simple resolution'.
         if (TP.notValid(dispatchFunc)) {
-            dispatchFunc = function () {
+            dispatchFunc = function() {
                     return dispatchFunc.$resolutionMethod.apply(
                             this, arguments);
                 };
@@ -8998,9 +8998,9 @@ function() {
         //  initialize message and set its initialized flag to true.
         return own.collect(
 
-            function (item, index) {
+            function(item, index) {
 
-                return function () {
+                return function() {
 
                     var obj;
 

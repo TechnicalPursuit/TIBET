@@ -2010,7 +2010,7 @@ function(aContentObject, aRequest) {
     //  Construct a load function that will install the proper handlers for
     //  'back key' handling and 'focus' handling
     req.atPut(TP.ONLOAD,
-                function (aNode) {
+                function(aNode) {
 
                     //  Set up any 'backspace' key handlers on the window so
                     //  that backspace key presses won't cause the standard

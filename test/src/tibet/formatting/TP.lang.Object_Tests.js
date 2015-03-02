@@ -72,7 +72,7 @@ function() {
 
         //  ---
 
-        testRep = (22).as(function (anObj) {return 'His age is: ' + anObj;});
+        testRep = (22).as(function(anObj) {return 'His age is: ' + anObj;});
 
         correctRep = 'His age is: 22';
 
@@ -85,7 +85,7 @@ function() {
 
         transformObj = TP.lang.Object.construct();
         transformObj.defineMethod('transform',
-                        function (anObj) {return 'The value is: ' + anObj;});
+                        function(anObj) {return 'The value is: ' + anObj;});
 
         testRep = (22).as(transformObj);
 
@@ -100,9 +100,9 @@ function() {
 
         transformObj = TP.lang.Object.construct();
         transformObj.defineMethod('transformNumber',
-                        function (anObj) {return 'This is a Number: ' + anObj;});
+                        function(anObj) {return 'This is a Number: ' + anObj;});
         transformObj.defineMethod('transformDate',
-                        function (anObj) {return 'This is a Date: ' + anObj;});
+                        function(anObj) {return 'This is a Date: ' + anObj;});
 
         testRep = (22).as(transformObj);
 

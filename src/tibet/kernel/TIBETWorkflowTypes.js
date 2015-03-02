@@ -1556,7 +1556,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('getPromise',
-function () {
+function() {
 
     /**
      * @method getPromise
@@ -3508,7 +3508,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Response.Inst.defineMethod('then',
-function (onFulfilled, onRejected) {
+function(onFulfilled, onRejected) {
 
     /**
      * @method then
@@ -3542,7 +3542,7 @@ function (onFulfilled, onRejected) {
     //  run the onFulfilled handler (if supplied) or just complete the new
     //  request with the value (if the onFulfilled handler is not supplied).
     myReq.defineMethod('handleRequestSucceeded',
-        function (aResponse) {
+        function(aResponse) {
             var handlerValue,
                 promiseRequest;
 
@@ -3551,7 +3551,7 @@ function (onFulfilled, onRejected) {
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
                 /* eslint-disable no-wrap-func,no-extra-parens */
-                (function () {
+                (function() {
                     try {
                         //  Go ahead and run the onFulfilled
                         handlerValue = onFulfilled(aResponse.getResult());
@@ -3588,7 +3588,7 @@ function (onFulfilled, onRejected) {
     //  run the onRejected handler (if supplied) or just complete the new
     //  request with the value (if the onRejected handler is not supplied).
     myReq.defineMethod('handleRequestFailed',
-        function (aResponse) {
+        function(aResponse) {
             var handlerValue,
                 promiseRequest;
 
@@ -3597,7 +3597,7 @@ function (onFulfilled, onRejected) {
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
                 /* eslint-disable no-wrap-func,no-extra-parens */
-                (function () {
+                (function() {
                     try {
                         //  Go ahead and run the onRejected
                         handlerValue = onRejected(
@@ -4879,7 +4879,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('asFunctionRequest',
-function () {
+function() {
 
     /**
      * @method asFunctionRequest
@@ -4895,7 +4895,7 @@ function () {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('fire',
-function () {
+function() {
 
     /**
      * @method fire

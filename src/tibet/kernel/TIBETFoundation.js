@@ -460,7 +460,7 @@ if (!TP.isFunction(TP.FunctionProto.bind)) {
         //  arguments onto the front of it and applies the bound Function
         //  with that set of arguments.
         if (boundArgs.length > 0) {
-            retFunc = function () {
+            retFunc = function() {
 
                 var newArgs;
 
@@ -472,7 +472,7 @@ if (!TP.isFunction(TP.FunctionProto.bind)) {
         } else {
             //  otherwise, build a return Function that applies the bound
             //  Function with its own arguments when invoked.
-            retFunc = function () {
+            retFunc = function() {
 
                 return thisFunc.apply(aThis, arguments);
             };
@@ -672,7 +672,7 @@ function(aFunction) {
     /**
      * @method unbound
      * @summary Returns the true function that would be invoked by a
-     *     potentially bound function (or series of them). This method "drills
+     *     potentially bound function - or series of them. This method "drills
      *     down" through a set of bound functions until it reaches the
      *     originally bound function reference.
      * @param {Function} aFunction A function to unbind, returning the original.
@@ -753,7 +753,7 @@ function() {
 
             //  Define a function that runs all functions in the
             //  TP.$$unwindQueue and then empties the queue.
-            flushQueue = function () {
+            flushQueue = function() {
                 var i;
 
                 for (i = 0; i < TP.$$unwindQueue.getSize(); i++) {
@@ -5122,7 +5122,7 @@ function(aFilterName, aLevel) {
             Math.max(0, aLevel);
 
     if (lvl === 0) {
-        return 'function () {}';
+        return 'function() {}';
     }
 
     src = this.asString();
@@ -7271,7 +7271,7 @@ function(aFunction, shouldReverse) {
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
     if (len > TP.sys.cfg('perform.instrument_max')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
+        //  Test the interior of aFunction - *not* func in case it was bound -
         //  to see if there are any calls to atStart() or atEnd().
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
     }
@@ -8641,8 +8641,8 @@ function(aThis, anArgArray, whenError, stopOnError) {
     errors = TP.ac();
 
     arr = this.collect(
-            function (item, index) {
-                return function () {
+            function(item, index) {
+                return function() {
                     try {
                         results.atPut(index, item.apply(aThis, anArgArray));
                     } catch (e) {
@@ -8659,7 +8659,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
                 };
             });
 
-    runner = function () {
+    runner = function() {
         if (stopOnError && errors.length > 0) {
             that.signal('TP.sig.InvokeComplete',
                 TP.hc('results', results, 'errors', errors));
@@ -9147,7 +9147,7 @@ function() {
 
     thisName = this[TP.NAME];
     dnuFunc =
-        function () {
+        function() {
             var ret;
 
             ret = TP.sys.dnu(this, thisName, arguments, arguments);
@@ -9185,7 +9185,7 @@ function(aName) {
     }
 
     dnuFunc =
-        function () {
+        function() {
             var ret;
             ret = TP.sys.dnu(this, aName, arguments, arguments);
             return ret;
