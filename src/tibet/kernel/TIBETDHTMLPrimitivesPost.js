@@ -8194,7 +8194,7 @@ function(aWindow) {
 
 //  ------------------------------------------------------------------------
 
-// Direct assignment here to support internal reference to function.
+//  Direct assignment here to support internal reference to function.
 TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
 
     /**
@@ -8255,15 +8255,6 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     TP.core.Keyboard.resetEventData();
     TP.core.Mouse.resetEventData();
 
-    //  clear the 'backhack' slots from the window info. This means that if
-    //  we load new content into the same window, these will be starting
-    //  fresh. Note that, if we're closing the window, the window's entire
-    //  registry entry will be removed, so in that case this logic is
-    //  somewhat superfluous.
-    TP.core.Window.removeWindowInfo(aWindow, 'backhack1');
-    TP.core.Window.removeWindowInfo(aWindow, 'backhack2');
-    TP.core.Window.removeWindowInfo(aWindow, 'backhack3');
-
     if (checkWindow) {
         winDidClose = false;
 
@@ -8304,7 +8295,7 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     return;
 };
 
-// Register it.
+//  Register it.
 TP.definePrimitive('$$processDocumentUnloaded', TP.$$processDocumentUnloaded);
 
 //  ------------------------------------------------------------------------
