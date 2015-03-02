@@ -7472,7 +7472,7 @@ function(aRequest, filterResult) {
     //  clearer from a logic/branching perspective
     if (TP.notValid(key = this.$get('uriKey'))) {
         key = TP.join(TP.str(TP.isEmpty(path)),
-                        '_' ,
+                        '_',
                         TP.str(TP.isEmpty(pointer)));
         this.$set('uriKey', key, false);
     }
