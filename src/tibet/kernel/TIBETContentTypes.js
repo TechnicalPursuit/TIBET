@@ -4066,6 +4066,12 @@ function(targetObj, varargs) {
                             nodePath.slice(nodePath.indexOf('@')),
                         this.getPathType(),
                         false);
+        } else if (TP.regex.TEXT_NODE_ENDS.test(nodePath)) {
+            nodes = TP.nodeEvaluatePath(
+                        natTargetObj,
+                        nodePath.slice(0, -7),
+                        this.getPathType(),
+                        false);
         } else {
             //  Otherwise, reevaluate and just try to capture the Node above
             //  the result.
