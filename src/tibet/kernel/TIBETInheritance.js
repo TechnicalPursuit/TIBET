@@ -7686,7 +7686,8 @@ function(aspectName, facetName) {
 
             //  The validity facet is computed by a method, since it is a more
             //  complex calculation than any of the other facets.
-            facetValue = this.getType().validateConstraintsOn(val, facetSetting);
+            facetValue = this.getType().validateConstraintsOn(
+                                                    val, facetSetting);
 
         break;
 
