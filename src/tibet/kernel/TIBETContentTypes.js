@@ -756,16 +756,14 @@ TP.core.AccessPath.Type.defineAttribute('$changedAddresses');
 //  ------------------------------------------------------------------------
 
 TP.core.AccessPath.Type.defineMethod('construct',
-function(aPath, shouldCollapse) {
+function(aPath, config) {
 
     /**
      * @method construct
      * @summary Returns a new instance of an access path or aPath if it is
      *     already a path.
      * @param {String} aPath The String to build the instance from.
-     * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one
-     *     item, it will just return that item. The default is false.
+     * @param {TP.lang.Hash} config The configuration for this path.
      * @returns {TP.core.AccessPath} A new instance or aPath if it's already a
      *     path.
      */
