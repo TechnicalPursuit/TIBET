@@ -5127,7 +5127,7 @@ function(anObject) {
         return anObject;
     }
 
-    if (TP.isNodeList(anObject)) {
+    if (TP.isNodeList(anObject) && anObject.length === 1) {
         return anObject[0];
     }
 
