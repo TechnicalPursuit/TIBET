@@ -4131,7 +4131,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      * @returns {TP.core.XPathPath} The receiver.
      */
 
-    var oldVal,
+    var args,
+        oldVal,
+
+        shouldCollapse,
+        newVal,
 
         natTargetObj,
         targetDoc,
@@ -4143,7 +4147,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         leaveFlaggedChanges,
 
         path,
-        args,
 
         createdStructure,
         changeAction,
@@ -4190,11 +4193,19 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         oldVal = this.executeGet(targetObj);
     }
 
+    newVal = attributeValue;
+
+    /* eslint-disable no-extra-parens */
+    if ((shouldCollapse = this.get('shouldCollapse'))) {
+        newVal = TP.collapse(newVal);
+    }
+    /* eslint-enable no-extra-parens */
+
     //  If the old value is equal to the value that we're setting, then there
     //  is nothing to do here and we exit. This is important to avoid endless
     //  recursion when doing a 'two-ended bind' to data referenced by this path
     //  and to avoid a lot of unnecessary signaling.
-    if (this.checkValueEquality(oldVal, attributeValue)) {
+    if (this.checkValueEquality(oldVal, newVal)) {
         return oldVal;
     }
 
@@ -4300,8 +4311,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  normalize inbound nodes to elements so we don't try to put a document
     //  where it can't be appended
-    attrValue = TP.isDocument(attributeValue) ?
-            TP.elem(attributeValue) : attributeValue;
+    attrValue = TP.isDocument(newVal) ? TP.elem(newVal) : newVal;
 
     mutatedStructure = TP.isNode(attrValue);
 
