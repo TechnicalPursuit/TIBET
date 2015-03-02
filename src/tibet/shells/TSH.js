@@ -2300,6 +2300,7 @@ function(aRequest) {
          '@version'];
 
     aliases = {'@virtual': '@abstract',
+        '@returns': '@return',
         '@extends': '@augments',
         '@const': '@constant',
         '@defaultvalue': '@default',
@@ -2351,15 +2352,16 @@ function(aRequest) {
         source = func.getSourceText();
         error = {file: file, name: name, errors: TP.ac()};
 
+        if (TP.isFalse(checklib)) {
+            if (TP.boot.$uriInTIBETFormat(file).startsWith('~lib')) {
+                return;
+            }
+        }
+
         //  Create an entry for every file. This will let us count total files
         //  in addition to just error files.
-        fileDict.atPut(file, null);
-
-        //  This doesn't mask off all lib code since additions to native types
-        //  won't be caught here.
-        if ((name.startsWith('TP') || name.startsWith('MetaInst')) &&
-                TP.isFalse(checklib)) {
-            return;
+        if (TP.notEmpty(file)) {
+            fileDict.atPut(file, null);
         }
 
         if (TP.notValid(lines)) {
@@ -3896,21 +3898,21 @@ function(aRequest) {
 //  FILE SYSTEM WATCH
 //  ------------------------------------------------------------------------
 
-TP.sig.SourceSignal.defineSubtype('FileChangedEvent');
+TP.sig.SourceSignal.defineSubtype('FileChangeEvent');
 
-TP.sig.FileChangedEvent.Type.defineConstant('NATIVE_NAME',
+TP.sig.FileChangeEvent.Type.defineConstant('NATIVE_NAME',
     TP.sys.cfg('tds.watch_event'));
 
-TP.sig.FileChangedEvent.Type.defineAttribute('pending', TP.hc());
+TP.sig.FileChangeEvent.Type.defineAttribute('pending', TP.hc());
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeChangedFS',
+TP.core.TSH.Inst.defineMethod('executeChangeFS',
 function(aRequest) {
 
     var dict;
 
-    dict = TP.sig.FileChangedEvent.get('pending');
+    dict = TP.sig.FileChangeEvent.get('pending');
 
     aRequest.stdout(TP.str(dict));
 
@@ -3926,7 +3928,7 @@ function(aRequest) {
         files,
         loaded;
 
-    dict = TP.sig.FileChangedEvent.get('pending');
+    dict = TP.sig.FileChangeEvent.get('pending');
 
     loaded = TP.ac();
     files = dict.getKeys();
@@ -4048,7 +4050,7 @@ function(aRequest) {
         this.set('watcherSSESource', watcher);
     }
 
-    this.observe(watcher, 'TP.sig.FileChangedEvent');
+    this.observe(watcher, 'TP.sig.FileChangeEvent');
 
     aRequest.stdout('File system change monitoring active.');
 
@@ -4077,7 +4079,7 @@ function(aRequest) {
         watcher = TP.core.SSESignalSource.construct(url);
     }
 
-    this.ignore(watcher, 'TP.sig.FileChangedEvent');
+    this.ignore(watcher, 'TP.sig.FileChangeEvent');
 
     aRequest.stdout('File system change monitoring ended.');
 
@@ -4110,7 +4112,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('handleFileChangedEvent',
+TP.core.TSH.Inst.defineMethod('handleFileChangeEvent',
 function(aSignal) {
 
     var payload,

@@ -1572,7 +1572,7 @@ event handlers.
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getHandler',
-function(aSignal, dontTraverseSpoofs, startSignalName) {
+function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
 
     /**
      * @method getHandler
@@ -1585,14 +1585,16 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
      *     'skip ahead' to consider signals further down in the chain (the
      *     INHERITANCE_FIRING policy in the notification system does this).
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @param {Boolean} dontTraverseSpoofs True will mean that traversing up the
-     *     supertype chain will be disabled for 'spoofed' signals (i.e. signals
-     *     where the signal name doesn't match the type name). The default is
-     *     false.
-     * @param {String} startSignalName The signal name to start considering
+     * @param {String} [startSignalName] The signal name to start considering
      *     handlers if the supplied signal has more than one signal name. This
      *     parameter is optional and, if not supplied, all of the signal names
      *     as computed from the supplied signal will be used.
+     * @param {Boolean} [dontTraverseSpoofs] True will mean that traversing up
+     *     the supertype chain will be disabled for 'spoofed' signals (i.e.
+     *     signals where the signal name doesn't match the type name). The
+     *     default is false.
+     * @param {Boolean} [dontTraverse] Turn off any form of signal hierarchy
+     *     traversal. Default is false.
      * @returns {Function} The specific function or method that would be (or
      *     was) invoked.
      */
@@ -1600,6 +1602,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
     var key,
         orgid,
         signame,
+        state,
         hasOrigin,
         handlers,
         handler,
@@ -1614,7 +1617,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
     }
 
     //  Process the origin. Origins that are "generated" such as TIBET OIDs or
-    //  DOM paths aren't observable so they're not relevant for.handler names.
+    //  DOM paths aren't observable so they're not relevant for handler names.
     orgid = TP.ifInvalid(aSignal.getOrigin(), '');
     orgid = TP.gid(orgid).split('#').last();
 
@@ -1631,11 +1634,18 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
 
     signame = aSignal.getSignalName();
 
+    state = TP.sys.getApplication().getStateName();
+
+    //  Create a key we can use for cache lookups to avoid name generation
+    //  overhead for repeated queries.
     key = signame + '.' + aSignal.getTypeName() + '.' +
                 TP.ifEmpty(orgid, TP.ANY) + '.' +
+                TP.ifEmpty(state, TP.ANY) + '.' +
                 (dontTraverseSpoofs || false) + '.' +
+                (dontTraverse || false) + '.' +
                 (startSignalName || signame);
 
+    //  Check the receiver's handler cache.
     handlers = this.$get('$$handlers');
     if (TP.notValid(handlers)) {
         handlers = TP.hc();
@@ -1661,14 +1671,28 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
 
         if (hasOrigin) {
 
-            fName = sigType.getHandlerName(orgid, false, aSignal);
+            fName = sigType.getHandlerName(orgid, aSignal, state, false);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = sigType.getHandlerName(orgid, true, aSignal);
+            fName = sigType.getHandlerName(orgid, aSignal, state, true);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
+            }
+
+            fName = sigType.getHandlerName(orgid, aSignal, null, false);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
+            }
+
+            fName = sigType.getHandlerName(orgid, aSignal, null, true);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
@@ -1676,19 +1700,38 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             }
         }
 
-        fName = sigType.getHandlerName(null, false, aSignal);
+        fName = sigType.getHandlerName(null, aSignal, state, false);
         if (TP.canInvoke(this, fName)) {
             handler = this[fName];
             handlers.atPut(key, handler);
             return handler;
         }
 
-        fName = sigType.getHandlerName(null, true, aSignal);
+        fName = sigType.getHandlerName(null, aSignal, state, true);
         if (TP.canInvoke(this, fName)) {
             handler = this[fName];
             handlers.atPut(key, handler);
             return handler;
         }
+
+        fName = sigType.getHandlerName(null, aSignal, null, false);
+        if (TP.canInvoke(this, fName)) {
+            handler = this[fName];
+            handlers.atPut(key, handler);
+            return handler;
+        }
+
+        fName = sigType.getHandlerName(null, aSignal, null, true);
+        if (TP.canInvoke(this, fName)) {
+            handler = this[fName];
+            handlers.atPut(key, handler);
+            return handler;
+        }
+    }
+
+    if (dontTraverse) {
+        handlers.atPut(key, TP.NO_RESULT);
+        return;
     }
 
     //  If the signal is spoofed, then we want all of the signal names based on
@@ -1730,14 +1773,29 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
             //  instance.
 
             if (hasOrigin) {
-                fName = sigType.getHandlerName(orgid, false);
+
+                fName = sigType.getHandlerName(orgid, null, state, false);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
-                fName = sigType.getHandlerName(orgid, true);
+                fName = sigType.getHandlerName(orgid, null, state, true);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+
+                fName = sigType.getHandlerName(orgid, null, null, false);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+
+                fName = sigType.getHandlerName(orgid, null, null, true);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
@@ -1745,14 +1803,28 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
                 }
             }
 
-            fName = sigType.getHandlerName(null, false);
+            fName = sigType.getHandlerName(null, null, state, false);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = sigType.getHandlerName(null, true);
+            fName = sigType.getHandlerName(null, null, state, true);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
+            }
+
+            fName = sigType.getHandlerName(null, null, null, false);
+            if (TP.canInvoke(this, fName)) {
+                handler = this[fName];
+                handlers.atPut(key, handler);
+                return handler;
+            }
+
+            fName = sigType.getHandlerName(null, null, null, true);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
@@ -1769,7 +1841,7 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('handle',
-function(aSignal, dontTraverseSpoofs, startSignalName) {
+function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
 
     /**
      * @method handle
@@ -1782,21 +1854,24 @@ function(aSignal, dontTraverseSpoofs, startSignalName) {
      *     to serve as a generic signal catcher or handleChange() as a generic
      *     Change handler for example.
      * @param {TP.core.Signal} aSignal The specific signal to handle.
-     * @param {Boolean} dontTraverseSpoofs True will mean that traversing up the
-     *     supertype chain will be disabled for 'spoofed' signals (i.e. signals
-     *     where the signal name doesn't match the type name). The default is
-     *     false.
-     * @param {String} startSignalName The signal name to start considering
+     * @param {String} [startSignalName] The signal name to start considering
      *     handlers if the supplied signal has more than one signal name. This
      *     parameter is optional and, if not supplied, all of the signal names
      *     as computed from the supplied signal will be used.
+     * @param {Boolean} [dontTraverseSpoofs] True will mean that traversing up
+     *     the supertype chain will be disabled for 'spoofed' signals (i.e.
+     *     signals where the signal name doesn't match the type name). The
+     *     default is false.
+     * @param {Boolean} [dontTraverse] Turn off any form of signal hierarchy
+     *     traversal. Default is false.
      * @returns {Object} The handler function's results.
      */
 
     var handlerFunc;
 
-    if (TP.isCallable(handlerFunc = this.getHandler(
-                            aSignal, dontTraverseSpoofs, startSignalName))) {
+    handlerFunc = this.getHandler(
+        aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
+    if (TP.isCallable(handlerFunc)) {
         return handlerFunc.call(this, aSignal);
     }
 

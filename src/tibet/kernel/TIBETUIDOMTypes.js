@@ -2519,9 +2519,6 @@ function(aSignal, isCapturing) {
      *     the supplied signal and capturing mode.
      */
 
-    var origin,
-        sigType;
-
     //  The default is that we don't participate in capturing responder
     //  chains unless there is an 'ev:phase' attribute on us that says
     //  otherwise.
@@ -2529,20 +2526,7 @@ function(aSignal, isCapturing) {
         return false;
     }
 
-    origin = this.getGlobalID();
-
-    sigType = aSignal.getType();
-
-    //  Then we check that we're a responder for any signals that we have a
-    //  handler for.
-    return TP.canInvoke(
-                this, sigType.getHandlerName(origin, false, aSignal)) ||
-            TP.canInvoke(
-                this, sigType.getHandlerName(origin, true, aSignal)) ||
-            TP.canInvoke(
-                this, sigType.getHandlerName(null, false, aSignal)) ||
-            TP.canInvoke(
-                this, sigType.getHandlerName(null, true, aSignal));
+    return TP.isFunction(this.getHandler(aSignal));
 });
 
 //  ------------------------------------------------------------------------
@@ -5396,12 +5380,12 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIValueChanged',
+TP.core.UIElementNode.Inst.defineMethod('handleUIValueChange',
 function(aSignal) {
 
     /**
-     * @method handleUIValueChanged
-     * @param {TP.sig.UIValueChanged} aSignal The signal that caused this
+     * @method handleUIValueChange
+     * @param {TP.sig.UIValueChange} aSignal The signal that caused this
      *     handler to trip.
      */
 

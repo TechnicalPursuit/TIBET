@@ -411,9 +411,6 @@ function() {
     //  requires changing everywhere that expects TP.ONLOAD as a key (many DOM
     //  and DHTML primitives (ack TP.ONLOAD for the list).
     request.atPut(TP.ONLOAD, function(aDocument) {
-        var bodyElem,
-            elem,
-            tpElem;
 
         //  Don't do this if the boot is stopping.
         if (TP.boot.shouldStop()) {
@@ -421,52 +418,7 @@ function() {
             return;
         }
 
-        //  Signal TP.sig.AppWillStart and then, if not cancelled,
-        //  TP.sig.AppStart for the system once the app tag awakens. Note how we
-        //  fork the call so that all child awaken processing has occurred
-        //  first.
-        /* eslint-disable no-wrap-func,no-extra-parens */
-        (function() {
-
-            var didStartHandler;
-
-            if (TP.signal(TP.sys, 'TP.sig.AppWillStart').shouldPrevent()) {
-                return;
-            }
-
-            //  Set up a handler for 'TP.sig.AppDidStart' that will turn on
-            //  the system-wide 'hasStarted' flag when everything, including
-            //  any application-specific startup, has finished.
-            didStartHandler = function () {
-
-                //  Rip out the observation to avoid polluting the signal
-                //  map.
-                didStartHandler.ignore(null, 'TP.sig.AppDidStart');
-
-                //  Queue to allow any pending processing to clear.
-                (function() {
-                    try {
-                        TP.boot.$setStage('liftoff');
-                    } finally {
-                        //  Set our final stage/state flags so dependent
-                        //  pieces of logic can switch to their "started"
-                        //  states (ie. no more boot log usage etc.)
-                        TP.sys.hasStarted(true);
-                    }
-                }).afterUnwind();
-            };
-
-            didStartHandler.observe(null, 'TP.sig.AppDidStart');
-
-            TP.signal(
-                TP.sys,
-                'TP.sig.AppStart',
-                TP.hc('ApplicationTag', elem));
-
-            //  Make sure to null out 'elem' to avoid a leak.
-            elem = null;
-        }).afterUnwind();
-        /* eslint-enable no-wrap-func,no-extra-parens */
+        TP.signal(TP.sys, 'TP.sig.AppWillStart');
     });
 
     request.atPut(TP.ONFAIL, function(req) {

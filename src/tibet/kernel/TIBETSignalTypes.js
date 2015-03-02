@@ -742,7 +742,7 @@ TP.sig.ResponderInteractionSignal.defineSubtype('DOMSubmitSerialize');//   XForm
 
 //  ------------------------------------------------------------------------
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIValueChanged'); //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIValueChange'); //  XForms
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UISelect'); //    XForms
 TP.sig.ResponderInteractionSignal.defineSubtype('UIDeselect'); //  XForms
@@ -2463,13 +2463,13 @@ TP.sig.DOMDNDSignal.defineSubtype('DOMDNDSucceeded');
 //  GEOLOCATION SIGNALS
 //  ========================================================================
 
-TP.sig.Signal.defineSubtype('GeoLocationChanged');
+TP.sig.Signal.defineSubtype('GeoLocationChange');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.GeoLocationChanged.Type.defineMethod('getSignalOwner',
+TP.sig.GeoLocationChange.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
@@ -2488,13 +2488,13 @@ function() {
 //  CSS MEDIA SIGNALS
 //  ========================================================================
 
-TP.sig.Signal.defineSubtype('CSSMediaChanged');
+TP.sig.Signal.defineSubtype('CSSMediaChange');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.CSSMediaChanged.Type.defineMethod('getSignalOwner',
+TP.sig.CSSMediaChange.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
@@ -2509,8 +2509,8 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.CSSMediaChanged.defineSubtype('CSSMediaActive');
-TP.sig.CSSMediaChanged.defineSubtype('CSSMediaInactive');
+TP.sig.CSSMediaChange.defineSubtype('CSSMediaActive');
+TP.sig.CSSMediaChange.defineSubtype('CSSMediaInactive');
 
 //  ========================================================================
 //  TP.sig.WARNING SIGNALS

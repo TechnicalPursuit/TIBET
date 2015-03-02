@@ -6159,12 +6159,12 @@ function() {
     var dtdInfoURI,
         dtdInfo;
 
-    //  Set this up so that it observes the 'AppStart' signal and tries to
+    //  Set this up so that it observes the 'AppWillStart' signal and tries to
     //  load 2000ms after it gets that signal. This avoids a large pause at
     //  app startup.
     this.observe(
         TP.sys,
-        'TP.sig.AppStart',
+        'TP.sig.AppWillStart',
         function(aSignal) {
 
             this.ignore(TP.sys, aSignal.getSignalName());

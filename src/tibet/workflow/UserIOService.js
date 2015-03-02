@@ -142,9 +142,7 @@ function(aRequest) {
      */
 
     var req,
-        fname,
-
-        reqType;
+        handler;
 
     //  when input causes a new input request to be queued the
     //  'lastInputRequest' might not have been handled yet, so we have to
@@ -170,24 +168,12 @@ function(aRequest) {
         return this.handleNoMoreRequests(aRequest);
     }
 
-    //  if we have the right method invoke it, otherwise we'll raise an
-    //  error
-    if (!TP.isType(reqType = TP.sys.getTypeByName(req.getTypeName()))) {
-        return this.raise('TP.sig.InvalidType',
-                            req.getTypeName());
+    handler = this.getHandler(req);
+    if (TP.isFunction(handler)) {
+        handler.call(this);
     }
 
-    fname = reqType.getHandlerName(null, false, aRequest);
-    if (TP.isMethod(this[fname])) {
-        return this[fname](req);
-    }
-
-    fname = reqType.getHandlerName(null, true, aRequest);
-    if (TP.isMethod(this[fname])) {
-        return this[fname](req);
-    }
-
-    return this.raise('TP.sig.UnhandledInputRequest', fname);
+    return this.raise('TP.sig.UnhandledInputRequest', req);
 });
 
 //  ------------------------------------------------------------------------

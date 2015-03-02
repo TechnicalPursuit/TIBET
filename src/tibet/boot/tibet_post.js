@@ -6265,7 +6265,8 @@ TP.boot.Log.prototype.report = function(entry) {
     limit = TP.boot[TP.sys.cfg('log.console_threshold')];
     level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
-    if (TP.boot.Log.isErrorLevel(level) && level >= limit) {
+    if (TP.boot.Log.isErrorLevel(level) && level >= limit ||
+            TP.sys.cfg('boot.consolelog')) {
         TP.boot.$consoleReporter(entry, {console: true});
     }
 

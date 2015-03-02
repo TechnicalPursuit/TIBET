@@ -574,7 +574,7 @@ function(aSignal) {
 
     //  look up a handler, forcing lookup to find only handlers that
     //  properly match custom signal name overrides
-    handler = this.getHandler(request, true);
+    handler = this.getHandler(request, null, true);
     if (TP.isCallable(handler)) {
         try {
             this.acceptRequest(request);
@@ -1819,7 +1819,7 @@ function(aSignal) {
 
     //  look up a handler, forcing lookup to find only handlers that
     //  properly match custom signal name overrides
-    handler = this.getHandler(aSignal, true);
+    handler = this.getHandler(aSignal, null, true);
     if (TP.isCallable(handler)) {
         try {
             return handler.apply(this, arguments);
@@ -2877,8 +2877,10 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
                 continue;
             }
 
-            shortHandler = sigType.getHandlerName(null, false) + suffix;
-            fullHandler = sigType.getHandlerName(null, true) + suffix;
+            shortHandler = sigType.getHandlerName(null, null, null, false) +
+                suffix;
+            fullHandler = sigType.getHandlerName(null, null, null, true) +
+                suffix;
 
             response.setSignalName(signame + suffix);
 
@@ -5961,16 +5963,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleAppStart',
+TP.core.Application.Inst.defineMethod('handleAppWillStart',
 function(aSignal) {
 
     /**
-     * @method handleAppStart
+     * @method handleAppWillStart
      * @summary A handler that is called when the system has set up everything
-     *     required to run a TIBET application and is ready to start the GUI.
-     * @description At this level, this type does nothing.
-     * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
-     *     trip.
+     *     required to run a TIBET application.
+     * @param {TP.sig.AppWillStart} aSignal The startup signal.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -5978,11 +5978,13 @@ function(aSignal) {
         appType,
         newAppInst;
 
+    //  Configure the application type setting, defaulting the value as needed.
     typeName = TP.sys.cfg('project.apptype');
     if (TP.isEmpty(typeName)) {
         typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
     }
 
+    //  If we're supposed to grab a different type that'll happen here.
     appType = TP.sys.require(typeName);
 
     if (TP.notValid(appType)) {
@@ -5999,7 +6001,7 @@ function(aSignal) {
     newAppInst = appType.construct('Application', null);
     TP.core.Application.set('singleton', newAppInst);
 
-    //  Tell our new singleton instance to start :).
+    //  Tell our new singleton instance to start and provide the signal.
     newAppInst.start(aSignal);
 
     return this;
@@ -6024,15 +6026,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleLocationChanged',
+TP.core.Application.Inst.defineMethod('handleLocationChange',
 function(aSignal) {
 
     /**
-     * @method handleLocationChanged
+     * @method handleLocationChange
      * @summary A handler that is called when the user has changed the location
      *     and changed history in some way, either by using the forward or
      *     backward controls in the browser or by attempting to load a bookmark.
-     * @param {TP.sig.LocationChanged} aSignal The signal that caused this
+     * @param {TP.sig.LocationChange} aSignal The signal that caused this
      *     handler to trip.
      * @returns {TP.core.Application} The receiver.
      */
@@ -6177,32 +6179,50 @@ function(aSignal) {
      * @method start
      * @summary Starts the application, performing any initialization necessary
      *     for startup.
-     * @param {TP.sig.AppStart} aSignal The signal that caused this handler to
-     *     trip.
+     * @param {TP.sig.AppWillStart} aSignal The "will start" signal that
+     *     triggered our startup sequence.
      * @returns {TP.core.Application} The receiver.
      */
-
-    var elem,
-        rootWin;
 
     // Do any final steps to ensure the UI is ready for operation.
     this.finalizeGUI();
 
-    if (TP.isElement(elem = aSignal.at('ApplicationTag'))) {
-        //  Grab the UI root window and focus it.
-        if (TP.isWindow(rootWin = TP.nodeGetWindow(elem))) {
-            rootWin.focus();
+    (function(signal) {
+
+        var elem,
+            rootWin;
+
+        //  Grab the UI root window and focus it if possible.
+        if (TP.isElement(elem = signal.at('ApplicationTag'))) {
+            if (TP.isWindow(rootWin = TP.nodeGetWindow(elem))) {
+                rootWin.focus();
+            }
         }
-    }
 
-    //  If we're asked to trigger routing on startup do that to properly set the
-    //  initial path context.
-    if (TP.sys.cfg('uri.routing.onstart')) {
-        this.getRouter().route(TP.sys.getLaunchURL());
-    }
+        //  Signal that we are starting. This provides a hook point for extensions
+        //  etc. to tap into the startup sequence before routing or other behaviors
+        //  but after we're sure the UI has been finalized.
+        this.signal('TP.sig.AppStart');
 
-    //  Signal that everything is ready and that the application did start.
-    this.signal('TP.sig.AppDidStart');
+        //  If we're asked to trigger routing on startup do that to properly set
+        //  the initial path context.
+        if (TP.sys.cfg('uri.routing.onstart')) {
+            this.getRouter().route(TP.sys.getLaunchURL());
+        }
+
+        try {
+            TP.boot.$setStage('liftoff');
+        } finally {
+            //  Set our final stage/state flags so dependent
+            //  pieces of logic can switch to their "started"
+            //  states (ie. no more boot log usage etc.)
+            TP.sys.hasStarted(true);
+        }
+
+        //  Signal that everything is ready and that the application did start.
+        this.signal('TP.sig.AppDidStart');
+
+    }.bind(this).afterUnwind(aSignal));
 
     return this;
 });
@@ -6617,7 +6637,7 @@ function(anEvent) {
 
     this.updateIndex(anEvent);
 
-    this.signal('TP.sig.LocationChanged', this.getNativeLocation());
+    this.signal('TP.sig.LocationChange', this.getNativeLocation());
 
     return this;
 });
@@ -6642,7 +6662,7 @@ function(anEvent) {
 
     this.updateIndex(anEvent);
 
-    this.signal('TP.sig.LocationChanged', this.getNativeLocation());
+    this.signal('TP.sig.LocationChange', this.getNativeLocation());
 
     return this;
 });
@@ -6704,7 +6724,7 @@ function(stateObj, title, aURL) {
 
     //  If the url changed our API should trigger a routing event.
     if (url !== current && TP.sys.hasStarted()) {
-        this.signal('TP.sig.LocationChanged', url);
+        this.signal('TP.sig.LocationChange', url);
     }
 
     if (TP.sys.cfg('log.history')) {
@@ -6763,7 +6783,7 @@ function(stateObj, title, aURL) {
 
     //  If the url changed our API should trigger a routing event.
     if (url !== current) {
-        this.signal('TP.sig.LocationChanged', url);
+        this.signal('TP.sig.LocationChange', url);
     }
 
     if (TP.sys.cfg('log.history')) {
@@ -6787,6 +6807,7 @@ function(anIndex) {
     var index,
         entry,
         native,
+        local,
         method;
 
     native = this.getNativeLocation();
