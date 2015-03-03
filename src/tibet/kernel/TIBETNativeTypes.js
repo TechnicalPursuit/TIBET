@@ -6047,7 +6047,6 @@ function(aDataSource, aKeySource, aScope) {
     var str,
         theDataSource,
         theKeySource,
-        dataSymbol,
         results;
 
     TP.stop('break.content_substitute');
@@ -6066,9 +6065,6 @@ function(aDataSource, aKeySource, aScope) {
     //  registered substitutions in the system, process them.
     if (TP.isRegExp(String.$subsRe)) {
         while (TP.isArray(results = str.match(String.$subsRe))) {
-            dataSymbol =
-                this.getType().getSubstitution(results[1]).at('dataSymbol');
-
             str = str.substituteFor(
                         results[1],
                         theDataSource,
@@ -6464,10 +6460,8 @@ function(aSize, aTail) {
      *     ellipsis.
      */
 
-    var size,
-        tail;
+    var tail;
 
-    size = TP.ifInvalid(aSize, TP.DEFAULT_STRLEN);
     tail = TP.ifInvalid(aTail, '...');
 
     if (this.getSize() <= aSize) {

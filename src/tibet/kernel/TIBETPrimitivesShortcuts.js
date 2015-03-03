@@ -22,8 +22,7 @@ of easy-to-type functions with a $ prefix signifying a global function.
 
 /* JSHint checking */
 
-/* global $signal_stack:true,
-          $signal:true
+/* global $signal_stack:true
 */
 
 //  ------------------------------------------------------------------------
@@ -1374,6 +1373,8 @@ function(anElement, effectName, effectParams, nodeContext) {
         'post',
         function(job, params) {
 
+            /* eslint-disable no-unused-vars */
+
             var theElements,
 
                 postFunc,
@@ -1392,6 +1393,10 @@ function(anElement, effectName, effectParams, nodeContext) {
             if (TP.isCallable(postFunc = ctrlParams.at('post'))) {
                 postFunc(job, params);
             }
+
+            //  NB: We assign to dummyVal below to ensure that the JS engine is
+            //  forced to access (and assign) the value so that it can't
+            //  optimize it away.
 
             if (TP.isArray(theElements)) {
                 theElements.perform(
@@ -1422,6 +1427,8 @@ function(anElement, effectName, effectParams, nodeContext) {
                 dummyVal = TP.documentGetBody(TP.nodeGetDocument(
                                     theElements)).offsetHeight;
             }
+
+            /* eslint-enable no-unused-vars */
         });
 
     //  Instrument the individual elements that we are touching with the
@@ -2166,8 +2173,7 @@ function(anObject, aFilter, aDiscriminator) {
      */
 
     var arr,
-        obj,
-        i;
+        obj;
 
     if (TP.notValid(anObject)) {
         return TP.ac();
@@ -2695,7 +2701,6 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     //  the thing about forcing manual invocation of handlers is that it can
     //  get the signal stack out of sync, so we manage it directly here
     $signal_stack.push(aSignal);
-    $signal = aSignal;
 
     try {
         return anObject[handlerName](aSignal);
@@ -2704,7 +2709,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
             TP.error(TP.ec(e, 'Handler invocation error.'),
                 TP.LOG) : 0;
     } finally {
-        $signal = $signal_stack.pop();
+        $signal_stack.pop();
     }
 
     return;

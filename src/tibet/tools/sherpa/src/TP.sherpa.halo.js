@@ -41,7 +41,7 @@ function() {
      */
 
     /* eslint-disable no-wrap-func,no-extra-parens */
-    (function (aSignal) {
+    (function(aSignal) {
         if (aSignal.getShiftKey()) {
             //  Make sure to prevent default to avoid having the context menu
             //  pop up.
@@ -53,7 +53,7 @@ function() {
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
 
-    (function (aSignal) {
+    (function(aSignal) {
         if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
@@ -469,7 +469,6 @@ function(aSignal) {
      */
 
     var sigTarget,
-        targetWin,
 
         handledSignal,
 
@@ -477,13 +476,6 @@ function(aSignal) {
         targetTPElem;
 
     sigTarget = aSignal.getTarget();
-
-    //  Compute the 'target window' - that is, the window that the event's
-    //  target is in... this may be different than the signals' window (weird, I
-    //  know).
-    if (TP.isValid(this.get('currentTargetTPElem'))) {
-        targetWin = this.get('currentTargetTPElem').getNativeWindow();
-    }
 
     handledSignal = false;
 

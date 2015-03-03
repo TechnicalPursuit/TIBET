@@ -38,9 +38,6 @@ function(test, shellInput, valueTestFunction) {
 
     this.get('promiseProvider').thenPromise(
         function(resolver, rejector) {
-            var threwMsg;
-
-            threwMsg = '';
 
             //  Flip the flag on to ignore eval() errors in the TSH. We'll test
             //  for undefined values here.
@@ -51,7 +48,7 @@ function(test, shellInput, valueTestFunction) {
                 'cmdEcho', false,
                 'cmdHistory', false,
                 'cmdSilent', false,
-                'success', function (aSignal, stdioResults) {
+                'success', function(aSignal, stdioResults) {
                     var testResult;
 
                     //  The shell request itself succeeded. See if it returned
@@ -87,7 +84,7 @@ function(test, shellInput, valueTestFunction) {
                     //  ignore eval() errors.
                     TP.sys.setcfg('tsh.ignore_eval_errors', false);
                 },
-                'failure', function (aSignal, stdioResults) {
+                'failure', function(aSignal, stdioResults) {
                     var errMsg;
 
                     //  Make sure to put the flag back that caused the TSH to
@@ -126,10 +123,10 @@ function(test, inputVal, correctResults) {
     this.execShellTest(
         test,
         inputVal,
-        function (testResult) {
+        function(testResult) {
 
             correctResults.perform(
-                function (kvPair) {
+                function(kvPair) {
                     var correctResultKey,
                         correctResultValue,
 

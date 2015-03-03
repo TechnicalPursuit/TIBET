@@ -1571,7 +1571,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('getPromise',
-function () {
+function() {
 
     /**
      * @method getPromise
@@ -2081,10 +2081,8 @@ function(aResult) {
      * @returns {Object}
      */
 
-    var response;
-
     //  calling constructResponse will construct/get the response as needed
-    response = this.constructResponse(aResult);
+    this.constructResponse(aResult);
 
     return this;
 });
@@ -2804,8 +2802,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
      * @returns {TP.sig.Request} The receiver.
      */
 
-    var start,
-        end,
+    var end,
 
         response,
         request,
@@ -2838,7 +2835,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
 
     //  consider this to be "end of processing" time since what follows is
     //  largely about notifying rather than "real work" for the request
-    if (TP.isValid(start = this.at('cmdStart'))) {
+    if (TP.isValid(this.at('cmdStart'))) {
         end = Date.now();
         this.atPut('cmdEnd', end);
     }
@@ -3523,7 +3520,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Response.Inst.defineMethod('then',
-function (onFulfilled, onRejected) {
+function(onFulfilled, onRejected) {
 
     /**
      * @method then
@@ -3557,7 +3554,7 @@ function (onFulfilled, onRejected) {
     //  run the onFulfilled handler (if supplied) or just complete the new
     //  request with the value (if the onFulfilled handler is not supplied).
     myReq.defineMethod('handleRequestSucceeded',
-        function (aResponse) {
+        function(aResponse) {
             var handlerValue,
                 promiseRequest;
 
@@ -3566,7 +3563,7 @@ function (onFulfilled, onRejected) {
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
                 /* eslint-disable no-wrap-func,no-extra-parens */
-                (function () {
+                (function() {
                     try {
                         //  Go ahead and run the onFulfilled
                         handlerValue = onFulfilled(aResponse.getResult());
@@ -3603,7 +3600,7 @@ function (onFulfilled, onRejected) {
     //  run the onRejected handler (if supplied) or just complete the new
     //  request with the value (if the onRejected handler is not supplied).
     myReq.defineMethod('handleRequestFailed',
-        function (aResponse) {
+        function(aResponse) {
             var handlerValue,
                 promiseRequest;
 
@@ -3612,7 +3609,7 @@ function (onFulfilled, onRejected) {
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
                 /* eslint-disable no-wrap-func,no-extra-parens */
-                (function () {
+                (function() {
                     try {
                         //  Go ahead and run the onRejected
                         handlerValue = onRejected(
@@ -4373,13 +4370,12 @@ function() {
      * @returns {TP.core.User} The receiver.
      */
 
-    var credentialsPW,
-        credentialsStorage;
+    var credentialsStorage;
 
     //  If the user was already prompted to enter a password for the credentials
     //  DB, but didn't, the password is set to TP.NULL. If this is the case,
     //  there is no sense in continuing.
-    if ((credentialsPW = this.get('credentialsPassword')) === TP.NULL) {
+    if (this.get('credentialsPassword') === TP.NULL) {
         //  TODO: Should we warn?
         return this;
     }
@@ -4894,7 +4890,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('asFunctionRequest',
-function () {
+function() {
 
     /**
      * @method asFunctionRequest
@@ -4910,7 +4906,7 @@ function () {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('fire',
-function () {
+function() {
 
     /**
      * @method fire
@@ -6288,10 +6284,6 @@ function() {
      * @method initialize
      * @summary Performs one-time type initialization.
      */
-
-    var size,
-        index,
-        location;
 
     //  Install a popstate handler to catch changes due to hash changes.
     top.onhashchange = function(evt) {

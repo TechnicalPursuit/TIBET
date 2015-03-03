@@ -337,9 +337,7 @@ function(aNode) {
      *     XML.
      */
 
-    var node,
-
-        doc;
+    var node;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');

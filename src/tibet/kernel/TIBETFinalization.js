@@ -22,11 +22,13 @@ Kernel finalization. Any last configuration and processing is done here.
 //  GLOBAL INIT's
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.sys.$extraglobals = TP.sys.$nativeglobals.difference(
                             TP.sys.$ecmaglobals).difference(
                                 TP.sys.$systemglobals).difference(
                                     TP.sys.$windowglobals).difference(
                                         TP.sys.$globals);
+/* eslint-enable no-unused-vars */
 
 TP.sys.$keywords = TP.hc().addAllKeys(TP.sys.$keywords);
 TP.sys.$reservedwords = TP.hc().addAllKeys(TP.sys.$reservedwords);
@@ -246,13 +248,11 @@ function() {
         });
 
     postCore = function(aSignal) {
-        var results,
-            errors,
+        var errors,
 
             msg;
 
         if (TP.isValid(aSignal)) {
-            results = aSignal.at('results');
             errors = aSignal.at('errors');
         }
 
@@ -300,11 +300,9 @@ function() {
     //  Create a simple function we'll trigger when the type initializers
     //  have finished running.
     postTypes = function(aSignal) {
-        var results,
-            errors;
+        var errors;
 
         if (TP.isValid(aSignal)) {
-            results = aSignal.at('results');
             errors = aSignal.at('errors');
         }
 
@@ -461,7 +459,7 @@ function() {
 
         /* eslint-disable no-wrap-func,no-extra-parens */
         //  set up keyboard toggle to show/hide the boot UI
-        (function () {
+        (function() {
             TP.boot.toggleUI();
             TP.boot.$scrollLog();
         }).observe(TP.core.Keyboard, toggleKey);

@@ -119,6 +119,8 @@ function(params) {
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
+    /* eslint-disable no-unused-vars */
+
     var theTargets,
         theProperty,
 
@@ -132,6 +134,9 @@ function(params) {
                                                 this.get('styleProperty')))) {
         return;
     }
+
+    //  NB: We assign to dummyVal below to ensure that the JS engine is forced
+    //  to access (and assign) the value so that it can't optimize it away.
 
     if (TP.isArray(theTargets)) {
         theTargets.perform(
@@ -151,6 +156,8 @@ function(params) {
     }
 
     return;
+
+    /* eslint-enable no-unused-vars */
 });
 
 //  ------------------------------------------------------------------------
@@ -167,6 +174,8 @@ function(transitionJob) {
      *     function will be used in.
      * @returns {Function} A new transition work function.
      */
+
+    /* eslint-disable no-unused-vars */
 
     var step,
         func;
@@ -196,6 +205,10 @@ function(transitionJob) {
             }
         }
 
+        //  NB: We assign to dummyVal below to ensure that the JS engine is
+        //  forced to access (and assign) the value so that it can't optimize it
+        //  away.
+
         dummyVal = func.targetBody.offsetHeight;
 
         return job.wasSuccessful;
@@ -207,6 +220,8 @@ function(transitionJob) {
     func.$realFunc = step;
 
     return func;
+
+    /* eslint-enable no-unused-vars */
 });
 
 //  ------------------------------------------------------------------------
@@ -325,6 +340,8 @@ function(params) {
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
      */
 
+    /* eslint-disable no-unused-vars */
+
     var theTargets,
         theProperty,
 
@@ -340,6 +357,9 @@ function(params) {
                                                 this.get('styleProperty')))) {
         return;
     }
+
+    //  NB: We assign to dummyVal below to ensure that the JS engine is forced
+    //  to access (and assign) the value so that it can't optimize it away.
 
     if (TP.isArray(theTargets)) {
         theTargets.perform(
@@ -368,6 +388,8 @@ function(params) {
     }
 
     return;
+
+    /* eslint-enable no-unused-vars */
 });
 
 //  ========================================================================

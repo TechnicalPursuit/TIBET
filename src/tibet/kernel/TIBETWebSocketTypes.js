@@ -155,12 +155,11 @@ function(aResult) {
      * @returns {TP.sig.WebSocketRequest} The receiver.
      */
 
-    var wsObj,
-        url,
+    var url,
         uri,
         data;
 
-    if (TP.isValid(wsObj = this.at('wsObj'))) {
+    if (TP.isValid(this.at('wsObj'))) {
         //  update what we consider to be our "final uri", the qualified URI
         //  based on parameter data etc.
         url = this.at('finaluri');

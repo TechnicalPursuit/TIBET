@@ -10,9 +10,6 @@
 
 /* JSHint checking */
 
-/* global $focus_stack:true
-*/
-
 //  ========================================================================
 //  TP.core.CollectionNode
 //  ========================================================================
@@ -987,9 +984,9 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - JS template',
 function() {
 
-    var unloadURI;
+    //var unloadURI;
 
-    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+    //unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
     //  ---
 
@@ -1066,9 +1063,9 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XML template',
 function() {
 
-    var unloadURI;
+    //var unloadURI;
 
-    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+    //unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
     //  ---
 
@@ -1145,9 +1142,9 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XSLT template',
 function() {
 
-    var unloadURI;
+    //var unloadURI;
 
-    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+    //unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
     //  ---
 

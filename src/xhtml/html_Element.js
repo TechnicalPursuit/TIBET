@@ -241,8 +241,7 @@ function(aValue) {
      * @returns {html:Element} The receiver.
      */
 
-    var node,
-        val;
+    var node;
 
     node = this.getNativeNode();
 
@@ -252,7 +251,7 @@ function(aValue) {
     this.setAttribute('value', aValue);
 
     try {
-        if (TP.notEmpty(val = node.value)) {
+        if (TP.notEmpty(node.value)) {
             node.value = aValue;
         } else {
             TP.nodeSetTextContent(node, aValue);

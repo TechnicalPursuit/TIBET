@@ -296,7 +296,7 @@ function() {
 
         //  Using a local hash - key has Function value
         testRep = ''.format('Bill says: %{aKey}',
-                            TP.hc('aKey', function () {return 'hi there';}));
+                            TP.hc('aKey', function() {return 'hi there';}));
         correctRep = 'Bill says: hi there';
 
         test.assert.isEqualTo(
@@ -309,7 +309,7 @@ function() {
         //  Using a local hash - key has Function value that takes a param - the
         //  value being formatted
         testRep = 'Bill'.format('What\'s your name? %{aKey}',
-                TP.hc('aKey', function (item) {return 'My name is: ' + item;}));
+                TP.hc('aKey', function(item) {return 'My name is: ' + item;}));
 
         correctRep = 'What\'s your name? My name is: Bill';
 
@@ -390,7 +390,7 @@ function() {
         //  ---
 
         /* eslint-disable no-wrap-func,no-extra-parens */
-        testRep = (function (object, formatParams) {
+        testRep = (function(object, formatParams) {
             return 'Your name is: ' + object.at('firstName');
         }).transform(TP.hc('firstName', 'Bill'));
         /* eslint-enable no-wrap-func,no-extra-parens */
@@ -415,7 +415,7 @@ function() {
 
         //  ---
 
-        testRep = 'What\'s your name? %{aKey}'.transform('Bill', TP.hc('aKey', function (item) {return 'My name is: ' + item;}));
+        testRep = 'What\'s your name? %{aKey}'.transform('Bill', TP.hc('aKey', function(item) {return 'My name is: ' + item;}));
         correctRep = 'What\'s your name? My name is: Bill';
 
         test.assert.isEqualTo(
@@ -438,7 +438,7 @@ function() {
         dayOnlyDateFormatter = TP.lang.Object.construct();
         dayOnlyDateFormatter.defineMethod(
                 'transformDate',
-                function (aDate, formatParams) {
+                function(aDate, formatParams) {
                     return aDate.getDate();
                 });
 
@@ -473,7 +473,7 @@ function() {
         newObj.set('firstName', 'Scott');
 
         newObj.defineMethod('getFirstName',
-                                function () {
+                                function() {
                                     return 'Rob';
                                 });
 

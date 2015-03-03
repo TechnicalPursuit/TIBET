@@ -252,7 +252,6 @@ TP.hc(
          */
 
         var path,
-            report,
             fname,
             msg,
             request,
@@ -267,9 +266,6 @@ TP.hc(
         path = TP.uriExpandPath(targetUrl);
 
         request = TP.request(aRequest);
-
-        //  by default we fail silently
-        report = TP.ifKeyInvalid(request, 'reportErrors', false);
 
         if (TP.regex.HTTP_SCHEME.test(path.toLowerCase())) {
             msg = TP.sc('Local file deletion not supported for HTTP URI ',

@@ -659,7 +659,7 @@ function(anObject, optFormat) {
             {
                 name: 'application/ld+json'
             },
-            function (text, style) {
+            function(text, style) {
 
                 //  Collapse a brace followed by a comma with a brace coming
                 //  next to a single line
@@ -990,7 +990,7 @@ function(anObject) {
         {
             name: 'javascript'
         },
-        function (text, style) {
+        function(text, style) {
 
             if (style) {
                 str += '<span class="cm-' + style + '">' +
@@ -1017,7 +1017,7 @@ function(anObject) {
         {
             name: 'application/xml'
         },
-        function (text, style) {
+        function(text, style) {
 
             if (style) {
                 str += '<span class="cm-' + style + '">' +

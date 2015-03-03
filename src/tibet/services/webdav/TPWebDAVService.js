@@ -103,7 +103,6 @@ function(aRequest) {
      */
 
     var url,
-        httpObj,
 
         headers;
 
@@ -136,31 +135,31 @@ function(aRequest) {
 
             case 'read':
 
-                httpObj = TP.httpGet(url, aRequest);
+                TP.httpGet(url, aRequest);
 
             break;
 
             case 'write':
 
-                httpObj = TP.httpPut(url, aRequest);
+                TP.httpPut(url, aRequest);
 
             break;
 
             case 'remove':
 
-                httpObj = TP.httpDelete(url, aRequest);
+                TP.httpDelete(url, aRequest);
 
             break;
 
             case 'copy':
 
-                httpObj = TP.webdavCopy(url, aRequest);
+                TP.webdavCopy(url, aRequest);
 
             break;
 
             case 'move':
 
-                httpObj = TP.webdavMove(url, aRequest);
+                TP.webdavMove(url, aRequest);
 
             break;
 
@@ -168,13 +167,13 @@ function(aRequest) {
 
             case 'makecoll':
 
-                httpObj = TP.webdavMkCol(url, aRequest);
+                TP.webdavMkCol(url, aRequest);
 
             break;
 
             case 'listcoll':
 
-                httpObj = TP.webdavPropFind(url, aRequest);
+                TP.webdavPropFind(url, aRequest);
 
             break;
 
@@ -182,31 +181,31 @@ function(aRequest) {
 
             case 'getprop':
 
-                httpObj = TP.webdavGetProperty(url, aRequest);
+                TP.webdavGetProperty(url, aRequest);
 
             break;
 
             case 'getprops':
 
-                httpObj = TP.webdavGetAllProperties(url, aRequest);
+                TP.webdavGetAllProperties(url, aRequest);
 
             break;
 
             case 'setprops':
 
-                httpObj = TP.webdavPropPatch(url, aRequest);
+                TP.webdavPropPatch(url, aRequest);
 
             break;
 
             case 'setprop':
 
-                httpObj = TP.webdavSetProperty(url, aRequest);
+                TP.webdavSetProperty(url, aRequest);
 
             break;
 
             case 'deleteprops':
 
-                httpObj = TP.webdavPropPatch(url, aRequest);
+                TP.webdavPropPatch(url, aRequest);
 
             break;
 
@@ -214,13 +213,13 @@ function(aRequest) {
 
             case 'lock':
 
-                httpObj = TP.webdavLock(url, aRequest);
+                TP.webdavLock(url, aRequest);
 
             break;
 
             case 'unlock':
 
-                httpObj = TP.webdavUnlock(url, aRequest);
+                TP.webdavUnlock(url, aRequest);
 
             break;
 

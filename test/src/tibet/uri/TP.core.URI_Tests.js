@@ -2530,7 +2530,7 @@ function() {
                 url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
 
                 pouchRequest.defineMethod('handleRequestSucceeded',
-                    function (aResponse) {
+                    function(aResponse) {
 
                         var result;
 
@@ -2581,7 +2581,7 @@ function() {
                 url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
 
                 pouchRequest.defineMethod('handleRequestSucceeded',
-                    function (aResponse) {
+                    function(aResponse) {
 
                         var result;
 
@@ -2631,7 +2631,7 @@ function() {
                 url.setResource(null);
 
                 pouchRequest.defineMethod('handleRequestSucceeded',
-                    function (aResponse) {
+                    function(aResponse) {
 
                         var result;
 
@@ -2682,7 +2682,7 @@ function() {
                 url.setResource(null);
 
                 pouchRequest.defineMethod('handleRequestSucceeded',
-                    function (aResponse) {
+                    function(aResponse) {
 
                         var result;
 
@@ -2765,14 +2765,14 @@ function() {
         structurePathResults = TP.ac();
 
         jsonValueObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
                 };
 
         jsonValueObsFunction.observe(jsonURI1, 'ValueChange');
 
         jsonStructureObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
                 };
 
@@ -3079,14 +3079,14 @@ function() {
         structurePathResults = TP.ac();
 
         xmlValueObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
                 };
 
         xmlValueObsFunction.observe(xmlURI1, 'ValueChange');
 
         xmlStructureObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
                 };
 

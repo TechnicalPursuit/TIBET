@@ -25,7 +25,6 @@ quickly, see the workflow module for more information.
 /* JSHint checking */
 
 /* global $handled:true,
-          $signal:true,
           $signal_stack:true,
           EventSource:false
 */
@@ -335,9 +334,7 @@ function(anOrigin, aSignal, aState, wantsFullName) {
      * @returns {String}
      */
 
-    var origin,
-        signame,
-        statename,
+    var signame,
         handlerName;
 
     //  Ask the inbound signal what signal name it should be using.
@@ -4675,7 +4672,6 @@ aSigEntry, checkTarget) {
         //  make sure the signal stack is up to date by doing a
         //  "push" of the new signal
         $signal_stack.push(aSignal);
-        $signal = aSignal;
 
         targetID = aSignal.getTargetGlobalID();
 
@@ -4875,7 +4871,7 @@ aSigEntry, checkTarget) {
         //  "pop" the signal stack, throwing away the last signal
         //  and making the current signal the one at the end of the
         //  stack (or null)
-        $signal = $signal_stack.pop();
+        $signal_stack.pop();
     }
 
     return;
@@ -5070,7 +5066,6 @@ function(originSet, aSignal, aPayload, aType) {
         entry,
         evt,
         eventType,
-        eventTarget,
         onstarEvtName,
         detector,
         origins,
@@ -5092,7 +5087,6 @@ function(originSet, aSignal, aPayload, aType) {
         evt = aSignal.getEvent();
 
         if (TP.isEvent(evt)) {
-            eventTarget = aSignal.getTarget();
             eventType = aSignal.getEventType();
 
             onstarEvtName = eventType;
@@ -5407,8 +5401,6 @@ function(originSet, aSignal, aPayload, aType) {
      */
 
     var sig,
-        origin,
-        signame,
         firstResponder,
         respChain,
         responder,
@@ -5424,11 +5416,6 @@ function(originSet, aSignal, aPayload, aType) {
     sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
     if (!TP.isKindOf(sig, TP.sig.Signal)) {
         return;
-    }
-
-    //  set up the signal name, using TP.ANY if we can't get one
-    if (TP.isEmpty(signame = sig.getSignalName())) {
-        signame = TP.ANY;
     }
 
     //  get the first responder prior to looping since we'll be doing checks
@@ -7777,7 +7764,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     }
 
     sigTypes = sigTypes.collect(
-            function (aSignalType) {
+            function(aSignalType) {
                 var sigType,
                     subs;
 
@@ -7945,7 +7932,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     }
 
     sigTypes = sigTypes.collect(
-            function (aSignalType) {
+            function(aSignalType) {
                 var sigType,
                     subs;
 
@@ -8014,7 +8001,7 @@ function(signalTypes) {
     //  Loop over the signal types (or their names) and see if they need a
     //  custom handler registered for them.
     signalTypes.perform(
-        function (aSignalType) {
+        function(aSignalType) {
             var customName,
                 signalName,
 
@@ -8033,7 +8020,7 @@ function(signalTypes) {
 
                 signalName = aSignalType.getSignalName();
 
-                handlerFunc = function (evt) {
+                handlerFunc = function(evt) {
                     var payload;
 
                     payload = TP.hc(
@@ -8085,7 +8072,7 @@ function() {
     //  opened.
     eventSource.addEventListener(
         'open',
-        function (evt) {
+        function(evt) {
             var payload;
 
             payload = TP.hc(
@@ -8105,7 +8092,7 @@ function() {
     //  custom handlers).
     eventSource.addEventListener(
         'message',
-        function (evt) {
+        function(evt) {
             var payload;
 
             payload = TP.hc(
@@ -8124,7 +8111,7 @@ function() {
     //  Set up the event listener that will trigger when there is an error.
     eventSource.addEventListener(
         'error',
-        function (evt) {
+        function(evt) {
             var payload;
 
             //  If the readyState is set to EventSource.CLOSED, then the browser
@@ -8197,9 +8184,8 @@ function(signalTypes) {
     //  Loop over the signal types (or their names) and see if they need a
     //  custom handler registered for them.
     signalTypes.perform(
-        function (aSignalType) {
+        function(aSignalType) {
             var customName,
-                signalName,
 
                 handlerFunc;
 
@@ -8207,8 +8193,6 @@ function(signalTypes) {
             //  custom handler that we would've set up using that value as the
             //  event name.
             if (TP.notEmpty(customName = aSignalType.NATIVE_NAME)) {
-
-                signalName = aSignalType.getSignalName();
 
                 //  If there is a callable function registered in the handler
                 //  registry under the custom event name, remove it.

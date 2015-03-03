@@ -42,7 +42,6 @@ function(aRequest) {
         localHref,
         localURI,
 
-        childNodes,
         children,
         cdatas,
 
@@ -53,8 +52,7 @@ function(aRequest) {
         thisTPDoc,
         loadedHandler,
 
-        remoteHref,
-        remoteURI;
+        remoteHref;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -66,7 +64,7 @@ function(aRequest) {
 
     //  If we're not empty, then we use our child content as our 'local'
     //  resource's content and ignore any 'remote' URI attribute.
-    if (TP.notEmpty(childNodes = elem.childNodes)) {
+    if (TP.notEmpty(elem.childNodes)) {
 
         if (TP.notEmpty(localHref = tpElem.getAttribute('local'))) {
             if (!TP.isURI(localURI = TP.uc(localHref))) {
@@ -139,7 +137,7 @@ function(aRequest) {
         //  reference. Make sure that we can create a URI object from it and, if
         //  so, wrap ourself into an instance of this type and call 'load'.
 
-        if (!TP.isURI(remoteURI = TP.uc(remoteHref))) {
+        if (!TP.isURI(TP.uc(remoteHref))) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
         }
@@ -527,7 +525,7 @@ function() {
     newSource = TP.core.SSESignalSource.construct(
                     'http://127.0.0.1:5984/goodata/_changes?feed=eventsource');
 
-    refreshHandler = function (aSignal) {
+    refreshHandler = function(aSignal) {
         var payload;
 
         if (TP.isValid(payload = aSignal.getPayload())) {

@@ -232,12 +232,9 @@ function(aSignal) {
      * @returns {TP.sig.SignalCoalescer} The receiver.
      */
 
-    var coalesced,
-        origin,
+    var origin,
         id,
         item;
-
-    coalesced = false;
 
     //  we start with the original origin, which won't typically be ANY
     origin = aSignal.getOrigin();
@@ -250,7 +247,7 @@ function(aSignal) {
                     item.at(TP.sig.SignalCoalescer.SEEN_INDEX) + 1);
 
         //  if the item causes us to 'coalesce' then we'll notify
-        coalesced = this.hasCoalesced(item);
+        this.hasCoalesced(item);
     }
 
     //  when the origin wasn't ANY we'll simulate it now so that we can

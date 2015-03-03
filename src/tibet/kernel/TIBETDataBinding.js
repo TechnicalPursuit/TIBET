@@ -1342,7 +1342,6 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 params,
 
                 repeatResource,
-                isXMLResource,
 
                 retVal;
 
@@ -1646,9 +1645,7 @@ function(attributeName, wantsFullScope) {
     bindEntries.perform(
         function(bindEntry) {
 
-            var parts,
-
-                bindName,
+            var bindName,
                 bindVal,
 
                 allVals,
@@ -1919,8 +1916,6 @@ function(aSignalOrHash) {
 
         info,
 
-        goDeep,
-
         shouldDefine,
         shouldDestroy,
 
@@ -1946,8 +1941,6 @@ function(aSignalOrHash) {
     }
 
     info = TP.isValid(aSignalOrHash) ? aSignalOrHash : TP.hc();
-
-    goDeep = info.atIfInvalid('deep', true);
 
     shouldDefine = info.atIfInvalid('shouldDefine', true);
     shouldDestroy = info.atIfInvalid('shouldDestroy', true);
@@ -1987,8 +1980,7 @@ function(aSignalOrHash) {
                 function(kvPair) {
 
                     var attrName,
-                        attrVal,
-                        obsURI;
+                        attrVal;
 
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
@@ -2016,7 +2008,6 @@ function(aSignalOrHash) {
 
                     var attrName,
                         attrVal,
-                        obsURI,
 
                         isBidi;
 
@@ -2047,8 +2038,7 @@ function(aSignalOrHash) {
                 function(kvPair) {
 
                     var attrName,
-                        attrVal,
-                        obsURI;
+                        attrVal;
 
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
@@ -2139,7 +2129,6 @@ function(aSignalOrHash) {
 
                     var attrName,
                         attrVal,
-                        obsURI,
 
                         isBidi;
 
@@ -2732,7 +2721,6 @@ function(aNode, aResource, pathValues, anIndex, repeatResource) {
 
         template,
 
-        localName,
         vals,
 
         tagNode,

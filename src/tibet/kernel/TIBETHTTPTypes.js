@@ -874,8 +874,7 @@ function(aRequest) {
      * @returns {TP.sig.HTTPRequest} The supplied request.
      */
 
-    var url,
-        httpObj;
+    var url;
 
     //  Make sure we have a viable URL.
     url = aRequest.at('uri');
@@ -887,7 +886,7 @@ function(aRequest) {
         //  TP.$httpWrapup() processing will call back to the request via
         //  handleIO* based on success/failure and the rest is handled
         //  there...see the request type's handleIO* methods for more
-        httpObj = TP.httpCall(url, aRequest);
+        TP.httpCall(url, aRequest);
     } catch (e) {
         aRequest.atPut('object', e);
         aRequest.atPut('message', TP.str(e));

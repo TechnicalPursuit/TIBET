@@ -1378,7 +1378,6 @@ function(aReturnValue, targetObj) {
 
     var retVal,
 
-        shouldCollapse,
         extractWith,
 
         keys,
@@ -1393,7 +1392,7 @@ function(aReturnValue, targetObj) {
         //  If we're configured to collapse, then do it.
 
         /* eslint-disable no-extra-parens */
-        if ((shouldCollapse = this.get('shouldCollapse'))) {
+        if (this.get('shouldCollapse')) {
             retVal = TP.collapse(retVal);
         }
         /* eslint-enable no-extra-parens */
@@ -1497,7 +1496,7 @@ function(targetObj) {
     //  Now, we need to go through the invalidated paths and rerun their 'get'
     //  to re-execute and re-register their path.
     invalidatedPaths.perform(
-            function (aPath) {
+            function(aPath) {
                 TP.apc(aPath).executeGet(targetObj);
             });
 
@@ -1552,7 +1551,7 @@ function(targetObj) {
     addressesToRemove = this.get('$addressesToRemove');
 
     changedAddresses.perform(
-            function (locAddrPair) {
+            function(locAddrPair) {
                 var anAddress,
 
                     i,
@@ -1689,7 +1688,7 @@ function(targetObj) {
     changedPaths = TP.hc();
 
     observedAddresses.perform(
-        function (addressPair) {
+        function(addressPair) {
             var observedAddress,
                 interestedPaths,
 
@@ -2784,7 +2783,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                         TP.id(targetObj));
 
                 executedPaths.perform(
-                        function (pathEntry) {
+                        function(pathEntry) {
                             TP.apc(pathEntry.first()).executeGet(targetObj);
                         });
             }
@@ -4089,7 +4088,7 @@ function(targetObj, varargs) {
     //  TP.nodeGetAncestorPositions() returns an Array of positions all the way
     //  down
     nodes.perform(
-            function (aNode) {
+            function(aNode) {
                 addresses = addresses.concat(
                             TP.nodeGetAncestorPositions(aNode, true));
             });
@@ -4104,7 +4103,7 @@ function(targetObj, varargs) {
     sourceObjectID = TP.wrap(doc).getID();
 
     addresses.perform(
-            function (anAddress) {
+            function(anAddress) {
                 TP.core.AccessPath.registerObservedAddress(
                     anAddress, sourceObjectID, pathSrc);
             });
@@ -4140,7 +4139,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     var args,
         oldVal,
 
-        shouldCollapse,
         newVal,
 
         natTargetObj,
@@ -4202,7 +4200,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     newVal = attributeValue;
 
     /* eslint-disable no-extra-parens */
-    if ((shouldCollapse = this.get('shouldCollapse'))) {
+    if (this.get('shouldCollapse')) {
         newVal = TP.collapse(newVal);
     }
     /* eslint-enable no-extra-parens */
@@ -4302,7 +4300,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         createdStructure =
             TP.isValid(
                     content.detect(
-                        function (item) {
+                        function(item) {
                             if (TP.isElement(item)) {
                                 return TP.elementGetChangeAction(
                                             item, TP.SELF) === TP.CREATE;
@@ -4557,7 +4555,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
                                                     targetTPDoc.getID()))) {
                 executedPaths.perform(
-                        function (pathEntry) {
+                        function(pathEntry) {
                             TP.apc(pathEntry.first()).executeGet(targetObj);
                         });
             }
@@ -4578,7 +4576,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  strip it out.
         if (!leaveFlaggedChanges) {
             affectedElems.perform(
-                    function (anElem) {
+                    function(anElem) {
                         TP.elementStripChangeFlags(anElem);
                     });
         }
@@ -5632,8 +5630,6 @@ function(aTPNode) {
 
     var node,
 
-        pathStr,
-
         oldMakeStruct,
         results,
 
@@ -5643,10 +5639,6 @@ function(aTPNode) {
         elem;
 
     node = aTPNode.getNativeNode();
-
-    if (TP.notValid(pathStr = this.get('$transformedPath'))) {
-        pathStr = this.get('srcPath');
-    }
 
     oldMakeStruct = this.get('shouldMake');
     this.set('shouldMake', false);
@@ -5941,12 +5933,11 @@ function() {
      *     referenced by expression in the receiver.
      */
 
-    var context,
-        locationSteps;
+    var locationSteps;
 
     //  force creation of a non-native path processing context, which will
     //  ensure that we get a parsed path set in the tpPath attribute
-    if (TP.notValid(context = this.$get('$tpContext'))) {
+    if (TP.notValid(this.$get('$tpContext'))) {
         this.$createNonNativeParserContext();
     }
 

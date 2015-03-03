@@ -38,9 +38,6 @@
 
 /* JSHint checking */
 
-/* global PouchDB:true
-*/
-
 //  ------------------------------------------------------------------------
 
 TP.core.IOService.defineSubtype('PouchDBService');

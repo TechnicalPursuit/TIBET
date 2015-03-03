@@ -217,9 +217,7 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
-
-                    elem1,
+                var elem1,
                     elem2,
                     elem3,
                     elem4,
@@ -227,8 +225,6 @@ function() {
                     focusedElem;
 
                 TP.sys.uiwin(true).focus();
-
-                bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
                 elem1 = TP.byId('focusTestField1');
                 elem2 = TP.byId('focusTestField2');
@@ -377,9 +373,7 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
-
-                    elem1,
+                var elem1,
                     elem2,
                     elem3,
                     elem4,
@@ -387,8 +381,6 @@ function() {
                     focusedElem;
 
                 TP.sys.uiwin(true).focus();
-
-                bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
                 elem1 = TP.byId('focusTestField1');
                 elem2 = TP.byId('focusTestField2');
@@ -606,9 +598,7 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
-
-                    elem1,
+                var elem1,
                     elem2,
                     elem3,
                     elem4,
@@ -616,8 +606,6 @@ function() {
                     focusedElem;
 
                 TP.sys.uiwin(true).focus();
-
-                bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
                 elem1 = TP.byId('focusTestField1');
                 elem2 = TP.byId('focusTestField2');
@@ -842,9 +830,7 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
-
-                    elem1,
+                var elem1,
                     elem2,
                     elem3,
                     elem4,
@@ -852,8 +838,6 @@ function() {
                     focusedElem;
 
                 TP.sys.uiwin(true).focus();
-
-                bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
                 elem1 = TP.byId('focusTestField1');
                 elem2 = TP.byId('focusTestField2');
@@ -1085,9 +1069,7 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
-
-                    elem1,
+                var elem1,
                     elem2,
                     elem3,
                     elem4,
@@ -1099,8 +1081,6 @@ function() {
                     focusedElem;
 
                 TP.sys.uiwin(true).focus();
-
-                bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
                 elem1 = TP.byId('focusTestField1');
                 elem2 = TP.byId('focusTestField2');
@@ -1426,7 +1406,7 @@ function() {
 
                     elem1,
                     elem2,
-                    elem3,
+
                     elem4,
                     elem5,
                     elem6,
@@ -1441,7 +1421,7 @@ function() {
 
                 elem1 = TP.byId('focusTestField1');
                 elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
+
                 elem4 = TP.byId('focusTestField4');
                 elem5 = TP.byId('focusTestField5');
                 elem6 = TP.byId('focusTestField6');
@@ -2150,7 +2130,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup1 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2161,7 +2141,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup1 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 
@@ -2173,7 +2153,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup2 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2184,7 +2164,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup2 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 
@@ -2196,7 +2176,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup3 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2208,7 +2188,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup3 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 
@@ -2221,7 +2201,7 @@ function() {
 
                 docOrderResults =
                     TP.byCSS('#testGroup4 input').collect(
-                                function (anElem) {
+                                function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2233,7 +2213,7 @@ function() {
                 tabOrderResults = TP.byCSS('#testGroup4 input').sort(
                                                     TP.TABINDEX_ORDER_SORT);
                 tabOrderResults = tabOrderResults.collect(
-                                    function (anElem) {
+                                    function(anElem) {
                                         return anElem.getAttribute('id');
                                     });
 

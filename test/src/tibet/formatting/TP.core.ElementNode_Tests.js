@@ -119,9 +119,7 @@ function() {
 
         var loadURI,
 
-            driver,
-
-            dataObj;
+            driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting1.xhtml');
 
@@ -292,9 +290,7 @@ function() {
 
         var loadURI,
 
-            driver,
-
-            dataObj;
+            driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting2.xhtml');
 
@@ -370,9 +366,7 @@ function() {
 
         var loadURI,
 
-            driver,
-
-            dataObj;
+            driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting3.xhtml');
 
@@ -426,9 +420,7 @@ function() {
 
         var loadURI,
 
-            driver,
-
-            dataObj;
+            driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting4.xhtml');
 

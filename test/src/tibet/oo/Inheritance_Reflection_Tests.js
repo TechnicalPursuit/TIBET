@@ -65,23 +65,23 @@ function() {
 
     //  Introduce type method
     animalType.Type.defineMethod('breathes',
-                                    function () {return true;});
+                                    function() {return true;});
     //  Introduce type method
     animalType.Type.defineMethod('makesNoise',
-                                    function () {return false;});
+                                    function() {return false;});
 
     //  Introduce instance attribute
     animalType.Inst.defineAttribute('lifeTicks');
 
     //  Introduce instance method
-    animalType.Inst.defineMethod('live', function () {
+    animalType.Inst.defineMethod('live', function() {
         this.set('lifeTicks', this.get('lifeTicks') - 1);
     });
 
     //  Introduce instance method
-    animalType.Inst.defineMethod('generateNoise', function () {return '';});
+    animalType.Inst.defineMethod('generateNoise', function() {return '';});
     //  Introduce instance method
-    animalType.Inst.defineMethod('die', function () {return '10 years';});
+    animalType.Inst.defineMethod('die', function() {return '10 years';});
 
 
     //  --- Domesticated object (abstract)
@@ -91,11 +91,11 @@ function() {
 
     //  Introduce type method
     domesticatedType.Type.defineMethod('needsLeash',
-                                        function () {return false;});
+                                        function() {return false;});
 
     //  Overrides type method
     domesticatedType.Type.defineMethod('makesNoise',
-                                        function () {return true;});
+                                        function() {return true;});
 
     //  Introduce instance attribute
     domesticatedType.Inst.defineAttribute('petName');
@@ -104,10 +104,10 @@ function() {
 
     //  Introduce instance method
     domesticatedType.Inst.defineMethod('visitVet',
-                                function () {var happy; return happy;});
+                                function() {var happy; return happy;});
 
     //  Override instance method
-    domesticatedType.Inst.defineMethod('live', function () {
+    domesticatedType.Inst.defineMethod('live', function() {
         this.set('lifeTicks', this.get('lifeTicks') + 1000);
     });
 
@@ -127,17 +127,17 @@ function() {
 
     //  Introduce type method
     dogType.Type.defineMethod('catChaseProbability',
-                                function () {return 'high';});
+                                function() {return 'high';});
     //  Override type method
     dogType.Type.defineMethod('needsLeash',
-                                function () {return true;});
+                                function() {return true;});
 
     //  Override instance method
     dogType.Inst.defineMethod('generateNoise',
-                                function () {return this.bark();});
+                                function() {return this.bark();});
 
     //  Introduce instance method
-    dogType.Inst.defineMethod('bark', function () {return 'ruff ruff';});
+    dogType.Inst.defineMethod('bark', function() {return 'ruff ruff';});
 
     //  ---
 
@@ -213,12 +213,12 @@ function() {
 
     //  Now define an additional trait for Colors
     TP.lang.Object.defineSubtype('test.Color');
-    TP.test.Color.Inst.defineMethod('getRgb', function () {
+    TP.test.Color.Inst.defineMethod('getRgb', function() {
         TP.OOTests.set(
             'colorGetRGBCount',
                 TP.OOTests.get('colorGetRGBCount') + 1);
     });
-    TP.test.Color.Inst.defineMethod('equals', function () {
+    TP.test.Color.Inst.defineMethod('equals', function() {
         TP.OOTests.set(
             'colorEqualsCount',
                 TP.OOTests.get('colorEqualsCount') + 1);
@@ -228,7 +228,7 @@ function() {
 
     //  Now define an additional trait for RGBData
     TP.lang.Object.defineSubtype('test.RGBData');
-    TP.test.RGBData.Inst.defineMethod('getRgb', function () {});
+    TP.test.RGBData.Inst.defineMethod('getRgb', function() {});
 });
 
 //  ------------------------------------------------------------------------
@@ -367,7 +367,7 @@ function() {
 
         var typeName;
 
-        typeName = function () {return;}.getTypeName();
+        typeName = function() {return;}.getTypeName();
 
         test.assert.isEqualTo(
             typeName,
@@ -537,7 +537,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = Object;
 
         test.assert.isIdenticalTo(
@@ -691,7 +691,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = 'Object';
 
         test.assert.isEqualTo(
@@ -835,7 +835,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = TP.ac(Object);
 
         test.assert.isEqualTo(
@@ -992,7 +992,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = TP.ac('Object');
 
         test.assert.isEqualTo(
@@ -1251,7 +1251,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -1263,7 +1263,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -1534,7 +1534,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -1546,7 +1546,7 @@ function() {
 
         //  ---
 
-        obj = function () {return true;};
+        obj = function() {return true;};
         correctVal = TP.ac();
 
         test.assert.isEqualTo(
@@ -1832,7 +1832,7 @@ function() {
         //  Type side method - inherited from super-super-type and locally
         //  overridden
         obj = TP.test.Dog;
-        obj.defineMethod('breathes', function () {return 'always';});
+        obj.defineMethod('breathes', function() {return 'always';});
 
         propName = 'breathes';
         correctVal = TP.LOCAL;
@@ -1847,7 +1847,7 @@ function() {
 
         //  Type side method - inherited from super-type and locally overridden
         obj = TP.test.Dog;
-        obj.defineMethod('needsLeash', function () {return true;});
+        obj.defineMethod('needsLeash', function() {return true;});
 
         propName = 'needsLeash';
         correctVal = TP.LOCAL;
@@ -1863,7 +1863,7 @@ function() {
         //  Type side method - introduced on type and locally overridden
         obj = TP.test.Dog;
         obj.defineMethod('chaseCatProbability',
-                function () {return this.ifInterested();});
+                function() {return this.ifInterested();});
 
         propName = 'chaseCatProbability';
         correctVal = TP.LOCAL;
@@ -1878,7 +1878,7 @@ function() {
 
         //  Local method - introduced on just this object
         obj = TP.test.Dog;
-        obj.defineMethod('dance', function () {return 'Dogtrot';});
+        obj.defineMethod('dance', function() {return 'Dogtrot';});
 
         propName = 'dance';
         correctVal = TP.LOCAL;
@@ -1905,7 +1905,7 @@ function() {
         //  Instance side method - inherited from super-super-type and locally
         //  overridden
         obj = TP.test.Dog.construct();
-        obj.defineMethod('die', function () {return 'never';});
+        obj.defineMethod('die', function() {return 'never';});
 
         propName = 'die';
         correctVal = TP.LOCAL;
@@ -1922,7 +1922,7 @@ function() {
         //  overridden
         obj = TP.test.Dog.construct();
         obj.defineMethod('visitVet',
-                            function () {var veryHappy; return veryHappy;});
+                            function() {var veryHappy; return veryHappy;});
 
         propName = 'visitVet';
         correctVal = TP.LOCAL;
@@ -1937,7 +1937,7 @@ function() {
 
         //  Instance side method - introduced on type and locally overridden
         obj = TP.test.Dog.construct();
-        obj.defineMethod('bark', function () {return 'rooo rooo';});
+        obj.defineMethod('bark', function() {return 'rooo rooo';});
 
         propName = 'bark';
         correctVal = TP.LOCAL;
@@ -1952,7 +1952,7 @@ function() {
 
         //  Local method - introduced on just this object
         obj = TP.test.Dog.construct();
-        obj.defineMethod('dance', function () {return 'Foxtrot';});
+        obj.defineMethod('dance', function() {return 'Foxtrot';});
 
         propName = 'dance';
         correctVal = TP.LOCAL;
@@ -2126,13 +2126,13 @@ function() {
         //  Make sure and stub out some test methods to avoid changing real
         //  methods on built-in objects while we're running tests.
         TP.FunctionProto.defineMethod('test7TypeMethod',
-                                        function () {return true;});
+                                        function() {return true;});
 
         //  ---
 
         //  Type side method - inherited from super-type and locally overridden
         obj = Object;
-        obj.defineMethod('test7TypeMethod', function () {return false;});
+        obj.defineMethod('test7TypeMethod', function() {return false;});
 
         propName = 'test7TypeMethod';
         correctVal = TP.OVERRIDDEN;
@@ -2145,7 +2145,7 @@ function() {
 
         //  Type side method - inherited from super-type and locally overridden
         obj = Array;
-        obj.defineMethod('test7TypeMethod', function () {return false;});
+        obj.defineMethod('test7TypeMethod', function() {return false;});
 
         propName = 'test7TypeMethod';
         correctVal = TP.OVERRIDDEN;
@@ -2165,12 +2165,12 @@ function() {
         //  Make sure and stub out some test methods to avoid changing real
         //  methods on built-in objects while we're running tests.
         Object.Type.defineMethod('test7TypeMethod2',
-                                    function () {return true;});
+                                    function() {return true;});
 
         //  Type side method - introduced on type and locally overridden
         obj = Object;
         obj.defineMethod('test7TypeMethod2',
-                function () {return this.ifInterested();});
+                function() {return this.ifInterested();});
 
         propName = 'test7TypeMethod2';
         correctVal = TP.LOCAL;
@@ -2185,12 +2185,12 @@ function() {
 
         //  Make sure and stub out some test methods to avoid changing real
         //  methods on built-in objects while we're running tests.
-        Array.Type.defineMethod('test7TypeMethod2', function () {return true;});
+        Array.Type.defineMethod('test7TypeMethod2', function() {return true;});
 
         //  Type side method - introduced on type and locally overridden
         obj = Array;
         obj.defineMethod('test7TypeMethod2',
-                function () {return this.ifInterested();});
+                function() {return this.ifInterested();});
 
         propName = 'test7TypeMethod2';
         correctVal = TP.LOCAL;
@@ -2205,7 +2205,7 @@ function() {
 
         //  Local method - introduced on just this object
         obj = Object;
-        obj.defineMethod('test7LocalMethod', function () {return true;});
+        obj.defineMethod('test7LocalMethod', function() {return true;});
 
         propName = 'test7LocalMethod';
         correctVal = TP.LOCAL;
@@ -2220,7 +2220,7 @@ function() {
 
         //  Local method - introduced on just this object
         obj = Array;
-        obj.defineMethod('test7LocalMethod', function () {return true;});
+        obj.defineMethod('test7LocalMethod', function() {return true;});
 
         propName = 'test7LocalMethod';
         correctVal = TP.LOCAL;
@@ -2246,7 +2246,7 @@ function() {
 
         //  Instance side method - introduced on type and locally overridden
         obj = [];
-        obj.defineMethod('unshift', function () {return 'unshiften';});
+        obj.defineMethod('unshift', function() {return 'unshiften';});
 
         propName = 'unshift';
         correctVal = TP.LOCAL;
@@ -2261,7 +2261,7 @@ function() {
 
         //  Local method - introduced on just this object
         obj = [];
-        obj.defineMethod('doThis', function () {return 'doneIt';});
+        obj.defineMethod('doThis', function() {return 'doneIt';});
 
         propName = 'doThis';
         correctVal = TP.LOCAL;
@@ -3271,7 +3271,7 @@ function() {
         //      TP.FunctionProto
         //      Meta methods
         //      Common methods
-        //      Type or instance methods on Function (i.e. added via
+        //      Type or instance methods on function(i.e. added via
         //      'Type.defineMethod') where TP.OWNER is Function
 
         objProtoProperties = Object.keys(TP.ObjectProto);
@@ -3867,7 +3867,7 @@ function() {
         //  ---
 
         TP.core.Node.Type.defineMethod('testTypeMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = TP.core.Node.testTypeMethod1;
 
         val = obj[TP.OWNER];
@@ -3903,7 +3903,7 @@ function() {
         //  ---
 
         TP.core.Node.defineMethod('testTypeLocalMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = TP.core.Node.testTypeLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -3951,7 +3951,7 @@ function() {
         //  ---
 
         TP.core.Point.Inst.defineMethod('testInstMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = TP.core.Point.getInstPrototype().testInstMethod1;
 
         val = obj[TP.OWNER];
@@ -3989,7 +3989,7 @@ function() {
         inst = TP.core.Point.construct(20, 30);
 
         inst.defineMethod('testLocalMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = inst.testLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4037,7 +4037,7 @@ function() {
         //  ---
 
         Array.Type.defineMethod('testTypeMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = Array.testTypeMethod1;
 
         val = obj[TP.OWNER];
@@ -4073,7 +4073,7 @@ function() {
         //  ---
 
         Array.defineMethod('testTypeLocalMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = Array.testTypeLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4112,7 +4112,7 @@ function() {
         //  message TP.FunctionProto directly.
 
         TP.FunctionProto.defineMethod('testInstMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = TP.FunctionProto.testInstMethod1;
 
         val = obj[TP.OWNER];
@@ -4150,10 +4150,10 @@ function() {
         //  When we want a method to show up on a *particular* instance of a
         //  Function, we message it directly.
 
-        inst = function () {return false;};
+        inst = function() {return false;};
 
         inst.defineMethod('testLocalMethod1',
-                                function () {return true;});
+                                function() {return true;});
         obj = inst.testLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4201,7 +4201,7 @@ function() {
         //  ---
 
         Array.Inst.defineMethod('testInstMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = Array.getInstPrototype().testInstMethod1;
 
         val = obj[TP.OWNER];
@@ -4239,7 +4239,7 @@ function() {
         inst = TP.ac('hi', 'there');
 
         inst.defineMethod('testInstLocalMethod1',
-                                        function () {return true;});
+                                        function() {return true;});
         obj = inst.testInstLocalMethod1;
 
         val = obj[TP.OWNER];
@@ -4873,11 +4873,7 @@ function() {
         var obj,
 
             val,
-            correctVal,
-
-            oldLogLevel,
-
-            inlineCount;
+            correctVal;
 
         //  For this particular test, we undo the behavior we have in the
         //  before() / after() and turn trait autoresolution on
@@ -5119,12 +5115,12 @@ function() {
             TP.test.FooType.Inst.defineAttribute('theName');
 
             TP.test.FooType.Type.defineMethod('giveSpecies',
-            function (aSpecies) {
+            function(aSpecies) {
                 this.set('species', aSpecies);
             });
 
             TP.test.FooType.Inst.defineMethod('giveName',
-            function (aName) {
+            function(aName) {
                 this.set('theName', aName);
             });
 
@@ -5133,12 +5129,12 @@ function() {
             TP.test.FooType.defineSubtype('test.BarType');
 
             TP.test.BarType.Type.defineMethod('giveSpecies',
-            function (aSpecies) {
+            function(aSpecies) {
                 this.callNextMethod();
             });
 
             TP.test.BarType.Inst.defineMethod('giveName',
-            function (aName) {
+            function(aName) {
                 this.callNextMethod();
             });
 
@@ -5147,14 +5143,14 @@ function() {
             TP.test.BarType.defineSubtype('test.BazType');
 
             TP.test.BazType.Type.defineMethod('giveSpecies',
-            function (aSpecies) {
+            function(aSpecies) {
                 //  BazType will always have its species set to 'feline',
                 //  no matter what the caller wanted.
                 this.callNextMethod('feline');
             });
 
             TP.test.BazType.Inst.defineMethod('giveName',
-            function (aName) {
+            function(aName) {
                 //  Instances of BazType will always have their name set to
                 //  'fluffy', no matter what the caller wanted.
                 this.callNextMethod('fluffy');

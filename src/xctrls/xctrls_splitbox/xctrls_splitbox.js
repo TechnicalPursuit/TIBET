@@ -82,7 +82,6 @@ function(aSignal) {
         beforePanel,
         afterPanel,
 
-        ourSize,
         barPosition;
 
     //  We need to resize the panels to match our bar's position
@@ -93,7 +92,6 @@ function(aSignal) {
 
     //  TODO: Right now we assume a vertical orientation.
 
-    ourSize = this.getHeight();
     barPosition = TP.wrap(bar).getOffsetPoint().getY();
 
     TP.elementGetStyleObj(beforePanel).height = barPosition + 'px';

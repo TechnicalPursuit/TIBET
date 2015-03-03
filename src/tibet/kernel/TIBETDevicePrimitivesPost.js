@@ -1088,7 +1088,6 @@ function(nativeEvt) {
 
         fullTargetArray,
 
-        thrownSignal,
         firingPolicy;
 
     if (!TP.isEvent(nativeEvt)) {
@@ -1185,12 +1184,12 @@ function(nativeEvt) {
                         TP.SIGNAL_LOG) : 0;
 
         //  Its not TP.DOM_FIRING, so we send the globalID only
-        thrownSignal = TP.signal(globalID,
-                                    eventName,
-                                    null,
-                                    evtInfo,
-                                    sourceElement.firingPolicy,
-                                    eventSuper);
+        TP.signal(globalID,
+                    eventName,
+                    null,
+                    evtInfo,
+                    sourceElement.firingPolicy,
+                    eventSuper);
     } else {
         TP.ifTrace() && TP.sys.shouldLogSignals() ?
             TP.trace('Sending ' + eventName +
@@ -1200,12 +1199,12 @@ function(nativeEvt) {
         //  It is TP.DOM_FIRING, so we send the list of IDs
         fullTargetArray = TP.elementGetEventOrigins(sourceElement, evtInfo);
 
-        thrownSignal = TP.signal(fullTargetArray,
-                                    eventName,
-                                    null,
-                                    evtInfo,
-                                    TP.DOM_FIRING,
-                                    eventSuper);
+        TP.signal(fullTargetArray,
+                    eventName,
+                    null,
+                    evtInfo,
+                    TP.DOM_FIRING,
+                    eventSuper);
     }
 
     return;
@@ -1813,7 +1812,6 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
         len2,
 
         elementDoc,
-        elementWin,
         elementLocalID,
 
         foundElements,
@@ -1849,7 +1847,6 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
     }
 
     //  Grab the element's window and ID, forcing ID creation as needed
-    elementWin = TP.nodeGetWindow(elementDoc);
     elementLocalID = TP.lid(targetElement, true);
 
     //  If the element is not a window and its not a document, then check to
@@ -2024,7 +2021,6 @@ function(aWindow, aNode, eventNameArray, aHandler) {
         len2,
 
         elementDoc,
-        elementWin,
         elementLocalID,
 
         theHandler,
@@ -2050,7 +2046,6 @@ function(aWindow, aNode, eventNameArray, aHandler) {
 
     //  Grab the element's window and its name.
     elementDoc = TP.nodeGetDocument(aNode);
-    elementWin = TP.nodeGetWindow(elementDoc);
     elementLocalID = TP.lid(aNode);
 
     theHandler = TP.ifInvalid(aHandler, TP.$dispatchEventToTIBET);

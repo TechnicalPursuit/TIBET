@@ -33,14 +33,14 @@ function() {
         structurePathResults = TP.ac();
 
         jsonValueObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
                 };
 
         jsonValueObsFunction.observe(modelObj, 'ValueChange');
 
         jsonStructureObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
                 };
 
@@ -360,14 +360,14 @@ function() {
         structurePathResults = TP.ac();
 
         xmlValueObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
                 };
 
         xmlValueObsFunction.observe(modelObj, 'ValueChange');
 
         xmlStructureObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
                 };
 
@@ -629,7 +629,7 @@ function() {
         valueChangedResults = TP.ac();
 
         aspectObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
                     valueChangedResults.push(aSignal.getValue());
                 };
@@ -673,7 +673,7 @@ function() {
         valueChangedResults = TP.ac();
 
         aspectObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
                     valueChangedResults.push(aSignal.getValue());
                 };
@@ -720,7 +720,7 @@ function() {
         valueChangedResults = TP.ac();
 
         aspectObsFunction =
-                function (aSignal) {
+                function(aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
                     valueChangedResults.push(
                         aSignal.getValue().first().getTextContent());
@@ -777,7 +777,7 @@ function() {
         TP.observe(
             modelObj,
             'SalaryChange',
-            handlerFunc = function (aSignal) {
+            handlerFunc = function(aSignal) {
 
                 var newValue;
 
@@ -830,7 +830,7 @@ function() {
         TP.observe(
             'CurrentEmployee',
             'SalaryChange',
-            handlerFunc = function (aSignal) {
+            handlerFunc = function(aSignal) {
 
                 var newValue;
 
@@ -884,7 +884,7 @@ function() {
         TP.observe(
             modelURI,
             'SalaryChange',
-            handlerFunc = function (aSignal) {
+            handlerFunc = function(aSignal) {
 
                 var newValue;
 

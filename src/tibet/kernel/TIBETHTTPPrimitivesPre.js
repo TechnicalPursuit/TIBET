@@ -26,7 +26,6 @@ function(targetUrl) {
      */
 
     var xhr,
-        type,
         url;
 
     xhr = new XMLHttpRequest();
@@ -42,7 +41,7 @@ function(targetUrl) {
     //  HTTP request object used for a particular URI so we associate it
     //  here if possible
     if (TP.isValid(targetUrl) &&
-        TP.isValid(type = TP.sys.require('TP.core.URI'))) {
+        TP.isValid(TP.sys.require('TP.core.URI'))) {
         url = TP.uc(targetUrl);
         url.$set('lastCommObj', xhr);
     }

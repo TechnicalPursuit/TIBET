@@ -179,19 +179,19 @@ function(aRequest) {
     //  get a time-ordered collection of all output from the request.
     stdioProvider = TP.lang.Object.construct();
     stdioProvider.defineMethod('notify',
-                    function (anObject, aRequest) {
+                    function(anObject, aRequest) {
                         stdioResults.push({meta: 'notify', data: anObject});
                     });
     stdioProvider.defineMethod('stdin',
-                    function (anObject, aDefault, aRequest) {
+                    function(anObject, aDefault, aRequest) {
                         stdioResults.push({meta: 'stdin', data: anObject});
                     });
     stdioProvider.defineMethod('stdout',
-                    function (anObject, aRequest) {
+                    function(anObject, aRequest) {
                         stdioResults.push({meta: 'stdout', data: anObject});
                     });
     stdioProvider.defineMethod('stderr',
-                    function (anObject, aRequest) {
+                    function(anObject, aRequest) {
                         stdioResults.push({meta: 'stderr', data: anObject});
                     });
 
@@ -233,7 +233,7 @@ function(aRequest) {
             success = function() {};
         }
     }
-    successHandler = function (aSignal) {
+    successHandler = function(aSignal) {
         shell.detachSTDIO();
 
         //  Note that we have to ignore *both* of the handlers so that when one
@@ -255,7 +255,7 @@ function(aRequest) {
             failure = function() {};
         }
     }
-    failureHandler = function (aSignal) {
+    failureHandler = function(aSignal) {
         shell.detachSTDIO();
 
         //  Note that we have to ignore *both* of the handlers so that when one
@@ -1416,7 +1416,6 @@ function(aSignal) {
         responder,
 
         req,
-        result,
 
         response;
 
@@ -1432,7 +1431,7 @@ function(aSignal) {
     req.set('requestor', this);
 
     try {
-        result = TP.handle(this, req);
+        TP.handle(this, req);
     } catch (e) {
     } finally {
         //  if there was a responder let it know we're done
@@ -1552,10 +1551,7 @@ function(anObject, aRequest) {
      * @returns {TP.core.Shell} The receiver.
      */
 
-    var message,
-
-        name,
-        raw;
+    var message;
 
     if (TP.isString(anObject)) {
         message = anObject;
@@ -1574,8 +1570,8 @@ function(anObject, aRequest) {
         message = TP.str(anObject);
     }
 
-    name = TP.ifKeyInvalid(aRequest, 'cmdNotifier', null);
-    raw = TP.ifKeyInvalid(aRequest, 'cmdAsIs', false);
+    //name = TP.ifKeyInvalid(aRequest, 'cmdNotifier', null);
+    //raw = TP.ifKeyInvalid(aRequest, 'cmdAsIs', false);
 
     TP.boot.$alert(message);
 
@@ -2308,7 +2304,7 @@ function(aString) {
     if (TP.regex.TSH_VARSUB.test(str)) {
         str = str.replace(
                 TP.regex.TSH_VARSUB,
-                function (wholeMatch, varName) {
+                function(wholeMatch, varName) {
                     var value;
                     value = this.getExecutionInstance().at('$' + varName);
 
@@ -2515,12 +2511,12 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
         if (argumentName === 'ARGV') {
             if (wantsOriginal) {
                 value = value.collect(
-                        function (item) {
+                        function(item) {
                             return item.first();
                         });
             } else {
                 value = value.collect(
-                        function (item) {
+                        function(item) {
                             return item.last();
                         });
             }
@@ -2862,9 +2858,9 @@ function(aRequest, anArgument) {
      * @returns {Boolean} True if the argument exists.
      */
 
-    var arg;
+    this.todo();
 
-    arg = this.getArguments(aRequest, anArgument);
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -2928,9 +2924,7 @@ function(aRequest) {
 
     var dict,
 
-        node,
-
-        shell;
+        node;
 
     TP.stop('break.tsh_params');
 
@@ -2947,7 +2941,6 @@ function(aRequest) {
         return;
     }
 
-    shell = this;
     dict = TP.hc();
 
     //  TODO:   restructure what's here to simply ask the tsh:param tag
@@ -3161,14 +3154,10 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
-    var node,
-
-        name,
+    var name,
         value,
 
         hash;
-
-    node = aRequest.at('cmdNode');
 
     name = this.getArgument(aRequest, 'ARG0');
     value = this.getArgument(aRequest, 'ARG1');

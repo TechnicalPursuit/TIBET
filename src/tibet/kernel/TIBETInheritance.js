@@ -278,7 +278,7 @@ function(name) {
     //  put a custom 'getName' function on the typeConstructor that will return
     //  'TP.meta.<nsName>.<subtypeName>' as the 'public name' of this object
     //  (i.e. the type's 'meta type')
-    typeConstructor.getName = function () {
+    typeConstructor.getName = function() {
         return 'TP.meta.' + nsName + '.' + subtypeName;
     };
 
@@ -2414,7 +2414,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         arr,
         anObj,
         orgid,
-        orgtype,
         stackInfo,
         targetType,
         typeName,
@@ -2431,7 +2430,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     //  grab the origin's ID for reporting
     orgid = TP.id(anOrigin);
-    orgtype = TP.tname(anOrigin);
 
     //  windows are notoriously poor at dealing with DNUs since
     //  they're "special objects" in the browser world, so don't try
@@ -2691,7 +2689,6 @@ function(aFunction, millisecondCount, stackNames) {
         fo,
         max,
         min,
-        avg,
         cnt,
         sum,
         stacks,
@@ -2727,7 +2724,6 @@ function(aFunction, millisecondCount, stackNames) {
     min = TP.ifInvalid(d2.at('min'), Number.POSITIVE_INFINITY);
     d2.atPut('min', Math.min(millisecondCount, min));
 
-    avg = TP.ifInvalid(d2.at('avg'), 0);
     d2.atPut('avg', d2.at('sum') / d2.at('cnt'));
 
     //  manage call stack data if provided
@@ -3488,14 +3484,7 @@ function() {
 
     var c3,
 
-        tnames,
-
-        traits,
         resolver,
-        i,
-
-        j,
-        traitType,
 
         finalResult;
 
@@ -3571,11 +3560,11 @@ function() {
             });
         };
 
-        empty = function (s) {
+        empty = function(s) {
             return s.length;
         };
 
-        merge = function (seqs) {
+        merge = function(seqs) {
             var results,
                 candidate,
                 nonEmptySeqs,
@@ -3620,7 +3609,7 @@ function() {
             }
         };
 
-        run = function (name) {
+        run = function(name) {
             var mergeResult;
 
             mergeResult = merge([[name]].concat(processMap[name].map(run)));
@@ -3795,9 +3784,7 @@ function() {
                         entry,
                         sources,
                         i,
-                        pastSourceTarget,
-
-                        propVal;
+                        pastSourceTarget;
 
                     //  If the mainTypeTarget has this property, then we need to
                     //  check whether the trait type has it too - in that case,
@@ -3875,7 +3862,7 @@ function() {
                         sources.push(traitType);
                     } else {
                         //  If the property is defined on the main type
-                        if (TP.isDefined(propVal = mainTypeTarget[propName])) {
+                        if (TP.isDefined(mainTypeTarget[propName])) {
                             entry = TP.hc('sources',
                                             TP.ac(mainType, traitType));
                         } else {
@@ -3917,9 +3904,7 @@ function() {
                         entry,
                         sources,
                         i,
-                        pastSourceTarget,
-
-                        propVal;
+                        pastSourceTarget;
 
                     //  If the mainTypeTarget has this property, then we need to
                     //  check whether the trait type has it too - in that case,
@@ -3993,7 +3978,7 @@ function() {
                         sources.push(traitType);
                     } else {
                         //  If the property is defined on the main type
-                        if (TP.isDefined(propVal = mainTypeTarget[propName])) {
+                        if (TP.isDefined(mainTypeTarget[propName])) {
                             entry = TP.hc('sources',
                                             TP.ac(mainType, traitType));
                         } else {
@@ -4022,7 +4007,6 @@ function() {
      */
 
     var mainType,
-        mainTypeTarget,
 
         keys,
 
@@ -4032,9 +4016,7 @@ function() {
         unresolvedTypeTraits,
         resolvedTypeTraits,
         unresolvedInstTraits,
-        resolvedInstTraits,
-
-        errStr;
+        resolvedInstTraits;
 
     //  Make sure that we actually have traits
     if (!this.hasTraits()) {
@@ -4060,7 +4042,6 @@ function() {
         keys.forEach(
             function(propName) {
                 var entry,
-                    resolution,
                     len,
                     i,
                     source,
@@ -4073,7 +4054,7 @@ function() {
                 //  then we can resolve it if all but one of the values of
                 //  'propName' on each of the sources is TP.REQUIRED. If more
                 //  than one is "real", then we have a conflict.
-                if (TP.notValid(resolution = entry.at('resolvesTo'))) {
+                if (TP.notValid(entry.at('resolvesTo'))) {
 
                     len = entry.at('sources').getSize();
                     for (i = 0; i < len; i++) {
@@ -4142,13 +4123,10 @@ function() {
 
     if (TP.notEmpty(instResolutions)) {
 
-        mainTypeTarget = mainType.getInstPrototype();
-
         keys = instResolutions.getKeys();
         keys.forEach(
             function(propName) {
                 var entry,
-                    resolution,
                     len,
                     i,
                     source,
@@ -4161,7 +4139,7 @@ function() {
                 //  then we can resolve it if all but one of the values of
                 //  'propName' on each of the sources is TP.REQUIRED. If more
                 //  than one is "real", then we have a conflict.
-                if (TP.notValid(resolution = entry.at('resolvesTo'))) {
+                if (TP.notValid(entry.at('resolvesTo'))) {
 
                     len = entry.at('sources').getSize();
                     for (i = 0; i < len; i++) {
@@ -4347,10 +4325,7 @@ function(c3Resolver) {
      */
 
     var traits,
-        i,
-
-        traitSupers,
-        j;
+        i;
 
     //  Add an entry for ourself and our supertype.
     c3Resolver.add(this.getName(), this.getSupertypeName());
@@ -4447,7 +4422,7 @@ function(resolution, propName, targetObject, forInstances) {
                 } else if (TP.isString(resolutionOption)) {
                     switch (resolutionOption) {
                         case TP.BEFORE:
-                            dispatchFunc = function () {
+                            dispatchFunc = function() {
                                     dispatchFunc.$resolutionMethod.apply(
                                             this, arguments);
                                     return dispatchFunc.$mainMethod.apply(
@@ -4459,7 +4434,7 @@ function(resolution, propName, targetObject, forInstances) {
                             installName = propName;
                             break;
                         case TP.AFTER:
-                            dispatchFunc = function () {
+                            dispatchFunc = function() {
                                     dispatchFunc.$mainMethod.apply(
                                             this, arguments);
                                     return dispatchFunc.$resolutionMethod.apply(
@@ -4539,7 +4514,7 @@ function(resolution, propName, targetObject, forInstances) {
         //  If we didn't assign a dispatch Function earlier, that means that we
         //  are doing a 'simple resolution'.
         if (TP.notValid(dispatchFunc)) {
-            dispatchFunc = function () {
+            dispatchFunc = function() {
                     return dispatchFunc.$resolutionMethod.apply(
                             this, arguments);
                 };
@@ -4609,7 +4584,6 @@ function(targetType, conflictedTraits, track) {
                 function(kvPair) {
                     var propName,
                         sources,
-                        candidateTypes,
                         resolvedType,
 
                         i,
@@ -5460,8 +5434,7 @@ function(anObject, aspectNames) {
      *     the aspect names.
      */
 
-    var hadFacetCheck,
-        constraintsResult,
+    var constraintsResult,
 
         aspectsToCheck,
 
@@ -5472,8 +5445,6 @@ function(anObject, aspectNames) {
 
         aspectName,
         constraints;
-
-    hadFacetCheck = false;
 
     //  No aspect names supplied - use all of the aspects of the supplied
     //  object.
@@ -5504,8 +5475,6 @@ function(anObject, aspectNames) {
 
             continue;
         }
-
-        hadFacetCheck = true;
 
         //  Otherwise, there was a set of validity constraints (a literal Object
         //  containing 1...n of them). Execute those constraints and put the
@@ -6809,10 +6778,6 @@ function() {
      * @summary Returns the receiver as a Date instance.
      * @returns {Date}
      */
-
-    var theDate;
-
-    theDate = TP.dc(this.asString());
 
     return TP.dc(this.asString());
 });
@@ -8498,7 +8463,6 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
         name,
         suffix,
         supers,
-        args,
         len,
         i,
         sname;
@@ -8510,7 +8474,6 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     prefix = aPrefix;
     suffix = aSuffix || '';
-    args = TP.args(anArgArray || callingContext);
 
     if (TP.isNull(anObject)) {
         name = prefix + 'Null' + suffix;
@@ -8998,9 +8961,9 @@ function() {
         //  initialize message and set its initialized flag to true.
         return own.collect(
 
-            function (item, index) {
+            function(item, index) {
 
-                return function () {
+                return function() {
 
                     var obj;
 
@@ -9102,8 +9065,7 @@ function() {
      * @returns {Array}
      */
 
-    var lastProto,
-        proto,
+    var proto,
         protos;
 
     protos = TP.ac();
@@ -9114,12 +9076,10 @@ function() {
     }
 
     proto = this;
-    lastProto = null;
 
     //  watch for circularities on the native types
     while (proto !== TP.ObjectProto &&
             proto !== proto.constructor.prototype) {
-        lastProto = proto;
         proto = proto.getPrototype();
         protos.add(proto);
     }

@@ -283,12 +283,10 @@ function(targetUrl, openCallback) {
     wsObj.onopen =
         function(openEvt) {
 
-            var type;
-
             //  We need to keep track of the last WebSocket object used for
             //  a particular URI so we associate it here if possible
             if (TP.isURI(targetUrl) &&
-                TP.isType(type = TP.sys.require('TP.core.URI'))) {
+                TP.isType(TP.sys.require('TP.core.URI'))) {
                 url = TP.uc(targetUrl);
                 url.set('webSocketObj', wsObj);
             }
@@ -557,7 +555,6 @@ function(targetUrl, aRequest, wsObj) {
      */
 
     var request,
-        url,
         type,
         sig,
         id;
@@ -565,7 +562,6 @@ function(targetUrl, aRequest, wsObj) {
     TP.stop('break.websocket_wrapup');
 
     request = TP.request(aRequest);
-    url = TP.ifInvalid(targetUrl, request.at('uri'));
 
     //  make sure the request has access to the native WebSocket object
     request.atPut('wsObj', wsObj);

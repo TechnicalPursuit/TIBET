@@ -221,7 +221,7 @@ function(tokenList, templateName, sourceVarNames) {
 
     ignoreNull = 'return TP.isNull(result) ? \'\' : result;';
 
-    formattedValue = function (argName, argFormat, isRepeating) {
+    formattedValue = function(argName, argFormat, isRepeating) {
         //  Returns an expression that will return the value formatted according
         //  to the supplied format, and whether it's a repeating format.
 
@@ -257,20 +257,20 @@ function(tokenList, templateName, sourceVarNames) {
 
     generators = {
 
-        defineUndefined: function (arg) {
+        defineUndefined: function(arg) {
             //  Returns an expression that returns an empty String if the
             //  argument is not defined.
 
             return 'if (!TP.isDefined(' + generators.escapedIdentifier(arg) + ')) { return \'\'; };';
         },
 
-        escape: function (str) {
+        escape: function(str) {
             //  Returns any single quote within the str as escaped quotes.
 
             return str.replace(/'/ig, '\\\'');
         },
 
-        escapedIdentifier: function (str) {
+        escapedIdentifier: function(str) {
             //  Returns any supplied identifier as a 'hashed number' if it can't
             //  be expressed as a JavaScript identifier
 
@@ -281,7 +281,7 @@ function(tokenList, templateName, sourceVarNames) {
             return str;
         },
 
-        guardCollection: function (arg) {
+        guardCollection: function(arg) {
             //  Returns an expression that will tested the provided argument to
             //  see if it is defined. If so, it will be used - otherwise it will
             //  return an empty Array
@@ -289,7 +289,7 @@ function(tokenList, templateName, sourceVarNames) {
             return '!TP.isDefined(' + generators.escapedIdentifier(arg) + ') ? TP.ac() : ' + arg;
         },
 
-        getFromArgs: function (propName) {
+        getFromArgs: function(propName) {
             //  Returns an expression that will try to extract a value for the
             //  property named by the propName parameter. The source object for
             //  this will either be the data source or the params handed to the
@@ -323,7 +323,7 @@ function(tokenList, templateName, sourceVarNames) {
             return retVal;
         },
 
-        guardValue: function (arg) {
+        guardValue: function(arg) {
             //  Returns an expression that will tested the provided argument to
             //  see if it is defined. If so, it will be used - otherwise it will
             //  return a null.
@@ -333,7 +333,7 @@ function(tokenList, templateName, sourceVarNames) {
                     'null : ' + arg;
         },
 
-        handle: function (item) {
+        handle: function(item) {
             //  Handles processing a particular kind of token
 
             var args,
@@ -354,7 +354,7 @@ function(tokenList, templateName, sourceVarNames) {
             return commands[command].apply(this, args);
         },
 
-        loop: function (input, joinChar) {
+        loop: function(input, joinChar) {
             //  Loops over the stream of tokens represented by input, invokes
             //  'handle' on each one, and concats it all together into a single
             //  expression
@@ -362,21 +362,21 @@ function(tokenList, templateName, sourceVarNames) {
             return input.map(generators.handle).join(joinChar || ' + ');
         },
 
-        returnWrap: function (code) {
+        returnWrap: function(code) {
             //  Returns an expression that returns whatever the supplied code
             //  returns.
 
             return generators.wrap('return ' + code);
         },
 
-        wrap: function (code) {
+        wrap: function(code) {
             //  Wraps the supplied code into a Function closure that is then
             //  executed.
 
             return '(function() {' + code + '})()';
         },
 
-        valueFrom: function (varName, formatName, isRepeating) {
+        valueFrom: function(varName, formatName, isRepeating) {
 
             var valueGet;
 

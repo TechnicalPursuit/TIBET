@@ -36,11 +36,7 @@ function() {
     var initialScreenWidth,
         initialScreenHeight,
 
-        allScreens,
         allIFrames,
-
-        screenWidth,
-        screenHeight,
 
         screen0Loc,
 
@@ -54,13 +50,8 @@ function() {
     initialScreenHeight =
         TP.ifInvalid(768, TP.sys.cfg('sherpa.initial_screen_width'));
 
-    allScreens = TP.byCSS('sherpa|screen', this.getNativeWindow());
-
     this.set('screenWidth', initialScreenWidth);
     this.set('screenHeight', initialScreenHeight);
-
-    screenWidth = this.get('screenWidth');
-    screenHeight = this.get('screenHeight');
 
     allIFrames = TP.byCSS('sherpa|screen > iframe', this.getNativeWindow());
 
@@ -154,11 +145,11 @@ function(aSignal) {
      * @method handleHiddenChange
      */
 
+    /*
     var isHidden;
 
     isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
 
-    /*
     if (isHidden) {
         console.log('hud is now hidden');
     } else {

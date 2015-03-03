@@ -1813,7 +1813,7 @@ function(anObject, assignIfAbsent) {
      *          <samp>TP.lang.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.gid(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          TP.gid((function () {TP.alert('foo');}));
+     *          TP.gid((function() {TP.alert('foo');}));
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.gid(TP.lang.Object.construct());
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -2161,7 +2161,7 @@ function(anObject, assignIfAbsent) {
      *          <samp>TP.lang.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.lid(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          TP.lid((function () {TP.alert('foo');}));
+     *          TP.lid((function() {TP.alert('foo');}));
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.lid(TP.lang.Object.construct());
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -2433,7 +2433,7 @@ function(anObject, assignIfAbsent) {
      *          <samp>TP.lang.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.id(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          TP.id((function () {TP.alert('foo');}));
+     *          TP.id((function() {TP.alert('foo');}));
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.id(TP.lang.Object.construct());
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -2793,7 +2793,7 @@ function(anObject, aDocument) {
      *          <samp>[object Text]</samp>
      *          TP.htmlnode(TP.dc());
      *          <samp>[object Text]</samp>
-     *          TP.htmlnode((function () {TP.alert('foo');}));
+     *          TP.htmlnode((function() {TP.alert('foo');}));
      *          <samp>[object Text]</samp>
      *          TP.htmlnode(TP.lang.Object.construct());
      *          <samp>[object Text]</samp>
@@ -4735,7 +4735,7 @@ function(anObject) {
     //  Make sure to run a collect() to create a new Array, since we might be
     //  touching a cached Array of TP.ANCESTORS.
     return stypes.collect(
-            function (aType) {
+            function(aType) {
                 return TP.name(aType);
             });
 });
