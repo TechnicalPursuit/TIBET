@@ -4008,30 +4008,16 @@ function(beDisabled) {
      * @returns {Boolean} Whether the receiver's state is disabled.
      */
 
-    var navIndex;
-
     if (TP.isTrue(beDisabled)) {
-        //  We go ahead and set a generic 'disabled' attribute here that can
-        //  be used outside of XControls (and is used by our eventing
-        //  routines).
-        this.setAttribute('disabled', true);
-        this.setAttribute('pclass:disabled', 'true');
-
-        this.setAttribute('xctrls:navindex', '-1');
+        //  We go ahead and set a generic 'disabled' attribute here that is used
+        //  for (X)HTML. Note the '$setAttribute()' call to avoid calling back
+        //  into ourself here. Note also how we do *not* signal change here.
+        this.$setAttribute('disabled', true, false);
     } else {
         this.removeAttribute('disabled');
-        this.removeAttribute('pclass:disabled');
-
-        if (TP.notValid(navIndex = this.get('navIndex'))) {
-            this.setAttribute('xctrls:navindex', navIndex);
-        } else {
-            this.removeAttribute('xctrls:navindex');
-        }
     }
 
-    this.setAttribute('tabIndex', this.getAttribute('xctrls:navindex'));
-
-    return this.hasAttribute('pclass:disabled');
+    return this.$isInState('pclass:disabled', beDisabled);
 });
 
 //  ------------------------------------------------------------------------
