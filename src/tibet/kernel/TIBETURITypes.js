@@ -4689,8 +4689,7 @@ function(aResource, aRequest) {
 
                 //  NB: We supply the old resource and the fragment text
                 //  here for ease of obtaining values.
-                'oldTarget', resource,
-                'path', fragText
+                'oldTarget', resource
                 );
 
         //  If we have sub URIs, then observers of them will be expecting to get
@@ -4703,45 +4702,30 @@ function(aResource, aRequest) {
 
             description.atPut('path', fragText);
 
-            subURIs.at(i).signal(
-                    'TP.sig.StructureChange',
-                    description);
+            subURIs.at(i).signal('TP.sig.StructureChange', description);
 
             aResource.checkFacets(fragText);
         }
-
-        //  Now that we're done signaling the sub URIs, it's time to signal a
-        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-        description = TP.hc(
-                'action', TP.DELETE,
-                'aspect', 'value',
-                'facet', 'value',
-
-                //  NB: We supply these values here for consistency with the 'no
-                //  subURIs logic' below.
-                'target', aResource,
-                'oldTarget', resource,
-                TP.OLDVAL, resource,
-                TP.NEWVAL, aResource
-                );
-
-        this.signal(
-            'TP.sig.ValueChange',
-            description);
-    } else {
-        //  If we don't have subURIs, we invoke the standard 'changed' mechanism
-        //  (which signals 'TP.sig.ValueChange' from ourself). Note here that we
-        //  invoke '$changed()' since, by default, we do *not* signal change (we
-        //  don't signal change for our 'properties' (i.e. hash, URL, params,
-        //  etc.) since we don't want observers to get notified about all of
-        //  that).
-        this.$changed('value',
-                        TP.UPDATE,
-                        TP.hc('target', aResource,
-                                'oldTarget', resource,
-                                TP.OLDVAL, resource,
-                                TP.NEWVAL, aResource));
     }
+
+    //  Now that we're done signaling the sub URIs, it's time to signal a
+    //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+    description = TP.hc(
+        'action', TP.UPDATE,
+        'aspect', 'value',
+        'facet', 'value',
+
+        'path', this.getFragmentExpr(),
+
+        //  NB: We supply these values here for consistency with the 'no
+        //  subURIs logic' below.
+        'target', aResource,
+        'oldTarget', resource,
+        TP.OLDVAL, resource,
+        TP.NEWVAL, aResource
+        );
+
+    this.signal('TP.sig.ValueChange', description);
 
     return this;
 });
