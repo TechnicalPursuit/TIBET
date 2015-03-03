@@ -5561,7 +5561,7 @@ function(anObject, constraints) {
         constraint = constraints[constraintName];
 
         if (constraint.isAccessPath()) {
-            constraint = constraint.executeGet(anObject);
+            constraint = constraint.executeGet(anObject.getPathSource());
         }
 
         //  Set the initial result to false.
@@ -7713,7 +7713,7 @@ function(aspectName, facetName) {
                 } else if (TP.isArray(facetSetting)) {
                     val = facetValue;
                 } else if (facetValue.isAccessPath()) {
-                    val = facetValue.executeGet(this);
+                    val = facetValue.executeGet(this.getPathSource());
                 } else if (TP.isString(facetValue) &&
                             TP.isMethod(this[facetValue])) {
                     val = this[facetValue]();
@@ -7740,7 +7740,7 @@ function(aspectName, facetName) {
             } else if (TP.isArray(facetSetting)) {
                 facetValue = facetSetting;
             } else if (facetSetting.isAccessPath()) {
-                facetValue = facetSetting.executeGet(this);
+                facetValue = facetSetting.executeGet(this.getPathSource());
             } else if (TP.isString(facetSetting) &&
                         TP.isMethod(this[facetSetting])) {
                 facetValue = this[facetSetting]();
