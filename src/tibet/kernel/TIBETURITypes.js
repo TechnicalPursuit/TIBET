@@ -4639,13 +4639,15 @@ function(aResource, aRequest) {
 
     //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
     //  same as it's OID), we're going to set it to our 'name'.
-    /* eslint-disable no-extra-parens */
-    hasID = (aResource[TP.ID] !== aResource.$$oid);
-    /* eslint-enable no-extra-parens */
+    if (TP.isValid(aResource)) {
+        /* eslint-disable no-extra-parens */
+        hasID = (aResource[TP.ID] !== aResource.$$oid);
+        /* eslint-enable no-extra-parens */
 
-    if (!hasID) {
-        if (TP.canInvoke(aResource, 'setID')) {
-            aResource.setID(this.getName());
+        if (!hasID) {
+            if (TP.canInvoke(aResource, 'setID')) {
+                aResource.setID(this.getName());
+            }
         }
     }
 
@@ -4661,15 +4663,20 @@ function(aResource, aRequest) {
 
     //  If the request doesn't have an 'observeResource' property (or it isn't
     //  set to true), then observe the resource.
-    if (TP.notFalse(request.at('observeResource'))) {
-        //  Observe the new resource object for changes.
-        this.observe(aResource, 'Change');
-    }
+    if (TP.isValid(aResource)) {
+        if (TP.notFalse(request.at('observeResource'))) {
+            //  Observe the new resource object for changes.
+            this.observe(aResource, 'Change');
+        }
 
-    //  Once we have a value, in any form, we're both dirty and loaded from a
-    //  state perspective.
-    this.isDirty(true);
-    this.isLoaded(true);
+        //  Once we have a value, in any form, we're both dirty and loaded from
+        //  a state perspective.
+        this.isDirty(true);
+        this.isLoaded(true);
+    } else {
+        this.isDirty(false);
+        this.isLoaded(false);
+    }
 
     //  clear any expiration computations
     this.expire(false);
