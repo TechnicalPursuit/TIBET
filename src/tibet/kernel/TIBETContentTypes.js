@@ -135,6 +135,9 @@ function(aURI, content) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  A URI that is acting as our public reference
+TP.core.Content.Inst.defineAttribute('$publicURI');
+
 //  The content's JavaScript representation
 TP.core.Content.Inst.defineAttribute('data');
 
@@ -157,6 +160,41 @@ function(data) {
     this.set('data', data);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe() call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var facetFunctions;
+
+    facetFunctions = this.$get('$facetFunctions');
+
+    if (TP.isURI(aHandler) && TP.isEmpty(facetFunctions)) {
+        this.setupFacetObservations();
+        this.$set('$publicURI', aHandler, false);
+    }
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -329,6 +367,38 @@ function(aSignal) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    if (TP.isURI(aHandler) && aHandler === this.$get('$publicURI')) {
+        this.teardownFacetObservations();
+        this.$set('$publicURI', null, false);
+    }
+
+    //  Always tell the notification to remove our handler, etc.
+    return true;
 });
 
 //  ------------------------------------------------------------------------
