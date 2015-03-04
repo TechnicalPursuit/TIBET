@@ -1102,6 +1102,9 @@ function(aPath, config) {
         this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', false));
         this.set('extractWith', config.atIfInvalid('extractWith', null));
         this.set('fallbackWith', config.atIfInvalid('fallbackWith', null));
+    } else {
+        this.set('shouldMake', false);
+        this.set('shouldCollapse', false);
     }
 
     this.set('$invalidatedPaths', TP.ac());
