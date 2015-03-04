@@ -7515,7 +7515,7 @@ function(aspectNames, facetList) {
                 oldVal = this.$get('$' + aspectName + '_' + facetName);
 
                 if (oldVal !== newVal) {
-                    //  We got a valid value - set it.
+                    //  We got a validity value - set it.
                     this.setFacet(aspectName, facetName, newVal);
                 }
             }
