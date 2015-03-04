@@ -3848,7 +3848,7 @@ TP.core.XMLPath.isAbstract(true);
 TP.core.XMLPath.Inst.defineAttribute('$transformedPath');
 
 //  Whether or not to make scalar data slots on execution
-TP.core.XMLPath.Inst.defineAttribute('shouldMakeScalar');
+TP.core.XMLPath.Inst.defineAttribute('shouldMakeValues');
 
 //  -----------------------------------------------------------------------
 //  Instance Methods
@@ -3868,10 +3868,10 @@ function(aPath, config) {
     this.callNextMethod();
 
     if (TP.isKindOf(config, TP.lang.Hash)) {
-        this.set('shouldMakeScalar',
-                    config.atIfInvalid('shouldMakeScalar', true));
+        this.set('shouldMakeValues',
+                    config.atIfInvalid('shouldMakeValues', true));
     } else {
-        this.set('shouldMakeScalar', true);
+        this.set('shouldMakeValues', true);
     }
 
     return this;
@@ -4688,7 +4688,7 @@ function(aNode, flagChanges) {
         retVal;
 
     //  We can create an Attribute, if this is an attribute-only path (and
-    //  shouldMakeScalar is true)
+    //  shouldMake is true)
     if (TP.isElement(aNode) &&
         TP.regex.ATTRIBUTE.test(pathStr = this.asString())) {
 
@@ -4698,7 +4698,7 @@ function(aNode, flagChanges) {
             return TP.elementGetAttributeNode(aNode, attrName);
         }
 
-        if (this.get('shouldMakeScalar')) {
+        if (this.get('shouldMake')) {
             TP.elementSetAttribute(aNode, attrName, '', true);
             retVal = TP.elementGetAttributeNode(aNode, attrName);
             TP.elementFlagChange(aNode, TP.ATTR + attrName, TP.CREATE);
@@ -4886,7 +4886,7 @@ function(aNode, flagChanges) {
                                     aNode,
                                     path,
                                     false,
-                                    this.get('shouldMakeScalar')))) {
+                                    this.get('shouldMake')))) {
         content = TP.ac(content);
     }
 
@@ -5756,8 +5756,8 @@ function(aNode, flagChanges) {
             newPath = TP.xpc(newPath);
 
             //  Since we're now dealing with a scalar path, we change shouldMake
-            //  to be the value of 'shouldMakeScalar'.
-            shouldMake = this.get('shouldMakeScalar');
+            //  to be the value of 'shouldMakeValues'.
+            shouldMake = this.get('shouldMakeValues');
 
             results = newPath.execOnNative(
                                     aNode, TP.NODESET, false, flagChanges);
