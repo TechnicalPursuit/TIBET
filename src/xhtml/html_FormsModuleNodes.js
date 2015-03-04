@@ -1399,11 +1399,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
     var groupTPElems,
         resource;
 
-    if (targetAttributeName === 'checked' ||
-        targetAttributeName === '@checked') {
-
-        //  Get all of elements that are part of our 'group', including ourself.
-        groupTPElems = TP.wrap(this.getElementArray());
+    if (targetAttributeName === 'checked') {
 
         if (TP.isString(resourceOrURI)) {
             resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
@@ -1411,20 +1407,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             resource = resourceOrURI;
         }
 
-        //  Filter to all of the elements that don't already have a 'bind:io'
-        //  for the 'checked' attribute, including ourself.
-        groupTPElems = groupTPElems.select(
-            function(aTPElem) {
-                var bindInfo;
-
-                if (aTPElem.isBoundElement() &&
-                    TP.notEmpty(bindInfo = aTPElem.getBindingInfoFrom('io')) &&
-                    bindInfo.hasKey('checked')) {
-                    return false;
-                }
-
-                return true;
-            });
+        //  Get all of elements that are part of our 'group', including ourself.
+        groupTPElems = TP.wrap(this.getElementArray());
 
         groupTPElems.perform(
             function(aTPElem) {
@@ -1435,8 +1419,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
                             sourceAttributeName, aTPElem, 'value');
             });
     } else {
-        this.callNextMethod(targetAttributeName, resourceOrURI,
-                            sourceAttributeName, sourceFacetName);
+        this.callNextMethod();
     }
 
     return this;
