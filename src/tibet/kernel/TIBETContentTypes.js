@@ -5357,7 +5357,8 @@ function(aPath, config, forceNative) {
      * @returns {TP.core.XPathPath} The new instance.
      */
 
-    var thePath;
+    var thePath,
+        tnTestPath;
 
     //  Make sure that any 'xpath path' scheme is stripped off
     if (TP.regex.XPATH_POINTER.test(aPath)) {
@@ -5380,6 +5381,21 @@ function(aPath, config, forceNative) {
     //  set (even though 'setPath' did that above, our supertype won't know
     //  that).
     this.callNextMethod(thePath, config);
+
+    if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(thePath)) {
+        tnTestPath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(thePath).at(1);
+    } else {
+        tnTestPath = thePath;
+    }
+
+    if (TP.regex.TEXT_NODE_ENDS.test(tnTestPath)) {
+        if (TP.isKindOf(config, TP.lang.Hash)) {
+            this.set('shouldCollapse',
+                        config.atIfInvalid('shouldCollapse', true));
+        } else {
+            this.set('shouldCollapse', true);
+        }
+    }
 
     return this;
 });
