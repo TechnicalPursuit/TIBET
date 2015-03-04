@@ -4652,7 +4652,7 @@ function(aResource, aRequest) {
     //  If we already have a resource, make sure to 'ignore' it for changes.
     if (this.isLoaded()) {
         resource = this.$get('resource');
-        this.ignore(aResource, 'Change');
+        this.ignore(resource, 'Change');
     }
 
     //  If the receiver is the primary resource we can update our cached value
