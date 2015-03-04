@@ -181,6 +181,7 @@ function(aRequest) {
         }
 
         localURI.unregister();
+        localURI.setResource(null);
     }
 
     return;
