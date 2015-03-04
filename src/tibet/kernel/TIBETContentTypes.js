@@ -3847,8 +3847,36 @@ TP.core.XMLPath.isAbstract(true);
 //  expressions.
 TP.core.XMLPath.Inst.defineAttribute('$transformedPath');
 
+//  Whether or not to make scalar data slots on execution
+TP.core.XMLPath.Inst.defineAttribute('shouldMakeScalar');
+
 //  -----------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.lang.Hash} config The configuration for this path.
+     * @returns {TP.core.XMLPath} The receiver.
+     */
+
+    this.callNextMethod();
+
+    if (TP.isKindOf(config, TP.lang.Hash)) {
+        this.set('shouldMakeScalar',
+                    config.atIfInvalid('shouldMakeScalar', true));
+    } else {
+        this.set('shouldMakeScalar', true);
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
@@ -4659,7 +4687,8 @@ function(aNode, flagChanges) {
 
         retVal;
 
-    //  We can create an Attribute, if this is an attribute-only path
+    //  We can create an Attribute, if this is an attribute-only path (and
+    //  shouldMakeScalar is true)
     if (TP.isElement(aNode) &&
         TP.regex.ATTRIBUTE.test(pathStr = this.asString())) {
 
@@ -4669,9 +4698,11 @@ function(aNode, flagChanges) {
             return TP.elementGetAttributeNode(aNode, attrName);
         }
 
-        TP.elementSetAttribute(aNode, attrName, '', true);
-        retVal = TP.elementGetAttributeNode(aNode, attrName);
-        TP.elementFlagChange(aNode, TP.ATTR + attrName, TP.CREATE);
+        if (this.get('shouldMakeScalar')) {
+            TP.elementSetAttribute(aNode, attrName, '', true);
+            retVal = TP.elementGetAttributeNode(aNode, attrName);
+            TP.elementFlagChange(aNode, TP.ATTR + attrName, TP.CREATE);
+        }
 
         return retVal;
     }
@@ -4827,29 +4858,6 @@ TP.core.XMLPath.defineSubtype('BarenamePath');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.BarenamePath.Inst.defineMethod('init',
-function(aPath, config) {
-
-    /**
-     * @method init
-     * @summary Initialize the instance.
-     * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
-     * @returns {TP.core.BarenamePath} The receiver.
-     */
-
-    this.callNextMethod();
-
-    //  For CSS paths, we go ahead and turn on 'shouldMake' because the only
-    //  kinds of paths that will be building structure are our 'TIBET special'
-    //  barename paths with attribute additions.
-    this.set('shouldMake', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.BarenamePath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
@@ -4875,7 +4883,10 @@ function(aNode, flagChanges) {
     //  consistent (we can get an Array of attributes here due to 'special
     //  TIBET barename' syntax).
     if (!TP.isArray(content = TP.nodeEvaluateBarename(
-                            aNode, path, false, this.get('shouldMake')))) {
+                                    aNode,
+                                    path,
+                                    false,
+                                    this.get('shouldMakeScalar')))) {
         content = TP.ac(content);
     }
 
@@ -5743,6 +5754,11 @@ function(aNode, flagChanges) {
 
         if (TP.notEmpty(newPath)) {
             newPath = TP.xpc(newPath);
+
+            //  Since we're now dealing with a scalar path, we change shouldMake
+            //  to be the value of 'shouldMakeScalar'.
+            shouldMake = this.get('shouldMakeScalar');
+
             results = newPath.execOnNative(
                                     aNode, TP.NODESET, false, flagChanges);
         }
