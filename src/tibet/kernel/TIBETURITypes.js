@@ -608,7 +608,6 @@ function(anInstance) {
         }
     }
 
-    anInstance.setResource(null);
     dict.removeKey(anInstance.getLocation());
 
     return this;
