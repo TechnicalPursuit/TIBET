@@ -3204,7 +3204,18 @@ function(aSignal) {
 
             for (i = 0; i < subURIs.getSize(); i++) {
 
-                aSignal.atPut('path', subURIs.at(i).getFragmentExpr());
+                path = subURIs.at(i).getFragmentExpr();
+
+                //  If the path is just a JS identifier, then this is probably a
+                //  'tibet(...)' pointer. If that does not match the primary
+                //  aspect, then we don't send the signal. This avoids
+                //  oversignaling.
+                if (TP.regex.JS_IDENTIFIER.test(path) &&
+                        path !== primaryAspect) {
+                    continue;
+                }
+
+                aSignal.atPut('path', path);
 
                 subURIs.at(i).signal(
                         aSignal.getSignalName(),
