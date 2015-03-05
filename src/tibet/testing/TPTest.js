@@ -1969,19 +1969,25 @@ function(aFaultString, aFaultCode, aFaultStack) {
      *     the fault occurred.
      */
 
+    var msg;
+
     //  NOTE that even though we had an error we still resolve, not reject. This
     //  allows other test cases to continue to be processed.
     this.$resolve();
 
     this.set('msend', Date.now());
 
+    msg = ('not ok - ' + this.getCaseName() + ' error' +
+            (aFaultString ? ': ' + aFaultString : '')).trim();
+
+    if (msg.charAt(msg.length - 1) !== '.') {
+        msg += '.';
+    }
+
     if (TP.isValid(aFaultStack)) {
-        TP.sys.logTest('not ok - ' + this.getCaseName() + ' error' +
-            (aFaultString ? ': ' + aFaultString : '') + '.\n' +
-            aFaultStack.join('\n'));
+        TP.sys.logTest(msg + '\n' + aFaultStack.join('\n'));
     } else {
-        TP.sys.logTest('not ok - ' + this.getCaseName() + ' error' +
-            (aFaultString ? ': ' + aFaultString : '') + '.');
+        TP.sys.logTest(msg);
     }
 
     return this;
