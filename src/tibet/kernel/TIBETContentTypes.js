@@ -135,6 +135,9 @@ function(aURI, content) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  A URI that is acting as our public reference
+TP.core.Content.Inst.defineAttribute('$publicURI');
+
 //  The content's JavaScript representation
 TP.core.Content.Inst.defineAttribute('data');
 
@@ -157,6 +160,41 @@ function(data) {
     this.set('data', data);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe() call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var facetFunctions;
+
+    facetFunctions = this.$get('$facetFunctions');
+
+    if (TP.isURI(aHandler) && TP.isEmpty(facetFunctions)) {
+        this.setupFacetObservations();
+        this.$set('$publicURI', aHandler, false);
+    }
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -329,6 +367,38 @@ function(aSignal) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    if (TP.isURI(aHandler) && aHandler === this.$get('$publicURI')) {
+        this.teardownFacetObservations();
+        this.$set('$publicURI', null, false);
+    }
+
+    //  Always tell the notification to remove our handler, etc.
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -1057,7 +1127,7 @@ function(anAddress, sourceObjectID, interestedPath) {
 TP.core.AccessPath.Inst.defineAttribute('srcPath');
 
 //  Whether or not to make data structures on execution
-TP.core.AccessPath.Inst.defineAttribute('shouldMake');
+TP.core.AccessPath.Inst.defineAttribute('shouldMakeStructures');
 
 //  How to make data structures on execution (if we are making them)
 TP.core.AccessPath.Inst.defineAttribute('packageWith');
@@ -1097,11 +1167,15 @@ function(aPath, config) {
     this.set('srcPath', aPath);
 
     if (TP.isKindOf(config, TP.lang.Hash)) {
-        this.set('shouldMake', config.atIfInvalid('shouldMake', false));
+        this.set('shouldMakeStructures',
+                    config.atIfInvalid('shouldMakeStructures', false));
         this.set('packageWith', config.atIfInvalid('packageWith', null));
         this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', false));
         this.set('extractWith', config.atIfInvalid('extractWith', null));
         this.set('fallbackWith', config.atIfInvalid('fallbackWith', null));
+    } else {
+        this.set('shouldMakeStructures', false);
+        this.set('shouldCollapse', false);
     }
 
     this.set('$invalidatedPaths', TP.ac());
@@ -1127,8 +1201,8 @@ function() {
     str = TP.tname(this) + '.construct(\'' + this.get('srcPath') +
            '\')';
 
-    if ((val = this.get('shouldMake')) === true) {
-        str += '.set(\'shouldMake\', ' + val + ')';
+    if ((val = this.get('shouldMakeStructures')) === true) {
+        str += '.set(\'shouldMakeStructures\', ' + val + ')';
     }
 
     if ((val = this.get('shouldCollapse')) === true) {
@@ -3281,7 +3355,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
     thisType = this.getType();
 
-    shouldMake = this.get('shouldMake');
+    shouldMake = this.get('shouldMakeStructures');
 
     if (/[,:]/.test(head)) {
 
@@ -3377,7 +3451,8 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
+                        val.set(TP.apc(tail, TP.hc('shouldMakeStructures',
+                                                                shouldMake)),
                                 attributeValue,
                                 false);
 
@@ -3483,7 +3558,8 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
+                        val.set(TP.apc(tail, TP.hc('shouldMakeStructures',
+                                                                shouldMake)),
                                 attributeValue,
                                 false);
 
@@ -3512,7 +3588,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(head, TP.hc('shouldMake', shouldMake)),
+        targetObj.set(TP.apc(head, TP.hc('shouldMakeStructures', shouldMake)),
                          val,
                          false);
     }
@@ -3528,7 +3604,7 @@ function(targetObj, attributeValue, shouldSignal) {
         thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
+        val.set(TP.apc(tail, TP.hc('shouldMakeStructures', shouldMake)),
                 attributeValue,
                 false);
 
@@ -3584,7 +3660,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
     thisType = this.getType();
 
-    shouldMake = this.get('shouldMake');
+    shouldMake = this.get('shouldMakeStructures');
 
     if (/,/.test(head)) {
         //  Make sure to strip off the leading '[' and trailing ']'
@@ -3679,7 +3755,8 @@ function(targetObj, attributeValue, shouldSignal) {
 
                     //  This 'set' call will take care of registering the
                     //  changed address.
-                    val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
+                    val.set(TP.apc(tail, TP.hc('shouldMakeStructures',
+                                                                shouldMake)),
                             attributeValue,
                             false);
 
@@ -3707,7 +3784,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(head, TP.hc('shouldMake', shouldMake)),
+        targetObj.set(TP.apc(head, TP.hc('shouldMakeStructures', shouldMake)),
                          val,
                          false);
     }
@@ -3723,7 +3800,7 @@ function(targetObj, attributeValue, shouldSignal) {
         thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(tail, TP.hc('shouldMake', shouldMake)),
+        val.set(TP.apc(tail, TP.hc('shouldMakeStructures', shouldMake)),
                 attributeValue,
                 false);
 
@@ -3844,8 +3921,36 @@ TP.core.XMLPath.isAbstract(true);
 //  expressions.
 TP.core.XMLPath.Inst.defineAttribute('$transformedPath');
 
+//  Whether or not to make scalar data slots on execution
+TP.core.XMLPath.Inst.defineAttribute('shouldMakeValues');
+
 //  -----------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.lang.Hash} config The configuration for this path.
+     * @returns {TP.core.XMLPath} The receiver.
+     */
+
+    this.callNextMethod();
+
+    if (TP.isKindOf(config, TP.lang.Hash)) {
+        this.set('shouldMakeValues',
+                    config.atIfInvalid('shouldMakeValues', true));
+    } else {
+        this.set('shouldMakeValues', true);
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
@@ -4656,7 +4761,8 @@ function(aNode, flagChanges) {
 
         retVal;
 
-    //  We can create an Attribute, if this is an attribute-only path
+    //  We can create an Attribute, if this is an attribute-only path (and
+    //  shouldMakeStructures is true)
     if (TP.isElement(aNode) &&
         TP.regex.ATTRIBUTE.test(pathStr = this.asString())) {
 
@@ -4666,9 +4772,11 @@ function(aNode, flagChanges) {
             return TP.elementGetAttributeNode(aNode, attrName);
         }
 
-        TP.elementSetAttribute(aNode, attrName, '', true);
-        retVal = TP.elementGetAttributeNode(aNode, attrName);
-        TP.elementFlagChange(aNode, TP.ATTR + attrName, TP.CREATE);
+        if (this.get('shouldMakeStructures')) {
+            TP.elementSetAttribute(aNode, attrName, '', true);
+            retVal = TP.elementGetAttributeNode(aNode, attrName);
+            TP.elementFlagChange(aNode, TP.ATTR + attrName, TP.CREATE);
+        }
 
         return retVal;
     }
@@ -4824,29 +4932,6 @@ TP.core.XMLPath.defineSubtype('BarenamePath');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.BarenamePath.Inst.defineMethod('init',
-function(aPath, config) {
-
-    /**
-     * @method init
-     * @summary Initialize the instance.
-     * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
-     * @returns {TP.core.BarenamePath} The receiver.
-     */
-
-    this.callNextMethod();
-
-    //  For CSS paths, we go ahead and turn on 'shouldMake' because the only
-    //  kinds of paths that will be building structure are our 'TIBET special'
-    //  barename paths with attribute additions.
-    this.set('shouldMake', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.BarenamePath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
@@ -4872,7 +4957,10 @@ function(aNode, flagChanges) {
     //  consistent (we can get an Array of attributes here due to 'special
     //  TIBET barename' syntax).
     if (!TP.isArray(content = TP.nodeEvaluateBarename(
-                            aNode, path, false, this.get('shouldMake')))) {
+                                    aNode,
+                                    path,
+                                    false,
+                                    this.get('shouldMakeStructures')))) {
         content = TP.ac(content);
     }
 
@@ -5269,7 +5357,8 @@ function(aPath, config, forceNative) {
      * @returns {TP.core.XPathPath} The new instance.
      */
 
-    var thePath;
+    var thePath,
+        tnTestPath;
 
     //  Make sure that any 'xpath path' scheme is stripped off
     if (TP.regex.XPATH_POINTER.test(aPath)) {
@@ -5292,6 +5381,21 @@ function(aPath, config, forceNative) {
     //  set (even though 'setPath' did that above, our supertype won't know
     //  that).
     this.callNextMethod(thePath, config);
+
+    if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(thePath)) {
+        tnTestPath = TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(thePath).at(1);
+    } else {
+        tnTestPath = thePath;
+    }
+
+    if (TP.regex.TEXT_NODE_ENDS.test(tnTestPath)) {
+        if (TP.isKindOf(config, TP.lang.Hash)) {
+            this.set('shouldCollapse',
+                        config.atIfInvalid('shouldCollapse', true));
+        } else {
+            this.set('shouldCollapse', true);
+        }
+    }
 
     return this;
 });
@@ -5342,8 +5446,8 @@ function() {
             '\', ' +
             this.get('isNative') + ')';
 
-    if ((val = this.get('shouldMake')) === true) {
-        str += '.set(\'shouldMake\', ' + val + ')';
+    if ((val = this.get('shouldMakeStructures')) === true) {
+        str += '.set(\'shouldMakeStructures\', ' + val + ')';
     }
 
     if ((val = this.get('shouldCollapse')) === true) {
@@ -5414,12 +5518,12 @@ function(aNode, flagChanges) {
     //  non-native parser, so we save the settings of the path type and whether
     //  the parser is configured to create nodes as it executes.
     wasNative = this.get('isNative');
-    oldMakeStruct = this.get('shouldMake');
+    oldMakeStruct = this.get('shouldMakeStructures');
 
     //  Switch the path type to a non native path and the create nodes on
     //  execution to true.
     this.set('isNative', false);
-    this.set('shouldMake', true);
+    this.set('shouldMakeStructures', true);
 
     //  created. note that we pass the flagging state here so the path can flag
     //  anything it has to create when the node is flagging changes
@@ -5428,7 +5532,7 @@ function(aNode, flagChanges) {
     //  Set the path type and the create nodes on execution switches back to
     //  their previous value.
     this.set('isNative', wasNative);
-    this.set('shouldMake', oldMakeStruct);
+    this.set('shouldMakeStructures', oldMakeStruct);
 
     return results;
 });
@@ -5640,13 +5744,13 @@ function(aTPNode) {
 
     node = aTPNode.getNativeNode();
 
-    oldMakeStruct = this.get('shouldMake');
-    this.set('shouldMake', false);
+    oldMakeStruct = this.get('shouldMakeStructures');
+    this.set('shouldMakeStructures', false);
 
     this.set('isNative', false);
     results = this.execOnNative(node, TP.NODESET, false);
 
-    this.set('shouldMake', oldMakeStruct);
+    this.set('shouldMakeStructures', oldMakeStruct);
 
     //  If there were no results, there probably wasn't a valid XPath.
     //  Exit here.
@@ -5729,7 +5833,7 @@ function(aNode, flagChanges) {
         lastSegment,
         ndx;
 
-    shouldMake = this.get('shouldMake');
+    shouldMake = this.get('shouldMakeStructures');
 
     if (TP.notValid(path = this.get('$transformedPath'))) {
         path = this.get('srcPath');
@@ -5740,6 +5844,11 @@ function(aNode, flagChanges) {
 
         if (TP.notEmpty(newPath)) {
             newPath = TP.xpc(newPath);
+
+            //  Since we're now dealing with a scalar path, we change shouldMake
+            //  to be the value of 'shouldMakeValues'.
+            shouldMake = this.get('shouldMakeValues');
+
             results = newPath.execOnNative(
                                     aNode, TP.NODESET, false, flagChanges);
         }
@@ -5826,11 +5935,11 @@ function(aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getShouldMake',
+TP.core.XPathPath.Inst.defineMethod('getShouldMakeStructures',
 function() {
 
     /**
-     * @method getShouldMake
+     * @method getShouldMakeStructures
      * @summary Returns whether the receiver is currently configured to create
      *     Nodes as it is executed against a particular context node.
      * @returns {Boolean} Whether the receiver is configured to create nodes as
@@ -5846,7 +5955,7 @@ function() {
     }
 
     //  Note that we use $get() here to avoid endless recursion
-    return this.$get('shouldMake');
+    return this.$get('shouldMakeStructures');
 });
 
 //  ------------------------------------------------------------------------
@@ -6021,7 +6130,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('setShouldMake',
+TP.core.XPathPath.Inst.defineMethod('setShouldMakeStructures',
 function(shouldMakeStruct) {
 
     /**
@@ -6048,7 +6157,7 @@ function(shouldMakeStruct) {
     }
 
     //  Note that we use $set() here to avoid endless recursion
-    this.$set('shouldMake', shouldMakeStruct);
+    this.$set('shouldMakeStructures', shouldMakeStruct);
 
     return this;
 });

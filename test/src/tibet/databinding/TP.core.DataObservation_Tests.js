@@ -54,7 +54,7 @@ function() {
     this.it('change along a single path', function(test, options) {
 
         jsonPath2 = TP.apc('foo.3.bar');
-        jsonPath2.set('shouldMake', true);
+        jsonPath2.set('shouldMakeStructures', true);
 
         jsonPath2.executeSet(modelObj, 'goo', true);
 
@@ -76,7 +76,7 @@ function() {
     this.it('change along a branching path', function(test, options) {
 
         jsonPath3 = TP.apc('foo.3[bar,moo,too].roo');
-        jsonPath3.set('shouldMake', true);
+        jsonPath3.set('shouldMakeStructures', true);
 
         jsonPath3.executeSet(modelObj, TP.ac(), true);
 
@@ -196,7 +196,7 @@ function() {
     this.it('change of another parent aspect of a branching path', function(test, options) {
 
         jsonPath7 = TP.apc('foo.2');
-        jsonPath7.set('shouldMake', true);
+        jsonPath7.set('shouldMakeStructures', true);
 
         jsonPath7.executeSet(modelObj, TP.ac(), true);
 
@@ -241,7 +241,7 @@ function() {
     });
 
     this.it('change model to a whole new object', function(test, options) {
-        jsonPath1.set('shouldMake', true);
+        jsonPath1.set('shouldMakeStructures', true);
 
         //  Set everything under 'foo' to a new data structure
         jsonPath1.executeSet(modelObj, TP.json2js('["A","B","C","D"]'), true);
@@ -381,7 +381,7 @@ function() {
     this.it('change along a single path', function(test, options) {
 
         xmlPath2 = TP.apc('/emp/lname');
-        xmlPath2.set('shouldMake', true);
+        xmlPath2.set('shouldMakeStructures', true);
 
         xmlPath2.executeSet(modelObj, 'Shattuck', true);
 
@@ -404,7 +404,7 @@ function() {
     this.it('change along a single attribute path', function(test, options) {
 
         xmlPath3 = TP.apc('/emp/lname/@valid');
-        xmlPath3.set('shouldMake', true);
+        xmlPath3.set('shouldMakeStructures', true);
 
         xmlPath3.executeSet(modelObj, false, true);
 
@@ -427,7 +427,7 @@ function() {
     this.it('change along a single attribute path with creation', function(test, options) {
 
         xmlPath4 = TP.apc('/emp/age/@valid');
-        xmlPath4.set('shouldMake', true);
+        xmlPath4.set('shouldMakeStructures', true);
 
         xmlPath4.executeSet(modelObj, false, true);
 
@@ -450,7 +450,7 @@ function() {
     this.it('change along a branching path', function(test, options) {
 
         xmlPath5 = TP.apc('/emp/fname');
-        xmlPath5.set('shouldMake', true);
+        xmlPath5.set('shouldMakeStructures', true);
 
         xmlPath5.executeSet(modelObj, 'Scott', true);
 
@@ -478,7 +478,7 @@ function() {
     this.it('change along another branching path', function(test, options) {
 
         xmlPath6 = TP.apc('/emp/ssn');
-        xmlPath6.set('shouldMake', true);
+        xmlPath6.set('shouldMakeStructures', true);
 
         xmlPath6.executeSet(modelObj, '555-55-5555', true);
 
@@ -509,7 +509,7 @@ function() {
 
     this.it('change at the top level', function(test, options) {
 
-        xmlPath1.set('shouldMake', true);
+        xmlPath1.set('shouldMakeStructures', true);
 
         //  Set everything under '/emp' to a new data structure
         xmlPath1.executeSet(modelObj, TP.elem('<lname>Edney</lname>'), true);

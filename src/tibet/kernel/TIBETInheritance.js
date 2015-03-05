@@ -5561,7 +5561,7 @@ function(anObject, constraints) {
         constraint = constraints[constraintName];
 
         if (constraint.isAccessPath()) {
-            constraint = constraint.executeGet(anObject);
+            constraint = constraint.executeGet(anObject.getPathSource());
         }
 
         //  Set the initial result to false.
@@ -7409,6 +7409,51 @@ function(attributeName, includeSupertypes) {
 //  Attribute Facets
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Inst.defineMethod('$addFacetFunction',
+function(aspectName, facetName, facetFunction) {
+
+    /**
+     * @method $addFacetFunction
+     * @summary Adds a 'facet function' to the receiver. This is a function that
+     *     is observing a data source and will set the value of the aspect's
+     *     facet when that data source changes.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetFunction The function to add as the facet function.
+     * @returns {Object} The receiver.
+     */
+
+    var facetFunctions,
+        facetFuncSlotName;
+
+    //  If the facet is 'value', then just return - we don't set these for
+    //  'value' facets.
+    if (facetName === 'value') {
+        return this;
+    }
+
+    //  If the internal slot that keeps all of the facet functions for this
+    //  instance is not defined on the receiver, define it.
+    //  Otherwise, TIBET's '$set' method will whine ;-).
+    if (TP.notDefined(this.$facetFunctions)) {
+        this.defineAttribute('$facetFunctions');
+        //  Pre-populate the slot with a hash.
+        this.$set('$facetFunctions', TP.hc(), false);
+    }
+
+    facetFunctions = this.$get('$facetFunctions');
+
+    //  The internal facet slot name will always be something like
+    //  '$SSN_required_func'.
+    facetFuncSlotName = '$' + aspectName + '_' + facetName + '_func';
+
+    facetFunctions.atPut(facetFuncSlotName, facetFunction);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('checkAllFacetsOfAllAspects',
 function() {
 
@@ -7515,7 +7560,7 @@ function(aspectNames, facetList) {
                 oldVal = this.$get('$' + aspectName + '_' + facetName);
 
                 if (oldVal !== newVal) {
-                    //  We got a valid value - set it.
+                    //  We got a validity value - set it.
                     this.setFacet(aspectName, facetName, newVal);
                 }
             }
@@ -7713,7 +7758,7 @@ function(aspectName, facetName) {
                 } else if (TP.isArray(facetSetting)) {
                     val = facetValue;
                 } else if (facetValue.isAccessPath()) {
-                    val = facetValue.executeGet(this);
+                    val = facetValue.executeGet(this.getPathSource());
                 } else if (TP.isString(facetValue) &&
                             TP.isMethod(this[facetValue])) {
                     val = this[facetValue]();
@@ -7740,7 +7785,7 @@ function(aspectName, facetName) {
             } else if (TP.isArray(facetSetting)) {
                 facetValue = facetSetting;
             } else if (facetSetting.isAccessPath()) {
-                facetValue = facetSetting.executeGet(this);
+                facetValue = facetSetting.executeGet(this.getPathSource());
             } else if (TP.isString(facetSetting) &&
                         TP.isMethod(this[facetSetting])) {
                 facetValue = this[facetSetting]();
@@ -7888,6 +7933,166 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     } else {
         //  No custom setter implemented - use the standard $setFacet() method.
         this.$setFacet(aspectName, facetName, facetValue, shouldSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('setupFacetObservations',
+function() {
+
+    /**
+     * @method setupFacetObservations
+     * @summary Sets up any observations that the facet requires in order to
+     *     compute its value.
+     * @description Some facets have values like paths, URIs, etc. that point to
+     *     sources that can change. These sources need to be observed for change
+     *     and, if they do, the facet needs to be set to the new value.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    var facetedAspectNames,
+        facets,
+
+        aspectsLen,
+        i,
+
+        facetsLen,
+        j,
+
+        thisType,
+
+        aspectName,
+        facetName,
+
+        facetSetting,
+        obsFunction;
+
+    facetedAspectNames = this.getFacetedAspectNames();
+
+    //  Default the set of facets to check to TP.FACET_NAMES, which are the list
+    //  of standard facets for all TIBET attributes.
+    facets = TP.FACET_NAMES;
+
+    aspectsLen = facetedAspectNames.getSize();
+    facetsLen = facets.getSize();
+
+    thisType = this.getType();
+
+    //  Iterate over all of the aspects defined for this type of object and all
+    //  of the possible facets for it.
+
+    for (i = 0; i < aspectsLen; i++) {
+
+        aspectName = facetedAspectNames.at(i);
+
+        for (j = 0; j < facetsLen; j++) {
+
+            facetName = facets.at(j);
+
+            //  If there is a real setting for the aspect/facet pair, then see
+            //  what kind of object it is.
+            if (TP.isValid(facetSetting = thisType.getInstFacetSettingFor(
+                                            aspectName, facetName))) {
+
+                /* eslint-disable no-loop-func */
+
+                //  Make sure its not a plain object - some descriptors have
+                //  nested Object literals and they don't respond to any TIBET
+                //  methods.
+                if (!TP.isPlainObject(facetSetting)) {
+
+                    //  If its an access path, set up a Function to observe
+                    //  ourself and run the path when we change. Then use that
+                    //  value to set the facet.
+                    if (facetSetting.isAccessPath()) {
+                        obsFunction =
+                            function(aSignal) {
+                                var newVal;
+
+                                newVal = obsFunction.path.executeGet(
+                                            obsFunction.source.getPathSource());
+                                this.setFacet(obsFunction.aspectName,
+                                                obsFunction.facetName,
+                                                newVal,
+                                                true);
+                            }.bind(this);
+                        obsFunction.aspectName = aspectName;
+                        obsFunction.facetName = facetName;
+                        obsFunction.path = facetSetting;
+                        obsFunction.source = this;
+
+                        obsFunction.observe(obsFunction.source, 'ValueChange');
+                    } else if (TP.isURI(facetSetting)) {
+                        //  Otherwise, if its an access path, set up a Function
+                        //  to observe the URI and get that URI's resource when
+                        //  it changes. Then use that value to set the facet.
+                        obsFunction =
+                            function(aSignal) {
+                                var newVal;
+
+                                newVal = obsFunction.source.getResource();
+                                this.setFacet(obsFunction.aspectName,
+                                                obsFunction.facetName,
+                                                newVal,
+                                                true);
+                            }.bind(this);
+                        obsFunction.aspectName = aspectName;
+                        obsFunction.facetName = facetName;
+                        obsFunction.source = facetSetting;
+
+                        obsFunction.observe(obsFunction.source, 'ValueChange');
+                    }
+
+                    //  Add this observation Function to ourself as an
+                    //  'observation Function'.
+                    this.$addFacetFunction(aspectName, facetName, obsFunction);
+                }
+                /* eslint-enable no-loop-func */
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('teardownFacetObservations',
+function() {
+
+    /**
+     * @method teardownFacetObservations
+     * @summary Tears down any observations that the receiver set up for any
+     *     facets requiring them in order to compute their value.
+     * @description Some facets have values like paths, URIs, etc. that point to
+     *     sources that can change. These sources need to be observed for change
+     *     and, if they do, the facet needs to be set to the new value. At some
+     *     point, these observations need to be undone which is what this method
+     *     does.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    var facetFunctions;
+
+    //  Iterate over all the facet functions, call ignore on them and then empty
+    //  the hash.
+
+    if (TP.notEmpty(facetFunctions = this.$get('$facetFunctions'))) {
+        facetFunctions.perform(
+            function(kvPair) {
+
+                var func;
+
+                func = kvPair.last();
+                func.ignore(func.source, 'ValueChange');
+
+                return this;
+            });
+
+        facetFunctions.empty();
     }
 
     return this;

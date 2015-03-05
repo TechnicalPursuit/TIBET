@@ -1294,63 +1294,43 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.inputCheckable.Inst.defineMethod('defineBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+TP.html.inputCheckable.Inst.defineMethod('defineBindingsUsing',
+function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
     /**
-     * @method defineBinding
-     * @summary Adds a binding to the instance receiver.
-     * @param {String} targetAttributeName The target attribute name.
-     * @param {Object} resourceOrURI The resource specification.
-     * @param {String} sourceAttributeName The source attribute name. If not
-     *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
-     * @param {Function} transformationFunc A Function to transform the value
-     *     before it is supplied to the observer of the binding. It takes one
-     *     parameter, the new value from the model and returns the
-     *     transformation parameter. This parameter is optional.
-     * @returns {Object} The receiver.
+     * @method defineBindingsUsing
+     * @summary Defines a binding between the data source as described in the
+     *     supplied attribute value and the receiver.
+     * @param {String} attrName The attribute name to install the binding under
+     *     in the receiver.
+     * @param {String} attrValue The attribute value to analyse to produce the
+     *     proper binding expression.
+     * @param {Array} scopeVals The list of scope values to use to qualify the
+     *     binding expression.
+     * @param {String} direction The binding 'direction' (i.e. which way to
+     *     establish the binding connection from the data source to the
+     *     receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
+     * @param {Boolean} [refreshImmediately=false] Whether or not to refresh the
+     *     receiver immediately after the bind is established.
+     * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var groupTPElems,
-        resource;
+    var groupTPElems;
 
-    if (targetAttributeName === 'checked' ||
-        targetAttributeName === '@checked') {
+    if (attrName === 'checked') {
 
         //  Get all of elements that are part of our 'group', including ourself.
         groupTPElems = TP.wrap(this.getElementArray());
 
-        if (TP.isString(resourceOrURI)) {
-            resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
-        } else {
-            resource = resourceOrURI;
-        }
-
-        //  Filter to all of the elements that don't already have a 'bind:io'
-        //  for the 'checked' attribute, including ourself.
-        groupTPElems = groupTPElems.select(
-            function(aTPElem) {
-                var bindInfo;
-
-                if (aTPElem.isBoundElement() &&
-                    TP.notEmpty(bindInfo = aTPElem.getBindingInfoFrom('io')) &&
-                    bindInfo.hasKey('checked')) {
-                    return false;
-                }
-
-                return true;
-            });
-
         groupTPElems.perform(
             function(aTPElem) {
-                aTPElem.defineBinding(
-                            'value', resource, sourceAttributeName);
-
-                resource.defineBinding(
-                            sourceAttributeName, aTPElem, 'value');
+                TP.core.ElementNode.Inst.defineBindingsUsing.call(
+                    aTPElem,
+                    'value',
+                    attrValue,
+                    scopeVals,
+                    direction,
+                    refreshImmediately);
             });
     } else {
         this.callNextMethod();
@@ -1419,11 +1399,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
     var groupTPElems,
         resource;
 
-    if (targetAttributeName === 'checked' ||
-        targetAttributeName === '@checked') {
-
-        //  Get all of elements that are part of our 'group', including ourself.
-        groupTPElems = TP.wrap(this.getElementArray());
+    if (targetAttributeName === 'checked') {
 
         if (TP.isString(resourceOrURI)) {
             resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
@@ -1431,20 +1407,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             resource = resourceOrURI;
         }
 
-        //  Filter to all of the elements that don't already have a 'bind:io'
-        //  for the 'checked' attribute, including ourself.
-        groupTPElems = groupTPElems.select(
-            function(aTPElem) {
-                var bindInfo;
-
-                if (aTPElem.isBoundElement() &&
-                    TP.notEmpty(bindInfo = aTPElem.getBindingInfoFrom('io')) &&
-                    bindInfo.hasKey('checked')) {
-                    return false;
-                }
-
-                return true;
-            });
+        //  Get all of elements that are part of our 'group', including ourself.
+        groupTPElems = TP.wrap(this.getElementArray());
 
         groupTPElems.perform(
             function(aTPElem) {
@@ -1455,8 +1419,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
                             sourceAttributeName, aTPElem, 'value');
             });
     } else {
-        this.callNextMethod(targetAttributeName, resourceOrURI,
-                            sourceAttributeName, sourceFacetName);
+        this.callNextMethod();
     }
 
     return this;

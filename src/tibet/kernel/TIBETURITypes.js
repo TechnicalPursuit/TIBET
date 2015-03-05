@@ -3219,7 +3219,18 @@ function(aSignal) {
 
             for (i = 0; i < subURIs.getSize(); i++) {
 
-                aSignal.atPut('path', subURIs.at(i).getFragmentExpr());
+                path = subURIs.at(i).getFragmentExpr();
+
+                //  If the path is just a JS identifier, then this is probably a
+                //  'tibet(...)' pointer. If that does not match the primary
+                //  aspect, then we don't send the signal. This avoids
+                //  oversignaling.
+                if (TP.regex.JS_IDENTIFIER.test(path) &&
+                        path !== primaryAspect) {
+                    continue;
+                }
+
+                aSignal.atPut('path', path);
 
                 subURIs.at(i).signal(
                         aSignal.getSignalName(),
@@ -3859,7 +3870,8 @@ function(aRequest, aResult, aResource) {
             fragment = fragment;
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
             fragment = TP.apc(fragment, TP.hc('shouldCollapse', true));
-            fragment.set('shouldMake', this.get('shouldCreateContent'));
+            fragment.set('shouldMakeStructures',
+                            this.get('shouldCreateContent'));
         }
 
         if (TP.canInvoke(result, 'set')) {
@@ -4643,20 +4655,22 @@ function(aResource, aRequest) {
 
     //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
     //  same as it's OID), we're going to set it to our 'name'.
-    /* eslint-disable no-extra-parens */
-    hasID = (aResource[TP.ID] !== aResource.$$oid);
-    /* eslint-enable no-extra-parens */
+    if (TP.isValid(aResource)) {
+        /* eslint-disable no-extra-parens */
+        hasID = (aResource[TP.ID] !== aResource.$$oid);
+        /* eslint-enable no-extra-parens */
 
-    if (!hasID) {
-        if (TP.canInvoke(aResource, 'setID')) {
-            aResource.setID(this.getName());
+        if (!hasID) {
+            if (TP.canInvoke(aResource, 'setID')) {
+                aResource.setID(this.getName());
+            }
         }
     }
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
     if (this.isLoaded()) {
         resource = this.$get('resource');
-        this.ignore(aResource, 'Change');
+        this.ignore(resource, 'Change');
     }
 
     //  If the receiver is the primary resource we can update our cached value
@@ -4665,15 +4679,20 @@ function(aResource, aRequest) {
 
     //  If the request doesn't have an 'observeResource' property (or it isn't
     //  set to true), then observe the resource.
-    if (TP.notFalse(request.at('observeResource'))) {
-        //  Observe the new resource object for changes.
-        this.observe(aResource, 'Change');
-    }
+    if (TP.isValid(aResource)) {
+        if (TP.notFalse(request.at('observeResource'))) {
+            //  Observe the new resource object for changes.
+            this.observe(aResource, 'Change');
+        }
 
-    //  Once we have a value, in any form, we're both dirty and loaded from a
-    //  state perspective.
-    this.isDirty(true);
-    this.isLoaded(true);
+        //  Once we have a value, in any form, we're both dirty and loaded from
+        //  a state perspective.
+        this.isDirty(true);
+        this.isLoaded(true);
+    } else {
+        this.isDirty(false);
+        this.isLoaded(false);
+    }
 
     //  clear any expiration computations
     this.expire(false);
@@ -4704,8 +4723,7 @@ function(aResource, aRequest) {
 
                 //  NB: We supply the old resource and the fragment text
                 //  here for ease of obtaining values.
-                'oldTarget', resource,
-                'path', fragText
+                'oldTarget', resource
                 );
 
         //  If we have sub URIs, then observers of them will be expecting to get
@@ -4718,45 +4736,30 @@ function(aResource, aRequest) {
 
             description.atPut('path', fragText);
 
-            subURIs.at(i).signal(
-                    'TP.sig.StructureChange',
-                    description);
+            subURIs.at(i).signal('TP.sig.StructureChange', description);
 
             aResource.checkFacets(fragText);
         }
-
-        //  Now that we're done signaling the sub URIs, it's time to signal a
-        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-        description = TP.hc(
-                'action', TP.DELETE,
-                'aspect', 'value',
-                'facet', 'value',
-
-                //  NB: We supply these values here for consistency with the 'no
-                //  subURIs logic' below.
-                'target', aResource,
-                'oldTarget', resource,
-                TP.OLDVAL, resource,
-                TP.NEWVAL, aResource
-                );
-
-        this.signal(
-            'TP.sig.ValueChange',
-            description);
-    } else {
-        //  If we don't have subURIs, we invoke the standard 'changed' mechanism
-        //  (which signals 'TP.sig.ValueChange' from ourself). Note here that we
-        //  invoke '$changed()' since, by default, we do *not* signal change (we
-        //  don't signal change for our 'properties' (i.e. hash, URL, params,
-        //  etc.) since we don't want observers to get notified about all of
-        //  that).
-        this.$changed('value',
-                        TP.UPDATE,
-                        TP.hc('target', aResource,
-                                'oldTarget', resource,
-                                TP.OLDVAL, resource,
-                                TP.NEWVAL, aResource));
     }
+
+    //  Now that we're done signaling the sub URIs, it's time to signal a
+    //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+    description = TP.hc(
+        'action', TP.UPDATE,
+        'aspect', 'value',
+        'facet', 'value',
+
+        'path', this.getFragmentExpr(),
+
+        //  NB: We supply these values here for consistency with the 'no
+        //  subURIs logic' below.
+        'target', aResource,
+        'oldTarget', resource,
+        TP.OLDVAL, resource,
+        TP.NEWVAL, aResource
+        );
+
+    this.signal('TP.sig.ValueChange', description);
 
     return this;
 });

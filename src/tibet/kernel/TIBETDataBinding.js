@@ -1411,7 +1411,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
             if (TP.isCallable(transformFunc)) {
                 this.defineBinding(
-                    '@' + attrName, obsURIs.at(i),
+                    attrName, obsURIs.at(i),
                     'value', TP.ALL,
                     transformFunc);
 
@@ -1422,7 +1422,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 }
             } else {
                 this.defineBinding(
-                    '@' + attrName, obsURIs.at(i),
+                    attrName, obsURIs.at(i),
                     'value', TP.ALL);
 
                 if (refreshImmediately) {
@@ -1442,7 +1442,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
         //  to establish a bind back the other way - from this object to the
         //  data model.
         if (direction === TP.OUT || direction === TP.IO) {
-            obsURIs.at(i).defineBinding('value', this, 'value');
+            obsURIs.at(i).defineBinding('value', this, attrName);
         }
     }
 
