@@ -945,6 +945,420 @@ function() {
 });
 
 //  ========================================================================
+//  Markup-level Test Suite
+//  ========================================================================
+
+//  ========================================================================
+//  TP.test.BaseMarkupEmployee
+//  ========================================================================
+
+/**
+ * @type {TP.test.BaseMarkupEmployee}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.defineSubtype('test.BaseMarkupEmployee');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'lastname',
+        {
+            value: TP.xpc('string(./person/lastname/text())'),
+            valid: {
+                dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'firstname',
+        {
+            value: TP.xpc('string(./person/firstname/text())'),
+            valid: {
+                dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'age',
+        {
+            value: TP.xpc('number(./person/age/text())'),
+            valid: {
+                dataType: 'xs:decimal'
+            }
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'address',
+        {
+            value: TP.xpc('./person/address',
+                            TP.hc('packageWith', 'object')),
+            valid: {
+                dataType: 'TP.tibet.address'  //  Defined as JSON Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'gender',
+        {
+            value: TP.xpc('string(./person/gender/text())'),
+            valid: {
+                dataType: 'TP.tibet.gender'   //  Defined as JSON Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'uscitizen',
+        {
+            value: TP.xpc('boolean(./person/uscitizen/text())'),
+            valid: {
+                dataType: Boolean
+            }
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'SSN',
+        {
+            value: TP.xpc('string(./person/SSN/text())'),
+            relevant: TP.xpc('boolean(./person/uscitizen/text())'),
+            valid: {
+                dataType: 'TP.test.SSN'
+            }
+        });
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Inst.describe('Markup level validation',
+function() {
+
+    var unloadURI,
+
+        usingDebugger,
+        oldLogLevel;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
+    this.before(
+        function() {
+            var xmlSchemaTPDoc,
+                jsonSchemaContent;
+
+            //  For now, we turn off triggering the debugger because we know
+            //  that this test case has a XInclude that points to a file
+            //  that won't be found - that part of this test is testing
+            //  'xi:fallback' element.
+            usingDebugger = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+
+            //  Same for log level
+            oldLogLevel = TP.getLogLevel();
+            TP.setLogLevel(TP.SEVERE);
+
+            //  Suspend raising (since we know - and want - some of these
+            //  validations to fail).
+            TP.raise.$suspended = true;
+
+            //  ---
+
+            xmlSchemaTPDoc = TP.uc('~lib_lib/xs/tibet_common_types.xsd').
+                                            getResource(TP.hc('async', false));
+            xmlSchemaTPDoc.getDocumentElement().defineTypes();
+
+            jsonSchemaContent = TP.uc('~lib_lib/json/tibet_common_types.json').
+                                            getResource(TP.hc('async', false));
+            jsonSchemaContent.defineTypes();
+
+            //  ---
+
+            this.getDriver().showTestGUI();
+
+            //  ---
+
+            //  NB: We do this here rather than in the 'beforeEach' so that we
+            //  can test for signals that get dispatched during the load
+            //  process.
+            this.startTrackingSignals();
+        });
+
+    this.after(
+        function() {
+
+            //  Put log level back to what it was
+            TP.setLogLevel(oldLogLevel);
+
+            //  Put the debugger setting back to what it was
+            TP.sys.shouldUseDebugger(usingDebugger);
+
+            //  Unsuspend raising
+            TP.raise.$suspended = false;
+
+            //  ---
+
+            this.getDriver().showTestLog();
+
+            //  ---
+
+            //  Stop tracking here because we started tracking in the before().
+            this.stopTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            //  Reset the metrics we're tracking.
+            TP.signal.reset();
+        });
+
+    //  ---
+
+    this.it('markup-level validation - simple and complex types', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation1.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ageURI,
+
+                    ageField;
+
+                srcURI = TP.uc('urn:tibet:Validation1_person');
+                ageURI = TP.uc('urn:tibet:Validation1_person#tibet(age)');
+
+                ageField = TP.byOID('ageField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  'structure' change - age URI
+                test.assert.didSignal(ageURI, 'TP.sig.StructureChange');
+
+                //  'valid' change
+                test.assert.didSignal(ageURI, 'AgeValidChange');
+                test.assert.didSignal(ageField, 'TP.sig.UIValid');
+                test.assert.didSignal(ageField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'AgeValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ageField.clearValue();
+                            }).
+                    sendKeys('Not A Number', ageField).
+                    sendEvent(TP.hc('type', 'change'), ageField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  'age' change - age URI
+                        test.assert.didSignal(ageURI, 'AgeChange');
+
+                        //  'age' change - source URI
+                        test.assert.didSignal(srcURI, 'AgeChange');
+
+                        //  'valid' change
+                        test.assert.didSignal(ageURI, 'AgeValidChange');
+                        test.assert.didSignal(ageField, 'TP.sig.UIInvalid');
+                        test.assert.didSignal(ageField, 'InvalidChange');
+
+                        test.assert.didSignal(srcURI, 'AgeValidChange');
+                    });
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ageField.clearValue();
+                            }).
+                    sendKeys('25', ageField).
+                    sendEvent(TP.hc('type', 'change'), ageField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  'age' change - age URI
+                        test.assert.didSignal(ageURI, 'AgeChange');
+
+                        //  'age' change - source URI
+                        test.assert.didSignal(srcURI, 'AgeChange');
+
+                        //  'valid' change
+                        test.assert.didSignal(ageURI, 'AgeValidChange');
+                        test.assert.didSignal(ageField, 'TP.sig.UIValid');
+                        test.assert.didSignal(ageField, 'InvalidChange');
+
+                        test.assert.didSignal(srcURI, 'AgeValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level validation - relevancy check', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation2.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ssnURI,
+                    citURI,
+
+                    ssnField,
+                    citCheckbox;
+
+                srcURI = TP.uc('urn:tibet:Validation2_person');
+                ssnURI = TP.uc('urn:tibet:Validation2_person#tibet(SSN)');
+                citURI = TP.uc('urn:tibet:Validation2_person#tibet(uscitizen)');
+
+                ssnField = TP.byOID('SSNField');
+                citCheckbox = TP.byOID('uscitizenCheckbox');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  'structure' change - citizen URI
+                test.assert.didSignal(citURI, 'TP.sig.StructureChange');
+
+                //  'valid' change
+                test.assert.didSignal(citURI, 'UscitizenValidChange');
+                test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
+                test.assert.didSignal(citCheckbox, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'UscitizenValidChange');
+
+                //  ---
+
+                //  'structure' change - SSN URI
+                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+
+                //  'relevant' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+                test.assert.didSignal(ssnField, 'DisabledChange');
+
+                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                //  'valid' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNValidChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(ssnField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                //  Reset the metrics we're tracking.
+                TP.signal.reset();
+
+                //  ---
+
+                driver.startSequence().
+                    click(citCheckbox).
+                    perform();
+
+                test.then(
+                    function() {
+
+                        //  'relevant' change - SSN
+                        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
+                        test.assert.didSignal(ssnField, 'DisabledChange');
+
+                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                        //  'US citizen' change - citizen URI
+                        test.assert.didSignal(citURI, 'UscitizenChange');
+
+                        //  'US citizen' change - source URI
+                        test.assert.didSignal(srcURI, 'UscitizenChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
 
