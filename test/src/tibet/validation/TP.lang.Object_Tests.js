@@ -625,7 +625,7 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute(
             value: TP.xpc('/emp/SSN',
                        TP.hc('shouldCollapse', true,
                                 'extractWith', 'value',
-                                'shouldMake', true)),
+                                'shouldMakeStructures', true)),
             valid: {
                 dataType: 'TP.test.SSN'
             },
