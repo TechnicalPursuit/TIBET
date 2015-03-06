@@ -7753,9 +7753,9 @@ function(aspectName, facetName) {
             //  If facetSetting is a POJO with a 'value' slot, then that's the
             //  value to use, otherwise we do a 'get' of the aspectName
             if (TP.isValid(facetValue = facetSetting.value)) {
-                if (TP.isBoolean(facetSetting)) {
+                if (TP.isBoolean(facetValue)) {
                     val = facetValue;
-                } else if (TP.isArray(facetSetting)) {
+                } else if (TP.isArray(facetValue)) {
                     val = facetValue;
                 } else if (facetValue.isAccessPath()) {
                     val = facetValue.executeGet(this.getPathSource());
