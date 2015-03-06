@@ -2722,6 +2722,81 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('signalUsingFacetAndValue',
+function(facetName, facetValue) {
+
+    /**
+     * @method signalUsingFacetAndValue
+     * @summary Signals one of the UI state change signals based on the facet
+     *     name and value supplied.
+     * @param {String} facetName The name of the facet to use to compute the
+     *     signal to send.
+     * @param {Boolean} facetValue The value of the facet to use to compute the
+     *     signal to send.
+     * @returns {Object} The receiver.
+     */
+
+    var signalName;
+
+    //  Generate a proper signal name based on the facet name and whether the
+    //  value is true or false
+
+    switch (facetName) {
+
+        case 'readonly':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIReadonly';
+            } else {
+                signalName = 'TP.sig.UIReadwrite';
+            }
+
+            break;
+
+        case 'relevant':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIEnabled';
+            } else {
+                signalName = 'TP.sig.UIDisabled';
+            }
+
+            break;
+
+        case 'required':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIRequired';
+            } else {
+                signalName = 'TP.sig.UIOptional';
+            }
+
+            break;
+
+        case 'valid':
+
+            if (TP.isTrue(facetValue)) {
+                signalName = 'TP.sig.UIValid';
+            } else {
+                signalName = 'TP.sig.UIInvalid';
+            }
+
+            break;
+
+        default:
+            break;
+    }
+
+    //  Signal the signal name - because the signals above are all responder
+    //  policy signals, this will trigger this object's handler as part of the
+    //  responder chain. Note we supply the facet name here as a convenience.
+    this.signal(signalName, TP.hc('facet', facetName));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue, shouldSignal) {
 
@@ -2858,68 +2933,13 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @returns {Object} The receiver.
      */
 
-    var signalName;
-
     //  If the facet is 'value', then use the standard 'set' mechanism.
     if (facetName === 'value') {
         //  NB: This will signal the standard TP.sig.ValueChange
         return this.set(aspectName, facetValue, shouldSignal);
     }
 
-    //  Otherwise, if it is one of the other common facets, then generate a
-    //  proper signal name based on the facet name and whether the value is true
-    //  or false
-
-    switch (facetName) {
-
-        case 'readonly':
-
-            if (TP.isTrue(facetValue)) {
-                signalName = 'TP.sig.UIReadonly';
-            } else {
-                signalName = 'TP.sig.UIReadwrite';
-            }
-
-            break;
-
-        case 'relevant':
-
-            if (TP.isTrue(facetValue)) {
-                signalName = 'TP.sig.UIEnabled';
-            } else {
-                signalName = 'TP.sig.UIDisabled';
-            }
-
-            break;
-
-        case 'required':
-
-            if (TP.isTrue(facetValue)) {
-                signalName = 'TP.sig.UIRequired';
-            } else {
-                signalName = 'TP.sig.UIOptional';
-            }
-
-            break;
-
-        case 'valid':
-
-            if (TP.isTrue(facetValue)) {
-                signalName = 'TP.sig.UIValid';
-            } else {
-                signalName = 'TP.sig.UIInvalid';
-            }
-
-            break;
-
-        default:
-            break;
-    }
-
-    //  Signal the signal name - because the signals above are all responder
-    //  policy signals, this will trigger this object's handler as part of the
-    //  responder chain.
-    this.signal(signalName);
+    this.signalUsingFacetAndValue(facetName, facetValue);
 
     return this;
 });
