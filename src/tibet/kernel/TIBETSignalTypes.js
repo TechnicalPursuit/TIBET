@@ -760,20 +760,24 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIDelete'); //    XForms
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UIDuplicate');
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIValid'); // XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIInvalid'); //   XForms
+//  ------------------------------------------------------------------------
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIReadonly'); //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIReadwrite'); // XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIStateChange');
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIRequired'); //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIOptional'); //  XForms
+TP.sig.UIStateChange.defineSubtype('UIValid');          //  XForms
+TP.sig.UIStateChange.defineSubtype('UIInvalid');        //  XForms
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIEnabled'); //   XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDisabled'); //  XForms
+TP.sig.UIStateChange.defineSubtype('UIReadonly');       //  XForms
+TP.sig.UIStateChange.defineSubtype('UIReadwrite');      //  XForms
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIInRange'); //   XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIOutOfRange'); //    XForms
+TP.sig.UIStateChange.defineSubtype('UIRequired');       //  XForms
+TP.sig.UIStateChange.defineSubtype('UIOptional');       //  XForms
+
+TP.sig.UIStateChange.defineSubtype('UIEnabled');        //  XForms
+TP.sig.UIStateChange.defineSubtype('UIDisabled');       //  XForms
+
+TP.sig.UIStateChange.defineSubtype('UIInRange');        //  XForms
+TP.sig.UIStateChange.defineSubtype('UIOutOfRange');     //  XForms
 
 //TP.sig.ResponderInteractionSignal.defineSubtype('DOMSubmitDone'); // XForms
 
