@@ -969,7 +969,7 @@ TP.test.BaseMarkupEmployee.Inst.defineAttribute(
         {
             value: TP.xpc('string(./person/lastname/text())'),
             valid: {
-                dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
+                dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
             },
             required: true
         });
@@ -979,7 +979,7 @@ TP.test.BaseMarkupEmployee.Inst.defineAttribute(
         {
             value: TP.xpc('string(./person/firstname/text())'),
             valid: {
-                dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
+                dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
             },
             required: true
         });
@@ -1204,6 +1204,8 @@ function() {
                         TP.signal.reset();
                     });
 
+                //  ---
+
                 test.getDriver().startSequence().
                     exec(function() {
                                 ageField.clearValue();
@@ -1280,17 +1282,22 @@ function() {
 
                 //  ---
 
+                //  Citizen
+
                 //  'structure' change - citizen URI
                 test.assert.didSignal(citURI, 'TP.sig.StructureChange');
 
-                //  'valid' change
+                //  'valid' change - citizen
                 test.assert.didSignal(citURI, 'UscitizenValidChange');
                 test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
                 test.assert.didSignal(citCheckbox, 'InvalidChange');
 
+                //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'UscitizenValidChange');
 
                 //  ---
+
+                //  SSN
 
                 //  'structure' change - SSN URI
                 test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
@@ -1307,6 +1314,7 @@ function() {
                 test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
                 test.assert.didSignal(ssnField, 'InvalidChange');
 
+                //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'SSNValidChange');
 
                 //  ---
@@ -1324,6 +1332,8 @@ function() {
                 driver.startSequence().
                     click(citCheckbox).
                     perform();
+
+                //  ---
 
                 test.then(
                     function() {
