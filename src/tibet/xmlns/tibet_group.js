@@ -331,6 +331,134 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.group.Inst.defineMethod('handleAttributeChange',
+function(aSignal) {
+
+    /**
+     * @method handleAttributeChange
+     * @summary Handles when one of this group's members changes one of its
+     *     attributes. This may cause this group element to add or remove the
+     *     same attribute from itself.
+     * @description It is possible for group elements to change their attribute
+     *     setting for certain 'ui state' attributes (i.e. readonly, disabled,
+     *     required, invalid) based on whether one or all of their members have
+     *     that setting. These take the form of:
+     *
+     *     invalidwhen="all"            All of the members must be invalid
+     *     invalidwhen="any"            Any of the members may be invalid
+     *     invalidwhen="none-or-all"    None or all of the members must be
+     *                                  invalid
+     * @param {TP.sig.UIAttributeChange} aSignal The signal that caused this
+     *     handler to trip.
+     */
+
+    var attrName,
+
+        shouldSetFlag,
+
+        attrVal,
+
+        members,
+
+        i,
+
+        count;
+
+    if (TP.isEmpty(attrName = aSignal.at('aspect'))) {
+        //  TODO: Raise exception
+        return;
+    }
+
+    //  attrName will be one of the following:
+    //      readonly
+    //      disabled
+    //      required
+    //      invalid
+
+    if (TP.notEmpty(attrVal = this.getAttribute(attrName + 'when'))) {
+
+        //  Grab all of the members of this group and test their values.
+        members = this.getMembers();
+
+        switch (attrVal) {
+
+            case 'all':
+
+                //  Initially set it to set our flag
+                shouldSetFlag = true;
+
+                for (i = 0; i < members.getSize(); i++) {
+                    if (TP.bc(members.at(i).getAttribute(attrName)) === false) {
+                        //  One failed - we'll no longer set our flag
+                        shouldSetFlag = false;
+                        break;
+                    }
+                }
+
+                break;
+
+            case 'any':
+
+                //  Initially set it to *not* set our flag
+                shouldSetFlag = false;
+
+                for (i = 0; i < members.getSize(); i++) {
+                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                        //  One succeeded - we'll set our flag
+                        shouldSetFlag = true;
+                        break;
+                    }
+                }
+
+                break;
+
+            case 'none-or-all':
+
+                count = 0;
+
+                for (i = 0; i < members.getSize(); i++) {
+                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                        count++;
+                        break;
+                    }
+                }
+
+                /* eslint-disable no-extra-parens */
+                shouldSetFlag =
+                    (count === 0 || count === members.getSize() - 1);
+                /* eslint-enable no-extra-parens */
+
+                break;
+            default:
+                break;
+        }
+
+        //  Set the flag (or not) and send the proper signal depending on
+        //  whether the flag is already set.
+        if (shouldSetFlag) {
+            if (!this.$isInState('pclass:' + attrName)) {
+                if (attrName === 'invalid') {
+                    this.signalUsingFacetAndValue('valid', false);
+                } else {
+                    this.signalUsingFacetAndValue(attrName, true);
+                }
+            }
+        } else {
+            if (this.$isInState('pclass:' + attrName)) {
+                if (attrName === 'invalid') {
+                    this.signalUsingFacetAndValue('valid', true);
+                } else {
+                    this.signalUsingFacetAndValue(attrName, false);
+                }
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.group.Inst.defineMethod('mutationAddedFilteredNodes',
 function(addedNodes) {
 
