@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	@namespace pclass url(urn:tibet:pseudoclass);
+    @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+	tibet|group[pclass|invalid]
+	{
+		border-color: red;
+    }
+
+	/*input[type=text]:invalid*/
+	input[type=text][pclass|invalid]
+	{
+		color: red;
+	}
+	]]>
+	</style>
+
+	<tibet:data id="Validation3Data" local="urn:tibet:Validation3_person" resultType="TP.test.BaseMarkupEmployee">
+		<person xmlns="">
+			<lastname>Smith</lastname>
+			<firstname>Joe</firstname>
+            <age>48</age>
+            <address>
+                <street_address>111 Main St.</street_address>
+                <city>Anytown</city>
+                <state>CA</state>
+            </address>
+            <gender>male</gender>
+            <SSN></SSN>
+		</person>
+	</tibet:data>
+
+</head>
+
+<body>
+
+	<h2>Validation Test #3</h2><br/>
+
+	<br/>
+	<br/>
+	This test sets up two XHTML elements, both bound to an underlying data model defined in the test code. One is a 'input type="checkbox"' element and the other is a 'input type="text"' element, which is made active or inactive dependent on whether the first control is checked or not. This 'relevancy' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
+	<br/>
+    <br/>
+    The test code 'checks' the first element, which causes the bound data value to change and for the 'relevancy' of the text field to change. The text field changes its appearance based on that fact.
+	<br/>
+    <br/>
+    A variety of signals are thrown by the various objects involved.
+	<br/>
+
+    <tibet:group id="EmployeeGroup" invalidwhen="any">
+        <label for="GenderField">Gender: </label>
+        <input type="text" id="GenderField" bind:io="value: urn:tibet:Validation3_person#tibet(gender)" tabindex="0"/><br/>
+        <label for="SSNField">SSN: </label>
+        <input type="text" id="SSNField" bind:io="value: urn:tibet:Validation3_person#tibet(SSN)" tabindex="0"/><br/>
+    </tibet:group>
+
+</body>
+</html>

@@ -999,7 +999,27 @@ TP.test.BaseMarkupEmployee.Inst.defineAttribute(
             value: TP.xpc('./person/address',
                             TP.hc('packageWith', 'object')),
             valid: {
-                dataType: 'TP.tibet.address'  //  Defined as JSON Schema type
+                dataType: 'TP.tibet.address'    //  Defined as JSON Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'city',
+        {
+            value: TP.xpc('string(./person/address/city/text())'),
+            valid: {
+                dataType: String
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'state',
+        {
+            value: TP.xpc('string(./person/address/state/text())'),
+            valid: {
+                dataType: 'TP.tibet.usstatecodes' //  Defined as XML Schema type
             },
             required: true
         });
@@ -1009,7 +1029,7 @@ TP.test.BaseMarkupEmployee.Inst.defineAttribute(
         {
             value: TP.xpc('string(./person/gender/text())'),
             valid: {
-                dataType: 'TP.tibet.gender'   //  Defined as JSON Schema type
+                dataType: 'TP.tibet.gender'     //  Defined as JSON Schema type
             },
             required: true
         });
@@ -1365,6 +1385,430 @@ function() {
                                             loadURI.getLocation()));
             });
     });
+
+    //  ---
+
+    this.it('markup-level validation - group-level validation', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation3.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ssnURI,
+                    gendURI,
+
+                    ssnField,
+                    gendField,
+
+                    empGroup;
+
+                srcURI = TP.uc('urn:tibet:Validation3_person');
+                ssnURI = TP.uc('urn:tibet:Validation3_person#tibet(SSN)');
+                gendURI = TP.uc('urn:tibet:Validation3_person#tibet(gender)');
+
+                ssnField = TP.byOID('SSNField');
+                gendField = TP.byOID('GenderField');
+
+                empGroup = TP.byOID('EmployeeGroup');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Gender
+
+                //  'structure' change - gender URI
+                test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
+
+                //  'required' change - gender
+                test.assert.didSignal(gendURI, 'GenderRequiredChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIRequired');
+                test.assert.didSignal(gendField, 'RequiredChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'GenderRequiredChange');
+
+                //  'valid' change - gender
+                test.assert.didSignal(gendURI, 'GenderValidChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIValid');
+                test.assert.didSignal(gendField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'GenderValidChange');
+
+                //  ---
+
+                //  SSN
+
+                //  'structure' change - SSN URI
+                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+
+                //  'relevant' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+                test.assert.didSignal(ssnField, 'DisabledChange');
+
+                //  'relevant' change - source URI
+                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                //  'valid' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNValidChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(ssnField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                //  ---
+
+                //  Employee Group
+
+                //  'valid' change - Employee Group field
+                test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
+                test.assert.didSignal(empGroup, 'InvalidChange');
+                test.assert.hasAttribute(empGroup, 'pclass:invalid');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ssnField.clearValue();
+                            }).
+                    sendKeys('333-33-3333', ssnField).
+                    sendEvent(TP.hc('type', 'change'), ssnField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  SSN
+
+                        //  'SSN' change - SSN URI
+                        test.assert.didSignal(ssnURI, 'SSNChange');
+
+                        //  'SSN' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNChange');
+
+                        //  'valid' change - SSN
+                        test.assert.didSignal(ssnURI, 'SSNValidChange');
+                        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
+                        test.assert.didSignal(ssnField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                        //  'valid' change - Employee Group field
+                        test.assert.didSignal(empGroup, 'InvalidChange');
+                        test.refute.hasAttribute(empGroup, 'pclass:invalid');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level validation - nested group-level validation', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation4.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ssnURI,
+                    gendURI,
+                    cityURI,
+                    stateURI,
+
+                    ssnField,
+                    gendField,
+                    cityField,
+                    stateField,
+
+                    empGroup,
+                    addrGroup;
+
+                srcURI = TP.uc('urn:tibet:Validation4_person');
+                ssnURI = TP.uc('urn:tibet:Validation4_person#tibet(SSN)');
+                gendURI = TP.uc('urn:tibet:Validation4_person#tibet(gender)');
+                cityURI = TP.uc('urn:tibet:Validation4_person#tibet(city)');
+                stateURI = TP.uc('urn:tibet:Validation4_person#tibet(state)');
+
+                ssnField = TP.byOID('SSNField');
+                gendField = TP.byOID('GenderField');
+                cityField = TP.byOID('CityField');
+                stateField = TP.byOID('StateField');
+
+                empGroup = TP.byOID('EmployeeGroup');
+                addrGroup = TP.byOID('AddressGroup');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Gender
+
+                //  'structure' change - gender URI
+                test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
+
+                //  'required' change - gender
+                test.assert.didSignal(gendURI, 'GenderRequiredChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIOptional');
+                test.assert.didSignal(gendField, 'RequiredChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'GenderRequiredChange');
+
+                //  'valid' change - gender
+                test.assert.didSignal(gendURI, 'GenderValidChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIValid');
+                test.assert.didSignal(gendField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'GenderValidChange');
+
+                //  ---
+
+                //  SSN
+
+                //  'structure' change - SSN URI
+                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+
+                //  'relevant' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+                test.assert.didSignal(ssnField, 'DisabledChange');
+
+                //  'relevant' change - source URI
+                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                //  'valid' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNValidChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(ssnField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                //  ---
+
+                //  City
+
+                //  'structure' change - city URI
+                test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
+
+                //  'required' change - city
+                test.assert.didSignal(cityURI, 'CityRequiredChange');
+                test.assert.didSignal(cityField, 'TP.sig.UIOptional');
+                test.assert.didSignal(cityField, 'InvalidChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'CityRequiredChange');
+
+                //  'structure' change - city URI
+                test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
+
+                //  'valid' change - city
+                test.assert.didSignal(cityURI, 'CityValidChange');
+                test.assert.didSignal(cityField, 'TP.sig.UIValid');
+                test.assert.didSignal(cityField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'CityValidChange');
+
+                //  ---
+
+                //  State
+
+                //  'structure' change - state URI
+                test.assert.didSignal(stateURI, 'TP.sig.StructureChange');
+
+                //  'required' change - state
+                test.assert.didSignal(stateURI, 'StateRequiredChange');
+                test.assert.didSignal(stateField, 'TP.sig.UIOptional');
+                test.assert.didSignal(stateField, 'RequiredChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'StateRequiredChange');
+
+                //  'valid' change - state
+                test.assert.didSignal(stateURI, 'StateValidChange');
+                test.assert.didSignal(stateField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(stateField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'StateValidChange');
+
+                //  ---
+
+                //  Employee Group
+
+                //  'valid' change - Employee Group field (invalid because SSN
+                //  is invalid)
+                test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
+                test.assert.didSignal(empGroup, 'InvalidChange');
+                test.assert.hasAttribute(empGroup, 'pclass:invalid');
+
+                //  ---
+
+                //  Address Group
+
+                //  'required' change - Address Group field (invalid because
+                //  State is invalid)
+                test.assert.didSignal(addrGroup, 'TP.sig.UIInvalid');
+                test.assert.didSignal(addrGroup, 'InvalidChange');
+                test.assert.hasAttribute(addrGroup, 'pclass:invalid');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                stateField.clearValue();
+                            }).
+                    sendKeys('CA', stateField).
+                    sendEvent(TP.hc('type', 'change'), stateField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  State
+
+                        //  'State' change - State URI
+                        test.assert.didSignal(stateURI, 'StateChange');
+
+                        //  'State' change - source URI
+                        test.assert.didSignal(srcURI, 'StateChange');
+
+                        //  'valid' change - state
+                        test.assert.didSignal(stateURI, 'StateValidChange');
+                        test.assert.didSignal(stateField, 'TP.sig.UIValid');
+                        test.assert.didSignal(stateField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'StateValidChange');
+
+                        //  ---
+
+                        //  Address Group
+
+                        //  'valid' change - Address Group field
+                        test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
+                        test.assert.didSignal(addrGroup, 'InvalidChange');
+                        test.refute.hasAttribute(addrGroup, 'pclass:invalid');
+                    });
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ssnField.clearValue();
+                            }).
+                    sendKeys('333-33-3333', ssnField).
+                    sendEvent(TP.hc('type', 'change'), ssnField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  SSN
+
+                        //  'SSN' change - SSN URI
+                        test.assert.didSignal(ssnURI, 'SSNChange');
+
+                        //  'SSN' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNChange');
+
+                        //  'valid' change - SSN
+                        test.assert.didSignal(ssnURI, 'SSNValidChange');
+                        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
+                        test.assert.didSignal(ssnField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                        //  ---
+
+                        //  Employee Group
+
+                        //  'valid' change - Employee Group field
+                        test.assert.didSignal(empGroup, 'TP.sig.UIValid');
+                        test.assert.didSignal(empGroup, 'InvalidChange');
+                        test.refute.hasAttribute(empGroup, 'pclass:invalid');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).only();
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
