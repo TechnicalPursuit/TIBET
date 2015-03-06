@@ -3782,7 +3782,7 @@ function() {
      * @returns {Boolean} Whether the receiver's state is disabled.
      */
 
-    return this.hasAttribute('pclass:disabled');
+    return this.$isInState('pclass:disabled');
 });
 
 //  ------------------------------------------------------------------------
