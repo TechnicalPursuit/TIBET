@@ -582,6 +582,12 @@ TP.sig.ProcessingComplete.defineSubtype('AttachProcessingComplete');
 TP.sig.ProcessingComplete.defineSubtype('DetachProcessingComplete');
 
 //  ========================================================================
+//  CHANGE SIGNALS
+//  ========================================================================
+
+TP.sig.Change.defineSubtype('AttributeChange');
+
+//  ========================================================================
 //  APP SIGNALS
 //  ========================================================================
 

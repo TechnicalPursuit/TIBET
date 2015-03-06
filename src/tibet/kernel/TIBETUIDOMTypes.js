@@ -3734,7 +3734,9 @@ function(stateAttribute, stateFlag, shouldSignal) {
         }
 
         if (flag) {
-            this.changed(stateAttribute.slice(7), TP.UPDATE);
+            this.changed(stateAttribute.slice(7),
+                            TP.UPDATE,
+                            TP.hc('baseSignalType', TP.sig.AttributeChange));
         }
     }
 
