@@ -9802,10 +9802,7 @@ function(aNode) {
         defaultType;
 
     //  If the proper TP.core.Node subtype has been cached on the supplied
-    //  node, then just return it (note that we only do this for HTML nodes,
-    //  since doing this to XML nodes in Mozilla causes a problem with the
-    //  XML DOM data structure such that XPath queries take a 10X
-    //  performance hit).
+    //  node, then just return it.
     if (TP.isValid(type = aNode.tpNodeType)) {
         return type;
     }
