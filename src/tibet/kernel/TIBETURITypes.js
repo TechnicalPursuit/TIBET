@@ -2531,7 +2531,7 @@ function() {
     text = this.getFragment();
 
     //  don't confuse xpointer prefix with path content.
-    if (TP.regex.ANY_POINTER.test(text)) {
+    if (TP.isEmpty(text) || TP.regex.ANY_POINTER.test(text)) {
         return;
     }
 
