@@ -7752,8 +7752,6 @@ function(aspectName, facetName) {
 
             if (TP.isBoolean(facetSetting)) {
                 val = facetSetting;
-            } else if (TP.isArray(facetSetting)) {
-                val = facetSetting;
             } else if (facetSetting.isAccessPath()) {
                 val = facetSetting.executeGet(this.getPathSource());
             } else if (TP.isString(facetSetting) &&
