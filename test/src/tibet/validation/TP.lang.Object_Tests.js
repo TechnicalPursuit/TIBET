@@ -1430,9 +1430,10 @@ function() {
                 //  'structure' change - gender URI
                 test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
 
-                //  'required' change - gender
+                //  'required' change - gender (the model value has a valid
+                //  value - so this constraint is satisfied)
                 test.assert.didSignal(gendURI, 'GenderRequiredChange');
-                test.assert.didSignal(gendField, 'TP.sig.UIRequired');
+                test.assert.didSignal(gendField, 'TP.sig.UIOptional');
                 test.assert.didSignal(gendField, 'RequiredChange');
 
                 //  'required' change - source URI
@@ -1590,7 +1591,8 @@ function() {
                 //  'structure' change - gender URI
                 test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
 
-                //  'required' change - gender
+                //  'required' change - gender (the model value has a valid
+                //  value - so this constraint is satisfied)
                 test.assert.didSignal(gendURI, 'GenderRequiredChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIOptional');
                 test.assert.didSignal(gendField, 'RequiredChange');
