@@ -1812,6 +1812,438 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('markup-level - XML content type defined in markup', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation5.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation5_data');
+                codeNumURI = TP.uc('urn:tibet:Validation5_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('42', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level - JSON content type defined in markup', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation6.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation6_data');
+                codeNumURI = TP.uc('urn:tibet:Validation6_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('4', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level - XML content type defined in markup with a schema defined type', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation7.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation7_data');
+                codeNumURI = TP.uc('urn:tibet:Validation7_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('42', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level - JSON content type defined in markup with a schema defined type', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation8.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation8_data');
+                codeNumURI = TP.uc('urn:tibet:Validation8_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('42', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================

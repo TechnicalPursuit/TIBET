@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	@namespace pclass url(urn:tibet:pseudoclass);
+
+	/*input[type=text]:invalid*/
+	input[type=text][pclass|invalid]
+	{
+		color: red;
+	}
+	]]>
+	</style>
+
+    <tibet:data local="urn:tibet:Validation7_data" resultType="TP.test.SomeXMLCodeData">
+        <codenum xmlns=""/>
+	</tibet:data>
+
+    <tibet:content name="TP.test.SomeXMLCodeData" baseType="TP.core.XMLContent" schema="~lib_tst/src/tibet/validation/Validation_Test_Types.xsd">
+        <tibet:aspect name="codenum" value="number(./codenum/text())" dataType="test:XMLCodeNumber" required="true"/>
+    </tibet:content>
+
+</head>
+
+<body>
+
+	<h2>Validation Test #7</h2><br/>
+
+	<br/>
+	<br/>
+	This test sets up an XHTML 'input' element, bound to an underlying data model (expressed in XML) defined in the test code. It also uses a &lt;tibet:content&gt; element to define a content type for validation purposes, which has a 'schema' attribute used to import data type schema definitions.
+	<br/>
+	<br/>
+
+	<label for="CodeNumField">Code Number: </label>
+    <input type="text" id="CodeNumField" bind:io="value: urn:tibet:Validation7_data#tibet(codenum)" tabindex="0"/><br/>
+</body>
+</html>
