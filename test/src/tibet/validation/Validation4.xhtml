@@ -49,10 +49,13 @@
 
 	<br/>
 	<br/>
-	This test sets up two XHTML elements, both bound to an underlying data model defined in the test code. One is a 'input type="checkbox"' element and the other is a 'input type="text"' element, which is made active or inactive dependent on whether the first control is checked or not. This 'relevancy' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
+	This test sets up multiple XHTML elements, all bound to an underlying data model defined in the test code. They are all 'input type="text"' elements, some wrapped in a 'tibet:group' element and some wrapped in a 'tibet:group' subgroup element of that element. These groups elements have an 'invalidwhen="any"' attribute, which means that they are considered to be invalid when any of the fields (which are members of their group) are invalid. This 'validity' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
 	<br/>
     <br/>
-    The test code 'checks' the first element, which causes the bound data value to change and for the 'relevancy' of the text field to change. The text field changes its appearance based on that fact.
+    The value of the third element is valid, so nothing more needs to be done. The test code sets a value on the fourth element, which causes the bound data value to change and for the 'validity' of the text field to change. The text field changes its appearance based on that fact and the nested 'tibet:group' element also changes itself to the valid state because both of its members are now valid. Note that the top-level group is still considered invalid because the second field is still invalid.
+	<br/>
+    <br/>
+    The value of the first element is valid, so nothing more needs to be done. The test code sets a value on the second element, which causes the bound data value to change and for the 'validity' of the text field to change. The text field changes its appearance based on that fact and the top-level'tibet:group' element also changes itself to the valid state because all of its members, nested and non-nested, are now valid.
 	<br/>
     <br/>
     A variety of signals are thrown by the various objects involved.
