@@ -2895,31 +2895,31 @@ function(anObject, aLogLevel) {
      *     to log their activity. The object argument can provide data in one or
      *     more keys including:
      *
-     *     'uri'        the targetUrl
-     *     'uriparams'  optional parameters for url-encoding,
-     *     'separator'  optional uri parameter separator
+     *     'uri'            the targetUrl
+     *     'uriparams'      optional parameters for url-encoding,
+     *     'separator'      optional uri parameter separator
      *
-     *     'headers'    http headers, or response headers,
-     *     'async'      true or false
-     *     'verb'       the command verb (GET/POST/PUT/DELETE etc)
-     *     'body'       any data content for the call,
+     *     'headers'        http headers, or response headers,
+     *     'async'          true or false
+     *     'verb'           the command verb (GET/POST/PUT/DELETE etc)
+     *     'body'           any data content for the call,
      *
-     *     'noencode'   turns off body content encoding 'mimetype'
-     *     'mimetype'   used for body encoding 'encoding'
-     *     'charset'    encoding used for multi-part
-     *     'mediatype'  used for multi-part encodings
+     *     'noencode'       turns off body content encoding 'mimetype'
+     *     'mimetype'       used for body encoding 'encoding'
+     *     'charset'        encoding used for multi-part
+     *     'multiparttypes' used for multi-part encodings
      *
-     *     'xhr'        the XMLHttpRequest object used, if any
+     *     'xhr'            the XMLHttpRequest object used, if any
      *
-     *     'request'    TP.sig.Request reference
-     *     'response'   TP.sig.Response reference
+     *     'request'        TP.sig.Request reference
+     *     'response'       TP.sig.Response reference
      *
-     *     'direction'  TP.SEND or TP.RECV
-     *     'message'    the log message
-     *     'object'     any Error object which might be related,
+     *     'direction'      TP.SEND or TP.RECV
+     *     'message'        the log message
+     *     'object'         any Error object which might be related,
      *
-     *     'finaluri'   the fully expanded uri w/parameters
-     *     'finalbody'  the TP.str(body) value actually sent
+     *     'finaluri'       the fully expanded uri w/parameters
+     *     'finalbody'      the TP.str(body) value actually sent
      *
      *     Note that IO log entries will only be pushed to the activity log
      *     (and stdout) when the logging level is INFO.

@@ -162,7 +162,7 @@ function(httpObj) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('httpEncode',
-function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
+function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
 
     /**
      * @method httpEncode
@@ -192,9 +192,8 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
      *     as application/x-www-form-urlencoded or multipart/form-data.
      * @param {String} aSeparator Used for url encoding, this is normally the &
      *     used to separate individual key/value pairs.
-     * @param {String} aMediatype Used with certain encoding types to provide
-     *     data for the type of content being encoded. Defaults vary based on
-     *     the encoding type.
+     * @param {String[]} multipartMIMETypes Used when encoding multipart
+     *     messages, 1 per message part.
      * @param {String} anEncoding The character set/encoding to use. Default is
      *     'UTF-8'. NOTE that changing this can cause certain encodings to be
      *     inconsistent so use caution when changing this value.
@@ -422,16 +421,20 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 //  data as XML, forming a single block.
                 arr.push(
                     TP.join('; type=',
-                                TP.ifInvalid(aMediatype, TP.XML_ENCODED),
+                                TP.ifInvalid(multipartMIMETypes.first(),
+                                                TP.XML_ENCODED),
                             '; charset=',
                                 charset));
             } else {
                 arr.push(
                     TP.join('; type=',
-                                TP.ifInvalid(aMediatype, TP.PLAIN_TEXT_ENCODED),
+                                TP.ifInvalid(multipartMIMETypes.first(),
+                                                TP.PLAIN_TEXT_ENCODED),
                             '; charset=',
                                 charset));
             }
+
+            //  We leave the preamble empty.
 
             //  place first boundary
             arr.push('--' + boundary);
@@ -441,7 +444,7 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
 
             //  if the data is an Array, then each item in the Array should
             //  be a TP.lang.Hash containing keys that would be the same as
-            //  a regular data request, such as 'body', 'mediatype',
+            //  a regular data request, such as 'body', 'multipartypes',
             //  'encoding', 'separator', etc.
 
             //  We then loop over those, encoding each one using the
@@ -465,8 +468,9 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                         //  Get the data into it's rawest form
                         itemContent = TP.unwrap(itemContent);
 
-                        itemMIMEType =
-                                anItem.atIfInvalid('mimetype', aMediatype);
+                        itemMIMEType = anItem.atIfInvalid(
+                                            'mimetype',
+                                            multipartMIMETypes.at(anIndex));
                         if (TP.isEmpty(itemMIMEType)) {
                             if (TP.isNode(itemContent)) {
                                 itemMIMEType = TP.XML_ENCODED;
@@ -491,11 +495,11 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
 
                         //  honor the 'noencode' flag here
                         if (TP.notTrue(anItem.at('noencode'))) {
-                            //  Note here how we supply the item's 'media
-                            //  type' as the MIME type to this recursive
-                            //  call to TP.httpEncode() and a 'null' for
-                            //  media type. This is the correct behavior but
-                            //  it effectively prevents *nested*
+                            //  Note here how we supply the item's 'media type'
+                            //  as the MIME type to this recursive call to
+                            //  TP.httpEncode() and a 'null' for the list of
+                            //  multipart mime types. This is the correct
+                            //  behavior but it effectively prevents *nested*
                             //  multipart/related encoding.
                             itemContent = TP.httpEncode(
                                             itemContent,
@@ -520,7 +524,8 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 //  root
                 arr.push(
                     TP.join('Content-Type: ',
-                                TP.ifInvalid(aMediatype, TP.XML_ENCODED),
+                                TP.ifInvalid(multipartMIMETypes.first(),
+                                                TP.XML_ENCODED),
                             '; charset=',
                                 charset),
                     'Content-ID: 0');
@@ -533,7 +538,8 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 //  encoding.
                 content = TP.httpEncode(
                                 data,
-                                TP.ifInvalid(aMediatype, TP.XML_ENCODED),
+                                TP.ifInvalid(multipartMIMETypes.first(),
+                                                TP.XML_ENCODED),
                                 separator,
                                 null,
                                 charset);
@@ -553,9 +559,9 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
 
                 len = list.getSize();
                 for (i = 0; i < len; i++) {
-                    if (TP.notEmpty(aMediatype)) {
+                    if (TP.notEmpty(multipartMIMETypes.at(i))) {
                         arr.push(
-                            TP.join('Content-Type: ', aMediatype,
+                            TP.join('Content-Type: ', multipartMIMETypes.at(i),
                                     '; charset=', charset,
                                     ' '));
                     }
@@ -586,10 +592,6 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
             boundary = TP.genID('part');
 
             //  per XForms spec the default here is application/octet-stream
-
-            //  TODO: This isn't used below... regular plaintext encoding is
-            //  used. Is this correct?
-            //mediatype = TP.ifInvalid(aMediatype, TP.OCTET_ENCODED);
 
             //  start the show :)
             arr.push(TP.join('Content-Type: ', TP.MP_FORMDATA_ENCODED,
@@ -683,7 +685,7 @@ function(aRequest) {
     var body,
         mimetype,
         separator,
-        mediatype,
+        multiparttypes,
         encoding;
 
     body = aRequest.at('body');
@@ -703,12 +705,12 @@ function(aRequest) {
     separator = aRequest.at('separator');
 
     //  only used for the multi-part encodings, but just in case :)
-    mediatype = aRequest.at('mediatype');
+    multiparttypes = aRequest.at('multiparttypes');
 
     //  should be left alone 99% of the time so it defaults to UTF-8
     encoding = aRequest.at('encoding');
 
-    return TP.httpEncode(body, mimetype, separator, mediatype, encoding);
+    return TP.httpEncode(body, mimetype, separator, multiparttypes, encoding);
 });
 
 //  ------------------------------------------------------------------------
