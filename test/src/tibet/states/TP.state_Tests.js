@@ -659,7 +659,7 @@ function() {
     function(test, options) {
         this.assert.isTrue(false);
     });
-});
+}).skip();
 
 //  ------------------------------------------------------------------------
 //  end
