@@ -3,13 +3,6 @@
 TIBET is a seamless front-end framework blending the best features of today's
 modern JavaScript modules with a powerful set of interactive development tools.
 
-TIBET is a true framework in that TIBET code calls you, not the other way around
-as you may expect if you've used most JavaScript libraries.
-
-Like Rails, TIBET offers a convention-over-configuration approach to building
-web front-ends and applications. These conventions help structure your work,
-help keep your code organized, and help TIBET's tools assist you more.
-
 Designed specifically for large-scale Enterprise and Government-class web
 applications, TIBET is more like Smalltalk than Scheme, bringing tag-driven
 development, advanced OO, and immersive development tools to JavaScript.
