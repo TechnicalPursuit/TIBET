@@ -1572,7 +1572,7 @@ event handlers.
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getHandler',
-function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
+function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
     /**
      * @method getHandler
@@ -1595,6 +1595,8 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
      *     default is false.
      * @param {Boolean} [dontTraverse] Turn off any form of signal hierarchy
      *     traversal. Default is false.
+     * @param {String} [skip] A string used to mask off certain handler names
+     *     such as high-level default handlers.
      * @returns {Function} The specific function or method that would be (or
      *     was) invoked.
      */
@@ -1613,6 +1615,10 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
         j,
         states,
         sigType;
+
+    //  TODO:   this routine works, but really needs to be a lot more efficient.
+    //          caching makes it "workable" but speed changes here during lookup
+    //          can have a dramatic impact on certain parts of the system.
 
     if (TP.notValid(aSignal)) {
         return;
@@ -1635,6 +1641,13 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
     hasOrigin = TP.isEmpty(orgid) ? false : true;
 
     signame = aSignal.getSignalName();
+    sigType = aSignal.getType();
+
+    handlers = this.$get('$$handlers');
+    if (TP.notValid(handlers)) {
+        handlers = TP.hc();
+        this.$set('$$handlers', handlers, false);
+    }
 
     //  Get the state list and force at least one iteration to happen even if
     //  there's no current state machine/state value.
@@ -1656,24 +1669,25 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
                     (startSignalName || signame);
 
         //  Check the receiver's handler cache.
-        handlers = this.$get('$$handlers');
-        if (TP.notValid(handlers)) {
-            handlers = TP.hc();
-            this.$set('$$handlers', handlers, false);
-        } else {
-            handler = handlers.at(key);
-            if (handler === TP.NO_RESULT) {
-                return;
-            } else if (TP.isValid(handler)) {
+        handler = handlers.at(key);
+        if (handler === TP.NO_RESULT) {
+            return;
+        } else if (TP.isValid(handler)) {
+            //  We have to observe skip semantics or risk things like
+            //  recursions even if we've previously cached a value.
+            if (skip) {
+                if (TP.name(handler) !== skip) {
+                    return handler;
+                }
+            } else {
                 return handler;
             }
         }
 
-        sigType = aSignal.getType();
-
-        //  If the startSignalName wasn't supplied or it's the same as the signal's
-        //  'direct' signal name, then go ahead and consider that the receiver may
-        //  have the handler directly on it without traversing the type chain.
+        //  If the startSignalName wasn't supplied or it's the same as the
+        //  signal's 'direct' signal name, then go ahead and consider that the
+        //  receiver may have the handler directly on it without traversing the
+        //  type chain.
         if (TP.isEmpty(startSignalName) || startSignalName === signame) {
 
             //  check first for explicit one to avoid overhead when the handler
@@ -1682,28 +1696,28 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
             if (hasOrigin) {
 
                 fName = sigType.getHandlerName(orgid, aSignal, state, false);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
                 fName = sigType.getHandlerName(orgid, aSignal, state, true);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
                 fName = sigType.getHandlerName(orgid, aSignal, null, false);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
                 fName = sigType.getHandlerName(orgid, aSignal, null, true);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
@@ -1711,28 +1725,28 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
             }
 
             fName = sigType.getHandlerName(null, aSignal, state, false);
-            if (TP.canInvoke(this, fName)) {
+            if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
             fName = sigType.getHandlerName(null, aSignal, state, true);
-            if (TP.canInvoke(this, fName)) {
+            if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
             fName = sigType.getHandlerName(null, aSignal, null, false);
-            if (TP.canInvoke(this, fName)) {
+            if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
             fName = sigType.getHandlerName(null, aSignal, null, true);
-            if (TP.canInvoke(this, fName)) {
+            if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
@@ -1785,28 +1799,28 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
                 if (hasOrigin) {
 
                     fName = sigType.getHandlerName(orgid, null, state, false);
-                    if (TP.canInvoke(this, fName)) {
+                    if (fName !== skip && TP.canInvoke(this, fName)) {
                         handler = this[fName];
                         handlers.atPut(key, handler);
                         return handler;
                     }
 
                     fName = sigType.getHandlerName(orgid, null, state, true);
-                    if (TP.canInvoke(this, fName)) {
+                    if (fName !== skip && TP.canInvoke(this, fName)) {
                         handler = this[fName];
                         handlers.atPut(key, handler);
                         return handler;
                     }
 
                     fName = sigType.getHandlerName(orgid, null, null, false);
-                    if (TP.canInvoke(this, fName)) {
+                    if (fName !== skip && TP.canInvoke(this, fName)) {
                         handler = this[fName];
                         handlers.atPut(key, handler);
                         return handler;
                     }
 
                     fName = sigType.getHandlerName(orgid, null, null, true);
-                    if (TP.canInvoke(this, fName)) {
+                    if (fName !== skip && TP.canInvoke(this, fName)) {
                         handler = this[fName];
                         handlers.atPut(key, handler);
                         return handler;
@@ -1814,28 +1828,28 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
                 }
 
                 fName = sigType.getHandlerName(null, null, state, false);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
                 fName = sigType.getHandlerName(null, null, state, true);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
                 fName = sigType.getHandlerName(null, null, null, false);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
                 fName = sigType.getHandlerName(null, null, null, true);
-                if (TP.canInvoke(this, fName)) {
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
