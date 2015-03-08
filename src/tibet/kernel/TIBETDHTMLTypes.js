@@ -28,7 +28,7 @@ TP.core.StateMachine.defineSubtype('DragMachine');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.DragMachine.Inst.defineAttribute('eventStream',
+TP.core.DragMachine.Inst.defineAttribute('triggerSignals',
     TP.ac('TP.sig.DOMDragDown',
             'TP.sig.DOMDragHover',
             'TP.sig.DOMDragMove',
@@ -46,7 +46,7 @@ function(source) {
      * @summary Initializes a new instance of the receiver. The optional source
      *     parameter can be used to define which object the receiver will use as
      *     the data source for its event stream.
-     * @param {HTMLElement|String|TP.core.Mouse} source The source object the
+     * @param {HTMLElement|String|TP.core.Mouse} [source] The source object the
      *     receiver will be observing. The source must resolve to either an
      *     Element or the Mouse object. The default is TP.core.Mouse.
      * @returns {TP.core.DragMachine} A new instance.
@@ -71,7 +71,7 @@ function(source) {
     }
 
     //  Assign our resolved source object as the eventSource.
-    this.set('eventSource', obj);
+    this.set('triggerOrigins', TP.ac(obj));
 
     return this;
 });
@@ -110,18 +110,20 @@ function(signalOrParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragMachine.Inst.defineMethod('defineDefaultStates',
+TP.core.DragMachine.Inst.defineMethod('defineStates',
 function() {
 
     /**
-     * @method defineDefaultStates
-     * @summary Provides for state configuration by subtypes so different
-     *     specialized instances can be created with minimal code.
+     * @method defineStates
+     * @summary Invoked by the init method to set up initial states for the
+     *     receiver.
      */
 
-    //  We can transition to dragging from active and vice versa.
-    this.defineState('dragging', this, TP.ACTIVE);
-    this.defineState(TP.ACTIVE, this, 'dragging');
+    //  We can transition to dragging from idle and vice versa.
+    this.defineState(null, 'idle');         //  start-able state
+    this.defineState('idle', 'dragging');
+    this.defineState('dragging', 'idle');
+    this.defineState('idle');               //  final-able state
 
     return;
 });
@@ -132,12 +134,12 @@ function() {
 
 /**
  * @type {TP.core.DragResponder}
- * @summary A StateResponder responsible for simple drag operations.
+ * @summary A StateMachine event responder for simple drag operations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.defineSubtype('DragResponder');
+TP.lang.Object.defineSubtype('TP.core.DragResponder');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -492,6 +494,8 @@ function(aDragResponder, aSignal, xyPoint) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.core.DragResponder.Inst.defineAttribute('stateMachine');
+
 TP.core.DragResponder.Inst.defineAttribute('startSignal');
 TP.core.DragResponder.Inst.defineAttribute('currentSignal');
 TP.core.DragResponder.Inst.defineAttribute('lastSignal');
@@ -549,7 +553,14 @@ function(stateMachine, actionElement) {
     var obj,
         actionElem;
 
-    this.callNextMethod(stateMachine);
+    this.callNextMethod();
+
+    if (TP.notValid(stateMachine)) {
+        return this.raise('InvalidParameter');
+    }
+
+    this.$set('stateMachine', stateMachine);
+    this.observe(stateMachine, TP.sig.StateSignal);
 
     this.set('currentPoint', TP.pc(0, 0));
 
@@ -771,27 +782,6 @@ function() {
     this.set('$offsetPoint', TP.pc(offsetX, offsetY));
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragResponder.Inst.defineMethod('defineDefaultHandlers',
-function() {
-
-    /**
-     * @method defineDefaultHandlers
-     * @summary Provides for state configuration by subtypes so different
-     *     specialized instances can be created with minimal code.
-     */
-
-    //  We handle dragging related states of Enter, Exit, Input, and the
-    //  ability to transition from dragging to Active.
-    this.defineStateHandler('dragging', this, TP.ENTER);
-    this.defineStateHandler('dragging', this, TP.TRANSITION, TP.ACTIVE);
-    this.defineStateHandler('dragging', this, TP.EXIT);
-    this.defineStateHandler('dragging', this, TP.INPUT);
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -4099,7 +4089,7 @@ function() {
 
 /**
  * @type {TP.core.DragTracker}
- * @summary The TP.core.DragTracker is a StateResponder which responds to the
+ * @summary The TP.core.DragTracker is an object which responds to the
  *     current drag state and related events by tracking the mouse relative to a
  *     "domain" of objects.
  * @description Based on the configuration of the tracker instance the various
@@ -4117,7 +4107,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.defineSubtype('DragTracker');
+TP.lang.Object.defineSubtype('TP.core.DragTracker');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -4229,6 +4219,9 @@ TP.core.DragTracker.Type.defineConstant('PAGE_Y_COORDS',
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  The state machine we observe for tracking event state changes.
+TP.core.DragTracker.Inst.defineAttribute('stateMachine');
+
 //  The list of objects the tracker uses for computation.
 TP.core.DragTracker.Inst.defineAttribute('computeList');
 
@@ -4287,7 +4280,10 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
 
     //  Configure a DragMachine to keep the responder informed on drag state.
     machine = TP.core.DragMachine.construct();
-    this.callNextMethod(machine);
+    this.callNextMethod();
+
+    this.$set('stateMachine', machine);
+    this.observe(machine, TP.sig.StateSignal);
 
     this.$set('domainSpec', domainSpec);
 
@@ -4371,25 +4367,6 @@ function() {
     list.length = 0;
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragTracker.Inst.defineMethod('defineDefaultHandlers',
-function() {
-
-    /**
-     * @method defineDefaultHandlers
-     * @summary Provides for state configuration by subtypes so different
-     *     specialized instances can be created with minimal code.
-     */
-
-    this.defineStateHandler('dragging', this, TP.ENTER);
-    this.defineStateHandler('dragging', this, TP.TRANSITION, TP.ACTIVE);
-    this.defineStateHandler('dragging', this, TP.EXIT);
-    this.defineStateHandler('dragging', this, TP.INPUT);
-
-    return;
 });
 
 //  ------------------------------------------------------------------------

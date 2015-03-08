@@ -180,6 +180,196 @@ application manifest for different user role/unit affiliations.
 */
 
 //  ========================================================================
+//  TP.core.Triggered
+//  ========================================================================
+
+TP.lang.Object.defineSubtype('TP.core.Triggered');
+
+//  This type is used primarily as a trait.
+TP.core.Triggered.isAbstract(true);
+
+//  the combination of origins/signals defining the triggers we observe.
+//  note that the defaults are declared at the type level but each instance
+//  can alter these as it chooses
+TP.core.Triggered.Type.defineAttribute('triggerOrigins');
+TP.core.Triggered.Type.defineAttribute('triggerSignals');
+
+//  ------------------------------------------------------------------------
+//  Instance Definition
+//  ------------------------------------------------------------------------
+
+//  these default to the values installed on the type, but can be altered
+//  at the instance level
+TP.core.Triggered.Inst.defineAttribute('triggerOrigins');
+TP.core.Triggered.Inst.defineAttribute('triggerSignals');
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Inst.defineMethod('getTriggerOrigins',
+function() {
+
+    /**
+     * @method getTriggerOrigins
+     * @summary Returns one or more origins for the TIBET signaling system
+     *     which should cause the receiver to respond to requests.
+     * @description The trigger origins are typically null meaning any origin is
+     *     valid and responsiveness depends on the signal type. You can override
+     *     this for specific types or instances of those types.
+     * @returns {Object[]} An array of trigger origins.
+     */
+
+    var origins;
+
+    if (TP.notValid(origins = this.$get('triggerOrigins'))) {
+        return this.getType().get('triggerOrigins');
+    }
+
+    return origins;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Inst.defineMethod('getTriggerSignals',
+function() {
+
+    /**
+     * @method getTriggerSignals
+     * @summary Returns one or more trigger signals for the TIBET signaling
+     *     system which should cause the receiver to respond to triggers.
+     * @returns {String[]} An array of trigger signal names.
+     */
+
+    var signals;
+
+    if (TP.notValid(signals = this.$get('triggerSignals'))) {
+        return this.getType().get('triggerSignals');
+    }
+
+    return signals;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Inst.defineMethod('ignoreTriggers',
+function() {
+
+    /**
+     * @method ignoreTriggers
+     * @summary Turns off registration (ignores) the receivers triggers.
+     * @returns {TP.core.Triggered} The receiver.
+     */
+
+    var origins,
+        signals,
+
+        i,
+        j;
+
+    origins = this.get('triggerOrigins') || TP.ANY;
+    signals = this.get('triggerSignals') || 'TP.sig.Request';
+
+    if (TP.isArray(origins)) {
+        for (i = 0; i < origins.getSize(); i++) {
+            if (TP.isArray(signals)) {
+                for (j = 0; j < signals.getSize(); j++) {
+                    this.ignore(origins.at(i), signals.at(j));
+                }
+            } else {
+                this.ignore(origins.at(i), signals);
+            }
+        }
+    } else {
+        if (TP.isArray(signals)) {
+            for (j = 0; j < signals.getSize(); j++) {
+                this.ignore(origins, signals.at(j));
+            }
+        } else {
+            this.ignore(origins, signals);
+        }
+    }
+
+    return this;
+});
+
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Inst.defineMethod('observeTriggers',
+function() {
+
+    /**
+     * @method observeTriggers
+     * @summary Tells the receiver to observe its trigger signals so it can
+     *     begin to respond to them.
+     * @returns {TP.core.Triggered} The receiver.
+     */
+
+    var origins,
+        signals,
+
+        i,
+        j;
+
+    origins = this.get('triggerOrigins') || TP.ANY;
+    signals = this.get('triggerSignals');
+
+    //  Need at least one triggering signal to proceed.
+    if (TP.isEmpty(signals)) {
+        return;
+    }
+
+    if (TP.isArray(origins)) {
+        for (i = 0; i < origins.getSize(); i++) {
+            if (TP.isArray(signals)) {
+                for (j = 0; j < signals.getSize(); j++) {
+                    this.observe(origins.at(i), signals.at(j));
+                }
+            } else {
+                this.observe(origins.at(i), signals);
+            }
+        }
+    } else {
+        if (TP.isArray(signals)) {
+            for (j = 0; j < signals.getSize(); j++) {
+                this.observe(origins, signals.at(j));
+            }
+        } else {
+            this.observe(origins, signals);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Inst.defineMethod('setTriggerOrigins',
+function(origins) {
+
+    if (!TP.isArray(origins)) {
+        return this.raise('InvalidParameter', 'Origins should be an array.');
+    }
+
+    this.$set('triggerOrigins', origins);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Inst.defineMethod('setTriggerSignals',
+function(signals) {
+
+    if (!TP.isArray(signals)) {
+        return this.raise('InvalidParameter', 'Signals should be an array.');
+    }
+
+    this.$set('triggerSignals', signals);
+
+    return this;
+});
+
+//  ========================================================================
 //  TP.core.Resource
 //  ========================================================================
 
@@ -214,6 +404,7 @@ TP.lang.Object.defineSubtype('core.Resource');
 
 //  add sync and async mode support along with necessary constants.
 TP.core.Resource.addTraits(TP.core.SyncAsync);
+TP.core.Resource.addTraits(TP.core.Triggered);
 
 //  Resolve the traits right away as subtypes of this type are used during the
 //  booting process.
@@ -226,12 +417,6 @@ TP.core.Resource.finalizeTraits();
 //  keep a hash of all resource instances, by ID. this helps to ensure
 //  we only construct one of each resource ID.
 TP.core.Resource.Type.defineAttribute('instances', TP.hc());
-
-//  the combination of origins/signals defining the triggers we observe.
-//  note that the defaults are declared at the type level but each instance
-//  can alter these as it chooses
-TP.core.Resource.Type.defineAttribute('triggerOrigins');
-TP.core.Resource.Type.defineAttribute('triggerSignals');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -318,11 +503,6 @@ function(anID) {
 //  has the resource registered for requests yet? registration isn't
 //  strictly required except for signal-based invocation
 TP.core.Resource.Inst.defineAttribute('registered', false);
-
-//  these default to the values installed on the type, but can be altered
-//  at the instance level
-TP.core.Resource.Inst.defineAttribute('triggerOrigins');
-TP.core.Resource.Inst.defineAttribute('triggerSignals');
 
 //  the current vCard associated with this resource, and indirectly the
 //  resulting role and unit types
@@ -470,53 +650,6 @@ function() {
      */
 
     return this.getID();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Resource.Inst.defineMethod('getTriggerOrigins',
-function() {
-
-    /**
-     * @method getTriggerOrigins
-     * @summary Returns one or more origins for the TIBET signaling system
-     *     which should cause the receiver to respond to requests.
-     * @description The trigger origins are typically null meaning any origin is
-     *     valid and responsiveness depends on the signal type. You can override
-     *     this for specific instances so that a particular resource is focused
-     *     on responding to a particular requestor.
-     * @returns {Object}
-     */
-
-    var origins;
-
-    if (TP.notValid(origins = this.$get('triggerOrigins'))) {
-        return this.getType().get('triggerOrigins');
-    }
-
-    return origins;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Resource.Inst.defineMethod('getTriggerSignals',
-function() {
-
-    /**
-     * @method getTriggerSignals
-     * @summary Returns one or more trigger signals for the TIBET signaling
-     *     system which should cause the receiver to respond to requests. The
-     *     trigger signals default based on the receiver's type.
-     * @returns {Object}
-     */
-
-    var signals;
-
-    if (TP.notValid(signals = this.$get('triggerSignals'))) {
-        return this.getType().get('triggerSignals');
-    }
-
-    return signals;
 });
 
 //  ------------------------------------------------------------------------
@@ -885,44 +1018,15 @@ function() {
 
     /**
      * @method register
-     * @summary Registers the receiver observe its trigger signals so that
+     * @summary Registers the receiver and observes its trigger signals so that
      *     requests will cause activation of the service.
      * @returns {TP.core.Resource} The receiver.
      */
 
-    var origins,
-        signals,
-
-        i,
-        j;
-
-    //  let TIBET know who we are
     TP.sys.registerObject(this);
 
-    origins = this.get('triggerOrigins') || TP.ANY;
-    signals = this.get('triggerSignals') || 'TP.sig.Request';
+    this.observeTriggers();
 
-    if (TP.isArray(origins)) {
-        for (i = 0; i < origins.getSize(); i++) {
-            if (TP.isArray(signals)) {
-                for (j = 0; j < signals.getSize(); j++) {
-                    this.observe(origins.at(i), signals.at(j));
-                }
-            } else {
-                this.observe(origins.at(i), signals);
-            }
-        }
-    } else {
-        if (TP.isArray(signals)) {
-            for (j = 0; j < signals.getSize(); j++) {
-                this.observe(origins, signals.at(j));
-            }
-        } else {
-            this.observe(origins, signals);
-        }
-    }
-
-    //  update our internal registration flag
     this.isRegistered(true);
 
     return this;
@@ -960,39 +1064,10 @@ function() {
      * @returns {TP.core.Resource} The receiver.
      */
 
-    var origins,
-        signals,
-
-        i,
-        j;
-
-    //  let TIBET forget who we are
     TP.sys.unregisterObject(this);
 
-    origins = this.get('triggerOrigins') || TP.ANY;
-    signals = this.get('triggerSignals') || 'TP.sig.Request';
+    this.ignoreTriggers();
 
-    if (TP.isArray(origins)) {
-        for (i = 0; i < origins.getSize(); i++) {
-            if (TP.isArray(signals)) {
-                for (j = 0; j < signals.getSize(); j++) {
-                    this.ignore(origins.at(i), signals.at(j));
-                }
-            } else {
-                this.ignore(origins.at(i), signals);
-            }
-        }
-    } else {
-        if (TP.isArray(signals)) {
-            for (j = 0; j < signals.getSize(); j++) {
-                this.ignore(origins, signals.at(j));
-            }
-        } else {
-            this.ignore(origins, signals);
-        }
-    }
-
-    //  update our internal registration flag
     this.isRegistered(false);
 
     return this;

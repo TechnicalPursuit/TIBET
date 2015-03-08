@@ -1500,7 +1500,7 @@ function() {
     /**
      * @method getSignalNames
      * @summary Returns the all of the receiver's 'signal names' - that is,
-     *     each supertype signal name *and* the receiver's direct *signal* name.
+     *     each type signal name *and* the receiver's direct *signal* name.
      * @description Note that this method is different than
      *     'getTypeSignalNames()' below in that this method will always use the
      *     signal name, even for the receiving type - which for a spoofed signal
@@ -1510,14 +1510,10 @@ function() {
 
     var names;
 
-    //  We do this a bit different than just getting the types Array and
-    //  getting the signal names of each type because of 'signal name
-    //  spoofing'. This instance may have a different signal name than its
-    //  type name because its being spoofed. So, we get the supertype signal
-    //  names and then unshift our *signal name* onto the front of it.
-
-    names = this.getSupertypeSignalNames();
-    names.unshift(this.getSignalName());
+    names = this.getTypeSignalNames();
+    if (names.at(0) !== this.getSignalName()) {
+        names.unshift(this.getSignalName());
+    }
 
     return names;
 });
@@ -1537,15 +1533,11 @@ function() {
     var types,
         signames;
 
-    //  Make sure to copy the supertype Array - we're doing a convert
-    //  below.
-    types = this.getType().getSupertypes().copy();
-
+    types = this.getType().getSupertypes();
     signames = types.collect(
-                function(aType) {
-
-                    return aType.getSignalName();
-                });
+        function(aType) {
+            return aType.getSignalName();
+        });
 
     //  Slice off any type names above 'TP.sig.signal' in the inheritance
     //  hierarchy.
@@ -1731,16 +1723,13 @@ function() {
     var types,
         signames;
 
-    //  Make sure to copy the Array - we're doing a convert below.
-    types = this.getType().getTypes().copy();
-
+    types = this.getType().getTypes();
     signames = types.collect(
-                function(aType) {
+        function(aType) {
+            return aType.getSignalName();
+        });
 
-                    return aType.getSignalName();
-                });
-
-    //  Slice off any type names above 'TP.sig.signal' in the inheritance
+    //  Slice off any type names above 'TP.sig.Signal' in the inheritance
     //  hierarchy.
     signames = signames.slice(0, signames.getPosition('TP.sig.Signal') + 1);
 
@@ -6373,8 +6362,10 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
     }
 
     if (!TP.isArray(typenames = aSignal)) {
-        typenames = TP.ac(aSignal);
-        typenames.isOriginSet(true);
+        typenames = TP.ac();
+        if (TP.isValid(aSignal)) {
+            typenames.push(aSignal);
+        }
     }
 
     len = typenames.getSize();
@@ -6516,8 +6507,10 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
     }
 
     if (!TP.isArray(typenames = aSignal)) {
-        typenames = TP.ac(aSignal);
-        typenames.isOriginSet(true);
+        typenames = TP.ac();
+        if (TP.isValid(aSignal)) {
+            typenames.push(aSignal);
+        }
     }
 
     len = typenames.getSize();
@@ -6826,6 +6819,11 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  TP.core.Device, responsible for events of that type which may also
     //  decide to manage observations directly
     type = TP.isTypeName(signame) ? TP.sys.require(signame) : signame;
+
+    //  If we were using a spoofed signal name we may not have a real type, but
+    //  we need one to determine if the signal is of a type that has an owner,
+    //  or default firing policy etc.
+    type = TP.ifInvalid(type, TP.sig.SignalMap.$getSignalType(aSignal));
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event

@@ -47,6 +47,7 @@
     <config ref="formatting"/>
     <config ref="grouping"/>
     <config ref="oo"/>
+    <config ref="states"/>
     <config ref="values"/>
     <config ref="validation"/>
 
@@ -116,6 +117,10 @@
 
 <config id="oo">
     <script src="~lib_tst/src/tibet/oo/Inheritance_Reflection_Tests.js" />
+</config>
+
+<config id="states">
+    <script src="~lib_tst/src/tibet/states/TP.state_Tests.js" />
 </config>
 
 <config id="values">
