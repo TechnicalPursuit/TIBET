@@ -346,6 +346,14 @@ function() {
 TP.core.Triggered.Inst.defineMethod('setTriggerOrigins',
 function(origins) {
 
+    /**
+     * @method setTriggerOrigins
+     * @summary Defines the array of origins the receiver should observe.
+     * @param {Object[]} origins The array of origins, either objects or strings
+     *     which should be observed.
+     * @return {TP.core.Triggered} The receiver.
+     */
+
     if (!TP.isArray(origins)) {
         return this.raise('InvalidParameter', 'Origins should be an array.');
     }
@@ -359,6 +367,14 @@ function(origins) {
 
 TP.core.Triggered.Inst.defineMethod('setTriggerSignals',
 function(signals) {
+
+    /**
+     * @method setTriggerSignals
+     * @summary Defines the array of signals the receiver should observe.
+     * @param {Object[]} signals The array of signals, either objects or strings
+     *     which should be observed.
+     * @return {TP.core.Triggered} The receiver.
+     */
 
     if (!TP.isArray(signals)) {
         return this.raise('InvalidParameter', 'Signals should be an array.');
@@ -5847,21 +5863,45 @@ TP.core.Controller.Inst.defineAttribute('stateMachine');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Controller.Inst.defineMethod('getStateName',
+TP.core.Controller.Inst.defineMethod('getCurrentState',
 function() {
 
     /**
-     * Returns the string name for the receiver's current state. If the
-     * controller has no state machine this value will be undefined.
-     * @returns {String} The current controller state.
+     * @method getCurrentState
+     * @summary Returns the state name of the most specific state of the
+     *     receiver's state machine. This is the value of the state for the most
+     *     nested state machine, if nested, or the state machine itself.
+     * @returns {String} The current most-specific state name.
      */
 
     var stateMachine;
 
     stateMachine = this.$get('stateMachine');
     if (TP.isValid(stateMachine)) {
-        return stateMachine.getStateName();
+        return stateMachine.getCurrentState();
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Controller.Inst.defineMethod('getCurrentStates',
+function() {
+
+    /**
+     * @method getCurrentStates
+     * @summary Returns an array of state names, from most specific to least
+     *     specific in terms of most-nested child to outer-most state machine.
+     * @returns {String[]} The current controller state list.
+     */
+
+    var stateMachine;
+
+    stateMachine = this.$get('stateMachine');
+    if (TP.isValid(stateMachine)) {
+        return stateMachine.getCurrentStates();
+    }
+
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------

@@ -78,22 +78,6 @@ function(source) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragMachine.Inst.defineMethod('acceptActive',
-function(signalOrParams) {
-
-    /**
-     * @method acceptActive
-     * @summary Returns true if a state transition to "active" is valid.
-     * @param {TP.sig.Signal|Object} signalOrParams Input data which can
-     *     influence the result of the test.
-     * @returns {Boolean} True if we can transition to the state.
-     */
-
-    return TP.isKindOf(signalOrParams, 'TP.sig.DOMDragUp');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.DragMachine.Inst.defineMethod('acceptDragging',
 function(signalOrParams) {
 
@@ -106,6 +90,22 @@ function(signalOrParams) {
      */
 
     return TP.isKindOf(signalOrParams, 'TP.sig.DOMDragDown');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DragMachine.Inst.defineMethod('acceptIdle',
+function(signalOrParams) {
+
+    /**
+     * @method acceptActive
+     * @summary Returns true if a state transition to "active" is valid.
+     * @param {TP.sig.Signal|Object} signalOrParams Input data which can
+     *     influence the result of the test.
+     * @returns {Boolean} True if we can transition to the state.
+     */
+
+    return TP.isKindOf(signalOrParams, 'TP.sig.DOMDragUp');
 });
 
 //  ------------------------------------------------------------------------
@@ -786,7 +786,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('draggingTP_sig_DOMDragHover',
+TP.core.DragResponder.Inst.defineHandler('draggingDOMDragHover',
 function(aSignal) {
 
     /**
@@ -802,7 +802,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('draggingTP_sig_DOMDragMove',
+TP.core.DragResponder.Inst.defineHandler('draggingDOMDragMove',
 function(aSignal) {
 
     /**
@@ -835,7 +835,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('draggingEnter',
+TP.core.DragResponder.Inst.defineHandler('draggingEnter',
 function(aSignal) {
 
     /**
@@ -875,7 +875,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('draggingExit',
+TP.core.DragResponder.Inst.defineHandler('draggingExit',
 function(aSignal) {
 
     /**
@@ -1351,9 +1351,9 @@ function() {
 
     moveSingleton = this.construct(moveStateMachine);
 
-    //  Install an 'draggingExit' that will clear certain properties that
+    //  Install a 'draggingExit' handler that will clear certain properties that
     //  are set up using markup configuration
-    moveSingleton.defineMethod(
+    moveSingleton.defineHandler(
             'draggingExit',
             function(aSignal) {
 
@@ -1391,7 +1391,7 @@ TP.core.MoveResponder.Inst.defineAttribute('$computedPoint');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('draggingTP_sig_DOMDragMove',
+TP.core.MoveResponder.Inst.defineHandler('draggingDOMDragMove',
 function(aSignal) {
 
     /**
@@ -1457,7 +1457,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('draggingEnter',
+TP.core.MoveResponder.Inst.defineHandler('draggingEnter',
 function(aSignal) {
 
     /**
@@ -1562,7 +1562,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('draggingExit',
+TP.core.MoveResponder.Inst.defineHandler('draggingExit',
 function(aSignal) {
 
     /**
@@ -1735,9 +1735,9 @@ function() {
 
     resizeSingleton = this.construct(resizeStateMachine);
 
-    //  Install an 'draggingExit' that will clear certain properties that
-    //  are set up using markup configuration
-    resizeSingleton.defineMethod(
+    //  Install a 'draggingExit' handler that will clear certain properties
+    //  that are set up using markup configuration
+    resizeSingleton.defineHandler(
             'draggingExit',
             function(aSignal) {
 
@@ -2126,7 +2126,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('draggingTP_sig_DOMDragMove',
+TP.core.ResizeResponder.Inst.defineHandler('draggingDOMDragMove',
 function(aSignal) {
 
     /**
@@ -2365,7 +2365,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('draggingEnter',
+TP.core.ResizeResponder.Inst.defineHandler('draggingEnter',
 function(aSignal) {
 
     /**
@@ -2471,7 +2471,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('draggingExit',
+TP.core.ResizeResponder.Inst.defineHandler('draggingExit',
 function(aSignal) {
 
     /**
@@ -2889,9 +2889,9 @@ function() {
 
     dndSingleton = this.construct(dndStateMachine);
 
-    //  Install an 'draggingExit' that will clear certain properties that
+    //  Install a 'draggingExit' handler that will clear certain properties that
     //  are set up using markup configuration
-    dndSingleton.defineMethod(
+    dndSingleton.defineHandler(
             'draggingExit',
             function(aSignal) {
 
@@ -3059,7 +3059,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('draggingEnter',
+TP.core.DNDResponder.Inst.defineHandler('draggingEnter',
 function(aSignal) {
 
     /**
@@ -3095,7 +3095,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('draggingExit',
+TP.core.DNDResponder.Inst.defineHandler('draggingExit',
 function(aSignal) {
 
     /**
@@ -4371,7 +4371,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('draggingEnter',
+TP.core.DragTracker.Inst.defineHandler('draggingEnter',
 function(aSignal) {
 
     /**
@@ -4392,7 +4392,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('draggingExit',
+TP.core.DragTracker.Inst.defineHandler('draggingExit',
 function(aSignal) {
 
     /**
@@ -4414,7 +4414,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('draggingTP_sig_DOMDragHover',
+TP.core.DragTracker.Inst.defineHandler('draggingDOMDragHover',
 function(aSignal) {
 
     /**
@@ -4430,7 +4430,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('draggingTP_sig_DOMDragMove',
+TP.core.DragTracker.Inst.defineHandler('draggingDOMDragMove',
 function(aSignal) {
 
     /**

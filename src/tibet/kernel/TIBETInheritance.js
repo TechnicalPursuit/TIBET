@@ -1610,6 +1610,8 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
         sigTypeNames,
         startNameIndex,
         i,
+        j,
+        states,
         sigType;
 
     if (TP.notValid(aSignal)) {
@@ -1634,65 +1636,102 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
 
     signame = aSignal.getSignalName();
 
-    state = TP.sys.getApplication().getStateName();
-
-    //  Create a key we can use for cache lookups to avoid name generation
-    //  overhead for repeated queries.
-    key = signame + '.' + aSignal.getTypeName() + '.' +
-                TP.ifEmpty(orgid, TP.ANY) + '.' +
-                TP.ifEmpty(state, TP.ANY) + '.' +
-                (dontTraverseSpoofs || false) + '.' +
-                (dontTraverse || false) + '.' +
-                (startSignalName || signame);
-
-    //  Check the receiver's handler cache.
-    handlers = this.$get('$$handlers');
-    if (TP.notValid(handlers)) {
-        handlers = TP.hc();
-        this.$set('$$handlers', handlers, false);
-    } else {
-        handler = handlers.at(key);
-        if (handler === TP.NO_RESULT) {
-            return;
-        } else if (TP.isValid(handler)) {
-            return handler;
-        }
+    //  Get the state list and force at least one iteration to happen even if
+    //  there's no current state machine/state value.
+    states = TP.sys.getApplication().getCurrentStates();
+    if (TP.isEmpty(states)) {
+        states.push(null);
     }
 
-    sigType = aSignal.getType();
+    for (j = 0; j < states.getSize(); j++) {
+        state = states.at(j);
 
-    //  If the startSignalName wasn't supplied or it's the same as the signal's
-    //  'direct' signal name, then go ahead and consider that the receiver may
-    //  have the handler directly on it without traversing the type chain.
-    if (TP.isEmpty(startSignalName) || startSignalName === signame) {
+        //  Create a key we can use for cache lookups to avoid name generation
+        //  overhead for repeated queries.
+        key = signame + '.' + aSignal.getTypeName() + '.' +
+                    TP.ifEmpty(orgid, TP.ANY) + '.' +
+                    TP.ifEmpty(state, TP.ANY) + '.' +
+                    (dontTraverseSpoofs || false) + '.' +
+                    (dontTraverse || false) + '.' +
+                    (startSignalName || signame);
 
-        //  check first for explicit one to avoid overhead when the handler
-        //  is specific to the signal
+        //  Check the receiver's handler cache.
+        handlers = this.$get('$$handlers');
+        if (TP.notValid(handlers)) {
+            handlers = TP.hc();
+            this.$set('$$handlers', handlers, false);
+        } else {
+            handler = handlers.at(key);
+            if (handler === TP.NO_RESULT) {
+                return;
+            } else if (TP.isValid(handler)) {
+                return handler;
+            }
+        }
 
-        if (hasOrigin) {
+        sigType = aSignal.getType();
 
-            fName = sigType.getHandlerName(orgid, aSignal, state, false);
+        //  If the startSignalName wasn't supplied or it's the same as the signal's
+        //  'direct' signal name, then go ahead and consider that the receiver may
+        //  have the handler directly on it without traversing the type chain.
+        if (TP.isEmpty(startSignalName) || startSignalName === signame) {
+
+            //  check first for explicit one to avoid overhead when the handler
+            //  is specific to the signal
+
+            if (hasOrigin) {
+
+                fName = sigType.getHandlerName(orgid, aSignal, state, false);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+
+                fName = sigType.getHandlerName(orgid, aSignal, state, true);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+
+                fName = sigType.getHandlerName(orgid, aSignal, null, false);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+
+                fName = sigType.getHandlerName(orgid, aSignal, null, true);
+                if (TP.canInvoke(this, fName)) {
+                    handler = this[fName];
+                    handlers.atPut(key, handler);
+                    return handler;
+                }
+            }
+
+            fName = sigType.getHandlerName(null, aSignal, state, false);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = sigType.getHandlerName(orgid, aSignal, state, true);
+            fName = sigType.getHandlerName(null, aSignal, state, true);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = sigType.getHandlerName(orgid, aSignal, null, false);
+            fName = sigType.getHandlerName(null, aSignal, null, false);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
                 return handler;
             }
 
-            fName = sigType.getHandlerName(orgid, aSignal, null, true);
+            fName = sigType.getHandlerName(null, aSignal, null, true);
             if (TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
@@ -1700,140 +1739,112 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
             }
         }
 
-        fName = sigType.getHandlerName(null, aSignal, state, false);
-        if (TP.canInvoke(this, fName)) {
-            handler = this[fName];
-            handlers.atPut(key, handler);
-            return handler;
-        }
-
-        fName = sigType.getHandlerName(null, aSignal, state, true);
-        if (TP.canInvoke(this, fName)) {
-            handler = this[fName];
-            handlers.atPut(key, handler);
-            return handler;
-        }
-
-        fName = sigType.getHandlerName(null, aSignal, null, false);
-        if (TP.canInvoke(this, fName)) {
-            handler = this[fName];
-            handlers.atPut(key, handler);
-            return handler;
-        }
-
-        fName = sigType.getHandlerName(null, aSignal, null, true);
-        if (TP.canInvoke(this, fName)) {
-            handler = this[fName];
-            handlers.atPut(key, handler);
-            return handler;
-        }
-    }
-
-    if (dontTraverse) {
-        handlers.atPut(key, TP.NO_RESULT);
-        return;
-    }
-
-    //  If the signal is spoofed, then we want all of the signal names based on
-    //  type, including the one for the actual type of the signal. This is
-    //  because the *signal* name of the signal will be the spoofed name,
-    //  whereas the *type* name of the signal will be it's real concrete type
-    //  and we want that to be considered as well.
-    if (aSignal.isSpoofed()) {
-        if (dontTraverseSpoofs) {
+        if (dontTraverse) {
             handlers.atPut(key, TP.NO_RESULT);
             return;
         }
 
-        //  Since the type name isn't the same as the signal name, we must
-        //  start checking at the actual type name of the signal.
-        sigTypeNames = aSignal.getTypeSignalNames();
-    } else {
-        //  Since the type name is the same as the signal name, we can start
-        //  checking at the supertype name of the signal.
-        sigTypeNames = aSignal.getSupertypeSignalNames();
-    }
+        //  If the signal is spoofed, then we want all of the signal names based on
+        //  type, including the one for the actual type of the signal. This is
+        //  because the *signal* name of the signal will be the spoofed name,
+        //  whereas the *type* name of the signal will be it's real concrete type
+        //  and we want that to be considered as well.
+        if (aSignal.isSpoofed()) {
+            if (dontTraverseSpoofs) {
+                handlers.atPut(key, TP.NO_RESULT);
+                return;
+            }
 
-    //  If a startSignalName was supplied and it can be found in the list of
-    //  computed signal names, then slice off all signal names in the list
-    //  *before* that.
-    if (TP.notEmpty(startSignalName) &&
-            (startNameIndex = sigTypeNames.indexOf(startSignalName)) !==
-                                                            TP.NOT_FOUND) {
-        sigTypeNames = sigTypeNames.slice(startNameIndex);
-    }
+            //  Since the type name isn't the same as the signal name, we must
+            //  start checking at the actual type name of the signal.
+            sigTypeNames = aSignal.getTypeSignalNames();
+        } else {
+            //  Since the type name is the same as the signal name, we can start
+            //  checking at the supertype name of the signal.
+            sigTypeNames = aSignal.getSupertypeSignalNames();
+        }
 
-    for (i = 0; i < sigTypeNames.getSize(); i++) {
+        //  If a startSignalName was supplied and it can be found in the list of
+        //  computed signal names, then slice off all signal names in the list
+        //  *before* that.
+        if (TP.notEmpty(startSignalName) &&
+                (startNameIndex = sigTypeNames.indexOf(startSignalName)) !==
+                                                                TP.NOT_FOUND) {
+            sigTypeNames = sigTypeNames.slice(startNameIndex);
+        }
 
-        if (TP.isType(sigType = TP.sys.getTypeByName(sigTypeNames.at(i)))) {
+        for (i = 0; i < sigTypeNames.getSize(); i++) {
 
-            //  Note here how we do *not* supply aSignal as the third
-            //  parameter to these methods... we want to use just the signal
-            //  type's signal name, not any override supplied by the aSignal
-            //  instance.
+            if (TP.isType(sigType = TP.sys.getTypeByName(sigTypeNames.at(i)))) {
 
-            if (hasOrigin) {
+                //  Note here how we do *not* supply aSignal as the third
+                //  parameter to these methods... we want to use just the signal
+                //  type's signal name, not any override supplied by the aSignal
+                //  instance.
 
-                fName = sigType.getHandlerName(orgid, null, state, false);
+                if (hasOrigin) {
+
+                    fName = sigType.getHandlerName(orgid, null, state, false);
+                    if (TP.canInvoke(this, fName)) {
+                        handler = this[fName];
+                        handlers.atPut(key, handler);
+                        return handler;
+                    }
+
+                    fName = sigType.getHandlerName(orgid, null, state, true);
+                    if (TP.canInvoke(this, fName)) {
+                        handler = this[fName];
+                        handlers.atPut(key, handler);
+                        return handler;
+                    }
+
+                    fName = sigType.getHandlerName(orgid, null, null, false);
+                    if (TP.canInvoke(this, fName)) {
+                        handler = this[fName];
+                        handlers.atPut(key, handler);
+                        return handler;
+                    }
+
+                    fName = sigType.getHandlerName(orgid, null, null, true);
+                    if (TP.canInvoke(this, fName)) {
+                        handler = this[fName];
+                        handlers.atPut(key, handler);
+                        return handler;
+                    }
+                }
+
+                fName = sigType.getHandlerName(null, null, state, false);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
-                fName = sigType.getHandlerName(orgid, null, state, true);
+                fName = sigType.getHandlerName(null, null, state, true);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
-                fName = sigType.getHandlerName(orgid, null, null, false);
+                fName = sigType.getHandlerName(null, null, null, false);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
 
-                fName = sigType.getHandlerName(orgid, null, null, true);
+                fName = sigType.getHandlerName(null, null, null, true);
                 if (TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
                     return handler;
                 }
-            }
-
-            fName = sigType.getHandlerName(null, null, state, false);
-            if (TP.canInvoke(this, fName)) {
-                handler = this[fName];
-                handlers.atPut(key, handler);
-                return handler;
-            }
-
-            fName = sigType.getHandlerName(null, null, state, true);
-            if (TP.canInvoke(this, fName)) {
-                handler = this[fName];
-                handlers.atPut(key, handler);
-                return handler;
-            }
-
-            fName = sigType.getHandlerName(null, null, null, false);
-            if (TP.canInvoke(this, fName)) {
-                handler = this[fName];
-                handlers.atPut(key, handler);
-                return handler;
-            }
-
-            fName = sigType.getHandlerName(null, null, null, true);
-            if (TP.canInvoke(this, fName)) {
-                handler = this[fName];
-                handlers.atPut(key, handler);
-                return handler;
             }
         }
-    }
 
-    handlers.atPut(key, TP.NO_RESULT);
+        handlers.atPut(key, TP.NO_RESULT);
+    }
 
     return;
 });

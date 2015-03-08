@@ -369,7 +369,7 @@ function(anOrigin, aSignal, aState, wantsFullName) {
 
     //  Add optional When clause for state filtering.
     if (TP.notEmpty(aState)) {
-        handlerName += 'When' + TP.str(aState);
+        handlerName += 'When' + TP.str(aState).asTitleCase();
     }
 
     if (TP.notTrue(wantsFullName)) {
