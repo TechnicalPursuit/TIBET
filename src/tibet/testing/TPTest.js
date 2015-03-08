@@ -2177,12 +2177,16 @@ function(suite, caseName, caseFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('getAllFiredSignalsInfo',
-function(wantsRequests) {
+TP.test.Case.Inst.defineMethod('getFiredSignalInfos',
+function(verbose, wantsRequests) {
 
     /**
      * Returns an Array of hashes of information about the argument sets of the
      *     signals fired using the TP.signal spy since it was last reset.
+     * @param {Boolean} [verbose=false] Whether or not to include extra signal
+     *     information, such as signal payload, policy and type. The default is
+     *     false, which means that only the signal origin and signal name are
+     *     included.
      * @param {Boolean} wantsRequests Whether or not to include all of the sets
      *     of signal arguments, including TP.sig.Requests, fired since the spy
      *     was last reset when retrieving the information. The default is false.
@@ -2196,7 +2200,8 @@ function(wantsRequests) {
 
     this.getFiredSignals(wantsRequests).perform(
             function(entry, index) {
-                info.push(this.getFiredSignalInfoAt(index, wantsRequests));
+                info.push(this.getFiredSignalInfoAt(
+                                    index, verbose, wantsRequests));
             }.bind(this));
 
     return info;
@@ -2204,13 +2209,17 @@ function(wantsRequests) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('getAllFiredSignalInfosString',
-function(wantsRequests) {
+TP.test.Case.Inst.defineMethod('getFiredSignalInfosString',
+function(verbose, wantsRequests) {
 
     /**
      * Returns a String representation of the Array of hashes of information
      *     about the argument sets of the signals fired using the TP.signal spy
      *     since it was last reset.
+     * @param {Boolean} [verbose=false] Whether or not to include extra signal
+     *     information, such as signal payload, policy and type. The default is
+     *     false, which means that only the signal origin and signal name are
+     *     included.
      * @param {Boolean} wantsRequests Whether or not to include all of the sets
      *     of signal arguments, including TP.sig.Requests, fired since the spy
      *     was last reset when retrieving the information. The default is false.
@@ -2221,7 +2230,7 @@ function(wantsRequests) {
 
     var str;
 
-    str = this.getAllFiredSignalsInfo().asDisplayString(
+    str = this.getFiredSignalInfos(verbose, wantsRequests).asDisplayString(
                 TP.hc('itemSeparator', '\n',
                         'kvSeparator', '  :  ',
                         'valueTransform', function(it) {
@@ -2266,12 +2275,19 @@ function(wantsRequests) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getFiredSignalInfoAt',
-function(signalIndex, wantsRequests) {
+function(signalIndex, verbose, wantsRequests) {
 
     /**
      * Returns a hash of information about the argument set of the signal at
      *     signalIndex within the Array of signals fired using the TP.signal spy
      *     since it was last reset.
+     * @param {Number} signalIndex The index of the desired signal info in the
+     *     list of all of the signals that have been gathered since the last
+     *     reset.
+     * @param {Boolean} [verbose=false] Whether or not to include extra signal
+     *     information, such as signal payload, policy and type. The default is
+     *     false, which means that only the signal origin and signal name are
+     *     included.
      * @param {Boolean} wantsRequests Whether or not to include all of the sets
      *     of signal arguments, including TP.sig.Requests, fired since the spy
      *     was last reset when retrieving the information. The default is false.
@@ -2304,17 +2320,20 @@ function(signalIndex, wantsRequests) {
 
     info.atPut('origin', sigOrigin);
     info.atPut('signame', TP.str(signalArgs.at(1)));
-    info.atPut('payload', signalArgs.at(2));
-    info.atPut('policy', TP.str(signalArgs.at(3)));
 
-    if (!TP.isType(sigType = TP.sys.getTypeByName(info.at('signame')))) {
-        if (TP.notEmpty(typeName = TP.str(signalArgs.at(4)))) {
-            sigType = TP.sys.getTypeByName(typeName);
+    if (TP.isTrue(verbose)) {
+        info.atPut('payload', signalArgs.at(2));
+        info.atPut('policy', TP.str(signalArgs.at(3)));
+
+        if (!TP.isType(sigType = TP.sys.getTypeByName(info.at('signame')))) {
+            if (TP.notEmpty(typeName = TP.str(signalArgs.at(4)))) {
+                sigType = TP.sys.getTypeByName(typeName);
+            }
         }
-    }
 
-    if (TP.isType(sigType)) {
-        info.atPut('sigtype', TP.name(sigType));
+        if (TP.isType(sigType)) {
+            info.atPut('sigtype', TP.name(sigType));
+        }
     }
 
     return info;

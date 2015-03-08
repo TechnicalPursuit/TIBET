@@ -945,6 +945,1308 @@ function() {
 });
 
 //  ========================================================================
+//  Markup-level Test Suite
+//  ========================================================================
+
+//  ========================================================================
+//  TP.test.BaseMarkupEmployee
+//  ========================================================================
+
+/**
+ * @type {TP.test.BaseMarkupEmployee}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.defineSubtype('test.BaseMarkupEmployee');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'lastname',
+        {
+            value: TP.xpc('string(./person/lastname/text())'),
+            valid: {
+                dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'firstname',
+        {
+            value: TP.xpc('string(./person/firstname/text())'),
+            valid: {
+                dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'age',
+        {
+            value: TP.xpc('number(./person/age/text())'),
+            valid: {
+                dataType: 'xs:decimal'
+            }
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'address',
+        {
+            value: TP.xpc('./person/address',
+                            TP.hc('packageWith', 'object')),
+            valid: {
+                dataType: 'TP.tibet.address'    //  Defined as JSON Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'city',
+        {
+            value: TP.xpc('string(./person/address/city/text())'),
+            valid: {
+                dataType: String
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'state',
+        {
+            value: TP.xpc('string(./person/address/state/text())'),
+            valid: {
+                dataType: 'TP.tibet.usstatecodes' //  Defined as XML Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'gender',
+        {
+            value: TP.xpc('string(./person/gender/text())'),
+            valid: {
+                dataType: 'TP.tibet.gender'     //  Defined as JSON Schema type
+            },
+            required: true
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'uscitizen',
+        {
+            value: TP.xpc('boolean(./person/uscitizen/text())'),
+            valid: {
+                dataType: Boolean
+            }
+        });
+
+TP.test.BaseMarkupEmployee.Inst.defineAttribute(
+        'SSN',
+        {
+            value: TP.xpc('string(./person/SSN/text())'),
+            relevant: TP.xpc('boolean(./person/uscitizen/text())'),
+            valid: {
+                dataType: 'TP.test.SSN'
+            }
+        });
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Inst.describe('Markup level validation',
+function() {
+
+    var unloadURI,
+
+        usingDebugger,
+        oldLogLevel;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
+    this.before(
+        function() {
+            var xmlSchemaTPDoc,
+                jsonSchemaContent;
+
+            //  For now, we turn off triggering the debugger because we know
+            //  that this test case has a XInclude that points to a file
+            //  that won't be found - that part of this test is testing
+            //  'xi:fallback' element.
+            usingDebugger = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+
+            //  Same for log level
+            oldLogLevel = TP.getLogLevel();
+            TP.setLogLevel(TP.SEVERE);
+
+            //  Suspend raising (since we know - and want - some of these
+            //  validations to fail).
+            TP.raise.$suspended = true;
+
+            //  ---
+
+            xmlSchemaTPDoc = TP.uc('~lib_lib/xs/tibet_common_types.xsd').
+                                            getResource(TP.hc('async', false));
+            xmlSchemaTPDoc.getDocumentElement().defineTypes();
+
+            jsonSchemaContent = TP.uc('~lib_lib/json/tibet_common_types.json').
+                                            getResource(TP.hc('async', false));
+            jsonSchemaContent.defineTypes();
+
+            //  ---
+
+            this.getDriver().showTestGUI();
+
+            //  ---
+
+            //  NB: We do this here rather than in the 'beforeEach' so that we
+            //  can test for signals that get dispatched during the load
+            //  process.
+            this.startTrackingSignals();
+        });
+
+    this.after(
+        function() {
+
+            //  Put log level back to what it was
+            TP.setLogLevel(oldLogLevel);
+
+            //  Put the debugger setting back to what it was
+            TP.sys.shouldUseDebugger(usingDebugger);
+
+            //  Unsuspend raising
+            TP.raise.$suspended = false;
+
+            //  ---
+
+            this.getDriver().showTestLog();
+
+            //  ---
+
+            //  Stop tracking here because we started tracking in the before().
+            this.stopTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            //  Reset the metrics we're tracking.
+            TP.signal.reset();
+        });
+
+    //  ---
+
+    this.it('markup-level validation - simple and complex types', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation1.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ageURI,
+
+                    ageField;
+
+                srcURI = TP.uc('urn:tibet:Validation1_person');
+                ageURI = TP.uc('urn:tibet:Validation1_person#tibet(age)');
+
+                ageField = TP.byOID('ageField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  'structure' change - age URI
+                test.assert.didSignal(ageURI, 'TP.sig.StructureChange');
+
+                //  'valid' change
+                test.assert.didSignal(ageURI, 'AgeValidChange');
+                test.assert.didSignal(ageField, 'TP.sig.UIValid');
+                test.assert.didSignal(ageField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'AgeValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ageField.clearValue();
+                            }).
+                    sendKeys('Not A Number', ageField).
+                    sendEvent(TP.hc('type', 'change'), ageField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  'age' change - age URI
+                        test.assert.didSignal(ageURI, 'AgeChange');
+
+                        //  'age' change - source URI
+                        test.assert.didSignal(srcURI, 'AgeChange');
+
+                        //  'valid' change
+                        test.assert.didSignal(ageURI, 'AgeValidChange');
+                        test.assert.didSignal(ageField, 'TP.sig.UIInvalid');
+                        test.assert.didSignal(ageField, 'InvalidChange');
+
+                        test.assert.didSignal(srcURI, 'AgeValidChange');
+                    });
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ageField.clearValue();
+                            }).
+                    sendKeys('25', ageField).
+                    sendEvent(TP.hc('type', 'change'), ageField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  'age' change - age URI
+                        test.assert.didSignal(ageURI, 'AgeChange');
+
+                        //  'age' change - source URI
+                        test.assert.didSignal(srcURI, 'AgeChange');
+
+                        //  'valid' change
+                        test.assert.didSignal(ageURI, 'AgeValidChange');
+                        test.assert.didSignal(ageField, 'TP.sig.UIValid');
+                        test.assert.didSignal(ageField, 'InvalidChange');
+
+                        test.assert.didSignal(srcURI, 'AgeValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level validation - relevancy check', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation2.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ssnURI,
+                    citURI,
+
+                    ssnField,
+                    citCheckbox;
+
+                srcURI = TP.uc('urn:tibet:Validation2_person');
+                ssnURI = TP.uc('urn:tibet:Validation2_person#tibet(SSN)');
+                citURI = TP.uc('urn:tibet:Validation2_person#tibet(uscitizen)');
+
+                ssnField = TP.byOID('SSNField');
+                citCheckbox = TP.byOID('uscitizenCheckbox');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Citizen
+
+                //  'structure' change - citizen URI
+                test.assert.didSignal(citURI, 'TP.sig.StructureChange');
+
+                //  'valid' change - citizen
+                test.assert.didSignal(citURI, 'UscitizenValidChange');
+                test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
+                test.assert.didSignal(citCheckbox, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'UscitizenValidChange');
+
+                //  ---
+
+                //  SSN
+
+                //  'structure' change - SSN URI
+                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+
+                //  'relevant' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+                test.assert.didSignal(ssnField, 'DisabledChange');
+
+                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                //  'valid' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNValidChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(ssnField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                //  Reset the metrics we're tracking.
+                TP.signal.reset();
+
+                //  ---
+
+                driver.startSequence().
+                    click(citCheckbox).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  'relevant' change - SSN
+                        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
+                        test.assert.didSignal(ssnField, 'DisabledChange');
+
+                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                        //  'US citizen' change - citizen URI
+                        test.assert.didSignal(citURI, 'UscitizenChange');
+
+                        //  'US citizen' change - source URI
+                        test.assert.didSignal(srcURI, 'UscitizenChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level validation - group-level validation', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation3.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ssnURI,
+                    gendURI,
+
+                    ssnField,
+                    gendField,
+
+                    empGroup;
+
+                srcURI = TP.uc('urn:tibet:Validation3_person');
+                ssnURI = TP.uc('urn:tibet:Validation3_person#tibet(SSN)');
+                gendURI = TP.uc('urn:tibet:Validation3_person#tibet(gender)');
+
+                ssnField = TP.byOID('SSNField');
+                gendField = TP.byOID('GenderField');
+
+                empGroup = TP.byOID('EmployeeGroup');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Gender
+
+                //  'structure' change - gender URI
+                test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
+
+                //  'required' change - gender (the model value has a valid
+                //  value - so this constraint is satisfied)
+                test.assert.didSignal(gendURI, 'GenderRequiredChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIOptional');
+                test.assert.didSignal(gendField, 'RequiredChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'GenderRequiredChange');
+
+                //  'valid' change - gender
+                test.assert.didSignal(gendURI, 'GenderValidChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIValid');
+                test.assert.didSignal(gendField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'GenderValidChange');
+
+                //  ---
+
+                //  SSN
+
+                //  'structure' change - SSN URI
+                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+
+                //  'relevant' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+                test.assert.didSignal(ssnField, 'DisabledChange');
+
+                //  'relevant' change - source URI
+                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                //  'valid' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNValidChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(ssnField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                //  ---
+
+                //  Employee Group
+
+                //  'valid' change - Employee Group field
+                test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
+                test.assert.didSignal(empGroup, 'InvalidChange');
+                test.assert.hasAttribute(empGroup, 'pclass:invalid');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ssnField.clearValue();
+                            }).
+                    sendKeys('333-33-3333', ssnField).
+                    sendEvent(TP.hc('type', 'change'), ssnField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  SSN
+
+                        //  'SSN' change - SSN URI
+                        test.assert.didSignal(ssnURI, 'SSNChange');
+
+                        //  'SSN' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNChange');
+
+                        //  'valid' change - SSN
+                        test.assert.didSignal(ssnURI, 'SSNValidChange');
+                        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
+                        test.assert.didSignal(ssnField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                        //  'valid' change - Employee Group field
+                        test.assert.didSignal(empGroup, 'InvalidChange');
+                        test.refute.hasAttribute(empGroup, 'pclass:invalid');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level validation - nested group-level validation', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation4.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    ssnURI,
+                    gendURI,
+                    cityURI,
+                    stateURI,
+
+                    ssnField,
+                    gendField,
+                    cityField,
+                    stateField,
+
+                    empGroup,
+                    addrGroup;
+
+                srcURI = TP.uc('urn:tibet:Validation4_person');
+                ssnURI = TP.uc('urn:tibet:Validation4_person#tibet(SSN)');
+                gendURI = TP.uc('urn:tibet:Validation4_person#tibet(gender)');
+                cityURI = TP.uc('urn:tibet:Validation4_person#tibet(city)');
+                stateURI = TP.uc('urn:tibet:Validation4_person#tibet(state)');
+
+                ssnField = TP.byOID('SSNField');
+                gendField = TP.byOID('GenderField');
+                cityField = TP.byOID('CityField');
+                stateField = TP.byOID('StateField');
+
+                empGroup = TP.byOID('EmployeeGroup');
+                addrGroup = TP.byOID('AddressGroup');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Gender
+
+                //  'structure' change - gender URI
+                test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
+
+                //  'required' change - gender (the model value has a valid
+                //  value - so this constraint is satisfied)
+                test.assert.didSignal(gendURI, 'GenderRequiredChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIOptional');
+                test.assert.didSignal(gendField, 'RequiredChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'GenderRequiredChange');
+
+                //  'valid' change - gender
+                test.assert.didSignal(gendURI, 'GenderValidChange');
+                test.assert.didSignal(gendField, 'TP.sig.UIValid');
+                test.assert.didSignal(gendField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'GenderValidChange');
+
+                //  ---
+
+                //  SSN
+
+                //  'structure' change - SSN URI
+                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+
+                //  'relevant' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+                test.assert.didSignal(ssnField, 'DisabledChange');
+
+                //  'relevant' change - source URI
+                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                //  'valid' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNValidChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(ssnField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                //  ---
+
+                //  City
+
+                //  'structure' change - city URI
+                test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
+
+                //  'required' change - city
+                test.assert.didSignal(cityURI, 'CityRequiredChange');
+                test.assert.didSignal(cityField, 'TP.sig.UIOptional');
+                test.assert.didSignal(cityField, 'InvalidChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'CityRequiredChange');
+
+                //  'structure' change - city URI
+                test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
+
+                //  'valid' change - city
+                test.assert.didSignal(cityURI, 'CityValidChange');
+                test.assert.didSignal(cityField, 'TP.sig.UIValid');
+                test.assert.didSignal(cityField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'CityValidChange');
+
+                //  ---
+
+                //  State
+
+                //  'structure' change - state URI
+                test.assert.didSignal(stateURI, 'TP.sig.StructureChange');
+
+                //  'required' change - state
+                test.assert.didSignal(stateURI, 'StateRequiredChange');
+                test.assert.didSignal(stateField, 'TP.sig.UIOptional');
+                test.assert.didSignal(stateField, 'RequiredChange');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'StateRequiredChange');
+
+                //  'valid' change - state
+                test.assert.didSignal(stateURI, 'StateValidChange');
+                test.assert.didSignal(stateField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(stateField, 'InvalidChange');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'StateValidChange');
+
+                //  ---
+
+                //  Employee Group
+
+                //  'valid' change - Employee Group field (invalid because SSN
+                //  is invalid)
+                test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
+                test.assert.didSignal(empGroup, 'InvalidChange');
+                test.assert.hasAttribute(empGroup, 'pclass:invalid');
+
+                //  ---
+
+                //  Address Group
+
+                //  'required' change - Address Group field (invalid because
+                //  State is invalid)
+                test.assert.didSignal(addrGroup, 'TP.sig.UIInvalid');
+                test.assert.didSignal(addrGroup, 'InvalidChange');
+                test.assert.hasAttribute(addrGroup, 'pclass:invalid');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                stateField.clearValue();
+                            }).
+                    sendKeys('CA', stateField).
+                    sendEvent(TP.hc('type', 'change'), stateField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  State
+
+                        //  'State' change - State URI
+                        test.assert.didSignal(stateURI, 'StateChange');
+
+                        //  'State' change - source URI
+                        test.assert.didSignal(srcURI, 'StateChange');
+
+                        //  'valid' change - state
+                        test.assert.didSignal(stateURI, 'StateValidChange');
+                        test.assert.didSignal(stateField, 'TP.sig.UIValid');
+                        test.assert.didSignal(stateField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'StateValidChange');
+
+                        //  ---
+
+                        //  Address Group
+
+                        //  'valid' change - Address Group field
+                        test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
+                        test.assert.didSignal(addrGroup, 'InvalidChange');
+                        test.refute.hasAttribute(addrGroup, 'pclass:invalid');
+                    });
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                ssnField.clearValue();
+                            }).
+                    sendKeys('333-33-3333', ssnField).
+                    sendEvent(TP.hc('type', 'change'), ssnField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  SSN
+
+                        //  'SSN' change - SSN URI
+                        test.assert.didSignal(ssnURI, 'SSNChange');
+
+                        //  'SSN' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNChange');
+
+                        //  'valid' change - SSN
+                        test.assert.didSignal(ssnURI, 'SSNValidChange');
+                        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
+                        test.assert.didSignal(ssnField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                        //  ---
+
+                        //  Employee Group
+
+                        //  'valid' change - Employee Group field
+                        test.assert.didSignal(empGroup, 'TP.sig.UIValid');
+                        test.assert.didSignal(empGroup, 'InvalidChange');
+                        test.refute.hasAttribute(empGroup, 'pclass:invalid');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level - XML content type defined in markup', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation5.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation5_data');
+                codeNumURI = TP.uc('urn:tibet:Validation5_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('42', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level - JSON content type defined in markup', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation6.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation6_data');
+                codeNumURI = TP.uc('urn:tibet:Validation6_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('4', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level - XML content type defined in markup with a schema defined type', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation7.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation7_data');
+                codeNumURI = TP.uc('urn:tibet:Validation7_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('42', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level - JSON content type defined in markup with a schema defined type', function(test, options) {
+        var loadURI,
+
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation8.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var srcURI,
+
+                    codeNumURI,
+
+                    codeNumField;
+
+                srcURI = TP.uc('urn:tibet:Validation8_data');
+                codeNumURI = TP.uc('urn:tibet:Validation8_data#tibet(codenum)');
+
+                codeNumField = TP.byOID('CodeNumField');
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code Number
+
+                //  'structure' change - code number URI
+                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+
+                //  'required' change (the model value, while empty, created a
+                //  NaN - so this constraint is satisfied)
+                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'RequiredChange');
+
+                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+
+                //  'valid' change
+                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+                test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                test.assert.didSignal(srcURI, 'CodenumValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                codeNumField.clearValue();
+                            }).
+                    sendKeys('42', codeNumField).
+                    sendEvent(TP.hc('type', 'change'), codeNumField).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+
+                        //  Code Number
+
+                        //  'Codenum' change - Codenum URI
+                        test.assert.didSignal(codeNumURI, 'CodenumChange');
+
+                        //  'Codenum' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumChange');
+
+                        //  'valid' change - Codenum
+                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
+                        test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'valid' change - source URI
+                        test.assert.didSignal(srcURI, 'CodenumValidChange');
+                    });
+
+                //  ---
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
 

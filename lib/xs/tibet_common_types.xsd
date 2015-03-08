@@ -166,13 +166,6 @@ types.
 		</xs:restriction>
 	</xs:simpleType>
 
-	<!-- Missouri Driver License -->
-	<xs:simpleType name="tibet:mo_license">
-		<xs:restriction base="xs:string">
-            <xs:pattern value="^[a-zA-Z]\d{5,9}$|^\d{9}$"/>
-		</xs:restriction>
-	</xs:simpleType>
-
 	<!-- Credit card providers -->
 	<xs:simpleType name="tibet:cc_providers">
 		<xs:restriction base="xs:string">
@@ -182,5 +175,12 @@ types.
 			<xs:enumeration value="American Express"/>
 		</xs:restriction>
 	</xs:simpleType>
+
+    <!-- Credit card CVV -->
+    <xs:simpleType name="tibet:CVV">
+        <xs:restriction base="xs:integer">
+            <xs:pattern value="\d{3}"/>
+        </xs:restriction>
+    </xs:simpleType>
 
 </xs:schema>

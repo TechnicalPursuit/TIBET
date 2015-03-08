@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	@namespace pclass url(urn:tibet:pseudoclass);
+    @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+	tibet|group[pclass|invalid]
+	{
+		border-color: red;
+    }
+
+	/*input[type=text]:invalid*/
+	input[type=text][pclass|invalid]
+	{
+		color: red;
+	}
+	]]>
+	</style>
+
+	<tibet:data id="Validation3Data" local="urn:tibet:Validation3_person" resultType="TP.test.BaseMarkupEmployee">
+		<person xmlns="">
+			<lastname>Smith</lastname>
+			<firstname>Joe</firstname>
+            <age>48</age>
+            <address>
+                <street_address>111 Main St.</street_address>
+                <city>Anytown</city>
+                <state>CA</state>
+            </address>
+            <gender>male</gender>
+            <SSN></SSN>
+		</person>
+	</tibet:data>
+
+</head>
+
+<body>
+
+	<h2>Validation Test #3</h2><br/>
+
+	<br/>
+	<br/>
+	This test sets up two XHTML elements, both bound to an underlying data model defined in the test code. They are both 'input type="text"' elements, wrapped in a 'tibet:group' element. This group element has an 'invalidwhen="any"' attribute, which means that it is considered to be invalid when either of the two field (which are members of its group) are invalid. This 'validity' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
+	<br/>
+    <br/>
+    The value of the first element is valid, so nothing more needs to be done. The test code sets a value on the second element, which causes the bound data value to change and for the 'validity' of the text field to change. The text field changes its appearance based on that fact and the 'tibet:group' element also changes itself to the valid state because both of its members are now valid.
+	<br/>
+    <br/>
+    A variety of signals are thrown by the various objects involved.
+	<br/>
+
+    <tibet:group id="EmployeeGroup" invalidwhen="any">
+        <label for="GenderField">Gender: </label>
+        <input type="text" id="GenderField" bind:io="value: urn:tibet:Validation3_person#tibet(gender)" tabindex="0"/><br/>
+        <label for="SSNField">SSN: </label>
+        <input type="text" id="SSNField" bind:io="value: urn:tibet:Validation3_person#tibet(SSN)" tabindex="0"/><br/>
+    </tibet:group>
+
+</body>
+</html>

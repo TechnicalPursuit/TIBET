@@ -6316,7 +6316,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.defineCommonMethod('isAccessPath',
+TP.defineMetaInstMethod('isAccessPath',
 function() {
 
     /**

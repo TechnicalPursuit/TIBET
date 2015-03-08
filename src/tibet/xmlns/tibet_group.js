@@ -52,9 +52,14 @@ function(aRequest) {
     //  unique 'id' for the element and register it.
     elemTPNode = TP.tpnode(elem);
 
+    //  Configure the wrapper to send change signals. This is important because
+    //  if the group element changes its state due to underlying state changes
+    //  in its members, it needs to signal changes.
+    elemTPNode.shouldSignalChange(true);
+
     //  Grab all of the members of this group, iterate over them and add
     //  ourself as a group that contains them. Note that an element can have
-    //  more than one group.
+    //  more than one group. Also, we observe each one for AttributeChange.
     if (TP.notEmpty(groupTPElems = elemTPNode.getMembers())) {
         groupTPElems.perform(
                 function(aTPElem) {
@@ -62,6 +67,8 @@ function(aRequest) {
                     //  Note: This will overwrite any prior group element
                     //  setting for aTPElem
                     aTPElem.setGroupElement(elemTPNode);
+
+                    elemTPNode.observe(aTPElem, 'AttributeChange');
                 });
     }
 
@@ -90,12 +97,30 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var elem;
+    var elem,
+        elemTPNode,
+
+        groupTPElems;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
         return;
+    }
+
+    //  Get a handle to a TP.core.Node representing an instance of this
+    //  element type wrapped around elem. Note that this will both ensure a
+    //  unique 'id' for the element and register it.
+    elemTPNode = TP.tpnode(elem);
+
+    //  Grab all of the members of this group, iterate over them and ignore each
+    //  one for AttributeChange. This undoes the observation that we made in
+    //  tagAttachDOM().
+    if (TP.notEmpty(groupTPElems = elemTPNode.getMembers())) {
+        groupTPElems.perform(
+                function(aTPElem) {
+                    elemTPNode.ignore(aTPElem, 'AttributeChange');
+                });
     }
 
     //  We're going away - remove the subtree query that we registered when we
@@ -306,6 +331,134 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.group.Inst.defineMethod('handleAttributeChange',
+function(aSignal) {
+
+    /**
+     * @method handleAttributeChange
+     * @summary Handles when one of this group's members changes one of its
+     *     attributes. This may cause this group element to add or remove the
+     *     same attribute from itself.
+     * @description It is possible for group elements to change their attribute
+     *     setting for certain 'ui state' attributes (i.e. readonly, disabled,
+     *     required, invalid) based on whether one or all of their members have
+     *     that setting. These take the form of:
+     *
+     *     invalidwhen="all"            All of the members must be invalid
+     *     invalidwhen="any"            Any of the members may be invalid
+     *     invalidwhen="none-or-all"    None or all of the members must be
+     *                                  invalid
+     * @param {TP.sig.UIAttributeChange} aSignal The signal that caused this
+     *     handler to trip.
+     */
+
+    var attrName,
+
+        shouldSetFlag,
+
+        attrVal,
+
+        members,
+
+        i,
+
+        count;
+
+    if (TP.isEmpty(attrName = aSignal.at('aspect'))) {
+        //  TODO: Raise exception
+        return;
+    }
+
+    //  attrName will be one of the following:
+    //      readonly
+    //      disabled
+    //      required
+    //      invalid
+
+    if (TP.notEmpty(attrVal = this.getAttribute(attrName + 'when'))) {
+
+        //  Grab all of the members of this group and test their values.
+        members = this.getMembers();
+
+        switch (attrVal) {
+
+            case 'all':
+
+                //  Initially set it to set our flag
+                shouldSetFlag = true;
+
+                for (i = 0; i < members.getSize(); i++) {
+                    if (TP.bc(members.at(i).getAttribute(attrName)) === false) {
+                        //  One failed - we'll no longer set our flag
+                        shouldSetFlag = false;
+                        break;
+                    }
+                }
+
+                break;
+
+            case 'any':
+
+                //  Initially set it to *not* set our flag
+                shouldSetFlag = false;
+
+                for (i = 0; i < members.getSize(); i++) {
+                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                        //  One succeeded - we'll set our flag
+                        shouldSetFlag = true;
+                        break;
+                    }
+                }
+
+                break;
+
+            case 'none-or-all':
+
+                count = 0;
+
+                for (i = 0; i < members.getSize(); i++) {
+                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                        count++;
+                        break;
+                    }
+                }
+
+                /* eslint-disable no-extra-parens */
+                shouldSetFlag =
+                    (count === 0 || count === members.getSize() - 1);
+                /* eslint-enable no-extra-parens */
+
+                break;
+            default:
+                break;
+        }
+
+        //  Set the flag (or not) and send the proper signal depending on
+        //  whether the flag is already set.
+        if (shouldSetFlag) {
+            if (!this.$isInState('pclass:' + attrName)) {
+                if (attrName === 'invalid') {
+                    this.signalUsingFacetAndValue('valid', false);
+                } else {
+                    this.signalUsingFacetAndValue(attrName, true);
+                }
+            }
+        } else {
+            if (this.$isInState('pclass:' + attrName)) {
+                if (attrName === 'invalid') {
+                    this.signalUsingFacetAndValue('valid', true);
+                } else {
+                    this.signalUsingFacetAndValue(attrName, false);
+                }
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.group.Inst.defineMethod('mutationAddedFilteredNodes',
 function(addedNodes) {
 
@@ -333,10 +486,16 @@ function(addedNodes) {
         //  nodes.
         occursInBoth = groupElems.intersection(addedNodes, TP.IDENTITY);
 
-        //  Set the group of any that are in both lists.
+        //  Set the group of any that are in both lists. Also, we observe each
+        //  one for AttributeChange.
         occursInBoth.perform(
                 function(anElem) {
-                    TP.wrap(anElem).setGroupElement(this);
+                    var aTPElem;
+
+                    aTPElem = TP.wrap(anElem);
+
+                    aTPElem.setGroupElement(this);
+                    this.observe(aTPElem, 'AttributeChange');
                 }.bind(this));
     }
 
@@ -357,7 +516,33 @@ function(removedNodes) {
      * @returns {TP.tibet.group} The receiver.
      */
 
-    //  For now, this is a no-op for this type
+    var groupTPElems,
+        groupElems,
+        occursInBoth;
+
+    //  Grab all elements that could be our members - if the added nodes are
+    //  part of our group, they will now be in this list.
+    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+
+        //  Unwrap them
+        groupElems = TP.unwrap(groupTPElems);
+
+        //  Compare that list to what the mutation machinery handed us as added
+        //  nodes.
+        occursInBoth = groupElems.intersection(removedNodes, TP.IDENTITY);
+
+        //  Ignore each member for AttributeChange. This undoes the observation
+        //  that we do in mutationAddedFilteredNodes.
+        occursInBoth.perform(
+                function(anElem) {
+                    var aTPElem;
+
+                    aTPElem = TP.wrap(anElem);
+
+                    this.ignore(aTPElem, 'AttributeChange');
+                }.bind(this));
+    }
+
     return this;
 });
 

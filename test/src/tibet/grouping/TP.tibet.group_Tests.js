@@ -162,7 +162,7 @@ function() {
                                     });
                 test.assert.isEqualTo(
                         groupMembers,
-                        TP.ac('gar', 'gaz', 'element(gooStuff/3)'));
+                        TP.ac('gar', 'gaz', 'nestedGooStuff'));
 
                 groupMembers = TP.byOID('nestedGooGroup').getMembers().collect(
                                     function(elem) {

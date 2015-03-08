@@ -7748,14 +7748,37 @@ function(aspectName, facetName) {
     //  computing the validity facet or not.
     switch (facetName) {
 
+        case TP.REQUIRED:
+
+            if (TP.isBoolean(facetSetting)) {
+                val = facetSetting;
+            } else if (facetSetting.isAccessPath()) {
+                val = facetSetting.executeGet(this.getPathSource());
+            } else if (TP.isString(facetSetting) &&
+                        TP.isMethod(this[facetSetting])) {
+                val = this[facetSetting]();
+            } else if (TP.isString(facetSetting)) {
+                val = facetSetting;
+            }
+
+            //  If the value of the 'required' facet is true, then we check
+            //  to see if the object has a value. We want to return true if
+            //  *doesn't* (i.e. this aspect is required, it doesn't have a value
+            //  and so it's "still in a required-ness state").
+            if (TP.isTrue(val)) {
+                facetValue = TP.isEmpty(this.get(aspectName));
+            }
+
+        break;
+
         case TP.VALID:
 
             //  If facetSetting is a POJO with a 'value' slot, then that's the
             //  value to use, otherwise we do a 'get' of the aspectName
             if (TP.isValid(facetValue = facetSetting.value)) {
-                if (TP.isBoolean(facetSetting)) {
+                if (TP.isBoolean(facetValue)) {
                     val = facetValue;
-                } else if (TP.isArray(facetSetting)) {
+                } else if (TP.isArray(facetValue)) {
                     val = facetValue;
                 } else if (facetValue.isAccessPath()) {
                     val = facetValue.executeGet(this.getPathSource());

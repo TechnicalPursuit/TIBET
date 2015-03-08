@@ -1,0 +1,11 @@
+<xs:schema tibet:redefine="true">
+
+    <!-- Code Number - must be greater than 0 and less than 100 -->
+    <xs:simpleType name="test:XMLCodeNumber">
+        <xs:restriction base="xs:integer">
+            <xs:minExclusive value="0"/>
+            <xs:maxExclusive value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>
