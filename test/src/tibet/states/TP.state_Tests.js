@@ -221,16 +221,6 @@ function() {
         machine = null;
     });
 
-    this.it('can deactivate if at a final state', function(test, options) {
-        var result;
-        machine.defineState(null, 'solo');
-        machine.defineState('solo');
-        result = machine.activate();
-        this.assert.isTrue(result);
-        result = machine.deactivate();
-        this.assert.isTrue(result);
-    });
-
     this.it('cannot deactivate unless in final state', function(test, options) {
         var result;
         machine.defineState(null, 'start');
@@ -310,6 +300,23 @@ function() {
         this.assert.isTrue(called);
     });
 
+    this.it('invokes state transition for activation state',
+    function(test, options) {
+        var params,
+            called;
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'finish');
+        machine.defineState('finish');
+        machine.transition = function(details) {
+            called = true;
+            params = details;
+        };
+        machine.activate();
+        machine.deactivate(true);
+        this.assert.isTrue(called);
+        this.assert.isEqualTo(params.at('state'), 'start');
+    });
+
     this.it('invokes state transition for new trigger inputs',
     function(test, options) {
         var params,
@@ -318,14 +325,19 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
+        called = 0;
         machine.transition = function(details) {
-            called = true;
+            called += 1;
             params = details;
+            //  NOTE we have to still set the state on the first pass or the
+            //  second pass won't process correctly since we won't have actually
+            //  transitioned in a concrete sense.
+            machine.$setState(details.at('state'));
         };
-        machine.activate();
-        TP.signal(TP.ANY, 'Fluffy');
+        machine.activate();     //  first call occurs here...
+        TP.signal(TP.ANY, 'Fluffy');    //  second call here...
         machine.deactivate(true);
-        this.assert.isTrue(called);
+        this.assert.isEqualTo(called, 2);
         this.assert.isEqualTo(params.at('state'), 'finish');
     });
 
@@ -457,7 +469,7 @@ function() {
             return false;
         });
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StateStartInput',
+        TP.sys.getApplication().defineHandler('StartInput',
         function(aSignal) {
             called = true;
         });
@@ -478,7 +490,7 @@ function() {
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StateStartExit',
+        TP.sys.getApplication().defineHandler('StartExit',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -530,7 +542,7 @@ function() {
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StateFinishTransition',
+        TP.sys.getApplication().defineHandler('FinishTransition',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -556,7 +568,7 @@ function() {
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StateFinishTransitionWhenStart',
+        TP.sys.getApplication().defineHandler('FinishTransitionWhenStart',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -582,7 +594,7 @@ function() {
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StateFinishEnter',
+        TP.sys.getApplication().defineHandler('FinishEnter',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -622,7 +634,6 @@ function() {
         this.assert.isEqualTo(next, 'finish');
         TP.sys.getApplication().setStateMachine();
     });
-
 });
 
 //  ------------------------------------------------------------------------
@@ -640,26 +651,155 @@ function() {
         machine = null;
     });
 
-    this.it('activates nested state machine on outer state enter',
+    this.it('activates nested state machine upon outer state enter',
     function(test, options) {
-        this.assert.isTrue(false);
+        var m2,
+            called;
+
+        m2 = TP.core.StateMachine.construct();
+        m2.defineState(null, 'childstart');
+        m2.defineState('childstart', 'childfinish');
+        m2.defineState('childfinish');
+        m2.activate = function() {
+            called = true;
+        };
+
+        machine.defineState(null, 'start', m2);
+        machine.defineState('start', 'finish');
+        machine.defineState('finish');
+        machine.activate();
+
+        m2.deactivate(true);
+        machine.deactivate(true);
+
+        this.assert.isTrue(called);
     });
 
-    this.it('deactivates nested state machines on outer state exit',
+    this.it('bubbles unhandled triggers to parent machine(s) for processing',
     function(test, options) {
-        this.assert.isTrue(false);
+        var m2,
+            called;
+
+        //  Define the inner nested state machine.
+        m2 = TP.core.StateMachine.construct();
+        m2.defineState(null, 'childstart');
+        m2.defineState('childstart', 'childfinish');
+        m2.defineState('childfinish');
+        m2.setTriggerSignals(TP.ac('Fluffy'));
+        //  Disable transition so we get internal transition.
+        m2.defineMethod('acceptChildfinish', function() {
+            return false;
+        });
+
+        //  Define the outer state machine.
+        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState('start', 'finish');
+        machine.defineState('finish');
+        machine.defineHandler('Fluffy',
+        function() {
+            called = true;
+        });
+        machine.activate();
+
+        TP.signal(TP.ANY, 'Fluffy');
+
+        m2.deactivate(true);
+        machine.deactivate(true);
+
+        this.assert.isTrue(called);
     });
 
-    this.it('does ??? when inner state machine reaches final state',
+    this.it('specializes bubbled triggers by current state',
     function(test, options) {
-        this.assert.isTrue(false);
+        var m2,
+            called;
+
+        TP.sys.getApplication().setStateMachine(machine);
+
+        //  Define the inner nested state machine.
+        m2 = TP.core.StateMachine.construct();
+        m2.defineState(null, 'childstart');
+        m2.defineState('childstart', 'childfinish');
+        m2.defineState('childfinish');
+        m2.setTriggerSignals(TP.ac('Fluffy'));
+        //  Disable transition so we get internal transition.
+        m2.defineMethod('acceptChildfinish', function() {
+            return false;
+        });
+
+        //  Define the outer state machine.
+        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState('start', 'finish');
+        machine.defineState('finish');
+        machine.defineHandler('FluffyWhenChildstart',
+        function() {
+            called = true;
+        });
+        machine.activate();
+
+        TP.signal(TP.ANY, 'Fluffy');
+
+        m2.deactivate(true);
+        machine.deactivate(true);
+
+        this.assert.isTrue(called);
+
+        TP.sys.getApplication().setStateMachine();
     });
 
-    this.it('bubbles unhandled inputs to parent machine(s) for processing',
+    this.it('bubbles unhandled StateInput to parent machine(s) for processing',
+    function(test, options) {
+        var m2,
+            called;
+
+        //  Define the inner nested state machine.
+        m2 = TP.core.StateMachine.construct();
+        m2.defineState(null, 'childstart');
+        m2.defineState('childstart', 'childfinish');
+        m2.defineState('childfinish');
+        m2.setTriggerSignals(TP.ac('Fluffy'));
+        //  Disable transition so we get internal transition.
+        m2.defineMethod('acceptChildfinish', function() {
+            return false;
+        });
+
+        //  Define the outer state machine.
+        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState('start', 'finish');
+        machine.defineState('finish');
+        machine.defineHandler('StateInput',
+        function() {
+            called = true;
+        });
+        machine.activate();
+
+        TP.signal(TP.ANY, 'Fluffy');
+
+        m2.deactivate(true);
+        machine.deactivate(true);
+
+        this.assert.isTrue(called);
+    });
+
+    this.it('reports current child state as current state',
+    function(test, options) {
+    }).skip();
+
+    this.it('reports current states as collection of child states plus state',
+    function(test, options) {
+    }).skip();
+
+    this.it('exits nested state machines upon outer state exit',
     function(test, options) {
         this.assert.isTrue(false);
-    });
-}).skip();
+    }).skip();
+
+    this.it('transitions when inner state machine reaches final state',
+    function(test, options) {
+        this.assert.isTrue(false);
+    }).skip();
+
+});
 
 //  ------------------------------------------------------------------------
 //  end
