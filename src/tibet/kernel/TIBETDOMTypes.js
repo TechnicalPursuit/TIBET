@@ -4243,7 +4243,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('$removeAttribute',
-function(attributeName) {
+function(attributeName, shouldSignal) {
 
     /**
      * @method removeAttribute
@@ -4252,10 +4252,14 @@ function(attributeName) {
      *     standard change notification semantics for native nodes as well as
      *     proper namespace management.
      * @param {String} attributeName The attribute name to remove.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
      */
 
     var attr,
-        node;
+        node,
+
+        flag;
 
     node = this.getNativeNode();
 
@@ -4283,6 +4287,11 @@ function(attributeName) {
         return;
     }
 
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     //  NB: We don't flag changes for internal 'tibet:' attributes
     //  (presuming change flagging is on)
     if (this.shouldFlagChanges() &&
@@ -4293,7 +4302,9 @@ function(attributeName) {
     //  rip out the attribute itself
     TP.elementRemoveAttribute(node, attributeName, true);
 
-    this.changed('@' + attributeName, TP.DELETE);
+    if (flag) {
+        this.changed('@' + attributeName, TP.DELETE);
+    }
 
     //  removeAttribute returns void according to the spec
     return;
