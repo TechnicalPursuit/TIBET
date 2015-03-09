@@ -1848,10 +1848,9 @@ function() {
                 //  'structure' change - code number URI
                 test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                //  'required' change (the model value, while empty, created a
-                //  NaN - so this constraint is satisfied)
+                //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
                 test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
@@ -1901,6 +1900,14 @@ function() {
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
                         test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'required' change - Codenum
+                        test.assert.didSignal(codeNumURI,
+                                                'CodenumRequiredChange');
+                        test.assert.didSignal(codeNumField,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(codeNumField,
+                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -1956,10 +1963,9 @@ function() {
                 //  'structure' change - code number URI
                 test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                //  'required' change (the model value, while empty, created a
-                //  NaN - so this constraint is satisfied)
+                //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
                 test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
@@ -2009,6 +2015,14 @@ function() {
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
                         test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'required' change - Codenum
+                        test.assert.didSignal(codeNumURI,
+                                                'CodenumRequiredChange');
+                        test.assert.didSignal(codeNumField,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(codeNumField,
+                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -2064,10 +2078,9 @@ function() {
                 //  'structure' change - code number URI
                 test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                //  'required' change (the model value, while empty, created a
-                //  NaN - so this constraint is satisfied)
+                //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
                 test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
@@ -2117,6 +2130,14 @@ function() {
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
                         test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'required' change - Codenum
+                        test.assert.didSignal(codeNumURI,
+                                                'CodenumRequiredChange');
+                        test.assert.didSignal(codeNumField,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(codeNumField,
+                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -2172,10 +2193,9 @@ function() {
                 //  'structure' change - code number URI
                 test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                //  'required' change (the model value, while empty, created a
-                //  NaN - so this constraint is satisfied)
+                //  'required' change (the model value is empty)
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIOptional');
+                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
                 test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
@@ -2201,9 +2221,6 @@ function() {
                     });
 
                 test.getDriver().startSequence().
-                    exec(function() {
-                                codeNumField.clearValue();
-                            }).
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
                     perform();
@@ -2225,6 +2242,14 @@ function() {
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
                         test.assert.didSignal(codeNumField, 'InvalidChange');
+
+                        //  'required' change - Codenum
+                        test.assert.didSignal(codeNumURI,
+                                                'CodenumRequiredChange');
+                        test.assert.didSignal(codeNumField,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(codeNumField,
+                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');

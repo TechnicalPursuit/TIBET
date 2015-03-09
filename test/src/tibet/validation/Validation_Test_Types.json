@@ -5,7 +5,7 @@
       "name": "TP.test.JSONCodeNumber",
       "type": "number",
       "minimum": 0,
-      "maximum": 0
+      "maximum": 100
     }
   }
 }
