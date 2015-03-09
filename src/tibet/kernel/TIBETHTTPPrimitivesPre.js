@@ -202,9 +202,12 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
      */
 
     var data,
+
         mimetype,
         charset,
         separator,
+        firstPartMIMEType,
+
         arr,
         list,
         item,
@@ -254,6 +257,10 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
     charset = TP.ifInvalid(anEncoding, TP.UTF8);
 
     separator = TP.ifInvalid(aSeparator, '&');
+
+    if (TP.notEmpty(multipartMIMETypes)) {
+        firstPartMIMEType = multipartMIMETypes.first();
+    }
 
     switch (mimetype) {
         case TP.JSON_ENCODED:
@@ -421,14 +428,14 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                 //  data as XML, forming a single block.
                 arr.push(
                     TP.join('; type=',
-                                TP.ifInvalid(multipartMIMETypes.first(),
+                                TP.ifInvalid(firstPartMIMEType,
                                                 TP.XML_ENCODED),
                             '; charset=',
                                 charset));
             } else {
                 arr.push(
                     TP.join('; type=',
-                                TP.ifInvalid(multipartMIMETypes.first(),
+                                TP.ifInvalid(firstPartMIMEType,
                                                 TP.PLAIN_TEXT_ENCODED),
                             '; charset=',
                                 charset));
@@ -468,9 +475,11 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                         //  Get the data into it's rawest form
                         itemContent = TP.unwrap(itemContent);
 
-                        itemMIMEType = anItem.atIfInvalid(
-                                            'mimetype',
-                                            multipartMIMETypes.at(anIndex));
+                        if (TP.notEmpty(multipartMIMETypes)) {
+                            itemMIMEType = anItem.atIfInvalid(
+                                                'mimetype',
+                                                multipartMIMETypes.at(anIndex));
+                        }
                         if (TP.isEmpty(itemMIMEType)) {
                             if (TP.isNode(itemContent)) {
                                 itemMIMEType = TP.XML_ENCODED;
@@ -524,7 +533,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                 //  root
                 arr.push(
                     TP.join('Content-Type: ',
-                                TP.ifInvalid(multipartMIMETypes.first(),
+                                TP.ifInvalid(firstPartMIMEType,
                                                 TP.XML_ENCODED),
                             '; charset=',
                                 charset),
@@ -538,7 +547,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                 //  encoding.
                 content = TP.httpEncode(
                                 data,
-                                TP.ifInvalid(multipartMIMETypes.first(),
+                                TP.ifInvalid(firstPartMIMEType,
                                                 TP.XML_ENCODED),
                                 separator,
                                 null,
@@ -559,7 +568,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
 
                 len = list.getSize();
                 for (i = 0; i < len; i++) {
-                    if (TP.notEmpty(multipartMIMETypes.at(i))) {
+                    if (TP.notEmpty(multipartMIMETypes) &&
+                        TP.notEmpty(multipartMIMETypes.at(i))) {
                         arr.push(
                             TP.join('Content-Type: ', multipartMIMETypes.at(i),
                                     '; charset=', charset,
