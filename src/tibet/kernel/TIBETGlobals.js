@@ -2430,7 +2430,7 @@ TP.regex.ONLY_PERIOD = /^\.$/;
 
 TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 
-TP.regex.ANY_NUMBER = /^-?\d+$/i;
+TP.regex.ANY_NUMBER = /^-?\d*\.{0,1}\d+$/i;
 TP.regex.PERCENTAGE = /^-?\d+%$/i;
 
 // needs reset
