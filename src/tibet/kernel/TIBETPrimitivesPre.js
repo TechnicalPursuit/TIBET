@@ -5748,6 +5748,42 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  CONVERSION
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getParsedPrimitiveValue',
+function(aVal) {
+
+    /**
+     * @method getParsedPrimitiveValue
+     * @summary Returns a value by attempting to parse the supplied value (which
+     *     should be a String) into one of the 'primitive JavaScript' types
+     *     (Number, Boolean, RegExp, etc.)
+     * @param {String} aVal The value to parse into a JS primitive.
+     * @returns {Object} The value parsed into the primitive or null, if it
+     *     can't be parsed.
+     */
+
+    if (!TP.isString(aVal)) {
+        return aVal;
+    }
+
+    if (TP.regex.ANY_NUMBER.test(aVal)) {
+        return 1 * aVal;
+    }
+
+    if (TP.regex.BOOLEAN_ID.test(aVal)) {
+        return aVal === 'true';
+    }
+
+    if (TP.regex.REGEX_LITERAL_STRING.test(aVal)) {
+        return TP.rc(aVal.slice(1, -1));
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  STRING PROCESSING
 //  ------------------------------------------------------------------------
 
