@@ -735,11 +735,9 @@ TP.hc(
                     TP.isString(exceptionWarningMsg =
                                 TP.MOZ_XSLT_ERROR_CODES.at(
                                                 exceptionMsgParts.at(1)))) {
-                    if (TP.notEmpty(srcURI =
-                                    TP.elementGetAttribute(
-                                        styleDoc.documentElement,
-                                        'tibet:src',
-                                        true))) {
+                    if (TP.notEmpty(
+                            srcURI =
+                                styleDoc.documentElement[TP.SRC_LOCATION])) {
                         exceptionWarningMsg += ' in: ' + srcURI;
                     }
 
@@ -843,10 +841,8 @@ TP.hc(
                 TP.isString(exceptionWarningMsg =
                                     TP.MOZ_XSLT_ERROR_CODES.at(
                                         exceptionMsgParts.at(1)))) {
-                if (TP.notEmpty(srcURI = TP.elementGetAttribute(
-                                            styleDoc.documentElement,
-                                            'tibet:src',
-                                            true))) {
+                if (TP.notEmpty(srcURI =
+                                styleDoc.documentElement[TP.SRC_LOCATION])) {
                     exceptionWarningMsg += ' in: ' + srcURI;
                 }
 
