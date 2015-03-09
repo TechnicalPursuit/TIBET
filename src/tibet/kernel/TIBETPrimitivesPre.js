@@ -2374,14 +2374,10 @@ function(aValue) {
      * @returns {Boolean} Whether or not the value is NaN.
      */
 
-    try {
-        if (TP.isValid(aValue) &&
-            isNaN(aValue) &&
-            aValue.constructor === Number) {
-            return true;
-        }
-    } catch (e) {
-        //  This catch purposely left blank - we'll return false below
+    if (TP.isValid(aValue) &&
+        isNaN(aValue) &&
+        aValue.constructor === Number) {
+        return true;
     }
 
     return false;
