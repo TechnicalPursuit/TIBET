@@ -28,7 +28,7 @@
 
 	<ev:script event="TP.sig.DOM_X_Up" observer="#document">
 		<![CDATA[
-        "fired_shiftXkey" .> TP.byOID('testResults').setAttribute('shiftXkey_fired', $INPUT);
+        TP.byOID('testResults').setAttribute('shiftXkey_fired', 'fired_shiftXkey');
 		]]>
 	</ev:script>
 
@@ -39,7 +39,7 @@
 
 	<ev:script event="TP.sig.DOM_Y_Up" observer="#document">
 		<![CDATA[
-        $SIGNAL .> TP.byOID('testResults').setAttribute('shiftYkey_fired', TP.jsonsrc($INPUT));
+        TP.byOID('testResults').setAttribute('shiftYkey_fired', TP.jsonsrc($SIGNAL));
 		]]>
 	</ev:script>
 
@@ -50,7 +50,7 @@
 
 	<ev:script event="TP.sig.DOM_Z_Up" observer="#document">
 		<![CDATA[
-        $SIGNAL.typeName .> TP.byOID('testResults').setAttribute('shiftZkey_fired', TP.jsonsrc($INPUT));
+        TP.byOID('testResults').setAttribute('shiftZkey_fired', TP.jsonsrc($SIGNAL.getTypeName()));
 		]]>
 	</ev:script>
 
