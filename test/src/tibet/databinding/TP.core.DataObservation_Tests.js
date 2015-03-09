@@ -596,7 +596,7 @@ function() {
 
         TP.lang.Object.defineSubtype('test.ComplexPathEmployee');
 
-        TP.test.ComplexPathEmployee.Inst.defineAttribute('data');
+        TP.test.ComplexPathEmployee.Inst.defineAttribute('privateData');
 
         //  These paths assume a root instance property of 'data'
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
