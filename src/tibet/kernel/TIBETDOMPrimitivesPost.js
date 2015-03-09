@@ -7040,6 +7040,8 @@ function(aNode, anXPath, resultType, logErrors) {
 
         result,
 
+        nodePath,
+
         resultArr,
         node,
 
@@ -7154,8 +7156,33 @@ function(aNode, anXPath, resultType, logErrors) {
             switch (result.resultType) {
                 case XPathResult.NUMBER_TYPE:
 
-                    return result.numberValue;
+                    //  If what we got back was a NaN here, then we see if the
+                    //  path we were trying to run was trying to convert into a
+                    //  scalar (number() value). If so, then we strip off the
+                    //  conversion, run it again and return the 'first result'
+                    //  in the iteration. This allows us to have an 'empty Text
+                    //  node' that resolves to a null, rather than a NaN -
+                    //  important in cases where we're trying to determine
+                    //  whether we have a real value or not.
+                    if (TP.isNaN(result.numberValue)) {
+                        if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(
+                                                                theXPath)) {
+                            nodePath =
+                                TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(
+                                                                theXPath).at(1);
+                            result = doc.evaluate(
+                                            nodePath,
+                                            aNode,
+                                            TP.$$xpathResolverFunction,
+                                            XPathResult.ANY_TYPE,
+                                            null);
+                            return result.iterateNext();
+                        }
+                    } else {
+                        return result.numberValue;
+                    }
 
+                    break;
                 case XPathResult.BOOLEAN_TYPE:
 
                     return result.booleanValue;
