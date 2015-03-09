@@ -255,7 +255,8 @@ function(force) {
      * @return {Boolean} True if deactivation was successful.
      */
 
-    var current,
+    var child,
+        current,
         states;
 
     //  Can't deactivate when there's no current state.
@@ -263,6 +264,10 @@ function(force) {
         this.raise('InvalidOperation',
             'Cannot deactivate an inactive state machine.');
         return false;
+    }
+
+    if (TP.isValid(child = this.get('child'))) {
+        child.deactivate(force);
     }
 
     //  Turn off any observations we may have in place regarding input
@@ -440,6 +445,53 @@ function(initialState, targetState, stateMachine) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateMachine.Inst.defineMethod('exit',
+function(transitionDetails, nested) {
+
+    /**
+     * @method exit
+     * @summary Performs exit processing, ensuring that any nested state
+     *     machines exit before their outer composite state machines.
+     * @param {TP.lang.Hash} transitionDetails Transition information including
+     *     'state' (the new state), and 'trigger' (usually a signal).
+     * @param {Boolean} [nested] True if the call is being invoked by a parent
+     *     on a nested child state machine.
+     * @return {TP.core.StateMachine} The receiver.
+     */
+
+    var child,
+        state,
+        parent,
+        signal;
+
+    if (TP.isValid(child = this.get('child'))) {
+        //  Exit the child, telling it it's being deactivated by a parent.
+        child.exit(transitionDetails, true);
+
+        //  Clear the child reference. We're exiting the state that "owned" it.
+        this.set('child', null);
+    }
+
+    //  Exit works with whatever local state we're currently in.
+    state = this.get('state');
+
+    //  {Old}Exit or StateExit[When{Old}]
+    signal = this.getActionSignal(state, TP.EXIT);
+    signal.setPayload(transitionDetails);
+    signal.fire();
+
+    if (TP.isTrue(nested)) {
+        //  If we're being exited "top down" from the parent then we need to
+        //  clear up any leftover state.
+        this.set('parent', null);
+        this.deactivate(true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateMachine.Inst.defineMethod('getActionName',
 function(stateAction) {
 
@@ -526,7 +578,7 @@ function() {
         return;
     }
 
-    return state.asTitleCase();
+    return state;
 });
 
 //  ------------------------------------------------------------------------
@@ -720,15 +772,16 @@ function(transitionDetails) {
         if (TP.isKindOf(trigger, 'TP.sig.Signal')) {
 
             //  Try to handle locally within this state machine.
-            handler = this.getHandler(trigger);
-            if (TP.isFunction(handler) && handler !== this.handleSignal) {
+            handler = this.getHandler(trigger,
+                null, null, null, 'handleSignal');
+            if (TP.isFunction(handler)) {
                 handler.call(this, trigger);
             } else {
                 //  Try bubbling to parent if not handled.
                 if (TP.isValid(parent = this.get('parent'))) {
-                    handler = parent.getHandler(trigger);
-                    if (TP.isFunction(handler) &&
-                            handler !== parent.handleSignal) {
+                    handler = parent.getHandler(trigger,
+                        null, null, null, 'handleSignal');
+                    if (TP.isFunction(handler)) {
                         handler.call(parent, trigger);
                     }
                 }
@@ -742,16 +795,18 @@ function(transitionDetails) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getHandler(signal);
-        if (TP.isFunction(handler) && handler !== this.handleSignal) {
+        handler = this.getHandler(signal,
+            null, null, null, 'handleSignal');
+        if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
             //  If this is a nested state machine bubble the option to handle
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getHandler(signal);
-                if (TP.isFunction(handler) && handler !== parent.handleSignal) {
+                handler = parent.getHandler(signal,
+                    null, null, null, 'handleSignal');
+                if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }
             }
@@ -764,17 +819,10 @@ function(transitionDetails) {
 
         //  When processing a start state there is no state to exit.
         if (TP.notEmpty(oldState)) {
-            //  TODO:   if we have a child state machine but we're performing an
-            //  exit we need to exit the child first...and it needs to exit any
-            //  of its children, and so on...
 
-            //  TODO:   as to child state we can simply leave them in their
-            //  current state preserving "history state" (flag for this?).
-
-            //  {Old}Exit or StateExit[When{Old}]
-            signal = this.getActionSignal(oldState, TP.EXIT);
-            signal.setPayload(transitionDetails);
-            signal.fire();
+            //  Invoke the exit routine to ensure any child exit processing
+            //  occurs in the right order.
+            this.exit(transitionDetails);
         }
 
         //  {New}Transition or StateTransition[When{Old}]
@@ -822,13 +870,19 @@ function(transitionDetails) {
         //  state as an alternative route.
         states = this.$getFinalStates();
         if (states.indexOf(newState) !== TP.NOT_FOUND) {
+
             //  A final state. But it is a "final only" state?
             states = this.get('byInitial').at(newState);
             if (states.length === 1 && states.at(0) === null) {
+
                 this.deactivate();
 
-                //  If we're a nested state machine now what?
-                //  TODO:   exix and exit parent state? signal?
+                //  If we're a nested state machine we're essentially done, but
+                //  we need to also trigger our parent to update since the
+                //  child has reached a terminal point.
+                if (TP.isValid(parent = this.get('parent'))) {
+                    parent.updateCurrentState();
+                }
             }
         }
     }
@@ -844,7 +898,7 @@ function(signalOrParams) {
     /**
      * @method updateCurrentState
      * @summary Sets the receiver's state as necessary based on parameter input.
-     *     In all cases a transition() is requested but it may be an internal
+     *     In all cases a transition is requested but it may be an internal
      *     transition if the data doesn't necessitate a full state change.
      * @param {TP.sig.Signal|Object} signalOrParams An object containing
      *     information which might help determine the state. Usually a signal
