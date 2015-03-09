@@ -2826,7 +2826,7 @@ function(anObj) {
 
     //  Many 'native types' on Chrome will report as NaN using the standard
     //  isNaN() test - weird
-    if (TP.isNaN(anObj)) {
+    if (typeof anObj === 'number') {
         return false;
     }
 
