@@ -7690,6 +7690,9 @@ TP.boot.$getArgumentPrimitive = function(value) {
         return new RegExp(value.slice(1, -1));
     } else if (TP.boot.OBJECT_REGEX.test(value)) {
         try {
+            //  We don't return the value of JSON.parse() here because if we can
+            //  make a real value from an Object structure, then it's not a
+            //  primitive value.
             JSON.parse(value);
         } catch (e) {
             return value;
