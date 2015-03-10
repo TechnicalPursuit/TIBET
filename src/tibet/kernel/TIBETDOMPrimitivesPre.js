@@ -368,12 +368,14 @@ function(srcNode, destNode, shouldRemove) {
     }
 
     //  We always copy the following TIBET expandos:
-    destNode[TP.SHOULD_SIGNAL_CHANGE] = TP.notEmpty(val = srcNode[TP.SHOULD_SIGNAL_CHANGE]) ?
-                                val :
-                                destNode[TP.SHOULD_SIGNAL_CHANGE];
-    destNode[TP.SHOULD_SUSPEND_SIGNALING] = TP.notEmpty(val = srcNode[TP.SHOULD_SUSPEND_SIGNALING]) ?
-                                val :
-                                destNode[TP.SHOULD_SUSPEND_SIGNALING];
+    destNode[TP.SHOULD_SIGNAL_CHANGE] =
+            TP.notEmpty(val = srcNode[TP.SHOULD_SIGNAL_CHANGE]) ?
+            val :
+            destNode[TP.SHOULD_SIGNAL_CHANGE];
+    destNode[TP.SHOULD_SUSPEND_SIGNALING] =
+            TP.notEmpty(val = srcNode[TP.SHOULD_SUSPEND_SIGNALING]) ?
+            val :
+            destNode[TP.SHOULD_SUSPEND_SIGNALING];
 
     destNode[TP.GENERATOR] = TP.notEmpty(val = srcNode[TP.GENERATOR]) ?
                                 val :
