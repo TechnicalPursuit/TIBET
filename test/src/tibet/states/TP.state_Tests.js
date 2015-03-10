@@ -664,7 +664,7 @@ function() {
             called = true;
         };
 
-        machine.defineState(null, 'start', m2);
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.activate();
@@ -691,7 +691,7 @@ function() {
         });
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.defineHandler('Fluffy',
@@ -727,7 +727,7 @@ function() {
         });
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.defineHandler('FluffyWhenChildstart',
@@ -765,7 +765,7 @@ function() {
         });
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.defineHandler('FluffyWhenStart',
@@ -800,7 +800,7 @@ function() {
         });
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.defineHandler('StateInput',
@@ -827,7 +827,7 @@ function() {
         m2.defineState('childfinish');
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.activate();
@@ -848,7 +848,7 @@ function() {
         m2.defineState('childfinish');
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.activate();
@@ -876,7 +876,7 @@ function() {
         };
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.activate();
@@ -902,7 +902,7 @@ function() {
         };
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.activate();
@@ -930,7 +930,7 @@ function() {
         m2.setTriggerSignals(TP.ac('Fluffy'));
 
         //  Define the outer state machine.
-        machine.defineState(null, 'start', m2);     // start is nested...
+        machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
@@ -944,6 +944,9 @@ function() {
         //  This should trigger nested state machine to transition...which ends
         //  up in a final state, which should force outer machine to transition.
         TP.signal(TP.ANY, 'Fluffy');
+
+        this.assert.isNull(m2.get('parent'));
+        this.assert.isNull(machine.get('child'));
 
         this.assert.isTrue(called);
     });

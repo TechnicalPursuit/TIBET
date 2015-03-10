@@ -152,7 +152,9 @@ function(aParent) {
     this.set('byInitial', TP.hc());
     this.set('byTarget', TP.hc());
 
-    this.set('parent', aParent);
+    if (TP.isValid(aParent)) {
+        this.set('parent', aParent);
+    }
 
     //  Give subtypes a place to override which would set up a set of
     //  default states and handlers, avoiding too much instance creation
@@ -233,9 +235,27 @@ function(aState) {
     }
 
     this.transition(TP.hc('state', start));
-    this.observeTriggers();
+
+    this.activateTriggers();
 
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateMachine.Inst.defineMethod('activateTriggers',
+function() {
+
+    /**
+     * @method activateTriggers
+     * @summary Activates the receiver's triggers, typically by invoking
+     *     observeTriggers. This method can be overridden as needed to ensure
+     *     any other triggering setup occurs.
+     */
+
+    this.observeTriggers();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -273,7 +293,7 @@ function(force) {
     //  Turn off any observations we may have in place regarding input
     //  events. Regardless of errors we may raise we honor the request to
     //  deactivate the inbound triggering.
-    this.ignoreTriggers();
+    this.deactivateTriggers();
 
     //  Should be in a final state. If not that's an error.
     current = this.get('state');
@@ -295,6 +315,23 @@ function(force) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateMachine.Inst.defineMethod('deactivateTriggers',
+function() {
+
+    /**
+     * @method deactivateTriggers
+     * @summary Deactivates the receiver's triggers, typically by invoking
+     *     ignoreTriggers. This method can be overridden as needed to ensure
+     *     any other triggering shutdown occurs.
+     */
+
+    this.ignoreTriggers();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateMachine.Inst.defineMethod('defineStates',
 function() {
 
@@ -311,7 +348,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('defineState',
-function(initialState, targetState, stateMachine) {
+function(initialState, targetState, transitionDetails) {
 
     /**
      * @method defineState
@@ -323,19 +360,26 @@ function(initialState, targetState, stateMachine) {
      *     Defaults to null since start states may not have an initial state.
      * @param {String|String[]} [targetState] The name of the target state(s).
      *     Defaults to null since final states may not have target states.
-     * @param {TP.core.StateMachine} [stateMachine] An optional nested state
-     *     machine instance which implements nested states for the targetState.
+     * @param {TP.lang.Hash} [transitionDetails] A hash containing details on
+     *     the transition such as triggers and nested machine activation.
+     * @param {TP.core.StateMachine|String} [options.nested]. The type name
+     *     for a nested state machine, or the state machine itself.
      */
 
     var initials,
         parents,
         targets,
         arr,
-        list;
+        list,
+        options,
+        nested;
 
     initials = this.get('byInitial');
     parents = this.get('byParent');
     targets = this.get('byTarget');
+
+    options = TP.ifInvalid(transitionDetails, TP.hc());
+    nested = options.at('nested');
 
     //  ---
     //  start states
@@ -359,8 +403,8 @@ function(initialState, targetState, stateMachine) {
 
             list.push(null);
 
-            if (TP.isValid(stateMachine)) {
-                parents.atPut(key, stateMachine);
+            if (TP.isValid(nested)) {
+                parents.atPut(key, nested);
             }
         });
 
@@ -435,8 +479,8 @@ function(initialState, targetState, stateMachine) {
             list.push(initialState);
         }
 
-        if (TP.isValid(stateMachine)) {
-            parents.atPut(key, stateMachine);
+        if (TP.isValid(nested)) {
+            parents.atPut(key, nested);
         }
     });
 
@@ -881,7 +925,9 @@ function(transitionDetails) {
                 //  we need to also trigger our parent to update since the
                 //  child has reached a terminal point.
                 if (TP.isValid(parent = this.get('parent'))) {
-                    parent.updateCurrentState();
+                    //  NOTE that this should cause a parent transition which
+                    //  ultimately exits the parent and cleans up references.
+                    parent.updateCurrentState(transitionDetails);
                 }
             }
         }
@@ -929,7 +975,8 @@ function(signalOrParams) {
     if (TP.isEmpty(stateTargets)) {
         //  No target states means we're at a final state, but apparently didn't
         //  deactivate since we're still receiving input from our triggers.
-        //  TODO:   should we warn about this? deactivate?
+        TP.warn('State update request yielded no targets for: ' + oldState);
+
         return oldState;
     } else {
         //  We can get 0, which means no new state, 1...which means we have
@@ -965,7 +1012,7 @@ function(signalOrParams) {
 
         if (stateCount > 1) {
             this.raise('InvalidStateMachine',
-                'Multiple valid states for transition from ' +
+                'Multiple valid target states for transition from: ' +
                 oldState);
             return oldState;
         } else if (stateCount === 1) {
