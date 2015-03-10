@@ -69,18 +69,16 @@ function() {
         loadedFunc = function(evt) {
             var win,
 
-                bodyElem,
                 appElem;
 
             this.removeEventListener('load', loadedFunc, false);
 
             win = this.contentWindow;
 
-            bodyElem = TP.documentGetBody(win.document);
-
             appElem = TP.nodeGetElementsByTagName(
-                            bodyElem,
+                            win.document.documentElement,
                             TP.tibet.root.computeAppTagTypeName(false)).first();
+
             if (TP.isElement(appElem)) {
                 TP.wrap(appElem).compile();
             }
