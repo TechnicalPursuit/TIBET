@@ -667,7 +667,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                 transform,
 
                 source,
-                newVal;
+                newVal,
+
+                parsedVal;
 
             TP.stop('break.bind_change');
 
@@ -697,6 +699,16 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                     transform = entry.last();
 
                     newVal = aSignal.getValue();
+
+                    //  If what we got back was a String, and that String can be
+                    //  parsed into another 'JavaScript primitive' data type
+                    //  (Number, Boolean, RegExp, etc.), then we do that here
+                    //  *before* we call the transformation function.
+                    if (TP.isString(newVal) &&
+                        TP.isValid(parsedVal =
+                                    TP.getParsedPrimitiveValue(newVal))) {
+                        newVal = parsedVal;
+                    }
 
                     //  If there was a transformation Function registered, then
                     //  execute it.

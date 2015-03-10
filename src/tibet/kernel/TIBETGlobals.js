@@ -707,6 +707,7 @@ TP.SHOULD_SUSPEND_SIGNALING = 'shouldSuspendSignaling';
 TP.WRAPPER = 'wrapper';
 TP.GENERATOR = 'generator';
 TP.IS_XHTML = 'isXHTML';
+TP.SRC_LOCATION = 'sourcelocation';
 
 //  meta owners and their target objects
 
@@ -2430,7 +2431,7 @@ TP.regex.ONLY_PERIOD = /^\.$/;
 
 TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 
-TP.regex.ANY_NUMBER = /^-?\d+$/i;
+TP.regex.ANY_NUMBER = /^-?\d*\.{0,1}\d+$/i;
 TP.regex.PERCENTAGE = /^-?\d+%$/i;
 
 // needs reset

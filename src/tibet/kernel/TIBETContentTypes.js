@@ -4213,7 +4213,12 @@ function(targetObj, varargs) {
                     anAddress, sourceObjectID, pathSrc);
             });
 
-    if (TP.isValid(finalValue)) {
+    //  If there is a valid final value *or* we were trying to do a scalar
+    //  conversion (and maybe got a null value - which is what we would want if
+    //  we were trying to get scalar and the node was empty or some such) then
+    //  just return the final value here.
+    if (TP.isValid(finalValue) ||
+        TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(pathSrc)) {
         return finalValue;
     }
 

@@ -6365,8 +6365,6 @@ function(aNode, newNode, oldNode, shouldAwake) {
     //  document. as of ff3 and s3 this is required to avoid exceptions
     importedContent = TP.nodeImportNode(targetNode, childContent);
 
-    TP.nodeCopyTIBETExpandos(childContent, importedContent);
-
     //  We awaken if the content is an HTML node, otherwise we don't.
     awakenContent = TP.ifInvalid(shouldAwake, false);
 
@@ -7040,6 +7038,8 @@ function(aNode, anXPath, resultType, logErrors) {
 
         result,
 
+        nodePath,
+
         resultArr,
         node,
 
@@ -7154,8 +7154,33 @@ function(aNode, anXPath, resultType, logErrors) {
             switch (result.resultType) {
                 case XPathResult.NUMBER_TYPE:
 
-                    return result.numberValue;
+                    //  If what we got back was a NaN here, then we see if the
+                    //  path we were trying to run was trying to convert into a
+                    //  scalar (number() value). If so, then we strip off the
+                    //  conversion, run it again and return the 'first result'
+                    //  in the iteration. This allows us to have an 'empty Text
+                    //  node' that resolves to a null, rather than a NaN -
+                    //  important in cases where we're trying to determine
+                    //  whether we have a real value or not.
+                    if (TP.isNaN(result.numberValue)) {
+                        if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(
+                                                                theXPath)) {
+                            nodePath =
+                                TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(
+                                                                theXPath).at(1);
+                            result = doc.evaluate(
+                                            nodePath,
+                                            aNode,
+                                            TP.$$xpathResolverFunction,
+                                            XPathResult.ANY_TYPE,
+                                            null);
+                            return result.iterateNext();
+                        }
+                    } else {
+                        return result.numberValue;
+                    }
 
+                    break;
                 case XPathResult.BOOLEAN_TYPE:
 
                     return result.booleanValue;
@@ -9690,6 +9715,9 @@ function(aNode, otherNode) {
     } else {
         theNode = otherNode;
     }
+
+    //  Copy any TIBET expandos to the imported node.
+    TP.nodeCopyTIBETExpandos(otherNode, theNode);
 
     //  If aNode is an XML node, do some namespace normalization. If aNode and
     //  theNode have the same namespace URI, then remove the 'xmlns' attribute

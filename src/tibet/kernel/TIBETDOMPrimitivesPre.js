@@ -343,28 +343,48 @@ function(srcNode, destNode, shouldRemove) {
      * @exception TP.sig.InvalidNode
      */
 
+    var srcDoc,
+        destDoc;
+
     if (!TP.isNode(srcNode) || !TP.isNode(destNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    destNode[TP.EVENT_IDS] = srcNode[TP.EVENT_IDS];
-    destNode[TP.GLOBAL_ID] = srcNode[TP.GLOBAL_ID];
+    srcDoc = TP.nodeGetDocument(srcNode);
+    destDoc = TP.nodeGetDocument(srcNode);
 
+    //  We never copy the following TIBET expandos:
+    //      TP.EVENT_IDS
+    //      TP.WRAPPER
+
+    //  We only copy the following TIBET expandos if the 2 documents are the
+    //  same.
+    if (srcDoc === destDoc) {
+        destNode[TP.GLOBAL_ID] = srcNode[TP.GLOBAL_ID];
+    }
+
+    //  We always copy the following TIBET expandos:
     destNode[TP.SHOULD_SIGNAL_CHANGE] =
                 srcNode[TP.SHOULD_SIGNAL_CHANGE];
     destNode[TP.SHOULD_SUSPEND_SIGNALING] =
                 srcNode[TP.SHOULD_SUSPEND_SIGNALING];
 
-    destNode[TP.WRAPPER] = srcNode[TP.WRAPPER];
     destNode[TP.GENERATOR] = srcNode[TP.GENERATOR];
+
+    destNode[TP.SRC_LOCATION] = srcNode[TP.SRC_LOCATION];
 
     if (TP.notFalse(shouldRemove)) {
         srcNode[TP.EVENT_IDS] = null;
+        srcNode[TP.WRAPPER] = null;
+
         srcNode[TP.GLOBAL_ID] = null;
+
         srcNode[TP.SHOULD_SIGNAL_CHANGE] = null;
         srcNode[TP.SHOULD_SUSPEND_SIGNALING] = null;
-        srcNode[TP.WRAPPER] = null;
+
         srcNode[TP.GENERATOR] = null;
+
+        srcNode[TP.SRC_LOCATION] = null;
     }
 
     return;

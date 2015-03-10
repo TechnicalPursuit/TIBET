@@ -3806,9 +3806,9 @@ function(aURI, force) {
 
     /**
      * @method addTIBETSrc
-     * @summary Adds an tibet:src value to the documentElement of the receiver.
-     *     This method is normally invoked when the Node is "owned" by a URI to
-     *     ensure proper ID generation can occur.
+     * @summary Adds a TP.SRC_LOCATION value to the documentElement of the
+     *     receiver. This method is normally invoked when the Node is "owned" by
+     *     a URI to ensure proper ID generation can occur.
      * @param {TP.core.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
@@ -3837,7 +3837,6 @@ function(aURI, force) {
     //  causes 'handleChange' to fire, which then tries to obtain the primary
     //  resource which then loops back around to this method, setting up a
     //  recursion.
-    //this.changed('@tibet:src', TP.CREATE);
 
     return this;
 });
@@ -4243,7 +4242,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('$removeAttribute',
-function(attributeName) {
+function(attributeName, shouldSignal) {
 
     /**
      * @method removeAttribute
@@ -4252,10 +4251,14 @@ function(attributeName) {
      *     standard change notification semantics for native nodes as well as
      *     proper namespace management.
      * @param {String} attributeName The attribute name to remove.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
      */
 
     var attr,
-        node;
+        node,
+
+        flag;
 
     node = this.getNativeNode();
 
@@ -4283,6 +4286,11 @@ function(attributeName) {
         return;
     }
 
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     //  NB: We don't flag changes for internal 'tibet:' attributes
     //  (presuming change flagging is on)
     if (this.shouldFlagChanges() &&
@@ -4293,7 +4301,9 @@ function(attributeName) {
     //  rip out the attribute itself
     TP.elementRemoveAttribute(node, attributeName, true);
 
-    this.changed('@' + attributeName, TP.DELETE);
+    if (flag) {
+        this.changed('@' + attributeName, TP.DELETE);
+    }
 
     //  removeAttribute returns void according to the spec
     return;
@@ -8838,9 +8848,9 @@ function(aURI, force) {
 
     /**
      * @method addTIBETSrc
-     * @summary Adds an tibet:src value to the documentElement of the receiver.
-     *     This method is normally invoked when the Node is "owned" by a URI to
-     *     ensure proper ID generation can occur.
+     * @summary Adds a TP.SRC_LOCATION value to the documentElement of the
+     *     receiver. This method is normally invoked when the Node is "owned" by
+     *     a URI to ensure proper ID generation can occur.
      * @description At this level, this method is a no-op.
      * @param {TP.core.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
@@ -10153,7 +10163,7 @@ function(resource, mimeType) {
     //  If we were able to load a real document from the source URI stamp that
     //  path on the resulting element so we have it for reference.
     if (TP.notEmpty(src)) {
-        TP.elementSetAttribute(elem, 'tibet:src', src, true);
+        elem[TP.SRC_LOCATION] = src;
     }
 
     return TP.wrap(elem);
@@ -10303,7 +10313,8 @@ function(anElement) {
      *     location of the receiver's content.
      * @description This method guesses the receiver's content type and
      *     location, if the receiver has external content. It then populates
-     *     that information on the 'tibet:src' and 'tibet:mime' attributes.
+     *     that information on the TP.SRC_LOCATION property and 'tibet:mime'
+     *     attribute.
      * @param {Element|TP.core.ElementNode} anElement The element to guess the
      *     type and location for.
      * @returns {TP.core.ElementNode} The receiver.
@@ -10325,7 +10336,7 @@ function(anElement) {
     //  The source attribute can be provided or computed from configuration
     //  data. When it's not provided we need to know whether to look for an
     //  XSLT or XHTML file when the markup type is XML of some form.
-    src = TP.elementGetAttribute(elem, 'tibet:src', true);
+    src = elem[TP.SRC_LOCATION];
     if (TP.isEmpty(src)) {
         //  If a MIME type was explicitly defined by the targeted element, then
         //  get its resource URI and use that as the source.
@@ -10361,7 +10372,7 @@ function(anElement) {
     }
 
     if (TP.notEmpty(src)) {
-        TP.elementSetAttribute(elem, 'tibet:src', src, true);
+        elem[TP.SRC_LOCATION] = src;
     }
 
     if (TP.notEmpty(mime)) {
@@ -12434,12 +12445,11 @@ function(aRequest) {
         return TP.CONTINUE;
     }
 
-    //  See if the document element has a 'tibet:src' attribute. If so, we
+    //  See if the document element has a TP.SRC_LOCATION property. If so, we
     //  can try to use it to provide a collection path (if the sheet needs
     //  it - i.e. it's not an absolute path).
-    if (TP.elementHasAttribute(docElem, 'tibet:src', true)) {
-        sheetPath = TP.uriCollectionPath(
-                        TP.elementGetAttribute(docElem, 'tibet:src', true));
+    if (TP.isValid(docElem[TP.SRC_LOCATION])) {
+        sheetPath = TP.uriCollectionPath(docElem[TP.SRC_LOCATION]);
     } else if (TP.isValid(aRequest)) {
         //  Otherwise, see if the request has that path under the 'uri' key.
 

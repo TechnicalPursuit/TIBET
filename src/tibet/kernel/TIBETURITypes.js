@@ -389,7 +389,7 @@ function(aDocument) {
     //  document objects can be flagged by TIBET, in which case that wins...
     elem = aDocument.documentElement;
     if (TP.isElement(elem)) {
-        path = TP.elementGetAttribute(elem, 'tibet:src', true);
+        path = elem[TP.SRC_LOCATION];
         if (TP.notEmpty(path)) {
             return this.construct(path + '#document');
         }

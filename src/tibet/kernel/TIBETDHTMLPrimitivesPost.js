@@ -548,10 +548,10 @@ function(aDocument, trimFile) {
      * @method documentGetLocation
      * @summary Returns the supplied document's location, optionally minus the
      *     document name itself. If there is no window associated with the
-     *     supplied document and it has no internal data such as a tibet:src or
-     *     xml:base value this method returns the empty String (''). NOTE also
-     *     that the response to this call is not encoded (escaped with %20 for
-     *     space etc).
+     *     supplied document and it has no internal data such as a
+     *     TP.SRC_LOCATION property or xml:base attribute value this method
+     *     returns the empty String (''). NOTE also that the response to this
+     *     call is not encoded (escaped with %20 for space etc).
      * @param {Document} aDocument The document to use.
      * @param {Boolean} trimFile True will cause any file reference to be
      *     trimmed, returning only a directory. Default is false.
@@ -582,11 +582,9 @@ function(aDocument, trimFile) {
         return '';
     }
 
-    //  first choice is always the tibet:src value since we try to keep this
-    //  accurate relative to the original source file name
-    if (TP.notEmpty(loc = TP.elementGetAttribute(doc.documentElement,
-                                                    'tibet:src',
-                                                    true))) {
+    //  first choice is always the TP.SRC_LOCATION value since we try to keep
+    //  this accurate relative to the original source file name
+    if (TP.notEmpty(loc = doc.documentElement[TP.SRC_LOCATION])) {
         //  we need to expand these since they're often virtual paths
         loc = TP.uriExpandPath(loc);
     } else if (TP.notTrue(trim) &&
@@ -876,12 +874,12 @@ function(aDocument, aURIStr, force) {
     /**
      * @method documentSetLocation
      * @summary Sets the document's location. This is done by stamping the
-     *     document's 'root element' with a 'tibet:src' attribute.
+     *     document's 'root element' with a TP.SRC_LOCATION property.
      * @param {Document} aDocument The document to use.
      * @param {String} aURIStr The URL string to use as the document's location.
      * @param {Boolean} force If true, this method will ignore any existing
-     *     value for 'tibet:src' (or 'xml:base') and stamp in the supplied URI
-     *     value for 'tibet:src'.
+     *     value for TP.SRC_LOCATION property (or 'xml:base' attribute) and
+     *     stamp in the supplied URI value for TP.SRC_LOCATION.
      * @exception TP.sig.InvalidDocument
      * @returns {String} The document's location.
      */
@@ -908,15 +906,15 @@ function(aDocument, aURIStr, force) {
         return;
     }
 
-    //  If its already got either a 'tibet:src' or 'xml:base', bail out
+    //  If its already got either a TP.SRC_LOCATION or 'xml:base', bail out
     //  here.
-    if ((TP.elementHasAttribute(node, 'tibet:src', true) ||
+    if ((TP.isValid(node[TP.SRC_LOCATION]) ||
             TP.elementHasAttribute(node, 'xml:base', true)) &&
             TP.notTrue(force)) {
         return;
     }
 
-    TP.elementSetAttributeInNS(node, 'tibet:src', url, TP.w3.Xmlns.TIBET);
+    node[TP.SRC_LOCATION] = url;
 
     return;
 });
@@ -8819,10 +8817,7 @@ function(aWindow, anHref) {
     //  Iterate over those and see if any of them match the href.
     for (i = 0; i < elemsWithSrc.getSize(); i++) {
 
-        elemURI = TP.uc(TP.elementGetAttribute(
-                        elemsWithSrc.at(i),
-                        'tibet:src',
-                        true));
+        elemURI = TP.uc(elemsWithSrc.at(i)[TP.SRC_LOCATION]);
 
         if (elemURI.equalTo(url)) {
 

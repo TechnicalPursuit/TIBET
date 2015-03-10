@@ -735,7 +735,14 @@ function() {
 
         test.then(
             function(result) {
+
+                //  This sequence of focusing the window and then 'typing' a Tab
+                //  key seems to have the best chance of success to then accept
+                //  keystrokes meant for the document body.
                 TP.sys.uiwin(true).focus();
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
 
                 driver.startSequence().
                         sendKeys('[Shift]A[Shift-Up]').
@@ -751,6 +758,14 @@ function() {
                         test.assert.didSignal(TP.sys.uidoc(),
                                                 'TP.sig.DOM_A_Up__TP.sig.DOM_S_Up');
                     });
+
+                //  This sequence of focusing the window and then 'typing' a Tab
+                //  key seems to have the best chance of success to then accept
+                //  keystrokes meant for the document body.
+                TP.sys.uiwin(true).focus();
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
 
                 driver.startSequence().
                         sendKeys('\u0062').
@@ -798,7 +813,7 @@ function() {
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
             });
-    }).skip(TP.sys.cfg('tibet.sherpa'));
+    });
 
     //  ---
 

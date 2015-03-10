@@ -3745,7 +3745,7 @@ function(stateAttribute, stateFlag, shouldSignal) {
         if (stateFlag) {
             this.$setAttribute(stateAttribute, 'true', false);
         } else {
-            this.$removeAttribute(stateAttribute);
+            this.$removeAttribute(stateAttribute, false);
         }
 
         //  NB: Use this construct this way for better performance
