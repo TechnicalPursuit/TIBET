@@ -344,7 +344,9 @@ function(srcNode, destNode, shouldRemove) {
      */
 
     var srcDoc,
-        destDoc;
+        destDoc,
+
+        val;
 
     if (!TP.isNode(srcNode) || !TP.isNode(destNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -360,18 +362,26 @@ function(srcNode, destNode, shouldRemove) {
     //  We only copy the following TIBET expandos if the 2 documents are the
     //  same.
     if (srcDoc === destDoc) {
-        destNode[TP.GLOBAL_ID] = srcNode[TP.GLOBAL_ID];
+        destNode[TP.GLOBAL_ID] = TP.notEmpty(val = srcNode[TP.GLOBAL_ID]) ?
+                                    val :
+                                    destNode[TP.GLOBAL_ID];
     }
 
     //  We always copy the following TIBET expandos:
-    destNode[TP.SHOULD_SIGNAL_CHANGE] =
-                srcNode[TP.SHOULD_SIGNAL_CHANGE];
-    destNode[TP.SHOULD_SUSPEND_SIGNALING] =
-                srcNode[TP.SHOULD_SUSPEND_SIGNALING];
+    destNode[TP.SHOULD_SIGNAL_CHANGE] = TP.notEmpty(val = srcNode[TP.SHOULD_SIGNAL_CHANGE]) ?
+                                val :
+                                destNode[TP.SHOULD_SIGNAL_CHANGE];
+    destNode[TP.SHOULD_SUSPEND_SIGNALING] = TP.notEmpty(val = srcNode[TP.SHOULD_SUSPEND_SIGNALING]) ?
+                                val :
+                                destNode[TP.SHOULD_SUSPEND_SIGNALING];
 
-    destNode[TP.GENERATOR] = srcNode[TP.GENERATOR];
+    destNode[TP.GENERATOR] = TP.notEmpty(val = srcNode[TP.GENERATOR]) ?
+                                val :
+                                destNode[TP.GENERATOR];
 
-    destNode[TP.SRC_LOCATION] = srcNode[TP.SRC_LOCATION];
+    destNode[TP.SRC_LOCATION] = TP.notEmpty(val = srcNode[TP.SRC_LOCATION]) ?
+                                val :
+                                destNode[TP.SRC_LOCATION];
 
     if (TP.notFalse(shouldRemove)) {
         srcNode[TP.EVENT_IDS] = null;
