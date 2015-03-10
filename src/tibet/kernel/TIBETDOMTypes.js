@@ -15444,6 +15444,8 @@ function(aRequest) {
         wantsTemplateWrapper,
 
         replacement,
+        replacementClone,
+
         canonicalName;
 
     //  Make sure that we have an element to work from.
@@ -15507,7 +15509,11 @@ function(aRequest) {
                         'template',
                         TP.elementGetAttribute(elem, 'tibet:mime', true));
 
-        replacement = TP.unwrap(replacement.clone());
+        replacementClone = TP.unwrap(replacement.clone());
+        replacementClone[TP.SRC_LOCATION] =
+                            TP.unwrap(replacement)[TP.SRC_LOCATION];
+        replacement = replacementClone;
+
         replacement[TP.GENERATOR] = canonicalName;
 
         //  Merge any remaining attributes. Note that we don't want to overwrite
