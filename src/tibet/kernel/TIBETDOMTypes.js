@@ -10517,9 +10517,6 @@ function(aNode) {
     //  Process the tree of markup
     processor.processTree(aNode);
 
-    //  Signal from the node that attach processing is complete.
-    TP.signal(TP.gid(aNode), 'TP.sig.AttachProcessingComplete');
-
     return;
 });
 

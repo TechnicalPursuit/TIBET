@@ -656,6 +656,8 @@ function(aTargetElem, nodesAdded) {
 
     var processor,
 
+        mutatedGIDs,
+
         len,
         i,
 
@@ -668,6 +670,8 @@ function(aTargetElem, nodesAdded) {
     //  Allocate a tag processor and initialize it with the ATTACH_PHASES
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.ATTACH_PHASES);
+
+    mutatedGIDs = TP.ac();
 
     //  Now, process each *root* that we have gotten as an added node
     len = nodesAdded.getSize();
@@ -699,9 +703,13 @@ function(aTargetElem, nodesAdded) {
 
         processor.processTree(node);
 
-        //  Signal from the node that attach processing is complete.
-        TP.signal(TP.gid(node), 'TP.sig.AttachProcessingComplete');
+        mutatedGIDs.push(TP.gid(node));
     }
+
+    //  Signal from our document that attach processing is complete.
+    TP.signal(TP.gid(TP.nodeGetDocument(aTargetElem)),
+                'TP.sig.AttachProcessingComplete',
+                TP.hc('mutatedNodeIDs', mutatedGIDs));
 
     return this;
 });
@@ -729,6 +737,8 @@ function(aTargetElem, nodesRemoved) {
 
     var processor,
 
+        mutatedGIDs,
+
         focusStackCheckElems,
 
         len,
@@ -745,6 +755,8 @@ function(aTargetElem, nodesRemoved) {
     //  Allocate a tag processor and initialize it with the DETACH_PHASES
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.DETACH_PHASES);
+
+    mutatedGIDs = TP.ac();
 
     focusStackCheckElems = TP.ac();
 
@@ -787,9 +799,13 @@ function(aTargetElem, nodesRemoved) {
                                 TP.nodeGetDescendantElements(node, '*'));
         }
 
-        //  Signal from the node that detach processing is complete.
-        TP.signal(TP.gid(node), 'TP.sig.DetachProcessingComplete');
+        mutatedGIDs.push(TP.gid(node));
     }
+
+    //  Signal from our document that detach processing is complete.
+    TP.signal(TP.gid(TP.nodeGetDocument(aTargetElem)),
+                'TP.sig.DetachProcessingComplete',
+                TP.hc('mutatedNodeIDs', mutatedGIDs));
 
     //  Filter any elements that are in the document of the nodes we are
     //  removing out of the $focus_stack.
