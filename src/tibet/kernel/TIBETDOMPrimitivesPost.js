@@ -6384,6 +6384,9 @@ function(aNode, newNode, oldNode, shouldAwake) {
         return;
     }
 
+    //  Copy any TIBET expandos to the imported node.
+    TP.nodeCopyTIBETExpandos(oldNode, importedContent, false);
+
     //  if newNode was a fragment, then it should now be empty to maintain
     //  semantic consistency with a standard appendChild call. If newNode
     //  was a string we don't bother to empty it.
