@@ -9717,7 +9717,7 @@ function(aNode, otherNode) {
         theNode = nodeDoc.importNode(otherNode, true);
 
         //  Copy any TIBET expandos to the imported node.
-        TP.nodeCopyTIBETExpandos(otherNode, theNode);
+        TP.nodeCopyTIBETExpandos(otherNode, theNode, false);
     } else {
         theNode = otherNode;
     }
