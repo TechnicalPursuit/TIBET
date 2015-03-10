@@ -8808,7 +8808,12 @@ function(aWindow, anHref) {
 
     //  See if this file is associated with content currently being displayed in
     //  the window.
-    elemsWithSrc = TP.byCSS('*[tibet|src]', doc);
+
+    elemsWithSrc = TP.nodeSelectDescendantElements(
+                        doc,
+                        function(node) {
+                            return TP.isValid(node[TP.SRC_LOCATION]);
+                        });
 
     if (!TP.isURI(url = TP.uc(anHref))) {
         return TP.raise(this, 'TP.sig.InvalidURI');
