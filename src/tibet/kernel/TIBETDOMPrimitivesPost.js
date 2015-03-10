@@ -9712,12 +9712,12 @@ function(aNode, otherNode) {
 
     if (nodeDoc !== TP.nodeGetDocument(otherNode)) {
         theNode = nodeDoc.importNode(otherNode, true);
+
+        //  Copy any TIBET expandos to the imported node.
+        TP.nodeCopyTIBETExpandos(otherNode, theNode);
     } else {
         theNode = otherNode;
     }
-
-    //  Copy any TIBET expandos to the imported node.
-    TP.nodeCopyTIBETExpandos(otherNode, theNode);
 
     //  If aNode is an XML node, do some namespace normalization. If aNode and
     //  theNode have the same namespace URI, then remove the 'xmlns' attribute
