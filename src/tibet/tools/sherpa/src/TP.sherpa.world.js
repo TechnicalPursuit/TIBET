@@ -93,7 +93,8 @@ function() {
         //  Hide all of the other iframes (1...N)
         allIFrames.slice(1).perform(
                             function(anIFrameElem) {
-                                TP.elementHide(anIFrameElem);
+                                //TP.elementHide(anIFrameElem);
+                                TP.elementHide(anIFrameElem.parentNode);
                             });
 
         //  Set the ui canvas to be the first screen
