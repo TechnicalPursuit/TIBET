@@ -8795,7 +8795,8 @@ function(aWindow, anHref) {
         elemURI,
 
         domDoc,
-        domElem,
+
+        newElem,
 
         tpElem;
 
@@ -8833,15 +8834,17 @@ function(aWindow, anHref) {
                 return TP.raise(this, 'TP.sig.InvalidDocument');
             }
 
-            if (!TP.isElement(
-                    domElem = domDoc.documentElement)) {
+            if (!TP.isElement(newElem = domDoc.documentElement)) {
                 return TP.raise(this, 'TP.sig.InvalidElement');
             }
 
-            tpElem = TP.wrap(domElem);
+            tpElem = TP.wrap(newElem);
             tpElem.compile();
 
-            TP.xmlElementReplaceWith(elemsWithSrc.at(i), TP.unwrap(tpElem));
+            newElem = TP.unwrap(tpElem);
+
+            TP.elementMergeAttributes(elemsWithSrc.at(i), newElem);
+            TP.xmlElementReplaceWith(elemsWithSrc.at(i), newElem);
         }
     }
 
