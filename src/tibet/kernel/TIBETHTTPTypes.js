@@ -586,7 +586,10 @@ function() {
 
     var xml,
         httpObj,
-        text;
+        text,
+
+        xmlnsInfo,
+        defaultNS;
 
     //  did we already build it? just return it
     if (TP.isNode(xml = this.$get('responseXML'))) {
@@ -605,9 +608,21 @@ function() {
         text = httpObj.responseText;
 
         if (TP.notEmpty(text)) {
+
+            //  Try to guess the default XML namespace from the MIME type
+            //  computed from the supplied text and URL.
+            if (TP.isValid(xmlnsInfo =
+                            TP.w3.Xmlns.fromMIMEType(
+                                TP.ietf.Mime.guessMIMEType(
+                                    text, TP.uc(httpObj.responseURL))))) {
+                defaultNS = xmlnsInfo.at('uri');
+            } else {
+                defaultNS = null;
+            }
+
             //  NOTE not everything we go after actually _is_ XML to tell
             //  the parse step to work quietly
-            xml = TP.documentFromString(text, null, false);
+            xml = TP.documentFromString(text, defaultNS, false);
         }
     } catch (e) {
         xml = null;
