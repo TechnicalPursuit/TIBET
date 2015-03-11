@@ -1838,6 +1838,43 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.w3.Xmlns.Type.defineMethod('fromMIMEType',
+function(aMimeType) {
+
+    /**
+     * @method fromMIMEType
+     * @summary Returns a hash of namespace data corresponding to the supplied
+     *     MIME type.
+     * @param {String} aMimeType The MIME type to use to retrieve the namespace
+     *     data.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.lang.Hash} A hash of data corresponding to the 'info'
+     *     entries on this type.
+     */
+
+    var info,
+        xmlnsEntry;
+
+    if (TP.notValid(aMimeType)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    info = TP.w3.Xmlns.get('info');
+
+    xmlnsEntry = info.detect(
+                    function(kvPair) {
+                        return kvPair.last().at('mimetype') === aMimeType;
+                    });
+
+    if (TP.isValid(xmlnsEntry)) {
+        return xmlnsEntry.last();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.w3.Xmlns.Type.defineMethod('getCanonicalPrefix',
 function(anNSURI) {
 
@@ -2322,7 +2359,7 @@ function(anNSURI, aHash) {
     var uriStr,
         info,
         prefix,
-                constName;
+        constName;
 
     if (TP.notValid(anNSURI)) {
         return this.raise('TP.sig.InvalidURI');
