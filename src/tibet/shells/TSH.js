@@ -3957,6 +3957,7 @@ function(aRequest) {
                     case 'xhtml':
                     case 'xml':
 
+                    /*
                         if (TP.notValid(
                             src = url.getContent(
                                     TP.hc('refresh', true, 'async', false)))) {
@@ -3966,6 +3967,7 @@ function(aRequest) {
 
                             return;
                         }
+                    */
 
                         TP.windowRefreshContentFrom(
                                 TP.sys.uiwin(true),
