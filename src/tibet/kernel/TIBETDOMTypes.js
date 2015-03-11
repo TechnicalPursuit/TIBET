@@ -10112,9 +10112,12 @@ function(resource, mimeType) {
     var uri,
         src,
         str,
+
+        mime,
+        xmlnsInfo,
+        defaultNS,
+
         doc,
-        openingTag,
-        updatedOpeningTag,
         elem;
 
     uri = this.getResourceURI(resource, mimeType);
@@ -10131,28 +10134,19 @@ function(resource, mimeType) {
     //  add default namespace as needed to make authoring more convenient.
     str = uri.getResourceText(TP.hc('async', false));
 
-    //  If the markup author didn't provide a default namespace, we'll try to
-    //  default it here by rewriting the opening tag.
-    if (TP.notEmpty(openingTag = TP.regex.OPENING_TAG.exec(str).at(0))) {
-        //  TODO: This should not be hardcoded to assume the default namespace
-        //  is XHTML - we should at least be trying to look it up based on the
-        //  file extension.
-
-        if (!/xmlns=/.test(openingTag)) {
-            // Watch out for <blah/> vs <blah> here...
-            if (TP.regex.CLOSED_TAG.match(str)) {
-                str = str.slice(0, -2) +
-                    ' xmlns="' + TP.w3.Xmlns.XHTML + '"/>';
-            } else {
-                updatedOpeningTag =
-                    TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
-                    ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
-                str = str.replace(openingTag, updatedOpeningTag);
-            }
-        }
+    if (TP.isEmpty(mime = mimeType)) {
+        mime = TP.ietf.Mime.guessMIMEType(str, uri);
     }
 
-    doc = TP.documentFromString(str, null, true);
+    //  Try to guess the default XML namespace from the MIME type
+    //  computed from the supplied text and URL.
+    if (TP.isValid(xmlnsInfo = TP.w3.Xmlns.fromMIMEType(mime))) {
+        defaultNS = xmlnsInfo.at('uri');
+    } else {
+        defaultNS = null;
+    }
+
+    doc = TP.documentFromString(str, defaultNS, true);
 
     //  Make sure that the resource had real markup that could be built as such.
     if (!TP.isDocument(doc) || !TP.isElement(elem = doc.documentElement)) {
