@@ -3932,6 +3932,8 @@ function(aRequest) {
 
                 ext = url.getExtension();
 
+                url.isLoaded(false);
+
                 switch (ext) {
                     case 'js':
                         if (TP.notValid(
