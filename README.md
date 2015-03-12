@@ -1,11 +1,11 @@
 # TIBET
 
 TIBET is a seamless front-end framework blending the best features of today's
-modern JavaScript modules with a powerful set of interactive development tools.
+modern JavaScript modules with a powerful set of development tools.
 
 Designed specifically for large-scale Enterprise and Government-class web
 applications, TIBET is more like Smalltalk than Scheme, bringing tag-driven
-development, advanced OO, and immersive development tools to JavaScript.
+development, advanced OO, and immersive development to JavaScript.
 
 # Installation
 
@@ -22,9 +22,12 @@ TIBET should be installed globally using `npm install` with the -g flag:<br/>
 That's it. You should now have the latest stable release of TIBET
 installed.
 
-Jump to the <a href="#nextsteps">Next Steps</a> section for how to proceed.
+Follow the <a href="#nextsteps">Next Steps</a> to get started with your first
+TIBET application.
 
 ### Installing TIBET via Git
+
+If you prefer working from a git repository you can install TIBET via git.
 
 ##### Uninstall any npm-installed version of TIBET
 
@@ -40,7 +43,7 @@ installation to avoid conflicts with your Git-based installation:
 If you are going to install TIBET via Git we recommend that you first create a
 fork of TIBET so you can manage updates in a stable, predictable fashion.
 
-Follow these instructions: <a target="_blank" href="https://help.github.com/articles/fork-a-repo/">create
+Follow these instructions to <a target="_blank" href="https://help.github.com/articles/fork-a-repo/">create
 your own fork</a>.
 
 ##### Clone your Fork
@@ -68,20 +71,8 @@ that the `tibet` command will function properly:
     npm link .
 </pre>
 <br/>
-You should now be able to use the `tibet` command which is necessary for the
-final step in our process.
-
-##### Build TIBET
-
-At this point you have downloaded the TIBET source code via Git as well as
-all the NPM modules listed in the TIBET repository's package.json file. Now it's
-time to assemble a working set of those dependencies so TIBET can use them.
-
-<pre>
-    tibet build_all
-</pre>
-<br/>
-Once you've built all of TIBET's rollups your installation is complete.
+You should now be able to use the `tibet` command, which means you're ready to
+start working on your first TIBET application.
 
 <a name="nextsteps" href="#"></a>
 # Next Steps
@@ -91,7 +82,7 @@ range of tools to help streamline your development workflow.
 
 ### Help
 
-You can get help on the `tibet` command and its options via `tibet help`:
+The `tibet help` command lists all the options for the `tibet` command:
 
 <pre>
     $ tibet help
@@ -186,12 +177,19 @@ to clone, initialize, and start your first TIBET application.
 
 </pre>
 
-### Your First Project
+### Tutorials
 
 The <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
-target="_blank">Quickstart Guide</a> is the best place to continue your
-journey with TIBET.
+target="_blank">Quickstart Guide</a> is the best place to start your
+journey with TIBET. You'll have your first TIBET application running in just a
+few minutes with this guide.
+
+For a detailed exploration of TIBET and its capabilities we recommend you work
+through the <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Essentials"
+target="_blank">TIBET Essentials</a> tutorial. This walkthrough will take
+longer but you'll get a complete picture of TIBET and what makes it special.
 
 
 # Documentation
