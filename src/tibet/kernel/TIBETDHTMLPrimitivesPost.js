@@ -8787,11 +8787,12 @@ function(aWindow, anHref) {
 
     var doc,
 
-        elemsWithSrc,
+        elemsWithTTag,
         url,
 
         i,
 
+        elemType,
         elemURI,
 
         domDoc,
@@ -8807,26 +8808,31 @@ function(aWindow, anHref) {
 
     doc = aWindow.document;
 
-    //  See if this file is associated with content currently being displayed in
-    //  the window.
-
-    elemsWithSrc = TP.nodeSelectDescendantElements(
-                        doc,
-                        function(node) {
-                            return TP.isValid(node[TP.SRC_LOCATION]);
-                        });
-
+    //  Compute a file URL
     if (!TP.isURI(url = TP.uc(anHref))) {
         return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
+    //  See if this file is associated with content currently being displayed in
+    //  the window.
+
+    //  Get all of the elements that have a 'tibet:tag' attribute.
+    elemsWithTTag = TP.byCSS('*[tibet|tag]', doc);
+
     //  Iterate over those and see if any of them match the href.
-    for (i = 0; i < elemsWithSrc.getSize(); i++) {
+    for (i = 0; i < elemsWithTTag.getSize(); i++) {
 
-        elemURI = TP.uc(elemsWithSrc.at(i)[TP.SRC_LOCATION]);
+        //  Grab the element's type.
+        if (!TP.isType(elemType = TP.wrap(elemsWithTTag.at(i)).getType())) {
+            return TP.raise(this, 'TP.sig.InvalidType');
+        }
 
+        //  Grab the element's 'template' resource URI - if it's equal to the
+        //  URL that just changed, then we need to recompile / refresh.
+        elemURI = elemType.getResourceURI('template');
         if (elemURI.equalTo(url)) {
 
+            //  Grab an X(HT)ML document from the resource.
             domDoc = url.getResource(TP.hc('async', false,
                                             'resultType', TP.DOM));
 
@@ -8838,13 +8844,17 @@ function(aWindow, anHref) {
                 return TP.raise(this, 'TP.sig.InvalidElement');
             }
 
+            //  Compile the tag
             tpElem = TP.wrap(newElem);
             tpElem.compile();
 
-            newElem = TP.unwrap(tpElem);
+            //  Extract the new tag from the document.
+            newElem = domDoc.documentElement;
 
-            TP.elementMergeAttributes(elemsWithSrc.at(i), newElem);
-            TP.xmlElementReplaceWith(elemsWithSrc.at(i), newElem);
+            //  Merge the attributes from the existing element onto the new
+            //  element and replace the old with the new.
+            TP.elementMergeAttributes(elemsWithTTag.at(i), newElem);
+            TP.xmlElementReplaceWith(elemsWithTTag.at(i), newElem);
         }
     }
 

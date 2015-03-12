@@ -10138,8 +10138,8 @@ function(resource, mimeType) {
         mime = TP.ietf.Mime.guessMIMEType(str, uri);
     }
 
-    //  Try to guess the default XML namespace from the MIME type
-    //  computed from the supplied text and URL.
+    //  Try to guess the default XML namespace from the MIME type computed from
+    //  the supplied text and URL.
     if (TP.isValid(xmlnsInfo = TP.w3.Xmlns.fromMIMEType(mime))) {
         defaultNS = xmlnsInfo.at('uri');
     } else {

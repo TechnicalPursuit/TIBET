@@ -1118,16 +1118,18 @@ function(aNode, aProcessor, aRequest) {
         //  handed in or it equals it, according to the W3C's definition of
         //  'node equality'. Therefore, we just continue without further
         //  processing of the result.
-        if (TP.isNode(result) &&
-            (result === node || TP.nodeEqualsNode(result, node) &&
-             TP.notValid(node[TP.GENERATOR]))) {
-            continue;
-        }
+        if (TP.isNode(result)) {
 
-        //  To reduce markup clutter, try to propagate namespaces as high up as
-        //  possible.
-        if (TP.isElement(result)) {
-            TP.elementBubbleXMLNSAttributes(result);
+            //  To reduce markup clutter, try to propagate namespaces as high
+            //  up as possible.
+            if (TP.isElement(result)) {
+                TP.elementBubbleXMLNSAttributes(result);
+            }
+
+            if ((result === node || TP.nodeEqualsNode(result, node)) &&
+                TP.notValid(node[TP.GENERATOR])) {
+                continue;
+            }
         }
 
         //  If either a singular Node or Array of Nodes was returned, then push
