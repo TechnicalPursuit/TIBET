@@ -9207,7 +9207,7 @@ function(resource, mimeType, fallback) {
      *     flag and attribute settings which let you control the computation of
      *     a resource URI explicitly for each element type.
      *
-     *     The config flag values are always of the form 'path' + typeName +
+     *     The config flag values are always of the form 'path.' + typeName +
      *     '.{{resource}}'. If that value is set it should be a URI and it will
      *     be used as-is UNLESS the extension has a rollup setting. For example,
      *     if the extension would be xhtml and xhtml.resource.rollup="{{uri}}"
