@@ -1,6 +1,6 @@
 # TIBET
 
-TIBET is a <a href="./wiki/The-TIBET-Stack">seamless</a> front-end framework
+TIBET is a <a href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Stack">seamless</a> front-end framework
 blending the best features of today's modern JavaScript modules with a powerful
 set of development tools.
 
