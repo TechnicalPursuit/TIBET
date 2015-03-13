@@ -2654,6 +2654,7 @@ function(aRequest, allForms) {
                 last,
                 argv,
                 parts,
+                nonIdent,
                 val,
                 expandedVal,
                 reParts;
@@ -2669,17 +2670,20 @@ function(aRequest, allForms) {
                 argv = TP.ac();
                 dict.atPut('ARGV', argv);
 
-                // Watch for dot-separated identifiers like TP.sys.* etc. and
-                // skip the tokenizer in those cases.
+                //  Watch for dot-separated identifiers like TP.sys.* etc. and
+                //  skip the tokenizer in those cases.
                 parts = last.split('.');
-                if (parts.detect(function(part) {
-                    return !part.isJSIdentifier();
-                })) {
-                    //  Note here how we pass 'true' as the sixth argument, telling
-                    //  the tokenize routine that we're parsing for shell arguments.
-                    parts = TP.$tokenize(last,
-                                        TP.tsh.script.$tshOperators,
-                                        true, false, false, true);
+                nonIdent = parts.detect(
+                                function(part) {
+                                    return !part.isJSIdentifier();
+                                });
+
+                if (TP.isValid(nonIdent)) {
+                    //  Note here how we pass 'true' as the sixth argument,
+                    //  telling the tokenize routine that we're parsing for
+                    //  shell arguments.
+                    parts = TP.$tokenize(last, TP.tsh.script.$tshOperators,
+                                            true, false, false, true);
                 } else {
                     //  One special case here is any argument which appears to
                     //  be a valid JS identifier but which is, in fact, a TSH
@@ -2692,6 +2696,7 @@ function(aRequest, allForms) {
                         dict.atPut('ARG0', TP.ac(last, last));
                         argv.push(TP.ac(last, last));
                     }
+
                     return;
                 }
 
