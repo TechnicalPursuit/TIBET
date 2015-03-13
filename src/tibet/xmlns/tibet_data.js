@@ -26,11 +26,11 @@ TP.core.UIElementNode.defineSubtype('tibet:data');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.tibet.data.Type.defineMethod('tagAttachDOM',
+TP.tibet.data.Type.defineMethod('tagAttachData',
 function(aRequest) {
 
     /**
-     * @method tagAttachDOM
+     * @method tagAttachData
      * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -148,11 +148,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.data.Type.defineMethod('tagDetachDOM',
+TP.tibet.data.Type.defineMethod('tagDetachData',
 function(aRequest) {
 
     /**
-     * @method tagDetachDOM
+     * @method tagDetachData
      * @summary Tears down runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
