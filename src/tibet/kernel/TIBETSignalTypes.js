@@ -825,6 +825,12 @@ TP.sig.DOMSignal.defineSubtype('DOMLoaded');
 TP.sig.DOMLoaded.defineSubtype('DOMContentLoaded');
 
 //  ------------------------------------------------------------------------
+
+//  Fired when a DOM node is ready - it's dynamic content has been loaded, other
+//  dynamically loaded assets are realized, etc.
+TP.sig.DOMSignal.defineSubtype('DOMReady');   //  XForms
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
