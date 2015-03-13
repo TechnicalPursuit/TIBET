@@ -14,6 +14,23 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind18_person">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe",
+                    "addresses":[
+                        {"street":"111 Main St.", "city":"Anytown"},
+                        {"street":"222 State St.", "city":"Another Town"}]
+                    },
+                {"lastname": "Jones", "firstname": "John",
+                    "addresses":[
+                        {"street":"333 1st Av.", "city":"Yet Another Town"},
+                        {"street":"444 2nd Av.", "city":"One More Town"}]
+                    }
+            ]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -38,23 +55,6 @@
             <input type="text" id="addressCityField" bind:io="value: city" tabindex="0"/><br/>
         </span>
     </span>
-
-    <tibet:data local="urn:tibet:Bind18_person">
-        <![CDATA[
-            {"people": [
-                {"lastname": "Smith", "firstname": "Joe",
-                    "addresses":[
-                        {"street":"111 Main St.", "city":"Anytown"},
-                        {"street":"222 State St.", "city":"Another Town"}]
-                    },
-                {"lastname": "Jones", "firstname": "John",
-                    "addresses":[
-                        {"street":"333 1st Av.", "city":"Yet Another Town"},
-                        {"street":"444 2nd Av.", "city":"One More Town"}]
-                    }
-            ]}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

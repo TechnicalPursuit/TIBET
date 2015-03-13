@@ -14,6 +14,19 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind42_person_xml">
+        <person xmlns="">
+            <lastname>Smith</lastname>
+            <firstname>Joe</firstname>
+        </person>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:Bind42_person_json">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -39,19 +52,6 @@
 
     <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
     <input type="text" id="jsonBindStdinAttr" bind:io="value: The data source's last name field value uppercased: [[urn:tibet:Bind42_person_json#tibet($_.person.lastname .% upperCase)]]" tabindex="0"/><br/>
-
-    <tibet:data local="urn:tibet:Bind42_person_xml">
-        <person xmlns="">
-            <lastname>Smith</lastname>
-            <firstname>Joe</firstname>
-        </person>
-    </tibet:data>
-
-    <tibet:data local="urn:tibet:Bind42_person_json">
-        <![CDATA[
-        {"person": {"lastname": "Smith", "firstname": "Joe"}}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

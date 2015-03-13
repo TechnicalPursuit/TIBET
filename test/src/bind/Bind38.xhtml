@@ -14,6 +14,17 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind38_person">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
+                {"lastname": "Jones", "firstname": "John", "color": "green"},
+                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
+                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
+            ]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -38,17 +49,6 @@
         <span id="colorSpan" style="background-color: [[#tibet(people[1].color)]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
 
     </span>
-
-    <tibet:data local="urn:tibet:Bind38_person">
-        <![CDATA[
-            {"people": [
-                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
-                {"lastname": "Jones", "firstname": "John", "color": "green"},
-                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
-                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
-            ]}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

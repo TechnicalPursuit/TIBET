@@ -14,6 +14,17 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind4_person">
+        <person xmlns="">
+            <lastname>Jones</lastname>
+            <firstname>Jane</firstname>
+            <description>Ms. Jones is a great lady</description>
+            <gender>f</gender>
+            <pet>cat</pet>
+            <color>blue</color>
+        </person>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -64,17 +75,6 @@
         <input type="checkbox" name="input_checkbox" value="yellow" id="colorCheckbox3"/><label for="colorCheckbox3">Yellow</label>
 
     </span>
-
-    <tibet:data local="urn:tibet:Bind4_person">
-        <person xmlns="">
-            <lastname>Jones</lastname>
-            <firstname>Jane</firstname>
-            <description>Ms. Jones is a great lady</description>
-            <gender>f</gender>
-            <pet>cat</pet>
-            <color>blue</color>
-        </person>
-    </tibet:data>
 
 </body>
 </html>

@@ -14,6 +14,17 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind2_person">
+        <person xmlns="">
+            <lastname>Jones</lastname>
+            <firstname>Jane</firstname>
+            <description>Ms. Jones is a great lady</description>
+            <gender>f</gender>
+            <pet>cat</pet>
+            <color>blue</color>
+        </person>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -55,17 +66,6 @@
     <input type="checkbox" name="input_checkbox" value="red" id="colorCheckbox1" bind:io="checked: urn:tibet:Bind2_person#xpath1(/person/color)"/><label for="colorCheckbox1">Red</label>
     <input type="checkbox" name="input_checkbox" value="blue" id="colorCheckbox2"/><label for="colorCheckbox2">Blue</label>
     <input type="checkbox" name="input_checkbox" value="yellow" id="colorCheckbox3"/><label for="colorCheckbox3">Yellow</label>
-
-    <tibet:data local="urn:tibet:Bind2_person">
-        <person xmlns="">
-            <lastname>Jones</lastname>
-            <firstname>Jane</firstname>
-            <description>Ms. Jones is a great lady</description>
-            <gender>f</gender>
-            <pet>cat</pet>
-            <color>blue</color>
-        </person>
-    </tibet:data>
 
 </body>
 </html>

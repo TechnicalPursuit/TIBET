@@ -14,6 +14,12 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind52_person">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -36,12 +42,6 @@
     [[urn:tibet:Bind52_person#tibet(person.lastname)]]
     <br/>
     <br/>
-
-    <tibet:data local="urn:tibet:Bind52_person">
-        <![CDATA[
-        {"person": {"lastname": "Smith", "firstname": "Joe"}}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

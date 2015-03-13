@@ -14,6 +14,31 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind30_person">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+                <color>red</color>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+                <color>green</color>
+            </person>
+            <person>
+                <lastname>Homemaker</lastname>
+                <firstname>Billy</firstname>
+                <color>blue</color>
+            </person>
+            <person>
+                <lastname>Professional</lastname>
+                <firstname>Pamela</firstname>
+                <color>yellow</color>
+            </person>
+        </people>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -38,31 +63,6 @@
         <span id="colorSpan" style="background-color: [[#xpath1(/people/person[2]/color)]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
 
     </span>
-
-    <tibet:data local="urn:tibet:Bind30_person">
-        <people xmlns="">
-            <person>
-                <lastname>Smith</lastname>
-                <firstname>Joe</firstname>
-                <color>red</color>
-            </person>
-            <person>
-                <lastname>Jones</lastname>
-                <firstname>John</firstname>
-                <color>green</color>
-            </person>
-            <person>
-                <lastname>Homemaker</lastname>
-                <firstname>Billy</firstname>
-                <color>blue</color>
-            </person>
-            <person>
-                <lastname>Professional</lastname>
-                <firstname>Pamela</firstname>
-                <color>yellow</color>
-            </person>
-        </people>
-    </tibet:data>
 
 </body>
 </html>
