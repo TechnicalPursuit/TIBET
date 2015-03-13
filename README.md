@@ -1,7 +1,8 @@
 # TIBET
 
-TIBET is a seamless front-end framework blending the best features of today's
-modern JavaScript modules with a powerful set of development tools.
+TIBET is a <a href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Stack">seamless</a> front-end framework
+blending the best features of today's modern JavaScript modules with a powerful
+set of development tools.
 
 Designed specifically for large-scale Enterprise and Government-class web
 applications, TIBET is more like Smalltalk than Scheme, bringing tag-driven
