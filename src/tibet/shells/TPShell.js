@@ -2667,6 +2667,7 @@ function(aRequest, allForms) {
 
             if (first === 'tsh:argv') {
                 argv = TP.ac();
+                dict.atPut('ARGV', argv);
 
                 // Watch for dot-separated identifiers like TP.sys.* etc. and
                 // skip the tokenizer in those cases.
@@ -2776,8 +2777,6 @@ function(aRequest, allForms) {
                         dict.atPut('ARG' + index, item);
                         argv.push(item);
                     });
-
-                dict.atPut('ARGV', argv);
             } else if (!TP.core.Shell.INVALID_ARGUMENT_MATCHER.test(first)) {
                 val = last;
                 expandedVal = null;
