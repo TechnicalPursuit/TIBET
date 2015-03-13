@@ -143,6 +143,7 @@ Cmd.prototype.execute = function() {
         app_npm,
         infroot,
         libbase,
+        libsrc,
         srcroot,
 
         file,
@@ -160,7 +161,30 @@ Cmd.prototype.execute = function() {
     // Verify our intended target directory exists.
     if (!sh.test('-e', app_inf)) {
         this.error('Cannot find app_inf: ' + app_inf);
-        return;
+        return 1;
+    }
+
+    // Make sure we can find npm root directory (node_modules).
+    app_npm = CLI.expandPath('~app_npm');
+    if (!sh.test('-e', app_npm)) {
+        this.error('Cannot find app_npm: ' + app_npm);
+        this.warn('Verify `tibet init` has run and initialized the project.');
+        return 1;
+    }
+
+    // Make sure we can find the bundled TIBET source packages.
+    libbase = path.join(app_npm, 'tibet', 'lib');
+    if (!sh.test('-e', libbase)) {
+        this.error('Cannot find library root: ' + libbase);
+        return 1;
+    }
+
+    // Make sure we can find the bundled TIBET source packages.
+    libsrc = path.join(libbase, 'src');
+    if (!sh.test('-e', libsrc)) {
+        this.error('Cannot find library source: ' + libsrc);
+        this.warn('Run `tibet build` in TIBET library to build packages.');
+        return 1;
     }
 
     // Construct the target location for TIBET code.
@@ -191,20 +215,6 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    // Make sure we can find npm root directory (node_modules).
-    app_npm = CLI.expandPath('~app_npm');
-    if (!sh.test('-e', app_npm)) {
-        this.error('Cannot find app_npm: ' + app_npm);
-        return;
-    }
-
-    // Make sure we can find the bundled TIBET source packages.
-    libbase = path.join(app_npm, 'tibet', 'lib');
-    if (!sh.test('-e', libbase)) {
-        this.error('Cannot find library source: ' + libbase);
-        return;
-    }
-
     //  ---
     //  freeze (aka copy)
     //  ---
@@ -218,11 +228,11 @@ Cmd.prototype.execute = function() {
     }
 
     srcroot = path.join(infroot, 'lib', 'src');
-
     list = sh.ls('-A', srcroot);
     err = sh.error();
     if (sh.error()) {
         this.error('Error listing ' + srcroot + ': ' + err);
+        this.warn('Verify `tibet build` has run and built library packages.');
         return 1;
     }
 
