@@ -11,28 +11,28 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
-    <style type="text/css">
-    <![CDATA[
-    @namespace pclass url(urn:tibet:pseudoclass);
+	<style type="text/css">
+	<![CDATA[
+	@namespace pclass url(urn:tibet:pseudoclass);
     @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-    tibet|group[pclass|invalid]
-    {
-        border-color: red;
+	tibet|group[pclass|invalid]
+	{
+		border-color: red;
     }
 
-    /*input[type=text]:invalid*/
-    input[type=text][pclass|invalid]
-    {
-        color: red;
-    }
-    ]]>
-    </style>
+	/*input[type=text]:invalid*/
+	input[type=text][pclass|invalid]
+	{
+		color: red;
+	}
+	]]>
+	</style>
 
-    <tibet:data id="Validation3Data" local="urn:tibet:Validation3_person" resultType="TP.test.BaseMarkupEmployee">
-        <person xmlns="">
-            <lastname>Smith</lastname>
-            <firstname>Joe</firstname>
+	<tibet:data id="Validation3Data" name="urn:tibet:Validation3_person" resultType="TP.test.BaseMarkupEmployee">
+		<person xmlns="">
+			<lastname>Smith</lastname>
+			<firstname>Joe</firstname>
             <age>48</age>
             <address>
                 <street_address>111 Main St.</street_address>
@@ -41,25 +41,25 @@
             </address>
             <gender>male</gender>
             <SSN></SSN>
-        </person>
-    </tibet:data>
+		</person>
+	</tibet:data>
 
 </head>
 
 <body>
 
-    <h2>Validation Test #3</h2><br/>
+	<h2>Validation Test #3</h2><br/>
 
-    <br/>
-    <br/>
-    This test sets up two XHTML elements, both bound to an underlying data model defined in the test code. They are both 'input type="text"' elements, wrapped in a 'tibet:group' element. This group element has an 'invalidwhen="any"' attribute, which means that it is considered to be invalid when either of the two field (which are members of its group) are invalid. This 'validity' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
-    <br/>
+	<br/>
+	<br/>
+	This test sets up two XHTML elements, both bound to an underlying data model defined in the test code. They are both 'input type="text"' elements, wrapped in a 'tibet:group' element. This group element has an 'invalidwhen="any"' attribute, which means that it is considered to be invalid when either of the two field (which are members of its group) are invalid. This 'validity' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
+	<br/>
     <br/>
     The value of the first element is valid, so nothing more needs to be done. The test code sets a value on the second element, which causes the bound data value to change and for the 'validity' of the text field to change. The text field changes its appearance based on that fact and the 'tibet:group' element also changes itself to the valid state because both of its members are now valid.
-    <br/>
+	<br/>
     <br/>
     A variety of signals are thrown by the various objects involved.
-    <br/>
+	<br/>
 
     <tibet:group id="EmployeeGroup" invalidwhen="any">
         <label for="GenderField">Gender: </label>

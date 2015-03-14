@@ -11,6 +11,17 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind34_person">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
+                {"lastname": "Jones", "firstname": "John", "color": "green"},
+                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
+                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
+            ]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -34,17 +45,6 @@
         John's Favorite Color: <input type="text" id="colorField" value="[[#tibet(people[1].color)]]" tabindex="0"/><br/>
 
     </span>
-
-    <tibet:data local="urn:tibet:Bind34_person">
-        <![CDATA[
-            {"people": [
-                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
-                {"lastname": "Jones", "firstname": "John", "color": "green"},
-                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
-                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
-            ]}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

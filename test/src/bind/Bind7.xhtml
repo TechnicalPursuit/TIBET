@@ -11,6 +11,12 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind7_person">
+        <![CDATA[
+        {"person": {"lastname": "Jones", "firstname": "Jane", "description": "Ms. Jones is a great lady", "gender": "f", "pet": "cat", "color": "blue"}}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -52,12 +58,6 @@
     <input type="checkbox" name="input_checkbox" value="red" id="colorCheckbox1" bind:io="checked: urn:tibet:Bind7_person#tibet(person.color)"/><label for="colorCheckbox1">Red</label>
     <input type="checkbox" name="input_checkbox" value="blue" id="colorCheckbox2"/><label for="colorCheckbox2">Blue</label>
     <input type="checkbox" name="input_checkbox" value="yellow" id="colorCheckbox3"/><label for="colorCheckbox3">Yellow</label>
-
-    <tibet:data local="urn:tibet:Bind7_person">
-        <![CDATA[
-        {"person": {"lastname": "Jones", "firstname": "Jane", "description": "Ms. Jones is a great lady", "gender": "f", "pet": "cat", "color": "blue"}}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

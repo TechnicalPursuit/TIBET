@@ -11,6 +11,17 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind37_person">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
+                {"lastname": "Jones", "firstname": "John", "color": "green"},
+                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
+                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
+            ]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -26,17 +37,6 @@
     Joe's Favorite Color: <input type="text" id="colorField" value="[[urn:tibet:Bind37_person#tibet(people[0].color)]]" tabindex="0"/><br/>
 
     <span id="colorSpan" style="background-color: [[urn:tibet:Bind37_person#tibet(people[0].color)]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
-
-    <tibet:data local="urn:tibet:Bind37_person">
-        <![CDATA[
-            {"people": [
-                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
-                {"lastname": "Jones", "firstname": "John", "color": "green"},
-                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
-                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
-            ]}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

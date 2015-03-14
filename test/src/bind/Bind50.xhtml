@@ -11,6 +11,17 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind50_person_json">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe"},
+                {"lastname": "Jones", "firstname": "John"},
+                {"lastname": "Homemaker", "firstname": "Billy"},
+                {"lastname": "Professional", "firstname": "Pamela"}
+            ]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -37,17 +48,6 @@
             </tr>
         </tbody>
     </table>
-
-    <tibet:data local="urn:tibet:Bind50_person_json">
-        <![CDATA[
-            {"people": [
-                {"lastname": "Smith", "firstname": "Joe"},
-                {"lastname": "Jones", "firstname": "John"},
-                {"lastname": "Homemaker", "firstname": "Billy"},
-                {"lastname": "Professional", "firstname": "Pamela"}
-            ]}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>

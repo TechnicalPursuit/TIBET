@@ -11,6 +11,19 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind11_person">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+            </person>
+        </people>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -39,19 +52,6 @@
     <label for="lastNameField2">Last name: </label>
     <input type="text" id="lastNameField2" bind:io="value: urn:tibet:Bind11_person#xpath1(/people/person[2]/lastname)" tabindex="0"/><br/>
     <br/>
-
-    <tibet:data local="urn:tibet:Bind11_person">
-        <people xmlns="">
-            <person>
-                <lastname>Smith</lastname>
-                <firstname>Joe</firstname>
-            </person>
-            <person>
-                <lastname>Jones</lastname>
-                <firstname>John</firstname>
-            </person>
-        </people>
-    </tibet:data>
 
 </body>
 </html>

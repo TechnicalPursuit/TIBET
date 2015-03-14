@@ -11,22 +11,22 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
-    <style type="text/css">
-    <![CDATA[
-    @namespace pclass url(urn:tibet:pseudoclass);
+	<style type="text/css">
+	<![CDATA[
+	@namespace pclass url(urn:tibet:pseudoclass);
 
-    /*input[type=text]:invalid*/
-    input[type=text][pclass|invalid]
-    {
-        color: red;
-    }
-    ]]>
-    </style>
+	/*input[type=text]:invalid*/
+	input[type=text][pclass|invalid]
+	{
+		color: red;
+	}
+	]]>
+	</style>
 
-    <tibet:data id="Validation2Data" local="urn:tibet:Validation2_person" resultType="TP.test.BaseMarkupEmployee">
-        <person xmlns="">
-            <lastname>Smith</lastname>
-            <firstname>Joe</firstname>
+	<tibet:data id="Validation2Data" name="urn:tibet:Validation2_person" resultType="TP.test.BaseMarkupEmployee">
+		<person xmlns="">
+			<lastname>Smith</lastname>
+			<firstname>Joe</firstname>
             <age>48</age>
             <address>
                 <street_address>111 Main St.</street_address>
@@ -36,30 +36,30 @@
             <gender>male</gender>
             <uscitizen></uscitizen>
             <SSN></SSN>
-        </person>
-    </tibet:data>
+		</person>
+	</tibet:data>
 
 </head>
 
 <body>
 
-    <h2>Validation Test #2</h2><br/>
+	<h2>Validation Test #2</h2><br/>
 
-    <br/>
-    <br/>
-    This test sets up two XHTML elements, both bound to an underlying data model defined in the test code. One is a 'input type="checkbox"' element and the other is a 'input type="text"' element, which is made active or inactive dependent on whether the first control is checked or not. This 'relevancy' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
-    <br/>
+	<br/>
+	<br/>
+	This test sets up two XHTML elements, both bound to an underlying data model defined in the test code. One is a 'input type="checkbox"' element and the other is a 'input type="text"' element, which is made active or inactive dependent on whether the first control is checked or not. This 'relevancy' property of the underlying data model is modeled in the code. The attendant data types are also defined in the code.
+	<br/>
     <br/>
     The test code 'checks' the first element, which causes the bound data value to change and for the 'relevancy' of the text field to change. The text field changes its appearance based on that fact.
-    <br/>
+	<br/>
     <br/>
     A variety of signals are thrown by the various objects involved.
-    <br/>
+	<br/>
 
-    <label for="uscitizenField">U.S. Citizen?: </label>
+	<label for="uscitizenField">U.S. Citizen?: </label>
     <input type="checkbox" id="uscitizenCheckbox" bind:io="checked: urn:tibet:Validation2_person#tibet(uscitizen)" tabindex="0"/><br/>
 
-    <label for="SSNField">SSN: </label>
+	<label for="SSNField">SSN: </label>
     <input type="text" id="SSNField" bind:io="value: urn:tibet:Validation2_person#tibet(SSN)" tabindex="0"/><br/>
 
 </body>

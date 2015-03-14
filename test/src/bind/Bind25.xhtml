@@ -11,21 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
-</head>
-
-<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
-
-    <h2>Bind Test #25</h2><br/>
-    <br/>
-    <br/>
-    This test sets up a 'simple binding' between a textfield that is using an 'embedded expression' (which is the whole attribute expression) and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
-    <br/>
-    <br/>
-
-    <label for="colorField">Color: </label>
-    Joe's Favorite Color: <input type="text" id="colorField" value="[[urn:tibet:Bind25_person#xpath1(/people/person[1]/color)]]" tabindex="0"/><br/>
-
-    <tibet:data local="urn:tibet:Bind25_person">
+    <tibet:data name="urn:tibet:Bind25_person">
         <people xmlns="">
             <person>
                 <lastname>Smith</lastname>
@@ -49,6 +35,20 @@
             </person>
         </people>
     </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+	<h2>Bind Test #25</h2><br/>
+	<br/>
+	<br/>
+    This test sets up a 'simple binding' between a textfield that is using an 'embedded expression' (which is the whole attribute expression) and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+	<br/>
+	<br/>
+
+	<label for="colorField">Color: </label>
+    Joe's Favorite Color: <input type="text" id="colorField" value="[[urn:tibet:Bind25_person#xpath1(/people/person[1]/color)]]" tabindex="0"/><br/>
 
 </body>
 </html>

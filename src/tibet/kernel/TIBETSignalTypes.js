@@ -742,9 +742,22 @@ TP.sig.ResponderInteractionSignal.defineSubtype('DOMRevalidate');  //  XForms
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMRecalculate');//   XForms
 
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMReset');   //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMSubmit');  //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMSubmitSerialize');//   XForms
 */
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDataWillSend');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDataSignal');
+
+TP.sig.UIDataSignal.defineSubtype('UIDataReceived');
+TP.sig.UIDataSignal.defineSubtype('UIDataSent');
+TP.sig.UIDataSignal.defineSubtype('UIDataSerialize');
+
+TP.sig.UIDataSignal.defineSubtype('UIDataConstruct');
+TP.sig.UIDataSignal.defineSubtype('UIDataDestruct');
 
 //  ------------------------------------------------------------------------
 
@@ -779,8 +792,6 @@ TP.sig.UIStateChange.defineSubtype('UIDisabled');       //  XForms
 TP.sig.UIStateChange.defineSubtype('UIInRange');        //  XForms
 TP.sig.UIStateChange.defineSubtype('UIOutOfRange');     //  XForms
 
-//TP.sig.ResponderInteractionSignal.defineSubtype('DOMSubmitDone'); // XForms
-
 //  ========================================================================
 //  DOM SIGNALS
 //  ========================================================================
@@ -802,15 +813,6 @@ TP.sig.DOMSignal.defineSubtype('DOMInitializationSignal');
 TP.sig.DOMInitializationSignal.Type.defineAttribute('cancelable', false);
 
 //  ------------------------------------------------------------------------
-
-/*
-TP.sig.DOMInitializationSignal.defineSubtype('DOMModelConstruct');     //  XForms
-TP.sig.DOMInitializationSignal.defineSubtype('DOMModelConstructDone'); //  XForms
-TP.sig.DOMInitializationSignal.defineSubtype('DOMReady');              //  XForms
-TP.sig.DOMInitializationSignal.defineSubtype('DOMModelDestruct');      //  XForms
-*/
-
-//  ------------------------------------------------------------------------
 //  DOM Content Signals
 //  ------------------------------------------------------------------------
 
@@ -821,6 +823,12 @@ TP.sig.DOMSignal.defineSubtype('DOMLoaded');
 //  Fired when the content of a DOM node is loaded when the content is more
 //  markup.
 TP.sig.DOMLoaded.defineSubtype('DOMContentLoaded');
+
+//  ------------------------------------------------------------------------
+
+//  Fired when a DOM node is ready - it's dynamic content has been loaded, other
+//  dynamically loaded assets are realized, etc.
+TP.sig.DOMSignal.defineSubtype('DOMReady');   //  XForms
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -11,6 +11,12 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
+    <tibet:data name="urn:tibet:Bind6_person">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -27,12 +33,6 @@
 
     <label for="lastNameField">Last name: </label>
     <input type="text" id="lastNameField" bind:io="value: urn:tibet:Bind6_person#tibet(person.lastname)" tabindex="0"/><br/>
-
-    <tibet:data local="urn:tibet:Bind6_person">
-        <![CDATA[
-        {"person": {"lastname": "Smith", "firstname": "Joe"}}
-        ]]>
-    </tibet:data>
 
 </body>
 </html>
