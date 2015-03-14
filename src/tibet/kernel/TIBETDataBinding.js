@@ -1423,7 +1423,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
             if (TP.isCallable(transformFunc)) {
                 this.defineBinding(
-                    attrName, obsURIs.at(i),
+                    '@' + attrName, obsURIs.at(i),
                     'value', TP.ALL,
                     transformFunc);
 
@@ -1434,7 +1434,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 }
             } else {
                 this.defineBinding(
-                    attrName, obsURIs.at(i),
+                    '@' + attrName, obsURIs.at(i),
                     'value', TP.ALL);
 
                 if (refreshImmediately) {
