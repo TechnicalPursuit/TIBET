@@ -1553,7 +1553,7 @@ function(attrName, attrValue, scopeVals, direction) {
         //  have to destroy the binding that we set up the other way - from this
         //  object to the data model.
         if (direction === TP.OUT || direction === TP.IO) {
-            obsURI.destroyBinding('value', this, 'value');
+            obsURI.destroyBinding('value', this, attrName);
         }
     }
 
