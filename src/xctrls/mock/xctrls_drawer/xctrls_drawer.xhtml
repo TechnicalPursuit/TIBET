@@ -1,22 +1,18 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
-		xmlns:ev="http://www.w3.org/2001/xml-events"
-		xmlns:sig="http://www.technicalpursuit.com/1999/signals">
+        xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+        xmlns:ev="http://www.w3.org/2001/xml-events"
+        xmlns:sig="http://www.technicalpursuit.com/1999/signals">
 
 <head>
 <title>xctrls:drawer mock</title>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<script type="text/javascript"
-		src="~lib_build/tibet_hook.min.js">
-</script>
+<script src="~lib_build/tibet_hook.min.js"></script>
 
-<link type="text/css" rel="stylesheet" href="~lib_css/tibet.css"/>
+<link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
 <!--<link type="text/css" rel="stylesheet" href="~xctrls_drawer/xctrls_drawer.css"/>-->
 
@@ -35,9 +31,9 @@
 <!-- Top Drawer -->
 
 <xctrls:drawer id="top_drawer" ev:event="TP.sig.DOMShow" xctrls:edge="top" ev:observer="showTopDrawerButton">
-	<xctrls:body>
-	This is the top drawer.
-	</xctrls:body>
+    <xctrls:body>
+    This is the top drawer.
+    </xctrls:body>
 </xctrls:drawer>
 
 <ev:listener event="TP.sig.DOMHide" observer="#document" handler="top_drawer"/>
@@ -47,9 +43,9 @@
 <!-- Right Drawer -->
 
 <xctrls:drawer id="right_drawer" ev:event="TP.sig.DOMShow" xctrls:edge="right" ev:observer="showRightDrawerButton">
-	<xctrls:body>
-	This is the right drawer.
-	</xctrls:body>
+    <xctrls:body>
+    This is the right drawer.
+    </xctrls:body>
 </xctrls:drawer>
 
 <ev:listener event="TP.sig.DOMHide" observer="#document" handler="right_drawer"/>
@@ -59,9 +55,9 @@
 <!-- Bottom Drawer -->
 
 <xctrls:drawer id="bottom_drawer" ev:event="TP.sig.DOMShow" xctrls:edge="bottom" ev:observer="showBottomDrawerButton">
-	<xctrls:body>
-	This is the bottom drawer.
-	</xctrls:body>
+    <xctrls:body>
+    This is the bottom drawer.
+    </xctrls:body>
 </xctrls:drawer>
 
 <ev:listener event="TP.sig.DOMHide" observer="#document" handler="bottom_drawer"/>
@@ -71,9 +67,9 @@
 <!-- Left Drawer -->
 
 <xctrls:drawer id="left_drawer" ev:event="TP.sig.DOMShow" xctrls:edge="left" ev:observer="showLeftDrawerButton">
-	<xctrls:body>
-	This is the left drawer.
-	</xctrls:body>
+    <xctrls:body>
+    This is the left drawer.
+    </xctrls:body>
 </xctrls:drawer>
 
 <ev:listener event="TP.sig.DOMHide" observer="#document" handler="left_drawer"/>

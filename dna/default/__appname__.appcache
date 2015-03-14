@@ -12,7 +12,7 @@ CACHE MANIFEST
 CACHE:
 # !!! lib
 
-node_modules/tibet/lib/xhtml/tp_blank.xhtml
+node_modules/tibet/lib/xhtml/blank.xhtml
 node_modules/tibet/lib/css/tibet_boot.css
 node_modules/tibet/lib/img/boot/tpi_logo.png
 node_modules/tibet/lib/img/boot/nojs.png
@@ -78,11 +78,11 @@ CACHE:
 
 tibet.json
 
-html/UIROOT.xhtml
-html/UIBOOT.xhtml
+TIBET-INF/xhtml/UIROOT.xhtml
+TIBET-INF/xhtml/UIBOOT.xhtml
+TIBET-INF/xhtml/home.xhtml
 
-css/app.css
-css/master.css
+styles/app.css
 
 TIBET-INF/cfg/app.xml
 TIBET-INF/cfg/development.xml

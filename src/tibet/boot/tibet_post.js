@@ -7529,7 +7529,7 @@ TP.boot.$setStage = function(aStage, aReason) {
 
     image = info.image;
     if (TP.boot.$notEmpty(image)) {
-        //  Image is provided as a TIBET URL, ~lib_img etc. so we need to
+        //  Image is provided as a TIBET URL, ~lib_media etc. so we need to
         //  replace that with the proper prefix before setting as the img
         //  element's src.
 
@@ -8508,11 +8508,11 @@ TP.boot.$configureProject = function() {
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.rootpage'))) {
-        TP.sys.setcfg('project.rootpage', '~app_html/UIROOT.xhtml');
+        TP.sys.setcfg('project.rootpage', '~app_inf/xhtml/UIROOT.xhtml');
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
-        TP.sys.setcfg('project.homepage', '~app_html/home.xhtml');
+        TP.sys.setcfg('project.homepage', '~app_inf/xhtml/home.xhtml');
     }
 
     return;

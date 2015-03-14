@@ -79,7 +79,7 @@ Cmd.prototype.HELP =
 'The optional --name parameter lets you rename from the directory name\n' +
 'to an alternative name. This lets the directory and appname vary. This\n' +
 'is common when cloning to existing directories or poorly named ones\n' +
-'like those produced by GitHub Pages repositories.\n\n' +
+'like those required for GitHub Pages repositories.\n\n' +
 
 'The optional --dna parameter lets you clone any valid template in\n' +
 'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +

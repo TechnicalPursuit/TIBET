@@ -366,7 +366,7 @@ if (typeof navigator === 'undefined') {
 //  ---
 
 //  the default page used to initialize an xhtml canvas or display "nothing"
-TP.sys.setcfg('tibet.blankpage', '~lib_xhtml/tp_blank.xhtml');
+TP.sys.setcfg('tibet.blankpage', '~lib_xhtml/blank.xhtml');
 
 //  the file used to initialize a dynamically generated XML-based IFRAME.
 TP.sys.setcfg('tibet.iframepage', '~lib_xhtml/tp_launch_stub.xhtml');
@@ -533,9 +533,6 @@ TP.sys.setcfg('path.lib_cfg', '~lib_lib/cfg');
 TP.sys.setcfg('path.app_cmd', '~app_inf/cmd');
 TP.sys.setcfg('path.lib_cmd', '~lib_lib/cmd');
 
-TP.sys.setcfg('path.app_css', '~app/css');
-TP.sys.setcfg('path.lib_css', '~lib_lib/css');
-
 TP.sys.setcfg('path.app_dat', '~app_inf/dat');
 TP.sys.setcfg('path.lib_dat', '~lib_lib/dat');
 
@@ -548,23 +545,23 @@ TP.sys.setcfg('path.lib_dna', '~lib/dna');
 TP.sys.setcfg('path.app_etc', '~app/etc');
 TP.sys.setcfg('path.lib_etc', '~lib/etc');
 
-TP.sys.setcfg('path.app_html', '~app/html');
-TP.sys.setcfg('path.lib_html', '~lib_lib/html');
-
 TP.sys.setcfg('path.app_xhtml', '~app/xhtml');
 TP.sys.setcfg('path.lib_xhtml', '~lib_lib/xhtml');
 
-TP.sys.setcfg('path.app_img', '~app/img');
-TP.sys.setcfg('path.lib_img', '~lib_lib/img');
-
 TP.sys.setcfg('path.app_lib', '~app/lib');
 TP.sys.setcfg('path.lib_lib', '~lib/lib');
+
+TP.sys.setcfg('path.app_media', '~app/media');
+TP.sys.setcfg('path.lib_media', '~lib_lib/media');
 
 TP.sys.setcfg('path.app_npm', '~/' + TP.sys.cfg('path.npm_dir'));
 TP.sys.setcfg('path.lib_npm', '~lib/' + TP.sys.cfg('path.npm_dir'));
 
 TP.sys.setcfg('path.app_src', '~app/src');
 TP.sys.setcfg('path.lib_src', '~lib/src');
+
+TP.sys.setcfg('path.app_styles', '~app/styles');
+TP.sys.setcfg('path.lib_styles', '~lib_lib/styles');
 
 TP.sys.setcfg('path.app_tsh', '~app_inf/tsh');
 TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
@@ -587,7 +584,7 @@ TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
 TP.sys.setcfg('path.app_change', '~app_src/changes');
 TP.sys.setcfg('path.app_log', '~app_inf/log');
 TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
-TP.sys.setcfg('path.app_xmlbase', '~app_html');
+TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
 //  TIBET namespace source is used often enough that a shortcut is nice
 TP.sys.setcfg('path.tibet_src', '~lib_src/tibet');
@@ -1275,7 +1272,7 @@ TP.sys.setcfg('sherpa.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
 //  the initial location to load into screen_0 in the Sherpa. Note that this
 //  might be the same as 'project.homepage', but the Sherpa contains machinery
 //  to manually replace 'tibet:root' with the current app's app tag.
-TP.sys.setcfg('path.sherpa.screen_0', '~app_html/home.xhtml');
+TP.sys.setcfg('path.sherpa.screen_0', '~app_inf/xhtml/home.xhtml');
 
 //  ---
 //  tds support
@@ -1475,7 +1472,7 @@ TP.sys.setcfg('tibet.sherpa', false);
 //  your server on successful login.
 TP.sys.setcfg('tibet.indexpage', '~/index.html');
 
-TP.sys.setcfg('tibet.loginpage', '~app_html/login.html');
+TP.sys.setcfg('tibet.loginpage', '~app_xhtml/login.xhtml');
 
 //  ---
 //  tuning

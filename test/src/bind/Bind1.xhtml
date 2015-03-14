@@ -1,16 +1,13 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
         xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 <head>
 
-	<title></title>
+    <title></title>
 
-	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
-	</script>
+    <script src="~lib_lib/src/tibet_hook.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
@@ -18,17 +15,17 @@
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
 
-	<h2>Bind Test #1</h2><br/>
-	<br/>
-	<br/>
-	This test sets up a 'simple binding' between the fields and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
-	<br/>
-	<br/>
+    <h2>Bind Test #1</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a 'simple binding' between the fields and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+    <br/>
+    <br/>
 
-	<label for="firstNameField">First name: </label>
+    <label for="firstNameField">First name: </label>
     <input type="text" id="firstNameField" bind:io="value: urn:tibet:Bind1_person#xpath1(/person/firstname)" tabindex="0"/><br/>
 
-	<label for="lastNameField">Last name: </label>
+    <label for="lastNameField">Last name: </label>
     <input type="text" id="lastNameField" bind:io="value: urn:tibet:Bind1_person#xpath1(/person/lastname)" tabindex="0"/><br/>
 
     <tibet:data local="urn:tibet:Bind1_person">

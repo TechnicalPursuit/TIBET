@@ -1,5 +1,3 @@
-<?xml version="1.0"?>
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -7,29 +5,28 @@
 
 <head>
 
-	<title></title>
+    <title></title>
 
-	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
-	</script>
+    <script src="~lib_lib/src/tibet_hook.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
-	<style type="text/css">
-	<![CDATA[
-	@namespace pclass url(urn:tibet:pseudoclass);
+    <style type="text/css">
+    <![CDATA[
+    @namespace pclass url(urn:tibet:pseudoclass);
 
-	/*input[type=text]:invalid*/
-	input[type=text][pclass|invalid]
-	{
-		color: red;
-	}
-	]]>
-	</style>
+    /*input[type=text]:invalid*/
+    input[type=text][pclass|invalid]
+    {
+        color: red;
+    }
+    ]]>
+    </style>
 
-	<tibet:data id="Validation1Data" local="urn:tibet:Validation1_person" resultType="TP.test.BaseMarkupEmployee">
-		<person xmlns="">
-			<lastname>Smith</lastname>
-			<firstname>Joe</firstname>
+    <tibet:data id="Validation1Data" local="urn:tibet:Validation1_person" resultType="TP.test.BaseMarkupEmployee">
+        <person xmlns="">
+            <lastname>Smith</lastname>
+            <firstname>Joe</firstname>
             <age>48</age>
             <address>
                 <street_address>111 Main St.</street_address>
@@ -38,30 +35,30 @@
             </address>
             <gender>male</gender>
             <SSN>555-55-5555</SSN>
-		</person>
-	</tibet:data>
+        </person>
+    </tibet:data>
 
 </head>
 
 <body>
 
-	<h2>Validation Test #1</h2><br/>
+    <h2>Validation Test #1</h2><br/>
 
-	<br/>
-	<br/>
-	This test sets up an XHTML 'input type="text"' element, bound to an underlying data model defined in the test code. The attendant data types are also defined in the code.
-	<br/>
+    <br/>
+    <br/>
+    This test sets up an XHTML 'input type="text"' element, bound to an underlying data model defined in the test code. The attendant data types are also defined in the code.
+    <br/>
     <br/>
     The test code changes the text value of the element to an invalid value, which then changes the bound data value to an invalid value and the text field changes its appearance based on that fact.
-	<br/>
+    <br/>
     <br/>
     The test code then changes the text value of the element back to a valid value, which then changes the bound data value to a valid value and the text field changes its appearance based on that fact.
-	<br/>
+    <br/>
     <br/>
     A variety of signals are thrown by the various objects involved.
-	<br/>
+    <br/>
 
-	<label for="ageField">Age: </label>
+    <label for="ageField">Age: </label>
     <input type="text" id="ageField" bind:io="value: urn:tibet:Validation1_person#tibet(age)" tabindex="0"/><br/>
 
 </body>

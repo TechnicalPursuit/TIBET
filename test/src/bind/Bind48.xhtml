@@ -1,16 +1,13 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
         xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 <head>
 
-	<title></title>
+    <title></title>
 
-	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
-	</script>
+    <script src="~lib_lib/src/tibet_hook.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
 
@@ -18,15 +15,15 @@
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
 
-	<h2>Bind Test #48</h2><br/>
-	<br/>
-	<br/>
-	This test sets up a test in a 'repeating context' where elements bound with embedded syntax that have binding expressions in them with variables are used. There is surrounding literal content.
-	<br/>
-	<br/>
+    <h2>Bind Test #48</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a test in a 'repeating context' where elements bound with embedded syntax that have binding expressions in them with variables are used. There is surrounding literal content.
+    <br/>
+    <br/>
     Since these expressions use variables, they won't be using data from their data source, but they will be re-evaluated when their data source changes.
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
     <span bind:repeat="urn:tibet:Bind48_person_xml#xpath1(/people/person)">
         <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>

@@ -361,7 +361,7 @@ function() {
         toggleKey,
         bootframe;
 
-    rootLoc = TP.uriJoinPaths('~app_html', TP.sys.cfg('project.rootpage'));
+    rootLoc = TP.uriJoinPaths('~app_inf/xhtml', TP.sys.cfg('project.rootpage'));
 
     //  Construct a TP.core.URI wrapper around the location and perform a
     //  rewrite on it, in case its actually a URI that's been mapped using

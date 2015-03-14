@@ -5,6 +5,6 @@
         "dna": "{{dna}}"
     },
     "boot": {
-        "profile": "standard.xml"
+        "profile": "development#developer"
     }
 }

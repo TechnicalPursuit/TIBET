@@ -17,8 +17,8 @@ mechanism is provided for map setup.
 <!-- Takes advantage of on-the-fly document.write() and a call into the
 TIBET code frame to dynamically compute the source URI to load the code from
 -->
-<script type="text/javascript">
-document.write('<script type="text/javascript" src="' + window.frameElement.computeMapSrc() + '"><' + '/script>');
+<script>
+document.write('<script src="' + window.frameElement.computeMapSrc() + '"><' + '/script>');
 </script>
 
 <style type="text/css">
