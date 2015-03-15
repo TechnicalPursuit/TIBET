@@ -172,7 +172,7 @@ function(aRequest) {
     objectVal = {};
     objectVal.foo = 'bar';
 
-    functionVal = function() {return 'fluffy';};
+    functionVal = function() {return 'fluffy'; };
 
     nanVal = NaN;
     invalidDateVal = new Date('fluffy');

@@ -274,7 +274,7 @@ Cmd.prototype.executeForEach = function(list) {
 
     files = sh.find(dirs).filter(function(file) {
         return !sh.test('-d', file) &&
-            !file.match(/img\/boot/);
+            !file.match(/media\/boot/);
     });
 
     // Package files are provided in fully expanded form to avoid problems

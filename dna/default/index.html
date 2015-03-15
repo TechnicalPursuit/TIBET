@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" no-manifest="{{appname}}.appcache">
+<html xmlns="http://www.w3.org/1999/xhtml" no-manifest="./cfg/{{appname}}.appcache">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
@@ -25,15 +25,29 @@ iframe {
 </head>
 <body onload="init()">
 
-<iframe id="UIROOT" frameborder="0" src="./TIBET-INF/xhtml/blank.xhtml"></iframe>
-<iframe id="UIBOOT" frameborder="0" src="./TIBET-INF/xhtml/UIBOOT.xhtml"></iframe>
+<iframe id="UIROOT" frameborder="0"
+    src="./TIBET-INF/boot/xhtml/blank.xhtml"></iframe>
+<iframe id="UIBOOT" frameborder="0"
+    src="./TIBET-INF/boot/xhtml/UIBOOT.xhtml"></iframe>
 
-<script src="./node_modules/tibet/lib/src/tibet_init.js"></script>
+<script src="./node_modules/tibet/lib/src/tibet_init.min.js"></script>
 
 <script>
 //<![CDATA[
 function init() {
-    TP.boot.launch();
+    if (window['TP'] && TP.boot) {
+        TP.boot.launch();
+        return;
+    }
+
+    //  If TP isn't real it means tibet_init wasn't found. Try to notify about
+    //  that in a reasonable fashion so the UI doesn't just look hung.
+    if (top.UIBOOT && top.UIBOOT.contentDocument) {
+        top.UIBOOT.contentDocument.getElementById('BOOT-IMAGE').src =
+            '../media/alert.png'
+        top.UIBOOT.contentDocument.getElementById('BOOT-SUBHEAD').innerHTML =
+            'Error loading. Was the project initialized via `tibet init`?'
+    }
 }
 //]]>
 </script>

@@ -1678,7 +1678,7 @@ function(controlParams) {
 
     //  build a function we can use repeatedly for queueing the work
     thisref = this;
-    this.$timedWork = function() {thisref.$work();};
+    this.$timedWork = function() {thisref.$work(); };
 
     return this;
 });

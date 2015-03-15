@@ -8508,11 +8508,11 @@ TP.boot.$configureProject = function() {
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.rootpage'))) {
-        TP.sys.setcfg('project.rootpage', '~app_inf/xhtml/UIROOT.xhtml');
+        TP.sys.setcfg('project.rootpage', '~boot_xhtml/UIROOT.xhtml');
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
-        TP.sys.setcfg('project.homepage', '~app_inf/xhtml/home.xhtml');
+        TP.sys.setcfg('project.homepage', '~boot_xhtml/home.xhtml');
     }
 
     return;

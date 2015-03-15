@@ -22,7 +22,7 @@
 TP.defineNamespace('test', 'TP');
 
 //  Create a custom Error for use in Assert processing.
-AssertionFailed = function(message) { this.message = message;};
+AssertionFailed = function(message) { this.message = message; };
 AssertionFailed.prototype = new Error();
 AssertionFailed.prototype.name = 'AssertionFailed';
 

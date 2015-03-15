@@ -6277,7 +6277,7 @@ function() {
             (function() {
 
                 //  Load the DTD information for HTML 4.01 Strict
-                dtdInfoURI = TP.uc('~lib_lib/json/html401_strict.json');
+                dtdInfoURI = TP.uc('~lib_schema/html401_strict.json');
                 dtdInfo = dtdInfoURI.getResource(
                                     TP.hc('async', false,
                                             'contentHandler', this));

@@ -6,50 +6,50 @@
 
 <head>
 
-	<title></title>
+    <title></title>
 
-    <script src="~lib_lib/src/tibet_hook.js"></script>
+    <script src="~lib_build/tibet_hook.js"></script>
 
-	<link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
 </head>
 
 <body xmlns:xi="http://www.w3.org/2001/XInclude">
 
-	<h2>XInclude Test #2</h2><br/>
-	<br/>
-	<br/>
-	This test ensures that the XInclude processing is working properly.<br/>
+    <h2>XInclude Test #2</h2><br/>
+    <br/>
+    <br/>
+    This test ensures that the XInclude processing is working properly.<br/>
 
-	It tests 'partial' XInclude tags, that is XIncludes that will include only a portion of the content of their href URI when encountered. XPointer syntax is used to extract a portion of the content:<br/>
-	<br/>
-	<br/>
-	Here is an example of using 'id's (i.e. XPointer 'bare name' syntax):<br/>
+    It tests 'partial' XInclude tags, that is XIncludes that will include only a portion of the content of their href URI when encountered. XPointer syntax is used to extract a portion of the content:<br/>
+    <br/>
+    <br/>
+    Here is an example of using 'id's (i.e. XPointer 'bare name' syntax):<br/>
 
-	&lt;xi:include href="XIncludePart2.xml" xpointer="partialDiv"&gt;&lt;/xi:include&gt;
-	<br/>
-	<br/>
-
-	<xi:include href="XIncludePart2.xml" xpointer="partialDiv">
-		<xi:fallback>
-		Couldn't get Part #2. Shouldn't get here.
-		</xi:fallback>
-    </xi:include>
-
-	<br/>
-	<br/>
-	Here is an example of using XPath syntax (i.e. utilizing the xpointer() function):<br/>
-
-	&lt;xi:include href="XIncludePart2.xml" xpointer="xpointer(//*[name() = 'p'])"&gt;&lt;/xi:include&gt;
-
-	<br/>
+    &lt;xi:include href="XIncludePart2.xml" xpointer="partialDiv"&gt;&lt;/xi:include&gt;
+    <br/>
     <br/>
 
-	<xi:include href="XIncludePart2.xml" xpointer="xpointer(//*[name() = 'p'])">
-		<xi:fallback>
-		Couldn't get Part #2. Shouldn't get here.
-		</xi:fallback>
-	</xi:include>
+    <xi:include href="XIncludePart2.xml" xpointer="partialDiv">
+        <xi:fallback>
+        Couldn't get Part #2. Shouldn't get here.
+        </xi:fallback>
+    </xi:include>
+
+    <br/>
+    <br/>
+    Here is an example of using XPath syntax (i.e. utilizing the xpointer() function):<br/>
+
+    &lt;xi:include href="XIncludePart2.xml" xpointer="xpointer(//*[name() = 'p'])"&gt;&lt;/xi:include&gt;
+
+    <br/>
+    <br/>
+
+    <xi:include href="XIncludePart2.xml" xpointer="xpointer(//*[name() = 'p'])">
+        <xi:fallback>
+        Couldn't get Part #2. Shouldn't get here.
+        </xi:fallback>
+    </xi:include>
 
 </body>
 </html>

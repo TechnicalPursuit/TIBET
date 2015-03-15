@@ -8,10 +8,6 @@
  */
 //  ========================================================================
 
-//  ========================================================================
-//  URI
-//  ========================================================================
-
 TP.describe('uriJoinFragments',
 function() {
 
@@ -342,13 +338,27 @@ function() {
     });
 });
 
-//  ========================================================================
-//  Run those babies!
-//  ------------------------------------------------------------------------
+TP.describe('uriResolvePaths',
+function() {
+    var path1,
+        path2,
+        result;
 
-/*
-TP.runTestSuites();
-*/
+    this.beforeEach(function() {
+        path1 = null;
+        path2 = null;
+        result = null;
+    });
+
+    this.it('joins file paths properly', function(test, options) {
+        path1 = 'file:///dev/fluffy/TIBET-INF/boot/xhtml/';
+        path2 = '../../../styles/app.css';
+        result = TP.uriResolvePaths(path1, path2);
+        test.assert.isEqualTo(result,
+            'file:///dev/fluffy/styles/app.css');
+    });
+
+});
 
 //  ------------------------------------------------------------------------
 //  end

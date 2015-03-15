@@ -524,6 +524,9 @@ TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
 TP.sys.setcfg('path.app_bin', '~app/bin');
 TP.sys.setcfg('path.lib_bin', '~lib/bin');
 
+TP.sys.setcfg('path.app_boot', '~app_inf/boot');
+TP.sys.setcfg('path.lib_boot', '~lib_inf/boot');
+
 TP.sys.setcfg('path.app_build', '~app/build');
 TP.sys.setcfg('path.lib_build', '~lib_lib/src');
 
@@ -545,23 +548,25 @@ TP.sys.setcfg('path.lib_dna', '~lib/dna');
 TP.sys.setcfg('path.app_etc', '~app/etc');
 TP.sys.setcfg('path.lib_etc', '~lib/etc');
 
-TP.sys.setcfg('path.app_xhtml', '~app/xhtml');
-TP.sys.setcfg('path.lib_xhtml', '~lib_lib/xhtml');
-
 TP.sys.setcfg('path.app_lib', '~app/lib');
 TP.sys.setcfg('path.lib_lib', '~lib/lib');
 
 TP.sys.setcfg('path.app_media', '~app/media');
 TP.sys.setcfg('path.lib_media', '~lib_lib/media');
+TP.sys.setcfg('path.boot_media', '~app_boot/media');
 
 TP.sys.setcfg('path.app_npm', '~/' + TP.sys.cfg('path.npm_dir'));
 TP.sys.setcfg('path.lib_npm', '~lib/' + TP.sys.cfg('path.npm_dir'));
+
+TP.sys.setcfg('path.app_schema', '~app/schema');
+TP.sys.setcfg('path.lib_schema', '~lib_lib/schema');
 
 TP.sys.setcfg('path.app_src', '~app/src');
 TP.sys.setcfg('path.lib_src', '~lib/src');
 
 TP.sys.setcfg('path.app_styles', '~app/styles');
 TP.sys.setcfg('path.lib_styles', '~lib_lib/styles');
+TP.sys.setcfg('path.boot_styles', '~app_boot/styles');
 
 TP.sys.setcfg('path.app_tsh', '~app_inf/tsh');
 TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
@@ -569,17 +574,17 @@ TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
 TP.sys.setcfg('path.app_tst', '~app/test');
 TP.sys.setcfg('path.lib_tst', '~lib/test');
 
+TP.sys.setcfg('path.app_xhtml', '~app/xhtml');
+TP.sys.setcfg('path.lib_xhtml', '~lib_lib/xhtml');
+TP.sys.setcfg('path.boot_xhtml', '~app_boot/xhtml');
+
 TP.sys.setcfg('path.app_xml', '~app_inf/xml');
 TP.sys.setcfg('path.lib_xml', '~lib_lib/xml');
 
 TP.sys.setcfg('path.app_xsl', '~app_inf/xsl');
 TP.sys.setcfg('path.lib_xsl', '~lib_lib/xsl');
 
-TP.sys.setcfg('path.app_xs', '~app_inf/xs');
-TP.sys.setcfg('path.lib_xs', '~lib_lib/xs');
-
 //  app-only virtual paths
-TP.sys.setcfg('path.app_boot', '~lib/src/tibet/boot');
 TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
 TP.sys.setcfg('path.app_change', '~app_src/changes');
 TP.sys.setcfg('path.app_log', '~app_inf/log');
@@ -1272,7 +1277,7 @@ TP.sys.setcfg('sherpa.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
 //  the initial location to load into screen_0 in the Sherpa. Note that this
 //  might be the same as 'project.homepage', but the Sherpa contains machinery
 //  to manually replace 'tibet:root' with the current app's app tag.
-TP.sys.setcfg('path.sherpa.screen_0', '~app_inf/xhtml/home.xhtml');
+TP.sys.setcfg('path.sherpa.screen_0', '~boot_xhtml/home.xhtml');
 
 //  ---
 //  tds support

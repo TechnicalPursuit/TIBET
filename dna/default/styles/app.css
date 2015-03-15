@@ -14,11 +14,10 @@
     margin-left: auto;
     margin-right: auto;
     border-radius: 3px;
-    font-size: 93%;
 }
 
 .hello {
-    font-size: 100%;
+    font-size: 108%;
     font-weight: bold;
     max-width: 500px;
     margin: auto;

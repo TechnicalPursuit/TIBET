@@ -505,7 +505,6 @@ function(transitionDetails, nested) {
 
     var child,
         state,
-        parent,
         signal;
 
     if (TP.isValid(child = this.get('child'))) {
@@ -713,8 +712,6 @@ function(aState) {
      *     current state.
      * @returns {String} The normalized state name.
      */
-
-    var state;
 
     if (TP.isString(aState)) {
         return aState.asTitleCase();
@@ -960,8 +957,6 @@ function(signalOrParams) {
         i,
         targetState,
         guard,
-        parent,
-        stateCheck,
         stateName;
 
     //  Check the various state test functions and determine what our state

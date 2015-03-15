@@ -296,7 +296,7 @@ function() {
 
         //  Using a local hash - key has Function value
         testRep = ''.format('Bill says: %{aKey}',
-                            TP.hc('aKey', function() {return 'hi there';}));
+                            TP.hc('aKey', function() {return 'hi there'; }));
         correctRep = 'Bill says: hi there';
 
         test.assert.isEqualTo(
@@ -309,7 +309,7 @@ function() {
         //  Using a local hash - key has Function value that takes a param - the
         //  value being formatted
         testRep = 'Bill'.format('What\'s your name? %{aKey}',
-                TP.hc('aKey', function(item) {return 'My name is: ' + item;}));
+                TP.hc('aKey', function(item) {return 'My name is: ' + item; }));
 
         correctRep = 'What\'s your name? My name is: Bill';
 
@@ -404,7 +404,7 @@ function() {
 
         //  ---
 
-        testRep = 'Bill says: %{aKey}'.transform(null, TP.hc('aKey', function() {return 'hi there';}));
+        testRep = 'Bill says: %{aKey}'.transform(null, TP.hc('aKey', function() {return 'hi there'; }));
 
         correctRep = 'Bill says: hi there';
 
@@ -415,7 +415,7 @@ function() {
 
         //  ---
 
-        testRep = 'What\'s your name? %{aKey}'.transform('Bill', TP.hc('aKey', function(item) {return 'My name is: ' + item;}));
+        testRep = 'What\'s your name? %{aKey}'.transform('Bill', TP.hc('aKey', function(item) {return 'My name is: ' + item; }));
         correctRep = 'What\'s your name? My name is: Bill';
 
         test.assert.isEqualTo(

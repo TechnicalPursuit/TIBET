@@ -5184,7 +5184,7 @@ function() {
      * @fires Change
      */
 
-    this.convert(function(it, ind) {return it.first();});
+    this.convert(function(it, ind) {return it.first(); });
 
     return this;
 });
@@ -6370,7 +6370,7 @@ function(aFilter) {
 
         thisref;
 
-    filter = aFilter || function(item) {return TP.notValid(item.last());};
+    filter = aFilter || function(item) {return TP.notValid(item.last()); };
 
     items = this.select(
         function(item, index) {
@@ -8043,7 +8043,7 @@ function(aValue, aTest) {
         });
 
     //  return the keys from our itemset, those are our 'indexes'
-    return items.collect(function(item) {return item.first();});
+    return items.collect(function(item) {return item.first(); });
 });
 
 //  ------------------------------------------------------------------------

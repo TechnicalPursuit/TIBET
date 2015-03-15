@@ -1312,147 +1312,18 @@ function(aRootPath, aRelativePath, filePath) {
      * @returns {String}
      */
 
-    var url,
-        prefix,
-        first,
-        second,
-        type;
+    var first,
+        second;
 
-    //  if there's no second path then we can do things quicker for the
-    //  common cases where we've only been provided a root path
-    if (TP.isEmpty(aRelativePath)) {
-        if (TP.isEmpty(aRootPath)) {
-            return decodeURI(window.location.toString());
-        } else {    //  root path only, most common case
-            first = TP.str(aRootPath);
+    first = aRootPath;
 
-            //  when the first path was a ~ or scheme-based path we can
-            //  just return it, but we prepend tibet:/// to normalize tibet
-            //  refs
-            if (TP.uriIsAbsolute(first)) {
-                return TP.regex.VIRTUAL_URI_PREFIX.test(first) ?
-                        'tibet:///' + first :
-                        first;
-            }
-
-            //  first path isn't considered absolute? all we can do is
-            //  expand it as best we can and return the result if it's
-            //  absolute
-            if (first.indexOf('//') === 0) {
-                //  special case which strips host and/or drive spec
-                prefix = TP.sys.getScheme();
-
-                return prefix.last() === ':' ? prefix + first :
-                                                prefix + ':' + first;
-            } else if (first.indexOf('/') === 0) {
-                //  a leading slash is actually relative to the launch root
-                //  which with http is the server root and with files is
-                //  supported here as relative to the root of the drive
-                //  (Win) or file system (*NIX) from which we launched
-
-                //  Note here how we slice off the leading slash from
-                //  first so that TP.uriJoinPaths() doesn't think its an
-                //  absolute path and just return it as the result.
-                return TP.uriJoinPaths(TP.sys.getLaunchRoot(),
-                                        first.slice(1));
-            }
-
-            //  first path is relative, no second path, so we'll default to
-            //  presuming things are relative to the app root
-            return TP.uriJoinPaths(TP.sys.getAppRoot(), first);
-        }
-    } else {    //  second path not empty
-        //  next test is whether the second path is absolute and if it is
-        //  we can simply return it (but we prepend tibet:/// to normalize
-        //  tibet refs). Note that TIBET URIs prefixed with ~ are considered
-        //  absolute for this test
-        if (TP.uriIsAbsolute(aRelativePath)) {
-            return TP.regex.VIRTUAL_URI_PREFIX.test(aRelativePath) ?
-                        'tibet:///' + aRelativePath :
-                        aRelativePath;
-        }
-
-        //  two other cases where we may still have an absolute path, but we
-        //  need to expand them to their full form before we return
-        second = TP.str(aRelativePath);
-
-        if (second.indexOf('//') === 0) {
-            //  special case which strips host and/or drive spec
-            prefix = TP.sys.getScheme();
-
-            return prefix.last() === ':' ? prefix + second :
-                                            prefix + ':' + second;
-        } else if (second.indexOf('/') === 0) {
-            //  a leading slash is actually relative to the launch root
-            //  which with http is the server root and with files is
-            //  supported here as relative to the root of the drive
-            //  (Win) or file system (*NIX) from which we launched
-
-            //  Note here how we slice off the leading slash from second
-            //  so that TP.uriJoinPaths() doesn't think its an absolute path
-            //  and just return it as the result.
-            return TP.uriJoinPaths(TP.sys.getLaunchRoot(), second.slice(1));
-        }
-
-        if (TP.isEmpty(aRootPath)) {
-            //  second appears to be truly relative, but no first...
-            return TP.uriJoinPaths(TP.sys.getAppRoot(), second);
-        } else {
-            //  two path values...so we'll be doing some form of join...
-            first = TP.str(aRootPath);
-
-            //  to use the lower-level calls to generate a properly adjusted
-            //  second. path we'll need to fully expand the first path
-            if (first.indexOf('~') === 0) {
-                //  TODO:   verify this matters, otherwise just expandTilde
-                if (TP.isType(type =
-                                TP.sys.getTypeByName('TP.core.TIBETURL'))) {
-                    if (TP.isValid(url =
-                                    type.construct('tibet:///' + first))) {
-                        //  force URI resolution to occur
-                        if (TP.isURI(url = url.getPrimaryURI())) {
-                            first = url.getLocation();
-                        }
-                    }
-                } else {
-                    first = TP.uriExpandPath(first);
-                }
-
-                //  didn't resolve? then we can consider the first URI
-                //  invalid
-                if (TP.isEmpty(first) || first.indexOf('~') === 0) {
-                    return TP.raise(this, 'TP.sig.InvalidURI',
-                            'First URI must resolve to absolute path.');
-                }
-            } else if (first.indexOf('//') === 0) {
-                //  special case which strips host and/or drive spec
-                prefix = TP.sys.getScheme();
-
-                first = prefix.last() === ':' ? prefix + first :
-                                                prefix + ':' + first;
-            } else if (first.indexOf('/') === 0) {
-                //  a leading slash is actually relative to the launch root
-                //  which with http is the server root and with files is
-                //  supported here as relative to the root of the drive
-                //  (Win) or file system (*NIX) from which we launched
-
-                //  Note here how we slice off the leading slash from
-                //  first so that TP.uriJoinPaths() doesn't think its an
-                //  absolute path and just return it as the result.
-                first = TP.uriJoinPaths(TP.sys.getLaunchRoot(),
-                                        first.slice(1));
-            }
-
-            //  with the path expanded we can now use the lower-level call
-            //  to get the second path "adjusted" for use, paying attention
-            //  to any file path information passed in regarding the root
-            second = TP.uriRelativeToPath(second, first, filePath);
-
-            return TP.uriJoinPaths(first, second);
-        }
+    if (filePath) {
+        second = TP.uriRelativeToPath(second, first, filePath);
+    } else {
+        second = aRelativePath;
     }
 
-    return;
+    return TP.uriJoinPaths(first, second);
 });
 
 //  ------------------------------------------------------------------------

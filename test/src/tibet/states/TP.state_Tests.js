@@ -343,8 +343,6 @@ function() {
 
     this.it('raises when multiple-choice transition',
     function(test, options) {
-        var params,
-            called;
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('start', 'notfinish');
@@ -483,8 +481,7 @@ function() {
     function(test, options) {
         var called,
             prior,
-            next,
-            handler;
+            next;
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -508,8 +505,7 @@ function() {
     function(test, options) {
         var called,
             prior,
-            next,
-            handler;
+            next;
         TP.sys.getApplication().setStateMachine(machine);
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
@@ -535,8 +531,7 @@ function() {
     function(test, options) {
         var called,
             prior,
-            next,
-            handler;
+            next;
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -560,8 +555,7 @@ function() {
     function(test, options) {
         var called,
             prior,
-            next,
-            handler;
+            next;
         TP.sys.getApplication().setStateMachine(machine);
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
@@ -587,8 +581,7 @@ function() {
     function(test, options) {
         var called,
             prior,
-            next,
-            handler;
+            next;
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -612,8 +605,7 @@ function() {
     function(test, options) {
         var called,
             prior,
-            next,
-            handler;
+            next;
         TP.sys.getApplication().setStateMachine(machine);
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
@@ -710,8 +702,7 @@ function() {
     this.it('specializes bubbled triggers by current child state',
     function(test, options) {
         var m2,
-            called,
-            called2;
+            called;
 
         TP.sys.getApplication().setStateMachine(machine);
 
@@ -748,8 +739,7 @@ function() {
     this.it('specializes bubbled triggers by current outer state',
     function(test, options) {
         var m2,
-            called,
-            called2;
+            called;
 
         TP.sys.getApplication().setStateMachine(machine);
 

@@ -205,7 +205,7 @@ function() {
 
     //  Manually add the stylesheet
     stylesheetLoc = TP.uc(
-            '~lib_src/tibet/tools/tdc/css/TP.tsh.console.css').getLocation();
+            '~lib_src/tibet/tools/tdc/styles/TP.tsh.console.css').getLocation();
     TP.documentAddLinkElement(doc, stylesheetLoc);
 
     //  Prep the UI for full console mode.

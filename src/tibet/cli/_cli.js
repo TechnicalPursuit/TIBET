@@ -129,7 +129,7 @@ CLI.GULP_FILE = 'gulpfile.js';
  * launch root location, not app root or lib root.
  * @type {string}
  */
-CLI.MAKE_FILE = '~/makefile.js';
+CLI.MAKE_FILE = 'makefile.js';
 
 
 /**
@@ -549,13 +549,21 @@ CLI.getCommandPath = function(command) {
  * @returns {boolean} True if the target is found.
  */
 CLI.getMakeTargets = function() {
-    var fullpath;
+    var fullpath,
+        prefix;
 
     if (this.make_targets) {
         return this.make_targets;
     }
 
-    fullpath = this.expandPath(this.MAKE_FILE);
+    //  Prefix varies by whether we're in a project or not.
+    if (this.inProject()) {
+        prefix = '~app_cmd';
+    } else if (this.inLibrary()) {
+        prefix = '~';
+    }
+
+    fullpath = this.expandPath(path.join(prefix, this.MAKE_FILE));
 
     if (!sh.test('-f', fullpath)) {
         this.debug('Project make file not found: ' + fullpath);

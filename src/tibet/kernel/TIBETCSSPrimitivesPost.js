@@ -827,11 +827,11 @@ function(aLongNumber) {
     str = '#';
 
     /* jshint bitwise:false */
-    /* eslint-disable no-constant-condition,no-extra-parens */
+    /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
     for (i = 24; (i -= 4) >= 0;) {
         str += hexChars.charAt((aLongNumber >> i) & 0xF);
     }
-    /* eslint-enable no-constant-condition,no-extra-parens */
+    /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
     /* jshint bitwise:true */
 
     return str;
@@ -875,14 +875,14 @@ function(color1, color2, aPercentage) {
     n = 0;
 
     /* jshint bitwise:false */
-    /* eslint-disable no-constant-condition,no-extra-parens */
+    /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
     for (i = 24; (i -= 8) >= 0;) {
         ca = (color1 >> i) & 0xFF;
         cb = (color2 >> i) & 0xFF;
         cc = Math.floor(ca * (1 - aPercentage) + cb * aPercentage);
         n |= cc << i;
     }
-    /* eslint-enable no-constant-condition,no-extra-parens */
+    /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
     /* jshint bitwise:true */
 
     return n;

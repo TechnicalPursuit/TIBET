@@ -6,49 +6,49 @@
 
 <head>
 
-	<title></title>
+    <title></title>
 
-    <script src="~lib_lib/src/tibet_hook.min.js"></script>
+    <script src="~lib_build/tibet_hook.min.js"></script>
 
-	<link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
 </head>
 
 <body xmlns:xi="http://www.w3.org/2001/XInclude">
 
-	<h2>XInclude Test #1</h2><br/>
-	<br/>
-	<br/>
-	This test ensures that the XInclude processing is working properly.<br/>
+    <h2>XInclude Test #1</h2><br/>
+    <br/>
+    <br/>
+    This test ensures that the XInclude processing is working properly.<br/>
 
-	It tests 'simple' XInclude tags, that is XIncludes that will include the entire content of their href URI when encountered:<br/>
-	<br/>
-	<br/>
-	&lt;xi:include href="XIncludePart1.xml"&lt;/xi:include&gt;<br/>
-	<br/>
+    It tests 'simple' XInclude tags, that is XIncludes that will include the entire content of their href URI when encountered:<br/>
+    <br/>
+    <br/>
+    &lt;xi:include href="XIncludePart1.xml"&lt;/xi:include&gt;<br/>
+    <br/>
     <br/>
 
-	This is an inclusion of the 'Part 1' file:
-	<br/>
+    This is an inclusion of the 'Part 1' file:
+    <br/>
     <br/>
 
-	<xi:include href="XIncludePart1.xml">
-		<xi:fallback>
-		Couldn't get Part #1. Shouldn't get here.
-		</xi:fallback>
+    <xi:include href="XIncludePart1.xml">
+        <xi:fallback>
+        Couldn't get Part #1. Shouldn't get here.
+        </xi:fallback>
     </xi:include>
 
-	<br/>
-    <br/>
-
-	This is an inclusion of the 'Part 10' file (which won't exist so we'll get fallback behavior):
     <br/>
     <br/>
 
-	<xi:include href="XIncludePart10.xml">
-		<xi:fallback>
+    This is an inclusion of the 'Part 10' file (which won't exist so we'll get fallback behavior):
+    <br/>
+    <br/>
+
+    <xi:include href="XIncludePart10.xml">
+        <xi:fallback>
             <span id="part10Fallback">Couldn't get Part #1. Shouldn't get here.</span>
-		</xi:fallback>
+        </xi:fallback>
     </xi:include>
 
 </body>
