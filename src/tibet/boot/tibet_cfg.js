@@ -587,7 +587,7 @@ TP.sys.setcfg('path.lib_xsl', '~lib_lib/xsl');
 //  app-only virtual paths
 TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
 TP.sys.setcfg('path.app_change', '~app_src/changes');
-TP.sys.setcfg('path.app_log', '~app_inf/log');
+TP.sys.setcfg('path.app_log', '~app_inf/logs');
 TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
 TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
