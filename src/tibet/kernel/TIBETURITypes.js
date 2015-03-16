@@ -2457,13 +2457,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('getFragmentParameters',
-function() {
+function(textOnly) {
 
     /**
      * @method getFragmentParameters
      * @summary Returns any "parameters" from the receiver's fragment string.
      *     The parameter set is derived by treating a fragment as a potential
      *     URI and processing it using normal parsing based on ?, &, and =.
+     * @param {Boolean} [textOnly=false] Return just the text parameter string
+     *     if any.
      * @returns {TP.lang.Hash} The fragment parameters if any.
      */
 
@@ -2476,14 +2478,23 @@ function() {
 
     //  don't bother if fragment is a pointer of some kind.
     if (TP.regex.ANY_POINTER.test(text)) {
+        if (textOnly) {
+            return '';
+        }
         return hash;
     }
 
     if (!/\?/.test(text)) {
+        if (textOnly) {
+            return '';
+        }
         return hash;
     }
 
     params = text.slice(text.indexOf('?') + 1);
+    if (textOnly) {
+        return params;
+    }
     params = params.split('&');
     params.forEach(function(item) {
         var parts,
@@ -8958,7 +8969,9 @@ function(aURI) {
         direction,
         last,
         lastUrl,
+        params,
         lastPath,
+        lastParams,
         trigger,
         path,
         name,
@@ -8991,17 +9004,32 @@ function(aURI) {
     trigger = TP.sys.cfg('uri.routing.trigger');
     switch (trigger) {
         case 'popstate':
-            path = url.getPath();
+            path = url.getPath() || '';
+            params = url.get('query') || '';
             lastPath = TP.isValid(lastUrl) ? lastUrl.getPath() : '';
+            lastParams = TP.isValid(lastUrl) ? lastUrl.getParameters() : '';
             break;
         default:
-            path = url.getFragmentPath();
-            lastPath = TP.isValid(lastUrl) ? lastUrl.getFragmentPath() : '';
+            path = url.getFragmentPath() || '/';
+            params = url.getFragmentParameters(true) || '';
+            lastPath = TP.isValid(lastUrl) ? lastUrl.getFragmentPath() : '/';
+            lastParams = TP.isValid(lastUrl) ?
+                lastUrl.getFragmentParameters(true) : '';
             break;
     }
 
     //  Is this a routable change?
     if (path === lastPath) {
+        //  If there's no last then we can't really be changing params.
+        if (!last) {
+            return;
+        }
+
+        //  If the params didn't change nothing else to do.
+        if (params === lastParams) {
+            return;
+        }
+
         //  Likely a parameter change since path didn't shift. If the boot
         //  parameters did change then we'll request a restart.
         this.signal('BootConfigChange', url.getFragmentParameters());
