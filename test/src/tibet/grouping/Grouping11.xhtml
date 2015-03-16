@@ -1,53 +1,50 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
-	<title></title>
+    <title></title>
 
-	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
-	</script>
+    <script src="~lib_build/tibet_hook.min.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-	<style type="text/css">
-	<![CDATA[
-	@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+    <style type="text/css">
+    <![CDATA[
+    @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-	*[tibet|group~="fooGroup"]
-	{
-		border: solid 1px black;
-	}
-	]]>
-	</style>
+    *[tibet|group~="fooGroup"]
+    {
+        border: solid 1px black;
+    }
+    ]]>
+    </style>
 
 </head>
 
 <body xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
-	<h2>Group Test #2</h2><br/>
-	<br/>
-	<br/>
-	This test sets up 1 'tibet:group' element with an explicit query that will associate 2 elements in the document with that group. Then, more nodes are inserted under the 'fooStuff' div, which means they should become members of the 'fooGroup' group.
-	<br/>
-	<br/>
-	Elements that are members of this group will have their borders turned black.
-	<br/>
+    <h2>Group Test #2</h2><br/>
+    <br/>
+    <br/>
+    This test sets up 1 'tibet:group' element with an explicit query that will associate 2 elements in the document with that group. Then, more nodes are inserted under the 'fooStuff' div, which means they should become members of the 'fooGroup' group.
+    <br/>
+    <br/>
+    Elements that are members of this group will have their borders turned black.
+    <br/>
 
-	<!-- Since this element is empty, its 'context' is the document element -->
-	<tibet:group id="fooGroup" query="#fooStuff &gt; *, #baz"/>
+    <!-- Since this element is empty, its 'context' is the document element -->
+    <tibet:group id="fooGroup" query="#fooStuff &gt; *, #baz"/>
 
-	<div id="fooStuff">
-		<div id="foo">This is the foo div. It is in the 'fooGroup' group.</div>
-		<div id="bar">This is the bar div. It is in the 'fooGroup' group.</div>
-	</div>
+    <div id="fooStuff">
+        <div id="foo">This is the foo div. It is in the 'fooGroup' group.</div>
+        <div id="bar">This is the bar div. It is in the 'fooGroup' group.</div>
+    </div>
 
-	<div id="goo">This is the goo div. It is not in the 'fooGroup' group.</div>
-	<br/>
-	<div id="baz">This is the baz div. It is in the 'fooGroup' group.</div>
-	<br/>
+    <div id="goo">This is the goo div. It is not in the 'fooGroup' group.</div>
+    <br/>
+    <div id="baz">This is the baz div. It is in the 'fooGroup' group.</div>
+    <br/>
 </body>
 </html>

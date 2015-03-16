@@ -3,8 +3,21 @@
  */
 
 /* hello & startup styles. remove when app template has been updated */
+.content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 750px;
+    min-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 3px;
+}
+
 .hello {
-    font-size: 123%;
+    font-size: 108%;
     font-weight: bold;
     max-width: 500px;
     margin: auto;
@@ -17,10 +30,6 @@
     margin-top: 50px;
 }
 
-.startup p {
-    font-size: 108%;
-}
-
 .startup a {
   color: #369;
   text-decoration: underline;
@@ -28,9 +37,8 @@
 
 .startup p.hint {
     margin-top: 50px;
-    font-size: 108%;
 }
 
 .startup code {
-    font-size: 108%;
+    font-size: 100%;
 }

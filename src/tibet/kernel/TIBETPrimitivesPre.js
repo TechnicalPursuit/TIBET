@@ -133,16 +133,16 @@ APP[TP.TNAME] = 'Object';
 //  -----------------------------------------------------------------------
 
 //  Needed during boot
-TP.getID = function() {return TP[TP.ID];};
-TP.sys.getID = function() {return TP.sys[TP.ID];};
-TP.boot.getID = function() {return TP.boot[TP.ID];};
-APP.getID = function() {return APP[TP.ID];};
+TP.getID = function() {return TP[TP.ID]; };
+TP.sys.getID = function() {return TP.sys[TP.ID]; };
+TP.boot.getID = function() {return TP.boot[TP.ID]; };
+APP.getID = function() {return APP[TP.ID]; };
 
 //  Needed during boot
-TP.getName = function() {return TP[TP.NAME];};
-TP.sys.getName = function() {return TP.sys[TP.NAME];};
-TP.boot.getName = function() {return TP.boot[TP.NAME];};
-APP.getName = function() {return APP[TP.NAME];};
+TP.getName = function() {return TP[TP.NAME]; };
+TP.sys.getName = function() {return TP.sys[TP.NAME]; };
+TP.boot.getName = function() {return TP.boot[TP.NAME]; };
+APP.getName = function() {return APP[TP.NAME]; };
 
 //  ------------------------------------------------------------------------
 

@@ -1,22 +1,18 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
-		xmlns:ev="http://www.w3.org/2001/xml-events"
-		xmlns:sig="http://www.technicalpursuit.com/1999/signals">
+        xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+        xmlns:ev="http://www.w3.org/2001/xml-events"
+        xmlns:sig="http://www.technicalpursuit.com/1999/signals">
 
 <head>
 <title>xctrls:clipbox mock</title>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<script type="text/javascript"
-		src="~lib_build/tibet_hook.min.js">
-</script>
+<script src="~lib_build/tibet_hook.min.js"></script>
 
-<link type="text/css" rel="stylesheet" href="~lib_css/tibet.css"/>
+<link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
 <!--<link type="text/css" rel="stylesheet" href="~xctrls_clipbox/xctrls_clipbox.css"/>-->
 
@@ -27,22 +23,22 @@
 /* xctrls|clipbox */
 .xctrls-clipbox
 {
-	border: solid 1px black;
+    border: solid 1px black;
 }
 
 #clipbox_mock
 {
-	height: 5em;
+    height: 5em;
 }
 
 #my_item_list
 {
-	background-color: red;
+    background-color: red;
 }
 
 ul
 {
-	margin: 0px;
+    margin: 0px;
 }
 ]]>
 </style>
@@ -52,22 +48,22 @@ ul
 <body>
 
 <xctrls:clipbox id="clipbox_mock" ev:event="Slide" increment="10px">
-	<div class="xctrls-clipbox_content">
-		<div id="my_item_list">
-			<ul>
-				<li>Item #1</li>
-				<li>Item #2</li>
-				<li>Item #3</li>
-				<li>Item #4</li>
-				<li>Item #5</li>
-				<li>Item #6</li>
-				<li>Item #7</li>
-				<li>Item #8</li>
-				<li>Item #9</li>
-				<li>Item #10</li>
-			</ul>
-		</div>
-	</div>
+    <div class="xctrls-clipbox_content">
+        <div id="my_item_list">
+            <ul>
+                <li>Item #1</li>
+                <li>Item #2</li>
+                <li>Item #3</li>
+                <li>Item #4</li>
+                <li>Item #5</li>
+                <li>Item #6</li>
+                <li>Item #7</li>
+                <li>Item #8</li>
+                <li>Item #9</li>
+                <li>Item #10</li>
+            </ul>
+        </div>
+    </div>
 </xctrls:clipbox>
 
 <sig:dispatch ev:event="TP.sig.DOMClick" ev:observer="slideUpButton" name="Slide" payload="increment=10px;side=TP.TOP"/>
@@ -78,22 +74,22 @@ ul
 
 <!--
 <div id="clipbox_mock" class="xctrls-clipbox" ev:event="Slide">
-	<div class="xctrls-clipbox_content">
-		<div id="my_item_list">
-			<ul>
-				<li>Item #1</li>
-				<li>Item #2</li>
-				<li>Item #3</li>
-				<li>Item #4</li>
-				<li>Item #5</li>
-				<li>Item #6</li>
-				<li>Item #7</li>
-				<li>Item #8</li>
-				<li>Item #9</li>
-				<li>Item #10</li>
-			</ul>
-		</div>
-	</div>
+    <div class="xctrls-clipbox_content">
+        <div id="my_item_list">
+            <ul>
+                <li>Item #1</li>
+                <li>Item #2</li>
+                <li>Item #3</li>
+                <li>Item #4</li>
+                <li>Item #5</li>
+                <li>Item #6</li>
+                <li>Item #7</li>
+                <li>Item #8</li>
+                <li>Item #9</li>
+                <li>Item #10</li>
+            </ul>
+        </div>
+    </div>
 </div>
 -->
 

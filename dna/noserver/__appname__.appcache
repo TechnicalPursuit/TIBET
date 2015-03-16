@@ -12,25 +12,28 @@ CACHE MANIFEST
 CACHE:
 # !!! lib
 
-node_modules/tibet/lib/xhtml/tp_blank.xhtml
-node_modules/tibet/lib/css/tibet_boot.css
-node_modules/tibet/lib/img/boot/tpi_logo.png
-node_modules/tibet/lib/img/boot/nojs.png
+node_modules/tibet/lib/xhtml/blank.xhtml
+node_modules/tibet/lib/styles/tibet_boot.css
+node_modules/tibet/lib/media/boot/tpi_logo.png
+node_modules/tibet/lib/media/boot/nojs.png
 
-node_modules/tibet/lib/css/tibet_reset.css
-node_modules/tibet/lib/css/tibet_content.css
-node_modules/tibet/lib/css/normalize.css
-node_modules/tibet/lib/css/tibet_normalize.css
+node_modules/tibet/lib/styles/normalize.css
+node_modules/tibet/lib/styles/tibet_normalize.css
+node_modules/tibet/lib/styles/tibet_reset.css
+node_modules/tibet/lib/styles/tibet_content.css
+node_modules/tibet/lib/styles/tibet_framing.css
+node_modules/tibet/lib/styles/tibet_boot.css
+node_modules/tibet/lib/styles/tibet.css
 
-node_modules/tibet/lib/img/boot/dark_fiber.png
-node_modules/tibet/lib/img/boot/white_fiber.png
+node_modules/tibet/lib/media/boot/dark_fiber.png
+node_modules/tibet/lib/media/boot/white_fiber.png
 
 node_modules/tibet/lib/cfg/TIBET.xml
 node_modules/tibet/lib/cfg/tibet_kernel.xml
 node_modules/tibet/lib/cfg/tibet_extensions.xml
 node_modules/tibet/lib/cfg/lib_namespaces.xml
 
-node_modules/tibet/lib/img/boot/tibet_logo.png
+node_modules/tibet/lib/media/boot/tibet_logo.png
 
 node_modules/tibet/lib/dat/keyrings.xml
 node_modules/tibet/lib/dat/uris.xml
@@ -43,7 +46,7 @@ node_modules/tibet/lib/json/html401_strict.json
 node_modules/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
 
 node_modules/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
-node_modules/tibet/src/tibet/tools/tdc/css/TP.tsh.console.css
+node_modules/tibet/src/tibet/tools/tdc/styles/TP.tsh.console.css
 node_modules/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
 
 # --- don't cache multiple copies of TIBET, only the desired one(s)
@@ -81,8 +84,8 @@ tibet.json
 html/UIROOT.xhtml
 html/UIBOOT.xhtml
 
-css/app.css
-css/master.css
+styles/app.css
+styles/master.css
 
 TIBET-INF/cfg/app.xml
 TIBET-INF/cfg/development.xml

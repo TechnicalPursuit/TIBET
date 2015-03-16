@@ -4,6 +4,7 @@
     name="{{appname}}" default="base" basedir="~app_cfg">
 
 <config id="properties" if="boot.phaseone">
+    <property name="tibet.sherpa" value="true"/>
     <property name="debug.use_debugger" value="true"/>
     <property name="break.dnu" value="true"/>
     <property name="break.unbound" value="true"/>

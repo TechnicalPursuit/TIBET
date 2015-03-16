@@ -622,56 +622,56 @@ prelaunch: {
     log: 'Prelaunch',
     head: 'Pre-Launch',
     sub: 'Verifying environment...',
-    image: '~lib_img/boot/tpi_logo.png'
+    image: '~lib_media/boot/tpi_logo.png'
 },
 configuring: {
     order: 1,
     log: 'Configure',
     head: 'Configure',
     sub: 'Reading configuration...',
-    image: '~lib_img/boot/tpi_logo.png'
+    image: '~lib_media/boot/tpi_logo.png'
 },
 expanding: {
     order: 2,
     log: 'Expanding',
     head: 'Expanding',
     sub: 'Processing boot manifest...',
-    image: '~lib_img/boot/tpi_logo.png'
+    image: '~lib_media/boot/tpi_logo.png'
 },
 import_phase_one: {
     order: 3,
     log: 'Import Phase One',
     head: 'Import Phase One',
     sub: 'Importing phase-one (static/library) components...',
-    image: '~lib_img/boot/tibet_logo.png'
+    image: '~lib_media/boot/tibet_logo.png'
 },
 import_paused: {
     order: 4,
     log: 'Import Pause',
     head: 'Import Paused',
     sub: 'Waiting to start phase-two import...',
-    image: '~lib_img/boot/playpause.png'
+    image: '~lib_media/boot/playpause.png'
 },
 import_phase_two: {
     order: 5,
     log: 'Import Phase Two',
     head: 'Import Phase Two',
     sub: 'Importing phase-two (dynamic/application) components...',
-    image: '~lib_img/boot/tpi_logo.png'
+    image: '~lib_media/boot/tpi_logo.png'
 },
 paused: {
     order: 6,
     log: 'Paused',
     head: 'Paused',
     sub: 'Proceed when ready.',
-    image: '~lib_img/boot/playpause.png'
+    image: '~lib_media/boot/playpause.png'
 },
 activating: {
     order: 7,
     log: 'Activating',
     head: 'Activating',
     sub: 'Activating application...',
-    image: '~lib_img/boot/tpi_logo.png',
+    image: '~lib_media/boot/tpi_logo.png',
     fatal: true
 },
 initializing: {
@@ -679,7 +679,7 @@ initializing: {
     log: 'Initialization',
     head: 'Initializing',
     sub: 'Initializing loaded components...',
-    image: '~lib_img/boot/tpi_logo.png',
+    image: '~lib_media/boot/tpi_logo.png',
     fatal: true
 },
 rendering: {
@@ -687,7 +687,7 @@ rendering: {
     log: 'Rendering',
     head: 'Rendering',
     sub: 'Rendering application UI...',
-    image: '~lib_img/boot/tpi_logo.png',
+    image: '~lib_media/boot/tpi_logo.png',
     fatal: true
 },
 liftoff: {
@@ -695,7 +695,7 @@ liftoff: {
     log: 'Started',
     head: 'Started',
     sub: 'Application running.',
-    image: '~lib_img/boot/tpi_logo.png',
+    image: '~lib_media/boot/tpi_logo.png',
     hook: function() {
         TP.boot.$displayStatus('Application running: ' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
@@ -708,7 +708,7 @@ stopped: {
     log: 'Stopped',
     head: 'Stopped',
     sub: 'Boot halted.',
-    image: '~lib_img/boot/alert.png',
+    image: '~lib_media/boot/alert.png',
     hook: function() {
         TP.boot.$displayStatus('Boot halted after: ' +
             (TP.boot.$getStageTime('started', 'prelaunch') -

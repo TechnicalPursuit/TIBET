@@ -6080,6 +6080,13 @@ function() {
 
     doc = TP.sys.getUICanvas().getNativeDocument();
     body = TP.documentGetBody(doc);
+
+    //  If the body tag is part of what's being rendered there won't be one in
+    //  all cases.
+    if (!body) {
+        return '';
+    }
+
     theme = TP.elementGetAttribute(body, 'data-theme');
 
     theme = TP.ifEmpty(theme, this.$get('theme'));

@@ -101,8 +101,8 @@ Cmd.prototype.execute = function() {
 
     context.boot = {};
     context.boot.package = CLI.getcfg('boot.package') ||
-        '~app_cfg/standard.xml';    // NOTE the default here must be in sync
-                                    // with default value from the boot system.
+        CLI.getcfg('boot.package_default') ||
+        CLI.PACKAGE_FILE;
 
     text = sh.cat(CLI.expandPath(context.boot.package));
     if (text) {

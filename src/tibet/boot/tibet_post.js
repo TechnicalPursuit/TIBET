@@ -7529,7 +7529,7 @@ TP.boot.$setStage = function(aStage, aReason) {
 
     image = info.image;
     if (TP.boot.$notEmpty(image)) {
-        //  Image is provided as a TIBET URL, ~lib_img etc. so we need to
+        //  Image is provided as a TIBET URL, ~lib_media etc. so we need to
         //  replace that with the proper prefix before setting as the img
         //  element's src.
 
@@ -8170,11 +8170,10 @@ TP.boot.$configurePackage = function() {
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
+            package = TP.sys.cfg('boot.package_default');
 
-            TP.boot.$stdout('Empty boot.package. Defaulting to standard.xml.',
-                TP.DEBUG);
-
-            package = 'standard.xml';
+            TP.boot.$stdout('Empty boot.package. Defaulting to ' +
+                package + '.', TP.DEBUG);
         } else {
             TP.boot.$stdout('Found boot.package. Using: ' + package,
                 TP.DEBUG);
@@ -8508,11 +8507,11 @@ TP.boot.$configureProject = function() {
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.rootpage'))) {
-        TP.sys.setcfg('project.rootpage', '~app_html/UIROOT.xhtml');
+        TP.sys.setcfg('project.rootpage', '~boot_xhtml/UIROOT.xhtml');
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
-        TP.sys.setcfg('project.homepage', '~app_html/home.xhtml');
+        TP.sys.setcfg('project.homepage', '~boot_xhtml/home.xhtml');
     }
 
     return;

@@ -1,0 +1,685 @@
+/*
+    ====================================================================
+
+NAME: tibet.css
+DESC: TIBET system-wide CSS styles
+AUTH: Scott Shattuck (ss)
+NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+    Reserved. Patent Pending, Technical Pursuit Inc.
+
+    Unless explicitly acquired and licensed under the Technical
+    Pursuit License ("TPL") Version 1.5, the contents of this file
+    are subject to the Reciprocal Public License ("RPL") Version 1.5
+    and You may not copy or use this file in either source code or
+    executable form, except in compliance with the terms and
+    conditions of the RPL.
+
+    You may obtain a copy of both the TPL and RPL (the "Licenses")
+    from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+    All software distributed under the Licenses is provided strictly
+    on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+    EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+    ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+    WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+    QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+    language governing rights and limitations under the Licenses.
+
+    --------------------------------------------------------------------
+*/
+
+@import "tibet_reset.css";
+
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+/*
+    ========================================================================
+  UIROOT PAGE STYLES
+    ========================================================================
+*/
+
+#UIROOT {
+  position: absolute;
+
+  top: 0px;
+  left: 0px;
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+
+  overflow: hidden;
+
+  background-color: white;
+
+  background: url(../media/tibet_logo.gif) center center no-repeat;
+}
+
+/*
+    ========================================================================
+  INTRO PAGE FRAMING
+    ========================================================================
+*/
+
+/*  give everything a root positioning context */
+div#top_background {
+  position: absolute;
+
+  top: 0px;
+  left: 0px;
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+
+  overflow: hidden;
+
+  background-color: white;
+
+  background: url(../media/tibet_logo.gif) center center no-repeat;
+}
+
+/*  room for a banner image or other heading text */
+div#header {
+  height: 72px;
+  width: 100%;
+
+  border-bottom: 1px solid #369;
+
+  background: url(../media/tibet_banner_72.gif) top left no-repeat;
+}
+
+/*  somewhere to put initial copyright notifications */
+div#footer {
+  position: absolute;
+
+  left: 0px;
+  bottom: 0px;
+
+  height: 24px;
+  width: 100%;
+
+  line-height: 24px;
+
+  background-color: #CFD7E0;
+
+  border-top: 1px solid #369;
+}
+
+div#content {
+  position: absolute;
+
+  left: 0px;
+  top: 73px;
+  bottom: 25px;
+  right: 0px;
+
+  text-align: left;
+
+  overflow: auto;
+}
+
+/*
+    ========================================================================
+  INDEX PAGE FRAMING
+    ========================================================================
+*/
+
+/*  the page's real content display area */
+div#checking, div#booting, div#pausing, div#bugs, div#ie_bugs, div#ff_bugs, div#wk_bugs, div#unsupported {
+  position: absolute;
+
+  left: 0px;
+  top: 73px;
+  bottom: 25px;
+  right: 0px;
+
+  text-align: left;
+
+  overflow: auto;
+}
+
+/*  some form of startup error */
+.alert {
+  padding-top: 72px;
+
+  margin-left: 10%;
+  margin-bottom: 2em;
+
+  color: #A00;
+
+  font-weight: bold;
+  font-size: 100%;
+}
+
+/*  primary heading text */
+.announce {
+  padding-top: 72px;
+
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 2em;
+
+  color: #369;
+  font-weight: bold;
+  font-size: 100%;
+}
+
+/*  simple button */
+button.button {
+  font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1em;
+
+  width: 20%;
+  height: 1.5em;
+
+  float: left;
+
+  padding: 0px;
+
+  padding-bottom: 3px;
+  margin-right: 1em;
+
+  text-align: center;
+  text-transform: lowercase !important;
+
+  border: 1px solid #369;
+  display: block;
+
+  color: #369;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+button.button:focus {
+  color: white;
+  background-color: #369;
+}
+
+button.button:hover {
+  color: white;
+  background-color: #369;
+
+  cursor: pointer;
+}
+
+button.button.label {
+  margin-left: 0px;
+  width: 40%;
+}
+
+/*  simple button simulation */
+span.button {
+  font-size: 1em;
+
+  width: 24%;
+  float: left;
+
+  margin-right: 1em;
+
+  text-align: center;
+}
+
+span.button a {
+  padding-top: 1px;
+  padding-bottom: 1px;
+
+  text-transform: lowercase !important;
+
+  border: 1px solid #369;
+  display: block;
+
+  color: #369;
+  text-decoration: none;
+}
+
+span.button a:focus {
+  color: white;
+  background-color: #369;
+}
+
+span.button a:hover {
+  color: white;
+  background-color: #369;
+}
+
+/*  convenient wrapper for text centering */
+.centering {
+  display: block;
+
+  text-align: center;
+}
+
+/*  float clearing */
+.clear {
+  clear: both;
+}
+
+/*  standard copyright notice */
+.copyright {
+  font-size: 90%;
+}
+
+/*  headings for justified text blocks */
+.heading {
+  width: 25%;
+  float: left;
+
+  margin-left: 10%;
+  margin-right: 1em;
+  font-weight: bold;
+}
+
+/*  justified text block content */
+.msg {
+  width: 50%;
+  float: left;
+  margin: 0px;
+}
+
+/*  justified text block section */
+.section {
+  width: 100%;
+  float: left;
+
+  margin-bottom: 1em;
+}
+
+/*  simple data input field */
+input.field {
+  width: 50%;
+
+  margin: 0px;
+  padding: 0px;
+
+  font-weight: bold;
+  font-size: 100%;
+
+  color: #000000;
+  background-color: transparent;
+
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #000000;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-left-width: 0px;
+}
+
+
+/*  labels for justified input fields */
+.label {
+  width: 25%;
+  float: left;
+
+  margin-left: 10%;
+  margin-right: 1em;
+
+  text-align: right;
+  text-transform: lowercase !important;
+}
+
+/*  topic page lead */
+div.lead {
+  margin-top: 72px;
+  margin-left: 72px;
+
+  color: #369;
+  font-size: 150%;;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+div.discussion {
+  margin-top: 36px;
+  margin-left: 108px;
+}
+
+div.discussion p {
+  padding-bottom: 1em;
+}
+
+/*
+  ========================================================================
+  BOOT PROGRESS (TEXT)
+  ========================================================================
+*/
+
+/*  The boot messages, other than progress bar content */
+.bootmsg {
+  margin: 0px;
+  padding: 0px;
+
+  color: #000;
+
+  font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 100%;
+
+  vertical-align: middle;
+}
+
+/*
+  ========================================================================
+  BOOT PROGRESS (CONSOLE)
+  ========================================================================
+*/
+
+
+/*  without the console attribute just another container */
+#PageContent {
+  position: absolute;
+
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+/*  The console output area */
+#PageContent.consoleMode {
+  font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+
+  font-size: 11px;
+  padding: 12px;
+
+  text-align: left;
+
+  color: #666;
+}
+
+/*
+  ========================================================================
+  BOOT PROGRESS (GRAPHICAL)
+  ========================================================================
+*/
+
+/*  The progress bar div itself */
+#ProgressBarOne, #ProgressBarTwo {
+  margin: 0px;
+  padding: 0px;
+
+  width: 1px;
+  height: 9px;
+
+  background-color: #369;
+
+  z-index: 1;
+}
+
+#ProgressBarTwo {
+  background-color: #369;
+}
+
+#ProgressBarOne, #ProgressBarTwo {
+  float: left;
+}
+
+#ProgressBarOne.logwarn, #ProgressBarTwo.logwarn {
+  background-color: #F60;
+}
+
+#ProgressBarOne.logerr, #ProgressBarTwo.logerr {
+  background-color: #A00;
+}
+
+/*  Progress bar outline div */
+#ProgressBorder {
+  margin-top: 1em;
+  margin-right: 10%;
+  margin-bottom: 1em;
+  margin-left: 10%;
+
+  padding: 0px;
+
+  height: 18px;
+  border: 1px solid #369;
+
+  background-color: #EEE;
+
+  z-index: 0;
+
+  visibility: hidden;
+  clear: left;
+}
+
+/*  The background div for progress/message text */
+#ProgressText {
+  padding-top: 72px;
+
+  margin-bottom: 1em;
+  margin-left: 10%;
+
+  width: 70%;
+  float: left;
+
+  color: #369;
+  overflow: hidden;
+
+  z-index: 2;
+}
+
+#ProgressStatus {
+  margin: 0px;
+  padding: 0px;
+  padding-top: 72px;
+  padding-right: 3%;
+
+  width: 10%;
+  float: right;
+
+  overflow: hidden;
+  color: #369;
+
+  z-index: 2;
+
+  visibility: hidden;
+}
+
+/*  importing vs. deferring display */
+#ProgressDefer {
+  margin: 0px;
+  padding: 0px;
+
+  font-weight: bold;
+  color: #369;
+
+  overflow: hidden;
+
+  z-index: 2;
+}
+
+/*  what is the current script being imported */
+#ProgressPath {
+  margin: 0px;
+  padding: 0px;
+
+  font-weight: bold;
+  color: #369;
+
+  overflow: hidden;
+  z-index: 2;
+}
+
+/*  what is the percent imported */
+#ProgressComplete {
+  margin: 0px;
+  padding: 0px;
+  padding-right: 4%;
+
+  font-weight: bold;
+  color: #369;
+
+  z-index: 2;
+}
+
+#ProgressComplete.busy {
+  display:block;
+  width: 28px;
+  height: 28px;
+  background: url(../media/tibet_busy.gif) center no-repeat;
+}
+
+/*
+  ========================================================================
+  BOOT LOG
+  ========================================================================
+*/
+
+#log * {
+  font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+}
+
+ol {
+  font-weight: bold;
+  color: #000000;
+}
+
+.loglist {
+  font-weight: bold;
+  color: #000000;
+}
+
+.logdate {
+  /*margin: 5px;*/
+  padding-right: .5em;
+  color: #000000;
+}
+
+.logargs {
+  padding: 3px;
+  color: #666666;
+}
+
+.logitem {
+  padding: 3px;
+  color: #666666;
+}
+
+.logerr {
+  font-weight: bold;
+  padding: 3px;
+  color: #A00;
+}
+
+.logmsg {
+  padding: 3px;
+  color: black;
+}
+
+.logstack {
+  font-style: italic;
+  padding: 3px;
+  color: #666666;
+}
+
+.logwarn {
+  padding: 3px;
+  color: #F60;
+}
+
+.logmsg .iolog span {
+  margin: 5px;
+}
+
+.bootmsg .logwarn {
+  color: #F60;
+}
+
+.bootmsg .logerr {
+  color: #A00;
+}
+
+/*
+  ========================================================================
+  notify() FORMATTING
+  ========================================================================
+*/
+
+#NOTIFY_MENU {
+  width: 100%;
+  height: 2em;
+  background-color: #DDD;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  text-align: center;
+  padding: .25em;
+}
+
+#NOTIFY_MENU input {
+  color: #369;
+  border: 1px solid #369;
+  background-color: white;
+}
+
+/*
+  ========================================================================
+  'Busy' FEEDBACK PANEL
+  ========================================================================
+*/
+
+/* In its natural state, the busy is 'closed' */
+div[busyFor] {
+  position: absolute;
+
+/*  border: solid 1px black; */
+
+  display: none;
+
+  background-color: transparent;
+
+  /* Note that this matches TP.POPUP_TIER in the TIBET kernel */
+  z-index: 5000;
+}
+
+div[busyFor] > .background {
+  background-color: white;
+  opacity: .7;
+}
+
+div[busyFor] > .controlImage {
+  position: absolute;
+
+  left: 50%;
+
+  /* 50% of the size of the busy control image for centering purposes */
+  margin-left: -14px;
+
+  /* This must match TP.BUSY_HEIGHT for it to be centered properly */
+  width: 28px;
+  height: 28px;
+
+  background-image: url(../media/tibet_busy.gif);
+}
+
+div[busyFor] > span {
+  position: absolute;
+
+  width: 100%;
+
+  text-align: center;
+}
+
+/*
+  ========================================================================
+  'Built-in' 'tibet:' elements
+  ========================================================================
+*/
+
+tibet|data {
+    display: none;
+}
+
+/*
+  ------------------------------------------------------------------------
+  end
+  ========================================================================
+*/

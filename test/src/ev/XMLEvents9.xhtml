@@ -1,60 +1,57 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
-	<title></title>
+    <title></title>
 
-	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
-	</script>
+    <script src="~lib_build/tibet_hook.min.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
 </head>
 
 <body xmlns:ev="http://www.w3.org/2001/xml-events">
 
-	<h2>XML Events Test #9</h2><br/>
-	<br/>
-	This test sets up an XMLEvents &lt;ev:script&gt; elements to both send and listen for changes coming between text fields and a JSON data source object.<br/>
-	<br/>
-	<br/>
+    <h2>XML Events Test #9</h2><br/>
+    <br/>
+    This test sets up an XMLEvents &lt;ev:script&gt; elements to both send and listen for changes coming between text fields and a JSON data source object.<br/>
+    <br/>
+    <br/>
 
     <!-- Salary changing -->
-	<ev:script type="text/javascript" event="TP.sig.DOMClick" observer="setSalaryButton">
-		<![CDATA[
+    <ev:script type="text/javascript" event="TP.sig.DOMClick" observer="setSalaryButton">
+        <![CDATA[
         TP.uc('urn:tibet:empObject').getResource().set(TP.apc('person.salary'), 42);
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
-	<button id="setSalaryButton">Click me to set the salary to 42.</button>
+    <button id="setSalaryButton">Click me to set the salary to 42.</button>
 
-	<ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.salary)">
+    <ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.salary)">
         <![CDATA[
         TP.byOID('salaryField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
     Salary: <input id="salaryField" type="text"/><br/>
 
     <br/>
 
     <!-- SSN changing -->
-	<ev:script type="text/javascript" event="TP.sig.DOMClick" observer="setSSNButton">
-		<![CDATA[
+    <ev:script type="text/javascript" event="TP.sig.DOMClick" observer="setSSNButton">
+        <![CDATA[
         TP.uc('urn:tibet:empObject').getResource().set(TP.apc('person.SSN'), '111-22-3333');
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
-	<button id="setSSNButton">Click me to set the SSN to 111-22-3333.</button>
+    <button id="setSSNButton">Click me to set the SSN to 111-22-3333.</button>
 
-	<ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.SSN)">
+    <ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.SSN)">
         <![CDATA[
         TP.byOID('ssnField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
-		]]>
+        ]]>
     </ev:script>
 
     SSN: <input id="ssnField" type="text"/><br/>
@@ -62,23 +59,23 @@
     <br/>
 
     <!-- Any aspect changing -->
-	<ev:script type="text/javascript" event="TP.sig.Change" observer="urn:tibet:empObject">
+    <ev:script type="text/javascript" event="TP.sig.Change" observer="urn:tibet:empObject">
         <![CDATA[
         TP.byOID('msgField').addContent('<span xmlns="http://www.w3.org/1999/xhtml">' + triggerSignal.getTarget().getID() + ' changed: ' + triggerSignal.get('aspect') + ' to: ' + triggerSignal.getTarget().get(TP.apc(triggerSignal.get('aspect'))) + '<br/></span>');
-		]]>
+        ]]>
     </ev:script>
 
     This just happened: <span id="msgField"><br/></span><br/><br/>
 
-	<!-- Data model construction handler -->
-	<ev:script type="text/javascript" event="TP.sig.DOMContentLoaded" observer="#document">
-		<![CDATA[
-		var newInst;
+    <!-- Data model construction handler -->
+    <ev:script type="text/javascript" event="TP.sig.DOMContentLoaded" observer="#document">
+        <![CDATA[
+        var newInst;
         newInst = TP.json2js('{"person": {"lastname": "Smith", "firstname": "Joe", "description" : "Mr. Smith is a great guy", "gender":"", "salary":"", "SSN":""}}');
 
-		TP.uc('urn:tibet:empObject').setResource(newInst);
-		]]>
-	</ev:script>
+        TP.uc('urn:tibet:empObject').setResource(newInst);
+        ]]>
+    </ev:script>
 
 </body>
 </html>

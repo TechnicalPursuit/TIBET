@@ -2203,10 +2203,20 @@ function(aRequest) {
                 //  in the text.
                 parts = text.split(term);
                 count += parts.length - 1;
+
+                if (name.indexOf(term) !== -1) {
+                    count += 1;
+                }
+
             } else {
                 //  Our regular expressions are global so they'll provide a
                 //  match count for the total string.
                 match = term.match(text);
+                if (TP.isValid(match)) {
+                    count += match.length;
+                }
+
+                match = term.match(name);
                 if (TP.isValid(match)) {
                     count += match.length;
                 }
@@ -2221,8 +2231,16 @@ function(aRequest) {
 
     //  Sort by "relevance" in terms of counts.
     results = results.sort(function(a, b) {
-        return a[1] < b[1];
+        if (a[1] < b[1]) {
+            return -1;
+        } else if (a[1] > b[1]) {
+            return 1;
+        } else {
+            return 0;
+        }
     });
+
+    results.reverse();
 
     results = results.map(function(result) {
         return result[0] + ' (' + result[1] + ')';

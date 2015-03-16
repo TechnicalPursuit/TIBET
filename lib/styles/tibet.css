@@ -55,7 +55,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
   background-color: white;
 
-  background: url(../img/tibet_logo.gif) center center no-repeat;
+  background: url(../media/tibet_logo.gif) center center no-repeat;
 }
 
 /*
@@ -82,7 +82,7 @@ div#top_background {
 
   background-color: white;
 
-  background: url(../img/tibet_logo.gif) center center no-repeat;
+  background: url(../media/tibet_logo.gif) center center no-repeat;
 }
 
 /*  room for a banner image or other heading text */
@@ -92,7 +92,7 @@ div#header {
 
   border-bottom: 1px solid #369;
 
-  background: url(../img/tibet_banner_72.gif) top left no-repeat;
+  background: url(../media/tibet_banner_72.gif) top left no-repeat;
 }
 
 /*  somewhere to put initial copyright notifications */
@@ -525,7 +525,7 @@ div.discussion p {
   display:block;
   width: 28px;
   height: 28px;
-  background: url(../img/tibet_busy.gif) center no-repeat;
+  background: url(../media/tibet_busy.gif) center no-repeat;
 }
 
 /*
@@ -657,7 +657,7 @@ div[busyFor] > .controlImage {
   width: 28px;
   height: 28px;
 
-  background-image: url(../img/tibet_busy.gif);
+  background-image: url(../media/tibet_busy.gif);
 }
 
 div[busyFor] > span {

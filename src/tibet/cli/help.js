@@ -266,6 +266,10 @@ Cmd.prototype.getCommands = function(aPath) {
     if (sh.test('-d', aPath)) {
         files = sh.ls(aPath);
         files.sort().forEach(function(file) {
+            if (file.indexOf(CLI.MAKE_FILE) !== -1) {
+                return;
+            }
+
             if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
                 cmds.push(file.replace(/\.js$/, ''));
             }

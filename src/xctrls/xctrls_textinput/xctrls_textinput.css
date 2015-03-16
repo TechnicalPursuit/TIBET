@@ -60,7 +60,7 @@ xctrls|textinput:invalid
 */
 xctrls|textinput[pclass|invalid]
 {
-	content: url(../../../../lib/img/boot/alert.png);
+	content: url(../../../../lib/media/boot/alert.png);
 }
 
 xctrls|textinput > xctrls|label

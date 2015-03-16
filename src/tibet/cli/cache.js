@@ -211,7 +211,10 @@ Cmd.prototype.execute = function() {
         cachefile = this.options.file;
     } else {
         appname = CLI.getcfg('npm.name');
-        cachefile = appname + '.appcache';
+        cachefile = CLI.expandPath('~app_cfg/' + appname + '.appcache');
+
+        //  resolve the cache file path relative to our current location
+        cachefile = './' + cachefile.replace(CLI.expandPath('~'), '');
     }
 
     if (!sh.test('-e', cachefile)) {

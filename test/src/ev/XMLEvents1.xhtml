@@ -1,61 +1,58 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
-	<title></title>
+    <title></title>
 
-	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
-	</script>
+    <script src="~lib_build/tibet_hook.min.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
 </head>
 
 <body xmlns:ev="http://www.w3.org/2001/xml-events">
 
-	<h2>XML Events Test #1</h2><br/>
-	<br/>
-	<br/>
-	This test sets up both an XMLEvents &lt;ev:script&gt; element and an 'inline listener' using XML Events attributes on the element generating the events.<br/>
-	<br/>
-	<br/>
-	The &lt;ev:script&gt; element has an 'event' value of 'DOMClick' (the TIBET equivalent of 'onclick') and an 'observer' containing the id of the element throwing off the events, a button.<br/>
+    <h2>XML Events Test #1</h2><br/>
+    <br/>
+    <br/>
+    This test sets up both an XMLEvents &lt;ev:script&gt; element and an 'inline listener' using XML Events attributes on the element generating the events.<br/>
+    <br/>
+    <br/>
+    The &lt;ev:script&gt; element has an 'event' value of 'DOMClick' (the TIBET equivalent of 'onclick') and an 'observer' containing the id of the element throwing off the events, a button.<br/>
 
-	<br/>
+    <br/>
 
-	Note here how the TIBET 'ev:script' element is authored for supplying script content for the handler. You put the script inside of a CDATA block inside of the ev:script element.
+    Note here how the TIBET 'ev:script' element is authored for supplying script content for the handler. You put the script inside of a CDATA block inside of the ev:script element.
 
-	<br/>
+    <br/>
 
-	<ev:script type="text/javascript" event="TP.sig.DOMClick" observer="fooButton">
-		<![CDATA[
+    <ev:script type="text/javascript" event="TP.sig.DOMClick" observer="fooButton">
+        <![CDATA[
         TP.byOID('testResults').setAttribute('handler_specifies_control', 'true');
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
-	<button id="fooButton">Click me to send the event</button>
+    <button id="fooButton">Click me to send the event</button>
 
-	<br/>
-	<br/>
-	The 'inline listener' installed directly on the generating element has an 'event' value of 'DOMClick' (the TIBET equivalent of 'onclick') and an 'handler' that points to the 'ev:script' action element that contains the handler code.<br/>
+    <br/>
+    <br/>
+    The 'inline listener' installed directly on the generating element has an 'event' value of 'DOMClick' (the TIBET equivalent of 'onclick') and an 'handler' that points to the 'ev:script' action element that contains the handler code.<br/>
 
-	<br/>
+    <br/>
 
-	Note here how the TIBET 'ev:script' element is authored for supplying script content for the handler. You put the script inside of a CDATA block inside of the ev:script element.
+    Note here how the TIBET 'ev:script' element is authored for supplying script content for the handler. You put the script inside of a CDATA block inside of the ev:script element.
 
-	<br/>
+    <br/>
 
-	<button id="barButton" ev:event="TP.sig.DOMClick" ev:handler="#barButtonHandler">Click me to send a DOMClick event from 'barButton'</button>
+    <button id="barButton" ev:event="TP.sig.DOMClick" ev:handler="#barButtonHandler">Click me to send a DOMClick event from 'barButton'</button>
 
-	<ev:script type="text/javascript" id="barButtonHandler">
-		<![CDATA[
+    <ev:script type="text/javascript" id="barButtonHandler">
+        <![CDATA[
         TP.byOID('testResults').setAttribute('control_specifies_handler', 'true');
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
     <!-- The test result data goes here -->
     <span id="testResults"/>

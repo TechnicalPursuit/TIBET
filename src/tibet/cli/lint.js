@@ -463,7 +463,8 @@ Cmd.prototype.finalizePackageOptions = function() {
     // Force the most comprehensive package#config we can given our context.
     if (CLI.inProject()) {
         if (CLI.notValid(this.pkgOpts.package)) {
-            this.pkgOpts.package = '~app_cfg/standard.xml';
+            this.pkgOpts.package = CLI.getcfg('boot.package_default') ||
+                CLI.PACKAGE_FILE;
         }
     } else if (CLI.inLibrary()) {
         if (CLI.notValid(this.pkgOpts.package)) {

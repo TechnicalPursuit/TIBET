@@ -695,7 +695,7 @@ TP.HIDDEN = 'hidden';
 //  for traits
 TP.BEFORE = 'before';
 TP.AFTER = 'after';
-TP.REQUIRED = function() {return;};
+TP.REQUIRED = function() {return; };
 
 //  for native nodes
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
@@ -714,8 +714,8 @@ TP.SRC_LOCATION = 'sourcelocation';
 TP.META_TYPE_OWNER = {};
 TP.META_TYPE_OWNER[TP.ID] = 'MetaType';
 TP.META_TYPE_OWNER[TP.NAME] = 'MetaType';
-TP.META_TYPE_OWNER.getID = function() {return 'MetaType';};
-TP.META_TYPE_OWNER.getName = function() {return 'MetaType';};
+TP.META_TYPE_OWNER.getID = function() {return 'MetaType'; };
+TP.META_TYPE_OWNER.getName = function() {return 'MetaType'; };
 
 TP.META_TYPE_OWNER.meta_methods = {};
 
@@ -734,8 +734,8 @@ TP.META_TYPE_TARGETS =
 TP.META_INST_OWNER = {};
 TP.META_INST_OWNER[TP.ID] = 'MetaInst';
 TP.META_INST_OWNER[TP.NAME] = 'MetaInst';
-TP.META_INST_OWNER.getID = function() {return 'MetaInst';};
-TP.META_INST_OWNER.getName = function() {return 'MetaInst';};
+TP.META_INST_OWNER.getID = function() {return 'MetaInst'; };
+TP.META_INST_OWNER.getName = function() {return 'MetaInst'; };
 
 TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
@@ -1664,7 +1664,7 @@ TP.TEST_HANDLER = function(aSignal) {
 
 TP.TEST_SETUP_NAME = 'Test_SetUp';      //  the method name of object-level test
                                         //  set up methods
-TP.TEST_TEARDOWN_NAME = 'Test_TearDown';//  the method name of object-level test
+TP.TEST_TEARDOWN_NAME = 'Test_TearDown'; //  the method name of the test
                                         //  tear down methods
 TP.TEST_NAME_PREFIX = 'test ';          //  prefixed on all test function names
 

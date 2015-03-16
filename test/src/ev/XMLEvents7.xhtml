@@ -1,58 +1,55 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
-	<title></title>
+    <title></title>
 
-	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
-	</script>
+    <script src="~lib_build/tibet_hook.min.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
 </head>
 
 <body xmlns:ev="http://www.w3.org/2001/xml-events">
 
-	<h2>XML Events Test #7</h2><br/>
-	<br/>
-	<br/>
-	This test sets up an XMLEvents &lt;ev:script&gt; with TIBET Shell which activates on X.<br/>
-	<br/>
-	<br/>
+    <h2>XML Events Test #7</h2><br/>
+    <br/>
+    <br/>
+    This test sets up an XMLEvents &lt;ev:script&gt; with TIBET Shell which activates on X.<br/>
+    <br/>
+    <br/>
 
-	This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_X_Up' (the TIBET way of observing the 'X' - shift x - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert a message.<br/>
+    This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_X_Up' (the TIBET way of observing the 'X' - shift x - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert a message.<br/>
 
-	<ev:script event="TP.sig.DOM_X_Up" observer="#document">
-		<![CDATA[
+    <ev:script event="TP.sig.DOM_X_Up" observer="#document">
+        <![CDATA[
         TP.byOID('testResults').setAttribute('shiftXkey_fired', 'fired_shiftXkey');
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
     This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_Y_Up' (the TIBET way of observing the 'Y' - shift y - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert the 'JSON source' representation of the signal that triggered the script.<br/>
 
-	<ev:script event="TP.sig.DOM_Y_Up" observer="#document">
-		<![CDATA[
+    <ev:script event="TP.sig.DOM_Y_Up" observer="#document">
+        <![CDATA[
         TP.byOID('testResults').setAttribute('shiftYkey_fired', TP.jsonsrc($SIGNAL));
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
     This &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOM_Z_Up' (the TIBET way of observing the 'Z' - shift z - key going 'up') and an 'observer' containing '#document', meaning that the document should be the observer of those events. It will alert the 'JSON source' representation of the target of the signal that triggered the script.<br/>
 
-	<ev:script event="TP.sig.DOM_Z_Up" observer="#document">
-		<![CDATA[
+    <ev:script event="TP.sig.DOM_Z_Up" observer="#document">
+        <![CDATA[
         TP.byOID('testResults').setAttribute('shiftZkey_fired', TP.jsonsrc($SIGNAL.getTypeName()));
-		]]>
-	</ev:script>
+        ]]>
+    </ev:script>
 
     <!-- The test result data goes here -->
     <span id="testResults"/>

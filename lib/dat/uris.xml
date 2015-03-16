@@ -101,18 +101,18 @@
     tibet:browser="safari"/>
 
   <!--  map the URI for the app CSS file on Gecko -->
-  <uri name="tibet:///~app_css/app.css"
-    uri="tibet:///~app_css/app_gecko.css"
+  <uri name="tibet:///~app_styles/app.css"
+    uri="tibet:///~app_styles/app_gecko.css"
     tibet:browserUI="gecko"/>
 
   <!--  map the URI for the app CSS file on Trident -->
-  <uri name="tibet:///~app_css/app.css"
-    uri="tibet:///~app_css/app_trident.css"
+  <uri name="tibet:///~app_styles/app.css"
+    uri="tibet:///~app_styles/app_trident.css"
     tibet:browserUI="trident"/>
 
   <!--  map the URI for the app CSS file on Webkit -->
-  <uri name="tibet:///~app_css/app.css"
-    uri="tibet:///~app_css/app_webkit.css"
+  <uri name="tibet:///~app_styles/app.css"
+    uri="tibet:///~app_styles/app_webkit.css"
     tibet:browserUI="webkit"/>
 
   <!--

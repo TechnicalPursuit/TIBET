@@ -12,10 +12,10 @@
 
 //  https://github.com/cjohansen/Sinon.JS/issues/559
 TP.extern.sinon.FakeXMLHttpRequest.prototype.overrideMimeType =
-    function() {return;};
+    function() {return; };
 
 //  https://github.com/cjohansen/Sinon.JS/issues/558
-TP.extern.sinon.log = function() {return;};
+TP.extern.sinon.log = function() {return; };
 
 //  ------------------------------------------------------------------------
 

@@ -888,11 +888,11 @@ function() {
             //  validations to fail).
             TP.raise.$suspended = true;
 
-            xmlSchemaTPDoc = TP.uc('~lib_lib/xs/tibet_common_types.xsd').
+            xmlSchemaTPDoc = TP.uc('~lib_schema/tibet_common_types.xsd').
                                             getResource(TP.hc('async', false));
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
-            jsonSchemaContent = TP.uc('~lib_lib/json/tibet_common_types.json').
+            jsonSchemaContent = TP.uc('~lib_schema/tibet_common_types.json').
                                             getResource(TP.hc('async', false));
             jsonSchemaContent.defineTypes();
         });
@@ -1087,11 +1087,11 @@ function() {
 
             //  ---
 
-            xmlSchemaTPDoc = TP.uc('~lib_lib/xs/tibet_common_types.xsd').
+            xmlSchemaTPDoc = TP.uc('~lib_schema/tibet_common_types.xsd').
                                             getResource(TP.hc('async', false));
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
-            jsonSchemaContent = TP.uc('~lib_lib/json/tibet_common_types.json').
+            jsonSchemaContent = TP.uc('~lib_schema/tibet_common_types.json').
                                             getResource(TP.hc('async', false));
             jsonSchemaContent.defineTypes();
 

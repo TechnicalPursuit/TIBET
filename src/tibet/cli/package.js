@@ -274,7 +274,7 @@ Cmd.prototype.executeForEach = function(list) {
 
     files = sh.find(dirs).filter(function(file) {
         return !sh.test('-d', file) &&
-            !file.match(/img\/boot/);
+            !file.match(/media\/boot/);
     });
 
     // Package files are provided in fully expanded form to avoid problems
@@ -310,8 +310,8 @@ Cmd.prototype.finalizePackageOptions = function() {
 
     if (!this.pkgOpts.package) {
         this.pkgOpts.package = CLI.getcfg('boot.package') ||
-        '~app_cfg/standard.xml';    // NOTE the default here must be in sync
-                                    // with default value from the boot system.
+            CLI.getcfg('boot.package_default') ||
+            CLI.PACKAGE_FILE;
     }
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
 };
