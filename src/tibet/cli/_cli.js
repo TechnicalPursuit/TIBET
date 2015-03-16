@@ -140,6 +140,13 @@ CLI.NPM_FILE = 'package.json';
 
 
 /**
+ * The name of the default TIBET package configuration file. This value should
+ * be kept in sync with the tibet_cfg value for boot.package_default.
+ * @type {string}
+ */
+CLI.PACKAGE_FILE = '~app_cfg/standard.xml';
+
+/**
  * Command argument parsing options for minimist. The defaults handle the common
  * flags but can be overridden if the command needs to define specific ones.
  * @type {Object}

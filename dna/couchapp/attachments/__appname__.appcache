@@ -82,7 +82,6 @@ html/UIROOT.xhtml
 html/UIBOOT.xhtml
 
 styles/app.css
-styles/master.css
 
 TIBET-INF/cfg/app.xml
 TIBET-INF/cfg/development.xml

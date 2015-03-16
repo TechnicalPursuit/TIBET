@@ -59,7 +59,7 @@ TP.sys.setcfg('debug.path', true);
 TP.sys.setcfg('project.ident', null);
 
 //  what's this application called? this affects the default value of the
-//  home page that will load. NOTE that this is updated with the tibet.xml
+//  home page that will load. NOTE that this is updated with the boot package
 //  file's project name, and can then be refined by the environment files
 TP.sys.setcfg('project.name', null);
 
@@ -165,7 +165,7 @@ TP.sys.setcfg('boot.twophase', true);
 //  ---
 
 //  controls process reporting during the launch. setting this to true
-//  here (and in the tibet.xml file) will cause a few more lines of
+//  here (and/or in the package xml file) will cause a few more lines of
 //  output covering the initial parameter-setting phase of the boot process.
 //  If you're not trying to debug that you should be able to just set
 //  tibet.debug in your application build file and leave this set to false.
@@ -221,13 +221,15 @@ TP.sys.setcfg('boot.initoffset', '../../..');
 TP.sys.setcfg('boot.profile', null);
 
 //  What package file should we load? This defaults to {{profile}}.xml where
-//  profile is taken from boot.profile. If no value exists for boot.profile this
-//  will default to 'tibet.xml'.
+//  profile is taken from boot.profile.
 TP.sys.setcfg('boot.package', null);
+
+//  Default value for the package if no package is otherwise specified.
+TP.sys.setcfg('boot.package_default', 'standard.xml');
 
 //  What package config do we start from? This will default to whatever is given
 //  in the boot.package file. The package tag's "default" attribute defines the
-//  config we should default to.
+//  config we should default to for each package.
 TP.sys.setcfg('boot.config', null);
 
 //  Do we filter by asset type? Default is false so we let the boot logic itself
@@ -1212,8 +1214,8 @@ TP.sys.setcfg('tibet.string_file', '~lib_dat/strings.xml');
 //  where is the default location for the uri mappings? this path should be
 //  an absolute path using either a / or ~ prefix to reference libroot or
 //  approot respectively. this can be set in the boot script/tibet.xml files
-//  using the 'uris' parameter.
-TP.sys.setcfg('tibet.uri_file', '~lib_dat/uris.xml');
+//  using the 'uris' parameter. A sample is in ~lib_dat/uris.xml.
+TP.sys.setcfg('tibet.uri_file', null);
 
 //  where is the default vCard file containing application vcards? this file
 //  is used (by default) as a simple way to create a small set of vcards
