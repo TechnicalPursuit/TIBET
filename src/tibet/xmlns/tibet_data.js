@@ -132,7 +132,8 @@ function(aRequest) {
                     tpElem.signal('TP.sig.UIDataDestruct');
                 }
 
-                //  Set the resource to the new resource and signal
+                //  Set the resource to the new resource (causing any observers
+                //  of the URI to get notified of a change) and signal
                 //  'TP.sig.UIDataConstruct'.
                 namedURI.setResource(newResource);
                 tpElem.signal('TP.sig.UIDataConstruct');
