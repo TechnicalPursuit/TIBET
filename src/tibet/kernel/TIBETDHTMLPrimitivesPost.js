@@ -217,29 +217,22 @@ function(aDocument) {
      *     the supplied document.
      */
 
-    var headElement;
+    var head;
 
-    //  Note that sometimes we use this in XML documents (i.e. content
-    //  processing) so we just check for TP.isDocument() here, not
-    //  TP.isHTMLDocument().
-    if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument');
-    }
-
-    headElement = TP.nodeGetFirstElementByTagName(aDocument, 'head');
-    if (TP.notValid(headElement)) {
-        headElement = TP.documentCreateElement(
+    head = TP.documentGetHead(aDocument);
+    if (TP.notValid(head)) {
+        head = TP.documentCreateElement(
                                 aDocument,
                                 'head',
                                 TP.w3.Xmlns.XHTML);
 
         TP.nodeInsertBefore(aDocument.documentElement,
-                            headElement,
+                            head,
                             aDocument.documentElement.firstChild,
                             false);
     }
 
-    return headElement;
+    return head;
 });
 
 //  ------------------------------------------------------------------------
@@ -340,12 +333,16 @@ function(aDocument) {
      * @returns {String} The document's body element.
      */
 
+    var body;
+
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    if (TP.isHTMLDocument(aDocument)) {
-        return aDocument.body;
+    //  HTML and XHTML documents will often have a body slot.
+    body = aDocument.body;
+    if (TP.isElement(body)) {
+        return body;
     }
 
     return TP.nodeGetFirstElementByTagName(aDocument, 'body');
@@ -366,15 +363,11 @@ function(aDocument) {
      * @returns {String} The document's body text.
      */
 
-    var bodyElement;
+    var body;
 
-    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument');
-    }
-
-    bodyElement = TP.nodeGetFirstElementByTagName(aDocument, 'body');
-    if (TP.isElement(bodyElement)) {
-        return bodyElement.innerHTML;
+    body = TP.documentGetBody(aDocument);
+    if (TP.isElement(body)) {
+        return body.innerHTML;
     }
 
     return null;
@@ -393,8 +386,16 @@ function(aDocument) {
      * @returns {String} The document's head element.
      */
 
+    var head;
+
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    //  HTML and XHTML documents will often have a head slot.
+    head = aDocument.head;
+    if (TP.isElement(head)) {
+        return head;
     }
 
     return TP.nodeGetFirstElementByTagName(aDocument, 'head');
@@ -415,15 +416,11 @@ function(aDocument) {
      * @returns {String} The document's head text.
      */
 
-    var headElement;
+    var head;
 
-    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument');
-    }
-
-    headElement = TP.nodeGetFirstElementByTagName(aDocument, 'head');
-    if (TP.isElement(headElement)) {
-        return headElement.innerHTML;
+    head = TP.documentGetHead(aDocument);
+    if (TP.isElement(head)) {
+        return head.innerHTML;
     }
 
     return null;
@@ -491,10 +488,6 @@ function(aDocument) {
         len,
         i,
         name;
-
-    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument');
-    }
 
     list = TP.nodeGetElementsByTagName(aDocument, 'a');
     len = list.getSize();

@@ -9366,6 +9366,7 @@ function(aNode, aTagName, aNamespaceURI) {
      */
 
     var tagName,
+        list,
         matcher;
 
     //  no child nodes for anything that isn't an element, document or
@@ -9384,6 +9385,13 @@ function(aNode, aTagName, aNamespaceURI) {
         tagName = aTagName.toLowerCase();
     } else {
         tagName = aTagName;
+    }
+
+    if (TP.notEmpty(aNamespaceURI) &&
+            TP.canInvoke(aNode.getElementsByTagNameNS)) {
+        list = aNode.getElementsByTagNameNS(aNamespaceURI,
+            tagName.split(':').first());
+        return list[0];
     }
 
     matcher = TP.getQNameRegex(tagName);
