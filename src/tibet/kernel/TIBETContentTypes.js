@@ -2191,18 +2191,18 @@ function(addressPart) {
     var prefixParts,
 
         sourceObjectID,
-        pathSrc;
+        srcPath;
 
     prefixParts = this.get('$prefixParts');
 
     prefixParts.push(addressPart);
 
     sourceObjectID = TP.id(TP.core.SimpleTIBETPath.get('$currentSource'));
-    pathSrc = TP.core.SimpleTIBETPath.get('$currentPath').get('srcPath');
+    srcPath = TP.core.SimpleTIBETPath.get('$currentPath').get('srcPath');
 
     this.registerObservedAddress(prefixParts.join('.'),
                                     sourceObjectID,
-                                    pathSrc);
+                                    srcPath);
 
     return this;
 });
@@ -2260,6 +2260,7 @@ function(targetObj, varargs) {
     var args,
 
         path,
+        srcPath,
 
         retVal;
 
@@ -2275,7 +2276,9 @@ function(targetObj, varargs) {
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
-    path = this.get('srcPath');
+    srcPath = this.get('srcPath');
+    path = srcPath;
+
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first one off (since it's the
         //  targetObj, which we already have).
@@ -2296,7 +2299,7 @@ function(targetObj, varargs) {
 
     //  NB: We use the original source path to register with the address change
     //  notification mechanism
-    this.getType().startObservedAddress(this.get('srcPath'));
+    this.getType().startObservedAddress(srcPath);
 
     //  If the path is something like '[0]', then slice off the brackets to
     //  just produce '0'.
@@ -2336,6 +2339,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      */
 
     var srcPath,
+        path,
+
         thisType,
 
         oldVal,
@@ -2362,6 +2367,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
 
     srcPath = this.get('srcPath');
+    path = srcPath;
+
     thisType = this.getType();
 
     if (TP.notValid(attributeValue)) {
@@ -2380,12 +2387,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return oldVal;
     }
 
-    if (TP.regex.HAS_ACP.test(srcPath)) {
+    if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first three off (since they're
         //  targetObj, attributeValue and shouldSignal which we already have).
         args = TP.args(arguments, 3);
 
-        srcPath = srcPath.transform(args);
+        path = path.transform(args);
     }
 
     //  Trigger the actual 'set' mechanism, tracking changed addresses as we
@@ -2395,7 +2402,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  NB: We use the original source path to register with the address change
     //  notification mechanism
-    thisType.startChangedAddress(this.get('srcPath'));
+    thisType.startChangedAddress(srcPath);
 
     //  If we're doing a TP.UPDATE, but we're replacing something that has
     //  structure (i.e. it's not just a scalar value), then we change to
@@ -2682,6 +2689,7 @@ function(targetObj, varargs) {
 
     var args,
 
+        srcPath,
         path,
 
         retVal;
@@ -2700,7 +2708,9 @@ function(targetObj, varargs) {
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
-    path = this.get('srcPath');
+    srcPath = this.get('srcPath');
+    path = srcPath;
+
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first one off (since it's the
         //  targetObj, which we already have).
@@ -2745,7 +2755,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     object using the receiver.
      */
 
-    var path,
+    var srcPath,
+        path,
+
         args,
 
         retVal,
@@ -2769,7 +2781,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
-    path = this.get('srcPath');
+    srcPath = this.get('srcPath');
+    path = srcPath;
+
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first three off (since they're
         //  targetObj, attributeValue and shouldSignal which we already have).
@@ -2794,7 +2808,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
 
-        if (TP.regex.HAS_ACP.test(this.get('srcPath'))) {
+        if (TP.regex.HAS_ACP.test(srcPath)) {
             //  Grab the arguments and slice the first three off (since they're
             //  targetObj, attributeValue and shouldSignal which we already
             //  have).
@@ -4085,7 +4099,7 @@ function(targetObj, varargs) {
 
     var args,
 
-        pathSrc,
+        srcPath,
 
         executedPaths,
 
@@ -4112,13 +4126,13 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    pathSrc = this.get('srcPath');
+    srcPath = this.get('srcPath');
 
     executedPaths = TP.core.AccessPath.$getExecutedPaths().atPutIfAbsent(
                     TP.id(targetObj),
                     TP.hc());
 
-    executedPaths.atPut(pathSrc, true);
+    executedPaths.atPut(srcPath, true);
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
@@ -4139,7 +4153,7 @@ function(targetObj, varargs) {
     //  'false' on autoCollapse (we collapse later if we're set for it, but for
     //  now we want an Array).
     nodes = TP.nodeEvaluatePath(
-                natTargetObj, pathSrc, this.getPathType(), false);
+                natTargetObj, srcPath, this.getPathType(), false);
 
     //  If the return value is not an Array, that means a scalar value was
     //  returned (because we forced false on autoCollapse).
@@ -4148,8 +4162,8 @@ function(targetObj, varargs) {
         //  Capture the scalar as the final value - we want to return this.
         finalValue = nodes;
 
-        //  Compute a 'node path' by starting with the path source.
-        nodePath = pathSrc;
+        //  Compute a 'node path' by starting with the source path.
+        nodePath = srcPath;
 
         //  If there's a 'wrapping scalar conversion' (i.e. 'string(...)'), then
         //  we need to strip it off of the path so that we can get to nodes, not
@@ -4210,7 +4224,7 @@ function(targetObj, varargs) {
     addresses.perform(
             function(anAddress) {
                 TP.core.AccessPath.registerObservedAddress(
-                    anAddress, sourceObjectID, pathSrc);
+                    anAddress, sourceObjectID, srcPath);
             });
 
     //  If there is a valid final value *or* we were trying to do a scalar
@@ -4218,7 +4232,7 @@ function(targetObj, varargs) {
     //  we were trying to get scalar and the node was empty or some such) then
     //  just return the final value here.
     if (TP.isValid(finalValue) ||
-        TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(pathSrc)) {
+        TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(srcPath)) {
         return finalValue;
     }
 
