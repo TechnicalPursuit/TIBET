@@ -2858,7 +2858,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
                 executedPaths.perform(
                         function(pathEntry) {
-                            TP.apc(pathEntry.first()).executeGet(targetObj);
+                            TP.tpc(pathEntry.first()).executeGet(targetObj);
                         });
             }
 
@@ -2970,7 +2970,7 @@ function(targetObj) {
                                 itemVal = itemVal(targetObj);
                             }
 
-                            val.push(itemVal.get(TP.apc(tail)));
+                            val.push(itemVal.get(TP.tpc(tail)));
 
                             thisType.endObservedAddress();
                         });
@@ -3042,7 +3042,7 @@ function(targetObj) {
                             }
 
                             if (TP.isValid(itemVal)) {
-                                val.push(itemVal.get(TP.apc(tail)));
+                                val.push(itemVal.get(TP.tpc(tail)));
                             } else {
                                 val.push(itemVal);
                             }
@@ -3072,7 +3072,7 @@ function(targetObj) {
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
         thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.apc(tail));
+        retVal = val.get(TP.tpc(tail));
 
         thisType.endObservedAddress();
 
@@ -3171,7 +3171,7 @@ function(targetObj) {
                         }
 
                         if (TP.isValid(itemVal)) {
-                            val.push(itemVal.get(TP.apc(tail)));
+                            val.push(itemVal.get(TP.tpc(tail)));
                         } else {
                             val.push(itemVal);
                         }
@@ -3204,7 +3204,7 @@ function(targetObj) {
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
         thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.apc(tail));
+        retVal = val.get(TP.tpc(tail));
 
         thisType.endObservedAddress();
 
@@ -3392,7 +3392,7 @@ function(targetObj, attributeValue, shouldSignal) {
                 //  Otherwise, we take each one of our items and send it a
                 //  'set' message with the attribute value.
 
-                firstSimplePath = TP.apc(tail).getFirstSimplePath();
+                firstSimplePath = TP.tpc(tail).getFirstSimplePath();
                 attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
                 //  If an Array was not supplied, then we use the supplied
@@ -3451,7 +3451,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(tail, TP.hc('shouldMakeStructures',
+                        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
                                                                 shouldMake)),
                                 attributeValue,
                                 false);
@@ -3501,7 +3501,7 @@ function(targetObj, attributeValue, shouldSignal) {
                 //  Otherwise, we take each one of our items and send it a
                 //  'set' message with the attribute value.
 
-                firstSimplePath = TP.apc(tail).getFirstSimplePath();
+                firstSimplePath = TP.tpc(tail).getFirstSimplePath();
                 attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
                 targetObj.performOver(
@@ -3558,7 +3558,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(tail, TP.hc('shouldMakeStructures',
+                        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
                                                                 shouldMake)),
                                 attributeValue,
                                 false);
@@ -3580,7 +3580,7 @@ function(targetObj, attributeValue, shouldSignal) {
     //  'head', then we create a reference type (either an Object or an Array)
     //  and set it into place.
     if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
-        firstSimplePath = TP.apc(tail).getFirstSimplePath();
+        firstSimplePath = TP.tpc(tail).getFirstSimplePath();
         if (TP.isNumber(firstSimplePath.asNumber())) {
             val = TP.ac();
         } else {
@@ -3588,7 +3588,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(head, TP.hc('shouldMakeStructures', shouldMake)),
+        targetObj.set(TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake)),
                          val,
                          false);
     }
@@ -3604,7 +3604,7 @@ function(targetObj, attributeValue, shouldSignal) {
         thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(tail, TP.hc('shouldMakeStructures', shouldMake)),
+        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake)),
                 attributeValue,
                 false);
 
@@ -3698,7 +3698,7 @@ function(targetObj, attributeValue, shouldSignal) {
             //  Otherwise, we take each one of our items and send it a 'set'
             //  message with the attribute value.
 
-            firstSimplePath = TP.apc(tail).getFirstSimplePath();
+            firstSimplePath = TP.tpc(tail).getFirstSimplePath();
             attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
             targetObj.performOver(
@@ -3755,7 +3755,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                     //  This 'set' call will take care of registering the
                     //  changed address.
-                    val.set(TP.apc(tail, TP.hc('shouldMakeStructures',
+                    val.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
                                                                 shouldMake)),
                             attributeValue,
                             false);
@@ -3776,7 +3776,7 @@ function(targetObj, attributeValue, shouldSignal) {
     //  'head', then we create a reference type (either an Object or an Array)
     //  and set it into place.
     if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
-        firstSimplePath = TP.apc(tail).getFirstSimplePath();
+        firstSimplePath = TP.tpc(tail).getFirstSimplePath();
         if (TP.isNumber(firstSimplePath.asNumber())) {
             val = TP.ac();
         } else {
@@ -3784,7 +3784,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(head, TP.hc('shouldMakeStructures', shouldMake)),
+        targetObj.set(TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake)),
                          val,
                          false);
     }
@@ -3800,7 +3800,7 @@ function(targetObj, attributeValue, shouldSignal) {
         thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(tail, TP.hc('shouldMakeStructures', shouldMake)),
+        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake)),
                 attributeValue,
                 false);
 
@@ -4666,7 +4666,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                                     targetTPDoc.getID()))) {
                 executedPaths.perform(
                         function(pathEntry) {
-                            TP.apc(pathEntry.first()).executeGet(targetObj);
+                            TP.xpc(pathEntry.first()).executeGet(targetObj);
                         });
             }
         }
