@@ -9006,15 +9006,22 @@ function(aURI) {
         case 'popstate':
             path = url.getPath() || '';
             params = url.get('query') || '';
-            lastPath = TP.isValid(lastUrl) ? lastUrl.getPath() : '';
-            lastParams = TP.isValid(lastUrl) ? lastUrl.getParameters() : '';
+            if (TP.isValid(lastUrl)) {
+                lastPath = lastUrl.getPath();
+                lastParams = lastUrl.getParameters();
+            }
+            lastPath = TP.ifInvalid(lastPath, '');
+            lastParams = TP.ifInvalid(lastParams, '');
             break;
         default:
             path = url.getFragmentPath() || '/';
             params = url.getFragmentParameters(true) || '';
-            lastPath = TP.isValid(lastUrl) ? lastUrl.getFragmentPath() : '/';
-            lastParams = TP.isValid(lastUrl) ?
-                lastUrl.getFragmentParameters(true) : '';
+            if (TP.isValid(lastUrl)) {
+                lastPath = lastUrl.getFragmentPath();
+                lastParams = lastUrl.getFragmentParameters(true);
+            }
+            lastPath = TP.ifInvalid(lastPath, '/');
+            lastParams = TP.ifInvalid(lastParams, '');
             break;
     }
 
