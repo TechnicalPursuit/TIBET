@@ -169,8 +169,8 @@ function(aNode) {
      */
 
     var node,
+        list,
         head,
-        found,
         str,
         rep;
 
@@ -182,35 +182,19 @@ function(aNode) {
         return node;
     }
 
-    //  link/style can only be in head and we already know we're XHTML
-    if (TP.isDocument(node)) {
-        head = TP.nodeGetFirstElementByTagName(node, 'head');
-    } else if (TP.elementGetLocalName(node).toLowerCase() === 'head') {
-        head = node;
+    list = node.getElementsByTagNameNS(TP.w3.Xmlns.XHTML, 'head');
+    if (TP.isEmpty(list)) {
+        return node;
+    } else {
+        head = list[0];
     }
 
-    //  "below" the head? can't have style or link elements then
-    if (TP.notValid(head)) {
-        return node;
-    }
-
-    //  links and styles are early in the document, and only in the head, so
-    //  we root our next search there
-    found = TP.nodeDetectDescendantElement(
-                head,
-                function(elem) {
-
-                    var name;
-
-                    name = TP.elementGetLocalName(elem).toLowerCase();
-
-                    /* eslint-disable no-extra-parens */
-                    return (name === 'link' || name === 'style');
-                    /* eslint-enable no-extra-parens */
-                });
-
-    if (TP.notValid(found)) {
-        return node;
+    list = node.getElementsByTagNameNS(TP.w3.Xmlns.XHTML, 'link');
+    if (TP.isEmpty(list)) {
+        list = node.getElementsByTagNameNS(TP.w3.Xmlns.XHTML, 'style');
+        if (TP.isEmpty(list)) {
+            return node;
+        }
     }
 
     //  going to have to do the work since we found at least one link or

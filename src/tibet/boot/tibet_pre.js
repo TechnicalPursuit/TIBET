@@ -1166,7 +1166,7 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         i,
         obj;
 
-    if (aHash == null) {
+    if (aHash === undefined || aHash === null) {
         return aDefault;
     }
 
@@ -1188,6 +1188,12 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         } else {
             key = aPrefix + '.' + aKey;
         }
+    }
+
+    if (!TP.sys.configlookups[key]) {
+        TP.sys.configlookups[key] = 1;
+    } else {
+        TP.sys.configlookups[key] = TP.sys.configlookups[key] + 1;
     }
 
     //  If the key accesses a real value return it. Otherwise we've got a bit
@@ -1333,6 +1339,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
 //  ----------------------------------------------------------------------------
 
 TP.sys.configuration = {};
+TP.sys.configlookups = {};
 
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
