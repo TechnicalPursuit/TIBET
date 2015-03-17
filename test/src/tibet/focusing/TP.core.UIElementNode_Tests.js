@@ -2948,7 +2948,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).skip();
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
