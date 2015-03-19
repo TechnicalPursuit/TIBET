@@ -213,22 +213,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineMethod('getPathSource',
-function() {
-
-    /**
-     * @method getPathSource
-     * @summary Return the current source object being used by the executeGet()
-     *     and executeSet() methods. At this level, this method returns the
-     *     underlying data object.
-     * @returns {Object} The object used as the current path source object.
-     */
-
-    return this.$get('data');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Content.Inst.defineMethod('getFacetedAspectNames',
 function() {
 
@@ -251,6 +235,37 @@ function() {
     }
 
     return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('getPathSource',
+function() {
+
+    /**
+     * @method getPathSource
+     * @summary Return the current source object being used by the executeGet()
+     *     and executeSet() methods. At this level, this method returns the
+     *     underlying data object.
+     * @returns {Object} The object used as the current path source object.
+     */
+
+    return this.$get('data');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @method getValue
+     * @summary Returns the 'value' of the receiver. For this type, this method
+     *     returns the underlying data.
+     * @returns {Object} The value of the receiver - in this case, it's 'data'.
+     */
+
+    return this.$get('data');
 });
 
 //  ------------------------------------------------------------------------
