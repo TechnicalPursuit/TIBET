@@ -3633,6 +3633,8 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @returns {Object} The receiver.
      */
 
+    var resourceContent;
+
     //  We have no notion of any other facet for URIs.
     if (facetName !== 'value') {
         return this;
@@ -3647,7 +3649,13 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         this.getPrimaryURI().getResource().set(
                     this.getFragmentExpr(), facetValue);
     } else {
-        this.getResource().set(aspectName, facetValue);
+
+        //  Make sure we have a real content object - if not, stub it in.
+        if (TP.notValid(resourceContent = this.getResource())) {
+            this.stubResourceContent();
+            resourceContent = this.getResource();
+        }
+        resourceContent.set(aspectName, facetValue);
     }
 
     return this;
@@ -3896,6 +3904,52 @@ function(aRequest, aResult, aResource) {
     }
 
     return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('stubResourceContent',
+function() {
+
+    /**
+     * @method stubResourceContent
+     * @summary 'Stubs' the resource content to have a single instance of
+     *     TP.lang.Object with a 'value' slot. This object is also configured to
+     *     be a 'good' resource for the URI by turning on it's change mechanism.
+     * @description This method is used to 'stub in' very basic object that can
+     *     store a value in it's 'value' slot and will signal a notification
+     *     when that value changes. This is necessary in scenarios like data
+     *     binding when bindings are triggered into this URI and no resource has
+     *     been set.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var resourceContent;
+
+    //  This only gets done for primary URIs, so if we're not one, we call up to
+    //  that (the check below will make sure that if the primary URI has a
+    //  resource it won't be replaced).
+    if (!this.isPrimaryURI()) {
+        return this.getPrimaryURI().stubResourceContent();
+    }
+
+    //  If the receiver has a real resource, don't replace it.
+    if (TP.notValid(resourceContent = this.getResource())) {
+
+        //  Construct a simple TP.lang.Object, define a 'value' slot on it and
+        //  give it an initial value of the empty String. Also, configure it be
+        //  a good citizen as a resource for URIs by signaling change.
+        resourceContent = TP.lang.Object.construct();
+
+        resourceContent.defineAttribute('value');
+        resourceContent.set('value', '', false);
+
+        resourceContent.shouldSignalChange(true);
+
+        this.setResource(resourceContent);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
