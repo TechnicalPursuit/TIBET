@@ -302,12 +302,25 @@ function(anObject, aFilterName) {
      *     in the Object.
      */
 
-    var str,
+    var obj,
+
+        str,
 
         doc,
         node;
 
-    str = TP.extern.jxon.jsToString(anObject);
+    //  Make sure that we have a native JS object here (Object, Array, Number,
+    //  String, Boolean, etc.)
+    obj = anObject.asObject();
+
+    //  If the object has more than 1 key, then put it in another object with a
+    //  single slot, 'value'. This is because the JXON processor cannot handle
+    //  multi-keyed objects - it needs a 'rooted' object.
+    if (Object.getKeys(obj).getSize() > 1) {
+        obj = {value: obj};
+    }
+
+    str = TP.extern.jxon.jsToString(obj);
     if (TP.isXMLDocument(doc = TP.doc(str, null, true))) {
         node = doc.documentElement;
     }
