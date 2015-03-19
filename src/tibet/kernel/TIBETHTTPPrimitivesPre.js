@@ -416,9 +416,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
             //  should appear in a 'type=' parameter before the first boundary.
             if (TP.isArray(data)) {
                 arr.push(
-                    TP.join('; type=',
-                            data.first().atIfInvalid(
-                                    'mimetype', TP.PLAIN_TEXT_ENCODED)));
+                    TP.join('; type=', TP.ifInvalid(firstPartMIMEType,
+                                                      TP.PLAIN_TEXT_ENCODED)));
             } else if (TP.isNode(data)) {
                 //  if the data is a Node, we use the supplied media type or
                 //  TP.XML_ENCODED if that's not defined, and the same
