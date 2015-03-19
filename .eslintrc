@@ -20,7 +20,6 @@
         "indent": 2,
         "max-len": [0, 80, 4],
         "no-div-regex": 2,
-        "no-duplicate-case": 0,
         "no-eq-null": 0,
         "no-extend-native": 0,
         "no-extra-parens": 1,
