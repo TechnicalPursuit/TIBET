@@ -753,6 +753,7 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIDataWillSend');
 TP.sig.ResponderNotificationSignal.defineSubtype('UIDataSignal');
 
 TP.sig.UIDataSignal.defineSubtype('UIDataReceived');
+TP.sig.UIDataSignal.defineSubtype('UIDataFailed');
 TP.sig.UIDataSignal.defineSubtype('UIDataSent');
 TP.sig.UIDataSignal.defineSubtype('UIDataSerialize');
 
