@@ -494,6 +494,29 @@ function() {
 //  $$isPair                    Kernel
 //  ------------------------------------------------------------------------
 
+Array.Inst.defineMethod('getIndices',
+function() {
+
+    /**
+     * @method getIndices
+     * @summary Returns the indices of the receiver. That is, all indices that
+     *     have an actual value. This is different from getKeys() for an Array,
+     *     since the results of that method also include the key 'length'.
+     * @returns {Array} The indices of the receiver.
+     */
+
+    var keys;
+
+    //  NB: We don't want any keys besides the ones that this object owns (not
+    //  even 'length').
+    keys = this.getKeys();
+    keys.splice(keys.indexOf('length'), 1);
+
+    return keys;
+});
+
+//  ------------------------------------------------------------------------
+
 Array.Inst.defineMethod('vslice',
 function(startIndexOrSpec, endIndex, aStep) {
 
