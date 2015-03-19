@@ -644,7 +644,11 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                     }
                 }
             } else {
-                list = TP.keys(data);
+                if (TP.isArray(data)) {
+                    list = data.getIndices();
+                } else {
+                    list = TP.keys(data);
+                }
 
                 len = list.getSize();
                 for (i = 0; i < len; i++) {
