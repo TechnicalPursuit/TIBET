@@ -242,6 +242,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
         if (TP.isTextNode(data)) {
             return aPayload;
         }
+    } else if (TP.isPlainObject(aPayload)) {
+        data = TP.hc(aPayload);
     } else {
         data = aPayload;
     }
