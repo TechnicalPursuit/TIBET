@@ -86,16 +86,11 @@ function(anEvent) {
 
         //  UI Events
         case 'abort':
-        case 'blur':
-        case 'change':
         case 'error':
-        case 'focus':
         case 'load':
-        case 'reset':
         case 'resize':
         case 'scroll':
         case 'select':
-        case 'submit':
         case 'unload':
         case 'transitionend':
 

@@ -620,8 +620,8 @@ function(aDirection, aValue, shouldSignal) {
         pipe,
 
         request,
-        shell,
-        response;
+        shell;
+        //response;
 
     //  process any binding data and produce the parts we need.
     if (TP.notValid(triplet = this.$getBoundSTDIO(aDirection))) {
@@ -652,7 +652,7 @@ function(aDirection, aValue, shouldSignal) {
     //  NOTE that this presumes the shell script doesn't include any
     //  portions which are going to require async processing.
     shell = TP.core.TSH.getDefaultInstance();
-    response = shell.handleShellRequest(request);
+    //response = shell.handleShellRequest(request);
 
     //  TODO:   add success/error completion hooks
 

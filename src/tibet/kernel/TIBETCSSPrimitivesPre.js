@@ -170,7 +170,6 @@ function(aNode) {
 
     var node,
         list,
-        head,
         str,
         rep;
 
@@ -185,8 +184,6 @@ function(aNode) {
     list = node.getElementsByTagNameNS(TP.w3.Xmlns.XHTML, 'head');
     if (TP.isEmpty(list)) {
         return node;
-    } else {
-        head = list[0];
     }
 
     list = node.getElementsByTagNameNS(TP.w3.Xmlns.XHTML, 'link');
