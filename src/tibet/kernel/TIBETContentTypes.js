@@ -333,6 +333,7 @@ function(aSignal) {
     action = payload.at('action');
     switch (action) {
         case TP.CREATE:
+        case TP.INSERT:
         case TP.DELETE:
 
             //  CREATE or DELETE means a 'structural change' in the
@@ -340,6 +341,7 @@ function(aSignal) {
             sigName = 'TP.sig.StructureChange';
             break;
 
+        case TP.APPEND:
         case TP.UPDATE:
 
             //  UPDATE means just a value changed.
@@ -1849,6 +1851,7 @@ function(targetObj) {
 
             switch (pathAction) {
                 case TP.CREATE:
+                case TP.INSERT:
                 case TP.DELETE:
 
                     //  CREATE or DELETE means a 'structural change' in the
@@ -1856,6 +1859,7 @@ function(targetObj) {
                     sigName = 'TP.sig.StructureChange';
                     break;
 
+                case TP.APPEND:
                 case TP.UPDATE:
 
                     //  UPDATE means just a value changed.
