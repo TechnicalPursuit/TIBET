@@ -1356,7 +1356,8 @@ TP.hc(
             str = anObject.toString();
             if (TP.regex.INSTANCE_OID.test(str)) {
                 str = '[object ' + TP.tname(anObject) + ']';
-            } else if (TP.regex.NATIVE_CODE.test(str)) {
+            } else if (TP.regex.NATIVE_CODE.test(str) &&
+                                TP.isNativeType(anObject)) {
 
                 //  NB: Do *not* rewrite as "TP.name('anObject')" or this call
                 //  will endlessly recurse.
@@ -1496,7 +1497,8 @@ TP.hc(
             str = anObject.toString();
             if (TP.regex.INSTANCE_OID.test(str)) {
                 str = '[object ' + TP.tname(anObject) + ']';
-            } else if (TP.regex.NATIVE_CODE.test(str)) {
+            } else if (TP.regex.NATIVE_CODE.test(str) &&
+                                TP.isNativeType(anObject)) {
 
                 //  NB: Do *not* rewrite as "TP.name('anObject')" or this call
                 //  will endlessly recurse.
@@ -1638,7 +1640,8 @@ TP.hc(
             str = anObject.toString();
             if (TP.regex.INSTANCE_OID.test(str)) {
                 str = '[object ' + TP.tname(anObject) + ']';
-            } else if (TP.regex.NATIVE_CODE.test(str)) {
+            } else if (TP.regex.NATIVE_CODE.test(str) &&
+                                TP.isNativeType(anObject)) {
 
                 //  NB: Do *not* rewrite as "TP.name('anObject')" or this call
                 //  will endlessly recurse.

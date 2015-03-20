@@ -3598,7 +3598,10 @@ function(anObject, verbose) {
     if (TP.canInvoke(anObject, 'asString')) {
         try {
             str = anObject.asString(wantsVerbose);
-            if (TP.regex.NATIVE_CODE.test(str)) {
+
+            //  If it reports as '[native code]' and is also a native type, then
+            //  extract it's name.
+            if (TP.regex.NATIVE_CODE.test(str) && TP.isNativeType(anObject)) {
                 str = TP.tname(anObject);
             }
 
@@ -3739,7 +3742,9 @@ function(anObject, verbose) {
 
     if (TP.canInvoke(anObject, 'asString')) {
         str = anObject.asString(wantsVerbose);
-        if (TP.regex.NATIVE_CODE.test(str)) {
+        //  If it reports as '[native code]' and is also a native type, then
+        //  extract it's name.
+        if (TP.regex.NATIVE_CODE.test(str) && TP.isNativeType(anObject)) {
             str = TP.tname(anObject);
         }
 
