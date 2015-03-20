@@ -2806,6 +2806,24 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isNativeFunction',
+function(anObj) {
+
+    /**
+     * @method isNativeFunction
+     * @summary Returns true if the object provided acts as a native (i.e.
+     *     builtin) Function.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} Whether or not the supplied object is a native
+     *     Function (that is, one that is built into the browser).
+     */
+
+    return TP.regex.NATIVE_CODE.test(anObj.toString());
+
+}, false, 'TP.isNativeFunction');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isNativeType',
 function(anObj) {
 

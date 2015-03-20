@@ -1819,16 +1819,12 @@ function(anObject, aType) {
     //  data, we get objects from another frame and those native objects
     //  don't have any of the methods / slots that we put on them in the
     //  code frame. This will at least try something.
-    //  Note that all three browser types we currently support (Gecko,
-    //  Webkit and IE/Trident) all report '[native code]' as part of their
-    //  String representation of native object constructors, so we can use
-    //  this test on those browsers.
-    if (/native code/.test(anObject.constructor.toString())) {
+    if (TP.isNativeFunction(anObject.constructor)) {
         if (TP.isString(testType = aType)) {
             testType = TP.global[aType];
         }
 
-        if (/native code/.test(testType.toString())) {
+        if (TP.isNativeFunction(testType)) {
             return anObject.constructor.toString() === testType.toString();
         }
     }
