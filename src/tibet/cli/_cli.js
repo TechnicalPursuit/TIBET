@@ -111,7 +111,7 @@ CLI.CONTEXTS = {
  * TIBET does NOT do by default).
  * @type {string}
  */
-CLI.GRUNT_FILE = 'gruntfile.js';
+CLI.GRUNT_FILE = 'Gruntfile.js';
 
 
 /**
@@ -1043,10 +1043,11 @@ CLI.runViaGrunt = function(command) {
 
     cmd = this;
 
-    str = 'grunt ' + process.argv.slice(2).join(' ');
+    str = process.argv.slice(2).join(' ');
     this.debug('spawning: ' + str);
 
-    child = require('child_process').spawn('./node_modules/.bin/grunt',
+    //child = require('child_process').spawn('./node_modules/.bin/grunt',
+    child = require('child_process').spawn('grunt',
         process.argv.slice(2),
         {cwd: this.getAppRoot()}
     );
@@ -1086,10 +1087,10 @@ CLI.runViaGulp = function(command) {
 
     cmd = this;
 
-    str = './node_modules/.bin/gulp ' + process.argv.slice(2).join(' ');
+    str = process.argv.slice(2).join(' ');
     this.debug('spawning: ' + str);
 
-    child = require('child_process').spawn('./node_modules/.bin/gulp',
+    child = require('child_process').spawn('gulp',
         process.argv.slice(2),
         {cwd: cmd.getAppRoot()}
     );
