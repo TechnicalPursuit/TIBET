@@ -1825,6 +1825,10 @@ function(anObject, aRequest) {
 
         //  make sure its always a String though.
         data = TP.str(data);
+
+        //  and, since we're not feeding it through a formatter (who is normally
+        //  responsible for this), make sure its escaped
+        data = data.asEscapedXML();
     }
 
     if (TP.isTrue(tap)) {
