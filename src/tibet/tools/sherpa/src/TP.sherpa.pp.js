@@ -524,7 +524,7 @@ function(anObject, optFormat) {
                 '</span>';
     } else {
 
-        obj = anObject.asEscapedXML();
+        obj = anObject;
 
         return '<span class="sherpa_pp String">' +
                 this.runJSModeOn(obj) +
