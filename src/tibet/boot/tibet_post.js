@@ -8872,6 +8872,8 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
         scriptUrl,
 
+        oldScript,
+
         tn;
 
     if (jsSrc == null) {
@@ -8916,6 +8918,14 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     TP.boot.$$onerrorURL = scriptUrl;
 
     try {
+        //  first, check to see if we already have a 'script' node with a
+        //  'source' attribute equal to scriptUrl. If we do, that means we've
+        //  already brought this code in once and need to remove the old node
+        oldScript = scriptHead.querySelector('*[source="' + scriptUrl + '"]');
+        if (oldScript) {
+            oldScript.parentNode.removeChild(oldScript);
+        }
+
         tn = scriptDoc.createTextNode(jsSrc);
         TP.boot.$nodeAppendChild(elem, tn);
 
