@@ -68,6 +68,7 @@ function(aRequest) {
         invalidDateVal,
 
         nativeTypeVal,
+        nativeFuncVal,
 
         windowVal,
         iframeWindowVal,
@@ -178,6 +179,7 @@ function(aRequest) {
     invalidDateVal = new Date('fluffy');
 
     nativeTypeVal = Array;
+    nativeFuncVal = Array.prototype.slice;
 
     windowVal = top;
     iframeWindowVal = top.UIROOT;
@@ -332,6 +334,7 @@ function(aRequest) {
     'String',                   stringVal,              //  String
 
     'NativeType',               nativeTypeVal,          //  NativeType
+    'NativeFunction',           nativeFuncVal,          //  NativeFunc
 
     'Window',                   windowVal,              //  Window
     'IFrameWindow',             iframeWindowVal,        //  IFrame Window
