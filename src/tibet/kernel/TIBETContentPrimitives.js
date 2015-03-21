@@ -309,9 +309,13 @@ function(anObject, aFilterName) {
         doc,
         node;
 
-    //  Make sure that we have a native JS object here (Object, Array, Number,
-    //  String, Boolean, etc.)
-    obj = anObject.asObject();
+    //  If we can't invoke this, it's probably because it's already a plain JS
+    //  object.
+    if (TP.canInvoke(anObject, 'asObject')) {
+        //  Make sure that we have a native JS object here (Object, Array,
+        //  Number, String, Boolean, etc.)
+        obj = anObject.asObject();
+    }
 
     //  If the object has more than 1 key, then put it in another object with a
     //  single slot, 'value'. This is because the JXON processor cannot handle
