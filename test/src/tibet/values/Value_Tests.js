@@ -44,86 +44,99 @@ function() {
     //  ---
 
     this.it('local id of: undefined', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at(TP.UNDEF)), 'undefined');
+        test.assert.isEqualTo(TP.lid(testData.at(TP.UNDEF)),
+                                'undefined');
     });
 
     //  ---
 
     this.it('local id of: null', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at(TP.NULL)), 'null');
+        test.assert.isEqualTo(TP.lid(testData.at(TP.NULL)),
+                                'null');
     });
 
     //  ---
 
     this.it('local id of: Array', function(test, options) {
-        test.assert.matches(TP.lid(testData.at('Array')), /^Array\$(\w+)$/);
+        test.assert.matches(TP.lid(testData.at('Array')),
+                                /^Array\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: Boolean', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('Boolean')), 'true');
+        test.assert.isEqualTo(TP.lid(testData.at('Boolean')),
+                                'true');
     });
 
     //  ---
 
     this.it('local id of: Date', function(test, options) {
-        test.assert.matches(TP.lid(testData.at('Date')), /^Date\$(\w+)$/);
+        test.assert.matches(TP.lid(testData.at('Date')),
+                                /^Date\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: Function', function(test, options) {
         test.assert.matches(TP.lid(testData.at('Function')),
-                            /^Function\$(\w+)$/);
+                                /^Function\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: InvalidDate', function(test, options) {
-        test.assert.matches(TP.lid(testData.at('Date')), /^Date\$(\w+)$/);
+        test.assert.matches(TP.lid(testData.at('Date')),
+                                /^Date\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: NaN', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('NaN')), 'NaN');
+        test.assert.isEqualTo(TP.lid(testData.at('NaN')),
+                                'NaN');
     });
 
     //  ---
 
     this.it('local id of: Number', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('Number')), '42');
+        test.assert.isEqualTo(TP.lid(testData.at('Number')),
+                                '42');
     });
 
     //  ---
 
     this.it('local id of: Object', function(test, options) {
-        test.assert.matches(TP.lid(testData.at('Object')), /^Object\$(\w+)$/);
+        test.assert.matches(TP.lid(testData.at('Object')),
+                                /^Object\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: RegExp', function(test, options) {
-        test.assert.matches(TP.lid(testData.at('RegExp')), /^RegExp\$(\w+)$/);
+        test.assert.matches(TP.lid(testData.at('RegExp')),
+                                /^RegExp\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: String', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('String')), 'bar');
+        test.assert.isEqualTo(TP.lid(testData.at('String')),
+                                'bar');
     });
 
     //  ---
 
     this.it('local id of: NativeType', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('NativeType')), 'Array');
+        test.assert.isEqualTo(TP.lid(testData.at('NativeType')),
+                                'Array');
     });
 
     //  ---
 
     this.it('local id of: NativeFunction', function(test, options) {
-        test.assert.matches(TP.lid(testData.at('NativeFunction')), /^Function\$(\w+)$/);
+        test.assert.matches(TP.lid(testData.at('NativeFunction')),
+                                /^Function\$(\w+)$/);
     });
 
     //  ---
@@ -136,7 +149,8 @@ function() {
     //  ---
 
     this.it('local id of: IFrameWindow', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('IFrameWindow')), 'UIROOT');
+        test.assert.isEqualTo(TP.lid(testData.at('IFrameWindow')),
+                                'UIROOT');
     });
 
     //  ---
@@ -149,25 +163,29 @@ function() {
     //  ---
 
     this.it('local id of: HTMLDocument', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('HTMLDocument')), 'document');
+        test.assert.isEqualTo(TP.lid(testData.at('HTMLDocument')),
+                                'document');
     });
 
     //  ---
 
     this.it('local id of: HTMLElement', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('HTMLElement')), 'body');
+        test.assert.isEqualTo(TP.lid(testData.at('HTMLElement')),
+                                'body');
     });
 
     //  ---
 
     this.it('local id of: XMLDocument', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('XMLDocument')), 'document');
+        test.assert.isEqualTo(TP.lid(testData.at('XMLDocument')),
+                                'document');
     });
 
     //  ---
 
     this.it('local id of: XMLElement', function(test, options) {
-        test.assert.isEqualTo(TP.lid(testData.at('XMLElement')), 'element(/1)');
+        test.assert.isEqualTo(TP.lid(testData.at('XMLElement')),
+                                'element(/1)');
     });
 
     //  ---
@@ -216,56 +234,56 @@ function() {
 
     this.it('local id of: NodeList', function(test, options) {
         test.assert.matches(TP.lid(testData.at('NodeList')),
-                            /^NodeList\$(\w+)$/);
+                                /^NodeList\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: NamedNodeMap', function(test, options) {
         test.assert.matches(TP.lid(testData.at('NamedNodeMap')),
-                            /^NamedNodeMap\$(\w+)$/);
+                                /^NamedNodeMap\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: CSSStyleSheet', function(test, options) {
         test.assert.matches(TP.lid(testData.at('CSSStyleSheet')),
-                            /^CSSStyleSheet\$(\w+)$/);
+                                /^CSSStyleSheet\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: CSSStyleRule', function(test, options) {
         test.assert.matches(TP.lid(testData.at('CSSStyleRule')),
-                            /^CSSStyleRule\$(\w+)$/);
+                                /^CSSStyleRule\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: CSSStyleDeclaration', function(test, options) {
         test.assert.matches(TP.lid(testData.at('CSSStyleDeclaration')),
-                            /^CSSStyleDeclaration\$(\w+)$/);
+                                /^CSSStyleDeclaration\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: Error', function(test, options) {
         test.assert.matches(TP.lid(testData.at('Error')),
-                            /^Error\$(\w+)$/);
+                                /^Error\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: Event', function(test, options) {
         test.assert.matches(TP.lid(testData.at('Event')),
-                            /^MouseEvent\$(\w+)$/);
+                                /^MouseEvent\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: XHR', function(test, options) {
         test.assert.matches(TP.lid(testData.at('XHR')),
-                            /^XMLHttpRequest\$(\w+)$/);
+                                /^XMLHttpRequest\$(\w+)$/);
     });
 
     //  ---
@@ -279,28 +297,28 @@ function() {
 
     this.it('local id of: TP.lang.Object', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.lang.Object')),
-                            /^TP\.lang\.Object\$(\w+)$/);
+                                /^TP\.lang\.Object\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.lang.Hash', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.lang.Hash')),
-                            /^TP\.lang\.Hash\$(\w+)$/);
+                                /^TP\.lang\.Hash\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.sig.Signal', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.sig.Signal')),
-                            /^TP\.sig\.Signal\$(\w+)$/);
+                                /^TP\.sig\.Signal\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.sig.Exception', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.sig.Exception')),
-                            /^TP\.sig\.Exception\$(\w+)$/);
+                                /^TP\.sig\.Exception\$(\w+)$/);
     });
 
     //  ---
@@ -384,49 +402,49 @@ function() {
 
     this.it('local id of: TP.core.SimpleTIBETPath', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.SimpleTIBETPath')),
-                            /^TP\.core\.SimpleTIBETPath\$(\w+)$/);
+                                /^TP\.core\.SimpleTIBETPath\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.ComplexTIBETPath', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.ComplexTIBETPath')),
-                            /^TP\.core\.ComplexTIBETPath\$(\w+)$/);
+                                /^TP\.core\.ComplexTIBETPath\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.ElementPath', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.ElementPath')),
-                            /^TP\.core\.ElementPath\$(\w+)$/);
+                                /^TP\.core\.ElementPath\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.XTensionPath', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.XTensionPath')),
-                            /^TP\.core\.XTensionPath\$(\w+)$/);
+                                /^TP\.core\.XTensionPath\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.XPathPath', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.XPathPath')),
-                            /^TP\.core\.XPathPath\$(\w+)$/);
+                                /^TP\.core\.XPathPath\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.sig.Request', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.sig.Request')),
-                            /^TP\.sig\.Request\$(\w+)$/);
+                                /^TP\.sig\.Request\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.sig.Response', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.sig.Response')),
-                            /^TP\.sig\.Response\$(\w+)$/);
+                                /^TP\.sig\.Response\$(\w+)$/);
     });
 
     //  ---
@@ -484,70 +502,70 @@ function() {
 
     this.it('local id of: TP.w3.DocType', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.w3.DocType')),
-                            /^TP\.w3\.DocType\$(\w+)$/);
+                                /^TP\.w3\.DocType\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Point', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Point')),
-                            /^TP\.core\.Point\$(\w+)$/);
+                                /^TP\.core\.Point\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Rect', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Rect')),
-                            /^TP\.core\.Rect\$(\w+)$/);
+                                /^TP\.core\.Rect\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Matrix', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Matrix')),
-                            /^TP\.core\.Matrix\$(\w+)$/);
+                                /^TP\.core\.Matrix\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Color', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Color')),
-                            /^TP\.core\.Color\$(\w+)$/);
+                                /^TP\.core\.Color\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.LinearGradient', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.LinearGradient')),
-                            /^TP\.core\.LinearGradient\$(\w+)$/);
+                                /^TP\.core\.LinearGradient\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.RadialGradient', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.RadialGradient')),
-                            /^TP\.core\.RadialGradient\$(\w+)$/);
+                                /^TP\.core\.RadialGradient\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Pattern', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Pattern')),
-                            /^TP\.core\.Pattern\$(\w+)$/);
+                                /^TP\.core\.Pattern\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Path', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Path')),
-                            /^TP\.core\.SVGPath\$(\w+)$/);
+                                /^TP\.core\.SVGPath\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Job', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Job')),
-                            /^TP\.core\.Job\$(\w+)$/);
+                                /^TP\.core\.Job\$(\w+)$/);
     });
 
     //  ---
@@ -561,14 +579,14 @@ function() {
 
     this.it('local id of: TP.boot.Annotation', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.boot.Annotation')),
-                            /^Function\$(\w+)$/);
+                                /^Function\$(\w+)$/);
     });
 
     //  ---
 
     this.it('local id of: TP.core.Annotation', function(test, options) {
         test.assert.matches(TP.lid(testData.at('TP.core.Annotation')),
-                            /^TP\.core\.Annotation\$(\w+)$/);
+                                /^TP\.core\.Annotation\$(\w+)$/);
     });
 });
 
