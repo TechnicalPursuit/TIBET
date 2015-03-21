@@ -320,7 +320,7 @@ function(anObject, aFilterName) {
     //  If the object has more than 1 key, then put it in another object with a
     //  single slot, 'value'. This is because the JXON processor cannot handle
     //  multi-keyed objects - it needs a 'rooted' object.
-    if (Object.getKeys(obj).getSize() > 1) {
+    if (Object.keys(obj).getSize() > 1) {
         obj = {value: obj};
     }
 
