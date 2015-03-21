@@ -159,81 +159,121 @@ function(aRequest) {
         return;
     }
 
+    //  undefined
     undefVal = undefined;
+    //  null
     nullVal = null;
 
-    booleanVal = true;
-    stringVal = 'bar';
-    numberVal = 42;
-
-    regexpVal = /foo/g;
-    dateVal = new Date('Aug 23 1995');
+    //  Instance of Array
     arrayVal = [1, 2, 3];
-
+    //  Instance of Boolean
+    booleanVal = true;
+    //  Instance of Date
+    dateVal = new Date('Aug 23 1995');
+    //  Instance of Function
+    functionVal = function() {return 'fluffy'; };
+    //  invalid Date
+    invalidDateVal = new Date('fluffy');
+    //  NaN
+    nanVal = NaN;
+    //  Instance of Number
+    numberVal = 42;
+    //  Instance of Object
     objectVal = {};
     objectVal.foo = 'bar';
+    //  Instance of RegExp
+    regexpVal = /foo/g;
+    //  Instance of String
+    stringVal = 'bar';
 
-    functionVal = function() {return 'fluffy'; };
-
-    nanVal = NaN;
-    invalidDateVal = new Date('fluffy');
-
+    //  Native Type
     nativeTypeVal = Array;
+    //  Native Function
     nativeFuncVal = Array.prototype.slice;
 
+    //  Window
     windowVal = top;
+    //  iframe Window
     iframeWindowVal = top.UIROOT;
 
+    //  HTML Document
     htmlDocumentVal = top.document;
+    //  HTML Element
     htmlElementVal = top.document.body;
 
+    //  XML Document
     xmlDocumentVal = TP.createDocument();
     xmlDocumentVal.appendChild(TP.elem('<foo bar="baz">Hi there<\/foo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<boo><goo/><\/boo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<moo\/>'));
 
+    //  XML Element
     xmlElementVal = xmlDocumentVal.createElement('foo');
     xmlElementVal.appendChild(xmlDocumentVal.createTextNode('bar'));
 
+    //  XML Attribute
     attrNodeVal = xmlDocumentVal.createAttribute('foo');
     attrNodeVal.nodeValue = 'bar';
 
-    textNodeVal = xmlDocumentVal.createTextNode('foo');
+    //  XML CDATA Node
     cdataSectionNodeVal = xmlDocumentVal.createCDATASection('foo');
-    piNodeVal = xmlDocumentVal.createProcessingInstruction('foo', 'bar');
+
+    //  XML Comment Node
     commentNodeVal = xmlDocumentVal.createComment('foo');
 
+    //  XML DocumentFragment Node
     documentFragmentNodeVal = xmlDocumentVal.createDocumentFragment();
     documentFragmentNodeVal.appendChild(xmlDocumentVal.createElement('foo'));
     documentFragmentNodeVal.appendChild(xmlDocumentVal.createElement('bar'));
 
+    //  XML PI Node
+    piNodeVal = xmlDocumentVal.createProcessingInstruction('foo', 'bar');
+
+    //  XML Text Node
+    textNodeVal = xmlDocumentVal.createTextNode('foo');
+
+    //  XML NodeList
     nodeListVal = xmlDocumentVal.documentElement.childNodes;
+
+    //  XML NamedNodeMap
     namedNodeMapVal = xmlDocumentVal.documentElement.attributes;
 
+    //  Style sheet
     stylesheetVal = top.document.styleSheets[0];
+    //  Style rule
     styleRuleVal = TP.styleSheetGetStyleRules(stylesheetVal, false)[1];
+    //  Style declaration
     styleDeclVal = styleRuleVal.style;
 
+    //  Error
     errorVal = new Error('There was an error');
+
+    //  Event
     eventVal = TP.documentCreateEvent(
                     TP.sys.uidoc(true), TP.ac('type', 'mouseover'));
 
+    //  XHR
     xhrVal = new XMLHttpRequest();
 
+    //  TIBET Type
     tibetTypeVal = TP.sys.require('TP.core.Node');
 
+    //  Instance of TP.lang.Object
     tibetObjectVal = TP.lang.Object.construct();
     tibetObjectVal.defineAttribute('foo');
     tibetObjectVal.set('foo', 'bar');
 
+    //  Instance of TP.lang.Hash
     tibetHashVal = TP.lang.Hash.construct();
     tibetHashVal.atPut('foo', 'bar');
 
+    //  Instance of TP.sig.Signal
     tibetSignalVal = TP.sig.Signal.construct(TP.hc('foo', 'bar'));
     //  Need to do this so that the signal has a real signal name for testing
     //  down below
     tibetSignalVal.getSignalName();
 
+    //  Instance of TP.sig.Exception
     tibetExceptionVal = TP.sig.Exception.construct(
         TP.hc('object', errorVal,
                  'message', 'There really was an Error'));
@@ -241,82 +281,121 @@ function(aRequest) {
     //  down below
     tibetExceptionVal.getSignalName();
 
+    //  Instance of TP.core.Window
     tibetWindowVal = TP.core.Window.construct(windowVal);
+    //  Instance of TP.core.HTMLDocumentNode
     tibetHTMLDocVal = TP.core.Document.construct(htmlDocumentVal);
+    //  Instance of TP.core.HTMLElementNode
     tibetHTMLElemVal = TP.core.HTMLElementNode.construct(htmlElementVal);
 
+    //  Instance of TP.core.XMLDocumentNode
     tibetXMLDocVal = TP.core.Document.construct(xmlDocumentVal);
+    //  Instance of TP.core.XMLElementNode
     tibetXMLElemVal = TP.core.XMLElementNode.construct(xmlElementVal);
 
+    //  Instance of TP.core.DocumentFragmentNode
     tibetDocFragNodeVal = TP.core.DocumentFragmentNode.construct(
         documentFragmentNodeVal);
+    //  Instance of TP.core.AttributeNode
     tibetAttributeNodeVal = TP.core.AttributeNode.construct(attrNodeVal);
+    //  Instance of TP.core.TextNode
     tibetTextNodeVal = TP.core.TextNode.construct(textNodeVal);
+    //  Instance of TP.core.CDATASectionNode
     tibetCDATASectionNodeVal = TP.core.CDATASectionNode.construct(
         cdataSectionNodeVal);
+    //  Instance of TP.core.ProcessingInstructionNode
     tibetPINodeVal = TP.core.ProcessingInstructionNode.construct(piNodeVal);
+    //  Instance of TP.core.CommentNode
     tibetCommentNodeVal = TP.core.CommentNode.construct(commentNodeVal);
 
+    //  Instance of TP.core.SimpleTIBETPath
     tibetSimpleTIBETPathVal = TP.core.SimpleTIBETPath.construct('foo');
+    //  Instance of TP.core.ComplexTIBETPath
     tibetComplexTIBETPathVal = TP.core.ComplexTIBETPath.construct('foo.bar.baz');
+    //  Instance of TP.core.ElementPath
     tibetElementPathVal = TP.core.ElementPath.construct('/1/2');
+    //  Instance of TP.core.XTensionPath
     tibetXTensionPathVal = TP.core.XTensionPath.construct('*[foo]');
+    //  Instance of TP.core.XPathPath
     tibetXPathVal = TP.core.XPathPath.construct('//*');
 
+    //  Instance of TP.sig.Request
     tibetRequestVal = TP.sig.Request.construct(TP.hc('foo', 'bar'));
     //  Need to do this so that the request has a real signal name for testing
     //  down below
     tibetRequestVal.getSignalName();
 
+    //  Instance of TP.sig.Response
     tibetResponseVal = TP.sig.Response.construct(tibetRequestVal, 'baz');
     //  Need to do this so that the response has a real signal name for testing
     //  down below
     tibetResponseVal.getSignalName();
 
+    //  Instance of TP.core.TIBETURN
     tibetTIBETURNVal = TP.uc('urn:tibet:foo');
+    //  Instance of TP.core.HTTPURL
     tibetHTTPURLVal = TP.uc('http://www.blah.com');
+    //  Instance of TP.core.FileURL
     tibetFileURLVal = TP.uc('file:///goo.txt');
     /* eslint-disable no-script-url */
+    //  Instance of TP.core.JSURL
     tibetJSURIVal = TP.uc('javascript:alert("hi")');
     /* eslint-enable no-script-url */
+    //  Instance of TP.core.WSURL
     tibetWSURLVal = TP.uc('ws://ws.blah.com');
+    //  Instance of TP.core.TIBETURL
     tibetTIBETURLVal = TP.uc('tibet://top/file:///goo.txt');
+    //  Instance of TP.core.CookieURL
     tibetCookieURLVal = TP.uc('cookie://blah=foo');
 
+    //  Instance of TP.w3.DocType
     tibetDocTypeVal = TP.w3.DocType.construct(
         'html',
         '-//W3C//DTD XHTML 1.0 Strict//EN',
         'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd');
 
+    //  Instance of TP.core.Point
     tibetPointVal = TP.core.Point.construct(20, 30);
+    //  Instance of TP.core.Rect
     tibetRectVal = TP.core.Rect.construct(0, 0, 100, 100);
+    //  Instance of TP.core.Matrix
     tibetMatrixVal = TP.core.Matrix.construct();
+    //  Instance of TP.core.Color
     tibetColorVal = TP.core.Color.construct(0, 255, 255);
 
+    //  Instance of TP.core.LinearGradient
     tibetLinearGradientVal = TP.core.LinearGradient.construct();
     tibetLinearGradientVal.set('angle', 45);
     tibetLinearGradientVal.addColorStop('10%', TP.cc(0, 0, 255, 0.5));
     tibetLinearGradientVal.addColorStop('50%', TP.cc(0, 255, 255, 1.0));
 
+    //  Instance of TP.core.RadialGradient
     tibetRadialGradientVal = TP.core.RadialGradient.construct();
     tibetRadialGradientVal.addColorStop('10%', TP.cc(0, 0, 255, 0.5));
     tibetRadialGradientVal.addColorStop('50%', TP.cc(0, 255, 255, 1.0));
 
+    //  Instance of TP.core.Pattern
     tibetPatternVal = TP.core.Pattern.construct().
                         set('x', 20).
                         set('y', 20).
                         set('width', 100).
                         set('height', 100);
 
+    //  Instance of TP.core.SVGPath
     tibetPath = TP.core.SVGPath.construct();
     tibetPath.addSegment(TP.core.SVGPath.MOVE_TO_ABS, TP.ac(10, 10));
     tibetPath.addSegment(TP.core.SVGPath.MOVE_TO_ABS, TP.ac(20, 20));
 
+    //  Instance of TP.core.Job
     tibetJob = TP.core.Job.construct(TP.hc());
 
+    //  TP.core.Browser
     tibetBrowserType = TP.core.Browser;
 
+    //  Instance of TP.boot.Annotation
     tpBootAnnotation = TP.boot.$annotate('A String', 'This is a message');
+
+    //  Instance of TP.core.Annotation
     tpAnnotation = TP.annotate('A String', 'This is a message');
 
     /* eslint-disable no-multi-spaces */
