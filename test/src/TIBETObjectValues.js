@@ -528,6 +528,7 @@ function(aRequest) {
         invalidDateVal,
 
         nativeTypeVal,
+        nativeFuncVal,
 
         windowVal,
         iframeWindowVal,
@@ -637,6 +638,7 @@ function(aRequest) {
     invalidDateVal = TP.ac(Date, Object);
 
     nativeTypeVal = TP.ac(Function, Object);
+    nativeFuncVal = TP.ac(Function, Object);
 
     windowVal = TP.ac(Window, Object);
     iframeWindowVal = TP.ac(top.UIROOT.Window, top.UIROOT.Object);
@@ -743,7 +745,8 @@ function(aRequest) {
     'Object',                   objectVal,              //  Object
     'String',                   stringVal,              //  String
 
-    'NativeType',               nativeTypeVal,            //  NativeType
+    'NativeType',               nativeTypeVal,          //  NativeType
+    'NativeFunction',           nativeFuncVal,          //  NativeFunc
 
     'Window',                   windowVal,              //  Window
     'IFrameWindow',             iframeWindowVal,        //  IFrame Window
