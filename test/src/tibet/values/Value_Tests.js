@@ -122,6 +122,12 @@ function() {
 
     //  ---
 
+    this.it('local id of: NativeFunction', function(test, options) {
+        test.assert.matches(TP.lid(testData.at('NativeFunction')), /^Function\$(\w+)$/);
+    });
+
+    //  ---
+
     this.it('local id of: Window', function(test, options) {
         test.assert.isEqualTo(TP.lid(testData.at('Window')),
                                 TP.sys.cfg('tibet.uibuffer'));
