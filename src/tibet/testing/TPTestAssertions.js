@@ -857,7 +857,7 @@ function(anObject, aComment) {
     this.assert(
         TP.isFalse(anObject),
         aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be False.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be false.'));
 
     return;
 });
@@ -887,7 +887,7 @@ function(anObject, aComment) {
     this.assert(
         TP.isTrue(anObject),
         aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be True.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be true.'));
 
     return;
 });
