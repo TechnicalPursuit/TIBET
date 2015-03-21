@@ -6407,7 +6407,7 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    //  Install a popstate handler to catch changes due to hash changes.
+    //  Install a hashchange handler to catch changes due to hash changes.
     top.onhashchange = function(evt) {
         this.onhashchange(evt);
     }.bind(this);

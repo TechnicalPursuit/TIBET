@@ -2,7 +2,7 @@
  * @overview TIBET platform makefile. Key targets here focus on packaging the
  *     various portions of the platform for inclusion in TIBET applications.
  * @author Scott Shattuck (ss), William J. Edney (wje)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
@@ -586,10 +586,6 @@ targets.test_cli = function(make) {
         targets.test_cli.reject(e);
     }
 };
-
-//  ---
-//  Export
-//  ---
 
 module.exports = targets;
 
