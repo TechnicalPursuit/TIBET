@@ -407,6 +407,11 @@ function() {
                         });
 
                 uri.setResource(bodyContent);
+
+                //  Set 'refresh' to false - we're not interested in what the
+                //  server currently has.
+                request.atPut('refresh', false);
+
                 uri.save(request);
 
                 break;
