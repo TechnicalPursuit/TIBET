@@ -13,9 +13,10 @@
  */
 //  ========================================================================
 
+/*global TP:true*/
 /*eslint indent:0*/
 
-(function(root) {
+(function() {
 
 var fs,
     path,
@@ -1260,6 +1261,7 @@ Package.prototype.getcfg = function(property) {
         value,
         parts,
         keys,
+        key,
         cfg,
         pkg;
 
@@ -1291,23 +1293,30 @@ Package.prototype.getcfg = function(property) {
 
     keys = Object.keys(this.cfg);
     keys.forEach(function(key) {
-        if (key.indexOf(property) === 0) {
+        if (key.indexOf(name) === 0) {
             cfg[key] = pkg.cfg[key];
         }
     });
 
-    // Now, if we thought we were going after a set...but only found one (or
-    // no) value, return just the individual lookup.
-    if (Object.keys(cfg).length < 2) {
-        if (Object.keys(cfg)[0] === name) {
-            return this.cfg[name];
-        } else {
-            //  Empty wasn't it. Return empty.
+    //  What we return now depends on how many keys we ran across.
+    keys = Object.keys(cfg);
+    switch (keys.length) {
+        case 0:
+            //  No matches.
             return;
-        }
+        case 1:
+            //  Exact match or a solo prefix match.
+            key = keys[0];
+            if (key === name) {
+                return pkg.cfg[key];
+            } else {
+                return cfg;
+            }
+            break;
+        default:
+            //  Multiple matches. Must have been a prefix.
+            return cfg;
     }
-
-    return cfg;
 };
 
 
@@ -2367,17 +2376,6 @@ Package.prototype.system = function(msg) {
     console.log(chalk.cyan(msg));
 };
 
-//  ---
-//  Export
-//  ---
+module.exports = Package;
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Package;
-    }
-    exports.Package = Package;
-} else {
-    root.Package = Package;
-}
-
-}(this));
+}());

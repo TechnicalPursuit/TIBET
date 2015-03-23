@@ -77,7 +77,8 @@ Cmd.prototype.HELP =
 
 'You can minify output via the --minify flag, and turn off headers via\n' +
 '--no-headers should you choose. Normally these flags are managed by one\n' +
-'or more makefile.js targets used to build library or app-level bundles.\n\n' +
+'or more makefile.js targets used to build library or app-level bundles.\n' +
+'See https://github.com/estools/escodegen/wiki/API for minify options.\n\n' +
 
 '<package-opts> refers to options for the \'tibet package\' command.\n';
 
@@ -127,16 +128,19 @@ Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
 Cmd.prototype.executeForEach = function(list) {
     var pkg,
         cmd,
+        cfg,
         minifyOpts; // Options for minify
 
     cmd = this;
     pkg = this.package;
 
+    cfg = pkg.getProjectConfig();
+
     if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
 
-    minifyOpts = CLI.ifUndefined(CLI.getcfg('tibet.escodegen'), {});
+    minifyOpts = CLI.ifUndefined(cfg.escodegen, {});
     this.verbose('minifyOpts: ' + beautify(JSON.stringify(minifyOpts)));
 
     list.forEach(function(item) {

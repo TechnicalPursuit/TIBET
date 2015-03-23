@@ -588,6 +588,18 @@ CLI.getMakeTargets = function() {
 
 
 /**
+ * Returns a reference to the current package instance which handles information
+ * like configuration properties etc.
+ * @return {Package} The receiver's package instance.
+ */
+CLI.getPackage = function() {
+    this.initPackage();
+
+    return this._package;
+};
+
+
+/**
  * Returns the name of the current project as defined in the Package.NPM_FILE.
  * @returns {String} The project name.
  */
