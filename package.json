@@ -72,7 +72,7 @@
         "serve-static": "*",
         "shelljs": "TechnicalPursuit/shelljs",
         "shelljs-nodecli": "*",
-        "sinon": "TechnicalPursuit/Sinon.JS",
+        "sinon": "TechnicalPursuit/Sinon.JS#v1.12.2",
         "syn": "TechnicalPursuit/syn",
         "watch": "*",
         "xpath": "TechnicalPursuit/xpath",
