@@ -562,11 +562,10 @@ function() {
     if (TP.isValid(model = this.get('model'))) {
         model.attachSTDIO(this);
     }
-/*
+
     if (TP.isWindow(self.$$TIBET) && this.get('vWin') !== self.$$TIBET) {
         TP.tpwin(self.$$TIBET).attachSTDIO(this);
     }
-*/
 
     return this;
 });
