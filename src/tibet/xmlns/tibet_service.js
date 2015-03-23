@@ -413,16 +413,28 @@ function() {
             }
         /* eslint-enable no-fallthrough */
         case TP.HTTP_PUT:
+
+            //  If we had a body, set the resource of the URI to it. We might
+            //  not - we might have a simple payload in the query.
             if (TP.isURI(val = bodyURIs.first()) &&
                 TP.isValid(bodyContent =
                             val.getResource(TP.hc('async', false)))) {
                 bodyContent = bodyContent.get('value');
                 uri.setResource(bodyContent);
-                uri.save(request);
+            } else {
+                uri.setResource('');
             }
+
+            //  Set 'refresh' to false - we're not interested in what the server
+            //  currently has.
+            request.atPut('refresh', false);
+
+            uri.save(request);
+
             break;
         case TP.HTTP_DELETE:
             uri.nuke(request);
+
             break;
     }
 
