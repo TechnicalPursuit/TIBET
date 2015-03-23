@@ -70,7 +70,9 @@ function() {
                     resultElem,
                     server,
 
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locStr = '/TIBET_endpoints/HTTP_QUERY_GET_TEST?search=dog';
                 resultElem = TP.wrap(
@@ -96,36 +98,47 @@ function() {
 
                 serviceTPElem = TP.byOID('Service1');
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service1_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service1_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -137,6 +150,9 @@ function() {
 
                 //  Restore the server to the built-in functionality.
                 server.restore();
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -162,7 +178,9 @@ function() {
                     server,
 
                     searchTPElem,
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_QUERY_GET_TEST\\?search=.+');
                 resultElem = TP.wrap(
@@ -191,36 +209,47 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service2_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service2_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -241,6 +270,9 @@ function() {
                         //  Restore the server to the built-in functionality.
                         server.restore();
                     });
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -265,7 +297,9 @@ function() {
                     resultElem,
                     server,
 
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locStr = '/TIBET_endpoints/HTTP_REST_GET_TEST';
                 resultElem = TP.wrap(
@@ -291,36 +325,47 @@ function() {
 
                 serviceTPElem = TP.byOID('Service3');
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service3_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service3_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -332,6 +377,9 @@ function() {
 
                 //  Restore the server to the built-in functionality.
                 server.restore();
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -356,7 +404,9 @@ function() {
                     resultElem,
                     server,
 
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locStr = '/TIBET_endpoints/HTTP_REST_GET_TEST/dog';
                 resultElem = TP.wrap(
@@ -382,36 +432,47 @@ function() {
 
                 serviceTPElem = TP.byOID('Service4');
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service4_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service4_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -423,6 +484,9 @@ function() {
 
                 //  Restore the server to the built-in functionality.
                 server.restore();
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -448,7 +512,9 @@ function() {
                     server,
 
                     searchTPElem,
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_GET_TEST\\/.+');
                 resultElem = TP.wrap(
@@ -477,36 +543,47 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service5_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service5_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -526,6 +603,9 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
+
+                        //  Return the Promise.
+                        return promise;
                     });
             },
             function(error) {
@@ -552,7 +632,9 @@ function() {
                     server,
 
                     searchTPElem,
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_GET_TEST\\/.+');
                 resultElem = TP.wrap(
@@ -585,36 +667,47 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service6_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service6_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -634,6 +727,9 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
+
+                        //  Return the Promise.
+                        return promise;
                     });
             },
             function(error) {
@@ -661,7 +757,9 @@ function() {
                     server,
 
                     bodyContentTPElem,
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locStr = '/TIBET_endpoints/HTTP_REST_POST_TEST';
                 testBody = 'POST test content';
@@ -692,33 +790,43 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service7_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service7_Result');
 
-                        test.assert.isKindOf(aResult, String);
-                        test.assert.isEqualTo(aResult, testBody);
+                            aResult = resultURI.getResource();
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isKindOf(aResult, String);
+                            test.assert.isEqualTo(aResult, testBody);
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -738,6 +846,9 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
+
+                        //  Return the Promise.
+                        return promise;
                     });
             },
             function(error) {
@@ -764,7 +875,9 @@ function() {
                     server,
 
                     searchTPElem,
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_PUT_TEST\\/.+');
                 resultElem = TP.wrap(
@@ -793,36 +906,47 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service8_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service8_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -842,6 +966,9 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
+
+                        //  Return the Promise.
+                        return promise;
                     });
             },
             function(error) {
@@ -868,7 +995,9 @@ function() {
                     server,
 
                     searchTPElem,
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_DELETE_TEST\\/.+');
                 resultElem = TP.wrap(
@@ -897,36 +1026,47 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service9_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service9_Result');
 
-                        test.assert.isKindOf(aResult, TP.core.XHTMLDocumentNode);
+                            aResult = resultURI.getResource();
 
-                        test.assert.isEqualTo(
-                                aResult.get('html|body').at(0),
-                                resultElem.get('html|body').at(0));
+                            test.assert.isKindOf(
+                                aResult, TP.core.XHTMLDocumentNode);
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isEqualTo(
+                                    aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -946,6 +1086,9 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
+
+                        //  Return the Promise.
+                        return promise;
                     });
             },
             function(error) {
@@ -974,7 +1117,9 @@ function() {
 
                     server,
 
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
 
@@ -1008,33 +1153,44 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service10_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service10_Result');
 
-                        test.assert.isKindOf(aResult, TP.lang.Hash);
-                        test.assert.isEqualTo(aResult, testBody.get('data'));
+                            aResult = resultURI.getResource();
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isKindOf(aResult, TP.lang.Hash);
+                            test.assert.isEqualTo(
+                                aResult, testBody.get('data'));
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -1046,6 +1202,9 @@ function() {
 
                 //  Restore the server to the built-in functionality.
                 server.restore();
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1070,7 +1229,9 @@ function() {
 
                     server,
 
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEST';
 
@@ -1100,34 +1261,44 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service11_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service11_Result');
 
-                        test.assert.isKindOf(aResult, Array);
-                        test.assert.hasKey(aResult.at(0), 'body');
-                        test.assert.hasKey(aResult.at(1), 'body');
+                            aResult = resultURI.getResource();
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isKindOf(aResult, Array);
+                            test.assert.hasKey(aResult.at(0), 'body');
+                            test.assert.hasKey(aResult.at(1), 'body');
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -1139,6 +1310,9 @@ function() {
 
                 //  Restore the server to the built-in functionality.
                 server.restore();
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1163,7 +1337,9 @@ function() {
 
                     server,
 
-                    serviceTPElem;
+                    serviceTPElem,
+
+                    promise;
 
                 locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_TEST';
 
@@ -1193,34 +1369,44 @@ function() {
 
                 //  ---
 
-                handler = function() {
-                        var resultURI,
-                            aResult;
+                //  In order to make the asynchronous behavior work here, we
+                //  create a Promise and return it from the test case method.
+                promise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+                        handler = function() {
+                            var resultURI,
+                                aResult;
 
-                        handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+                            //  Now that we're really done with everything, we
+                            //  can resolve() the Promise.
+                            resolver();
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataReceived');
+                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
 
-                        test.assert.didSignal(
-                            serviceTPElem, 'TP.sig.UIDataConstruct');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataReceived');
 
-                        resultURI = TP.uc('urn:tibet:Service12_Result');
+                            test.assert.didSignal(
+                                serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                        aResult = resultURI.getResource();
+                            resultURI = TP.uc('urn:tibet:Service12_Result');
 
-                        test.assert.isKindOf(aResult, Array);
-                        test.assert.hasKey(aResult.at(0), 'body');
-                        test.assert.hasKey(aResult.at(1), 'body');
+                            aResult = resultURI.getResource();
 
-                        //  Unload the current page by setting it to the blank
-                        test.getDriver().setLocation(unloadURI);
+                            test.assert.isKindOf(aResult, Array);
+                            test.assert.hasKey(aResult.at(0), 'body');
+                            test.assert.hasKey(aResult.at(1), 'body');
 
-                        //  Unregister the URI to avoid a memory leak
-                        loadURI.unregister();
+                            //  Unload the current page by setting it to the
+                            //  blank
+                            test.getDriver().setLocation(unloadURI);
 
-                        return this;
-                    };
+                            //  Unregister the URI to avoid a memory leak
+                            loadURI.unregister();
+
+                            return this;
+                        };
+                    });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
@@ -1232,6 +1418,9 @@ function() {
 
                 //  Restore the server to the built-in functionality.
                 server.restore();
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
