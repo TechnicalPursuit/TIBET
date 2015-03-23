@@ -329,6 +329,8 @@ function() {
 
                     resultType = thisArg.getResultType(mimeType);
                     result = resultType.construct(result);
+                } else if (TP.isNode(result)) {
+                    result = TP.wrap(result);
                 }
 
                 //  If the named URI has existing data, then we signal
