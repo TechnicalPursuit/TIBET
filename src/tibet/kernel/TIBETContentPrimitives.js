@@ -309,9 +309,11 @@ function(anObject, aFilterName) {
         doc,
         node;
 
+    obj = anObject;
+
     //  If we can't invoke this, it's probably because it's already a plain JS
     //  object.
-    if (TP.canInvoke(anObject, 'asObject')) {
+    if (TP.canInvoke(obj, 'asObject')) {
         //  Make sure that we have a native JS object here (Object, Array,
         //  Number, String, Boolean, etc.)
         obj = anObject.asObject();
