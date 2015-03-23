@@ -1,6 +1,14 @@
-/* copyright added via build process */
+/* copyright added via build process. see copyright.js in TIBET kernel */
 
 //  ============================================================================
+
+/**
+ * @overview The first portion of the tibet_init.js script. This section handles
+ *     pre-launch checks to ensure TIBET is being targeted at the TOP window,
+ *     puts some common functions in play, and gets TP.sys.cfg (configuration)
+ *     data and methods ready for loading tibet_cfg.js and the rest of the
+ *     tibet_init boot script.
+ */
 
 /* jshint debug:true,
           eqnull:true,
@@ -10,31 +18,94 @@
           node:true
 */
 
-/*eslint indent:0*/
+/* global TP:true, APP:true, $$TIBET:true */
 
 //  ----------------------------------------------------------------------------
 
-(function(root) {
+/* eslint indent:0 */
+(function (root) {
 
-//  Check for global TIBET symbols.
-if (root.TP != null || root.APP != null) {
-    if (!root.TP.boot || !root.TP.sys) {
-        top.console.error('TIBET TP variable already mapped. Exiting.');
+//  GLOBAL - Defines where TIBET booted and where the codeframe is. We set this
+//  early so the cfg/post/hook file logic knows it's bundled with tibet_pre.js.
+window.$$TIBET = window;
+
+//  ----------------------------------------------------------------------------
+
+/*
+ * Pre-start checks.
+ */
+
+if (window === top) {
+
+    //  Even if we exit this function we need to help the rest of tibet_init's
+    //  modules find the TP reference.
+    TP = root.TP = window.TP;
+
+    //  If the TP or APP globals aren't available and we're loading into TOP
+    //  that's a problem since our target globals aren't available.
+    if (window.TP) {
+        top.console.error('TIBET global TP already mapped. Exiting.');
         return;
     }
-    if (!root.APP || !root.APP) {
-        top.console.error('TIBET APP variable already mapped. Exiting.');
+
+    if (window.APP) {
+        top.console.error('TIBET global APP already mapped. Exiting.');
         return;
+    }
+
+} else {
+
+    //  If we're being loaded into a frame other than TOP that's not a good
+    //  thing. TIBET should only boot in TOP to avoid security issues with
+    //  things like clickjacking etc. Plus it's a "single page" framework.
+    if (top.TP) {
+
+        //  Even if we exit this function we need to help the rest of
+        //  tibet_init's modules find the TP reference.
+        TP = root.TP = top.TP;
+
+        //  See if we can trigger the router to route us based on the URL we're
+        //  being loaded from (typically index.html via a "/" or "#" link).
+        if (top.TP.sys && top.TP.sys.getRouter) {
+
+            //  Keep the boot UI from showing...
+            window.document.body.innerHTML = '';
+
+            //  Set a flag the remaining portions of tibet_init and the
+            //  containing file (such as index.html) which might try to invoke
+            //  TP.boot.launch() can check.
+            top.TP.$$routing = true;
+
+            //  Clear the TIBET global. We don't want any new content confused
+            //  about where it's loading.
+            delete window.$$TIBET;
+
+            //  Ask the router to do something useful with the location.
+            top.TP.sys.getRouter().route(window.location.toString());
+
+            return;
+
+        } else {
+
+            //  We found TP but not TP.sys or the router? Probably not TIBET.
+            top.console.error('TIBET global TP already mapped. Exiting.');
+
+            return;
+        }
+
+    } else {
+
+        //  If we're not being loaded in TOP and TOP isn't running TIBET then we
+        //  reset so we try to load into the top frame.
+        top.location = window.location;
     }
 }
+
+//  ----------------------------------------------------------------------------
 
 //  ---
 //  Define TIBET global and boot-level namespace symbols.
 //  ---
-
-//  TODO: get rid of this and migrate to checking for TP/APP duo in dependent
-//  files and routines (findTIBET et. al.)
-root.$$tibet = root;
 
 //  If the ECMAScript5 'defineProperty' call is available, use it to try to
 //  protect our key objects from being overwritten.
@@ -42,10 +113,7 @@ if (Object.defineProperty) {
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(root, 'TP', {value: {}, writable: false});
-
-    //  Node.js requires seeing the actual assignment.
-    TP = root.TP;
+    Object.defineProperty(window, 'TP', {value: {}, writable: false});
 
     //  The TP.boot object, which holds functions and data needed
     //  for booting and for loading code dynamically.
@@ -57,20 +125,17 @@ if (Object.defineProperty) {
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(root, 'APP', {value: {}, writable: false});
+    Object.defineProperty(window, 'APP', {value: {}, writable: false});
 
-    //  No... just no. Get a copy of Mavis Beacon and practice.
+    //  No... just no. Get a copy of Mavis Beacon and practice :).
     Object.defineProperty(TP, '$', {value: null, writable: false});
     Object.defineProperty(TP, '_', {value: null, writable: false});
 
-    //  Node.js requires seeing the actual assignment.
-    APP = root.APP;
-
 } else {
-    TP = root.TP || {};
-    TP.boot = TP.boot || {};
+    TP = window.TP || {};
     TP.sys = TP.sys || {};
-    APP = root.APP || {};
+    TP.boot = TP.boot || {};
+    APP = window.APP || {};
 }
 
 //  ----------------------------------------------------------------------------
@@ -109,7 +174,7 @@ if (!TP.sys.$nativeglobals) {
         //  Traverse the prototype chain using the property names of the target.
         getProps = function(target) {
             return target ? Object.getOwnPropertyNames(target)
-                .concat(getProps(Object.getPrototypeOf(target))) : [] ;
+                .concat(getProps(Object.getPrototypeOf(target))) : [];
         };
 
         //  Unique the property names.
@@ -136,19 +201,19 @@ if (TP.sys.$globals == null) {
 
 TP.$$isNamespace = true;
 TP.$$name = 'TP';
-TP.getTypeNames = function() {return [];};
+TP.getTypeNames = function() {return []; };
 
 TP.boot.$$isNamespace = true;
 TP.boot.$$name = 'TP.boot';
-TP.boot.getTypeNames = function() {return [];};
+TP.boot.getTypeNames = function() {return []; };
 
 TP.sys.$$isNamespace = true;
 TP.sys.$$name = 'TP.sys';
-TP.sys.getTypeNames = function() {return [];};
+TP.sys.getTypeNames = function() {return []; };
 
 APP.$$isNamespace = true;
 APP.$$name = 'APP';
-APP.getTypeNames = function() {return [];};
+APP.getTypeNames = function() {return []; };
 
 //  ---
 //  Configure baseline log/debug levels.
@@ -700,7 +765,7 @@ liftoff: {
         TP.boot.$displayStatus('Application running: ' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
             TP.boot.$getStageTime('paused')) + 'ms.');
-            TP.boot.hideUIBoot();
+        TP.boot.hideUIBoot();
     }
 },
 stopped: {
@@ -933,6 +998,25 @@ TP.boot.$isVisible = function(anElement) {
     }
 
     return true;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.boot.$isWindow = function(anObj) {
+
+    /**
+     * @method isWindow
+     * @summary Returns true if the object provided appears to be a valid
+     *     window instance based on location and navigator slot checks.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} True if the object is a window.
+     */
+
+    if (anObj != null && anObj.moveBy !== undefined) {
+        return true;
+    }
+
+    return false;
 };
 
 //  ----------------------------------------------------------------------------
@@ -1233,8 +1317,8 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
             obj = TP.hc();
         } else {
             obj = {};
-            obj.at = function(aKey) {return this[aKey];};
-            obj.atPut = function(aKey, aValue) {this[aKey] = aValue;};
+            obj.at = function(aKey) {return this[aKey]; };
+            obj.atPut = function(aKey, aValue) {this[aKey] = aValue; };
         }
 
         len = arr.length;
@@ -1290,12 +1374,12 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
 
     // Don't override any user overrides, unless forced.
     if (TP.sys.overrides.hasOwnProperty(key)) {
-      if (override !== true) {
-        return;
-      } else if (TP.boot.$argsDone === true) {
-        TP.boot.$stdout('Forcing reset of \'' + key +
-                        '\' override to ' + aValue, TP.boot.DEBUG);
-      }
+        if (override !== true) {
+            return;
+        } else if (TP.boot.$argsDone === true) {
+            TP.boot.$stdout('Forcing reset of \'' + key +
+                '\' override to ' + aValue, TP.boot.DEBUG);
+        }
     }
 
     oldval = aHash.at(key);
@@ -1344,16 +1428,16 @@ TP.sys.configlookups = {};
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
     Object.defineProperty(TP.sys.configuration, 'at', {
-        value: function(aKey) {return this[aKey];},
+        value: function(aKey) {return this[aKey]; },
         enumerable: false
     });
     Object.defineProperty(TP.sys.configuration, 'atPut', {
-        value: function(aKey, aValue) {this[aKey] = aValue;},
+        value: function(aKey, aValue) {this[aKey] = aValue; },
         enumerable: false
     });
 } else {
-    TP.sys.configuration.at = function(aKey) {return this[aKey];};
-    TP.sys.configuration.atPut = function(aKey, aValue) {this[aKey] = aValue;};
+    TP.sys.configuration.at = function(aKey) {return this[aKey]; };
+    TP.sys.configuration.atPut = function(aKey, aValue) {this[aKey] = aValue; };
 }
 
 // Cache values set on the launch URL which represent user overrides.
@@ -1444,16 +1528,16 @@ TP.sys.environment = {};
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
     Object.defineProperty(TP.sys.environment, 'at', {
-        value: function(aKey) {return this[aKey];},
+        value: function(aKey) {return this[aKey]; },
         enumerable: false
     });
     Object.defineProperty(TP.sys.environment, 'atPut', {
-        value: function(aKey, aValue) {this[aKey] = aValue;},
+        value: function(aKey, aValue) {this[aKey] = aValue; },
         enumerable: false
     });
 } else {
-    TP.sys.environment.at = function(aKey) {return this[aKey];};
-    TP.sys.environment.atPut = function(aKey, aValue) {this[aKey] = aValue;};
+    TP.sys.environment.at = function(aKey) {return this[aKey]; };
+    TP.sys.environment.atPut = function(aKey, aValue) {this[aKey] = aValue; };
 }
 
 //  ----------------------------------------------------------------------------
@@ -1505,20 +1589,10 @@ TP.boot.$$setenv = function(aKey, aValue) {
     return TP.boot.$$setprop(TP.sys.environment, aKey, aValue, 'env');
 };
 
-//  ============================================================================
-//  Export
-//  ============================================================================
+//  ----------------------------------------------------------------------------
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = TP;
-    }
-    exports.TP = TP;
-    exports.APP = APP;
-} else {
-    root.TP = TP;
-    root.APP = APP;
-}
+root.TP = TP;
+root.APP = APP;
 
 }(this));
 

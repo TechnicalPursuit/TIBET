@@ -165,7 +165,7 @@ Cmd.prototype.parse = function(options) {
 
     // Now overlay any options missing but provided by the CLI.PROJECT_FILE.
     command = CLI.options._[0];
-    cfg = CLI.getcfg('tibet.cli');
+    cfg = CLI.getPackage().getProjectConfig().cli;
     if (cfg && cfg[command]) {
         this.options = CLI.blend(this.options, cfg[command]);
     }

@@ -1007,16 +1007,6 @@ function(aWindow) {
         return;
     }
 
-    //  Set the native window's opener to our own window to help it find
-    //  TIBET when asked
-    //  TODO:   is this WRONG to do?
-    if (TP.notValid(nativeWindow.opener)) {
-        nativeWindow.opener = window;
-    }
-
-    //  Set the native window's tibet references to the proper ones.
-    nativeWindow.$$tibet = window;
-
     //  Set the other common TIBET root objects, used for constants etc.
     nativeWindow.TP = window.TP;
 

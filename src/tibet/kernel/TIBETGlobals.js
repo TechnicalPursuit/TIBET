@@ -2859,13 +2859,5 @@ TP.sys.$$realBrowser = null;
 TP.sys.$LICENSE = TP.NULL_OID;
 
 //  ------------------------------------------------------------------------
-
-window.$$TIBET = true;              //  hook for locating true TIBET frame
-                                    //  used by the findTIBET routine.
-                                    //  NOTE: WE DO NOT REGISTER THIS GLOBAL
-                                    //  to avoid having it imported/exported
-                                    //  to other frames.
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

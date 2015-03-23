@@ -443,6 +443,7 @@ function() {
     hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_on'));
     if (TP.sys.cfg('boot.context') !== 'phantomjs' && hasBootToggle) {
 
+        //  No hook file in the boot screen so we initialize manually.
         TP.boot.initializeCanvas(TP.win('UIBOOT'));
 
         //  Configure a toggle so we can always get back to the boot UI as

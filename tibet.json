@@ -5,12 +5,7 @@
     },
     "escodegen": {
         "format": {
-            "indent": {
-                "style": "",
-                "base": 0
-            },
-            "newline": "",
-            "space": ""
+            "compact": true
         }
     },
     "tds": {

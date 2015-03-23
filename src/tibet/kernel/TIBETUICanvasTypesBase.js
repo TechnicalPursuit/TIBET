@@ -45,7 +45,8 @@ function(aWindow) {
      * @returns {TP.core.Window} The receiver.
      */
 
-    var tibetWin,
+    var msg,
+        tibetWin,
         dclListener,
         unloadListener;
 
@@ -53,9 +54,10 @@ function(aWindow) {
         return this.raise('TP.sig.InvalidWindow');
     }
 
-    if (TP.$$DEBUG) {
-        TP.boot.$stdout('Arming window: ' + TP.gid(aWindow) + '.', TP.DEBUG);
-        TP.boot.$stdout('Adding listeners to ' + aWindow.name + '.', TP.DEBUG);
+    if (TP.sys.cfg('log.hook')) {
+        msg = 'Arming window: ' + TP.gid(aWindow) + '.';
+        TP.boot.$stdout(msg, TP.DEBUG);
+        top.console.log(msg);
     }
 
     //  Set the native window's onerror handler to the standard TIBET
@@ -75,6 +77,7 @@ function(aWindow) {
     //  window for both and don't install them if they're already installed.
 
     if (TP.notValid(aWindow.dclListener)) {
+
         dclListener = function(anEvent) {
 
             if (anEvent.target !== aWindow.document) {

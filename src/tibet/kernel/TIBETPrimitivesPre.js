@@ -6272,6 +6272,193 @@ TP.definePrimitive('stderr', TP.boot.STDERR_LOG);
 //  METADATA
 //  ------------------------------------------------------------------------
 
+/*
+All objects which might be leveraged as 'types' including the builtins
+need to have basic metadata in TIBET. The values consist of slots for:
+
+    TP.TYPE             Reference to the type of the receiver.
+
+    TP.TYPEC            The type constructor, used for subtype creation.
+    TP.INSTC            The inst constructor, used for instance creation.
+
+    TP.TNAME            The type name in string form for easy access.
+    TP.RNAME            The 'real' type name in JS-identifier form.
+
+    TP.SUPER            The immediate supertype object.
+
+    TP.ANCESTORS        Receiver's supertype list.
+    TP.ANCESTOR_NAMES   Receiver's supertype names.
+*/
+
+//  --------------------------------------------------------------------
+
+TP.boot.$$setupMetadata = function(aWindow) {
+
+    var registerMetadata,
+        win;
+
+    win = aWindow || window;
+
+    registerMetadata = function (target, type,
+                                    typeC, instC,
+                                    tName, rName, name,
+                                    superT, ancestors, ancestorNames) {
+        target[TP.TYPE] = type;
+
+        target[TP.TYPEC] = typeC;
+        target[TP.INSTC] = instC;
+
+        target[TP.TNAME] = tName;
+        target[TP.RNAME] = rName;
+        target[TP.NAME] = name;
+
+        target[TP.SUPER] = superT;
+        target[TP.ANCESTORS] = ancestors;
+        target[TP.ANCESTOR_NAMES] = ancestorNames;
+    };
+
+    //  Here we instrument the "big 8" types native to JS so they are
+    //  aware of the metadata we'll be asking for from anything we think
+    //  of as a type. NOTE we use simple closure here to hide this work.
+
+    //  ** NOTE NOTE NOTE **
+    //  We use 'TP.ac()' here throughout this method because these
+    //  Arrays need to be created *as TIBETan enhanced Arrays*. They
+    //  will be used for reflection purposes, etc. *even if this Window
+    //  is not the TIBET window*. This is why we check not only for
+    //  'TP', but 'TP.ac' below.
+
+    //  Array
+    registerMetadata(
+            win.Array, win.Array, win.Function, win.Function,
+            'Array', 'Array', 'Array',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+
+    //  Boolean
+    registerMetadata(
+            win.Boolean, win.Boolean, win.Function, win.Function,
+            'Boolean', 'Boolean', 'Boolean',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+
+    //  Date
+    registerMetadata(
+            win.Date, win.Date, win.Function, win.Function,
+            'Date', 'Date', 'Date',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+
+    //  Function
+    registerMetadata(
+            win.Function, win.Function, win.Function, win.Function,
+            'Function', 'Function', 'Function',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+
+    //  Number
+    registerMetadata(
+            win.Number, win.Number, win.Function, win.Function,
+            'Number', 'Number', 'Number',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+
+    //  Object
+    registerMetadata(
+            win.Object, win.Object, win.Function, win.Function,
+            'Object', 'Object', 'Object',
+            null, TP.ac(), TP.ac());
+
+    //  RegExp
+    registerMetadata(
+            win.RegExp, win.RegExp, win.Function, win.Function,
+            'RegExp', 'RegExp', 'RegExp',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+
+    //  String
+    registerMetadata(
+            win.String, win.String, win.Function, win.Function,
+            'String', 'String', 'String',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+
+    //  The subtypes (and 'deep subtypes') of Object are the other "big 7"
+    Object[TP.SUBTYPES] =
+            TP.ac(win.Array, win.Boolean, win.Date, win.Function, win.Number,
+                    win.RegExp, win.String);
+    Object[TP.SUBTYPES_DEEP] =
+            TP.ac(win.Array, win.Boolean, win.Date, win.Function, win.Number,
+                    win.RegExp, win.String);
+    Object[TP.SUBTYPE_NAMES] =
+            TP.ac('Array', 'Boolean', 'Date', 'Function',
+                    'Number', 'RegExp', 'String');
+    Object[TP.SUBTYPE_NAMES_DEEP] =
+            TP.ac('Array', 'Boolean', 'Date', 'Function',
+                    'Number', 'RegExp', 'String');
+
+    //  Now we instrument DOM-specific 'types'
+
+    //  Window
+    registerMetadata(
+            win.Window, win.Window, win.Function, win.Function,
+            'DOMWindow', 'DOMWindow', 'DOMWindow',
+            win.Object, TP.ac(win.Object), TP.ac('Object'));
+    Window.$$nonFunctionConstructorObjectName = 'DOMWindow';
+
+    //  Need to tell our machinery that NaN's *constructor* name is
+    //  'Number'
+    /* jshint ignore:start */
+    /* eslint-disable no-proto */
+    win.NaN.__proto__.$$nonFunctionConstructorConstructorName = 'Number';
+    /* eslint-enable no-proto */
+    /* jshint ignore:end */
+
+    //  Browser-specific DOM 'types'
+
+    //  Webkit
+
+    if (TP.boot.$$isWebkit()) {
+
+        registerMetadata(
+                win.XMLDocument, win.XMLDocument, win.Function, win.Function,
+                'XMLDocument', 'XMLDocument', 'XMLDocument',
+                win.Document,
+                TP.ac(win.Document, win.Node, win.Object),
+                TP.ac('Document', 'Node', 'Object'));
+
+        registerMetadata(
+                win.XMLHttpRequest, win.XMLHttpRequest,
+                    win.Function, win.Function,
+                'XMLHttpRequest', 'XMLHttpRequest', 'XMLHttpRequest',
+                win.Object,
+                TP.ac(win.Object),
+                TP.ac('Object'));
+
+    }
+
+    //  Firefox
+
+    if (TP.boot.$$isMoz()) {
+
+        registerMetadata(
+                win.CSS2Properties, win.CSS2Properties, win.Function,
+                    win.Function,
+                'CSSStyleDeclaration',
+                'CSSStyleDeclaration',
+                'CSSStyleDeclaration',
+                win.Object,
+                TP.ac(win.Object),
+                TP.ac('Object'));
+    }
+
+    //  Internet Explorer
+
+    if (TP.boot.$$isIE()) {
+        win.Object.defineProperty(win.Document, '$$name',
+                            {get: function () {
+                                if (this.xmlVersion) {
+                                    return 'XMLDocument';
+                                } else {
+                                    return 'HTMLDocument';
+                                }
+                            }});
+    }
+};
+
 //  We need to set up metadata for ourself - the other UI frames have all done
 //  it (or will).
 TP.boot.$$setupMetadata();
@@ -6573,19 +6760,48 @@ function(unwrapped) {
      *     canvas.
      */
 
-    var obj;
+    var name,
+        obj;
 
-    if (TP.isTrue(unwrapped)) {
-        obj = TP.sys.getWindowById(TP.sys.getUICanvasName());
-        if (TP.isWindow(obj)) {
+    name = TP.sys.getUICanvasName();
+    obj = TP.sys.getWindowById(name);
+
+    if (TP.isWindow(obj)) {
+        if (TP.isTrue(unwrapped)) {
             return obj;
+        } else {
+            return TP.core.Window.construct(obj);
         }
-
-        return;
     }
 
-    //  NB: This caches TP.core.Window instances
-    return TP.core.Window.construct(TP.sys.getUICanvasName());
+    //  Proposed window name was not found. The thing is, TIBET always needs a
+    //  canvas so we have to work our way up the proposed path until we find a
+    //  window that is valid.
+    while (name.indexOf('.') !== -1) {
+        name = name.slice(0, name.lastIndexOf('.'));
+        obj = TP.sys.getWindowById(name);
+
+        if (TP.isWindow(obj)) {
+            if (TP.isTrue(unwrapped)) {
+                return obj;
+            } else {
+                return TP.core.Window.construct(obj);
+            }
+        }
+    }
+
+    //  Absolute last chance...and if this doesn't work it's not really a proper
+    //  TIBET application since the UIROOT frame has gone missing.
+    obj = TP.sys.getWindowById('top.UIROOT');
+    if (TP.isWindow(obj)) {
+        if (TP.isTrue(unwrapped)) {
+            return obj;
+        } else {
+            return TP.core.Window.construct(obj);
+        }
+    }
+
+    this.raise('InvalidFraming', 'No UIROOT found.');
 });
 
 //  ------------------------------------------------------------------------

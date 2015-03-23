@@ -8,9 +8,12 @@
  */
 //  ============================================================================
 
-/*
- * TODO
- *
+/**
+ * @overview The central portion of the tibet_init boot script. This file
+ *     contains the logic for processing TIBET package files and loading their
+ *     configured scripts, properties, and other elements. A number of functions
+ *     are also included here to help determine the browser environment and to
+ *     provide default UI during the startup process.
  */
 
 /* jshint debug:true,
@@ -20,31 +23,24 @@
           nonstandard:true,
           node:true
 */
-/* global ActiveXObject:false,
+/* global TP:true,
+          ActiveXObject:false,
           netscape:false,
           Components:false,
           $ERROR:true,
           $STATUS:true
 */
 
-/*eslint new-cap:0, no-alert:0, indent:0*/
+/* eslint new-cap:0, no-alert:0, indent:0 */
+(function (root) {
 
-//  ----------------------------------------------------------------------------
+    TP = root.TP || this.TP;
 
-//  We don't rely on require() but using a closure helps avoid unintended
-//  leakage into any enclosing scope.
-(function(root) {
-
-//  ============================================================================
-//  Core Globals / Roots
-//  ============================================================================
-
-if (!root || !root.TP || !root.APP) {
-    throw new Error('GlobalInitError');
-}
-
-TP = root.TP;
-APP = root.APP;
+    //  If we can't find the TP reference, or we're part of tibet_init and we're
+    //  loading due to a location change that should route we exit.
+    if (!TP || TP.$$routing) {
+        return;
+    }
 
 //  ============================================================================
 //  tibet_cfg Overrides / Updates
@@ -2563,7 +2559,7 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
      */
 
     var url,
-        root;
+        base;
 
     if (!targetUrl) {
         return;
@@ -2580,12 +2576,12 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
     //  note the use of the 'current root' path here since we can't assume
     //  that this should be rooted against libroot or approot without help
     if (TP.boot.$notValid(aRoot)) {
-        root = TP.sys.getAppHead();
+        base = TP.sys.getAppHead();
     } else {
-        root = aRoot;
+        base = aRoot;
     }
 
-    return TP.boot.$uriJoinPaths(root, targetUrl);
+    return TP.boot.$uriJoinPaths(base, targetUrl);
 };
 
 //  ============================================================================
@@ -6389,6 +6385,26 @@ TP.boot.log = function(anObject, aLogLevel) {
 
 //  ----------------------------------------------------------------------------
 //  UI ELEMENT ACQUISITION
+//  ------------------------------------------------------------------------
+
+TP.boot.$byId = function(anID) {
+
+    /**
+     * @method $byId
+     * @summary The de-facto standard $ function, a simple wrapper for
+     *     document.getElementById.
+     * @param {String|Element} anID The string ID to locate, or an element
+     *     (which will be returned).
+     * @returns {Element}
+     */
+
+    if (typeof anID === 'string') {
+        return document.getElementById(anID);
+    }
+
+    return anID;
+};
+
 //  ----------------------------------------------------------------------------
 
 TP.boot.$consoleConfigured = false;
@@ -6523,10 +6539,10 @@ TP.boot.$getUIElement = function(varargs) {
         i,
         len,
         id,
-        root,
+        doc,
         elem;
 
-    root = document;
+    doc = document;
 
     //  Don't assume we don't have access path components in the list of
     //  arguments. Split them so we build a full-descent path.
@@ -6539,7 +6555,7 @@ TP.boot.$getUIElement = function(varargs) {
     len = ids.length;
     for (i = 0; i < len; i++) {
         id = ids[i];
-        elem = root.getElementById(id);
+        elem = doc.getElementById(id);
         if (!elem) {
             return;
         }
@@ -6552,7 +6568,7 @@ TP.boot.$getUIElement = function(varargs) {
         if (elem.contentWindow) {
             //  If we're holding an IFRAME we need to drill down into that via
             //  its content document.
-            root = elem.contentWindow.document;
+            doc = elem.contentWindow.document;
         } else {
             //  Standard element. That's a problem since they don't have a
             //  getElementById call...
@@ -6903,6 +6919,30 @@ TP.boot.$displayStatus = function(aString) {
 
 //  ----------------------------------------------------------------------------
 //  SHOW/HIDE UI
+//  ------------------------------------------------------------------------
+
+TP.boot.hideContent = function(anID) {
+
+    /**
+     * @method hideContent
+     * @summary Hides the identified element, or the current content
+     *     element if no element is specified.
+     * @param {String|Element} anID The element whose content should be
+     *     hidden.
+     * @returns {null}
+     */
+
+    var elem;
+
+    if (TP.boot.$isValid(elem =
+            TP.boot.$byId(anID || TP.boot.$$currentContentID))) {
+        elem.style.display = 'none';
+        if (TP.boot.$$currentContentID === anID) {
+            TP.boot.$$currentContentID = null;
+        }
+    }
+};
+
 //  ----------------------------------------------------------------------------
 
 TP.boot.hideUIBoot = function() {
@@ -7021,6 +7061,43 @@ TP.boot.showUIBoot = function() {
     }
 
     elem.focus();
+};
+
+//  ------------------------------------------------------------------------
+
+TP.boot.showUICanvas = function(aURI) {
+
+    /**
+     * @method showUICanvas
+     * @summary Displays the current tibet.uicanvas element in the
+     *     application's main window. If aURI is provided the content of
+     *     that URI is placed in the canvas.
+     * @param {String} aURI The URI whose content should be loaded and
+     *     displayed.
+     * @returns {null}
+     */
+
+    var win,
+        file;
+
+    TP.boot.hideContent();
+
+    win = TP.sys.getWindowById(TP.sys.cfg('tibet.uicanvas'));
+    if (TP.boot.$isValid(win)) {
+        if (TP.boot.$isValid(aURI)) {
+            file = TP.boot.$uriExpandPath(aURI);
+
+            //  pretend this page never hit the history
+            window.location.replace(file);
+        }
+
+        //  make sure iframes are visible when used in this fashion
+        if (TP.boot.$isValid(win.frameElement)) {
+            win.frameElement.style.visibility = 'visible';
+        }
+    }
+
+    return;
 };
 
 //  ------------------------------------------------------------------------
@@ -7704,36 +7781,6 @@ TP.boot.$getArgumentPrimitive = function(value) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.getBootParamString = function(url) {
-
-    /**
-     * @method getBootParamString
-     * @summary Parses the URL for boot parameters, parameters on the fragment
-     *     portion of the launch url.
-     * @param {string} url The url string to decode for arguments.
-     * @returns {string} The parameter portion of the url, if any.
-     */
-
-    var hash;
-
-    //  Process the hash portion of the URL string.
-    if (!/#/.test(url)) {
-        return;
-    }
-    hash = url.slice(url.indexOf('#') + 1);
-
-    //  Any part of the hash which is formatted to match server-side parameter
-    //  syntax will be treated as client-side parameters. The bookmark portion
-    //  of the hash must be non-empty.
-    if (/\?/.test(hash)) {
-        hash = hash.slice(0, hash.indexOf('?'));
-    }
-
-    return hash;
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.getURLArguments = function(url) {
 
     /**
@@ -7892,7 +7939,7 @@ TP.boot.$getAppRoot = function() {
      * @returns {String} The computed path.
      */
 
-    var root;
+    var approot;
 
     //  first check for a cached value. this is what's used during booting
     if (TP.boot.$$approot != null) {
@@ -7900,9 +7947,9 @@ TP.boot.$getAppRoot = function() {
     }
 
     //  if specified it should be an absolute path we can expand and use
-    root = TP.sys.cfg('path.app_root');
-    if (TP.boot.$notEmpty(root)) {
-        return TP.boot.$setAppRoot(root);
+    approot = TP.sys.cfg('path.app_root');
+    if (TP.boot.$notEmpty(approot)) {
+        return TP.boot.$setAppRoot(approot);
     }
 
     //  If app root isn't going to match up with app head it's going to
@@ -7926,7 +7973,7 @@ TP.boot.$getLibRoot = function() {
      */
 
     var comp,
-        root,
+        libroot,
         loc,
         test,
         ndx,
@@ -7942,21 +7989,21 @@ TP.boot.$getLibRoot = function() {
     }
 
     //  if specified it should be an absolute path we can expand and use
-    root = TP.sys.cfg('path.lib_root');
-    if (TP.boot.$notEmpty(root)) {
-        return TP.boot.$setLibRoot(root);
+    libroot = TP.sys.cfg('path.lib_root');
+    if (TP.boot.$notEmpty(libroot)) {
+        return TP.boot.$setLibRoot(libroot);
     }
 
     //  Default starting point is the current window location minus any fragment
     //  and file reference.
     loc = decodeURI(window.location.toString());
-    root = loc.split(/[#?]/)[0];
+    libroot = loc.split(/[#?]/)[0];
 
-    parts = root.split('/');
+    parts = libroot.split('/');
     if (parts[parts.length - 1].match(/\./)) {
         parts.length = parts.length - 1;
     }
-    root = parts.join('/');
+    libroot = parts.join('/');
 
     comp = TP.sys.cfg('boot.libcomp');
 
@@ -7973,7 +8020,7 @@ TP.boot.$getLibRoot = function() {
         case 'frozen':
             //  frozen applications typically have TIBET-INF/tibet in them
             path = TP.boot.$uriJoinPaths(
-                    TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetinf')),
+                    TP.boot.$uriJoinPaths(libroot, TP.sys.cfg('boot.tibetinf')),
                     TP.sys.cfg('boot.tibetlib'));
 
             return TP.boot.$setLibRoot(path);
@@ -7982,10 +8029,10 @@ TP.boot.$getLibRoot = function() {
             //  find location match using a string index on window location.
             test = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
             if (TP.boot.$notEmpty(test)) {
-                ndx = root.lastIndexOf(test);
+                ndx = libroot.lastIndexOf(test);
                 if (ndx !== -1) {
                     ndx += test.length + 1;
-                    path = root.slice(0, ndx);
+                    path = libroot.slice(0, ndx);
 
                     return TP.boot.$setLibRoot(path);
                 }
@@ -7994,12 +8041,12 @@ TP.boot.$getLibRoot = function() {
 
         case 'location':
             //  force to last 'collection' in the window location.
-            return TP.boot.$setLibRoot(root);
+            return TP.boot.$setLibRoot(libroot);
 
         case 'tibetdir':
             //  npmdir applications typically have node_modules/tibet in them
             path = TP.boot.$uriJoinPaths(
-                    TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetdir')),
+                    TP.boot.$uriJoinPaths(libroot, TP.sys.cfg('boot.tibetdir')),
                     TP.sys.cfg('boot.tibetlib'));
 
             return TP.boot.$setLibRoot(path);
@@ -8028,7 +8075,8 @@ TP.boot.$getLibRoot = function() {
             if (TP.boot.$notEmpty(path)) {
                 return TP.boot.$setLibRoot(
                     TP.boot.$uriCollapsePath(
-                        TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(root, path),
+                        TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(
+                            libroot, path),
                         TP.sys.cfg('boot.initoffset'))));
             }
 
@@ -9110,7 +9158,6 @@ TP.boot.$$importComplete = function() {
                             if (TP.boot.bootPhaseTwo) {
                                 TP.boot.bootPhaseTwo();
                             } else {
-                                TP.boot.initializeCanvas();
                                 TP.boot.$$importPhaseTwo();
                             }
 
@@ -10479,6 +10526,15 @@ TP.boot.launch = function(options) {
 
     var nologin;
 
+    //  If we're in the middle of a routine exercise care of having been loaded
+    //  into a non-TOP frame exit after clearing that flag. The launch() call
+    //  will have been triggered by the index.html file for a default TIBET app
+    //  but we don't want to honor launch when we're not in TOP.
+    if (TP.$$routing) {
+        delete TP.$$routing;
+        return;
+    }
+
     TP.boot.$$launchOptions = options;
 
     //  set up the environment variables appropriate for the browser. this
@@ -10555,13 +10611,13 @@ TP.boot.launch = function(options) {
     //  startup sequence.
 
     //  don't boot TIBET twice into the same window hierarchy, check to make
-    //  sure we don't already see the $$tibet window reference
-    if (window.$$tibet !== null && window.$$tibet !== window) {
+    //  sure we don't already see the $$TIBET window reference
+    if (window.$$TIBET && window.$$TIBET !== window) {
         //  make sure the user sees this
         TP.boot.$stderr('Found existing TIBET image in ' +
-            (typeof window.$$tibet.getFullName === 'function') ?
-                window.$$tibet.getFullName() :
-                window.$$tibet.name +
+            (typeof window.$$TIBET.getFullName === 'function' ?
+                window.$$TIBET.getFullName() :
+                window.$$TIBET.name) +
                 '. Boot sequence terminated.', TP.FATAL);
         return;
     }
@@ -10617,7 +10673,10 @@ TP.boot.main = function() {
         return;
     }
 
-    TP.boot.$activate();
+    //  Only activate if we're the top window. Can only boot there.
+    if (window === top) {
+        TP.boot.$activate();
+    }
 };
 
 //  ----------------------------------------------------------------------------
@@ -10852,20 +10911,7 @@ TP.boot.$uiRootReady = function() {
     return;
 };
 
-//  ============================================================================
-//  Export
-//  ============================================================================
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = TP;
-    }
-    exports.TP = TP;
-    exports.APP = APP;
-} else {
-    root.TP = TP;
-    root.APP = APP;
-}
+//  ----------------------------------------------------------------------------
 
 }(this));
 

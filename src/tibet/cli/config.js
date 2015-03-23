@@ -207,7 +207,6 @@ Cmd.prototype.setConfig = function(path, value) {
         this.error('Unable to load: ' + file);
         return 1;
     }
-
     parts = path.split('.');
 
     if (parts.length === 1) {

@@ -19,11 +19,6 @@ kernel so we can reduce the amount of housekeeping required here.
 
 /* JSHint checking */
 
-/* global $$getNextWindow:true,
-          $$findTIBET:true,
-          $$init:true
-*/
-
 //  ------------------------------------------------------------------------
 
 //  ---
@@ -212,52 +207,22 @@ TP.boot.defineMethod('main', TP.boot.main);
 //  tibet_hook.js
 //  ---
 
-// TODO: eliminate these...they should all be on TP.
-TP.defineGlobalMethod('$$getNextWindow', $$getNextWindow);
-TP.defineGlobalMethod('$$findTIBET', $$findTIBET);
-TP.defineGlobalMethod('$$init', $$init);
-
-//  flags used to 'find' the codebase
-TP.sys.defineGlobal('$$checked', null);
-TP.sys.defineGlobal('$$TIBET', null);
-
-//  the codebase window
-TP.sys.defineGlobal('$$tibet', null);
-
-//  whether or not we're autobooting
-TP.sys.defineGlobal('$$autoboot', null);
-
 //  whether or not we can move on to phase two processing
 TP.sys.defineGlobal('$$phasetwo', null);
 
 TP.boot.defineMethod('$isElement', TP.boot.$isElement);
 TP.boot.defineMethod('$isEmpty', TP.boot.$isEmpty);
-TP.boot.defineMethod('$isEvent', TP.boot.$isEvent);
-TP.boot.defineMethod('$isTrue', TP.boot.$isTrue);
 TP.boot.defineMethod('$isValid', TP.boot.$isValid);
 TP.boot.defineMethod('$isWindow', TP.boot.$isWindow);
 TP.boot.defineMethod('$notValid', TP.boot.$notValid);
 
-TP.boot.defineMethod('$formatCookieSource', TP.boot.$formatCookieSource);
-TP.boot.defineMethod('getCookie', TP.boot.getCookie);
-TP.boot.defineMethod('setCookie', TP.boot.setCookie);
-
 TP.boot.defineMethod('$byId', TP.boot.$byId);
 
 TP.boot.defineMethod('hideContent', TP.boot.hideContent);
-TP.boot.defineMethod('hideUICanvas', TP.boot.hideUICanvas);
 TP.boot.defineMethod('hideUIRoot', TP.boot.hideUIRoot);
 
-TP.boot.defineMethod('launchApp', TP.boot.launchApp);
-
-TP.boot.defineMethod('showContent', TP.boot.showContent);
 TP.boot.defineMethod('showUICanvas', TP.boot.showUICanvas);
 TP.boot.defineMethod('showUIRoot', TP.boot.showUIRoot);
-
-TP.boot.defineMethod('startGUI', TP.boot.startGUI);
-
-TP.boot.defineMethod('autoBoot', TP.boot.autoBoot);
-TP.boot.defineMethod('initializeCanvas', TP.boot.initializeCanvas);
 
 //  ---
 //  TIBETGlobals.js

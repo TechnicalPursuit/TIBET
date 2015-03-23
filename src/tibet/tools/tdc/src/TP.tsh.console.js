@@ -556,19 +556,17 @@ function() {
      * @returns {TP.core.ConsoleService} The receiver.
      */
 
-    var model,
-        tibetWin;
+    var model;
 
     //  configure the shell's stdio routines to forward to us...
     if (TP.isValid(model = this.get('model'))) {
         model.attachSTDIO(this);
     }
-
-    if (TP.isWindow(tibetWin = TP.global.$$findTIBET(window)) &&
-        this.get('vWin') !== tibetWin) {
-
-        TP.tpwin(tibetWin).attachSTDIO(this);
+/*
+    if (TP.isWindow(self.$$TIBET) && this.get('vWin') !== self.$$TIBET) {
+        TP.tpwin(self.$$TIBET).attachSTDIO(this);
     }
+*/
 
     return this;
 });

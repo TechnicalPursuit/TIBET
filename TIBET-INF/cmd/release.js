@@ -2,7 +2,7 @@
  * @overview The 'tibet release' command. Does a number of steps with the goal
  *     of producing a newly tagged release-able version of TIBET.
  * @author Scott Shattuck (ss)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional

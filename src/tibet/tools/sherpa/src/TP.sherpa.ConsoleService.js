@@ -189,20 +189,19 @@ function() {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    var model,
-        tibetWin;
+    var model;
 
     //  configure the shell's output to pipe to us...
     if (TP.isValid(model = this.get('model'))) {
         model.attachSTDIO(this);
     }
+/*
+    if (TP.isWindow(self.$$TIBET) &&
+        this.get('$consoleGUI').getNativeWindow() !== self.$$TIBET) {
 
-    if (TP.isWindow(tibetWin = TP.global.$$findTIBET(window)) &&
-        this.get('$consoleGUI').getNativeWindow() !== tibetWin) {
-
-        TP.tpwin(tibetWin).attachSTDIO(this);
+        TP.tpwin(self.$$TIBET).attachSTDIO(this);
     }
-
+*/
     return this;
 });
 

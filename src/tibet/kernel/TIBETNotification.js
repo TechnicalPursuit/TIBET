@@ -5897,7 +5897,9 @@ function(anOrigin, aSignal, aHandler) {
         if (/Change/.test(signame)) {
             if (TP.isMutable(anOrigin)) {
                 //  not a String ID
-                anOrigin.shouldSignalChange(true);
+                if (TP.canInvoke(anOrigin, 'shouldSignalChange')) {
+                    anOrigin.shouldSignalChange(true);
+                }
             } else {
                 //  a string ID -- try to get handle to obj
                 /*
@@ -5952,7 +5954,9 @@ function(anOrigin, aSignal, aHandler) {
         if (/Change/.test(signame)) {
             if (TP.isMutable(anOrigin)) {
                 //  not a String ID
-                anOrigin.shouldSignalChange(true);
+                if (TP.canInvoke(anOrigin, 'shouldSignalChange')) {
+                    anOrigin.shouldSignalChange(true);
+                }
             } else {
                 //  a string ID -- try to get handle to obj
                 /*
