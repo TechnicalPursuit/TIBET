@@ -434,7 +434,12 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('toggle',
 function() {
 
-    TP.byOID('SherpaHUD', this.get('vWin')).toggle('hidden');
+    var elem;
+
+    elem = TP.byOID('SherpaHUD', this.get('vWin'));
+    if (TP.isValid(elem)) {
+        elem.toggle('hidden');
+    }
 
     return this;
 });
