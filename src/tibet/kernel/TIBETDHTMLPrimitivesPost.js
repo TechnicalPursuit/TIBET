@@ -1268,11 +1268,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         if (!/tibet_hook/.test(str)) {
             //  Reset handlers. they get cleared on open/write
             TP.core.Window.installLoadUnloadHooks(win);
-
-            //  Note we set this slot *after* the document opens. This is
-            //  put here so that the manual 'onload' handler that we wrote
-            //  above can find the TIBET window reference.
-            win.$$tibet = window;
         }
 
         aDocument.write(str);
@@ -7909,7 +7904,7 @@ function(aWindow, aWindowID) {
         } catch (e) {
         } finally {
             TP.core.Window.removeWindowInfo(aWindowID);
-            TP.global[aWindowID] = null; //  bound to $$tibet
+            TP.global[aWindowID] = null;
         }
 
         return true;

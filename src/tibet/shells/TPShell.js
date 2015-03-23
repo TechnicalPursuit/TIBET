@@ -2031,10 +2031,9 @@ function(aRequest) {
         return ctx;
     }
 
-    //  default when not set is to map it to the TIBET code frame via a
-    //  findTIBET call (which should return the current window actually)
-    if (TP.isWindow(tWin = TP.global.$$findTIBET())) {
-        win = tWin;
+    //  default when not set is to map it to the TIBET code frame.
+    if (TP.isWindow(self.$$TIBET)) {
+        win = self.$$TIBET;
     }
 
     //  "shouldn't happen" ;), but just in case...

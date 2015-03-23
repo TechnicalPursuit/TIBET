@@ -9079,6 +9079,13 @@ function(aURI) {
             break;
     }
 
+    if (TP.$$routing) {
+        top.console.log('routing via tibet_init trigger');
+        //  Clear the last path since it's not relevant, we want to route and
+        //  not trigger a reboot via config below, even if reloading home page.
+        lastPath = null;
+    }
+
     //  Is this a routable change?
     if (path === lastPath) {
         //  If there's no last then we can't really be changing params.
