@@ -6377,16 +6377,16 @@ TP.boot.$$setupMetadata = function(aWindow) {
             win.Object, TP.ac(win.Object), TP.ac('Object'));
 
     //  The subtypes (and 'deep subtypes') of Object are the other "big 7"
-    Object[TP.SUBTYPES] =
+    win.Object[TP.SUBTYPES] =
             TP.ac(win.Array, win.Boolean, win.Date, win.Function, win.Number,
                     win.RegExp, win.String);
-    Object[TP.SUBTYPES_DEEP] =
+    win.Object[TP.SUBTYPES_DEEP] =
             TP.ac(win.Array, win.Boolean, win.Date, win.Function, win.Number,
                     win.RegExp, win.String);
-    Object[TP.SUBTYPE_NAMES] =
+    win.Object[TP.SUBTYPE_NAMES] =
             TP.ac('Array', 'Boolean', 'Date', 'Function',
                     'Number', 'RegExp', 'String');
-    Object[TP.SUBTYPE_NAMES_DEEP] =
+    win.Object[TP.SUBTYPE_NAMES_DEEP] =
             TP.ac('Array', 'Boolean', 'Date', 'Function',
                     'Number', 'RegExp', 'String');
 
@@ -6397,7 +6397,7 @@ TP.boot.$$setupMetadata = function(aWindow) {
             win.Window, win.Window, win.Function, win.Function,
             'DOMWindow', 'DOMWindow', 'DOMWindow',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
-    Window.$$nonFunctionConstructorObjectName = 'DOMWindow';
+    win.Window.$$nonFunctionConstructorObjectName = 'DOMWindow';
 
     //  Need to tell our machinery that NaN's *constructor* name is
     //  'Number'
