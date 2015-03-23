@@ -335,7 +335,6 @@ targets.rollup_sinon = function(make) {
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'sinon'));
     sh.exec('npm install -d');
-    sh.exec('./build');
     sh.exec('cp -f ./pkg/sinon.js ../../deps/sinon-tpi.js');
 
     targets.rollup_sinon.resolve();
