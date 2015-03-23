@@ -18,16 +18,14 @@
           maxerr:999
 */
 /* global TP:true,
-          CSS2Properties:false,
           CSSPrimitiveValue:false,
-          Document:false,
-          XMLDocument:false
+          Document:false
 */
 
 //  ----------------------------------------------------------------------------
 
 /* eslint indent:0 */
-(function (root) {
+(function(root) {
 
     var $$bundled,
         $$window,
@@ -385,7 +383,7 @@ keeping them here in the hook file.
 
 //  ------------------------------------------------------------------------
 
-TP.boot.installPatches = TP.boot.installPatches || function (aWindow) {
+TP.boot.installPatches = TP.boot.installPatches || function(aWindow) {
 
     if (TP.sys.cfg('log.hook')) {
         $$msg = 'TIBET hook installing window patches on ' + window.name;
@@ -835,7 +833,7 @@ TP.boot.installPatches = TP.boot.installPatches || function (aWindow) {
         aWindow.Object.defineProperty(
             aWindow.MozNamedAttrMap,
             '$$name',
-            {get: function () {return 'NamedNodeMap'; }});
+            {get: function() {return 'NamedNodeMap'; }});
     }
 
     //  --------------------------------------------------------------------
@@ -1581,8 +1579,6 @@ function(aWindow) {
      */
 
     var win,
-        loadedHandler,
-        unloadedHandler,
         initCanvas,
         initTime,
         minTime,
@@ -1604,7 +1600,7 @@ function(aWindow) {
             initTime = Math.max(TP.boot.$$totalwork * 5, 1000);
         }
 
-        decay = .75;        //  decay the delay by this percentage.
+        decay = 0.75;        //  decay the delay by this percentage.
         minTime = 200;      //  never check more than every 200ms.
         maxCount = 100;     //  roughly 20 seconds max.
         count = 0;
@@ -1660,8 +1656,7 @@ function(aWindow) {
 TP.boot.initializeCanvasDocument = TP.boot.initializeCanvasDocument ||
 function(aDocument) {
 
-    var doc,
-        loadedHandler;
+    var doc;
 
     doc = aDocument || window.document;
 

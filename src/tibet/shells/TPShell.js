@@ -2016,8 +2016,6 @@ function(aRequest) {
      */
 
     var ctx,
-
-        tWin,
         win;
 
     //  does the request have an execution context? If so, use it.

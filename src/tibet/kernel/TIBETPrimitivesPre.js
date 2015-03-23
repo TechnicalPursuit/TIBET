@@ -6294,15 +6294,15 @@ need to have basic metadata in TIBET. The values consist of slots for:
 
 TP.boot.$$setupMetadata = function(aWindow) {
 
-    var registerMetadata,
+    var populateMetadata,
         win;
 
     win = aWindow || window;
 
-    registerMetadata = function (target, type,
-                                    typeC, instC,
-                                    tName, rName, name,
-                                    superT, ancestors, ancestorNames) {
+    populateMetadata = function(target, type,
+                                typeC, instC,
+                                tName, rName, name,
+                                superT, ancestors, ancestorNames) {
         target[TP.TYPE] = type;
 
         target[TP.TYPEC] = typeC;
@@ -6329,49 +6329,49 @@ TP.boot.$$setupMetadata = function(aWindow) {
     //  'TP', but 'TP.ac' below.
 
     //  Array
-    registerMetadata(
+    populateMetadata(
             win.Array, win.Array, win.Function, win.Function,
             'Array', 'Array', 'Array',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
 
     //  Boolean
-    registerMetadata(
+    populateMetadata(
             win.Boolean, win.Boolean, win.Function, win.Function,
             'Boolean', 'Boolean', 'Boolean',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
 
     //  Date
-    registerMetadata(
+    populateMetadata(
             win.Date, win.Date, win.Function, win.Function,
             'Date', 'Date', 'Date',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
 
     //  Function
-    registerMetadata(
+    populateMetadata(
             win.Function, win.Function, win.Function, win.Function,
             'Function', 'Function', 'Function',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
 
     //  Number
-    registerMetadata(
+    populateMetadata(
             win.Number, win.Number, win.Function, win.Function,
             'Number', 'Number', 'Number',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
 
     //  Object
-    registerMetadata(
+    populateMetadata(
             win.Object, win.Object, win.Function, win.Function,
             'Object', 'Object', 'Object',
             null, TP.ac(), TP.ac());
 
     //  RegExp
-    registerMetadata(
+    populateMetadata(
             win.RegExp, win.RegExp, win.Function, win.Function,
             'RegExp', 'RegExp', 'RegExp',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
 
     //  String
-    registerMetadata(
+    populateMetadata(
             win.String, win.String, win.Function, win.Function,
             'String', 'String', 'String',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
@@ -6393,7 +6393,7 @@ TP.boot.$$setupMetadata = function(aWindow) {
     //  Now we instrument DOM-specific 'types'
 
     //  Window
-    registerMetadata(
+    populateMetadata(
             win.Window, win.Window, win.Function, win.Function,
             'DOMWindow', 'DOMWindow', 'DOMWindow',
             win.Object, TP.ac(win.Object), TP.ac('Object'));
@@ -6413,14 +6413,14 @@ TP.boot.$$setupMetadata = function(aWindow) {
 
     if (TP.boot.$$isWebkit()) {
 
-        registerMetadata(
+        populateMetadata(
                 win.XMLDocument, win.XMLDocument, win.Function, win.Function,
                 'XMLDocument', 'XMLDocument', 'XMLDocument',
                 win.Document,
                 TP.ac(win.Document, win.Node, win.Object),
                 TP.ac('Document', 'Node', 'Object'));
 
-        registerMetadata(
+        populateMetadata(
                 win.XMLHttpRequest, win.XMLHttpRequest,
                     win.Function, win.Function,
                 'XMLHttpRequest', 'XMLHttpRequest', 'XMLHttpRequest',
@@ -6434,7 +6434,7 @@ TP.boot.$$setupMetadata = function(aWindow) {
 
     if (TP.boot.$$isMoz()) {
 
-        registerMetadata(
+        populateMetadata(
                 win.CSS2Properties, win.CSS2Properties, win.Function,
                     win.Function,
                 'CSSStyleDeclaration',
@@ -6449,7 +6449,7 @@ TP.boot.$$setupMetadata = function(aWindow) {
 
     if (TP.boot.$$isIE()) {
         win.Object.defineProperty(win.Document, '$$name',
-                            {get: function () {
+                            {get: function() {
                                 if (this.xmlVersion) {
                                     return 'XMLDocument';
                                 } else {
