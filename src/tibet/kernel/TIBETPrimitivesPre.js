@@ -6445,18 +6445,7 @@ TP.boot.$$setupMetadata = function(aWindow) {
                 TP.ac('Object'));
     }
 
-    //  Internet Explorer
-
-    if (TP.boot.$$isIE()) {
-        win.Object.defineProperty(win.Document, '$$name',
-                            {get: function() {
-                                if (this.xmlVersion) {
-                                    return 'XMLDocument';
-                                } else {
-                                    return 'HTMLDocument';
-                                }
-                            }});
-    }
+    win.$$hasMetadata = true;
 };
 
 //  We need to set up metadata for ourself - the other UI frames have all done

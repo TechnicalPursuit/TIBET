@@ -392,7 +392,17 @@ TP.boot.installPatches = TP.boot.installPatches || function(aWindow) {
     }
 
     //  For IE...
-    if (TP.boot.$notValid(aWindow.atob)) {
+    if (TP.boot.$$isIE()) {
+        aWindow.Object.defineProperty(aWindow.Document,
+                                        '$$name',
+                                        {get: function() {
+                                            if (this.xmlVersion) {
+                                                return 'XMLDocument';
+                                            } else {
+                                                return 'HTMLDocument';
+                                            }
+                                        }});
+
         aWindow.atob = function(aString) {
             /**
              * @method atob
@@ -840,13 +850,15 @@ TP.boot.installPatches = TP.boot.installPatches || function(aWindow) {
     //  Set up Metadata
     //  --------------------------------------------------------------------
 
-    //  See the ** NOTE NOTE NOTE* above in TP.boot.$$setupMetadata about
-    //  why we check not only for 'TP' here, but for 'TP.ac' (we also check
-    //  to see if the Object constructor has a '$$name' slot just to avoid
-    //  doing this again if it's been done).
+    //  See the ** NOTE NOTE NOTE* in TP.boot.$$setupMetadata about why we check
+    //  not only for 'TP' here, but for 'TP.ac' (we also check to see if the
+    //  '$$hasMetadata' flag is set just to avoid doing this again if it's been
+    //  done).
 
-    if (aWindow.TP && aWindow.TP.ac && !aWindow.Object.$$name) {
+    if (aWindow.TP && aWindow.TP.ac && !aWindow.$$hasMetadata) {
+
         TP.boot.$$setupMetadata(aWindow);
+
         if (TP.sys.cfg('log.hook')) {
             $$msg = 'TIBET hook updated JavaScript metadata.';
             TP.boot.$stdout($$msg, TP.INFO);
@@ -1608,6 +1620,7 @@ function(aWindow) {
 
         //  wait for it...but as low-impact as possible.
         initCanvas = function() {
+
             //  requeue until we find what we need
             if (!TP.sys || !TP.sys.hasInitialized || !TP.sys.hasInitialized()) {
 
@@ -1636,6 +1649,7 @@ function(aWindow) {
 
                 return;
             }
+
             TP.boot.initializeCanvas(win);
         };
 
