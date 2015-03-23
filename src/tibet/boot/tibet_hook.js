@@ -1736,13 +1736,14 @@ function(aWindow) {
 
     win = aWindow || window;
 
-    if (win.$$hooked) {
+    if (win.$$hooked === true) {
         if (TP.sys.cfg('log.hook')) {
             $$msg = 'TIBET hook skipping re-instrumentation of window ' +
                 win.name;
             TP.boot.$stdout($$msg, TP.TRACE);
             top.console.log($$msg);
         }
+
         return;
     }
 
@@ -1769,6 +1770,8 @@ function(aWindow) {
 
     win.addEventListener('unload',
         unloadedHandler = function() {
+
+            win.$$hooked = false;
 
             //  First step is to clean up so we don't do this twice
             win.removeEventListener('unload',
