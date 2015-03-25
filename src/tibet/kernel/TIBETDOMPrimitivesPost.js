@@ -713,7 +713,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     allContentLoadedFunc =
         function() {
 
-            lastSourcedScript.onload = null;
+            if (TP.isValid(lastSourcedScript)) {
+                lastSourcedScript.onload = null;
+            }
 
             //  We only signal TP.sig.DOMContentLoaded if the system is
             //  configured for it.

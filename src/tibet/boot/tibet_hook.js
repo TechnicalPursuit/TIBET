@@ -56,7 +56,10 @@
  * Pre-launch checks.
  */
 
-if (window === top) {
+if (window.$$hooked === true) {
+    //  If we're being pushed into an already hooked frame just stop.
+    return;
+} else if (window === top) {
 
     //  If we're in top we should be bundled into tibet_init and booting TIBET.
     //  We can detect that by checking for $$TIBET set by tibet_pre.js.
@@ -1595,6 +1598,8 @@ function(aWindow) {
         initTime,
         minTime,
         maxCount,
+        msPerUnit,
+        defaultInit,
         count,
         decay,
         delay;
@@ -1612,11 +1617,15 @@ function(aWindow) {
             initTime = Math.max(TP.boot.$$totalwork * 5, 1000);
         }
 
-        decay = 0.75;        //  decay the delay by this percentage.
-        minTime = 200;      //  never check more than every 200ms.
-        maxCount = 100;     //  roughly 20 seconds max.
-        count = 0;
-        delay = initTime || 1000;
+        //  Values here drive how fast the check interval is decreasing over
+        //  time and what our limits are for continuing etc.
+        decay = 0.8;        //  decay the delay by this percentage.
+        minTime = 100;      //  never check more than every 100ms.
+        maxCount = 200;     //  roughly 20-25 seconds depending on workload.
+        msPerUnit = 5;      //  ms per workload unit for load estimate.
+        defaultInit = 1000; //  default init time if one isn't computed.
+        delay = initTime || defaultInit;   //  initial delay.
+        count = 0;          //  current iteration count.
 
         //  wait for it...but as low-impact as possible.
         initCanvas = function() {
@@ -1629,7 +1638,8 @@ function(aWindow) {
                     //  If we didn't get a workload value we may be too early so
                     //  recheck. If we find one we reset the delay.
                     if (!initTime && TP.boot && TP.boot.$$totalwork) {
-                        initTime = Math.max(TP.boot.$$totalwork * 5, 1000);
+                        initTime = Math.max(TP.boot.$$totalwork *
+                            msPerUnit, defaultInit);
                         delay = initTime;
                     } else {
                         delay = Math.max(minTime, Math.floor(delay * decay));
@@ -1759,14 +1769,14 @@ function(aWindow) {
     TP.core.Window.instrument(win);
 
     //  Install a hashchange handler for changes due to hash changes.
-    win.onhashchange = function(evt) {
+    win.addEventListener('hashchange', function(evt) {
         tibet.TP.core.History.onhashchange(evt);
-    };
+    }, false);
 
     //  Install a popstate handler to catch changes via history API.
-    win.onpopstate = function(evt) {
+    win.addEventListener('popstate', function(evt) {
         tibet.TP.core.History.onpopstate(evt);
-    };
+    }, false);
 
     win.addEventListener('unload',
         unloadedHandler = function() {

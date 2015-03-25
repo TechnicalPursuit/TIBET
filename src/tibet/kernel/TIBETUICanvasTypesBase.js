@@ -105,11 +105,11 @@ function(aWindow) {
                     dclListener,
                     false);
 
+            aWindow.dclListener = null;
+
             //  writing handler is false, we're the location
             //  handler
             tibetWin.TP.$$processDocumentLoaded(aWindow);
-
-            aWindow.dclListener = null;
         };
         aWindow.dclListener = dclListener;
 
@@ -141,9 +141,9 @@ function(aWindow) {
                     unloadListener,
                     false);
 
-            tibetWin.TP.$$processDocumentUnloaded(aWindow);
-
             aWindow.unloadListener = null;
+
+            tibetWin.TP.$$processDocumentUnloaded(aWindow);
         };
         aWindow.unloadListener = unloadListener;
 

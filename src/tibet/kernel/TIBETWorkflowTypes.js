@@ -6408,14 +6408,14 @@ function() {
      */
 
     //  Install a hashchange handler to catch changes due to hash changes.
-    top.onhashchange = function(evt) {
+    top.addEventListener('hashchange', function(evt) {
         this.onhashchange(evt);
-    }.bind(this);
+    }.bind(this), false);
 
     //  Install a popstate handler to catch changes due to history API.
-    top.onpopstate = function(evt) {
+    top.addEventListener('popstate', function(evt) {
         this.onpopstate(evt);
-    }.bind(this);
+    }.bind(this), false);
 
     //  Create a history list the size of the current native list.
     this.$set('history', TP.ac());
