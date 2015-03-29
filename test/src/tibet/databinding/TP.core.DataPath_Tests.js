@@ -1384,7 +1384,7 @@ function() {
     this.it('tail results slicing get', function(test, options) {
         var val;
 
-        val = path3.executeGet(model1, true);
+        val = path3.executeGet(model1);
 
         test.assert.isEqualTo(val, TP.ac('willy'));
     });
@@ -1404,7 +1404,7 @@ function() {
     this.it('tail results multi-value slicing get', function(test, options) {
         var val;
 
-        val = path4.executeGet(model1, true);
+        val = path4.executeGet(model1);
 
         test.assert.isEqualTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
     });
