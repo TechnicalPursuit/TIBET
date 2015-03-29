@@ -1839,13 +1839,15 @@ PathExpr.prototype.evaluate = function(c) {
 									//  if nodes are being flagged we have
 									//  to check for deleted status nodes
 									//  and reset as we go...
-									var existingAction;
+									var existingAction,
+                                        elem;
+                                    elem = m.nodeType === 1 ? m : m.parentNode;
 									existingAction =
-										TP.elementGetChangeAction(m, TP.SELF);
+										TP.elementGetChangeAction(elem, TP.SELF);
 									if (existingAction === TP.DELETE) {
 										if (xpc.shouldCreateNodes == true) {
 											TP.elementFlagChange(
-													m, TP.SELF, TP.CREATE);
+													elem, TP.SELF, TP.CREATE);
 											newNodes.push(m);
 											pushed = true;
 										} else {
@@ -1853,7 +1855,7 @@ PathExpr.prototype.evaluate = function(c) {
 											pushed = false;
 										}
 									} else {
-								newNodes.push(m);
+								        newNodes.push(m);
 										pushed = true;
 									}
 								} else {
