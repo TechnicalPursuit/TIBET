@@ -1726,8 +1726,19 @@ PathExpr.prototype.evaluate = function(c) {
 				var pred = this.filterPredicates[j];
 				var newNodes = [];
 				xpc.contextSize = nodes.length;
-				for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
-					xpc.contextNode = nodes[xpc.contextPosition - 1];
+                //  wje (2015-03-29): Patched an issue where the position of the
+                //  actual node was tied to the looping index. If the set of
+                //  nodes comes from different parts of the DOM, their position
+                //  *must* be computed relative to their parent, not to the
+                //  index of the query result structure.
+				//for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
+				//	xpc.contextNode = nodes[xpc.contextPosition - 1];
+                for (var k = 0; k < xpc.contextSize; k++) {
+					xpc.contextNode = nodes[k];
+                    xpc.contextPosition =
+                        Array.prototype.indexOf.call(
+                                nodes[k].parentNode.childNodes, nodes[k]) + 1;
+
 					if (this.predicateMatches(pred, xpc)) {
 						newNodes.push(xpc.contextNode);
 					}
@@ -2097,11 +2108,21 @@ PathExpr.prototype.evaluate = function(c) {
 				var pred = step.predicates[j];
 				var newNodes = [];
 				xpc.contextSize = nodes.length;
-				for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
-					xpc.contextNode = nodes[xpc.contextPosition - 1];
+                //  wje (2015-03-29): Patched an issue where the position of the
+                //  actual node was tied to the looping index. If the set of
+                //  nodes comes from different parts of the DOM, their position
+                //  *must* be computed relative to their parent, not to the
+                //  index of the query result structure.
+				//for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
+				//	xpc.contextNode = nodes[xpc.contextPosition - 1];
+                for (var k = 0; k < xpc.contextSize; k++) {
+					xpc.contextNode = nodes[k];
+                    xpc.contextPosition =
+                        Array.prototype.indexOf.call(
+                                nodes[k].parentNode.childNodes, nodes[k]) + 1;
+
 					if (this.predicateMatches(pred, xpc)) {
 						newNodes.push(xpc.contextNode);
-					} else {
 					}
 				}
 				nodes = newNodes;
