@@ -1386,7 +1386,7 @@ function() {
 
         val = path3.executeGet(model1);
 
-        test.assert.isEqualTo(val, TP.ac('willy'));
+        test.assert.isEqualTo(val, 'willy');
     });
 
     this.it('tail results slicing set', function(test, options) {
