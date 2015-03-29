@@ -1022,17 +1022,17 @@ function() {
     this.it('tail results set', function(test, options) {
         var val;
 
-        tailResultsPath.executeSet(tailResultsModel, 'zoo', true);
+        tailResultsPath.executeSet(tailResultsModel, TP.hc('roo', 'coo'), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = tailResultsModel.at('foo').at('hi').at('boo');
 
-        test.assert.isEqualTo(val, 'zoo');
+        test.assert.isEqualTo(val, TP.hc('roo', 'coo'));
 
         val = tailResultsModel.at('foo').at('hi').at('moo');
 
-        test.assert.isEqualTo(val, 'zoo');
+        test.assert.isEqualTo(val, TP.hc('roo', 'coo'));
     });
 
     this.it('middle results get', function(test, options) {
