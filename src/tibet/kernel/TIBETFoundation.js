@@ -1746,14 +1746,6 @@ function(anObject, aType) {
 
         testType;
 
-    if (TP.notDefined(anObject) && TP.notDefined(aType)) {
-        return true;
-    }
-
-    if (TP.isNull(anObject) && TP.isNull(aType)) {
-        return true;
-    }
-
     if (TP.notValid(anObject) ||
         TP.notValid(aType) ||
         TP.notValid(anObject.constructor)) {
@@ -1854,6 +1846,12 @@ function(anObject, aType) {
     //  type...and this is a fairly fast test
     if (TP.isMemberOf(anObject, aType)) {
         return true;
+    }
+
+    if (TP.notValid(anObject) ||
+        TP.notValid(aType) ||
+        TP.notValid(anObject.constructor)) {
+        return false;
     }
 
     //  If anObject *is a type itself* (in this case, a native type), then it's
