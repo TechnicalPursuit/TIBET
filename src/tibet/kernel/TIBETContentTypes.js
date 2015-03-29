@@ -4571,7 +4571,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             tpcontent = TP.wrap(contentnode);
             tpcontent.setProcessedContent(value);
 
-            if (TP.isNode(content)) {
+            if (TP.isNode(contentnode)) {
                 if (TP.isElement(contentnode)) {
                     //  If we're gonna signal a change, then add the element's
                     //  address to the list of changed addresses.
