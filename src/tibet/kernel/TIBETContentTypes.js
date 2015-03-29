@@ -578,7 +578,10 @@ function(data) {
 
     //  If a String was handed in, it's probably JSON - try to convert it.
     if (TP.isString(data) && TP.notEmpty(data)) {
-        jsonData = TP.json2js(data);
+
+        //  Note here how we pass false in order to *not* get TIBET-enhanced
+        //  objects. We're interested in holding a bag of 'plain JS objects'.
+        jsonData = TP.json2js(data, false);
 
         //  TP.json2js will raise for us.
         if (TP.notValid(jsonData)) {
