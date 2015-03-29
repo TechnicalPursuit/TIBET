@@ -183,7 +183,8 @@ function(aString, smartConversion, shouldReport) {
 
                         //  If its a 'JS Array', convert it into a TIBETized
                         //  Array.
-                        if (TP.isMemberOf(value, Array)) {
+                        //  TODO: Check the necessity of this.
+                        if (TP.isArray(value)) {
                             arr = TP.ac();
                             for (j = 0; j < value.length; j++) {
                                 arr.push(value[j]);
@@ -203,7 +204,8 @@ function(aString, smartConversion, shouldReport) {
 
         //  If the 'outermost' object is a 'JS Array', convert it into a
         //  TIBETized Array
-        if (TP.isMemberOf(obj, Array)) {
+        //  TODO: Check the necessity of this.
+        if (TP.isArray(obj)) {
             newArr = TP.ac();
             for (i = 0; i < obj.length; i++) {
                 newArr.push(obj[i]);
