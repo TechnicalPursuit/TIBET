@@ -2252,6 +2252,12 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
+    if (TP.isKindOf(config, TP.lang.Hash)) {
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
+    } else {
+        this.set('shouldCollapse', true);
+    }
+
     return this;
 });
 
