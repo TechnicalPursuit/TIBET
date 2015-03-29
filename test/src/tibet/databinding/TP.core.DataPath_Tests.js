@@ -84,12 +84,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType SimpleXML Paths',
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType Simple XML Paths',
 function() {
 
     var path;
 
-    this.it('SimpleXML path', function(test, options) {
+    this.it('Simple XML path', function(test, options) {
         path = TP.apc('@foo');
         test.assert.isKindOf(path, TP.core.SimpleXMLPath);
     });
@@ -502,6 +502,7 @@ function() {
     var path;
 
     this.it('Simple TIBET path', function(test, options) {
+
         path = TP.apc('#tibet(foo)');
         test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
 
@@ -510,6 +511,7 @@ function() {
     });
 
     this.it('Complex TIBET path', function(test, options) {
+
         path = TP.apc('#tibet(foo.hi)');
         test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
@@ -532,6 +534,7 @@ function() {
     var path;
 
     this.it('XPath path', function(test, options) {
+
         path = TP.apc('#xpath1(/emp)');
         test.assert.isKindOf(path, TP.core.XPathPath);
 
@@ -566,6 +569,7 @@ function() {
     var path;
 
     this.it('CSS path', function(test, options) {
+
         path = TP.apc('#css(*)');
         test.assert.isKindOf(path, TP.core.XTensionPath);
 
@@ -636,6 +640,7 @@ function() {
     var path;
 
     this.it('Composite path with TIBET Simple Paths', function(test, options) {
+
         path = TP.apc('#tibet(foo.(bar).baz)');
         test.assert.isKindOf(path, TP.core.CompositePath);
 
@@ -647,6 +652,7 @@ function() {
     });
 
     this.it('Composite path with TIBET Simple Paths', function(test, options) {
+
         path = TP.apc('#tibet(foo.(foo.hi).baz)');
         test.assert.isKindOf(path, TP.core.CompositePath);
 
@@ -685,6 +691,7 @@ function() {
     });
 
     this.it('Composite path with TIBET Simple paths and embedded TIBET Complex Paths', function(test, options) {
+
         path = TP.apc('#tibet(foo.(foo.hi).baz)');
         test.assert.isKindOf(path, TP.core.CompositePath);
 
@@ -723,6 +730,7 @@ function() {
     });
 
     this.it('Composite path with TIBET Simple paths and embedded XPath Paths', function(test, options) {
+
         path = TP.apc('#tibet(foo.(/author).baz)');
         test.assert.isKindOf(path, TP.core.CompositePath);
 
@@ -809,6 +817,7 @@ function() {
     });
 
     this.it('Composite path with TIBET Simple paths and embedded CSS Paths', function(test, options) {
+
         path = TP.apc('#tibet(foo.(.myclass).baz)');
         test.assert.isKindOf(path, TP.core.CompositePath);
 
