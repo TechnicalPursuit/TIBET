@@ -428,6 +428,149 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$jsonObj2xml',
+function(anObject, rootName) {
+
+    /**
+     * @method $jsonObj2xml
+     * @summary Converts a ("plain") JavaScript object that was produced
+     *     directly from parsing JSON into an XML representation.
+     * @description This method is used by TIBET internal machinery to produce a
+     *     specific XML format for use with JSONPaths. Therefore, it is not
+     *     intended to be a general purpose transformation for JavaScript -> XML
+     *     data. Use the public TP.json2xml() method for that purpose.
+     * @param {Object} anObject The object to transform.
+     * @param {String} rootName The name of the root tag. This defaults to
+     *     'root'.
+     * @returns {Node} An XML node representing the same data structures found
+     *     in the Object, using to a very specific, purpose-built algorithm for
+     *     TIBET's JSONPath support.
+     */
+
+    var jsonObjAsXMLStr,
+
+        dataRoot,
+        rootKeys,
+
+        name,
+
+        str,
+        doc,
+
+        result;
+
+    jsonObjAsXMLStr = function(obj, slotName) {
+
+        //  NB: We use native JS language constructs in this Function for
+        //  performance reasons.
+
+        var theType,
+            i,
+            keys;
+
+        theType = typeof obj;
+
+        switch (theType) {
+
+            case 'undefined':
+                str += '<' + slotName + ' type="' + theType + '">' +
+                        'undefined' +
+                        '</' + slotName + '>';
+                break;
+
+            case 'boolean':
+            case 'number':
+            case 'string':
+
+                str += '<' + slotName + ' type="' + theType + '">' +
+                        TP.xmlLiteralsToEntities(obj.toString()) +
+                        '</' + slotName + '>';
+                break;
+
+            case 'object':
+
+                if (obj === null) {
+                    str += '<' + slotName + ' type="null">' +
+                            'null' +
+                            '</' + slotName + '>';
+                } else {
+                    switch (true) {
+                        case obj instanceof Date:
+                            str += '<' + slotName + ' type="date">' +
+                                    obj.toISOString() +
+                                    '</' + slotName + '>';
+                            break;
+
+                        case obj instanceof Array:
+
+                            str += '<' + slotName + ' type="array">';
+                            for (i = 0; i < obj.length; i++) {
+                                jsonObjAsXMLStr(obj[i], slotName);
+                            }
+                            str += '</' + slotName + '>';
+                            break;
+
+                        default:
+
+                            keys = Object.keys(obj);
+                            str += '<' + slotName + ' type="object">';
+                            for (i = 0; i < keys.length; i++) {
+                                if (TP.regex.PRIVATE_OR_INTERNAL_SLOT.test(
+                                                                    keys[i])) {
+                                    continue;
+                                }
+
+                                jsonObjAsXMLStr(obj[keys[i]], keys[i]);
+                            }
+                            str += '</' + slotName + '>';
+                            break;
+                    }
+                }
+        }
+    };
+
+    name = TP.ifInvalid(rootName, 'root');
+
+    dataRoot = anObject;
+
+    //  If the object has more than 1 key, then put it in another object with a
+    //  single slot keyed under the root name. This is because the translation
+    //  machinery cannot handle multi-keyed objects - it needs a 'rooted'
+    //  object.
+    rootKeys = Object.keys(anObject);
+    if (rootKeys.getSize() > 1) {
+        dataRoot = {};
+        dataRoot[name] = anObject;
+    }
+
+    //  Build a String, starting at the root object. This function, defined
+    //  above, recursively calls itself to build out the entire structure.
+    str = '';
+    jsonObjAsXMLStr(dataRoot, name);
+
+    //  Try to turn that a real XML DOM.
+    doc = (new DOMParser()).parseFromString(str, 'application/xml');
+
+    if (TP.isXMLDocument(doc)) {
+
+        //  If we a real result, then we either use the documentElement's
+        //  firstChild or, if there are multiple children under the
+        //  documentElement, then the documentElement itself.
+        result = TP.doc();
+        if (doc.documentElement.childNodes.length > 0) {
+            result.appendChild(doc.documentElement.firstChild);
+        } else {
+            result.appendChild(doc.documentElement);
+        }
+
+        return result;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('xml2json',
 function(aNode) {
 
@@ -451,6 +594,129 @@ function(aNode) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$xml2jsonObj',
+function(aNode) {
+
+    /**
+     * @method $xml2jsonObj
+     * @summary Converts an XML representation into a ("plain") JavaScript
+     *     object that can directly produce 'clean' JSON.
+     * @description This method is used by TIBET internal machinery to produce a
+     *     JavaScript object from a specific XML format used with TIBET's
+     *     implemenration of JSONPaths (it is the inverse of the
+     *     'TP.$jsonObj2xml' method). Therefore, it is not intended to be a
+     *     general purpose transformation for XML -> JavaScript data. Use the
+     *     public TP.xml2json() method for that purpose.
+     * @param {Node} aNode An XML node.
+     * @returns {Object} A JavaScript Object representing the same data
+     *     structures found in the XML, using to a very specific, purpose-built
+     *     algorithm for TIBET's JSONPath support.
+     */
+
+    var xmlNodeAsJSONObj,
+
+        node,
+
+        root;
+
+    xmlNodeAsJSONObj = function(anElement, parentObj) {
+
+        var elemName,
+
+            newObj,
+            i,
+
+            currentChild,
+
+            itemObj,
+            key;
+
+        elemName = anElement.nodeName;
+
+        switch (anElement.getAttribute('type')) {
+
+            case 'null':
+
+                parentObj[elemName] = null;
+                break;
+
+            case 'undefined':
+
+                parentObj[elemName] = undefined;
+                break;
+
+            case 'boolean':
+
+                /* eslint-disable no-extra-parens */
+                parentObj[elemName] = (anElement.textContent === 'true');
+                /* eslint-enable no-extra-parens */
+                break;
+
+            case 'number':
+
+                parentObj[elemName] = parseFloat(anElement.textContent);
+                break;
+
+            case 'string':
+
+                parentObj[elemName] = anElement.textContent;
+                break;
+
+            case 'date':
+
+                parentObj[elemName] = Date.parse(anElement.textContent);
+                break;
+
+            case 'array':
+
+                newObj = [];
+
+                itemObj = {};
+                for (i = 0; i < anElement.children.length; i++) {
+
+                    currentChild = anElement.children[i];
+
+                    xmlNodeAsJSONObj(currentChild, itemObj);
+                    key = Object.keys(itemObj)[0];
+
+                    newObj.push(itemObj[key]);
+                    itemObj[key] = null;
+                }
+
+                parentObj[elemName] = newObj;
+                break;
+
+            case 'object':
+
+                newObj = {};
+                for (i = 0; i < anElement.children.length; i++) {
+
+                    currentChild = anElement.children[i];
+
+                    xmlNodeAsJSONObj(currentChild, newObj);
+                }
+
+                parentObj[elemName] = newObj;
+                break;
+        }
+    };
+
+    //  If we got back a Text node, just return it's node value - we must've
+    //  been translating a scalar value.
+    if (TP.isTextNode(aNode)) {
+        return aNode.nodeValue;
+    } else if (TP.isDocument(node = aNode)) {
+        node = aNode.documentElement;
+    }
+
+    root = {};
+    xmlNodeAsJSONObj(node, root);
+
+    return root;
 });
 
 //  ------------------------------------------------------------------------
