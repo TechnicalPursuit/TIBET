@@ -919,6 +919,12 @@ function(aPath) {
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
 
+    //  If we're handed a '#json(...)' pointer, then we know what kind of
+    //  path it is (or should be, anyway)
+    if (TP.regex.JSON_POINTER.test(path) || TP.regex.JSON_PATH.test(path)) {
+        return TP.core.JSONPath;
+    }
+
     //  If we're handed a '#tibet(...)' pointer, then we know what kind of
     //  path it is (or should be, anyway)
     if (TP.regex.TIBET_POINTER.test(path)) {
@@ -2094,6 +2100,865 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     retVal = retVal.set(paths.last(), attributeValue, shouldSignal);
 
     return retVal;
+});
+
+//  ========================================================================
+//  TP.core.JSONPath
+//  ========================================================================
+
+/**
+ * @type {TP.core.JSONPath}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.defineSubtype('JSONPath');
+
+//  ------------------------------------------------------------------------
+
+//  avoid binding and apply issues by creating our alias as a wrapper
+TP.definePrimitive('jpc',
+function(aPath, config) {
+
+    /**
+     * @method jpc
+     * @summary Returns a newly initialized JSONPath instance. Note that if
+     * @param {String} aPath The JSONPath as a String.
+     * @param {TP.lang.Hash} config The configuration for this path.
+     * @returns {TP.core.XPathPath} The new instance.
+     */
+
+    return TP.core.JSONPath.construct.apply(TP.core.JSONPath, arguments);
+});
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Type.defineAttribute('$mirroredAttributes');
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    //  These are properties whose values get 'mirrored' over to our internal
+    //  XML path. Note that we only mirror over ones that makes sense for XML
+    //  paths.
+    this.Type.set('$mirroredAttributes',
+                    TP.ac('shouldMakeStructures', 'shouldCollapse'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  Our internal XPath
+TP.core.JSONPath.Inst.defineAttribute('$xmlPath');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.lang.Hash} config The configuration for this path.
+     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     */
+
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.JSON_POINTER.test(aPath)) {
+        path = TP.regex.JSON_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
+    this.callNextMethod(path, config);
+
+    if (TP.isKindOf(config, TP.lang.Hash)) {
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
+    } else {
+        this.set('shouldCollapse', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('asXPath',
+function() {
+
+    /**
+     * @method asXPath
+     * @summary Returns an XPath representation of the receiver. This can be
+     *     used to query the special XML representation of a JavaScript object
+     *     sourced from JSON data and converted to XML. This is only used for
+     *     TIBET's JSONPath support.
+     * @returns {String} An XPath representation of the receiver.
+     */
+
+    var srcPath,
+        tokens,
+
+        xmlStr,
+        prevStepIsDescent,
+
+        pathTokens,
+        i,
+
+        token,
+        operation,
+        scope,
+
+        tokenRecord,
+        exprRecord,
+
+        from,
+        to,
+
+        fromExpr,
+        toExpr,
+
+        indexes,
+        j,
+        item,
+
+        content;
+
+    srcPath = this.get('srcPath');
+
+    //  Tokenize the JSONPath string.
+    try {
+        tokens = TP.$JSONPathParser.parse(srcPath);
+    } catch (e) {
+        return this.raise(
+                'TP.sig.JSONPathTokenizationFailed',
+                TP.ec(e,
+                    TP.sc('Tokenization failed at: ', e.line || 'unknown',
+                            ' with source: ' + srcPath)));
+    }
+
+    xmlStr = '';
+
+    prevStepIsDescent = false;
+
+    //  The individual path tokens start at this place under the root
+    pathTokens = tokens[0].expression.value;
+
+    for (i = 0; i < pathTokens.getSize(); i++) {
+
+        token = pathTokens.at(i);
+
+        //  JSONPath root operator standalone
+        if (token === '$') {
+
+            xmlStr += '//*';
+            continue;
+        }
+
+        operation = token.operation;
+        scope = token.scope;
+        tokenRecord = token.value;
+
+        if (tokenRecord) {
+            exprRecord = tokenRecord.expression;
+        } else {
+            exprRecord = {type: 'none', value: 'none'};
+        }
+
+        switch (operation) {
+
+            case 'member':
+
+                prevStepIsDescent = false;
+
+                switch (scope) {
+
+                    //  JSONPath recursive descent
+                    //  '..'    ->  '//'
+                    case 'descendant':
+                        xmlStr += '//';
+                        prevStepIsDescent = true;
+                        break;
+                    //  JSONPath child operator
+                    //  '.'     ->  '/'
+                    case 'child':
+                        xmlStr += '/';
+                        break;
+                    //  JSONPath parent operator (enhanced JSONPath)
+                    //  '^'     ->  '/..'
+                    case 'parent':
+                        xmlStr += '/..';
+                        continue;
+                }
+
+                switch (exprRecord.type) {
+
+                    case 'identifier':
+                        xmlStr += exprRecord.value;
+                        break;
+                    case 'wildcard':
+                        xmlStr += '*';
+                        break;
+                }
+
+                break;
+
+            case 'subscript':
+
+                //  Note how with all of these expressions we add 1 to the
+                //  various computations to account for XPath's 1-based
+                //  indexing.
+
+                switch (exprRecord.type) {
+
+                    //  JSONPath subscript operator (numeric values only)
+                    //  '[<number>]' ->  '[position() = ... + 1]'
+                    case 'numeric_literal':
+
+                        //  If the previous step was a 'recursive descent'
+                        //  operator (i.e. '..' converted to '//'), then we
+                        //  filter out same-named nodes that really represent
+                        //  the Array of this item. This is so that recursive
+                        //  descent operators don't also pick up the Element
+                        //  representing the Array itself. Otherwise, we add an
+                        //  'all element's step to make the query work properly.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        xmlStr += '[position() = ' +
+                               (exprRecord.value.asNumber() + 1) +
+                               ']';
+
+                        break;
+
+                    //  JSONPath subscript operator with wildcard
+                    case 'wildcard':
+
+                        //  Find the last slash and double it
+                        xmlStr = xmlStr.slice(0, xmlStr.lastIndexOf('/')) +
+                                    '/' +
+                                    xmlStr.slice(xmlStr.lastIndexOf('/'));
+
+                        break;
+
+                    //  JSONPath slice expression
+                    //  '[<number>:<number>]' ->  '[...]'
+                    case 'slice':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        if (TP.isValid(exprRecord.value.start)) {
+                            from = exprRecord.value.start.asNumber();
+                            if (!TP.isNaN(from)) {
+                                if (from.isNegative()) {
+                                    fromExpr =
+                                        'position() >= last() + ';
+                                } else {
+                                    fromExpr = 'position() >= ';
+                                }
+
+                                fromExpr += from + 1;
+                            }
+                        }
+
+                        if (TP.isValid(exprRecord.value.end)) {
+                            to = exprRecord.value.end.asNumber();
+
+                            if (!TP.isNaN(to)) {
+                                if (to.isNegative()) {
+                                    toExpr =
+                                        'position() < last() - ';
+                                    toExpr += to.abs() - 1;
+                                } else {
+                                    toExpr = 'position() < ';
+                                    toExpr += to + 1;
+                                }
+                            }
+                        }
+
+                        xmlStr += '[';
+
+                        if (TP.notEmpty(fromExpr)) {
+                            xmlStr += fromExpr;
+                        }
+
+                        if (TP.notEmpty(fromExpr) &&
+                            TP.notEmpty(toExpr)) {
+                            xmlStr += ' and ';
+                        }
+
+                        if (TP.notEmpty(toExpr)) {
+                            xmlStr += toExpr;
+                        }
+
+                        xmlStr += ']';
+
+                        break;
+
+                    //  JSONPath union operator
+                    //  '[... , ...]' ->  '[... or ...]'
+                    case 'union':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        indexes = exprRecord.value;
+
+                        xmlStr += '[';
+
+                        for (j = 0; j < indexes.getSize(); j++) {
+
+                            item = indexes.at(j).expression.value;
+                            if (TP.isNumber(item.asNumber())) {
+                                xmlStr += 'position() = ' +
+                                        (item.asNumber() + 1);
+                            } else {
+                                xmlStr += 'local-name() = "' + item + '"';
+                            }
+
+                            xmlStr += ' or ';
+                        }
+
+                        //  slice off the last ' or '
+                        xmlStr = xmlStr.slice(0, -4);
+
+                        xmlStr += ']';
+
+                        break;
+
+                    //  JSONPath script expression
+                    //  '[(...)]'  ->  '[...]'
+                    case 'script_expression':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        content = exprRecord.value;
+
+                        xmlStr += '[';
+
+                        if (/@\.length/.test(content)) {
+                            xmlStr +=
+                                'position() = ' +
+                                content.replace(/@\.length/, 'last() + 1');
+                        } else {
+                            //  JSONPath current object
+                            //  '@'     ->  '.'
+                            xmlStr += content.replace(/@\./g, './');
+                        }
+
+                        /* eslint-disable no-div-regex */
+                        xmlStr = xmlStr.replace(/==/, '=');
+                        /* eslint-enable no-div-regex */
+
+                        xmlStr = xmlStr.replace(/&&/, 'and');
+                        xmlStr = xmlStr.replace(/\|\|/, 'or');
+
+                        xmlStr += ']';
+
+                        break;
+
+                    //  JSONPath filter expression
+                    //  '[?(...)]'  ->  '[...]'
+                    case 'filter_expression':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        content = exprRecord.value;
+
+                        xmlStr += '[';
+
+                        //  JSONPath current object
+                        //  '@'     ->  '.'
+                        xmlStr += content.replace(/@\./g, './');
+
+                        /* eslint-disable no-div-regex */
+                        xmlStr = xmlStr.replace(/==/, '=');
+                        /* eslint-enable no-div-regex */
+
+                        xmlStr = xmlStr.replace(/&&/, 'and');
+                        xmlStr = xmlStr.replace(/\|\|/, 'or');
+
+                        xmlStr += ']';
+
+                        break;
+                }
+        }
+    }
+
+    return xmlStr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('executeGet',
+function(targetObj, varargs) {
+
+    /**
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
+     *     i.e. with the intent of retrieving data from the supplied target
+     *     object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     get data.
+     * @param {Array} varargs The arguments to execute the get with. The
+     *     first argument should be the object to execute the receiver against
+     *     to retrieve data. Any remaining arguments will be used as values for
+     *     a templated substitution in the path itself.
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath,TP.sig.InvalidNode
+     * @returns {Object} The result of executing a 'get' against the target
+     *     object using the receiver.
+     */
+
+    var tpXMLDoc,
+
+        currentJSONData,
+
+        xPath,
+        xmlPath,
+
+        mirroredAttributes,
+
+        retVal,
+        retValKeys;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  This kind of path will only work against TP.core.JSONContent objects
+    if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    //  See if the JSONContent object already has corresponding XML content. If
+    //  not, create it.
+    if (!TP.isNode(tpXMLDoc = targetObj.$get('data'))) {
+
+        //  Some sleight-of-hand to get our target content object to hold XML
+        //  rather than JSON, but pretend to outside observers like it's holding
+        //  JSON.
+
+        //  To do this, we locally rewrite its getData()/setData() to read/write
+        //  the xmlDocument.
+
+        //  Make sure to get the JavaScript Object data *first* before we
+        //  redefine getData()
+        currentJSONData = targetObj.getData();
+
+        //  Define a local version of 'getData' to return the result of
+        //  converting the entire XML data structure to a "plain" JavaScript
+        //  object. Note that this is very rarely done - normally a 'slice' of
+        //  the data will be retrieved by executing the path and just that slice
+        //  will be converted.
+        targetObj.defineMethod(
+            'getData',
+            function() {
+                var tpValueDoc,
+                    result;
+
+                //  Retrieve the XML representation that is sitting in the
+                //  actual 'data' slot (using $get() to avoid getting
+                //  recursively called here).
+                if (TP.isValid(tpValueDoc = this.$get('data'))) {
+
+                    if (TP.isValid(
+                        result = TP.$xml2jsonObj(TP.unwrap(tpValueDoc)))) {
+
+                        //  NB: In our particular encoding of JS<->XML, we use
+                        //  the 'rootObj' slot as a top-level value. See below.
+                        return result.rootObj;
+                    }
+                }
+
+                return null;
+            });
+
+        //  Define a local version of 'setData' to set the supplied JavaScript
+        //  Object data as an XML representation under the covers.
+        targetObj.defineMethod(
+            'setData',
+            function(aDataObject) {
+                var rootObj,
+                    tpValueDoc;
+
+                //  We always place this behind a 'rootObj' slot - if the JSON
+                //  describes a top-level Hash with multiple properties, then we
+                //  need to have this anyway so that the XML can have a single
+                //  root element. The TP.$jsonObj2xml() call will do this for us
+                //  automatically, but we want to have a well-known handle.
+                rootObj = {rootObj: aDataObject};
+                tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
+
+                //  Call 'up' to our super method to set the real underlying
+                //  'data' slot to our XML data.
+                this.callNextMethod(tpValueDoc);
+
+                return this;
+            });
+
+        //  Now that we've redefined setData(), push the current data back
+        //  through it, causing the XML representation to be created.
+        targetObj.set('data', currentJSONData);
+
+        //  Now, retrieve the XML representation that is sitting in the actual
+        //  'data' slot (using $get() to bypass the redefined getData() call
+        //  above).
+        tpXMLDoc = targetObj.$get('data');
+    }
+
+    //  Make sure that we're holding wrapped XML node
+    if (!TP.isValid(tpXMLDoc)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If we don't have a valid XPath representation of ourself, then try to
+    //  build one.
+    if (TP.notValid(xmlPath = this.get('$xmlPath'))) {
+        //  Grab ourself as an XPath and adjust as necessary for the 'rootObj'
+        //  top-level element that will get generated as the root-level element.
+        xPath = this.asXPath();
+        if (xPath.startsWith('/') && !xPath.startsWith('//')) {
+            xPath = '/rootObj' + xPath;
+        }
+
+        xmlPath = TP.xpc(xPath);
+
+        //  Configure this path with the same sorts of flags as we have. We have
+        //  also overridden 'set()' on this type to do this whenever 'set()' is
+        //  called.
+        mirroredAttributes = this.getType().get('$mirroredAttributes');
+        mirroredAttributes.perform(
+            function(aProperty) {
+                xmlPath.set(aProperty, this.get(aProperty));
+            }.bind(this));
+
+        //  Define a local version of '$$getContentForSetOperation' to massage
+        //  the XML that will be being manipulated by the XPath.
+        xmlPath.defineMethod('$$getContentForSetOperation',
+            function(aNode, flagChanges) {
+
+                var result,
+                    doc,
+
+                    newElems,
+
+                    pathParts;
+
+                //  Allow the normal XPath path machinery to create the nodes
+                //  that we need.
+                result = this.callNextMethod();
+
+                //  If we got real XML nodes built and returned to us, massage
+                //  them into what we need for our special XML format.
+                if (TP.notEmpty(result)) {
+
+                    doc = TP.doc(result.first());
+
+                    //  Find any new elements that were created
+                    newElems = TP.byCSS('*[tibet|crud*="create"]', doc);
+
+                    //  Split the path along '/' and shift the initial 'root'
+                    //  off of the path.
+                    pathParts = this.asString().split('/');
+                    pathParts.shift();
+
+                    newElems.perform(
+                        function(anElem) {
+                            var pathRef,
+                                elemsWithSameName;
+
+                            //  If the new element doesn't have a 'type'
+                            //  attribute, then search *under* it (*child-level
+                            //  only*) for any elements with the same name
+                            if (!anElem.hasAttribute('type')) {
+
+                                elemsWithSameName = TP.byCSS(
+                                    '> ' + anElem.nodeName,
+                                    anElem.parentNode);
+
+                                //  If we found *child* elements with the same
+                                //  name
+                                if (TP.notEmpty(elemsWithSameName)) {
+
+                                    //  Get the part of the path that names the
+                                    //  same level that we're at by using the
+                                    //  element's position relative to it's
+                                    //  ancestor, which will (at least in a
+                                    //  simple path of names) be the name we're
+                                    //  interested in
+                                    pathRef = pathParts.at(
+                                        TP.nodeGetAncestorPositions(
+                                                        anElem).getSize());
+
+                                    //  if that piece of the path has a
+                                    //  'position' function call in a predicate,
+                                    //  then assume that the user really wants
+                                    //  this to be an Array
+                                    if (TP.notEmpty(pathRef) &&
+                                        /position/.test(pathRef)) {
+                                        anElem.parentNode.setAttribute(
+                                                        'type', 'array');
+                                    } else {
+
+                                        //  Otherwise, set it to be an Object
+                                        //  structure.
+                                        anElem.parentNode.setAttribute(
+                                                        'type', 'object');
+                                    }
+                                }
+
+                                //  If the element is empty, then mark it as
+                                //  'undefined'.
+                                if (TP.isEmpty(anElem)) {
+                                    anElem.setAttribute('type', 'undefined');
+                                }
+                            }
+                        });
+                }
+
+                return result;
+            });
+
+        //  Define a local version of 'finalizeSetValue' to convert JavaScript
+        //  Object values into the proper XML structure.
+        xmlPath.defineMethod(
+                'finalizeSetValue',
+                function(content, value) {
+
+                    var val,
+                        nodeName,
+
+                        theType;
+
+                    val = value;
+
+                    //  If it's an Array, convert to XML and then return the
+                    //  child node list as a fragment
+                    if (TP.isArray(val)) {
+
+                        nodeName = content.nodeName;
+                        val = TP.$jsonObj2xml(val, nodeName);
+                        val = TP.nodeListAsFragment(
+                                    val.documentElement.childNodes);
+
+                        //  Tag the content as being an 'array'
+                        content.setAttribute('type', 'array');
+
+                    } else if (TP.isPlainObject(val)) {
+
+                        //  Otherwise, if its a "plain" Object, return the root
+                        //  node that was generated
+                        nodeName = content.nodeName;
+                        val = TP.$jsonObj2xml(val, nodeName);
+
+                        //  Tag the content as being an 'object'
+                        content.setAttribute('type', 'object');
+                    } else {
+                        theType = typeof value;
+
+                        //  null will report itself as undefined when using
+                        //  'typeof' - we want to be more specific.
+                        if (TP.isNull(value)) {
+                            theType = 'null';
+                        }
+
+                        switch (theType) {
+                            case 'undefined':
+                            case 'null':
+                            case 'boolean':
+                            case 'number':
+                            case 'string':
+                            case 'object':
+                                //  Tag the content with the computed data type.
+                                content.setAttribute('type', theType);
+                                break;
+                        }
+                    }
+
+                    return val;
+                });
+
+        //  Set our internal XPath representation.
+        this.set('$xmlPath', xmlPath);
+    }
+
+    //  TODO: Slice, etc. to pass along varargs
+    retVal = xmlPath.executeGet(tpXMLDoc);
+
+    //  If we got a valid value back, then convert it using our internal XML to
+    //  JavaScript object (JSON friendly) conversion routine.
+    if (TP.isValid(retVal)) {
+
+        //  If it's an Array, then convert each value.
+        if (TP.isArray(retVal)) {
+            retVal = retVal.convert(
+                            function(item) {
+                                var result,
+                                    resultKeys;
+
+                                result = TP.$xml2jsonObj(item);
+                                resultKeys = Object.keys(result);
+
+                                //  If the converted data structure only has 1
+                                //  key, then return the object at that key.
+                                if (resultKeys.length === 1) {
+                                    return result[resultKeys[0]];
+                                }
+
+                                return result;
+                            });
+        } else if (TP.isNode(retVal)) {
+
+            retVal = TP.$xml2jsonObj(retVal);
+            retValKeys = Object.keys(retVal);
+
+            //  If the converted data structure only has 1 key, then return the
+            //  object at that key.
+            if (retValKeys.length === 1) {
+                retVal = retVal[retValKeys[0]];
+            }
+        }
+
+        //  Make sure to process the final value using converters, etc.
+        //  configured for this object.
+        return this.processFinalValue(retVal, targetObj);
+    }
+
+    return null;
+});
+
+//  -----------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('executeSet',
+function(targetObj, attributeValue, shouldSignal, varargs) {
+
+    /**
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
+     *     setting the supplied data into the supplied target object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     set data.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
+     * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
+     *     targetObj.shouldSignalChange().
+     * @param {Array} varargs Any remaining arguments will be used as values
+     *     for a templated substitution in the path itself.
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath,TP.sig.InvalidNode
+     * @returns {TP.core.JSONPath} The receiver.
+     */
+
+    var oldVal,
+
+        tpXMLDoc,
+        xmlPath;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  This kind of path will only work against TP.core.JSONContent objects
+    if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    //  This should create the XML representation and paths in ourself
+
+    //  TODO: Slice, etc. to pass along varargs
+    oldVal = this.executeGet(targetObj);
+
+    //  If the old value is equal to the value that we're setting, then there
+    //  is nothing to do here and we exit. This is important to avoid endless
+    //  recursion when doing a 'two-ended bind' to data referenced by this
+    //  path.
+    //  Note that we handle empty Arrays specially here since, if we're not
+    //  reducing Arrays, an empty Array handed in as the value will compare as
+    //  'true' here and this routine will exit.
+    if (TP.equal(oldVal, attributeValue)) {
+        if (TP.isArray(attributeValue) && TP.isEmpty(attributeValue)) {
+            void 0;
+        } else {
+            return oldVal;
+        }
+    }
+
+    //  Make sure that we're holding wrapped XML node
+    if (!TP.isValid(tpXMLDoc = targetObj.$get('data'))) {
+        //  Raise an exception - this should've been created in the executeGet()
+        //  method.
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    if (TP.notValid(xmlPath = this.get('$xmlPath'))) {
+        //  Raise an exception - this should've been created in the executeGet()
+        //  method.
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    xmlPath.executeSet(tpXMLDoc, attributeValue, shouldSignal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('set',
+function(attributeName, attributeValue, shouldSignal) {
+
+    /**
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
+     *     no value is provided the value null is used.
+     * @description This is overridden from its supertype to make sure to copy
+     *     over attributes that also need to be populated onto the receiver's
+     *     internal XPath.
+     * @param {String|TP.core.AccessPath} attributeName The name of the
+     *     attribute to set.
+     * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var xmlPath;
+
+    //  For certain properties we mirror their settings onto our internal
+    //  xmlPath.
+    if (this.getType().get('$mirroredAttributes').contains(attributeName)) {
+        if (TP.isValid(xmlPath = this.get('$xmlPath'))) {
+            xmlPath.set(attributeName, attributeValue, shouldSignal);
+        }
+    }
+
+    return this.callNextMethod();
 });
 
 //  ========================================================================
