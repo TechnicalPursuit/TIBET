@@ -3559,10 +3559,19 @@ function() {
     });
 
     this.it('single level set without creation', function(test, options) {
-        var val;
+        var oldLogLevel,
+            val;
+
+        //  Turn off logging of WARN and below for now - otherwise, the fact
+        //  that we don't have creation turned on will log to the console
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path1.executeSet(model1, 'goo', true);
+
+        //  Put log level back to what it was
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
@@ -3589,10 +3598,19 @@ function() {
     });
 
     this.it('multi level set without creation', function(test, options) {
-        var val;
+        var oldLogLevel,
+            val;
+
+        //  Turn off logging of WARN and below for now - otherwise, the fact
+        //  that we don't have creation turned on will log to the console
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path2.executeSet(model1, 'boo', true);
+
+        //  Put log level back to what it was
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
@@ -3647,10 +3665,19 @@ function() {
     });
 
     this.it('single level set without creation', function(test, options) {
-        var val;
+        var oldLogLevel,
+            val;
+
+        //  Turn off logging of WARN and below for now - otherwise, the fact
+        //  that we don't have creation turned on will log to the console
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path1.executeSet(model1, 'four', true);
+
+        //  Put log level back to what it was
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
@@ -3677,10 +3704,19 @@ function() {
     });
 
     this.it('multi level set without creation', function(test, options) {
-        var val;
+        var oldLogLevel,
+            val;
+
+        //  Turn off logging of WARN and below for now - otherwise, the fact
+        //  that we don't have creation turned on will log to the console
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path2.executeSet(model1, 'stuff', true);
+
+        //  Put log level back to what it was
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
@@ -3718,10 +3754,19 @@ function() {
     });
 
     this.it('slicing results set without creation', function(test, options) {
-        var val;
+        var oldLogLevel,
+            val;
+
+        //  Turn off logging of WARN and below for now - otherwise, the fact
+        //  that we don't have creation turned on will log to the console
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path3.executeSet(model1, 'foofy', true);
+
+        //  Put log level back to what it was
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
@@ -3770,10 +3815,19 @@ function() {
     });
 
     this.it('single level set without creation', function(test, options) {
-        var val;
+        var oldLogLevel,
+            val;
+
+        //  Turn off logging of WARN and below for now - otherwise, the fact
+        //  that we don't have creation turned on will log to the console
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path1.executeSet(model1, 'goo', true);
+
+        //  Put log level back to what it was
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
@@ -3800,10 +3854,19 @@ function() {
     });
 
     this.it('multi level set without creation', function(test, options) {
-        var val;
+        var oldLogLevel,
+            val;
+
+        //  Turn off logging of WARN and below for now - otherwise, the fact
+        //  that we don't have creation turned on will log to the console
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path2.executeSet(model1, TP.ac(), true);
+
+        //  Put log level back to what it was
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
