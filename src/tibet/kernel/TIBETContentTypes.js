@@ -463,7 +463,10 @@ function(aDataObject) {
 
     var oldDataObject;
 
-    if (TP.isValid(oldDataObject = this.get('data'))) {
+    //  NB: We use '$get()' here because we want access to the real underlying
+    //  object - subtypes and local objects might have reprogrammed 'getData()'
+    //  to return other objects or have special handling logic.
+    if (TP.isValid(oldDataObject = this.$get('data'))) {
         this.ignore(oldDataObject, 'Change');
     }
 
