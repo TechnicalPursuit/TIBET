@@ -2327,7 +2327,7 @@ function(targetObj, varargs) {
 
     //  NB: We use the original source path to register with the address change
     //  notification mechanism
-    this.getType().startObservedAddress(srcPath);
+    this.getType().startObservedAddress(path);
 
     //  If the path is something like '[0]', then slice off the brackets to
     //  just produce '0'.
@@ -4181,7 +4181,7 @@ function(targetObj, varargs) {
     //  'false' on autoCollapse (we collapse later if we're set for it, but for
     //  now we want an Array).
     nodes = TP.nodeEvaluatePath(
-                natTargetObj, srcPath, this.getPathType(), false);
+                natTargetObj, path, this.getPathType(), false);
 
     //  If the return value is not an Array, that means a scalar value was
     //  returned (because we forced false on autoCollapse).
@@ -4190,8 +4190,8 @@ function(targetObj, varargs) {
         //  Capture the scalar as the final value - we want to return this.
         finalValue = nodes;
 
-        //  Compute a 'node path' by starting with the source path.
-        nodePath = srcPath;
+        //  Compute a 'node path' by starting with the path.
+        nodePath = path;
 
         //  If there's a 'wrapping scalar conversion' (i.e. 'string(...)'), then
         //  we need to strip it off of the path so that we can get to nodes, not
@@ -4252,7 +4252,7 @@ function(targetObj, varargs) {
     addresses.perform(
             function(anAddress) {
                 TP.core.AccessPath.registerObservedAddress(
-                    anAddress, sourceObjectID, srcPath);
+                    anAddress, sourceObjectID, path);
             });
 
     //  If there is a valid final value *or* we were trying to do a scalar
@@ -4260,11 +4260,23 @@ function(targetObj, varargs) {
     //  we were trying to get scalar and the node was empty or some such) then
     //  just return the final value here.
     if (TP.isValid(finalValue) ||
-        TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(srcPath)) {
+        TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(path)) {
         return finalValue;
     }
 
     return this.processFinalValue(nodes, targetObj);
+});
+
+//  -----------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('finalizeSetValue',
+function(content, value) {
+
+    if (TP.isNode(value)) {
+        return value;
+    }
+
+    return TP.str(value);
 });
 
 //  -----------------------------------------------------------------------
@@ -4803,17 +4815,20 @@ function(aNode, flagChanges) {
      * @returns {Array} The array of Nodes that got built.
      */
 
-    var pathStr,
+    var path,
         attrName,
 
         retVal;
 
+    if (TP.notValid(path = this.get('$transformedPath'))) {
+        path = this.get('srcPath');
+    }
+
     //  We can create an Attribute, if this is an attribute-only path (and
     //  shouldMakeStructures is true)
-    if (TP.isElement(aNode) &&
-        TP.regex.ATTRIBUTE.test(pathStr = this.asString())) {
+    if (TP.isElement(aNode) && TP.regex.ATTRIBUTE.test(path)) {
 
-        attrName = pathStr.slice(1);
+        attrName = path.slice(1);
 
         if (TP.elementHasAttribute(aNode, attrName, true)) {
             return TP.elementGetAttributeNode(aNode, attrName);
@@ -5688,19 +5703,19 @@ function(aNode, resultType, logErrors, flagChanges) {
      */
 
     var flag,
-        srcPath,
+        path,
         context,
         result;
 
     flag = TP.ifEmpty(flagChanges, false);
 
-    if (TP.notValid(srcPath = this.get('$transformedPath'))) {
-        srcPath = this.get('srcPath');
+    if (TP.notValid(path = this.get('$transformedPath'))) {
+        path = this.get('srcPath');
     }
 
     //  One thing to note is that if you run an XPath against an HTML document
     //  you have to use the external XPath parser _EVEN_ if there are no
-    //  non-native constructs in the srcPath. Which means, in essence, that
+    //  non-native constructs in the path. Which means, in essence, that
     //  we're only a native path at execution time if we're native in terms of
     //  syntax, AND being evaluated against a valid XML document... oh and we
     //  can't be requesting to flag changes :)
@@ -5710,18 +5725,18 @@ function(aNode, resultType, logErrors, flagChanges) {
         //  Note here how we use the primitive call. If we used
         //  TP.core.Node's evaluateXPath(), we'd likely recurse because we
         //  are most likely being called from there.
-        return TP.nodeEvaluateXPath(aNode, srcPath, resultType, logErrors);
+        return TP.nodeEvaluateXPath(aNode, path, resultType, logErrors);
     }
 
     //  If we're here its because we're either not a native path, or we're
     //  being run against an HTML document, or we're being asked to flag
     //  changes.
-    //  Either way we need to process the srcPath using the non-native XPath
+    //  Either way we need to process the path using the non-native XPath
     //  processor...
 
     //  create a non-native context if necessary
     if (TP.notValid(context = this.$get('$tpContext'))) {
-        this.$createNonNativeParserContext(srcPath);
+        this.$createNonNativeParserContext(path);
         context = this.$get('$tpContext');
     }
 

@@ -2522,6 +2522,86 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst parameterized path traversal',
+function() {
+
+    var model1,
+        path1,
+
+        setPath,
+
+        model2,
+        path2;
+
+    this.before(function() {
+        model1 = TP.tpdoc('<emp><lname>Edney</lname></emp>');
+        path1 = TP.apc('/emp/{{0}}').set('shouldCollapse', true);
+
+        setPath = TP.apc('/{{0}}').set('shouldCollapse', true);
+
+        model2 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        path2 = TP.apc('/emp/{{0}}|/emp/{{1}}').set('shouldCollapse', true);
+    });
+
+    this.it('single value get', function(test, options) {
+        var val;
+
+        val = path1.executeGet(model1, 'lname');
+
+        test.assert.isEqualTo(val, TP.elem('<lname>Edney</lname>'));
+    });
+
+    this.it('single value set', function(test, options) {
+        var val;
+
+        setPath.executeSet(model1, TP.elem('<fooname>Foodney</fooname>'),
+                            true, 'emp');
+
+        //  NB: We use a manual mechanism to get to the value to get independent
+        //  validation of 'path' execution code.
+
+        //  This will return a single native Element
+        val = TP.nodeEvaluatePath(
+                    TP.unwrap(model1), '/emp/fooname', null, true);
+
+        test.assert.isEqualTo(val, TP.elem('<fooname>Foodney</fooname>'));
+    });
+
+    this.it('multiple value get', function(test, options) {
+        var val;
+
+        val = path2.executeGet(model2, 'lname', 'age');
+
+        test.assert.isEqualTo(val.at(0), TP.elem('<lname>Edney</lname>'));
+
+        test.assert.isEqualTo(val.at(1), TP.elem('<age>47</age>'));
+    });
+
+    this.it('multiple value set', function(test, options) {
+        var val;
+
+        setPath.executeSet(
+            model2,
+            TP.frag('<barname>Bardney</barname><barage>470</barage>'),
+            true,
+            'lname',
+            'age');
+
+        //  NB: We use a manual mechanism to get to the value to get independent
+        //  validation of 'path' execution code.
+
+        //  This will return a single native Element
+        val = TP.nodeEvaluatePath(
+                    TP.unwrap(model2), '/emp/barname|/emp/barage', null, true);
+
+        test.assert.isEqualTo(val.at(0), TP.elem('<barname>Bardney</barname>'));
+
+        test.assert.isEqualTo(val.at(1), TP.elem('<barage>470</barage>'));
+    });
+});
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
