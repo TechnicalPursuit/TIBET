@@ -4269,18 +4269,6 @@ function(targetObj, varargs) {
 
 //  -----------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('finalizeSetValue',
-function(content, value) {
-
-    if (TP.isNode(value)) {
-        return value;
-    }
-
-    return TP.str(value);
-});
-
-//  -----------------------------------------------------------------------
-
 TP.core.XMLPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
@@ -4507,8 +4495,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         if (TP.isNode(value = attrValue)) {
             value = TP.nodeCloneNode(attrValue, true);
         } else {
-            value = TP.str(attrValue);
+            value = attrValue;
         }
+
+        //  Finalize the set value.
+        value = this.finalizeSetValue(content, value);
 
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
@@ -4587,8 +4578,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             if (TP.isNode(value = attrValue)) {
                 value = TP.nodeCloneNode(attrValue, true);
             } else {
-                value = TP.str(attrValue);
+                value = attrValue;
             }
+
+            value = this.finalizeSetValue(contentnode, value);
 
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
@@ -4759,6 +4752,29 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     TP.sys.shouldSignalDOMLoaded(sigFlag);
 
     return this;
+});
+
+//  -----------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('finalizeSetValue',
+function(content, value) {
+
+    /**
+     * @method finalizeSetValue
+     * @summary 'Finalizes' the value used when calling executeSet(). This may
+     *     adjust the value to allow for more intelligent placement in the
+     *     storage data structure.
+     * @param {content} Node The content node that the value will be placed
+     *     into.
+     * @param {value} Object The value to finalize.
+     * @returns {Object} The finalized value.
+     */
+
+    if (TP.isNode(value)) {
+        return value;
+    }
+
+    return TP.str(value);
 });
 
 //  ------------------------------------------------------------------------
