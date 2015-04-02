@@ -4373,8 +4373,16 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  is nothing to do here and we exit. This is important to avoid endless
     //  recursion when doing a 'two-ended bind' to data referenced by this path
     //  and to avoid a lot of unnecessary signaling.
+
+    //  Note that we handle empty Arrays specially here since, if we're not
+    //  reducing Arrays, an empty Array handed in as the value will compare as
+    //  'true' here and this routine will exit.
     if (this.checkValueEquality(oldVal, newVal)) {
-        return oldVal;
+        if (TP.isArray(newVal) && TP.isEmpty(newVal)) {
+            void 0;
+        } else {
+            return oldVal;
+        }
     }
 
     natTargetObj = TP.unwrap(targetObj);
