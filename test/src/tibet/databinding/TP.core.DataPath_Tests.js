@@ -2047,8 +2047,7 @@ function() {
     });
 
     this.it('slicing results set with creation', function(test, options) {
-        this.todo();
-    });
+    }).todo();
 });
 
 //  ------------------------------------------------------------------------
