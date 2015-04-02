@@ -949,7 +949,7 @@ function(aDataSource, transformParams) {
 });
 
 //  ========================================================================
-//  Core Parser
+//  Templating Parser
 //  ========================================================================
 
 //  Generate this by executing the following command (assuming NodeJS is
