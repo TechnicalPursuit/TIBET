@@ -2244,7 +2244,7 @@ function() {
         test.assert.isEqualTo(val, 'baz');
     });
 
-    this.it('multi level get slice', function(test, options) {
+    this.it('multi level set slice', function(test, options) {
         var val;
 
         //  Note here how it's model, value, shouldSignal, parameter1ToPath,
