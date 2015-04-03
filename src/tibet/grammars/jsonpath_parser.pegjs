@@ -40,7 +40,7 @@ MEMBER_EXPRESSION
   = body:STAR                                       {return {expression: {type: "wildcard", value: body}}}
   / body:IDENTIFIER                                 {return {expression: {type: "identifier", value: body}}}
   / body:SCRIPT_EXPRESSION                          {return {expression: {type: "script_expression", value: body}}}
-  / body:INDEX                                    {return {expression: {type: "numeric_literal", value: parseInt(body)}}}
+  / body:INDEX                                      {return {expression: {type: "numeric_literal", value: parseInt(body)}}}
 
 SUBSCRIPT_COMPONENT
   = body:DESCENDANT_SUBSCRIPT_COMPONENT             {return {scope: "descendant", value: body}}
@@ -62,7 +62,7 @@ SUBSCRIPT_EXPRESSION_LIST
 SUBSCRIPT_EXPRESSION
   = body:STAR               {return {expression: {type:"wildcard", value: body}}}
   / body:ARRAY_SLICE        {return {expression: {type:"slice", value: body}}}
-  / body:INDEX              {return {expression: {type:"numeric_literal", value: body}}}
+  / body:INDEX              {return {expression: {type:"index", value: body}}}
   / body:IDENTIFIER         {return {expression: {type:"identifier", value: body}}}
   / body:SCRIPT_EXPRESSION  {return {expression: {type:"script_expression", value: body}}}
   / body:FILTER_EXPRESSION  {return {expression: {type:"filter_expression", value: body}}}

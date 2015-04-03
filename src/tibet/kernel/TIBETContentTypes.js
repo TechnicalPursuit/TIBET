@@ -2332,7 +2332,7 @@ function() {
 
                     //  JSONPath subscript operator (numeric values only)
                     //  '[<number>]' ->  '[position() = ... + 1]'
-                    case 'numeric_literal':
+                    case 'index':
 
                         //  If the previous step was a 'recursive descent'
                         //  operator (i.e. '..' converted to '//'), then we
