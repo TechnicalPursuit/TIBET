@@ -496,11 +496,7 @@ function(aFlag) {
      * @returns {Boolean} The current status.
      */
 
-    if (TP.isBoolean(aFlag)) {
-        this.get('data').shouldSignalChange(aFlag);
-    }
-
-    return this.callNextMethod();
+    return this.get('data').shouldSignalChange(aFlag);
 });
 
 //  ------------------------------------------------------------------------
