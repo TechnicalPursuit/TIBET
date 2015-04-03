@@ -352,7 +352,7 @@ function() {
         path = TP.apc('$..*');
         test.assert.isKindOf(path, TP.core.JSONPath);
 
-        path = TP.apc('$');
+        path = TP.apc('$.');
         test.assert.isKindOf(path, TP.core.JSONPath);
 
         path = TP.apc('$.store');
