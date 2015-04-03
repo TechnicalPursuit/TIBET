@@ -3923,58 +3923,65 @@ function() {
         path4;
 
     this.before(function() {
+
         model1 = TP.core.JSONContent.construct(
-            '{"foo":["1st","2nd","3rd","4th",["A","B","C"],["X","Y","Z"]]}');
-        path1 = TP.apc('foo.{{0}}');
-        path2 = TP.apc('foo[{{0}}:{{1}}]');
-        path3 = TP.apc('foo.{{0}}.{{1}}');
-        path4 = TP.apc('foo[{{0}}:{{1}}].{{2}}');
+            '{"value":[' +
+                '{"fname":"bill", "lname":"edney", "aliases":["billy", "willy", "eds"]},' +
+                '{"fname":"scott", "lname":"shattuck"},' +
+                '{"fname":"jim", "lname":"bowery"},' +
+                '{"fname":"another", "lname":"hacker"}' +
+            ']}');
+
+        path1 = TP.apc('$.value[{{0}}].fname');
+        path2 = TP.apc('$.value[{{0}}:{{1}}].fname');
+        path3 = TP.apc('$.value[{{0}},{{1}}].fname');
+        path4 = TP.apc('$.value[{{0}}].aliases[{{1}}:{{2}}]');
     });
 
     this.it('single level get', function(test, options) {
         var val;
 
-        val = path1.executeGet(model1, 1);
+        val = path1.executeGet(model1, 0);
 
-        test.assert.isEqualTo(val, '2nd');
+        test.assert.isEqualTo(val, 'bill');
     });
 
     this.it('single level get slice', function(test, options) {
         var val;
 
-        val = path2.executeGet(model1, 1, 4);
+        val = path2.executeGet(model1, 0, 2);
 
-        test.assert.isEqualTo(val, TP.ac('2nd', '3rd', '4th'));
+        test.assert.isEqualTo(val, TP.ac('bill', 'scott'));
     });
 
-    this.it('multi level get', function(test, options) {
+    this.it('single level get union', function(test, options) {
         var val;
 
-        val = path3.executeGet(model1, 4, 0);
+        val = path3.executeGet(model1, 1, 3);
 
-        test.assert.isEqualTo(val, 'A');
+        test.assert.isEqualTo(val, TP.ac('scott', 'another'));
     });
 
     this.it('multi level get slice', function(test, options) {
         var val;
 
-        val = path4.executeGet(model1, 4, 6, 0);
+        val = path4.executeGet(model1, 0, 1, 3);
 
-        test.assert.isEqualTo(val, TP.ac('A', 'X'));
+        test.assert.isEqualTo(val, TP.ac('willy', 'eds'));
     });
 
     this.it('single level set', function(test, options) {
         var val;
 
         //  Note here how it's model, value, shouldSignal, parameter1ToPath
-        path1.executeSet(model1, 'boo', false, 1);
+        path1.executeSet(model1, 'spike', false, 1);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.at('foo').at(1);
+        val = model1.get('data').value[1].fname;
 
-        test.assert.isEqualTo(val, 'boo');
+        test.assert.isEqualTo(val, 'spike');
     });
 
     this.it('single level set slice', function(test, options) {
@@ -3982,54 +3989,62 @@ function() {
 
         //  Note here how it's model, value, shouldSignal, parameter1ToPath,
         //  parameter2ToPath
-        path2.executeSet(model1, 'bar', false, 1, 3);
+        path2.executeSet(model1, 'larry', false, 1, 4);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.at('foo').at(1);
+        val = model1.get('data').value[1].fname;
 
-        test.assert.isEqualTo(val, 'bar');
+        test.assert.isEqualTo(val, 'larry');
 
-        val = model1.at('foo').at(2);
+        val = model1.get('data').value[2].fname;
 
-        test.assert.isEqualTo(val, 'bar');
+        test.assert.isEqualTo(val, 'larry');
+
+        val = model1.get('data').value[3].fname;
+
+        test.assert.isEqualTo(val, 'larry');
     });
 
-    this.it('multi level set', function(test, options) {
+    this.it('multi level set union', function(test, options) {
         var val;
 
         //  Note here how it's model, value, shouldSignal, parameter1ToPath,
         //  parameter2ToPath
-        path3.executeSet(model1, 'baz', false, 4, 0);
+        path3.executeSet(model1, 'curly', false, 2, 3);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.at('foo').at(4).at(0);
+        val = model1.get('data').value[2].fname;
 
-        test.assert.isEqualTo(val, 'baz');
+        test.assert.isEqualTo(val, 'curly');
+
+        val = model1.get('data').value[3].fname;
+
+        test.assert.isEqualTo(val, 'curly');
     });
 
-    this.it('multi level get slice', function(test, options) {
+    this.it('multi level set slice', function(test, options) {
         var val;
 
         //  Note here how it's model, value, shouldSignal, parameter1ToPath,
         //  parameter2ToPath
-        path4.executeSet(model1, 'goo', false, 4, 6, 0);
+        path4.executeSet(model1, 'moe', false, 0, 1, 3);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.at('foo').at(4).at(0);
+        val = model1.get('data').value[0].aliases[1];
 
-        test.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'moe');
 
-        val = model1.at('foo').at(5).at(0);
+        val = model1.get('data').value[0].aliases[2];
 
-        test.assert.isEqualTo(val, 'goo');
+        test.assert.isEqualTo(val, 'moe');
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 

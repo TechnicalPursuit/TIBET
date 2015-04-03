@@ -75,7 +75,7 @@ STRING_LITERAL
 /* ===== Supporting values ===== */
 
 IDENTIFIER
-  = body:[a-zA-Z_]+[a-zA-Z0-9_]*    {return body.join("")}
+  = body:[a-zA-Z0-9_{}]+[a-zA-Z0-9_{}]*     {return body.join("")}
 
 ARRAY_SLICE
   = start:INDEX? whitespace* ":" whitespace* end:INDEX?     {return {start:start, end:end}}
