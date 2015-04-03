@@ -2784,8 +2784,9 @@ TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\.\[\(]/;
 TP.regex.JSON_POINTER = /json\((.+)\)/;
 
 //  Not strictly true, but virtually every JSONPath example seen in the wild
-//  begins with '$.' and it's a great way to disambiguate.
-TP.regex.JSON_PATH = /^\$\.?/;
+//  begins with '$.' and it's a great way to disambiguate. Note here that we
+//  require the '.' as well, to disambiguate between JSONPath and '$FOO'.
+TP.regex.JSON_PATH = /^\$\.+/;
 
 //  ---
 //  TIBET path
