@@ -687,6 +687,39 @@ function() {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('shouldSignalChange',
+function(aFlag) {
+
+    /**
+     * @method shouldSignalChange
+     * @summary Defines whether the receiver should actively signal change
+     *     notifications.
+     * @description In general objects do not signal changes when no observers
+     *     exist. This flag is triggered by observe where the signal being
+     *     observed is a form of Change signal to "arm" the object for change
+     *     notification. You can also manipulate it during multi-step
+     *     manipulations to signal only when a series of changes has been
+     *     completed.
+     * @param {Boolean} aFlag true/false signaling status.
+     * @returns {Boolean} The current status.
+     */
+
+    var data;
+
+    //  Sometimes this object holds a TIBET-wrapped piece of XML data (when it
+    //  is being used by a JSONPath). In this case, we want to pass through this
+    //  setting. Otherwise, it's holding a plain JavaScript Object created from
+    //  JSON, so it won't respond to this.
+
+    if (TP.canInvoke(data = this.get('data'), 'shouldSignalChange')) {
+        return data.shouldSignalChange(aFlag);
+    }
+
+    return false;
+});
+
 //  ========================================================================
 //  TP.core.XMLContent
 //  ========================================================================
