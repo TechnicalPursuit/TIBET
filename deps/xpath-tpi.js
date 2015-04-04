@@ -1726,6 +1726,8 @@ PathExpr.prototype.evaluate = function(c) {
 			for (var j = 0; j < this.filterPredicates.length; j++) {
 				var pred = this.filterPredicates[j];
 				var newNodes = [];
+                var likeChildNodes;
+
 				xpc.contextSize = nodes.length;
                 //  wje (2015-03-29): Patched an issue where the position of the
                 //  actual node was tied to the looping index. If the set of
@@ -1736,9 +1738,12 @@ PathExpr.prototype.evaluate = function(c) {
 				//	xpc.contextNode = nodes[xpc.contextPosition - 1];
                 for (var k = 0; k < xpc.contextSize; k++) {
 					xpc.contextNode = nodes[k];
+                    likeChildNodes = TP.nodeGetChildNodesByType(
+                                                    nodes[k].parentNode,
+                                                    nodes[k].nodeType);
                     xpc.contextPosition =
                         Array.prototype.indexOf.call(
-                                nodes[k].parentNode.childNodes, nodes[k]) + 1;
+                                likeChildNodes, nodes[k]) + 1;
 
 					if (this.predicateMatches(pred, xpc)) {
 						newNodes.push(xpc.contextNode);
@@ -2119,6 +2124,8 @@ PathExpr.prototype.evaluate = function(c) {
 			for (var j = 0; j < step.predicates.length; j++) {
 				var pred = step.predicates[j];
 				var newNodes = [];
+                var likeChildNodes;
+
 				xpc.contextSize = nodes.length;
                 //  wje (2015-03-29): Patched an issue where the position of the
                 //  actual node was tied to the looping index. If the set of
@@ -2129,9 +2136,12 @@ PathExpr.prototype.evaluate = function(c) {
 				//	xpc.contextNode = nodes[xpc.contextPosition - 1];
                 for (var k = 0; k < xpc.contextSize; k++) {
 					xpc.contextNode = nodes[k];
+                    likeChildNodes = TP.nodeGetChildNodesByType(
+                                                    nodes[k].parentNode,
+                                                    nodes[k].nodeType);
                     xpc.contextPosition =
                         Array.prototype.indexOf.call(
-                                nodes[k].parentNode.childNodes, nodes[k]) + 1;
+                                likeChildNodes, nodes[k]) + 1;
 
                     //  wje (2015-03-30): Added 'node building' code for certain
                     //  limited predicate expressions (position() and
