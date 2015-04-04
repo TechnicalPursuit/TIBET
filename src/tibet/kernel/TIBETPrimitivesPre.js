@@ -9915,6 +9915,7 @@ function(anAspect, anAction, aDescription) {
          * @returns {Boolean} The current status.
          */
 
+        //  Note we can't do 'if (flag)' here because of its Boolean nature.
         if (arguments.length) {
             this.$$shouldSignal = aFlag;
         }
