@@ -709,8 +709,15 @@ function(aFlag) {
     //  setting. Otherwise, it's holding a plain JavaScript Object created from
     //  JSON, so it won't respond to this.
 
-    if (TP.canInvoke(data = this.get('data'), 'shouldSignalChange')) {
-        return data.shouldSignalChange(aFlag);
+    data = this.get('data');
+
+    if (TP.canInvoke(data, 'shouldSignalChange')) {
+        //  Note we can't do 'if (flag)' here because of its Boolean nature.
+        if (arguments.length) {
+            return data.shouldSignalChange(aFlag);
+        } else {
+            return data.shouldSignalChange();
+        }
     }
 
     return false;
