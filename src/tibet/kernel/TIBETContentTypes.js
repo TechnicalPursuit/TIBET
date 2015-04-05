@@ -2615,8 +2615,16 @@ function(targetObj, varargs) {
         //  the xmlDocument.
 
         //  Make sure to get the JavaScript Object data *first* before we
-        //  redefine getData()
-        currentJSONData = targetObj.getData();
+        //  redefine getData(). Note that if this is just a String, then it
+        //  hasn't been packaged yet - which is good - we'll package it using
+        //  'plain JSON'. Note that the regular getData() call will package this
+        //  an 'enhanced' JSON, which is why - if the data isn't a String - we
+        //  get a JSON String representation and then turn it into 'plain JSON'.
+        if (TP.isString(currentJSONData = targetObj.$get('data'))) {
+            currentJSONData = TP.json2js(currentJSONData, false);
+        } else if (!TP.isKindOf(currentJSONData, TP.core.Node)) {
+            currentJSONData = TP.json2js(TP.js2json(currentJSONData), false);
+        }
 
         //  Define a local version of 'getData' to return the result of
         //  converting the entire XML data structure to a "plain" JavaScript
