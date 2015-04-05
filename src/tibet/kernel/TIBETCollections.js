@@ -4448,76 +4448,7 @@ function() {
      * @returns {TP.lang.Hash} The receiver.
      */
 
-    var dict,
-        obj,
-        i,
-        pair,
-        attrs,
-
-        len,
-        keys;
-
-    dict = TP.lang.Hash.construct();
-
-    switch (arguments.length) {
-        case 0:
-            break;
-        case 1:
-            obj = arguments[0];
-            if (TP.notValid(obj)) {
-                return dict;
-            } else if (TP.isArray(obj)) {
-                if (TP.isPair(obj[0])) {
-                    //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
-                    for (i = 0; i < obj.length; i++) {
-                        pair = obj[i];
-                        dict.atPut(
-                            pair[0],
-                            pair[1],
-                            false);
-                    }
-                } else {
-                    //  array syntax ['a', 1, 'b', 2, 'c', 3]
-                    for (i = 0; i < obj.length; i += 2) {
-                        dict.atPut(
-                            obj[i],
-                            obj[i + 1],
-                            false);
-                    }
-                }
-            } else if (TP.isString(obj)) {
-                return TP.lang.Hash.fromString(obj);
-            } else if (TP.isElement(obj)) {
-                attrs = obj.attributes;
-                len = attrs.length;
-
-                for (i = 0; i < len; i++) {
-                    dict.atPut(attrs[i].name, attrs[i].value);
-                }
-            } else if (TP.isKindOf(obj, TP.lang.Hash)) {
-                return obj;
-            } else {
-                //  NB: We're only interested in the local keys here.
-                keys = TP.$getOwnKeys(obj);
-                len = keys.getSize();
-
-                for (i = 0; i < len; i++) {
-                    dict.atPut(keys.at(i), obj[keys.at(i)], false);
-                }
-            }
-            break;
-        default:
-            //  arguments syntax 'a', 1, 'b', 2, 'c', 3
-            for (i = 0; i < arguments.length; i += 2) {
-                dict.atPut(
-                    arguments[i],
-                    arguments[i + 1],
-                    false);
-            }
-            break;
-    }
-
-    return dict;
+    return TP.lang.Hash.construct.apply(TP.lang.Hash, arguments);
 });
 
 //  ------------------------------------------------------------------------
@@ -4559,8 +4490,7 @@ function() {
      * @returns {TP.lang.Hash} The receiver.
      */
 
-    var hash,
-        obj,
+    var obj,
         i,
         pair,
         attrs,
@@ -4573,16 +4503,22 @@ function() {
     //  force a unique ID
     this.$set(TP.ID, TP.genID('TP.lang.Hash'));
 
-    //  allocate internal hash - note that it is a prototype-less object.
-    hash = TP.constructOrphanObject();
-    this.$set('$$hash', hash);
-
+    //  NB: For performance reasons, there are multiple occurrences of setting
+    //  the internal hash to an orphan object here. This is due to the desire to
+    //  minimize checking and object creation.
     switch (arguments.length) {
         case 0:
+            this.$set('$$hash', TP.constructOrphanObject());
             break;
         case 1:
             obj = arguments[0];
-            if (TP.isArray(obj)) {
+            if (TP.notValid(obj)) {
+                this.$set('$$hash', TP.constructOrphanObject());
+            } else if (TP.isArray(obj)) {
+                //  allocate internal hash - note that it is a prototype-less
+                //  object.
+                this.$set('$$hash', TP.constructOrphanObject());
+
                 if (TP.isPair(obj[0])) {
                     //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
                     for (i = 0; i < obj.length; i++) {
@@ -4604,6 +4540,10 @@ function() {
             } else if (TP.isString(obj)) {
                 return TP.lang.Hash.fromString(obj);
             } else if (TP.isElement(obj)) {
+                //  allocate internal hash - note that it is a prototype-less
+                //  object.
+                this.$set('$$hash', TP.constructOrphanObject());
+
                 attrs = obj.attributes;
                 len = attrs.length;
 
@@ -4613,16 +4553,31 @@ function() {
             } else if (TP.isKindOf(obj, TP.lang.Hash)) {
                 return obj;
             } else {
-                //  NB: We're only interested in the local keys here.
-                keys = TP.$getOwnKeys(obj);
-                len = keys.getSize();
+                if (TP.isPlainObject(obj)) {
+                    /* eslint-disable no-proto */
+                    obj.__proto__ = null;
+                    /* eslint-enable no-proto */
+                    this.$set('$$hash', obj);
+                } else {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    this.$set('$$hash', TP.constructOrphanObject());
 
-                for (i = 0; i < len; i++) {
-                    this.atPut(keys.at(i), obj[keys.at(i)], false);
+                    //  NB: We're only interested in the local keys here.
+                    keys = TP.$getOwnKeys(obj);
+                    len = keys.getSize();
+
+                    for (i = 0; i < len; i++) {
+                        this.atPut(keys.at(i), obj[keys.at(i)], false);
+                    }
                 }
             }
             break;
         default:
+            //  allocate internal hash - note that it is a prototype-less
+            //  object.
+            this.$set('$$hash', TP.constructOrphanObject());
+
             //  arguments syntax 'a', 1, 'b', 2, 'c', 3
             for (i = 0; i < arguments.length; i += 2) {
                 this.atPut(

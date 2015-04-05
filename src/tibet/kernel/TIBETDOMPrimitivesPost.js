@@ -7471,6 +7471,44 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeGetChildNodesByType',
+function(aNode, aType, breadthFirst) {
+
+    /**
+     * @method nodeGetChildNodesByType
+     * @summary Returns an Array of all child nodes of the provided node whose
+     *     node type matches the type provided.
+     * @param {Node} aNode The DOM node to operate on.
+     * @param {Number} aType The DOM node type constant to match against.
+     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
+     *     meaning depth first.
+     * @returns {Array} An Array containing the nodes found.
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
+     *     'collection node' is provided to the method.
+     * @exception TP.sig.InvalidParameter Raised when an invalid node type is
+     *     provided to the method.
+     */
+
+    //  no child nodes for anything that isn't an element, document or
+    //  document fragment
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode',
+                            'Node not a collection Node.');
+    }
+
+    if (TP.notValid(aType)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    return TP.nodeSelectChildNodes(
+                aNode,
+                function(childNode) {
+                    return childNode.nodeType === aType;
+                });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeGetChildElementAt',
 function(aNode, anIndex) {
 

@@ -1138,30 +1138,36 @@ function(aString, replaceSpaces) {
                         return TP.XML_LITERALS_TO_ENTITIES.at(match);
                     });
     } else {
-        result = aString.replace(
-            /[<>'"]/g,
-            function(aChar) {
 
-                switch (aChar) {
-                    case '<':
-                        return '&lt;';
+        if (/[&<>'"]/.test(aString)) {
 
-                    case '>':
-                        return '&gt;';
+            result = aString.replace(
+                /[<>'"]/g,
+                function(aChar) {
 
-                    case '\'':
-                        return '&apos;';
+                    switch (aChar) {
+                        case '<':
+                            return '&lt;';
 
-                    case '"':
-                        return '&quot;';
+                        case '>':
+                            return '&gt;';
 
-                    default:
-                    break;
-                }
-            });
+                        case '\'':
+                            return '&apos;';
 
-        //  Replace all '&' that are *not* part of an entity with '&amp;'
-        result = result.replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+                        case '"':
+                            return '&quot;';
+
+                        default:
+                        break;
+                    }
+                });
+
+            //  Replace all '&' that are *not* part of an entity with '&amp;'
+            result = result.replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+        } else {
+            result = aString;
+        }
     }
 
     result = replaceSpaces ? result.replace(/ /g, '&#160;') : result;

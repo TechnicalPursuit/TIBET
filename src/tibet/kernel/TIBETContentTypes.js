@@ -463,7 +463,10 @@ function(aDataObject) {
 
     var oldDataObject;
 
-    if (TP.isValid(oldDataObject = this.get('data'))) {
+    //  NB: We use '$get()' here because we want access to the real underlying
+    //  object - subtypes and local objects might have reprogrammed 'getData()'
+    //  to return other objects or have special handling logic.
+    if (TP.isValid(oldDataObject = this.$get('data'))) {
         this.ignore(oldDataObject, 'Change');
     }
 
@@ -493,11 +496,7 @@ function(aFlag) {
      * @returns {Boolean} The current status.
      */
 
-    if (TP.isBoolean(aFlag)) {
-        this.get('data').shouldSignalChange(aFlag);
-    }
-
-    return this.callNextMethod();
+    return this.get('data').shouldSignalChange(aFlag);
 });
 
 //  ------------------------------------------------------------------------
@@ -562,38 +561,6 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.JSONContent.Inst.defineMethod('init',
-function(data) {
-
-    /**
-     * @method init
-     * @summary Returns a newly constructed Object from inbound JSON content.
-     * @param {Object} data The string to use for data.
-     * @returns {TP.core.JSONContent} A new instance.
-     */
-
-    var jsonData;
-
-    //  If a String was handed in, it's probably JSON - try to convert it.
-    if (TP.isString(data) && TP.notEmpty(data)) {
-
-        //  Note here how we pass false in order to *not* get TIBET-enhanced
-        //  objects. We're interested in holding a bag of 'plain JS objects'.
-        jsonData = TP.json2js(data, false);
-
-        //  TP.json2js will raise for us.
-        if (TP.notValid(jsonData)) {
-            return;
-        }
-    } else {
-        jsonData = data;
-    }
-
-    return this.callNextMethod(jsonData);
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.JSONContent.Inst.defineMethod('asJSONSource',
@@ -682,6 +649,77 @@ function() {
         });
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('getData',
+function() {
+
+    /**
+     * @method getData
+     * @summary Returns the underlying data object.
+     * @returns {Object} The receiver's underlying data object.
+     */
+
+    var jsonData;
+
+    jsonData = this.$get('data');
+
+    //  If a String was handed in, it's probably JSON - try to convert it.
+    if (TP.isString(jsonData) && TP.notEmpty(jsonData)) {
+
+        jsonData = TP.json2js(jsonData);
+
+        //  TP.json2js will raise for us.
+        if (TP.notValid(jsonData)) {
+            return;
+        }
+
+        this.set('data', jsonData);
+    }
+
+    return jsonData;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('shouldSignalChange',
+function(aFlag) {
+
+    /**
+     * @method shouldSignalChange
+     * @summary Defines whether the receiver should actively signal change
+     *     notifications.
+     * @description In general objects do not signal changes when no observers
+     *     exist. This flag is triggered by observe where the signal being
+     *     observed is a form of Change signal to "arm" the object for change
+     *     notification. You can also manipulate it during multi-step
+     *     manipulations to signal only when a series of changes has been
+     *     completed.
+     * @param {Boolean} aFlag true/false signaling status.
+     * @returns {Boolean} The current status.
+     */
+
+    var data;
+
+    //  Sometimes this object holds a TIBET-wrapped piece of XML data (when it
+    //  is being used by a JSONPath). In this case, we want to pass through this
+    //  setting. Otherwise, it's holding a plain JavaScript Object created from
+    //  JSON, so it won't respond to this.
+
+    data = this.get('data');
+
+    if (TP.canInvoke(data, 'shouldSignalChange')) {
+        //  Note we can't do 'if (flag)' here because of its Boolean nature.
+        if (arguments.length) {
+            return data.shouldSignalChange(aFlag);
+        } else {
+            return data.shouldSignalChange();
+        }
+    }
+
+    return false;
 });
 
 //  ========================================================================
@@ -917,6 +955,12 @@ function(aPath) {
         //  of the path.
         TP.regex.ACP_NUMERIC.lastIndex = 0;
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
+    }
+
+    //  If we're handed a '#json(...)' pointer, then we know what kind of
+    //  path it is (or should be, anyway)
+    if (TP.regex.JSON_POINTER.test(path) || TP.regex.JSON_PATH.test(path)) {
+        return TP.core.JSONPath;
     }
 
     //  If we're handed a '#tibet(...)' pointer, then we know what kind of
@@ -2097,6 +2141,954 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 });
 
 //  ========================================================================
+//  TP.core.JSONPath
+//  ========================================================================
+
+/**
+ * @type {TP.core.JSONPath}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.defineSubtype('JSONPath');
+
+//  ------------------------------------------------------------------------
+
+//  avoid binding and apply issues by creating our alias as a wrapper
+TP.definePrimitive('jpc',
+function(aPath, config) {
+
+    /**
+     * @method jpc
+     * @summary Returns a newly initialized JSONPath instance. Note that if
+     * @param {String} aPath The JSONPath as a String.
+     * @param {TP.lang.Hash} config The configuration for this path.
+     * @returns {TP.core.XPathPath} The new instance.
+     */
+
+    return TP.core.JSONPath.construct.apply(TP.core.JSONPath, arguments);
+});
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Type.defineAttribute('$mirroredAttributes');
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    //  These are properties whose values get 'mirrored' over to our internal
+    //  XML path. Note that we only mirror over ones that makes sense for XML
+    //  paths.
+    this.Type.set('$mirroredAttributes',
+                    TP.ac('shouldMakeStructures', 'shouldCollapse'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  Our internal XPath
+TP.core.JSONPath.Inst.defineAttribute('$xmlPath');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.lang.Hash} config The configuration for this path.
+     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     */
+
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.JSON_POINTER.test(aPath)) {
+        path = TP.regex.JSON_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
+    this.callNextMethod(path, config);
+
+    if (TP.isKindOf(config, TP.lang.Hash)) {
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
+    } else {
+        this.set('shouldCollapse', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('asXPath',
+function(templateArgs) {
+
+    /**
+     * @method asXPath
+     * @summary Returns an XPath representation of the receiver. This can be
+     *     used to query the special XML representation of a JavaScript object
+     *     sourced from JSON data and converted to XML. This is only used for
+     *     TIBET's JSONPath support.
+     * @returns {String} An XPath representation of the receiver.
+     */
+
+    var srcPath,
+        path,
+        tokens,
+
+        xmlStr,
+        prevStepIsDescent,
+
+        pathTokens,
+        i,
+
+        token,
+        operation,
+        scope,
+
+        tokenRecord,
+        exprRecord,
+
+        from,
+        to,
+
+        fromExpr,
+        toExpr,
+
+        indexes,
+        j,
+        item,
+
+        content;
+
+    srcPath = this.get('srcPath');
+    path = srcPath;
+
+    if (TP.regex.HAS_ACP.test(path)) {
+        path = path.transform(templateArgs);
+    }
+
+    //  Tokenize the JSONPath string.
+    try {
+        tokens = TP.$JSONPathParser.parse(path);
+    } catch (e) {
+        return this.raise(
+                'TP.sig.JSONPathTokenizationFailed',
+                TP.ec(e,
+                    TP.sc('Tokenization failed at: ', e.line || 'unknown',
+                            ' with source: ' + srcPath)));
+    }
+
+    xmlStr = '';
+
+    prevStepIsDescent = false;
+
+    //  The individual path tokens start at this place under the root
+    pathTokens = tokens[0].expression.value;
+
+    for (i = 0; i < pathTokens.getSize(); i++) {
+
+        token = pathTokens.at(i);
+
+        //  JSONPath root operator standalone
+        if (token === '$') {
+
+            xmlStr += '//*';
+            continue;
+        }
+
+        operation = token.operation;
+        scope = token.scope;
+        tokenRecord = token.value;
+
+        if (tokenRecord) {
+            exprRecord = tokenRecord.expression;
+        } else {
+            exprRecord = {type: 'none', value: 'none'};
+        }
+
+        switch (operation) {
+
+            case 'member':
+
+                prevStepIsDescent = false;
+
+                switch (scope) {
+
+                    //  JSONPath recursive descent
+                    //  '..'    ->  '//'
+                    case 'descendant':
+                        xmlStr += '//';
+                        prevStepIsDescent = true;
+                        break;
+                    //  JSONPath child operator
+                    //  '.'     ->  '/'
+                    case 'child':
+                        xmlStr += '/';
+                        break;
+                    //  JSONPath parent operator (enhanced JSONPath)
+                    //  '^'     ->  '/..'
+                    case 'parent':
+                        xmlStr += '/..';
+                        continue;
+                }
+
+                switch (exprRecord.type) {
+
+                    case 'identifier':
+                        xmlStr += exprRecord.value;
+                        break;
+                    case 'wildcard':
+                        xmlStr += '*';
+                        break;
+                }
+
+                break;
+
+            case 'subscript':
+
+                //  Note how with all of these expressions we add 1 to the
+                //  various computations to account for XPath's 1-based
+                //  indexing.
+
+                switch (exprRecord.type) {
+
+                    //  JSONPath subscript operator (numeric values only)
+                    //  '[<number>]' ->  '[position() = ... + 1]'
+                    case 'index':
+
+                        //  If the previous step was a 'recursive descent'
+                        //  operator (i.e. '..' converted to '//'), then we
+                        //  filter out same-named nodes that really represent
+                        //  the Array of this item. This is so that recursive
+                        //  descent operators don't also pick up the Element
+                        //  representing the Array itself. Otherwise, we add an
+                        //  'all element's step to make the query work properly.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        xmlStr += '[position() = ' +
+                               (exprRecord.value.asNumber() + 1) +
+                               ']';
+
+                        break;
+
+                    //  JSONPath subscript operator with wildcard
+                    case 'wildcard':
+
+                        //  Find the last slash and double it
+                        xmlStr = xmlStr.slice(0, xmlStr.lastIndexOf('/')) +
+                                    '/' +
+                                    xmlStr.slice(xmlStr.lastIndexOf('/'));
+
+                        break;
+
+                    //  JSONPath slice expression
+                    //  '[<number>:<number>]' ->  '[...]'
+                    case 'slice':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        if (TP.isValid(exprRecord.value.start)) {
+                            from = exprRecord.value.start.asNumber();
+                            if (!TP.isNaN(from)) {
+                                if (from.isNegative()) {
+                                    fromExpr =
+                                        'position() >= last() + ';
+                                } else {
+                                    fromExpr = 'position() >= ';
+                                }
+
+                                fromExpr += from + 1;
+                            }
+                        }
+
+                        if (TP.isValid(exprRecord.value.end)) {
+                            to = exprRecord.value.end.asNumber();
+
+                            if (!TP.isNaN(to)) {
+                                if (to.isNegative()) {
+                                    toExpr =
+                                        'position() < last() - ';
+                                    toExpr += to.abs() - 1;
+                                } else {
+                                    toExpr = 'position() < ';
+                                    toExpr += to + 1;
+                                }
+                            }
+                        }
+
+                        xmlStr += '[';
+
+                        if (TP.notEmpty(fromExpr)) {
+                            xmlStr += fromExpr;
+                        }
+
+                        if (TP.notEmpty(fromExpr) &&
+                            TP.notEmpty(toExpr)) {
+                            xmlStr += ' and ';
+                        }
+
+                        if (TP.notEmpty(toExpr)) {
+                            xmlStr += toExpr;
+                        }
+
+                        xmlStr += ']';
+
+                        break;
+
+                    //  JSONPath union operator
+                    //  '[... , ...]' ->  '[... or ...]'
+                    case 'union':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        indexes = exprRecord.value;
+
+                        xmlStr += '[';
+
+                        for (j = 0; j < indexes.getSize(); j++) {
+
+                            item = indexes.at(j).expression.value;
+                            if (TP.isNumber(item.asNumber())) {
+                                xmlStr += 'position() = ' +
+                                        (item.asNumber() + 1);
+                            } else {
+                                xmlStr += 'local-name() = "' + item + '"';
+                            }
+
+                            xmlStr += ' or ';
+                        }
+
+                        //  slice off the last ' or '
+                        xmlStr = xmlStr.slice(0, -4);
+
+                        xmlStr += ']';
+
+                        break;
+
+                    //  JSONPath script expression
+                    //  '[(...)]'  ->  '[...]'
+                    case 'script_expression':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        content = exprRecord.value;
+
+                        xmlStr += '[';
+
+                        if (/@\.length/.test(content)) {
+                            xmlStr +=
+                                'position() = ' +
+                                content.replace(/@\.length/, 'last() + 1');
+                        } else {
+                            //  JSONPath current object
+                            //  '@'     ->  '.'
+                            xmlStr += content.replace(/@\./g, './');
+                        }
+
+                        /* eslint-disable no-div-regex */
+                        xmlStr = xmlStr.replace(/==/, '=');
+                        /* eslint-enable no-div-regex */
+
+                        xmlStr = xmlStr.replace(/&&/, 'and');
+                        xmlStr = xmlStr.replace(/\|\|/, 'or');
+
+                        xmlStr += ']';
+
+                        break;
+
+                    //  JSONPath filter expression
+                    //  '[?(...)]'  ->  '[...]'
+                    case 'filter_expression':
+
+                        //  See above for what this is used for.
+                        xmlStr += prevStepIsDescent ?
+                                    '[not(@type="array")]' :
+                                    '/*';
+
+                        content = exprRecord.value;
+
+                        xmlStr += '[';
+
+                        //  JSONPath current object
+                        //  '@'     ->  '.'
+                        xmlStr += content.replace(/@\./g, './');
+
+                        /* eslint-disable no-div-regex */
+                        xmlStr = xmlStr.replace(/==/, '=');
+                        /* eslint-enable no-div-regex */
+
+                        xmlStr = xmlStr.replace(/&&/, 'and');
+                        xmlStr = xmlStr.replace(/\|\|/, 'or');
+
+                        xmlStr += ']';
+
+                        break;
+                }
+        }
+    }
+
+    return xmlStr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('executeGet',
+function(targetObj, varargs) {
+
+    /**
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
+     *     i.e. with the intent of retrieving data from the supplied target
+     *     object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     get data.
+     * @param {Array} varargs The arguments to execute the get with. The
+     *     first argument should be the object to execute the receiver against
+     *     to retrieve data. Any remaining arguments will be used as values for
+     *     a templated substitution in the path itself.
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath,TP.sig.InvalidNode
+     * @returns {Object} The result of executing a 'get' against the target
+     *     object using the receiver.
+     */
+
+    var tpXMLDoc,
+
+        currentJSONData,
+
+        xmlPath,
+
+        retVal,
+        retValKeys,
+
+        srcPath,
+        args;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  This kind of path will only work against TP.core.JSONContent objects
+    if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    //  See if the JSONContent object already has corresponding XML content. If
+    //  not, create it.
+    tpXMLDoc = targetObj.$get('data');
+    if (!TP.isKindOf(tpXMLDoc, TP.core.XMLDocumentNode)) {
+
+        //  Some sleight-of-hand to get our target content object to hold XML
+        //  rather than JSON, but pretend to outside observers like it's holding
+        //  JSON.
+
+        //  To do this, we locally rewrite its getData()/setData() to read/write
+        //  the xmlDocument.
+
+        //  Make sure to get the JavaScript Object data *first* before we
+        //  redefine getData(). Note that if this is just a String, then it
+        //  hasn't been packaged yet - which is good - we'll package it using
+        //  'plain JSON'. Note that the regular getData() call will package this
+        //  an 'enhanced' JSON, which is why - if the data isn't a String - we
+        //  get a JSON String representation and then turn it into 'plain JSON'.
+        if (TP.isString(currentJSONData = targetObj.$get('data'))) {
+            currentJSONData = TP.json2js(currentJSONData, false);
+        } else if (!TP.isKindOf(currentJSONData, TP.core.Node)) {
+            currentJSONData = TP.json2js(TP.js2json(currentJSONData), false);
+        }
+
+        //  Define a local version of 'getData' to return the result of
+        //  converting the entire XML data structure to a "plain" JavaScript
+        //  object. Note that this is very rarely done - normally a 'slice' of
+        //  the data will be retrieved by executing the path and just that slice
+        //  will be converted.
+        targetObj.defineMethod(
+            'getData',
+            function() {
+                var tpValueDoc,
+                    result;
+
+                //  Retrieve the XML representation that is sitting in the
+                //  actual 'data' slot (using $get() to avoid getting
+                //  recursively called here).
+                if (TP.isValid(tpValueDoc = this.$get('data'))) {
+
+                    if (TP.isValid(
+                        result = TP.$xml2jsonObj(TP.unwrap(tpValueDoc)))) {
+
+                        //  NB: In our particular encoding of JS<->XML, we use
+                        //  the 'rootObj' slot as a top-level value. See below.
+                        return result.rootObj;
+                    }
+                }
+
+                return null;
+            });
+
+        //  Define a local version of 'setData' to set the supplied JavaScript
+        //  Object data as an XML representation under the covers.
+        targetObj.defineMethod(
+            'setData',
+            function(aDataObject) {
+                var rootObj,
+                    tpValueDoc;
+
+                //  We always place this behind a 'rootObj' slot - if the JSON
+                //  describes a top-level Hash with multiple properties, then we
+                //  need to have this anyway so that the XML can have a single
+                //  root element. The TP.$jsonObj2xml() call will do this for us
+                //  automatically, but we want to have a well-known handle.
+                rootObj = {rootObj: aDataObject};
+                tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
+
+                //  Call 'up' to our super method to set the real underlying
+                //  'data' slot to our XML data.
+                this.callNextMethod(tpValueDoc);
+
+                return this;
+            });
+
+        //  Now that we've redefined setData(), push the current data back
+        //  through it, causing the XML representation to be created.
+        targetObj.set('data', currentJSONData);
+
+        //  Now, retrieve the XML representation that is sitting in the actual
+        //  'data' slot (using $get() to bypass the redefined getData() call
+        //  above).
+        tpXMLDoc = targetObj.$get('data');
+    }
+
+    //  Make sure that we're holding wrapped XML node
+    if (!TP.isValid(tpXMLDoc)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If we don't have a valid XPath representation of ourself, then try to
+    //  build one.
+    if (TP.notValid(xmlPath = this.get('$xmlPath'))) {
+
+        //  Grab ourself as an XPath - if we're a templated path, we get 'fully
+        //  realized' here.
+        srcPath = this.get('srcPath');
+        if (TP.regex.HAS_ACP.test(srcPath)) {
+
+            //  Grab the arguments and slice the first one off (we're not going
+            //  to use it)
+            args = TP.args(arguments, 1);
+
+            //  Build an XPath version of ourself with the template arguments.
+            //  This won't be cached, since templated paths aren't.
+            xmlPath = this.$setupXMLPath(args);
+        } else {
+            //  Build an XPath version of ourself. Since it's not templated,
+            //  this will be cached and will only happen once.
+            xmlPath = this.$setupXMLPath();
+        }
+    }
+
+    //  Execute the actual get through the XML document
+    retVal = xmlPath.executeGet(tpXMLDoc);
+
+    //  If we got a valid value back, then convert it using our internal XML to
+    //  JavaScript object (JSON friendly) conversion routine.
+    if (TP.isValid(retVal)) {
+
+        //  If it's an Array, then convert each value.
+        if (TP.isArray(retVal)) {
+            retVal = retVal.convert(
+                            function(item) {
+                                var result,
+                                    resultKeys;
+
+                                result = TP.$xml2jsonObj(item);
+                                resultKeys = Object.keys(result);
+
+                                //  If the converted data structure only has 1
+                                //  key, then return the object at that key.
+                                if (resultKeys.length === 1) {
+                                    return result[resultKeys[0]];
+                                }
+
+                                return result;
+                            });
+        } else if (TP.isNode(retVal)) {
+
+            retVal = TP.$xml2jsonObj(retVal);
+            retValKeys = Object.keys(retVal);
+
+            //  If the converted data structure only has 1 key, then return the
+            //  object at that key.
+            if (retValKeys.length === 1) {
+                retVal = retVal[retValKeys[0]];
+            }
+        }
+
+        //  Make sure to process the final value using converters, etc.
+        //  configured for this object.
+        return this.processFinalValue(retVal, targetObj);
+    }
+
+    return null;
+});
+
+//  -----------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('executeSet',
+function(targetObj, attributeValue, shouldSignal, varargs) {
+
+    /**
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
+     *     setting the supplied data into the supplied target object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     set data.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
+     * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
+     *     targetObj.shouldSignalChange().
+     * @param {Array} varargs Any remaining arguments will be used as values
+     *     for a templated substitution in the path itself.
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath,TP.sig.InvalidNode
+     * @returns {TP.core.JSONPath} The receiver.
+     */
+
+    var srcPath,
+
+        args,
+
+        oldVal,
+
+        tpXMLDoc,
+        xmlPath;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  This kind of path will only work against TP.core.JSONContent objects
+    if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    //  This should create the XML representation and paths in ourself
+
+    srcPath = this.get('srcPath');
+    if (TP.regex.HAS_ACP.test(srcPath)) {
+        //  Grab the arguments and slice the first three off (we're not
+        //  going to use them)
+        args = TP.args(arguments, 3);
+
+        args.unshift(targetObj);
+        oldVal = this.executeGet.apply(this, args);
+    } else {
+        oldVal = this.executeGet(targetObj);
+    }
+
+    //  If the old value is equal to the value that we're setting, then there
+    //  is nothing to do here and we exit. This is important to avoid endless
+    //  recursion when doing a 'two-ended bind' to data referenced by this
+    //  path.
+    //  Note that we handle empty Arrays specially here since, if we're not
+    //  reducing Arrays, an empty Array handed in as the value will compare as
+    //  'true' here and this routine will exit.
+    if (TP.equal(oldVal, attributeValue)) {
+        if (TP.isArray(attributeValue) && TP.isEmpty(attributeValue)) {
+            void 0;
+        } else {
+            return oldVal;
+        }
+    }
+
+    //  Make sure that we're holding wrapped XML node
+    if (!TP.isValid(tpXMLDoc = targetObj.$get('data'))) {
+        //  Raise an exception - this should've been created in the executeGet()
+        //  method.
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    if (TP.notValid(xmlPath = this.get('$xmlPath'))) {
+
+        //  Grab ourself as an XPath - if we're a templated path, we get 'fully
+        //  realized' here.
+        if (TP.regex.HAS_ACP.test(srcPath)) {
+
+            //  We don't want the targetObject that we unshifted onto the front
+            //  of this from above.
+            args = args.slice(1);
+
+            //  Build an XPath version of ourself with the template arguments.
+            //  This won't be cached, since templated paths aren't.
+            xmlPath = this.$setupXMLPath(args);
+        } else {
+            //  Build an XPath version of ourself. Since it's not templated,
+            //  this will be cached and will only happen once.
+            xmlPath = this.$setupXMLPath();
+        }
+    }
+
+    xmlPath.executeSet(tpXMLDoc, attributeValue, shouldSignal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('set',
+function(attributeName, attributeValue, shouldSignal) {
+
+    /**
+     * @method set
+     * @summary Sets the value of the named attribute to the value provided. If
+     *     no value is provided the value null is used.
+     * @description This is overridden from its supertype to make sure to copy
+     *     over attributes that also need to be populated onto the receiver's
+     *     internal XPath.
+     * @param {String|TP.core.AccessPath} attributeName The name of the
+     *     attribute to set.
+     * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var xmlPath;
+
+    //  For certain properties we mirror their settings onto our internal
+    //  xmlPath.
+    if (this.getType().get('$mirroredAttributes').contains(attributeName)) {
+        if (TP.isValid(xmlPath = this.get('$xmlPath'))) {
+            xmlPath.set(attributeName, attributeValue, shouldSignal);
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('$setupXMLPath',
+function(templateArgs) {
+
+    /**
+     * @method $setupXMLPath
+     * @summary
+     * @param {Array} templateArgs An optional Array of template arguments. If
+     *     the receiver is a templated path, these values will be used to fill
+     *     in the template values and the computed XPath will *not* be cached.
+     * @returns {TP.core.XPathPath} The new instance of the computed XPath pate
+     *     object.
+     */
+
+    var xPath,
+
+        xmlPath,
+
+        mirroredAttributes;
+
+    xPath = this.asXPath(templateArgs);
+
+    //  Adjust as necessary for the 'rootObj' top-level element that will
+    //  get generated as the root-level element.
+    if (xPath.startsWith('/') && !xPath.startsWith('//')) {
+        xPath = '/rootObj' + xPath;
+    }
+
+    xmlPath = TP.xpc(xPath);
+
+    //  Configure this path with the same sorts of flags as we have. We have
+    //  also overridden 'set()' on this type to do this whenever 'set()' is
+    //  called.
+    mirroredAttributes = this.getType().get('$mirroredAttributes');
+    mirroredAttributes.perform(
+        function(aProperty) {
+            xmlPath.set(aProperty, this.get(aProperty));
+        }.bind(this));
+
+    //  Define a local version of '$$getContentForSetOperation' to massage
+    //  the XML that will be being manipulated by the XPath.
+    xmlPath.defineMethod('$$getContentForSetOperation',
+        function(aNode, flagChanges) {
+
+            var result,
+                doc,
+
+                newElems,
+
+                pathParts;
+
+            //  Allow the normal XPath path machinery to create the nodes
+            //  that we need.
+            result = this.callNextMethod();
+
+            //  If we got real XML nodes built and returned to us, massage
+            //  them into what we need for our special XML format.
+            if (TP.notEmpty(result)) {
+
+                doc = TP.doc(result.first());
+
+                //  Find any new elements that were created
+                newElems = TP.byCSS('*[tibet|crud*="create"]', doc);
+
+                //  Split the path along '/' and shift the initial 'root'
+                //  off of the path.
+                pathParts = this.asString().split('/');
+                pathParts.shift();
+
+                newElems.perform(
+                    function(anElem) {
+                        var pathRef,
+                            elemsWithSameName;
+
+                        //  If the new element doesn't have a 'type'
+                        //  attribute, then search *under* it (*child-level
+                        //  only*) for any elements with the same name
+                        if (!anElem.hasAttribute('type')) {
+
+                            elemsWithSameName = TP.byCSS(
+                                '> ' + anElem.nodeName,
+                                anElem.parentNode);
+
+                            //  If we found *child* elements with the same
+                            //  name
+                            if (TP.notEmpty(elemsWithSameName)) {
+
+                                //  Get the part of the path that names the
+                                //  same level that we're at by using the
+                                //  element's position relative to it's
+                                //  ancestor, which will (at least in a
+                                //  simple path of names) be the name we're
+                                //  interested in
+                                pathRef = pathParts.at(
+                                    TP.nodeGetAncestorPositions(
+                                                    anElem).getSize());
+
+                                //  if that piece of the path has a
+                                //  'position' function call in a predicate,
+                                //  then assume that the user really wants
+                                //  this to be an Array
+                                if (TP.notEmpty(pathRef) &&
+                                    /position/.test(pathRef)) {
+                                    anElem.parentNode.setAttribute(
+                                                    'type', 'array');
+                                } else {
+
+                                    //  Otherwise, set it to be an Object
+                                    //  structure.
+                                    anElem.parentNode.setAttribute(
+                                                    'type', 'object');
+                                }
+                            }
+
+                            //  If the element is empty, then mark it as
+                            //  'undefined'.
+                            if (TP.isEmpty(anElem)) {
+                                anElem.setAttribute('type', 'undefined');
+                            }
+                        }
+                    });
+            }
+
+            return result;
+        });
+
+    //  Define a local version of 'finalizeSetValue' to convert JavaScript
+    //  Object values into the proper XML structure.
+    xmlPath.defineMethod(
+            'finalizeSetValue',
+            function(content, value) {
+
+                var val,
+                    nodeName,
+
+                    theType;
+
+                val = value;
+
+                //  If it's an Array, convert to XML and then return the
+                //  child node list as a fragment
+                if (TP.isArray(val)) {
+
+                    nodeName = content.nodeName;
+                    val = TP.$jsonObj2xml(val, nodeName);
+                    val = TP.nodeListAsFragment(
+                                val.documentElement.childNodes);
+
+                    //  Tag the content as being an 'array'
+                    content.setAttribute('type', 'array');
+
+                } else if (TP.isPlainObject(val)) {
+
+                    //  Otherwise, if its a "plain" Object, return the root
+                    //  node that was generated
+                    nodeName = content.nodeName;
+                    val = TP.$jsonObj2xml(val, nodeName);
+
+                    //  Tag the content as being an 'object'
+                    content.setAttribute('type', 'object');
+                } else {
+                    theType = typeof value;
+
+                    //  null will report itself as undefined when using
+                    //  'typeof' - we want to be more specific.
+                    if (TP.isNull(value)) {
+                        theType = 'null';
+                    }
+
+                    switch (theType) {
+                        case 'undefined':
+                        case 'null':
+                        case 'boolean':
+                        case 'number':
+                        case 'string':
+                        case 'object':
+                            //  Tag the content with the computed data type.
+                            content.setAttribute('type', theType);
+                            break;
+                    }
+                }
+
+                return val;
+            });
+
+    //  Cache our internal XPath representation, but only if we weren't a
+    //  templated path.
+    if (!TP.regex.HAS_ACP.test(this.get('srcPath'))) {
+        this.set('$xmlPath', xmlPath);
+    }
+
+    return xmlPath;
+});
+
+//  ========================================================================
 //  TP.core.SimpleTIBETPath
 //  ========================================================================
 
@@ -2327,7 +3319,7 @@ function(targetObj, varargs) {
 
     //  NB: We use the original source path to register with the address change
     //  notification mechanism
-    this.getType().startObservedAddress(srcPath);
+    this.getType().startObservedAddress(path);
 
     //  If the path is something like '[0]', then slice off the brackets to
     //  just produce '0'.
@@ -4181,7 +5173,7 @@ function(targetObj, varargs) {
     //  'false' on autoCollapse (we collapse later if we're set for it, but for
     //  now we want an Array).
     nodes = TP.nodeEvaluatePath(
-                natTargetObj, srcPath, this.getPathType(), false);
+                natTargetObj, path, this.getPathType(), false);
 
     //  If the return value is not an Array, that means a scalar value was
     //  returned (because we forced false on autoCollapse).
@@ -4190,8 +5182,8 @@ function(targetObj, varargs) {
         //  Capture the scalar as the final value - we want to return this.
         finalValue = nodes;
 
-        //  Compute a 'node path' by starting with the source path.
-        nodePath = srcPath;
+        //  Compute a 'node path' by starting with the path.
+        nodePath = path;
 
         //  If there's a 'wrapping scalar conversion' (i.e. 'string(...)'), then
         //  we need to strip it off of the path so that we can get to nodes, not
@@ -4252,7 +5244,7 @@ function(targetObj, varargs) {
     addresses.perform(
             function(anAddress) {
                 TP.core.AccessPath.registerObservedAddress(
-                    anAddress, sourceObjectID, srcPath);
+                    anAddress, sourceObjectID, path);
             });
 
     //  If there is a valid final value *or* we were trying to do a scalar
@@ -4260,7 +5252,7 @@ function(targetObj, varargs) {
     //  we were trying to get scalar and the node was empty or some such) then
     //  just return the final value here.
     if (TP.isValid(finalValue) ||
-        TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(srcPath)) {
+        TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(path)) {
         return finalValue;
     }
 
@@ -4361,8 +5353,16 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  is nothing to do here and we exit. This is important to avoid endless
     //  recursion when doing a 'two-ended bind' to data referenced by this path
     //  and to avoid a lot of unnecessary signaling.
+
+    //  Note that we handle empty Arrays specially here since, if we're not
+    //  reducing Arrays, an empty Array handed in as the value will compare as
+    //  'true' here and this routine will exit.
     if (this.checkValueEquality(oldVal, newVal)) {
-        return oldVal;
+        if (TP.isArray(newVal) && TP.isEmpty(newVal)) {
+            void 0;
+        } else {
+            return oldVal;
+        }
     }
 
     natTargetObj = TP.unwrap(targetObj);
@@ -4487,8 +5487,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         if (TP.isNode(value = attrValue)) {
             value = TP.nodeCloneNode(attrValue, true);
         } else {
-            value = TP.str(attrValue);
+            value = attrValue;
         }
+
+        //  Finalize the set value.
+        value = this.finalizeSetValue(content, value);
 
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
@@ -4567,8 +5570,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             if (TP.isNode(value = attrValue)) {
                 value = TP.nodeCloneNode(attrValue, true);
             } else {
-                value = TP.str(attrValue);
+                value = attrValue;
             }
+
+            value = this.finalizeSetValue(contentnode, value);
 
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
@@ -4741,6 +5746,29 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     return this;
 });
 
+//  -----------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('finalizeSetValue',
+function(content, value) {
+
+    /**
+     * @method finalizeSetValue
+     * @summary 'Finalizes' the value used when calling executeSet(). This may
+     *     adjust the value to allow for more intelligent placement in the
+     *     storage data structure.
+     * @param {content} Node The content node that the value will be placed
+     *     into.
+     * @param {value} Object The value to finalize.
+     * @returns {Object} The finalized value.
+     */
+
+    if (TP.isNode(value)) {
+        return value;
+    }
+
+    return TP.str(value);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.XMLPath.Inst.defineMethod('$$getContentForSetOperation',
@@ -4803,17 +5831,20 @@ function(aNode, flagChanges) {
      * @returns {Array} The array of Nodes that got built.
      */
 
-    var pathStr,
+    var path,
         attrName,
 
         retVal;
 
+    if (TP.notValid(path = this.get('$transformedPath'))) {
+        path = this.get('srcPath');
+    }
+
     //  We can create an Attribute, if this is an attribute-only path (and
     //  shouldMakeStructures is true)
-    if (TP.isElement(aNode) &&
-        TP.regex.ATTRIBUTE.test(pathStr = this.asString())) {
+    if (TP.isElement(aNode) && TP.regex.ATTRIBUTE.test(path)) {
 
-        attrName = pathStr.slice(1);
+        attrName = path.slice(1);
 
         if (TP.elementHasAttribute(aNode, attrName, true)) {
             return TP.elementGetAttributeNode(aNode, attrName);
@@ -5688,19 +6719,19 @@ function(aNode, resultType, logErrors, flagChanges) {
      */
 
     var flag,
-        srcPath,
+        path,
         context,
         result;
 
     flag = TP.ifEmpty(flagChanges, false);
 
-    if (TP.notValid(srcPath = this.get('$transformedPath'))) {
-        srcPath = this.get('srcPath');
+    if (TP.notValid(path = this.get('$transformedPath'))) {
+        path = this.get('srcPath');
     }
 
     //  One thing to note is that if you run an XPath against an HTML document
     //  you have to use the external XPath parser _EVEN_ if there are no
-    //  non-native constructs in the srcPath. Which means, in essence, that
+    //  non-native constructs in the path. Which means, in essence, that
     //  we're only a native path at execution time if we're native in terms of
     //  syntax, AND being evaluated against a valid XML document... oh and we
     //  can't be requesting to flag changes :)
@@ -5710,18 +6741,18 @@ function(aNode, resultType, logErrors, flagChanges) {
         //  Note here how we use the primitive call. If we used
         //  TP.core.Node's evaluateXPath(), we'd likely recurse because we
         //  are most likely being called from there.
-        return TP.nodeEvaluateXPath(aNode, srcPath, resultType, logErrors);
+        return TP.nodeEvaluateXPath(aNode, path, resultType, logErrors);
     }
 
     //  If we're here its because we're either not a native path, or we're
     //  being run against an HTML document, or we're being asked to flag
     //  changes.
-    //  Either way we need to process the srcPath using the non-native XPath
+    //  Either way we need to process the path using the non-native XPath
     //  processor...
 
     //  create a non-native context if necessary
     if (TP.notValid(context = this.$get('$tpContext'))) {
-        this.$createNonNativeParserContext(srcPath);
+        this.$createNonNativeParserContext(path);
         context = this.$get('$tpContext');
     }
 
@@ -6395,6 +7426,2151 @@ function(childElementName, parentElementName) {
 
     return childElems.contains(childElementName);
 });
+
+//  ========================================================================
+//  JSONPath Parser
+//  ========================================================================
+
+//  Generate this by executing the following command (assuming NodeJS is
+//  available):
+
+//  pegjs --export-var 'TP.$JSONPathParser' <tibet_dir>/src/tibet/grammars/jsonpath_parser.pegjs
+
+/* eslint-disable */
+/* jshint ignore:start */
+TP.$JSONPathParser = (function() {
+  /*
+   * Generated by PEG.js 0.8.0.
+   *
+   * http://pegjs.majda.cz/
+   */
+
+  function peg$subclass(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+  }
+
+  function SyntaxError(message, expected, found, offset, line, column) {
+    this.message  = message;
+    this.expected = expected;
+    this.found    = found;
+    this.offset   = offset;
+    this.line     = line;
+    this.column   = column;
+
+    this.name     = "SyntaxError";
+  }
+
+  peg$subclass(SyntaxError, Error);
+
+  function parse(input) {
+    var options = arguments.length > 1 ? arguments[1] : {},
+
+        peg$FAILED = {},
+
+        peg$startRuleFunctions = { start: peg$parsestart },
+        peg$startRuleFunction  = peg$parsestart,
+
+        peg$c0 = [],
+        peg$c1 = peg$FAILED,
+        peg$c2 = function(body) {return {expression: {type: "root", value: body}}},
+        peg$c3 = function(body) {return {operation: "member", scope: "child", expression:{ type: "identifier", value: body }}},
+        peg$c4 = function() {return {expression: {type: "root", value: "$"}}},
+        peg$c5 = function(body) {body.operation = "member"; return body},
+        peg$c6 = function(body) {body.operation = "subscript"; return body},
+        peg$c7 = function(body) {return {scope: "descendant", value: body}},
+        peg$c8 = function(body) {return {scope: "child", value: body}},
+        peg$c9 = function(body) {return {scope: "parent", value: body}},
+        peg$c10 = null,
+        peg$c11 = void 0,
+        peg$c12 = function(body) {return body},
+        peg$c13 = function(body) {return {scope: "child", operation: "member", value: body}},
+        peg$c14 = function(body) {return {expression: {type: "wildcard", value: body}}},
+        peg$c15 = function(body) {return {expression: {type: "identifier", value: body}}},
+        peg$c16 = function(body) {return {expression: {type: "script_expression", value: body}}},
+        peg$c17 = function(body) {return {expression: {type: "numeric_literal", value: parseInt(body)}}},
+        peg$c18 = "[",
+        peg$c19 = { type: "literal", value: "[", description: "\"[\"" },
+        peg$c20 = "]",
+        peg$c21 = { type: "literal", value: "]", description: "\"]\"" },
+        peg$c22 = ",",
+        peg$c23 = { type: "literal", value: ",", description: "\",\"" },
+        peg$c24 = function(content) {return content},
+        peg$c25 = function(first, rest) {return {expression: {type: "union", value: [first].concat(rest)}}},
+        peg$c26 = function(body) {return {expression: {type:"wildcard", value: body}}},
+        peg$c27 = function(body) {return {expression: {type:"slice", value: body}}},
+        peg$c28 = function(body) {return {expression: {type:"index", value: body}}},
+        peg$c29 = function(body) {return {expression: {type:"identifier", value: body}}},
+        peg$c30 = function(body) {return {expression: {type:"script_expression", value: body}}},
+        peg$c31 = function(body) {return {expression: {type:"filter_expression", value: body}}},
+        peg$c32 = function(body) {return {expression: {type:"string_literal", value: body}}},
+        peg$c33 = /^[a-zA-Z0-9_{}]/,
+        peg$c34 = { type: "class", value: "[a-zA-Z0-9_{}]", description: "[a-zA-Z0-9_{}]" },
+        peg$c35 = function(body) {return body.join("")},
+        peg$c36 = ":",
+        peg$c37 = { type: "literal", value: ":", description: "\":\"" },
+        peg$c38 = function(start, end) {return {start:start, end:end}},
+        peg$c39 = function() {return parseInt(text());},
+        peg$c40 = function(chars) {return chars.join("")},
+        peg$c41 = "?",
+        peg$c42 = { type: "literal", value: "?", description: "\"?\"" },
+        peg$c43 = function(inner) {return inner},
+        peg$c44 = "(",
+        peg$c45 = { type: "literal", value: "(", description: "\"(\"" },
+        peg$c46 = ")",
+        peg$c47 = { type: "literal", value: ")", description: "\")\"" },
+        peg$c48 = { type: "any", description: "any character" },
+        peg$c49 = "\\(",
+        peg$c50 = { type: "literal", value: "\\(", description: "\"\\\\(\"" },
+        peg$c51 = function(body) {return "(" + body.join("") + ")"},
+        peg$c52 = function(body) {return "("+ body.join("") +")"},
+        peg$c53 = "$",
+        peg$c54 = { type: "literal", value: "$", description: "\"$\"" },
+        peg$c55 = "..",
+        peg$c56 = { type: "literal", value: "..", description: "\"..\"" },
+        peg$c57 = ".",
+        peg$c58 = { type: "literal", value: ".", description: "\".\"" },
+        peg$c59 = "*",
+        peg$c60 = { type: "literal", value: "*", description: "\"*\"" },
+        peg$c61 = "^",
+        peg$c62 = { type: "literal", value: "^", description: "\"^\"" },
+        peg$c63 = { type: "other", description: "number" },
+        peg$c64 = function() { return parseFloat(text()); },
+        peg$c65 = /^[1-9]/,
+        peg$c66 = { type: "class", value: "[1-9]", description: "[1-9]" },
+        peg$c67 = /^[eE]/,
+        peg$c68 = { type: "class", value: "[eE]", description: "[eE]" },
+        peg$c69 = "-",
+        peg$c70 = { type: "literal", value: "-", description: "\"-\"" },
+        peg$c71 = "+",
+        peg$c72 = { type: "literal", value: "+", description: "\"+\"" },
+        peg$c73 = "0",
+        peg$c74 = { type: "literal", value: "0", description: "\"0\"" },
+        peg$c75 = { type: "other", description: "string" },
+        peg$c76 = function(chars) { return chars.join(""); },
+        peg$c77 = "\"",
+        peg$c78 = { type: "literal", value: "\"", description: "\"\\\"\"" },
+        peg$c79 = "\\",
+        peg$c80 = { type: "literal", value: "\\", description: "\"\\\\\"" },
+        peg$c81 = "/",
+        peg$c82 = { type: "literal", value: "/", description: "\"/\"" },
+        peg$c83 = "b",
+        peg$c84 = { type: "literal", value: "b", description: "\"b\"" },
+        peg$c85 = function() { return "\b"; },
+        peg$c86 = "f",
+        peg$c87 = { type: "literal", value: "f", description: "\"f\"" },
+        peg$c88 = function() { return "\f"; },
+        peg$c89 = "n",
+        peg$c90 = { type: "literal", value: "n", description: "\"n\"" },
+        peg$c91 = function() { return "\n"; },
+        peg$c92 = "r",
+        peg$c93 = { type: "literal", value: "r", description: "\"r\"" },
+        peg$c94 = function() { return "\r"; },
+        peg$c95 = "t",
+        peg$c96 = { type: "literal", value: "t", description: "\"t\"" },
+        peg$c97 = function() { return "\t"; },
+        peg$c98 = "u",
+        peg$c99 = { type: "literal", value: "u", description: "\"u\"" },
+        peg$c100 = function(digits) {
+                  return String.fromCharCode(parseInt(digits, 16));
+                },
+        peg$c101 = function(sequence) { return sequence; },
+        peg$c102 = /^[ -!#-[\]-\u10FFFF]/,
+        peg$c103 = { type: "class", value: "[ -!#-[\\]-\\u10FFFF]", description: "[ -!#-[\\]-\\u10FFFF]" },
+        peg$c104 = /^[0-9]/,
+        peg$c105 = { type: "class", value: "[0-9]", description: "[0-9]" },
+        peg$c106 = /^[0-9a-f]/i,
+        peg$c107 = { type: "class", value: "[0-9a-f]i", description: "[0-9a-f]i" },
+        peg$c108 = { type: "other", description: "whitespace" },
+        peg$c109 = /^[ \t\n\r]/,
+        peg$c110 = { type: "class", value: "[ \\t\\n\\r]", description: "[ \\t\\n\\r]" },
+
+        peg$currPos          = 0,
+        peg$reportedPos      = 0,
+        peg$cachedPos        = 0,
+        peg$cachedPosDetails = { line: 1, column: 1, seenCR: false },
+        peg$maxFailPos       = 0,
+        peg$maxFailExpected  = [],
+        peg$silentFails      = 0,
+
+        peg$result;
+
+    if ("startRule" in options) {
+      if (!(options.startRule in peg$startRuleFunctions)) {
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      }
+
+      peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+    }
+
+    function text() {
+      return input.substring(peg$reportedPos, peg$currPos);
+    }
+
+    function offset() {
+      return peg$reportedPos;
+    }
+
+    function line() {
+      return peg$computePosDetails(peg$reportedPos).line;
+    }
+
+    function column() {
+      return peg$computePosDetails(peg$reportedPos).column;
+    }
+
+    function expected(description) {
+      throw peg$buildException(
+        null,
+        [{ type: "other", description: description }],
+        peg$reportedPos
+      );
+    }
+
+    function error(message) {
+      throw peg$buildException(message, null, peg$reportedPos);
+    }
+
+    function peg$computePosDetails(pos) {
+      function advance(details, startPos, endPos) {
+        var p, ch;
+
+        for (p = startPos; p < endPos; p++) {
+          ch = input.charAt(p);
+          if (ch === "\n") {
+            if (!details.seenCR) { details.line++; }
+            details.column = 1;
+            details.seenCR = false;
+          } else if (ch === "\r" || ch === "\u2028" || ch === "\u2029") {
+            details.line++;
+            details.column = 1;
+            details.seenCR = true;
+          } else {
+            details.column++;
+            details.seenCR = false;
+          }
+        }
+      }
+
+      if (peg$cachedPos !== pos) {
+        if (peg$cachedPos > pos) {
+          peg$cachedPos = 0;
+          peg$cachedPosDetails = { line: 1, column: 1, seenCR: false };
+        }
+        advance(peg$cachedPosDetails, peg$cachedPos, pos);
+        peg$cachedPos = pos;
+      }
+
+      return peg$cachedPosDetails;
+    }
+
+    function peg$fail(expected) {
+      if (peg$currPos < peg$maxFailPos) { return; }
+
+      if (peg$currPos > peg$maxFailPos) {
+        peg$maxFailPos = peg$currPos;
+        peg$maxFailExpected = [];
+      }
+
+      peg$maxFailExpected.push(expected);
+    }
+
+    function peg$buildException(message, expected, pos) {
+      function cleanupExpected(expected) {
+        var i = 1;
+
+        expected.sort(function(a, b) {
+          if (a.description < b.description) {
+            return -1;
+          } else if (a.description > b.description) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+
+        while (i < expected.length) {
+          if (expected[i - 1] === expected[i]) {
+            expected.splice(i, 1);
+          } else {
+            i++;
+          }
+        }
+      }
+
+      function buildMessage(expected, found) {
+        function stringEscape(s) {
+          function hex(ch) { return ch.charCodeAt(0).toString(16).toUpperCase(); }
+
+          return s
+            .replace(/\\/g,   '\\\\')
+            .replace(/"/g,    '\\"')
+            .replace(/\x08/g, '\\b')
+            .replace(/\t/g,   '\\t')
+            .replace(/\n/g,   '\\n')
+            .replace(/\f/g,   '\\f')
+            .replace(/\r/g,   '\\r')
+            .replace(/[\x00-\x07\x0B\x0E\x0F]/g, function(ch) { return '\\x0' + hex(ch); })
+            .replace(/[\x10-\x1F\x80-\xFF]/g,    function(ch) { return '\\x'  + hex(ch); })
+            .replace(/[\u0180-\u0FFF]/g,         function(ch) { return '\\u0' + hex(ch); })
+            .replace(/[\u1080-\uFFFF]/g,         function(ch) { return '\\u'  + hex(ch); });
+        }
+
+        var expectedDescs = new Array(expected.length),
+            expectedDesc, foundDesc, i;
+
+        for (i = 0; i < expected.length; i++) {
+          expectedDescs[i] = expected[i].description;
+        }
+
+        expectedDesc = expected.length > 1
+          ? expectedDescs.slice(0, -1).join(", ")
+              + " or "
+              + expectedDescs[expected.length - 1]
+          : expectedDescs[0];
+
+        foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
+
+        return "Expected " + expectedDesc + " but " + foundDesc + " found.";
+      }
+
+      var posDetails = peg$computePosDetails(pos),
+          found      = pos < input.length ? input.charAt(pos) : null;
+
+      if (expected !== null) {
+        cleanupExpected(expected);
+      }
+
+      return new SyntaxError(
+        message !== null ? message : buildMessage(expected, found),
+        expected,
+        found,
+        pos,
+        posDetails.line,
+        posDetails.column
+      );
+    }
+
+    function peg$parsestart() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parseJSON_PATH();
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$parseJSON_PATH();
+      }
+
+      return s0;
+    }
+
+    function peg$parseJSON_PATH() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDOLLAR();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsePATH_COMPONENTS();
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c2(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseLEADING_CHILD_MEMBER_EXPRESSION();
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          s1 = peg$parseLEADING_CHILD_MEMBER_EXPRESSION();
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parsePATH_COMPONENTS();
+            if (s2 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c3(s2);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c1;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            s1 = peg$parseDOLLAR();
+            if (s1 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c4();
+            }
+            s0 = s1;
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parsePATH_COMPONENTS() {
+      var s0, s1;
+
+      s0 = [];
+      s1 = peg$parsePATH_COMPONENT();
+      if (s1 !== peg$FAILED) {
+        while (s1 !== peg$FAILED) {
+          s0.push(s1);
+          s1 = peg$parsePATH_COMPONENT();
+        }
+      } else {
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parsePATH_COMPONENT() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMEMBER_COMPONENT();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c5(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseSUBSCRIPT_COMPONENT();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c6(s1);
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseMEMBER_COMPONENT() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDESCENDANT_MEMBER_COMPONENT();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c7(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseCHILD_MEMBER_COMPONENT();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c8(s1);
+        }
+        s0 = s1;
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          s1 = peg$parsePARENT_MEMBER_COMPONENT();
+          if (s1 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c9(s1);
+          }
+          s0 = s1;
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseCHILD_MEMBER_COMPONENT() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDOT();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMEMBER_EXPRESSION();
+        if (s2 === peg$FAILED) {
+          s2 = peg$c10;
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parseCIRCUMFLEX();
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = peg$c11;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c1;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c12(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseDESCENDANT_MEMBER_COMPONENT() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDOT_DOT();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseMEMBER_EXPRESSION();
+        if (s2 === peg$FAILED) {
+          s2 = peg$c10;
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          peg$silentFails++;
+          s4 = peg$parseCIRCUMFLEX();
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = peg$c11;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c1;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c12(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parsePARENT_MEMBER_COMPONENT() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDOT();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseCIRCUMFLEX();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseMEMBER_EXPRESSION();
+          if (s3 === peg$FAILED) {
+            s3 = peg$c10;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c12(s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseLEADING_CHILD_MEMBER_EXPRESSION() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseMEMBER_EXPRESSION();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c13(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseMEMBER_EXPRESSION() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseSTAR();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c14(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseIDENTIFIER();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c15(s1);
+        }
+        s0 = s1;
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          s1 = peg$parseSCRIPT_EXPRESSION();
+          if (s1 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c16(s1);
+          }
+          s0 = s1;
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            s1 = peg$parseINDEX();
+            if (s1 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c17(s1);
+            }
+            s0 = s1;
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseSUBSCRIPT_COMPONENT() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDESCENDANT_SUBSCRIPT_COMPONENT();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c7(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseCHILD_SUBSCRIPT_COMPONENT();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c8(s1);
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseCHILD_SUBSCRIPT_COMPONENT() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 91) {
+        s1 = peg$c18;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c19); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseSUBSCRIPT();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 93) {
+            s3 = peg$c20;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c21); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c12(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseDESCENDANT_SUBSCRIPT_COMPONENT() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseDOT_DOT();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 91) {
+          s2 = peg$c18;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c19); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseSUBSCRIPT();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 93) {
+              s4 = peg$c20;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c21); }
+            }
+            if (s4 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c12(s3);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c1;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSUBSCRIPT() {
+      var s0;
+
+      s0 = peg$parseSUBSCRIPT_EXPRESSION_LIST();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseSUBSCRIPT_EXPRESSION();
+      }
+
+      return s0;
+    }
+
+    function peg$parseSUBSCRIPT_EXPRESSION_LIST() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parseSUBSCRIPT_EXPRESSION();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = [];
+        s5 = peg$parsewhitespace();
+        while (s5 !== peg$FAILED) {
+          s4.push(s5);
+          s5 = peg$parsewhitespace();
+        }
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c22;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c23); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = [];
+            s7 = peg$parsewhitespace();
+            while (s7 !== peg$FAILED) {
+              s6.push(s7);
+              s7 = peg$parsewhitespace();
+            }
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parseSUBSCRIPT_EXPRESSION();
+              if (s7 !== peg$FAILED) {
+                peg$reportedPos = s3;
+                s4 = peg$c24(s7);
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c1;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c1;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c1;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$c1;
+        }
+        if (s3 !== peg$FAILED) {
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$currPos;
+            s4 = [];
+            s5 = peg$parsewhitespace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parsewhitespace();
+            }
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 44) {
+                s5 = peg$c22;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c23); }
+              }
+              if (s5 !== peg$FAILED) {
+                s6 = [];
+                s7 = peg$parsewhitespace();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parsewhitespace();
+                }
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseSUBSCRIPT_EXPRESSION();
+                  if (s7 !== peg$FAILED) {
+                    peg$reportedPos = s3;
+                    s4 = peg$c24(s7);
+                    s3 = s4;
+                  } else {
+                    peg$currPos = s3;
+                    s3 = peg$c1;
+                  }
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$c1;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c1;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c1;
+            }
+          }
+        } else {
+          s2 = peg$c1;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c25(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseSUBSCRIPT_EXPRESSION() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseSTAR();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c26(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseARRAY_SLICE();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c27(s1);
+        }
+        s0 = s1;
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          s1 = peg$parseINDEX();
+          if (s1 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c28(s1);
+          }
+          s0 = s1;
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            s1 = peg$parseIDENTIFIER();
+            if (s1 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c29(s1);
+            }
+            s0 = s1;
+            if (s0 === peg$FAILED) {
+              s0 = peg$currPos;
+              s1 = peg$parseSCRIPT_EXPRESSION();
+              if (s1 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c30(s1);
+              }
+              s0 = s1;
+              if (s0 === peg$FAILED) {
+                s0 = peg$currPos;
+                s1 = peg$parseFILTER_EXPRESSION();
+                if (s1 !== peg$FAILED) {
+                  peg$reportedPos = s0;
+                  s1 = peg$c31(s1);
+                }
+                s0 = s1;
+                if (s0 === peg$FAILED) {
+                  s0 = peg$currPos;
+                  s1 = peg$parseSTRING_LITERAL();
+                  if (s1 !== peg$FAILED) {
+                    peg$reportedPos = s0;
+                    s1 = peg$c32(s1);
+                  }
+                  s0 = s1;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseSTRING_LITERAL() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parsestring();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c12(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseQ_STRING();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c12(s1);
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseIDENTIFIER() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c33.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c34); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c33.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c34); }
+          }
+        }
+      } else {
+        s1 = peg$c1;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        if (peg$c33.test(input.charAt(peg$currPos))) {
+          s3 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c34); }
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          if (peg$c33.test(input.charAt(peg$currPos))) {
+            s3 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c34); }
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c35(s1);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseARRAY_SLICE() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseINDEX();
+      if (s1 === peg$FAILED) {
+        s1 = peg$c10;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parsewhitespace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parsewhitespace();
+        }
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s3 = peg$c36;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c37); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = [];
+            s5 = peg$parsewhitespace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parsewhitespace();
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseINDEX();
+              if (s5 === peg$FAILED) {
+                s5 = peg$c10;
+              }
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c38(s1, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c1;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c1;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseINDEX() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseminus();
+      if (s1 === peg$FAILED) {
+        s1 = peg$c10;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseint();
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c39();
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseQ_STRING() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parsechar();
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$parsechar();
+      }
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c40(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseSCRIPT_EXPRESSION() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseEXPR();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c35(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseFILTER_EXPRESSION() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 63) {
+        s1 = peg$c41;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c42); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseEXPR();
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c35(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseEXPR() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseEXPR_START();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parseEXPR_INNER();
+        if (s3 !== peg$FAILED) {
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$parseEXPR_INNER();
+          }
+        } else {
+          s2 = peg$c1;
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseEXPR_END();
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c43(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseEXPR_START() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 40) {
+        s0 = peg$c44;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c45); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseEXPR_END() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 41) {
+        s0 = peg$c46;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c47); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseEXPR_INNER() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parseEXPR_CONTENT();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c12(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseEMPTY_EXPR_CONTENT();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c12(s1);
+        }
+        s0 = s1;
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          s1 = peg$currPos;
+          peg$silentFails++;
+          s2 = peg$parseEXPR_END();
+          peg$silentFails--;
+          if (s2 === peg$FAILED) {
+            s1 = peg$c11;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$c1;
+          }
+          if (s1 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s2 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s2 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c48); }
+            }
+            if (s2 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c12(s2);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c1;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            if (input.substr(peg$currPos, 2) === peg$c49) {
+              s1 = peg$c49;
+              peg$currPos += 2;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c50); }
+            }
+            if (s1 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c12(s1);
+            }
+            s0 = s1;
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseEMPTY_EXPR_CONTENT() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 40) {
+        s1 = peg$c44;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c45); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 === peg$FAILED) {
+          s2 = peg$c10;
+        }
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 41) {
+            s3 = peg$c46;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c47); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c51(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseEXPR_CONTENT() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 40) {
+        s1 = peg$c44;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c45); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parseEXPR_CONTENT_INNER();
+        if (s3 !== peg$FAILED) {
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$parseEXPR_CONTENT_INNER();
+          }
+        } else {
+          s2 = peg$c1;
+        }
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 41) {
+            s3 = peg$c46;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c47); }
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c52(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseEXPR_CONTENT_INNER() {
+      var s0, s1, s2;
+
+      s0 = peg$parseEMPTY_EXPR_CONTENT();
+      if (s0 === peg$FAILED) {
+        s0 = [];
+        s1 = peg$parseEXPR_CONTENT();
+        if (s1 !== peg$FAILED) {
+          while (s1 !== peg$FAILED) {
+            s0.push(s1);
+            s1 = peg$parseEXPR_CONTENT();
+          }
+        } else {
+          s0 = peg$c1;
+        }
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          s1 = peg$currPos;
+          peg$silentFails++;
+          if (input.charCodeAt(peg$currPos) === 41) {
+            s2 = peg$c46;
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c47); }
+          }
+          peg$silentFails--;
+          if (s2 === peg$FAILED) {
+            s1 = peg$c11;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$c1;
+          }
+          if (s1 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s2 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s2 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c48); }
+            }
+            if (s2 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c12(s2);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c1;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseDOLLAR() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 36) {
+        s0 = peg$c53;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseDOT_DOT() {
+      var s0;
+
+      if (input.substr(peg$currPos, 2) === peg$c55) {
+        s0 = peg$c55;
+        peg$currPos += 2;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c56); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseDOT() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 46) {
+        s0 = peg$c57;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c58); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseSTAR() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 42) {
+        s0 = peg$c59;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c60); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseCIRCUMFLEX() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 94) {
+        s0 = peg$c61;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c62); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseBRACKET_LEFT() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 91) {
+        s0 = peg$c18;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c19); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseBRACKET_RIGHT() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 93) {
+        s0 = peg$c20;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c21); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsenumber() {
+      var s0, s1, s2, s3, s4;
+
+      peg$silentFails++;
+      s0 = peg$currPos;
+      s1 = peg$parseminus();
+      if (s1 === peg$FAILED) {
+        s1 = peg$c10;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseint();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsefrac();
+          if (s3 === peg$FAILED) {
+            s3 = peg$c10;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseexp();
+            if (s4 === peg$FAILED) {
+              s4 = peg$c10;
+            }
+            if (s4 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c64();
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c1;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c63); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsedecimal_point() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 46) {
+        s0 = peg$c57;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c58); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsedigit1_9() {
+      var s0;
+
+      if (peg$c65.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c66); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsee() {
+      var s0;
+
+      if (peg$c67.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c68); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseexp() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parsee();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseminus();
+        if (s2 === peg$FAILED) {
+          s2 = peg$parseplus();
+        }
+        if (s2 === peg$FAILED) {
+          s2 = peg$c10;
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = [];
+          s4 = peg$parseDIGIT();
+          if (s4 !== peg$FAILED) {
+            while (s4 !== peg$FAILED) {
+              s3.push(s4);
+              s4 = peg$parseDIGIT();
+            }
+          } else {
+            s3 = peg$c1;
+          }
+          if (s3 !== peg$FAILED) {
+            s1 = [s1, s2, s3];
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parsefrac() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parsedecimal_point();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parseDIGIT();
+        if (s3 !== peg$FAILED) {
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$parseDIGIT();
+          }
+        } else {
+          s2 = peg$c1;
+        }
+        if (s2 !== peg$FAILED) {
+          s1 = [s1, s2];
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseint() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$parsezero();
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parsedigit1_9();
+        if (s1 !== peg$FAILED) {
+          s2 = [];
+          s3 = peg$parseDIGIT();
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$parseDIGIT();
+          }
+          if (s2 !== peg$FAILED) {
+            s1 = [s1, s2];
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseminus() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 45) {
+        s0 = peg$c69;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c70); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseplus() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 43) {
+        s0 = peg$c71;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c72); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsezero() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 48) {
+        s0 = peg$c73;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c74); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsestring() {
+      var s0, s1, s2, s3;
+
+      peg$silentFails++;
+      s0 = peg$currPos;
+      s1 = peg$parsequotation_mark();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parsechar();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parsechar();
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsequotation_mark();
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c76(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c1;
+      }
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c75); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsechar() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+
+      s0 = peg$parseunescaped();
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseescape();
+        if (s1 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 34) {
+            s2 = peg$c77;
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c78); }
+          }
+          if (s2 === peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 92) {
+              s2 = peg$c79;
+              peg$currPos++;
+            } else {
+              s2 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c80); }
+            }
+            if (s2 === peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 47) {
+                s2 = peg$c81;
+                peg$currPos++;
+              } else {
+                s2 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c82); }
+              }
+              if (s2 === peg$FAILED) {
+                s2 = peg$currPos;
+                if (input.charCodeAt(peg$currPos) === 98) {
+                  s3 = peg$c83;
+                  peg$currPos++;
+                } else {
+                  s3 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c84); }
+                }
+                if (s3 !== peg$FAILED) {
+                  peg$reportedPos = s2;
+                  s3 = peg$c85();
+                }
+                s2 = s3;
+                if (s2 === peg$FAILED) {
+                  s2 = peg$currPos;
+                  if (input.charCodeAt(peg$currPos) === 102) {
+                    s3 = peg$c86;
+                    peg$currPos++;
+                  } else {
+                    s3 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c87); }
+                  }
+                  if (s3 !== peg$FAILED) {
+                    peg$reportedPos = s2;
+                    s3 = peg$c88();
+                  }
+                  s2 = s3;
+                  if (s2 === peg$FAILED) {
+                    s2 = peg$currPos;
+                    if (input.charCodeAt(peg$currPos) === 110) {
+                      s3 = peg$c89;
+                      peg$currPos++;
+                    } else {
+                      s3 = peg$FAILED;
+                      if (peg$silentFails === 0) { peg$fail(peg$c90); }
+                    }
+                    if (s3 !== peg$FAILED) {
+                      peg$reportedPos = s2;
+                      s3 = peg$c91();
+                    }
+                    s2 = s3;
+                    if (s2 === peg$FAILED) {
+                      s2 = peg$currPos;
+                      if (input.charCodeAt(peg$currPos) === 114) {
+                        s3 = peg$c92;
+                        peg$currPos++;
+                      } else {
+                        s3 = peg$FAILED;
+                        if (peg$silentFails === 0) { peg$fail(peg$c93); }
+                      }
+                      if (s3 !== peg$FAILED) {
+                        peg$reportedPos = s2;
+                        s3 = peg$c94();
+                      }
+                      s2 = s3;
+                      if (s2 === peg$FAILED) {
+                        s2 = peg$currPos;
+                        if (input.charCodeAt(peg$currPos) === 116) {
+                          s3 = peg$c95;
+                          peg$currPos++;
+                        } else {
+                          s3 = peg$FAILED;
+                          if (peg$silentFails === 0) { peg$fail(peg$c96); }
+                        }
+                        if (s3 !== peg$FAILED) {
+                          peg$reportedPos = s2;
+                          s3 = peg$c97();
+                        }
+                        s2 = s3;
+                        if (s2 === peg$FAILED) {
+                          s2 = peg$currPos;
+                          if (input.charCodeAt(peg$currPos) === 117) {
+                            s3 = peg$c98;
+                            peg$currPos++;
+                          } else {
+                            s3 = peg$FAILED;
+                            if (peg$silentFails === 0) { peg$fail(peg$c99); }
+                          }
+                          if (s3 !== peg$FAILED) {
+                            s4 = peg$currPos;
+                            s5 = peg$currPos;
+                            s6 = peg$parseHEXDIG();
+                            if (s6 !== peg$FAILED) {
+                              s7 = peg$parseHEXDIG();
+                              if (s7 !== peg$FAILED) {
+                                s8 = peg$parseHEXDIG();
+                                if (s8 !== peg$FAILED) {
+                                  s9 = peg$parseHEXDIG();
+                                  if (s9 !== peg$FAILED) {
+                                    s6 = [s6, s7, s8, s9];
+                                    s5 = s6;
+                                  } else {
+                                    peg$currPos = s5;
+                                    s5 = peg$c1;
+                                  }
+                                } else {
+                                  peg$currPos = s5;
+                                  s5 = peg$c1;
+                                }
+                              } else {
+                                peg$currPos = s5;
+                                s5 = peg$c1;
+                              }
+                            } else {
+                              peg$currPos = s5;
+                              s5 = peg$c1;
+                            }
+                            if (s5 !== peg$FAILED) {
+                              s5 = input.substring(s4, peg$currPos);
+                            }
+                            s4 = s5;
+                            if (s4 !== peg$FAILED) {
+                              peg$reportedPos = s2;
+                              s3 = peg$c100(s4);
+                              s2 = s3;
+                            } else {
+                              peg$currPos = s2;
+                              s2 = peg$c1;
+                            }
+                          } else {
+                            peg$currPos = s2;
+                            s2 = peg$c1;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          if (s2 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c101(s2);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c1;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c1;
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseescape() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 92) {
+        s0 = peg$c79;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c80); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsequotation_mark() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 34) {
+        s0 = peg$c77;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c78); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseunescaped() {
+      var s0;
+
+      if (peg$c102.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c103); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseDIGIT() {
+      var s0;
+
+      if (peg$c104.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c105); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseHEXDIG() {
+      var s0;
+
+      if (peg$c106.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c107); }
+      }
+
+      return s0;
+    }
+
+    function peg$parse_() {
+      var s0, s1;
+
+      peg$silentFails++;
+      s0 = [];
+      s1 = peg$parsewhitespace();
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$parsewhitespace();
+      }
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c108); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsewhitespace() {
+      var s0;
+
+      if (peg$c109.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c110); }
+      }
+
+      return s0;
+    }
+
+    peg$result = peg$startRuleFunction();
+
+    if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+      return peg$result;
+    } else {
+      if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+        peg$fail({ type: "end", description: "end of input" });
+      }
+
+      throw peg$buildException(null, peg$maxFailExpected, peg$maxFailPos);
+    }
+  }
+
+  return {
+    SyntaxError: SyntaxError,
+    parse:       parse
+  };
+})();
+/* eslint-enable */
+/* jshint ignore:end */
 
 //  ------------------------------------------------------------------------
 //  end

@@ -2777,8 +2777,21 @@ TP.regex.PATH_EXPR = /(^|\s+)(.+?)($|\s+)/g; // needs reset
 //  '|', '@', '#', ':', '/', '&', '=', '<', '>', '.', '[', '('
 TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\.\[\(]/;
 
-//  force the colon to have numbers on either side to avoid collisions with
-//  prefixed XPath expressions
+//  ---
+//  JSON path
+//  ---
+
+TP.regex.JSON_POINTER = /json\((.+)\)/;
+
+//  Not strictly true, but virtually every JSONPath example seen in the wild
+//  begins with '$.' and it's a great way to disambiguate. Note here that we
+//  require the '.' as well, to disambiguate between JSONPath and '$FOO'.
+TP.regex.JSON_PATH = /^\$\.+/;
+
+//  ---
+//  TIBET path
+//  ---
+
 TP.regex.TIBET_POINTER = /tibet\((.+)\)/;
 
 //  Forms of TIBETan access paths can include words separated by periods ('.'),
@@ -2792,7 +2805,9 @@ TP.regex.TIBET_PATH_TEMPLATE = /(^|\s+)(\w[\w\.:,]*)(\s+|$)/g; //  needs reset
 
 TP.regex.SIMPLE_NUMERIC_PATH = /^\[(\d+)\]$/;
 
-//  Node Path matching
+//  ---
+//  XML path
+//  ---
 
 //  TIBET extensions that can be used in *node* paths
 TP.regex.XTENSION_POINTER = /css\((.+)\)/;

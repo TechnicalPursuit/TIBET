@@ -7,7 +7,7 @@
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
  * License. To view a copy of this license, visit
- * 
+ *
  *   http://creativecommons.org/licenses/by-sa/2.0/
  *
  * or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford,
@@ -71,7 +71,7 @@
  *     workaround for MSXML not supporting 'localName' and 'getElementById',
  *     thanks to Grant Gongaware.
  *   Fix a few problems when the context node is the root node.
- *   
+ *
  * Revision 7: February 11, 2005
  *   Default namespace resolver fix from Grant Gongaware
  *   <grant (at) gongaware.com>.
@@ -93,7 +93,7 @@
  *
  * Revision 2: October 26, 2004
  *   QName node test namespace handling fixed.  Few other bug fixes.
- *   
+ *
  * Revision 1: August 13, 2004
  *   Bug fixes from William J. Edney <bedney (at) technicalpursuit.com>.
  *   Added minimal licence.
@@ -847,7 +847,7 @@ XPathParser.prototype.tokenize = function(s1) {
 			c = s.charAt(pos++);
 			continue;
 		}
-		
+
 		if (c == '.') {
 			c = s.charAt(pos++);
 			if (c == '.') {
@@ -1181,6 +1181,8 @@ XPathParser.prototype.parse = function(s) {
 };
 
 // XPath /////////////////////////////////////////////////////////////////////
+
+var pushed = false;
 
 XPath.prototype = new Object();
 XPath.prototype.constructor = XPath;
@@ -1724,9 +1726,25 @@ PathExpr.prototype.evaluate = function(c) {
 			for (var j = 0; j < this.filterPredicates.length; j++) {
 				var pred = this.filterPredicates[j];
 				var newNodes = [];
+                var likeChildNodes;
+
 				xpc.contextSize = nodes.length;
-				for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
-					xpc.contextNode = nodes[xpc.contextPosition - 1];
+                //  wje (2015-03-29): Patched an issue where the position of the
+                //  actual node was tied to the looping index. If the set of
+                //  nodes comes from different parts of the DOM, their position
+                //  *must* be computed relative to their parent, not to the
+                //  index of the query result structure.
+				//for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
+				//	xpc.contextNode = nodes[xpc.contextPosition - 1];
+                for (var k = 0; k < xpc.contextSize; k++) {
+					xpc.contextNode = nodes[k];
+                    likeChildNodes = TP.nodeGetChildNodesByType(
+                                                    nodes[k].parentNode,
+                                                    nodes[k].nodeType);
+                    xpc.contextPosition =
+                        Array.prototype.indexOf.call(
+                                likeChildNodes, nodes[k]) + 1;
+
 					if (this.predicateMatches(pred, xpc)) {
 						newNodes.push(xpc.contextNode);
 					}
@@ -1798,7 +1816,7 @@ PathExpr.prototype.evaluate = function(c) {
 
 					case Step.ATTRIBUTE:
 						// look at the attributes
-						var pushed = false;
+						pushed = false;
 												var nnm = xpc.contextNode.attributes;
 						if (nnm != null) {
 							for (var k = 0; k < nnm.length; k++) {
@@ -1831,20 +1849,22 @@ PathExpr.prototype.evaluate = function(c) {
 
 					case Step.CHILD:
 						// look at all child elements
-						var pushed = false;
+						pushed = false;
 						for (var m = xpc.contextNode.firstChild; m != null; m = m.nextSibling) {
 							if (step.nodeTest.matches(m, xpc)) {
 								if (xpc.shouldFlagNodes == true) {
 									//  if nodes are being flagged we have
 									//  to check for deleted status nodes
 									//  and reset as we go...
-									var existingAction;
+									var existingAction,
+                                        elem;
+                                    elem = m.nodeType === 1 ? m : m.parentNode;
 									existingAction =
-										TP.elementGetChangeAction(m, TP.SELF);
+										TP.elementGetChangeAction(elem, TP.SELF);
 									if (existingAction === TP.DELETE) {
 										if (xpc.shouldCreateNodes == true) {
 											TP.elementFlagChange(
-													m, TP.SELF, TP.CREATE);
+													elem, TP.SELF, TP.CREATE);
 											newNodes.push(m);
 											pushed = true;
 										} else {
@@ -1864,8 +1884,11 @@ PathExpr.prototype.evaluate = function(c) {
 
 						if ((pushed == false) &&
 							(xpc.shouldCreateNodes == true)) {
-							var newNode,
-								ownerDoc;
+							var ownerDoc,
+
+                                flagNode,
+                                newNode,
+                                action;
 
 							//  when the root portion of the path doesn't
 							//  match you end up at the document element and
@@ -1875,15 +1898,49 @@ PathExpr.prototype.evaluate = function(c) {
 								ownerDoc = xpc.contextNode;
 							}
 
-							newNode = ownerDoc.createElement(
+                            switch(step.nodeTest.type) {
+                                case NodeTest.COMMENT:
+                                    flagNode = xpc.contextNode;
+                                    newNode = ownerDoc.createComment(
+                                                        step.nodeTest.value);
+                                    action = TP.UPDATE;
+                                    break;
+                                case NodeTest.TEXT:
+                                    flagNode = xpc.contextNode;
+                                    newNode = ownerDoc.createTextNode(
 										step.nodeTest.value);
+                                    action = TP.UPDATE;
+                                    break;
+                                case NodeTest.PI:
+                                    flagNode = xpc.contextNode;
+                                    newNode =
+                                        ownerDoc.createProcessingInstruction(
+                                                        step.nodeTest.value);
+                                    action = TP.UPDATE;
+                                    break;
+                                default:
+                                    var name = step.nodeTest.value ?
+                                                step.nodeTest.value :
+                                                xpc.contextNode.nodeName;
+
+                                    newNode = ownerDoc.createElement(name);
+                                    flagNode = newNode;
+                                    action = TP.CREATE;
+
+                                    if (xpc.contextNode.childNodes.length === 1 &&
+                                        xpc.contextNode.childNodes[0].nodeType === 3) {
+                                        xpc.contextNode.removeChild(
+                                                xpc.contextNode.childNodes[0]);
+                                    }
+                            }
+
 							if (xpc.shouldFlagNodes == true) {
-								TP.elementFlagChange(
-										newNode, TP.SELF, TP.CREATE);
+								TP.elementFlagChange(flagNode, TP.SELF, action);
 							}
 
 							xpc.contextNode.appendChild(newNode);
 							newNodes.push(newNode);
+                            pushed = true;
 						}
 						break;
 
@@ -1954,7 +2011,7 @@ PathExpr.prototype.evaluate = function(c) {
 							}
 						} while (st.length > 0);
 						break;
-						
+
 					case Step.FOLLOWINGSIBLING:
 						if (xpc.contextNode === xpc.virtualRoot) {
 							break;
@@ -2062,16 +2119,155 @@ PathExpr.prototype.evaluate = function(c) {
 				}
 			}
 			nodes = newNodes;
+            var checkedOnce = false;
 			// apply each of the predicates in turn
 			for (var j = 0; j < step.predicates.length; j++) {
 				var pred = step.predicates[j];
 				var newNodes = [];
+                var likeChildNodes;
+
 				xpc.contextSize = nodes.length;
-				for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
-					xpc.contextNode = nodes[xpc.contextPosition - 1];
+                //  wje (2015-03-29): Patched an issue where the position of the
+                //  actual node was tied to the looping index. If the set of
+                //  nodes comes from different parts of the DOM, their position
+                //  *must* be computed relative to their parent, not to the
+                //  index of the query result structure.
+				//for (xpc.contextPosition = 1; xpc.contextPosition <= xpc.contextSize; xpc.contextPosition++) {
+				//	xpc.contextNode = nodes[xpc.contextPosition - 1];
+                for (var k = 0; k < xpc.contextSize; k++) {
+					xpc.contextNode = nodes[k];
+                    likeChildNodes = TP.nodeGetChildNodesByType(
+                                                    nodes[k].parentNode,
+                                                    nodes[k].nodeType);
+                    xpc.contextPosition =
+                        Array.prototype.indexOf.call(
+                                likeChildNodes, nodes[k]) + 1;
+
+                    //  wje (2015-03-30): Added 'node building' code for certain
+                    //  limited predicate expressions (position() and
+                    //  local-name() matching).
+                    if (checkedOnce == false && xpc.shouldCreateNodes == true) {
+
+                        var matchRe,
+                            results,
+                            nums,
+                            names,
+                            count,
+                            contextParent,
+                            minNumChildNodes,
+                            numChildNodes,
+                            createNumNodes;
+
+                        contextParent = xpc.contextNode.parentNode;
+
+                        ownerDoc = contextParent.ownerDocument;
+                        if (TP.notValid(ownerDoc)) {
+                            ownerDoc = contextParent;
+                        }
+
+                        if (/position\(\)/.test(pred.toString())) {
+                            matchRe = /position[^\d]+(\d+?)/g;
+                            nums = [];
+
+                            //  Extract all of the numeric indexes from the
+                            //  'position()' statements in the predicate
+                            //  statement, convert them to Numbers and sort
+                            //  lowest to highest.
+                            while ((results = matchRe.exec(pred.toString()))) {
+                                nums.push(parseInt(results[1], 10));
+                            }
+                            nums.sort(function(a, b) {
+                                        return a - b;
+                                        });
+
+                            //  If we got real numbers, then make sure that the
+                            //  current context node's *parent* node has the
+                            //  correct number of children. If not, build them
+                            //  and flag each one as being created.
+                            if (nums.length > 0) {
+                                minNumChildNodes = nums[nums.length - 1];
+                                numChildNodes = contextParent.childNodes.length;
+
+                                if (numChildNodes < minNumChildNodes) {
+                                    createNumNodes =
+                                        minNumChildNodes - numChildNodes;
+
+                                    for (count = 0;
+                                            count < createNumNodes;
+                                            count++) {
+
+                                        newNode = ownerDoc.createElement(
+                                                        contextParent.nodeName);
+                                        action = TP.CREATE;
+
+                                        if (xpc.shouldFlagNodes == true) {
+                                            TP.elementFlagChange(newNode,
+                                                                    TP.SELF,
+                                                                    action);
+                                        }
+
+                                        contextParent.appendChild(newNode);
+
+                                        //  Add the newly created node to the
+                                        //  set of nodes that is being
+                                        //  'considered' for this step in the
+                                        //  predicate engine
+                                        nodes.push(newNode);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (/local-name\(\)/.test(pred.toString())) {
+                            matchRe = /local-name\(\)\s*=\s*['"]?([^'"]+)['"]?/g;
+                            names = [];
+
+                            //  Extract any names used with 'local-name()'
+                            while ((results = matchRe.exec(pred.toString()))) {
+                                names.push(results[1]);
+                            }
+
+                            //  Iterate over the set of names.
+                            for (count = 0; count < names.length; count++) {
+                                //  Detect if there a *child* element under the
+                                //  context node's parent node. If not, create
+                                //  one with that name and flag it as created.
+                                if (TP.byCSS('> ' + names[count],
+                                            contextParent).length === 0) {
+
+                                    newNode = ownerDoc.createElement(
+                                                            names[count]);
+                                    action = TP.CREATE;
+
+                                    if (xpc.shouldFlagNodes == true) {
+                                        TP.elementFlagChange(newNode,
+                                                                TP.SELF,
+                                                                action);
+                                    }
+
+                                    contextParent.appendChild(newNode);
+
+                                    //  Add the newly created node to the set of
+                                    //  nodes that is being 'considered' for
+                                    //  this step in the predicate engine
+                                    nodes.push(newNode);
+                                }
+                            }
+                        }
+
+                        //  NOTE: Make sure to update the context size here with
+                        //  the newly added nodes!
+                        xpc.contextSize = nodes.length;
+
+                        //  Update our flag - we've already checked once for
+                        //  this location step - no need to check again.
+                        checkedOnce = true;
+                    }
+
+                    //  Test the predicate and add it to the node set that we're
+                    //  selecting, moving forward.
 					if (this.predicateMatches(pred, xpc)) {
 						newNodes.push(xpc.contextNode);
-					} else {
 					}
 				}
 				nodes = newNodes;
@@ -2370,7 +2566,7 @@ NodeTest.prototype.matches = function(n, xpc) {
 				if (ns == null) {
 					throw new Error("Cannot resolve QName " + this.value);
 				}
-				return true;	
+				return true;
 			}
 			return false;
 		case NodeTest.NAMETESTQNAME:
@@ -2878,21 +3074,21 @@ AVLTree.prototype.balance = function() {
 		if (lldepth < lrdepth) {
 			// LR rotation consists of a RR rotation of the left child
 			this.left.rotateRR();
-			// plus a LL rotation of this node, which happens anyway 
+			// plus a LL rotation of this node, which happens anyway
 		}
-		this.rotateLL();	   
+		this.rotateLL();
 	} else if (ldepth + 1 < rdepth) {
 		// RR or RL rorarion
 		var rrdepth = this.right.right == null ? 0 : this.right.right.depth;
 		var rldepth = this.right.left  == null ? 0 : this.right.left.depth;
-	 
+
 		if (rldepth > rrdepth) {
 			// RR rotation consists of a LL rotation of the right child
 			this.right.rotateLL();
-			// plus a RR rotation of this node, which happens anyway 
+			// plus a RR rotation of this node, which happens anyway
 		}
 		this.rotateRR();
-	}		 
+	}
 };
 
 AVLTree.prototype.rotateLL = function() {
@@ -2921,8 +3117,8 @@ AVLTree.prototype.rotateRR = function() {
 	this.left.node = nodeBefore;
 	this.left.updateInNewLocation();
 	this.updateInNewLocation();
-}; 
-	
+};
+
 AVLTree.prototype.updateInNewLocation = function() {
 	this.getDepthFromChildren();
 };
@@ -2984,9 +3180,9 @@ AVLTree.prototype.add = function(n)  {
 	if (n === this.node) {
 		return false;
 	}
-	
+
 	var o = this.order(n, this.node);
-	
+
 	var ret = false;
 	if (o == -1) {
 		if (this.left == null) {
@@ -3009,7 +3205,7 @@ AVLTree.prototype.add = function(n)  {
 			}
 		}
 	}
-	
+
 	if (ret) {
 		this.getDepthFromChildren();
 	}
@@ -4153,130 +4349,130 @@ Utilities.isLetter = function(c) {
 };
 
 Utilities.isNCNameChar = function(c) {
-	return c >= 0x0030 && c <= 0x0039 
-		|| c >= 0x0660 && c <= 0x0669 
-		|| c >= 0x06F0 && c <= 0x06F9 
-		|| c >= 0x0966 && c <= 0x096F 
-		|| c >= 0x09E6 && c <= 0x09EF 
-		|| c >= 0x0A66 && c <= 0x0A6F 
-		|| c >= 0x0AE6 && c <= 0x0AEF 
-		|| c >= 0x0B66 && c <= 0x0B6F 
-		|| c >= 0x0BE7 && c <= 0x0BEF 
-		|| c >= 0x0C66 && c <= 0x0C6F 
-		|| c >= 0x0CE6 && c <= 0x0CEF 
-		|| c >= 0x0D66 && c <= 0x0D6F 
-		|| c >= 0x0E50 && c <= 0x0E59 
-		|| c >= 0x0ED0 && c <= 0x0ED9 
+	return c >= 0x0030 && c <= 0x0039
+		|| c >= 0x0660 && c <= 0x0669
+		|| c >= 0x06F0 && c <= 0x06F9
+		|| c >= 0x0966 && c <= 0x096F
+		|| c >= 0x09E6 && c <= 0x09EF
+		|| c >= 0x0A66 && c <= 0x0A6F
+		|| c >= 0x0AE6 && c <= 0x0AEF
+		|| c >= 0x0B66 && c <= 0x0B6F
+		|| c >= 0x0BE7 && c <= 0x0BEF
+		|| c >= 0x0C66 && c <= 0x0C6F
+		|| c >= 0x0CE6 && c <= 0x0CEF
+		|| c >= 0x0D66 && c <= 0x0D6F
+		|| c >= 0x0E50 && c <= 0x0E59
+		|| c >= 0x0ED0 && c <= 0x0ED9
 		|| c >= 0x0F20 && c <= 0x0F29
 		|| c == 0x002E
 		|| c == 0x002D
 		|| c == 0x005F
 		|| Utilities.isLetter(c)
-		|| c >= 0x0300 && c <= 0x0345 
-		|| c >= 0x0360 && c <= 0x0361 
-		|| c >= 0x0483 && c <= 0x0486 
-		|| c >= 0x0591 && c <= 0x05A1 
-		|| c >= 0x05A3 && c <= 0x05B9 
-		|| c >= 0x05BB && c <= 0x05BD 
-		|| c == 0x05BF 
-		|| c >= 0x05C1 && c <= 0x05C2 
-		|| c == 0x05C4 
-		|| c >= 0x064B && c <= 0x0652 
-		|| c == 0x0670 
-		|| c >= 0x06D6 && c <= 0x06DC 
-		|| c >= 0x06DD && c <= 0x06DF 
-		|| c >= 0x06E0 && c <= 0x06E4 
-		|| c >= 0x06E7 && c <= 0x06E8 
-		|| c >= 0x06EA && c <= 0x06ED 
-		|| c >= 0x0901 && c <= 0x0903 
-		|| c == 0x093C 
-		|| c >= 0x093E && c <= 0x094C 
-		|| c == 0x094D 
-		|| c >= 0x0951 && c <= 0x0954 
-		|| c >= 0x0962 && c <= 0x0963 
-		|| c >= 0x0981 && c <= 0x0983 
-		|| c == 0x09BC 
-		|| c == 0x09BE 
-		|| c == 0x09BF 
-		|| c >= 0x09C0 && c <= 0x09C4 
-		|| c >= 0x09C7 && c <= 0x09C8 
-		|| c >= 0x09CB && c <= 0x09CD 
-		|| c == 0x09D7 
-		|| c >= 0x09E2 && c <= 0x09E3 
-		|| c == 0x0A02 
-		|| c == 0x0A3C 
-		|| c == 0x0A3E 
-		|| c == 0x0A3F 
-		|| c >= 0x0A40 && c <= 0x0A42 
-		|| c >= 0x0A47 && c <= 0x0A48 
-		|| c >= 0x0A4B && c <= 0x0A4D 
-		|| c >= 0x0A70 && c <= 0x0A71 
-		|| c >= 0x0A81 && c <= 0x0A83 
-		|| c == 0x0ABC 
-		|| c >= 0x0ABE && c <= 0x0AC5 
-		|| c >= 0x0AC7 && c <= 0x0AC9 
-		|| c >= 0x0ACB && c <= 0x0ACD 
-		|| c >= 0x0B01 && c <= 0x0B03 
-		|| c == 0x0B3C 
-		|| c >= 0x0B3E && c <= 0x0B43 
-		|| c >= 0x0B47 && c <= 0x0B48 
-		|| c >= 0x0B4B && c <= 0x0B4D 
-		|| c >= 0x0B56 && c <= 0x0B57 
-		|| c >= 0x0B82 && c <= 0x0B83 
-		|| c >= 0x0BBE && c <= 0x0BC2 
-		|| c >= 0x0BC6 && c <= 0x0BC8 
-		|| c >= 0x0BCA && c <= 0x0BCD 
-		|| c == 0x0BD7 
-		|| c >= 0x0C01 && c <= 0x0C03 
-		|| c >= 0x0C3E && c <= 0x0C44 
-		|| c >= 0x0C46 && c <= 0x0C48 
-		|| c >= 0x0C4A && c <= 0x0C4D 
-		|| c >= 0x0C55 && c <= 0x0C56 
-		|| c >= 0x0C82 && c <= 0x0C83 
-		|| c >= 0x0CBE && c <= 0x0CC4 
-		|| c >= 0x0CC6 && c <= 0x0CC8 
-		|| c >= 0x0CCA && c <= 0x0CCD 
-		|| c >= 0x0CD5 && c <= 0x0CD6 
-		|| c >= 0x0D02 && c <= 0x0D03 
-		|| c >= 0x0D3E && c <= 0x0D43 
-		|| c >= 0x0D46 && c <= 0x0D48 
-		|| c >= 0x0D4A && c <= 0x0D4D 
-		|| c == 0x0D57 
-		|| c == 0x0E31 
-		|| c >= 0x0E34 && c <= 0x0E3A 
-		|| c >= 0x0E47 && c <= 0x0E4E 
-		|| c == 0x0EB1 
-		|| c >= 0x0EB4 && c <= 0x0EB9 
-		|| c >= 0x0EBB && c <= 0x0EBC 
-		|| c >= 0x0EC8 && c <= 0x0ECD 
-		|| c >= 0x0F18 && c <= 0x0F19 
-		|| c == 0x0F35 
-		|| c == 0x0F37 
-		|| c == 0x0F39 
-		|| c == 0x0F3E 
-		|| c == 0x0F3F 
-		|| c >= 0x0F71 && c <= 0x0F84 
-		|| c >= 0x0F86 && c <= 0x0F8B 
-		|| c >= 0x0F90 && c <= 0x0F95 
-		|| c == 0x0F97 
-		|| c >= 0x0F99 && c <= 0x0FAD 
-		|| c >= 0x0FB1 && c <= 0x0FB7 
-		|| c == 0x0FB9 
-		|| c >= 0x20D0 && c <= 0x20DC 
-		|| c == 0x20E1 
-		|| c >= 0x302A && c <= 0x302F 
-		|| c == 0x3099 
+		|| c >= 0x0300 && c <= 0x0345
+		|| c >= 0x0360 && c <= 0x0361
+		|| c >= 0x0483 && c <= 0x0486
+		|| c >= 0x0591 && c <= 0x05A1
+		|| c >= 0x05A3 && c <= 0x05B9
+		|| c >= 0x05BB && c <= 0x05BD
+		|| c == 0x05BF
+		|| c >= 0x05C1 && c <= 0x05C2
+		|| c == 0x05C4
+		|| c >= 0x064B && c <= 0x0652
+		|| c == 0x0670
+		|| c >= 0x06D6 && c <= 0x06DC
+		|| c >= 0x06DD && c <= 0x06DF
+		|| c >= 0x06E0 && c <= 0x06E4
+		|| c >= 0x06E7 && c <= 0x06E8
+		|| c >= 0x06EA && c <= 0x06ED
+		|| c >= 0x0901 && c <= 0x0903
+		|| c == 0x093C
+		|| c >= 0x093E && c <= 0x094C
+		|| c == 0x094D
+		|| c >= 0x0951 && c <= 0x0954
+		|| c >= 0x0962 && c <= 0x0963
+		|| c >= 0x0981 && c <= 0x0983
+		|| c == 0x09BC
+		|| c == 0x09BE
+		|| c == 0x09BF
+		|| c >= 0x09C0 && c <= 0x09C4
+		|| c >= 0x09C7 && c <= 0x09C8
+		|| c >= 0x09CB && c <= 0x09CD
+		|| c == 0x09D7
+		|| c >= 0x09E2 && c <= 0x09E3
+		|| c == 0x0A02
+		|| c == 0x0A3C
+		|| c == 0x0A3E
+		|| c == 0x0A3F
+		|| c >= 0x0A40 && c <= 0x0A42
+		|| c >= 0x0A47 && c <= 0x0A48
+		|| c >= 0x0A4B && c <= 0x0A4D
+		|| c >= 0x0A70 && c <= 0x0A71
+		|| c >= 0x0A81 && c <= 0x0A83
+		|| c == 0x0ABC
+		|| c >= 0x0ABE && c <= 0x0AC5
+		|| c >= 0x0AC7 && c <= 0x0AC9
+		|| c >= 0x0ACB && c <= 0x0ACD
+		|| c >= 0x0B01 && c <= 0x0B03
+		|| c == 0x0B3C
+		|| c >= 0x0B3E && c <= 0x0B43
+		|| c >= 0x0B47 && c <= 0x0B48
+		|| c >= 0x0B4B && c <= 0x0B4D
+		|| c >= 0x0B56 && c <= 0x0B57
+		|| c >= 0x0B82 && c <= 0x0B83
+		|| c >= 0x0BBE && c <= 0x0BC2
+		|| c >= 0x0BC6 && c <= 0x0BC8
+		|| c >= 0x0BCA && c <= 0x0BCD
+		|| c == 0x0BD7
+		|| c >= 0x0C01 && c <= 0x0C03
+		|| c >= 0x0C3E && c <= 0x0C44
+		|| c >= 0x0C46 && c <= 0x0C48
+		|| c >= 0x0C4A && c <= 0x0C4D
+		|| c >= 0x0C55 && c <= 0x0C56
+		|| c >= 0x0C82 && c <= 0x0C83
+		|| c >= 0x0CBE && c <= 0x0CC4
+		|| c >= 0x0CC6 && c <= 0x0CC8
+		|| c >= 0x0CCA && c <= 0x0CCD
+		|| c >= 0x0CD5 && c <= 0x0CD6
+		|| c >= 0x0D02 && c <= 0x0D03
+		|| c >= 0x0D3E && c <= 0x0D43
+		|| c >= 0x0D46 && c <= 0x0D48
+		|| c >= 0x0D4A && c <= 0x0D4D
+		|| c == 0x0D57
+		|| c == 0x0E31
+		|| c >= 0x0E34 && c <= 0x0E3A
+		|| c >= 0x0E47 && c <= 0x0E4E
+		|| c == 0x0EB1
+		|| c >= 0x0EB4 && c <= 0x0EB9
+		|| c >= 0x0EBB && c <= 0x0EBC
+		|| c >= 0x0EC8 && c <= 0x0ECD
+		|| c >= 0x0F18 && c <= 0x0F19
+		|| c == 0x0F35
+		|| c == 0x0F37
+		|| c == 0x0F39
+		|| c == 0x0F3E
+		|| c == 0x0F3F
+		|| c >= 0x0F71 && c <= 0x0F84
+		|| c >= 0x0F86 && c <= 0x0F8B
+		|| c >= 0x0F90 && c <= 0x0F95
+		|| c == 0x0F97
+		|| c >= 0x0F99 && c <= 0x0FAD
+		|| c >= 0x0FB1 && c <= 0x0FB7
+		|| c == 0x0FB9
+		|| c >= 0x20D0 && c <= 0x20DC
+		|| c == 0x20E1
+		|| c >= 0x302A && c <= 0x302F
+		|| c == 0x3099
 		|| c == 0x309A
-		|| c == 0x00B7 
-		|| c == 0x02D0 
-		|| c == 0x02D1 
-		|| c == 0x0387 
-		|| c == 0x0640 
-		|| c == 0x0E46 
-		|| c == 0x0EC6 
-		|| c == 0x3005 
-		|| c >= 0x3031 && c <= 0x3035 
-		|| c >= 0x309D && c <= 0x309E 
+		|| c == 0x00B7
+		|| c == 0x02D0
+		|| c == 0x02D1
+		|| c == 0x0387
+		|| c == 0x0640
+		|| c == 0x0E46
+		|| c == 0x0EC6
+		|| c == 0x3005
+		|| c >= 0x3031 && c <= 0x3035
+		|| c >= 0x309D && c <= 0x309E
 		|| c >= 0x30FC && c <= 0x30FE;
 };
 
