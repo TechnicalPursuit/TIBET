@@ -1,6 +1,6 @@
 # TIBET
 
-TIBET is a <a href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Stack">seamless</a> front-end framework
+TIBET is a <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">seamless</a> front-end framework
 blending the best features of today's modern JavaScript modules with a powerful
 set of development tools.
 
@@ -66,7 +66,7 @@ package dependencies:
 ##### Link TIBET via npm
 
 With your fork initialized you'll need to link the repository via `npm link` so
-that the `tibet` command will function properly:
+that the `tibet` command will function. From the top of your TIBET fork type:
 
 <pre>
     npm link .
@@ -247,11 +247,6 @@ The best way to communicate an issue, feature request, or code-related
 concern is to use the GitHub-based <a
 href="https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open"
 target="_blank">issues list</a> for TIBET.
-
-If you have specific code you'd like us to consider we're always open to <a
-href="http://help.github.com/articles/using-pull-requests" target="_blank">pull
-requests</a>. Using pull requests is great way to keep discussion of new
-features visible to the entire TIBET community.
 
 Additional contact info is available at <a href="http://www.technicalpursuit.com"
 target="_blank">www.technicalpursuit.com</a>.
