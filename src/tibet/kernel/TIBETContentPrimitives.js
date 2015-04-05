@@ -642,6 +642,8 @@ function(aNode) {
             currentChild,
 
             itemObj,
+            children,
+
             key;
 
         elemName = anElement.nodeName;
@@ -685,9 +687,14 @@ function(aNode) {
                 newObj = [];
 
                 itemObj = {};
-                for (i = 0; i < anElement.children.length; i++) {
 
-                    currentChild = anElement.children[i];
+                if (!(children = anElement.children)) {
+                    children = TP.nodeGetChildElements(anElement);
+                }
+
+                for (i = 0; i < children.length; i++) {
+
+                    currentChild = children[i];
 
                     xmlNodeAsJSONObj(currentChild, itemObj);
                     key = Object.keys(itemObj)[0];
@@ -702,9 +709,14 @@ function(aNode) {
             case 'object':
 
                 newObj = {};
-                for (i = 0; i < anElement.children.length; i++) {
 
-                    currentChild = anElement.children[i];
+                if (!(children = anElement.children)) {
+                    children = TP.nodeGetChildElements(anElement);
+                }
+
+                for (i = 0; i < children.length; i++) {
+
+                    currentChild = children[i];
 
                     xmlNodeAsJSONObj(currentChild, newObj);
                 }
