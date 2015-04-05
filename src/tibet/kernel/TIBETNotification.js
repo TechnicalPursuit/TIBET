@@ -2179,10 +2179,6 @@ function(aSignalName, clearIgnores) {
         this.clearIgnores();
     }
 
-    this.shouldPrevent(false);
-    this.shouldStop(false);
-    this.shouldStopImmediately(false);
-
     return this;
 });
 
@@ -2281,6 +2277,7 @@ function(aFlag) {
 
     return this.$shouldStopImmediately;
 });
+
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Inst.defineMethod('stopImmediatePropagation',
@@ -5734,6 +5731,11 @@ function(anOrigin, aSignal, aPayload, aType) {
 
         //  are we at Signal? top of signal hierarchy so stop here
         if (signame === 'TP.sig.Signal') {
+            break;
+        }
+
+        //  as we loop across signal names we may be stopped, so check that.
+        if (i > 0 && (sig.shouldStop() || sig.shouldStopImmediately())) {
             break;
         }
 
