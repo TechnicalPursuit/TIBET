@@ -2605,7 +2605,8 @@ function(targetObj, varargs) {
 
     //  See if the JSONContent object already has corresponding XML content. If
     //  not, create it.
-    if (!TP.isNode(tpXMLDoc = targetObj.$get('data'))) {
+    tpXMLDoc = targetObj.$get('data');
+    if (!TP.isKindOf(tpXMLDoc, TP.core.XMLDocumentNode)) {
 
         //  Some sleight-of-hand to get our target content object to hold XML
         //  rather than JSON, but pretend to outside observers like it's holding
