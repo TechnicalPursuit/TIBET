@@ -563,38 +563,6 @@ function(anObject) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Inst.defineMethod('init',
-function(data) {
-
-    /**
-     * @method init
-     * @summary Returns a newly constructed Object from inbound JSON content.
-     * @param {Object} data The string to use for data.
-     * @returns {TP.core.JSONContent} A new instance.
-     */
-
-    var jsonData;
-
-    //  If a String was handed in, it's probably JSON - try to convert it.
-    if (TP.isString(data) && TP.notEmpty(data)) {
-
-        //  Note here how we pass false in order to *not* get TIBET-enhanced
-        //  objects. We're interested in holding a bag of 'plain JS objects'.
-        jsonData = TP.json2js(data, false);
-
-        //  TP.json2js will raise for us.
-        if (TP.notValid(jsonData)) {
-            return;
-        }
-    } else {
-        jsonData = data;
-    }
-
-    return this.callNextMethod(jsonData);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.JSONContent.Inst.defineMethod('asJSONSource',
 function() {
 
@@ -681,6 +649,37 @@ function() {
         });
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('getData',
+function() {
+
+    /**
+     * @method getData
+     * @summary Returns the underlying data object.
+     * @returns {Object} The receiver's underlying data object.
+     */
+
+    var jsonData;
+
+    jsonData = this.$get('data');
+
+    //  If a String was handed in, it's probably JSON - try to convert it.
+    if (TP.isString(jsonData) && TP.notEmpty(jsonData)) {
+
+        jsonData = TP.json2js(jsonData);
+
+        //  TP.json2js will raise for us.
+        if (TP.notValid(jsonData)) {
+            return;
+        }
+
+        this.set('data', jsonData);
+    }
+
+    return jsonData;
 });
 
 //  ------------------------------------------------------------------------
