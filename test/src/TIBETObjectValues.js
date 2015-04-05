@@ -206,10 +206,14 @@ function(aRequest) {
     xmlDocumentVal.appendChild(TP.elem('<foo bar="baz">Hi there<\/foo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<boo><goo/><\/boo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<moo\/>'));
+    //  assign a global ID for use in testing
+    TP.id(xmlDocumentVal, true);
 
     //  XML Element
     xmlElementVal = xmlDocumentVal.createElement('foo');
     xmlElementVal.appendChild(xmlDocumentVal.createTextNode('bar'));
+    //  assign a global ID for use in testing
+    TP.id(xmlElementVal, true);
 
     //  XML Attribute
     attrNodeVal = xmlDocumentVal.createAttribute('foo');

@@ -218,6 +218,9 @@ function() {
         testData,
         testKeys,
 
+        winGID,
+        docLoc,
+
         len,
         i,
 
@@ -233,6 +236,9 @@ function() {
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
+
+    winGID = TP.gid(testData.at('Window'));
+    docLoc = TP.documentGetLocation(testData.at('HTMLDocument'));
 
     /* eslint-disable no-multi-spaces */
     correctValues = TP.hc(
@@ -251,21 +257,21 @@ function() {
         'NativeType',                           'Array',
         'NativeFunction',                       /^Function\$(\w+)$/,
 
-        'Window',                               TP.sys.cfg('tibet.uibuffer'),
-        'IFrameWindow',                         TP.sys.cfg('tibet.uibuffer') + '.UIROOT',
+        'Window',                               winGID,
+        'IFrameWindow',                         winGID + '.UIROOT',
 
         //'Node',                                 'Node',
-        'HTMLDocument',                         'document',
-        'HTMLElement',                          'body',
+        'HTMLDocument',                         'tibet://' + winGID + '/' + docLoc,
+        'HTMLElement',                          'tibet://' + winGID + '/' + docLoc.slice(0, docLoc.indexOf('#?')) + '#body',
 
-        'XMLDocument',                          'document',
-        'XMLElement',                           'element(/1)',
+        'XMLDocument',                          TP.id(testData.at('XMLDocument')),
+        'XMLElement',                           TP.id(testData.at('XMLElement')),
 
-        'AttributeNode',                        'xpath1(./@foo)',
-        'TextNode',                             'xpath1(./text()[contains(.,\'foo\')])',
-        'CDATASectionNode',                     'xpath1(./text()[contains(.,\'foo\')])',
-        'PINode',                               'xpath1(./processing-instruction(\'foo\'))',
-        'CommentNode',                          'xpath1(./comment()[1])',
+        'AttributeNode',                        '#xpath1(./@foo)',
+        'TextNode',                             '#xpath1(./text()[contains(.,\'foo\')])',
+        'CDATASectionNode',                     '#xpath1(./text()[contains(.,\'foo\')])',
+        'PINode',                               '#xpath1(./processing-instruction(\'foo\'))',
+        'CommentNode',                          '#xpath1(./comment()[1])',
         'DocumentFragmentNode',                 '#document-fragment',
 
         'NodeList',                             /^NodeList\$(\w+)$/,
@@ -286,18 +292,18 @@ function() {
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
         'TP.core.Window',                       TP.sys.cfg('tibet.uibuffer'),
-        'TP.core.HTMLDocumentNode',             'document',
-        'TP.core.HTMLElementNode',              'body',
+        'TP.core.HTMLDocumentNode',             'tibet://' + winGID + '/' + docLoc,
+        'TP.core.HTMLElementNode',              'tibet://' + winGID + '/' + docLoc.slice(0, docLoc.indexOf('#?')) + '#body',
 
-        'TP.core.XMLDocumentNode',              'document',
-        'TP.core.XMLElementNode',               'element(/1)',
+        'TP.core.XMLDocumentNode',              TP.id(testData.at('XMLDocument')),
+        'TP.core.XMLElementNode',               TP.id(testData.at('XMLElement')),
 
         'TP.core.DocumentFragmentNode',         '#document-fragment',
-        'TP.core.AttributeNode',                'xpath1(./@foo)',
-        'TP.core.TextNode',                     'xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.CDATASectionNode',             'xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.ProcessingInstructionNode',    'xpath1(./processing-instruction(\'foo\'))',
-        'TP.core.CommentNode',                  'xpath1(./comment()[1])',
+        'TP.core.AttributeNode',                '#xpath1(./@foo)',
+        'TP.core.TextNode',                     '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.core.CDATASectionNode',             '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.core.ProcessingInstructionNode',    '#xpath1(./processing-instruction(\'foo\'))',
+        'TP.core.CommentNode',                  '#xpath1(./comment()[1])',
 
         'TP.core.SimpleTIBETPath',              /^TP\.core\.SimpleTIBETPath\$(\w+)$/,
         'TP.core.ComplexTIBETPath',             /^TP\.core\.ComplexTIBETPath\$(\w+)$/,
