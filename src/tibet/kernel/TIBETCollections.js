@@ -4561,7 +4561,7 @@ function() {
                 } else {
                     //  allocate internal hash - note that it is a
                     //  prototype-less object.
-                    this.set('$$hash', TP.constructOrphanObject());
+                    this.$set('$$hash', TP.constructOrphanObject());
 
                     //  NB: We're only interested in the local keys here.
                     keys = TP.$getOwnKeys(obj);
