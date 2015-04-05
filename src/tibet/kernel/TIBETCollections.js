@@ -4448,76 +4448,7 @@ function() {
      * @returns {TP.lang.Hash} The receiver.
      */
 
-    var dict,
-        obj,
-        i,
-        pair,
-        attrs,
-
-        len,
-        keys;
-
-    dict = TP.lang.Hash.construct();
-
-    switch (arguments.length) {
-        case 0:
-            break;
-        case 1:
-            obj = arguments[0];
-            if (TP.notValid(obj)) {
-                return dict;
-            } else if (TP.isArray(obj)) {
-                if (TP.isPair(obj[0])) {
-                    //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
-                    for (i = 0; i < obj.length; i++) {
-                        pair = obj[i];
-                        dict.atPut(
-                            pair[0],
-                            pair[1],
-                            false);
-                    }
-                } else {
-                    //  array syntax ['a', 1, 'b', 2, 'c', 3]
-                    for (i = 0; i < obj.length; i += 2) {
-                        dict.atPut(
-                            obj[i],
-                            obj[i + 1],
-                            false);
-                    }
-                }
-            } else if (TP.isString(obj)) {
-                return TP.lang.Hash.fromString(obj);
-            } else if (TP.isElement(obj)) {
-                attrs = obj.attributes;
-                len = attrs.length;
-
-                for (i = 0; i < len; i++) {
-                    dict.atPut(attrs[i].name, attrs[i].value);
-                }
-            } else if (TP.isKindOf(obj, TP.lang.Hash)) {
-                return obj;
-            } else {
-                //  NB: We're only interested in the local keys here.
-                keys = TP.$getOwnKeys(obj);
-                len = keys.getSize();
-
-                for (i = 0; i < len; i++) {
-                    dict.atPut(keys.at(i), obj[keys.at(i)], false);
-                }
-            }
-            break;
-        default:
-            //  arguments syntax 'a', 1, 'b', 2, 'c', 3
-            for (i = 0; i < arguments.length; i += 2) {
-                dict.atPut(
-                    arguments[i],
-                    arguments[i + 1],
-                    false);
-            }
-            break;
-    }
-
-    return dict;
+    return TP.lang.Hash.construct.apply(TP.lang.Hash, arguments);
 });
 
 //  ------------------------------------------------------------------------
