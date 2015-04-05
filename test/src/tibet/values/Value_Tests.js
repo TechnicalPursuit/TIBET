@@ -984,113 +984,12 @@ function() {
     //  Instances of native and TIBET types
 
     TP.$$setupCommonObjectValues();
+    TP.$$setupCommonObjectTypes();
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
 
-    /* eslint-disable no-multi-spaces */
-    correctValues = TP.hc(
-        TP.NULL,                                null,
-        'Boolean',                              Boolean,
-        'String',                               String,
-        'Number',                               Number,
-        'RegExp',                               RegExp,
-        'Date',                                 Date,
-        'InvalidDate',                          Date,
-        'Array',                                Array,
-        'Object',                               Object,
-        'Function',                             Function,
-        'NaN',                                  Number,
-        'NativeType',                           Function,
-        'NativeFunction',                       Function,
-
-        'Window',                               Window,
-        'IFrameWindow',                         testData.at('IFrameWindow').Window,
-
-        //'Node',                                 'Node',
-        'HTMLDocument',                         HTMLDocument,
-        'HTMLElement',                          HTMLBodyElement,
-
-        'XMLDocument',                          XMLDocument,
-        'XMLElement',                           Element,
-
-        'AttributeNode',                        Attr,
-        'TextNode',                             Text,
-        'CDATASectionNode',                     CDATASection,
-        'PINode',                               ProcessingInstruction,
-        'CommentNode',                          Comment,
-        'DocumentFragmentNode',                 DocumentFragment,
-
-        'NodeList',                             NodeList,
-        'NamedNodeMap',                         NamedNodeMap,
-
-        'CSSStyleSheet',                        CSSStyleSheet,
-        'CSSStyleRule',                         CSSStyleRule,
-        'CSSStyleDeclaration',                  CSSStyleDeclaration,
-
-        'Error',                                Error,
-        'Event',                                MouseEvent,
-        'XHR',                                  XMLHttpRequest,
-
-        'TIBETType',                            TP.meta.core.Node,
-        'TP.lang.Object',                       TP.lang.Object,
-        'TP.lang.Hash',                         TP.lang.Hash,
-        'TP.sig.Signal',                        TP.sig.Signal,
-        'TP.sig.Exception',                     TP.sig.Exception,
-
-        'TP.core.Window',                       TP.core.Window,
-        'TP.core.HTMLDocumentNode',             TP.core.HTMLDocumentNode,
-        'TP.core.HTMLElementNode',              TP.html.body,
-
-        'TP.core.XMLDocumentNode',              TP.core.XMLDocumentNode,
-        'TP.core.XMLElementNode',               TP.core.XMLElementNode,
-
-        'TP.core.DocumentFragmentNode',         TP.core.DocumentFragmentNode,
-        'TP.core.AttributeNode',                TP.core.AttributeNode,
-        'TP.core.TextNode',                     TP.core.TextNode,
-        'TP.core.CDATASectionNode',             TP.core.CDATASectionNode,
-        'TP.core.ProcessingInstructionNode',    TP.core.XMLProcessingInstruction,
-        'TP.core.CommentNode',                  TP.core.CommentNode,
-
-        'TP.core.SimpleTIBETPath',              TP.core.SimpleTIBETPath,
-        'TP.core.ComplexTIBETPath',             TP.core.ComplexTIBETPath,
-        'TP.core.ElementPath',                  TP.core.ElementPath,
-        'TP.core.XTensionPath',                 TP.core.XTensionPath,
-        'TP.core.XPathPath',                    TP.core.XPathPath,
-
-        'TP.sig.Request',                       TP.sig.Request,
-        'TP.sig.Response',                      TP.sig.Response,
-
-        'TP.core.TIBETURN',                     TP.core.TIBETURN,
-        'TP.core.HTTPURL',                      TP.core.HTTPURL,
-        'TP.core.FileURL',                      TP.core.FileURL,
-        'TP.core.JSURI',                        TP.core.JSURI,
-        'TP.core.WSURL',                        TP.core.WSURL,
-        'TP.core.TIBETURL',                     TP.core.TIBETURL,
-        'TP.core.CookieURL',                    TP.core.CookieURL,
-
-        'TP.w3.DocType',                        TP.w3.DocType,
-
-        'TP.core.Point',                        TP.core.Point,
-        'TP.core.Rect',                         TP.core.Rect,
-        'TP.core.Matrix',                       TP.core.Matrix,
-        'TP.core.Color',                        TP.core.Color,
-
-        'TP.core.LinearGradient',               TP.core.LinearGradient,
-        'TP.core.RadialGradient',               TP.core.RadialGradient,
-
-        'TP.core.Pattern',                      TP.core.Pattern,
-        'TP.core.Path',                         TP.core.SVGPath,
-
-        'TP.core.Job',                          TP.core.Job,
-        'TP.core.Browser_TYPE',                 TP.meta.core.Browser,
-
-        'TP.boot.Annotation',                   TP.boot.Annotation,
-        'TP.core.Annotation',                   TP.core.Annotation
-    );
-    /* eslint-enable no-multi-spaces */
-
-    correctValues.$get('$$hash')[TP.UNDEF] = undefined;
+    correctValues = TP.$$commonObjectTypes;
 
     //  ---
 
