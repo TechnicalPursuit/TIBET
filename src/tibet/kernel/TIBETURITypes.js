@@ -9124,6 +9124,10 @@ function(aURI) {
             signal = type.construct(payload);
         } else {
             signal = TP.sig.RouteChange.construct(payload);
+            //  Adjust the name to be a "route" name for consistency.
+            if (!/^Route/.test(name)) {
+                name = 'Route' + name;
+            }
             signal.setSignalName(name);
         }
 
