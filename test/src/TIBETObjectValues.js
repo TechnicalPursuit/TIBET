@@ -617,7 +617,12 @@ function(aRequest) {
         tpBootAnnotation,
         tpAnnotation,
 
-        objTypes;
+        objTypeHierarchies,
+
+        objTypes,
+
+        i,
+        keys;
 
     if (TP.isValid(TP.$$commonObjectTypes)) {
         return;
@@ -736,7 +741,7 @@ function(aRequest) {
     tpAnnotation = TP.ac(TP.core.Annotation, TP.lang.Object, TP.lang.RootObject, Object);
 
     /* eslint-disable no-multi-spaces */
-    objTypes = TP.hc(
+    objTypeHierarchies = TP.hc(
     TP.NULL,                    nullVal,                //  null
     'Array',                    arrayVal,               //  Array
     'Boolean',                  booleanVal,             //  Boolean
@@ -839,9 +844,31 @@ function(aRequest) {
 
     //  In order to get an 'undefined' value into our hash, we have to play some
     //  trickery with the underlying hash... TODO: clean this up
-    objTypes.$get('$$hash')[TP.UNDEF] = undefVal;
+    objTypeHierarchies.$get('$$hash')[TP.UNDEF] = undefVal;
 
-    TP.defineAttributeSlot(TP, '$$commonObjectTypes', objTypes);
+    TP.defineAttributeSlot(
+            TP, '$$commonObjectTypeHierarchies', objTypeHierarchies);
+
+    //  To make the individual type values, we go to each entry for the type
+    //  hierarchy and grab the first value (which will be the 'most specific'
+    //  type).
+
+    objTypes = TP.hc();
+
+    keys = objTypeHierarchies.getKeys();
+    for (i = 0; i < keys.getSize(); i++) {
+        objTypes.atPut(
+                keys.at(i),
+                objTypeHierarchies.at(keys.at(i)).at(0));
+    }
+
+    //  These values are different for the standalone type values vs. the type
+    //  hierarchy values
+    objTypes.$get('$$hash')[TP.UNDEF] = undefined;
+    objTypes.$get('$$hash')[TP.NULL] = null;
+
+    TP.defineAttributeSlot(
+            TP, '$$commonObjectTypes', objTypes);
 });
 
 //  ------------------------------------------------------------------------
