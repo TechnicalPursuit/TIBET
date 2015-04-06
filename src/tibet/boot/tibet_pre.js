@@ -18,12 +18,12 @@
           node:true
 */
 
-/* global TP:true, APP:true, $$TIBET:true */
+/* global TP:true, APP:true */
 
 //  ----------------------------------------------------------------------------
 
 /* eslint indent:0 */
-(function (root) {
+(function(root) {
 
 //  GLOBAL - Defines where TIBET booted and where the codeframe is. We set this
 //  early so the cfg/post/hook file logic knows it's bundled with tibet_pre.js.
@@ -166,7 +166,7 @@ if (!TP.sys.$nativeglobals) {
     //  'TP.global' here, which we use when we mean the global context and not
     //  the window from a semantic perspective.
 
-    (function () {
+    (function() {
 
         var getProps,
             uniqueProps;
@@ -179,7 +179,7 @@ if (!TP.sys.$nativeglobals) {
 
         //  Unique the property names.
         uniqueProps = function(props) {
-            return props.filter(function (value, index) {
+            return props.filter(function(value, index) {
                 return props.lastIndexOf(value) === index;
             });
         };
@@ -1245,8 +1245,7 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
      * @returns {Object} The value of the property.
      */
 
-    var prefix,
-        val,
+    var val,
         key,
         arr,
         keys,
