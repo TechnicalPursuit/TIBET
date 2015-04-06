@@ -2610,7 +2610,9 @@ function(anObj) {
         Function.prototype.fluffycat = 'fluffycat';
 
         //  Loop over all of the globals that were found in our startup
-        //  sequence.
+        //  sequence. Note that TP.sys.$nativeglobals gets redone as a
+        //  TP.lang.Hash during system finalization, but at the point the first
+        //  call to this method is made, it is still an Array.
         TP.sys.$nativeglobals.forEach(
                 function(aProp) {
                     var obj;
