@@ -3127,6 +3127,13 @@ function() {
      * @returns {Object} The function's return value upon invocation.
      */
 
+    //  If the receiver is a native Function, it may throw an exception if we
+    //  try to execute it without any arguments or for other reasons. Therefore,
+    //  we don't execute them this way
+    if (TP.isNativeFunction(this)) {
+        return null;
+    }
+
     return this.apply(null, arguments);
 });
 
