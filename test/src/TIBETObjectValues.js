@@ -754,8 +754,8 @@ function(aRequest) {
     'InvalidDate',              invalidDateVal,         //  not a Date
     'NaN',                      nanVal,                 //  NaN
     'Number',                   numberVal,              //  Number
-    'RegExp',                   regexpVal,              //  RegExp
     'Object',                   objectVal,              //  Object
+    'RegExp',                   regexpVal,              //  RegExp
     'String',                   stringVal,              //  String
 
     'NativeType',               nativeTypeVal,          //  NativeType
