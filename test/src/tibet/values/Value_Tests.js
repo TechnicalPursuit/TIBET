@@ -989,7 +989,7 @@ function() {
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
 
-    correctValues = TP.$$commonObjectTypes;
+    correctValues = TP.$$commonObjectLeafTypes;
 
     //  ---
 

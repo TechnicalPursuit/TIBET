@@ -619,7 +619,7 @@ function(aRequest) {
 
         objTypeHierarchies,
 
-        objTypes,
+        objLeafTypes,
 
         i,
         keys;
@@ -849,26 +849,27 @@ function(aRequest) {
     TP.defineAttributeSlot(
             TP, '$$commonObjectTypeHierarchies', objTypeHierarchies);
 
-    //  To make the individual type values, we go to each entry for the type
-    //  hierarchy and grab the first value (which will be the 'most specific'
-    //  type).
+    //  ---
 
-    objTypes = TP.hc();
+    //  To make the most specific type values, we go to each entry for the type
+    //  hierarchy and grab the first value.
+
+    objLeafTypes = TP.hc();
 
     keys = objTypeHierarchies.getKeys();
     for (i = 0; i < keys.getSize(); i++) {
-        objTypes.atPut(
+        objLeafTypes.atPut(
                 keys.at(i),
-                objTypeHierarchies.at(keys.at(i)).at(0));
+                objTypeHierarchies.at(keys.at(i)).first());
     }
 
     //  These values are different for the standalone type values vs. the type
     //  hierarchy values
-    objTypes.$get('$$hash')[TP.UNDEF] = undefined;
-    objTypes.$get('$$hash')[TP.NULL] = null;
+    objLeafTypes.$get('$$hash')[TP.UNDEF] = undefined;
+    objLeafTypes.$get('$$hash')[TP.NULL] = null;
 
     TP.defineAttributeSlot(
-            TP, '$$commonObjectTypes', objTypes);
+            TP, '$$commonObjectLeafTypes', objLeafTypes);
 });
 
 //  ------------------------------------------------------------------------
