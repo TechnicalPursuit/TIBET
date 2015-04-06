@@ -2602,7 +2602,7 @@ function(anObject, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('go2',
-function(aURI, aRequest, nodeContext) {
+function(aURI, nodeContext) {
 
     /**
      * @method go2
@@ -2610,7 +2610,6 @@ function(aURI, aRequest, nodeContext) {
      *     this method is that it tracks history and link access which isn't
      *     done by a typical href or location= invocation.
      * @param {TP.core.URI|String} aURI The URI to focus on.
-     * @param {TP.sig.Request} aRequest A request containing control parameters.
      * @param {Object} nodeContext The window to adjust. Defaults to the
      *     $$context placed on this function.
      * @exception TP.sig.InvalidURI
@@ -2642,7 +2641,7 @@ function(aURI, aRequest, nodeContext) {
 
     TP.sys.logLink(aURI, TP.INFO);
 
-    win.setContent(TP.uc(aURI), aRequest);
+    win.setContent(TP.uc(aURI));
 
     return false;
 });
