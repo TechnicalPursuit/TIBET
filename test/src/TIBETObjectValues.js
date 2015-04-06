@@ -509,6 +509,8 @@ function(aRequest) {
     objValues.$get('$$hash')[TP.UNDEF] = undefVal;
 
     TP.defineAttributeSlot(TP, '$$commonObjectValues', objValues);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -870,6 +872,8 @@ function(aRequest) {
 
     TP.defineAttributeSlot(
             TP, '$$commonObjectLeafTypes', objLeafTypes);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
