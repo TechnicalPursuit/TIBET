@@ -942,5 +942,368 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$setupCommonWrappedObjectValues',
+function(aRequest) {
+
+    var wrappedObjectValues;
+
+    if (TP.isValid(TP.$$commonWrappedObjectValues)) {
+        return;
+    }
+
+    /* eslint-disable no-multi-spaces */
+    wrappedObjectValues = TP.hc(
+        TP.UNDEF,                               TP.IDENTITY,
+        TP.NULL,                                TP.IDENTITY,
+        'Array',                                'Array',    //  contents wrapped
+        'Boolean',                              TP.IDENTITY,
+        'Date',                                 TP.IDENTITY,
+        'Function',                             TP.IDENTITY,
+        'InvalidDate',                          TP.IDENTITY,
+        'NaN',                                  TP.IDENTITY,
+        'Number',                               TP.IDENTITY,
+        'Object',                               TP.IDENTITY,
+        'RegExp',                               TP.IDENTITY,
+        'String',                               TP.IDENTITY,
+
+        'NativeType',                           TP.IDENTITY,
+        'NativeFunction',                       TP.IDENTITY,
+
+        'Window',                               'TP.core.Window',
+        'IFrameWindow',                         'TP.core.Window',
+
+        //'Node',                                 'Node',
+        'HTMLDocument',                         'TP.core.HTMLDocumentNode',
+        'HTMLElement',                          'TP.html.body',
+
+        'XMLDocument',                          'TP.core.XMLDocumentNode',
+        'XMLElement',                           'TP.core.XMLElementNode',
+
+        'AttributeNode',                        'TP.core.AttributeNode',
+        'TextNode',                             'TP.core.TextNode',
+        'CDATASectionNode',                     'TP.core.CDATASectionNode',
+        'PINode',                               'TP.core.ProcessingInstructionNode',
+        'CommentNode',                          'TP.core.CommentNode',
+        'DocumentFragmentNode',                 'TP.core.DocumentFragmentNode',
+
+        'NodeList',                             'Array',        //  contents wrapped
+        'NamedNodeMap',                         'TP.lang.Hash', //  contents wrapped
+
+        'CSSStyleSheet',                        TP.IDENTITY,
+        'CSSStyleRule',                         TP.IDENTITY,
+        'CSSStyleDeclaration',                  TP.IDENTITY,
+
+        'Error',                                TP.IDENTITY,
+        'Event',                                'TP.sig.DOMMouseOver',
+        'XHR',                                  TP.IDENTITY,
+
+        'TIBETType',                            TP.IDENTITY,
+        'TP.lang.Object',                       TP.IDENTITY,
+        'TP.lang.Hash',                         'TP.lang.Hash', //  contents wrapped
+        'TP.sig.Signal',                        TP.IDENTITY,
+        'TP.sig.Exception',                     TP.IDENTITY,
+
+        'TP.core.Window',                       TP.IDENTITY,
+        'TP.core.HTMLDocumentNode',             TP.IDENTITY,
+        'TP.core.HTMLElementNode',              TP.IDENTITY,
+
+        'TP.core.XMLDocumentNode',              TP.IDENTITY,
+        'TP.core.XMLElementNode',               TP.IDENTITY,
+
+        'TP.core.DocumentFragmentNode',         TP.IDENTITY,
+        'TP.core.AttributeNode',                TP.IDENTITY,
+        'TP.core.TextNode',                     TP.IDENTITY,
+        'TP.core.CDATASectionNode',             TP.IDENTITY,
+        'TP.core.ProcessingInstructionNode',    TP.IDENTITY,
+        'TP.core.CommentNode',                  TP.IDENTITY,
+
+        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.core.ElementPath',                  TP.IDENTITY,
+        'TP.core.XTensionPath',                 TP.IDENTITY,
+        'TP.core.XPathPath',                    TP.IDENTITY,
+
+        'TP.sig.Request',                       TP.IDENTITY,
+        'TP.sig.Response',                      TP.IDENTITY,
+
+        'TP.core.TIBETURN',                     TP.IDENTITY,
+        'TP.core.HTTPURL',                      TP.IDENTITY,
+        'TP.core.FileURL',                      TP.IDENTITY,
+        'TP.core.JSURI',                        TP.IDENTITY,
+        'TP.core.WSURL',                        TP.IDENTITY,
+        'TP.core.TIBETURL',                     TP.IDENTITY,
+        'TP.core.CookieURL',                    TP.IDENTITY,
+
+        'TP.w3.DocType',                        TP.IDENTITY,
+
+        'TP.core.Point',                        TP.IDENTITY,
+        'TP.core.Rect',                         TP.IDENTITY,
+        'TP.core.Matrix',                       TP.IDENTITY,
+        'TP.core.Color',                        TP.IDENTITY,
+
+        'TP.core.LinearGradient',               TP.IDENTITY,
+        'TP.core.RadialGradient',               TP.IDENTITY,
+
+        'TP.core.Pattern',                      TP.IDENTITY,
+        'TP.core.Path',                         TP.IDENTITY,
+
+        'TP.core.Job',                          TP.IDENTITY,
+        'TP.core.Browser_TYPE',                 TP.IDENTITY,
+
+        'TP.boot.Annotation',                   TP.IDENTITY,
+        'TP.core.Annotation',                   TP.IDENTITY
+        );
+    /* eslint-enable no-multi-spaces */
+
+    TP.defineAttributeSlot(
+            TP, '$$commonWrappedObjectValues', wrappedObjectValues);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$setupCommonUnwrappedObjectValues',
+function(aRequest) {
+
+    var unwrappedObjectValues;
+
+    if (TP.isValid(TP.$$commonUnwrappedObjectValues)) {
+        return;
+    }
+
+    /* eslint-disable no-multi-spaces */
+    unwrappedObjectValues = TP.hc(
+        TP.UNDEF,                               TP.IDENTITY,
+        TP.NULL,                                TP.IDENTITY,
+        'Array',                                'Array',    //  contents wrapped
+        'Boolean',                              TP.IDENTITY,
+        'Date',                                 TP.IDENTITY,
+        'Function',                             TP.IDENTITY,
+        'InvalidDate',                          TP.IDENTITY,
+        'NaN',                                  TP.IDENTITY,
+        'Number',                               TP.IDENTITY,
+        'Object',                               TP.IDENTITY,
+        'RegExp',                               TP.IDENTITY,
+        'String',                               TP.IDENTITY,
+
+        'NativeType',                           TP.IDENTITY,
+        'NativeFunction',                       TP.IDENTITY,
+
+        'Window',                               TP.IDENTITY,
+        'IFrameWindow',                         TP.IDENTITY,
+
+        //'Node',                                 'Node',
+        'HTMLDocument',                         TP.IDENTITY,
+        'HTMLElement',                          TP.IDENTITY,
+
+        'XMLDocument',                          TP.IDENTITY,
+        'XMLElement',                           TP.IDENTITY,
+
+        'AttributeNode',                        TP.IDENTITY,
+        'TextNode',                             TP.IDENTITY,
+        'CDATASectionNode',                     TP.IDENTITY,
+        'PINode',                               TP.IDENTITY,
+        'CommentNode',                          TP.IDENTITY,
+        'DocumentFragmentNode',                 TP.IDENTITY,
+
+        'NodeList',                             TP.IDENTITY,
+        'NamedNodeMap',                         TP.IDENTITY,
+
+        'CSSStyleSheet',                        TP.IDENTITY,
+        'CSSStyleRule',                         TP.IDENTITY,
+        'CSSStyleDeclaration',                  TP.IDENTITY,
+
+        'Error',                                TP.IDENTITY,
+        'Event',                                TP.IDENTITY,
+        'XHR',                                  TP.IDENTITY,
+
+        'TIBETType',                            TP.IDENTITY,
+        'TP.lang.Object',                       TP.IDENTITY,
+        'TP.lang.Hash',                         'TP.lang.Hash', //  contents wrapped
+        'TP.sig.Signal',                        TP.IDENTITY,
+        'TP.sig.Exception',                     TP.IDENTITY,
+
+        'TP.core.Window',                       'DOMWindow',
+        'TP.core.HTMLDocumentNode',             'HTMLDocument',
+        'TP.core.HTMLElementNode',              'HTMLBodyElement',
+
+        'TP.core.XMLDocumentNode',              'XMLDocument',
+        'TP.core.XMLElementNode',               'Element',
+
+        'TP.core.DocumentFragmentNode',         'DocumentFragment',
+        'TP.core.AttributeNode',                'Attr',
+        'TP.core.TextNode',                     'Text',
+        'TP.core.CDATASectionNode',             'CDATASection',
+        'TP.core.ProcessingInstructionNode',    'ProcessingInstruction',
+        'TP.core.CommentNode',                  'Comment',
+
+        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.core.ElementPath',                  TP.IDENTITY,
+        'TP.core.XTensionPath',                 TP.IDENTITY,
+        'TP.core.XPathPath',                    TP.IDENTITY,
+
+        'TP.sig.Request',                       TP.IDENTITY,
+        'TP.sig.Response',                      TP.IDENTITY,
+
+        'TP.core.TIBETURN',                     'String',
+        'TP.core.HTTPURL',                      'String',
+        'TP.core.FileURL',                      'String',
+        'TP.core.JSURI',                        'String',
+        'TP.core.WSURL',                        'String',
+        'TP.core.TIBETURL',                     'String',
+        'TP.core.CookieURL',                    'String',
+
+        'TP.w3.DocType',                        TP.IDENTITY,
+
+        'TP.core.Point',                        TP.IDENTITY,
+        'TP.core.Rect',                         TP.IDENTITY,
+        'TP.core.Matrix',                       TP.IDENTITY,
+        'TP.core.Color',                        TP.IDENTITY,
+
+        'TP.core.LinearGradient',               TP.IDENTITY,
+        'TP.core.RadialGradient',               TP.IDENTITY,
+
+        'TP.core.Pattern',                      TP.IDENTITY,
+        'TP.core.Path',                         TP.IDENTITY,
+
+        'TP.core.Job',                          TP.IDENTITY,
+        'TP.core.Browser_TYPE',                 TP.IDENTITY,
+
+        'TP.boot.Annotation',                   TP.IDENTITY,
+        'TP.core.Annotation',                   TP.IDENTITY
+        );
+    /* eslint-enable no-multi-spaces */
+
+    TP.defineAttributeSlot(
+            TP, '$$commonUnwrappedObjectValues', unwrappedObjectValues);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$setupCommonPrimitiveObjectValues',
+function(aRequest) {
+
+    var primitiveObjectValues;
+
+    if (TP.isValid(TP.$$commonPrimitiveObjectValues)) {
+        return;
+    }
+
+    /* eslint-disable no-multi-spaces */
+    primitiveObjectValues = TP.hc(
+        TP.UNDEF,                               TP.IDENTITY,
+        TP.NULL,                                TP.IDENTITY,
+        'Array',                                TP.IDENTITY,
+        'Boolean',                              TP.IDENTITY,
+        'Date',                                 TP.IDENTITY,
+        'Function',                             'fluffy',       //  Return value of function
+        'InvalidDate',                          TP.IDENTITY,
+        'NaN',                                  TP.IDENTITY,
+        'Number',                               TP.IDENTITY,
+        'Object',                               TP.IDENTITY,
+        'RegExp',                               TP.IDENTITY,
+        'String',                               TP.IDENTITY,
+
+        'NativeType',                           TP.IDENTITY,
+        'NativeFunction',                       TP.IDENTITY,
+
+        'Window',                               TP.IDENTITY,
+        'IFrameWindow',                         TP.IDENTITY,
+
+        //'Node',                                 'Node',
+        'HTMLDocument',                         /([\s\S]+)/,
+        'HTMLElement',                          /([\s\S]+)/,
+
+        'XMLDocument',                          'Hi there<boo><goo/></boo><moo/>',
+        'XMLElement',                           'bar',
+
+        'AttributeNode',                        'bar',
+        'TextNode',                             'foo',
+        'CDATASectionNode',                     'foo',
+        'PINode',                               'bar',
+        'CommentNode',                          'foo',
+        'DocumentFragmentNode',                 '<foo/><bar/>',
+
+        'NodeList',                             TP.IDENTITY,
+        'NamedNodeMap',                         TP.IDENTITY,
+
+        'CSSStyleSheet',                        TP.IDENTITY,
+        'CSSStyleRule',                         TP.IDENTITY,
+        'CSSStyleDeclaration',                  TP.IDENTITY,
+
+        'Error',                                TP.IDENTITY,
+        'Event',                                TP.IDENTITY,
+        'XHR',                                  TP.IDENTITY,
+
+        'TIBETType',                            TP.IDENTITY,
+        'TP.lang.Object',                       TP.IDENTITY,
+        'TP.lang.Hash',                         TP.IDENTITY,
+        'TP.sig.Signal',                        TP.IDENTITY,
+        'TP.sig.Exception',                     TP.IDENTITY,
+
+        'TP.core.Window',                       TP.IDENTITY,
+        'TP.core.HTMLDocumentNode',             /([\s\S]+)/,
+        'TP.core.HTMLElementNode',              /([\s\S]+)/,
+
+        'TP.core.XMLDocumentNode',              'Hi there<boo><goo/></boo><moo/>',
+        'TP.core.XMLElementNode',               'bar',
+
+        'TP.core.DocumentFragmentNode',         '<foo/><bar/>',
+        'TP.core.AttributeNode',                'bar',
+        'TP.core.TextNode',                     'foo',
+        'TP.core.CDATASectionNode',             'foo',
+        'TP.core.ProcessingInstructionNode',    'bar',
+        'TP.core.CommentNode',                  'foo',
+
+        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.core.ElementPath',                  TP.IDENTITY,
+        'TP.core.XTensionPath',                 TP.IDENTITY,
+        'TP.core.XPathPath',                    TP.IDENTITY,
+
+        'TP.sig.Request',                       TP.IDENTITY,
+        'TP.sig.Response',                      'baz',
+
+        'TP.core.TIBETURN',                     TP.IDENTITY,
+        'TP.core.HTTPURL',                      TP.IDENTITY,
+        'TP.core.FileURL',                      TP.IDENTITY,
+        'TP.core.JSURI',                        TP.IDENTITY,
+        'TP.core.WSURL',                        TP.IDENTITY,
+        'TP.core.TIBETURL',                     TP.IDENTITY,
+        'TP.core.CookieURL',                    TP.IDENTITY,
+
+        'TP.w3.DocType',                        TP.IDENTITY,
+
+        'TP.core.Point',                        TP.IDENTITY,
+        'TP.core.Rect',                         TP.IDENTITY,
+        'TP.core.Matrix',                       TP.IDENTITY,
+        'TP.core.Color',                        TP.IDENTITY,
+
+        'TP.core.LinearGradient',               TP.IDENTITY,
+        'TP.core.RadialGradient',               TP.IDENTITY,
+
+        'TP.core.Pattern',                      TP.IDENTITY,
+        'TP.core.Path',                         TP.IDENTITY,
+
+        'TP.core.Job',                          TP.IDENTITY,
+        'TP.core.Browser_TYPE',                 TP.IDENTITY,
+
+        'TP.boot.Annotation',                   TP.IDENTITY,
+        'TP.core.Annotation',                   TP.IDENTITY
+        );
+    /* eslint-enable no-multi-spaces */
+
+    TP.defineAttributeSlot(
+            TP, '$$commonPrimitiveObjectValues', primitiveObjectValues);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
