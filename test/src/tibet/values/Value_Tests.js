@@ -1222,5 +1222,424 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.describe('TP.isKindOf()',
+function() {
+
+    var thisArg,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+        val,
+
+        correctValues,
+        correctVal,
+
+        len2,
+        j,
+        correctType;
+
+    thisArg = this;
+
+    /* eslint-disable no-loop-func */
+
+    //  isKindOf() tests 'indirect' type relationship - an instance of a type or
+    //  one of it's subtypes.
+
+    //  Native JavaScript types (big 8)
+    testData = TP.ac(Array, Boolean, Date, Function,
+                        Number, Object, RegExp, String);
+
+    for (i = 0; i < testData.getSize(); i++) {
+
+        val = testData.at(i);
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isTrue(TP.isKindOf(testFunc.val, Object));
+                };
+            testFunc.val = val;
+
+            thisArg.it(TP.name(val) + ' (constructor) is a kind of: Object',
+                    testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isFalse(
+                        TP.isKindOf(testFunc.val, TP.ObjectProto));
+                };
+            testFunc.val = val;
+
+            thisArg.it(TP.name(val) +
+                        ' (constructor) is not a kind of: TP.ObjectProto',
+                    testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isTrue(TP.isKindOf(testFunc.val, Function));
+                };
+            testFunc.val = val;
+
+            thisArg.it(TP.name(val) + ' (constructor) is a kind of: Function',
+                    testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isFalse(
+                        TP.isKindOf(testFunc.val, TP.FunctionProto));
+                };
+            testFunc.val = val;
+
+            thisArg.it(TP.name(val) +
+                        ' (constructor) is not a kind of: TP.FunctionProto',
+                    testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isTrue(TP.isKindOf(testFunc.val, 'Object'));
+                };
+            testFunc.val = val;
+
+            thisArg.it(TP.name(val) + ' (constructor) is a kind of: "Object"',
+                    testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isTrue(TP.isKindOf(testFunc.val, 'Object'));
+                };
+            testFunc.val = val;
+
+            thisArg.it(TP.name(val) + ' (constructor) is a kind of: "Object"',
+                    testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isTrue(TP.isKindOf(testFunc.val, 'Function'));
+                };
+            testFunc.val = val;
+
+            thisArg.it(TP.name(val) + ' (constructor) is a kind of: "Function"',
+                    testFunc);
+        }());
+    }
+
+    //  Host types
+
+    TP.$$setupHostTypesValues();
+
+    testData = TP.$$hostTypesTestValues;
+    testKeys = TP.keys(TP.$$hostTypesTestValues);
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+
+        testKey = testKeys.at(i);
+        val = testData.at(testKey);
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isTrue(TP.isKindOf(testFunc.val, Object));
+                };
+            testFunc.val = val;
+
+            thisArg.it(testKey + ' (constructor) is a kind of: Object',
+                        testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isFalse(
+                        TP.isKindOf(testFunc.val, TP.ObjectProto));
+                };
+            testFunc.val = val;
+
+            thisArg.it(testKey +
+                        ' (constructor) is not a kind of: TP.ObjectProto',
+                        testFunc);
+        }());
+
+        //  ---
+
+        (function() {
+
+            var testFunc;
+
+            if (TP.isNonFunctionConstructor(val)) {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isFalse(TP.isKindOf(testFunc.val, Function));
+                    };
+                testFunc.val = val;
+
+                thisArg.it(testKey + ' (constructor) is not a kind of: Function',
+                            testFunc);
+            } else {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isTrue(TP.isKindOf(testFunc.val, Function));
+                    };
+                testFunc.val = val;
+
+                thisArg.it(testKey + ' (constructor) is a kind of: Function',
+                            testFunc);
+            }
+        }());
+
+        //  ---
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isFalse(
+                        TP.isKindOf(testFunc.val, TP.FunctionProto));
+                };
+            testFunc.val = val;
+
+            thisArg.it(testKey +
+                        ' (constructor) is not a kind of: TP.FunctionProto',
+                        testFunc);
+        }());
+    }
+
+    //  Instances of native and TIBET types
+
+    TP.$$setupCommonObjectValues();
+    TP.$$setupCommonObjectTypes();
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    correctValues = TP.$$commonObjectTypeHierarchies;
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+        test.assert.isEqualTo(
+            testKeys.getSize(),
+            correctValues.getKeys().getSize(),
+            'There are missing test values for TP.isKindOf(): ' +
+                testKeys.difference(
+                            correctValues.getKeys()).asString(', '));
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+        testKey = testKeys.at(i);
+
+        val = testData.at(testKey);
+        correctVal = correctValues.at(testKey);
+
+        //  ---
+
+        len2 = correctVal.getSize();
+        for (j = 0; j < len2; j++) {
+
+            correctType = correctVal.at(j);
+
+            (function() {
+                var testFunc;
+
+                testFunc =
+                    function(test, options) {
+                        //  'null' and 'undefined' should always return false
+                        if (TP.notValid(testFunc.val)) {
+                            test.assert.isFalse(
+                                TP.isKindOf(
+                                    testFunc.val,
+                                    testFunc.correctVal));
+                        } else {
+                            test.assert.isTrue(
+                                TP.isKindOf(
+                                    testFunc.val,
+                                    testFunc.correctVal));
+                        }
+                    };
+                testFunc.val = val;
+                testFunc.correctVal = correctType;
+
+                thisArg.it(testKey +
+                        ' is a kind of: ' +
+                        TP.name(correctType),
+                        testFunc);
+            }());
+
+            //  ---
+
+            (function() {
+                var testFunc;
+
+                testFunc =
+                    function(test, options) {
+                        //  'null' and 'undefined' should always return false
+                        if (TP.notValid(testFunc.val)) {
+                            test.assert.isFalse(
+                                TP.isKindOf(
+                                    testFunc.val,
+                                    TP.name(testFunc.correctVal)));
+                        } else {
+                            test.assert.isTrue(
+                                TP.isKindOf(
+                                    testFunc.val,
+                                    TP.name(testFunc.correctVal)));
+                        }
+                    };
+                testFunc.val = val;
+                testFunc.correctVal = correctType;
+
+                thisArg.it(testKey +
+                        ' is a kind of: ' +
+                        '"' + TP.name(correctType) + '"',
+                        testFunc);
+            }());
+        }
+
+        //  ---
+
+        //  Root object tests
+
+        if (testKey === TP.NULL || testKey === TP.UNDEF) {
+            continue;
+        }
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isTrue(
+                        TP.isKindOf(testFunc.val, Object));
+                };
+            testFunc.val = val;
+            testFunc.correctVal = TP.$$commonObjectRootTypes.at(testKey);
+
+            thisArg.it(testKey + ' is a kind of: ' + TP.name(Object),
+                        testFunc);
+        }());
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isFalse(
+                        TP.isKindOf(testFunc.val, TP.ObjectProto));
+                };
+            testFunc.val = val;
+
+            thisArg.it(testKey + ' is not a kind of: ' + TP.name(TP.ObjectProto),
+                        testFunc);
+        }());
+
+        if (testKey === 'Function' ||
+            testKey === 'NativeType' ||
+            testKey === 'NativeFunction') {
+            (function() {
+                var testFunc;
+
+                testFunc =
+                    function(test, options) {
+                        test.assert.isTrue(
+                            TP.isKindOf(testFunc.val, Function));
+                    };
+                testFunc.val = val;
+
+                thisArg.it(testKey + ' is a kind of: ' +
+                                TP.name(Function),
+                            testFunc);
+            }());
+        } else {
+            (function() {
+                var testFunc;
+
+                testFunc =
+                    function(test, options) {
+                        test.assert.isFalse(
+                            TP.isKindOf(testFunc.val, Function));
+                    };
+                testFunc.val = val;
+
+                thisArg.it(testKey + ' is not a kind of: ' +
+                                TP.name(Function),
+                            testFunc);
+            }());
+        }
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isFalse(
+                        TP.isKindOf(testFunc.val, TP.FunctionProto));
+                };
+            testFunc.val = val;
+
+            thisArg.it(testKey + ' is not a kind of: ' +
+                                TP.name(TP.FunctionProto),
+                        testFunc);
+        }());
+    }
+
+    /* eslint-enable no-loop-func */
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
