@@ -11,22 +11,6 @@
 /**
 */
 
-/* global Window: true,
-          HTMLDocument: true,
-          XMLDocument: true,
-          Attr: true,
-          Text: true,
-          CDATASection: true,
-          ProcessingInstruction: true,
-          Comment: true,
-          DocumentFragment: true,
-          NodeList: true,
-          NamedNodeMap: true,
-          CSSStyleSheet: true,
-          CSSStyleRule: true,
-          CSSStyleDeclaration: true
-*/
-
 //  ------------------------------------------------------------------------
 
 TP.describe('local id - TP.objectLocalID() / TP.lid()',
