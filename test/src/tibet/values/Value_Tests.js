@@ -1641,5 +1641,414 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.describe('supertype objects - TP.objectSupertypes() / TP.stypes()',
+function() {
+
+    var thisArg,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+        val,
+
+        correctValues,
+        correctVal,
+
+        stypesVal;
+
+    thisArg = this;
+
+    /* eslint-disable no-loop-func */
+
+    //  stypes() returns all of an object's supertypes.
+
+    //  Instances of native and TIBET types
+
+    TP.$$setupCommonObjectValues();
+    TP.$$setupCommonObjectTypes();
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    correctValues = TP.$$commonObjectTypeHierarchies;
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+        test.assert.isEqualTo(
+            testKeys.getSize(),
+            correctValues.getKeys().getSize(),
+            'There are missing test values for TP.stypes(): ' +
+                testKeys.difference(
+                            correctValues.getKeys()).asString(', '));
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+        testKey = testKeys.at(i);
+
+        val = testData.at(testKey);
+        correctVal = correctValues.at(testKey);
+
+        //  ---
+
+        stypesVal = TP.stypes(val).copy();
+        if (testKey !== TP.UNDEF && testKey !== TP.NULL) {
+            stypesVal.unshift(TP.type(val));
+        }
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isEqualTo(
+                        testFunc.val, testFunc.correctVal);
+                };
+            testFunc.val = stypesVal;
+            testFunc.correctVal = correctVal;
+
+            thisArg.it(testKey + ': TP.stypes() reports all proper supertypes',
+                        testFunc);
+        }());
+    }
+
+    /* eslint-enable no-loop-func */
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.describe('type objects - TP.objectType() / TP.type()',
+function() {
+
+    var thisArg,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+        val,
+
+        correctValues,
+        correctVal;
+
+    thisArg = this;
+
+    /* eslint-disable no-loop-func */
+
+    //  type() returns an object's type.
+
+    //  Instances of native and TIBET types
+
+    TP.$$setupCommonObjectValues();
+    TP.$$setupCommonObjectTypes();
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    correctValues = TP.$$commonObjectLeafTypes;
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+        test.assert.isEqualTo(
+            testKeys.getSize(),
+            correctValues.getKeys().getSize(),
+            'There are missing test values for TP.type(): ' +
+                testKeys.difference(
+                            correctValues.getKeys()).asString(', '));
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+        testKey = testKeys.at(i);
+
+        val = testData.at(testKey);
+        correctVal = correctValues.at(testKey);
+
+        (function() {
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isEqualTo(
+                        testFunc.val, testFunc.correctVal);
+                };
+            testFunc.val = TP.type(val);
+            testFunc.correctVal = correctVal;
+
+            thisArg.it(testKey + ': TP.type() reports proper type',
+                        testFunc);
+        }());
+    }
+
+    /* eslint-enable no-loop-func */
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.describe('wrapping - TP.objectWrap() / TP.wrap()',
+function() {
+
+    var thisArg,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+        val,
+
+        correctValues,
+        correctVal;
+
+    thisArg = this;
+
+    /* eslint-disable no-loop-func */
+
+    //  wrap() returns an object wrapped in a richer TIBET type
+
+    //  Instances of native and TIBET types
+
+    TP.$$setupCommonObjectValues();
+    TP.$$setupCommonWrappedObjectValues();
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    correctValues = TP.$$commonWrappedObjectValues;
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+        test.assert.isEqualTo(
+            testKeys.getSize(),
+            correctValues.getKeys().getSize(),
+            'There are missing test values for TP.wrap(): ' +
+                testKeys.difference(
+                            correctValues.getKeys()).asString(', '));
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+        testKey = testKeys.at(i);
+
+        val = testData.at(testKey);
+        correctVal = correctValues.at(testKey);
+
+        (function() {
+            var testFunc;
+
+            if (correctVal === TP.IDENTITY) {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isIdenticalTo(
+                            testFunc.val, testFunc.correctVal);
+                    };
+
+                testFunc.val = TP.wrap(val);
+                testFunc.correctVal = val;
+            } else {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isKindOf(
+                            testFunc.val, testFunc.correctVal);
+                    };
+
+                testFunc.val = TP.wrap(val);
+                testFunc.correctVal = correctVal;
+            }
+
+            thisArg.it(testKey + ': TP.wrap() wraps in proper type',
+                        testFunc);
+        }());
+    }
+
+    /* eslint-enable no-loop-func */
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.describe('unwrapping - TP.objectUnwrap() / TP.unwrap()',
+function() {
+
+    var thisArg,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+        val,
+
+        correctValues,
+        correctVal;
+
+    thisArg = this;
+
+    /* eslint-disable no-loop-func */
+
+    //  unwrap() returns an object unwrapped from a richer TIBET type
+
+    //  Instances of native and TIBET types
+
+    TP.$$setupCommonObjectValues();
+    TP.$$setupCommonUnwrappedObjectValues();
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    correctValues = TP.$$commonUnwrappedObjectValues;
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+        test.assert.isEqualTo(
+            testKeys.getSize(),
+            correctValues.getKeys().getSize(),
+            'There are missing test values for TP.unwrap(): ' +
+                testKeys.difference(
+                            correctValues.getKeys()).asString(', '));
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+        testKey = testKeys.at(i);
+
+        val = testData.at(testKey);
+        correctVal = correctValues.at(testKey);
+
+        (function() {
+            var testFunc;
+
+            if (correctVal === TP.IDENTITY) {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isIdenticalTo(
+                            testFunc.val, testFunc.correctVal);
+                    };
+
+                testFunc.val = TP.unwrap(val);
+                testFunc.correctVal = val;
+            } else {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isKindOf(
+                            testFunc.val, testFunc.correctVal);
+                    };
+
+                testFunc.val = TP.unwrap(val);
+                testFunc.correctVal = correctVal;
+            }
+
+            thisArg.it(testKey + ': TP.unwrap() unwraps in proper type',
+                        testFunc);
+        }());
+    }
+
+    /* eslint-enable no-loop-func */
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.describe('object value - TP.objectValue() / TP.val()',
+function() {
+
+    var thisArg,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+        val,
+
+        correctValues,
+        correctVal;
+
+    thisArg = this;
+
+    /* eslint-disable no-loop-func */
+
+    //  val() returns a 'more primitive' value
+
+    //  Instances of native and TIBET types
+
+    TP.$$setupCommonObjectValues();
+    TP.$$setupCommonPrimitiveObjectValues();
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    correctValues = TP.$$commonPrimitiveObjectValues;
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+        test.assert.isEqualTo(
+            testKeys.getSize(),
+            correctValues.getKeys().getSize(),
+            'There are missing test values for TP.val(): ' +
+                testKeys.difference(
+                            correctValues.getKeys()).asString(', '));
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+        testKey = testKeys.at(i);
+
+        val = testData.at(testKey);
+        correctVal = correctValues.at(testKey);
+
+        (function() {
+            var testFunc;
+
+            if (correctVal === TP.IDENTITY) {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isIdenticalTo(
+                            testFunc.val, testFunc.correctVal);
+                    };
+
+                testFunc.val = TP.val(val);
+                testFunc.correctVal = val;
+            } else if (TP.isString(correctVal)) {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isEqualTo(
+                            testFunc.val, testFunc.correctVal);
+                    };
+
+                testFunc.val = TP.val(val);
+                testFunc.correctVal = correctVal;
+            } else if (TP.isRegExp(correctVal)) {
+                testFunc =
+                    function(test, options) {
+                        test.assert.matches(
+                            testFunc.val, testFunc.correctVal);
+                    };
+
+                testFunc.val = TP.val(val);
+                testFunc.correctVal = correctVal;
+            }
+
+            thisArg.it(testKey + ': TP.val() produces primitive value',
+                        testFunc);
+        }());
+    }
+
+    /* eslint-enable no-loop-func */
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
