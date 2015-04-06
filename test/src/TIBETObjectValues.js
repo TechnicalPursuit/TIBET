@@ -624,7 +624,9 @@ function(aRequest) {
         objLeafTypes,
 
         i,
-        keys;
+        keys,
+
+        objRootTypes;
 
     if (TP.isValid(TP.$$commonObjectTypes)) {
         return;
@@ -872,6 +874,28 @@ function(aRequest) {
 
     TP.defineAttributeSlot(
             TP, '$$commonObjectLeafTypes', objLeafTypes);
+
+    //  ---
+
+    //  To make the least specific type values, we go to each entry for the type
+    //  hierarchy and grab the last value.
+
+    objRootTypes = TP.hc();
+
+    keys = objTypeHierarchies.getKeys();
+    for (i = 0; i < keys.getSize(); i++) {
+        objRootTypes.atPut(
+                keys.at(i),
+                objTypeHierarchies.at(keys.at(i)).last());
+    }
+
+    //  These values are different for the standalone type values vs. the type
+    //  hierarchy values
+    objRootTypes.$get('$$hash')[TP.UNDEF] = undefined;
+    objRootTypes.$get('$$hash')[TP.NULL] = null;
+
+    TP.defineAttributeSlot(
+            TP, '$$commonObjectRootTypes', objRootTypes);
 
     return;
 });
