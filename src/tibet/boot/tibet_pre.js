@@ -186,6 +186,10 @@ if (!TP.sys.$nativeglobals) {
 
         //  Get all of the unique property names from TP.global.
         TP.sys.$nativeglobals = uniqueProps(getProps(TP.global).sort());
+
+        //  Slice out any TIBET globals.
+        TP.sys.$nativeglobals.splice(TP.sys.$nativeglobals.indexOf('TP'), 1);
+        TP.sys.$nativeglobals.splice(TP.sys.$nativeglobals.indexOf('APP'), 1);
     }());
 }
 
