@@ -870,7 +870,7 @@ function(aRequest) {
     //  These values are different for the standalone type values vs. the type
     //  hierarchy values
     objLeafTypes.$get('$$hash')[TP.UNDEF] = undefined;
-    objLeafTypes.$get('$$hash')[TP.NULL] = null;
+    objLeafTypes.$get('$$hash')[TP.NULL] = undefined;
 
     TP.defineAttributeSlot(
             TP, '$$commonObjectLeafTypes', objLeafTypes);
@@ -892,7 +892,7 @@ function(aRequest) {
     //  These values are different for the standalone type values vs. the type
     //  hierarchy values
     objRootTypes.$get('$$hash')[TP.UNDEF] = undefined;
-    objRootTypes.$get('$$hash')[TP.NULL] = null;
+    objRootTypes.$get('$$hash')[TP.NULL] = undefined;
 
     TP.defineAttributeSlot(
             TP, '$$commonObjectRootTypes', objRootTypes);
