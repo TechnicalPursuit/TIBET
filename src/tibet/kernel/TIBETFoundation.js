@@ -5595,6 +5595,29 @@ function(that) {
 
 //  ------------------------------------------------------------------------
 
+Boolean.Inst.defineMethod('identicalTo',
+function(that) {
+
+    /**
+     * @method identicalTo
+     * @summary Compare for identity.
+     * @param {Object} that The object to test against.
+     * @returns {Boolean} Whether or not the receiver is identical to the
+     *     supplied object.
+     */
+
+    if (!TP.isBoolean(that)) {
+        return false;
+    }
+
+    //  force primitive comparison
+    /* eslint-disable eqeqeq */
+    return this == that;
+    /* eslint-enable eqeqeq */
+});
+
+//  ------------------------------------------------------------------------
+
 String.Inst.defineMethod('identicalTo',
 function(that) {
 
