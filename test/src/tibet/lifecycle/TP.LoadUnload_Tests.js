@@ -18,7 +18,7 @@ function() {
     var loadURI,
         win;
 
-    loadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+    loadURI = TP.uc('~lib_tst/src/tibet/lifecycle/Test.xhtml');
     win = TP.win(TP.sys.cfg('tibet.uicanvas'));
 
     //  ---
