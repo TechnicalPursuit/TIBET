@@ -73,7 +73,7 @@
 </config>
 
 <config id="lifecycle">
-    <script src="~lib_tst/src/tibet/lifecycle/TP.LoadUnload_Tests.js" />
+    <script src="~lib_tst/src/tibet/lifecycle/TP.Lifecycle_Tests.js" />
 </config>
 
 <config id="tagprocessor">
