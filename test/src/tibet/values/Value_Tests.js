@@ -2049,6 +2049,20 @@ function() {
     /* eslint-enable no-loop-func */
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  TP.copy()
+//  TP.keys()
+//  TP.loc()
+//  TP.parse()
+//  TP.size()
+
+//  TP.equal()
+//  TP.identical()
+
+//  TP.format()
+//  TP.validate()
+
+//  TP.isSubtypeOf()
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
