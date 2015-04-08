@@ -41,7 +41,7 @@ function() {
         screen0Loc,
 
         defaultURL,
-        loadedFunc;
+        loadRequest;
 
     //  TODO: This should match the actual width & height of the entry in the
     //  'sherpa|screen' rule.
@@ -64,31 +64,31 @@ function() {
     //  will render the core app tag content.
     if (TP.notEmpty(screen0Loc)) {
 
-        defaultURL = TP.uc(screen0Loc).getLocation();
+        defaultURL = TP.uc(screen0Loc);
 
-        loadedFunc = function(evt) {
-            var win,
+        loadRequest = TP.request();
 
-                appElem;
+        loadRequest.atPut(
+            TP.ONLOAD,
+            function(evt) {
+                var win,
 
-            this.removeEventListener('load', loadedFunc, false);
+                    appElem;
 
-            win = this.contentWindow;
+                win = this.contentWindow;
 
-            appElem = TP.nodeGetElementsByTagName(
+                appElem = TP.nodeGetElementsByTagName(
                             win.document.documentElement,
                             TP.tibet.root.computeAppTagTypeName(false)).first();
 
-            if (TP.isElement(appElem)) {
-                TP.wrap(appElem).compile();
-            }
-        };
-
-        allIFrames.first().addEventListener('load', loadedFunc, false);
+                if (TP.isElement(appElem)) {
+                    TP.wrap(appElem).compile();
+                }
+            });
 
         //  We *MUST* use this technique to load up the iframes - just setting
         //  the '.src' of the iframe won't do what we want (at least on Chrome).
-        allIFrames.first().contentWindow.location = defaultURL;
+        TP.wrap(allIFrames.first().contentWindow).setLocation(defaultURL);
 
         //  Hide all of the other iframes (1...N)
         allIFrames.slice(1).perform(
