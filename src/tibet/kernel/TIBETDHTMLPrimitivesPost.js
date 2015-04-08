@@ -8043,7 +8043,9 @@ function(aWindow) {
      * @exception TP.sig.InvalidWindow
      */
 
-    var allElems,
+    var msg,
+
+        allElems,
         i,
 
         winLoadFuncs,
@@ -8053,6 +8055,14 @@ function(aWindow) {
 
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    if (TP.sys.cfg('log.hook')) {
+
+        msg = 'Processing document loaded for: ' + TP.gid(aWindow) + '.';
+        TP.boot.$stdout(msg, TP.DEBUG);
+
+        top.console.log(msg);
     }
 
     if (TP.$$DEBUG) {

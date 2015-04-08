@@ -55,8 +55,10 @@ function(aWindow) {
     }
 
     if (TP.sys.cfg('log.hook')) {
+
         msg = 'Arming window: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);
+
         top.console.log(msg);
     }
 
