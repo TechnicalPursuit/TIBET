@@ -6209,32 +6209,19 @@ function(aSignal) {
      *     usually a RouteChange set to have 'RouteHome' as a signal name.
      */
 
-    var doc,
-        win,
-        url,
-        func;
+    var win,
+        url;
 
     //  We'll be setting the location of the UICANVAS so we'll need that.
-    doc = TP.sys.getUICanvas();
-    win = doc.getWindow();
+    win = TP.sys.getUICanvas();
     url = TP.uc(TP.sys.cfg('project.homepage'));
 
     //  Don't bother if the URL won't be changing.
-    if (doc.getNativeNode().location === url.asString()) {
+    if (win.getNativeWindow().location === url.asString()) {
         return;
     }
 
-    //  Once we're sure we have an XML display surface we can set the home
-    //  page back into the UICANVAS location. Set that in a handler.
-    func = function() {
-        TP.sys.getUICanvas().setContent(url);
-    };
-
-    //  Empty string for URI will default us to the blank page.
-    win.setLocation('', false, func);
-
-    //  TODO: remove this once we figure out why onload never gets called.
-    setTimeout(func, 100);
+    win.setLocation(url);
 
     //  Don't let the signal continue since we've handled it.
     aSignal.stopPropagation();
