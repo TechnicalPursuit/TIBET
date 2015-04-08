@@ -5151,13 +5151,13 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getPathType',
+TP.definePrimitive('getMarkupPathType',
 function(aPath) {
 
     /**
-     * @method getPathType
+     * @method getMarkupPathType
      * @summary Obtains the 'path type' of the supplied path. This allows TIBET
-     *     to distinguish between different query languages.
+     *     to distinguish between different markup query languages.
      * @param {String} aPath The path to obtain the type of.
      * @returns {String} One of the 'path type' constants:
      *     TP.TIBET_PATH_TYPE
@@ -5302,7 +5302,7 @@ function(aPath) {
         return 'tibet';
     }
 
-    pathType = TP.getPathType(aPath);
+    pathType = TP.getMarkupPathType(aPath);
 
     switch (pathType) {
         case TP.TIBET_PATH_TYPE:

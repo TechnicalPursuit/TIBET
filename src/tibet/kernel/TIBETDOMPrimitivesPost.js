@@ -6900,7 +6900,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
     }
 
     //  If the path type wasn't supplied, compute it.
-    thePathType = TP.ifInvalid(aPathType, TP.getPathType(aPath));
+    thePathType = TP.ifInvalid(aPathType, TP.getMarkupPathType(aPath));
 
     switch (thePathType) {
         case TP.XPATH_PATH_TYPE:
