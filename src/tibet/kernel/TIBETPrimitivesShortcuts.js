@@ -2616,32 +2616,25 @@ function(aURI, nodeContext) {
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      */
 
-    var context,
-        type,
-        win;
+    var context;
 
-    if (TP.notValid(aURI)) {
+    if (!TP.isURI(aURI)) {
         TP.raise(TP.go2, 'TP.sig.InvalidURI');
 
         return false;
     }
 
     if (TP.notValid(context = nodeContext)) {
-        context = TP.ifInvalid(
-                        TP.sys.getWindowById(TP.sys.getUICanvasName()),
-                        window);
+        context = TP.sys.getUICanvas();
     }
 
-    type = TP.sys.getTypeByName('TP.core.Window');
-    if (TP.notValid(win = type.construct(TP.gid(context)))) {
+    if (!TP.isWindow(context)) {
         TP.raise(TP.go2, 'TP.sig.InvalidWindow');
 
         return false;
     }
 
-    TP.sys.logLink(aURI, TP.INFO);
-
-    win.setContent(TP.uc(aURI));
+    TP.wrap(context).setLocation(aURI);
 
     return false;
 });
