@@ -912,7 +912,7 @@ TP.boot.installPatches = function(aWindow) {
 
 //  ------------------------------------------------------------------------
 
-TP.windowIsInstrumented = TP.windowIsInstrumented || function(aWindow) {
+TP.windowIsInstrumented = function(aWindow) {
 
     /**
      * @method windowIsInstrumented
@@ -1042,7 +1042,7 @@ TP.boot.$$captureStyle = function(aDocument) {
         head,
         handlerFunc;
 
-    doc = aDocument || document;
+    doc = aDocument;
 
     //  Add our DOM insertion function as an Event handler for the
     //  DOMNodeInserted event on the head element. See the
