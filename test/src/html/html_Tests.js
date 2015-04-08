@@ -874,13 +874,17 @@ function() {
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
         test.assert.isEqualTo(
-            value.strip(/ xml:base=".+?"/).strip(/ xmlns:xml=".+?"/),
+            value.
+            strip(/ xml:base=".+?"/).
+            strip(/ xmlns:xml=".+?"/).
+            strip(/ xmlns:tibet=".+?"/).
+            strip(/ tibet:globalDocID=".+?"/),
             '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
 
         //  XMLElement
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, '<foo>bar</foo>');
+        test.assert.matches(value, /<foo id=".+">bar<\/foo>/);
 
         //  AttributeNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
@@ -1006,13 +1010,17 @@ function() {
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
         test.assert.isEqualTo(
-            value.strip(/ xml:base=".+?"/).strip(/ xmlns:xml=".+?"/),
+            value.
+            strip(/ xml:base=".+?"/).
+            strip(/ xmlns:xml=".+?"/).
+            strip(/ xmlns:tibet=".+?"/).
+            strip(/ tibet:globalDocID=".+?"/),
             '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
 
         //  XMLElement
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, '<foo>bar</foo>');
+        test.assert.matches(value, /<foo id=".+">bar<\/foo>/);
 
         //  AttributeNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
