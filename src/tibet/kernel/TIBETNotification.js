@@ -1746,7 +1746,8 @@ function() {
      * @summary Returns the window from which the signal originated. This is
      *     typically the TIBET window, but it can vary when UI events are
      *     involved.
-     * @returns {Window} The native window object that the receiver occurred in.
+     * @returns {TP.core.Window} The window object that the receiver occurred
+     *     in.
      */
 
     var payload,
@@ -1765,12 +1766,12 @@ function() {
     //  We didn't get a valid signal payload object, but we can try to use
     //  the UICanvas's window anyway.
     if (TP.isWindow(canvasWin = TP.sys.getUICanvas(true))) {
-        return canvasWin;
+        return TP.wrap(canvasWin);
     }
 
     //  Can't do any good here. No payload and no canvas window. Just
     //  hand back the 'tibet' window.
-    return window;
+    return TP.wrap(window);
 });
 
 //  ------------------------------------------------------------------------

@@ -148,7 +148,7 @@ function(aHalo, aSignal) {
 
         sigTarget;
 
-    evtWin = aSignal.getWindow();
+    evtWin = TP.unwrap(aSignal.getWindow());
     targetWin = this.getNativeWindow();
     haloWin = aHalo.getNativeWindow();
 
