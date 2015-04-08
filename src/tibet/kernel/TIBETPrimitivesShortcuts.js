@@ -1872,6 +1872,10 @@ function(elemOrId, anAspect, aValue, nodeContext) {
                 try {
                     obj[aspect] = aValue;
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(
+                            TP.ec(e, 'Unable to set element: ' + obj),
+                                    TP.LOG) : 0;
                 }
             } else {
                 //  TODO:   warn?
@@ -1889,6 +1893,10 @@ function(elemOrId, anAspect, aValue, nodeContext) {
             try {
                 list[aspect] = aValue;
             } catch (e) {
+                TP.ifError() ?
+                    TP.error(
+                        TP.ec(e, 'Unable to obtain element: ' + list),
+                                TP.LOG) : 0;
             }
         } else {
             //  TODO:   warn?

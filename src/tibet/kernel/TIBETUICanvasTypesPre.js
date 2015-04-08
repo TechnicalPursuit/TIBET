@@ -283,6 +283,10 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                                     callingContext);
         }
     } catch (e) {
+        TP.ifError() ?
+                TP.error(
+                    TP.ec(e, 'Unable to resolve DNU: ' + aMethodName),
+                            TP.LOG) : 0;
     }
 
     //  If there weren't any arguments in the arg array, then we have
@@ -2187,6 +2191,10 @@ function(attributeName) {
     try {
         val = win[attributeName];
     } catch (e) {
+        TP.ifError() ?
+                TP.error(
+                    TP.ec(e, 'Unable to property: ' + attributeName),
+                            TP.LOG) : 0;
     }
 
     //  non-existent on model? try locally
