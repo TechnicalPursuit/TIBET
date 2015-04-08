@@ -8753,9 +8753,11 @@ function() {
     this.definePath(/.*/, this.processMatch.bind(this));
 
     //  Define the root pattern route for "empty paths".
-    this.definePath(/^\/$/, function() {
-        return TP.ac(this.get('root'), TP.hc());
-    }.bind(this));
+    this.definePath(
+        /^\/$/,
+        function() {
+            return TP.ac(this.get('root'), TP.hc());
+        }.bind(this));
 
     return;
 });
@@ -8790,8 +8792,8 @@ function(pattern, processor) {
 
     //  Exception will have raised during processing, just exit.
     if (TP.notValid(regex)) {
-        return this.raise('InvalidRoute', 'Unable to produce RegExp for ' +
-            pattern);
+        return this.raise('InvalidRoute',
+                            'Unable to produce RegExp for ' + pattern);
     }
 
     //  Default the processor function to our standard one.
@@ -8843,7 +8845,7 @@ function(path, match, names) {
      *     default processor for definePath which can produce a signal name and
      *     payload for the majority of use cases.
      * @param {String} path The full URL path being processed.
-     * @param {Object} match The "match" object returned by RegExp.match calls.
+     * @param {Array} match The "match" Array returned by RegExp match() calls.
      *     The first slot is the "full match" while any parenthesized capture
      *     portions will populate slots 1 through N.
      * @param {String[]} names An array of token names for any named path
@@ -8859,40 +8861,49 @@ function(path, match, names) {
     params = TP.hc();
 
     //  Only a full match value, no parameterized/captured sections.
-    if (match.length === 1) {
-        parts = match[0].slice(1).split('/');
-        name = parts.reduce(function(prev, current, index, array) {
+    if (match.getSize() === 1) {
 
-            //  Treat identifiers as signal name segments.
-            if (TP.regex.JS_IDENTIFIER.test(current)) {
-                return prev + current.asTitleCase();
-            }
+        parts = match.at(0).slice(1).split('/');
 
-            //  Treat everything else with a real value like an argument.
-            params.atPut('arg' + params.getSize(), current);
-            return prev;
+        name = parts.reduce(
+                function(prev, current, index, array) {
 
-        }, 'Route');
+                    //  Treat identifiers as signal name segments.
+                    if (TP.regex.JS_IDENTIFIER.test(current)) {
+                        return prev + current.asTitleCase();
+                    }
+
+                    //  Treat everything else with a real value like an
+                    //  argument.
+                    params.atPut('arg' + params.getSize(), current);
+
+                    return prev;
+
+                },
+                'Route');
     } else {
+
         //  Throw away the full-match portion. This will also shift the list so
         //  our naming indexes should resolve correctly.
         match.shift();
 
-        name = match.reduce(function(prev, current, index, array) {
-            var token;
+        name = match.reduce(
+                function(prev, current, index, array) {
+                    var token;
 
-            token = names.at(index);
-            if (TP.notEmpty(token)) {
-                //  Found a named parameter segment.
-                params.atPut(token, current);
-            } else if (TP.regex.JS_IDENTIFIER.test(current)) {
-                return prev + current.asTitleCase();
-            } else {
-                params.atPut('arg' + params.getSize(), current);
-            }
-            return prev;
+                    token = names.at(index);
+                    if (TP.notEmpty(token)) {
+                        //  Found a named parameter segment.
+                        params.atPut(token, current);
+                    } else if (TP.regex.JS_IDENTIFIER.test(current)) {
+                        return prev + current.asTitleCase();
+                    } else {
+                        params.atPut('arg' + params.getSize(), current);
+                    }
+                    return prev;
 
-        }, 'Route');
+                },
+                'Route');
     }
 
     return TP.ac(name, params);
@@ -8932,28 +8943,33 @@ function(pattern) {
     names = TP.hc();
 
     str = pattern.slice(1);
+
     //  TODO:   need to parse rather than split to avoid embedded / impact. Done
     //  properly we could potentially mix regex, token, and "normal" segments.
     parts = str.split('/');
 
-    parts = parts.map(function(item, index) {
-        var pattern,
-            str;
+    parts = parts.map(
+            function(item, index) {
+                var pattern,
+                    str;
 
-        //  Check for a token pattern of this name.
-        if (item.charAt(0) === ':') {
-            names.atPut(index, item.slice(1));
-            pattern = tokens.at(item.slice(1));
-            if (TP.isValid(pattern)) {
-                str = TP.str(pattern);
-                return '(' + str.slice(1, str.lastIndexOf('/') + ')');
-            } else {
-                return '(.*?)';
-            }
-        }
+                //  Check for a token pattern of this name.
+                if (item.charAt(0) === ':') {
 
-        return '(' + item + ')';
-    });
+                    names.atPut(index, item.slice(1));
+                    pattern = tokens.at(item.slice(1));
+
+                    if (TP.isValid(pattern)) {
+                        str = TP.str(pattern);
+
+                        return '(' + str.slice(1, str.lastIndexOf('/') + ')');
+                    } else {
+                        return '(.*?)';
+                    }
+                }
+
+                return '(' + item + ')';
+            });
 
     str = '\\/' + parts.join('\\/');
 
@@ -8978,25 +8994,28 @@ function(route) {
         result;
 
     paths = this.get('paths');
-    paths.detect(function(path) {
-        var pattern,
-            processor,
-            names,
-            match;
+    paths.detect(
+        function(path) {
+                var pattern,
+                    processor,
+                    names,
+                    match;
 
-        pattern = path[0];
-        processor = path[1];
-        names = path[2];
+                pattern = path.at(0);
+                processor = path.at(1);
+                names = path.at(2);
 
-        match = pattern.match(route);
-        if (TP.isValid(match)) {
-            // NOTE we update the outer variable here.
-            result = processor(route, match, names);
-            return true;
-        }
+                match = pattern.match(route);
 
-        return false;
-    });
+                if (TP.isValid(match)) {
+                    // NOTE we update the outer variable here.
+                    result = processor(route, match, names);
+
+                    return true;
+                }
+
+                return false;
+            });
 
     return result;
 });
@@ -9019,25 +9038,32 @@ function(aURI) {
      * @fires {BootConfigChange} If the URI has changed fragment parameters.
      */
 
-    var url,
-        direction,
+    var direction,
         last,
+
+        url,
         lastUrl,
+
+        trigger,
+
+        path,
         params,
+
         lastPath,
         lastParams,
-        trigger,
-        path,
+
+        result,
         name,
         payload,
+
         type,
-        result,
         signal;
 
     //  The direction of change determines whether we compare our URL to the
     //  "next" or "last" URL in the history list to see if it really changed the
     //  routable portion or not.
     direction = TP.sys.getHistory().get('direction');
+
     if (direction === 'back') {
         last = TP.sys.getHistory().getNextLocation();
     } else if (direction === 'forward') {
@@ -9056,31 +9082,41 @@ function(aURI) {
     lastUrl = TP.uc(last);
 
     trigger = TP.sys.cfg('uri.routing.trigger');
+
     switch (trigger) {
+
         case 'popstate':
+
             path = url.getPath() || '';
             params = url.get('query') || '';
+
             if (TP.isValid(lastUrl)) {
                 lastPath = lastUrl.getPath();
                 lastParams = lastUrl.getParameters();
             }
+
             lastPath = TP.ifInvalid(lastPath, '');
             lastParams = TP.ifInvalid(lastParams, '');
+
             break;
+
         default:
+
             path = url.getFragmentPath() || '/';
             params = url.getFragmentParameters(true) || '';
+
             if (TP.isValid(lastUrl)) {
                 lastPath = lastUrl.getFragmentPath();
                 lastParams = lastUrl.getFragmentParameters(true);
             }
+
             lastPath = TP.ifInvalid(lastPath, '/');
             lastParams = TP.ifInvalid(lastParams, '');
+
             break;
     }
 
     if (TP.$$routing) {
-        top.console.log('routing via tibet_init trigger');
         //  Clear the last path since it's not relevant, we want to route and
         //  not trigger a reboot via config below, even if reloading home page.
         lastPath = null;
@@ -9123,11 +9159,14 @@ function(aURI) {
         if (TP.isValid(type)) {
             signal = type.construct(payload);
         } else {
+
             signal = TP.sig.RouteChange.construct(payload);
+
             //  Adjust the name to be a "route" name for consistency.
             if (!/^Route/.test(name)) {
                 name = 'Route' + name;
             }
+
             signal.setSignalName(name);
         }
 
@@ -9136,6 +9175,7 @@ function(aURI) {
         signal.setOrigin(TP.ANY);
 
         if (TP.sys.cfg('log.routes')) {
+
             TP.info('RouteChange: ' + signal.getSignalName() + ' with: ' +
                 TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
         }
