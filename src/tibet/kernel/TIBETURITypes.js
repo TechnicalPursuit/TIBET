@@ -1195,7 +1195,7 @@ function(url, entry, key) {
                 //  if this delegation rule isn't about mapping some kind of
                 //  handler or controller then skip to next one
                 if (TP.isEmpty(hash.at('tibet:urihandler')) &&
-                    TP.isEmpty(hash.at('tibet:contenthandler'))) {
+                    TP.isEmpty(hash.at('tibet:contenttype'))) {
                     continue;
                 }
 
@@ -5407,7 +5407,7 @@ function(aRequest) {
     //  ---
 
     //  result content handler invocation...if possible.
-    handler = aRequest.at('contentHandler');
+    handler = aRequest.at('contenttype');
     if (TP.notValid(handler)) {
         //  check on uri mapping to see if the URI maps define a wrapper.
         if (TP.notFalse(this.isMappedURI())) {
@@ -5427,9 +5427,9 @@ function(aRequest) {
 
             if (TP.isValid(map)) {
                 if (TP.isValid(item = map.at('mapping'))) {
-                    handler = item.at('tibet:contenthandler');
+                    handler = item.at('tibet:contenttype');
                 } else if (TP.isValid(item = map.at('delegate'))) {
-                    handler = item.at('tibet:contenthandler');
+                    handler = item.at('tibet:contenttype');
                 }
             }
         }
