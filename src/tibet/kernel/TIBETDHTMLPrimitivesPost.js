@@ -8142,10 +8142,26 @@ function(aWindow) {
         }
     }
 
-    //  Make sure that if there is an Element that wanted to be focused as
-    //  the first focused element on the page (using the HTML5 'autofocus'
+    //  Set up any 'backspace' key handlers on the window so that backspace key
+    //  presses won't cause the standard "Back" button behavior that would
+    //  cause the TIBET frame to be flushed.
+    TP.windowSetupBackKeyHandlers(aWindow);
+
+    //  Make sure that if there is an Element that wanted to be focused as the
+    //  first focused element on the page (using the HTML5 'autofocus'
     //  attribute) that it is, indeed, focused.
     TP.documentFocusAutofocusedElement(aWindow.document);
+
+    //  If there was no focused element, then just go ahead and focus the
+    //  window.
+    if (!TP.isElement(TP.documentGetFocusedElement(aWindow.document))) {
+        aWindow.focus();
+    }
+
+    //  Set up any focus handlers for the various windows/frames that we use in
+    //  TIBET so that the user experiences 'proper' behavior when using the
+    //  keyboard during application execution.
+    TP.windowSetupFocusHandlers(aWindow);
 
     //  final operation is to signal that we've done the work
     try {

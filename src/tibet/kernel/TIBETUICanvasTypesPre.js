@@ -1985,46 +1985,15 @@ function(aContentObject, aRequest) {
      */
 
     var req,
-        reqLoadFunction,
-        natWin,
         retval;
 
     req = TP.request(aRequest);
-    reqLoadFunction = req.at(TP.ONLOAD);
-
-    natWin = this.getNativeWindow();
-
-    //  Construct a load function that will install the proper handlers for
-    //  'back key' handling and 'focus' handling
-    req.atPut(TP.ONLOAD,
-                function(aNode) {
-
-                    //  Set up any 'backspace' key handlers on the window so
-                    //  that backspace key presses won't cause the standard
-                    //  "Back" button behavior that would cause the TIBET
-                    //  frame to be flushed.
-                    TP.windowSetupBackKeyHandlers(natWin);
-
-                    //  Go ahead and focus the window
-                    natWin.focus();
-
-                    //  Set up any focus handlers for the various
-                    //  windows/frames that we use in TIBET so that the user
-                    //  experiences 'proper' behavior when using the keyboard
-                    //  during application execution.
-                    TP.windowSetupFocusHandlers(natWin);
-
-                    if (TP.isCallable(reqLoadFunction)) {
-                        reqLoadFunction(aNode);
-                    }
-
-                });
 
     retval = this.getContentDocument().setContent(aContentObject, req);
 
-    // A couple of things can go wrong in the setContent chain. One is that the
-    // content may not be found if aContentObject is a URI for example, and that
-    // URI ends up failing to load. In that case we need to check req.
+    //  A couple of things can go wrong in the setContent chain. One is that the
+    //  content may not be found if aContentObject is a URI for example, and
+    //  that URI ends up failing to load. In that case we need to check req.
     if (req.didFail()) {
         if (req.at(TP.ONFAIL)) {
             req.at(TP.ONFAIL)(req);
