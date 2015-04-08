@@ -1414,64 +1414,43 @@ function(aWindow) {
 //  ------------------------------------------------------------------------
 
 TP.core.Window.Inst.defineMethod('setLocation',
-function(aURL, wantsHistoryEntry, onloadFunction) {
+function(aURL, aRequest) {
 
     /**
      * @method setLocation
      * @summary Sets the window's location to the URL provided. This method is
      *     similar to the native '<windowRef>.location =' call, except that it
-     *     attempts to ensure that the onloadFunction is executed onload.
+     *     will process content at the end of the URL and set up proper TIBET
+     *     constructs in the receiver's native window.
      * @param {String|TP.core.URI} aURL The URL of the content to load into this
      *     window.
-     * @param {Boolean} wantsHistoryEntry Whether or not a TIBET 'history' entry
-     *     should be created (and the main window URL hash adjusted).
-     * @param {Function} onloadFunction The setup function to execute as part of
-     *     the document's 'onload' processing.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
      * @returns {TP.core.Window} The receiver.
      */
 
-    var url,
-        win,
-        doc,
-        blankURI;
+    var win,
+        blankURI,
+
+        url,
+
+        thisArg,
+        handlerFunc;
 
     TP.stop('break.window_location');
 
-    if (TP.notValid(aURL)) {
-        return this.raise('TP.sig.InvalidURI');
-    }
-
     win = this.getNativeWindow();
-    doc = this.getNativeDocument();
 
-    //  !!!NOTE!!!
-    //  We do *not* set the 'tibet:settinglocation' flag here on purpose,
-    //  since there may be unprocessed markup in the target location and we
-    //  *want* the hook file to redirect back through the
-    //  TP.windowResetLocation() call to 'grab the body content and process
-    //  it.
+    blankURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
-    //  Clear any onbeforeunload handler so we can do the requested work.
-
-    //  Note that we have to set this 'allowUnload' attribute on the
-    //  window's document's body which can then be checked by the
-    //  onbeforeunload() handler because, on IE, once the onbeforeunload()
-    //  handler is installed it can't be uninstalled. This attribute is
-    //  then checked in the actual onbeforeunload handler itself.
-    if (TP.isElement(TP.documentGetBody(doc))) {
-        TP.elementSetAttribute(TP.documentGetBody(doc),
-                                'allowUnload',
-                                'true');
-    }
-
-    //  If empty then we clear the window
+    //  If empty then we clear the window by just loading the blank
     if (TP.isEmpty(aURL)) {
-        //  Load the app's version of the blank file
-        blankURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
-        this.getNativeWindow().location = blankURI.getLocation();
+
+        win.location = blankURI.getLocation();
 
         return this;
     }
+
+    TP.sys.logLink(aURL, TP.INFO);
 
     //  need a valid URI and creating one ensures we have one regardless of
     //  what we were originally provided. NOTE that we do this operation
@@ -1480,48 +1459,25 @@ function(aURL, wantsHistoryEntry, onloadFunction) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  register any onloadFunction so if the location triggers the proper
-    //  events we'll run it. NOTE that this means the location has to be
-    //  TIBET-enabled either via the hook file or via an onload handler etc.
-    if (TP.isCallable(onloadFunction)) {
-        TP.core.Window.registerOnloadFunction(win, onloadFunction);
-    }
+    thisArg = this;
 
-    //  register our own onload function to manage keyboard and focus issues
-    TP.core.Window.registerOnloadFunction(
-        win,
-        function(aDocument) {
+    //  If we're in an iframe window (which is the vast majority of the time)
+    //  then we can leverage the fact that setting a 'load' event handler on the
+    //  iframe can be used to set (and process) the content after the blank has
+    //  loaded. Note that we have to load a blank here to get an XHTML rendering
+    //  surface.
+    if (TP.isIFrameWindow(win)) {
+        win.frameElement.addEventListener(
+                'load',
+                handlerFunc = function() {
+                    this.removeEventListener('load', handlerFunc, false);
+                    thisArg.setContent(url, aRequest);
+                },
+                false);
 
-            var theWindow;
-
-            theWindow = TP.nodeGetWindow(aDocument);
-
-            //  Set up any 'backspace' key handlers on the window so that
-            //  backspace key presses won't cause the standard "Back" button
-            //  behavior that would cause the TIBET frame to be flushed.
-            TP.windowSetupBackKeyHandlers(theWindow);
-
-            //  Focus the window so that key events that occur just after
-            //  application go the window and are then dispatched properly.
-            theWindow.focus();
-
-            //  Set up any focus handlers for the various windows/frames
-            //  that we use in TIBET so that the user experiences 'proper'
-            //  behavior when using the keyboard during application
-            //  execution.
-            TP.windowSetupFocusHandlers(theWindow);
-
-            if (TP.notFalse(wantsHistoryEntry)) {
-                TP.core.History.pushLocation(aURL);
-            }
-        });
-
-    //  We still wrap this in a try...catch just to make sure.
-    try {
-        win.location = TP.uriExpandPath(url.getLocation());
-    } catch (e) {
-        this.raise('TP.sig.InvalidWindow',
-                    'Unable to set window location.', TP.ec(e));
+        win.location = blankURI.getLocation();
+    } else {
+        win.location = aURL.getLocation();
     }
 
     return this;
