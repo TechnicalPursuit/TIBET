@@ -9229,13 +9229,18 @@ function(resource, mimeType, fallback) {
      * @returns {String} A properly computed URL in string form.
      */
 
-    var type,
+    var name,
+        type,
+
         uri,
-        location,
-        ext,
         mime,
+
+        location,
+
+        res,
+        ext,
+
         extensions,
-        name,
         key,
         value;
 
@@ -9251,17 +9256,24 @@ function(resource, mimeType, fallback) {
     //  then we delegate our answer to the namespace object for the receiver. If
     //  we're in a rollup state the namespace object should handle that fact.
     if (TP.isTrue(this.get('namespaced' + resource.asTitleCase()))) {
+
         type = this.getNamespaceObject();
+
         if (TP.canInvoke(type, 'getResourceURI')) {
+
             uri = type.getResourceURI(resource, mimeType);
 
-            // Depending on resource type we adjust shared template URIs to use
-            // a slice. For now we'll do this for XHTML and XML templates.
+            //  Depending on resource type we adjust shared template URIs to use
+            //  a slice. For now we'll do this for XHTML and XML templates.
             if (TP.isURI(uri)) {
+
                 mime = uri.getMIMEType();
+
                 if (mime === TP.ietf.Mime.XHTML || mime === TP.ietf.Mime.XML) {
+
                     location = uri.getLocation();
                     location += '#' + TP.escapeTypeName(name);
+
                     uri = TP.uc(location);
                 }
             }
@@ -9272,32 +9284,37 @@ function(resource, mimeType, fallback) {
 
     //  If we have an explicit mapping for an extension we will avoid worrying
     //  about any mime type extension list and just rely on the explicit one.
-    ext = this.get(resource.toLowerCase() + 'Extension');
+
+    res = resource.toLowerCase();
+
+    ext = this.get(res + 'Extension');
     if (TP.isEmpty(ext)) {
 
         //  Without an explicit extension we'll drop back to mime type and see
         //  if we can leverage that.
-        mime = TP.ifInvalid(this.get(resource.toLowerCase() + 'Mime'),
-                mimeType);
+        mime = TP.ifInvalid(this.get(res + 'Mime'), mimeType);
+
         if (TP.isEmpty(mime)) {
-            switch (resource.toLowerCase()) {
-                case 'template':
-                    mime = TP.ietf.Mime.XHTML;
-                    break;
-                case 'style':
-                    mime = TP.ietf.Mime.CSS;
-                    break;
-                case 'theme':
-                    mime = TP.ietf.Mime.CSS;
-                    break;
-                default:
-                    mime = TP.ietf.Mime.XML;
-                    break;
+
+            if (/^theme_/.test(res)) {
+                mime = TP.ietf.Mime.CSS;
+            } else {
+                switch (res) {
+                    case 'template':
+                        mime = TP.ietf.Mime.XHTML;
+                        break;
+                    case 'style':
+                        mime = TP.ietf.Mime.CSS;
+                        break;
+                    default:
+                        mime = TP.ietf.Mime.XML;
+                        break;
+                }
             }
         }
 
-        // Once we have a mime type we can fetch the extensions and default to
-        // the first one (the canonical one based on convention).
+        //  Once we have a mime type we can fetch the extensions and default to
+        //  the first one (the canonical one based on convention).
         extensions = TP.ietf.Mime.getExtensions(mime);
         if (TP.notEmpty(extensions)) {
             ext = extensions.at(0);
@@ -9307,15 +9324,17 @@ function(resource, mimeType, fallback) {
     //  With an extension we can now check to see if we're supposed to use
     //  rollup resources for that extension. If so it'll be a config flag
     //  pointing to the URI we should use.
-    key = ext + '.' + resource.toLowerCase() + '.rollup';
+    key = ext + '.' + res + '.rollup';
     value = TP.sys.cfg(key);
+
     if (TP.notEmpty(value)) {
         return value;
     }
 
     //  Not doing a rollup? See if we have an explicit mapping for our resource.
-    key = 'path.' + name + '.' + resource.toLowerCase();
+    key = 'path.' + name + '.' + res;
     value = TP.sys.cfg(key);
+
     if (TP.notEmpty(value)) {
         return value;
     }
@@ -9330,8 +9349,13 @@ function(resource, mimeType, fallback) {
         //  If we couldn't compute a URI, default it to the receiver's load
         //  location and use the extension computed earlier.
         return TP.objectGetSourceCollectionPath(this) +
-            '/' + this.getName() + '.' + ext;
+                '/' +
+                this.getName() +
+                '.' +
+                ext;
     }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -10224,9 +10248,9 @@ function(resource, mimeType) {
         uri = this.get(resource.toLowerCase() + 'URI');
     }
 
-    // For resource methods there are a lot of default versions which return
-    // null so we don't assume we're done here unless we got a real value
-    // that's not TP.NO_RESULT. That value is used to say "stop".
+    //  For resource methods there are a lot of default versions which return
+    //  null so we don't assume we're done here unless we got a real value
+    //  that's not TP.NO_RESULT. That value is used to say "stop".
     if (TP.notEmpty(uri)) {
         if (uri === TP.NO_RESULT) {
             return;
@@ -10235,8 +10259,8 @@ function(resource, mimeType) {
         return uri;
     }
 
-    // Extensions are typically ordered from canonical to least-likely so we
-    // loop here trying to find a method specific to the MIME extension.
+    //  Extensions are typically ordered from canonical to least-likely so we
+    //  loop here trying to find a method specific to the MIME extension.
     if (TP.notEmpty(mimeType) &&
             TP.notEmpty(extensions = TP.ietf.Mime.getExtensions(mimeType))) {
 
@@ -10244,7 +10268,8 @@ function(resource, mimeType) {
         for (i = 0; i < len; i++) {
             ext = extensions.at(i);
 
-            // The word resource would trigger a recursion so mask off that one.
+            //  The word resource would trigger a recursion so mask off that
+            //  one.
             if (ext === 'resource') {
                 return;
             }
@@ -10266,8 +10291,8 @@ function(resource, mimeType) {
         }
     }
 
-    // Final option if no method is found is to create a configuration key and
-    // see if there's a mapping under that key.
+    //  Final option if no method is found is to create a configuration key and
+    //  see if there's a mapping under that key.
     typeName = this.getResourceTypeName();
     key = 'path.' + typeName + '.' + resource.toLowerCase();
     value = TP.sys.cfg(key);
