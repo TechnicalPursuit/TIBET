@@ -1,43 +1,43 @@
 <?xml version="1.0"?>
 <tmx xmlns="http://www.lisa.org/tmx14" version="1.4"
   xmlns:xml="http://www.w3.org/XML/1998/namespace">
-
-<header creationtool="TIBET"
-  creationtoolversion="3.0"
-  segtype="sentence"
-  o-tmf=""
-  adminlang="en-us"
-  srclang="EN"
-  datatype="plaintext">
+<header
+    creationtool="TIBET"
+    creationtoolversion="0.5.0"
+    datatype="PlainText"
+    segtype="sentence"
+    adminlang="en-us"
+    srclang="*all*"
+    o-encoding="UTF-8">
 </header>
 
 <body>
 
-  <tu tuid="hello">
+  <tu tuid="0001">
     <tuv xml:lang="en"><seg>Hello</seg></tuv>
     <tuv xml:lang="de"><seg>Hallo</seg></tuv>
     <tuv xml:lang="fr"><seg>Bonjour</seg></tuv>
   </tu>
 
-  <tu tuid="true">
+  <tu tuid="0002">
     <tuv xml:lang="en"><seg>true</seg></tuv>
     <tuv xml:lang="de"><seg>zutreffend</seg></tuv>
     <tuv xml:lang="fr"><seg>vrai</seg></tuv>
   </tu>
 
-  <tu tuid="false">
+  <tu tuid="0003">
     <tuv xml:lang="en"><seg>false</seg></tuv>
     <tuv xml:lang="de"><seg>falsch</seg></tuv>
     <tuv xml:lang="fr"><seg>faux</seg></tuv>
   </tu>
 
-  <tu tuid="yes">
+  <tu tuid="0004">
     <tuv xml:lang="en"><seg>yes</seg></tuv>
     <tuv xml:lang="de"><seg>ja</seg></tuv>
     <tuv xml:lang="fr"><seg>oui</seg></tuv>
   </tu>
 
-  <tu tuid="no">
+  <tu tuid="0005">
     <tuv xml:lang="en"><seg>no</seg></tuv>
     <tuv xml:lang="de"><seg>nein</seg></tuv>
     <tuv xml:lang="fr"><seg>non</seg></tuv>

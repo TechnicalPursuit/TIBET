@@ -433,7 +433,7 @@ function() {
                 var elem;
 
                 //  Note that the strings here are localized against the
-                //  'strings.xml' file in either the app (if available) or the
+                //  'strings.tmx' file in either the app (if available) or the
                 //  lib.
 
                 //  ---

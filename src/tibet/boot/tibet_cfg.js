@@ -1234,7 +1234,7 @@
     //  path should be an absolute path using either a / or ~ prefix to
     //  reference libroot or approot respectively. this can be set in the
     //  boot script/tibet.xml files using the 'strings' parameter.
-    TP.sys.setcfg('tibet.string_file', '~lib_dat/strings.xml');
+    TP.sys.setcfg('tibet.string_file', '~lib_dat/strings.tmx');
 
     //  where is the default location for the uri mappings? this path should be
     //  an absolute path using either a / or ~ prefix to reference libroot or

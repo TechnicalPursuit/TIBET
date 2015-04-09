@@ -962,11 +962,11 @@ function(forceRefresh) {
      *     file or a set of string files, one per language code, or a mix of the
      *     two strategies. When asked for a string table (XML) TIBET uses the
      *     boot property 'strings' to find the file name to use. This file name
-     *     is typically strings.xml. The file name is used as a template in the
+     *     is typically strings.tmx. The file name is used as a template in the
      *     sense that TIBET will split off any extension, add the language code
      *     with underscores (ie. strings_en_us.xml for US English) and try to
      *     load the file. If that file doesn't exist the root file is loaded
-     *     (strings.xml) and used. Note that since each locale will only use one
+     *     (strings.tmx) and used. Note that since each locale will only use one
      *     string file all strings needing translation in that language should
      *     be included in the file.
      */
