@@ -6054,8 +6054,11 @@ function() {
 
     name = TP.sys.cfg('uri.router');
     type = TP.sys.require(name);
+
     if (TP.canInvoke(type, 'route')) {
+
         this.$set('router', type);
+
         return type;
     }
 });
@@ -6083,7 +6086,7 @@ function() {
 
     //  If the body tag is part of what's being rendered there won't be one in
     //  all cases.
-    if (!body) {
+    if (!TP.isElement(body)) {
         return '';
     }
 
@@ -6323,6 +6326,7 @@ function(themeName) {
 
     return this;
 });
+
 //  ------------------------------------------------------------------------
 
 TP.core.Application.Inst.defineMethod('setRouter',
