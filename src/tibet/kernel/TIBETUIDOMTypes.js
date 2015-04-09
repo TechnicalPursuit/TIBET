@@ -57,8 +57,8 @@ function(aDocument) {
      *     the stylesheet is already present, this method will *not* add another
      *     instance.
      * @param {The} aDocument document to add the stylesheet to.
-     * @exception TP.sig.InvalidDocument Raised when an invalid Document is provided
-     *     to the method.
+     * @exception TP.sig.InvalidDocument Raised when an invalid Document is
+     *     provided to the method.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -238,15 +238,6 @@ function(mimeType) {
 
     var uri;
 
-    uri = this.$get('styleURI');
-    if (TP.notEmpty(uri)) {
-        if (uri === TP.NO_RESULT) {
-            return;
-        }
-
-        return TP.uc(uri);
-    }
-
     uri = this.computeResourceURI('style', mimeType);
     if (TP.isValid(uri)) {
         return TP.uc(uri);
@@ -274,47 +265,20 @@ function(mimeType) {
      * @returns {TP.core.URI} The computed theme URI.
      */
 
-    var extensions,
-        typeName,
-        themeName,
-        url;
-
-    if (TP.notValid(mimeType)) {
-        return this.raise('TP.sig.InvalidParameter',
-                            'Must supply a valid TP.ietf.Mime reference.');
-    }
+    var themeName,
+        uri;
 
     themeName = TP.sys.getApplication().getTheme();
     if (TP.isEmpty(themeName)) {
         return;
     }
 
-    if (TP.isEmpty(extensions = TP.ietf.Mime.getExtensions(mimeType))) {
-        return;
+    uri = this.computeResourceURI('theme_' + themeName, mimeType);
+    if (TP.isValid(uri)) {
+        return TP.uc(uri);
     }
 
-    typeName = this.getResourceTypeName();
-
-    // Find the first match in the configuration data for our type.ext
-    extensions.perform(
-        function(ext) {
-
-            var cfgKey,
-                value;
-
-            cfgKey = 'path.' + typeName + '.' + ext + '.' + themeName;
-            value = TP.sys.cfg(cfgKey);
-
-            if (TP.notEmpty(value)) {
-                url = value;
-
-                return TP.BREAK;
-            }
-        });
-
-    if (TP.isValid(url)) {
-        return TP.uc(url);
-    }
+    return;
 });
 
 //  ------------------------------------------------------------------------
