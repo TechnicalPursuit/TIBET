@@ -26,6 +26,8 @@ function() {
         jsonPath6,
         jsonPath7;
 
+    //  ---
+
     this.before(function() {
         modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
 
@@ -51,6 +53,22 @@ function() {
         jsonPath1.executeGet(modelObj);
     });
 
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        jsonValueObsFunction.ignore(modelObj, 'ValueChange');
+        jsonStructureObsFunction.ignore(modelObj, 'StructureChange');
+    });
+
+    //  ---
+
     this.it('change along a single path', function(test, options) {
 
         jsonPath2 = TP.apc('foo.3.bar');
@@ -68,9 +86,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
         this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -98,9 +113,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
         this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change of an end aspect of a branching path', function(test, options) {
@@ -138,9 +150,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
         this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
@@ -188,9 +197,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
         this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
@@ -235,9 +241,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
         this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -322,14 +325,6 @@ function() {
 
         //  And not for the structural path result
         this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
-    });
-
-    this.after(function() {
-        jsonValueObsFunction.ignore(modelObj, 'ValueChange');
-        jsonStructureObsFunction.ignore(modelObj, 'StructureChange');
     });
 });
 
@@ -352,6 +347,8 @@ function() {
         xmlPath5,
         xmlPath6,
         xmlPath7;
+
+    //  ---
 
     this.before(function() {
         modelObj = TP.tpdoc('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
@@ -378,6 +375,22 @@ function() {
         xmlPath1.executeGet(modelObj);
     });
 
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        xmlValueObsFunction.ignore(modelObj, 'ValueChange');
+        xmlStructureObsFunction.ignore(modelObj, 'StructureChange');
+    });
+
+    //  ---
+
     this.it('change along a single path', function(test, options) {
 
         xmlPath2 = TP.apc('/emp/lname');
@@ -396,9 +409,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change along a single attribute path', function(test, options) {
@@ -419,9 +429,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change along a single attribute path with creation', function(test, options) {
@@ -442,9 +449,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -470,9 +474,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change along another branching path', function(test, options) {
@@ -502,9 +503,6 @@ function() {
         //  And *not* for xmlPath1 (it's too high up in the chain)
         this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change at the top level', function(test, options) {
@@ -531,9 +529,6 @@ function() {
         //  And for xmlPath1 (because it's the same path as xmlPath1)
         test.assert.contains(valuePathResults, xmlPath1.get('srcPath'));
         test.assert.contains(structurePathResults, xmlPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change all of the elements individually', function(test, options) {
@@ -569,14 +564,6 @@ function() {
         //  in the chain)
         this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
-    });
-
-    this.after(function() {
-        xmlValueObsFunction.ignore(modelObj, 'ValueChange');
-        xmlStructureObsFunction.ignore(modelObj, 'StructureChange');
     });
 });
 
