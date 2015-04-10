@@ -101,7 +101,7 @@ function() {
         //  The structure path results should have the path for jsonPath3
         test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
 
-        //  And the value path results for jsonPath2 (because and we replaced the
+        //  And the value path results for jsonPath2 (because we replaced the
         //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
         test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
 
