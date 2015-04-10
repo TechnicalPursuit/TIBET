@@ -5518,10 +5518,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
             }
         } else if (TP.isAttributeNode(content)) {
+            ownerElem = TP.attributeGetOwnerElement(content);
+
             //  If we're gonna signal a change, then add the attribute's
             //  address to the list of changed addresses.
             if (signalChange) {
-                ownerElem = TP.attributeGetOwnerElement(content);
                 affectedElems.push(ownerElem);
 
                 //  Note here how we pass in 'false', because we don't want to
@@ -5539,10 +5540,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
             }
         } else if (TP.isTextNode(content)) {
+            ownerElem = content.parentNode;
+
             //  If we're gonna signal a change, then add the element's address
             //  to the list of changed addresses.
             if (signalChange) {
-                ownerElem = content.parentNode;
                 affectedElems.push(ownerElem);
 
                 //  Note here how we pass in 'false', because we don't want to
@@ -5601,10 +5603,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode, TP.SELF, TP.UPDATE, false);
                     }
                 } else if (TP.isAttributeNode(contentnode)) {
+                    ownerElem = TP.attributeGetOwnerElement(contentnode);
+
                     //  If we're gonna signal a change, then add the
                     //  attribute's address to the list of changed addresses.
                     if (signalChange) {
-                        ownerElem = TP.attributeGetOwnerElement(contentnode);
                         affectedElems.push(ownerElem);
 
                         //  Note here how we pass in 'false', because we don't
@@ -5630,10 +5633,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 false);
                     }
                 } else if (TP.isTextNode(contentnode)) {
+                    ownerElem = contentnode.parentNode;
+
                     //  If we're gonna signal a change, then add the
                     //  attribute's address to the list of changed addresses.
                     if (signalChange) {
-                        ownerElem = contentnode.parentNode;
                         affectedElems.push(ownerElem);
 
                         //  Note here how we pass in 'false', because we don't
