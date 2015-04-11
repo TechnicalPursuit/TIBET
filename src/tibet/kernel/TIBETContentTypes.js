@@ -4988,13 +4988,16 @@ function(aPath, config) {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
-function(aNode) {
+function(aNode, prevContentHadElems) {
 
     /**
      * @method $addChangedAddressFromNode
      * @summary Adds the supplied node's address and action to
      *     TP.core.AccessPath's 'changed address list'.
      * @param {Node} aNode The Node to extract the address and action from.
+     * @param {Boolean} prevContentHadElems Whether or not the content had child
+     *     elements that got replaced. This is used to determine what kind of
+     *     change action to compute.
      * @returns {TP.core.XMLPath} The receiver.
      */
 
@@ -5045,11 +5048,13 @@ function(aNode) {
     }
 
     //  If we're doing a TP.UPDATE, but we're replacing a Node that had child
-    //  Element content, then we change to registering a TP.DELETE, followed by
-    //  a TP.CREATE for that.
+    //  Element content (detected either by new element child content or by the
+    //  flag supplied to this method in the case of deleting), then we change to
+    //  registering a TP.DELETE, followed by a TP.CREATE for that.
     if (action === TP.UPDATE &&
            TP.isCollectionNode(aNode) &&
-           TP.notEmpty(TP.nodeGetChildElements(aNode))) {
+           (TP.notEmpty(TP.nodeGetChildElements(aNode)) ||
+                prevContentHadElems)) {
 
         TP.core.AccessPath.registerChangedAddress(address, TP.DELETE);
         TP.core.AccessPath.registerChangedAddress(address, TP.CREATE);
