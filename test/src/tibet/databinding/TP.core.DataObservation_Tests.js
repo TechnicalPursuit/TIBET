@@ -637,7 +637,7 @@ function() {
 
         //  ---
 
-        TP.core.XMLDocumentNode.defineSubtype('test.XPathPathEmployee');
+        TP.core.XMLContent.defineSubtype('test.XPathPathEmployee');
 
         //  These paths assume a chunk of XML has been set on the native node.
         TP.test.XPathPathEmployee.Inst.defineAttribute(
@@ -749,11 +749,10 @@ function() {
         valueChangedResults = TP.ac();
 
         aspectObsFunction =
-                function(aSignal) {
-                    aspectChangedResults.push(aSignal.at('aspect'));
-                    valueChangedResults.push(
-                        aSignal.getValue().first().getTextContent());
-                };
+            function(aSignal) {
+                aspectChangedResults.push(aSignal.at('aspect'));
+                valueChangedResults.push(TP.val(aSignal.getValue().first()));
+            };
 
         newEmployee = TP.test.XPathPathEmployee.construct(
                         TP.doc('<emp><lname></lname><fname></fname></emp>'));
