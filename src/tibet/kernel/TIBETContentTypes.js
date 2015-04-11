@@ -321,7 +321,9 @@ function(aSignal) {
 
         description,
 
-        k,
+        oldTarget,
+
+        i,
 
         aspectName,
         aspectSigName;
@@ -357,8 +359,14 @@ function(aSignal) {
     if (TP.isValid(pathAspectAliases)) {
         aliasesLen = pathAspectAliases.getSize();
 
-        for (k = 0; k < aliasesLen; k++) {
-            aspectName = pathAspectAliases.at(k);
+        //  Because we want any querying of the signal's value to happen with
+        //  *this* object as the query target, we grab the old target and put
+        //  ourself in as the target.
+        oldTarget = description.at('target');
+        description.atPut('target', this);
+
+        for (i = 0; i < aliasesLen; i++) {
+            aspectName = pathAspectAliases.at(i);
 
             description.atPut('aspect', aspectName);
 
@@ -378,6 +386,9 @@ function(aSignal) {
             TP.signal(this, aspectSigName, description,
                         TP.INHERITANCE_FIRING, sigName);
         }
+
+        //  Restore the old target since we mucked with it.
+        description.atPut('target', oldTarget);
     } else {
         //  Otherwise send the generic signal.
         TP.signal(this, sigName, description);
