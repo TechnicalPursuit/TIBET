@@ -5313,6 +5313,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         attrValue,
         value,
 
+        hadChildElems,
+
         affectedElems,
 
         tpcontent,
@@ -5498,6 +5500,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  Finalize the set value.
         value = this.finalizeSetValue(content, value);
 
+        //  See if we have child elements - if so, we're going to let the change
+        //  notification machinery know about it.
+        hadChildElems = TP.isCollectionNode(content) ?
+                        TP.notEmpty(TP.nodeGetChildElements(content)) :
+                        false;
+
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
         tpcontent.setProcessedContent(value);
@@ -5519,7 +5527,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 //  address on this element.
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content);
+                this.$addChangedAddressFromNode(content, hadChildElems);
 
                 if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
                     affectedElems.push(ownerElem);
@@ -5595,6 +5603,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             value = this.finalizeSetValue(contentnode, value);
 
+            //  See if we have child elements - if so, we're going to let the
+            //  change notification machinery know about it.
+            hadChildElems = TP.isCollectionNode(content) ?
+                            TP.notEmpty(TP.nodeGetChildElements(content)) :
+                            false;
+
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
             tpcontent.setProcessedContent(value);
@@ -5616,7 +5630,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         TP.elementFlagChange(
                                 contentnode, TP.SELF, TP.UPDATE, false);
 
-                        this.$addChangedAddressFromNode(contentnode);
+                        this.$addChangedAddressFromNode(contentnode,
+                                                        hadChildElems);
 
                         if (TP.notEmpty(TP.elementGetChangeAction(
                                                         ownerElem, TP.SELF))) {
