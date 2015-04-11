@@ -12,19 +12,19 @@ TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst path chang
 function() {
 
     var modelObj,
-        jsonValueObsFunction,
-        jsonStructureObsFunction,
+        objValueObsFunction,
+        objStructureObsFunction,
 
         valuePathResults,
         structurePathResults,
 
-        jsonPath1,
-        jsonPath2,
-        jsonPath3,
-        jsonPath4,
-        jsonPath5,
-        jsonPath6,
-        jsonPath7;
+        objPath1,
+        objPath2,
+        objPath3,
+        objPath4,
+        objPath5,
+        objPath6,
+        objPath7;
 
     //  ---
 
@@ -34,23 +34,23 @@ function() {
         valuePathResults = TP.ac();
         structurePathResults = TP.ac();
 
-        jsonValueObsFunction =
+        objValueObsFunction =
                 function(aSignal) {
                     valuePathResults.push(aSignal.at('aspect'));
                 };
 
-        jsonValueObsFunction.observe(modelObj, 'ValueChange');
+        objValueObsFunction.observe(modelObj, 'ValueChange');
 
-        jsonStructureObsFunction =
+        objStructureObsFunction =
                 function(aSignal) {
                     structurePathResults.push(aSignal.at('aspect'));
                 };
 
-        jsonStructureObsFunction.observe(modelObj, 'StructureChange');
+        objStructureObsFunction.observe(modelObj, 'StructureChange');
 
         //  Set up this path just to observe
-        jsonPath1 = TP.apc('foo');
-        jsonPath1.executeGet(modelObj);
+        objPath1 = TP.apc('foo');
+        objPath1.executeGet(modelObj);
     });
 
     //  ---
@@ -63,265 +63,265 @@ function() {
     //  ---
 
     this.after(function() {
-        jsonValueObsFunction.ignore(modelObj, 'ValueChange');
-        jsonStructureObsFunction.ignore(modelObj, 'StructureChange');
+        objValueObsFunction.ignore(modelObj, 'ValueChange');
+        objStructureObsFunction.ignore(modelObj, 'StructureChange');
     });
 
     //  ---
 
     this.it('change along a single path', function(test, options) {
 
-        jsonPath2 = TP.apc('foo.3.bar');
-        jsonPath2.set('shouldMakeStructures', true);
+        objPath2 = TP.apc('foo.3.bar');
+        objPath2.set('shouldMakeStructures', true);
 
-        jsonPath2.executeSet(modelObj, 'goo', true);
+        objPath2.executeSet(modelObj, 'goo', true);
 
-        //  The value path results should have the path for jsonPath2
-        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        //  The value path results should have the path for objPath2
+        test.assert.contains(valuePathResults, objPath2.get('srcPath'));
 
-        //  The structure path results should have the path for jsonPath2
-        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+        //  The structure path results should have the path for objPath2
+        test.assert.contains(structurePathResults, objPath2.get('srcPath'));
 
-        //  But *not* for jsonPath1 for either set of results (it's too high up
+        //  But *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change along a branching path', function(test, options) {
 
-        jsonPath3 = TP.apc('foo.3[bar,moo,too].roo');
-        jsonPath3.set('shouldMakeStructures', true);
+        objPath3 = TP.apc('foo.3[bar,moo,too].roo');
+        objPath3.set('shouldMakeStructures', true);
 
-        jsonPath3.executeSet(modelObj, TP.ac(), true);
+        objPath3.executeSet(modelObj, TP.ac(), true);
 
-        //  The value path results should have the path for jsonPath3
-        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        //  The value path results should have the path for objPath3
+        test.assert.contains(valuePathResults, objPath3.get('srcPath'));
 
-        //  The structure path results should have the path for jsonPath3
-        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        //  The structure path results should have the path for objPath3
+        test.assert.contains(structurePathResults, objPath3.get('srcPath'));
 
-        //  And the value path results for jsonPath2 (because we replaced the
+        //  And the value path results for objPath2 (because we replaced the
         //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
-        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, objPath2.get('srcPath'));
 
-        //  But not the structure path results for jsonPath2 (we created no new
+        //  But not the structure path results for objPath2 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
-        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change of an end aspect of a branching path', function(test, options) {
 
-        jsonPath4 = TP.apc('foo.3.bar.roo');
-        jsonPath4.executeGet(modelObj);
+        objPath4 = TP.apc('foo.3.bar.roo');
+        objPath4.executeGet(modelObj);
 
-        jsonPath5 = TP.apc('foo.3.moo.roo');
+        objPath5 = TP.apc('foo.3.moo.roo');
 
-        jsonPath5.executeSet(modelObj, 42, true);
+        objPath5.executeSet(modelObj, 42, true);
 
-        //  The value path results should have the path for jsonPath5
-        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        //  The value path results should have the path for objPath5
+        test.assert.contains(valuePathResults, objPath5.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath5
-        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+        //  And the structure path results should have the path for objPath5
+        test.assert.contains(structurePathResults, objPath5.get('srcPath'));
 
-        //  And *not* for jsonPath4 for either set of results (it's at a similar
+        //  And *not* for objPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath4.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath4.get('srcPath'));
 
-        //  The value path results should have the path for jsonPath3
-        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        //  The value path results should have the path for objPath3
+        test.assert.contains(valuePathResults, objPath3.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath3
-        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        //  And the structure path results should have the path for objPath3
+        test.assert.contains(structurePathResults, objPath3.get('srcPath'));
 
-        //  And *not* for jsonPath2 for either set of results (it's too high up
+        //  And *not* for objPath2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath2.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
-        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
 
-        jsonPath6 = TP.apc('foo.3');
+        objPath6 = TP.apc('foo.3');
 
-        jsonPath6.executeSet(modelObj, 'fluffy', true);
+        objPath6.executeSet(modelObj, 'fluffy', true);
 
-        //  The value path results should have the path for jsonPath6
-        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+        //  The value path results should have the path for objPath6
+        test.assert.contains(valuePathResults, objPath6.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath6 as
+        //  And the structure path results should have the path for objPath6 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath6.get('srcPath'));
 
-        //  And for jsonPath5 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        //  And for objPath5 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objPath5.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath5 as
+        //  And the structure path results should have the path for objPath5 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath5.get('srcPath'));
 
-        //  And for jsonPath4 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
+        //  And for objPath4 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objPath4.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath4 as
+        //  And the structure path results should have the path for objPath4 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath4.get('srcPath'));
 
-        //  And for jsonPath3 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        //  And for objPath3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objPath3.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath3 as
+        //  And the structure path results should have the path for objPath3 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath3.get('srcPath'));
 
-        //  And for jsonPath2 (because it's ancestor's structure changed)
-        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        //  And for objPath2 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objPath2.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath2 as
+        //  And the structure path results should have the path for objPath2 as
         //  well (structure was changed).
-        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath2.get('srcPath'));
 
-        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
 
-        jsonPath7 = TP.apc('foo.2');
-        jsonPath7.set('shouldMakeStructures', true);
+        objPath7 = TP.apc('foo.2');
+        objPath7.set('shouldMakeStructures', true);
 
-        jsonPath7.executeSet(modelObj, TP.ac(), true);
+        objPath7.executeSet(modelObj, TP.ac(), true);
 
-        //  The value path results should have the path for jsonPath7
-        test.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
+        //  The value path results should have the path for objPath7
+        test.assert.contains(valuePathResults, objPath7.get('srcPath'));
 
-        //  And the structure path results should have the path for jsonPath7
-        test.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
+        //  And the structure path results should have the path for objPath7
+        test.assert.contains(structurePathResults, objPath7.get('srcPath'));
 
-        //  But *not* for jsonPath6 for either set of results (it's at a similar
+        //  But *not* for objPath6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath6.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath6.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath6.get('srcPath'));
 
-        //  And *not* for jsonPath5 for either set of results (it's at a similar
+        //  And *not* for objPath5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath5.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath5.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath5.get('srcPath'));
 
-        //  And *not* for jsonPath4 for either set of results (it's at a similar
+        //  And *not* for objPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath4.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath4.get('srcPath'));
 
-        //  And *not* for jsonPath3 for either set of results (it's at a similar
+        //  And *not* for objPath3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath3.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath3.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath3.get('srcPath'));
 
-        //  And *not* for jsonPath2 for either set of results (it's at a similar
+        //  And *not* for objPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath2.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
-        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change model to a whole new object', function(test, options) {
-        jsonPath1.set('shouldMakeStructures', true);
+        objPath1.set('shouldMakeStructures', true);
 
         //  Set everything under 'foo' to a new data structure
-        jsonPath1.executeSet(modelObj, TP.json2js('["A","B","C","D"]'), true);
+        objPath1.executeSet(modelObj, TP.json2js('["A","B","C","D"]'), true);
 
         //  All paths will have changed
 
-        //  Both results should have the path for jsonPath7
-        test.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
-        test.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
+        //  Both results should have the path for objPath7
+        test.assert.contains(valuePathResults, objPath7.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath7.get('srcPath'));
 
-        //  And for jsonPath6
-        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
-        test.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
+        //  And for objPath6
+        test.assert.contains(valuePathResults, objPath6.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath6.get('srcPath'));
 
-        //  And for jsonPath5
-        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
-        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+        //  And for objPath5
+        test.assert.contains(valuePathResults, objPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath5.get('srcPath'));
 
-        //  And for jsonPath4
-        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
-        test.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
+        //  And for objPath4
+        test.assert.contains(valuePathResults, objPath4.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath4.get('srcPath'));
 
-        //  And for jsonPath3
-        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
-        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+        //  And for objPath3
+        test.assert.contains(valuePathResults, objPath3.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath3.get('srcPath'));
 
-        //  And for jsonPath2
-        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
-        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+        //  And for objPath2
+        test.assert.contains(valuePathResults, objPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath2.get('srcPath'));
 
-        //  And for jsonPath1
-        test.assert.contains(valuePathResults, jsonPath1.get('srcPath'));
-        test.assert.contains(structurePathResults, jsonPath1.get('srcPath'));
+        //  And for objPath1
+        test.assert.contains(valuePathResults, objPath1.get('srcPath'));
+        test.assert.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change along a single path for the new object', function(test, options) {
-        jsonPath6.executeSet(modelObj, 'fluffy', true);
+        objPath6.executeSet(modelObj, 'fluffy', true);
 
-        //  The path has should *not* have the path for jsonPath7 (it's at a
+        //  The path has should *not* have the path for objPath7 (it's at a
         //  similar level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath7.get('srcPath'));
+        this.refute.contains(valuePathResults, objPath7.get('srcPath'));
 
-        //  The value path results should have the path for jsonPath6
-        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
-
-        //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
-
-        //  And for jsonPath5
-        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        //  The value path results should have the path for objPath6
+        test.assert.contains(valuePathResults, objPath6.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath6.get('srcPath'));
 
-        //  And for jsonPath4
-        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
-
-        //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
-
-        //  And for jsonPath3
-        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        //  And for objPath5
+        test.assert.contains(valuePathResults, objPath5.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath5.get('srcPath'));
 
-        //  And for jsonPath2
-        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        //  And for objPath4
+        test.assert.contains(valuePathResults, objPath4.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath4.get('srcPath'));
 
-        //  And *not* for jsonPath1 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        //  And for objPath3
+        test.assert.contains(valuePathResults, objPath3.get('srcPath'));
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, objPath3.get('srcPath'));
+
+        //  And for objPath2
+        test.assert.contains(valuePathResults, objPath2.get('srcPath'));
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
+
+        //  And *not* for objPath1 (it's too high up in the chain)
+        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
 
         //  And not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 });
 
