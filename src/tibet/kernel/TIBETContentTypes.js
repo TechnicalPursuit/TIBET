@@ -805,9 +805,9 @@ function(data) {
         if (TP.notValid(xmlData, null, true)) {
             return;
         }
+    } else if (TP.isNode(data)) {
+        xmlData = TP.wrap(data);
     } else {
-
-        //  TODO: Make sure this is a TP.core.DocumentNode
         xmlData = data;
     }
 
