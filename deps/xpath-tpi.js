@@ -1888,7 +1888,10 @@ PathExpr.prototype.evaluate = function(c) {
 
                                 flagNode,
                                 newNode,
-                                action;
+                                action,
+
+                                name,
+                                hadScalar;
 
 							//  when the root portion of the path doesn't
 							//  match you end up at the document element and
@@ -1897,6 +1900,8 @@ PathExpr.prototype.evaluate = function(c) {
 							if (TP.notValid(ownerDoc)) {
 								ownerDoc = xpc.contextNode;
 							}
+
+                            hadScalar = false;
 
                             switch(step.nodeTest.type) {
                                 case NodeTest.COMMENT:
@@ -1919,18 +1924,21 @@ PathExpr.prototype.evaluate = function(c) {
                                     action = TP.UPDATE;
                                     break;
                                 default:
-                                    var name = step.nodeTest.value ?
-                                                step.nodeTest.value :
-                                                xpc.contextNode.nodeName;
+                                    name = step.nodeTest.value ?
+                                            step.nodeTest.value :
+                                            xpc.contextNode.nodeName;
 
                                     newNode = ownerDoc.createElement(name);
                                     flagNode = newNode;
                                     action = TP.CREATE;
 
+                                    TP.nodeNormalize(xpc.contextNode);
+
                                     if (xpc.contextNode.childNodes.length === 1 &&
                                         xpc.contextNode.childNodes[0].nodeType === 3) {
                                         xpc.contextNode.removeChild(
                                                 xpc.contextNode.childNodes[0]);
+                                        hadScalar = true;
                                     }
                             }
 
@@ -1939,6 +1947,12 @@ PathExpr.prototype.evaluate = function(c) {
 							}
 
 							xpc.contextNode.appendChild(newNode);
+							if (hadScalar && xpc.shouldFlagNodes == true) {
+								TP.elementFlagChange(xpc.contextNode,
+                                                        TP.SELF,
+                                                        TP.UPDATE);
+							}
+
 							newNodes.push(newNode);
                             pushed = true;
 						}
