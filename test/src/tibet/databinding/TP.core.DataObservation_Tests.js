@@ -343,7 +343,8 @@ function() {
         xmlPath4,
         xmlPath5,
         xmlPath6,
-        xmlPath7;
+        xmlPath7,
+        xmlPath8;
 
     //  ---
 
@@ -456,29 +457,29 @@ function() {
         xmlPath5.executeSet(modelObj, 'Scott', true);
 
         //  The value path should have the path for xmlPath5
-        test.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
+        this.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
 
         //  And the structure path results for xmlPath5 (we created new
         //  structure there).
-        test.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
+        this.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
 
         //  But *not* for xmlPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
         this.refute.contains(valuePathResults, xmlPath2.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
 
-        //  And *not* for xmlPath1 for either set of results (it's too high up
+        //  But *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
         this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 
-    this.it('change along another branching path', function(test, options) {
+    this.it('change (structural) along a branching path', function(test, options) {
 
-        xmlPath6 = TP.apc('/emp/ssn');
+        xmlPath6 = TP.apc('/emp/lname/alias');
         xmlPath6.set('shouldMakeStructures', true);
 
-        xmlPath6.executeSet(modelObj, '555-55-5555', true);
+        xmlPath6.executeSet(modelObj, 'Smith', true);
 
         //  The value path should have the path for xmlPath6
         test.assert.contains(valuePathResults, xmlPath6.get('srcPath'));
@@ -488,6 +489,41 @@ function() {
         test.assert.contains(structurePathResults, xmlPath6.get('srcPath'));
 
         //  But *not* for xmlPath5 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, xmlPath5.get('srcPath'));
+        this.refute.contains(structurePathResults, xmlPath5.get('srcPath'));
+
+        //  Both results should have the path for xmlPath2 (because we replaced
+        //  the value at '/emp/lname' with an Element to hold the 'alias' value)
+        this.assert.contains(valuePathResults, xmlPath2.get('srcPath'));
+        this.assert.contains(structurePathResults, xmlPath2.get('srcPath'));
+
+        //  But *not* for xmlPath1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+    });
+
+    this.it('change along another branching path', function(test, options) {
+
+        xmlPath7 = TP.apc('/emp/ssn');
+        xmlPath7.set('shouldMakeStructures', true);
+
+        xmlPath7.executeSet(modelObj, '555-55-5555', true);
+
+        //  The value path should have the path for xmlPath7
+        test.assert.contains(valuePathResults, xmlPath7.get('srcPath'));
+
+        //  And the structure path results for xmlPath7 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlPath7.get('srcPath'));
+
+        //  But *not* for xmlPath6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, xmlPath6.get('srcPath'));
+        this.refute.contains(structurePathResults, xmlPath6.get('srcPath'));
+
+        //  And *not* for xmlPath5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
         this.refute.contains(valuePathResults, xmlPath5.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath5.get('srcPath'));
@@ -511,7 +547,11 @@ function() {
 
         //  All paths will have changed
 
-        //  Both results should have the path for xmlPath6
+        //  Both results should have the path for xmlPath7
+        test.assert.contains(valuePathResults, xmlPath7.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath7.get('srcPath'));
+
+        //  And for xmlPath6 (because it's ancestor's structure changed)
         test.assert.contains(valuePathResults, xmlPath6.get('srcPath'));
         test.assert.contains(structurePathResults, xmlPath6.get('srcPath'));
 
@@ -531,19 +571,24 @@ function() {
     this.it('change all of the elements individually', function(test, options) {
 
         //  Set up this path just to observe
-        xmlPath7 = TP.apc('//*');
-        xmlPath7.executeGet(modelObj);
+        xmlPath8 = TP.apc('//*');
+        xmlPath8.executeGet(modelObj);
 
         //  But set using xmlPath5
-        xmlPath5.executeSet(modelObj, 'Scott', true);
+        xmlPath5.executeSet(modelObj, 'Spike', true);
 
-        //  Both results should have the path for xmlPath7 (it's for all
+        //  Both results should have the path for xmlPath8 (it's for all
         //  elements)
-        test.assert.contains(valuePathResults, xmlPath7.get('srcPath'));
-        test.assert.contains(structurePathResults, xmlPath7.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath8.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath8.get('srcPath'));
 
-        //  But *not* for xmlPath6 for either set of results (it's at a similar
+        //  But *not* for xmlPath7 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, xmlPath7.get('srcPath'));
+        this.refute.contains(structurePathResults, xmlPath7.get('srcPath'));
+
+        //  And *not* for xmlPath6 for either set of results (it's on a
+        //  different branch)
         this.refute.contains(valuePathResults, xmlPath6.get('srcPath'));
         this.refute.contains(structurePathResults, xmlPath6.get('srcPath'));
 
