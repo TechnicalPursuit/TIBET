@@ -5500,6 +5500,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  99% is single value targeting a single element, attribute node or
         //  text node
         if (TP.isElement(content)) {
+            ownerElem = TP.isDocument(content.parentNode) ?
+                        content :
+                        content.parentNode;
+
             //  If we're gonna signal a change, then add the element's address
             //  to the list of changed addresses.
             if (signalChange) {
@@ -5511,11 +5515,20 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
 
                 this.$addChangedAddressFromNode(content);
+
+                if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
+                    affectedElems.push(ownerElem);
+                    this.$addChangedAddressFromNode(ownerElem);
+                }
             } else if (flagChanges) {
                 //  Note here how we pass in 'false', because we don't want to
                 //  overwrite any existing change flag record for the TP.SELF
                 //  address on this element.
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
+
+                if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
+                    affectedElems.push(ownerElem);
+                }
             }
         } else if (TP.isAttributeNode(content)) {
             ownerElem = TP.attributeGetOwnerElement(content);
@@ -5583,6 +5596,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             if (TP.isNode(contentnode)) {
                 if (TP.isElement(contentnode)) {
+                    ownerElem = TP.isDocument(contentnode.parentNode) ?
+                                contentnode :
+                                contentnode.parentNode;
+
                     //  If we're gonna signal a change, then add the element's
                     //  address to the list of changed addresses.
                     if (signalChange) {
@@ -5595,12 +5612,22 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode, TP.SELF, TP.UPDATE, false);
 
                         this.$addChangedAddressFromNode(contentnode);
+
+                        if (TP.notEmpty(TP.elementGetChangeAction(
+                                                        ownerElem, TP.SELF))) {
+                            affectedElems.push(ownerElem);
+                            this.$addChangedAddressFromNode(ownerElem);
+                        }
                     } else if (flagChanges) {
                         //  Note here how we pass in 'false', because we don't
                         //  want to overwrite any existing change flag record
                         //  for the TP.SELF address on this element.
                         TP.elementFlagChange(
                                 contentnode, TP.SELF, TP.UPDATE, false);
+                        if (TP.notEmpty(TP.elementGetChangeAction(
+                                                        ownerElem, TP.SELF))) {
+                            affectedElems.push(ownerElem);
+                        }
                     }
                 } else if (TP.isAttributeNode(contentnode)) {
                     ownerElem = TP.attributeGetOwnerElement(contentnode);
