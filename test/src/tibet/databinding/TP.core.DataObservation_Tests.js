@@ -278,9 +278,6 @@ function() {
         //  And for jsonPath1
         test.assert.contains(valuePathResults, jsonPath1.get('srcPath'));
         test.assert.contains(structurePathResults, jsonPath1.get('srcPath'));
-
-        valuePathResults.empty();
-        structurePathResults.empty();
     });
 
     this.it('change along a single path for the new object', function(test, options) {
