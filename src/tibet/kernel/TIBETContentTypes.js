@@ -736,6 +736,30 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Inst.defineMethod('getPathSource',
+function(aPath) {
+
+    /**
+     * @method getPathSource
+     * @summary Return the current source object being used by the executeGet()
+     *     and executeSet() methods. At this level, this method returns the
+     *     underlying data object.
+     * @param {TP.core.AccessPath} aPath The path that the path source will be
+     *     used with.
+     * @returns {Object} The object used as the current path source object.
+     */
+
+    //  If we're going to be used with a JSONPath, then we are the path source -
+    //  otherwise our data is.
+    if (TP.isKindOf(aPath, TP.core.JSONPath)) {
+        return this;
+    }
+
+    return this.$get('data');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
