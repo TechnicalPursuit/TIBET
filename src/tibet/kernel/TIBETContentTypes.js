@@ -3589,7 +3589,7 @@ function(targetObj) {
                     TP.id(targetObj),
                     TP.hc());
 
-    executedPaths.atPut(this.get('srcPath'), true);
+    executedPaths.atPut(this.get('srcPath'), this);
 
     TP.core.SimpleTIBETPath.set(
         '$currentSource',
@@ -3968,7 +3968,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
                 executedPaths.perform(
                         function(pathEntry) {
-                            TP.tpc(pathEntry.first()).executeGet(targetObj);
+                            pathEntry.last().executeGet(targetObj);
                         });
             }
 
@@ -5233,7 +5233,7 @@ function(targetObj, varargs) {
                     TP.id(targetObj),
                     TP.hc());
 
-    executedPaths.atPut(srcPath, true);
+    executedPaths.atPut(srcPath, this);
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
@@ -5840,7 +5840,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                                     targetTPDoc.getID()))) {
                 executedPaths.perform(
                         function(pathEntry) {
-                            TP.xpc(pathEntry.first()).executeGet(targetObj);
+                            pathEntry.last().executeGet(targetObj);
                         });
             }
         }
