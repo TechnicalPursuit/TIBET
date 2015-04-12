@@ -494,6 +494,43 @@ function(aDataObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('setID',
+function(anID) {
+
+    /**
+     * @method setID
+     * @summary Sets the public ID of the receiver.
+     * @param {String} anID The value to use as a public ID.
+     * @returns {String} The ID that was set.
+     */
+
+    var dataObject,
+        retVal;
+
+    //  NB: We use '$get()' here because we want access to the real underlying
+    //  object - subtypes and local objects might have reprogrammed 'getData()'
+    //  to return other objects or have special handling logic.
+    if (TP.isValid(dataObject = this.$get('data'))) {
+
+        //  Ignore our data object under our 'old ID'
+        this.ignore(dataObject, 'Change');
+
+        //  Go ahead and get new ID assigned.
+        retVal = this.callNextMethod();
+
+        //  Observe our data object under our 'new ID'
+        this.observe(dataObject, 'Change');
+    } else {
+
+        //  We have no data - just do whatever our supertype does.
+        retVal = this.callNextMethod();
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
