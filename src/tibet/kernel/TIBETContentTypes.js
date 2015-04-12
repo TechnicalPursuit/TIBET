@@ -3161,6 +3161,10 @@ function(templateArgs) {
         this.set('$xmlPath', xmlPath);
     }
 
+    //  Set our string representation as the 'interested path' representation
+    //  for use during change notification.
+    xmlPath.set('$interestedPath', this.asString());
+
     return xmlPath;
 });
 
@@ -5027,6 +5031,9 @@ TP.core.XMLPath.isAbstract(true);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  The path we use to register interest for change notification
+TP.core.XMLPath.Inst.defineAttribute('$interestedPath');
+
 //  The transformed path we actually execute - it may have templated
 //  expressions.
 TP.core.XMLPath.Inst.defineAttribute('$transformedPath');
@@ -5216,7 +5223,9 @@ function(targetObj, varargs) {
         addresses,
 
         doc,
-        sourceObjectID;
+        sourceObjectID,
+
+        interestedPath;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -5322,10 +5331,15 @@ function(targetObj, varargs) {
 
     sourceObjectID = TP.wrap(doc).getID();
 
+    //  Get our 'interested path' (the path representation used to register
+    //  interest for change notification). This will default to the path we just
+    //  created above.
+    interestedPath = TP.ifInvalid(this.get('$interestedPath'), path);
+
     addresses.perform(
             function(anAddress) {
                 TP.core.AccessPath.registerObservedAddress(
-                    anAddress, sourceObjectID, path);
+                    anAddress, sourceObjectID, interestedPath);
             });
 
     //  If there is a valid final value *or* we were trying to do a scalar
