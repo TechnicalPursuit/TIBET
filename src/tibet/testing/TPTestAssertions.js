@@ -127,6 +127,7 @@ function(aCondition, aComment, aFaultString) {
         condition = !aCondition;
         if (TP.isString(aFaultString)) {
             faultStr = aFaultString.replace(/to be/, 'to not be');
+            faultStr = faultStr.replace(/to contain/, 'to not contain');
         } else {
             faultStr = aFaultString;
         }
