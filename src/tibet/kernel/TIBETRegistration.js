@@ -435,7 +435,11 @@ function(anObj, anID, forceRegistration, observeResource) {
 
     var id,
         obj,
-        anObjType;
+
+        anObjType,
+
+        urn,
+        oldObj;
 
     if (TP.notValid(anObj)) {
         return false;
@@ -487,12 +491,20 @@ function(anObj, anID, forceRegistration, observeResource) {
         return false;
     }
 
+    urn = TP.uc(TP.TIBET_URN_PREFIX + id);
+
+    //  First, let's see if there's an old object at a TIBET URN that happens to
+    //  be the exact same object as what we'll be setting this to. In this case,
+    //  we can just return and save signaling overhead
+    if (TP.isValid(oldObj = urn.getResource()) && anObj === oldObj) {
+        return true;
+    }
+
     //  Create a TIBET URN to store the object - make sure to pass along the
-    //  'observeResource' flag (which we default to true if one wasn't
-    //  supplied).
-    TP.uc(TP.TIBET_URN_PREFIX + id).setResource(
-                anObj,
-                TP.hc('observeResource', TP.ifInvalid(observeResource, true)));
+    //  'observeResource' flag (which we default to true if one wasn't supplied)
+    urn.setResource(
+        anObj,
+        TP.hc('observeResource', TP.ifInvalid(observeResource, true)));
 
     if (TP.isValid(obj)) {
         id.signal('TP.sig.IdentityChange');
