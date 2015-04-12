@@ -327,6 +327,321 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONPath.Inst.describe('TP.core.JSONPath Inst path change signaling',
+function() {
+
+    var modelObj,
+        jsonValueObsFunction,
+        jsonStructureObsFunction,
+
+        valuePathResults,
+        structurePathResults,
+
+        jsonPath1,
+        jsonPath2,
+        jsonPath3,
+        jsonPath4,
+        jsonPath5,
+        jsonPath6,
+        jsonPath7;
+
+    //  ---
+
+    this.before(function() {
+        modelObj = TP.core.JSONContent.construct('{"foo":["1st","2nd",{"hi":"there"}]}');
+
+        valuePathResults = TP.ac();
+        structurePathResults = TP.ac();
+
+        jsonValueObsFunction =
+                function(aSignal) {
+                    valuePathResults.push(aSignal.at('aspect'));
+                };
+
+        jsonValueObsFunction.observe(modelObj, 'ValueChange');
+
+        jsonStructureObsFunction =
+                function(aSignal) {
+                    structurePathResults.push(aSignal.at('aspect'));
+                };
+
+        jsonStructureObsFunction.observe(modelObj, 'StructureChange');
+
+        //  Set up this path just to observe
+        jsonPath1 = TP.apc('$.foo');
+        jsonPath1.executeGet(modelObj);
+    });
+
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        jsonValueObsFunction.ignore(modelObj, 'ValueChange');
+        jsonStructureObsFunction.ignore(modelObj, 'StructureChange');
+    });
+
+    //  ---
+
+    this.it('change along a single path', function(test, options) {
+
+        jsonPath2 = TP.apc('$.foo[3].bar');
+        jsonPath2.set('shouldMakeStructures', true);
+
+        jsonPath2.executeSet(modelObj, 'goo', true);
+
+        //  The value path results should have the path for jsonPath2
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+
+        //  The structure path results should have the path for jsonPath2
+        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+
+        //  But *not* for jsonPath1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+
+    this.it('change along a branching path', function(test, options) {
+
+        jsonPath3 = TP.apc('$.foo[3][bar,moo,too].roo');
+        jsonPath3.set('shouldMakeStructures', true);
+
+        jsonPath3.executeSet(modelObj, TP.ac(), true);
+
+        //  The value path results should have the path for jsonPath3
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+
+        //  The structure path results should have the path for jsonPath3
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+
+        //  And the value path results for jsonPath2 (because we replaced the
+        //  value at 'foo[3].bar' with an Object to hold the 'roo' value)
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+
+        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+
+    this.it('change of an end aspect of a branching path', function(test, options) {
+
+        jsonPath4 = TP.apc('$.foo[3].bar.roo');
+        jsonPath4.executeGet(modelObj);
+
+        jsonPath5 = TP.apc('$.foo[3].moo.roo');
+
+        jsonPath5.executeSet(modelObj, 42, true);
+
+        //  The value path results should have the path for jsonPath5
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+
+        //  And *not* for jsonPath4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+
+        //  The value path results should have the path for jsonPath3
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+
+        //  And *not* for jsonPath2 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+
+        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+
+    this.it('change of a parent aspect of a branching path', function(test, options) {
+
+        jsonPath6 = TP.apc('$.foo[3]');
+
+        jsonPath6.executeSet(modelObj, 'fluffy', true);
+
+        //  The value path results should have the path for jsonPath6
+        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+
+        //  And the structure path results should have the path for jsonPath6 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
+
+        //  And for jsonPath5 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+
+        //  And the structure path results should have the path for jsonPath5 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+
+        //  And for jsonPath4 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
+
+        //  And the structure path results should have the path for jsonPath4 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
+
+        //  And for jsonPath3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+
+        //  And the structure path results should have the path for jsonPath3 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+
+        //  And for jsonPath2 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+
+        //  And the structure path results should have the path for jsonPath2 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+
+        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+
+    this.it('change of another parent aspect of a branching path', function(test, options) {
+
+        jsonPath7 = TP.apc('$.foo[2]');
+        jsonPath7.set('shouldMakeStructures', true);
+
+        jsonPath7.executeSet(modelObj, TP.ac(), true);
+
+        //  The value path results should have the path for jsonPath7
+        test.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
+
+        //  And the structure path results should have the path for jsonPath7
+        test.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
+
+        //  But *not* for jsonPath6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, jsonPath6.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
+
+        //  And *not* for jsonPath5 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, jsonPath5.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+
+        //  And *not* for jsonPath4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+
+        //  And *not* for jsonPath3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, jsonPath3.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+
+        //  And *not* for jsonPath2 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+
+        //  And *not* for jsonPath1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+
+    this.it('change model to a whole new object', function(test, options) {
+        jsonPath1.set('shouldMakeStructures', true);
+
+        //  Set everything under 'foo' to a new data structure
+        jsonPath1.executeSet(modelObj, TP.json2js('["A","B","C","D"]'), true);
+
+        //  All paths will have changed
+
+        //  Both results should have the path for jsonPath7
+        test.assert.contains(valuePathResults, jsonPath7.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath7.get('srcPath'));
+
+        //  And for jsonPath6
+        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath6.get('srcPath'));
+
+        //  And for jsonPath5
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
+
+        //  And for jsonPath4
+        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath4.get('srcPath'));
+
+        //  And for jsonPath3
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
+
+        //  And for jsonPath2
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath2.get('srcPath'));
+
+        //  And for jsonPath1
+        test.assert.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.assert.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+
+    this.it('change along a single path for the new object', function(test, options) {
+        jsonPath6.executeSet(modelObj, 'fluffy', true);
+
+        //  The path has should *not* have the path for jsonPath7 (it's at a
+        //  similar level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, jsonPath7.get('srcPath'));
+
+        //  The value path results should have the path for jsonPath6
+        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
+
+        //  And for jsonPath5
+        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+
+        //  And for jsonPath4
+        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+
+        //  And for jsonPath3
+        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+
+        //  And for jsonPath2
+        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+
+        //  And *not* for jsonPath1 (it's too high up in the chain)
+        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+
+        //  And not for the structural path result
+        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst path change signaling',
 function() {
 
@@ -637,6 +952,15 @@ function() {
 
         //  ---
 
+        TP.core.JSONContent.defineSubtype('test.JSONPathEmployee');
+
+        //  These paths assume a chunk of XML has been set on the native node.
+        TP.test.JSONPathEmployee.Inst.defineAttribute(
+                'lastName', {value: TP.apc('$.emp.lastName')});
+        TP.test.JSONPathEmployee.Inst.defineAttribute(
+                'firstName', {value: TP.apc('$.emp.firstName')});
+        //  ---
+
         TP.core.XMLContent.defineSubtype('test.XPathPathEmployee');
 
         //  These paths assume a chunk of XML has been set on the native node.
@@ -710,6 +1034,52 @@ function() {
         newEmployee = TP.test.ComplexPathEmployee.construct();
         newEmployee.set('privateData',
                 TP.json2js('{"public_info":{"lastName":"", "firstName":""}}'));
+
+        aspectObsFunction.observe(newEmployee, 'FirstNameChange');
+        aspectObsFunction.observe(newEmployee, 'LastNameChange');
+
+        newEmployee.set('firstName', 'Bill');
+
+        //  This should contain firstName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'firstName');
+
+        //  And the value should be 'Bill'
+        test.assert.contains(valueChangedResults, 'Bill');
+
+        //  But not lastName, because we didn't change it.
+        this.refute.contains(aspectChangedResults, 'lastName');
+
+        newEmployee.set('lastName', 'Edney');
+
+        //  And now it should contain lastName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'lastName');
+
+        //  And the value should be 'Edney'
+        test.assert.contains(valueChangedResults, 'Edney');
+
+        aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
+        aspectObsFunction.ignore(newEmployee, 'LastNameChange');
+    });
+
+    this.it('TP.core.JSONPath path-enhanced aspect change notification', function(test, options) {
+
+        var aspectChangedResults,
+            valueChangedResults,
+            aspectObsFunction,
+
+            newEmployee;
+
+        aspectChangedResults = TP.ac();
+        valueChangedResults = TP.ac();
+
+        aspectObsFunction =
+                function(aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(aSignal.getValue());
+                };
+
+        newEmployee = TP.test.JSONPathEmployee.construct(
+                TP.json2js('{"emp":{"lastName":"", "firstName":""}}'));
 
         aspectObsFunction.observe(newEmployee, 'FirstNameChange');
         aspectObsFunction.observe(newEmployee, 'LastNameChange');
@@ -1914,6 +2284,396 @@ function() {
 
                 modelObj.set('emp.salary', 45);
                 modelObj.set('emp.salaryInRange', false);
+
+                //  Because there is now no binding between these two, the field
+                //  should still have the value of 42 set above.
+                test.assert.isEqualTo(
+                            42,
+                            salaryField.get('value').asNumber());
+
+                test.assert.isEqualTo(
+                            true,
+                            salaryField.get('@inrange').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            });
+    });
+
+    this.it('change notification - concrete reference, JSON path aspect', function(test, options) {
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var modelObj,
+
+                    salaryField;
+
+                modelObj = TP.core.JSONContent.construct(
+                                '{"emp":{"salary":50000}}');
+
+                salaryField = TP.byOID('salaryField');
+
+                salaryField.defineBinding('value',
+                                            modelObj,
+                                            TP.apc('$.emp.salary'));
+
+                //  Set the value of 'salary' on the model object. The binding
+                //  should cause the value of 'salary' on the field to update.
+                modelObj.set('$.emp.salary', 42);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salary'),
+                            salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
+                //  Destroy the binding
+                salaryField.destroyBinding('value',
+                                            modelObj,
+                                            TP.apc('$.emp.salary'));
+
+                modelObj.set('$.emp.salary', 45);
+
+                //  Because there is now no binding between these two, the field
+                //  should still have the value of 42 set above.
+                test.assert.isEqualTo(
+                            42,
+                            salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            });
+    });
+
+    this.it('change notification - virtual reference, JSON path aspect', function(test, options) {
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var modelObj,
+                    salaryField;
+
+                modelObj = TP.core.JSONContent.construct(
+                                '{"emp":{"salary":50000}}');
+
+                //  This sets the ID of the object and registers it with an
+                //  accompanying 'urn:tibet' URN (which will allow the
+                //  'defineBinding()' call to turn change handling on for it).
+                modelObj.setID('CurrentEmployee');
+                TP.sys.registerObject(modelObj);
+
+                salaryField = TP.byOID('salaryField');
+
+                salaryField.defineBinding('value',
+                                            'CurrentEmployee',
+                                            TP.apc('$.emp.salary'));
+
+                //  Set the value of 'salary' on the model object. The binding
+                //  should cause the value of 'value' on the field to update.
+                modelObj.set('$.emp.salary', 42);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salary'),
+                            salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
+                //  Destroy the binding
+                salaryField.destroyBinding('value',
+                                            'CurrentEmployee',
+                                            TP.apc('$.emp.salary'));
+
+                modelObj.set('$.emp.salary', 45);
+
+                //  Because there is now no binding between these two, the field
+                //  should still have the value of 42 set above.
+                test.assert.isEqualTo(
+                            42,
+                            salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            });
+    });
+
+    this.it('change notification - URI reference, JSON path aspect', function(test, options) {
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var modelObj,
+                    modelURI,
+                    salaryField;
+
+                modelObj = TP.core.JSONContent.construct(
+                                '{"emp":{"salary":50000}}');
+
+                modelURI = TP.uc('urn:tibet:testdata');
+                //  This automatically sets the ID of modelObj to
+                //  'urn:tibet:testdata' because it didn't have an existing ID
+                //  and was assigned as the resource to the URI defined above.
+                modelURI.setResource(modelObj);
+
+                salaryField = TP.byOID('salaryField');
+
+                salaryField.defineBinding('value',
+                                            modelURI,
+                                            TP.apc('$.emp.salary'));
+
+                //  Set the value of 'salary' on the model object. The binding
+                //  should cause the value of 'value' on the field to update.
+                modelObj.set('$.emp.salary', 42);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salary'),
+                            salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
+                //  Destroy the binding
+                salaryField.destroyBinding('value',
+                                            modelURI,
+                                            TP.apc('$.emp.salary'));
+
+                modelObj.set('$.emp.salary', 45);
+
+                //  Because there is now no binding between these two, the field
+                //  should still have the value of 42 set above.
+                test.assert.isEqualTo(
+                            42,
+                            salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            });
+    });
+
+    this.it('change notification - concrete reference, JSON path aspect with attributes', function(test, options) {
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var modelObj,
+                    salaryField;
+
+                modelObj = TP.core.JSONContent.construct(
+                                '{"emp":{"salary":50000,"salaryInRange":false}}');
+
+                salaryField = TP.byOID('salaryField');
+
+                salaryField.defineBinding('value',
+                                            modelObj,
+                                            TP.apc('$.emp.salary'));
+
+                salaryField.defineBinding('@inrange',
+                                            modelObj,
+                                            TP.apc('$.emp.salaryInRange'));
+
+                //  Set the value of 'salary' on the model object. The binding
+                //  should cause the value of 'salary' on the field to update.
+                modelObj.set('$.emp.salary', 42);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salary'),
+                            salaryField.get('value').asNumber());
+
+                //  Set the value of 'salaryInRange' on the model object. The
+                //  binding should cause the value of '@inrange' on the field to
+                //  update.
+                modelObj.set('$.emp.salaryInRange', true);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
+                //  Destroy the binding
+                salaryField.destroyBinding('value',
+                                            modelObj,
+                                            TP.apc('$.emp.salary'));
+                salaryField.destroyBinding('@inrange',
+                                            modelObj,
+                                            TP.apc('$.emp.salaryInRange'));
+
+                modelObj.set('$.emp.salary', 45);
+                modelObj.set('$.emp.salaryInRange', false);
+
+                //  Because there is now no binding between these two, the field
+                //  should still have the value of 42 set above.
+                test.assert.isEqualTo(
+                            42,
+                            salaryField.get('value').asNumber());
+
+                test.assert.isEqualTo(
+                            true,
+                            salaryField.get('@inrange').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            });
+    });
+
+    this.it('change notification - virtual reference, JSON path aspect with attributes', function(test, options) {
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var modelObj,
+                    salaryField;
+
+                modelObj = TP.core.JSONContent.construct(
+                                '{"emp":{"salary":50000,"salaryInRange":null}}');
+
+                //  This sets the ID of the object and registers it with an
+                //  accompanying 'urn:tibet' URN (which will allow the
+                //  'defineBinding()' call to turn change handling on for it).
+                modelObj.setID('CurrentEmployee');
+                TP.sys.registerObject(modelObj);
+
+                salaryField = TP.byOID('salaryField');
+
+                salaryField.defineBinding('value',
+                                            'CurrentEmployee',
+                                            TP.apc('$.emp.salary'));
+
+                salaryField.defineBinding('@inrange',
+                                            'CurrentEmployee',
+                                            TP.apc('$.emp.salaryInRange'));
+
+                //  Set the value of 'salary' on the model object. The binding
+                //  should cause the value of 'salary' on the field to update.
+                modelObj.set('$.emp.salary', 42);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salary'),
+                            salaryField.get('value').asNumber());
+
+                //  Set the value of 'salaryInRange' on the model object. The
+                //  binding should cause the value of '@inrange' on the field to
+                //  update.
+                modelObj.set('$.emp.salaryInRange', true);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
+                //  Destroy the binding
+                salaryField.destroyBinding('value',
+                                            'CurrentEmployee',
+                                            TP.apc('$.emp.salary'));
+                salaryField.destroyBinding('@inrange',
+                                            'CurrentEmployee',
+                                            TP.apc('$.emp.salaryInRange'));
+
+                modelObj.set('$.emp.salary', 45);
+                modelObj.set('$.emp.salaryInRange', false);
+
+                //  Because there is now no binding between these two, the field
+                //  should still have the value of 42 set above.
+                test.assert.isEqualTo(
+                            42,
+                            salaryField.get('value').asNumber());
+
+                test.assert.isEqualTo(
+                            true,
+                            salaryField.get('@inrange').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            });
+    });
+
+    this.it('change notification - URI reference, JSON path aspect with attributes', function(test, options) {
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var modelObj,
+                    modelURI,
+                    salaryField;
+
+                modelObj = TP.core.JSONContent.construct(
+                                '{"emp":{"salary":50000,"salaryInRange":null}}');
+
+                modelURI = TP.uc('urn:tibet:testdata');
+                //  This automatically sets the ID of modelObj to
+                //  'urn:tibet:testdata' because it didn't have an existing ID
+                //  and was assigned as the resource to the URI defined above.
+                modelURI.setResource(modelObj);
+
+                salaryField = TP.byOID('salaryField');
+
+                salaryField.defineBinding('value',
+                                            modelURI,
+                                            TP.apc('$.emp.salary'));
+
+                salaryField.defineBinding('@inrange',
+                                            modelURI,
+                                            TP.apc('$.emp.salaryInRange'));
+
+                //  Set the value of 'salary' on the model object. The binding
+                //  should cause the value of 'salary' on the field to update.
+                modelObj.set('$.emp.salary', 42);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salary'),
+                            salaryField.get('value').asNumber());
+
+                //  Set the value of 'salaryInRange' on the model object. The
+                //  binding should cause the value of 'salary' on the field to
+                //  update.
+                modelObj.set('$.emp.salaryInRange', true);
+
+                test.assert.isEqualTo(
+                            modelObj.get('$.emp.salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
+                //  Destroy the binding
+                salaryField.destroyBinding('value',
+                                            modelURI,
+                                            TP.apc('$.emp.salary'));
+                salaryField.destroyBinding('@inrange',
+                                            modelURI,
+                                            TP.apc('$.emp.salaryInRange'));
+
+                modelObj.set('$.emp.salary', 45);
+                modelObj.set('$.emp.salaryInRange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
