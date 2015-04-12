@@ -485,7 +485,9 @@ function(aDataObject) {
 
     this.$set('data', aDataObject);
 
-    this.observe(aDataObject, 'Change');
+    if (TP.isMutable(aDataObject)) {
+        this.observe(aDataObject, 'Change');
+    }
 
     return this;
 });
