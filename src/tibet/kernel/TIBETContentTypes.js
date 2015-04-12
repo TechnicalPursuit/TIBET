@@ -240,13 +240,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Content.Inst.defineMethod('getPathSource',
-function() {
+function(aPath) {
 
     /**
      * @method getPathSource
      * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     underlying data object.
+     * @param {TP.core.AccessPath} aPath The path that the path source will be
+     *     used with.
      * @returns {Object} The object used as the current path source object.
      */
 

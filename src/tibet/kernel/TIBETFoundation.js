@@ -6285,9 +6285,9 @@ function(attributeName) {
         //  is parameterized).
         if (arguments.length > 1) {
             args = TP.args(arguments);
-            args.atPut(0, this.getPathSource());
+            args.atPut(0, this.getPathSource(path));
         } else {
-            args = TP.ac(this.getPathSource(), this.getPathParameters());
+            args = TP.ac(this.getPathSource(path), this.getPathParameters());
         }
 
         return path.executeGet.apply(path, args);
@@ -6300,13 +6300,15 @@ function(attributeName) {
 //  ------------------------------------------------------------------------
 
 TP.defineCommonMethod('getPathSource',
-function() {
+function(aPath) {
 
     /**
      * @method getPathSource
      * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     receiver.
+     * @param {TP.core.AccessPath} aPath The path that the path source will be
+     *     used with.
      * @returns {Object} The object used as the current path source object.
      */
 
@@ -6468,9 +6470,9 @@ function(attributeName) {
         //  is parameterized).
         if (arguments.length > 1) {
             args = TP.args(arguments);
-            args.atPut(0, this.getPathSource());
+            args.atPut(0, this.getPathSource(path));
         } else {
-            args = TP.ac(this.getPathSource(), this.getPathParameters());
+            args = TP.ac(this.getPathSource(path), this.getPathParameters());
         }
 
         return path.executeGet.apply(path, args);
@@ -6560,9 +6562,9 @@ function(attributeName) {
         //  is parameterized).
         if (arguments.length > 1) {
             args = TP.args(arguments);
-            args.atPut(0, this.getPathSource());
+            args.atPut(0, this.getPathSource(path));
         } else {
-            args = TP.ac(this.getPathSource(), this.getPathParameters());
+            args = TP.ac(this.getPathSource(path), this.getPathParameters());
         }
 
         return path.executeGet.apply(path, args);
@@ -6779,9 +6781,9 @@ function(attributeName, attributeValue, shouldSignal) {
         //  is parameterized).
         if (arguments.length > 3) {
             args = TP.args(arguments);
-            args.atPut(0, this.getPathSource());
+            args.atPut(0, this.getPathSource(path));
         } else {
-            args = TP.ac(this.getPathSource(), attributeValue, shouldSignal,
+            args = TP.ac(this.getPathSource(path), attributeValue, shouldSignal,
                             this.getPathParameters());
         }
 
@@ -6894,9 +6896,9 @@ function(attributeName, attributeValue, shouldSignal) {
         //  is parameterized).
         if (arguments.length > 3) {
             args = TP.args(arguments);
-            args.atPut(0, this.getPathSource());
+            args.atPut(0, this.getPathSource(path));
         } else {
-            args = TP.ac(this.getPathSource(), attributeValue, shouldSignal,
+            args = TP.ac(this.getPathSource(path), attributeValue, shouldSignal,
                             this.getPathParameters());
         }
 

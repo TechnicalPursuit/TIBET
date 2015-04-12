@@ -5325,9 +5325,9 @@ function(attributeName) {
         //  is parameterized).
         if (arguments.length > 1) {
             args = TP.args(arguments);
-            args.atPut(0, this.getPathSource());
+            args.atPut(0, this.getPathSource(path));
         } else {
-            args = TP.ac(this.getPathSource(), this.getPathParameters());
+            args = TP.ac(this.getPathSource(path), this.getPathParameters());
         }
 
         return path.executeGet.apply(path, args);
@@ -5759,9 +5759,9 @@ function(attributeName, attributeValue, shouldSignal) {
         //  is parameterized).
         if (arguments.length > 3) {
             args = TP.args(arguments);
-            args.atPut(0, this.getPathSource());
+            args.atPut(0, this.getPathSource(path));
         } else {
-            args = TP.ac(this.getPathSource(), attributeValue, shouldSignal,
+            args = TP.ac(this.getPathSource(path), attributeValue, shouldSignal,
                             this.getPathParameters());
         }
 

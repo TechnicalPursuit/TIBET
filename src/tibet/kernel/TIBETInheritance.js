@@ -5593,7 +5593,8 @@ function(anObject, constraints) {
         constraint = constraints[constraintName];
 
         if (constraint.isAccessPath()) {
-            constraint = constraint.executeGet(anObject.getPathSource());
+            constraint = constraint.executeGet(
+                            anObject.getPathSource(constraint));
         }
 
         //  Set the initial result to false.
@@ -7785,7 +7786,7 @@ function(aspectName, facetName) {
             if (TP.isBoolean(facetSetting)) {
                 val = facetSetting;
             } else if (facetSetting.isAccessPath()) {
-                val = facetSetting.executeGet(this.getPathSource());
+                val = facetSetting.executeGet(this.getPathSource(facetSetting));
             } else if (TP.isString(facetSetting) &&
                         TP.isMethod(this[facetSetting])) {
                 val = this[facetSetting]();
@@ -7813,7 +7814,7 @@ function(aspectName, facetName) {
                 } else if (TP.isArray(facetValue)) {
                     val = facetValue;
                 } else if (facetValue.isAccessPath()) {
-                    val = facetValue.executeGet(this.getPathSource());
+                    val = facetValue.executeGet(this.getPathSource(facetValue));
                 } else if (TP.isString(facetValue) &&
                             TP.isMethod(this[facetValue])) {
                     val = this[facetValue]();
@@ -7840,7 +7841,8 @@ function(aspectName, facetName) {
             } else if (TP.isArray(facetSetting)) {
                 facetValue = facetSetting;
             } else if (facetSetting.isAccessPath()) {
-                facetValue = facetSetting.executeGet(this.getPathSource());
+                facetValue = facetSetting.executeGet(
+                                this.getPathSource(facetSetting));
             } else if (TP.isString(facetSetting) &&
                         TP.isMethod(this[facetSetting])) {
                 facetValue = this[facetSetting]();
@@ -8068,7 +8070,8 @@ function() {
                                 var newVal;
 
                                 newVal = obsFunction.path.executeGet(
-                                            obsFunction.source.getPathSource());
+                                            obsFunction.source.getPathSource(
+                                                            obsFunction.path));
                                 this.setFacet(obsFunction.aspectName,
                                                 obsFunction.facetName,
                                                 newVal,
