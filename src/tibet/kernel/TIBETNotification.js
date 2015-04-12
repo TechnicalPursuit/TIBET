@@ -4133,7 +4133,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         root,
         entry,
         id,
-        handlerID;
+        handlerID,
+        shouldObserveResource;
 
     /*
     if (TP.isEmpty(anOrigin) || (anOrigin == '*')) {
@@ -4246,8 +4247,13 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     entry.handler = handlerID;
 
+    //  If the interest being registered is for a *Change signal of some sort,
+    //  then we tell the registration routine to tell the URN to observe it's
+    //  resource for Change.
+    shouldObserveResource = TP.sig.SignalMap.CHANGE_REGEX.test(signame);
+
     //  register the object so it can be found during notification
-    TP.sys.registerObject(aHandler, handlerID, true, false);
+    TP.sys.registerObject(aHandler, handlerID, true, shouldObserveResource);
 
     root.listeners.push(entry);
 
