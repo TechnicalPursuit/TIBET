@@ -4743,7 +4743,7 @@ function(aResource, aRequest) {
     this.$set('resource', aResource);
 
     //  If the request doesn't have an 'observeResource' property (or it isn't
-    //  set to true), then observe the resource.
+    //  set to false), then observe the resource.
     if (TP.isValid(aResource)) {
         if (TP.notFalse(request.at('observeResource'))) {
             //  Observe the new resource object for changes.
