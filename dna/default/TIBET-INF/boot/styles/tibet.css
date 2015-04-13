@@ -674,7 +674,7 @@ div[busyFor] > span {
   ========================================================================
 */
 
-tibet|data {
+tibet|data, tibet|service, tibet|content {
     display: none;
 }
 
