@@ -2671,11 +2671,11 @@ function(aNode, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setProcessedContent',
+TP.core.Node.Inst.defineMethod('setRawContent',
 function(newContent, aRequest) {
 
     /**
-     * @method setProcessedContent
+     * @method setRawContent
      * @summary Sets the content of the receiver to the content provided
      *     without performing any content processing on it. At this level, this
      *     method just performs a setContent() and returns.
@@ -4835,16 +4835,16 @@ function(newContent, aRequest, stdinContent) {
         content = TP.process(newContent, request);
     }
 
-    return this.addProcessedContent(content, request);
+    return this.addRawContent(content, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addProcessedContent',
+TP.core.CollectionNode.Inst.defineMethod('addRawContent',
 function(newContent, aRequest) {
 
     /**
-     * @method addProcessedContent
+     * @method addRawContent
      * @summary Adds new content to the receiver without performing any content
      *     processing on it.
      * @param {Object} newContent The content to write into the receiver. This
@@ -4941,7 +4941,7 @@ function(aNode) {
     /**
      * @method contentAppendCallback
      * @summary This method is the standard 'content append' callback when
-     *     addProcessedContent() method is called.
+     *     addRawContent() method is called.
      * @param {Node} aNode The node that content has been appended to. Unless
      *     this node has been altered by the method that is appending the
      *     content, this should be the same as the receiver's native node.
@@ -4958,7 +4958,7 @@ function(aNode) {
     /**
      * @method contentInsertCallback
      * @summary This method is the standard 'content insert' callback when
-     *     insertProcessedContent() method is called.
+     *     insertRawContent() method is called.
      * @param {Node} aNode The node that content has been inserted into. Unless
      *     this node has been altered by the method that is inserting the
      *     content, this should be the same as the receiver's native node.
@@ -4975,7 +4975,7 @@ function(aNode) {
     /**
      * @method contentReplaceCallback
      * @summary This method is the standard 'content replace' callback when
-     *     setProcessedContent() method is called.
+     *     setRawContent() method is called.
      * @param {Node} aNode The node that content has been replaced for. Unless
      *     this node has been altered by the method that is replacing the
      *     content, this should be the same as the receiver's native node.
@@ -5079,16 +5079,16 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
         content = TP.process(newContent, request);
     }
 
-    return this.insertProcessedContent(content, aPositionOrPath, request);
+    return this.insertRawContent(content, aPositionOrPath, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('insertProcessedContent',
+TP.core.CollectionNode.Inst.defineMethod('insertRawContent',
 function(newContent, aPositionOrPath, aRequest) {
 
     /**
-     * @method insertProcessedContent
+     * @method insertRawContent
      * @summary Inserts new content in the receiver without performing any
      *     content processing on it.
      * @param {Object} newContent The content to write into the receiver. This
@@ -5316,16 +5316,16 @@ function(newContent, aRequest, stdinContent) {
         return;
     }
 
-    return this.setProcessedContent(content, request);
+    return this.setRawContent(content, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('setProcessedContent',
+TP.core.CollectionNode.Inst.defineMethod('setRawContent',
 function(newContent, aRequest) {
 
     /**
-     * @method setProcessedContent
+     * @method setRawContent
      * @summary Sets the content of the receiver to the content provided
      *     without performing any content processing on it.
      * @param {Object} newContent The content to write into the receiver. This
@@ -6825,7 +6825,7 @@ function() {
     for (i = 0; i < arguments.length; i++) {
 
         //  Note that we use the low-level primitive here rather than
-        //  'addContent()' / 'addProcessedContent()' because this is a
+        //  'addContent()' / 'addRawContent()' because this is a
         //  'lower-level' API and we don't want processed content.
         TP.nodeAddContent(node, arguments[i], null, false);
     }

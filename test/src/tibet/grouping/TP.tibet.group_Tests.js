@@ -612,7 +612,7 @@ function() {
 
                 parentTPElem = TP.byOID('fooStuff');
 
-                parentTPElem.addProcessedContent('<div id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
+                parentTPElem.addRawContent('<div id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
 
                 //  Give it a 50ms wait - otherwise, Promises starve the event
                 //  loop and the MO machinery will never be triggered.

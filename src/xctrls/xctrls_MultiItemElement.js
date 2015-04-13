@@ -110,10 +110,10 @@ function(aValue, aPositionOrPath, templateName) {
             newItemElem = TP.elem(newItemStr);
 
             if (TP.notEmpty(aPositionOrPath)) {
-                bodyElem.insertProcessedContent(newItemElem,
+                bodyElem.insertRawContent(newItemElem,
                                                 aPositionOrPath);
             } else {
-                bodyElem.addProcessedContent(newItemElem);
+                bodyElem.addRawContent(newItemElem);
             }
         });
 

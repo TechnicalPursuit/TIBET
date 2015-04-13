@@ -74,11 +74,11 @@ function(newContent, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.Inst.defineMethod('setProcessedContent',
+TP.sherpa.tile.Inst.defineMethod('setRawContent',
 function(newContent, aRequest) {
 
     /**
-     * @method setProcessedContent
+     * @method setRawContent
      * @summary Sets the content of the receiver to the content provided
      *     without performing any content processing on it.
      * @param {Object} newContent The content to write into the receiver. This
@@ -90,7 +90,7 @@ function(newContent, aRequest) {
      *     receiver.
      */
 
-    return this.get('body').setProcessedContent(newContent, aRequest);
+    return this.get('body').setRawContent(newContent, aRequest);
 });
 
 //  ------------------------------------------------------------------------

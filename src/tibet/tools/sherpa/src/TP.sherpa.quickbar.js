@@ -336,14 +336,14 @@ function() {
         detailTile.setPagePositionAndSize(
                         this.get('resultDetail').getPageRect());
 
-        detailTile.setProcessedContent('<h2>Hi there</h2>');
+        detailTile.setRawContent('<h2>Hi there</h2>');
 
     } else {
         detailTile.setAttribute('hidden', true);
     }
     /*
     if (TP.isValid(currentResultItem = this.get('currentResultItem'))) {
-        detailTile.setProcessedContent('<h2>Stuff</h2>');
+        detailTile.setRawContent('<h2>Stuff</h2>');
     } else {
         detailTile.empty();
     }

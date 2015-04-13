@@ -35,7 +35,7 @@ function() {
      * @method setup
      */
 
-    this.setProcessedContent('<ul id="entryList"></ul>');
+    this.setRawContent('<ul id="entryList"></ul>');
 
     return this;
 });
@@ -54,24 +54,24 @@ function(dataRecord) {
                 dataRecord.at('output') +
                 '</span></li>';
 
-    return this.get('entryList').addProcessedContent(content);
+    return this.get('entryList').addRawContent(content);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.logview.Inst.defineMethod('addProcessedContent',
+TP.sherpa.logview.Inst.defineMethod('addRawContent',
 function(newContent, aRequest) {
 
-    return this.get('body').addProcessedContent(newContent, aRequest);
+    return this.get('body').addRawContent(newContent, aRequest);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.logview.Inst.defineMethod('setProcessedContent',
+TP.sherpa.logview.Inst.defineMethod('setRawContent',
 function(newContent, aRequest) {
 
     /**
-     * @method setProcessedContent
+     * @method setRawContent
      * @summary Sets the content of the receiver to the content provided
      *     without performing any content processing on it.
      * @param {Object} newContent The content to write into the receiver. This
@@ -83,7 +83,7 @@ function(newContent, aRequest) {
      *     receiver.
      */
 
-    return this.get('body').setProcessedContent(newContent, aRequest);
+    return this.get('body').setRawContent(newContent, aRequest);
 });
 
 //  ------------------------------------------------------------------------
