@@ -11913,6 +11913,10 @@ function(aValue, formats) {
         value = aValue;
     }
 
+    //  Formatters can sometimes consist of chain separated (for compatibility
+    //  with TSH) with '.|'. We split these and process each one individually in
+    //  the chain.
+
     formats = formats.split(TP.regex.ACP_FORMAT_SEPARATOR);
     len = formats.getSize();
 
@@ -11923,9 +11927,11 @@ function(aValue, formats) {
 
             format = formats.at(i);
 
-            //  Sometimes we can have a leading '.|' (or '.|*') in which case
-            //  the first item will be empty
-            if (TP.isEmpty(format)) {
+            //  If it was a chain, we will have a leading '$_' followed by a
+            //  '.|' (or '.|*') in which case the first item will be '$_'.  We
+            //  will throw this away, since it's there to represent 'standard
+            //  in' for compatibility with shell formatting expressions.
+            if (format === '$_') {
                 continue;
             }
 

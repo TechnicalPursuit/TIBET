@@ -21,6 +21,6 @@
 
     <input type="text" name="input_text" id="input_text" ui:storage="upperCase .| lowerCase"/>
 
-    <textarea id="textarea" name="textarea" ui:storage=".| TP.test.Splitter .|* html:li .| escapedXML"/>
+    <textarea id="textarea" name="textarea" ui:storage="$_ .| TP.test.Splitter .|* html:li .| escapedXML"/>
 </body>
 </html>

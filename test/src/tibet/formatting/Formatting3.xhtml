@@ -19,9 +19,9 @@
     <br/>
     <br/>
 
-    <span id="span" ui:display="upperCase .| lowerCase"/>
+    <span id="span" ui:display="$_ .| upperCase .| lowerCase"/>
 
-    <div id="div" ui:display=".|* html:li .| escapedXML"/>
+    <div id="div" ui:display="$_ .|* html:li .| escapedXML"/>
 
 </body>
 </html>
