@@ -531,10 +531,10 @@ function(aThis, varargs) {
 
     var retFunc;
 
-    //  if more than 1 argument was supplied, then call $$bind() with an
-    //  Array built from the arguments object, slicing off aThis.
+    //  if more than 1 argument was supplied, then call $$bind() with the
+    //  arguments object.
     if (arguments.length > 1) {
-        retFunc = this.$$bind(aThis, TP.args(arguments, 1));
+        retFunc = this.$$bind.apply(this, arguments);
     } else {
         //  On rare occasions, 'this' points to a Function that isn't
         //  participating in the Function.prototype chain (sigh...). If so, the
