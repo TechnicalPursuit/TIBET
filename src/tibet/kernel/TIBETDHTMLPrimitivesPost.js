@@ -3881,6 +3881,40 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementIsDisabled',
+function(anElement) {
+
+    /**
+     * @method elementIsDisabled
+     * @summary Returns whether or not anElement is disabled.
+     * @description An element can be considered to be disabled if it has a
+     *     '.disabled' property (as some HTML elements do) that is set to true
+     *     or if it has an attribute of 'pclass:disabled' (the existence of
+     *     which means 'true').
+     * @param {Element} anElement The element to determine the disabled state
+     *     of.
+     * @exception TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not anElement is disabled.
+     */
+
+    var isDisabled;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    isDisabled = anElement.disabled;
+
+    if (TP.isValid(isDisabled)) {
+        return isDisabled;
+    }
+
+    return TP.elementHasAttribute(anElement, 'disabled', true) ||
+            TP.elementHasAttribute(anElement, 'pclass|disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementIsDisplayed',
 function(anElement) {
 
