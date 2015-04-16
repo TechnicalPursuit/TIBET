@@ -125,7 +125,7 @@
      */
     TDS.cli = function(options) {
 
-        return function (req, res, next) {
+        return function(req, res, next) {
 
             var cli,    // Spawned child process for the server.
                 cmd,    // The command being requested.
@@ -180,7 +180,7 @@
      */
     TDS.patcher = function(options) {
 
-        return function (req, res, next) {
+        return function(req, res, next) {
 
             var body,
                 data,
@@ -387,7 +387,7 @@
                 changedFileName = changedFileName.replace(TDS.getAppHead(), '');
             });
 
-        writeSSEHead = function (req, res, cb) {
+        writeSSEHead = function(req, res, cb) {
 
             res.writeHead(
                 200,
@@ -404,7 +404,7 @@
             }
         };
 
-        writeSSEData = function (req, res, eventName, eventData, cb) {
+        writeSSEData = function(req, res, eventName, eventData, cb) {
             var id;
 
             id = (new Date()).getTime();
@@ -418,7 +418,7 @@
             }
         };
 
-        return function (req, res, next) {
+        return function(req, res, next) {
 
             var eventName;
 
@@ -473,7 +473,7 @@
         node = path.resolve(TDS.expandPath(TDS.getcfg('tds.dav_root')));
         mount = TDS.expandPath(TDS.getcfg('tds.dav_uri'));
 
-        return function (req, res, next) {
+        return function(req, res, next) {
             jsDAV.mount({
                 node: node,
                 mount: mount,
