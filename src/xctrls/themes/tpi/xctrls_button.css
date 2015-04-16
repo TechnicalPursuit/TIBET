@@ -1,0 +1,89 @@
+/*
+	CSS styles for 'xctrls:button' controls for the 'tpi' theme.
+*/
+
+@import url('../xctrls_button_all.css');
+@import url('xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+/* The button */
+
+*[data-theme="tpi"] xctrls|button {
+    border-radius: 4px;
+}
+
+/* Hovering over the button */
+
+*[data-theme="tpi"] xctrls|button:hover {
+}
+
+/* Focusing on the button */
+
+/* doesn't work in any browser:
+*[data-theme="tpi"] xctrls|button:focus
+*/
+*[data-theme="tpi"] xctrls|button[pclass|focus] {
+}
+
+/* Clicking down on the button */
+
+/* doesn't work in IE9:
+*[data-theme="tpi"] xctrls|button:active
+*/
+*[data-theme="tpi"] xctrls|button[pclass|active] {
+}
+
+/* The button is disabled */
+
+/* doesn't work in any browser:
+*[data-theme="tpi"] xctrls|button:disabled
+*/
+*[data-theme="tpi"] xctrls|button[pclass|disabled] {
+}
+
+/* The button label */
+
+*[data-theme="tpi"] xctrls|button > xctrls|label {
+
+    color: black;
+}
+
+/* Hovering over the button, label must highlight */
+
+*[data-theme="tpi"] xctrls|button:hover > xctrls|label {
+
+    color: #D59D6E;
+}
+
+/* Focusing on the button, label must highlight */
+
+/* doesn't work in any browser
+*[data-theme="tpi"] xctrls|button:focus > xctrls|label
+*/
+*[data-theme="tpi"] xctrls|button[pclass|focus] > xctrls|label {
+
+    color: #46A3C9;
+}
+
+/* Clicking down on the button, label must highlight */
+
+/* doesn't work in IE9:
+*[data-theme="tpi"] xctrls|button:active > xctrls|label
+*/
+*[data-theme="tpi"] xctrls|button[pclass|active] > xctrls|label {
+
+    color: #D23E3E;
+}
+
+/* The button is disabled, so is the label */
+
+/* doesn't work in any browser:
+*[data-theme="tpi"] xctrls|button:disabled > xctrls|label
+*/
+*[data-theme="tpi"] xctrls|button[pclass|disabled] > xctrls|label {
+
+    color: #444444;
+}
+
