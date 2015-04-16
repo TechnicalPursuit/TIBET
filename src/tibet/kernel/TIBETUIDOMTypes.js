@@ -4255,8 +4255,8 @@ function() {
     //  Set our attributes so that the proper visuals, etc. are showing that
     //  we are both selected and focused.
 
-    this.set('selected', true);
-    this.set('focused', true);
+    this.setAttrSelected(true);
+    this.setAttrFocused(true);
 
     //  TODO: Should we also invoke 'focus' here? If so, we won't need to
     //  set 'selected' above since the focus handler does that.
@@ -4679,8 +4679,8 @@ function(aSignal) {
     this.resignFocusedResponder();
 
     //  We're blurring... set 'focused' and 'selected' to false
-    this.set('focused', false);
-    this.set('selected', false);
+    this.setAttrFocused(false);
+    this.setAttrSelected(false);
 
     this.signalAfterUnwind('TP.sig.UIDidBlur');
 
@@ -4995,7 +4995,7 @@ function(aSignal) {
     this.becomeFocusedResponder();
 
     //  We're focusing... set 'focused' to true
-    this.set('focused', true);
+    this.setAttrFocused(true);
 
     this.signalAfterUnwind('TP.sig.UIDidFocus');
 
