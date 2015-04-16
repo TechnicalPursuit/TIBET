@@ -700,14 +700,14 @@ TP.REQUIRED = function() {return; };
 //  for native nodes
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
 //  to be changed.
-TP.EVENT_IDS = 'eventIds';
-TP.GLOBAL_ID = 'globalID';
-TP.SHOULD_SIGNAL_CHANGE = 'shouldSignalChange';
-TP.SHOULD_SUSPEND_SIGNALING = 'shouldSuspendSignaling';
-TP.WRAPPER = 'wrapper';
-TP.GENERATOR = 'generator';
-TP.IS_XHTML = 'isXHTML';
-TP.SRC_LOCATION = 'sourcelocation';
+TP.EVENT_IDS = 'tp_eventIds';
+TP.GLOBAL_ID = 'tp_globalID';
+TP.SHOULD_SIGNAL_CHANGE = 'tp_shouldSignalChange';
+TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';
+TP.WRAPPER = 'tp_wrapper';
+TP.GENERATOR = 'tp_generator';
+TP.IS_XHTML = 'tp_isXHTML';
+TP.SRC_LOCATION = 'tp_sourcelocation';
 
 //  meta owners and their target objects
 
