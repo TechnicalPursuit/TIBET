@@ -273,23 +273,24 @@ function(anEvent) {
     /**
      * @method eventResolveTarget
      * @summary Returns a 'proper target' for the supplied Event object.
-     *     discussion This method takes a number of factors into account when
-     *     computing the target element for the supplied Event: - Whether the
-     *     native target is a Document - Whether the native target or any of its
-     *     ancestors are disabled. - Whether the native target or any of its
-     *     ancestors have a 'tibet:captures' attribute that allows them to
-     *     capture a particular signal and therefore designates them as the
-     *     'proper target'.
+     * @description This method takes a number of factors into account when
+     *     computing the target element for the supplied Event:
+     *     - Whether the native target is a Document
+     *     - Whether the native target or any of its ancestors are disabled.
+     *     - Whether the native target or any of its ancestors have a
+     *     'tibet:captures' attribute that allows them to capture a particular
+     *     signal and therefore designates them as the 'proper target'.
      * @param {Event} anEvent The event to resolve the target of.
      * @exception TP.sig.InvalidEvent
      * @returns {The} proper target for the supplied Event object.
      */
 
     var target,
-        element,
         signal,
         ancestor,
-        attr;
+        computedTarget,
+        sigNames,
+        targetType;
 
     if (!TP.isEvent(anEvent)) {
         return TP.raise(this, 'TP.sig.InvalidEvent');
@@ -324,34 +325,38 @@ function(anEvent) {
     //  Document node (or the nearest DocumentFragment node).
     ancestor = target;
 
+    //  Make sure to skip over Node.TEXT_NODE nodes.
+    if (!TP.isElement(ancestor)) {
+        ancestor = ancestor.parentNode;
+    }
+
     while (ancestor &&
             ancestor.nodeType !== Node.DOCUMENT_NODE &&
             ancestor.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
-        //  Make sure to skip over Node.TEXT_NODE nodes.
-        if (!TP.isElement(ancestor)) {
-            ancestor = ancestor.parentNode;
-            continue;
-        }
 
         //  If the element at this level is 'disabled', then nothing we do
         //  here matters, so we bail out returning null.
-        if (TP.elementHasAttribute(ancestor, 'tibet:disabled', true)) {
+        if (TP.elementIsDisabled(ancestor)) {
             return null;
         }
 
         //  unless we found a capturing container we keep searching until we
         //  run out of options or run into a disabled element.
-        if (TP.notValid(element)) {
-            if (TP.elementHasAttribute(ancestor, 'tibet:captures', true)) {
-                attr = TP.elementGetAttribute(ancestor,
-                                                'tibet:captures',
-                                                true);
-                if (attr.indexOf(signal) !== TP.NOT_FOUND) {
-                    //  set element to the ancestor, but NOTE NO BREAK here
-                    //  so the iteration will continue up the tree until
-                    //  we're sure we're not under a disabled element.
-                    element = ancestor;
-                }
+        if (TP.notValid(computedTarget)) {
+
+            //  Grab the TIBET wrapper type for the element and query it for
+            //  signal names that this type might capture.
+            if (TP.isType(targetType =
+                            TP.core.ElementNode.getConcreteType(ancestor))) {
+                sigNames = targetType.getCapturingSignalNames(ancestor);
+            }
+
+            if (TP.isValid(sigNames) &&
+                sigNames.indexOf(signal) !== TP.NOT_FOUND) {
+                //  set computedTarget to the ancestor, but NOTE NO BREAK
+                //  here so the iteration will continue up the tree until
+                //  we're sure we're not under a disabled element.
+                computedTarget = ancestor;
             }
         }
 
@@ -360,13 +365,13 @@ function(anEvent) {
         ancestor = ancestor.parentNode;
     }
 
-    //  If we couldn't find a return element, then go ahead and return the
+    //  If we couldn't compute a target element, then go ahead and return the
     //  'original' (unless it was a Node.TEXT_NODE) event target, since we
     //  couldn't find any elements that had the attribute we were searching
     //  for. This allows a nice defaulting behavior when we're in a page
     //  (or DOM section) that's not using the 'tibet:captures' attribute and
     //  doesn't care.
-    return element || target;
+    return computedTarget || target;
 });
 
 //  ------------------------------------------------------------------------

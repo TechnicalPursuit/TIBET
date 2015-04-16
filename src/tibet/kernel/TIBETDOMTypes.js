@@ -9794,6 +9794,33 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('getCapturingSignalNames',
+function(anElem) {
+
+    /**
+     * @method getCapturingSignalNames
+     * @summary Returns an Array of signal names that are captured by elements
+     *     wrapped by the receiving type.
+     * @description At this level, the supplied element is checked for a
+     *     'tibet:captures' attribute, which should contain a space-separated
+     *     set of TIBET signal names that will be captured by this element.
+     * @param {Element} anElem The element to check for the 'tibet:captures'
+     *     attribute.
+     * @returns {String[]} An Array of signal names.
+     */
+
+    var attrVal;
+
+    if (TP.elementHasAttribute(anElem, 'tibet:captures', true)) {
+        attrVal = TP.elementGetAttribute(anElem, 'tibet:captures', true);
+        return attrVal.split(' ');
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
