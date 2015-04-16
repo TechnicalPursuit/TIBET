@@ -305,16 +305,20 @@
      * @returns {Function} A connect/express middleware function.
      */
     TDS.watcher = function(options) {
-        var root,
+        var changedFiles,
+
+            root,
             retry,
-            changedFileName,
+
             writeSSEHead,
             writeSSEData,
+
             pattern,
             ignore,
             escaper;
 
-        changedFileName = '';
+        changedFiles = [];
+
         root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch_root')));
 
         retry = TDS.getcfg('tds.watch.retry');
@@ -322,9 +326,9 @@
             retry = 500;
         }
 
-        // Helper function for escaping regex metacharacters for patterns. NOTE
-        // that we need to take "ignore format" things like path/* and make it
-        // path/.* or the regex will fail.
+        //  Helper function for escaping regex metacharacters for patterns. NOTE
+        //  that we need to take "ignore format" things like path/* and make it
+        //  path/.* or the regex will fail.
         escaper = function(str) {
             return str.replace(
                 /\*/g, '\.\*').replace(
@@ -332,13 +336,16 @@
                 /\//g, '\\/');
         };
 
-        // Build a pattern we can use to test against ignore files.
+        //  Build a pattern we can use to test against ignore files.
         ignore = TDS.getcfg('tds.watch.ignore');
         if (ignore) {
 
-            pattern = ignore.reduce(function(str, item) {
-                return str ? str + '|' + escaper(item) : escaper(item);
-            }, '');
+            pattern = ignore.reduce(
+                        function(str, item) {
+                            return str ?
+                                    str + '|' + escaper(item) :
+                                    escaper(item);
+                        }, '');
 
             try {
                 pattern = new RegExp(pattern);
@@ -354,37 +361,44 @@
         // TODO: may need to change to the "monitor" approach here. see docs for
         // the watch module.
 
-        watch.watchTree(root,
-            function (fileName, curr, prev) {
-                if (typeof fileName === 'object' && prev === null &&
+        watch.watchTree(
+            root,
+            function(fileName, curr, prev) {
+
+                var expandedFileName;
+
+                if (typeof fileName === 'object' &&
+                        prev === null &&
                         curr === null) {
-                    // Finished walking the tree
+                    //  Finished walking the tree
                     void 0;
                 } else if (prev === null) {
-                    // fileName is a new file
+                    //  fileName is a new file
                     void 0;
                 } else if (curr.nlink === 0) {
-                    // fileName was removed
+                    //  fileName was removed
                     void 0;
                 } else {
-                    // fileName was changed
-                    changedFileName = fileName;
-                }
 
-                if (changedFileName && pattern) {
-                    if (pattern.test(changedFileName)) {
-                        changedFileName = '';
+                    //  Normalize the file name. We need to send it to the
+                    //  client as if it were rooted from the launch root.
+                    expandedFileName = fileName.replace(TDS.getAppHead(), '');
+
+                    //  fileName was changed
+
+                    //  if the ignore pattern exists, use it to filter the file
+                    //  name
+                    if (pattern) {
+
+                        if (!pattern.test(expandedFileName)) {
+                            //  add it to the changedFiles queue
+                            changedFiles.push(expandedFileName);
+                        }
+                    } else {
+                        //  Otherwise, just add it to the changedFiles queue
+                        changedFiles.push(expandedFileName);
                     }
                 }
-
-                //  TODO:   Check the file to see if it's one we should process?
-                //  Obvious examples are coffeescript and sass files which we
-                //  can compile and then clear in terms of notification/SSE
-                //  dispatch.
-
-                // Normalize the file name. We need to send it to the client as
-                // if it were rooted from the launch root.
-                changedFileName = changedFileName.replace(TDS.getAppHead(), '');
             });
 
         writeSSEHead = function(req, res, cb) {
@@ -420,21 +434,24 @@
 
         return function(req, res, next) {
 
-            var eventName;
+            var eventName,
+                changedFileName;
+
+            changedFileName = null;
 
             if (req.headers.accept &&
                     req.headers.accept === 'text/event-stream') {
 
-                if (changedFileName !== '') {
+                if (changedFiles.length > 0) {
+                    changedFileName = changedFiles.shift();
                     eventName = TDS.getcfg('tds.watch_event');
-                    console.log('Announcing file system change to: ' +
-                        changedFileName);
                 } else {
                     eventName = '';
                 }
 
                 //  Write the SSE HEAD and then in that method's callback, write
                 //  the SSE data.
+
                 writeSSEHead(
                     req, res,
                     function(req, res) {
@@ -442,9 +459,7 @@
                             req, res, eventName, changedFileName,
                             function(req, res) {
 
-                                if (changedFileName !== '') {
-                                    changedFileName = '';
-                                }
+                                changedFileName = '';
 
                                 res.end();
                             });
