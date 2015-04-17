@@ -2090,7 +2090,9 @@ function(aSignal, isCapturing) {
     //  Check for a parent node or node controller we can wrap.
     parentNode = node.parentNode;
     if (TP.isElement(parentNode) &&
-            TP.isElement(ancestorControl = TP.nodeGetControlElement(parentNode))) {
+            TP.isElement(
+                ancestorControl = TP.nodeGetControlElement(parentNode))) {
+
         return TP.wrap(ancestorControl);
     }
 
@@ -2098,10 +2100,13 @@ function(aSignal, isCapturing) {
     //  only return the iframe if it has a specific handler, otherwise we
     //  continue searching upward from the iframe.
     elementWin = TP.nodeGetWindow(this.getNativeDocument());
+
     if (TP.isIFrameWindow(elementWin)) {
         frameElem = elementWin.frameElement;
+
         if (TP.isElement(frameElem)) {
             frame = TP.wrap(frameElem);
+
             if (frame.isResponderFor(aSignal, isCapturing)) {
                 return frame;
             } else {

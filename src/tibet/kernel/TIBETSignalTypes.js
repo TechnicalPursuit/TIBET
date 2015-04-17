@@ -743,8 +743,8 @@ TP.sig.ResponderInteractionSignal.defineSubtype('DOMRebuild'); //  XForms
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMRefresh'); //  XForms
 
 /*
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMRevalidate');  //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMRecalculate');//   XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('DOMRevalidate');   //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('DOMRecalculate');  //  XForms
 
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMReset');   //  XForms
 */
@@ -767,15 +767,15 @@ TP.sig.UIDataSignal.defineSubtype('UIDataDestruct');
 
 //  ------------------------------------------------------------------------
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIValueChange'); //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIValueChange');   //  XForms
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UISelect'); //    XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDeselect'); //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UISelect');        //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDeselect');      //  XForms
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UIScroll');
 
-TP.sig.ResponderInteractionSignal.defineSubtype('UIInsert'); //    XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDelete'); //    XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIInsert');        //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDelete');        //  XForms
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UIDuplicate');
 
