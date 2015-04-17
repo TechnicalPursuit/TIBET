@@ -1484,7 +1484,7 @@ function() {
 
     var signame;
 
-    if (!TP.isString(signame = this.$get('signalName'))) {
+    if (TP.isEmpty(signame = this.$get('signalName'))) {
         signame = this.computeSignalName();
         this.$set('signalName', signame, false);
     }
