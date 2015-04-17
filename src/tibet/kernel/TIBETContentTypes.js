@@ -2144,6 +2144,11 @@ function(targetObj, varargs) {
             break;
         }
 
+        //  If the return value cannot execute a 'get', then wrap it.
+        if (!TP.canInvoke(retVal, 'get')) {
+            retVal = TP.wrap(retVal);
+        }
+
         //  Execute the 'get()' and reassign the return value.
         retVal = retVal.get(paths.at(i));
 
