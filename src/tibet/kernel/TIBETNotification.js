@@ -5084,6 +5084,9 @@ function(originSet, aSignal, aPayload, aType) {
 
             onstarEvtName = eventType;
 
+            //  Note here how the detector searches for attributes in the
+            //  TP.w3.Xmlns.ON namespace, in case the user hasn't used the 'on:'
+            //  prefix. This detector function is used below.
             detector = function(attrNode) {
                 /* eslint-disable no-extra-parens */
                 return (TP.attributeGetLocalName(attrNode) === onstarEvtName &&
@@ -5265,12 +5268,26 @@ function(originSet, aSignal, aPayload, aType) {
 
         origin = originArray.at(i);
 
+        //  If a detector function was defined and our origin is an Element,
+        //  then we are eligible for 'on:' remapping.
         if (TP.isCallable(detector) && TP.isElement(origin)) {
+
             if (TP.elementGetAttributeNodes(origin).detect(detector)) {
                 //  Found an on: mapping for this origin...
-                signame = TP.elementGetAttribute(origin, onstarEvtName, true);
 
-                sig.setSignalName(signame);
+                //  NB: We can use 'on:' here even if the user didn't, since the
+                //  'true' in the 3rd parameter will cause a search of the
+                //  TP.w3.Xmlns.ON namespace if an attribute prefixed by 'on:'
+                //  isn't found.
+                signame = TP.elementGetAttribute(
+                                        origin, 'on:' + onstarEvtName, true);
+
+                //  Queue the new signal and continue - thereby skipping
+                //  processing for the bubbling phase of this signal (for this
+                //  origin) in deference to signaling the new signal.
+                TP.queue(origin, signame, TP.hc('event', sig.getPayload()));
+
+                continue;
             }
         }
 
