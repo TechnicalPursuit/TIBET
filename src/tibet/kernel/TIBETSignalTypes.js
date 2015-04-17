@@ -287,6 +287,7 @@ function() {
                 try {
                     obj = target();
                 } catch (e) {
+                    //  empty
                     //  ignore errors in acquisition functions
                 }
             } else if (TP.isString(target)) {
@@ -307,6 +308,10 @@ function() {
                     TP.signal(obj, signal);
                 }
             } catch (e) {
+                TP.ifError() ?
+                    TP.error('Couldn\'t process step function signal: ' +
+                                    signal.getSignalName(),
+                                TP.LOG) : 0;
             }
         }
 
