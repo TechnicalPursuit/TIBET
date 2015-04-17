@@ -797,12 +797,15 @@ function(aRequest) {
      *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
      *                          the result of this processing will be rendered
      *                          into.
+     *          $SOURCE     ->  The original source tag, if this is being
+     *                          processed as part of a nested template.
      *          $SELECTION  ->  The current selection. This could be text or an
      *                          Array of objects determined by the selection
      *                          manager.
      *          $*          ->  An alias for $SELECTION
      *          $FOCUS      ->  The currently focused TP.core.ElementNode in the
      *                          target TP.core.DocumentNode.
+     *          $@          ->  An alias for $FOCUS
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      * @returns {TP.lang.Hash} The hash containing the substitution info as
@@ -890,12 +893,15 @@ function(aRequest) {
      *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
      *                          the result of this processing will be rendered
      *                          into.
+     *          $SOURCE     ->  The original source tag, if this is being
+     *                          processed as part of a nested template.
      *          $SELECTION  ->  The current selection. This could be text or an
      *                          Array of objects determined by the selection
      *                          manager.
      *          $*          ->  An alias for $SELECTION
      *          $FOCUS      ->  The currently focused TP.core.ElementNode in the
      *                          target TP.core.DocumentNode.
+     *          $@          ->  An alias for $FOCUS
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -907,22 +913,49 @@ function(aRequest) {
 
         str,
 
-        result;
+        result,
+        elem;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('node'))) {
         return;
     }
 
+    //  Wrap it so that when we ask for its text content, we're getting the best
+    //  representation.
     tpNode = TP.wrap(node);
 
+    //  Populate the substitution information with various variables, etc.
     info = this.populateSubstitutionInfo(aRequest);
 
+    //  Grab the best representation text. This may contain ACP templating
+    //  expressions.
     str = tpNode.getTextContent();
 
-    result = str.transform(tpNode, info);
+    //  If it contains ACP expressions
+    if (TP.regex.HAS_ACP.test(str)) {
 
-    tpNode.setTextContent(result);
+        //  Run a transform on it.
+        result = str.transform(tpNode, info);
+
+        //  If the result contains 'element' markup, then try to create a
+        //  TP.core.ElementNode from it and compile that.
+        if (TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
+
+            elem = TP.tpelem(result);
+            elem.compile(aRequest);
+
+            //  If we got a real Element back from the compilation process,
+            //  replace the original node's content with it.
+            if (TP.isElement(elem = TP.unwrap(elem))) {
+                TP.nodeReplaceChild(node.parentNode, elem, node, false);
+            }
+        } else {
+            //  Otherwise, it was just a straight templated value - just set the
+            //  original node's text content.
+            tpNode.setTextContent(result);
+        }
+    }
 
     return;
 });
