@@ -408,6 +408,10 @@ TP.hc(
 
                 return true;
             } catch (e) {
+                TP.ifError() ?
+                    TP.error(
+                        'Error executing privileged code',
+                        TP.SECURITY_LOG) : 0;
             }
         }
 
@@ -1384,6 +1388,7 @@ TP.hc(
                 return 'NaN';
             }
         } catch (e) {
+            //  empty
         }
 
         //  if all else fails punt
@@ -1525,6 +1530,7 @@ TP.hc(
                 return 'NaN';
             }
         } catch (e) {
+            //  empty
         }
 
         //  if all else fails punt
@@ -1668,6 +1674,7 @@ TP.hc(
                 return 'NaN';
             }
         } catch (e) {
+            //  empty
         }
 
         //  if all else fails punt

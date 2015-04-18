@@ -156,6 +156,9 @@ function(forceRefresh) {
                 }
             }
         } catch (e) {
+            TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error loading vCards.'),
+                            TP.LOG) : 0;
         }
 
         try {
@@ -173,6 +176,9 @@ function(forceRefresh) {
                 }
             }
         } catch (e) {
+            TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error loading vCards.'),
+                            TP.LOG) : 0;
         }
 
         if (TP.notValid(node)) {
@@ -182,6 +188,9 @@ function(forceRefresh) {
 
         TP.sys.$vcardXML = node;
     } catch (e) {
+        TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading vCards.'),
+                        TP.LOG) : 0;
     } finally {
         TP.sys.shouldLogRaise(flag);
     }
@@ -577,6 +586,9 @@ function(forceRefresh) {
                 }
             }
         } catch (e) {
+            TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error loading keyrings.'),
+                            TP.LOG) : 0;
         }
 
         try {
@@ -592,6 +604,9 @@ function(forceRefresh) {
                 }
             }
         } catch (e) {
+            TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error loading keyrings.'),
+                            TP.LOG) : 0;
         }
 
         if (TP.notValid(node)) {
@@ -601,7 +616,6 @@ function(forceRefresh) {
         }
 
         TP.sys.$keyringXML = node;
-    } catch (e) {
     } finally {
         TP.sys.shouldLogRaise(flag);
     }

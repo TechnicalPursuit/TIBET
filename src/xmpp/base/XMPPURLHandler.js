@@ -360,6 +360,12 @@ function(targetURI, aRequest) {
                             'status', queryDict.at('status'))));
 
         break;
+
+        default:
+
+            aRequest.fail('Unrecognized action');
+
+            return this;
     }
 
     //  Construct and initialize an TP.sig.XMPPRequest using the params as a
@@ -518,6 +524,9 @@ function(targetURI, aRequest) {
 
             uriparams.atPut('payload', content);
 
+        break;
+
+        default:
         break;
     }
 

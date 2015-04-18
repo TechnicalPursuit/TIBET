@@ -85,6 +85,9 @@ function(forceRefresh) {
                                         TP.hc('resultType', TP.DOM));
                 }
             } catch (e) {
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading the TIBET URIs.'),
+                        TP.LOG) : 0;
             }
         }
 
@@ -99,6 +102,9 @@ function(forceRefresh) {
                                         TP.hc('resultType', TP.DOM));
                 }
             } catch (e) {
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading the TIBET URIs file.'),
+                        TP.LOG) : 0;
             }
 
             if (TP.notValid(node)) {
@@ -110,7 +116,6 @@ function(forceRefresh) {
         }
 
         TP.sys.$uriXML = node;
-    } catch (e) {
     } finally {
         //  restore notification state
         TP.sys.shouldLogRaise(flag);
@@ -155,6 +160,9 @@ function(forceRefresh) {
         node = TP.sys.getURIXML(forceRefresh);
         TP.sys.$uriSTR = TP.nodeAsString(node);
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error retrieving the TIBET URI XML.'),
+                TP.LOG) : 0;
     }
 
     return TP.sys.$uriSTR;

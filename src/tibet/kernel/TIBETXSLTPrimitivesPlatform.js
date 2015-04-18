@@ -1028,6 +1028,10 @@ TP.hc(
                                 new ActiveXObject(versions.at(i));
                     break;
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(
+                            TP.ec(e, 'Error creating style document'), TP.LOG) :
+                        0;
                 }
             }
 
@@ -1086,6 +1090,10 @@ TP.hc(
                     xslTemplate = new ActiveXObject(versions.at(i));
                     break;
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(
+                            TP.ec(e, 'Error creating XSLT document'), TP.LOG) :
+                        0;
                 }
             }
 

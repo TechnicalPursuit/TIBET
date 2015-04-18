@@ -575,6 +575,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
                                                     'within the specified ',
                                                     'timeout period.');
                                 break;
+
+                            default:
+                                break;
                         }
 
                         //  If it's an unknown error, build a errorMsg that

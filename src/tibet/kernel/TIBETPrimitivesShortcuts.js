@@ -117,7 +117,9 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
      *     such results.
      */
 
-    var elem,
+    var obj,
+
+        elem,
         arglist,
         arr,
         len,
@@ -126,14 +128,16 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
         wrapper;
 
     if (TP.notValid(elemOrId)) {
-        elemOrId = TP.sys.getWindowById(TP.sys.getUICanvasName());
+        obj = TP.sys.getWindowById(TP.sys.getUICanvasName());
+    } else {
+        obj = elemOrId;
     }
 
     //  use a combination of element and context to find the focal
     //  element(s) for the call
-    elem = TP.isString(elemOrId) ?
-                TP.byId(elemOrId, TP.context(nodeContext)) :
-                TP.elem(elemOrId);
+    elem = TP.isString(obj) ?
+                TP.byId(obj, TP.context(nodeContext)) :
+                TP.elem(obj);
 
     arglist = TP.args(arguments, 3);
 
@@ -191,7 +195,9 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
      *     such results.
      */
 
-    var elem,
+    var obj,
+
+        elem,
         arglist,
         arr,
         len,
@@ -199,14 +205,16 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
         item;
 
     if (TP.notValid(elemOrId)) {
-        elemOrId = TP.sys.getWindowById(TP.sys.getUICanvasName());
+        obj = TP.sys.getWindowById(TP.sys.getUICanvasName());
+    } else {
+        obj = elemOrId;
     }
 
     //  use a combination of element and context to find the focal
     //  element(s) for the call
-    elem = TP.isString(elemOrId) ?
-                TP.byId(elemOrId, TP.context(nodeContext)) :
-                TP.elem(elemOrId);
+    elem = TP.isString(obj) ?
+                TP.byId(obj, TP.context(nodeContext)) :
+                TP.elem(obj);
 
     arglist = TP.args(arguments, 3);
     arglist.unshift(null);              //  make room on front for item

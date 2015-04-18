@@ -479,6 +479,11 @@ function(aPosition) {
     try {
         node.focus();
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e,
+                    'Error focusing element when setting cursor position.'),
+                TP.LOG) : 0;
     }
 
     //  According to the spec, the end index is one character *after* the
@@ -508,6 +513,11 @@ function() {
     try {
         node.focus();
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e,
+                    'Error focusing element when setting cursor to end.'),
+                TP.LOG) : 0;
     }
 
     TP.documentCollapseSelection(this.getNativeDocument());
@@ -535,6 +545,11 @@ function() {
     try {
         node.focus();
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e,
+                    'Error focusing element when setting cursor to start.'),
+                TP.LOG) : 0;
     }
 
     TP.documentCollapseSelection(this.getNativeDocument(), true);
@@ -1182,10 +1197,6 @@ function(aValue, elementProperty) {
         item = elementArray.at(i);
 
         switch (aspect) {
-            case 'value':
-                val = item.value;
-            break;
-
             case 'label':
                 if (TP.isElement(
                     labelElem = TP.byCSS(
@@ -1203,6 +1214,11 @@ function(aValue, elementProperty) {
 
             case 'index':
                 val = i;
+            break;
+
+            case 'value':
+            default:
+                val = item.value;
             break;
         }
 
@@ -1871,10 +1887,6 @@ function(aValue, elementProperty) {
         item = elementArray.at(i);
 
         switch (aspect) {
-            case 'value':
-                val = item.value;
-            break;
-
             case 'label':
                 if (TP.isElement(
                     labelElem = TP.byCSS(
@@ -1892,6 +1904,11 @@ function(aValue, elementProperty) {
 
             case 'index':
                 val = i;
+            break;
+
+            case 'value':
+            default:
+                val = item.value;
             break;
         }
 
@@ -3524,10 +3541,6 @@ function(aValue, optionProperty) {
         item = elementArray.at(i);
 
         switch (aspect) {
-            case 'value':
-                val = item.value;
-            break;
-
             case 'label':
                 val = TP.nodeGetTextContent(elementArray.at(i));
             break;
@@ -3538,6 +3551,11 @@ function(aValue, optionProperty) {
 
             case 'index':
                 val = i;
+            break;
+
+            case 'value':
+            default:
+                val = item.value;
             break;
         }
 
@@ -4191,10 +4209,6 @@ function(aValue, optionProperty) {
         item = elementArray.at(i);
 
         switch (aspect) {
-            case 'value':
-                val = item.value;
-            break;
-
             case 'label':
                 val = TP.nodeGetTextContent(elementArray.at(i));
             break;
@@ -4205,6 +4219,11 @@ function(aValue, optionProperty) {
 
             case 'index':
                 val = i;
+            break;
+
+            case 'value':
+            default:
+                val = item.value;
             break;
         }
 

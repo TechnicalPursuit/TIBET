@@ -1498,6 +1498,11 @@ function(normalizedEvent, keyName, shift) {
 
             signame = sigkey + '_Press';
             break;
+
+        default:
+
+            signame = sigkey;
+            break;
     }
 
     //  Modifier keys are prefixes which effectively start with optional
@@ -3106,7 +3111,9 @@ function(normalizedEvent) {
         clearTimeout(this.$get('hoverTimer'));
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
-        //  TODO: Warn that we couldn't clear the hover timeout.
+        TP.ifError() ?
+                TP.error('Unable to clear hover timeout',
+                            TP.LOG) : 0;
     }
 
     return;
@@ -3205,7 +3212,9 @@ function(normalizedEvent) {
         clearTimeout(this.$get('hoverTimer'));
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
-        //  TODO: Warn that we couldn't clear the hover timeout.
+        TP.ifError() ?
+                TP.error('Unable to clear hover timeout',
+                            TP.LOG) : 0;
     }
 
     return;

@@ -32,7 +32,7 @@
 */
 
 /* eslint new-cap:0, no-alert:0, indent:0 */
-(function (root) {
+(function(root) {
 
     TP = root.TP || this.TP;
 
@@ -1264,7 +1264,6 @@ if (TP.sys.isUA('IE')) {
     //  NB: Put this in an enclosing function so that we can use local vars
     //  without them being hoisted into the global space
     (function() {
-        var xmlDoc;
 
         //  We assign to 'xmlDoc' here to avoid JSHint errors, but we don't
         //  really use it.
@@ -1273,32 +1272,34 @@ if (TP.sys.isUA('IE')) {
         //  we go ahead and set the TP.$msxml variable to the real version of
         //  MSXML that is installed. It's just that this shouldn't be used for
         //  creating documents, etc.
+        /* eslint-disable no-new */
         try {
-            xmlDoc = new ActiveXObject('Msxml2.DOMDocument.6.0');
+            new ActiveXObject('Msxml2.DOMDocument.6.0');
             TP.$msxml = 6;
         } catch (e) {
             try {
-                xmlDoc = new ActiveXObject('Msxml2.DOMDocument.5.0');
+                new ActiveXObject('Msxml2.DOMDocument.5.0');
                 TP.$msxml = 5;
             } catch (e2) {
                 try {
-                    xmlDoc = new ActiveXObject('Msxml2.DOMDocument.4.0');
+                    new ActiveXObject('Msxml2.DOMDocument.4.0');
                     TP.$msxml = 4;
                 } catch (e3) {
                     try {
-                        xmlDoc = new ActiveXObject('Msxml2.DOMDocument.3.0');
+                        new ActiveXObject('Msxml2.DOMDocument.3.0');
                         TP.$msxml = 3;
                     } catch (e4) {
                         try {
-                            xmlDoc =
-                                new ActiveXObject('Msxml2.DOMDocument.2.0');
+                            new ActiveXObject('Msxml2.DOMDocument.2.0');
                             TP.$msxml = 2;
                         } catch (e5) {
+                            //  empty
                         }
                     }
                 }
             }
         }
+        /* eslint-enable no-new */
     }());
 }
 
@@ -1729,6 +1730,7 @@ TP.boot.$httpCreate = function() {
                 request = new ActiveXObject(versions[i]);
                 break;
             } catch (e) {
+                //  empty
             }
         }
     } else {
@@ -2315,7 +2317,6 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
     var file,
         first,
         second,
-        index,
         prefix,
         path,
         count,
@@ -2358,7 +2359,7 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
         //  forced to interpret second path as a file path, so if there's
         //  any / in the second path we use that as the point of trimming
         //  the last segment
-        if ((index = second.lastIndexOf('/')) !== TP.NOT_FOUND) {
+        if (second.lastIndexOf('/') !== TP.NOT_FOUND) {
             if (second.lastIndexOf('/') === second.length - 1) {
                 second = second.slice(0, -1);
                 second = second.slice(0, second.lastIndexOf('/'));
@@ -3153,7 +3154,8 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
      *     from the targetUrl.
      */
 
-    var result;
+    var returnType,
+        result;
 
     if (targetUrl == null) {
         TP.boot.$stderr('InvalidURI');
@@ -3162,23 +3164,23 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
     }
 
     //  compute common result type from input and targetUrl extension.
-    resultType = TP.boot.$uriResultType(targetUrl, resultType);
+    returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     if (targetUrl.toLowerCase().indexOf('file') === 0) {
         if (TP.sys.isUA('IE')) {
-            result = TP.boot.$uriLoadIEFile(targetUrl, resultType);
+            result = TP.boot.$uriLoadIEFile(targetUrl, returnType);
         } else if (TP.sys.cfg('boot.moz_xpcom')) {
             //  if the uriLoadCommonFile has to switch into privilege mode
             //  for Moz/FF3+ then the flag will redirect so we don't waste
             //  time trying HTTP, we'll go straight to XPCOM
-            result = TP.boot.$uriLoadMozFile(targetUrl, resultType);
+            result = TP.boot.$uriLoadMozFile(targetUrl, returnType);
         } else {
-            result = TP.boot.$uriLoadCommonFile(targetUrl, resultType);
+            result = TP.boot.$uriLoadCommonFile(targetUrl, returnType);
         }
     } else {
         result = TP.boot.$uriLoadCommonHttp(
                 targetUrl,
-                resultType,
+                returnType,
                 null,
                 isPackage);
     }
@@ -3199,15 +3201,16 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
      *     from the targetUrl.
      */
 
-    var httpObj;
+    var returnType,
+        httpObj;
 
-    resultType = TP.boot.$uriResultType(targetUrl, resultType);
+    returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     httpObj = TP.boot.$httpCreate();
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
-    if (TP.sys.isUA('GECKO') && resultType !== TP.DOM) {
+    if (TP.sys.isUA('GECKO') && returnType !== TP.DOM) {
         httpObj.overrideMimeType('text/plain');
     }
 
@@ -3224,13 +3227,13 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
                             TP.boot.$ec(e), TP.WARN);
             TP.sys.setcfg('boot.moz_xpcom', true);
 
-            return TP.boot.$uriLoadMozFile(targetUrl, resultType);
+            return TP.boot.$uriLoadMozFile(targetUrl, returnType);
         }
 
         return null;
     }
 
-    return TP.boot.$uriResult(httpObj.responseText, resultType);
+    return TP.boot.$uriResult(httpObj.responseText, returnType);
 };
 
 //  ----------------------------------------------------------------------------
@@ -3246,13 +3249,15 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
      *     from the targetUrl.
      */
 
-    var doc,
+    var returnType,
+
+        doc,
 
         httpObj;
 
-    resultType = TP.boot.$uriResultType(targetUrl, resultType);
+    returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
-    if (resultType === TP.DOM) {
+    if (returnType === TP.DOM) {
         //  leverage IE's ActiveX DOMDocument's ability to load synchronously
         doc = TP.boot.$activeXDocumentCreateIE();
         doc.load(targetUrl);
@@ -3279,7 +3284,7 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
             return null;
         }
 
-        return TP.boot.$uriResult(httpObj.responseText, resultType);
+        return TP.boot.$uriResult(httpObj.responseText, returnType);
     }
 
     return null;
@@ -3302,7 +3307,9 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
      * @since 2.0
      */
 
-    var FP,
+    var returnType,
+
+        FP,
         IOS,
         IS,
 
@@ -3314,7 +3321,7 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
 
         text;
 
-    resultType = TP.boot.$uriResultType(targetUrl, resultType);
+    returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     //  file system access in Mozilla requires UniversalXPConnect
     try {
@@ -3373,7 +3380,7 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
             text = stream.read(file.fileSize);
             stream.close();
 
-            return TP.boot.$uriResult(text, resultType);
+            return TP.boot.$uriResult(text, returnType);
         }
     } catch (e) {
         TP.boot.$stderr('AccessViolation: ' + targetUrl,
@@ -3404,11 +3411,12 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
      *     from the targetUrl.
      */
 
-    var logpath,
+    var returnType,
+
         httpObj,
         headers;
 
-    resultType = TP.boot.$uriResultType(targetUrl, resultType);
+    returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     try {
         //  if we got a valid lastModified value then we're being asked to
@@ -3425,16 +3433,14 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
             httpObj = TP.boot.$httpCall(targetUrl, TP.HTTP_GET);
         }
 
-        logpath = TP.boot.$uriInTIBETFormat(targetUrl);
-
         if (httpObj.status === 200) {
-            return TP.boot.$uriResult(httpObj.responseText, resultType);
+            return TP.boot.$uriResult(httpObj.responseText, returnType);
         } else if (httpObj.status === 304) {
             return null;
         } else if (httpObj.status === 0) {
             if (/^chrome-extension/.test(targetUrl) &&
                 httpObj.responseText != null) {
-                return TP.boot.$uriResult(httpObj.responseText, resultType);
+                return TP.boot.$uriResult(httpObj.responseText, returnType);
             }
         }
     } catch (e) {
@@ -3590,6 +3596,7 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
      */
 
     var fname,
+        fmode,
         file,
         fso,
         ts;
@@ -3598,7 +3605,9 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
                         TP.boot.$uriInLocalFormat(targetUrl));
 
     if (fileMode == null) {
-        fileMode = 'w';
+        fmode = 'w';
+    } else {
+        fmode = fileMode;
     }
 
     //  make sure that any spaces or other escaped characters in the file
@@ -3608,7 +3617,7 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
     try {
         fso = new ActiveXObject('Scripting.FileSystemObject');
 
-        if (fileMode === 'w') {
+        if (fmode === 'w') {
             if (!fso.FileExists(fname)) {
                 fso.CreateTextFile(fname);
             }
@@ -3619,7 +3628,7 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
             ts.Close();
 
             return true;
-        } else if (fileMode === 'a') {
+        } else if (fmode === 'a') {
             if (fso.FileExists(fname)) {
                 file = fso.GetFile(fname);
                 ts = file.OpenAsTextStream(8);  //  8 -> ForAppending
@@ -3631,7 +3640,7 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
                 TP.boot.$stderr('NotFound: ' + fname);
             }
         } else {
-            TP.boot.$stderr('InvalidFileMode: ' + fileMode);
+            TP.boot.$stderr('InvalidFileMode: ' + fmode);
         }
     } catch (e) {
         TP.boot.$stderr('AccessException: ' + fname,
@@ -3661,7 +3670,9 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
      * @returns {Boolean} True on success, false on failure.
      */
 
-    var FP,
+    var fmode,
+
+        FP,
 
         file,
         fname,
@@ -3671,7 +3682,9 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
         stream;
 
     if (fileMode == null) {
-        fileMode = 'w';
+        fmode = 'w';
+    } else {
+        fmode = fileMode;
     }
 
     //  file system access in Mozilla requires UniversalXPConnect
@@ -3724,7 +3737,7 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
         permissions = 0644;                 //  unix-style file mask
         /* eslint-enable no-octal */
         file = new FP(fname);
-        if (fileMode === 'w') {
+        if (fmode === 'w') {
             flags = TP.MOZ_FILE_CREATE |
                     TP.MOZ_FILE_TRUNCATE |
                     TP.MOZ_FILE_WRONLY;
@@ -3735,7 +3748,7 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
             stream.close();
 
             return true;
-        } else if (fileMode === 'a') {
+        } else if (fmode === 'a') {
             flags = TP.MOZ_FILE_APPEND |
                     TP.MOZ_FILE_SYNC |
                     TP.MOZ_FILE_RDWR;
@@ -3751,7 +3764,7 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
                 TP.boot.$stderr('NotFound: ' + fname);
             }
         } else {
-            TP.boot.$stderr('InvalidFileMode: ' + fileMode);
+            TP.boot.$stderr('InvalidFileMode: ' + fmode);
         }
     } catch (e) {
         TP.boot.$stderr('AccessException: ' + fname,
@@ -3928,6 +3941,7 @@ TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
                 doc = new ActiveXObject(versions[i]);
                 break;
             } catch (e) {
+                //  empty
             }
         }
     }
@@ -4159,7 +4173,10 @@ TP.boot.$documentFromStringCommon = function(aString) {
         errorMatchResults = TP.boot.$$xmlParseErrorMsgMatcher.exec(
                                         errorElement.firstChild.nodeValue);
 
-        //  don't log, we use this call in logging
+        //  don't log, we use this call in logging - but go ahead and output to
+        //  the browser console
+        console.log(errorMatchResults);
+
         return null;
     }
 
@@ -4192,7 +4209,10 @@ TP.boot.$documentFromStringIE = function(aString, prohibitDTD) {
     if (successfulParse === false) {
         parseErrorObj = xmlDoc.parseError;
 
-        //  don't log, we use this call in logging
+        //  don't log, we use this call in logging - but go ahead and output to
+        //  the browser console
+        console.log(parseErrorObj);
+
         return null;
     }
 
@@ -4465,6 +4485,9 @@ TP.sys.getWindowById = function(anID, aWindow) {
             try {
                 return win.contentWindow;
             } catch (e) {
+                TP.boot.$stderr('Failed to find window for: ' + id,
+                                    TP.boot.$ec(e),
+                                    TP.FATAL);
             }
         }
 
@@ -5444,7 +5467,9 @@ TP.boot.$clearLog = function() {
 
 TP.boot.$$logReporter = function(entry, options) {
 
-    var level,
+    var opts,
+
+        level,
         console,
         sep,
         esc,
@@ -5461,7 +5486,7 @@ TP.boot.$$logReporter = function(entry, options) {
         return;
     }
 
-    options = options || {};
+    opts = options || {};
 
     level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
@@ -5477,9 +5502,9 @@ TP.boot.$$logReporter = function(entry, options) {
     time = entry[TP.boot.LOG_ENTRY_DATE];
     obj = entry[TP.boot.LOG_ENTRY_PAYLOAD];
 
-    esc = TP.boot.$isValid(options.escape) ? options.escape : true;
-    sep = TP.boot.$isValid(options.separator) ? options.separator : '\n';
-    console = TP.boot.$isValid(options.console) ? options.console : false;
+    esc = TP.boot.$isValid(opts.escape) ? opts.escape : true;
+    sep = TP.boot.$isValid(opts.separator) ? opts.separator : '\n';
+    console = TP.boot.$isValid(opts.console) ? opts.console : false;
 
     //  If the object is an annotation we've got to process it. Note that we
     //  double the separator around object dumps to help offset key/value dump
@@ -5675,6 +5700,7 @@ TP.boot.$bootuiReporter = function(entry, options) {
         }
     } catch (e) {
         //  this one we'll ignore.
+        //  empty
     }
 };
 
@@ -6221,6 +6247,7 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
                 TP.boot.$setStage('stopped', 'Boot terminated: ' + msg);
             } catch (e) {
                 //  Ignore if we broke that, we're stopping.
+                //  empty
             }
         }, 0);
     }
@@ -6847,7 +6874,6 @@ TP.boot.$displayProgress = function() {
     var elem,
         workload,
         percent,
-        stage,
         index;
 
     elem = TP.boot.$getProgressBarElement();
@@ -6858,8 +6884,6 @@ TP.boot.$displayProgress = function() {
     if (TP.sys.cfg('boot.reporter') !== 'bootui') {
         return;
     }
-
-    stage = TP.boot.$getStage();
 
     if (!TP.boot.$$bootnodes) {
         return;
@@ -8920,6 +8944,8 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
         scriptUrl,
 
+        jsSrcUrl,
+
         oldScript,
 
         tn;
@@ -8958,7 +8984,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     //  Patch for stack traces on text-injected code. See:
     //  https://bugs.webkit.org/show_bug.cgi?id=25475
     if (scriptUrl !== 'inline') {
-        jsSrc = '//@ sourceURL=' + scriptUrl + '\n\n' + jsSrc;
+        jsSrcUrl = '//@ sourceURL=' + scriptUrl + '\n\n' + jsSrc;
+    } else {
+        jsSrcUrl = jsSrc;
     }
 
     //  set a reference so when/if this errors out we'll get the right
@@ -8974,7 +9002,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
             oldScript.parentNode.removeChild(oldScript);
         }
 
-        tn = scriptDoc.createTextNode(jsSrc);
+        tn = scriptDoc.createTextNode(jsSrcUrl);
         TP.boot.$nodeAppendChild(elem, tn);
 
         //  since we're not using the src attribute put the url on the
@@ -8997,13 +9025,13 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
             if (shouldThrow === true) {
                 if (scriptUrl === 'inline') {
-                    throw new Error('Import failed in: ' + jsSrc);
+                    throw new Error('Import failed in: ' + jsSrcUrl);
                 } else {
                     throw new Error('Import failed for: ' + scriptUrl);
                 }
             } else {
                 if (scriptUrl === 'inline') {
-                    TP.boot.$stderr('Import failed in: ' + jsSrc);
+                    TP.boot.$stderr('Import failed in: ' + jsSrcUrl);
                 } else {
                     TP.boot.$stderr('Import failed for: ' + scriptUrl);
                 }
@@ -9453,8 +9481,6 @@ TP.boot.$importComponents = function(loadSync) {
         //  if we were handling inline code then we can import it directly now.
         try {
             TP.boot.$sourceImport(source, null, TP.boot.$loadPath);
-        } catch (e) {
-            //  Required for IE
         } finally {
             TP.boot.$loadNode = null;
         }

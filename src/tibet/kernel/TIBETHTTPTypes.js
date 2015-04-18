@@ -232,7 +232,6 @@ function(aSignal) {
             defer = true;
             this['handle' + code](aSignal);
         }
-    } catch (e) {
     } finally {
         //  When we've deferred to a status-specific handler that handler is
         //  responsible for completion of the job since some handlers may
@@ -297,7 +296,6 @@ function(aSignal) {
             defer = true;
             this['handle' + code](aSignal);
         }
-    } catch (e) {
     } finally {
         //  When we've deferred to a status-specific handler that handler is
         //  responsible for completion of the job since some handlers may
@@ -515,6 +513,9 @@ function() {
     try {
         return httpObj.status;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error retrieving status code.'),
+                                        TP.LOG) : 0;
     }
 
     return;
@@ -541,6 +542,9 @@ function() {
     try {
         return httpObj.statusText;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error retrieving status text.'),
+                                        TP.LOG) : 0;
     }
 
     return;
@@ -568,6 +572,9 @@ function() {
     try {
         text = httpObj.responseText;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error retrieving response text.'),
+                                        TP.LOG) : 0;
     }
 
     return text;

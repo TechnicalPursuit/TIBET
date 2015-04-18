@@ -149,6 +149,8 @@ function(aFilter, undefNotNull) {
         try {
             val = func(obj);
         } catch (e) {
+            TP.ifError() ?
+                TP.error(TP.ec(e, 'Error uniquing Array'), TP.LOG) : 0;
         }
 
         //  have to process null/undefined into string keys we can match

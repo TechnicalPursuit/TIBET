@@ -1389,7 +1389,11 @@ function(focusedTPElem, moveAction) {
                 }
             }
 
-        break;
+            break;
+
+        default:
+
+            return null;
     }
 
     resultElem = null;
@@ -1641,6 +1645,10 @@ function(focusedTPElem, moveAction) {
             }
 
             break;
+
+        default:
+
+            return null;
     }
 
     //  If there's a real result element, then return it. Otherwise return
@@ -3264,12 +3272,14 @@ function(aTransformRecord) {
     transformArgs = aTransformRecord.at('args');
 
     switch (aTransformRecord.at('type')) {
+
         case TP.ROTATE:
 
             str += 'rotate(' +
                     transformArgs + 'deg)';
 
         break;
+
         case TP.SKEW:
 
             str += 'skewX(' +
@@ -3278,6 +3288,7 @@ function(aTransformRecord) {
                     transformArgs.last() + 'deg)';
 
         break;
+
         case TP.SCALE:
 
             str += 'scaleX(' +
@@ -3286,12 +3297,16 @@ function(aTransformRecord) {
                     transformArgs.last() + ')';
 
         break;
+
         case TP.TRANSLATE:
 
             str += 'translateX(' +
                     transformArgs.first() + 'px) ' +
                     'translateY(' +
                     transformArgs.last() + 'px)';
+        break;
+
+        default:
         break;
     }
 

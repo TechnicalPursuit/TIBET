@@ -2861,7 +2861,6 @@ function(aName, skipChecks) {
         } else {
             return this.$getInstPropertyScope(aName);
         }
-    } catch (e) {
     } finally {
         TP.sys.shouldLogStack(flag);
     }

@@ -1018,6 +1018,7 @@ TP.hc(
                         }
                     } catch (e3) {
                         //  fall through to common access violation below
+                        //  empty
                     }
 
                     msg = TP.sc('Unable to access: ', fname);
@@ -2055,6 +2056,10 @@ TP.hc(
                             }
                         }
                     } catch (e) {
+                        TP.ifError() ?
+                            TP.error(
+                                TP.ec(e, 'Error deleting file'), TP.LOG) :
+                            0;
                     }
                 };
 
@@ -2134,7 +2139,6 @@ TP.hc(
                             try {
                                 request.complete();
                                 sig.fire(id);
-                            } catch (e) {
                             } finally {
                                 cleanup();
                             }
@@ -2533,6 +2537,10 @@ TP.hc(
                         }
                     }
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(
+                            TP.ec(e, 'Error deleting file'), TP.LOG) :
+                        0;
                 }
             };
 
@@ -2565,7 +2573,6 @@ TP.hc(
                             try {
                                 request.complete();
                                 sig.fire(id);
-                            } catch (e) {
                             } finally {
                                 cleanup();
                             }

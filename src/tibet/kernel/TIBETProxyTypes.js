@@ -197,6 +197,10 @@ function() {
     try {
         type = this.$$fault();
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e, TP.join('Error constructing type proxy')), TP.LOG) :
+            0;
     }
 
     if (TP.isType(type)) {
@@ -223,6 +227,10 @@ function() {
     try {
         type = this.$$fault();
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e, TP.join('Error converting type proxy')), TP.LOG) :
+            0;
     }
 
     if (TP.isType(type)) {
@@ -394,10 +402,8 @@ function() {
         } catch (e) {
             TP.ifError() ?
                 TP.error(
-                    TP.ec(e, TP.join('Error initializing ',
-                                        id,
-                                        ' type proxy')),
-                    TP.LOG) : 0;
+                    TP.ec(e, TP.join('Error initializing ', id, ' type proxy')),
+                            TP.LOG) : 0;
         }
     }
 

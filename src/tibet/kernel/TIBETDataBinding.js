@@ -625,6 +625,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
             break;
 
         case 'value':
+        default:
             signalName = 'TP.sig.ValueChange';
             break;
     }
@@ -953,6 +954,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
             break;
 
         case 'value':
+        default:
             signalName = 'TP.sig.ValueChange';
             break;
     }

@@ -842,6 +842,7 @@ function(aString, sourceLocale, forceRefresh) {
         //  typical case here is something the regex parser thinks isn't
         //  valid as a regex (invalid quantifier etc) so we have to keep
         //  going
+        //  empty
     }
 
     //  trick now is to find the parent containing our "key", which is the
@@ -1010,6 +1011,9 @@ function(forceRefresh) {
                 }
             }
         } catch (e) {
+            TP.ifError() ?
+                TP.error(TP.ec(e, 'Error retrieving TIBET strings.'),
+                    TP.LOG) : 0;
         }
 
         if (TP.notValid(node)) {
@@ -1018,7 +1022,6 @@ function(forceRefresh) {
                 node = url.getNativeNode(TP.hc('async', false));
             }
         }
-    } catch (e) {
     } finally {
         if (TP.notValid(node)) {
             node = TP.documentFromString(

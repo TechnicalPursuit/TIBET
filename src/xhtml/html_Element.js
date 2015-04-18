@@ -221,6 +221,9 @@ function() {
             return val;
         }
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error getting display value.'),
+                TP.LOG) : 0;
     }
 
     //  last value option is the text value

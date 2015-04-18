@@ -1060,6 +1060,7 @@ function(targetUrl, aRequest, httpObj) {
         url,
         redirect,
         async,
+        xhr,
         type,
         sig,
         id;
@@ -1090,15 +1091,16 @@ function(targetUrl, aRequest, httpObj) {
         }
 
         try {
-            httpObj = TP.httpCall(url, request);
-        } catch (e) {
+            xhr = TP.httpCall(url, request);
         } finally {
             request.atPut('async', async);
         }
+    } else {
+        xhr = httpObj;
     }
 
     //  make sure the request has access to the native http request object
-    request.atPut('xhr', httpObj);
+    request.atPut('xhr', xhr);
 
     //  create a signal that will carry the request to any callbacks in a
     //  fashion that allows it to treat it like a proper response object
@@ -1118,7 +1120,7 @@ function(targetUrl, aRequest, httpObj) {
     //  TODO:   do we want to signal something like an IORedirect ?
 
     //  with/without redirect, did we succeed?
-    if (!TP.httpDidSucceed(httpObj)) {
+    if (!TP.httpDidSucceed(xhr)) {
         TP.httpError(url, 'HTTPException', request);
         sig.setSignalName('TP.sig.IOFailed');
         sig.fire(id);
