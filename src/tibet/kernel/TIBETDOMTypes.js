@@ -4976,6 +4976,37 @@ function(newContent, aRequest, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('cleanTextContent',
+function() {
+
+    /**
+     * @method cleanTextContent
+     * @summary Cleans out the text content of any text nodes under the
+     *     receiver, thereby clearing all of the text and leaving just the node
+     *     structure.
+     */
+
+    var node,
+        descendantTextNodes;
+
+    node = this.getNativeNode();
+
+    //  First, we make sure to normalize to reduce the number of total text
+    //  nodes.
+    TP.nodeNormalize(node);
+
+    //  Grab all of the descendant text nodes and empty their textContent.
+    descendantTextNodes = TP.nodeGetDescendantsByType(node, Node.TEXT_NODE);
+    descendantTextNodes.perform(
+            function(aTextNode) {
+                aTextNode.textContent = '';
+            });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('contentAppendCallback',
 function(aNode) {
 
