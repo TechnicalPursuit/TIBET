@@ -6944,7 +6944,7 @@ function(aNode, resultType, logErrors, flagChanges) {
 //  ------------------------------------------------------------------------
 
 TP.core.XPathPath.Inst.defineMethod('execRemove',
-function(aTPNode) {
+function(aTPNode, shouldSignal) {
 
     /**
      * @method execRemove
@@ -6953,6 +6953,8 @@ function(aTPNode) {
      *     is provided as the attributeName.
      * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
      *     against.
+     * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
+     *     targetObj.shouldSignalChange().
      * @returns {TP.core.XPathPath} The receiver.
      */
 
@@ -6960,6 +6962,9 @@ function(aTPNode) {
 
         oldMakeStruct,
         results,
+
+        targetTPDoc,
+        signalChange,
 
         len,
         i,
@@ -6980,6 +6985,14 @@ function(aTPNode) {
     //  Exit here.
     if (TP.notValid(results) || results.getSize() === 0) {
         return this;
+    }
+
+    targetTPDoc = aTPNode.getDocument();
+
+    if (TP.isValid(shouldSignal)) {
+        signalChange = shouldSignal;
+    } else if (TP.isValid(targetTPDoc)) {
+        signalChange = targetTPDoc.shouldSignalChange();
     }
 
     len = results.getSize();
@@ -7005,7 +7018,9 @@ function(aTPNode) {
             //  this attribute once existed.
             elem.removeAttributeNode(node);
 
-            this.changed('@' + node.name, TP.DELETE);
+            if (signalChange) {
+                this.changed('@' + node.name, TP.DELETE);
+            }
         } else {
             //  when dealing with other elements we get their parent node so
             //  we can remove when needed
@@ -7024,7 +7039,9 @@ function(aTPNode) {
                 TP.nodeRemoveChild(elem, node);
             }
 
-            TP.wrap(elem).changed('content', TP.DELETE);
+            if (signalChange) {
+                TP.wrap(elem).changed('content', TP.DELETE);
+            }
         }
     }
 
