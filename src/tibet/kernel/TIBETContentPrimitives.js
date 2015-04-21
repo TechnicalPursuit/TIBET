@@ -75,6 +75,63 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('formatUnquotedJSON',
+function(aString) {
+
+    /**
+     * @method formatUnquotedJSON
+     * @summary Formats an 'unquoted JSON string' into a real JSON String that
+     *     can then be parsed. This routine also 'TP.' values to be resolved
+     *     into their real values.
+     * @description An example of an unquoted JSON string with 'TP.' references
+     *     is:
+     *          {index:1,position:TP.BEFORE}
+     *     from which this method will produce:
+     *          {"index":1,position:"before"}
+     * @param {String} aString The string to reformat into proper JSON.
+     * @returns {String} A properly quoted JSON string.
+     */
+
+    var data,
+        entries,
+
+        str,
+
+        i,
+        kvPair,
+
+        val;
+
+    data = /^\{(.+)\}$/.exec(aString);
+    data = data.at(1);
+
+    entries = data.split(',');
+
+    str = '{';
+
+    for (i = 0; i < entries.getSize(); i++) {
+        kvPair = /\s*(.+)\s*:\s*(.+)\s*/.exec(entries.at(i));
+        if (/^TP\./.test(val = kvPair.at(2))) {
+            val = TP[val.slice(3)];
+        }
+
+        if (TP.isNumber(val = parseFloat(val)) ||
+                (val === 'true' || val === 'false')) {
+            str += '"' + kvPair.at(1) + '":' + val + ',';
+        } else {
+            str += '"' + kvPair.at(1) + '":"' + val + '",';
+        }
+    }
+
+    //  Make sure to slice off the last comma and then append the trailing
+    //  bracket.
+    str = str.slice(0, -1) + '}';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
 //  JSON source conversions
 //  ------------------------------------------------------------------------
 

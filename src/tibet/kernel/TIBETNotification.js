@@ -5064,7 +5064,10 @@ function(originSet, aSignal, aPayload, aType) {
         origins,
         origin,
         originArray,
-        len;
+        len,
+        sigdata,
+        dataidx,
+        sigParams;
 
     TP.stop('break.signal_domfiring');
 
@@ -5279,13 +5282,37 @@ function(originSet, aSignal, aPayload, aType) {
                 //  'true' in the 3rd parameter will cause a search of the
                 //  TP.w3.Xmlns.ON namespace if an attribute prefixed by 'on:'
                 //  isn't found.
-                signame = TP.elementGetAttribute(
+                sigdata = TP.elementGetAttribute(
                                         origin, 'on:' + onstarEvtName, true);
+
+                //  If there is a '({' as part of the signal data, then there is
+                //  a name and a payload.
+                if ((dataidx = sigdata.indexOf('({')) !== TP.NOT_FOUND) {
+
+                    //  The signal name is the portion leading up to the '({'
+                    signame = sigdata.slice(0, dataidx);
+
+                    //  The signal data is the remaining portion. Here we slice
+                    //  off the leading '(' and trailing ')', leaving '{...}'
+                    sigdata = sigdata.slice(dataidx + 1, -1);
+
+                    //  Convert from that String into a real JSON string and
+                    //  from there into a real Hash.
+                    sigParams = TP.json2js(TP.formatUnquotedJSON(sigdata));
+                } else {
+
+                    //  No signal payload - the signal name is all of the signal
+                    //  data.
+                    signame = sigdata;
+                    sigParams = TP.hc();
+                }
+
+                sigParams.atPut('event', sig.getPayload());
 
                 //  Queue the new signal and continue - thereby skipping
                 //  processing for the bubbling phase of this signal (for this
                 //  origin) in deference to signaling the new signal.
-                TP.queue(origin, signame, TP.hc('event', sig.getPayload()));
+                TP.queue(origin, signame, sigParams);
 
                 continue;
             }
@@ -5847,8 +5874,20 @@ function(originSet, aSignal, aPayload, aType) {
      */
 
     var sig,
-        orgid,
-        signame;
+        signame,
+
+        payload,
+        scope,
+        evt,
+        target,
+
+        scopeVals,
+        scopeURI,
+
+        resource,
+        handler,
+
+        orgid;
 
     TP.stop('break.signal_crudfiring');
 
@@ -5867,19 +5906,65 @@ function(originSet, aSignal, aPayload, aType) {
         signame = TP.ANY;
     }
 
-    orgid = sig.getOrigin();
+    if (TP.notValid(payload = aPayload)) {
+        //  TODO: Raise an exception
+        return sig;
+    }
 
-    //  TODO:
-    /*
-     *  Try for an element origin. If we get one does it have a "bind scope" on
-     *  an ancestor or any other aspect we can use to determine what model is
-     *  being targeted? Does it have a target in the payload? Is the "origin" a
-     *  target reference?
-    */
+    //  If no scope was defined, then we see if we can compute one via an event
+    //  target.
+    if (TP.notValid(scope = payload.at('scope'))) {
 
+        //  Make sure that we have both an Event and an Event target.
+        if (TP.isEvent(evt = payload.at('event')) &&
+            TP.isElement(target = TP.eventGetTarget(evt))) {
 
-    //  final check is for controllers which may want to handle this.
-    TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
+            //  Wrap the target and compute its binding scope values.
+            scopeVals = TP.wrap(target).getBindingScopeValues();
+
+            //  Join all of the scope value fragments together and set the scope
+            //  in the payload.
+            scope = TP.uriJoinFragments.apply(TP, scopeVals);
+            payload.atPut('scope', scope);
+        }
+    }
+
+    //  If we didn't end up with a scope or if a URI can't be computed from it,
+    //  then exit here.
+    if (TP.notValid(scope) || !TP.isURI(scopeURI = TP.uc(scope))) {
+        //  TODO: Raise an exception
+        return sig;
+    }
+
+    //  Make sure that we can get a resource for the scope - note here how we
+    //  query the primary URI for its resource. The handler will be on that
+    //  object.
+    if (TP.notValid(resource = scopeURI.getPrimaryURI().getResource())) {
+        //  TODO: Raise an exception
+        return sig;
+    }
+
+    //  If the 'origin set' wasn't an Array, then we don't have real origins.
+    //  Compute one from the local ID of the 'origin set' and set that to be the
+    //  origin of the signal.
+    if (!TP.isArray(originSet)) {
+        orgid = TP.lid(originSet);
+        sig.setOrigin(orgid);
+    }
+
+    //  Look for handlers, but only explicit ones. This routing is called by
+    //  policies which handle all looping of inheritance chains etc for us.
+    handler = resource.getHandler(sig, null, true, true);
+    if (TP.isCallable(handler)) {
+        try {
+            handler.call(resource, sig);
+        } catch (e) {
+            //  TODO: handler exception
+            //  TODO: Add a callback check at the handler/owner level?
+            TP.error('HandlerException: ' + e.message + ' in: ' +
+                TP.name(handler));
+        }
+    }
 
     return sig;
 });
