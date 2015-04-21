@@ -4874,7 +4874,7 @@ function(newContent, aRequest, stdinContent) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('addRawContent',
-function(newContent, aRequest) {
+function(newContent, aRequest, shouldSignal) {
 
     /**
      * @method addRawContent
@@ -4885,6 +4885,8 @@ function(newContent, aRequest) {
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
      *     further parameters.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to true.
      * @returns {TP.core.Node} The result of adding content to the receiver.
      */
 
@@ -4936,14 +4938,20 @@ function(newContent, aRequest) {
             function(aNode) {
 
                 reqLoadFunc(aNode);
-                thisref.changed('content', TP.APPEND);
+
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.APPEND);
+                }
             };
     } else {
         loadFunc =
             function(aNode) {
 
                 thisref.contentAppendCallback(aNode);
-                thisref.changed('content', TP.APPEND);
+
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.APPEND);
+                }
             };
     }
 
@@ -5118,7 +5126,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('insertRawContent',
-function(newContent, aPositionOrPath, aRequest) {
+function(newContent, aPositionOrPath, aRequest, shouldSignal) {
 
     /**
      * @method insertRawContent
@@ -5134,6 +5142,8 @@ function(newContent, aPositionOrPath, aRequest) {
      *     Default is TP.BEFORE_END.
      * @param {TP.sig.Request} aRequest An optional request object which defines
      *     further parameters.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to true.
      * @returns {TP.core.Node} The result of adding content to the receiver.
      */
 
@@ -5185,14 +5195,20 @@ function(newContent, aPositionOrPath, aRequest) {
             function(aNode) {
 
                 reqLoadFunc(aNode);
-                thisref.changed('content', TP.INSERT);
+
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.INSERT);
+                }
             };
     } else {
         loadFunc =
             function(aNode) {
 
                 thisref.contentInsertCallback(aNode);
-                thisref.changed('content', TP.INSERT);
+
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.INSERT);
+                }
             };
     }
 
@@ -5355,7 +5371,7 @@ function(newContent, aRequest, stdinContent) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('setRawContent',
-function(newContent, aRequest) {
+function(newContent, aRequest, shouldSignal) {
 
     /**
      * @method setRawContent
@@ -5366,6 +5382,8 @@ function(newContent, aRequest) {
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
      *     further parameters.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to true.
      * @returns {TP.core.Node} The result of setting the content of the
      *     receiver.
      */
@@ -5455,7 +5473,9 @@ function(newContent, aRequest) {
 
                 historyFunc(aNode);
 
-                thisref.changed('content', TP.UPDATE);
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.UPDATE);
+                }
             };
     } else {
         loadFunc =
@@ -5465,7 +5485,9 @@ function(newContent, aRequest) {
 
                 historyFunc(aNode);
 
-                thisref.changed('content', TP.UPDATE);
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.UPDATE);
+                }
             };
     }
 
