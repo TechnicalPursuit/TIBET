@@ -4610,7 +4610,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     try {
         //  We only signal TP.sig.DOMContentLoaded if the system is configured
         //  for it.
-        if (TP.sys.shouldSignalDOMLoaded()) {
+        if (TP.sys.shouldSignalDOMLoaded() && TP.isElement(returnNode)) {
             //  NB: For insert, it's actually the parent node that's changed
             //  it's content.
             TP.signal(TP.gid(returnNode.parentNode),
@@ -4718,7 +4718,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     try {
         //  We only signal TP.sig.DOMContentLoaded if the system is
         //  configured for it.
-        if (TP.sys.shouldSignalDOMLoaded()) {
+        if (TP.sys.shouldSignalDOMLoaded() && TP.isElement(returnNode)) {
             //  NOTE NOTE NOTE
             //  we signal here, but from the PARENT since outer content replaces
             //  the original element
@@ -4823,7 +4823,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     try {
         //  We only signal TP.sig.DOMContentLoaded if the system is
         //  configured for it.
-        if (TP.sys.shouldSignalDOMLoaded()) {
+        if (TP.sys.shouldSignalDOMLoaded() && TP.isElement(returnNode)) {
             TP.signal(TP.gid(anElement),
                         'TP.sig.DOMContentLoaded',
                         theContent);

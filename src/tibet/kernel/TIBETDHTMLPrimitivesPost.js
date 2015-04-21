@@ -5949,13 +5949,13 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     }
 
     //  Execute any loaded function that we were handed.
-    if (TP.isCallable(loadedFunction)) {
+    if (TP.isCallable(loadedFunction) && TP.isElement(returnNode)) {
         loadedFunction(returnNode.parentNode);
     }
 
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
     //  for it.
-    if (TP.sys.shouldSignalDOMLoaded()) {
+    if (TP.sys.shouldSignalDOMLoaded() && TP.isElement(returnNode)) {
         //  NOTE NOTE NOTE
         //  we signal here, but from the PARENT since outer content replaces
         //  the original element
