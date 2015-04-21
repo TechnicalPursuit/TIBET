@@ -4588,10 +4588,10 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                             thePosition,
                             null,   //  let the call determine path type
                             true))) { //  autocollapse
-                TP.nodeInsertBefore(anElement,
-                                    nodeContent,
-                                    insertionNode,
-                                    awakenContent);
+                returnNode = TP.nodeInsertBefore(anElement,
+                                                    nodeContent,
+                                                    insertionNode,
+                                                    awakenContent);
             }
     }
 
