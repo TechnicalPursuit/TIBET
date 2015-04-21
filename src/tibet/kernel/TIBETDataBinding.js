@@ -2432,10 +2432,10 @@ function(aResource) {
     repeatAttrVal = this.getAttribute('bind:repeat');
 
     //  If we weren't handed a resource, or the resource we were handed wasn't a
-    //  collection, then refetch using our attribute.
+    //  collection, then wrap the resource we were handed into an Array.
     if (TP.notValid(repeatResource = aResource) ||
             !TP.isCollection(repeatResource)) {
-        repeatResource = TP.uc(repeatAttrVal).getResource();
+        repeatResource = TP.ac(aResource);
     }
 
     if (TP.notValid(repeatResource)) {
