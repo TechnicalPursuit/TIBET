@@ -1976,6 +1976,7 @@ function(anAspect, anAction, aDescription) {
         desc,
 
         subDesc,
+        sigName,
 
         i;
 
@@ -1998,23 +1999,45 @@ function(anAspect, anAction, aDescription) {
         //  Otherwise, this is a primary URI and we need to send change
         //  notifications from all of it's subURIs, if it has any.
 
+        //  Note here how we signal one of the types of TP.sig.StructureChange.
+        //  This is because the whole value of the primary URI has changed so,
+        //  as far as the subURIs are concerned, the whole structure has
+        //  changed.
+
         subDesc = TP.hc('action', anAction,
                         'aspect', 'value',
                         'facet', 'value',
                         'target', primaryResource
                         );
 
+        switch (anAction) {
+            case TP.CREATE:
+            case TP.INSERT:
+            case TP.APPEND:
+
+                //  CREATE, INSERT or APPEND means an 'insertion structural
+                //  change' in the data.
+                sigName = 'TP.sig.StructureInsert';
+                break;
+
+            case TP.DELETE:
+
+                //  DELETE means a 'deletion structural change' in the data.
+                sigName = 'TP.sig.StructureDelete';
+                break;
+
+            default:
+
+                //  The default is the supertype TP.sig.StructureChange signal.
+                sigName = 'TP.sig.StructureChange';
+                break;
+        }
+
         for (i = 0; i < subURIs.getSize(); i++) {
 
             subDesc.atPut('path', subURIs.at(i).getFragmentExpr());
 
-            //  Note here how we signal TP.sig.StructureChange. This is
-            //  because the whole value of the primary URI has changed so,
-            //  as far as the subURIs are concerned, the whole structure has
-            //  changed.
-            subURIs.at(i).signal(
-                    'TP.sig.StructureChange',
-                    subDesc);
+            subURIs.at(i).signal(sigName, subDesc);
         }
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
@@ -4792,7 +4815,7 @@ function(aResource, aRequest) {
                 );
 
         //  If we have sub URIs, then observers of them will be expecting to get
-        //  a TP.sig.StructureChange with 'value' as the aspect that changed (we
+        //  a TP.sig.StructureDelete with 'value' as the aspect that changed (we
         //  swapped out the entire resource, so the values of those will have
         //  definitely changed).
         for (i = 0; i < subURIs.getSize(); i++) {
@@ -4801,7 +4824,7 @@ function(aResource, aRequest) {
 
             description.atPut('path', fragText);
 
-            subURIs.at(i).signal('TP.sig.StructureChange', description);
+            subURIs.at(i).signal('TP.sig.StructureDelete', description);
 
             aResource.checkFacets(fragText);
         }

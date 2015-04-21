@@ -338,18 +338,30 @@ function(aSignal) {
     switch (action) {
         case TP.CREATE:
         case TP.INSERT:
-        case TP.DELETE:
+        case TP.APPEND:
 
-            //  CREATE or DELETE means a 'structural change' in the
-            //  data.
-            sigName = 'TP.sig.StructureChange';
+            //  CREATE, INSERT or APPEND means an 'insertion structural change'
+            //  in the data.
+            sigName = 'TP.sig.StructureInsert';
             break;
 
-        case TP.APPEND:
+        case TP.DELETE:
+
+            //  DELETE means a 'deletion structural change' in the data.
+            sigName = 'TP.sig.StructureDelete';
+            break;
+
         case TP.UPDATE:
 
             //  UPDATE means just a value changed.
             sigName = 'TP.sig.ValueChange';
+            break;
+
+        default:
+
+            //  The default is the TP.sig.ValueChange signal.
+            sigName = 'TP.sig.ValueChange';
+            break;
     }
 
     pathAspectAliases = this.getAccessPathAliases(aspect);
@@ -374,17 +386,16 @@ function(aSignal) {
 
             aspectSigName = aspectName.asStartUpper() + 'Change';
 
-            //  Note that we force the firing policy here. This allows
-            //  observers of a generic Change to see 'aspect'Change
-            //  notifications, even if those 'aspect'Change signals
-            //  haven't been defined as being subtypes of Change.
+            //  Note that we force the firing policy here. This allows observers
+            //  of a generic Change to see 'aspect'Change notifications, even if
+            //  those 'aspect'Change signals haven't been defined as being
+            //  subtypes of Change.
 
-            //  Also note how we supply either 'TP.sig.Change' (the top
-            //  level for simple attribute changes) or
-            //  'TP.sig.StructureChange' (the top level for structural
-            //  changes, mostly used in 'path'ed attributes) as the
-            //  default signal type here so that undefined aspect
-            //  signals will use that type.
+            //  Also note how we supply either 'TP.sig.Change' (the top level
+            //  for simple attribute changes) or one of the subtypes of
+            //  'TP.sig.StructureChange' (the top level for structural changes,
+            //  mostly used in 'path'ed attributes) as the default signal type
+            //  here so that undefined aspect signals will use that type.
             TP.signal(this, aspectSigName, description,
                         TP.INHERITANCE_FIRING, sigName);
         }
@@ -1975,14 +1986,19 @@ function(targetObj) {
             switch (pathAction) {
                 case TP.CREATE:
                 case TP.INSERT:
-                case TP.DELETE:
+                case TP.APPEND:
 
-                    //  CREATE or DELETE means a 'structural change' in the
-                    //  data.
-                    sigName = 'TP.sig.StructureChange';
+                    //  CREATE, INSERT or APPEND means an 'insertion structural
+                    //  change' in the data.
+                    sigName = 'TP.sig.StructureInsert';
                     break;
 
-                case TP.APPEND:
+                case TP.DELETE:
+
+                    //  DELETE means a 'deletion structural change' in the data.
+                    sigName = 'TP.sig.StructureDelete';
+                    break;
+
                 case TP.UPDATE:
 
                     //  UPDATE means just a value changed.
@@ -2014,10 +2030,10 @@ function(targetObj) {
                     //  haven't been defined as being subtypes of Change.
 
                     //  Also note how we supply either 'TP.sig.Change' (the top
-                    //  level for simple attribute changes) or
-                    //  'TP.sig.StructureChange' (the top level for structural
-                    //  changes, mostly used in 'path'ed attributes) as the
-                    //  default signal type here so that undefined aspect
+                    //  level for simple attribute changes) or one of the
+                    //  subtypes of 'TP.sig.StructureChange' (the top level for
+                    //  structural changes, mostly used in 'path'ed attributes)
+                    //  as the default signal type here so that undefined aspect
                     //  signals will use that type.
                     TP.signal(targetObj, aspectSigName, description,
                                 TP.INHERITANCE_FIRING, sigName);
