@@ -5052,6 +5052,9 @@ function(anObject) {
     //  90% case or better is that we're trying to wrap an element node from
     //  the UI
     if (TP.isElement(anObject)) {
+        if (TP.isValid(anObject[TP.WRAPPER])) {
+            return anObject[TP.WRAPPER];
+        }
         return TP.core.ElementNode.construct(anObject);
     } else if (TP.isDocument(anObject)) {
         return TP.core.DocumentNode.construct(anObject);
