@@ -4852,6 +4852,41 @@ function(aResource, aRequest) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.defineMethod('getResource',
+function(aRequest) {
+
+    /**
+     * @method getResource
+     * @summary Returns a receiver-specific object representing the "secondary"
+     *     resource being accessed. This method is overridden from its supertype
+     *     to provide more direct access to the underlying resource, since
+     *     TIBETURNs are really just memory locations and are always available
+     *     synchronously.
+     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {Object} The resource or TP.sig.Response when async.
+     */
+
+    var primaryResource;
+
+    if (TP.notValid(primaryResource = this.getPrimaryURI().$get('resource'))) {
+        return null;
+    }
+
+    //  When we're primary or we don't have a fragment we can keep it simple and
+    //  return primaryResource.
+    if (this.isPrimaryURI() ||
+        !this.hasFragment() ||
+        this.getFragment() === 'document') {
+        return primaryResource;
+    }
+
+    return this.$getResultFragment(aRequest, primaryResource);
+});
+
 //  ========================================================================
 //  TP.core.URL
 //  ========================================================================
