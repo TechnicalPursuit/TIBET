@@ -773,6 +773,9 @@ function() {
                             borderYOffset;
 
             break;
+
+            default:
+            break;
         }
 
         /* eslint-enable no-extra-parens */
@@ -2001,6 +2004,9 @@ function() {
                             borderYOffset;
 
             break;
+
+            default:
+            break;
         }
 
         /* eslint-enable no-extra-parens */
@@ -2115,6 +2121,9 @@ function() {
             offsetX = offsetX - leftDiff;
             offsetY = offsetY - topDiff;
 
+        break;
+
+        default:
         break;
     }
 
@@ -2357,6 +2366,9 @@ function(aSignal) {
 
             styleObj.width = dimensionX + 'px';
 
+        break;
+
+        default:
         break;
     }
 
@@ -3041,11 +3053,12 @@ function() {
             break;
 
             case TP.LEFT:
-
             break;
 
             case TP.TOP_LEFT:
+            break;
 
+            default:
             break;
         }
     }

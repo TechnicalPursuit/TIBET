@@ -342,7 +342,7 @@ CLI.notValid = function(aReference) {
  * @param {Object} target The object which will potentially be modified.
  * @param {Object} source The object which provides new property values.
  */
-CLI.blend = function (target, source) {
+CLI.blend = function(target, source) {
 
     if (this.notValid(source)) {
         return target;

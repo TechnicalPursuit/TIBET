@@ -300,8 +300,8 @@ function(aResponse) {
         //  request.
         createBucketRequest.defineMethod('handleRequestSucceeded',
             function(aResponse) {
-
                 var putItemRetryRequest;
+
                 putItemRetryRequest =
                     TP.sig.AmazonS3PutItemRequest.construct(
                         putItemRequestParams);

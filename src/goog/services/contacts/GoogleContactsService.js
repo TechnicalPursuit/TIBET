@@ -107,6 +107,9 @@ function(aRequest) {
             params.atPut('service', 'cp');
 
         break;
+
+        default:
+        break;
     }
 
     return this.callNextMethod();
@@ -130,6 +133,8 @@ function(aRequest) {
             return 'http://www.google.com/m8/feeds/contacts/' +
                                             aRequest.at('userEmail') +
                                             '/full';
+        default:
+        break;
     }
 
     return this.callNextMethod();
@@ -153,6 +158,9 @@ function(aRequest) {
         case 'fetchContacts':
 
             return TP.HTTP_GET;
+
+        default:
+        break;
     }
 
     return this.callNextMethod();

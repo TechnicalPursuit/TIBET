@@ -2572,6 +2572,10 @@ function(anObject) {
     try {
         return TP.FunctionProto.$getOID.call(anObject);
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e, 'Error retrieving object name.'),
+                TP.LOG) : 0;
     }
 
     return;
@@ -3862,6 +3866,7 @@ function(anObject, anAspect, autoCollapse) {
             val = anObject[aspect];
         } catch (e) {
             //  did our best - don't report though
+            //  empty
         }
     }
 

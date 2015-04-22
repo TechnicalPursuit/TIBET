@@ -177,6 +177,7 @@ function(aMessage) {
                     'messageType', 'debug'
                     )).fire(this);
     } catch (e) {
+        //  empty
     }
 
     return;
@@ -561,6 +562,7 @@ function(aRequest) {
         yakService.shutdownConnection();
     } catch (e) {
         //  ignore problems closing
+        //  empty
     }
 
     if (this.isRunning()) {

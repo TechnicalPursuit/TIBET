@@ -57,7 +57,7 @@ function(aName) {
 
     /* eslint-disable no-wrap-func */
     //  set up keyboard toggle to show/hide the boot UI
-    (tdcSetupFunc = function () {
+    (tdcSetupFunc = function() {
 
         //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
         //  handler Function. This is because, once we finish set up of the
@@ -98,7 +98,7 @@ function() {
         //  markup and stylesheets.
         TP.tsh.console.buildTDCGUI();
 
-        handler = function () {
+        handler = function() {
             var uiBoot,
                 tsh,
                 triggerKey,
@@ -400,10 +400,10 @@ function(aResourceID, aRequest) {
 
     /* eslint-disable no-wrap-func,no-extra-parens */
     //  set up keyboard toggle to show/hide us
-    (function () {
+    (function() {
         this.toggleConsole();
 
-        (function () {
+        (function() {
             TP.boot.$flushLog(true);
         }).fork(2000);
 
@@ -809,6 +809,7 @@ function(select) {
             TP.wrap(this.get('$inputCell')).focus();
         }
     } catch (e) {
+        //  empty
     }
 
     return this;

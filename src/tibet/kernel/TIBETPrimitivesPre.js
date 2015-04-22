@@ -4662,6 +4662,8 @@ function(aPrefix) {
         try {
             this.$$oid = TP.sys.constructOID(prefix);
         } catch (e) {
+            TP.ifError() ? TP.error(TP.ec(e, 'Could not obtain OID'),
+                                    TP.LOG) : 0;
         }
     } else if (this.$$oid === this.getPrototype().$$oid && !TP.isNode(this)) {
         //  watch out for TP.FunctionProto :). Endless recursion is possible if
@@ -5132,12 +5134,8 @@ function(aName) {
      * @returns {Boolean}
      */
 
-    try {
-        if (TP.sys.hasInitialized() && TP.isMethod(this[aName])) {
-            return this[aName][TP.OWNER] === this;
-        }
-    } catch (e) {
-        //  MOZ has a few that like to barf on this call.
+    if (TP.sys.hasInitialized() && TP.isMethod(this[aName])) {
+        return this[aName][TP.OWNER] === this;
     }
 
     return false;
@@ -6030,6 +6028,7 @@ function(aFlagOrParam) {
         /* eslint-enable no-debugger */
         /* jshint +W087 */
     } catch (e) {
+        //  empty
     }
 
     return;
@@ -7180,6 +7179,9 @@ function(anObject, aKey, aDefault) {
 
         return val;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Could not default invalid key: ' + aKey),
+                        TP.LOG) : 0;
     }
 
     return TP.isCallable(aDefault) ? aDefault(aKey) : aDefault;
@@ -7233,6 +7235,9 @@ function(anObject, aKey, aDefault) {
 
         return val;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Could not default null key: ' + aKey),
+                        TP.LOG) : 0;
     }
 
     return TP.isCallable(aDefault) ? aDefault(aKey) : aDefault;
@@ -7286,6 +7291,9 @@ function(anObject, aKey, aDefault) {
 
         return val;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Could not default undefined key: ' + aKey),
+                        TP.LOG) : 0;
     }
 
     return TP.isCallable(aDefault) ? aDefault(aKey) : aDefault;
@@ -8835,6 +8843,7 @@ function(anObj) {
                 TP.isProperty(anObj, 'responseText') &&
                 typeof anObj.send === 'function';
     } catch (e) {
+        //  empty
     }
 
     return false;
@@ -8988,6 +8997,8 @@ function(anObj) {
         try {
             return anObj.getSize() === 0;
         } catch (e) {
+            TP.ifError() ? TP.error(TP.ec(e, 'Could not obtain size'),
+                                    TP.LOG) : 0;
         }
     }
 

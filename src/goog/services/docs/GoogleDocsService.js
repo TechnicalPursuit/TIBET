@@ -111,6 +111,9 @@ function(aRequest) {
             params.atPut('docId', aRequest.at('docId'));
 
         break;
+
+        default:
+        break;
     }
 
     return this.callNextMethod();
@@ -170,6 +173,9 @@ function(aRequest) {
             aRequest.atPut('mimetype', TP.MP_RELATED_ENCODED);
 
         break;
+
+        default:
+        break;
     }
 
     return this.callNextMethod();
@@ -196,6 +202,9 @@ function(aRequest) {
         case 'downloadDoc':
 
             return 'http://docs.google.com/feeds/download/documents/Export';
+
+        default:
+        break;
     }
 
     return this.callNextMethod();
@@ -224,6 +233,9 @@ function(aRequest) {
         case 'uploadDoc':
 
             return TP.HTTP_POST;
+
+        default:
+        break;
     }
 
     return this.callNextMethod();

@@ -9088,12 +9088,8 @@ function(aName) {
      * @returns {Boolean}
      */
 
-    try {
-        if (TP.sys.hasInitialized() && TP.isMethod(this[aName])) {
-            return this[aName][TP.OWNER] === this;
-        }
-    } catch (e) {
-        //  MOZ has a few that like to barf on this call.
+    if (TP.sys.hasInitialized() && TP.isMethod(this[aName])) {
+        return this[aName][TP.OWNER] === this;
     }
 
     return false;

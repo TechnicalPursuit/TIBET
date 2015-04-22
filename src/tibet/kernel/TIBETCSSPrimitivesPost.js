@@ -2116,6 +2116,8 @@ function(aValueString) {
                             'right', origValues.at(1),
                             'bottom', origValues.at(2),
                             'left', origValues.at(3));
+        default:
+            break;
     }
 
     return;
@@ -2892,6 +2894,9 @@ function(strSelectorText, strictPseudos) {
                                                 'pseudoElement',
                                                 lastMatch.toLowerCase());
 
+                                break;
+
+                                default:
                                 break;
                             }
                         } else {

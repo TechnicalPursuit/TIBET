@@ -734,7 +734,6 @@ function(aRequest) {
             //  TODO:   configure "save profile" and then save those
             //  elements of the user's profile as efficiently as possible
             this.saveProfile();
-        } catch (e) {
         } finally {
             //  update our running status
             this.isRunning(false);
@@ -1432,7 +1431,6 @@ function(aSignal) {
 
     try {
         TP.handle(this, req);
-    } catch (e) {
     } finally {
         //  if there was a responder let it know we're done
         if (TP.isValid(responder)) {

@@ -210,6 +210,7 @@ Cmd.prototype.execute = function() {
             CLI.getcfg('npm.version').split('+')[0] +
             ' ' + sh.which('tibet'));
     } catch (e) {
+        //  empty
     }
 };
 

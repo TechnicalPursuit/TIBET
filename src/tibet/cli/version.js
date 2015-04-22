@@ -179,7 +179,7 @@ Cmd.prototype.execute = function() {
 
             res.setEncoding('utf8');
 
-            res.on('data', function (chunk) {
+            res.on('data', function(chunk) {
                 str += chunk;
             });
 
@@ -234,6 +234,8 @@ Cmd.prototype.execute = function() {
         }
         this.info(msg);
     }
+
+    return code;
 };
 
 

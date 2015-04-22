@@ -443,6 +443,9 @@ function() {
             uri.nuke(request);
 
             break;
+        default:
+            this.signal('TP.sig.UIDataFailed');
+            break;
     }
 
     //  Signal the fact that we're doing the work.

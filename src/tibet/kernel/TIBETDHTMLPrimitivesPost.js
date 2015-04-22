@@ -1205,7 +1205,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             //  to check to see if the window is or will close, which we
             //  know it won't here.
             TP.$$processDocumentUnloaded(win, false);
-        } catch (e) {
         } finally {
             aDocument.close();
         }
@@ -1283,7 +1282,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             win.$globalStyleCaptures = theStyleChunks;
         };
         */
-    } catch (e) {
     } finally {
         aDocument.close();
     }
@@ -2731,6 +2729,9 @@ function(anElement, boxType, wantsTransformed) {
                                                             TP.BOTTOM,
                                                             wantsTransformed);
                 break;
+
+        default:
+                break;
     }
 
     return heightVal;
@@ -2960,6 +2961,9 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                     elemBox.at('width') + offsets.at('marginLeft'));
 
                 break;
+
+        default:
+                break;
     }
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
@@ -3057,6 +3061,9 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                                                         wantsTransformed,
                                                         TP.LEFT);
                 break;
+
+        default:
+                break;
     }
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
@@ -3147,6 +3154,9 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                 position -= TP.elementGetMarginInPixels(anElement,
                                                         wantsTransformed,
                                                         TP.TOP);
+                break;
+
+        default:
                 break;
     }
 
@@ -3255,6 +3265,9 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                 yPosition -= TP.elementGetMarginInPixels(anElement,
                                                             TP.TOP,
                                                             wantsTransformed);
+                break;
+
+        default:
                 break;
     }
 
@@ -3755,6 +3768,9 @@ function(anElement, boxType, wantsTransformed) {
                 widthVal += TP.elementGetMarginInPixels(anElement,
                                                         TP.RIGHT,
                                                         wantsTransformed);
+                break;
+
+        default:
                 break;
     }
 
@@ -5569,6 +5585,9 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                                             childContainer.firstChild);
 
                             break;
+
+                        default:
+                            break;
                     }
                 }
             } else {
@@ -5634,6 +5653,9 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                                     TP.LAST);
 
                         break;
+
+                    default:
+                        break;
                 }
             }
         } else {
@@ -5666,6 +5688,9 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                     range.selectNodeContents(anElement);
                     range.collapse(false);
 
+                    break;
+
+                default:
                     break;
             }
 
@@ -5724,6 +5749,9 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                                         awakenContent);
 
                     break;
+
+                default:
+                    break;
             }
         }
     }
@@ -5753,6 +5781,9 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
             returnNode = anElement.lastChild;
 
         break;
+
+        default:
+            break;
     }
 
     //  Execute any loaded function that we were handed.
@@ -6449,6 +6480,9 @@ function(anElement) {
                     xhtmlResult.push('<!--' + commentText + '-->');
 
                 break;
+
+                default:
+                    break;
             }
         }
     );
@@ -6636,6 +6670,9 @@ function(aNode, aDocument) {
             }
 
             return node;
+
+        default:
+            break;
     }
 
     return null;
@@ -6929,6 +6966,9 @@ function(aNode, aDocument) {
             }
 
             return node;
+
+        default:
+            break;
     }
 
     return null;
@@ -7935,7 +7975,6 @@ function(aWindow, aWindowID) {
     if (aWindow.closed) {
         try {
             TP.signal(aWindowID, 'TP.sig.WindowClosed', null, null);
-        } catch (e) {
         } finally {
             TP.core.Window.removeWindowInfo(aWindowID);
             TP.global[aWindowID] = null;

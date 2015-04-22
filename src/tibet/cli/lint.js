@@ -213,6 +213,8 @@ Cmd.prototype.configureCSSLintOptions = function() {
                     rules[key] = 2;
                 });
                 break;
+            default:
+                break;
         }
     });
 
@@ -426,7 +428,9 @@ Cmd.prototype.getScannedAssetList = function() {
 
     var dir,
         file,
+        /* eslint-disable no-unused-vars */
         ignores,
+        /* eslint-enable no-unused-vars */
         list;
 
     this.verbose('scanning directory tree...');
@@ -638,6 +642,8 @@ Cmd.prototype.validateConfigFiles = function() {
 Cmd.prototype.validateCSSFiles = function(files, results) {
 
     var cmd,
+        res,
+        cssFiles,
         formatter,
         ruleset,
         csslint;
@@ -645,10 +651,10 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
     csslint = require('csslint').CSSLint;
 
     cmd = this;
-    results = results || {checked: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
 
-    files = Array.isArray(files) ? files : [files];
-    results.files += files.length;
+    cssFiles = Array.isArray(files) ? files : [files];
+    res.files += files.length;
 
     /*
      * Inline formatting helper function for csslint message objects.
@@ -671,58 +677,59 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
     ruleset = this.configureCSSLintOptions();
 
     // Process the files. Use 'some' so we can support --stop.
-    files.some(function(file) {
-        var text,
-            result;
+    cssFiles.some(
+        function(file) {
+            var text,
+                result;
 
-        cmd.verbose(chalk.underline(file));
-        results.checked += 1;
+            cmd.verbose(chalk.underline(file));
+            res.checked += 1;
 
-        text = sh.cat(file);
-        if (!text) {
-            results.errors += 1;
-            cmd.error('Unable to read ' + file);
-        } else {
-            result = csslint.verify(text, ruleset);
-            if (result.messages.length > 0) {
-                cmd.log(file);
-                result.messages.forEach(function(message) {
-                    var str;
+            text = sh.cat(file);
+            if (!text) {
+                res.errors += 1;
+                cmd.error('Unable to read ' + file);
+            } else {
+                result = csslint.verify(text, ruleset);
+                if (result.messages.length > 0) {
+                    cmd.log(file);
+                    result.messages.forEach(function(message) {
+                        var str;
 
-                    str = formatter(message);
-                    switch (message.type.toLowerCase()) {
-                        case 'error':
-                            results.errors += 1;
-                            if (!cmd.options.list) {
-                                cmd.error(str);
-                            }
-                            break;
-                        case 'warning':
-                            results.warnings += 1;
-                            if (!cmd.options.list && !cmd.options.quiet) {
-                                cmd.warn(str);
-                            }
-                            break;
-                        default:
-                            if (!cmd.options.list && !cmd.options.quiet) {
-                                cmd.log(str);
-                            }
-                            break;
-                    }
-                });
+                        str = formatter(message);
+                        switch (message.type.toLowerCase()) {
+                            case 'error':
+                                res.errors += 1;
+                                if (!cmd.options.list) {
+                                    cmd.error(str);
+                                }
+                                break;
+                            case 'warning':
+                                res.warnings += 1;
+                                if (!cmd.options.list && !cmd.options.quiet) {
+                                    cmd.warn(str);
+                                }
+                                break;
+                            default:
+                                if (!cmd.options.list && !cmd.options.quiet) {
+                                    cmd.log(str);
+                                }
+                                break;
+                        }
+                    });
+                }
             }
-        }
 
-        // True will end the loop but we only do that if we're doing
-        // stop-on-first processing.
-        if (cmd.options.stop) {
-            return results.errors > 0;
-        } else {
-            return false;
-        }
-    });
+            // True will end the loop but we only do that if we're doing
+            // stop-on-first processing.
+            if (cmd.options.stop) {
+                return res.errors > 0;
+            } else {
+                return false;
+            }
+        });
 
-    return results;
+    return res;
 };
 
 /**
@@ -734,44 +741,47 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
  */
 Cmd.prototype.validateJSONFiles = function(files, results) {
 
-    var cmd;
+    var cmd,
+        res,
+        jsonFiles;
 
     cmd = this;
-    results = results || {checked: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
 
-    files = Array.isArray(files) ? files : [files];
-    results.files += files.length;
+    jsonFiles = Array.isArray(files) ? files : [files];
+    res.files += jsonFiles.length;
 
-    files.some(function(file) {
-        var text;
+    jsonFiles.some(
+        function(file) {
+            var text;
 
-        cmd.verbose(chalk.underline(file));
-        results.checked += 1;
+            cmd.verbose(chalk.underline(file));
+            res.checked += 1;
 
-        text = sh.cat(file);
-        if (!text) {
-            results.errors += 1;
-            cmd.error('Unable to read ' + file);
-        } else {
-            try {
-                JSON.parse(text);
-            } catch (e) {
-                results.errors += 1;
-                cmd.log(file);
-                cmd.error(e);
+            text = sh.cat(file);
+            if (!text) {
+                res.errors += 1;
+                cmd.error('Unable to read ' + file);
+            } else {
+                try {
+                    JSON.parse(text);
+                } catch (e) {
+                    res.errors += 1;
+                    cmd.log(file);
+                    cmd.error(e);
+                }
             }
-        }
 
-        // True will end the loop but we only do that if we're doing
-        // stop-on-first processing.
-        if (cmd.options.stop) {
-            return results.errors > 0;
-        } else {
-            return false;
-        }
-    });
+            // True will end the loop but we only do that if we're doing
+            // stop-on-first processing.
+            if (cmd.options.stop) {
+                return res.errors > 0;
+            } else {
+                return false;
+            }
+        });
 
-    return results;
+    return res;
 };
 
 /**
@@ -786,53 +796,56 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
     var cmd,
         opts,
         engine,
+        res,
+        srcFiles,
         root;
 
     cmd = this;
     opts = this.configureEslintOptions();
     engine = new eslint.CLIEngine(opts);
 
-    results = results || {checked: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
 
-    files = Array.isArray(files) ? files : [files];
-    results.files += files.length;
+    srcFiles = Array.isArray(files) ? files : [files];
+    res.files += srcFiles.length;
     root = CLI.getAppHead() + path.sep;
 
     try {
-        files.some(function(file) {
-            var result,
-                summary;
+        srcFiles.some(
+            function(file) {
+                var result,
+                    summary;
 
-            if (engine.isPathIgnored(file.replace(root, ''))) {
-                return;
-            }
+                if (engine.isPathIgnored(file.replace(root, ''))) {
+                    return;
+                }
 
-            result = engine.executeOnFiles([file]);
-            results.checked += 1;
+                result = engine.executeOnFiles([file]);
+                res.checked += 1;
 
-            // Rely on a common output routine. This is shared with output for
-            // inline source done during executeForEach.
-            summary = cmd.processEslintResult(result);
-            results.errors = results.errors + summary.errors;
-            results.warnings = results.warnings + summary.warnings;
+                // Rely on a common output routine. This is shared with output
+                // for inline source done during executeForEach.
+                summary = cmd.processEslintResult(result);
+                res.errors = res.errors + summary.errors;
+                res.warnings = res.warnings + summary.warnings;
 
-            // True will end the loop but we only do that if we're doing
-            // stop-on-first processing.
-            if (cmd.options.stop) {
-                return results.errors > 0;
-            } else {
-                return false;
-            }
-        });
+                // True will end the loop but we only do that if we're doing
+                // stop-on-first processing.
+                if (cmd.options.stop) {
+                    return res.errors > 0;
+                } else {
+                    return false;
+                }
+            });
 
     } catch (e) {
         if (!cmd.options.stop) {
             this.error(e.message);
-            results.errors = results.errors + 1;
+            res.errors = res.errors + 1;
         }
     }
 
-    return results;
+    return res;
 };
 
 
@@ -846,24 +859,26 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
 Cmd.prototype.validateXMLFiles = function(files, results) {
 
     var cmd,
+        res,
+        xmlFiles,
         parser,
         current;
 
     cmd = this;
-    results = results || {checked: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
 
-    files = Array.isArray(files) ? files : [files];
-    results.files += files.length;
+    xmlFiles = Array.isArray(files) ? files : [files];
+    res.files += xmlFiles.length;
 
     parser = new dom.DOMParser({
         locator: {},
         errorHandler: {
             error: function(msg) {
-                results.errors += 1;
+                res.errors += 1;
                 cmd.error('Error in ' + current + ': ' + msg);
             },
             warn: function(msg) {
-                results.warnings += 1;
+                res.warnings += 1;
                 if (!cmd.options.quiet) {
                     cmd.warn('Warning in ' + current + ': ' + msg);
                 }
@@ -872,42 +887,43 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
     });
 
     // By using 'some' rather that forEach we can support --stop semantics.
-    files.some(function(file) {
-        var text,
-            doc;
+    xmlFiles.some(
+        function(file) {
+            var text,
+                doc;
 
-        current = file;
-        cmd.verbose(chalk.underline(file));
-        results.checked += 1;
+            current = file;
+            cmd.verbose(chalk.underline(file));
+            res.checked += 1;
 
-        text = sh.cat(file);
-        if (!text) {
-            cmd.error('Unable to read ' + file);
-            results.errors += 1;
-        }
-
-        try {
-            doc = parser.parseFromString(text);
-            if (!doc) {
-                cmd.error(file);
-                results.errors += 1;
+            text = sh.cat(file);
+            if (!text) {
+                cmd.error('Unable to read ' + file);
+                res.errors += 1;
             }
-        } catch (e) {
-            cmd.error(file);
-            cmd.error(e.message);
-            results.errors += 1;
-        }
 
-        // True will end the loop but we only do that if we're doing
-        // stop-on-first processing.
-        if (cmd.options.stop) {
-            return results.errors > 0;
-        } else {
-            return false;
-        }
-    });
+            try {
+                doc = parser.parseFromString(text);
+                if (!doc) {
+                    cmd.error(file);
+                    res.errors += 1;
+                }
+            } catch (e) {
+                cmd.error(file);
+                cmd.error(e.message);
+                res.errors += 1;
+            }
 
-    return results;
+            // True will end the loop but we only do that if we're doing
+            // stop-on-first processing.
+            if (cmd.options.stop) {
+                return res.errors > 0;
+            } else {
+                return false;
+            }
+        });
+
+    return res;
 };
 
 

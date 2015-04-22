@@ -1405,6 +1405,8 @@ function(target, type, args, callback, currentElement) {
 
         finalTarget,
 
+        evtArgs,
+
         doc,
         newEvent;
 
@@ -1468,51 +1470,51 @@ function(target, type, args, callback, currentElement) {
     switch (type) {
         case 'click':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.click(args, finalTarget, callback);
+            syn.click(evtArgs, finalTarget, callback);
 
         break;
 
         case 'dblclick':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.dblclick(args, finalTarget, callback);
+            syn.dblclick(evtArgs, finalTarget, callback);
 
         break;
 
         case 'rightclick':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.rightClick(args, finalTarget, callback);
+            syn.rightClick(evtArgs, finalTarget, callback);
 
         break;
 
         case 'key':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.key(args, finalTarget, callback);
+            syn.key(evtArgs, finalTarget, callback);
 
         break;
 
         case 'keys':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.type(args, finalTarget, callback);
+            syn.type(evtArgs, finalTarget, callback);
 
         break;
 
         case 'mousedown':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'mousedown',
-                TP.extern.syn.key.options(args, 'mousedown'),
+                TP.extern.syn.key.options(evtArgs, 'mousedown'),
                 finalTarget);
 
             callback();
@@ -1521,11 +1523,11 @@ function(target, type, args, callback, currentElement) {
 
         case 'mouseup':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'mouseup',
-                TP.extern.syn.key.options(args, 'mouseup'),
+                TP.extern.syn.key.options(evtArgs, 'mouseup'),
                 finalTarget);
 
             callback();
@@ -1534,11 +1536,11 @@ function(target, type, args, callback, currentElement) {
 
         case 'keydown':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'keydown',
-                TP.extern.syn.key.options(args, 'keydown'),
+                TP.extern.syn.key.options(evtArgs, 'keydown'),
                 finalTarget);
 
             callback();
@@ -1547,11 +1549,11 @@ function(target, type, args, callback, currentElement) {
 
         case 'keyup':
 
-            args = populateSynArgs(args, finalTarget);
+            evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'keyup',
-                TP.extern.syn.key.options(args, 'keyup'),
+                TP.extern.syn.key.options(evtArgs, 'keyup'),
                 finalTarget);
 
             callback();

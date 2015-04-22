@@ -461,6 +461,7 @@ function(aDocument, toStart) {
     } catch (e) {
         //  moz likes to throw up if there are any issues here so just
         //  ignore it, it's half-brained most of the time anyway
+        //  empty
     }
 
     return;

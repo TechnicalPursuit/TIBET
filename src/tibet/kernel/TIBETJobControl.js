@@ -1701,6 +1701,9 @@ function() {
                 clearInterval(this.$heartbeat);
             }
         } catch (e1) {
+            TP.ifError() ?
+                TP.error(TP.ec(e1, 'Error clearing scheduler.'),
+                    TP.LOG) : 0;
         }
 
         if (TP.isValid(this.$timer)) {
@@ -1711,7 +1714,6 @@ function() {
                 clearTimeout(this.$timer);
             }
         }
-    } catch (e2) {
     } finally {
         //  clear the variables so we don't have leftovers and pause/resume
         //  will operate as we'd like

@@ -592,6 +592,10 @@ function(anObject, rootName) {
                             break;
                     }
                 }
+                break;
+
+            default:
+                break;
         }
     };
 
@@ -779,6 +783,9 @@ function(aNode) {
                 }
 
                 parentObj[elemName] = newObj;
+                break;
+
+            default:
                 break;
         }
     };

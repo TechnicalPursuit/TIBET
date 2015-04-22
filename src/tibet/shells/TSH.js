@@ -468,6 +468,7 @@ function(aRequest) {
         try {
             name = user.unquoted();
         } catch (e) {
+            //  empty
         }
     }
 
@@ -2443,14 +2444,17 @@ function(aRequest) {
                 match = name.match(/^(.*?)_(.*?)_(.*)$/);
 
                 found = false;
-                names.forEach(function(line) {
-                    //  Throw away tag, keeping remainder.
-                    line = line.split(' ').last();
+                names.forEach(
+                        function(line) {
+                            var lineParts;
 
-                    if (match && match[3] === line) {
-                        found = true;
-                    }
-                });
+                            //  Throw away tag, keeping remainder.
+                            lineParts = line.split(' ').last();
+
+                            if (match && match[3] === lineParts) {
+                                found = true;
+                            }
+                        });
 
                 if (!found) {
 
@@ -2516,141 +2520,164 @@ function(aRequest) {
 
             //  Collect comment parameter names. While we're processing these
             //  verify that each @param has a type definition.
-            cParams = cParams.map(function(param) {
-                var type,
-                    count,
-                    i,
-                    c,
-                    len,
-                    pname,
-                    needName,
-                    optional,
-                    defaulted,
-                    description;
+            cParams =
+                cParams.map(
+                    function(param) {
+                        var theParam,
 
-                param = param.slice('@param '.length);
+                            type,
+                            count,
+                            i,
+                            c,
+                            len,
+                            pname,
+                            needName,
+                            optional,
+                            defaulted,
+                            description;
 
-                //  Check for parameter type references...
-                if (param.indexOf('{') !== 0) {
-                    // Apparently not formatted with a type for the param.
-                    result = TP.ifInvalid(result, error);
-                    result.errors.push('missing type for @param ');
-                    needName = true;
-                } else {
-                    //  Since some parameter type descriptions involve the use
-                    //  of nested {}'s we need to actually do a simple count
-                    //  here to be certain of our result.
-                    len = param.length;
-                    type = '';
-                    count = 0;
-                    for (i = 0; i < len; i++) {
-                        c = param.charAt(i);
-                        if (c === '}') {
-                            count--;
-                            if (count === 0) {
-                                param = param.slice(i + 1).trim();
-                                break;
+                        theParam = param.slice('@param '.length);
+
+                        //  Check for parameter type references...
+                        if (theParam.indexOf('{') !== 0) {
+                            // Apparently not formatted with a type for the
+                            // param.
+                            result = TP.ifInvalid(result, error);
+                            result.errors.push('missing type for @param ');
+                            needName = true;
+                        } else {
+                            //  Since some parameter type descriptions involve
+                            //  the use of nested {}'s we need to actually do a
+                            //  simple count here to be certain of our result.
+                            len = theParam.length;
+                            type = '';
+                            count = 0;
+                            for (i = 0; i < len; i++) {
+                                c = theParam.charAt(i);
+                                if (c === '}') {
+                                    count--;
+                                    if (count === 0) {
+                                        theParam = theParam.slice(i + 1).trim();
+                                        break;
+                                    }
+                                } else if (c === '{') {
+                                    count++;
+                                }
+                                type += c;
                             }
-                        } else if (c === '{') {
-                            count++;
+
+                            //  If the braces aren't balanced we can fall off
+                            //  the end. Watch out for that.
+                            if (count !== 0) {
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                        'unbalanced {}\'s in @param ');
+                                needName = true;
+
+                                // Take our best guess at what the real type and
+                                // parameter name are.
+                                type = theParam.slice(
+                                                1, theParam.lastIndexOf('}'));
+                                type = '{' + type.strip('{').strip('}') + '}';
+
+                                theParam =
+                                    theParam.slice(
+                                        theParam.lastIndexOf('}') + 1).trim();
+                            }
+
+                            //  We want to use a leading '?' not 'null' in
+                            //  types.
+                            if (type.match(/null/)) {
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                        'prefer {?...} in @param ');
+                                needName = true;
+                            }
+
+                            //  We want function() instead of Function for
+                            //  function parameters so there's a tendency to
+                            //  document signature.
+                            if (type.match(/Function/)) {
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                        'prefer {function(...)} in @param ');
+                                needName = true;
+                            }
+
+                            //  We want to use Type[] rather than Array.<Type>
+                            if (type.match(/Array/)) {
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                        'prefer {Type[]} in @param ');
+                                needName = true;
+                            }
+
+                            //  We want to use {key: type} rather than Object.<>
+                            if (type.match(/Object\./)) {
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                        'prefer @param name.slot for @param ');
+                                needName = true;
+                            }
                         }
-                        type += c;
-                    }
 
-                    //  If the braces aren't balanced we can fall off the end.
-                    //  Watch out for that.
-                    if (count !== 0) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push('unbalanced {}\'s in @param ');
-                        needName = true;
+                        //  Param name should be next non-whitespace sequence...
+                        //  or the content of ['s before any = for signifying a
+                        //  default value.
+                        if (theParam.charAt(0) === '[') {
+                            optional = true;
+                            pname = theParam.slice(1, theParam.indexOf(']'));
+                            defaulted = pname.indexOf('=') !== TP.NOT_FOUND;
+                            pname = pname.split('=').first();
+                        } else {
+                            pname = theParam.split(' ').first();
+                        }
 
-                        // Take our best guess at what the real type and
-                        // parameter name are.
-                        type = param.slice(1, param.lastIndexOf('}'));
-                        type = '{' + type.strip('{').strip('}') + '}';
-                        param = param.slice(param.lastIndexOf('}') + 1).trim();
-                    }
+                        //  Verify the parameter has a description.
+                        if (theParam.indexOf(' ') === TP.NOT_FOUND) {
+                            result = TP.ifInvalid(result, error);
+                            result.errors.push(
+                                        'missing text for @param ');
+                            needName = true;
+                        } else {
+                            //  There's a description. Does it indicate that we
+                            //  may need optional/default value content for the
+                            //  pname?
+                            description =
+                                theParam.slice(theParam.indexOf(' ') + 1);
+                            if (description.match(/[Oo]ptional/) && !optional) {
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                    'use [name] for optional @param ');
+                                needName = true;
+                            }
 
-                    //  We want to use a leading '?' not 'null' in types.
-                    if (type.match(/null/)) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push('prefer {?...} in @param ');
-                        needName = true;
-                    }
+                            if (description.match(/[Dd]efault/) && !defaulted) {
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                    'use [name=value] for defaulted @param ');
+                                needName = true;
+                            }
+                        }
 
-                    //  We want function() instead of Function for function
-                    //  parameters so there's a tendency to document signature.
-                    if (type.match(/Function/)) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push('prefer {function(...)} in @param ');
-                        needName = true;
-                    }
+                        //  If we flagged a missing type we need to append the
+                        //  name to the last message.
+                        if (needName) {
+                            result.errors.atPut(result.errors.length - 1,
+                                result.errors.last() + pname);
+                        }
 
-                    //  We want to use Type[] rather than Array.<Type>
-                    if (type.match(/Array/)) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push('prefer {Type[]} in @param ');
-                        needName = true;
-                    }
+                        //  If the param is a varargs param we should see '...'
+                        //  in the type definition.
+                        if (pname === 'varargs' &&
+                                TP.notValid(type.match(/\.\.\./))) {
+                            result = TP.ifInvalid(result, error);
+                            result.errors.push(
+                                    '@param varargs needs \'...\' in type');
+                        }
 
-                    //  We want to use {key: type} rather than Object.<>
-                    if (type.match(/Object\./)) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push(
-                            'prefer @param name.slot for @param ');
-                        needName = true;
-                    }
-                }
-
-                //  Param name should be next non-whitespace sequence...or the
-                //  content of ['s before any = for signifying a default value.
-                if (param.charAt(0) === '[') {
-                    optional = true;
-                    pname = param.slice(1, param.indexOf(']'));
-                    defaulted = pname.indexOf('=') !== TP.NOT_FOUND;
-                    pname = pname.split('=').first();
-                } else {
-                    pname = param.split(' ').first();
-                }
-
-                //  Verify the parameter has a description.
-                if (param.indexOf(' ') === TP.NOT_FOUND) {
-                    result = TP.ifInvalid(result, error);
-                    result.errors.push('missing text for @param ');
-                    needName = true;
-                } else {
-                    //  There's a description. Does it indicate that we may need
-                    //  optional/default value content for the pname?
-                    description = param.slice(param.indexOf(' ') + 1);
-                    if (description.match(/[Oo]ptional/) && !optional) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push('use [name] for optional @param ');
-                        needName = true;
-                    }
-
-                    if (description.match(/[Dd]efault/) && !defaulted) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push('use [name=value] for defaulted @param ');
-                        needName = true;
-                    }
-                }
-
-                //  If we flagged a missing type we need to append the name to
-                //  the last message.
-                if (needName) {
-                    result.errors.atPut(result.errors.length - 1,
-                        result.errors.last() + pname);
-                }
-
-                //  If the param is a varargs param we should see '...' in the
-                //  type definition.
-                if (pname === 'varargs' && TP.notValid(type.match(/\.\.\./))) {
-                    result = TP.ifInvalid(result, error);
-                    result.errors.push('@param varargs needs \'...\' in type');
-                }
-
-                return pname;
-            });
+                        return pname;
+                    });
 
             //  Get the function's parameter name list.
             fParams = func.getParameterNames();

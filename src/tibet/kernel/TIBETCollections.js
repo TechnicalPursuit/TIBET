@@ -1629,7 +1629,6 @@ function(aCollection, aTest) {
 
                 deleted += thisref.remove(item, aTest);
             });
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);
@@ -1700,7 +1699,6 @@ function(oldValue, newValue, aTest) {
 
                 return item;
             });
-    } catch (e) {
     } finally {
         //  re-enable change signaling
         this.shouldSignalChange(shouldSignal);
@@ -1770,7 +1768,6 @@ function(aCollection, newValue, aTest) {
 
                 replaced += thisref.replace(item, newValue, aTest);
             });
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);
@@ -4254,12 +4251,14 @@ function(aString) {
         TP.regex.STYLE_STRING.performWith(
             function(whole, key, value, index, str) {
 
+                var styleKey;
+
                 //  don't make keys of undefined, and don't let trailing ;
                 //  mess things up if the regex matched to that separator
 
                 /* eslint-disable no-extra-parens */
-                if ((key = key.strip(';').asDOMName())) {
-                    dict.atPut(key, value);
+                if ((styleKey = key.strip(';').asDOMName())) {
+                    dict.atPut(styleKey, value);
                 }
                 /* eslint-enable no-extra-parens */
             }, aString);
@@ -5589,7 +5588,6 @@ function(oldKey, newKey) {
     try {
         this.removeKey(oldKey);
         this.atPut(newKey, val);
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);
@@ -5656,7 +5654,6 @@ function(oldValue, newValue, aTest) {
                 //  default is to return old value, leaving item unchanged
                 return item.last();
             });
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);
@@ -7118,7 +7115,6 @@ function(aCollection, aTest) {
 
                 count += thisref.remove(item, aTest);
             });
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);
@@ -7172,7 +7168,6 @@ function(oldItem, newItem, aTest) {
         this.add(newItem);
 
         this.changed('value', TP.UPDATE);
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);
@@ -7231,7 +7226,6 @@ function(aCollection, newItem, aTest) {
 
                 count += thisref.replace(item, newItem, aTest);
             });
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);
@@ -8091,7 +8085,6 @@ function(aCollection) {
 
                 return;
             });
-    } catch (e) {
     } finally {
         //  re-enable change notification
         this.shouldSignalChange(shouldSignal);

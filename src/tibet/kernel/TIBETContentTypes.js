@@ -2000,6 +2000,7 @@ function(targetObj) {
                     break;
 
                 case TP.UPDATE:
+                default:
 
                     //  UPDATE means just a value changed.
                     sigName = 'TP.sig.ValueChange';
@@ -2446,6 +2447,9 @@ function(templateArgs) {
                     case 'parent':
                         xmlStr += '/..';
                         continue;
+
+                    default:
+                        break;
                 }
 
                 switch (exprRecord.type) {
@@ -2455,6 +2459,9 @@ function(templateArgs) {
                         break;
                     case 'wildcard':
                         xmlStr += '*';
+                        break;
+
+                    default:
                         break;
                 }
 
@@ -2650,7 +2657,14 @@ function(templateArgs) {
                         xmlStr += ']';
 
                         break;
+
+                    default:
+                        break;
                 }
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -3169,6 +3183,8 @@ function(templateArgs) {
                         case 'object':
                             //  Tag the content with the computed data type.
                             content.setAttribute('type', theType);
+                            break;
+                        default:
                             break;
                     }
                 }

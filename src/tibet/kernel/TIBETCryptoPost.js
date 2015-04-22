@@ -162,6 +162,9 @@ function(anObject, aHashMode, aHashFormat) {
             result.update(str);
 
             break;
+
+        default:
+            break;
     }
 
     switch (fmt) {
@@ -177,6 +180,10 @@ function(anObject, aHashMode, aHashFormat) {
         case TP.HASH_HEX:
 
             return result.digest().toHex();
+
+        default:
+
+            return result;
     }
 });
 
@@ -231,6 +238,9 @@ function(anObject, aKey, aHashMode, aHashFormat) {
             hmac.update(str);
 
             break;
+
+        default:
+            break;
     }
 
     switch (fmt) {
@@ -246,6 +256,9 @@ function(anObject, aKey, aHashMode, aHashFormat) {
         case TP.HASH_HEX:
 
             return hmac.digest().toHex();
+
+        default:
+            return hmac;
     }
 });
 

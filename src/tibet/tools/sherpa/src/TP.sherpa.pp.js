@@ -613,6 +613,8 @@ function(anObject, optFormat) {
                 return 'fatal';
             case TP.boot.SYSTEM:
                 return 'system';
+            default:
+                return 'trace';
         }
     };
 

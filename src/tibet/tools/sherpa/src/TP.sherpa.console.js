@@ -449,6 +449,7 @@ function(aMode) {
             break;
 
         case 'fullscreen':
+        default:
 
             TP.elementRemoveClass(centerElem, 'v-split-left');
             TP.elementRemoveClass(centerElem, 'v-split-right');
@@ -895,6 +896,7 @@ function(select) {
             this.get('consoleInput').focus();
         }
     } catch (e) {
+        //  empty
     }
 
     return this;

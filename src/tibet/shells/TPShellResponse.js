@@ -74,6 +74,8 @@ function(aRequest, aResult) {
             return this.callNextMethod(aRequest);
         case 2:
             return this.callNextMethod(aRequest, aResult);
+        default:
+            return this.callNextMethod.apply(this, arguments);
     }
 });
 

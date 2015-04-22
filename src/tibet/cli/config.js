@@ -199,7 +199,8 @@ Cmd.prototype.setConfig = function(path, value) {
         parts,
         root,
         text,
-        key;
+        key,
+        val;
 
     file = CLI.expandPath('~tibet_file');
     json = require(file);
@@ -230,14 +231,14 @@ Cmd.prototype.setConfig = function(path, value) {
         // If the value is potentially a number or boolean we need to convert to
         // that so we don't quote it as a string value.
         if (value === 'true') {
-            value = true;
+            val = true;
         } else if (value === 'false') {
-            value = false;
+            val = false;
         } else if (!isNaN(parseInt(value, 10))) {
-            value = parseInt(value, 10);
+            val = parseInt(value, 10);
         }
 
-        root[parts[0]] = value;
+        root[parts[0]] = val;
     }
 
     beautify(JSON.stringify(json)).to(file);
@@ -247,9 +248,9 @@ Cmd.prototype.setConfig = function(path, value) {
     text = sh.cat(file);
     if (text) {
         json = JSON.parse(text);
-        /*eslint no-eval:0*/
+        /* eslint-disable no-eval */
         this.info(eval('json.' + path));
-        /*eslint no-eval:1*/
+        /* eslint-disable no-eval */
     }
 };
 

@@ -146,6 +146,9 @@ function(aRequest) {
                 TP.sys.$version.root));
 
         break;
+
+        default:
+        break;
     }
 
     return this.callNextMethod();
@@ -376,6 +379,9 @@ function(aRequest) {
         case 'login':
 
             return TP.HTTP_POST;
+
+        default:
+        break;
     }
 
     return this.callNextMethod();

@@ -80,10 +80,10 @@ notValid = function(aReference) {
 /**
  * Removes a module from the npm require cache.
  */
-require.uncache = function (moduleName) {
+require.uncache = function(moduleName) {
     // Run over the cache looking for the files
     // loaded by the specified module name
-    require.searchCache(moduleName, function (mod) {
+    require.searchCache(moduleName, function(mod) {
         delete require.cache[mod.id];
     });
 };
@@ -91,7 +91,7 @@ require.uncache = function (moduleName) {
 /**
  * Runs over the npm cache to search for a cached module.
  */
-require.searchCache = function (moduleName, callback) {
+require.searchCache = function(moduleName, callback) {
     // Resolve the module identified by the specified name
     var mod = require.resolve(moduleName);
 
@@ -102,7 +102,7 @@ require.searchCache = function (moduleName, callback) {
         (function run(mod) {
             // Go over each of the module's children and
             // run over it
-            mod.children.forEach(function (child) {
+            mod.children.forEach(function(child) {
                 run(child);
             });
 
@@ -1259,7 +1259,6 @@ Package.prototype.getArgumentPrimitive = function(value) {
 Package.prototype.getcfg = function(property) {
     var name,
         value,
-        parts,
         keys,
         key,
         cfg,

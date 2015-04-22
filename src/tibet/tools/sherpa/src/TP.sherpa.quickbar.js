@@ -81,7 +81,7 @@ function() {
     this.observe(this.get('resultsList'), 'TP.sig.DOMClick');
 
     /* eslint-disable no-wrap-func,no-extra-parens */
-    (function () {
+    (function() {
 
         this.set('searchMode', false);
         this.toggle('hidden');
@@ -89,7 +89,7 @@ function() {
     }).bind(this).observe(TP.core.Keyboard,
         'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
-    (function () {
+    (function() {
 
         var inSearchMode,
             isHidden;
@@ -655,6 +655,7 @@ function(select) {
             this.get('textInput').focus();
         }
     } catch (e) {
+        //  empty
     }
 
     return this;

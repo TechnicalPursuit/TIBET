@@ -39,12 +39,6 @@ function(aRequest) {
      *     TP.BREAK.
      */
 
-    var node,
-        shell;
-
-    node = aRequest.at('cmdNode');
-    shell = aRequest.at('cmdShell');
-
     return TP.BREAK;
 });
 

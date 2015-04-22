@@ -4620,8 +4620,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     } catch (e) {
         TP.ifError() ?
             TP.error(
-                TP.ec(e,
-                        'TP.sig.DOMContentLoaded handler generated error.'),
+                TP.ec(e, 'TP.sig.DOMContentLoaded handler generated error.'),
                 TP.LOG) : 0;
     }
 
@@ -7603,6 +7602,10 @@ function(aNode, anIndex) {
                 count++;
             }
         } catch (e) {
+            TP.ifError() ?
+                TP.error(
+                    TP.ec(e, 'Error retrieving child element at: ' + ind),
+                    TP.LOG) : 0;
         }
     }
 
@@ -7675,6 +7678,10 @@ function(aNode) {
                 arr.push(node);
             }
         } catch (e) {
+            TP.ifError() ?
+                TP.error(
+                    TP.ec(e, 'Error retrieving child elements'),
+                    TP.LOG) : 0;
         }
     }
 
@@ -8001,6 +8008,11 @@ function(aNode, attrName, attrValue, breadthFirst) {
                     }
                 }
             } catch (e) {
+                TP.ifError() ?
+                    TP.error(
+                        TP.ec(e, 'Error getting descendant elements' +
+                                    ' by attribute: ' + attrName),
+                        TP.LOG) : 0;
             }
 
             return false;
@@ -8104,6 +8116,11 @@ function(aNode, attrPrefix, attrValue, breadthFirst) {
                     }
                 }
             } catch (e) {
+                TP.ifError() ?
+                    TP.error(
+                        TP.ec(e, 'Error getting descendant elements' +
+                                    ' by attribute prefix: ' + attrPrefix),
+                        TP.LOG) : 0;
             }
 
             return false;
@@ -8915,6 +8932,11 @@ function(aNode, attrName, attrValue) {
                         }
                     }
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(
+                            TP.ec(e, 'Error getting first element child' +
+                                        ' by attribute: ' + attrName),
+                            TP.LOG) : 0;
                 }
 
                 return false;
@@ -9348,6 +9370,11 @@ function(aNode, attrName, attrValue) {
                         }
                     }
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(
+                            TP.ec(e, 'Error getting first element' +
+                                        ' by attribute: ' + attrName),
+                            TP.LOG) : 0;
                 }
 
                 return false;

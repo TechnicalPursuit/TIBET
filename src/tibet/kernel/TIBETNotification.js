@@ -989,6 +989,12 @@ function(aKey) {
             try {
                 return payload[aKey];
             } catch (e) {
+                TP.ifError() ?
+                    TP.error(
+                        TP.ec(
+                            e,
+                            'Error retrieving signal payload property:' + aKey),
+                        TP.SIGNAL_LOG) : 0;
             }
         }
     }
@@ -1116,6 +1122,10 @@ function(aKey, aValue) {
 
         return this;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e, 'Error setting signal payload property:' + aKey),
+                TP.SIGNAL_LOG) : 0;
     }
 
     this.raise('TP.sig.InvalidPayload',
@@ -4844,6 +4854,12 @@ aSigEntry, checkTarget) {
                                     TP.SIGNAL_LOG) : 0;
                         }
                     } catch (e2) {
+                        TP.ifError() ?
+                                TP.error(
+                                TP.ec(e,
+                                TP.join('Error getting handler for: ', orgid,
+                                        '.', signame)),
+                                TP.SIGNAL_LOG) : 0;
                     }
 
                     //  register the handler if TIBET is configured for
@@ -5886,7 +5902,6 @@ function(originSet, aSignal, aPayload, aType) {
      */
 
     var sig,
-        signame,
 
         payload,
         scope,
@@ -5911,11 +5926,6 @@ function(originSet, aSignal, aPayload, aType) {
     sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
     if (!TP.isKindOf(sig, TP.sig.Signal)) {
         return;
-    }
-
-    //  set up the signal name, using TP.ANY if we can't get one
-    if (TP.isEmpty(signame = sig.getSignalName())) {
-        signame = TP.ANY;
     }
 
     if (TP.notValid(payload = aPayload)) {
@@ -7078,7 +7088,6 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
                         TP.ifTrace() ? TP.sys.logSignal(
                                             TP.annotate(aSignal, str),
                                             TP.DEBUG) : 0;
-                    } catch (e) {
                     } finally {
                         TP.sys.shouldLogStack(flag);
                     }
@@ -7224,6 +7233,10 @@ function(anOrigin, anException, aPayload) {
                     try {
                         args += TP.str(aPayload);
                     } catch (e) {
+                        TP.ifError() ?
+                            TP.error(
+                                TP.ec(e, 'Error generating payload string.'),
+                                TP.SIGNAL_LOG) : 0;
                     }
                 }
             } else {
@@ -7297,7 +7310,6 @@ function(anOrigin, anException, aPayload) {
                     break;
             }
         }
-    } catch (e) {
     } finally {
         //  set the log/raise flag back to original status
         TP.sys.shouldLogRaise(flag);
@@ -7587,6 +7599,7 @@ function(aMutationRecord) {
             }
 
             break;
+
         case 'childList':
             if (!TP.isEmpty(aMutationRecord.addedNodes) &&
                     !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
@@ -7634,6 +7647,9 @@ function(aMutationRecord) {
                 }
             }
 
+            break;
+
+        default:
             break;
     }
 

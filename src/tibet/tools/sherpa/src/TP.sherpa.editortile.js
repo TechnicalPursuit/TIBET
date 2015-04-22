@@ -213,9 +213,13 @@ function(categoryElem, itemElem) {
                         str = TP.$$targetMethod.toString();
                     }
                 break;
+
                 case 'Markup':
                     textInput.setEditorMode(TP.ietf.Mime.XHTML);
                     str = TP.elementGetOuterContent(natElem);
+                break;
+
+                default:
                 break;
             }
             break;
@@ -237,6 +241,11 @@ function(categoryElem, itemElem) {
             computed = TP.elementGetComputedStyleObj(natElem);
 
             str += itemName + ': ' + computed[itemName] + ';';
+
+            break;
+
+        default:
+            break;
     }
 
     textInput.setDisplayValue(str);

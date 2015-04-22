@@ -2102,6 +2102,11 @@ function(attributeName) {
     try {
         val = node[attributeName];
     } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e,
+                        'Error retrieving node property: ' + attributeName),
+                TP.LOG) : 0;
     }
 
     if (TP.notValid(val)) {
@@ -6784,6 +6789,9 @@ function(toNode, beforeNode) {
     try {
         oldSize = node.childNodes.length;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error reading child nodes length.'),
+                        TP.LOG) : 0;
     }
 
     retVal = TP.nodeCopyChildNodesTo(node, toNode, beforeNode);
@@ -6798,6 +6806,9 @@ function(toNode, beforeNode) {
             this.changed('content', TP.UPDATE);
         }
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error reading child nodes length.'),
+                        TP.LOG) : 0;
     }
 
     return TP.wrap(retVal);
@@ -6830,6 +6841,9 @@ function(toNode, beforeNode) {
     try {
         oldSize = node.childNodes.length;
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error reading child nodes length.'),
+                        TP.LOG) : 0;
     }
 
     retVal = TP.nodeMoveChildNodesTo(node, toNode, beforeNode);
@@ -6844,6 +6858,9 @@ function(toNode, beforeNode) {
             this.changed('content', TP.UPDATE);
         }
     } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error reading child nodes length.'),
+                        TP.LOG) : 0;
     }
 
     return TP.wrap(retVal);
@@ -7982,12 +7999,18 @@ function(anObject, anIndex, aPosition) {
                         TP.elementInsertContent(
                                         results[i], obj[j], position);
                     } catch (e) {
+                        TP.ifError() ?
+                            TP.error(TP.ec(e, 'Error adding node at.'),
+                                        TP.LOG) : 0;
                     }
                 }
             } else {
                 try {
                     TP.elementInsertContent(results[i], obj, position);
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error adding node at.'),
+                                    TP.LOG) : 0;
                 }
             }
         }
@@ -11985,6 +12008,7 @@ function(aValue, formats) {
         i,
         len,
 
+        elemFmts,
         format;
 
     TP.stop('break.bind_format');
@@ -12030,15 +12054,15 @@ function(aValue, formats) {
     //  with TSH) with '.|'. We split these and process each one individually in
     //  the chain.
 
-    formats = formats.split(TP.regex.ACP_FORMAT_SEPARATOR);
-    len = formats.getSize();
+    elemFmts = formats.split(TP.regex.ACP_FORMAT_SEPARATOR);
+    len = elemFmts.getSize();
 
     try {
         //  one value, multiple formats -- second most common case,
         //  basically a format chain
         for (i = 0; i < len; i++) {
 
-            format = formats.at(i);
+            format = elemFmts.at(i);
 
             //  If it was a chain, we will have a leading '$_' followed by a
             //  '.|' (or '.|*') in which case the first item will be '$_'.  We
@@ -13959,6 +13983,11 @@ function(aNode) {
                     }
 
                     break;
+
+                default:
+
+                    actionable = false;
+                    break;
             }
         }
     }
@@ -14678,7 +14707,6 @@ function(aSignal) {
 
     try {
         this.act(aSignal);
-    } catch (e) {
     } finally {
         if (this.shouldSignalChange()) {
             this.signal('TP.sig.DidRun');

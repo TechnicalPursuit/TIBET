@@ -74,6 +74,9 @@ function(anElement, attributeName, checkAttrNSURI) {
             return attr.value;
         }
     } catch (e) {
+        TP.ifError() ?
+            TP.error('Error retrieving attribute value for: ' + attributeName,
+                        TP.CSS_LOG) : 0;
     }
 
     //  We only do this check if its not an XML document...
@@ -101,6 +104,10 @@ function(anElement, attributeName, checkAttrNSURI) {
                     return attr.value;
                 }
             } catch (e) {
+                TP.ifError() ?
+                    TP.error('Error retrieving attribute value for: ' +
+                                    attributeName,
+                                TP.CSS_LOG) : 0;
             }
         }
     }
@@ -1143,6 +1150,9 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
                         case 'thick':
                             results = 6;
+                        break;
+
+                        default:
                         break;
                     }
 

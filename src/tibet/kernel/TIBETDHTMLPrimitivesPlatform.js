@@ -513,6 +513,9 @@ TP.hc(
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error configuring event.'),
+                                    TP.LOG) : 0;
                 }
             });
 
@@ -734,6 +737,9 @@ TP.hc(
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error configuring event.'),
+                                    TP.LOG) : 0;
                 }
             });
 
@@ -944,6 +950,9 @@ TP.hc(
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
+                    TP.ifError() ?
+                        TP.error(TP.ec(e, 'Error configuring event.'),
+                                    TP.LOG) : 0;
                 }
             });
 
@@ -1079,6 +1088,9 @@ TP.hc(
                 }
 
                 break;
+
+            default:
+                return null;
         }
 
         return returnContainer;
@@ -1308,9 +1320,13 @@ TP.hc(
                                             'borderLeftWidth',
                                             wantsTransformed);
                         break;
+
+                default:
+                        break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
+            //  empty
         }
 
         return valueInPixels;
@@ -1416,9 +1432,13 @@ TP.hc(
                     valueInPixels = pixelFunc('border-left-width');
 
                     break;
+
+                default:
+                        break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
+            //  empty
         }
 
         return valueInPixels;
@@ -1512,9 +1532,13 @@ TP.hc(
                                                 'marginLeft',
                                                 wantsTransformed);
                         break;
+
+                default:
+                        break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
+            //  empty
         }
 
         return valueInPixels;
@@ -1623,9 +1647,13 @@ TP.hc(
                     valueInPixels = pixelFunc('margin-left');
 
                     break;
+
+                default:
+                        break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
+            //  empty
         }
 
         return valueInPixels;
@@ -1822,9 +1850,13 @@ TP.hc(
                                                 'paddingLeft',
                                                 wantsTransformed);
                         break;
+
+                default:
+                        break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
+            //  empty
         }
 
         return valueInPixels;
@@ -1932,9 +1964,13 @@ TP.hc(
                     valueInPixels = pixelFunc('padding-left');
 
                     break;
+
+                default:
+                        break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
+            //  empty
         }
 
         return valueInPixels;
