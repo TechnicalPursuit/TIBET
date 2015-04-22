@@ -2845,7 +2845,7 @@ function(aRequest) {
      *     resource being accessed (i.e. the resource referenced by the base
      *     resource path subset identified by any fragment portion. If there is
      *     no fragment this method returns the same value as
-     *     $getPrimaryResource().
+     *     $getPrimaryResource()).
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
