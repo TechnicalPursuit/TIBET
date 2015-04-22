@@ -103,25 +103,40 @@ function(aString) {
 
         val;
 
+    //  Extract the value from the surrounding '{' ... '}'
     data = /^\{(.+)\}$/.exec(aString);
     data = data.at(1);
+
+    //  Split along commas (',') and start rebuilding.
 
     entries = data.split(',');
 
     str = '{';
 
     for (i = 0; i < entries.getSize(); i++) {
+
+        //  Split out the values on either side of the colon (':'). Note here
+        //  how we throw away surrounding whitespace on either side of these
+        //  values.
         kvPair = /\s*(.+)\s*:\s*(.+)\s*/.exec(entries.at(i));
+
+        //  If the value corresponds to a 'TP.' value, then slice off the 'TP.'
+        //  and look for it on the TP object.
         if (/^TP\./.test(val = kvPair.at(2))) {
             val = TP[val.slice(3)];
+            val = '"' + val + '"';
+        } else if (TP.isNumber(val = parseFloat(val)) ||
+                    (val === 'true' || val === 'false')) {
+            //  Its a Number or Boolean - we don't surround it with double
+            //  quotes.
+            //  empty
+        } else {
+            //  Its a String - surround it with quotes.
+            val = '"' + val + '"';
         }
 
-        if (TP.isNumber(val = parseFloat(val)) ||
-                (val === 'true' || val === 'false')) {
-            str += '"' + kvPair.at(1) + '":' + val + ',';
-        } else {
-            str += '"' + kvPair.at(1) + '":"' + val + '",';
-        }
+        //  Reassemble it.
+        str += '"' + kvPair.at(1) + '":' + val + ',';
     }
 
     //  Make sure to slice off the last comma and then append the trailing
