@@ -2431,21 +2431,18 @@ function(aResource) {
 
     repeatAttrVal = this.getAttribute('bind:repeat');
 
-    //  If we weren't handed a resource, or the resource we were handed wasn't a
-    //  collection, then wrap the resource we were handed into an Array.
-    if (TP.notValid(repeatResource = aResource) ||
-            !TP.isCollection(repeatResource)) {
-        repeatResource = TP.ac(aResource);
+    //  If we weren't handed a resource, then create an empty Array and use
+    //  that.
+    if (TP.notValid(repeatResource = aResource)) {
+        repeatResource = TP.ac();
     }
 
-    if (TP.notValid(repeatResource)) {
-        return this.raise('TP.sig.InvalidParameter', 'Invalid resource.');
-    }
-
-    //  Make sure the resource is a collection - if it isn't, make it one.
-    if (!TP.isCollection(repeatResource)) {
+    //  If the resource we were handed wasn't an Array, then wrap the resource
+    //  we were handed into an Array.
+    if (!TP.isArray(repeatResource)) {
         repeatResource = TP.ac(repeatResource);
     }
+
     resourceLength = repeatResource.getSize();
     isXMLResource = TP.isXMLNode(TP.unwrap(repeatResource.first()));
 
