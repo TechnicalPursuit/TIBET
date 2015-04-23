@@ -6067,7 +6067,7 @@ function(attributeName, facetName) {
 
     internalSlotName = attributeName + '_' + facetName;
 
-    if (TP.notValid(this.$$access_paths)) {
+    if (!TP.owns(this, '$$access_paths')) {
 
         //  NB: This is a JS literal object since this operates at a very low
         //  level and trying to use a TP.lang.Hash here causes an endless
