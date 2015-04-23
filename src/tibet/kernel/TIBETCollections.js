@@ -4500,23 +4500,23 @@ function() {
     this.callNextMethod();
 
     //  force a unique ID
-    this.$set(TP.ID, TP.genID('TP.lang.Hash'));
+    this.$set(TP.ID, TP.genID('TP.lang.Hash'), false);
 
     //  NB: For performance reasons, there are multiple occurrences of setting
     //  the internal hash to an orphan object here. This is due to the desire to
     //  minimize checking and object creation.
     switch (arguments.length) {
         case 0:
-            this.$set('$$hash', TP.constructOrphanObject());
+            this.$set('$$hash', TP.constructOrphanObject(), false);
             break;
         case 1:
             obj = arguments[0];
             if (TP.notValid(obj)) {
-                this.$set('$$hash', TP.constructOrphanObject());
+                this.$set('$$hash', TP.constructOrphanObject(), false);
             } else if (TP.isArray(obj)) {
                 //  allocate internal hash - note that it is a prototype-less
                 //  object.
-                this.$set('$$hash', TP.constructOrphanObject());
+                this.$set('$$hash', TP.constructOrphanObject(), false);
 
                 if (TP.isPair(obj[0])) {
                     //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
@@ -4541,7 +4541,7 @@ function() {
             } else if (TP.isElement(obj)) {
                 //  allocate internal hash - note that it is a prototype-less
                 //  object.
-                this.$set('$$hash', TP.constructOrphanObject());
+                this.$set('$$hash', TP.constructOrphanObject(), false);
 
                 attrs = obj.attributes;
                 len = attrs.length;
@@ -4560,7 +4560,7 @@ function() {
                 } else {
                     //  allocate internal hash - note that it is a
                     //  prototype-less object.
-                    this.$set('$$hash', TP.constructOrphanObject());
+                    this.$set('$$hash', TP.constructOrphanObject(), false);
 
                     //  NB: We're only interested in the local keys here.
                     keys = TP.$getOwnKeys(obj);
@@ -4575,7 +4575,7 @@ function() {
         default:
             //  allocate internal hash - note that it is a prototype-less
             //  object.
-            this.$set('$$hash', TP.constructOrphanObject());
+            this.$set('$$hash', TP.constructOrphanObject(), false);
 
             //  arguments syntax 'a', 1, 'b', 2, 'c', 3
             for (i = 0; i < arguments.length; i += 2) {
