@@ -4981,12 +4981,12 @@ function(newContent, aRequest, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('cleanTextContent',
+TP.core.CollectionNode.Inst.defineMethod('clearTextContent',
 function() {
 
     /**
-     * @method cleanTextContent
-     * @summary Cleans out the text content of any text nodes under the
+     * @method clearTextContent
+     * @summary Clears out the text content of any text nodes under the
      *     receiver, thereby clearing all of the text and leaving just the node
      *     structure.
      */
