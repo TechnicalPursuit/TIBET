@@ -628,6 +628,12 @@ function(aPath, aFragment) {
         return aPath;
     }
 
+    //  If the fragment is '.', that a self-reference. Just return the main
+    //  path.
+    if (aFragment === '.') {
+        return aPath;
+    }
+
     url = '';
     expr = '';
 
