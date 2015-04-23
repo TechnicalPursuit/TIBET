@@ -768,7 +768,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     //  If the resource is a URI and we can obtain the resource value of it,
     //  make sure that it is configured to signal Change notifications.
     if (TP.isURI(resource) &&
-        TP.isValid(resourceValue = resource.getResource())) {
+        TP.isValid(resourceValue =
+                    resource.getResource(TP.hc('resultType', TP.WRAP)))) {
         resourceValue.shouldSignalChange(true);
     }
 
