@@ -4989,6 +4989,9 @@ function() {
      * @summary Clears out the text content of any text nodes under the
      *     receiver, thereby clearing all of the text and leaving just the node
      *     structure.
+     * @description This method works by setting each text node to the empty
+     *     String.
+     * @returns {TP.core.CollectionNode} The receiver.
      */
 
     var node,
@@ -5007,7 +5010,7 @@ function() {
                 aTextNode.textContent = '';
             });
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -395,6 +395,40 @@ TP.api.IterationAPI =
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+Array.Inst.defineMethod('clearTextContent',
+function() {
+
+    /**
+     * @method clearTextContent
+     * @summary Clears out any text content of mutable items in the receiver,
+     *     thereby clearing all of the non-mutable (primitive) items and leaving
+     *     just the data structure.
+     * @returns {Array} The receiver.
+     */
+
+    var len,
+        i,
+        it;
+
+    len = this.length;
+    for (i = 0; i < len; i++) {
+
+        it = this[i];
+
+        //  Make sure that the item is both mutable and implements a 'clear'
+        //  method.
+        if (TP.isMutable(it) && TP.canInvoke(it, 'clear')) {
+            it.clear();
+        } else {
+            this[i] = '';
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 Array.Inst.defineMethod('equalAs',
 function(aType) {
 
@@ -5162,6 +5196,46 @@ function() {
      */
 
     this.convert(function(it, ind) {return it.first(); });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Hash.Inst.defineMethod('clearTextContent',
+function() {
+
+    /**
+     * @method clearTextContent
+     * @summary Clears out any text content of mutable items in the receiver,
+     *     thereby clearing all of the non-mutable (primitive) items and leaving
+     *     just the data structure.
+     * @returns {TP.lang.Hash} The receiver.
+     */
+
+    var hash,
+        keys,
+
+        len,
+        i,
+        it;
+
+    hash = this.$get('$$hash');
+    keys = this.getKeys();
+
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        it = this.at(keys.at(i));
+
+        //  Make sure that the item is both mutable and implements a 'clear'
+        //  method.
+        if (TP.isMutable(it) && TP.canInvoke(it, 'clear')) {
+            it.clear();
+        } else {
+            hash[keys.at(i)] = '';
+        }
+    }
 
     return this;
 });
