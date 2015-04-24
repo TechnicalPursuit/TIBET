@@ -601,7 +601,7 @@ function(tokenList, templateName, sourceVarNames) {
             //  Generate an expression that does the 'if' logic.
             retVal = generators.wrap(
                     retVal +
-                    'if (TP.notEmpty(' + generators.escapedIdentifier(aspectName) + '))' +
+                    'if (' + generators.escapedIdentifier(aspectName) + ')' +
                         '{return ' + generators.loop(blocks) + '}' + tail);
 
             //  Pop off whatever we pushed onto the 'scoped source' stack.
