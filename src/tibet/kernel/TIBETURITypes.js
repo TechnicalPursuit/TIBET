@@ -2988,14 +2988,13 @@ function(aRequest, aResult, aResource) {
             fragment = TP.apc(fragment);
         }
 
-        //  Note here how we wrap and collapse just to make sure to have
-        //  consistent results across 'get' calls... what ultimately gets
-        //  returned from this method is determined by the $getFilteredResult()
-        //  call below.
+        //  Note here how we collapse just to make sure to have consistent
+        //  results across 'get' calls... what ultimately gets returned from
+        //  this method is determined by the $getFilteredResult() call below.
 
         result = TP.canInvoke(result, 'get') ? result.get(fragment) : undefined;
 
-        result = TP.wrap(TP.collapse(result));
+        result = TP.collapse(result);
 
     } else {
         result = aResult;
