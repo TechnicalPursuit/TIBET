@@ -648,53 +648,7 @@ TP.boot.installPatches = function(aWindow) {
                 return 0;
             });
 
-        aWindow.Event.prototype.__defineGetter__(
-            'resolvedTarget',
-            function() {
-
-                var resolvedTarget;
-
-                if (TP.boot.$isValid(resolvedTarget =
-                                        this._resolvedTarget)) {
-                    return resolvedTarget;
-                }
-
-                if (!TP.boot.$isElement(resolvedTarget =
-                                            TP.eventResolveTarget(this))) {
-                    return null;
-                }
-
-                this._resolvedTarget = resolvedTarget;
-
-                return resolvedTarget;
-            });
     } else if (TP.boot.$$isIE()) {
-        //  IE
-
-        aWindow.Object.defineProperty(
-            aWindow.Event.prototype,
-            'resolvedTarget',
-            {
-                configurable: true,
-                get: function() {
-
-                    var resolvedTarget;
-
-                    if (TP.boot.$isValid(resolvedTarget =
-                                                this._resolvedTarget)) {
-                        return resolvedTarget;
-                    }
-
-                    if (!TP.boot.$isElement(resolvedTarget =
-                                            TP.eventResolveTarget(this))) {
-                        return null;
-                    }
-
-                    this._resolvedTarget = resolvedTarget;
-
-                    return resolvedTarget;
-                }
-            });
 
         aWindow.Object.defineProperty(
             aWindow.Event.prototype,
@@ -709,6 +663,32 @@ TP.boot.installPatches = function(aWindow) {
                 }
             });
     }
+
+    //  All browsers get a 'resolvedTarget' getter on their Event objects.
+    aWindow.Object.defineProperty(
+        aWindow.Event.prototype,
+        'resolvedTarget',
+        {
+            configurable: true,
+            get: function() {
+
+                var resolvedTarget;
+
+                if (TP.boot.$isValid(resolvedTarget =
+                                            this._resolvedTarget)) {
+                    return resolvedTarget;
+                }
+
+                if (!TP.boot.$isElement(resolvedTarget =
+                                        TP.eventResolveTarget(this))) {
+                    return null;
+                }
+
+                this._resolvedTarget = resolvedTarget;
+
+                return resolvedTarget;
+            }
+        });
 
     //  All browsers get 'at()' and 'atPut()' on their Event objects.
     aWindow.Event.prototype.at = function(key) {
