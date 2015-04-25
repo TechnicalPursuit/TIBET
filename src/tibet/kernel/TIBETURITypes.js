@@ -3739,6 +3739,8 @@ function(aResource, aRequest) {
 
     var url,
 
+        request,
+
         oldResource,
         newResource;
 
@@ -3753,6 +3755,8 @@ function(aResource, aRequest) {
     //  ---
     //  URI <-> data corellation
     //  ---
+
+    request = TP.request(aRequest);
 
     //  Make sure to wrap the resource since we're going to be performing
     //  TIBETan operations.
@@ -3782,9 +3786,13 @@ function(aResource, aRequest) {
     //  value for future use.
     this.$set('resource', newResource);
 
+    //  If the new resource is valid and the request parameters contain the flag
+    //  for observing our resource, then observe it for all *Change signals.
     if (TP.isValid(newResource)) {
-        //  Observe the new resource object for changes.
-        this.observe(newResource, 'Change');
+        if (TP.isTrue(request.at('observeResource'))) {
+            //  Observe the new resource object for changes.
+            this.observe(newResource, 'Change');
+        }
     }
 
     //  Once we have a value, in any form, we're both dirty and loaded from
@@ -4764,10 +4772,12 @@ function(aResource, aRequest) {
     //  for future use.
     this.$set('resource', aResource);
 
-    //  If the request doesn't have an 'observeResource' property (or it isn't
-    //  set to false), then observe the resource.
+    //  If the new resource is valid, then configure ourself.
     if (TP.isValid(aResource)) {
-        if (TP.notFalse(request.at('observeResource'))) {
+
+        //  If the request parameters contain the flag for observing our
+        //  resource, then observe it for all *Change signals.
+        if (TP.isTrue(request.at('observeResource'))) {
             //  Observe the new resource object for changes.
             this.observe(aResource, 'Change');
         }
