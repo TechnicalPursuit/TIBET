@@ -3155,9 +3155,9 @@ function(aSignal) {
 
     /**
      * @method handleChange
-     * @summary Handles changes to the receiver's resource.
-     * @description URIs listen for changes to their resource and invoke this
-     *     method when it changes. The supplied signal could have a
+     * @summary Handles changes to the value of the receiver's resource.
+     * @description URIs listen for changes to their resource's value and this
+     *     method is invoked when it changes. The supplied signal could have a
      *     TP.CHANGE_PATHS property in its payload, which is an Array of path
      *     Strings that referenced the resource at some point. If this property
      *     is present, those paths are compared against any fragments of 'sub
