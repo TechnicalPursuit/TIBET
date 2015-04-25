@@ -4121,6 +4121,15 @@ function() {
      * @returns {TP.core.URI} The receiver.
      */
 
+    var oldResource;
+
+    //  If we are loaded, then we may be observing our resource for *Change
+    //  signals. If so, we need to ignore it for those.
+    if (this.isLoaded()) {
+        oldResource = TP.wrap(this.$get('resource'));
+        this.ignore(oldResource, 'Change');
+    }
+
     TP.core.URI.removeInstance(this);
 
     return this;
