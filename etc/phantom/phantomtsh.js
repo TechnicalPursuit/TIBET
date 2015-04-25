@@ -555,6 +555,9 @@
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
 
+        if (phantom.version.major > 1) {
+            PhantomTSH.url = 'file://' + PhantomTSH.url;
+        }
 
         if (!PhantomTSH.argv.quiet) {
             PhantomTSH.log('Loading TIBET via PhantomJS ' +
