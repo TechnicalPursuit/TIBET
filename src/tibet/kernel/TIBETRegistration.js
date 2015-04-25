@@ -381,33 +381,48 @@ function(anObj, anID) {
     /**
      * @method hasRegistered
      * @summary Checks for the object in the public registry under its ID.
-     * @param {Object} anObj The object to check on. When null the test is
-     *     simply whether any object is registered under the ID, otherwise the
-     *     test is whether that particular object is registered under the ID
-     *     provided.
+     * @param {Object} anObj The object to check on.
      * @param {String} anID An optional ID to use instead of the object's
      *     internal ID.
      * @returns {Boolean} Whether or not the object was registered.
      */
 
-    if (TP.isEmpty(anID)) {
-        return false;
-    }
+    var id,
+        urnID;
 
-    //  If a TIBET URN can be made from the ID and it has a real resource
-    //  object, then return that.
-    if (TP.regex.TIBET_URN.test(anID)) {
-        if (TP.isValid(TP.uc(anID).getResource())) {
-            return true;
+    if (TP.isEmpty(id = anID)) {
+
+        if (TP.canInvoke(anObj, 'getID')) {
+            id = anObj.getID();
+        }
+
+        if (TP.isEmpty(id)) {
+            return false;
         }
     }
 
-    //  Try to make a TIBET URN from the ID and, if it has a real resource
-    //  object, then return that.
-    if (TP.regex.TIBET_URN.test(TP.TIBET_URN_PREFIX + anID)) {
-        if (TP.isValid(TP.uc(TP.TIBET_URN_PREFIX + anID).getResource())) {
-            return true;
-        }
+    //  Note that in the checks below, we check with the TP.core.URI *type*'s
+    //  'instances' registry *before* the 'TP.uc()' calls. 'TP.uc()' will create
+    //  a URI in the registry if one doesn't exist.
+
+    //  If a TIBET URN can be made from the ID and it is registered with the URI
+    //  type and it has a real resource object, then return that.
+    if (TP.regex.TIBET_URN.test(id) &&
+        TP.core.URI.instances.containsKey(id) &&
+        TP.isValid(TP.uc(id).getResource())) {
+
+        return true;
+    }
+
+    urnID = TP.TIBET_URN_PREFIX + id;
+
+    //  Try to make a TIBET URN from the urnID and, if it is registered with the
+    //  URI type and it has a real resource object, then return that.
+    if (TP.regex.TIBET_URN.test(urnID) &&
+        TP.core.URI.instances.containsKey(urnID) &&
+        TP.isValid(TP.uc(urnID).getResource())) {
+
+        return true;
     }
 
     return false;
