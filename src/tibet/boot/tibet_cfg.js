@@ -960,9 +960,9 @@
     TP.sys.setcfg('jsonp.delay', 1000);
 
     //  how long should we wait to give the GUI event thread a chance to be
-    //  serviced? This is using in the testing and automation frameworks to
+    //  serviced? This is used in the testing and automation frameworks to
     //  prevent the Promise machinery from starving the event loop.
-    TP.sys.setcfg('test.anti_starve_timeout', 50);
+    TP.sys.setcfg('test.anti_starve_timeout', 10);
 
     //  ---
     //  logging/notification
