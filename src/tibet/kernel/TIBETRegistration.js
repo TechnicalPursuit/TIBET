@@ -549,7 +549,7 @@ function(anObj, anID) {
     }
 
     urn.clearCaches();
-    TP.core.URI.removeInstance(urn);
+    urn.unregister();
 
     //  fail quietly
     return true;
