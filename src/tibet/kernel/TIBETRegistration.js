@@ -430,7 +430,8 @@ function(anObj, anID, forceRegistration, observeResource) {
      * @param {Boolean} observeResource Whether or not the URI used to register
      *     the supplied object should observe it for changes. The default is
      *     true.
-     * @returns {Boolean} Whether or not the object was registered.
+     * @returns {Boolean} Whether or not the object was new and went through the
+     *     registration process.
      */
 
     var id,
@@ -495,16 +496,16 @@ function(anObj, anID, forceRegistration, observeResource) {
 
     //  First, let's see if there's an old object at a TIBET URN that happens to
     //  be the exact same object as what we'll be setting this to. In this case,
-    //  we can just return and save signaling overhead
+    //  we can just return and save signaling overhead.
     if (TP.isValid(oldObj = urn.getResource()) && anObj === oldObj) {
-        return true;
+        return false;
     }
 
     //  Create a TIBET URN to store the object - make sure to pass along the
     //  'observeResource' flag (which we default to true if one wasn't supplied)
     urn.setResource(
         anObj,
-        TP.hc('observeResource', TP.ifInvalid(observeResource, true)));
+        TP.hc('observeResource', TP.ifInvalid(observeResource, false)));
 
     if (TP.isValid(obj)) {
         id.signal('TP.sig.IdentityChange');
