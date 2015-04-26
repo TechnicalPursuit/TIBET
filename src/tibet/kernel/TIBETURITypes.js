@@ -4888,7 +4888,8 @@ function(aRequest) {
      * @returns {Object} The resource or TP.sig.Response when async.
      */
 
-    var primaryResource;
+    var primaryResource,
+        result;
 
     if (TP.notValid(primaryResource = this.getPrimaryURI().$get('resource'))) {
         return this.callNextMethod();
@@ -4899,10 +4900,17 @@ function(aRequest) {
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        return primaryResource;
+        result = primaryResource;
+    } else {
+        result = this.$getResultFragment(aRequest, primaryResource);
     }
 
-    return this.$getResultFragment(aRequest, primaryResource);
+    //  synchronous? complete any request we might actually have.
+    if (TP.canInvoke(aRequest, 'complete')) {
+        aRequest.complete(result);
+    }
+
+    return result;
 });
 
 //  ========================================================================
