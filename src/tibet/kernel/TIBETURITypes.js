@@ -4891,7 +4891,7 @@ function(aRequest) {
     var primaryResource;
 
     if (TP.notValid(primaryResource = this.getPrimaryURI().$get('resource'))) {
-        return null;
+        return this.callNextMethod();
     }
 
     //  When we're primary or we don't have a fragment we can keep it simple and
