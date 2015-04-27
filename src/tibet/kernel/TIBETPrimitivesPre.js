@@ -9624,22 +9624,38 @@ function() {
      * @returns {String}
      */
 
-    var str;
+    var str,
+        up,
+        re;
 
     str = this.toString();
-    TP.regex.CAMEL_CASE.lastIndex = 0;
-    TP.regex.WORD_BOUNDARIES.lastIndex = 0;
+    re = /[-\s_.]/;
+    up = false;
 
-    if (!TP.regex.CAMEL_CASE.test(str)) {
-        return str;
-    }
+    return str.replace(/./g,
+        function(char, index) {
+            if (index === 0) {
+                return char.toLowerCase();
+            }
 
-    return str.replace(
-            TP.regex.CAMEL_CASE,
-            function(whole, part) {
+            //  Word boundary? Flip our flag and return empty string to strip.
+            if (re.test(char)) {
+                up = true;
+                return '';
+            }
 
-                return part.toUpperCase();
-            }).strip(TP.regex.WORD_BOUNDARIES);
+            if (up) {
+                //  If flag is set clear it for next iteration and convert.
+                up = false;
+                return char.toUpperCase();
+            } else if (char === char.toUpperCase()) {
+                //  Preserve existing uppercase characters.
+                return char;
+            } else {
+                //  Everything else should default to lowercase.
+                return char.toLowerCase();
+            }
+        });
 });
 
 //  ------------------------------------------------------------------------
