@@ -494,11 +494,15 @@ function(aDataObject) {
         this.ignore(oldDataObject, 'Change');
     }
 
-    this.$set('data', aDataObject);
+    this.$set('data', aDataObject, false);
 
-    if (TP.isMutable(aDataObject)) {
-        this.observe(aDataObject, 'Change');
+    if (TP.isValid(aDataObject)) {
+        if (TP.isMutable(aDataObject)) {
+            this.observe(aDataObject, 'Change');
+        }
     }
+
+    this.changed('value', TP.UPDATE);
 
     return this;
 });
