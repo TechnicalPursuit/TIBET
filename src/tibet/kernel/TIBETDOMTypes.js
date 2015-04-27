@@ -932,15 +932,17 @@ function(aRequest) {
     //  expressions.
     str = tpNode.getTextContent();
 
-    //  If it contains ACP expressions
+    //  If it contains ACP expressions, then process them.
     if (TP.regex.HAS_ACP.test(str)) {
 
         //  Run a transform on it.
         result = str.transform(tpNode, info);
 
-        //  If the result contains 'element' markup, then try to create a
-        //  TP.core.ElementNode from it and compile that.
-        if (TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
+        //  If the result contains 'element' markup (and does *not* contain more
+        //  ACP expressions), then try to create a TP.core.ElementNode from it
+        //  and compile that.
+        if (!TP.regex.HAS_ACP.test(result) &&
+            TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
 
             elem = TP.tpelem(result);
             elem.compile(aRequest);
@@ -951,7 +953,8 @@ function(aRequest) {
                 TP.nodeReplaceChild(node.parentNode, elem, node, false);
             }
         } else {
-            //  Otherwise, it was just a straight templated value - just set the
+            //  Otherwise, it was just a straight templated value (or it
+            //  contained further ACP templating expressions) - just set the
             //  original node's text content.
             tpNode.setTextContent(result);
         }
