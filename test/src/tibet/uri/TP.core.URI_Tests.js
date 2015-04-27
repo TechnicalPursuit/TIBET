@@ -2690,7 +2690,7 @@ function() {
         jsonURI1 = TP.uc('urn:tibet:jsonData');
         jsonURI1.set('shouldCreateContent', true);
 
-        jsonURI1.setResource(modelObj);
+        jsonURI1.setResource(modelObj, TP.hc('observeResource', true));
 
         valuePathResults = TP.ac();
         structurePathResults = TP.ac();
@@ -2731,7 +2731,7 @@ function() {
         jsonURI2 = TP.uc('urn:tibet:jsonData#tibet(foo.3.bar)');
         jsonURI2.set('shouldCreateContent', true);
 
-        jsonURI2.setResource('goo');
+        jsonURI2.setResource('goo', TP.hc('observeResource', true));
 
         //  The value path results should have the path for jsonURI2
         test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
@@ -2750,7 +2750,7 @@ function() {
         jsonURI3 = TP.uc('urn:tibet:jsonData#tibet(foo.3[bar,moo,too].roo)');
         jsonURI3.set('shouldCreateContent', true);
 
-        jsonURI3.setResource(TP.ac());
+        jsonURI3.setResource(TP.ac(), TP.hc('observeResource', true));
 
         //  The value path results should have the path for jsonURI3
         test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
@@ -2780,7 +2780,7 @@ function() {
         jsonURI5 = TP.uc('urn:tibet:jsonData#tibet(foo.3.moo.roo)');
         jsonURI5.set('shouldCreateContent', true);
 
-        jsonURI5.setResource(42);
+        jsonURI5.setResource(42, TP.hc('observeResource', true));
 
         //  The value path results should have the path for jsonURI5
         test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
@@ -2815,7 +2815,7 @@ function() {
         jsonURI6 = TP.uc('urn:tibet:jsonData#tibet(foo.3)');
         jsonURI6.set('shouldCreateContent', true);
 
-        jsonURI6.setResource('fluffy');
+        jsonURI6.setResource('fluffy', TP.hc('observeResource', true));
 
         //  The value path results should have the path for jsonURI6
         test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
@@ -2863,7 +2863,7 @@ function() {
         jsonURI7 = TP.uc('urn:tibet:jsonData#tibet(foo.2)');
         jsonURI7.set('shouldCreateContent', true);
 
-        jsonURI7.setResource(TP.ac());
+        jsonURI7.setResource(TP.ac(), TP.hc('observeResource', true));
 
         //  The value path results should have the path for jsonURI7
         test.assert.contains(valuePathResults, jsonURI7.getFragmentExpr());
@@ -2907,7 +2907,7 @@ function() {
         jsonURI1.set('shouldCreateContent', true);
 
         //  Set everything under 'foo' to a new data structure
-        jsonURI1.setResource(TP.json2js('["A","B","C","D"]'));
+        jsonURI1.setResource(TP.json2js('["A","B","C","D"]'), TP.hc('observeResource', true));
 
         //  In this case, we only get an aspect of 'value' in only the value
         //  path results, not the structure path results. The individual
@@ -2920,7 +2920,7 @@ function() {
     });
 
     this.it('change along a single path for the new object', function(test, options) {
-        jsonURI6.setResource('goofy');
+        jsonURI6.setResource('goofy', TP.hc('observeResource', true));
 
         //  The path has should *not* have the path for jsonURI7 (it's at a
         //  similar level in the chain, but on a different branch)
@@ -2990,7 +2990,7 @@ function() {
         modelObj.setID('xmlData');
 
         xmlURI1 = TP.uc('urn:tibet:xmlData');
-        xmlURI1.setResource(modelObj);
+        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
 
         //  Set up this path just to observe
         xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp)');
@@ -3035,7 +3035,7 @@ function() {
         xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
         xmlURI3.set('shouldCreateContent', true);
 
-        xmlURI3.setResource('Shattuck');
+        xmlURI3.setResource('Shattuck', TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI3
         test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
@@ -3055,7 +3055,7 @@ function() {
         xmlURI4 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname/@valid)');
         xmlURI4.set('shouldCreateContent', true);
 
-        xmlURI4.setResource(false);
+        xmlURI4.setResource(false, TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI4
         test.assert.contains(valuePathResults, xmlURI4.getFragmentExpr());
@@ -3075,7 +3075,7 @@ function() {
         xmlURI5 = TP.uc('urn:tibet:xmlData#xpath1(/emp/age/@valid)');
         xmlURI5.set('shouldCreateContent', true);
 
-        xmlURI5.setResource(false);
+        xmlURI5.setResource(false, TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI5
         test.assert.contains(valuePathResults, xmlURI5.getFragmentExpr());
@@ -3095,7 +3095,7 @@ function() {
         xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
         xmlURI6.set('shouldCreateContent', true);
 
-        xmlURI6.setResource('Scott');
+        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI6
         test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
@@ -3120,7 +3120,7 @@ function() {
         xmlURI7 = TP.uc('urn:tibet:xmlData#xpath1(/emp/ssn)');
         xmlURI7.set('shouldCreateContent', true);
 
-        xmlURI7.setResource('555-55-5555');
+        xmlURI7.setResource('555-55-5555', TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI7
         test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
@@ -3149,7 +3149,7 @@ function() {
         xmlURI2.set('shouldCreateContent', true);
 
         //  Set everything under '/emp' to a new data structure
-        xmlURI2.setResource(TP.elem('<lname>Edney</lname>'));
+        xmlURI2.setResource(TP.elem('<lname>Edney</lname>'), TP.hc('observeResource', true));
 
         //  All paths will have changed
 
@@ -3177,7 +3177,7 @@ function() {
         xmlURI8.getResource();
 
         //  But set using xmlURI6
-        xmlURI6.setResource('Scott');
+        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
 
         //  Both results should have the path for xmlURI8 (it's for all
         //  elements)
@@ -3210,7 +3210,7 @@ function() {
         xmlURI1.set('shouldCreateContent', true);
 
         //  Set everything under 'foo' to a new data structure
-        xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'));
+        xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'), TP.hc('observeResource', true));
 
         //  In this case, we only get an aspect of 'value' in only the value
         //  path results, not the structure path results. The individual
