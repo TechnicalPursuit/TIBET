@@ -2720,8 +2720,8 @@ function() {
     //  ---
 
     this.after(function() {
-        jsonValueObsFunction.ignore(modelObj, 'ValueChange');
-        jsonStructureObsFunction.ignore(modelObj, 'StructureChange');
+        jsonValueObsFunction.ignore(jsonURI1, 'ValueChange');
+        jsonStructureObsFunction.ignore(jsonURI1, 'StructureChange');
     });
 
     //  ---
@@ -3024,8 +3024,8 @@ function() {
     //  ---
 
     this.after(function() {
-        xmlValueObsFunction.ignore(modelObj, 'ValueChange');
-        xmlStructureObsFunction.ignore(modelObj, 'StructureChange');
+        xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
+        xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
     });
 
     //  ---
