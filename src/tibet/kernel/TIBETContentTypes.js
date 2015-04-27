@@ -869,35 +869,39 @@ function(anObject) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Inst.defineMethod('init',
-function(data) {
+TP.core.XMLContent.Inst.defineMethod('getData',
+function() {
 
     /**
-     * @method init
-     * @summary Returns a newly constructed Object from inbound JSON content.
-     * @param {Object} data The string to use for data.
-     * @returns {Object} A new instance.
+     * @method getData
+     * @summary Returns the underlying data object.
+     * @returns {Object} The receiver's underlying data object.
      */
 
     var xmlData;
 
-    //  If a String was handed in, it's probably XML - try to convert it.
-    if (TP.isString(data) && TP.notEmpty(data)) {
+    xmlData = this.$get('data');
+
+    //  If a String was handed in, it's probably JSON - try to convert it.
+    if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
 
         //  TP.tpdoc() will raise for us if we supply 'true' as the 3rd
         //  parameter.
-        xmlData = TP.tpdoc(data, null, true);
+        xmlData = TP.tpdoc(xmlData, null, true);
 
         if (TP.notValid(xmlData, null, true)) {
             return;
         }
-    } else if (TP.isNode(data)) {
-        xmlData = TP.wrap(data);
-    } else {
-        xmlData = data;
+
+        this.set('data', xmlData);
+
+    } else if (TP.isNode(xmlData)) {
+
+        xmlData = TP.wrap(xmlData);
+        this.set('data', xmlData);
     }
 
-    return this.callNextMethod(xmlData);
+    return xmlData;
 });
 
 //  ------------------------------------------------------------------------
