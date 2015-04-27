@@ -2916,10 +2916,11 @@ function() {
         test.assert.contains(valuePathResults, 'value');
         this.refute.contains(structurePathResults, 'value');
 
-        jsonURI1.setResource(modelObj);
+        jsonURI1.setResource(modelObj, TP.hc('observeResource', true));
     });
 
     this.it('change along a single path for the new object', function(test, options) {
+
         jsonURI6.setResource('goofy', TP.hc('observeResource', true));
 
         //  The path has should *not* have the path for jsonURI7 (it's at a
@@ -3219,7 +3220,7 @@ function() {
         test.assert.contains(valuePathResults, 'value');
         this.refute.contains(structurePathResults, 'value');
 
-        xmlURI1.setResource(modelObj);
+        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
     });
 });
 
