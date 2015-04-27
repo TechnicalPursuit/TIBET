@@ -144,8 +144,6 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    computedBase = null;
-
     len = uriAttrNames.getSize();
     for (i = 0; i < len; i++) {
         //  If there is no value for the attribute in question on the
@@ -194,9 +192,13 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
         baseVal = TP.uriResolveVirtualPath(baseVal);
 
         if (!TP.uriIsAbsolute(baseVal)) {
-            //  If we haven't yet computed an XML Base for this element,
-            //  compute one now.
-            if (TP.notValid(computedBase)) {
+
+            //  If the URL we're resolving is a fragment we need an entire URL
+            //  not just the base.
+            if (/^#/.test(baseVal)) {
+                computedBase = TP.documentGetLocation(
+                    TP.nodeGetDocument(anElement));
+            } else {
                 computedBase = TP.elementComputeXMLBaseFrom(anElement);
             }
 
