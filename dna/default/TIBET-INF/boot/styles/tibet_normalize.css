@@ -69,7 +69,7 @@ vertical-align: text-bottom
 input,textarea,select {
 font-family: inherit;
 font-size: inherit;
-font-weight: inherit;*font-size:100%
+font-weight: inherit;
 }
 legend {
 color: #000
@@ -84,7 +84,7 @@ Licensed under the BSD License.
 http://yuilibrary.com/license/
 */
 body {
-font: 13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small
+font: 13px/1.231 arial,helvetica,clean,sans-serif;
 }
 select,input,button,textarea {
 font: 99% arial,helvetica,clean,sans-serif
@@ -94,7 +94,7 @@ font-size: inherit;
 font: 100%
 }
 pre,code,kbd,samp,tt {
-font-family: monospace;*font-size:108%;
+font-family: monospace;
 line-height: 100%
 }
 
@@ -163,7 +163,7 @@ p,fieldset,table,pre {
 margin-bottom: 1em;
 }
 input[type=text],input[type=password],textarea {
-width: 12.25em;*width:11.9em;
+width: 12.25em;
 }
 
 /*
