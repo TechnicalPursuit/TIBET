@@ -5355,8 +5355,13 @@ function(targetObj, varargs) {
     //  down
     nodes.perform(
             function(aNode) {
-                addresses = addresses.concat(
-                            TP.nodeGetAncestorPositions(aNode, true));
+                var address;
+
+                address = TP.nodeGetAncestorPositions(aNode, true);
+
+                if (address !== TP.NOT_FOUND) {
+                    addresses = addresses.concat(address);
+                }
             });
 
     //  Now unique the values in addresses, in case there were duplicates
