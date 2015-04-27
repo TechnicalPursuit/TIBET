@@ -325,6 +325,8 @@ function(aSignal) {
 
         oldTarget,
 
+        originID,
+
         i,
 
         aspectName,
@@ -374,6 +376,15 @@ function(aSignal) {
     oldTarget = description.at('target');
     description.atPut('target', this);
 
+    //  If this object is registered and does *not* have a generated ID (but one
+    //  that was set by user code), then we want to signal using that ID.
+    //  Otherwise, we can signal from our private ID.
+    if (TP.sys.hasRegistered(this) && !this.hasGeneratedID()) {
+        originID = TP.TIBET_URN_PREFIX + this.getID();
+    } else {
+        originID = this.getID();
+    }
+
     //  If we found any path aliases, then loop over them and dispatch
     //  using their aspect name.
     if (TP.isValid(pathAspectAliases)) {
@@ -396,12 +407,12 @@ function(aSignal) {
             //  'TP.sig.StructureChange' (the top level for structural changes,
             //  mostly used in 'path'ed attributes) as the default signal type
             //  here so that undefined aspect signals will use that type.
-            TP.signal(this, aspectSigName, description,
+            TP.signal(originID, aspectSigName, description,
                         TP.INHERITANCE_FIRING, sigName);
         }
     } else {
         //  Otherwise send the generic signal.
-        TP.signal(this, sigName, description);
+        TP.signal(originID, sigName, description);
     }
 
     //  Restore the old target since we mucked with it.
