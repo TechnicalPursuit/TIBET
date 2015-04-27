@@ -72,10 +72,9 @@ function() {
             TP.ONLOAD,
             function(evt) {
                 var win,
-
                     appElem;
 
-                win = this.contentWindow;
+                win = evt.defaultView;
 
                 appElem = TP.nodeGetElementsByTagName(
                             win.document.documentElement,
@@ -84,11 +83,16 @@ function() {
                 if (TP.isElement(appElem)) {
                     TP.wrap(appElem).compile();
                 }
+
+                //  Once the home page loads we need to signal the UI is
+                //  "ready" so the remaining startup logic can proceed.
+                TP.signal(TP.sys, 'AppWillStart');
             });
 
         //  We *MUST* use this technique to load up the iframes - just setting
         //  the '.src' of the iframe won't do what we want (at least on Chrome).
-        TP.wrap(allIFrames.first().contentWindow).setLocation(defaultURL);
+        TP.wrap(allIFrames.first().contentWindow).setLocation(
+                defaultURL, loadRequest);
 
         //  Hide all of the other iframes (1...N)
         allIFrames.slice(1).perform(

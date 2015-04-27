@@ -6044,6 +6044,12 @@ function() {
 TP.core.Application.Inst.defineMethod('getRouter',
 function() {
 
+    /**
+     * @method getRouter
+     * @summary Returns the current router instance used by the application.
+     * @return {TP.core.URIRouter} The active router.
+     */
+
     var type,
         name;
 
@@ -6056,9 +6062,7 @@ function() {
     type = TP.sys.require(name);
 
     if (TP.canInvoke(type, 'route')) {
-
         this.$set('router', type);
-
         return type;
     }
 });
@@ -6091,7 +6095,6 @@ function() {
     }
 
     theme = TP.elementGetAttribute(body, 'data-theme');
-
     theme = TP.ifEmpty(theme, this.$get('theme'));
 
     return TP.ifEmpty(theme, '');
@@ -6110,37 +6113,7 @@ function(aSignal) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    var typeName,
-        appType,
-        newAppInst;
-
-    //  Configure the application type setting, defaulting the value as needed.
-    typeName = TP.sys.cfg('project.apptype');
-    if (TP.isEmpty(typeName)) {
-        typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
-    }
-
-    //  If we're supposed to grab a different type that'll happen here.
-    appType = TP.sys.require(typeName);
-
-    if (TP.notValid(appType)) {
-        TP.ifWarn() ?
-            TP.warn('Unable to locate application controller type: ' +
-                    typeName + '. ' +
-                    'Defaulting to TP.core.Application.',
-                    TP.LOG) : 0;
-        appType = TP.sys.require('TP.core.Application');
-    }
-
-    //  Create the new instance and define it as our singleton for any future
-    //  application instance requests.
-    newAppInst = appType.construct('Application', null);
-    TP.core.Application.set('singleton', newAppInst);
-
-    //  Tell our new singleton instance to start and provide the signal.
-    newAppInst.start(aSignal);
-
-    return this;
+    TP.core.Application.get('singleton').start(aSignal);
 });
 
 //  ------------------------------------------------------------------------
@@ -6158,6 +6131,39 @@ function(aSignal) {
     //  The change implies the current location bar value is the one we want so
     //  just ask for a reload.
     top.location.reload();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('handleDocumentLoaded',
+function(aSignal) {
+
+    /**
+     */
+
+    //  If the system hasn't started we don't want to process anything.
+    if (!TP.sys.hasStarted()) {
+        return;
+    }
+
+    //  Use the document location to update the system's idea of the current
+    //  route. This keeps us up to date with changes to the main UICANVAS etc
+    //  which might occur via link traversal or other means.
+    (function() {
+        var route;
+
+        //  We need a signal to get a document location.
+        if (TP.notValid(aSignal)) {
+            return;
+        }
+
+        route = TP.documentGetRouteName(
+            TP.sys.getWindowById(aSignal.getOrigin()).document);
+
+        TP.sys.getRouter().setRoute(route);
+    }).afterUnwind();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -6219,8 +6225,9 @@ function(aSignal) {
     win = TP.sys.getUICanvas();
     url = TP.uc(TP.sys.cfg('project.homepage'));
 
-    //  Don't bother if the URL won't be changing.
-    if (win.getNativeWindow().location === url.asString()) {
+    //  Don't bother if the URL won't be changing. We need to use a TIBET call
+    //  here since the location will normally be fixed due to setContent.
+    if (win.getLocation() === url.getLocation()) {
         return;
     }
 
@@ -6314,12 +6321,19 @@ function(themeName) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    var doc,
+    var canvas,
+        doc,
         body;
 
-    doc = TP.sys.getUICanvas().getNativeDocument();
-    body = TP.documentGetBody(doc);
-    TP.elementSetAttribute(body, 'data-theme', themeName);
+    canvas = TP.sys.getUICanvas();
+    if (TP.isValid(canvas)) {
+        doc = TP.sys.getUICanvas().getNativeDocument();
+        body = TP.documentGetBody(doc);
+
+        if (TP.isElement(body)) {
+            TP.elementSetAttribute(body, 'data-theme', themeName);
+        }
+    }
 
     //  Set the value internally so we trigger a change notification.
     this.$set('theme', themeName);

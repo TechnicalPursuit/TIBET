@@ -573,7 +573,8 @@ TP.boot.installPatches = function(aWindow) {
 
                 target = this.target;
 
-                if (target && target.nodeType !== Node.DOCUMENT_NODE) {
+                if (target && target.nodeType !== undefined &&
+                    target.nodeType !== Node.DOCUMENT_NODE) {
                     target = target.nodeType === Node.TEXT_NODE ?
                                                 target.parentNode :
                                                 target;
@@ -618,7 +619,8 @@ TP.boot.installPatches = function(aWindow) {
 
                 target = this.target;
 
-                if (target && target.nodeType !== Node.DOCUMENT_NODE) {
+                if (target && target.nodeType !== undefined &&
+                    target.nodeType !== Node.DOCUMENT_NODE) {
                     target = target.nodeType === Node.TEXT_NODE ?
                                                 target.parentNode :
                                                 target;

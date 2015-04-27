@@ -1436,55 +1436,72 @@ function(aURL, aRequest) {
      */
 
     var win,
-        blankURI,
-
         url,
-
+        blank,
+        blankURI,
+        frame,
         thisArg,
-        handlerFunc;
+        handler;
 
     TP.stop('break.window_location');
 
-    win = this.getNativeWindow();
-
-    blankURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
-
-    //  If empty then we clear the window by just loading the blank
+    //  Default URL to the blank page when empty or null/undefined.
     if (TP.isEmpty(aURL)) {
-
-        win.location = blankURI.getLocation();
-
-        return this;
+        url = TP.sys.cfg('tibet.blankpage');
+        blank = true;
+    } else {
+        url = aURL;
     }
 
-    TP.sys.logLink(aURL, TP.INFO);
+    TP.sys.logLink(url, TP.INFO);
 
     //  need a valid URI and creating one ensures we have one regardless of
     //  what we were originally provided. NOTE that we do this operation
-    //  after checking for '' as a location which is how we clear content
-    if (TP.notValid(url = TP.uc(aURL))) {
+    //  after checking for '' as a location which is how we clear content.
+    if (TP.notValid(url = TP.uc(url))) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    thisArg = this;
+    win = this.getNativeWindow();
 
-    //  If we're in an iframe window (which is the vast majority of the time)
-    //  then we can leverage the fact that setting a 'load' event handler on the
-    //  iframe can be used to set (and process) the content after the blank has
-    //  loaded. Note that we have to load a blank here to get an XHTML rendering
-    //  surface.
-    if (TP.isIFrameWindow(win)) {
-        win.frameElement.addEventListener(
-                'load',
-                handlerFunc = function() {
-                    this.removeEventListener('load', handlerFunc, false);
-                    thisArg.setContent(url, aRequest);
-                },
-                false);
+    //  If the target is an XML rendering surface, which it normally should be,
+    //  we can setContent directly. If not we can attempt to "double pump" it by
+    //  loading a blank.xhtml file and hooking into the onload (which works if
+    //  we're dealing with an iframe).
+    if (TP.isXMLDocument(this.getNativeDocument())) {
+        this.setContent(url, aRequest);
+    } else if (TP.isIFrameWindow(win)) {
 
-        win.location = blankURI.getLocation();
+        //  Capture variable binding references.
+        frame = win.frameElement;
+        thisArg = this;
+
+        handler = function() {
+            frame.removeEventListener('load', handler, false);
+            if (!blank) {
+                thisArg.setContent(url, aRequest);
+            } else if (TP.isValid(aRequest)) {
+                aRequest.complete();
+            }
+        };
+        frame.addEventListener('load', handler, false);
+
+        if (blank) {
+            win.location = url.getLocation();
+        } else {
+            blankURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+            win.location = blankURI.getLocation();
+        }
     } else {
-        win.location = aURL.getLocation();
+        //  Not XML surface, not an IFRAME, just set location.
+        win.location = url.getLocation();
+
+        //  A bit optimistic but we don't have a choice really. Hopefully the
+        //  request completion processing doesn't rely on rendering being
+        //  complete since it may not be.
+        if (TP.isValid(aRequest)) {
+            aRequest.complete();
+        }
     }
 
     return this;
@@ -1863,6 +1880,23 @@ function(assignIfAbsent) {
 
     //  cached on creation
     return this.$get('$windowID');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Window.Inst.defineMethod('getLocation',
+function() {
+
+    /**
+     * @method getLocation
+     * @summary Returns the location (URL) currently set for the receiver's
+     *     document. Note that this is often NOT the native window's location
+     *     property due to TIBET's use of setContent/setLocation which are not
+     *     always able to properly update the location value.
+     * @return {String} The window's document location.
+     */
+
+    return TP.documentGetLocation(this.getNativeDocument());
 });
 
 //  ------------------------------------------------------------------------

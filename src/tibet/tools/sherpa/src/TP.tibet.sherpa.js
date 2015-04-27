@@ -25,59 +25,46 @@ function(aRequest) {
 
     /**
      * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest.
+     * @summary Sets up runtime machinery for the element in aRequest. For this
+     *     tag this means setting the location of the current document to
+     *     contain the framing for the Sherpa.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
     var elem,
         elemWin,
-
         sherpaURI,
-
-        request,
-
-        setContentFunc;
+        request;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
         return;
     }
+
     elemWin = TP.nodeGetWindow(elem);
 
+    //  Get the URI we need to force into the window/frame.
     sherpaURI = TP.uc('~ide_root/xhtml/sherpa_framing.xhtml');
 
+    //  Set up an onload handler that will complete the construction process.
     request = TP.request();
-
     request.atPut(TP.ONLOAD,
-                function(aDocument) {
-                    var newSherpa;
+        function(aDocument) {
+            var newSherpa;
 
-                    //  This performs some initial setup. The first time the
-                    //  Sherpa is triggered, it will complete its setup
-                    //  sequence.
-                    newSherpa = TP.core.Sherpa.construct();
-                    newSherpa.setID('Sherpa');
-                    TP.sys.registerObject(newSherpa);
-                });
+            //  This performs some initial setup. The first time the
+            //  Sherpa is triggered, it will complete this sequence.
+            newSherpa = TP.core.Sherpa.construct();
+            newSherpa.setID('Sherpa');
 
-    /* eslint-disable no-wrap-func */
-    (setContentFunc = function(aSignal) {
-        setContentFunc.ignore(
-            TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
+            TP.sys.registerObject(newSherpa);
+        });
 
-        //  Set the content of this Window to the Sherpa content, but do so in a
-        //  timeout giving the current attaching process time to finish.
-        //  Otherwise, we end up in race conditions.
-
-        /* eslint-disable no-extra-parens */
-        (function() {
-            TP.wrap(elemWin).setContent(sherpaURI, request);
-        }).fork(100);
-        /* eslint-enable no-extra-parens */
-
-    }).observe(TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
-    /* eslint-enable no-wrap-func */
+    //  NOTE that on older versions of Safari this could trigger crashes due to
+    //  bugs in the MutationObserver implementation. It seems to work fine now.
+    (function() {
+        TP.wrap(elemWin).setContent(sherpaURI, request);
+    }).afterUnwind();
 
     return this.callNextMethod();
 });

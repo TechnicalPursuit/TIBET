@@ -295,10 +295,8 @@ function(aRequest) {
 
     var elem,
         elemWin,
-
-        homeURL,
-
-        setContentFunc;
+        request,
+        homeURL;
 
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then exit here - the Sherpa does some special things to
@@ -323,21 +321,19 @@ function(aRequest) {
     homeURL = TP.uc(TP.ifEmpty(TP.sys.cfg('project.homepage'),
                                 TP.sys.cfg('tibet.blankpage')));
 
+    request = TP.request();
+    request.atPut(TP.ONLOAD,
+                function(aDocument) {
+                    //  Once the home page loads we need to signal the UI is
+                    //  "ready" so the remaining startup logic can proceed.
+                    TP.signal(TP.sys, 'AppWillStart');
+                });
 
-    (setContentFunc = function(aSignal) {
-        setContentFunc.ignore(
-            TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
-
-        //  Set the content of this Window to the Sherpa content, but do so in a
-        //  timeout giving the current attaching process time to finish.
-        //  Otherwise, we end up in race conditions.
-        /* eslint-disable no-wrap-func,no-extra-parens */
-        (function() {
-            TP.wrap(elemWin).setContent(homeURL);
-        }).fork(100);
-        /* eslint-enable no-wrap-func,no-extra-parens */
-
-    }).observe(TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
+    //  NOTE that on older versions of Safari this could trigger crashes due to
+    //  bugs in the MutationObserver implementation. It seems to work fine now.
+    (function() {
+        TP.wrap(elemWin).setContent(homeURL, request);
+    }).afterUnwind();
 
     return;
 });

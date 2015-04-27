@@ -243,6 +243,41 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('uriGetRouteName',
+function(aURI) {
+
+    /**
+     * @method uriGetRouteName
+     * @summary Returns the route name, which is essentially the last
+     *     document location path component without any extension.
+     * @param {String} aURI A uri String defining the URI to parse.
+     * @return {String} The route name.
+     */
+
+    var url,
+        route;
+
+    url = TP.uc(aURI);
+    if (TP.notValid(url)) {
+        return '';
+    }
+
+    //  Get the path portion of the URL since that's what we route by.
+    route = url.getPath();
+
+    //  Strip off any leading path segments.
+    if (/\//.test(route)) {
+        route = route.slice(route.lastIndexOf('/') + 1);
+    }
+
+    //  Remove any file extension that might be attached.
+    route = route.split('.')[0];
+
+    return route.asCamelCase();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('uriGetXPointerData',
 function(aURI, aNode, shouldClone) {
 
@@ -858,8 +893,8 @@ function(firstPath, secondPath) {
         first = first.slice(0, first.lastIndexOf('/'));
     }
 
-    //  join what's left
-    if (second.charAt(0) !== '/') {
+    //  join what's left, watching out for existing separators.
+    if (second.charAt(0) !== '/' && second.charAt(0) !== '#') {
         val = first + '/' + second;
     } else {
         val = first + second;

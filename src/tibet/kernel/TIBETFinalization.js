@@ -289,6 +289,10 @@ function() {
             // Fall through and take our chances the UI will display properly.
         }
 
+        //  Get the Application subtype instance configured.
+        TP.sys.configureAppInstance();
+
+        //  Load the UI. This will ultimately trigger UIReady.
         TP.sys.loadUIRoot();
     };
 
@@ -339,6 +343,45 @@ function() {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('configureAppInstance',
+function() {
+
+    /**
+     * @method configureAppInstance
+     * @summary Gets the application type and instance set up after all
+     *     loading and type initialization has been done.
+     */
+
+    var typeName,
+        appType,
+        newAppInst;
+
+    //  Configure the application type setting, defaulting the value as needed.
+    typeName = TP.sys.cfg('project.apptype');
+    if (TP.isEmpty(typeName)) {
+        typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
+    }
+
+    //  If we're supposed to grab a different type that'll happen here.
+    appType = TP.sys.require(typeName);
+
+    if (TP.notValid(appType)) {
+        TP.ifWarn() ?
+            TP.warn('Unable to locate application controller type: ' +
+                    typeName + '. ' +
+                    'Defaulting to TP.core.Application.',
+                    TP.LOG) : 0;
+        appType = TP.sys.require('TP.core.Application');
+    }
+
+    //  Create the new instance and define it as our singleton for any future
+    //  application instance requests.
+    newAppInst = appType.construct('Application', null);
+    TP.core.Application.set('singleton', newAppInst);
 });
 
 //  ------------------------------------------------------------------------
@@ -408,19 +451,22 @@ function() {
     //  TODO: these should be methods, not functions in the payload. fixing this
     //  requires changing everywhere that expects TP.ONLOAD as a key (many DOM
     //  and DHTML primitives (ack TP.ONLOAD for the list).
+
     request.atPut(TP.ONLOAD, function(aDocument) {
 
-        //  Don't do this if the boot is stopping.
+        //  If the boot didn't trigger ONFAIL but is stopping then we're still
+        //  essentially in failure mode. Make sure we do the right thing.
         if (TP.boot.shouldStop()) {
             request.at(TP.ONFAIL)(request);
             return;
         }
 
-        TP.signal(TP.sys, 'TP.sig.AppWillStart');
+        //  NOTE that we don't have logic here. Formerly we'd trigger app start
+        //  signaling here but we have to let that happen via either the
+        //  tibet:root or tibet:sherpa tag processing for proper sequencing.
     });
 
     request.atPut(TP.ONFAIL, function(req) {
-
         var msg,
             txt;
 

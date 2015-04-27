@@ -715,6 +715,26 @@ function(aDocument, aFontSize) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentGetRouteName',
+function(aDocument) {
+
+    /**
+     * @method documentGetRouteName
+     * @summary Returns the route name, which is essentially the last
+     *     document location path component without any extension.
+     * @param {Document} aDocument The document to parse the route for.
+     * @return {String} The route name.
+     */
+
+    var loc;
+
+    loc = TP.documentGetLocation(aDocument);
+
+    return TP.uriGetRouteName(loc);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentGetScriptFileNames',
 function(aDocument) {
 

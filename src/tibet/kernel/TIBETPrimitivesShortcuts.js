@@ -2632,11 +2632,24 @@ function(aURI, nodeContext) {
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      */
 
-    var context;
+    var context,
+        router,
+        url;
+
+    url = TP.str(aURI);
+
+    //  If we get a "route" rather than a full URI update the hash and let the
+    //  system respond to that to route correctly.
+    if (url === '/' || /^#/.test(url)) {
+        router = TP.sys.getRouter();
+        if (TP.isValid(router)) {
+            router.setRoute(TP.str(url).slice(1));
+        }
+        return false;
+    }
 
     if (!TP.isURI(aURI)) {
         TP.raise(TP.go2, 'TP.sig.InvalidURI');
-
         return false;
     }
 
@@ -2646,12 +2659,10 @@ function(aURI, nodeContext) {
 
     if (!TP.isWindow(context)) {
         TP.raise(TP.go2, 'TP.sig.InvalidWindow');
-
         return false;
     }
 
     TP.wrap(context).setLocation(aURI);
-
     return false;
 });
 
