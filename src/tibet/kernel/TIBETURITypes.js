@@ -3778,7 +3778,7 @@ function(aResource, aRequest) {
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
     if (this.isLoaded()) {
-        oldResource = TP.wrap(this.$get('resource'));
+        oldResource = this.$get('resource');
         this.ignore(oldResource, 'Change');
     }
 
@@ -4126,7 +4126,7 @@ function() {
     //  If we are loaded, then we may be observing our resource for *Change
     //  signals. If so, we need to ignore it for those.
     if (this.isLoaded()) {
-        oldResource = TP.wrap(this.$get('resource'));
+        oldResource = this.$get('resource');
         this.ignore(oldResource, 'Change');
     }
 
