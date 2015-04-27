@@ -2722,6 +2722,8 @@ function() {
     this.after(function() {
         jsonValueObsFunction.ignore(jsonURI1, 'ValueChange');
         jsonStructureObsFunction.ignore(jsonURI1, 'StructureChange');
+
+        jsonURI1.unregister();
     });
 
     //  ---
@@ -3027,6 +3029,8 @@ function() {
     this.after(function() {
         xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
         xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
+
+        xmlURI1.unregister();
     });
 
     //  ---
