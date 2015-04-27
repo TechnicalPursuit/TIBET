@@ -5174,6 +5174,15 @@ function(url) {
     //  then we chop off any leading '//', if its there
     path = path.chop('//');
 
+    //  now remove any parameter or fragment portions...
+    if (/\?/.test(path)) {
+        path = path.slice(0, path.indexOf('?'));
+    }
+
+    if (/\#/.test(path)) {
+        path = path.slice(0, path.indexOf('#'));
+    }
+
     return path;
 });
 
