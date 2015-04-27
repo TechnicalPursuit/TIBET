@@ -9242,13 +9242,79 @@ function(aURI) {
         signal.setOrigin(TP.ANY);
 
         if (TP.sys.cfg('log.routes')) {
-
             TP.info('RouteChange: ' + signal.getSignalName() + ' with: ' +
                 TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
         }
 
         signal.fire();
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('setRoute',
+function(aRoute) {
+
+    /**
+     * @method setRoute
+     * @summary Updates the fragment path portion which defines the current
+     *     route in TIBET terms. Any boot parameters on the existing URL are
+     *     preserved by this call.
+     * @param {String} aRoute The route information.
+     */
+
+    var hash,
+        path,
+        params,
+        route,
+        homeURL,
+        homeRoute,
+        fragment;
+
+    hash = top.location.hash.replace('#', '');
+
+    //  The hash can include TIBET boot parameters so pull those off as needed.
+    if (/\?/.test(hash)) {
+        path = hash.slice(0, hash.indexOf('?'));
+        params = hash.slice(hash.indexOf('?') + 1);
+    } else {
+        path = hash;
+        params = '';
+    }
+
+    route = TP.str(aRoute).asCamelCase();
+
+    //  If we're about to set the same route don't bother.
+    if (route === path) {
+        if (TP.sys.cfg('log.routes')) {
+            TP.trace('setRoute ignoring duplicate route setting of: ' + route);
+        }
+        return;
+    }
+
+    //  Capture the route for the home page for comparison.
+    homeURL = TP.ifEmpty(TP.sys.cfg('project.homepage'),
+        TP.sys.cfg('tibet.blankpage'));
+    homeRoute = TP.uriGetRouteName(homeURL);
+
+    //  If we're about to set the route to the home page and we're on the home
+    //  page (either explicitly or implicitly) don't do the work.
+    if (route === homeRoute && path === '') {
+        if (TP.sys.cfg('log.routes')) {
+            TP.trace('setRoute ignoring existing home route of: ' + route);
+        }
+        return;
+    }
+
+    //  If we're going to set the route we need to include any params from the
+    //  original sequence.
+    if (TP.notEmpty(params)) {
+        route = route + '?' + params;
+    }
+
+    top.location.hash = route;
+
+    return;
 });
 
 //  ========================================================================
