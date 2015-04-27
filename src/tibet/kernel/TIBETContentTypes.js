@@ -559,7 +559,13 @@ function(aFlag) {
      * @returns {Boolean} The current status.
      */
 
-    return this.get('data').shouldSignalChange(aFlag);
+    var data;
+
+    if (TP.isValid(data = this.get('data'))) {
+        return data.shouldSignalChange(aFlag);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
