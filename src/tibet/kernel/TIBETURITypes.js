@@ -2988,14 +2988,13 @@ function(aRequest, aResult, aResource) {
             fragment = TP.apc(fragment);
         }
 
-        //  Note here how we wrap and collapse just to make sure to have
-        //  consistent results across 'get' calls... what ultimately gets
-        //  returned from this method is determined by the $getFilteredResult()
-        //  call below.
+        //  Note here how we collapse just to make sure to have consistent
+        //  results across 'get' calls... what ultimately gets returned from
+        //  this method is determined by the $getFilteredResult() call below.
 
         result = TP.canInvoke(result, 'get') ? result.get(fragment) : undefined;
 
-        result = TP.wrap(TP.collapse(result));
+        result = TP.collapse(result);
 
     } else {
         result = aResult;
@@ -3156,9 +3155,9 @@ function(aSignal) {
 
     /**
      * @method handleChange
-     * @summary Handles changes to the receiver's resource.
-     * @description URIs listen for changes to their resource and invoke this
-     *     method when it changes. The supplied signal could have a
+     * @summary Handles changes to the value of the receiver's resource.
+     * @description URIs listen for changes to their resource's value and this
+     *     method is invoked when it changes. The supplied signal could have a
      *     TP.CHANGE_PATHS property in its payload, which is an Array of path
      *     Strings that referenced the resource at some point. If this property
      *     is present, those paths are compared against any fragments of 'sub
@@ -3740,6 +3739,8 @@ function(aResource, aRequest) {
 
     var url,
 
+        request,
+
         oldResource,
         newResource;
 
@@ -3754,6 +3755,8 @@ function(aResource, aRequest) {
     //  ---
     //  URI <-> data corellation
     //  ---
+
+    request = TP.request(aRequest);
 
     //  Make sure to wrap the resource since we're going to be performing
     //  TIBETan operations.
@@ -3775,7 +3778,7 @@ function(aResource, aRequest) {
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
     if (this.isLoaded()) {
-        oldResource = TP.wrap(this.$get('resource'));
+        oldResource = this.$get('resource');
         this.ignore(oldResource, 'Change');
     }
 
@@ -3783,9 +3786,13 @@ function(aResource, aRequest) {
     //  value for future use.
     this.$set('resource', newResource);
 
+    //  If the new resource is valid and the request parameters contain the flag
+    //  for observing our resource, then observe it for all *Change signals.
     if (TP.isValid(newResource)) {
-        //  Observe the new resource object for changes.
-        this.observe(newResource, 'Change');
+        if (TP.isTrue(request.at('observeResource'))) {
+            //  Observe the new resource object for changes.
+            this.observe(newResource, 'Change');
+        }
     }
 
     //  Once we have a value, in any form, we're both dirty and loaded from
@@ -4113,6 +4120,15 @@ function() {
      * @summary Unregisters the receiver from the overall TP.core.URI registry.
      * @returns {TP.core.URI} The receiver.
      */
+
+    var oldResource;
+
+    //  If we are loaded, then we may be observing our resource for *Change
+    //  signals. If so, we need to ignore it for those.
+    if (this.isLoaded()) {
+        oldResource = this.$get('resource');
+        this.ignore(oldResource, 'Change');
+    }
 
     TP.core.URI.removeInstance(this);
 
@@ -4765,10 +4781,12 @@ function(aResource, aRequest) {
     //  for future use.
     this.$set('resource', aResource);
 
-    //  If the request doesn't have an 'observeResource' property (or it isn't
-    //  set to false), then observe the resource.
+    //  If the new resource is valid, then configure ourself.
     if (TP.isValid(aResource)) {
-        if (TP.notFalse(request.at('observeResource'))) {
+
+        //  If the request parameters contain the flag for observing our
+        //  resource, then observe it for all *Change signals.
+        if (TP.isTrue(request.at('observeResource'))) {
             //  Observe the new resource object for changes.
             this.observe(aResource, 'Change');
         }
@@ -4870,10 +4888,11 @@ function(aRequest) {
      * @returns {Object} The resource or TP.sig.Response when async.
      */
 
-    var primaryResource;
+    var primaryResource,
+        result;
 
     if (TP.notValid(primaryResource = this.getPrimaryURI().$get('resource'))) {
-        return null;
+        return this.callNextMethod();
     }
 
     //  When we're primary or we don't have a fragment we can keep it simple and
@@ -4881,10 +4900,17 @@ function(aRequest) {
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        return primaryResource;
+        result = primaryResource;
+    } else {
+        result = this.$getResultFragment(aRequest, primaryResource);
     }
 
-    return this.$getResultFragment(aRequest, primaryResource);
+    //  synchronous? complete any request we might actually have.
+    if (TP.canInvoke(aRequest, 'complete')) {
+        aRequest.complete(result);
+    }
+
+    return result;
 });
 
 //  ========================================================================

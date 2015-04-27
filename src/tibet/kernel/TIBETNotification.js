@@ -4156,7 +4156,10 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         entry,
         id,
         handlerID,
-        shouldObserveResource;
+
+        urnLocation,
+        existingURN,
+        urn;
 
     /*
     if (TP.isEmpty(anOrigin) || (anOrigin == '*')) {
@@ -4269,13 +4272,31 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     entry.handler = handlerID;
 
-    //  If the interest being registered is for a *Change signal of some sort,
-    //  then we tell the registration routine to tell the URN to observe it's
-    //  resource for Change.
-    shouldObserveResource = TP.sig.SignalMap.CHANGE_REGEX.test(signame);
+    //  If the handler ID isn't already a URI, then we create a TIBET URN out of
+    //  it.
+    if (!TP.isURI(handlerID)) {
 
-    //  register the object so it can be found during notification
-    TP.sys.registerObject(aHandler, handlerID, true, shouldObserveResource);
+        //  Prepend the standard TIBET URN prefix onto the handler ID and check
+        //  to see if there's already a URI registered under that location. Note
+        //  that we have to do this check *before* the 'TP.uc()' call (as it
+        //  will create an entry if one doesn't exist).
+        urnLocation = TP.TIBET_URN_PREFIX + handlerID;
+        existingURN = TP.core.URI.instances.containsKey(urnLocation);
+
+        urn = TP.uc(urnLocation);
+
+        //  If there was no existing URI, then that means we're creating this
+        //  one just to hold the handler. Therefore, we mark it with a local
+        //  attribute so that the '$removeInterest' call below will unregister
+        //  it.
+        if (!existingURN) {
+            urn.defineAttribute('createdForHandler');
+            urn.set('createdForHandler', true, false);
+        }
+
+        //  Set the handler as our newly created URI's resource.
+        urn.setResource(aHandler);
+    }
 
     root.listeners.push(entry);
 
@@ -4389,7 +4410,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
         /* eslint-enable no-loop-func */
     } else {
-        handlerID = aHandler.getID();
+        handlerID = TP.gid(aHandler);
+
         entry = root.listeners.detect(
                 function(item) {
                     return item.handler === handlerID;
@@ -4407,11 +4429,18 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             }
         }
 
-        //  If the handle points to a registered Function, unregister it from
-        //  the common URI registry.
-        if (/Function\$\w+/.test(handlerID)) {
-            handler = TP.uc('urn:tibet:' + handlerID);
-            handler.unregister();
+        //  If the handle points to a URI that was created just for this
+        //  handler, then remove it from the common URI registry. See the
+        //  '$registerInterest' call above for more on how & why these URIs get
+        //  created.
+
+        if (!TP.isURI(handlerID)) {
+            handlerID = TP.TIBET_URN_PREFIX + handlerID;
+        }
+
+        handler = TP.uc(handlerID);
+        if (handler.get('createdForHandler') === true) {
+            TP.core.URI.removeInstance(handler);
         }
     }
 

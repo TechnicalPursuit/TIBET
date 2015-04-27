@@ -325,6 +325,8 @@ function(aSignal) {
 
         oldTarget,
 
+        originID,
+
         i,
 
         aspectName,
@@ -374,6 +376,15 @@ function(aSignal) {
     oldTarget = description.at('target');
     description.atPut('target', this);
 
+    //  If this object is registered and does *not* have a generated ID (but one
+    //  that was set by user code), then we want to signal using that ID.
+    //  Otherwise, we can signal from our private ID.
+    if (TP.sys.hasRegistered(this) && !this.hasGeneratedID()) {
+        originID = TP.TIBET_URN_PREFIX + this.getID();
+    } else {
+        originID = this.getID();
+    }
+
     //  If we found any path aliases, then loop over them and dispatch
     //  using their aspect name.
     if (TP.isValid(pathAspectAliases)) {
@@ -396,12 +407,12 @@ function(aSignal) {
             //  'TP.sig.StructureChange' (the top level for structural changes,
             //  mostly used in 'path'ed attributes) as the default signal type
             //  here so that undefined aspect signals will use that type.
-            TP.signal(this, aspectSigName, description,
+            TP.signal(originID, aspectSigName, description,
                         TP.INHERITANCE_FIRING, sigName);
         }
     } else {
         //  Otherwise send the generic signal.
-        TP.signal(this, sigName, description);
+        TP.signal(originID, sigName, description);
     }
 
     //  Restore the old target since we mucked with it.
@@ -494,11 +505,15 @@ function(aDataObject) {
         this.ignore(oldDataObject, 'Change');
     }
 
-    this.$set('data', aDataObject);
+    this.$set('data', aDataObject, false);
 
-    if (TP.isMutable(aDataObject)) {
-        this.observe(aDataObject, 'Change');
+    if (TP.isValid(aDataObject)) {
+        if (TP.isMutable(aDataObject)) {
+            this.observe(aDataObject, 'Change');
+        }
     }
+
+    this.changed('value', TP.UPDATE);
 
     return this;
 });
@@ -559,7 +574,13 @@ function(aFlag) {
      * @returns {Boolean} The current status.
      */
 
-    return this.get('data').shouldSignalChange(aFlag);
+    var data;
+
+    if (TP.isValid(data = this.get('data'))) {
+        return data.shouldSignalChange(aFlag);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -859,35 +880,39 @@ function(anObject) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Inst.defineMethod('init',
-function(data) {
+TP.core.XMLContent.Inst.defineMethod('getData',
+function() {
 
     /**
-     * @method init
-     * @summary Returns a newly constructed Object from inbound JSON content.
-     * @param {Object} data The string to use for data.
-     * @returns {Object} A new instance.
+     * @method getData
+     * @summary Returns the underlying data object.
+     * @returns {Object} The receiver's underlying data object.
      */
 
     var xmlData;
 
-    //  If a String was handed in, it's probably XML - try to convert it.
-    if (TP.isString(data) && TP.notEmpty(data)) {
+    xmlData = this.$get('data');
+
+    //  If a String was handed in, it's probably JSON - try to convert it.
+    if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
 
         //  TP.tpdoc() will raise for us if we supply 'true' as the 3rd
         //  parameter.
-        xmlData = TP.tpdoc(data, null, true);
+        xmlData = TP.tpdoc(xmlData, null, true);
 
         if (TP.notValid(xmlData, null, true)) {
             return;
         }
-    } else if (TP.isNode(data)) {
-        xmlData = TP.wrap(data);
-    } else {
-        xmlData = data;
+
+        this.set('data', xmlData);
+
+    } else if (TP.isNode(xmlData)) {
+
+        xmlData = TP.wrap(xmlData);
+        this.set('data', xmlData);
     }
 
-    return this.callNextMethod(xmlData);
+    return xmlData;
 });
 
 //  ------------------------------------------------------------------------
@@ -5355,8 +5380,13 @@ function(targetObj, varargs) {
     //  down
     nodes.perform(
             function(aNode) {
-                addresses = addresses.concat(
-                            TP.nodeGetAncestorPositions(aNode, true));
+                var address;
+
+                address = TP.nodeGetAncestorPositions(aNode, true);
+
+                if (address !== TP.NOT_FOUND) {
+                    addresses = addresses.concat(address);
+                }
             });
 
     //  Now unique the values in addresses, in case there were duplicates

@@ -1871,37 +1871,27 @@ function(aTarget, aSignal) {
         //  signal names.
         signalMatcher = TP.extern.sinon.match(
                 function(value) {
-                    var sigNames;
+                    var sigType,
+                        sig,
+                        sigNames;
 
                     if (TP.isString(value)) {
                         if (value === signalName) {
                             return true;
                         }
 
-                        if (/^\w+ReadonlyChange$/.test(value)) {
-                            sigNames = TP.ac('TP.sig.ReadonlyChange',
-                                                'TP.sig.FacetChange',
-                                                'TP.sig.Change');
-                        } else if (/^\w+RelevantChange$/.test(value)) {
-                            sigNames = TP.ac('TP.sig.RelevantChange',
-                                                'TP.sig.FacetChange',
-                                                'TP.sig.Change');
-                        } else if (/^\w+RequiredChange$/.test(value)) {
-                            sigNames = TP.ac('TP.sig.RequiredChange',
-                                                'TP.sig.FacetChange',
-                                                'TP.sig.Change');
-                        } else if (/^\w+ValidChange$/.test(value)) {
-                            sigNames = TP.ac('TP.sig.ValidChange',
-                                                'TP.sig.FacetChange',
-                                                'TP.sig.Change');
-                        } else if (/^\w+Change$/.test(value)) {
-                            sigNames = TP.ac('TP.sig.StructureChange',
-                                                'TP.sig.ValueChange',
-                                                'TP.sig.FacetChange',
-                                                'TP.sig.Change');
+                        if (!TP.isType(
+                            sigType = TP.sys.getTypeByName(signalName))) {
+                            return false;
                         }
-                    } else if (TP.isKindOf(value, TP.sig.Signal)) {
-                        sigNames = value.getSignalNames();
+
+                        sig = sigType.construct();
+                    } else {
+                        sig = value;
+                    }
+
+                    if (TP.isKindOf(sig, TP.sig.Signal)) {
+                        sigNames = sig.getSignalNames();
                     }
 
                     if (TP.notEmpty(sigNames) &&

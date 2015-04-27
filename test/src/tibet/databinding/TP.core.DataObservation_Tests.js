@@ -1220,7 +1220,7 @@ function() {
         //  'urn:tibet' URN (which will allow the 'observe()' call to turn change
         //  handling on for it).
         modelObj.setID('CurrentEmployee');
-        TP.sys.registerObject(modelObj);
+        TP.sys.registerObject(modelObj, null, null, true);
 
         observerObj = TP.lang.Object.construct();
         observerObj.defineAttribute('salary');
@@ -1257,6 +1257,8 @@ function() {
         test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
+
+        TP.sys.unregisterObject(modelObj);
     });
 
     this.it('change notification - URI reference, simple aspect', function(test, options) {
@@ -1274,7 +1276,7 @@ function() {
         //  This automatically sets the ID of modelObj to 'urn:tibet:testdata'
         //  because it didn't have an existing ID and was assigned as the
         //  resource to the URI defined above.
-        modelURI.setResource(modelObj);
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
         observerObj = TP.lang.Object.construct();
         observerObj.defineAttribute('salary');
@@ -1311,6 +1313,8 @@ function() {
         test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
+
+        modelURI.unregister();
     });
 
     this.it('using defineBinding() - concrete reference, same simple aspect', function(test, options) {
@@ -1358,7 +1362,7 @@ function() {
         //  'urn:tibet' URN (which will allow the 'defineBinding()' call to turn
         //  change handling on for it).
         modelObj.setID('CurrentEmployee');
-        TP.sys.registerObject(modelObj);
+        TP.sys.registerObject(modelObj, null, null, true);
 
         observerObj = TP.lang.Object.construct();
         observerObj.defineAttribute('salary');
@@ -1383,6 +1387,8 @@ function() {
         test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
+
+        TP.sys.unregisterObject(modelObj);
     });
 
     this.it('using defineBinding() - URI reference, same simple aspect', function(test, options) {
@@ -1398,7 +1404,7 @@ function() {
         //  This automatically sets the ID of modelObj to 'urn:tibet:testdata'
         //  because it didn't have an existing ID and was assigned as the
         //  resource to the URI defined above.
-        modelURI.setResource(modelObj);
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
         observerObj = TP.lang.Object.construct();
         observerObj.defineAttribute('salary');
@@ -1423,6 +1429,8 @@ function() {
         test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
+
+        modelURI.unregister();
     });
 
     this.it('using defineBinding() - concrete reference, different simple aspect', function(test, options) {
@@ -1470,7 +1478,7 @@ function() {
         //  'urn:tibet' URN (which will allow the 'defineBinding()' call to turn
         //  change handling on for it).
         modelObj.setID('CurrentEmployee');
-        TP.sys.registerObject(modelObj);
+        TP.sys.registerObject(modelObj, null, null, true);
 
         observerObj = TP.lang.Object.construct();
         observerObj.defineAttribute('salary');
@@ -1495,6 +1503,8 @@ function() {
         test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
+
+        TP.sys.unregisterObject(modelObj);
     });
 
     this.it('using defineBinding() - URI reference, different simple aspect', function(test, options) {
@@ -1510,7 +1520,7 @@ function() {
         //  This automatically sets the ID of modelObj to 'urn:tibet:testdata'
         //  because it didn't have an existing ID and was assigned as the
         //  resource to the URI defined above.
-        modelURI.setResource(modelObj);
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
         observerObj = TP.lang.Object.construct();
         observerObj.defineAttribute('salary');
@@ -1535,6 +1545,8 @@ function() {
         test.assert.isEqualTo(
                     42,
                     observerObj.get('salary'));
+
+        modelURI.unregister();
     });
 });
 
@@ -1625,7 +1637,7 @@ function() {
                 //  accompanying 'urn:tibet' URN (which will allow the
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -1658,6 +1670,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -1679,7 +1694,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -1711,6 +1726,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 
@@ -1795,7 +1812,7 @@ function() {
                 //  accompanying 'urn:tibet' URN (which will allow the
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -1843,6 +1860,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -1865,7 +1885,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -1913,6 +1933,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 
@@ -1982,7 +2004,7 @@ function() {
                 //  accompanying 'urn:tibet' URN (which will allow the
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2018,6 +2040,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -2038,7 +2063,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2074,6 +2099,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 
@@ -2165,7 +2192,7 @@ function() {
                 //  accompanying 'urn:tibet' URN (which will allow the
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2222,6 +2249,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -2243,7 +2273,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2300,6 +2330,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 
@@ -2371,7 +2403,7 @@ function() {
                 //  accompanying 'urn:tibet' URN (which will allow the
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2407,6 +2439,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -2428,7 +2463,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2464,6 +2499,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 
@@ -2555,7 +2592,7 @@ function() {
                 //  accompanying 'urn:tibet' URN (which will allow the
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2612,6 +2649,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -2633,7 +2673,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2690,6 +2730,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 
@@ -2760,7 +2802,7 @@ function() {
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
 
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2796,6 +2838,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -2816,7 +2861,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2852,6 +2897,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 
@@ -2943,7 +2990,7 @@ function() {
                 //  accompanying 'urn:tibet' URN (which will allow the
                 //  'defineBinding()' call to turn change handling on for it).
                 modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj);
+                TP.sys.registerObject(modelObj, null, null, true);
 
                 salaryField = TP.byOID('salaryField');
 
@@ -3000,6 +3047,9 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                //  Unregister the model object.
+                TP.sys.unregisterObject(modelObj);
             });
     });
 
@@ -3021,7 +3071,7 @@ function() {
                 //  This automatically sets the ID of modelObj to
                 //  'urn:tibet:testdata' because it didn't have an existing ID
                 //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj);
+                modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
                 salaryField = TP.byOID('salaryField');
 
@@ -3078,6 +3128,8 @@ function() {
 
                 //  Unregister the URI to avoid a memory leak
                 loadURI.unregister();
+
+                modelURI.unregister();
             });
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
