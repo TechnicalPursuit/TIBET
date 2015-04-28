@@ -512,7 +512,10 @@ function() {
                 var usingDebugger,
                     oldLogLevel,
 
-                    tpDoc;
+                    tpDoc,
+
+                    server,
+                    loc;
 
                 //  For now, we turn off triggering the debugger because we know
                 //  that this test case has a XInclude that points to a file
@@ -526,6 +529,35 @@ function() {
                 TP.setLogLevel(TP.SEVERE);
 
                 tpDoc = TP.sys.getUICanvas().getDocument();
+
+                //  NB: These calls use a synchronous XHR, so we don't need a
+                //  'server.respond()' call below.
+
+                server = TP.test.fakeServer.create();
+
+                loc = TP.uc('~lib_tst/src/tibet/tagprocessor/XIncludePart10.xml').getNestedURI().get('path');
+                if (loc.charAt(0) !== '/') {
+                    loc = '/' + loc;
+                }
+
+                server.respondWith(
+                    TP.HTTP_GET,
+                    loc,
+                    [
+                        404,
+                        {},
+                        ''
+                    ]);
+
+                server.xhr.useFilters = true;
+                server.xhr.addFilter(
+                        function(method, url) {
+                            var testMatcher;
+
+                            testMatcher = new RegExp(TP.regExpEscape(loc));
+
+                            return !testMatcher.test(url);
+                        });
 
                 test.thenPromise(
                         function(resolver, rejector) {
@@ -547,6 +579,8 @@ function() {
                             test.assert.isElement(TP.byId('part1Success'));
 
                             test.assert.isElement(TP.byId('part10Fallback'));
+
+                            server.restore();
                         });
             },
             function(error) {
