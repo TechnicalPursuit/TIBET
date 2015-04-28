@@ -1791,7 +1791,7 @@ function() {
     this.thenPromise(
         function(resolver, rejector) {
             return TP.extern.Promise.delay(
-                        TP.sys.cfg('test.anti_starve_timeout')).then(
+                        TP.sys.cfg('tibet.test.anti_starve_timeout')).then(
                                                         resolver, rejector);
         });
 

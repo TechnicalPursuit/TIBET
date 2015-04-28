@@ -1358,7 +1358,8 @@ function() {
                             workCallback =
                                 function() {
                                     workFunc.fork(
-                                        TP.sys.cfg('test.anti_starve_timeout'));
+                                        TP.sys.cfg(
+                                            'tibet.test.anti_starve_timeout'));
                                 };
 
                             //  Execute the individual sequence step entry.
