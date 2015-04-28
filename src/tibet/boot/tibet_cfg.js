@@ -430,10 +430,10 @@
     TP.sys.setcfg('tibet.simple_cors_only', false);
 
     //  should we 'auto resolve' traits?
-    TP.sys.setcfg('tibet.traits.resolve', true);
+    TP.sys.setcfg('tibet.traits_resolve', true);
 
     //  should we warn when traits are 'auto resolved'?
-    TP.sys.setcfg('tibet.traits.warn', false);
+    TP.sys.setcfg('tibet.traits_warn', false);
 
     //  ---
     //  importer
