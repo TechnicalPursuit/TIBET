@@ -1539,8 +1539,9 @@
 
     //  should uri computations rely on fallbacks. the flags here are based on
     //  each resource type for finer control.
-    TP.sys.setcfg('uri.style.fallbacks', true);
-    TP.sys.setcfg('uri.template.fallbacks', false);
+    TP.sys.setcfg('uri.style.fallback', true);
+    TP.sys.setcfg('uri.template.fallback', true);
+    TP.sys.setcfg('uri.keybindings.fallback', false);
 
     //  the default type used to handle URI load/save operations.
     TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');

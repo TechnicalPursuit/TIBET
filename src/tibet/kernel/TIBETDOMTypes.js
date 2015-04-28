@@ -9300,12 +9300,14 @@ TP.core.ElementNode.Type.defineAttribute('template');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Type.defineMethod('computeResourceExtension',
 function(resource, mimeType) {
 
     /**
+     * @method computeResourceExtension
+     * @summary Returns the default extension to use for the resource and mime
+     *     type provided. Information in TP.ietf.Mime is used when a list of
+     *     extensions is needed.
      * @param {String} resource The resource name. Typically template, style,
      *     theme, etc. but it could be essentially anything except the word
      *     'resource' (since that would trigger a recursion).
@@ -9409,6 +9411,8 @@ function(resource, mimeType, fallback) {
         prefix,
         key,
         value,
+        reskey,
+        extkey,
         type,
         uri;
 
@@ -9429,14 +9433,10 @@ function(resource, mimeType, fallback) {
     //  If we've done computation before don't repeat it. Also, this serves
     //  as a way for individual types to provide a specific override via cfg.
 
-    key = 'path.' + name + '.' + res + '.rollup';
-    value = TP.sys.cfg(key);
-    if (TP.notEmpty(value)) {
-        return value;
-    }
+    reskey = 'path.' + name + '.' + res + '.cached';
+    extkey = 'path.' + name + '.' + ext + '.cached';
 
-    key = 'path.' + name + '.' + ext + '.rollup';
-    value = TP.sys.cfg(key);
+    value = TP.ifEmpty(TP.sys.cfg(reskey), TP.sys.cfg(extkey));
     if (TP.notEmpty(value)) {
         return value;
     }
@@ -9452,16 +9452,14 @@ function(resource, mimeType, fallback) {
     key = 'path.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        key = 'path.' + name + '.' + res + '.rollup';
-        TP.sys.setcfg(key, value);
+        TP.sys.setcfg(reskey, value);
         return value;
     }
 
     key = 'path.' + ext + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        key = 'path.' + name + '.' + ext + '.rollup';
-        TP.sys.setcfg(key, value);
+        TP.sys.setcfg(extkey, value);
         return value;
     }
 
@@ -9474,16 +9472,32 @@ function(resource, mimeType, fallback) {
     key = 'path.' + prefix + '.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        key = 'path.' + name + '.' + res + '.rollup';
-        TP.sys.setcfg(key, value);
+        TP.sys.setcfg(reskey, value);
         return value;
     }
 
     key = 'path.' + prefix + '.' + ext + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        key = 'path.' + name + '.' + ext + '.rollup';
-        TP.sys.setcfg(key, value);
+        TP.sys.setcfg(extkey, value);
+        return value;
+    }
+
+    //  ---
+    //  resource-level flag check
+    //  ---
+
+    key = 'path.' + name + '.' + res;
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        TP.sys.setcfg(reskey, value);
+        return value;
+    }
+
+    key = 'path.' + name + '.' + ext;
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        TP.sys.setcfg(extkey, value);
         return value;
     }
 
@@ -9549,11 +9563,14 @@ function(resource, mimeType, fallback) {
 
     //  If forced true, or the flag is true, we'll compute a fallback value.
     if (TP.isTrue(fallback) ||
-        TP.isTrue(TP.sys.cfg('uri.' + res + '.fallbacks'))) {
+        TP.isTrue(TP.sys.cfg('uri.' + res + '.fallback'))) {
 
         //  Default to receiver's load path and use extension computed earlier.
-        return TP.objectGetSourceCollectionPath(this) +
+        value = TP.objectGetSourceCollectionPath(this) +
             '/' + this.getName() + '.' + ext;
+
+        TP.sys.setcfg(reskey, value);
+        return value;
     }
 
     return;
@@ -10440,8 +10457,8 @@ function(resource, mimeType, fallback) {
      * @method getResourceURI
      * @summary Returns a resource URI specific to the receiver for the named
      *     resource and mimeType. This method is used to look up template,
-     *     style, theme, and other resource URIs by leveraging methods on the
-     *     receiver specific to each resource/mime requirement.
+     *     style, theme, and other resource URIs by leveraging cfg flags and
+     *     methods on the receiver specific to each resource/mime requirement.
      * @param {String} resource The resource name. Typically 'template',
      *     'style', 'theme', etc. but it could be essentially anything except
      *     the word 'resource' (since that would trigger a recursion).
