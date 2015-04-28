@@ -4798,6 +4798,11 @@ function() {
         server = TP.test.fakeServer.create();
     });
 
+    //  NOTE: These tests are coded so that a) the scheme (required by TSH to
+    //  discern that it is a URI and not a RegExp) is hardcoded to be 'http://'
+    //  (because that's what we're testing) and b) it has a nonsense domain that
+    //  Sinon will *not* try to relativize against the domain we loaded from.
+
     //  ---
 
     this.it('Shell HTTP URL: Retrieve asynchronously', function(test, options) {
@@ -5170,7 +5175,7 @@ function() {
         server.restore();
         TP.uriNeedsPrivileges = oldNeedsPrivileges;
     });
-});
+}).skip(!TP.sys.isHTTPBased());
 
 //  ------------------------------------------------------------------------
 
