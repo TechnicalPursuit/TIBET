@@ -597,7 +597,7 @@ function(target, options) {
             ignored + ' todo, ' +
             errored + ' errors.');
 
-        TP.sys.setcfg('test.running', false);
+        TP.sys.setcfg('tibet.test.running', false);
     };
 
     TP.sys.logTest('# ' + suitelist.length + ' suite(s) found.', TP.DEBUG);
@@ -643,7 +643,7 @@ function(target, options) {
                     });
             }, TP.extern.Promise.resolve());
 
-    TP.sys.setcfg('test.running', true);
+    TP.sys.setcfg('tibet.test.running', true);
 
     return promise.then(
             function(obj) {

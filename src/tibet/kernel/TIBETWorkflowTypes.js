@@ -6234,7 +6234,8 @@ function(aSignal) {
     }
 
     //  If you do this when running phantomjs tests etc. bad things happen.
-    if (TP.sys.cfg('boot.context') !== 'phantomjs') {
+    if (TP.sys.cfg('boot.context') !== 'phantomjs' &&
+        TP.sys.cfg('tibet.test.running') !== true) {
         win.setLocation(url);
     }
 

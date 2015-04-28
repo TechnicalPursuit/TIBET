@@ -1356,6 +1356,9 @@
     //  test harness
     //  ---
 
+    //  whether or not the test harness is currently executing
+    TP.sys.setcfg('tibet.test.running', false);
+
     //  the test case timeout
     TP.sys.setcfg('tibet.test.case.mslimit', 5000);
 
