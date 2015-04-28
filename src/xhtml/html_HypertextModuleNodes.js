@@ -41,7 +41,6 @@ function(aRequest) {
 
     var elem,
         target,
-        click,
         href;
 
     //  Make sure that we have a node to work from.
@@ -64,7 +63,7 @@ function(aRequest) {
 
     //  If there's already a click handler the developer "wins", even if that
     //  means they don't get the benefit of TIBET here.
-    if (TP.notEmpty(click = TP.elementGetAttribute(elem, 'onclick', true))) {
+    if (TP.notEmpty(TP.elementGetAttribute(elem, 'onclick', true))) {
         return;
     }
 

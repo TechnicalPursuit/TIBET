@@ -6149,6 +6149,7 @@ function(aSignal) {
     //  Use the document location to update the system's idea of the current
     //  route. This keeps us up to date with changes to the main UICANVAS etc
     //  which might occur via link traversal or other means.
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         var route;
 
@@ -6162,6 +6163,7 @@ function(aSignal) {
 
         TP.sys.getRouter().setRoute(route);
     }).afterUnwind();
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return;
 });

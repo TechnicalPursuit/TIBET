@@ -9294,8 +9294,7 @@ function(aRoute) {
         params,
         route,
         homeURL,
-        homeRoute,
-        fragment;
+        homeRoute;
 
     hash = top.location.hash.replace('#', '');
 

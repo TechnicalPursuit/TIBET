@@ -224,6 +224,9 @@ function(aSignal) {
                 case 29:
                     sigSuffix = 'Northwest';
                     break;
+                default:
+                    //  TODO: error?
+                    break;
             }
         }
 

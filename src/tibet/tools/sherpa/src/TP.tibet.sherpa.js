@@ -62,9 +62,11 @@ function(aRequest) {
 
     //  NOTE that on older versions of Safari this could trigger crashes due to
     //  bugs in the MutationObserver implementation. It seems to work fine now.
+    /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         TP.wrap(elemWin).setContent(sherpaURI, request);
     }).afterUnwind();
+    /* eslint-enable no-wrap-func,no-extra-parens */
 
     return this.callNextMethod();
 });
