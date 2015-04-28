@@ -70,7 +70,7 @@ TP.test.Root.Inst.defineAttribute('msend');
  * @type {Number}
  */
 TP.test.Root.Inst.defineAttribute('mslimit',
-                                    TP.sys.cfg('tibet.test.suite.mslimit'));
+                                    TP.sys.cfg('test.suite.mslimit'));
 
 /**
  * The millisecond timestamp at start of the task.
@@ -597,7 +597,7 @@ function(target, options) {
             ignored + ' todo, ' +
             errored + ' errors.');
 
-        TP.sys.setcfg('tibet.test.running', false);
+        TP.sys.setcfg('test.running', false);
     };
 
     TP.sys.logTest('# ' + suitelist.length + ' suite(s) found.', TP.DEBUG);
@@ -643,7 +643,7 @@ function(target, options) {
                     });
             }, TP.extern.Promise.resolve());
 
-    TP.sys.setcfg('tibet.test.running', true);
+    TP.sys.setcfg('test.running', true);
 
     return promise.then(
             function(obj) {
@@ -1791,7 +1791,7 @@ function() {
     this.thenPromise(
         function(resolver, rejector) {
             return TP.extern.Promise.delay(
-                        TP.sys.cfg('tibet.test.anti_starve_timeout')).then(
+                        TP.sys.cfg('test.anti_starve_timeout')).then(
                                                         resolver, rejector);
         });
 
@@ -1910,7 +1910,7 @@ TP.test.Case.Inst.defineAttribute('caseName');
  * @type {Number}
  */
 TP.test.Case.Inst.defineAttribute('mslimit',
-                                    TP.sys.cfg('tibet.test.case.mslimit'));
+                                    TP.sys.cfg('test.case.mslimit'));
 
 /**
  * The object that holds all of the test methods as a 'refuter'.
@@ -2867,7 +2867,7 @@ function() {
     this.thenPromise(
         function(resolver, rejector) {
             return TP.extern.Promise.delay(
-                        TP.sys.cfg('tibet.test.anti_starve_timeout')).then(
+                        TP.sys.cfg('test.anti_starve_timeout')).then(
                                                         resolver, rejector);
         });
 

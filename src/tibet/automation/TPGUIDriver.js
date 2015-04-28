@@ -1359,7 +1359,7 @@ function() {
                                 function() {
                                     workFunc.fork(
                                         TP.sys.cfg(
-                                            'tibet.test.anti_starve_timeout'));
+                                            'test.anti_starve_timeout'));
                                 };
 
                             //  Execute the individual sequence step entry.
