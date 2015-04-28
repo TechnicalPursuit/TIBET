@@ -4586,13 +4586,14 @@ function() {
 //  OBJECT IDENTITY - PART II
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('$getOIDPrefix',
-function() {
+TP.definePrimitive('$getOIDPrefix',
+function(anObject) {
 
     /**
      * @method $getOIDPrefix
      * @summary Returns an 'OID prefix' for the receiver - used as the prefix
      *     when the system is generating an OID for the receiver.
+     * @param {Object} anObject The object to retrieve an OID prefix for.
      * @returns {String} The OID prefix for the receiver.
      */
 
@@ -4601,9 +4602,9 @@ function() {
 
     //  prefix OIDs with type names so we get a sense of what an object is along
     //  with its random ID
-    type = TP.isType(this) ?
-                this :
-                TP.type(this);
+    type = TP.isType(anObject) ?
+                anObject :
+                TP.type(anObject);
 
     if (TP.isNativeType(type)) {
         if (TP.isNonFunctionConstructor(type)) {
@@ -4671,7 +4672,7 @@ function(aPrefix) {
     }
 
     if (!aPrefix) {
-        prefix = this.$getOIDPrefix();
+        prefix = TP.$getOIDPrefix(this);
     } else {
         prefix = aPrefix;
     }
@@ -4770,18 +4771,12 @@ function() {
 
     var privateIDMatcher;
 
-    //  If we can invoke '$getOIDPrefix' on this object, then we do so.
-    if (TP.canInvoke(this, '$getOIDPrefix')) {
+    //  Build a RegExp that will match the OID prefix for this object,
+    //  followed by a literal '$' and then 1-n word characters. Matching
+    //  this will indicate that the object has a privately generated ID.
+    privateIDMatcher = new RegExp(TP.$getOIDPrefix(this) + '\\$\\w+');
 
-        //  Build a RegExp that will match the OID prefix for this object,
-        //  followed by a literal '$' and then 1-n word characters. Matching
-        //  this will indicate that the object has a privately generated ID.
-        privateIDMatcher = new RegExp(this.$getOIDPrefix() + '\\$\\w+');
-
-        return privateIDMatcher.test(this.getID());
-    }
-
-    return false;
+    return privateIDMatcher.test(this.getID());
 });
 
 //  ------------------------------------------------------------------------
