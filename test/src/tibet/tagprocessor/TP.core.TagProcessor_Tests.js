@@ -422,25 +422,25 @@ function() {
                 //  needs to be processed (see the 'TP.html.img' tag type and it
                 //  'uriAttrs' attribute).
 
-                test.assert.isElement(TP.byId('image1'));
+                test.assert.isElement(TP.byId('area1'));
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image1'),
-                    'src',
+                    TP.byId('area1'),
+                    'href',
                     'file:///usr/local/src/TIBET/base/lib/tibet/img/tibet_logo_369.gif');
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image2'),
-                    'src',
+                    TP.byId('area2'),
+                    'href',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image3'),
-                    'src',
+                    TP.byId('area3'),
+                    'href',
                     TP.uc('~tibet/base/lib/tibet/img/../tibet_logo_369.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image4'),
-                    'src',
+                    TP.byId('area4'),
+                    'href',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
 
                 //  Unload the current page by setting it to the blank
