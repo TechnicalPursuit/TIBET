@@ -4591,10 +4591,10 @@ function(anObject) {
 
     /**
      * @method $getOIDPrefix
-     * @summary Returns an 'OID prefix' for the receiver - used as the prefix
-     *     when the system is generating an OID for the receiver.
+     * @summary Returns an 'OID prefix' for the supplied object. This is used as
+     *     the prefix when the system is generating an OID.
      * @param {Object} anObject The object to retrieve an OID prefix for.
-     * @returns {String} The OID prefix for the receiver.
+     * @returns {String} The OID prefix for the supplied object.
      */
 
     var type,
