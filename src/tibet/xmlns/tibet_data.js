@@ -124,7 +124,15 @@ function(aRequest) {
                 var newResource;
 
                 loadedHandler.ignore(thisTPDoc, 'TP.sig.DOMContentLoaded');
-                newResource = resultType.construct(resourceStr);
+                newResource = resultType.construct();
+
+                //  If the new resource is a content object of some sort (highly
+                //  likely) then it should respond to 'setData' so set its data
+                //  to the resource String (the content object type will convert
+                //  it to the proper type).
+                if (TP.canInvoke(newResource, 'setData')) {
+                    newResource.setData(resourceStr);
+                }
 
                 //  If the named URI has existing data, then we signal
                 //  'TP.sig.UIDataDestruct'.
@@ -135,7 +143,8 @@ function(aRequest) {
                 //  Set the resource to the new resource (causing any observers
                 //  of the URI to get notified of a change) and signal
                 //  'TP.sig.UIDataConstruct'.
-                namedURI.setResource(newResource);
+                namedURI.setResource(
+                            newResource, TP.hc('observeResource', true));
                 tpElem.signal('TP.sig.UIDataConstruct');
 
                 //  Signal 'TP.sig.DOMReady' for consistency with other elements
@@ -169,7 +178,9 @@ function(aRequest) {
     var elem,
 
         namedHref,
-        namedURI;
+        namedURI,
+
+        resource;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -188,8 +199,15 @@ function(aRequest) {
             }
         }
 
+        //  If the new resource is a content object of some sort (highly likely)
+        //  then it should respond to 'setData' so set its data to null (which
+        //  will cause it to ignore its data for *Change signals).
+        resource = namedURI.getResource();
+        if (TP.canInvoke(resource, 'setData')) {
+            resource.setData(null);
+        }
+
         namedURI.unregister();
-        namedURI.setResource(null);
 
         TP.wrap(elem).signal('TP.sig.UIDataDestruct');
     }
