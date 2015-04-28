@@ -430,10 +430,10 @@
     TP.sys.setcfg('tibet.simple_cors_only', false);
 
     //  should we 'auto resolve' traits?
-    TP.sys.setcfg('tibet.traits.resolve', true);
+    TP.sys.setcfg('tibet.traits_resolve', true);
 
     //  should we warn when traits are 'auto resolved'?
-    TP.sys.setcfg('tibet.traits.warn', false);
+    TP.sys.setcfg('tibet.traits_warn', false);
 
     //  ---
     //  importer
@@ -959,11 +959,6 @@
     //  needed to help processing jsonp calls.
     TP.sys.setcfg('jsonp.delay', 1000);
 
-    //  how long should we wait to give the GUI event thread a chance to be
-    //  serviced? This is used in the testing and automation frameworks to
-    //  prevent the Promise machinery from starving the event loop.
-    TP.sys.setcfg('test.anti_starve_timeout', 10);
-
     //  ---
     //  logging/notification
     //  ---
@@ -1349,18 +1344,31 @@
 
     //  maximum number of milliseconds in an individual unit test.
     TP.sys.setcfg('tsh.test_step_max', 15000);
+
     //  maximum number of milliseconds in a comprehensive test run.
     TP.sys.setcfg('tsh.test_series_max', 600000);
-
-    //  the test case timeout
-    TP.sys.setcfg('tibet.test.case.mslimit', 5000);
-
-    //  the test suite timeout
-    TP.sys.setcfg('tibet.test.suite.mslimit', 30000);
 
     //  when tracing is on each individual command's status and result is pushed
     //  into a $RESULTS slot that can be inspected
     TP.sys.setcfg('tsh.trace_commands', false);
+
+    //  ---
+    //  test harness
+    //  ---
+
+    //  whether or not the test harness is currently executing
+    TP.sys.setcfg('test.running', false);
+
+    //  the test case timeout
+    TP.sys.setcfg('test.case.mslimit', 5000);
+
+    //  the test suite timeout
+    TP.sys.setcfg('test.suite.mslimit', 30000);
+
+    //  how long should we wait to give the GUI event thread a chance to be
+    //  serviced? This is used in the testing and automation frameworks to
+    //  prevent the Promise machinery from starving the event loop.
+    TP.sys.setcfg('test.anti_starve_timeout', 10);
 
     //  ---
     //  signaling

@@ -4598,7 +4598,7 @@ function(targetType, conflictedTraits, track) {
         c3TypeList,
         errStr;
 
-    if (TP.isTrue(TP.sys.cfg('tibet.traits.resolve'))) {
+    if (TP.isTrue(TP.sys.cfg('tibet.traits_resolve'))) {
 
         //  There still may be conflicts that we can't handle via
         //  auto-resolution, so we keep a hash for ones that we couldn't
@@ -4667,7 +4667,7 @@ function(targetType, conflictedTraits, track) {
 
                         //  If we're warn()ing when we auto resolve, then do so
                         //  here.
-                        if (TP.isTrue(TP.sys.cfg('tibet.traits.warn'))) {
+                        if (TP.isTrue(TP.sys.cfg('tibet.traits_warn'))) {
 
                             TP.ifWarn() ?
                                 TP.warn('AUTO RESOLVING CONFLICTED' +

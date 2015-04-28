@@ -422,25 +422,25 @@ function() {
                 //  needs to be processed (see the 'TP.html.img' tag type and it
                 //  'uriAttrs' attribute).
 
-                test.assert.isElement(TP.byId('image1'));
+                test.assert.isElement(TP.byId('area1'));
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image1'),
-                    'src',
+                    TP.byId('area1'),
+                    'href',
                     'file:///usr/local/src/TIBET/base/lib/tibet/img/tibet_logo_369.gif');
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image2'),
-                    'src',
+                    TP.byId('area2'),
+                    'href',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image3'),
-                    'src',
+                    TP.byId('area3'),
+                    'href',
                     TP.uc('~tibet/base/lib/tibet/img/../tibet_logo_369.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('image4'),
-                    'src',
+                    TP.byId('area4'),
+                    'href',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
 
                 //  Unload the current page by setting it to the blank
@@ -512,7 +512,10 @@ function() {
                 var usingDebugger,
                     oldLogLevel,
 
-                    tpDoc;
+                    tpDoc,
+
+                    server,
+                    loc;
 
                 //  For now, we turn off triggering the debugger because we know
                 //  that this test case has a XInclude that points to a file
@@ -526,6 +529,35 @@ function() {
                 TP.setLogLevel(TP.SEVERE);
 
                 tpDoc = TP.sys.getUICanvas().getDocument();
+
+                //  NB: These calls use a synchronous XHR, so we don't need a
+                //  'server.respond()' call below.
+
+                server = TP.test.fakeServer.create();
+
+                loc = TP.uc('~lib_tst/src/tibet/tagprocessor/XIncludePart10.xml').getNestedURI().get('path');
+                if (loc.charAt(0) !== '/') {
+                    loc = '/' + loc;
+                }
+
+                server.respondWith(
+                    TP.HTTP_GET,
+                    loc,
+                    [
+                        404,
+                        {},
+                        ''
+                    ]);
+
+                server.xhr.useFilters = true;
+                server.xhr.addFilter(
+                        function(method, url) {
+                            var testMatcher;
+
+                            testMatcher = new RegExp(TP.regExpEscape(loc));
+
+                            return !testMatcher.test(url);
+                        });
 
                 test.thenPromise(
                         function(resolver, rejector) {
@@ -547,6 +579,8 @@ function() {
                             test.assert.isElement(TP.byId('part1Success'));
 
                             test.assert.isElement(TP.byId('part10Fallback'));
+
+                            server.restore();
                         });
             },
             function(error) {
