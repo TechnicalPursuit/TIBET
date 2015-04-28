@@ -1396,43 +1396,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.html.inputCheckable.Inst.defineMethod('destroyBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+TP.html.inputCheckable.Inst.defineMethod('destroyBindingsUsing',
+function(attrName, attrValue, scopeVals, direction) {
 
     /**
-     * @method destroyBinding
-     * @summary Removes a binding from the instance receiver.
-     * @param {String} targetAttributeName The target attribute name.
-     * @param {Object} resourceOrURI The resource specification.
-     * @param {String} sourceAttributeName The source attribute name. If not
-     *     specified, this will default to targetAttributeName.
-     * @param {String} sourceFacetName The source facet name. If not specified,
-     *     this will default to 'value'.
-     * @returns {Object} The receiver.
+     * @method destroyBindingsUsing
+     * @summary Destroys any binding between the data source as described in the
+     *     supplied attribute value and the receiver.
+     * @param {String} attrName The attribute name to use to remove the binding
+     *     from in the receiver.
+     * @param {String} attrValue The attribute value to analyse to produce the
+     *     proper binding expression.
+     * @param {Array} scopeVals The list of scope values to use to qualify the
+     *     binding expression.
+     * @param {String} direction The binding 'direction' (i.e. which way the
+     *     original binding connection was established from the data source to
+     *     the receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
+     * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var groupTPElems,
-        resource;
+    var groupTPElems;
 
-    if (targetAttributeName === 'checked') {
-
-        if (TP.isString(resourceOrURI)) {
-            resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
-        } else {
-            resource = resourceOrURI;
-        }
+    if (attrName === 'checked') {
 
         //  Get all of elements that are part of our 'group', including ourself.
         groupTPElems = TP.wrap(this.getElementArray());
 
         groupTPElems.perform(
             function(aTPElem) {
-                aTPElem.destroyBinding(
-                            'value', resource, sourceAttributeName);
-
-                resource.destroyBinding(
-                            sourceAttributeName, aTPElem, 'value');
+                TP.core.ElementNode.Inst.destroyBindingsUsing.call(
+                    aTPElem,
+                    'value',
+                    attrValue,
+                    scopeVals,
+                    direction);
             });
     } else {
         this.callNextMethod();
