@@ -1529,10 +1529,10 @@
     //  uri/url
     //  ---
 
-    //  should uri computations rely on fallbacks. default is false so you have
-    //  to either use a configuration parameter for a path.* variable, use an
-    //  attribute, or implement a resource uri method.
-    TP.sys.setcfg('uri.fallbacks', false);
+    //  should uri computations rely on fallbacks. the flags here are based on
+    //  each resource type for finer control.
+    TP.sys.setcfg('uri.style.fallbacks', true);
+    TP.sys.setcfg('uri.template.fallbacks', false);
 
     //  the default type used to handle URI load/save operations.
     TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');

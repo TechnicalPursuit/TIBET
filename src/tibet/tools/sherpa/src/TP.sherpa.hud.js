@@ -19,7 +19,7 @@ TP.sherpa.Element.defineSubtype('sherpa:hud');
 TP.sherpa.hud.addTraits(TP.core.TemplatedNode);
 
 TP.sherpa.hud.Type.resolveTraits(
-        TP.ac('getTemplateURI', 'tagCompile'),
+        TP.ac('tagCompile'),
         TP.core.TemplatedNode);
 
 TP.sherpa.hud.Inst.resolveTraits(

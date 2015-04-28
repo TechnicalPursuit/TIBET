@@ -9300,108 +9300,28 @@ TP.core.ElementNode.Type.defineAttribute('template');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('computeResourceURI',
-function(resource, mimeType, fallback) {
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('computeResourceExtension',
+function(resource, mimeType) {
 
     /**
-     * @method computeResourceURI
-     * @summary Computes a resource URI using information including a resource
-     *     "name" and mime type (for use in determining potential extensions).
-     *     This routine is leveraged by getResourceURI-invoked methods which
-     *     need to compute default file paths such as getTemplateURI and
-     *     getStyleURI.
-     * @discussion There are a couple of concerns regarding resources. First, we
-     *     might be in a "rollup" state where tags which normally have their own
-     *     file/uri need to use a uri path from a rolled up production file.
-     *     Second, tags in a namespace may be sharing a namespace-level
-     *     resource file (which is a form of limited rollup). Finally we might
-     *     be using a specific resource file for the tag but it could be in any
-     *     number of formats from XSL to JS to XHTML to SVG and so on.
-     *
-     *     To help avoid 404's this method relies on a combination of config
-     *     flag and attribute settings which let you control the computation of
-     *     a resource URI explicitly for each element type.
-     *
-     *     The config flag values are always of the form 'path.' + typeName +
-     *     '.{{resource}}'. If that value is set it should be a URI and it will
-     *     be used as-is UNLESS the extension has a rollup setting. For example,
-     *     if the extension would be xhtml and xhtml.resource.rollup="{{uri}}"
-     *     is set the specified rollup URI will be returned. NOTE the rollup
-     *     setting is typically managed by the TIBET CLI as part of packaging.
-     *
-     *     Attributes which help control this method allow you to define whether
-     *     the type should defer to a namespace-level resource and which mime
-     *     extension should be used. For example, if you set the type attribute
-     *     namespaced{{resource}} to true the receiver will delegate to the
-     *     namespace. If you set {{resource}}Extension that extension will be
-     *     used regardless of any value implied via the mimeType parameter.
      * @param {String} resource The resource name. Typically template, style,
      *     theme, etc. but it could be essentially anything except the word
      *     'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
-     * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
-     *     value of 'uri.fallbacks'.
-     * @returns {String} A properly computed URL in string form.
+     * @return {String} The computed extension.
      */
 
-    var name,
-        type,
-
-        uri,
-        mime,
-
-        location,
-
-        res,
+    var res,
         ext,
-
-        extensions,
-        key,
-        value;
-
-    if (!TP.isString(resource) || TP.isEmpty(resource) ||
-            resource === 'resource') {
-        return this.raise('TP.sig.InvalidParameter',
-            'Must supply a valid resource name.');
-    }
-
-    name = this.getResourceTypeName();
-
-    //  If we're set to leverage namespaced CSS or namespaced templates, etc.
-    //  then we delegate our answer to the namespace object for the receiver. If
-    //  we're in a rollup state the namespace object should handle that fact.
-    if (TP.isTrue(this.get('namespaced' + resource.asTitleCase()))) {
-
-        type = this.getNamespaceObject();
-
-        if (TP.canInvoke(type, 'getResourceURI')) {
-
-            uri = type.getResourceURI(resource, mimeType);
-
-            //  Depending on resource type we adjust shared template URIs to use
-            //  a slice. For now we'll do this for XHTML and XML templates.
-            if (TP.isURI(uri)) {
-
-                mime = uri.getMIMEType();
-
-                if (mime === TP.ietf.Mime.XHTML || mime === TP.ietf.Mime.XML) {
-
-                    location = uri.getLocation();
-                    location += '#' + TP.escapeTypeName(name);
-
-                    uri = TP.uc(location);
-                }
-            }
-
-            return uri;
-        }
-    }
-
-    //  If we have an explicit mapping for an extension we will avoid worrying
-    //  about any mime type extension list and just rely on the explicit one.
+        mime,
+        extensions;
 
     res = resource.toLowerCase();
 
+    //  If we have an explicit mapping for an extension we will avoid worrying
+    //  about any mime type extension list and just rely on the explicit one.
     ext = this.get(res + 'Extension');
     if (TP.isEmpty(ext)) {
 
@@ -9436,23 +9356,191 @@ function(resource, mimeType, fallback) {
         }
     }
 
-    //  With an extension we can now check to see if we're supposed to use
-    //  rollup resources for that extension. If so it'll be a config flag
-    //  pointing to the URI we should use.
-    key = ext + '.' + res + '.rollup';
-    value = TP.sys.cfg(key);
+    return ext;
+});
 
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('computeResourceURI',
+function(resource, mimeType, fallback) {
+
+    /**
+     * @method computeResourceURI
+     * @summary Computes a resource URI using information including a resource
+     *     "name" and mime type (for use in determining potential extensions).
+     *     This routine is leveraged by getResourceURI-invoked methods which
+     *     need to compute default file paths.
+     * @discussion There are a couple of concerns regarding resource uris:
+     *
+     *     First, we might be in a "rollup" state where tags which normally have
+     *     their own file/uri need to use a uri path from a rolled up file.
+     *
+     *     Second, tags in a namespace may be sharing a namespace-level
+     *     resource file (which is a common form of limited rollup).
+     *
+     *     Finally we might be using a specific resource file for the tag but it
+     *     could be in any number of formats from XSL to JS to XHTML to SVG etc.
+     *
+     *     To help avoid 404's this method relies on a combination of config
+     *     flag and method/attribute get() calls which let you control the
+     *     computation of a resource URI explicitly for each element type.
+     *
+     *     In all cases the mimeType parameter is used to determine the extension
+     *     unless the receiving type either implements get{{resource}}Extension
+     *     or sets a value for that property name. If none of those are helpful
+     *     'style' will use CSS and 'template' will use XHTML.
+     *
+     *     The config flag values are always of the form 'path.' followed by one
+     *     or more of the typename, resource name, etc. If a value for any of
+     *     these computed keys is set it should be a URI, typically virtual.
+     *
+     * @param {String} resource The resource name. Typically template, style,
+     *     theme, etc. but it could be essentially anything except the word
+     *     'resource' (since that would trigger a recursion).
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
+     *     value of 'uri.fallbacks'.
+     * @returns {String} A properly computed URL in string form.
+     */
+
+    var name,
+        res,
+        ext,
+        prefix,
+        key,
+        value,
+        type,
+        uri;
+
+    if (!TP.isString(resource) || TP.isEmpty(resource) ||
+            resource === 'resource') {
+        return this.raise('TP.sig.InvalidParameter',
+            'Must supply a valid resource name.');
+    }
+
+    res = resource.toLowerCase();
+    name = this.getResourceTypeName();
+    ext = this.computeResourceExtension(resource, mimeType);
+
+    //  ---
+    //  cached value check
+    //  ---
+
+    //  If we've done computation before don't repeat it. Also, this serves
+    //  as a way for individual types to provide a specific override via cfg.
+
+    key = 'path.' + name + '.' + res + '.rollup';
+    value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
         return value;
     }
 
-    //  Not doing a rollup? See if we have an explicit mapping for our resource.
-    key = 'path.' + name + '.' + res;
+    key = 'path.' + name + '.' + ext + '.rollup';
     value = TP.sys.cfg(key);
-
     if (TP.notEmpty(value)) {
         return value;
     }
+
+    //  ---
+    //  resource-level rollup check
+    //  ---
+
+    //  Production-level rollups are done via the CLI and have to be able to
+    //  override pretty much any other consideration in terms of computation
+    //  order so we check those first.
+
+    key = 'path.' + res + '.rollup';
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        key = 'path.' + name + '.' + res + '.rollup';
+        TP.sys.setcfg(key, value);
+        return value;
+    }
+
+    key = 'path.' + ext + '.rollup';
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        key = 'path.' + name + '.' + ext + '.rollup';
+        TP.sys.setcfg(key, value);
+        return value;
+    }
+
+    //  ---
+    //  namespace-level rollup check
+    //  ---
+
+    prefix = this.getNamespacePrefix().toLowerCase();
+
+    key = 'path.' + prefix + '.' + res + '.rollup';
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        key = 'path.' + name + '.' + res + '.rollup';
+        TP.sys.setcfg(key, value);
+        return value;
+    }
+
+    key = 'path.' + prefix + '.' + ext + '.rollup';
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        key = 'path.' + name + '.' + ext + '.rollup';
+        TP.sys.setcfg(key, value);
+        return value;
+    }
+
+    //  ---
+    //  receiver method
+    //  ---
+
+    if (res !== 'resource') {
+        uri = this.get(res + 'URI');
+        if (TP.notEmpty(uri)) {
+            if (uri === TP.NO_RESULT) {
+                return;
+            }
+            return uri;
+        }
+    }
+
+    if (ext !== 'resource') {
+        uri = this.get(ext + 'URI');
+        if (TP.notEmpty(uri)) {
+            if (uri === TP.NO_RESULT) {
+                return;
+            }
+            return uri;
+        }
+    }
+
+    //  ---
+    //  namespace method
+    //  ---
+
+    type = this.getNamespaceObject();
+    if (TP.canInvoke(type, 'get')) {
+        if (res !== 'resource') {
+            uri = type.get(res.toLowerCase() + 'URI');
+            if (TP.notEmpty(uri)) {
+                if (uri === TP.NO_RESULT) {
+                    return;
+                }
+                return uri;
+            }
+        }
+
+        if (ext !== 'resource') {
+            uri = type.get(ext.toLowerCase() + 'URI');
+            if (TP.notEmpty(uri)) {
+                if (uri === TP.NO_RESULT) {
+                    return;
+                }
+                return uri;
+            }
+        }
+    }
+
+    //  ---
+    //  computed fallback
+    //  ---
 
     //  If forced false nothing else matters...we're done.
     if (TP.isFalse(fallback)) {
@@ -9460,14 +9548,12 @@ function(resource, mimeType, fallback) {
     }
 
     //  If forced true, or the flag is true, we'll compute a fallback value.
-    if (TP.isTrue(fallback) || TP.isTrue(TP.sys.cfg('uri.fallbacks'))) {
-        //  If we couldn't compute a URI, default it to the receiver's load
-        //  location and use the extension computed earlier.
+    if (TP.isTrue(fallback) ||
+        TP.isTrue(TP.sys.cfg('uri.' + res + '.fallbacks'))) {
+
+        //  Default to receiver's load path and use extension computed earlier.
         return TP.objectGetSourceCollectionPath(this) +
-                '/' +
-                this.getName() +
-                '.' +
-                ext;
+            '/' + this.getName() + '.' + ext;
     }
 
     return;
@@ -10348,7 +10434,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('getResourceURI',
-function(resource, mimeType) {
+function(resource, mimeType, fallback) {
 
     /**
      * @method getResourceURI
@@ -10362,85 +10448,17 @@ function(resource, mimeType) {
      * @param {String} mimeType The mimeType for the resource being looked up.
      *     This is used to locate viable extensions based on the data in TIBET's
      *     TP.ietf.Mime.INFO dictionary.
+     * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
+     *     value of 'uri.fallbacks'.
      * @returns {TP.core.URI} The computed resource URI.
      */
 
-    var method,
-        uri,
-        extensions,
-        len,
-        i,
-        ext,
-        typeName,
-        key,
-        value;
+    var uri;
 
-    if (!TP.isString(resource) || TP.isEmpty(resource) ||
-            resource === 'resource') {
-        return this.raise('TP.sig.InvalidParameter',
-            'Must supply a valid resource name.');
-    }
+    uri = this.computeResourceURI(resource, mimeType, fallback);
 
-    //  If we can build a getter for the resource in question we'll rely on that
-    //  method to do the right thing for that resource.
-    method = 'get' + resource.asTitleCase() + 'URI';
-    if (TP.canInvoke(this, method)) {
-        uri = this[method](mimeType);
-    } else {
-        uri = this.get(resource.toLowerCase() + 'URI');
-    }
-
-    //  For resource methods there are a lot of default versions which return
-    //  null so we don't assume we're done here unless we got a real value
-    //  that's not TP.NO_RESULT. That value is used to say "stop".
     if (TP.notEmpty(uri)) {
-        if (uri === TP.NO_RESULT) {
-            return;
-        }
-
-        return uri;
-    }
-
-    //  Extensions are typically ordered from canonical to least-likely so we
-    //  loop here trying to find a method specific to the MIME extension.
-    if (TP.notEmpty(mimeType) &&
-            TP.notEmpty(extensions = TP.ietf.Mime.getExtensions(mimeType))) {
-
-        len = extensions.length;
-        for (i = 0; i < len; i++) {
-            ext = extensions.at(i);
-
-            //  The word resource would trigger a recursion so mask off that
-            //  one.
-            if (ext === 'resource') {
-                return;
-            }
-
-            method = 'get' + ext.asTitleCase() + 'URI';
-            if (TP.canInvoke(this, method)) {
-                uri = this[method]();
-            } else {
-                uri = this.get(ext.toLowerCase() + 'URI');
-            }
-
-            if (TP.notEmpty(uri)) {
-                if (uri === TP.NO_RESULT) {
-                    return;
-                }
-
-                return uri;
-            }
-        }
-    }
-
-    //  Final option if no method is found is to create a configuration key and
-    //  see if there's a mapping under that key.
-    typeName = this.getResourceTypeName();
-    key = 'path.' + typeName + '.' + resource.toLowerCase();
-    value = TP.sys.cfg(key);
-
-    if (TP.notEmpty(value)) {
-        return TP.uc(value);
+        return TP.uc(uri);
     }
 
     return;
@@ -15561,38 +15579,6 @@ TP.core.TemplatedNode.isAbstract(true);
 //  Whether or not the node wants a 'tsh:template' wrapper (necessary for
 //  dynamic templating, etc.)
 TP.core.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
-
-//  ------------------------------------------------------------------------
-
-TP.core.TemplatedNode.Type.defineMethod('getTemplateURI',
-function(mimeType) {
-
-    /**
-     * @method getTemplateURI
-     * @summary Returns a template URI for the receiver. For templated nodes
-     *     this routine should always return a valid URI.
-     * @param {String} mimeType The mimeType for the resource being looked up.
-     * @returns {TP.core.URI} The computed resource URI.
-     */
-
-    var uri;
-
-    uri = this.$get('templateURI');
-    if (TP.notEmpty(uri)) {
-        if (uri === TP.NO_RESULT) {
-            return;
-        }
-
-        return TP.uc(uri);
-    }
-
-    uri = this.computeResourceURI('template', mimeType, true);
-    if (TP.isValid(uri)) {
-        return TP.uc(uri);
-    }
-
-    return;
-});
 
 //  ------------------------------------------------------------------------
 

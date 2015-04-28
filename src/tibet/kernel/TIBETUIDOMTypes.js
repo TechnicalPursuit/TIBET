@@ -226,28 +226,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('getStyleURI',
-function(mimeType) {
-
-    /**
-     * @method getStyleURI
-     * @summary Returns a stylesheet URI for the receiver.
-     * @param {String} mimeType The mimeType for the resource being looked up.
-     * @returns {TP.core.URI} The computed resource URI.
-     */
-
-    var uri;
-
-    uri = this.computeResourceURI('style', mimeType);
-    if (TP.isValid(uri)) {
-        return TP.uc(uri);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.UIElementNode.Type.defineMethod('getThemeURI',
 function(mimeType) {
 

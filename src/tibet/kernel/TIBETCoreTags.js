@@ -26,10 +26,6 @@ TP.core.UIElementNode.defineSubtype('TP.core.CompiledTag');
 
 TP.core.CompiledTag.addTraits(TP.core.NonNativeUIElementNode);
 
-TP.core.CompiledTag.Type.resolveTraits(
-        TP.ac('getStyleURI'),
-        TP.core.UIElementNode);
-
 TP.core.CompiledTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
@@ -88,7 +84,7 @@ TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 TP.core.TemplatedTag.addTraits(TP.core.NonNativeUIElementNode);
 
 TP.core.TemplatedTag.Type.resolveTraits(
-        TP.ac('getStyleURI', 'getTemplateURI', 'tagCompile'),
+        TP.ac('tagCompile'),
         TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Inst.resolveTraits(
