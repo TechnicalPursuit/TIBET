@@ -6233,7 +6233,10 @@ function(aSignal) {
         return;
     }
 
-    win.setLocation(url);
+    //  If you do this when running phantomjs tests etc. bad things happen.
+    if (TP.sys.cfg('boot.context') !== 'phantomjs') {
+        win.setLocation(url);
+    }
 
     //  Don't let the signal continue since we've handled it.
     aSignal.stopPropagation();

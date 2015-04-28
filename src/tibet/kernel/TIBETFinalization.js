@@ -464,6 +464,9 @@ function() {
         //  NOTE that we don't have logic here. Formerly we'd trigger app start
         //  signaling here but we have to let that happen via either the
         //  tibet:root or tibet:sherpa tag processing for proper sequencing.
+        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+            TP.signal('TP.sys', 'AppWillStart');
+        }
     });
 
     request.atPut(TP.ONFAIL, function(req) {

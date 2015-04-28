@@ -4,6 +4,8 @@
     name="phantom" default="phantom" basedir="~lib">
 
 <config id="properties" if="boot.phaseone">
+    <property name="tibet.sherpa" value="false"/>
+    <property name="tibet.tdc" value="false"/>
 </config>
 
 <config id="phantom">
