@@ -86,10 +86,8 @@ if (window === top) {
             return;
 
         } else {
-
             //  We found TP but not TP.sys or the router? Probably not TIBET.
             top.console.error('TIBET global TP already mapped. Exiting.');
-
             return;
         }
 

@@ -8137,10 +8137,8 @@ function(aWindow) {
      */
 
     var msg,
-
         allElems,
         i,
-
         winLoadFuncs,
         len;
 
@@ -8151,11 +8149,8 @@ function(aWindow) {
     }
 
     if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
-
         msg = 'Processing document loaded for: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);
-
-        top.console.log(msg);
     }
 
     if (TP.$$DEBUG) {

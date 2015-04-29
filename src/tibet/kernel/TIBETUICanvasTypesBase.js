@@ -55,11 +55,8 @@ function(aWindow) {
     }
 
     if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
-
         msg = 'Arming window: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);
-
-        top.console.log(msg);
     }
 
     //  Set the native window's onerror handler to the standard TIBET

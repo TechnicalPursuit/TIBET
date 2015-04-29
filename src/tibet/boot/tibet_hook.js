@@ -69,35 +69,25 @@ if (window.$$hooked === true) {
         if (TP.sys.cfg('log.hook') &&
                 TP.sys.cfg('boot.context') !== 'phantomjs') {
 
-            $$msg = 'TIBET hook in \'' +
-                    window.name +
-                    '\' found TIBET in \'top\'.';
-
+            $$msg = 'TIBET hook in \'' + window.name +
+                '\' found TIBET in \'top\'.';
             TP.boot.$stdout($$msg, TP.TRACE);
-            top.console.log($$msg);
         }
 
         tibet = top.$$TIBET;
         window.onerror = tibet.onerror;
-
     } else {
-
         //  No TIBET and no config. Log to system console.
-        top.console.log('TIBET hook in \'' +
-                        window.name +
-                        '\' unable to find TIBET.');
-
+        top.console.log('TIBET hook in \'' + window.name +
+            '\' unable to find TIBET.');
         return;
     }
 }
 
 //  Output each window/frame and its location data as we process it.
 if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
-
     $$msg = 'TIBET hook @ ' + window.name + ' -> ' + $$location;
-
     TP.boot.$stdout($$msg, TP.INFO);
-    top.console.log($$msg);
 }
 
 //  ------------------------------------------------------------------------
@@ -140,7 +130,7 @@ if (window.onerror.failedlaunch !== true &&
     top.TP.windowResetLocation(window);
 
     if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
-        top.console.log('bailing out via location= trap');
+        top.console.log('TIBET hook bailing out via location= trap');
     }
     return;
 }
