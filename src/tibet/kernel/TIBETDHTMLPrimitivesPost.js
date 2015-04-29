@@ -8363,7 +8363,29 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     //      - 'TP.sig.DocumentUnloaded' signal type name
     winID = TP.gid(aWindow);
 
-    TP.signal(winID, 'TP.sig.DocumentUnloaded');
+    //  final operation is to signal that we've done the work
+    try {
+        //  We signal TP.sig.DocumentUnloaded using the GID of the window as
+        //  the origin.
+        TP.signal(winID, 'TP.sig.DocumentUnloaded');
+
+        //  We only signal DOMContentUnloaded if the system is configured for
+        //  it.
+        if (TP.sys.shouldSignalDOMLoaded()) {
+            //  We signal DOMContentUnloaded using the GID of the document as
+            //  the origin.
+
+            TP.signal(TP.gid(aWindow.document),
+                        'TP.sig.DOMContentUnloaded',
+                        aWindow.document.documentElement);
+        }
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(
+                    e, 'TP.sig.DOMContentUnloaded handler generated error.'),
+                    TP.LOG) : 0;
+    }
 
     //  close open windows if we're unloading the code frame
     if (TP.$$processDocumentUnloaded.codeframe === aWindow &&
