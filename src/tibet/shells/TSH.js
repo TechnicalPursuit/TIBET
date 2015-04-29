@@ -3845,9 +3845,9 @@ function(aRequest) {
         cmd = 'help';
     }
 
-    //  The url root we want to send to is in tds.cli_url
+    //  The url root we want to send to is in tds.cli.url
     url = TP.uriJoinPaths(TP.sys.getLaunchRoot(),
-                            TP.sys.cfg('tds.cli_uri'));
+                            TP.sys.cfg('tds.cli.uri'));
 
     //  TODO: Maybe use TP.httpEncode() here?
     url += '?cmd=' + encodeURIComponent(cmd);
@@ -3914,7 +3914,7 @@ function(aRequest) {
 TP.sig.SourceSignal.defineSubtype('FileChangeEvent');
 
 TP.sig.FileChangeEvent.Type.defineConstant('NATIVE_NAME',
-    TP.sys.cfg('tds.watch_event'));
+    TP.sys.cfg('tds.watch.event'));
 
 TP.sig.FileChangeEvent.Type.defineAttribute('pending', TP.hc());
 
@@ -4059,7 +4059,7 @@ function(aRequest) {
 
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-                                TP.sys.cfg('tds.watch_uri'));
+                                TP.sys.cfg('tds.watch.uri'));
 
         watcher = TP.core.SSESignalSource.construct(url);
         this.set('watcherSSESource', watcher);
@@ -4088,7 +4088,7 @@ function(aRequest) {
     // for us? Shouldn't there be a 'getInstance' or something instead?
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-                                TP.sys.cfg('tds.watch_uri'));
+                                TP.sys.cfg('tds.watch.uri'));
 
         watcher = TP.core.SSESignalSource.construct(url);
     }

@@ -96,7 +96,7 @@
      * @returns {Boolean} true to skip logging the current request.
      */
     TDS.logFilter = function(req, res) {
-        var url = TDS.getcfg('tds.watch_uri');
+        var url = TDS.getcfg('tds.watch.uri');
 
         // Don't log repeated calls to the watcher URL.
         if (req.path.indexOf(url) !== -1) {
@@ -240,7 +240,7 @@
                 return err(400, 'Unable to resolve patch target url.');
             }
 
-            root = path.resolve(TDS.expandPath(TDS.getcfg('tds.patch_root')));
+            root = path.resolve(TDS.expandPath(TDS.getcfg('tds.patch.root')));
 
             if (url.indexOf(root) !== 0) {
                 return err(403, 'Patch target outside patch directory.');
@@ -319,7 +319,7 @@
 
         changedFiles = [];
 
-        root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch_root')));
+        root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch.root')));
 
         retry = TDS.getcfg('tds.watch.retry');
         if (!retry) {
@@ -444,7 +444,7 @@
 
                 if (changedFiles.length > 0) {
                     changedFileName = changedFiles.shift();
-                    eventName = TDS.getcfg('tds.watch_event');
+                    eventName = TDS.getcfg('tds.watch.event');
                 } else {
                     eventName = '';
                 }
@@ -485,8 +485,8 @@
         var node,
             mount;
 
-        node = path.resolve(TDS.expandPath(TDS.getcfg('tds.dav_root')));
-        mount = TDS.expandPath(TDS.getcfg('tds.dav_uri'));
+        node = path.resolve(TDS.expandPath(TDS.getcfg('tds.webdav.root')));
+        mount = TDS.expandPath(TDS.getcfg('tds.webdav.uri'));
 
         return function(req, res, next) {
             jsDAV.mount({

@@ -1299,13 +1299,13 @@
     //  tds support
     //  ---
 
-    TP.sys.setcfg('tds.cli_uri', '/tds/cli');
+    TP.sys.setcfg('tds.cli.uri', '/tds/cli');
 
-    TP.sys.setcfg('tds.dav_root', '~app_src');
-    TP.sys.setcfg('tds.dav_uri', '/tds/webdav');
+    TP.sys.setcfg('tds.webdav.root', '~app_src');
+    TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
-    TP.sys.setcfg('tds.patch_root', '~app_src');
-    TP.sys.setcfg('tds.patch_uri', '/tds/patch');
+    TP.sys.setcfg('tds.patch.root', '~app_src');
+    TP.sys.setcfg('tds.patch.uri', '/tds/patch');
 
     TP.sys.setcfg('tds.port', 1407);
     TP.sys.setcfg('tds.secret', 'change this in your TIBET config');
@@ -1313,9 +1313,9 @@
     TP.sys.setcfg('tds.404', 'NotFound');
     TP.sys.setcfg('tds.500', 'ServerError');
 
-    TP.sys.setcfg('tds.watch_event', 'fileChange');
-    TP.sys.setcfg('tds.watch_root', '~app_src');
-    TP.sys.setcfg('tds.watch_uri', '/tds/watcher');
+    TP.sys.setcfg('tds.watch.event', 'fileChange');
+    TP.sys.setcfg('tds.watch.root', '~app_src');
+    TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
 
     //  ---
     //  tsh processing
