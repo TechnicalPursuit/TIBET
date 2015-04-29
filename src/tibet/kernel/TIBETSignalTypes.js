@@ -824,9 +824,15 @@ TP.sig.DOMInitializationSignal.Type.defineAttribute('cancelable', false);
 //  an <object> element
 TP.sig.DOMSignal.defineSubtype('DOMLoaded');
 
-//  Fired when the content of a DOM node is loaded when the content is more
-//  markup.
+//  Fired when a DOM node is unloaded - this might be an opaque element, like
+//  an <object> element
+TP.sig.DOMSignal.defineSubtype('DOMUnloaded');
+
+//  Fired when the content of a DOM node is loaded.
 TP.sig.DOMLoaded.defineSubtype('DOMContentLoaded');
+
+//  Fired when the content of a DOM node is unloaded.
+TP.sig.DOMUnloaded.defineSubtype('DOMContentUnloaded');
 
 //  ------------------------------------------------------------------------
 

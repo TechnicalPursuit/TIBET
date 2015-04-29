@@ -73,7 +73,14 @@
         var newInst;
         newInst = TP.json2js('{"person": {"lastname": "Smith", "firstname": "Joe", "description" : "Mr. Smith is a great guy", "gender":"", "salary":"", "SSN":""}}');
 
-        TP.uc('urn:tibet:empObject').setResource(newInst);
+        TP.uc('urn:tibet:empObject').setResource(newInst, TP.hc('observeResource', true));
+        ]]>
+    </ev:script>
+
+    <!-- Data model construction handler -->
+    <ev:script type="text/javascript" event="TP.sig.DOMContentUnloaded" observer="#document">
+        <![CDATA[
+        TP.uc('urn:tibet:empObject').unregister();
         ]]>
     </ev:script>
 

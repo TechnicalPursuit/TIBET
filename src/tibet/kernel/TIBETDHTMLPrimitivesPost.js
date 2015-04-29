@@ -796,6 +796,29 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentGetTheme',
+function(aDocument) {
+
+    /**
+     * @method documentGetTheme
+     * @summary Gets the data-theme attribute on the supplied document body that
+     *     is helping to drive themed CSS.
+     * @param {Document} aDocument The document to get the theme for.
+     * @returns {String} The theme in effect for the supplied document.
+     */
+
+    var body;
+
+    body = TP.documentGetBody(aDocument);
+    if (TP.isElement(body)) {
+        return TP.elementGetAttribute(body, 'data-theme');
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentRewriteSpecialHacks',
 function(theContent) {
 
@@ -939,8 +962,8 @@ function(aDocument, themeName) {
 
     /**
      * @method documentSetTheme
-     * @summary Sets a data-theme attribute on the document body to help drive
-     *     themed CSS.
+     * @summary Sets a data-theme attribute on the supplied document body to
+     *     help drive themed CSS.
      * @param {Document} aDocument The document to set the theme for.
      * @param {String} themeName The theme name to set for the document.
      */
@@ -8166,6 +8189,7 @@ function(aWindow) {
     var msg,
         allElems,
         i,
+        theme,
         winLoadFuncs,
         app,
         len;
@@ -8208,8 +8232,8 @@ function(aWindow) {
 
     //  Update the document theme based on the current application theme.
     app = TP.sys.getApplication();
-    if (TP.isValid(app)) {
-        TP.documentSetTheme(aWindow.document, app.getTheme());
+    if (TP.isValid(app) && TP.notEmpty(theme = app.getTheme())) {
+        TP.documentSetTheme(aWindow.document, theme);
     }
 
     //  we allow zero or more page load functions to be registered so that
@@ -8363,7 +8387,29 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     //      - 'TP.sig.DocumentUnloaded' signal type name
     winID = TP.gid(aWindow);
 
-    TP.signal(winID, 'TP.sig.DocumentUnloaded');
+    //  final operation is to signal that we've done the work
+    try {
+        //  We signal TP.sig.DocumentUnloaded using the GID of the window as
+        //  the origin.
+        TP.signal(winID, 'TP.sig.DocumentUnloaded');
+
+        //  We only signal DOMContentUnloaded if the system is configured for
+        //  it.
+        if (TP.sys.shouldSignalDOMLoaded()) {
+            //  We signal DOMContentUnloaded using the GID of the document as
+            //  the origin.
+
+            TP.signal(TP.gid(aWindow.document),
+                        'TP.sig.DOMContentUnloaded',
+                        aWindow.document.documentElement);
+        }
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(
+                    e, 'TP.sig.DOMContentUnloaded handler generated error.'),
+                    TP.LOG) : 0;
+    }
 
     //  close open windows if we're unloading the code frame
     if (TP.$$processDocumentUnloaded.codeframe === aWindow &&
