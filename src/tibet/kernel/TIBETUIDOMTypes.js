@@ -82,7 +82,13 @@ function(aDocument) {
 
     //  Add any theme name we might be using. The presumption is that a theme
     //  sheet that isn't standalone will @import what it requires.
-    themeName = TP.sys.getApplication().getTheme();
+
+    //  Note that we try to see if the document already has a theme, which will
+    //  override any application-level them.
+    if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument))) {
+        themeName = TP.sys.getApplication().getTheme();
+    }
+
     if (TP.notEmpty(themeName)) {
         sheetID = ourID + '_' + themeName;
         resource = 'style_' + themeName;
