@@ -907,7 +907,7 @@ function(targetUrl, aRequest, httpObj) {
     //  only if we'
     if (TP.notDefined(headers.at('X-Requested-With'))) {
         if (TP.uriNeedsPrivileges(targetUrl) &&
-            TP.sys.cfg('tibet.simple_cors_only')) {
+            TP.sys.cfg('http.simple_cors_only')) {
                 //  targetUrl needs privileges but we're configured for 'simple
                 //  CORS' only, which disallows custom 'X-' headers.
             void 0;

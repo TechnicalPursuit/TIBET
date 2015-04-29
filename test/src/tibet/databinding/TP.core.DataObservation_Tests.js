@@ -1559,7 +1559,7 @@ function() {
         unloadURI;
 
     loadURI = TP.uc('~lib_tst/src/tibet/databinding/Observation1.xhtml');
-    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
 
     this.beforeEach(

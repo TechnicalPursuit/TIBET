@@ -138,19 +138,19 @@ Cmd.prototype.execute = function() {
     // If there's no server.js assume a 'noserver' template or 'couchdb'
     // template of some sort and default to opening the index.html.
     if (!sh.test('-f', 'server.js')) {
-        url = CLI.expandPath(CLI.getcfg('tibet.indexpage'));
+        url = CLI.expandPath(CLI.getcfg('path.index_page'));
         msg = 'No server.js. Opening ' + url;
         cmd.system(msg);
 
         process.env.PORT = port;
         server = child.spawn('open',
-            [CLI.expandPath(CLI.getcfg('tibet.indexpage'))]);
+            [CLI.expandPath(CLI.getcfg('path.index_page'))]);
     } else {
         // If possible try to output the actual page reference to the index
         // page. This helps with things like CouchDB template start output.
-        indexpage = CLI.getcfg('tibet.indexpage');
+        indexpage = CLI.getcfg('path.index_page');
         if (CLI.notEmpty(indexpage)) {
-            index = CLI.expandPath(CLI.getcfg('tibet.indexpage'));
+            index = CLI.expandPath(CLI.getcfg('path.index_page'));
             index = index.replace(CLI.expandPath(CLI.getAppHead()), '');
         } else {
             index = '';

@@ -534,7 +534,7 @@ function(aURI) {
      * @summary Terminates the application by removing the protective
      *     onbeforeunload hooks that TIBET installs and navigating to the
      *     supplied URI. If a URI is not supplied the value from
-     *     TP.sys.cfg('tibet.blankpage') is used.
+     *     TP.sys.cfg('path.blank_page') is used.
      * @summary This function should be called by applications *only after
      *     all 'quit' logic (e.g. saving data to the server, etc.) has been
      *     executed by the application*.
@@ -575,7 +575,7 @@ function(aURI) {
                                 'true');
     }
 
-    url = TP.uc(TP.ifInvalid(aURI, TP.sys.cfg('tibet.blankpage')));
+    url = TP.uc(TP.ifInvalid(aURI, TP.sys.cfg('path.blank_page')));
 
     str = url.getLocation();
     if (str.match(/tibet:/)) {
@@ -584,7 +584,7 @@ function(aURI) {
                     TP.LOG) : 0;
 
         //  didn't resolve properly, not a valid resource URI
-        url = TP.uc(TP.sys.cfg('tibet.blankpage'));
+        url = TP.uc(TP.sys.cfg('path.blank_page'));
     }
 
     //  close open/registered windows. won't always work, but we can try :)

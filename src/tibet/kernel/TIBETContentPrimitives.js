@@ -61,7 +61,7 @@ function() {
     }
 
     // Look up the frame name, or default to an easy-to-spot name.
-    iframeName = TP.sys.cfg('tibet.jsonp_frame') || 'JSONP';
+    iframeName = TP.sys.cfg('jsonp.frame_id') || 'JSONP';
 
     if (!TP.isElement(iframeElem =
                         TP.nodeGetElementById(win.document, iframeName))) {

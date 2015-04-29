@@ -26,16 +26,16 @@
  *  --tds.port <number>         // Defaults to 1407.
  *  --tds.secret <string>       // Should change from tibet_cfg value.
  *
- *  --tds.cli_uri  <string>     // URL path for TIBET cli route
+ *  --tds.cli.uri  <string>     // URL path for TIBET cli route
  *
- *  --tds.dav_root <string>     // Directory mounted for webdav.
- *  --tds.dav_uri  <string>     // URL path for webdav routing.
+ *  --tds.webdav.root <string>  // Directory mounted for webdav.
+ *  --tds.webdav.uri  <string>  // URL path for webdav routing.
  *
- *  --tds.patch_root <string>   // Directory root for patchable source.
- *  --tds.patch_uri <string>    // URL path for patch handler.
+ *  --tds.patch.root <string>   // Directory root for patchable source.
+ *  --tds.patch.uri <string>    // URL path for patch handler.
  *
- *  --tds.watch_root <string>   // Directory mounted for watch.
- *  --tds.watch_uri  <string>   // URL path for file watcher.
+ *  --tds.watch.root <string>   // Directory mounted for watch.
+ *  --tds.watch.uri  <string>   // URL path for file watcher.
  */
 
 (function() {
@@ -132,30 +132,30 @@
     // not secure, but at least the command being run and the command set is
     // somewhat constrained.
     if (argv.cli !== false) {
-        app.get(TDS.getcfg('tds.cli_uri'), TDS.cli());
-        app.post(TDS.getcfg('tds.cli_uri'), TDS.cli());
+        app.get(TDS.getcfg('tds.cli.uri'), TDS.cli());
+        app.post(TDS.getcfg('tds.cli.uri'), TDS.cli());
     }
 
     // Configure the TIBET patch handler. This will process requests from the
     // client to apply a patch to a source file, or to replace the file
     // entirely.
     if (argv.patcher !== false) {
-        app.put(TDS.getcfg('tds.patch_uri'), TDS.patcher());
-        app.post(TDS.getcfg('tds.patch_uri'), TDS.patcher());
-        app.patch(TDS.getcfg('tds.patch_uri'), TDS.patcher());
+        app.put(TDS.getcfg('tds.patch.uri'), TDS.patcher());
+        app.post(TDS.getcfg('tds.patch.uri'), TDS.patcher());
+        app.patch(TDS.getcfg('tds.patch.uri'), TDS.patcher());
     }
 
     // Configure the file watcher so changes on the server can be propogated to
     // the client. SSE must be active in the client for this to work.
     if (argv.watcher !== false) {
-        app.get(TDS.getcfg('tds.watch_uri'), TDS.watcher());
+        app.get(TDS.getcfg('tds.watch.uri'), TDS.watcher());
     }
 
     // Configure the webdav component so changes in the client can be propogated
     // to the server.
     if (argv.webdav !== false) {
-        app.put(TDS.getcfg('tds.dav_uri'), TDS.webdav());
-        app.post(TDS.getcfg('tds.dav_uri'), TDS.webdav());
+        app.put(TDS.getcfg('tds.webdav.uri'), TDS.webdav());
+        app.post(TDS.getcfg('tds.webdav.uri'), TDS.webdav());
     }
 
     //  ---

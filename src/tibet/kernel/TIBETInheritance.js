@@ -233,7 +233,7 @@ function(name) {
     wholeName = root + '.' + nsName + '.' + subtypeName;
 
     //  check with TIBET so we don't try to build type twice
-    if (TP.sys.cfg('tibet.unique_types')) {
+    if (TP.sys.cfg('oo.unique_types')) {
         //  note the false here to avoid issues with proxies
         if (TP.isType(type = TP.sys.getTypeByName(wholeName, false))) {
             return type;
@@ -4598,7 +4598,7 @@ function(targetType, conflictedTraits, track) {
         c3TypeList,
         errStr;
 
-    if (TP.isTrue(TP.sys.cfg('tibet.traits_resolve'))) {
+    if (TP.isTrue(TP.sys.cfg('oo.$$traits_resolve'))) {
 
         //  There still may be conflicts that we can't handle via
         //  auto-resolution, so we keep a hash for ones that we couldn't
@@ -4667,7 +4667,7 @@ function(targetType, conflictedTraits, track) {
 
                         //  If we're warn()ing when we auto resolve, then do so
                         //  here.
-                        if (TP.isTrue(TP.sys.cfg('tibet.traits_warn'))) {
+                        if (TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
 
                             TP.ifWarn() ?
                                 TP.warn('AUTO RESOLVING CONFLICTED' +

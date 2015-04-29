@@ -1281,7 +1281,7 @@ function(methodText, onsuccess, onfailure) {
         return;
     }
 
-    url = TP.uc(TP.sys.cfg('tds.patch_uri'));
+    url = TP.uc(TP.sys.cfg('tds.patch.uri'));
     if (TP.notValid(url)) {
         TP.error('Unable to create URL for patch server.');
         return;

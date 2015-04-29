@@ -3203,10 +3203,10 @@ function(aFlag, shouldSignal) {
      */
 
     if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('tibet.$$construct_dnus', aFlag, shouldSignal);
+        TP.sys.setcfg('oo.$$construct_dnus', aFlag, shouldSignal);
     }
 
-    return TP.sys.cfg('tibet.$$construct_dnus');
+    return TP.sys.cfg('oo.$$construct_dnus');
 }, TP.LOCAL_TRACK, null, 'TP.sys.$$shouldConstructDNUs');
 
 //  -----------------------------------------------------------------------
@@ -10201,10 +10201,10 @@ function(aFlag) {
      */
 
     if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('tibet.$$cache_deep_subtypes', aFlag, false);
+        TP.sys.setcfg('oo.$$cache_deep_subtypes', aFlag, false);
     }
 
-    return TP.sys.cfg('tibet.$$cache_deep_subtypes');
+    return TP.sys.cfg('oo.$$cache_deep_subtypes');
 });
 
 //  ------------------------------------------------------------------------
@@ -10324,10 +10324,10 @@ function(aFlag, shouldSignal) {
      */
 
     if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('tibet.$$invoke_inferences', aFlag, shouldSignal);
+        TP.sys.setcfg('oo.$$invoke_inferences', aFlag, shouldSignal);
     }
 
-    return TP.sys.cfg('tibet.$$invoke_inferences');
+    return TP.sys.cfg('oo.$$invoke_inferences');
 });
 
 //  ------------------------------------------------------------------------
@@ -11479,10 +11479,10 @@ function(aFlag, shouldSignal) {
      */
 
     if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('tibet.unique_types', aFlag, shouldSignal);
+        TP.sys.setcfg('oo.unique_types', aFlag, shouldSignal);
     }
 
-    return TP.sys.cfg('tibet.unique_types');
+    return TP.sys.cfg('oo.unique_types');
 });
 
 //  ------------------------------------------------------------------------
@@ -11508,10 +11508,10 @@ function(aFlag, shouldSignal) {
      */
 
     if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('tibet.$$use_backstop', aFlag, shouldSignal);
+        TP.sys.setcfg('oo.$$use_backstop', aFlag, shouldSignal);
     }
 
-    return TP.sys.cfg('tibet.$$use_backstop');
+    return TP.sys.cfg('oo.$$use_backstop');
 });
 
 //  ------------------------------------------------------------------------
@@ -11636,10 +11636,10 @@ function(aFlag, shouldSignal) {
      */
 
     if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('tibet.$$use_inferencing', aFlag, shouldSignal);
+        TP.sys.setcfg('oo.$$use_inferencing', aFlag, shouldSignal);
     }
 
-    return TP.sys.cfg('tibet.$$use_inferencing');
+    return TP.sys.cfg('oo.$$use_inferencing');
 });
 
 //  ------------------------------------------------------------------------
