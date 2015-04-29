@@ -8189,6 +8189,7 @@ function(aWindow) {
     var msg,
         allElems,
         i,
+        theme,
         winLoadFuncs,
         app,
         len;
@@ -8231,8 +8232,8 @@ function(aWindow) {
 
     //  Update the document theme based on the current application theme.
     app = TP.sys.getApplication();
-    if (TP.isValid(app)) {
-        TP.documentSetTheme(aWindow.document, app.getTheme());
+    if (TP.isValid(app) && TP.notEmpty(theme = app.getTheme())) {
+        TP.documentSetTheme(aWindow.document, theme);
     }
 
     //  we allow zero or more page load functions to be registered so that
