@@ -127,7 +127,7 @@ Cmd.prototype.execute = function() {
     } else if (option && option.indexOf('.') !== -1) {
         // longer key...might be a partial path or a full path
         cfg = CLI.getcfg(option);
-        if (CLI.notValid(cfg)) {
+        if (cfg === undefined) {
             cfg = CLI.getcfg();
             keys = Object.keys(cfg).filter(function(key) {
                 return key.indexOf(option.replace(/\./g, '_')) === 0;
@@ -144,7 +144,7 @@ Cmd.prototype.execute = function() {
         cfg = CLI.getcfg(option);
     }
 
-    if (CLI.isEmpty(cfg)) {
+    if (cfg === undefined) {
         this.info('Config value not found: ' + option);
         return;
     }

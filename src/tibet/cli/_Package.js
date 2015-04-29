@@ -1269,18 +1269,16 @@ Package.prototype.getcfg = function(property) {
     }
 
     // Make simple access as fast as possible.
-    value = this.cfg[property];
-    if (value !== undefined) {
-        return value;
+    if (this.cfg.hasOwnProperty(property)) {
+        return this.cfg[property];
     }
 
     // Secondary check is for prefixed lookups.
     if (/\./.test(property)) {
         // Simple conversions from dotted to underscore should be checked first.
         name = property.replace(/\./g, '_');
-        value = this.cfg[name];
-        if (isValid(value)) {
-            return value;
+        if (this.cfg.hasOwnProperty(name)) {
+            return this.cfg[name];
         }
     } else {
         name = property;
