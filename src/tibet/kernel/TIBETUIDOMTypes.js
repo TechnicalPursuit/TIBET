@@ -63,21 +63,16 @@ function(aDocument) {
      */
 
     var ourID,
-
+        themeName,
+        sheetID,
+        resource,
         styleElem,
         styleURI,
-
-        existingStyleElems,
-
-        themeName,
-        themeID;
+        existingStyleElems;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
-
-    //  First, we add the "core" stylesheet - this should be the stylesheet
-    //  that supplies the 'core' (i.e. non-theme) layout of the node.
 
     //  We compute an 'id' by taking our *resource* type name and escaping
     //  it. The resource type name is usually the type name, but can be
@@ -85,66 +80,45 @@ function(aDocument) {
     //  here for use in resource location computations.
     ourID = TP.escapeTypeName(this.getResourceTypeName());
 
+    //  Add any theme name we might be using. The presumption is that a theme
+    //  sheet that isn't standalone will @import what it requires.
+    themeName = TP.sys.getApplication().getTheme();
+    if (TP.notEmpty(themeName)) {
+        sheetID = ourID + '_' + themeName;
+        resource = 'style_' + themeName;
+    } else {
+        sheetID = ourID;
+        resource = 'style';
+    }
+
     //  First, see if another occurrence of this UI element node (and which
     //  uses this same stylesheet) has already been processed and has placed
     //  that stylesheet in the document. We don't want the same stylesheet
     //  placed into the document over and over for each occurrence of the
     //  same type of element node.
-    if (TP.isElement(TP.byId(ourID, aDocument))) {
+    if (TP.isElement(TP.byId(sheetID, aDocument))) {
         return this;
     }
 
     //  Couldn't find that CSS style sheet, so we ask ourself to compute a
-    //  'resource URI' for the sheet using the CSS mime type.
-    styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
+    //  'resource URI' for the sheet using the CSS mime type. NOTE that the
+    //  computation here will automatically adjust for theme.
+    styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
     if (TP.notValid(styleURI)) {
         return this;
     }
 
     existingStyleElems = TP.nodeGetElementsByTagName(
-                            TP.documentGetHead(aDocument),
-                            'style');
+        TP.documentGetHead(aDocument), 'style');
 
     //  Add the stylesheet URI's location as an XHTML link element. Make
     //  sure also to set the style element's 'id' attribute, so that the
     //  above logic will work for future occurrences of this element being
     //  processed.
     styleElem = TP.documentAddLinkElement(aDocument,
-                                            styleURI.getLocation(),
-                                            existingStyleElems.first());
-    TP.elementSetAttribute(styleElem, 'id', ourID);
+        styleURI.getLocation(), existingStyleElems.first());
 
-
-    // TODO: eventually remove what's below and tie it into the setCurrentTheme
-    // and setContent methods when those alter either the theme or the UICANVAS
-    // document body.
-
-    themeName = TP.sys.getApplication().getTheme();
-    if (TP.notEmpty(themeName)) {
-
-        themeID = ourID + '_' + themeName;
-
-        //  We don't want more than one occurrence of the same theme
-        //  stylesheet in our document.
-        if (TP.isElement(TP.byId(themeID, aDocument))) {
-            return this;
-        }
-
-        //  Couldn't find that CSS style sheet, so we ask ourself to compute
-        //  a 'resource URI' for the sheet using the CSS mime type.
-        if (TP.notValid(styleURI = this.getThemeURI(TP.ietf.Mime.CSS))) {
-            return this;
-        }
-
-        //  Add the stylesheet URI's location as an XHTML link element. Make
-        //  sure also to set the style element's 'id' attribute, so that the
-        //  above logic will work for future occurrences of this element
-        //  being processed.
-        styleElem = TP.documentAddLinkElement(aDocument,
-                                                styleURI.getLocation(),
-                                                styleElem.nextSibling);
-        TP.elementSetAttribute(styleElem, 'id', themeID);
-    }
+    TP.elementSetAttribute(styleElem, 'id', sheetID);
 
     return this;
 });
@@ -222,41 +196,6 @@ function() {
     }
 
     return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Type.defineMethod('getThemeURI',
-function(mimeType) {
-
-    /**
-     * @method getThemeURI
-     * @summary Returns a 'theme' URI for the receiving type, given its load
-     *     path, the supplied mimeType and the current application theme.
-     * @description This method computes a theme URI for the receiver by using
-     *     the 'load path' of this type and appending the type name
-     *     (transforming ':' to '_') and the supplied theme name and extension
-     *     onto the end of it.
-     * @param {String} mimeType The mimeType for the resource being looked up.
-     *     This is used to locate viable extensions based on the
-     *     TP.ietf.Mime.INFO dictionary.
-     * @returns {TP.core.URI} The computed theme URI.
-     */
-
-    var themeName,
-        uri;
-
-    themeName = TP.sys.getApplication().getTheme();
-    if (TP.isEmpty(themeName)) {
-        return;
-    }
-
-    uri = this.computeResourceURI('theme_' + themeName, mimeType);
-    if (TP.isValid(uri)) {
-        return TP.uc(uri);
-    }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------

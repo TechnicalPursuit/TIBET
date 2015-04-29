@@ -9309,8 +9309,8 @@ function(resource, mimeType) {
      *     type provided. Information in TP.ietf.Mime is used when a list of
      *     extensions is needed.
      * @param {String} resource The resource name. Typically template, style,
-     *     theme, etc. but it could be essentially anything except the word
-     *     'resource' (since that would trigger a recursion).
+     *     style_{theme}, etc. but it could be essentially anything except the
+     *     word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      * @return {String} The computed extension.
      */
@@ -9333,8 +9333,10 @@ function(resource, mimeType) {
 
         if (TP.isEmpty(mime)) {
 
-            if (/^theme_/.test(res)) {
+            if (/^style_/.test(res)) {
                 mime = TP.ietf.Mime.CSS;
+            } else if (/^template_/.test(res)) {
+                mime = TP.ietf.Mime.XHTML;
             } else {
                 switch (res) {
                     case 'template':
@@ -9372,48 +9374,54 @@ function(resource, mimeType, fallback) {
      *     "name" and mime type (for use in determining potential extensions).
      *     This routine is leveraged by getResourceURI-invoked methods which
      *     need to compute default file paths.
-     * @discussion There are a couple of concerns regarding resource uris:
+     * @discussion The computation process goes through a number of checks:
      *
      *     First, we might be in a "rollup" state where tags which normally have
      *     their own file/uri need to use a uri path from a rolled up file.
+     *     This check uses path.{resource}.rollup as a cfg key.
      *
      *     Second, tags in a namespace may be sharing a namespace-level
      *     resource file (which is a common form of limited rollup).
+     *     This check uses path.{prefix}.{resource}.rollup as a cfg key.
      *
-     *     Finally we might be using a specific resource file for the tag but it
-     *     could be in any number of formats from XSL to JS to XHTML to SVG etc.
+     *     Third, we might be using a specific resource file for the tag.
+     *     This check uses path.{resourceName}.{resource}.rollup as a cfg key
+     *     where resourceName is the receiver's getResourceTypeName() value.
      *
-     *     To help avoid 404's this method relies on a combination of config
-     *     flag and method/attribute get() calls which let you control the
-     *     computation of a resource URI explicitly for each element type.
+     *     If no config flag setting is found the type is queried via a call to
+     *     get() with a property name of {resource}URI which will essentially
+     *     check for a get{Resource}URI method or attribute value.
      *
-     *     In all cases the mimeType parameter is used to determine the extension
-     *     unless the receiving type either implements get{{resource}}Extension
-     *     or sets a value for that property name. If none of those are helpful
-     *     'style' will use CSS and 'template' will use XHTML.
+     *     The receiver's namespace is then queried using the same get() call to
+     *     let a namespace respond on behalf of its members.
      *
-     *     The config flag values are always of the form 'path.' followed by one
-     *     or more of the typename, resource name, etc. If a value for any of
-     *     these computed keys is set it should be a URI, typically virtual.
+     *     Last, but not least a computation using the receiver's load path is
+     *     used to try to find a file with a MIME-specific extension for the
+     *     resource being computed. Basically we assume a tag's template and css
+     *     are in the same directory with the tag javascript.
+     *
+     *     In all cases whatever value is found/computed is cached under a key
+     *     of path.{name}.{res}.cached for future lookups. These latter keys are
+     *     not saved, they exist only at runtime.
      *
      * @param {String} resource The resource name. Typically template, style,
-     *     theme, etc. but it could be essentially anything except the word
-     *     'resource' (since that would trigger a recursion).
+     *     style_{theme}, etc. but it could be essentially anything except the
+     *     word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
      *     value of 'uri.fallbacks'.
      * @returns {String} A properly computed URL in string form.
      */
 
-    var name,
-        res,
-        ext,
+    var res,
+        name,
+        theme,
+        cachekey,
         prefix,
         key,
         value,
-        reskey,
-        extkey,
         type,
+        ext,
         uri;
 
     if (!TP.isString(resource) || TP.isEmpty(resource) ||
@@ -9424,7 +9432,7 @@ function(resource, mimeType, fallback) {
 
     res = resource.toLowerCase();
     name = this.getResourceTypeName();
-    ext = this.computeResourceExtension(resource, mimeType);
+    theme = /^style_/.test(res) ? theme = res.split('_').last() : '';
 
     //  ---
     //  cached value check
@@ -9433,10 +9441,9 @@ function(resource, mimeType, fallback) {
     //  If we've done computation before don't repeat it. Also, this serves
     //  as a way for individual types to provide a specific override via cfg.
 
-    reskey = 'path.' + name + '.' + res + '.cached';
-    extkey = 'path.' + name + '.' + ext + '.cached';
+    cachekey = 'path.' + name + '.' + res + '.cached';
 
-    value = TP.ifEmpty(TP.sys.cfg(reskey), TP.sys.cfg(extkey));
+    value = TP.sys.cfg(cachekey);
     if (TP.notEmpty(value)) {
         return value;
     }
@@ -9452,14 +9459,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        TP.sys.setcfg(reskey, value);
-        return value;
-    }
-
-    key = 'path.' + ext + '.rollup';
-    value = TP.sys.cfg(key);
-    if (TP.notEmpty(value)) {
-        TP.sys.setcfg(extkey, value);
+        TP.sys.setcfg(cachekey, value);
         return value;
     }
 
@@ -9472,14 +9472,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + prefix + '.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        TP.sys.setcfg(reskey, value);
-        return value;
-    }
-
-    key = 'path.' + prefix + '.' + ext + '.rollup';
-    value = TP.sys.cfg(key);
-    if (TP.notEmpty(value)) {
-        TP.sys.setcfg(extkey, value);
+        TP.sys.setcfg(cachekey, value);
         return value;
     }
 
@@ -9490,14 +9483,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + name + '.' + res;
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        TP.sys.setcfg(reskey, value);
-        return value;
-    }
-
-    key = 'path.' + name + '.' + ext;
-    value = TP.sys.cfg(key);
-    if (TP.notEmpty(value)) {
-        TP.sys.setcfg(extkey, value);
+        TP.sys.setcfg(cachekey, value);
         return value;
     }
 
@@ -9507,16 +9493,6 @@ function(resource, mimeType, fallback) {
 
     if (res !== 'resource') {
         uri = this.get(res + 'URI');
-        if (TP.notEmpty(uri)) {
-            if (uri === TP.NO_RESULT) {
-                return;
-            }
-            return uri;
-        }
-    }
-
-    if (ext !== 'resource') {
-        uri = this.get(ext + 'URI');
         if (TP.notEmpty(uri)) {
             if (uri === TP.NO_RESULT) {
                 return;
@@ -9540,16 +9516,6 @@ function(resource, mimeType, fallback) {
                 return uri;
             }
         }
-
-        if (ext !== 'resource') {
-            uri = type.get(ext.toLowerCase() + 'URI');
-            if (TP.notEmpty(uri)) {
-                if (uri === TP.NO_RESULT) {
-                    return;
-                }
-                return uri;
-            }
-        }
     }
 
     //  ---
@@ -9562,14 +9528,23 @@ function(resource, mimeType, fallback) {
     }
 
     //  If forced true, or the flag is true, we'll compute a fallback value.
+    res = /^style_/.test(res) ? 'style' : res;
     if (TP.isTrue(fallback) ||
         TP.isTrue(TP.sys.cfg('uri.' + res + '.fallback'))) {
 
-        //  Default to receiver's load path and use extension computed earlier.
-        value = TP.objectGetSourceCollectionPath(this) +
-            '/' + this.getName() + '.' + ext;
+        ext = this.computeResourceExtension(resource, mimeType);
 
-        TP.sys.setcfg(reskey, value);
+        //  Default to receiver's load path and full type name.
+        value = TP.objectGetSourceCollectionPath(this) +
+            '/' + this.getName();
+
+        //  Tack on theme as needed to provide theme-specific computation.
+        value = TP.isEmpty(theme) ? value : value + '_' + theme;
+
+        //  Finally add the proper mime extension such as CSS or XHTML.
+        value += '.' + ext;
+
+        TP.sys.setcfg(cachekey, value);
         return value;
     }
 
@@ -10371,8 +10346,8 @@ function(resource, mimeType) {
      *     mime type provided. This routine leverages getResourceURI to locate
      *     the source URI and then loads and wraps its content as needed.
      * @param {String} resource The resource name. Typically template, style,
-     *     theme, etc. but it could be essentially anything except the word
-     *     'resource' (since that would trigger a recursion).
+     *     style_{theme}, etc. but it could be essentially anything except the
+     *     word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      * @returns {TP.core.ElementNode} The wrapped element containing the
      *     content.
@@ -10460,8 +10435,8 @@ function(resource, mimeType, fallback) {
      *     style, theme, and other resource URIs by leveraging cfg flags and
      *     methods on the receiver specific to each resource/mime requirement.
      * @param {String} resource The resource name. Typically 'template',
-     *     'style', 'theme', etc. but it could be essentially anything except
-     *     the word 'resource' (since that would trigger a recursion).
+     *     'style', 'style_{theme}', etc. but it could be essentially anything
+     *     except the word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      *     This is used to locate viable extensions based on the data in TIBET's
      *     TP.ietf.Mime.INFO dictionary.
@@ -13229,6 +13204,23 @@ function(aPhase) {
         //  attribute will 'lose' its namespace along the way of processing.
         TP.elementSetAttribute(elem, 'tibet:phase', aPhase, true);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('setTheme',
+function(themeName) {
+
+    /**
+     * @method setTheme
+     * @summary Sets the receiver's CSS theme as appropriate.
+     * @param {String} themeName The theme name to set for the document.
+     * @returns {TP.core.DocumentNode} The receiver.
+     */
+
+    TP.documentSetTheme(this.getNativeNode(), themeName);
 
     return this;
 });

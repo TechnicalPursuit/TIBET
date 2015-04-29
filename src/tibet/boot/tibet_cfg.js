@@ -1504,6 +1504,9 @@
     //  should the sherpa currently be active? default is false.
     TP.sys.setcfg('tibet.sherpa', false);
 
+    //  what CSS theme should we use? default is none.
+    TP.sys.setcfg('tibet.theme', null);
+
     //  the application login page. when booting in two-phase mode with logins
     //  turned on this page is displayed in the uicanvas while the root page
     //  loads the TIBET target (kernel + any other TIBET code you configure) in

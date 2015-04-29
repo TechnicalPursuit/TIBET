@@ -934,6 +934,33 @@ function(aDocument, aURIStr, force) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentSetTheme',
+function(aDocument, themeName) {
+
+    /**
+     * @method documentSetTheme
+     * @summary Sets a data-theme attribute on the document body to help drive
+     *     themed CSS.
+     * @param {Document} aDocument The document to set the theme for.
+     * @param {String} themeName The theme name to set for the document.
+     */
+
+    var body;
+
+    body = TP.documentGetBody(aDocument);
+    if (TP.isElement(body)) {
+        if (TP.isEmpty(themeName)) {
+            TP.elementRemoveAttribute(body, 'data-theme');
+        } else {
+            TP.elementSetAttribute(body, 'data-theme', themeName);
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentSetTitleContent',
 function(aDocument, titleText) {
 
@@ -8140,6 +8167,7 @@ function(aWindow) {
         allElems,
         i,
         winLoadFuncs,
+        app,
         len;
 
     TP.stop('break.document_loaded');
@@ -8177,6 +8205,12 @@ function(aWindow) {
     //  update ACL content if possible so that subsequent CSS processing and
     //  awakening can work with an awareness of the ACL context
     TP.windowAssignACLKeys(aWindow);
+
+    //  Update the document theme based on the current application theme.
+    app = TP.sys.getApplication();
+    if (TP.isValid(app)) {
+        TP.documentSetTheme(aWindow.document, app.getTheme());
+    }
 
     //  we allow zero or more page load functions to be registered so that
     //  we don't have native onload processing getting mixed up with our

@@ -5977,12 +5977,6 @@ TP.core.Application.Inst.defineAttribute('controllers');
  */
 TP.core.Application.Inst.defineAttribute('router');
 
-/**
- * A reference to the current theme name being used for application styling.
- * @type {String}
- */
-TP.core.Application.Inst.defineAttribute('theme');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -6074,30 +6068,13 @@ function() {
 
     /**
      * @method getTheme
-     * @summary Returns the current UI theme. The value here is taken from any
-     *     setting data-theme attribute on the current UICANVAS body element, or
-     *     the value of the application's theme attribute. The value returned by
+     * @summary Returns the current UI theme. The value here is taken from the
+     *     tibet.theme configuration flag setting. The value returned by
      *     this method is used as part of computations for loading CSS sheets.
      * @returns {String} The name of the current UI theme.
      */
 
-    var doc,
-        body,
-        theme;
-
-    doc = TP.sys.getUICanvas().getNativeDocument();
-    body = TP.documentGetBody(doc);
-
-    //  If the body tag is part of what's being rendered there won't be one in
-    //  all cases.
-    if (!TP.isElement(body)) {
-        return '';
-    }
-
-    theme = TP.elementGetAttribute(body, 'data-theme');
-    theme = TP.ifEmpty(theme, this.$get('theme'));
-
-    return TP.ifEmpty(theme, '');
+    return TP.sys.cfg('tibet.theme');
 });
 
 //  ------------------------------------------------------------------------
@@ -6327,22 +6304,16 @@ function(themeName) {
      * @returns {TP.core.Application} The receiver.
      */
 
-    var canvas,
-        doc,
-        body;
+    var canvas;
 
+    //  Update the configuration flag that drives the getTheme call.
+    TP.sys.setcfg('tibet.theme', themeName);
+
+    //  Update the current canvas to reflect any changes.
     canvas = TP.sys.getUICanvas();
     if (TP.isValid(canvas)) {
-        doc = TP.sys.getUICanvas().getNativeDocument();
-        body = TP.documentGetBody(doc);
-
-        if (TP.isElement(body)) {
-            TP.elementSetAttribute(body, 'data-theme', themeName);
-        }
+        canvas.setTheme(themeName);
     }
-
-    //  Set the value internally so we trigger a change notification.
-    this.$set('theme', themeName);
 
     return this;
 });

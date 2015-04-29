@@ -1508,6 +1508,24 @@ function(aURL, aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Window.Inst.defineMethod('setTheme',
+function(themeName) {
+
+    /**
+     * @method setTheme
+     * @summary Sets a data-theme attribute on the receiving window's document
+     *     body to help drive themed CSS.
+     * @param {String} themeName The theme name to set.
+     * @returns {TP.core.Window} The receiver.
+     */
+
+    this.getDocument().setTheme(themeName);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.core.UICanvas Interface
 //  ------------------------------------------------------------------------
 
