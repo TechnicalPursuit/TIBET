@@ -41,7 +41,7 @@ function() {
 
     var unloadURI;
 
-    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     this.before(
         function() {

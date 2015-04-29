@@ -387,10 +387,10 @@
     //  ---
 
     //  the default page used to initialize an xhtml canvas or display "nothing"
-    TP.sys.setcfg('tibet.blankpage', '~lib_xhtml/blank.xhtml');
+    TP.sys.setcfg('path.blank_page', '~lib_xhtml/blank.xhtml');
 
     //  the file used to initialize a dynamically generated XML-based IFRAME.
-    TP.sys.setcfg('tibet.iframepage', '~lib_xhtml/tp_launch_stub.xhtml');
+    TP.sys.setcfg('path.iframe_page', '~lib_xhtml/tp_launch_stub.xhtml');
 
 
     //  ---
@@ -410,10 +410,6 @@
         TP.sys.setcfg('tibet.uibuffer', null);
     }
 
-    //  the ID to search for and/or generate for JSONP access buffering.
-    TP.sys.setcfg('tibet.jsonp_frame', 'JSONP');
-
-
     //  ---
     //  misc flags
     //  ---
@@ -425,15 +421,6 @@
     //  responded to a "work offline" prompt (presumably provided by you when an
     //  HTTP connection times out with an HTTPTimeout or a similar error occurs)
     TP.sys.setcfg('tibet.offline', false);
-
-    //  disallow custom 'X-' headers such as X-Requested-With for XHRs?
-    TP.sys.setcfg('tibet.simple_cors_only', false);
-
-    //  should we 'auto resolve' traits?
-    TP.sys.setcfg('tibet.traits_resolve', true);
-
-    //  should we warn when traits are 'auto resolved'?
-    TP.sys.setcfg('tibet.traits_warn', false);
 
     //  ---
     //  importer
@@ -909,7 +896,7 @@
     TP.sys.setcfg('debug.use_debugger', false);
 
     //  ---
-    //  http/webdav/websocket
+    //  http/jsonp/webdav/websocket
     //  ---
 
     //  default timeout for http requests in milliseconds (15 seconds). only
@@ -922,6 +909,17 @@
     //  are consistent with what people are used to entering for other
     //  frameworks.
     TP.sys.setcfg('http.use_webdav', true);
+
+    //  disallow custom 'X-' headers such as X-Requested-With for XHRs? This can
+    //  affect whether CORS XHR calls do preflight requests.
+    TP.sys.setcfg('http.simple_cors_only', false);
+
+    //  how long does the jsonp call delay in constructing the script element
+    //  needed to help processing jsonp calls.
+    TP.sys.setcfg('jsonp.delay', 1000);
+
+    //  the ID to search for and/or generate for JSONP access buffering.
+    TP.sys.setcfg('jsonp.frame_id', 'JSONP');
 
     //  default timeout for websocket requests in milliseconds (15 seconds).
     TP.sys.setcfg('websocket.timeout', 15000);
@@ -954,10 +952,6 @@
     //  TP.core.Job will keep statistics regarding start/stop times, delays,
     //  intervals, etc.
     TP.sys.setcfg('job.track_stats', false);
-
-    //  how long does the jsonp call delay in constructing the script element
-    //  needed to help processing jsonp calls.
-    TP.sys.setcfg('jsonp.delay', 1000);
 
     //  ---
     //  logging/notification
@@ -1212,36 +1206,36 @@
 
     //  the file holding the TIBET activity log when $writeActivityToDisk=true.
     //  Normally this won't be used except during certain debugging cycles.
-    TP.sys.setcfg('tibet.activity_file', '~app_log/activity.xml');
+    TP.sys.setcfg('path.activity_file', '~app_log/activity.xml');
 
     //  where is the keyring file? this file is used (by default) as the source
     //  for application keyrings used by TP.core.Role and TP.core.Unit types to
     //  associate permission "keys" with TP.core.User instances.
-    TP.sys.setcfg('tibet.keyring_file', '~lib_dat/keyrings.xml');
+    TP.sys.setcfg('path.keyring_file', '~lib_dat/keyrings.xml');
 
     //  where is the default location for the listener (observe) map? this
     //  path should be an absolute path using either a / or ~ prefix to
     //  reference libroot or approot respectively. this can be set in the
     //  boot script/tibet.xml files using the 'listeners' parameter.
-    TP.sys.setcfg('tibet.listener_file', '~lib_dat/listeners.xml');
+    TP.sys.setcfg('path.listener_file', '~lib_dat/listeners.xml');
 
     //  where is the default location for the localization string file? this
     //  path should be an absolute path using either a / or ~ prefix to
     //  reference libroot or approot respectively. this can be set in the
     //  boot script/tibet.xml files using the 'strings' parameter.
-    TP.sys.setcfg('tibet.string_file', '~lib_dat/strings.tmx');
+    TP.sys.setcfg('path.string_file', '~lib_dat/strings.tmx');
 
     //  where is the default location for the uri mappings? this path should be
     //  an absolute path using either a / or ~ prefix to reference libroot or
     //  approot respectively. this can be set in the boot script/tibet.xml files
     //  using the 'uris' parameter. A sample is in ~lib_dat/uris.xml.
-    TP.sys.setcfg('tibet.uri_file', null);
+    TP.sys.setcfg('path.uri_file', null);
 
     //  where is the default vCard file containing application vcards? this file
     //  is used (by default) as a simple way to create a small set of vcards
     //  that can be used across users. The vcard information relates users to
     //  roles, linking permissions assigned to those roles to a particular user.
-    TP.sys.setcfg('tibet.vcards', '~lib_dat/vcards.xml');
+    TP.sys.setcfg('path.vcard_file', '~lib_dat/vcards.xml');
 
     //  ---
     //  tdc processing
@@ -1449,41 +1443,47 @@
     // Ensure we use the tibetdir approach to computing root paths.
     TP.sys.setcfg('boot.rootcomp', 'tibetdir');
 
-    //  should TIBET enforce type uniqueness during defineSubtype operation. the
-    //  default is true, but this can be flipped to allow reloading during
-    //  development (with a number of caveats).
-    TP.sys.setcfg('tibet.unique_types', true);
-
     //  ---
     //  tibet internal
     //  ---
 
     //  should we cache child (subtype) names?
-    TP.sys.setcfg('tibet.$$cache_children', true);
+    TP.sys.setcfg('oo.$$cache_children', true);
 
     //  should we cache child (subtype) references?
-    TP.sys.setcfg('tibet.$$cache_cnames', true);
+    TP.sys.setcfg('oo.$$cache_cnames', true);
 
     //  should we cache parent (supertype) references?
-    TP.sys.setcfg('tibet.$$cache_parents', true);
+    TP.sys.setcfg('oo.$$cache_parents', true);
 
     //  should we cache parent (supertype) names?
-    TP.sys.setcfg('tibet.$$cache_pnames', true);
+    TP.sys.setcfg('oo.$$cache_pnames', true);
 
     //  should DNU methods be constructed? this controls whether the
     //  finalization process should construct DNU backstops for methods.
-    TP.sys.setcfg('tibet.$$construct_dnus', true);
+    TP.sys.setcfg('oo.$$construct_dnus', true);
 
     //  it's occasionally useful to see what *would* have happened --
     //  particularly when using inferencing depth/strictness controls.
-    TP.sys.setcfg('tibet.$$invoke_inferences', true);
+    TP.sys.setcfg('oo.$$invoke_inferences', true);
 
     //  this is OFF at startup and gets enabled once the kernel has loaded to
     //  avoid problems during startup.
-    TP.sys.setcfg('tibet.$$use_backstop', false);
+    TP.sys.setcfg('oo.$$use_backstop', false);
 
     //  should inferencing be enabled.
-    TP.sys.setcfg('tibet.$$use_inferencing', true);
+    TP.sys.setcfg('oo.$$use_inferencing', true);
+
+    //  should we 'auto resolve' traits?
+    TP.sys.setcfg('oo.$$traits_resolve', true);
+
+    //  should we warn when traits are 'auto resolved'?
+    TP.sys.setcfg('oo.traits_warn', false);
+
+    //  should TIBET enforce type uniqueness during defineSubtype operation. the
+    //  default is true, but this can be flipped to allow reloading during
+    //  development (with a number of caveats).
+    TP.sys.setcfg('oo.unique_types', true);
 
     //  ---
     //  tibet:root rendering control
@@ -1510,9 +1510,9 @@
     //  the code frame. when booting in a single phase this page replaces the
     //  index file and booting has to be restarted by the page returned from
     //  your server on successful login.
-    TP.sys.setcfg('tibet.indexpage', '~/index.html');
+    TP.sys.setcfg('path.index_page', '~/index.html');
 
-    TP.sys.setcfg('tibet.loginpage', '~app_xhtml/login.xhtml');
+    TP.sys.setcfg('path.login_page', '~app_xhtml/login.xhtml');
 
     //  ---
     //  tuning

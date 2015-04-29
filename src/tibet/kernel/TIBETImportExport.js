@@ -45,7 +45,7 @@ function(forceRefresh) {
      *     URI lookup, caching, loading, and storage. This file is typically
      *     named uris.xml but that name can be altered in the tibet.xml file
      *     using the 'uris' boot parameter. You can also change it using the
-     *     parameter tibet.uri_file. Either approach should resolve to a URI
+     *     parameter path.uri_file. Either approach should resolve to a URI
      *     which can be passed to the TP.core.URI type for lookup. Note that
      *     this file should be in the form required by the XML Catalog standard.
      * @param {Boolean} forceRefresh True if the current cached copy should be
@@ -93,7 +93,7 @@ function(forceRefresh) {
 
         if (TP.notValid(node)) {
             try {
-                fname = TP.uriExpandPath(TP.sys.cfg('tibet.uri_file'));
+                fname = TP.uriExpandPath(TP.sys.cfg('path.uri_file'));
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
                     //  since this gets loaded very early in the startup

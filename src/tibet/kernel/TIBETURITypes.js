@@ -9319,7 +9319,7 @@ function(aRoute) {
 
     //  Capture the route for the home page for comparison.
     homeURL = TP.ifEmpty(TP.sys.cfg('project.homepage'),
-        TP.sys.cfg('tibet.blankpage'));
+        TP.sys.cfg('path.blank_page'));
     homeRoute = TP.uriGetRouteName(homeURL);
 
     //  If we're about to set the route to the home page and we're on the home

@@ -10835,7 +10835,7 @@ TP.boot.$uiRootConfig = function() {
         //  the iframe. Then set the 'src' attribute to a 'data:'
         //  URL containing an encoded XHTML document.
         iFrameWrapper.innerHTML = '<iframe id="' + uiRootID + '">';
-        path = TP.boot.$uriExpandPath(TP.sys.cfg('tibet.iframepage'));
+        path = TP.boot.$uriExpandPath(TP.sys.cfg('path.iframe_page'));
         iFrameWrapper.firstChild.setAttribute('src', path);
 
         iFrameWrapper.firstChild.onload = function() {

@@ -315,7 +315,7 @@ function(aRequest) {
     //  Grab the URI that corresponds to the project's homepage. If it's not
     //  present, use the blank page instead.
     homeURL = TP.uc(TP.ifEmpty(TP.sys.cfg('project.homepage'),
-                                TP.sys.cfg('tibet.blankpage')));
+                                TP.sys.cfg('path.blank_page')));
 
     request = TP.request();
     request.atPut(TP.ONLOAD,

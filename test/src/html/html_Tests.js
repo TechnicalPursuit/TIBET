@@ -22,7 +22,7 @@ function() {
 
     loadURI = TP.uc('~lib_tst/src/html/HTMLContent.xhtml');
 
-    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 

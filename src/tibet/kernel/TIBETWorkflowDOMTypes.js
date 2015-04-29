@@ -142,7 +142,7 @@ function(forceRefresh) {
 
     try {
         try {
-            if (TP.notEmpty(fname = TP.sys.cfg('tibet.vcards'))) {
+            if (TP.notEmpty(fname = TP.sys.cfg('path.vcard_file'))) {
                 fname = TP.uriExpandPath(fname);
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
@@ -543,7 +543,7 @@ function(forceRefresh) {
      *     required a large number of unique keyring entries.
      * @description The keyring data file location can be altered by setting the
      *     environment parameter 'keyrings', or by altering the
-     *     tibet.keyring_file setting. This URI is then loaded to provide the
+     *     path.keyring_file setting. This URI is then loaded to provide the
      *     application keyring XML data.
      *
      *     NOTE that this call is only used by the getInstanceById call for
@@ -594,7 +594,7 @@ function(forceRefresh) {
         try {
             if (TP.notValid(node)) {
                 fname = TP.uriExpandPath(
-                            TP.sys.cfg('tibet.keyring_file'));
+                            TP.sys.cfg('path.keyring_file'));
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
                     //  since this gets loaded very early in the startup

@@ -1082,7 +1082,7 @@ function(url, aName, aSpec, shouldReplace) {
         //  use the application-specific "blank" so we stay consistent with
         //  the application's look and feel requirements while avoiding
         //  Mozilla's about:blank noise
-        theURL = TP.uc(TP.sys.cfg('tibet.blankpage'));
+        theURL = TP.uc(TP.sys.cfg('path.blank_page'));
     }
 
     theURL = theURL.getLocation();
@@ -1447,7 +1447,7 @@ function(aURL, aRequest) {
 
     //  Default URL to the blank page when empty or null/undefined.
     if (TP.isEmpty(aURL)) {
-        url = TP.sys.cfg('tibet.blankpage');
+        url = TP.sys.cfg('path.blank_page');
         blank = true;
     } else {
         url = aURL;
@@ -1489,7 +1489,7 @@ function(aURL, aRequest) {
         if (blank) {
             win.location = url.getLocation();
         } else {
-            blankURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+            blankURI = TP.uc(TP.sys.cfg('path.blank_page'));
             win.location = blankURI.getLocation();
         }
     } else {
