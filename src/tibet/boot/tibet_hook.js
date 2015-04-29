@@ -66,7 +66,8 @@ if (window.$$hooked === true) {
         //  TIBET was found in top where we expect it. Map over TP.
         Object.defineProperty(window, 'TP', {value: top.TP, writable: false});
 
-        if (TP.sys.cfg('log.hook')) {
+        if (TP.sys.cfg('log.hook') &&
+                TP.sys.cfg('boot.context') !== 'phantomjs') {
 
             $$msg = 'TIBET hook in \'' +
                     window.name +
@@ -91,7 +92,7 @@ if (window.$$hooked === true) {
 }
 
 //  Output each window/frame and its location data as we process it.
-if (TP.sys.cfg('log.hook')) {
+if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 
     $$msg = 'TIBET hook @ ' + window.name + ' -> ' + $$location;
 
@@ -138,7 +139,7 @@ if (window.onerror.failedlaunch !== true &&
     //  return it to the current window as properly managed content
     top.TP.windowResetLocation(window);
 
-    if (TP.sys.cfg('log.hook')) {
+    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
         top.console.log('bailing out via location= trap');
     }
     return;

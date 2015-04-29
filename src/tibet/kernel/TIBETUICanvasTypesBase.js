@@ -54,7 +54,7 @@ function(aWindow) {
         return this.raise('TP.sig.InvalidWindow');
     }
 
-    if (TP.sys.cfg('log.hook')) {
+    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 
         msg = 'Arming window: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);

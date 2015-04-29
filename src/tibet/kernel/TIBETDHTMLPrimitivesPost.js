@@ -8150,7 +8150,7 @@ function(aWindow) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
-    if (TP.sys.cfg('log.hook')) {
+    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 
         msg = 'Processing document loaded for: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);

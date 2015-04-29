@@ -383,7 +383,7 @@ TP.boot.installPatches = function(aWindow) {
 
     var $$msg;
 
-    if (TP.sys.cfg('log.hook')) {
+    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 
         $$msg = 'TIBET hook installing window patches on ' + aWindow.name;
 
@@ -835,7 +835,7 @@ TP.boot.installPatches = function(aWindow) {
 
     TP.boot.$$setupMetadata(aWindow);
 
-    if (TP.sys.cfg('log.hook')) {
+    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 
         $$msg = 'TIBET hook updated JavaScript metadata.';
 
@@ -1298,7 +1298,8 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
                 'http://www.technicalpursuit.com/1999/tibet',
                 'tibet:canvasinitialized')) {
 
-            if (TP.sys.cfg('log.hook')) {
+            if (TP.sys.cfg('log.hook') &&
+                    TP.sys.cfg('boot.context') !== 'phantomjs') {
 
                 $$msg = 'TIBET hook skipping re-instrumentation of ' +
                         doc.defaultView.name + '.document';
@@ -1357,7 +1358,8 @@ TP.boot.initializeCanvasWindow = function(aWindow) {
     win = aWindow;
 
     if (win.$$hooked === true) {
-        if (TP.sys.cfg('log.hook')) {
+        if (TP.sys.cfg('log.hook') &&
+                TP.sys.cfg('boot.context') !== 'phantomjs') {
 
             $$msg = 'TIBET hook skipping re-instrumentation of window ' +
                     win.name;
