@@ -796,6 +796,29 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentGetTheme',
+function(aDocument) {
+
+    /**
+     * @method documentGetTheme
+     * @summary Gets the data-theme attribute on the supplied document body that
+     *     is helping to drive themed CSS.
+     * @param {Document} aDocument The document to get the theme for.
+     * @returns {String} The theme in effect for the supplied document.
+     */
+
+    var body;
+
+    body = TP.documentGetBody(aDocument);
+    if (TP.isElement(body)) {
+        return TP.elementGetAttribute(body, 'data-theme');
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentRewriteSpecialHacks',
 function(theContent) {
 
@@ -939,8 +962,8 @@ function(aDocument, themeName) {
 
     /**
      * @method documentSetTheme
-     * @summary Sets a data-theme attribute on the document body to help drive
-     *     themed CSS.
+     * @summary Sets a data-theme attribute on the supplied document body to
+     *     help drive themed CSS.
      * @param {Document} aDocument The document to set the theme for.
      * @param {String} themeName The theme name to set for the document.
      */

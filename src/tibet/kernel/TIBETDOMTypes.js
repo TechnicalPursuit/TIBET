@@ -13109,6 +13109,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('getTheme',
+function() {
+
+    /**
+     * @method getTheme
+     * @summary Gets the data-theme attribute on the document body that is
+     *     helping to drive themed CSS.
+     * @returns {String} The theme in effect for the receiver.
+     */
+
+    return TP.documentGetTheme(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DocumentNode.Inst.defineMethod('getTitle',
 function() {
 
@@ -13215,7 +13230,8 @@ function(themeName) {
 
     /**
      * @method setTheme
-     * @summary Sets the receiver's CSS theme as appropriate.
+     * @summary Sets a data-theme attribute on the receiver's body to help drive
+     *     themed CSS.
      * @param {String} themeName The theme name to set for the document.
      * @returns {TP.core.DocumentNode} The receiver.
      */
