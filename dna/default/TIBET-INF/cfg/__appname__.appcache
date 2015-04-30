@@ -51,25 +51,25 @@ node_modules/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
 
 # --- don't cache multiple copies of TIBET, only the desired one(s)
 
-## node_modules/tibet/lib/src/tibet_init.js
+## node_modules/tibet/lib/src/tibet_loader.js
 ## node_modules/tibet/lib/src/tibet_hook.js
 ## node_modules/tibet/lib/src/tibet_base.js
 ## node_modules/tibet/lib/src/tibet_full.js
 ## node_modules/tibet/lib/src/tibet_developer.js
 
-## node_modules/tibet/lib/src/tibet_init.js.gz
+## node_modules/tibet/lib/src/tibet_loader.js.gz
 ## node_modules/tibet/lib/src/tibet_hook.js.gz
 ## node_modules/tibet/lib/src/tibet_base.js.gz
 ## node_modules/tibet/lib/src/tibet_full.js.gz
 ## node_modules/tibet/lib/src/tibet_developer.js.gz
 
-node_modules/tibet/lib/src/tibet_init.min.js
+node_modules/tibet/lib/src/tibet_loader.min.js
 node_modules/tibet/lib/src/tibet_hook.min.js
 node_modules/tibet/lib/src/tibet_base.min.js
 node_modules/tibet/lib/src/tibet_full.min.js
 node_modules/tibet/lib/src/tibet_developer.min.js
 
-## node_modules/tibet/lib/src/tibet_init.min.js.gz
+## node_modules/tibet/lib/src/tibet_loader.min.js.gz
 ## node_modules/tibet/lib/src/tibet_hook.min.js.gz
 ## node_modules/tibet/lib/src/tibet_base.min.js.gz
 ## node_modules/tibet/lib/src/tibet_full.min.js.gz

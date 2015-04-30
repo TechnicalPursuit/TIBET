@@ -9,7 +9,7 @@
 //  ============================================================================
 
 /**
- * @overview The central portion of the tibet_init boot script. This file
+ * @overview The central portion of the tibet_loader boot script. This file
  *     contains the logic for processing TIBET package files and loading their
  *     configured scripts, properties, and other elements. A number of functions
  *     are also included here to help determine the browser environment and to
@@ -36,8 +36,8 @@
 
     TP = root.TP || this.TP;
 
-    //  If we can't find the TP reference, or we're part of tibet_init and we're
-    //  loading due to a location change that should route we exit.
+    //  If we can't find the TP reference, or we're part of tibet_loader and
+    //  we're loading due to a location change that should route we exit.
     if (!TP || TP.$$routing) {
         return;
     }
@@ -4302,106 +4302,28 @@ TP.sys.getWindowById = function(anID, aWindow) {
      * @returns {Window} A native window reference.
      */
 
-    var id,
+    var context,
         parts,
-        elem,
-
-        win,
-
+        id,
+        lid,
         arr,
         len,
         i,
-
         current,
-        next,
-
-        opener,
-
-        cWin;
-
-    if (!anID) {
-        return;
-    }
-
-    cWin = aWindow || window;
-
-    //  most common cases in TIBET are 'top' and the aliases 'uicanvas' and
-    //  'uiroot'
-    switch (anID) {
-        case 'top':
-
-            return cWin.top;
-
-        case 'uiroot':
-        case 'UIROOT':
-
-            elem = cWin.document.getElementById(anID);
-            if (TP.boot.$isValid(elem) &&
-                TP.boot.$isValid(elem.contentWindow)) {
-                return elem.contentWindow;
-            }
-
-            return;
-
-        case 'uicanvas':
-        case 'UICANVAS':
-
-            if (typeof TP.sys.getUICanvas === 'function') {
-                //  This call will recurse back into this method, but with
-                //  the real window name.
-                return TP.sys.getUICanvas(true);
-            }
-
-            return;
-
-        case 'parent':
-
-            return parent;
-
-        case 'opener':
-
-            return cWin.opener;
-
-        case 'self':
-        case 'window':
-
-            return cWin;
-
-        default:
-
-            break;
-    }
+        name;
 
     //  not a string? might be a window already
     if (typeof anID !== 'string') {
         if (TP.boot.$isWindow(anID)) {
             return anID;
         }
-
         return;
     }
 
-    //  These slots are set when TP.core.Window objects are created.
-
-    //  second common case is window_N based on new window creation
-    if (TP.SCREEN_PREFIX_REGEX.test(anID) === true) {
-        if (TP.boot.$isWindow(win = TP.global[top.name + '.UIROOT.' + anID])) {
-            return win;
-        }
-    }
-
-    //  another common case is window_N based on new window creation
-    if (TP.WINDOW_PREFIX_REGEX.test(anID) === true) {
-        if (TP.boot.$isWindow(win = TP.global[anID])) {
-            return win;
-        }
-    }
-
     //  if we got a TIBET URI then we've got to split out the canvas ID.
-    //  this also isn't recommended practice but the test is quick enough
     if (anID.indexOf('tibet:') === 0) {
         //  have to split into parts to get canvas ID. if we don't match its
-        //  actually an invalid ID. if we match but it's empty then its
+        //  actually an invalid ID. if we match but path is empty then its
         //  shorthand for the current uicanvas
         if (TP.boot.$isValid(parts = anID.match(TP.TIBET_URI_SPLITTER))) {
             //  whole, jid, resource, canvas, path, pointer
@@ -4413,130 +4335,72 @@ TP.sys.getWindowById = function(anID, aWindow) {
             }
 
             id = parts[3] || 'uicanvas';
-
-            if (id.toLowerCase() === 'uicanvas') {
-                if (typeof TP.sys.getUICanvas === 'function') {
-                    return TP.sys.getUICanvas();
-                }
-                return;
-            }
-
-            if (id.toLowerCase() === 'uiroot') {
-                if (typeof TP.sys.getUIRoot === 'function') {
-                    return TP.sys.getUIRoot();
-                }
-
-                return;
-            }
         } else {
             return;
+        }
+    }
+
+    //  UICANVAS is special since it's a virtual name for another window. We
+    //  need the actual window name.
+    if (id === 'uicanvas' || id === 'UICANVAS') {
+        if (typeof TP.sys.getUICanvasName === 'function') {
+            id = TP.sys.getUICanvasName();
+        } else {
+            //  Not booted yet. No real way to know but we can guess UIBOOT.
+            id = 'UIBOOT';
         }
     } else {
         id = anID;
     }
 
-    //  normalize paths to dot-separated syntax
+    //  Normalize any path-style names to dot-separated syntax.
     id = id.replace(/\//g, '.');
 
-    //  watch out for certain pathologies
+    //  Watch out for certain pathologies found in some TIBET URIs.
     if (TP.BAD_WINDOW_ID_REGEX.test(id)) {
         return;
     }
 
-    //  if it's not a window path (a.b.c format) check the obvious places
-    if (/\./.test(id) !== true) {
-        if (cWin.name === id) {
-            return cWin;
-        }
+    //  Default to working from the current window down.
+    context = aWindow || window;
 
-        if (cWin.parent.name === id) {
-            return cWin.parent;
-        }
-
-        if (top.name === id) {
-            return top;
-        }
-
-        if (TP.boot.$isWindow(win = cWin[id])) {
-            return win;
-        }
-
-        if (TP.boot.$isWindow(win = cWin.parent[id])) {
-            return win;
-        }
-
-        if (TP.boot.$isWindow(win = cWin.top[id])) {
-            return win;
-        }
-
-        if (cWin.opener != null) {
-            if (cWin.opener.name === id) {
-                return cWin.opener;
-            }
-
-            if (TP.boot.$isWindow(win = cWin.opener[id])) {
-                return win;
-            }
-        }
-
-        //  no '.' and we've looked "everywhere" unless it's an IFRAME
-        //  window...
-        if ((win = cWin.document.getElementById(id)) != null) {
-            try {
-                return win.contentWindow;
-            } catch (e) {
-                TP.boot.$stderr('Failed to find window for: ' + id,
-                                    TP.boot.$ec(e),
-                                    TP.FATAL);
-            }
-        }
-
-        return;
+    //  And the other obvious things...
+    if (top.name === id) {
+        return top;
+    } else if (context.name === id) {
+        return context;
     }
 
-    //  try iterating, stopping at each level to check for a window IFRAME
+    //  Iterate, stopping at each level to check for a window IFRAME and/or name
+    //  value since things like top.name aren't globals you can find otherwise.
     arr = id.split('.');
     len = arr.length;
-    current = cWin;
+    current = context;
 
-    for (i = 0; i < len; i++) {
-        //  see if its a slot on the window object itself. If not, use a
-        //  recursive lookup.
-        next = current[arr[i]];
-        if (!TP.boot.$isWindow(next)) {
-            next = TP.sys.getWindowById(arr[i], current);
+    while (name = arr.shift()) {
+        if (current.name === name) {
+            continue;
+        }
 
-            if (next) {
-                current = next;
-                if (!TP.boot.$isWindow(current)) {
-                    break;
-                }
-            } else {
-                current = null;
-                break;
-            }
-        } else {
+        next = current[name];
+        if (TP.boot.$isWindow(next)) {
             current = next;
+            continue;
+        } else if (TP.boot.$isElement(next) &&
+                TP.boot.$isWindow(next.contentWindow)) {
+            current = next.contentWindow;
+            continue;
+        }
+
+        next = current.document.getElementById(name);
+        if (TP.boot.$isElement(next) &&
+                TP.boot.$isWindow(next.contentWindow)) {
+            current = next.contentWindow;
+            continue;
         }
     }
 
-    if (TP.boot.$isWindow(current)) {
-        return current;
-    }
-
-    //  try openers. this is largely here to help new windows find TIBET
-    opener = cWin.opener;
-    if (opener != null &&
-        opener !== cWin &&
-        typeof TP.windowIsInstrumented === 'function') {
-        if (!TP.windowIsInstrumented(opener)) {
-            opener.TP.sys = TP.sys;
-        }
-
-        return opener.TP.sys.getWindowById(anID);
-    }
-
-    return;
+    return current;
 };
 
 //  ----------------------------------------------------------------------------
@@ -8087,7 +7951,7 @@ TP.boot.$getLibRoot = function() {
                 document.getElementsByTagName('script'), 0);
             len = scripts.length;
             for (i = 0; i < len; i++) {
-                if (/tibet_init/.test(scripts[i].src)) {
+                if (/tibet_loader/.test(scripts[i].src)) {
                     path = scripts[i].src;
                     break;
                 }
@@ -8101,7 +7965,7 @@ TP.boot.$getLibRoot = function() {
                     TP.boot.$uriCollapsePath(
                         TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(
                             libroot, path),
-                        TP.sys.cfg('boot.initoffset'))));
+                        TP.sys.cfg('boot.loadoffset'))));
             }
 
             break;

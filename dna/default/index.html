@@ -30,7 +30,7 @@ iframe {
 <iframe id="UIBOOT" frameborder="0"
     src="./TIBET-INF/boot/xhtml/UIBOOT.xhtml"></iframe>
 
-<script src="./node_modules/tibet/lib/src/tibet_init.min.js"></script>
+<script src="./node_modules/tibet/lib/src/tibet_loader.min.js"></script>
 
 <script>
 //<![CDATA[
@@ -40,7 +40,7 @@ function init() {
         return;
     }
 
-    //  If TP isn't real it means tibet_init wasn't found. Try to notify about
+    //  If TP isn't real it means tibet_loader wasn't found. Try to notify about
     //  that in a reasonable fashion so the UI doesn't just look hung.
     if (top.UIBOOT && top.UIBOOT.contentDocument) {
         top.UIBOOT.contentDocument.getElementById('BOOT-IMAGE').src =
