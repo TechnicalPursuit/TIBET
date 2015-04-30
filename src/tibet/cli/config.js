@@ -236,6 +236,8 @@ Cmd.prototype.setConfig = function(path, value) {
             val = false;
         } else if (!isNaN(parseInt(value, 10))) {
             val = parseInt(value, 10);
+        } else {
+            val = value;
         }
 
         root[parts[0]] = val;
