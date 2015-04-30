@@ -529,59 +529,6 @@ function(range, cssClass, promptText) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('movePromptMarkToCursor',
-function() {
-
-    /**
-     * @method movePromptMarkToCursor
-     * @returns
-     */
-
-    var marker,
-
-        elem,
-        cssClass,
-        promptStr,
-
-        consoleInput,
-        editor,
-
-        cursorRange,
-        markerRange;
-
-    marker = this.get('currentPromptMarker');
-
-    elem = marker.widgetNode.firstChild;
-    cssClass = TP.elementGetClass(elem);
-    promptStr = elem.innerHTML;
-
-    consoleInput = this.get('consoleInput');
-
-    //  Clear the marker
-    markerRange = marker.find();
-    marker.clear();
-
-    //  Make sure to remove the space that was used as the text for the marker.
-    editor = this.get('consoleInput').$getEditorInstance();
-    editor.replaceRange('', markerRange.from, markerRange.to);
-
-    cursorRange = consoleInput.getCursor();
-
-    markerRange = {
-                from: {line: cursorRange.line, ch: cursorRange.ch},
-                to: {line: cursorRange.line, ch: cursorRange.ch + 1}
-            };
-
-    consoleInput.insertAtCursor(' ');
-
-    marker = this.generatePromptMarkAt(markerRange, cssClass, promptStr);
-    this.set('currentPromptMarker', marker);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.console.Inst.defineMethod('setPrompt',
 function(aPrompt, aCSSClass) {
 
