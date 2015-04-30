@@ -39,7 +39,7 @@
         "browserify": "*",
         "chalk": "*",
         "chai": "*",
-        "codemirror": "TechnicalPursuit/codemirror#5.0.0",
+        "codemirror": "TechnicalPursuit/codemirror#5.2.0",
         "connect": "*",
         "connect-gzip-static": "*",
         "csslint": "*",
