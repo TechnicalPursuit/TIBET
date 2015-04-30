@@ -10,7 +10,7 @@
 
 /**
  * @overview Shared default configuration data. This file is loaded by both the
- *     TIBET CLI and the TIBET initialization (aka boot) script tibet_init.js.
+ *     TIBET CLI and the TIBET initialization (aka boot) script tibet_loader.js.
  *     In the CLI the values here can be overridden by the content of tibet.json
  *     while in the browser they can be altered by the URL, tibet.json, or by
  *     package configuration property tags.
@@ -26,8 +26,8 @@
     //  provide a value via root.TP.
     TP = root.TP || this.TP;
 
-    //  If we can't find the TP reference, or we're part of tibet_init and we're
-    //  loading due to a location change that should route we exit.
+    //  If we can't find the TP reference, or we're part of tibet_loader and
+    //  we're loading due to a location change that should route we exit.
     if (!TP || TP.$$routing) {
         return;
     }
@@ -224,11 +224,11 @@
     //  you don't want this loaded set boot.notibetfile to true.
     TP.sys.setcfg('boot.tibetfile', 'tibet.json');
 
-    //  text pattern matching the init file used to check script tags during lib
+    //  text pattern matching the load file used to check script tags during lib
     //  root computation if no other method is specified.
-    TP.sys.setcfg('boot.tibetinit', 'tibet_init');
-    //  how deep under lib_root is the tibet_init file?
-    TP.sys.setcfg('boot.initoffset', '../../..');
+    TP.sys.setcfg('boot.tibetload', 'tibet_loader');
+    //  how deep under lib_root is the tibet_loader file?
+    TP.sys.setcfg('boot.loadoffset', '../../..');
 
 
     //  ---

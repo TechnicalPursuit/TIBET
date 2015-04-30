@@ -3,11 +3,11 @@
 //  ============================================================================
 
 /**
- * @overview The first portion of the tibet_init.js script. This section handles
- *     pre-launch checks to ensure TIBET is being targeted at the TOP window,
- *     puts some common functions in play, and gets TP.sys.cfg (configuration)
- *     data and methods ready for loading tibet_cfg.js and the rest of the
- *     tibet_init boot script.
+ * @overview The first portion of the tibet_loader.js script. This section
+ *     handles pre-launch checks to ensure TIBET is being targeted at the TOP
+ *     window, puts some common functions in play, and gets TP.sys.cfg
+ *     (configuration) data and methods ready for loading tibet_cfg.js and the
+ *     rest of the tibet_loader boot script.
  */
 
 /* jshint debug:true,
@@ -37,7 +37,7 @@ window.$$TIBET = window;
 
 if (window === top) {
 
-    //  Even if we exit this function we need to help the rest of tibet_init's
+    //  Even if we exit this function we need to help the rest of tibet_loader's
     //  modules find the TP reference.
     TP = root.TP = window.TP;
 
@@ -61,7 +61,7 @@ if (window === top) {
     if (top.TP) {
 
         //  Even if we exit this function we need to help the rest of
-        //  tibet_init's modules find the TP reference.
+        //  tibet_loader's modules find the TP reference.
         TP = root.TP = top.TP;
 
         //  See if we can trigger the router to route us based on the URL we're
@@ -71,7 +71,7 @@ if (window === top) {
             //  Keep the boot UI from showing...
             window.document.body.innerHTML = '';
 
-            //  Set a flag the remaining portions of tibet_init and the
+            //  Set a flag the remaining portions of tibet_loader and the
             //  containing file (such as index.html) which might try to invoke
             //  TP.boot.launch() can check.
             top.TP.$$routing = true;

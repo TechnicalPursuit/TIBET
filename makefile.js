@@ -399,7 +399,7 @@ targets.build_tibet = function(make) {
         sh.mkdir('./lib/src');
     }
 
-    targets.rollup_init().then(
+    targets.rollup_loader().then(
         targets.rollup_hook).then(
         targets.rollup_base).then(
         targets.rollup_full).then(
@@ -413,14 +413,14 @@ targets.build_tibet = function(make) {
 };
 
 /**
- * NOTE that if you change the 'init' here so the final file name changes
- * from tibet_init you need to update tibet_cfg.js to have the new value for
- * the 'tibetinit' flag. Also adjust the offset if the file target moves.
+ * NOTE that if you change the 'loader' here so the final file name changes
+ * from tibet_loader you need to update tibet_cfg.js to have the new value for
+ * the 'tibetload' flag. Also adjust the offset if the file target moves.
  */
-targets.rollup_init = function(make) {
+targets.rollup_loader = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
-        config: 'init',
+        config: 'loader',
         dir: './lib/src',
         prefix: 'tibet_',
         headers: false,
@@ -429,7 +429,7 @@ targets.rollup_init = function(make) {
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
-            config: 'init',
+            config: 'loader',
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
@@ -438,10 +438,10 @@ targets.rollup_init = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_init.resolve();
+        targets.rollup_loader.resolve();
     },
     function() {
-        targets.rollup_init.reject();
+        targets.rollup_loader.reject();
     });
 };
 

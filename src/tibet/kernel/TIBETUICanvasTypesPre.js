@@ -774,15 +774,20 @@ function(aWindow, aName, aSpec) {
 
     if (TP.isString(aWindow) && TP.regex.VALID_WINDOWNAME.test(aWindow)) {
         theWindow = TP.sys.getWindowById(aWindow);
+        if (!TP.isKindOf(Window, theWindow)) {
+            return this.raise('WindowNotFound', aWindow);
+        }
     } else if (!TP.isWindow(aWindow)) {
         //  NOTE that we want to ensure that the object provided is at least
         //  a kind of the receiving type, otherwise we can't return it
         if (!TP.isKindOf(aWindow, this)) {
             return this.raise('TP.sig.InvalidParameter');
         } else {
+            //  It's already a TP.core.Window, return it.
             return aWindow;
         }
     } else {
+        //  It's a native window...wrap it below.
         theWindow = aWindow;
     }
 
