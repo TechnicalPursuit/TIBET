@@ -513,9 +513,11 @@ function(range, cssClass, promptText) {
             readOnly: true,
             collapsed: true,
             replacedWith: elem,
-            inclusiveLeft: true,      //  do not allow the cursor to be
+            inclusiveLeft: true,        //  do not allow the cursor to be
                                         //  placed before the prompt mark
-            inclusiveRight: false
+            inclusiveRight: false,
+            clearWhenEmpty: false       //  don't require a character for this
+                                        //  mark to span.
         }
     );
 
@@ -625,8 +627,6 @@ function(aPrompt, aCSSClass) {
                     from: {line: cursorRange.line, ch: cursorRange.ch},
                     to: {line: cursorRange.line, ch: cursorRange.ch + 1}
                 };
-
-        consoleInput.insertAtCursor(' ');
 
         marker = this.generatePromptMarkAt(range, cssClass, promptStr);
         this.set('currentPromptMarker', marker);
