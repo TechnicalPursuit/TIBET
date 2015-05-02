@@ -10418,7 +10418,10 @@ TP.boot.launch = function(options) {
      * @returns {Window} The window the application launched in.
      */
 
-    var nologin;
+    //  Start logging...
+    TP.boot.$stdout('TIBET Boot System (TBS) ' + TP.boot.$bootversion,
+                    TP.SYSTEM);
+    TP.boot.$stdout('', TP.SYSTEM);
 
     //  If we're in the middle of a routine exercise care of having been loaded
     //  into a non-TOP frame exit after clearing that flag. The launch() call
@@ -10443,11 +10446,6 @@ TP.boot.launch = function(options) {
         TP.boot.$$configureOverrides(options);
         TP.boot.$updateDependentVars();
     }
-
-    //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
-    TP.boot.$stdout('TIBET Boot System (TBS) v' + TP.boot.$bootversion,
-                    TP.SYSTEM);
-    //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
     try {
         //  set the initial stage. this will also capture a start time.
