@@ -261,6 +261,11 @@
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.unminified', false);
 
+    //  Do we want to boot the unpackaged source alternative(s) where found? The
+    //  default tibet.xml file includes unpackaged options for kernel/library
+    //  code to assist with debugging into the framework code.
+    TP.sys.setcfg('boot.unpackaged', false);
+
     //  ---
     //  tibet ui roots
     //  ---
