@@ -4305,11 +4305,9 @@ TP.sys.getWindowById = function(anID, aWindow) {
     var context,
         parts,
         id,
-        lid,
         arr,
-        len,
-        i,
         current,
+        next,
         name;
 
     //  not a string? might be a window already
@@ -4374,9 +4372,9 @@ TP.sys.getWindowById = function(anID, aWindow) {
     //  Iterate, stopping at each level to check for a window IFRAME and/or name
     //  value since things like top.name aren't globals you can find otherwise.
     arr = id.split('.');
-    len = arr.length;
     current = context;
 
+    /* eslint-disable no-cond-assign */
     while (name = arr.shift()) {
         if (current.name === name) {
             continue;
@@ -4399,6 +4397,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
             continue;
         }
     }
+    /* eslint-enable no-cond-assign */
 
     return current;
 };
@@ -8400,13 +8399,13 @@ TP.boot.$$configureOverrides = function(options, activate) {
             Object.keys(value).forEach(function(subkey) {
                 var name = key + '.' + subkey;
 
-                TP.boot.$stdout('Setting override for: ' + name + ' to: \'' +
+                TP.boot.$stdout('Overriding cfg for: ' + name + ' with: \'' +
                     value[subkey] + '\'', TP.DEBUG);
 
                 TP.sys.setcfg(name, value[subkey], false, true);
             });
         } else {
-            TP.boot.$stdout('Setting override for: ' + key + ' to: \'' +
+            TP.boot.$stdout('Overriding cfg for: ' + key + ' with: \'' +
                 value + '\'', TP.DEBUG);
             TP.sys.setcfg(key, value, false, true);
         }
@@ -9809,6 +9808,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
         config,     //  The ultimate config ID being used.
         node,       //  Result of searching for our config by ID.
         package,    //  The package node from the XML doc.
+        version,    //  A version specifier for the package.
         msg;        //  Error message construction variable.
 
     expanded = TP.boot.$isEmpty(aPath) ? TP.sys.cfg('boot.package') : aPath;
@@ -9840,6 +9840,23 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
         if (TP.boot.$isEmpty(package.getAttribute('name'))) {
             throw new Error('Missing name on package: ' +
                 TP.boot.$nodeAsString(package));
+        }
+
+        //  version check of the package against the loader version.
+        version = package.getAttribute('version');
+        if (TP.boot.$notEmpty(version)) {
+            version = parseInt(version, 10);
+            if (!version) {
+                throw new Error('<package> has non-numeric version: ' +
+                    version + package.getAttribute('version'));
+            }
+
+            //  Booters are intended to be backward compatible so we want the
+            //  version to be more recent than whatever's in the config file.
+            if (version > TP.boot.$$bootversion) {
+                throw new Error('<package> version mismatch: ' +
+                    version + ' vs: ' + TP.boot.$$bootversion);
+            }
         }
 
         if (TP.boot.$isEmpty(aConfig)) {

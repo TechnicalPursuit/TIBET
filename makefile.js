@@ -9,6 +9,8 @@
  *     source code privacy waivers to keep your TIBET-based source code private.
  */
 
+/*eslint indent:0*/
+
 (function() {
 
 'use strict';
@@ -418,14 +420,28 @@ targets.build_tibet = function(make) {
  * the 'tibetload' flag. Also adjust the offset if the file target moves.
  */
 targets.rollup_loader = function(make) {
-    helpers.rollup(make, {
-        pkg: '~lib_cfg/TIBET.xml',
-        config: 'loader',
-        dir: './lib/src',
-        prefix: 'tibet_',
-        headers: false,
-        minify: false,
-        zip: true
+    var date,
+        ts;
+
+    date = new Date();
+    ts = '' + date.getUTCFullYear() +
+        ('0' + (date.getUTCMonth() + 1)).slice(-2) +
+        ('0' + date.getUTCDate()).slice(-2);
+
+    helpers.template(make, {
+        source: '~lib_boot/tibet_pre_template.js',
+        target: '~lib_boot/tibet_pre.js',
+        data: {bootversion: ts}
+    }).then(function() {
+        return helpers.rollup(make, {
+            pkg: '~lib_cfg/TIBET.xml',
+            config: 'loader',
+            dir: './lib/src',
+            prefix: 'tibet_',
+            headers: false,
+            minify: false,
+            zip: true
+        });
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
