@@ -17,6 +17,7 @@
 'use strict';
 
 var CLI,
+    hb,
     fs,
     sh,
     path,
@@ -27,10 +28,12 @@ var CLI,
 
 CLI = require('./_cli');
 fs = require('fs');
+hb = require('handlebars');
 sh = require('shelljs');
 path = require('path');
 Q = require('q');
 zlib = require('zlib');
+
 
 /**
  * Canonical `helper` object for internal utility functions.
@@ -176,6 +179,101 @@ helpers.rollup = function(make, options) {
                 return deferred.promise;
             });
         }
+};
+
+/**
+ * Performs a template interpolation on a source file, writing the output to a
+ * target file. The underlying templating engine used is the handlebars engine.
+ * @param {Cmd} make The make command handle which provides access to logging
+ *     and other CLI functionality specific to make operation.
+ * @param {Hash} options An object whose keys must include:
+ *     source - the file path to the source template text.
+ *     target - the file path to the target file.
+ *     data - the object containing templating data.
+ */
+helpers.template = function(make, options) {
+
+    var content,  // File content after template injection.
+        source,   // The source file path.
+        target,   // The target file path.
+        text,     // File text.
+        data,     // File injection data.
+        template, // The compiled template content.
+        deferred; // Promise support object for returns.
+
+    if (CLI.notValid(options)) {
+        throw new Error('InvalidOptions');
+    }
+
+    if (CLI.notValid(options.source)) {
+        throw new Error('InvalidSourceFile');
+    }
+
+    if (CLI.notValid(options.target)) {
+        throw new Error('InvalidTargetFile');
+    }
+
+    if (CLI.notValid(options.data)) {
+        throw new Error('InvalidData');
+    }
+
+    source = CLI.expandPath(options.source);
+    target = CLI.expandPath(options.target);
+    data = options.data;
+
+    deferred = Q.defer();
+
+    make.verbose('Processing file: ' + source);
+    try {
+        text = fs.readFileSync(source, {encoding: 'utf8'});
+        if (!text) {
+            throw new Error('Empty');
+        }
+    } catch (e) {
+        make.error('Error reading ' + source + ': ' + e.message);
+        deferred.reject(e.message);
+        return deferred.promise;
+    }
+
+    try {
+        template = hb.compile(text);
+        if (!template) {
+            throw new Error('InvalidTemplate');
+        }
+    } catch (e) {
+        make.error('Error compiling template ' + source + ': ' +
+            e.message);
+        deferred.reject(e.message);
+        return deferred.promise;
+    }
+
+    try {
+        content = template(data);
+        if (!content) {
+            throw new Error('InvalidContent');
+        }
+    } catch (e) {
+        make.error('Error injecting template data in ' + source +
+            ': ' + e.message);
+        deferred.reject(e.message);
+        return deferred.promise;
+    }
+
+    if (text === content) {
+        make.verbose('Ignoring static file: ' + source);
+    } else {
+        make.verbose('Updating file: ' + target);
+        try {
+            fs.writeFileSync(target, content);
+        } catch (e) {
+            make.error('Error writing file ' + target + ': ' + e.message);
+            deferred.reject(e.message);
+            return deferred.promise;
+        }
+    }
+
+    deferred.resolve();
+    return deferred.promise;
 };
 
 module.exports = helpers;
