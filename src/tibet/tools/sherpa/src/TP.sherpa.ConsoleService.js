@@ -409,10 +409,6 @@ function(anEvent) {
             this.handleCancel(anEvent);
             break;
 
-        case 'DOM_Ctrl_Enter_Up':
-            consoleGUI.movePromptMarkToCursor();
-            break;
-
         default:
             break;
     }
