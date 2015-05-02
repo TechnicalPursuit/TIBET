@@ -541,7 +541,7 @@
     TP.sys.setcfg('path.lib_bin', '~lib/bin');
 
     TP.sys.setcfg('path.app_boot', '~app_inf/boot');
-    TP.sys.setcfg('path.lib_boot', '~lib_inf/boot');
+    TP.sys.setcfg('path.lib_boot', '~tibet_src/boot');
 
     TP.sys.setcfg('path.app_build', '~app/build');
     TP.sys.setcfg('path.lib_build', '~lib_lib/src');
