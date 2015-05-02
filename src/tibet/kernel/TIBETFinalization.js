@@ -493,7 +493,10 @@ function() {
     if (TP.sys.cfg('boot.context') !== 'phantomjs' && hasBootToggle) {
 
         //  No hook file in the boot screen so we initialize manually.
-        TP.boot.initializeCanvas(TP.win('UIBOOT'));
+        bootframe = TP.wrap(TP.byId(TP.sys.cfg('boot.uiboot'), top));
+        if (TP.boot.isValid(bootframe)) {
+            TP.boot.initializeCanvas(bootframe);
+        }
 
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.
@@ -504,8 +507,9 @@ function() {
         }
 
         //  Prep the UI for full console mode.
-        bootframe = TP.wrap(TP.byId('UIBOOT', top));
-        bootframe.getContentDocument().getBody().addClass('full_console');
+        if (TP.isValid(bootframe)) {
+            bootframe.getContentDocument().getBody().addClass('full_console');
+        }
 
         /* eslint-disable no-wrap-func,no-extra-parens */
         //  set up keyboard toggle to show/hide the boot UI
