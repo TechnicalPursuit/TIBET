@@ -443,6 +443,7 @@ TP.boot.$$uiInput;
 TP.boot.$$uiLog;
 TP.boot.$$uiPath;
 TP.boot.$$uiProgress;
+TP.boot.$$uiSubhead;
 
 //  ---
 //  cached vars

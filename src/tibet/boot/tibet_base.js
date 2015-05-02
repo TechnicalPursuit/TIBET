@@ -6506,6 +6506,7 @@ TP.boot.$releaseUIElements = function() {
     TP.boot.$$uiLog = null;
     TP.boot.$$uiPath = null;
     TP.boot.$$uiProgress = null;
+    TP.boot.$$uiSubhead = null;
 
     return;
 };
@@ -8569,6 +8570,9 @@ TP.boot.$updateDependentVars = function() {
         debug: TP.sys.cfg('log.color.debug'),
         verbose: TP.sys.cfg('log.color.verbose')
     };
+
+    //  Clear any cached UI elements in cases of turning off/altering boot UI.
+    TP.boot.$releaseUIElements();
 };
 
 //  ============================================================================
@@ -10492,10 +10496,6 @@ TP.boot.launch = function(options) {
     //  Regardless of any ignore URL arg settings avoid cycling when the
     //  login page was the first page into the user interface (double-click,
     //  bookmark, shortcut, etc.)
-
-//  TODO: rename 'L' property to be more unique
-    nologin = /\?L=false/.test(window.location.toString());
-    TP.sys.setcfg('boot.uselogin', !nologin);
 
     //  now that both option lists have been set we can proceed with the
     //  startup sequence.
