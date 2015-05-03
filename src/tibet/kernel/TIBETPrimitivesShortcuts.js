@@ -343,7 +343,7 @@ function(anID, nodeContext) {
     }
 
     id = TP.str(anID);
-    node = TP.context(nodeContext, TP.byId.$$context);
+    node = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
 
     //  allow either string or array as ID definition, but turn into an
     //  array of 1 or more IDs to locate
@@ -402,7 +402,7 @@ function(anID, nodeContext) {
         i;
 
     id = TP.str(anID);
-    context = TP.context(nodeContext, TP.byOID.$$context);
+    context = TP.ifInvalid(TP.context(nodeContext), top);
 
     list = TP.isString(id) ? id.split(' ') : id;
     len = list.getSize();
@@ -2618,7 +2618,7 @@ function(anObject, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('go2',
-function(aURI, nodeContext) {
+function(aURI, linkContext) {
 
     /**
      * @method go2
@@ -2626,8 +2626,7 @@ function(aURI, nodeContext) {
      *     this method is that it tracks history and link access which isn't
      *     done by a typical href or location= invocation.
      * @param {TP.core.URI|String} aURI The URI to focus on.
-     * @param {Object} nodeContext The window to adjust. Defaults to the
-     *     $$context placed on this function.
+     * @param {Window} linkContext The window with the original link element.
      * @exception TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      */
@@ -2653,7 +2652,7 @@ function(aURI, nodeContext) {
         return false;
     }
 
-    if (TP.notValid(context = nodeContext)) {
+    if (TP.notValid(context = linkContext)) {
         context = TP.sys.getUICanvas();
     }
 
