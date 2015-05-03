@@ -494,8 +494,8 @@ function() {
 
         //  No hook file in the boot screen so we initialize manually.
         bootframe = TP.wrap(TP.byId(TP.sys.cfg('boot.uiboot'), top));
-        if (TP.boot.isValid(bootframe)) {
-            TP.boot.initializeCanvas(bootframe);
+        if (TP.boot.$isValid(bootframe)) {
+            TP.boot.initializeCanvas(bootframe.getContentWindow());
         }
 
         //  Configure a toggle so we can always get back to the boot UI as

@@ -1268,11 +1268,18 @@ TP.boot.initializeCanvas = function(aWindow) {
 
     var win;
 
-    win = aWindow;
+    if (TP.boot.$isWindow(aWindow)) {
+        //  Should be a window.
+        win = aWindow;
+    } else if (TP.boot.$isElement(aWindow)) {
+        //  In case it's an IFRAME
+        win = aWindow.contentWindow;
+    }
 
-    TP.boot.initializeCanvasWindow(win);
-
-    TP.boot.initializeCanvasDocument(win.document);
+    if (TP.boot.$isWindow(win)) {
+        TP.boot.initializeCanvasWindow(win);
+        TP.boot.initializeCanvasDocument(win.document);
+    }
 
     return;
 };
