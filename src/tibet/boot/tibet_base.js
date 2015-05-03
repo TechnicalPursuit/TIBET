@@ -9853,9 +9853,9 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
 
             //  Booters are intended to be backward compatible so we want the
             //  version to be more recent than whatever's in the config file.
-            if (version > TP.boot.$$bootversion) {
+            if (version > TP.boot.$version) {
                 throw new Error('<package> version mismatch: ' +
-                    version + ' vs: ' + TP.boot.$$bootversion);
+                    version + ' vs: ' + TP.boot.$version);
             }
         }
 
@@ -10436,7 +10436,7 @@ TP.boot.launch = function(options) {
      */
 
     //  Start logging...
-    TP.boot.$stdout('TIBET Boot System (TBS) ' + TP.boot.$bootversion,
+    TP.boot.$stdout('TIBET Boot System (TBS) ' + TP.boot.$version,
                     TP.SYSTEM);
     TP.boot.$stdout('', TP.SYSTEM);
 

@@ -422,7 +422,7 @@ TP.TIBET_VERSION_SPLITTER = /(\d*)\.(\d*)\.(\d*)/;
 //  process will be terminated with a version mismatch error.
 //  NOTE: we use parseInt here to keep this file valid JS for editing. If we use
 //  a bare numeric and try to template the linters get angry over syntax errors.
-TP.boot.$bootversion = parseInt('{{bootversion}}', 10);
+TP.boot.$version = parseInt('{{version}}', 10);
 
 //  ---
 //  Scott's nemeses.
