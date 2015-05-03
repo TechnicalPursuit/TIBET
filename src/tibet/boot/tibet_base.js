@@ -4318,6 +4318,16 @@ TP.sys.getWindowById = function(anID, aWindow) {
         return;
     }
 
+    //  shortcut for UIROOT and UIROOT.SCREEN_0 which are common lookups based
+    //  on the canvas in either standard or sherpa-enabled operation.
+    if (TP.boot.$isWindow(top[anID])) {
+        return top[anID];
+    } else if (TP.boot.$isElement(top[anID])) {
+        return top[anID].contentWindow;
+    } else if (/UIROOT.SCREEN_0/.test(anID)) {
+        return top.UIROOT && top.UIROOT.SCREEN_0;
+    }
+
     //  if we got a TIBET URI then we've got to split out the canvas ID.
     if (anID.indexOf('tibet:') === 0) {
         //  have to split into parts to get canvas ID. if we don't match its
@@ -4336,6 +4346,8 @@ TP.sys.getWindowById = function(anID, aWindow) {
         } else {
             return;
         }
+    } else {
+        id = anID;
     }
 
     //  UICANVAS is special since it's a virtual name for another window. We
@@ -4345,10 +4357,10 @@ TP.sys.getWindowById = function(anID, aWindow) {
             id = TP.sys.getUICanvasName();
         } else {
             //  Not booted yet. No real way to know but we can guess UIBOOT.
-            id = 'UIBOOT';
+            if (TP.boot.$isWindow(top.UIBOOT)) {
+                return top.UIBOOT;
+            }
         }
-    } else {
-        id = anID;
     }
 
     //  Normalize any path-style names to dot-separated syntax.
@@ -4359,8 +4371,8 @@ TP.sys.getWindowById = function(anID, aWindow) {
         return;
     }
 
-    //  Default to working from the current window down.
-    context = aWindow || window;
+    //  Default to working from the top window down.
+    context = aWindow || top;
 
     //  And the other obvious things...
     if (top.name === id) {
@@ -4396,6 +4408,9 @@ TP.sys.getWindowById = function(anID, aWindow) {
             current = next.contentWindow;
             continue;
         }
+
+        //  Not found, bail out.
+        return;
     }
     /* eslint-enable no-cond-assign */
 
