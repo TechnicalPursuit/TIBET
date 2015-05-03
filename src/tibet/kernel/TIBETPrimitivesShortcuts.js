@@ -402,7 +402,7 @@ function(anID, nodeContext) {
         i;
 
     id = TP.str(anID);
-    context = TP.ifInvalid(TP.context(nodeContext), top);
+    context = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
 
     list = TP.isString(id) ? id.split(' ') : id;
     len = list.getSize();
