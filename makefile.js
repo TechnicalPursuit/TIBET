@@ -431,7 +431,7 @@ targets.rollup_loader = function(make) {
     helpers.template(make, {
         source: '~lib_boot/tibet_pre_template.js',
         target: '~lib_boot/tibet_pre.js',
-        data: {bootversion: ts}
+        data: {version: ts}
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
