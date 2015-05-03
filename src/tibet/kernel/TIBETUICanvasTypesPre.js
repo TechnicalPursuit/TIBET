@@ -774,7 +774,7 @@ function(aWindow, aName, aSpec) {
 
     if (TP.isString(aWindow) && TP.regex.VALID_WINDOWNAME.test(aWindow)) {
         theWindow = TP.sys.getWindowById(aWindow);
-        if (!TP.isKindOf(Window, theWindow)) {
+        if (!TP.isWindow(theWindow)) {
             return this.raise('WindowNotFound', aWindow);
         }
     } else if (!TP.isWindow(aWindow)) {
