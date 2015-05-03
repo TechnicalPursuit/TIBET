@@ -1124,9 +1124,18 @@ function(aNode, aProcessor, aRequest) {
             type = TP.core.Node.getConcreteType(node);
         }
 
-        //  Do the deed, invoking the target method against the wrapper type and
-        //  supplying the request.
-        result = type[methodName](processingRequest);
+        try {
+            //  Do the deed, invoking the target method against the wrapper type
+            //  and supplying the request.
+            result = type[methodName](processingRequest);
+        } catch (e) {
+            TP.ifError() ?
+                TP.error(TP.ec(e,
+                        'Error in ' +
+                        this.getTypeName().split('.').last() +
+                        ' for: ' + TP.str(node)),
+                    TP.LOG) : 0;
+        }
 
         //  The node that we got handed back was either identical to the node we
         //  handed in or it equals it, according to the W3C's definition of
