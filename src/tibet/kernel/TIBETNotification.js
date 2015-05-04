@@ -5374,8 +5374,11 @@ function(originSet, aSignal, aPayload, aType) {
 
                 //  Queue the new signal and continue - thereby skipping
                 //  processing for the bubbling phase of this signal (for this
-                //  origin) in deference to signaling the new signal.
-                TP.queue(origin, signame, sigParams);
+                //  origin) in deference to signaling the new signal. Note here
+                //  how we supply 'TP.sig.ResponderSignal' as the default type
+                //  to use if the mapped signal type isn't a real type.
+                TP.queue(origin, signame, sigParams,
+                            null, TP.sig.ResponderSignal);
 
                 continue;
             }
