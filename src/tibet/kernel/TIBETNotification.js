@@ -5366,11 +5366,11 @@ function(originSet, aSignal, aPayload, aType) {
 
                 sigParams.atPut('event', sig.getPayload());
 
-                //  Note that it's important to put the target of the original
-                //  DOM signal here in case that the new signal is a
+                //  Note that it's important to put the current origin on the
+                //  signal here in case that the new signal is a
                 //  RESPONDER_FIRING signal (very likely) as it will look there
                 //  for the first responder when computing the responder chain.
-                sigParams.atPut('target', sig.getTarget());
+                sigParams.atPut('target', origin);
 
                 //  Queue the new signal and continue - thereby skipping
                 //  processing for the bubbling phase of this signal (for this
