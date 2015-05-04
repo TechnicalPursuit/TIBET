@@ -6994,8 +6994,12 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
 
     //  If we were using a spoofed signal name we may not have a real type, but
     //  we need one to determine if the signal is of a type that has an owner,
-    //  or default firing policy etc.
-    type = TP.ifInvalid(type, TP.sig.SignalMap.$getSignalType(aSignal));
+    //  or default firing policy etc. Note that we give preference to any
+    //  'default' signal type that was passed in and, if that doesn't exist,
+    //  then ask the signal instance itself.
+    type = TP.ifInvalid(
+                type,
+                TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(aSignal)));
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event
