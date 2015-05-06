@@ -2902,7 +2902,7 @@ function(aRequest) {
             var name,
                 errors;
 
-            TP.regex.UNDERSCORES.index = 0;
+            TP.regex.UNDERSCORES.lastIndex = 0;
             name = entry.name.replace(TP.regex.UNDERSCORES, '.');
             errors = entry.errors;
 
@@ -3025,7 +3025,7 @@ function(aRequest) {
             results.addAll(
                 TP.sys.getMetadata('methods').getKeys().collect(
                 function(key) {
-                    TP.regex.UNDERSCORES.index = 0;
+                    TP.regex.UNDERSCORES.lastIndex = 0;
                     return key.replace(TP.regex.UNDERSCORES, '.');
                 }));
         }
@@ -3034,7 +3034,7 @@ function(aRequest) {
             results.addAll(
                 TP.sys.getMetadata('owners').getKeys().collect(
                 function(key) {
-                    TP.regex.UNDERSCORES.index = 0;
+                    TP.regex.UNDERSCORES.lastIndex = 0;
                     return key.replace(TP.regex.UNDERSCORES, '.');
                 }));
         }
@@ -3064,7 +3064,7 @@ function(aRequest) {
 
                     if (TP.notEmpty(keys) && keys.getSize() > 1) {
                         results = keys.collect(function(key) {
-                            TP.regex.UNDERSCORES.index = 0;
+                            TP.regex.UNDERSCORES.lastIndex = 0;
                             return key.replace(TP.regex.UNDERSCORES, '.');
                         });
                     } else {
@@ -3154,7 +3154,7 @@ function(aRequest) {
 
                             if (TP.notEmpty(keys) && keys.getSize() > 1) {
                                 results = keys.collect(function(key) {
-                                    TP.regex.UNDERSCORES.index = 0;
+                                    TP.regex.UNDERSCORES.lastIndex = 0;
                                     return key.replace(TP.regex.UNDERSCORES, '.');
                                 });
                             } else {
