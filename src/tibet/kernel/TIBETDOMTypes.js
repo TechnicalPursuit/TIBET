@@ -1422,6 +1422,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('detach',
+function() {
+
+    /**
+     * @method detach
+     * @summary Removes the receiver from its parent.
+     * @returns {Boolean} Whether or not the supplied node is equal to the
+     *     receiver.
+     * @returns {TP.core.Node} The detached node.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return TP.wrap(TP.nodeDetach(node));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('equalTo',
 function(aNode) {
 
