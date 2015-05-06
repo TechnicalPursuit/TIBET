@@ -3042,6 +3042,39 @@ function(anObject, aLogLevel) {
 });
 
 //  ----------------------------------------------------------------------------
+//  MOUSE LOGGING
+//  ----------------------------------------------------------------------------
+
+/*
+The mouse log contains information on all mouse events being logged. Logging
+mouse events can be a useful way to debug code like drag and drop.
+*/
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.defineMethod('logMouse',
+function(anObject, aLogLevel) {
+
+    /**
+     * @method logMouse
+     * @summary Logs a mouse event. This method has no effect if
+     *     TP.sys.shouldLogMouse() is false.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     */
+
+    if (!TP.sys.shouldLogMouse()) {
+        return false;
+    }
+
+    TP.sys.$$log(TP.ac(anObject, TP.MOUSE_LOG), aLogLevel);
+
+    return true;
+});
+
+//  ----------------------------------------------------------------------------
 //  SECURITY LOGGING
 //  ----------------------------------------------------------------------------
 

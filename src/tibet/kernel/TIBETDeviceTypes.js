@@ -2629,6 +2629,8 @@ function(singletonName, normalizedEvent, aSignal) {
         redirected,
         dict,
 
+        logInfo,
+
         handlers,
 
         len,
@@ -2698,6 +2700,80 @@ function(singletonName, normalizedEvent, aSignal) {
 
     //  We process both the specific signal and the overall signal type so
     //  both kinds of observations will succeed.
+
+    if (TP.sys.shouldLogMouse()) {
+
+        logInfo = TP.hc(
+            'target', TP.isValid(normalizedEvent.$$target) ?
+                        TP.id(normalizedEvent.$$target) :
+                        TP.id(normalizedEvent.target),
+            'relatedTarget',
+                        TP.isValid(normalizedEvent.$$relatedTarget) ?
+                        TP.id(normalizedEvent.$$relatedTarget) :
+                        TP.id(normalizedEvent.relatedTarget),
+            'resolvedTarget',
+                        TP.isValid(normalizedEvent.$$_resolvedTarget) ?
+                        TP.id(normalizedEvent.$$_resolvedTarget) :
+                        TP.id(normalizedEvent.resolvedTarget),
+            'type', TP.isValid(normalizedEvent.$$type) ?
+                        normalizedEvent.$$type :
+                        normalizedEvent.type,
+            'timestamp', TP.isValid(normalizedEvent.$$timestamp) ?
+                        normalizedEvent.$$timestamp :
+                        normalizedEvent.timestamp,
+            'view', TP.isValid(normalizedEvent.$$view) ?
+                        normalizedEvent.$$view :
+                        normalizedEvent.view,
+
+            'clientX', TP.isValid(normalizedEvent.$$clientX) ?
+                        normalizedEvent.$$clientX :
+                        normalizedEvent.clientX,
+            'clientY', TP.isValid(normalizedEvent.$$clientY) ?
+                        normalizedEvent.$$clientY :
+                        normalizedEvent.clientY,
+            'offsetX', TP.isValid(normalizedEvent.$$offsetX) ?
+                        normalizedEvent.$$offsetX :
+                        normalizedEvent.offsetX,
+            'offsetY', TP.isValid(normalizedEvent.$$offsetY) ?
+                        normalizedEvent.$$offsetY :
+                        normalizedEvent.offsetY,
+            'pageX', TP.isValid(normalizedEvent.$$pageX) ?
+                        normalizedEvent.$$pageX :
+                        normalizedEvent.pageX,
+            'pageY', TP.isValid(normalizedEvent.$$pageY) ?
+                        normalizedEvent.$$pageY :
+                        normalizedEvent.pageY,
+            'screenX', TP.isValid(normalizedEvent.$$screenX) ?
+                        normalizedEvent.$$screenX :
+                        normalizedEvent.screenX,
+            'screenY', TP.isValid(normalizedEvent.$$screenY) ?
+                        normalizedEvent.$$screenY :
+                        normalizedEvent.screenY,
+
+            'button', TP.isValid(normalizedEvent.$$button) ?
+                        normalizedEvent.$$button :
+                        normalizedEvent.button,
+            'wheelDelta', TP.isValid(normalizedEvent.$$wheelDelta) ?
+                        normalizedEvent.$$wheelDelta :
+                        normalizedEvent.wheelDelta,
+
+            'which', TP.isValid(normalizedEvent.which) ?
+                                    normalizedEvent.which : '',
+
+            'shift', normalizedEvent.shiftKey,
+            'alt', normalizedEvent.altKey,
+            'ctrl', normalizedEvent.ctrlKey,
+            'meta', normalizedEvent.metaKey,
+
+            'low_level_signame', singletonName,
+            'high_level_signame', signal.getSignalName(),
+
+            'special', TP.isValid(normalizedEvent.$special) ?
+                        normalizedEvent.$special : false
+            );
+
+        TP.sys.logMouse(logInfo, null);
+    }
 
     //  Process the handlers registered under the signal name.
     if (TP.notEmpty(handlers = dict.at(signal.getSignalName()))) {

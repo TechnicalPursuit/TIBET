@@ -979,6 +979,7 @@ TP.IO_LOG = 'io';
 TP.JOB_LOG = 'job';
 TP.KEY_LOG = 'key';
 TP.LINK_LOG = 'link';
+TP.MOUSE_LOG = 'mouse';
 TP.PATCH_LOG = 'patch';
 TP.QUERY_LOG = 'query';
 TP.SECURITY_LOG = 'security';
