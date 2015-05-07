@@ -9184,16 +9184,23 @@ function(aWindow) {
         aWindow.addEventListener('focus',
                 function(anEvent) {
 
-                    var docBody;
+                    var canvasWindow,
+                        focusedElem;
 
                     //  For some reason, on Gecko trying to focus the canvas
                     //  window causes problems with focusing items not in the
                     //  canvas window. Focusing the document's body (if there is
                     //  one) seems to get around the problem.
                     if (anEvent.target === aWindow) {
-                        if (TP.isElement(docBody = TP.documentGetBody(
-                                TP.sys.getUICanvas(true).document))) {
-                            docBody.focus();
+                        canvasWindow = TP.sys.getUICanvas(true);
+
+                        focusedElem = TP.documentGetFocusedElement(
+                                                canvasWindow.document);
+
+                        if (TP.isElement(focusedElem)) {
+                            focusedElem.focus();
+                        } else {
+                            TP.documentGetBody(canvasWindow.document).focus();
                         }
                     }
                 },
@@ -9202,10 +9209,23 @@ function(aWindow) {
         aWindow.addEventListener('focus',
                 function(anEvent) {
 
+                    var canvasWindow,
+                        focusedElem;
+
                     if (anEvent.target === aWindow) {
-                        TP.sys.getUICanvas(true).focus();
+                        canvasWindow = TP.sys.getUICanvas(true);
+
+                        focusedElem = TP.documentGetFocusedElement(
+                                                canvasWindow.document);
+
+                        if (TP.isElement(focusedElem)) {
+                            focusedElem.focus();
+                        } else {
+                            canvasWindow.focus();
+                        }
                     }
-                });
+                },
+                false);
     }
 
     return;
