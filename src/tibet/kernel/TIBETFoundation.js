@@ -841,7 +841,7 @@ function(aDelay) {
 });
 
 //  ------------------------------------------------------------------------
-//  FUNCTION PARAMETERS
+//  FUNCTION INFORMATION
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('getArity',
@@ -855,6 +855,7 @@ function() {
      *     function.
      */
 
+    //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.length;
     }
@@ -1014,6 +1015,7 @@ function() {
         tokens,
         comment;
 
+    //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.getCommentText();
     }
@@ -1053,6 +1055,7 @@ function(methodText) {
         newtext,
         patch;
 
+    //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.getMethodPatch(methodText);
     }
@@ -1133,6 +1136,7 @@ function() {
         str,
         ownerName;
 
+    //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.getMethodSourceHead();
     }
@@ -1184,6 +1188,7 @@ function() {
         tokens,
         comments;
 
+    //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.getParameterNames();
     }
@@ -1227,6 +1232,7 @@ function() {
      * @returns {String} The signature string.
      */
 
+    //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.getSignature();
     }
@@ -1250,6 +1256,7 @@ function() {
     var text,
         tokens;
 
+    //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.getSourceText();
     }
