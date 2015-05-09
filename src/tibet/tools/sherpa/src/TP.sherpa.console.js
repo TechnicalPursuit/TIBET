@@ -267,7 +267,8 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var consoleInput;
+    var consoleInput,
+        retVal;
 
     if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
@@ -290,7 +291,17 @@ function(beHidden) {
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
         TP.wrap(TP.byId('content', this.getNativeWindow())).hide();
+
+        //  Execute the supertype's method and capture the return value *after*
+        //  everything has hidden.
+        retVal = this.callNextMethod();
+
     } else {
+
+        //  Execute the supertype's method and capture the return value *before*
+        //  everything has been shown.
+        retVal = this.callNextMethod();
+
         TP.wrap(TP.byId('content', this.getNativeWindow())).show();
 
         consoleInput = this.get('consoleInput');
@@ -306,7 +317,7 @@ function(beHidden) {
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
     }
 
-    return this.callNextMethod();
+    return retVal;
 });
 
 //  ----------------------------------------------------------------------------
