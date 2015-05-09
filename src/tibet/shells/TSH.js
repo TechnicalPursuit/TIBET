@@ -388,7 +388,7 @@ function(aResourceID, aRequest) {
     //  to reflect the current default
     name = this.get('commandXMLNS');
 
-    this.setPrompt(name.chop(':') + '&nbsp;&#187;');
+    this.setPrompt(name.chop(':') + '&#160;&#187;');
 
     this.$set('commandXMLNS', TP.sys.require(name));
 
@@ -1091,7 +1091,7 @@ function(aRequest) {
         if (/^(\w)*:$/.test(src)) {
             if (TP.isType(nstype = TP.sys.require(src))) {
                 this.$set('commandXMLNS', nstype);
-                this.setPrompt(src.chop(':') + '&nbsp;&#187;');
+                this.setPrompt(src.chop(':') + '&#160;&#187;');
 
                 return aRequest.complete();
             } else {
@@ -2933,7 +2933,6 @@ function(aRequest) {
 
     return aRequest.complete(results);
 });
-
 
 //  ------------------------------------------------------------------------
 
