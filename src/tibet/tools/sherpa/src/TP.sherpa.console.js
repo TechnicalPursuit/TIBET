@@ -137,6 +137,12 @@ function() {
 
     consoleInputStartupComplete.observe(consoleInputTPElem, 'TP.sig.DOMReady');
 
+    //  Go ahead and adjust the input size after everything else has laid out to
+    //  get the most accurate layout.
+    (function() {
+        this.adjustInputSize();
+    }.bind(this)).fork(400);
+
     return this;
 });
 
@@ -737,10 +743,7 @@ function() {
     var consoleInput,
         editorHeight,
 
-        styleVals,
-
-        editorFudgeFactor,
-        innerDrawerBorderTop;
+        styleVals;
 
     consoleInput = this.get('consoleInput');
     editorHeight = consoleInput.getEditorHeight();
@@ -751,20 +754,16 @@ function() {
                             'paddingTop', 'paddingBottom',
                             'bottom'));
 
-    editorFudgeFactor = 1;
     this.setHeight(editorHeight -
                     (styleVals.at('borderBottomWidth') +
-                     styleVals.at('paddingBottom') +
-                     editorFudgeFactor));
+                     styleVals.at('paddingBottom')));
 
-    innerDrawerBorderTop = 1;
     TP.elementSetHeight(TP.byId('south', this.getNativeWindow()),
                         editorHeight +
                         styleVals.at('borderTopWidth') +
                         styleVals.at('borderBottomWidth') +
                         styleVals.at('paddingTop') +
                         styleVals.at('paddingBottom') +
-                        innerDrawerBorderTop +
                         styleVals.at('bottom'));
     return;
 });

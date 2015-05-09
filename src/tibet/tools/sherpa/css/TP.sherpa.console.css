@@ -16,10 +16,10 @@ sherpa|console
     display: block;
     position: relative;
 
-    top: 3px;
+    top: 2px;
     bottom: 4px;
 
-    height: 18px;
+    height: 16px;
 
     /* Because we're display: relative, we need use margins for left and
         right */
@@ -31,7 +31,6 @@ sherpa|console
     /* This should match TIBET's CONSOLE_TIER constant */
     z-index: 15000;
 
-    box-shadow: 0 0 0 1px #666;
     border: 1px solid #aaa;
     border-radius: 4px;
     background: #444;
