@@ -2,8 +2,8 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-sherpa|logview
-{
+sherpa|logview {
+
     display: none;
 	position: absolute;
 
@@ -18,13 +18,13 @@ sherpa|logview
 	z-index: 15000;
 }
 
-sherpa|logview:not([pclass|hidden])
-{
+sherpa|logview:not([pclass|hidden]) {
+
     display: block;
 }
 
-sherpa|logview > .body
-{
+sherpa|logview > .body {
+
     position: absolute;
     top: 0px;
     right: 0px;
@@ -38,15 +38,15 @@ sherpa|logview > .body
     color: white;
 }
 
-sherpa|logview > .body ul
-{
+sherpa|logview > .body ul {
+
     list-style-type: none;
     margin: 0px;
     padding: 0px;
 }
 
-sherpa|logview > .body li
-{
+sherpa|logview > .body li {
+
     display: block;
     margin-bottom: 4px;
 }

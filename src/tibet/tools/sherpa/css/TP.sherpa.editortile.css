@@ -3,8 +3,8 @@
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-sherpa|editortile
-{
+sherpa|editortile {
+
     display: none;
 	position: absolute;
 
@@ -27,13 +27,13 @@ sherpa|editortile
 	z-index: 15000;
 }
 
-sherpa|editortile:not([pclass|hidden])
-{
+sherpa|editortile:not([pclass|hidden]) {
+
     display: block;
 }
 
-sherpa|editortile > .header
-{
+sherpa|editortile > .header {
+
     position: absolute;
     display: block;
 
@@ -50,8 +50,8 @@ sherpa|editortile > .header
     cursor: pointer;
 }
 
-sherpa|editortile > .body
-{
+sherpa|editortile > .body {
+
     position: absolute;
 
     background-color: #002B36;
@@ -65,8 +65,8 @@ sherpa|editortile > .body
     overflow-y: auto;
 }
 
-sherpa|editortile .header_text
-{
+sherpa|editortile .header_text {
+
     font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
 
     font-weight: bold;
@@ -77,8 +77,8 @@ sherpa|editortile .header_text
     overflow: hidden;
 }
 
-sherpa|editortile .close_mark
-{
+sherpa|editortile .close_mark {
+
     position: absolute;
 
     cursor: pointer;
@@ -92,8 +92,8 @@ sherpa|editortile .close_mark
     background-image: url(../img/x.svg);
 }
 
-sherpa|editortile xctrls|codeeditor
-{
+sherpa|editortile xctrls|codeeditor {
+
 	position: absolute;
 
     top: 0px;
@@ -104,6 +104,7 @@ sherpa|editortile xctrls|codeeditor
 }
 
 sherpa|editortile #saveButton {
+
     position: absolute;
 
     left: 200px;
@@ -118,6 +119,7 @@ sherpa|editortile #saveButton {
 }
 
 sherpa|editortile #pushButton {
+
     position: absolute;
 
     left: 240px;
@@ -131,8 +133,8 @@ sherpa|editortile #pushButton {
     cursor: pointer;
 }
 
-.editortile_property_list
-{
+.editortile_property_list {
+
     font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
     font-size: 11px;
 
@@ -157,8 +159,8 @@ sherpa|editortile #pushButton {
     overflow-y: auto;
 }
 
-.editortile_property_list h1
-{
+.editortile_property_list h1 {
+
     display: block;
 
     color: #002B36;
@@ -174,8 +176,8 @@ sherpa|editortile #pushButton {
     cursor: pointer;
 }
 
-.editortile_property_list ul
-{
+.editortile_property_list ul {
+
     display: none;
 
     list-style-type: none;
@@ -185,13 +187,13 @@ sherpa|editortile #pushButton {
     cursor: pointer;
 }
 
-.editortile_property_list section:not([hidelist]) ul
-{
+.editortile_property_list section:not([hidelist]) ul {
+
     display: block;
 }
 
-.editortile_property_list li:selected
-{
+.editortile_property_list li:selected {
+
     background-color: #BBBBBB;
 }
 

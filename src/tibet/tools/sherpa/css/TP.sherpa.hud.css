@@ -11,6 +11,7 @@
 }
 
 .drawerButton {
+
     position: relative;
 
     font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
@@ -27,49 +28,60 @@
 }
 
 div#fitToSelf {
+
     background-image: url(../img/fit_to_self.svg);
 }
 
 div.fitToScreen {
+
     background-image: url(../img/fit_to_screen.svg);
 }
 
 div#zoomIn {
+
     background-image: url(../img/zoom_in.svg);
 }
 
 div#zoomOut {
+
     background-image: url(../img/zoom_out.svg);
 }
 
 div#toggleLog {
+
     background-image: url(../img/log.svg);
 }
 
 .north, .south {
+
     transition: height .5s;
 }
 
 .east, .west {
+
     transition: width .5s;
 }
 
 .north[pclass|hidden] {
+
     top: -2px;
     height: 0px;
 }
 
 .west[pclass|hidden] {
+
     left: -2px;
     width: 0px;
 }
 
 .south[pclass|hidden] {
+
     bottom: -2px;
     height: 0px;
 }
 
 .east[pclass|hidden] {
+
     right: -2px;
     width: 0px;
 }

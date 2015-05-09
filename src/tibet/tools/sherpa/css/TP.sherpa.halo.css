@@ -2,8 +2,8 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-sherpa|halo
-{
+sherpa|halo {
+
 	display: none;
 	position: absolute;
 
@@ -17,24 +17,24 @@ sherpa|halo
     border-radius: 5px;
 }
 
-sherpa|halo:not([pclass|hidden])
-{
+sherpa|halo:not([pclass|hidden]) {
+
 	display: block;
 
 	width: 100px;
 	height: 100px;
 }
 
-sherpa|halo > div
-{
+sherpa|halo > div {
+
 	position: absolute;
 
 	width: 16px;
 	height: 16px;
 }
 
-.haloCorner
-{
+.haloCorner {
+
     border: dashed 1px black;
     border-radius: 16px;
 
@@ -42,14 +42,14 @@ sherpa|halo > div
     transition: opacity .25s ease-out;
 }
 
-.haloCorner:hover
-{
+.haloCorner:hover {
+
     opacity: 1.0;
 }
 
 /* TP.NORTHWEST */
-#haloCorner-Northwest
-{
+#haloCorner-Northwest {
+
     top: -12px;
     left: -12px;
 
@@ -57,8 +57,8 @@ sherpa|halo > div
 }
 
 /* TP.NORTH */
-#haloCorner-North
-{
+#haloCorner-North {
+
     top: -12px;
     left: calc(50% - 12px);
 
@@ -66,8 +66,8 @@ sherpa|halo > div
 }
 
 /* TP.NORTHEAST */
-#haloCorner-Northeast
-{
+#haloCorner-Northeast {
+
     top: -12px;
     right: -12px;
 
@@ -75,8 +75,8 @@ sherpa|halo > div
 }
 
 /* TP.WEST */
-#haloCorner-West
-{
+#haloCorner-West {
+
     left: -12px;
     top: calc(50% - 12px);
 
@@ -84,8 +84,8 @@ sherpa|halo > div
 }
 
 /* TP.EAST */
-#haloCorner-East
-{
+#haloCorner-East {
+
     right: -12px;
     top: calc(50% - 12px);
 
@@ -93,8 +93,8 @@ sherpa|halo > div
 }
 
 /* TP.SOUTHWEST */
-#haloCorner-Southwest
-{
+#haloCorner-Southwest {
+
 	bottom: -12px;
 	left: -12px;
 
@@ -102,8 +102,8 @@ sherpa|halo > div
 }
 
 /* TP.SOUTH */
-#haloCorner-South
-{
+#haloCorner-South {
+
     left: calc(50% - 12px);
     bottom: -12px;
 
@@ -111,8 +111,8 @@ sherpa|halo > div
 }
 
 /* TP.SOUTHEAST */
-#haloCorner-Southeast
-{
+#haloCorner-Southeast {
+
 	bottom: -12px;
 	right: -12px;
 

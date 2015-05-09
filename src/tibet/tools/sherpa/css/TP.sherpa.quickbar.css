@@ -3,8 +3,8 @@
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-sherpa|quickbar
-{
+sherpa|quickbar {
+
     display: none;
 	position: absolute;
 
@@ -20,13 +20,13 @@ sherpa|quickbar
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 
-sherpa|quickbar:not([pclass|hidden])
-{
+sherpa|quickbar:not([pclass|hidden]) {
+
     display: block;
 }
 
-sherpa|quickbar > xctrls|codeeditor
-{
+sherpa|quickbar > xctrls|codeeditor {
+
 	position: absolute;
 
     top: 0px;
@@ -38,13 +38,13 @@ sherpa|quickbar > xctrls|codeeditor
     border: solid 1px black;
 }
 
-sherpa|quickbar[showresults]
-{
+sherpa|quickbar[showresults] {
+
     height: 250px;
 }
 
-.quickbar_outer_wrapper
-{
+.quickbar_outer_wrapper {
+
     position: absolute;
 
     top: 0px;
@@ -53,8 +53,8 @@ sherpa|quickbar[showresults]
     width: 30em;
 }
 
-.quickbar_results
-{
+.quickbar_results {
+
     font: 14px/1.4 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
 
     background-color: white;
@@ -68,13 +68,13 @@ sherpa|quickbar[showresults]
     width: 100%;
 }
 
-sherpa|quickbar[showresults] > .quickbar_results
-{
+sherpa|quickbar[showresults] > .quickbar_results {
+
     display: block;
 }
 
-.results_list
-{
+.results_list {
+
     position: absolute;
 
     top: 0px;
@@ -87,16 +87,16 @@ sherpa|quickbar[showresults] > .quickbar_results
     overflow: auto;
 }
 
-.results_list h1
-{
+.results_list h1 {
+
     display: block;
 
     color: #73767D;
     background-color: rgba(222, 222, 222, 0.6);
 }
 
-.results_list ul
-{
+.results_list ul {
+
     list-style-type: none;
     margin: 0px;
     padding: 0px;
@@ -104,18 +104,18 @@ sherpa|quickbar[showresults] > .quickbar_results
     cursor: pointer;
 }
 
-.results_list li:selected
-{
+.results_list li:selected {
+
     background-color: #BBBBBB;
 }
 
-.results_list li:hover
-{
+.results_list li:hover {
+
     background-color: #EFEFEF;
 }
 
-.result_detail
-{
+.result_detail {
+
     border: solid 1px blue;
 
     position: absolute;
