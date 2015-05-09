@@ -64,78 +64,102 @@ function() {
      */
 
     var consoleInputTPElem,
-        consoleInputStartupComplete;
+        contentTPElem,
+
+        consoleOutputTPElem,
+        toolbarElem,
+
+        hudTPElem,
+
+        isHidden,
+
+        editorObj;
 
     consoleInputTPElem = this.get('consoleInput');
 
     //  Make sure to observe setup on the console input here, because it won't
     //  be fully formed when this line is executed.
-    consoleInputStartupComplete = function(aSignal) {
 
-        var contentTPElem,
+    editorObj = consoleInputTPElem.$get('$editorObj');
 
-            consoleOutputTPElem,
-            toolbarElem,
+    editorObj.setOption('theme', 'zenburn');
+    editorObj.setOption('mode', 'javascript');
+    editorObj.setOption('tabMode', 'indent');
+    editorObj.setOption('lineNumbers', false);
+    editorObj.setOption('viewportMargin', Infinity);
+    editorObj.setOption('electricChars', false);
+    editorObj.setOption('smartIndent', false);
+    editorObj.setOption('autofocus', true);
 
-            hudTPElem,
+    editorObj.setOption(
+            'extraKeys',
+            {
+                //  NB: These should match keys that are used by the console in
+                //  TP.sherpa.ConsoleService
+                'Shift-Enter': function() { return true; },
 
-            isHidden;
+                'Shift-Up': function() {return true; },
+                'Shift-Right': function() {return true; },
+                'Shift-Down': function() {return true; },
+                'Shift-Left': function() {return true; },
 
-        consoleInputStartupComplete.ignore(
-                aSignal.getOrigin(), aSignal.getSignalName());
+                'Shift-Alt-Up': function() {return true; },
+                'Shift-Alt-Right': function() {return true; },
+                'Shift-Alt-Down': function() {return true; },
+                'Shift-Alt-Left': function() {return true; },
 
-        consoleInputTPElem.setEditorEventHandler('viewportChange',
-                function() {
-                    this.adjustInputSize();
-                }.bind(this));
+                'Shift-Backspace': function() {return true; },
 
-        //  NB: We need to create the log view *before* we set up the console
-        //  service.
-        //this.setupLogView();
+                'Shift-Esc': function() {return true; },
 
-        //  Set up the consoleOutput element by putting it in the previously
-        //  used 'content' element that is currently displaying a 'busy' panel.
+                'Ctrl-Enter': function() {return true; }
+            });
 
-        contentTPElem = TP.wrap(TP.byId('content', this.getNativeWindow()));
+    consoleInputTPElem.setEditorEventHandler('viewportChange',
+            function() {
+                this.adjustInputSize();
+            }.bind(this));
 
-        consoleOutputTPElem = contentTPElem.addContent(
-                            TP.xhtmlnode('<div id="SherpaConsoleOutput"/>'));
-        this.set('consoleOutput', consoleOutputTPElem);
+    //  NB: We need to create the log view *before* we set up the console
+    //  service.
+    //this.setupLogView();
 
-        //  Place a toolbar element into the same 'content' element.
-        toolbarElem = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                            '#SherpaConsoleOutputToolbar').getResourceNode(
-                                TP.hc('async', false));
-        contentTPElem.addContent(toolbarElem);
+    //  Set up the consoleOutput element by putting it in the previously
+    //  used 'content' element that is currently displaying a 'busy' panel.
 
-        //  NB: We have to set up the ConsoleService this *after* we put in
-        //  the output view.
-        this.setupConsoleService();
+    contentTPElem = TP.wrap(TP.byId('content', this.getNativeWindow()));
 
-        hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
-        this.observe(hudTPElem, 'HiddenChange');
+    consoleOutputTPElem = contentTPElem.addContent(
+                        TP.xhtmlnode('<div id="SherpaConsoleOutput"/>'));
+    this.set('consoleOutput', consoleOutputTPElem);
 
-        //  Use the HUD's current value to set whether we are hidden or
-        //  not.
-        isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
-        this.setAttribute('hidden', isHidden);
+    //  Place a toolbar element into the same 'content' element.
+    toolbarElem = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                        '#SherpaConsoleOutputToolbar').getResourceNode(
+                            TP.hc('async', false));
+    contentTPElem.addContent(toolbarElem);
 
-        TP.elementHideBusyMessage(contentTPElem.getNativeNode());
+    //  NB: We have to set up the ConsoleService this *after* we put in
+    //  the output view.
+    this.setupConsoleService();
 
-        //  Grab the CodeMirror constructor so that we can use it to run
-        //  modes, etc.
-        TP.extern.CodeMirror = consoleInputTPElem.$getEditorConstructor();
+    hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
+    this.observe(hudTPElem, 'HiddenChange');
 
-        this.observe(contentTPElem,
-                        'TP.sig.DOMClick',
-                        function(aSignal) {
-                            this.toggleOutputMode(
-                                TP.elementGetAttribute(
-                                    aSignal.getTarget(), 'mode'));
-                        }.bind(this));
-    }.bind(this);
+    //  Use the HUD's current value to set whether we are hidden or
+    //  not.
+    isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
+    this.setAttribute('hidden', isHidden);
 
-    consoleInputStartupComplete.observe(consoleInputTPElem, 'TP.sig.DOMReady');
+    TP.elementHideBusyMessage(contentTPElem.getNativeNode());
+
+    this.observe(contentTPElem,
+                    'TP.sig.DOMClick',
+                    function(aSignal) {
+                        this.toggleOutputMode(
+                            TP.elementGetAttribute(
+                                aSignal.getTarget(), 'mode'));
+                    }.bind(this));
 
     //  Go ahead and adjust the input size after everything else has laid out to
     //  get the most accurate layout.
@@ -261,6 +285,24 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 //  Other instance methods
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('refresh',
+function() {
+
+    /**
+     * @method refresh
+     */
+
+    var consoleInput;
+
+    if (TP.isValid(consoleInput = this.get('consoleInput'))) {
+        consoleInput.$get('$editorObj').refresh();
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('setAttrHidden',
@@ -315,7 +357,6 @@ function(beHidden) {
 
         //  activate the input cell
         this.activateInputEditor();
-        this.adjustInputSize();
 
         //  Start observing the 'double Shift key' for focusing the input cell.
         this.observe(
@@ -514,15 +555,15 @@ function(range, cssClass, promptText) {
 
     consoleInput = this.get('consoleInput');
 
-    doc = consoleInput.getNativeContentDocument();
+    doc = this.getNativeDocument();
 
-    elem = TP.documentCreateElement(doc, 'span');
+    elem = TP.documentCreateElement(doc, 'span', TP.w3.Xmlns.XHTML);
     TP.elementSetClass(elem, cssClass);
     TP.elementAddClass(elem, 'noselect');
     TP.elementSetAttribute(elem, 'id', TP.sys.cfg('sherpa.console_prompt'));
-    TP.htmlElementSetContent(elem, promptText);
+    TP.xmlElementSetContent(elem, TP.xmlEntitiesToLiterals(promptText));
 
-    marker = consoleInput.$getEditorInstance().markText(
+    marker = consoleInput.$get('$editorObj').markText(
         range.from,
         range.to,
         {
@@ -580,7 +621,7 @@ function(aPrompt, aCSSClass) {
 
     consoleInput = this.get('consoleInput');
 
-    doc = consoleInput.getNativeContentDocument();
+    doc = this.getNativeDocument();
 
     if (!TP.isElement(
                 elem = TP.byId(TP.sys.cfg('sherpa.console_prompt'), doc))) {
@@ -595,7 +636,7 @@ function(aPrompt, aCSSClass) {
         marker = this.generatePromptMarkAt(range, cssClass, promptStr);
         this.set('currentPromptMarker', marker);
 
-        editor = this.get('consoleInput').$getEditorInstance();
+        editor = this.get('consoleInput').$get('$editorObj');
         editor.setCursor(range.to);
     } else {
         TP.elementSetClass(elem, cssClass);
@@ -786,7 +827,7 @@ function() {
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
-        editor = this.get('consoleInput').$getEditorInstance();
+        editor = this.get('consoleInput').$get('$editorObj');
         range = marker.find();
 
         editor.setSelection(range.from, range.to);
@@ -827,8 +868,7 @@ function(anEvent) {
      * @method eventInInput
      */
 
-    return TP.eventGetWindow(anEvent).document ===
-            this.get('consoleInput').getNativeContentDocument();
+    return this.get('consoleInput').$get('$editorObj').hasFocus();
 });
 
 //  ------------------------------------------------------------------------
@@ -921,7 +961,7 @@ function(anObject, shouldAppend) {
         val = TP.str(anObject);
     }
 
-    editor = consoleInput.$getEditorInstance();
+    editor = consoleInput.$get('$editorObj');
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
@@ -985,7 +1025,7 @@ function(aRange) {
 
     var marker;
 
-    marker = this.get('consoleInput').$getEditorInstance().markText(
+    marker = this.get('consoleInput').$get('$editorObj').markText(
         aRange.anchor,
         aRange.head,
         {
@@ -1405,7 +1445,8 @@ function() {
             newEvalRange = {anchor: currentInputRange.from,
                             head: currentInputRange.to};
 
-            this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
+            this.set('currentEvalMarker',
+                        this.generateEvalMarkAt(newEvalRange));
         }
     }
 
@@ -1414,7 +1455,7 @@ function() {
 
         this.set('currentInputMarker',
                     this.generateInputMarkAt({anchor: newEvalRange.anchor,
-                                            head: newEvalRange.head}));
+                                                head: newEvalRange.head}));
         this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
     }
 
@@ -1459,7 +1500,7 @@ function(direction, endPoint) {
 
     cimRange = currentEvalMarker.find();
 
-    editor = this.get('consoleInput').$getEditorInstance();
+    editor = this.get('consoleInput').$get('$editorObj');
 
     lastLineInfo = editor.lineInfo(editor.lastLine());
 
@@ -1623,7 +1664,7 @@ function() {
     //  Only compute the text if you get a valid range
     if (TP.isValid(marker = this.get('currentEvalMarker'))) {
         range = marker.find();
-        editor = this.get('consoleInput').$getEditorInstance();
+        editor = this.get('consoleInput').$get('$editorObj');
         inputText = editor.getRange(range.from, range.to);
     } else {
         this.teardownEvalMark();
@@ -1661,7 +1702,7 @@ function() {
         range = promptMark.find();
         retVal = range.to;
     } else {
-        editor = this.get('consoleInput').$getEditorInstance();
+        editor = this.get('consoleInput').$get('$editorObj');
 
         //  Look for the following, in this order (at the beginning of a line)
         //      - The current prompt (preceded by zero-or-more whitespace)
@@ -1731,7 +1772,7 @@ function() {
         retVal;
         //marks;
 
-    editor = this.get('consoleInput').$getEditorInstance();
+    editor = this.get('consoleInput').$get('$editorObj');
 
     anchor = editor.getCursor();
     searchCursor = editor.getSearchCursor(/^(\s*<|\n)/, anchor);
@@ -1779,7 +1820,7 @@ function() {
         selection,
         range;
 
-    editor = this.get('consoleInput').$getEditorInstance();
+    editor = this.get('consoleInput').$get('$editorObj');
 
     //  If there are real selections, then just use the first one
     selection = editor.getSelection();
@@ -1805,7 +1846,7 @@ function(range) {
 
     var marker;
 
-    marker = this.get('consoleInput').$getEditorInstance().markText(
+    marker = this.get('consoleInput').$get('$editorObj').markText(
         range.anchor,
         range.head,
         {

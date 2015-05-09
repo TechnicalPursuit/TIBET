@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.FramedElement.defineSubtype('codeeditor');
+TP.xctrls.Element.defineSubtype('codeeditor');
 
 //  Events:
 //      xctrls-codeeditor-selected
@@ -29,15 +29,8 @@ TP.xctrls.codeeditor.Type.defineConstant('XML_MODE', 'xml');
 TP.xctrls.codeeditor.Type.defineConstant('CSS_MODE', 'css');
 TP.xctrls.codeeditor.Type.defineConstant('JS_MODE', 'javascript');
 
-//  A URI to the 'frame file' - the file that will be loaded into the
-//  iframe that this type builds to hold the custom control.
-TP.xctrls.codeeditor.set('frameFileURI',
-    TP.uc('~lib_src/xctrls/xctrls_codeeditor/xctrls_codeeditor_stub.html'));
-
 TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
 
-TP.xctrls.codeeditor.Type.resolveTrait('cmdRunContent', TP.xctrls.FramedElement);
-TP.xctrls.codeeditor.Type.resolveTrait('tagCompile', TP.xctrls.FramedElement);
 TP.xctrls.codeeditor.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Inst.resolveTraits(
@@ -46,7 +39,6 @@ TP.xctrls.codeeditor.Inst.resolveTraits(
 TP.xctrls.codeeditor.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
-TP.xctrls.codeeditor.Inst.resolveTrait('init', TP.xctrls.FramedElement);
 
 //  ------------------------------------------------------------------------
 //  TSH Execution Support
@@ -122,8 +114,37 @@ function(aRequest) {
 TP.xctrls.codeeditor.Inst.defineAttribute('$oldSelectionLength');
 TP.xctrls.codeeditor.Inst.defineAttribute('$currentKeyHandler');
 
+TP.xctrls.codeeditor.Inst.defineAttribute('$editorObj');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('init',
+function(aNode, aURI) {
+
+    /**
+     * @method init
+     * @summary Returns a newly initialized instance.
+     * @param {Node} aNode A native node.
+     * @param {TP.core.URI|String} aURI An optional URI from which the Node
+     *     received its content.
+     * @returns {TP.xctrls.FramedElement} A new instance.
+     */
+
+    var editorObj;
+
+    this.callNextMethod();
+
+    /* eslint-disable new-cap */
+    editorObj = TP.extern.CodeMirror(this.getNativeNode());
+    /* eslint-enable new-cap */
+
+    this.$set('$editorObj', editorObj);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.codeeditor.Inst.defineMethod('appendToLine',
@@ -140,7 +161,7 @@ function(aText, line) {
         theLine,
         lineInfo;
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
 
     if (line === TP.LAST) {
         theLine = editor.lastLine();
@@ -161,27 +182,6 @@ function(aText, line) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.codeeditor.Inst.defineMethod('configure',
-function() {
-
-    /**
-     * @method configure
-     * @summary Configure the custom element as part of the startup process.
-     *     This is called from the iframe's 'onload' hook and provides a
-     *     mechanism for further processing after the content in the iframe has
-     *     been completely loaded and initialized.
-     * @returns {TP.xctrls.codeeditor} The receiver.
-     */
-
-    this.refresh();
-
-    //  Make sure to 'call up' so that signaling of 'TP.sig.DOMReady'
-    //  occurs.
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.codeeditor.Inst.defineMethod('createPos',
 function(line, ch) {
 
@@ -193,7 +193,7 @@ function(line, ch) {
      */
 
     /* eslint-disable new-cap */
-    return this.$getEditorConstructor().Pos(line, ch);
+    return TP.extern.CodeMirror.Pos(line, ch);
     /* eslint-enable new-cap */
 });
 
@@ -216,7 +216,7 @@ function(aText, aMode, tokenizeCallback) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorConstructor().runMode(aText, aMode, tokenizeCallback);
+    TP.extern.CodeMirror.runMode(aText, aMode, tokenizeCallback);
 
     return this;
 });
@@ -244,7 +244,7 @@ function(moveAction) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().focus();
+    this.$get('$editorObj').focus();
 
     return this;
 });
@@ -260,7 +260,7 @@ function(start) {
      * @returns
      */
 
-    return this.$getEditorInstance().getCursor(start);
+    return this.$get('$editorObj').getCursor(start);
 });
 
 //  ------------------------------------------------------------------------
@@ -276,35 +276,7 @@ function() {
      * @returns {Object} The visual value of the receiver's UI node.
      */
 
-    return this.$getEditorInstance().getValue();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.codeeditor.Inst.defineMethod('$getEditorConstructor',
-function() {
-
-    /**
-     * @method $getEditorConstructor
-     * @summary Returns the internal CodeMirror editor constructor.
-     * @returns {Object} The internal CodeMirror editor constructor.
-     */
-
-    return this.get('tpIFrame').getNativeContentWindow().CodeMirror;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.codeeditor.Inst.defineMethod('$getEditorInstance',
-function() {
-
-    /**
-     * @method $getEditorInstance
-     * @summary Returns the internal CodeMirror editor instance.
-     * @returns {Object} The internal CodeMirror editor instance.
-     */
-
-    return this.get('tpIFrame').get('cmEditor');
+    return this.$get('$editorObj').getValue();
 });
 
 //  ------------------------------------------------------------------------
@@ -318,7 +290,7 @@ function() {
      * @returns {Number} The height of the editor in pixels.
      */
 
-    return TP.elementGetHeight(this.$getEditorInstance().display.sizer);
+    return TP.elementGetHeight(this.$get('$editorObj').display.sizer);
 });
 
 //  ------------------------------------------------------------------------
@@ -336,7 +308,7 @@ function(aText) {
 
     var editor;
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
 
     editor.setSelection(editor.getCursor(), editor.getCursor());
     editor.replaceSelection(aText);
@@ -377,7 +349,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().refresh();
+    this.$get('$editorObj').refresh();
 
     return this;
 });
@@ -397,7 +369,7 @@ function() {
     var editor,
         lastLineInfo;
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
     if (TP.notValid(lastLineInfo = editor.lineInfo(editor.lastLine()))) {
         return this;
     }
@@ -435,7 +407,7 @@ function(aValue) {
         this.setEditorMode(this.getType().JS_MODE);
     }
 
-    this.$getEditorInstance().setValue(aValue);
+    this.$get('$editorObj').setValue(aValue);
 
     return this;
 });
@@ -457,7 +429,7 @@ function(eventName, aHandlerFunc) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().on(eventName, aHandlerFunc);
+    this.$get('$editorObj').on(eventName, aHandlerFunc);
 
     return this;
 });
@@ -475,7 +447,7 @@ function(modeConst) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().setOption('mode', modeConst);
+    this.$get('$editorObj').setOption('mode', modeConst);
 
     return this;
 });
@@ -493,7 +465,7 @@ function(themeName) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().setOption('theme', themeName);
+    this.$get('$editorObj').setOption('theme', themeName);
 
     return this;
 });
@@ -522,7 +494,7 @@ function(aHandlerFunc) {
             aHandlerFunc(evt);
         };
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
     editor.on('keydown', cmHandlerFunc);
     editor.on('keyup', cmHandlerFunc);
     editor.on('keypress', cmHandlerFunc);
@@ -544,7 +516,7 @@ function(shouldShow) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().setOption('lineNumbers', shouldShow);
+    this.$get('$editorObj').setOption('lineNumbers', shouldShow);
 
     return this;
 });
@@ -561,7 +533,7 @@ function(shouldWrap) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().lineWrapping = shouldWrap;
+    this.$get('$editorObj').lineWrapping = shouldWrap;
 
     return this;
 });
@@ -584,7 +556,7 @@ function() {
         return this;
     }
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
     editor.off('keydown', cmHandlerFunc);
     editor.off('keyup', cmHandlerFunc);
     editor.off('keypress', cmHandlerFunc);
@@ -611,7 +583,7 @@ function(eventName, aHandlerFunc) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().off(eventName, aHandlerFunc);
+    this.$get('$editorObj').off(eventName, aHandlerFunc);
 
     return this;
 });
@@ -631,9 +603,9 @@ function() {
 
     var oldVal;
 
-    oldVal = this.$getEditorInstance().getValue();
+    oldVal = this.$get('$editorObj').getValue();
 
-    this.$getEditorInstance().setValue('');
+    this.$get('$editorObj').setValue('');
 
     this.changed('value', TP.DELETE,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, ''));
@@ -656,7 +628,7 @@ function() {
 
     oldVal = this.getSelection();
 
-    this.$getEditorInstance().replaceSelection('');
+    this.$get('$editorObj').replaceSelection('');
 
     this.changed('selection', TP.DELETE,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, ''));
@@ -686,7 +658,7 @@ function(toStart) {
         first,
         last;
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
 
     //  We collapse only the first selection
     selections = editor.listSelections();
@@ -738,7 +710,7 @@ function() {
      * @returns {String} The currently selected text.
      */
 
-    return this.$getEditorInstance().getSelection(TP.JOIN);
+    return this.$get('$editorObj').getSelection(TP.JOIN);
 });
 
 //  ------------------------------------------------------------------------
@@ -752,7 +724,7 @@ function() {
      * @returns {Number} The ending index of the current selection.
      */
 
-    return this.$getEditorInstance().getCursor('to').ch;
+    return this.$get('$editorObj').getCursor('to').ch;
 });
 
 //  ------------------------------------------------------------------------
@@ -766,7 +738,7 @@ function() {
      * @returns {Number} The starting index of the current selection.
      */
 
-    return this.$getEditorInstance().getCursor('from').ch;
+    return this.$get('$editorObj').getCursor('from').ch;
 });
 
 //  ------------------------------------------------------------------------
@@ -786,7 +758,7 @@ function(aText) {
 
     oldVal = this.getSelection();
 
-    this.$getEditorInstance().replaceSelection(TP.join(oldVal, aText));
+    this.$get('$editorObj').replaceSelection(TP.join(oldVal, aText));
 
     newVal = this.getSelection();
 
@@ -813,7 +785,7 @@ function(aText) {
 
     oldVal = this.getSelection();
 
-    this.$getEditorInstance().replaceSelection(TP.join(aText, oldVal));
+    this.$get('$editorObj').replaceSelection(TP.join(aText, oldVal));
 
     newVal = this.getSelection();
 
@@ -840,7 +812,7 @@ function(aText) {
 
     oldVal = this.getSelection();
 
-    this.$getEditorInstance().replaceSelection(aText);
+    this.$get('$editorObj').replaceSelection(aText);
 
     newVal = this.getSelection();
 
@@ -869,7 +841,7 @@ function(aStartIndex, anEndIndex) {
         startCoords,
         endCoords;
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
 
     startCoords = editor.posFromIndex(aStartIndex);
     endCoords = editor.posFromIndex(anEndIndex);
@@ -894,7 +866,7 @@ function(aPosition) {
     var editor,
         coords;
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
 
     coords = editor.posFromIndex(aPosition);
 
@@ -917,7 +889,7 @@ function() {
     var editor,
         lastLineInfo;
 
-    editor = this.$getEditorInstance();
+    editor = this.$get('$editorObj');
     if (TP.notValid(lastLineInfo = editor.lineInfo(editor.lastLine()))) {
         return this;
     }
@@ -939,7 +911,7 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$getEditorInstance().setCursor({line: 0, ch: 0});
+    this.$get('$editorObj').setCursor({line: 0, ch: 0});
 
     return this;
 });

@@ -4,22 +4,21 @@
 
 /* NB: This should match the theme that is used in the console input editor
 HTML stub file */
-@import url("../cm_theme/zenburn.css");
 
-@namespace html url(http://www.w3.org/1999/xhtml);
+@namespace url(http://www.w3.org/1999/xhtml);
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-sherpa|console
-{
+sherpa|console {
+
     display: block;
-    position: relative;
+    position: absolute;
 
     top: 2px;
+    right: 0px;
     bottom: 4px;
-
-    height: 16px;
+    left: 0px;
 
     /* Because we're display: relative, we need use margins for left and
         right */
@@ -31,35 +30,54 @@ sherpa|console
     /* This should match TIBET's CONSOLE_TIER constant */
     z-index: 15000;
 
-    border: 1px solid #aaa;
+    border: 1px solid #AAAAAA;
     border-radius: 4px;
-    background: #444;
+    background: #444444;
     padding: 1px;
+
+    text-align: left;
+    line-height: 1.0;
 }
 
-sherpa|console[pclass|hidden]
-{
+sherpa|console[pclass|hidden] {
+
     height: 0px;
 }
 
-sherpa|console > xctrls|codeeditor
-{
-    position: static;
+sherpa|console > xctrls|codeeditor {
 
-    top: 0px;
-    left: 0px;
-
-    width: 100%;
-    height: 100%;
-}
-
-sherpa|console > xctrls|codeeditor > iframe
-{
     border-radius: 5px;
 }
 
-#SherpaConsoleOutputToolbar
-{
+sherpa|console > xctrls|codeeditor > .CodeMirror {
+
+    height: auto;
+}
+
+sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+#sherpaPrompt {
+
+    display: inline-block;
+
+    cursor: default;
+
+    margin-right: 6px;
+
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-size: 12px;
+
+    line-height: 12px;
+
+    white-space: nowrap;
+    color: orange;
+}
+#SherpaConsoleOutputToolbar {
+
     position: absolute;
 
     top: 0px;
@@ -78,14 +96,14 @@ sherpa|console > xctrls|codeeditor > iframe
     border-color: transparent;
 }
 
-#SherpaConsoleOutputToolbar:hover
-{
+#SherpaConsoleOutputToolbar:hover {
+
     border-color: rgb(188, 190, 143);
     background-color: #3F3F3F;
 }
 
-#SherpaConsoleOutputToolbar .toolbarButton
-{
+#SherpaConsoleOutputToolbar .toolbarButton {
+
     position: absolute;
 
     visibility: hidden;
@@ -98,51 +116,55 @@ sherpa|console > xctrls|codeeditor > iframe
     background-size: 20px 20px;
 }
 
-#SherpaConsoleOutputToolbar:hover .toolbarButton
-{
+#SherpaConsoleOutputToolbar:hover .toolbarButton {
+
     visibility: visible;
 }
 
-#toggleHSplitTop
-{
+#toggleHSplitTop {
+
     right: 5px;
     background-image: url(../img/h_split_top.svg);
 }
 
-#toggleHSplitBottom
-{
+#toggleHSplitBottom {
+
     right: 30px;
     background-image: url(../img/h_split_bottom.svg);
 }
 
-#toggleVSplitLeft
-{
+#toggleVSplitLeft {
+
     right: 55px;
     background-image: url(../img/v_split_left.svg);
 }
 
-#toggleVSplitRight
-{
+#toggleVSplitRight {
+
     right: 80px;
     background-image: url(../img/v_split_right.svg);
 }
 
-#toggleFullscreen
-{
+#toggleFullscreen {
+
     right: 105px;
     background-image: url(../img/full_screen.svg);
 }
 
+#SherpaConsoleOutput {
 
-#SherpaConsoleOutput
-{
     position: absolute;
+
+    display: flex;
+    flex-direction: column;
 
     top: 0px;
     right: 0px;
     bottom: 0px;
     left: 0px;
+
     padding-left: 5px;
+    padding-right: 5px;
 
     background-color: #3F3F3F;
 
@@ -159,44 +181,50 @@ sherpa|console > xctrls|codeeditor > iframe
     overflow: auto;
 }
 
-#SherpaConsoleOutput *
-{
+#SherpaConsoleOutput * {
+
     font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
 }
 
 
-#SherpaConsoleOutput a
-{
+#SherpaConsoleOutput a {
+
     color: LightSkyBlue;
 }
 
-span[name="inputEntry"]
-{
+span[name="inputEntry"] {
+
     font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
 }
 
-.inputcell
-{
+.consolecellgroup {
+
+    min-height: -webkit-min-content;
+    min-height: -moz-min-content;
+}
+
+.inputcell {
+
     position: relative;
 
     margin-top: 12px;
     margin-bottom: 8px;
 }
 
-.inputcell .hid
-{
+.inputcell .hid {
+
     text-decoration: none;
     display: inline-block;
     min-width: 32px;
 }
 
-.inputcell .hid:hover
-{
+.inputcell .hid:hover {
+
     font-weight: bold;
 }
 
-.inputcell .content
-{
+.inputcell .content {
+
     position: relative;
     display: inline-block;
 
@@ -205,8 +233,8 @@ span[name="inputEntry"]
     white-space: pre-wrap;
 }
 
-.inputcell .stats
-{
+.inputcell .stats {
+
     float: right;
     margin: 0 8px;
     display: inline-block;
@@ -216,8 +244,8 @@ span[name="inputEntry"]
     white-space: pre-wrap;
 }
 
-.inputcell .typeinfo
-{
+.inputcell .typeinfo {
+
     float: right;
     display: inline-block;
     margin: 0 8px;
@@ -232,8 +260,7 @@ span[name="inputEntry"]
     padding: 2px 0;
 }
 
-.outputcell .result
-{
+.outputcell .result {
     position: relative;
     display: inline-block;
     width: 100%;
@@ -241,8 +268,7 @@ span[name="inputEntry"]
     white-space: pre-wrap;
 }
 
-.outputcell .stats
-{
+.outputcell .stats {
     float: right;
     margin: -24px 8px;
     display: inline-block;
@@ -252,8 +278,7 @@ span[name="inputEntry"]
     white-space: pre-wrap;
 }
 
-.outputcell .typeinfo
-{
+.outputcell .typeinfo {
     float: right;
     display: inline-block;
     margin: -24px 8px;

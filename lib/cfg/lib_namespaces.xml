@@ -149,6 +149,7 @@
 </config>
 
 <config id="xctrls">
+
     <script src="xctrls/xctrls_.js"/>
 
     <script src="xctrls/xctrls_Element.js"/>
@@ -201,8 +202,25 @@
     <property name="path.TP.xctrls.drawerbox.style" value="~TP.xctrls.drawerbox/xctrls_drawerbox.css"/>
     <property name="path.TP.xctrls.drawerbox.template" value="~TP.xctrls.drawerbox/xctrls_drawerbox.xhtml"/>
 
+    <!-- BEGIN xctrls:codeeditor -->
+
+    <script src="~lib_deps/codemirror/lib/codemirror.js" no-lint="true"/>
+    <script src="~lib_deps/codemirror/addon/runmode/runmode.js" no-lint="true"/>
+    <script src="~lib_deps/codemirror/addon/search/searchcursor.js" no-lint="true"/>
+
+    <script src="~lib_deps/codemirror/mode/xml/xml.js" no-lint="true"/>
+    <script src="~lib_deps/codemirror/mode/javascript/javascript.js" no-lint="true"/>
+    <script src="~lib_deps/codemirror/mode/css/css.js" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.CodeMirror = CodeMirror;
+        ]]>
+    </script>
+
     <script src="xctrls/xctrls_codeeditor/xctrls_codeeditor.js"/>
     <property name="path.TP.xctrls.codeeditor.style" value="~TP.xctrls.codeeditor/xctrls_codeeditor.css"/>
+
+    <!-- END xctrls:codeeditor -->
 
     <script src="xctrls/xctrls_listbox/xctrls_listbox.js"/>
     <property name="path.TP.xctrls.listbox.style" value="~TP.xctrls.listbox/xctrls_listbox.css"/>

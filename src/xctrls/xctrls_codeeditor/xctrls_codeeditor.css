@@ -6,8 +6,7 @@
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 
-xctrls|codeeditor
-{
+xctrls|codeeditor {
 	position: absolute;
 
 	top: 0px;
@@ -15,4 +14,3 @@ xctrls|codeeditor
 	bottom: 0px;
 	left: 0px;
 }
-

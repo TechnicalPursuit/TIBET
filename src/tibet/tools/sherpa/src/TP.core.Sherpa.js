@@ -230,6 +230,11 @@ function() {
             TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
     */
 
+    (function() {
+        TP.byOID('SherpaConsole', this.get('vWin')).refresh();
+
+    }.bind(this)).fork(250);
+
     return this;
 });
 
