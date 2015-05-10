@@ -115,6 +115,22 @@ function(aName) {
 
 //  ----------------------------------------------------------------------------
 
+TP.log.Manager.Type.defineMethod('getLoggers',
+function() {
+
+    /**
+     * @method getLoggers
+     * @summary Returns the dictionary of all known loggers. The keys of this
+     *     dictionary are the logger names converted to lowercase to normalize
+     *     them. The entries are the logger instances themselves.
+     * @returns {TP.lang.Hash} The logger dictionary.
+     */
+
+    return this.loggers;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.log.Manager.Type.defineMethod('getLoggerFactory',
 function() {
 
