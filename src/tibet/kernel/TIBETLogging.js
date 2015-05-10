@@ -1741,9 +1741,15 @@ function(aLevel) {
      * @returns {Number} The comparison value.
      */
 
-    var index;
+    var level,
+        index;
 
-    index = aLevel.get('index');
+    level = TP.isString(aLevel) ? TP.log.Level.getLevel(aLevel) : aLevel;
+    if (!TP.canInvoke(level, 'get')) {
+        return -1;
+    }
+
+    index = level.get('index');
 
     if (this.get('index') === index) {
         return 0;
