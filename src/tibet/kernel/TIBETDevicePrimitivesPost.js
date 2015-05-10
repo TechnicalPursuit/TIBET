@@ -91,8 +91,8 @@ function(anEvent) {
         case 'resize':
         case 'scroll':
         case 'select':
-        case 'unload':
         case 'transitionend':
+        case 'unload':
 
             return TP.DOM_UI_EVENT_PROPERTIES;
 
