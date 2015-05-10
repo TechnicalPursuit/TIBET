@@ -1374,6 +1374,20 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$$handleScroll',
+function(anEvent) {
+
+    /**
+     * @method $$handleScroll
+     * @summary Document-level scroll handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$$handleTransitionEnd',
 function(anEvent) {
 

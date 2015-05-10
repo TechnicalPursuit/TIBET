@@ -177,6 +177,7 @@ if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
         'paste', 'TP.sig.DOMPaste',
         'reset', 'TP.sig.DOMReset',
         'resize', 'TP.sig.DOMResize',
+        'scroll', 'TP.sig.DOMScroll',
         'submit', 'TP.sig.DOMSubmit',
         'transitionend', 'TP.sig.DOMTransitionEnd',
         'unload', 'TP.sig.DOMUnload');

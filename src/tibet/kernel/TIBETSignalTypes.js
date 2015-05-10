@@ -1566,6 +1566,11 @@ TP.sig.DOMResize.Type.defineConstant('NATIVE_NAME', 'resize');
 
 //  ---
 
+TP.sig.DOMUISignal.defineSubtype('DOMScroll');
+TP.sig.DOMScroll.Type.defineConstant('NATIVE_NAME', 'scroll');
+
+//  ---
+
 TP.sig.DOMUISignal.defineSubtype('DOMSubmit');
 TP.sig.DOMSubmit.Type.defineConstant('NATIVE_NAME', 'submit');
 
