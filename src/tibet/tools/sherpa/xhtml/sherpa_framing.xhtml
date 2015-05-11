@@ -14,8 +14,41 @@
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
+    <style type="text/css">
+        <![CDATA[
+        @namespace pclass url(urn:tibet:pseudoclass);
+
+        #SherpaConsoleOutputToolbar {
+
+            position: absolute;
+
+            top: 5px;
+            right: 0px;
+
+            width: 100px;
+            height: 20px;
+
+            display: none;
+        }
+
+        #SherpaConsoleOutputToolbar:not([pclass|hidden]) {
+
+            display: flex;
+        }
+
+        #SherpaConsoleOutputToolbar .toolbarButton {
+
+            cursor: pointer;
+
+            width: 20px;
+            height: 20px;
+        }
+        ]]>
+    </style>
+
 </head>
 <body xmlns:pclass="urn:tibet:pseudoclass">
+
 <div id="background">
 
   <div id="northwest" class="framing corner north west" pclass:hidden="true">
@@ -27,7 +60,26 @@
   </div>
 
   <div id="north" class="framing h-edge north center" pclass:hidden="true">
-    <div class="drawer"></div>
+      <div class="drawer">
+        <!-- The markup used for output toolbar -->
+        <div id="SherpaConsoleOutputToolbar" pclass:hidden="true">
+            <div class="toolbarButton" mode="h_split_bottom">
+                <img src="~ide_root/media/h_split_bottom.svg" width="20" height="20"/>
+            </div>
+            <div class="toolbarButton" mode="h_split_top">
+                <img src="~ide_root/media/h_split_top.svg" width="20" height="20"/>
+            </div>
+            <div class="toolbarButton" mode="v_split_left">
+                <img src="~ide_root/media/v_split_left.svg" width="20" height="20"/>
+            </div>
+            <div class="toolbarButton" mode="v_split_right">
+                <img src="~ide_root/media/v_split_right.svg" width="20" height="20"/>
+            </div>
+            <div class="toolbarButton" mode="fullscreen">
+                <img src="~ide_root/media/full_screen.svg" width="20" height="20"/>
+            </div>
+        </div>
+      </div>
   </div>
 
   <div id="northeast" class="framing corner north east" pclass:hidden="true">

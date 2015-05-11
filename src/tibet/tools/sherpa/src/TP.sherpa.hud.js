@@ -42,6 +42,21 @@ function() {
      * @method setup
      */
 
+    var toolbarElem;
+
+    //  Set up the console toolbar
+    toolbarElem = TP.wrap(TP.byId('SherpaConsoleOutputToolbar',
+                                    this.getNativeWindow()));
+    this.observe(toolbarElem,
+                    'TP.sig.DOMClick',
+                    function(aSignal) {
+                        this.toggleOutputMode(
+                            TP.elementGetAttribute(
+                                aSignal.getTarget().parentNode, 'mode'));
+                    }.bind(this));
+
+    toolbarElem.toggle('hidden');
+
     return this;
 });
 
@@ -58,6 +73,8 @@ function(beHidden) {
 
     var drawerElement,
 
+        toolbarElem,
+
         drawerFinishedFunc;
 
     if (TP.bc(this.getAttribute('hidden')) === beHidden) {
@@ -66,6 +83,9 @@ function(beHidden) {
 
     drawerElement = TP.byId('south', this.getNativeWindow());
 
+    toolbarElem = TP.wrap(TP.byId('SherpaConsoleOutputToolbar',
+                                    this.getNativeWindow()));
+
     if (TP.isTrue(beHidden)) {
 
         //  We remove our 'south's 'no_transition' class so that it no longer
@@ -73,6 +93,8 @@ function(beHidden) {
         TP.elementRemoveClass(drawerElement, 'no_transition');
 
         TP.elementGetStyleObj(drawerElement).height = '';
+
+        toolbarElem.toggle('hidden');
 
         this.hideAllHUDDrawers();
 
@@ -83,9 +105,12 @@ function(beHidden) {
             drawerFinishedFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
-                //  We add our 'south's 'no_transition' class so that during
-                //  user interaction, resizing this drawer will be immediate.
+            //  We add our 'south's 'no_transition' class so that during
+            //  user interaction, resizing this drawer will be immediate.
             TP.elementAddClass(drawerElement, 'no_transition');
+
+            toolbarElem.toggle('hidden');
+
         }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
         this.showAllHUDDrawers();
