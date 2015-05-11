@@ -4988,8 +4988,9 @@ function(newContent, aRequest, shouldSignal) {
                     loadFunc,
                     TP.ifKeyInvalid(request, 'awaken', false));
 
-    //  If we're flagging changes, go ahead and do that now.
-    if (this.shouldFlagChanges()) {
+    //  If we're an Element and we're flagging changes, go ahead and do that
+    //  now.
+    if (TP.isElement(node) && this.shouldFlagChanges()) {
         TP.elementFlagChange(node, TP.SELF, TP.APPEND);
 
         TP.ifTrace() && TP.$DEBUG ?
@@ -5280,8 +5281,9 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
                     loadFunc,
                     TP.ifKeyInvalid(request, 'awaken', false));
 
-    //  If we're flagging changes, go ahead and do that now.
-    if (this.shouldFlagChanges()) {
+    //  If we're an Element and we're flagging changes, go ahead and do that
+    //  now.
+    if (TP.isElement(node) && this.shouldFlagChanges()) {
         TP.elementFlagChange(node, TP.SELF, TP.INSERT);
 
         TP.ifTrace() && TP.$DEBUG ?
@@ -5558,8 +5560,9 @@ function(newContent, aRequest, shouldSignal) {
                     loadFunc,
                     TP.ifKeyInvalid(request, 'awaken', true));
 
-    //  If we're flagging changes, go ahead and do that now.
-    if (this.shouldFlagChanges()) {
+    //  If we're an Element and we're flagging changes, go ahead and do that
+    //  now.
+    if (TP.isElement(node) && this.shouldFlagChanges()) {
         TP.elementFlagChange(node, TP.SELF, TP.UPDATE);
 
         TP.ifTrace() && TP.$DEBUG ?
