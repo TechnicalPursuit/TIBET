@@ -443,7 +443,7 @@ TP.log.Filtered.Inst.defineMethod('addFilter',
 function(aFilter) {
 
     /**
-     * @method addLayout
+     * @method addFilter
      * @summary Adds a new filter to the receiver. Instances can have 0 to N
      *     filters defined.
      * @param {TP.log.Filter} aFilter The new filter to add.
@@ -1549,6 +1549,9 @@ function(aLogger, aLevel, arglist) {
      * @returns {TP.log.Entry} The receiver.
      */
 
+    var arg0,
+        marker;
+
     this.callNextMethod();
 
     this.date = new Date();
@@ -1557,8 +1560,17 @@ function(aLogger, aLevel, arglist) {
     this.set('level', aLevel);
     this.set('arglist', arglist);
 
+    //  See if we have a marker or marker name as the first entry. If so we
+    //  shift that off our argument list and treat it as our marker value.
     if (arglist && arglist.length > 0) {
-        if (TP.isKindOf(arglist.at(0), TP.log.Marker)) {
+        arg0 = arglist.at(0);
+        if (TP.isString(arg0)) {
+            marker = TP.log.Marker.getInstanceByName(arg0);
+            if (TP.isValid(marker)) {
+                this.set('marker', marker);
+                arglist.shift();
+            }
+        } else if (TP.isKindOf(arg0, TP.log.Marker)) {
             this.set('marker', arglist.shift());
         }
     }
