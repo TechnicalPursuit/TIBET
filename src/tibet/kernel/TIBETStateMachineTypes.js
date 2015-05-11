@@ -717,7 +717,7 @@ function(aState) {
         return aState.asTitleCase();
     }
 
-    return this.getCurrentState();
+    return TP.str(aState).asStartUpper();
 });
 
 //  ------------------------------------------------------------------------
@@ -802,7 +802,7 @@ function(transitionDetails) {
     oldState = this.get('state');
     newState = transitionDetails.at('state');
 
-    // If the state isn't changing this is an internal transition request.
+    //  If the state isn't changing this is an internal transition request.
     internal = oldState === newState;
 
     if (internal) {
@@ -998,9 +998,6 @@ function(signalOrParams) {
                         targetState = stateName;
                         stateCount++;
                     }
-                } else {
-                    targetState = stateName;
-                    stateCount++;
                 }
             }
         }
@@ -1012,6 +1009,8 @@ function(signalOrParams) {
             return oldState;
         } else if (stateCount === 1) {
             newState = targetState;
+        } else if (stateCount === 0) {
+            return oldState;
         }
     }
 
@@ -1019,8 +1018,8 @@ function(signalOrParams) {
     //  value is handled in the transition call() for signal timing reasons.
     this.transition(
         TP.hc('state', newState,
-            'prior', oldState,
-            'trigger', signalOrParams));
+                'prior', oldState,
+                'trigger', signalOrParams));
 
     return newState;
 });

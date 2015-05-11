@@ -239,6 +239,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.FramedElement.Inst.defineMethod('setID',
+function(anID) {
+
+    /**
+     * @method setID
+     * @summary Sets the public ID of the receiver.
+     * @description This method is overridden from its supertype to set the ID
+     *     of it's underlying frame to something consistent with the supplied
+     *     ID.
+     * @param {String} anID The value to use as a public ID.
+     * @returns {String} The ID that was set.
+     */
+
+    this.get('tpIFrame').setID(anID + '_frame');
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.FramedElement.Inst.defineMethod('startIFrameLoad',
 function(stubURI) {
 

@@ -388,7 +388,7 @@ function(aResourceID, aRequest) {
     //  to reflect the current default
     name = this.get('commandXMLNS');
 
-    this.setPrompt(name.chop(':') + '&nbsp;&#187;');
+    this.setPrompt(name.chop(':') + '&#160;&#187;');
 
     this.$set('commandXMLNS', TP.sys.require(name));
 
@@ -1091,7 +1091,7 @@ function(aRequest) {
         if (/^(\w)*:$/.test(src)) {
             if (TP.isType(nstype = TP.sys.require(src))) {
                 this.$set('commandXMLNS', nstype);
-                this.setPrompt(src.chop(':') + '&nbsp;&#187;');
+                this.setPrompt(src.chop(':') + '&#160;&#187;');
 
                 return aRequest.complete();
             } else {
@@ -2902,7 +2902,7 @@ function(aRequest) {
             var name,
                 errors;
 
-            TP.regex.UNDERSCORES.index = 0;
+            TP.regex.UNDERSCORES.lastIndex = 0;
             name = entry.name.replace(TP.regex.UNDERSCORES, '.');
             errors = entry.errors;
 
@@ -2933,7 +2933,6 @@ function(aRequest) {
 
     return aRequest.complete(results);
 });
-
 
 //  ------------------------------------------------------------------------
 
@@ -3025,7 +3024,7 @@ function(aRequest) {
             results.addAll(
                 TP.sys.getMetadata('methods').getKeys().collect(
                 function(key) {
-                    TP.regex.UNDERSCORES.index = 0;
+                    TP.regex.UNDERSCORES.lastIndex = 0;
                     return key.replace(TP.regex.UNDERSCORES, '.');
                 }));
         }
@@ -3034,7 +3033,7 @@ function(aRequest) {
             results.addAll(
                 TP.sys.getMetadata('owners').getKeys().collect(
                 function(key) {
-                    TP.regex.UNDERSCORES.index = 0;
+                    TP.regex.UNDERSCORES.lastIndex = 0;
                     return key.replace(TP.regex.UNDERSCORES, '.');
                 }));
         }
@@ -3064,7 +3063,7 @@ function(aRequest) {
 
                     if (TP.notEmpty(keys) && keys.getSize() > 1) {
                         results = keys.collect(function(key) {
-                            TP.regex.UNDERSCORES.index = 0;
+                            TP.regex.UNDERSCORES.lastIndex = 0;
                             return key.replace(TP.regex.UNDERSCORES, '.');
                         });
                     } else {
@@ -3154,7 +3153,7 @@ function(aRequest) {
 
                             if (TP.notEmpty(keys) && keys.getSize() > 1) {
                                 results = keys.collect(function(key) {
-                                    TP.regex.UNDERSCORES.index = 0;
+                                    TP.regex.UNDERSCORES.lastIndex = 0;
                                     return key.replace(TP.regex.UNDERSCORES, '.');
                                 });
                             } else {

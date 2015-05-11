@@ -5366,10 +5366,19 @@ function(originSet, aSignal, aPayload, aType) {
 
                 sigParams.atPut('event', sig.getPayload());
 
+                //  Note that it's important to put the current origin on the
+                //  signal here in case that the new signal is a
+                //  RESPONDER_FIRING signal (very likely) as it will look there
+                //  for the first responder when computing the responder chain.
+                sigParams.atPut('target', origin);
+
                 //  Queue the new signal and continue - thereby skipping
                 //  processing for the bubbling phase of this signal (for this
-                //  origin) in deference to signaling the new signal.
-                TP.queue(origin, signame, sigParams);
+                //  origin) in deference to signaling the new signal. Note here
+                //  how we supply 'TP.sig.ResponderSignal' as the default type
+                //  to use if the mapped signal type isn't a real type.
+                TP.queue(origin, signame, sigParams,
+                            null, TP.sig.ResponderSignal);
 
                 continue;
             }
@@ -6988,8 +6997,12 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
 
     //  If we were using a spoofed signal name we may not have a real type, but
     //  we need one to determine if the signal is of a type that has an owner,
-    //  or default firing policy etc.
-    type = TP.ifInvalid(type, TP.sig.SignalMap.$getSignalType(aSignal));
+    //  or default firing policy etc. Note that we give preference to any
+    //  'default' signal type that was passed in and, if that doesn't exist,
+    //  then ask the signal instance itself.
+    type = TP.ifInvalid(
+                type,
+                TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(aSignal)));
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event

@@ -10689,6 +10689,34 @@ function(aFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('shouldLogMouse',
+function(aFlag, shouldSignal) {
+
+    /**
+     * @method shouldLogMouse
+     * @summary Controls and returns the state of TIBET's mouse logging flag.
+     * @description When this flag is true any mouse event handlers armed
+     *     with the standard TIBET event handler will log mouse events.
+     * @param {Boolean} aFlag Turn behavior on or off? Default is false.
+     * @param {Boolean} shouldSignal False to turn off configuration change
+     *     signaling for this call.
+     * @example Configure TIBET to log mouse event activity:
+     *     <code>
+     *          TP.sys.shouldLogMouse(true);
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not TIBET logs mouse events in the system.
+     */
+
+    if (TP.isBoolean(aFlag)) {
+        TP.sys.setcfg('log.mouse', aFlag, shouldSignal);
+    }
+
+    return TP.sys.cfg('log.mouse');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('shouldLogNullNamespaces',
 function(aFlag, shouldSignal) {
 
