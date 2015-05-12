@@ -91,13 +91,13 @@ function(beHidden) {
         this.ignore(this, 'TP.sig.DOMMouseOver');
         this.ignore(this, 'TP.sig.DOMMouseOut');
 
-        this.ignore(this, 'TP.sig.DOMMouseWheel');
+        this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
     } else {
         this.observe(this, 'TP.sig.DOMMouseMove');
         this.observe(this, 'TP.sig.DOMMouseOver');
         this.observe(this, 'TP.sig.DOMMouseOut');
 
-        this.observe(this, 'TP.sig.DOMMouseWheel');
+        this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
     }
 
     return this.callNextMethod();
@@ -293,34 +293,37 @@ function(aSignal) {
      * @abstract
      */
 
-    //TP.info('got to TP.sherpa.halo::handleDOMMouseWheel', TP.LOG);
-    return;
-/*
     var currentTargetTPElem,
         newTargetTPElem;
 
-    if (aSignal.getWheelDelta().abs() > 0.5) {
-        currentTargetTPElem = this.get('currentTargetTPElem');
+    if (aSignal.getShiftKey()) {
 
-        if (aSignal.getDirection() === TP.UP) {
-            newTargetTPElem = currentTargetTPElem.getHaloParent(this);
-        } else {
-            newTargetTPElem = currentTargetTPElem.getNextHaloChild(
-                this, aSignal);
-        }
+        aSignal.preventDefault();
 
-        if (TP.notValid(newTargetTPElem)) {
-            return;
-        }
+        if (aSignal.getWheelDelta().abs() > 0.5) {
+            currentTargetTPElem = this.get('currentTargetTPElem');
 
-        if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
-            (newTargetTPElem !== currentTargetTPElem)) {
-            this.focusOn(newTargetTPElem);
+            if (aSignal.getDirection() === TP.UP) {
+                newTargetTPElem = currentTargetTPElem.getHaloParent(this);
+            } else {
+                newTargetTPElem = currentTargetTPElem.getNextHaloChild(
+                                                                this, aSignal);
+            }
+
+            if (TP.notValid(newTargetTPElem)) {
+                return;
+            }
+
+            if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
+                !newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+                this.blur();
+                this.focusOn(newTargetTPElem);
+            }
         }
     }
 
     return this;
-*/
 });
 
 //  ------------------------------------------------------------------------
