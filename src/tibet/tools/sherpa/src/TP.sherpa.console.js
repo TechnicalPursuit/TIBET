@@ -67,7 +67,6 @@ function() {
         contentTPElem,
 
         consoleOutputTPElem,
-        toolbarElem,
 
         hudTPElem,
 
@@ -133,12 +132,6 @@ function() {
                         TP.xhtmlnode('<div id="SherpaConsoleOutput"/>'));
     this.set('consoleOutput', consoleOutputTPElem);
 
-    //  Place a toolbar element into the same 'content' element.
-    toolbarElem = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                        '#SherpaConsoleOutputToolbar').getResourceNode(
-                            TP.hc('async', false));
-    contentTPElem.addContent(toolbarElem);
-
     //  NB: We have to set up the ConsoleService this *after* we put in
     //  the output view.
     this.setupConsoleService();
@@ -152,14 +145,6 @@ function() {
     this.setAttribute('hidden', isHidden);
 
     TP.elementHideBusyMessage(contentTPElem.getNativeNode());
-
-    this.observe(contentTPElem,
-                    'TP.sig.DOMClick',
-                    function(aSignal) {
-                        this.toggleOutputMode(
-                            TP.elementGetAttribute(
-                                aSignal.getTarget(), 'mode'));
-                    }.bind(this));
 
     //  Go ahead and adjust the input size after everything else has laid out to
     //  get the most accurate layout.
