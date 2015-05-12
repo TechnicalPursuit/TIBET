@@ -1624,17 +1624,13 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
         return;
     }
 
-    //  Process the origin. Origins that are "generated" such as TIBET OIDs or
-    //  DOM paths aren't observable so they're not relevant for handler names.
+    //  Process the origin.
     orgid = TP.ifInvalid(aSignal.getOrigin(), '');
     orgid = TP.gid(orgid).split('#').last();
 
-    if (TP.regex.JS_IDENTIFIER.test(orgid)) {
-        //  Not all valid IDs are still useful. Watch for OIDs in particular.
-        if (TP.regex.INSTANCE_OID.test(orgid)) {
-            orgid = '';
-        }
-    } else {
+    //  Origins that are "generated" such as TIBET DOM paths aren't observable
+    //  so they're not relevant for handler names.
+    if (TP.regex.HAS_SLASH.test(orgid)) {
         orgid = '';
     }
 
