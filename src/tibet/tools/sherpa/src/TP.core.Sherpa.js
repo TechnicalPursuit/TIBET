@@ -189,7 +189,10 @@ function() {
 
     var worldTPElem,
 
-        toggleKey;
+        toggleKey,
+
+        sherpaEastDrawer,
+        tileDockTPElem;
 
     //  Set up the HUD
     this.setupHUD();
@@ -232,6 +235,19 @@ function() {
         }).bind(this).observe(
             TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
     */
+
+    sherpaEastDrawer = TP.byCSS('#east > .drawer',
+                                    this.get('vWin').document,
+                                    true);
+
+
+    tileDockTPElem = TP.wrap(sherpaEastDrawer).addContent(
+                        TP.sherpa.tiledock.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML));
+    tileDockTPElem.setID('tileDock');
+    tileDockTPElem.awaken();
+    tileDockTPElem.refresh();
 
     (function() {
         TP.byOID('SherpaConsole', this.get('vWin')).refresh();

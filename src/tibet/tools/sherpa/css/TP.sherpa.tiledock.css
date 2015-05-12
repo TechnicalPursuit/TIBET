@@ -1,0 +1,43 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|tiledock {
+
+    position: absolute;
+
+	top: 0px;
+	left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+sherpa|tiledock .tilelist {
+
+    margin: 2px;
+    font-size: 10px;
+
+    text-align: center;
+
+    list-style: none;
+    overflow: hidden;
+}
+
+sherpa|tiledock .tilelist li {
+
+    border: solid 1px black;
+    border-radius: 5px;
+
+    height: 1.5em;
+    line-height: 1.5em;
+}
+
+sherpa|tiledock .tilelist li:hover {
+
+    background-color: yellow;
+}
+
+sherpa|tiledock .tilelist li a {
+
+    text-decoration: none;
+}
+
