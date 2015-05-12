@@ -15,7 +15,10 @@
 //  Dragging State Machine Signals
 //  ========================================================================
 
+//  NOTE SCOTT: these specific subtypes of TP.sig.StateSignal should be
+//  eliminated once signaling is fixed.
 TP.sig.StateSignal.defineSubtype('TP.sig.DraggingEnter');
+TP.sig.StateSignal.defineSubtype('TP.sig.DraggingInput');
 TP.sig.StateSignal.defineSubtype('TP.sig.DraggingExit');
 
 //  ========================================================================
@@ -567,7 +570,11 @@ function(stateMachine, actionElement) {
     }
 
     this.$set('stateMachine', stateMachine);
+
+    //  NOTE SCOTT: these observations should be eliminated in favor of:
+    //  this.observe(stateMachine, TP.sig.StateSignal);
     this.observe(stateMachine, TP.sig.DraggingEnter);
+    this.observe(stateMachine, TP.sig.DraggingInput);
     this.observe(stateMachine, TP.sig.DraggingExit);
 
     this.set('currentPoint', TP.pc(0, 0));
@@ -828,6 +835,9 @@ function(aSignal) {
         currentSignal;
 
     //  The DOMDragMove signal that we want to become the 'current signal'
+
+    //  NOTE SCOTT: when this is switched back to using 'state input', switch
+    //  these lines
     //domDragMove = aSignal.getPayload().at('trigger');
     domDragMove = aSignal;
 
@@ -880,11 +890,25 @@ function(aSignal) {
         //  start point will remain unchanged.
 
         //  Observe the mouse to begin the dragging process.
+        //  NOTE SCOTT: when this is switched to using 'state input', these
+        //  lines should be eliminated.
         this.observe(TP.core.Mouse, 'TP.sig.DOMDragMove');
         this.observe(TP.core.Mouse, 'TP.sig.DOMDragHover');
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DragResponder.Inst.defineHandler('draggingInput',
+function(aSignal) {
+
+    /**
+     * @method draggingInput
+     */
+
+    TP.info('draggingInput: ' + TP.str(aSignal));
 });
 
 //  ------------------------------------------------------------------------
@@ -902,6 +926,8 @@ function(aSignal) {
      */
 
     //  Ignore the mouse to stop the dragging process.
+    //  NOTE SCOTT: when this is switched to using 'state input', these
+    //  lines should be eliminated.
     this.ignore(TP.core.Mouse, 'TP.sig.DOMDragHover');
     this.ignore(TP.core.Mouse, 'TP.sig.DOMDragMove');
 
