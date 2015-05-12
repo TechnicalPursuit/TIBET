@@ -799,11 +799,15 @@ function(transitionDetails) {
         child,
         states;
 
-    oldState = this.get('state');
+    oldState = transitionDetails.at('prior');
     newState = transitionDetails.at('state');
 
     //  If the state isn't changing this is an internal transition request.
-    internal = oldState === newState;
+
+    //  No, Mr. Eslint, the following parens are not really extraneous...
+    /* eslint-disable no-extra-parens */
+    internal = (oldState === newState);
+    /* eslint-enable no-extra-parens */
 
     if (internal) {
 
@@ -1009,8 +1013,6 @@ function(signalOrParams) {
             return oldState;
         } else if (stateCount === 1) {
             newState = targetState;
-        } else if (stateCount === 0) {
-            return oldState;
         }
     }
 
