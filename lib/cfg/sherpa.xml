@@ -68,6 +68,10 @@
     <property name="path.TP.sherpa.elementeditor.template" value="~ide_root/xhtml/TP.sherpa.elementeditor.xhtml"/>
     <property name="path.TP.sherpa.elementeditor.style" value="~ide_root/css/TP.sherpa.elementeditor.css"/>
 
+    <script src="./src/TP.sherpa.typedisplay.js"/>
+    <property name="path.TP.sherpa.typedisplay.template" value="~ide_root/xhtml/TP.sherpa.typedisplay.xhtml"/>
+    <property name="path.TP.sherpa.typedisplay.style" value="~ide_root/css/TP.sherpa.typedisplay.css"/>
+
 </config>
 
 </package>
