@@ -15,11 +15,14 @@
 
 *   TP.html.Element
 *       TP.html.Attrs
+            TP.html.datalist
+            TP.html.fieldset
+            TP.html.form
+            TP.html.keygen
+            TP.html.label
             TP.html.option
             TP.html.optgroup
-            TP.html.fieldset
-            TP.html.label
-            TP.html.form
+            TP.html.output
 *           TP.html.Aligned
                 TP.html.legend
 *           TP.html.Focused
@@ -57,6 +60,20 @@
 */
 
 //  ========================================================================
+//  html:datalist (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {html:datalist}
+ * @summary 'datalist' tag. Together with 'list' attribute for input can be
+ *     used to make a combobox.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('datalist');
+
+//  ========================================================================
 //  TP.html.fieldset
 //  ========================================================================
 
@@ -70,6 +87,514 @@
 TP.html.Attrs.defineSubtype('fieldset');
 
 TP.html.fieldset.Type.set('booleanAttrs', TP.ac('disabled', 'willValidate'));
+
+//  ========================================================================
+//  TP.html.form
+//  ========================================================================
+
+/**
+ * @type {TP.html.form}
+ * @summary 'form' tag. An input form. The TP.html.form object acts as a group
+ *     control for individual node component objects representing the form's
+ *     items as well as a wrapper for the form operations themselves.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('form');
+
+//  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+//  Standard type transformations for element<-> node component type.
+
+//  When a particular element is found, the type attribute is used as a
+//  key into this hash to locate the TIBET type to use as a wrapper. A new
+//  instance of that type is used so get() related calls always return a
+//  properly wrapped dom element.
+TP.html.form.Type.defineConstant('NODE_TYPE_NAMES',
+    TP.hc('button', 'TP.html.inputButton',
+            'image', 'TP.html.inputImage',
+            'checkbox', 'TP.html.inputCheckbox',
+            'color', 'TP.html.inputColor',
+            'date', 'TP.html.inputDate',
+            'datetime', 'TP.html.inputDateTime',
+            'datetime-local', 'TP.html.inputDateTimeLocal',
+            'email', 'TP.html.inputEmail',
+            'file', 'TP.html.inputFile',
+            'hidden', 'TP.html.inputHidden',
+            'month', 'TP.html.inputMonth',
+            'number', 'TP.html.inputNumber',
+            'password', 'TP.html.inputPassword',
+            'radio', 'TP.html.inputRadio',
+            'range', 'TP.html.inputRange',
+            'reset', 'TP.html.inputReset',
+            'search', 'TP.html.inputSearch',
+            'select-one', 'TP.html.select',
+            'select-single', 'TP.html.select',
+            'select-multiple', 'TP.html.select',
+            'submit', 'TP.html.inputSubmit',
+            'tel', 'TP.html.inputTel',
+            'text', 'TP.html.inputText',
+            'textarea', 'TP.html.textarea',
+            'time', 'TP.html.inputTime',
+            'url', 'TP.html.inputUrl',
+            'week', 'TP.html.inputWeek'));
+
+TP.html.form.Type.set('booleanAttrs', TP.ac('noValidate'));
+
+TP.html.form.Type.set('uriAttrs', TP.ac('action'));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.form.Type.defineMethod('getItemTagName',
+function() {
+
+    /**
+     * @method getItemTagName
+     * @summary Returns the 'default item tag name' for use it the
+     *     fromArray()/fromObject() methods.
+     * @returns {String} The item tag name.
+     */
+
+    return 'html:input';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.form.Type.defineMethod('shouldAutoWrapItems',
+function(anObject, formatArgs) {
+
+    /**
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
+     *     'auto-wrap items'. See those methods for more information.
+     * @param {Object} anObject The Object of content to wrap in markup.
+     * @param {TP.lang.Hash} formatArgs An optional object containing
+     *     parameters.
+     * @returns {Boolean} Whether or not we automatically wrap items.
+     */
+
+    if (TP.isBoolean(formatArgs.at('autowrap'))) {
+        return formatArgs.at('autowrap');
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.form.Inst.defineMethod('getElementArray',
+function() {
+
+    /**
+     * @method getElementArray
+     * @summary Returns the Array of native elements. In the case of a form
+     *     object this is the elements[] Array.
+     * @returns {Array} The array of native items.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    return TP.ac(node.elements);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.form.Inst.defineMethod('getDisplayValue',
+function() {
+
+    /**
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver. When targeting a form the
+     *     returned value is the set of key/value pairs for each form control in
+     *     the form.
+     * @returns {TP.lang.Hash} A hash containing keys and values which represent
+     *     the overall value of the form.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var i,
+        list,
+        el,
+        node,
+        dict;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    dict = TP.hc();
+    list = node.elements;
+    for (i = 0; i < list.length; i++) {
+        el = 'TP.html.Element'.construct(list[i]);
+        if (TP.notValid(el)) {
+            TP.ifWarn() ?
+                TP.warn(TP.annotate(
+                            TP.nodeCloneNode(list[i]),
+                            'Unable to acquire wrapper.'),
+                        TP.LOG) : 0;
+
+            continue;
+        }
+
+        dict.atPut(el.getSubmitName(), el.getValue());
+    }
+
+    return dict;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.form.Inst.defineMethod('setDisplayValue',
+function(aValue) {
+
+    /**
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver. When targeting a form the input
+     *     is a set of key/value pairs containing the new data for the form
+     *     controls.
+     * @param {TP.lang.Hash} aValue Hash containing key/value pairs where the
+     *     keys need to map to ids or names in the form.
+     * @returns {TP.html.form} The receiver.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var node,
+        list,
+        i,
+        el;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    if (!TP.isKindOf(aValue, TP.lang.Hash)) {
+        return this.raise('TP.sig.InvalidParameter',
+                            'Must provide a hash of key value pairs.');
+    }
+
+    list = node.elements;
+    for (i = 0; i < list.length; i++) {
+        el = 'TP.html.Element'.construct(list[i]);
+        if (TP.notValid(el)) {
+            TP.ifWarn() ?
+                TP.warn(TP.annotate(
+                            TP.nodeCloneNode(list[i]),
+                            'Unable to acquire wrapper.'),
+                        TP.LOG) : 0;
+
+            continue;
+        }
+
+        //  rely on the individual elements to do the real work
+        el.setDisplayValue(aValue.at(el.getSubmitName()));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.form.Inst.defineMethod('reset',
+function() {
+
+    /**
+     * @method reset
+     * @summary Resets the form. As a node component, however, this method
+     *     provides the opportunity for custom reset pre/post processing.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  TODO:   need to deal with bound element/form reset
+
+    //  TODO:   capture potential lost data here?
+    return node.reset();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.form.Inst.defineMethod('submit',
+function() {
+
+    /**
+     * @method submit
+     * @summary Submits the form. As a node component, however, this method
+     *     provides the opportunity for custom submit pre/post processing.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  TODO:   validation hook? parameters to control submit
+    //          method/etc?
+    return node.submit();
+});
+
+//  ========================================================================
+//  TP.html.keygen (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {TP.html.keygen}
+ * @summary 'keygen' tag. Key pair generation.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('keygen');
+
+TP.html.keygen.Type.set('booleanAttrs',
+        TP.ac('autofocus', 'disabled', 'willValidate'));
+
+//  ========================================================================
+//  TP.html.label
+//  ========================================================================
+
+/**
+ * @type {TP.html.label}
+ * @summary 'label' tag.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('label');
+
+//  ========================================================================
+//  TP.html.optgroup
+//  ========================================================================
+
+/**
+ * @type {TP.html.optgroup}
+ * @summary 'optgroup' tag.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('optgroup');
+
+TP.html.optgroup.Type.set('booleanAttrs', TP.ac('disabled'));
+
+//  ========================================================================
+//  TP.html.option
+//  ========================================================================
+
+/**
+ * @type {TP.html.option}
+ * @summary 'option' tag. A 'select' tag option. This type acts in the "item"
+ *     role relative to an TP.html.Select object. Most methods of interest are
+ *     on the TP.html.Select type.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('option');
+
+TP.html.option.Type.set('booleanAttrs',
+            TP.ac('disabled', 'defaultSelected', 'selected'));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.option.Type.defineMethod('generateMarkup',
+function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
+
+    /**
+     * @method generateMarkup
+     * @summary Generates markup for the supplied Object using the other
+     *     parameters supplied.
+     * @param {Object} anObject The Object of content to wrap in markup.
+     * @param {String} attrStr The String containing either the literal
+     *     attribute markup or a 'template invocation' that can be used inside
+     *     of a template.
+     * @param {String} itemFormat The name of an 'item format', either a tag
+     *     name (which defaults to the 'item tag name' of this type) or some
+     *     other format type which can be applied to this type.
+     * @param {Boolean} shouldAutoWrap Whether or not the markup generation
+     *     machinery should 'autowrap' items of the supplied object (each item
+     *     in an Array or each key/value pair in an Object).
+     * @param {TP.lang.Hash} formatArgs The 'formatting arguments' used by this
+     *     machinery to generate item markup.
+     * @param {TP.sig.Request|TP.lang.Hash} theRequest An optional object
+     *     containing parameters.
+     * @returns {String} The markup generated by taking the supplied Object and
+     *     iterating over its items.
+     */
+
+    var tagName,
+        template,
+        str;
+
+    tagName = this.getCanonicalName();
+
+    if (TP.isFalse(shouldAutoWrap)) {
+        if (TP.isTrue(theRequest.at('repeat'))) {
+            if (TP.isArray(anObject)) {
+                template = TP.join('<', tagName,
+                                    attrStr, ' value="{{$INDEX}}">',
+                                    '{{.%', itemFormat, '}}',
+                                    '</', tagName, '>');
+            } else {
+                template = TP.join('<', tagName,
+                                    attrStr, ' value="{{0}}">',
+                                    '{{1.%', itemFormat, '}}',
+                                    '</', tagName, '>');
+            }
+
+            //  Perform the transformation.
+            str = template.transform(anObject, theRequest);
+
+            return str;
+        }
+    } else {
+        //  Otherwise, the object that will be handed to the iteration
+        //  mechanism will be [key,value] pairs, so we can use that fact
+        //  to generate item tags around each one.
+
+        //  Build a template by joining the tag name with an invocation
+        //  of the itemFormat for both the key and the value.
+        template = TP.join('<', tagName,
+                            attrStr, ' value="{{0}}">',
+                            '{{1.%', itemFormat, '}}',
+                            '</', tagName, '>');
+
+        //  Perform the transformation.
+        str = template.transform(anObject, theRequest);
+
+        return str;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.option.Type.defineMethod('shouldAutoWrapItems',
+function(anObject, formatArgs) {
+
+    /**
+     * @method shouldAutoWrapItems
+     * @summary Whether or not our fromArray() / fromObject() methods
+     *     'auto-wrap items'. See those methods for more information.
+     * @param {Object} anObject The Object of content to wrap in markup.
+     * @param {TP.lang.Hash} formatArgs An optional object containing
+     *     parameters.
+     * @returns {Boolean} Whether or not we automatically wrap items.
+     */
+
+    if (TP.isBoolean(formatArgs.at('autowrap'))) {
+        return formatArgs.at('autowrap');
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.option.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    return node.selected;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.option.Inst.defineMethod('on',
+function() {
+
+    /**
+     * @method on
+     * @summary Sets the receiver's selected state to 'true'.
+     * @returns {TP.html.option} The receiver.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    node.selected = true;
+    this.setAttribute('selected', 'selected');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.option.Inst.defineMethod('off',
+function() {
+
+    /**
+     * @method off
+     * @summary Sets the receiver's selected state to 'false'.
+     * @returns {TP.html.option} The receiver.
+     * @exception TP.sig.InvalidNode
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    node.selected = false;
+    this.removeAttribute('selected');
+
+    return this;
+});
+
+//  ========================================================================
+//  html:output (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {html:output}
+ * @summary 'output' tag. Some form of output.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('output');
+
+TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
 
 //  ========================================================================
 //  TP.html.textUtilities
@@ -2206,269 +2731,6 @@ TP.html.inputSelectable.isAbstract(true);
 TP.backstop(TP.ac('select'), TP.html.inputSelectable.getInstPrototype());
 
 //  ========================================================================
-//  TP.html.form
-//  ========================================================================
-
-/**
- * @type {TP.html.form}
- * @summary 'form' tag. An input form. The TP.html.form object acts as a group
- *     control for individual node component objects representing the form's
- *     items as well as a wrapper for the form operations themselves.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.html.Attrs.defineSubtype('form');
-
-//  ------------------------------------------------------------------------
-//  Type Constants
-//  ------------------------------------------------------------------------
-
-//  Standard type transformations for element<-> node component type.
-
-//  When a particular element is found, the type attribute is used as a
-//  key into this hash to locate the TIBET type to use as a wrapper. A new
-//  instance of that type is used so get() related calls always return a
-//  properly wrapped dom element.
-TP.html.form.Type.defineConstant('NODE_TYPE_NAMES',
-    TP.hc('button', 'TP.html.inputButton',
-            'image', 'TP.html.inputImage',
-            'checkbox', 'TP.html.inputCheckbox',
-            'color', 'TP.html.inputColor',
-            'date', 'TP.html.inputDate',
-            'datetime', 'TP.html.inputDateTime',
-            'datetime-local', 'TP.html.inputDateTimeLocal',
-            'email', 'TP.html.inputEmail',
-            'file', 'TP.html.inputFile',
-            'hidden', 'TP.html.inputHidden',
-            'month', 'TP.html.inputMonth',
-            'number', 'TP.html.inputNumber',
-            'password', 'TP.html.inputPassword',
-            'radio', 'TP.html.inputRadio',
-            'range', 'TP.html.inputRange',
-            'reset', 'TP.html.inputReset',
-            'search', 'TP.html.inputSearch',
-            'select-one', 'TP.html.select',
-            'select-single', 'TP.html.select',
-            'select-multiple', 'TP.html.select',
-            'submit', 'TP.html.inputSubmit',
-            'tel', 'TP.html.inputTel',
-            'text', 'TP.html.inputText',
-            'textarea', 'TP.html.textarea',
-            'time', 'TP.html.inputTime',
-            'url', 'TP.html.inputUrl',
-            'week', 'TP.html.inputWeek'));
-
-TP.html.form.Type.set('booleanAttrs', TP.ac('noValidate'));
-
-TP.html.form.Type.set('uriAttrs', TP.ac('action'));
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.form.Type.defineMethod('getItemTagName',
-function() {
-
-    /**
-     * @method getItemTagName
-     * @summary Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
-     * @returns {String} The item tag name.
-     */
-
-    return 'html:input';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.form.Type.defineMethod('shouldAutoWrapItems',
-function(anObject, formatArgs) {
-
-    /**
-     * @method shouldAutoWrapItems
-     * @summary Whether or not our fromArray() / fromObject() methods
-     *     'auto-wrap items'. See those methods for more information.
-     * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.lang.Hash} formatArgs An optional object containing
-     *     parameters.
-     * @returns {Boolean} Whether or not we automatically wrap items.
-     */
-
-    if (TP.isBoolean(formatArgs.at('autowrap'))) {
-        return formatArgs.at('autowrap');
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.form.Inst.defineMethod('getElementArray',
-function() {
-
-    /**
-     * @method getElementArray
-     * @summary Returns the Array of native elements. In the case of a form
-     *     object this is the elements[] Array.
-     * @returns {Array} The array of native items.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return TP.ac(node.elements);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.form.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver. When targeting a form the
-     *     returned value is the set of key/value pairs for each form control in
-     *     the form.
-     * @returns {TP.lang.Hash} A hash containing keys and values which represent
-     *     the overall value of the form.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var i,
-        list,
-        el,
-        node,
-        dict;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    dict = TP.hc();
-    list = node.elements;
-    for (i = 0; i < list.length; i++) {
-        el = 'TP.html.Element'.construct(list[i]);
-        if (TP.notValid(el)) {
-            TP.ifWarn() ?
-                TP.warn(TP.annotate(
-                            TP.nodeCloneNode(list[i]),
-                            'Unable to acquire wrapper.'),
-                        TP.LOG) : 0;
-
-            continue;
-        }
-
-        dict.atPut(el.getSubmitName(), el.getValue());
-    }
-
-    return dict;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.form.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the value of the receiver. When targeting a form the input
-     *     is a set of key/value pairs containing the new data for the form
-     *     controls.
-     * @param {TP.lang.Hash} aValue Hash containing key/value pairs where the
-     *     keys need to map to ids or names in the form.
-     * @returns {TP.html.form} The receiver.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var node,
-        list,
-        i,
-        el;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    if (!TP.isKindOf(aValue, TP.lang.Hash)) {
-        return this.raise('TP.sig.InvalidParameter',
-                            'Must provide a hash of key value pairs.');
-    }
-
-    list = node.elements;
-    for (i = 0; i < list.length; i++) {
-        el = 'TP.html.Element'.construct(list[i]);
-        if (TP.notValid(el)) {
-            TP.ifWarn() ?
-                TP.warn(TP.annotate(
-                            TP.nodeCloneNode(list[i]),
-                            'Unable to acquire wrapper.'),
-                        TP.LOG) : 0;
-
-            continue;
-        }
-
-        //  rely on the individual elements to do the real work
-        el.setDisplayValue(aValue.at(el.getSubmitName()));
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.form.Inst.defineMethod('reset',
-function() {
-
-    /**
-     * @method reset
-     * @summary Resets the form. As a node component, however, this method
-     *     provides the opportunity for custom reset pre/post processing.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    //  TODO:   need to deal with bound element/form reset
-
-    //  TODO:   capture potential lost data here?
-    return node.reset();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.form.Inst.defineMethod('submit',
-function() {
-
-    /**
-     * @method submit
-     * @summary Submits the form. As a node component, however, this method
-     *     provides the opportunity for custom submit pre/post processing.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    //  TODO:   validation hook? parameters to control submit
-    //          method/etc?
-    return node.submit();
-});
-
-//  ========================================================================
 //  TP.html.inputButton
 //  ========================================================================
 
@@ -3180,19 +3442,6 @@ function(aValue) {
 });
 
 //  ========================================================================
-//  TP.html.label
-//  ========================================================================
-
-/**
- * @type {TP.html.label}
- * @summary 'label' tag.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.html.Attrs.defineSubtype('label');
-
-//  ========================================================================
 //  TP.html.legend
 //  ========================================================================
 
@@ -3204,207 +3453,6 @@ TP.html.Attrs.defineSubtype('label');
 //  ------------------------------------------------------------------------
 
 TP.html.Aligned.defineSubtype('legend');
-
-//  ========================================================================
-//  TP.html.optgroup
-//  ========================================================================
-
-/**
- * @type {TP.html.optgroup}
- * @summary 'optgroup' tag.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.html.Attrs.defineSubtype('optgroup');
-
-TP.html.optgroup.Type.set('booleanAttrs', TP.ac('disabled'));
-
-//  ========================================================================
-//  TP.html.option
-//  ========================================================================
-
-/**
- * @type {TP.html.option}
- * @summary 'option' tag. A 'select' tag option. This type acts in the "item"
- *     role relative to an TP.html.Select object. Most methods of interest are
- *     on the TP.html.Select type.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.html.Attrs.defineSubtype('option');
-
-TP.html.option.Type.set('booleanAttrs',
-            TP.ac('disabled', 'defaultSelected', 'selected'));
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.option.Type.defineMethod('generateMarkup',
-function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
-
-    /**
-     * @method generateMarkup
-     * @summary Generates markup for the supplied Object using the other
-     *     parameters supplied.
-     * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {String} attrStr The String containing either the literal
-     *     attribute markup or a 'template invocation' that can be used inside
-     *     of a template.
-     * @param {String} itemFormat The name of an 'item format', either a tag
-     *     name (which defaults to the 'item tag name' of this type) or some
-     *     other format type which can be applied to this type.
-     * @param {Boolean} shouldAutoWrap Whether or not the markup generation
-     *     machinery should 'autowrap' items of the supplied object (each item
-     *     in an Array or each key/value pair in an Object).
-     * @param {TP.lang.Hash} formatArgs The 'formatting arguments' used by this
-     *     machinery to generate item markup.
-     * @param {TP.sig.Request|TP.lang.Hash} theRequest An optional object
-     *     containing parameters.
-     * @returns {String} The markup generated by taking the supplied Object and
-     *     iterating over its items.
-     */
-
-    var tagName,
-        template,
-        str;
-
-    tagName = this.getCanonicalName();
-
-    if (TP.isFalse(shouldAutoWrap)) {
-        if (TP.isTrue(theRequest.at('repeat'))) {
-            if (TP.isArray(anObject)) {
-                template = TP.join('<', tagName,
-                                    attrStr, ' value="{{$INDEX}}">',
-                                    '{{.%', itemFormat, '}}',
-                                    '</', tagName, '>');
-            } else {
-                template = TP.join('<', tagName,
-                                    attrStr, ' value="{{0}}">',
-                                    '{{1.%', itemFormat, '}}',
-                                    '</', tagName, '>');
-            }
-
-            //  Perform the transformation.
-            str = template.transform(anObject, theRequest);
-
-            return str;
-        }
-    } else {
-        //  Otherwise, the object that will be handed to the iteration
-        //  mechanism will be [key,value] pairs, so we can use that fact
-        //  to generate item tags around each one.
-
-        //  Build a template by joining the tag name with an invocation
-        //  of the itemFormat for both the key and the value.
-        template = TP.join('<', tagName,
-                            attrStr, ' value="{{0}}">',
-                            '{{1.%', itemFormat, '}}',
-                            '</', tagName, '>');
-
-        //  Perform the transformation.
-        str = template.transform(anObject, theRequest);
-
-        return str;
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.option.Type.defineMethod('shouldAutoWrapItems',
-function(anObject, formatArgs) {
-
-    /**
-     * @method shouldAutoWrapItems
-     * @summary Whether or not our fromArray() / fromObject() methods
-     *     'auto-wrap items'. See those methods for more information.
-     * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.lang.Hash} formatArgs An optional object containing
-     *     parameters.
-     * @returns {Boolean} Whether or not we automatically wrap items.
-     */
-
-    if (TP.isBoolean(formatArgs.at('autowrap'))) {
-        return formatArgs.at('autowrap');
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.option.Inst.defineMethod('isSelected',
-function() {
-
-    /**
-     * @method isSelected
-     * @summary Returns true if the receiver is selected.
-     * @returns {Boolean} Whether or not the receiver is selected.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.selected;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.option.Inst.defineMethod('on',
-function() {
-
-    /**
-     * @method on
-     * @summary Sets the receiver's selected state to 'true'.
-     * @returns {TP.html.option} The receiver.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.selected = true;
-    this.setAttribute('selected', 'selected');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.option.Inst.defineMethod('off',
-function() {
-
-    /**
-     * @method off
-     * @summary Sets the receiver's selected state to 'false'.
-     * @returns {TP.html.option} The receiver.
-     * @exception TP.sig.InvalidNode
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.selected = false;
-    this.removeAttribute('selected');
-
-    return this;
-});
 
 //  ========================================================================
 //  TP.html.select

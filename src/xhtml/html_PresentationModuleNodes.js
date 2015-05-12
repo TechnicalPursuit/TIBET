@@ -35,20 +35,6 @@ TP.html.Attrs.defineSubtype('b');
 TP.html.Attrs.defineSubtype('big');
 
 //  ========================================================================
-//  html:datalist (HTML 5)
-//  ========================================================================
-
-/**
- * @type {html:datalist}
- * @summary 'datalist' tag. Together with 'list' attribute for input can be
- *     used to make a combobox.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.html.Attrs.defineSubtype('datalist');
-
-//  ========================================================================
 //  html:details (HTML 5)
 //  ========================================================================
 
@@ -108,21 +94,6 @@ TP.html.hr.finalizeTraits();
 //  ------------------------------------------------------------------------
 
 TP.html.Attrs.defineSubtype('i');
-
-//  ========================================================================
-//  html:output (HTML 5)
-//  ========================================================================
-
-/**
- * @type {html:output}
- * @summary 'output' tag. Some form of output.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.html.Attrs.defineSubtype('output');
-
-TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
 
 //  ========================================================================
 //  html:meter (HTML 5)
