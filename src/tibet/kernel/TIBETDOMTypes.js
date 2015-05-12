@@ -5519,8 +5519,8 @@ function(newContent, aRequest, shouldSignal) {
             if (TP.isDocument(aNode) &&
                 TP.isWindow(win = TP.nodeGetWindow(aNode)) &&
                 TP.gid(win) === TP.sys.getUICanvasName()) {
-                docTitle = TP.documentGetTitleContent(aNode);
 
+                docTitle = TP.documentGetTitleContent(aNode);
                 TP.documentSetTitleContent(document, docTitle);
 
                 if (TP.notEmpty(docURI = request.at('uri'))) {

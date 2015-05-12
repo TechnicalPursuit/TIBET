@@ -8187,6 +8187,7 @@ function(aWindow) {
      */
 
     var msg,
+        docTitle,
         allElems,
         i,
         theme,
@@ -8214,6 +8215,11 @@ function(aWindow) {
 
     //  instrument it so we're sure it has some basic TIBET features
     TP.core.Window.instrument(aWindow);
+
+    //  propagate the 'title' content from the document that we're drawing up
+    //  onto the *top* document
+    docTitle = TP.documentGetTitleContent(aWindow.document);
+    TP.documentSetTitleContent(top.document, docTitle);
 
     //  Go to every element in the document and try to bubble its namespaces
     if (TP.notEmpty(allElems = aWindow.document.getElementsByTagName('*'))) {
