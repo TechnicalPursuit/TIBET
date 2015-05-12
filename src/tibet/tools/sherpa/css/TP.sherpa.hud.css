@@ -28,27 +28,27 @@
 
 div#fitToSelf {
 
-    background-image: url(../img/fit_to_self.svg);
+    background-image: url(../media/fit_to_self.svg);
 }
 
 div.fitToScreen {
 
-    background-image: url(../img/fit_to_screen.svg);
+    background-image: url(../media/fit_to_screen.svg);
 }
 
 div#zoomIn {
 
-    background-image: url(../img/zoom_in.svg);
+    background-image: url(../media/zoom_in.svg);
 }
 
 div#zoomOut {
 
-    background-image: url(../img/zoom_out.svg);
+    background-image: url(../media/zoom_out.svg);
 }
 
 div#toggleLog {
 
-    background-image: url(../img/log.svg);
+    background-image: url(../media/log.svg);
 }
 
 .north, .south {

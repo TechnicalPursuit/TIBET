@@ -18,19 +18,23 @@ TP.sherpa.Element.defineSubtype('sherpa:tile');
 
 TP.sherpa.tile.Inst.defineAttribute(
         'header',
-        {value: TP.cpc('.header', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .header', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
         'headerText',
-        {value: TP.cpc('.header_text', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .header > .header_text', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.tile.Inst.defineAttribute(
+        'detachMark',
+        {value: TP.cpc('> .header > .detach_mark', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
         'closeMark',
-        {value: TP.cpc('.close_mark', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .header > .close_mark', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
         'body',
-        {value: TP.cpc('.body', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -41,25 +45,49 @@ function() {
 
     this.callNextMethod();
 
-    //this.observe(this.get('closeMark'), 'TP.sig.DOMClick');
+    this.setAttribute('tibet:ctrl', 'TP.sherpa.tile');
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.Inst.defineMethod('handleDOMClick',
+TP.sherpa.tile.Inst.defineMethod('handleTP_sig_DetachTile',
 function(aSignal) {
 
-    var natNode,
-        ourParent;
+    var docBody,
 
-    this.ignore(aSignal.getSignalOrigin(), aSignal.getSignalName);
+        header;
 
-    natNode = this.getNativeNode();
-    ourParent = natNode.parentNode;
+    //  Once it's detached, you cannot redock it into the console GUI stream.
+    if (!this.hasAttribute('attachedto')) {
+        this.toggle('hidden');
 
-    TP.wrap(ourParent).removeChild(natNode);
+        return this;
+    }
+
+    docBody = TP.documentGetBody(this.getNativeWindow().document);
+    TP.nodeAppendChild(docBody, this.getNativeNode(), false);
+    this.removeAttribute('attachedto');
+
+    //  Configure the header to be draggable
+    header = this.get('header');
+    header.setAttribute('drag:mover', true);
+    header.setAttribute('drag:item', '..');
+
+    TP.byOID('tileDock', this.getNativeWindow()).addTileEntry(
+                            this.getID(), 'tile 1');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Inst.defineMethod('handleTP_sig_CloseTile',
+function(aSignal) {
+
+    this.teardown();
+    this.detach();
 
     return this;
 });
@@ -91,6 +119,30 @@ function(newContent, aRequest) {
      */
 
     return this.get('body').setRawContent(newContent, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Inst.defineMethod('teardown',
+function() {
+
+    /**
+     * @method teardown
+     */
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

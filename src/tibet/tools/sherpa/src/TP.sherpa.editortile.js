@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.editortile}
+ * @type {TP.sherpa.tile}
  */
 
 //  ------------------------------------------------------------------------
@@ -21,357 +21,162 @@ TP.sherpa.tile.defineSubtype('sherpa:editortile');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.editortile.Inst.defineAttribute(
-        'headerText',
-        {value: TP.cpc('.header_text', TP.hc('shouldCollapse', true))});
+        'breadcrumb',
+        {value: TP.cpc('sherpa|breadcrumb', TP.hc('shouldCollapse', true))});
 
-//  'path' object back
-TP.sherpa.editortile.Inst.defineAttribute(
-        'textInput',
-        {value: TP.cpc('xctrls|codeeditor', TP.hc('shouldCollapse', true))});
+TP.sherpa.editortile.Inst.defineAttribute('displays');
 
-TP.sherpa.editortile.Inst.defineAttribute(
-        'propertyList',
-        {value: TP.cpc('.editortile_property_list', TP.hc('shouldCollapse', true))});
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineAttribute(
-        'headers',
-        {value: TP.cpc('h1', TP.hc('shouldCollapse', true))});
+TP.sherpa.editortile.Inst.defineMethod('getDisplayIdentifier',
+function(anObject) {
 
-TP.sherpa.editortile.Inst.defineAttribute('currentTPElement');
+    if (TP.isFunction(anObject)) {
+        if (TP.isMethod(anObject)) {
+            return 'Method';
+        }
+    } else if (TP.isType(anObject)) {
+        return 'Type';
+    } else if (TP.isKindOf(anObject, TP.core.ElementNode)) {
+        return 'TP.core.ElementNode';
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.editortile.Inst.defineMethod('setSourceObject',
+function(anObject) {
+
+    /**
+     * @method setID
+     */
+
+    var currentDisplay,
+
+        identifier,
+        displayTPElem;
+
+    this.get('breadcrumb').setSourceObject(anObject);
+
+    if (TP.isValid(currentDisplay = this.get('currentDisplay'))) {
+        currentDisplay.toggle('hidden');
+    }
+
+    if (TP.notValid(identifier = this.getDisplayIdentifier(anObject))) {
+        return this;
+    }
+
+    displayTPElem = this.get('displays').at(identifier);
+
+    if (TP.notValid(displayTPElem)) {
+        if (TP.isValid(displayTPElem = this.setupDisplayFor(anObject))) {
+            this.get('displays').atPut(identifier, displayTPElem);
+        }
+    }
+
+    if (TP.isValid(displayTPElem)) {
+
+        this.set('currentDisplay', displayTPElem);
+        displayTPElem.setSourceObject(anObject);
+        displayTPElem.toggle('hidden');
+    }
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.editortile.Inst.defineMethod('setup',
 function() {
 
-    /**
-     * @method setup
-     */
+    var resultBody,
+        breadCrumbTPElem;
 
-    this.observe(this, 'TP.sig.DOMClick');
+    resultBody = this.get('body');
 
-    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')), 'TP.sig.HaloDidFocus');
-    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')), 'TP.sig.HaloDidBlur');
+    breadCrumbTPElem = resultBody.addContent(
+                    TP.sherpa.breadcrumb.getResourceElement(
+                        'template',
+                        TP.ietf.Mime.XHTML));
 
-    return this;
-});
+    breadCrumbTPElem.awaken();
+    breadCrumbTPElem.set('sourceID', this.getID());
 
-//  ------------------------------------------------------------------------
-
-TP.sherpa.editortile.Inst.defineMethod('handleHaloDidFocus',
-function(aSignal) {
-
-    //this.show();
+    this.set('displays', TP.hc());
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineMethod('handleHaloDidBlur',
-function(aSignal) {
+TP.sherpa.editortile.Inst.defineMethod('setupDisplayFor',
+function(anObject) {
 
-    //this.hide();
+    var displayType,
 
-    return this;
-});
+        resultBody,
+        displayTPElem;
 
-//  ------------------------------------------------------------------------
+    displayType = TP.getSherpaStructuredEditor(anObject);
 
-TP.sherpa.editortile.Inst.defineMethod('handleDOMClick',
-function(aSignal) {
+    if (TP.isType(displayType)) {
+        resultBody = this.get('body');
 
-    var headers,
-        i,
+        displayTPElem = resultBody.addContent(
+                        displayType.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML));
 
-        elem,
+        displayTPElem.awaken();
 
-        textInput,
-        val,
-
-        heading,
-
-        replacement,
-        focusElem;
-
-    this.ignore(aSignal.getSignalOrigin(), aSignal.getSignalName);
-
-    headers = this.get('headers');
-
-    textInput = this.get('textInput');
-
-    elem = null;
-    for (i = 0; i < headers.getSize(); i++) {
-        if (aSignal.getTarget() === headers.at(i).getNativeNode()) {
-            elem = aSignal.getTarget();
-            if (TP.elementHasAttribute(elem.parentNode, 'hidelist', true)) {
-                TP.elementRemoveAttribute(elem.parentNode, 'hidelist', true);
-
-                textInput.clearValue();
-
-            } else {
-                TP.elementSetAttribute(elem.parentNode, 'hidelist', 'true');
-            }
-            break;
-        }
+        return displayTPElem;
     }
 
-    if (TP.notValid(elem)) {
-        elem = aSignal.getTarget();
-        if (TP.lname(elem) === 'li') {
-            heading = TP.byCSS('h1', elem.parentNode.parentNode, true);
-            this.displayEditorOnClick(heading, elem);
-        } else if (TP.elementGetAttribute(elem, 'id', true) === 'saveButton') {
-            if (TP.isValid(TP.$$targetMethod)) {
-                if (TP.notEmpty(val = textInput.getDisplayValue())) {
-                    val = 'TP.tibet.helloworld.defineMethod(\'tshCompile\',' +
-                            val + ');';
-
-                    /* eslint-disable no-eval */
-                    eval(val);  /* jshint ignore:line */
-                    /* eslint-enable no-eval */
-
-                    replacement = TP.unwrap(TP.process('<tibet:helloworld/>'));
-                    //TP.$$currentFocus.setContent('<tibet:helloworld/>');
-
-                    focusElem = TP.unwrap(TP.$$currentFocus);
-                    TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')).blur();
-
-                    TP.$$currentFocus =
-                        TP.wrap(
-                            TP.nodeReplaceChild(
-                                focusElem.parentNode,
-                                replacement,
-                                focusElem,
-                                false));
-
-                    TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')).focusOn(TP.$$currentFocus);
-                }
-            }
-        } else if (TP.elementGetAttribute(elem, 'id', true) === 'pushButton') {
-
-            if (TP.isValid(TP.$$targetMethod) && TP.isValid(TP.$$originalTargetMethod)) {
-
-                if (TP.notEmpty(val = textInput.getDisplayValue())) {
-                    TP.$$originalTargetMethod.postMethodPatch(val);
-                }
-            }
-        }
-    }
-
-    return this;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineMethod('displayEditorOnClick',
-function(categoryElem, itemElem) {
+TP.definePrimitive('getSherpaStructuredEditor',
+function(anObject) {
 
-    var categoryText,
-        itemName,
-
-        textInput,
-
-        targetTPElement,
-        targetType,
-
-        natElem,
-
-        str,
-
-        i,
-
-        rules,
-        computed;
-
-    categoryText = TP.nodeGetTextContent(categoryElem);
-    itemName = TP.nodeGetTextContent(itemElem);
-
-    textInput = this.get('textInput');
-    textInput.clearValue();
-
-    //targetTPElement = this.get('currentTPElement');
-    targetTPElement = TP.$$currentFocus;
-    targetType = TP.type(targetTPElement);
-    natElem = targetTPElement.getNativeNode();
-
-    TP.$$targetMethod = null;
-
-    str = '';
-
-    switch (categoryText) {
-        case 'Special':
-            switch (itemName) {
-                case 'Generator':
-                    if (targetType.ownsMethod('tshCompile')) {
-                        textInput.setEditorMode('javascript');
-                        TP.$$targetType = targetType;
-                        TP.$$targetMethod = targetType.tshCompile;
-                        if (TP.notValid(TP.$$originalTargetMethod)) {
-                            TP.$$originalTargetMethod = TP.$$targetMethod;
-                        }
-                        str = TP.$$targetMethod.toString();
-                    }
-                break;
-
-                case 'Markup':
-                    textInput.setEditorMode(TP.ietf.Mime.XHTML);
-                    str = TP.elementGetOuterContent(natElem);
-                break;
-
-                default:
-                break;
-            }
-            break;
-        case 'CSS Rules':
-            textInput.setEditorMode(TP.ietf.Mime.CSS);
-            rules = TP.elementGetAppliedNativeStyleRules(natElem);
-
-            for (i = 0; i < rules.length; i++) {
-                str += TP.boot.$uriInTIBETFormat(
-                        rules[i].parentStyleSheet.href) + '\n\n';
-                str += rules[i].cssText + '\n\n';
-                str += '---\n\n';
-            }
-
-            break;
-
-        case 'CSS Properties':
-            textInput.setEditorMode(TP.ietf.Mime.CSS);
-            computed = TP.elementGetComputedStyleObj(natElem);
-
-            str += itemName + ': ' + computed[itemName] + ';';
-
-            break;
-
-        default:
-            break;
+    if (TP.canInvoke(anObject, 'getSherpaStructuredEditor')) {
+        return anObject.getSherpaStructuredEditor();
     }
 
-    textInput.setDisplayValue(str);
-
-    return this;
+    return null;
 });
 
-//  ------------------------------------------------------------------------
+//  ---
 
-TP.sherpa.editortile.Inst.defineMethod('drawPropertyList',
+Function.Inst.defineMethod('getSherpaStructuredEditor',
 function() {
 
-    var targetTPElement,
-
-        groups,
-
-        propertyList,
-        result;
-
-    targetTPElement = this.get('currentTPElement');
-    targetTPElement = TP.$$currentFocus;
-
-    groups = TP.hc();
-    groups.atPut('Special', TP.ac('Generator', 'Markup'));
-    groups.atPut('CSS Rules', TP.ac('Applied Rules'));
-    groups.atPut('CSS Properties', TP.CSS_ALL_PROPERTIES);
-    groups.atPut('DOM Properties', Object.keys(targetTPElement.getNativeNode()));
-    groups.atPut('Introduced Methods',
-                    targetTPElement.getInterface('known_introduced').sort());
-    groups.atPut('Overridden Methods',
-                    targetTPElement.getInterface('known_overridden').sort());
-    groups.atPut('Inherited Methods',
-                    targetTPElement.getInterface('known_inherited').sort());
-
-    result = '';
-
-    groups.perform(
-            function(kvPair) {
-                var list;
-
-                result += '<section xmlns="' + TP.w3.Xmlns.XHTML + '" hidelist="true">';
-                result += '<h1>' + kvPair.first() + '</h1>';
-
-                if (TP.isEmpty(list = kvPair.last())) {
-
-                    result += '</section>';
-
-                    return;
-                }
-
-                result += '<ul>' +
-                            list.as('html:li', TP.hc('repeat', true)) +
-                            '</ul>';
-
-                result += '</section>';
-            });
-
-    propertyList = this.get('propertyList');
-
-    TP.xmlElementSetContent(propertyList.getNativeNode(),
-                            TP.frag(result),
-                            null);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.editortile.Inst.defineMethod('focusOn',
-function(targetTPElement) {
-
-    var textInput;
-
-    textInput = this.get('textInput');
-
-    textInput.clearValue();
-
-    //textInput.setDisplayValue(
-    //          TP.elementGetOuterContent(targetTPElement.getNativeNode()));
-
-    //this.set('currentTPElement', targetTPElement);
-
-    TP.$$currentFocus = targetTPElement;
-
-    this.show();
-    this.drawPropertyList();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.editortile.Inst.defineMethod('getEditorContentFor',
-function(obj) {
-
-
-    var str,
-        name,
-        owner,
-        track;
-
-    if (TP.isMethod(obj)) {
-        if (TP.isValid(name = obj[TP.NAME]) &&
-            TP.isValid(owner = obj[TP.OWNER]) &&
-            TP.isValid(track = obj[TP.TRACK])) {
-            str = TP.ac(owner.getName());
-
-            if (track === 'Inst') {
-                str.push('.Inst.defineMethod(\'');
-            } else if (track === 'Type') {
-                str.push('.Type.defineMethod(\'');
-            }
-
-            str.push(name, '\',\n', TP.str(obj), '\n);');
-
-            str = str.join('');
-        } else {
-            str = TP.str(obj);
-        }
-    } else if (TP.isURI(obj)) {
-        str = TP.str(obj.getResource(TP.hc('async', false)));
-    } else {
-        str = TP.str(obj);
+    if (TP.isMethod(this)) {
+        return TP.sherpa.methodeditor;
     }
 
-    return str;
+    return null;
+});
+
+//  ---
+
+TP.lang.RootObject.Type.defineMethod('getSherpaStructuredEditor',
+function() {
+
+    return TP.sherpa.typedisplay;
+});
+
+//  ---
+
+TP.core.ElementNode.Inst.defineMethod('getSherpaStructuredEditor',
+function() {
+
+    return TP.sherpa.elementeditor;
 });
 
 //  ------------------------------------------------------------------------

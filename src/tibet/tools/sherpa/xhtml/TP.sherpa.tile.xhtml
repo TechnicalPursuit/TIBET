@@ -2,12 +2,12 @@
 
 <sherpa:tile xmlns="http://www.w3.org/1999/xhtml"
         xmlns:sherpa="http://www.technicalpursuit.com/2014/sherpa"
-        xmlns:drag="http://www.technicalpursuit.com/2005/drag"
         xmlns:pclass="urn:tibet:pseudoclass"
         pclass:hidden="true">
-        <div class="body"/>
-        <div class="header" drag:mover="true" drag:item="..">
+        <div class="header">
             <div class="header_text"/>
-            <div class="close_mark"/>
+            <div class="detach_mark" on:click="TP.sig.DetachTile"/>
+            <div class="close_mark" on:click="TP.sig.CloseTile"/>
         </div>
+        <div class="body"/>
 </sherpa:tile>

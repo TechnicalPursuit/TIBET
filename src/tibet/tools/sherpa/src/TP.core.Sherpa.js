@@ -223,7 +223,10 @@ function() {
     /*
     (function () {
 
-        var testTile = TP.byOID('Sherpa', this.get('vWin')).makeTile('detailTile');
+        var testTile = TP.byOID('Sherpa', this.get('vWin')).makeTile(
+                                    'detailTile',
+                                    TP.documentGetBody(this.get('vWin').document));
+
         testTile.toggle('hidden');
 
         }).bind(this).observe(
@@ -241,18 +244,16 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
-function(anID) {
+function(anID, tileParent) {
 
-    var sherpaFrameBody,
-        tileTPElem;
+    var tileTPElem;
 
-    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
-
-    tileTPElem = TP.wrap(sherpaFrameBody).addContent(
+    tileTPElem = TP.wrap(tileParent).addContent(
                     TP.sherpa.tile.getResourceElement('template',
                         TP.ietf.Mime.XHTML));
 
     tileTPElem.setID(anID);
+    tileTPElem.awaken();
     tileTPElem.setup();
 
     return tileTPElem;
@@ -261,18 +262,23 @@ function(anID) {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeEditorTile',
-function(anID) {
+function(anID, tileParent) {
 
-    var sherpaFrameBody,
+    var newEditorTPElem,
         tileTPElem;
 
-    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
+    //  NB: Editor tiles don't have their own template - we use their
+    //  supertype's
+    newEditorTPElem = TP.sherpa.tile.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
+    newEditorTPElem = newEditorTPElem.clone();
+    newEditorTPElem.setAttribute('tibet:ctrl', 'TP.sherpa.editortile');
 
-    tileTPElem = TP.wrap(sherpaFrameBody).addContent(
-                    TP.sherpa.editortile.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
+    tileTPElem = TP.wrap(tileParent).addContent(newEditorTPElem);
 
     tileTPElem.setID(anID);
+    tileTPElem.awaken();
     tileTPElem.setup();
 
     return tileTPElem;
@@ -282,6 +288,7 @@ function(anID) {
 
 TP.core.Sherpa.Inst.defineMethod('setupConsole',
 function() {
+
     var sherpaSouthDrawer,
         consoleTPElem;
 

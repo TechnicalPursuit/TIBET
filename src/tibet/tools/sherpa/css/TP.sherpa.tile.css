@@ -1,17 +1,15 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-sherpa|tile
-{
+sherpa|tile {
+
     display: none;
-	position: absolute;
+    position: absolute;
 
 	top: 0px;
 	left: 0px;
-	width: 200px;
-	height: 100px;
-
-    background-color: white;
+	min-height: 300px;
+    min-width: 600px;
 
     border: solid 1px rgba(0, 0, 0, 0.2);
 
@@ -21,6 +19,8 @@ sherpa|tile
 
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 
+    background-color: rgb(238, 238, 238);
+
     font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
     font-size: 12px;
 
@@ -28,15 +28,24 @@ sherpa|tile
 	z-index: 15000;
 }
 
-sherpa|tile:not([pclass|hidden])
-{
+sherpa|tile[attachedto="console"] {
+
+	position: relative;
+
+    border: dotted 1px orange;
+
+    background-color: #3F3F3F;
+}
+
+sherpa|tile:not([pclass|hidden]) {
+
     display: block;
 }
 
-sherpa|tile > .header
-{
+sherpa|tile > .header {
+
     position: absolute;
-    display: none;
+    display: block;
 
     top: 0px;
     left: 0px;
@@ -45,19 +54,15 @@ sherpa|tile > .header
     height: 10px;
 
     padding-bottom: 1px;
-
-    background-color: rgba(0, 0, 0, 0.2);
-
-    cursor: pointer;
 }
 
-sherpa|tile:hover > .header
-{
-    display: block;
+sherpa|tile[attachedto="console"] > .header {
+
+    background-color: orange;
 }
 
-sherpa|tile > .body
-{
+sherpa|tile > .body {
+
     position: absolute;
 
     top: 12px;
@@ -65,81 +70,50 @@ sherpa|tile > .body
     right: 0px;
     bottom: 0px;
 
-    background-color: #0F192A;
-
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-sherpa|tile .header_text
-{
+sherpa|tile .header_text {
+
     font-weight: bold;
     font-size: 9px;
 
     pointer-events: none;
 }
 
-sherpa|tile .close_mark
-{
+sherpa|tile .detach_mark {
+
     position: absolute;
 
     cursor: pointer;
 
-    top: 2px;
+    top: 0px;
+    right: 22px;
+    width: 10px;
+    height: 10px;
+
+    background-size: 10px 10px;
+    background-image: url(../media/call49.svg);
+}
+
+sherpa|tile .close_mark {
+
+    position: absolute;
+
+    cursor: pointer;
+
+    top: 0px;
     right: 2px;
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
 
-    background-size: 8px 8px;
-    background-image: url(../img/x.svg);
+    background-size: 10px 10px;
+    background-image: url(../media/cancel19.svg);
 }
 
-/* Based on the theme at http://bonsaiden.github.com/JavaScript-Garden */
+sherpa|tile:not([attachedto]) .detach_mark {
 
-/*<!--match-->*/
-.cm-s-midnight span.CodeMirror-matchhighlight { background: #494949; }
-.cm-s-midnight.CodeMirror-focused span.CodeMirror-matchhighlight { background: #314D67 !important; }
-
-/*<!--activeline-->*/
-.cm-s-midnight .CodeMirror-activeline-background {background: #253540 !important;}
-
-.cm-s-midnight.CodeMirror {
-    background: #0F192A;
-    color: #D1EDFF;
-
-    font-family: monospace;
-    font-size: 10px;
-    word-wrap: break-word;
+    background-image: url(../media/exit13.svg);
 }
 
-.cm-s-midnight.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
-
-.cm-s-midnight div.CodeMirror-selected {background: #314D67 !important;}
-.cm-s-midnight .CodeMirror-gutters {background: #0F192A; border-right: 1px solid;}
-.cm-s-midnight .CodeMirror-guttermarker { color: white; }
-.cm-s-midnight .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
-.cm-s-midnight .CodeMirror-linenumber {color: #D0D0D0;}
-.cm-s-midnight .CodeMirror-cursor {
-    border-left: 1px solid #F8F8F0 !important;
-}
-
-.cm-s-midnight span.cm-comment {color: #428BDD;}
-.cm-s-midnight span.cm-atom {color: #AE81FF;}
-.cm-s-midnight span.cm-number {color: #D1EDFF;}
-
-.cm-s-midnight span.cm-property, .cm-s-midnight span.cm-attribute {color: #A6E22E;}
-.cm-s-midnight span.cm-keyword {color: #E83737;}
-.cm-s-midnight span.cm-string {color: #1DC116;}
-
-.cm-s-midnight span.cm-variable {color: #FFAA3E;}
-.cm-s-midnight span.cm-variable-2 {color: #FFAA3E;}
-.cm-s-midnight span.cm-def {color: #4DD;}
-.cm-s-midnight span.cm-bracket {color: #D1EDFF;}
-.cm-s-midnight span.cm-tag {color: #449;}
-.cm-s-midnight span.cm-link {color: #AE81FF;}
-.cm-s-midnight span.cm-error {background: #F92672; color: #F8F8F0;}
-
-.cm-s-midnight .CodeMirror-matchingbracket {
-  text-decoration: underline;
-  color: white !important;
-}
