@@ -565,8 +565,8 @@ function(stateName, stateAction) {
 
     /**
      * @method getActionSignal
-     * @summary Construcs a valid state transition signal for the state name and
-     *     state action being processed.
+     * @summary Constructs a valid state transition signal for the state name
+     *     and state action being processed.
      * @param {String} stateName The name of the state.
      * @param {String} stateAction TP.ENTER, TP.EXIT, or TP.TRANSITION.
      * @returns {TP.sig.StateSignal} The state signal.
@@ -741,6 +741,20 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateMachine.Inst.defineMethod('isActive',
+function() {
+
+    /**
+     * @method isActive
+     * @summary Returns whether or not the receiver is in an active state.
+     * @returns {Boolean} Whether or not the receiver is active.
+     */
+
+    return TP.notEmpty(this.get('state'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateMachine.Inst.defineMethod('$setState',
 function(newState) {
 
@@ -801,6 +815,11 @@ function(transitionDetails) {
 
     oldState = transitionDetails.at('prior');
     newState = transitionDetails.at('state');
+
+    //TP.info('TP.core.StateMachine :: transition -' +
+    //          ' oldState: ' + oldState +
+    //          ' newState: ' + newState +
+    //          ' trigger: ' + TP.str(transitionDetails.at('trigger')));
 
     //  If the state isn't changing this is an internal transition request.
 
@@ -967,6 +986,10 @@ function(signalOrParams) {
     //  should be.
     oldState = this.get('state');
     newState = oldState;
+
+    //TP.info('TP.core.StateMachine :: updateCurrentState -' +
+    //          ' oldState: ' + oldState +
+    //          ' newState: ' + newState);
 
     //  Get the list of potential target states to be checked.
     stateTargets = this.get('byInitial').at(oldState);
