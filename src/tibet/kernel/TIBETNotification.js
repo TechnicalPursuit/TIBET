@@ -4839,7 +4839,15 @@ aSigEntry, checkTarget) {
 
                     //  run the handler, making sure we can catch any
                     //  exceptions that are signaled
-                    handler.handle(aSignal, signame, false);
+
+                    //  NOTE that if we're observing TP.ANY signals, we
+                    //  don't supply a 'starting signal name' or skip
+                    //  spoofs, as that doesn't make sense.
+                    if (signame === TP.ANY) {
+                        handler.handle(aSignal);
+                    } else {
+                        handler.handle(aSignal, signame, false);
+                    }
                 }
             } else {
                 try {
@@ -4857,7 +4865,15 @@ aSigEntry, checkTarget) {
 
                         //  run the handler, making sure we can catch
                         //  any exceptions that are signaled
-                        handler.handle(aSignal, signame, false);
+
+                        //  NOTE that if we're observing TP.ANY signals, we
+                        //  don't supply a 'starting signal name' or skip
+                        //  spoofs, as that doesn't make sense.
+                        if (signame === TP.ANY) {
+                            handler.handle(aSignal);
+                        } else {
+                            handler.handle(aSignal, signame, false);
+                        }
                     }
 
                     //  TODO:   add check here regarding removal of the
