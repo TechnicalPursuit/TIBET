@@ -64,15 +64,16 @@ function() {
      */
 
     var consoleInputTPElem,
+
+        editorObj,
+
         contentTPElem,
 
         consoleOutputTPElem,
 
         hudTPElem,
 
-        isHidden,
-
-        editorObj;
+        isHidden;
 
     consoleInputTPElem = this.get('consoleInput');
 
@@ -146,6 +147,9 @@ function() {
 
     TP.elementHideBusyMessage(contentTPElem.getNativeNode());
 
+    //  Set the initial output mode to split horizontally with the console in
+    //  the bottom.
+    this.toggleOutputMode('h_split_bottom');
 
     return this;
 });
