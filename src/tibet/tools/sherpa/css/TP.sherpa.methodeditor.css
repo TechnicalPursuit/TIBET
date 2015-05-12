@@ -1,0 +1,80 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|methodeditor {
+
+    display: none;
+	position: relative;
+
+	top: 18px;
+	left: 0px;
+	height: 280px;
+}
+
+sherpa|methodeditor:not([pclass|hidden]) {
+
+    display: block;
+}
+
+sherpa|methodeditor > .body {
+
+    position: absolute;
+
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 16px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+sherpa|methodeditor > .head {
+
+    position: absolute;
+
+    left: 0px;
+    right: 0px;
+}
+
+sherpa|methodeditor > .foot {
+
+    position: absolute;
+
+    display: flex;
+    justify-content: flex-end;
+
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    height: 16px;
+}
+
+sherpa|methodeditor > .foot > button {
+
+    margin-bottom: 2px;
+    margin-right: 2px;
+
+    font-size: 10px;
+
+    line-height: 0.8;
+
+    color: orange;
+
+    border: dotted 1px orange;
+    background-color: transparent;
+}
+
+sherpa|methodeditor > xctrls|codeeditor > .CodeMirror {
+
+    font-size: 12px;
+    height: 100%;
+}
+
+sherpa|methodeditor > xctrls|codeeditor > .CodeMirror-scroll {
+
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
