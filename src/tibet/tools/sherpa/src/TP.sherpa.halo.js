@@ -120,6 +120,8 @@ function() {
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
+    this.ignore(this.getDocument(), 'TP.sig.DOMScroll');
+
     this.set('currentTargetTPElem', null);
 
     this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem));
@@ -143,6 +145,9 @@ function(target) {
         this.moveAndSizeToTarget(target);
 
         this.set('currentTargetTPElem', target);
+
+        this.observe(this.getDocument(), 'TP.sig.DOMScroll');
+
         this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));
 
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
@@ -153,6 +158,14 @@ function(target) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('handleTP_sig_DOMScroll',
+function(aSignal) {
+
+    this.moveAndSizeToTarget();
 });
 
 //  ------------------------------------------------------------------------
