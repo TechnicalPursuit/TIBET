@@ -49,6 +49,7 @@ function() {
             aSignal.stopPropagation();
 
             this.changeHaloFocus(aSignal);
+
             return;
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
@@ -59,7 +60,10 @@ function() {
             aSignal.stopPropagation();
 
             this.changeHaloFocus(aSignal);
+
             return;
+        } else if (this.contains(aSignal.getTarget())) {
+            this.handleHaloClick(aSignal);
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
     /* eslint-disable no-wrap-func,no-extra-parens */
@@ -139,14 +143,14 @@ function(target) {
         this.moveAndSizeToTarget(target);
 
         this.set('currentTargetTPElem', target);
+        this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));
+
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
     } else {
         //  No existing target
         void 0;
     }
-
-    this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));
 
     return this;
 });
@@ -167,73 +171,60 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
-//  Mouse Handling
-//  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleDOMClick',
+TP.sherpa.halo.Inst.defineMethod('handleHaloClick',
 function(aSignal) {
 
     /**
-     * @method handleDOMClick
+     * @method handleHaloClick
      * @summary Handles notifications of mouse click events.
      * @param {DOMClick} aSignal The TIBET signal which triggered this method.
      */
 
     var sigTarget,
-        sigSuffix,
-        lastCorner;
+        sigCorner,
 
-    if (aSignal.getShiftKey()) {
-        aSignal.preventDefault();
-        aSignal.stopPropagation();
-
-        this.changeHaloFocus(aSignal);
-
-        return;
-    }
+        cornerSuffix;
 
     sigTarget = aSignal.getTarget();
 
-    if (sigTarget === this.get('$haloTPElem').getNativeNode() ||
-        this.get('$haloTPElem').contains(sigTarget)) {
-        sigSuffix = null;
+    sigCorner = sigTarget.getAttribute('id');
 
-        if (TP.isValid(lastCorner = this.get('lastCorner'))) {
-            switch (lastCorner) {
-                case 1:
-                    sigSuffix = 'North';
-                    break;
-                case 5:
-                    sigSuffix = 'Northeast';
-                    break;
-                case 9:
-                    sigSuffix = 'East';
-                    break;
-                case 13:
-                    sigSuffix = 'Southeast';
-                    break;
-                case 17:
-                    sigSuffix = 'South';
-                    break;
-                case 21:
-                    sigSuffix = 'Southwest';
-                    break;
-                case 25:
-                    sigSuffix = 'West';
-                    break;
-                case 29:
-                    sigSuffix = 'Northwest';
-                    break;
-                default:
-                    //  TODO: error?
-                    break;
-            }
+    if (sigCorner.startsWith('haloCorner-')) {
+
+        cornerSuffix = sigCorner.slice(11);
+
+        switch (cornerSuffix) {
+            case 'North':
+                break;
+            case 'Northeast':
+                TP.shell(TP.hc(
+                            //'cmdSrc', ':edit $HALO',
+                            'cmdSrc', '1 + 2',
+                            'cmdEcho', true,
+                            'cmdHistory', true,
+                            'cmdSilent', false));
+                break;
+            case 'East':
+                break;
+            case 'Southeast':
+                break;
+            case 'South':
+                break;
+            case 'Southwest':
+                break;
+            case 'West':
+                break;
+            case 'Northwest':
+                break;
+            default:
+                //  TODO: error?
+                break;
         }
 
-        if (TP.isValid(sigSuffix)) {
-            this.signal('TP.sig.Halo' + sigSuffix + 'Click',
-                aSignal.getEvent(), TP.INHERITANCE_FIRING);
-        }
+        this.signal('TP.sig.Halo' + cornerSuffix + 'Click',
+                    aSignal.getEvent(),
+                    TP.INHERITANCE_FIRING);
     }
 
     return this;
@@ -367,31 +358,26 @@ function(aTarget) {
 
      */
 
-    var existingTPTarget,
+    var currentTargetTPElem,
         theRect;
 
-    existingTPTarget = this.get('currentTargetTPElem');
+    currentTargetTPElem = this.get('currentTargetTPElem');
 
     if (TP.notValid(aTarget)) {
         //  No new target
 
-        if (TP.notValid(existingTPTarget)) {
+        if (TP.notValid(currentTargetTPElem)) {
             //  No existing target either - bail out.
             return;
         }
 
         //  Grab rect for existing target and adjust to be in halves
-        theRect = existingTPTarget.getHaloRect(this);
-        theRect = TP.rtc(
-            theRect.getX() + (theRect.getWidth() / 2),
-            theRect.getY() + (theRect.getHeight() / 2),
-            0,
-            0);
+        theRect = currentTargetTPElem.getHaloRect(this);
     } else {
         theRect = aTarget.getHaloRect(this);
     }
 
-    if (TP.notValid(aTarget) && TP.notValid(existingTPTarget)) {
+    if (TP.notValid(aTarget) && TP.notValid(currentTargetTPElem)) {
         this.setAttribute('hidden', true);
 
         this.set('haloRect', null);
@@ -416,7 +402,7 @@ function(aSignal) {
      * @abstract
      */
 
-    var existingTPTarget,
+    var currentTargetTPElem,
 
         angle,
         corner,
@@ -427,15 +413,15 @@ function(aSignal) {
         return this;
     }
 
-    existingTPTarget = this.get('currentTargetTPElem');
+    currentTargetTPElem = this.get('currentTargetTPElem');
 
-    if (TP.notValid(existingTPTarget)) {
+    if (TP.notValid(currentTargetTPElem)) {
         //  No existing target either - bail out.
         return;
     }
 
     angle = TP.computeAngleFromEnds(
-        existingTPTarget.getHaloRect(this).getCenterPoint(),
+        currentTargetTPElem.getHaloRect(this).getCenterPoint(),
         aSignal.getEvent());
 
     corner = TP.computeCompassCorner(angle, 8);
@@ -475,22 +461,22 @@ function(aSignal) {
 
         handledSignal,
 
-        existingTPTarget,
+        currentTargetTPElem,
         targetTPElem;
 
     sigTarget = aSignal.getTarget();
 
     handledSignal = false;
 
-    existingTPTarget = this.get('currentTargetTPElem');
+    currentTargetTPElem = this.get('currentTargetTPElem');
 
     //  If:
     //      a) We have an existing target
     //      b) AND: The user clicked the LEFT button
     //      c) AND: the existing target can blur
-    if (TP.isValid(existingTPTarget) &&
+    if (TP.isValid(currentTargetTPElem) &&
         aSignal.getButton() === TP.LEFT &&
-        existingTPTarget.haloCanBlur(this, aSignal)) {
+        currentTargetTPElem.haloCanBlur(this, aSignal)) {
 
         this.blur();
         this.setAttribute('hidden', true);
@@ -498,18 +484,22 @@ function(aSignal) {
         handledSignal = true;
     } else if (aSignal.getButton() === TP.RIGHT) {
 
-        if (TP.isValid(existingTPTarget) &&
-                this.getNativeNode() === sigTarget) {
+        //  If there is an existing target and it's either identical to the
+        //  signal target or it contains the signal target, then we want to
+        //  traverse 'up' the parent hierarchy.
+        if (TP.isValid(currentTargetTPElem) &&
+                (currentTargetTPElem.identicalTo(sigTarget) ||
+                    currentTargetTPElem.contains(sigTarget))) {
 
-            targetTPElem = existingTPTarget.getHaloParent(this);
+            targetTPElem = currentTargetTPElem.getHaloParent(this);
 
-            if (targetTPElem !== existingTPTarget &&
+            //  If the parent wasn't the same as the currently focused element,
+            //  and it can be focused by the halo, then blur the existing
+            //  element and focus the parent.
+            if (!targetTPElem.identicalTo(currentTargetTPElem) &&
                 targetTPElem.haloCanFocus(this, aSignal)) {
 
-                this.signal('TP.sig.HaloDidBlur');
-                this.signal('TP.sig.HaloDidBlur',
-                            TP.hc('haloTarget', targetTPElem));
-
+                this.blur();
                 this.focusOn(targetTPElem);
 
                 handledSignal = true;
@@ -519,8 +509,9 @@ function(aSignal) {
 
             if (targetTPElem.haloCanFocus(this, aSignal)) {
 
-                //  This will cause the halo to move and size to a new target.
+                this.blur();
                 this.focusOn(targetTPElem);
+
                 this.setAttribute('hidden', false);
 
                 handledSignal = true;
@@ -529,8 +520,9 @@ function(aSignal) {
     }
 
     if (handledSignal) {
-        TP.documentClearSelection(this.getNativeDocument());
-        aSignal.preventDefault();
+        if (TP.isValid(targetTPElem)) {
+            TP.documentClearSelection(targetTPElem.getNativeDocument());
+        }
     }
 
     return this;
