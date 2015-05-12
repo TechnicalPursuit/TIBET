@@ -9,8 +9,8 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {html:Element}
- * @summary The html:Element type is the top-level type in the xhtml node
+ * @type {TP.html.Element}
+ * @summary The TP.html.Element type is the top-level type in the xhtml node
  *     hierarchy. Note that we use the prefix html here since that is the
  *     defined canonical prefix for XHTML as well as HTML.
  */
@@ -51,7 +51,7 @@ function(aCSSClass, atEnd) {
      * @param {String} aCSSClass The name of the CSS class to add.
      * @param {Boolean} atEnd Whether or not this CSS class should be added to
      *     the end of the list of CSS classes.
-     * @returns {html:Element} The receiver.
+     * @returns {TP.html.Element} The receiver.
      */
 
     TP.elementAddCSSClass(this.getNativeNode(), aCSSClass, atEnd);
@@ -98,7 +98,7 @@ function(aCSSClass) {
      * @summary Removes the CSS class whose name is equal to aCSSClass from
      *     this object's CSS class name list.
      * @param {String} aCSSClass The name of the CSS class to remove.
-     * @returns {html:Element} The receiver.
+     * @returns {TP.html.Element} The receiver.
      */
 
     TP.elementRemoveCSSClass(this.getNativeNode(), aCSSClass);
@@ -117,7 +117,7 @@ function(oldCSSClass, newCSSClass) {
      *     the CSS class named newCSSClass. this object's CSS class name list.
      * @param {String} oldCSSClass The name of the CSS class to replace.
      * @param {String} newCSSClass The name of the CSS class to replace it with.
-     * @returns {html:Element} The receiver.
+     * @returns {TP.html.Element} The receiver.
      */
 
     TP.elementReplaceCSSClass(this.getNativeNode(),
@@ -138,7 +138,7 @@ function(aClassName) {
      *     to aClassName.
      * @param {String} aClassName The CSS class name to set the native element's
      *     class name to.
-     * @returns {html:Element} The receiver.
+     * @returns {TP.html.Element} The receiver.
      */
 
     TP.elementSetClass(this.getNativeNode(), aClassName);
@@ -157,7 +157,7 @@ function(aStyle) {
      *     in aStyleString.
      * @param {String|TP.lang.Hash} aStyle The description of the style in CSS
      *     format, or a hash of style strings.
-     * @returns {html:Element} The receiver.
+     * @returns {TP.html.Element} The receiver.
      */
 
     var styleObj;
@@ -241,7 +241,7 @@ function(aValue) {
      *     The two default operations here are to set a 'value' attribute and a
      *     'value' slot if possible.
      * @param {String} aValue The new value to set.
-     * @returns {html:Element} The receiver.
+     * @returns {TP.html.Element} The receiver.
      */
 
     var node;

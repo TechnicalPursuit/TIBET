@@ -9,11 +9,11 @@
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  html:b
+//  TP.html.b
 //  ========================================================================
 
 /**
- * @type {html:b}
+ * @type {TP.html.b}
  * @summary 'b' tag. Bold font.
  */
 
@@ -22,11 +22,11 @@
 TP.html.Attrs.defineSubtype('b');
 
 //  ========================================================================
-//  html:big
+//  TP.html.big
 //  ========================================================================
 
 /**
- * @type {html:big}
+ * @type {TP.html.big}
  * @summary 'big' tag. Bigger font.
  */
 
@@ -35,11 +35,11 @@ TP.html.Attrs.defineSubtype('b');
 TP.html.Attrs.defineSubtype('big');
 
 //  ========================================================================
-//  html:details (HTML 5)
+//  TP.html.details (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:details}
+ * @type {TP.html.details}
  * @summary 'details' tag. Represents additional information which the user can
  *     obtain on demand.
  */
@@ -51,11 +51,11 @@ TP.html.Attrs.defineSubtype('details');
 TP.html.details.Type.set('booleanAttrs', TP.ac('open'));
 
 //  ========================================================================
-//  html:dialog (HTML 5)
+//  TP.html.dialog (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:dialog}
+ * @type {TP.html.dialog}
  * @summary 'dialog' tag. Defines a dialog box or window.
  */
 
@@ -66,11 +66,11 @@ TP.html.Attrs.defineSubtype('dialog');
 TP.html.dialog.Type.set('booleanAttrs', TP.ac('open'));
 
 //  ========================================================================
-//  html:hr
+//  TP.html.hr
 //  ========================================================================
 
 /**
- * @type {html:hr}
+ * @type {TP.html.hr}
  * @summary 'hr' tag. Horizontal rule.
  */
 
@@ -98,11 +98,11 @@ TP.html.hr.Inst.resolveTraits(
 TP.html.hr.finalizeTraits();
 
 //  ========================================================================
-//  html:i
+//  TP.html.i
 //  ========================================================================
 
 /**
- * @type {html:i}
+ * @type {TP.html.i}
  * @summary 'i' tag. Italic font.
  */
 
@@ -111,11 +111,11 @@ TP.html.hr.finalizeTraits();
 TP.html.Attrs.defineSubtype('i');
 
 //  ========================================================================
-//  html:menu (HTML 5)
+//  TP.html.menu (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:menu}
+ * @type {TP.html.menu}
  * @summary 'menu' tag. Defines a menu.
  */
 
@@ -124,11 +124,11 @@ TP.html.Attrs.defineSubtype('i');
 TP.html.Attrs.defineSubtype('menu');
 
 //  ========================================================================
-//  html:menuitem (HTML 5)
+//  TP.html.menuitem (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:menuitem}
+ * @type {TP.html.menuitem}
  * @summary 'menuitem' tag. Defines a menuitem.
  */
 
@@ -137,11 +137,11 @@ TP.html.Attrs.defineSubtype('menu');
 TP.html.Attrs.defineSubtype('menuitem');
 
 //  ========================================================================
-//  html:meter (HTML 5)
+//  TP.html.meter (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:meter}
+ * @type {TP.html.meter}
  * @summary 'meter' tag. A measurement, such as disk usage.
  */
 
@@ -150,11 +150,11 @@ TP.html.Attrs.defineSubtype('menuitem');
 TP.html.Attrs.defineSubtype('meter');
 
 //  ========================================================================
-//  html:progress (HTML 5)
+//  TP.html.progress (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:progress}
+ * @type {TP.html.progress}
  * @summary 'progress' tag. A completion of a task, such as downloading.
  */
 
@@ -163,11 +163,11 @@ TP.html.Attrs.defineSubtype('meter');
 TP.html.Attrs.defineSubtype('progress');
 
 //  ========================================================================
-//  html:small
+//  TP.html.small
 //  ========================================================================
 
 /**
- * @type {html:small}
+ * @type {TP.html.small}
  * @summary 'small' tag. Smaller font.
  */
 
@@ -176,11 +176,11 @@ TP.html.Attrs.defineSubtype('progress');
 TP.html.Attrs.defineSubtype('small');
 
 //  ========================================================================
-//  html:sub
+//  TP.html.sub
 //  ========================================================================
 
 /**
- * @type {html:sub}
+ * @type {TP.html.sub}
  * @summary 'sub' tag. Subscript.
  */
 
@@ -189,11 +189,11 @@ TP.html.Attrs.defineSubtype('small');
 TP.html.Attrs.defineSubtype('sub');
 
 //  ========================================================================
-//  html:summary (HTML 5)
+//  TP.html.summary (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:summary}
+ * @type {TP.html.summary}
  * @summary 'summary' tag. Represents summary information for a 'details' tag.
  */
 
@@ -202,11 +202,11 @@ TP.html.Attrs.defineSubtype('sub');
 TP.html.Attrs.defineSubtype('summary');
 
 //  ========================================================================
-//  html:sup
+//  TP.html.sup
 //  ========================================================================
 
 /**
- * @type {html:sup}
+ * @type {TP.html.sup}
  * @summary 'sup' tag. Superscript.
  */
 
@@ -215,11 +215,11 @@ TP.html.Attrs.defineSubtype('summary');
 TP.html.Attrs.defineSubtype('sup');
 
 //  ========================================================================
-//  html:time (HTML 5)
+//  TP.html.time (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:time}
+ * @type {TP.html.time}
  * @summary 'time' tag. A data and/or time.
  */
 
@@ -228,11 +228,11 @@ TP.html.Attrs.defineSubtype('sup');
 TP.html.Attrs.defineSubtype('time');
 
 //  ========================================================================
-//  html:tt
+//  TP.html.tt
 //  ========================================================================
 
 /**
- * @type {html:tt}
+ * @type {TP.html.tt}
  * @summary 'tt' tag. Fixed (teletype/typewriter) font.
  */
 

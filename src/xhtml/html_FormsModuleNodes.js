@@ -60,11 +60,11 @@
 */
 
 //  ========================================================================
-//  html:datalist (HTML 5)
+//  TP.html.datalist (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:datalist}
+ * @type {TP.html.datalist}
  * @summary 'datalist' tag. Together with 'list' attribute for input can be
  *     used to make a combobox.
  */
@@ -582,11 +582,11 @@ function() {
 });
 
 //  ========================================================================
-//  html:output (HTML 5)
+//  TP.html.output (HTML 5)
 //  ========================================================================
 
 /**
- * @type {html:output}
+ * @type {TP.html.output}
  * @summary 'output' tag. Some form of output.
  */
 
