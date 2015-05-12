@@ -146,11 +146,6 @@ function() {
 
     TP.elementHideBusyMessage(contentTPElem.getNativeNode());
 
-    //  Go ahead and adjust the input size after everything else has laid out to
-    //  get the most accurate layout.
-    (function() {
-        this.adjustInputSize();
-    }.bind(this)).fork(400);
 
     return this;
 });
@@ -284,6 +279,8 @@ function() {
     if (TP.isValid(consoleInput = this.get('consoleInput'))) {
         consoleInput.$get('$editorObj').refresh();
     }
+
+    this.adjustInputSize();
 
     return this;
 });
