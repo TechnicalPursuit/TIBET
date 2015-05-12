@@ -406,6 +406,37 @@ TP.html.Attrs.defineSubtype('source');
 TP.html.source.Type.set('uriAttrs', TP.ac('src'));
 
 //  ========================================================================
+//  TP.html.track (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {TP.html.track}
+ * @summary 'track' tag. Tracks for media elements.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('track');
+
+TP.html.track.Type.set('uriAttrs', TP.ac('src'));
+TP.html.track.Type.set('booleanAttrs', TP.ac('default'));
+
+TP.html.track.addTraits(TP.core.EmptyElementNode);
+
+TP.html.track.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+
+TP.html.track.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.track.finalizeTraits();
+
+//  ========================================================================
 //  TP.html.video (HTML 5)
 //  ========================================================================
 

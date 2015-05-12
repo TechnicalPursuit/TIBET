@@ -48,6 +48,20 @@ TP.html.Attrs.defineSubtype('acronym');
 TP.html.Attrs.defineSubtype('address');
 
 //  ========================================================================
+//  TP.html.bdi (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {TP.html.bdi}
+ * @summary 'bdi' tag. Defines a section that might be formatted in a different
+ * direction.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('bdi');
+
+//  ========================================================================
 //  TP.html.blockquote
 //  ========================================================================
 
