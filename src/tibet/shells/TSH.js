@@ -2072,9 +2072,7 @@ function(aRequest) {
 
     var arg,
         url,
-        obj,
-
-        editor;
+        obj;
 
     arg = this.getArgument(aRequest, 'ARG0');
 
@@ -2090,19 +2088,8 @@ function(aRequest) {
         obj = this.resolveObjectReference(arg, aRequest);
     }
 
-    if (TP.isValid(obj)) {
-        //  grab a reference to the TDP editor
-        if (TP.isValid(editor = TP.byOID('DeveloperEditor'))) {
-            editor.setContentObject(obj);
-            editor.navigateToEditorScreen();
-
-            aRequest.complete();
-
-            return;
-        }
-    }
-
-    aRequest.fail();
+    aRequest.atPut('structuredOutput', true);
+    aRequest.complete(obj);
 
     return;
 });

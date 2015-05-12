@@ -2,8 +2,8 @@
 
 <span xmlns="http://www.w3.org/1999/xhtml" xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
-    <!-- The template used for the 'input' part of a piece of console output -->
-    <div id="{{id}}" name="inputEntry">
+    <div id="{{id}}" name="consoleEntry" class="consolecellgroup">
+        <!-- The template used for the 'input' part of a piece of console output -->
         <div class="inputcell {{inputclass}}">
             <span class="hid"><a href="javascript: void 0" onclick="TP.core.Resource.getResourceById('SystemConsole').execRawInput('{{hid}}')">{{hid}}</a></span>
             <span class="content">{{cmdtext}}</span>
@@ -13,11 +13,14 @@
         <!-- the output entry will be injected here after it is templated -->
     </div>
 
-    <!-- The template used for the 'output' part of a piece of console output -->
-    <div class="outputcell {{outputclass}} cm-s-zenburn" name="outputEntry" tibet:nocompile="true">
+    <!-- The template used for the 'output' part of a piece of raw output -->
+    <div class="outputcell {{outputclass}} cm-s-zenburn" name="raw_outputEntry" tibet:nocompile="true">
         <span class="result">{{output}}</span>
     </div>
 
+    <!-- The template used for the 'output' part of a piece of structured output -->
+    <div class="outputcell {{outputclass}} cm-s-zenburn" name="structured_outputEntry">
+        {{output}}
     </div>
 </span>
 

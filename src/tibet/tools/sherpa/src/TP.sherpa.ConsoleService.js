@@ -1763,6 +1763,9 @@ function(anObject, aRequest) {
      */
 
     var request,
+
+        structuredOutput,
+
         tap,
         data,
         asIs,
@@ -1776,77 +1779,86 @@ function(anObject, aRequest) {
 
     request = TP.request(aRequest);
 
-    //  TODO: replace this hack with an update to direct to the proper
-    //  Logger/Appender so we get the output we want via layout/appender.
-    tap = request.at('cmdTAP');
+    structuredOutput = false;
 
-    //  ---
-    //  Produce valid XHTML node to test string content, otherwise do our best
-    //  to get an XHTML node we can serialize and inject. There are two flags
-    //  that drive the logic here: the 'cmdAsIs' flag and the 'cmdBox' flag.
-    //  If the 'cmdAsIs' flag is set, then no further operation will be
-    //  performed on the output.
-
-    //  ---
-    //  asIs() processing
-    //  ---
-
-    //  a "common flag" is the asIs flag telling us to skip formatting
-    asIs = TP.ifInvalid(request.at('cmdAsIs'), false);
-
-    //  if 'asIs' is not true, we format the data.
-    if (TP.notTrue(asIs)) {
-        request.atPutIfAbsent('shouldWrap', false);
-
-        data = TP.format(
-                anObject,
-                TP.sys.cfg('sherpa.default_format', 'sherpa:pp').asType(),
-                TP.hc('level', 1,
-                        'shouldWrap', false));
+    if (TP.isTrue(request.at('structuredOutput'))) {
+        data = '';
+        structuredOutput = true;
     } else {
-        //  Otherwise it's 'as is' - take it as it is.
 
-        //  For 'as is' content, we typically are 'rendering markup'. If we
-        //  got an Array (a distinct possibility, given the nature of pipes,
-        //  etc.), we don't want separators such as commas (',') showing up
-        //  in the rendered output. So we set the Array's delimiter to ''
-        //  perform an 'asString()' on it.
-        if (TP.isArray(anObject)) {
-            anObject.set('delimiter', '');
-            data = anObject.asString();
+        //  TODO: replace this hack with an update to direct to the proper
+        //  Logger/Appender so we get the output we want via layout/appender.
+        tap = request.at('cmdTAP');
+
+        //  ---
+        //  Produce valid XHTML node to test string content, otherwise do our
+        //  best to get an XHTML node we can serialize and inject. There are two
+        //  flags that drive the logic here: the 'cmdAsIs' flag and the 'cmdBox'
+        //  flag. If the 'cmdAsIs' flag is set, then no further operation will
+        //  be performed on the output.
+
+        //  ---
+        //  asIs() processing
+        //  ---
+
+        //  a "common flag" is the asIs flag telling us to skip formatting
+        asIs = TP.ifInvalid(request.at('cmdAsIs'), false);
+
+        //  if 'asIs' is not true, we format the data.
+        if (TP.notTrue(asIs)) {
+            request.atPutIfAbsent('shouldWrap', false);
+
+            data = TP.format(
+                    anObject,
+                    TP.sys.cfg('sherpa.default_format', 'sherpa:pp').asType(),
+                    TP.hc('level', 1,
+                            'shouldWrap', false));
         } else {
-            data = anObject;
+            //  Otherwise it's 'as is' - take it as it is.
+
+            //  For 'as is' content, we typically are 'rendering markup'. If we
+            //  got an Array (a distinct possibility, given the nature of pipes,
+            //  etc.), we don't want separators such as commas (',') showing up
+            //  in the rendered output. So we set the Array's delimiter to ''
+            //  perform an 'asString()' on it.
+            if (TP.isArray(anObject)) {
+                anObject.set('delimiter', '');
+                data = anObject.asString();
+            } else {
+                data = anObject;
+            }
+
+            //  make sure its always a String though.
+            data = TP.str(data);
+
+            //  and, since we're not feeding it through a formatter (who is
+            //  normally responsible for this), make sure its escaped
+            data = data.asEscapedXML();
         }
 
-        //  make sure its always a String though.
-        data = TP.str(data);
-
-        //  and, since we're not feeding it through a formatter (who is normally
-        //  responsible for this), make sure its escaped
-        data = data.asEscapedXML();
-    }
-
-    if (TP.isTrue(tap)) {
-        if (/^ok /.test(data) || /# PASS/i.test(data)) {
-            cssClass = 'tap-pass';
-        } else if (/^not ok /.test(data) || /# FAIL/i.test(data)) {
-            cssClass = 'tap-fail';
-        } else if (/^#/.test(data)) {
-            cssClass = 'tap-comment';
+        if (TP.isTrue(tap)) {
+            if (/^ok /.test(data) || /# PASS/i.test(data)) {
+                cssClass = 'tap-pass';
+            } else if (/^not ok /.test(data) || /# FAIL/i.test(data)) {
+                cssClass = 'tap-fail';
+            } else if (/^#/.test(data)) {
+                cssClass = 'tap-comment';
+            } else {
+                cssClass = 'tap-unknown';
+            }
         } else {
-            cssClass = 'tap-unknown';
+            if (TP.isValid(request.at('messageLevel'))) {
+                cssClass = request.at('messageLevel').getName().toLowerCase();
+            }
+            cssClass = TP.ifInvalid(cssClass, 'info');
         }
-    } else {
-        if (TP.isValid(request.at('messageLevel'))) {
-            cssClass = request.at('messageLevel').getName().toLowerCase();
-        }
-        cssClass = TP.ifInvalid(cssClass, 'info');
     }
 
     outputData = TP.hc('output', data,
                         'cssClass', cssClass,
                         'rawData', anObject,
-                        'request', request);
+                        'request', request,
+                        'structuredOutput', structuredOutput);
 
     consoleGUI = this.get('$consoleGUI');
 
