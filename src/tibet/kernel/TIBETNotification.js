@@ -3568,7 +3568,16 @@ function(anOrigin, aSignal) {
 
     entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
     if (TP.isValid(entry)) {
-        return entry.suspect === true;
+        return entry.suspend === true;
+    } else if (!TP.regex.HAS_PERIOD.test(signame)) {
+        //  If the signame didn't have a period, then it might be a spoofed
+        //  signal name, but the registration would've been made using a
+        //  'full signal' name (i.e. prefixed by 'TP.sig.').
+        entry = TP.sig.SignalMap.INTERESTS[
+                            orgid + '.' + 'TP.sig.' + signame];
+        if (TP.isValid(entry)) {
+            return entry.suspend === true;
+        }
     }
 });
 
@@ -4683,14 +4692,25 @@ aSigEntry, checkTarget) {
         //  meaning they're called only once in most cases
         entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
         if (TP.notValid(entry)) {
-            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
-                TP.trace(TP.join('Interest not found for: ',
-                                    orgid, '.', signame),
-                            TP.SIGNAL_LOG) : 0;
 
-            aSignal.setOrigin(originalOrigin);
+            //  If the signame didn't have a period, then it might be a spoofed
+            //  signal name, but the registration would've been made using a
+            //  'full signal' name (i.e. prefixed by 'TP.sig.').
+            if (!TP.regex.HAS_PERIOD.test(signame)) {
+                entry = TP.sig.SignalMap.INTERESTS[
+                                    orgid + '.' + 'TP.sig.' + signame];
+            }
 
-            return;
+            if (TP.notValid(entry)) {
+                TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
+                    TP.trace(TP.join('Interest not found for: ',
+                                        orgid, '.', signame),
+                                TP.SIGNAL_LOG) : 0;
+
+                aSignal.setOrigin(originalOrigin);
+
+                return;
+            }
         }
 
         //  if the entire block of interests is suspended then do not
@@ -6228,6 +6248,15 @@ function(anOrigin, aSignal) {
     entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
     if (TP.isValid(entry)) {
         delete entry.suspend;
+    } else if (!TP.regex.HAS_PERIOD.test(signame)) {
+        //  If the signame didn't have a period, then it might be a spoofed
+        //  signal name, but the registration would've been made using a
+        //  'full signal' name (i.e. prefixed by 'TP.sig.').
+        entry = TP.sig.SignalMap.INTERESTS[
+                            orgid + '.' + 'TP.sig.' + signame];
+        if (TP.isValid(entry)) {
+            delete entry.suspend;
+        }
     }
 
     return;
@@ -6256,6 +6285,15 @@ function(anOrigin, aSignal) {
     entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
     if (TP.isValid(entry)) {
         entry.suspend = true;
+    } else if (!TP.regex.HAS_PERIOD.test(signame)) {
+        //  If the signame didn't have a period, then it might be a spoofed
+        //  signal name, but the registration would've been made using a
+        //  'full signal' name (i.e. prefixed by 'TP.sig.').
+        entry = TP.sig.SignalMap.INTERESTS[
+                            orgid + '.' + 'TP.sig.' + signame];
+        if (TP.isValid(entry)) {
+            entry.suspend = true;
+        }
     }
 
     return;
