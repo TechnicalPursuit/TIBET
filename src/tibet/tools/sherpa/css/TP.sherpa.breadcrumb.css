@@ -1,0 +1,111 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|breadcrumb {
+
+    position: absolute;
+    display: block;
+
+    left: 0px;
+    right: 0px;
+
+    height: 18px;
+}
+
+sherpa|breadcrumb > .crumblist {
+
+    font-size: 10px;
+    line-height: 1.5em;
+
+    list-style: none;
+    overflow: hidden;
+
+    margin: 0px;
+}
+
+sherpa|breadcrumb > .crumblist li {
+
+    float: left;
+}
+
+sherpa|breadcrumb > .crumblist li a {
+
+    position: relative;
+    display: block;
+
+    float: left;
+    padding: 1px 0px 1px 35px;
+
+    color: white !important;
+    text-decoration: none;
+
+    background: brown;                   /* fallback color */
+    background: hsla(34,85%,35%,1);
+}
+
+sherpa|breadcrumb > .crumblist li a:after {
+
+    content: " ";
+
+    position: absolute;
+    display: block;
+
+    width: 0px;
+    height: 0px;
+
+    top: 50%;
+    margin-top: -12px;
+    left: 100%;
+
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 8px solid hsla(34,85%,35%,1);
+
+    z-index: 2;
+}
+
+sherpa|breadcrumb > .crumblist li a:before {
+
+    content: " ";
+
+    position: absolute;
+    display: block;
+
+    width: 0px;
+    height: 0px;
+
+    top: 50%;
+    margin-top: -12px;
+    margin-left: 1px;
+    left: 100%;
+
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 8px solid white;
+
+    z-index: 1;
+}
+
+sherpa|breadcrumb > .crumblist li:first-child a {
+    padding-left: 2px;
+}
+sherpa|breadcrumb > .crumblist li:nth-child(2) a       { background:        hsla(34,85%,45%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(2) a:after { border-left-color: hsla(34,85%,45%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(3) a       { background:        hsla(34,85%,50%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(3) a:after { border-left-color: hsla(34,85%,50%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(4) a       { background:        hsla(34,85%,55%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(4) a:after { border-left-color: hsla(34,85%,55%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(5) a       { background:        hsla(34,85%,60%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(5) a:after { border-left-color: hsla(34,85%,60%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(6) a       { background:        hsla(34,85%,65%,1); }
+sherpa|breadcrumb > .crumblist li:nth-child(6) a:after { border-left-color: hsla(34,85%,65%,1); }
+sherpa|breadcrumb > .crumblist li:last-child a {
+    color: black;
+    pointer-events: none;
+    cursor: default;
+}
+
+sherpa|breadcrumb > .crumblist li a:hover { background: hsla(34,85%,25%,1); }
+sherpa|breadcrumb > .crumblist li a:hover:after { border-left-color: hsla(34,85%,25%,1) !important; }
+
+

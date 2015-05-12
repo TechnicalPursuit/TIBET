@@ -56,6 +56,10 @@
     <property name="path.TP.sherpa.tiledock.template" value="~ide_root/xhtml/TP.sherpa.tiledock.xhtml"/>
     <property name="path.TP.sherpa.tiledock.style" value="~ide_root/css/TP.sherpa.tiledock.css"/>
 
+    <script src="./src/TP.sherpa.breadcrumb.js"/>
+    <property name="path.TP.sherpa.breadcrumb.template" value="~ide_root/xhtml/TP.sherpa.breadcrumb.xhtml"/>
+    <property name="path.TP.sherpa.breadcrumb.style" value="~ide_root/css/TP.sherpa.breadcrumb.css"/>
+
 </config>
 
 </package>
