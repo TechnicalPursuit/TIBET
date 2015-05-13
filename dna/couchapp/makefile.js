@@ -33,7 +33,7 @@ getDatabaseParameters = function(make) {
         throw new Error('Invalid call to helper function. No task provided.');
     }
 
-    db_url = 'http://0.0.0.0:5984';
+    db_url = 'http://127.0.0.1:5984';
     db_name = make.getProjectName();
 
     result = make.prompt.question('Database url [' + db_url + '] ? ');

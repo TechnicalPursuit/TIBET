@@ -496,7 +496,7 @@
     //  path to the json file (which avoids x-domain security issues) with the
     //  latest TIBET release data for version checking the root library.
     //TP.sys.setcfg('path.lib_version_file',
-    //  'http://0.0.0.0:1234/tibet/latest.js');
+    //  'http://127.0.0.1:1234/tibet/latest.js');
     TP.sys.setcfg('path.lib_version_file',
         'http://www.technicalpursuit.com/tibet/latest.js');
 

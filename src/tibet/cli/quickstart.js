@@ -113,7 +113,7 @@ Cmd.prototype.execute = function() {
 'the server using \'tibet start\' without any parameters:\n\n' +
 
 '    $ tibet start\n' +
-'    Starting server at http://0.0.0.0:1407/index.html\n\n' +
+'    Starting server at http://127.0.0.1:1407/index.html\n\n' +
 'Congratulations! Your new TIBET project is running. Open the web address\n' +
 'for your project in an HTML5 browser and you should see text directing you\n' +
 'on how to take the next step in your TIBET journey.\n\n' +

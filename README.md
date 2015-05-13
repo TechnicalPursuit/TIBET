@@ -167,7 +167,7 @@ to clone, initialize, and start your first TIBET application.
     the server using 'tibet start' without any parameters:
 
         $ tibet start
-        Starting server at http://0.0.0.0:1407/index.html
+        Starting server at http://127.0.0.1:1407/index.html
 
     Congratulations! Your new TIBET project is running. Open the web address
     for your project in an HTML5 browser and you should see text directing you

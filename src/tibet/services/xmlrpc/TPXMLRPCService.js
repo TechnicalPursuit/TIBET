@@ -111,14 +111,14 @@ function(aRequest) {
     url = TP.uc(aRequest.at('uri'));
     if (TP.isURI(url)) {
         //  have to watch out here for a couple of potential gotchas. First,
-        //  we don't really want to use 'localhost', better to use 0.0.0.0
+        //  we don't really want to use 'localhost', better to use 127.0.0.1
         //  and second we don't want to throw away the port number if it's
         //  not 80.
         port = url.get('port');
         port = port === 80 ? '' : ':' + port;
 
         host = url.get('host');
-        host = host === 'localhost' ? '0.0.0.0' : host;
+        host = host === 'localhost' ? '127.0.0.1' : host;
 
         headers.atPut('Host', host + port);
     }
