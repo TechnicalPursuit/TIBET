@@ -8948,6 +8948,7 @@ function(path, match, names) {
      */
 
     var parts,
+        route,
         name,
         params;
 
@@ -8956,7 +8957,9 @@ function(path, match, names) {
     //  Only a full match value, no parameterized/captured sections.
     if (match.getSize() === 1) {
 
-        parts = match.at(0).slice(1).split('/');
+        route = match.at(0).slice(1);
+        params.atPut('route', route);
+        parts = route.split('/');
 
         name = parts.reduce(
                 function(prev, current, index, array) {
