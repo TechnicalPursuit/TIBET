@@ -50,7 +50,8 @@ function() {
     this.observe(toolbarElem,
                     'TP.sig.DOMClick',
                     function(aSignal) {
-                        this.toggleOutputMode(
+                        TP.byOID('SherpaConsole', this.getNativeWindow()).
+                            toggleOutputMode(
                             TP.elementGetAttribute(
                                 aSignal.getTarget().parentNode, 'mode'));
                     }.bind(this));
