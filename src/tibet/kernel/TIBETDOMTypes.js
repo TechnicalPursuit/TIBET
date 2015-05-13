@@ -9468,7 +9468,7 @@ function(resource, mimeType, fallback) {
 
     value = TP.sys.cfg(cachekey);
     if (TP.notEmpty(value)) {
-        return value;
+        return value === TP.NO_RESULT ? void 0 : value;
     }
 
     //  ---
@@ -9483,7 +9483,9 @@ function(resource, mimeType, fallback) {
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
         TP.sys.setcfg(cachekey, value);
-        return value;
+        if (value !== TP.NO_RESULT) {
+            return value;
+        }
     }
 
     //  ---
@@ -9496,7 +9498,9 @@ function(resource, mimeType, fallback) {
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
         TP.sys.setcfg(cachekey, value);
-        return value;
+        if (value !== TP.NO_RESULT) {
+            return value;
+        }
     }
 
     //  ---
@@ -9507,13 +9511,14 @@ function(resource, mimeType, fallback) {
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
         TP.sys.setcfg(cachekey, value);
-        return value;
+        return value === TP.NO_RESULT ? void 0 : value;
     }
 
     //  ---
     //  receiver method
     //  ---
 
+    //  Don't cause infinite recursion...
     if (res !== 'resource') {
         uri = this.get(res + 'URI');
         if (TP.notEmpty(uri)) {
