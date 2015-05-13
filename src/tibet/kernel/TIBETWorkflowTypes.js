@@ -6599,10 +6599,7 @@ function() {
 
     var entry;
 
-    //  NOTE we can't use "at()" here since it supports negative indexes and we
-    //  may produce one if we're at the start of the list (index 0).
-    entry = this.get('history')[this.get('index') - 1];
-
+    entry = this.get('history').at(this.get('index'));
     if (TP.isValid(entry)) {
         return entry.at(2);
     }
