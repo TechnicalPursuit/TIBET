@@ -6180,6 +6180,37 @@ function(aSignal) {
      *     the route name and whose payload contains any URL parameters.
      */
 
+    var route,
+        val,
+        type,
+        url;
+
+    val = aSignal.at('route');
+
+    //  See if the value is a route configuration key.
+    route = TP.sys.cfg('route.' + val);
+    if (TP.isEmpty(route)) {
+        route = val;
+    }
+
+    //  See if the value is a tag type for injection.
+    type = TP.sys.getTypeByName(route);
+    if (TP.isType(type)) {
+        TP.info('setting content to: ' + TP.str(type));
+        // BILL: make this work :)
+        //TP.sys.getUICanvas().setContentFromTagType(type);
+        return;
+    }
+
+    //  See if the value looks like a URL for set location.
+    url = TP.uc(route);
+    if (TP.isURI(url)) {
+        TP.info('setting location to: ' + TP.str(url));
+        TP.sys.getUICanvas().setLocation(url);
+        return;
+    }
+
+    //  No default other than tag or url content update.
     return;
 });
 
