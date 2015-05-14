@@ -163,10 +163,15 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
                             'type',
                             TP.JS_TEXT_ENCODED);
     TP.elementSetAttribute(newScriptElement, 'charset', TP.UTF8);
-    TP.elementSetAttribute(newScriptElement, 'async', false);
+
+    //  NOTE!! This *must* be done by using the '.async' property. Setting the
+    //  'async' attribute to 'false' here will actually cause the new script
+    //  element to always be asynchronous, since the 'async' attribute is an
+    //  'existence' attribute.
+    newScriptElement.async = false;
 
     if (TP.notEmpty(aURL)) {
-        TP.elementSetAttribute(newScriptElement, 'src', aURL);
+        newScriptElement.src = aURL;
     } else if (TP.notEmpty(aContent)) {
         scriptContentNode = aDocument.createTextNode(aContent);
         newScriptElement.appendChild(scriptContentNode);
