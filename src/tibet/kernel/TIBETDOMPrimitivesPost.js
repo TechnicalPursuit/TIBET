@@ -622,18 +622,19 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
         newEvent,
 
+        scriptURLs,
+        placeholderElem,
+
         allContentLoadedFunc,
 
         lastSourcedScript,
-        newScripts,
 
         scripts,
 
         i,
-        oldScript,
-        newScript,
 
-        onloadTimer;
+        loadFunc,
+        count;
 
     if (!TP.isXMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -700,11 +701,46 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  Clear out the document's existing content.
     TP.nodeEmptyContent(aDocument);
 
-    //  Append the new child in
+    //  Script elements have to be treated specially. They won't be executed
+    //  simply by placing their ancestor (in this case 'nodeContent') into the
+    //  document, so we must manually process them (i.e. create new ones using
+    //  the same URLs and add them individually - then they will be invoked
+    //  properly).
+    //  But because of the way they are processed by browsers, and because of
+    //  the way that certain browsers (Chrome) will retain information (and
+    //  attempt to act on that information) about script elements even if they
+    //  are removed from the document, we make sure to capture their URLs and
+    //  remove them from the nodeContent *before* we set it into the document.
+
+    //  Grab all of the existing scripts.
+    scriptURLs = TP.ac();
+    scripts = TP.nodeGetElementsByTagName(nodeContent,
+                                            'script',
+                                            TP.w3.Xmlns.XHTML);
+
+    //  Loop over them, capturing their 'src' URL, and substituting a span
+    //  element for each one. Tag that placeholder span with the number of the
+    //  script that it represents in the document.
+    for (i = 0; i < scripts.getSize(); i++) {
+        scriptURLs.push(scripts.at(i).src);
+
+        placeholderElem = TP.documentCreateElement(
+                                        aDocument,
+                                        'span',
+                                        TP.w3.Xmlns.XHTML);
+
+        TP.elementSetAttribute(placeholderElem, 'script_num', i);
+
+        TP.nodeReplaceChild(scripts.at(i).parentNode,
+                            placeholderElem, scripts.at(i),
+                            false);
+    }
+
+    //  Append the new child into the target document
     TP.nodeAppendChild(aDocument, nodeContent, awakenContent);
 
     //  Since script elements, if we have them and they have a 'src'
-    //  attribute, are processed and fully realized in an asynchronous
+    //  attribute, may be processed and fully realized in an asynchronous
     //  manner (even if we set the new HTML5 'async' flag to false), we
     //  define a callback function that 'finishes up' the last parts of our
     //  simulated 'document.write()'. This includes dispatching a
@@ -760,84 +796,64 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             TP.core.Window.$$isDocumentWriting = false;
         };
 
-    lastSourcedScript = null;
-    newScripts = TP.ac();
+    //  Now, using the scriptURLs Array as a queue, create a script element for
+    //  each scriptURL, set its 'load' event handler to the Function it is
+    //  actually in, find the placeholder span and replace it. This will cause
+    //  the script to load and for the load handler to be called recursively.
 
-    //  If there's a 'head' element', and it contains 'script' elements,
-    //  then the only way to get them to execute is to create new script
-    //  elements, and copy over either the text content source (for inline
-    //  scripts) or the 'src' attribute.
-    if (TP.isElement(aDocument.getElementsByTagName('head')[0])) {
-        //  Note the usage of 'getElementsByTagNameNS' here - we only want XHTML
-        //  script nodes - not any other namespace's 'script' elements (in case
-        //  they've defined them).
-        scripts = aDocument.getElementsByTagNameNS(TP.w3.Xmlns.XHTML, 'script');
+    //  This ensures that each script is loaded in order and is completely
+    //  finished loading before the next script is loaded.
+    count = 0;
+    loadFunc = function(evt) {
+        var scriptURL,
+            newScript;
 
-        for (i = 0; i < scripts.length; i++) {
-            oldScript = scripts[i];
+        if (evt) {
+            evt.target.removeEventListener('load', loadFunc, false);
+        }
 
-            //  Create a new script element. Note that this call does set
-            //  the HTML5 'async' attribute to be false (so that the scripts
-            //  are loaded and parsed in order), but for some reason the
-            //  scripts haven't fully run until the 'onload of the last
-            //  script with a "src" attribute is called'. This is why we
-            //  capture it and use it later.
-            if (oldScript.hasAttribute('src')) {
-                newScript = TP.documentCreateScriptElement(
+        if (TP.notEmpty(scriptURLs)) {
+
+            //  Shift off the next script URL out of the queue
+            scriptURL = scriptURLs.shift();
+
+            newScript = TP.documentCreateScriptElement(
+                                    aDocument,
+                                    scriptURL);
+            newScript.addEventListener('load', loadFunc, false);
+
+            //  Find the 'span' placeholder element that we created above and
+            //  that is standing in for this script.
+            placeholderElem = TP.byCSS('span[script_num="' + count + '"]',
                                         aDocument,
-                                        oldScript.getAttribute('src'));
-                lastSourcedScript = newScript;
+                                        true);
+
+            if (TP.isElement(placeholderElem)) {
+                TP.nodeReplaceChild(placeholderElem.parentNode,
+                                    newScript, placeholderElem,
+                                    false);
             } else {
-                newScript = TP.documentCreateScriptElement(
-                                        aDocument,
-                                        null,
-                                        TP.nodeGetTextContent(oldScript));
+                TP.ifWarn() ?
+                    TP.warn('Couldn\'t find placeholder for script #: ' + count,
+                            TP.LOG) : 0;
             }
 
-            newScripts.push(newScript);
+            //  Make sure to increment the count for the next pass!
+            count++;
+        } else {
+
+            //  There are no more scripts - invoke the Function that signals
+            //  that all content has been loaded.
+            allContentLoadedFunc();
         }
+    };
 
-        //  If there was at least one script with a 'src' (and it should be
-        //  last), then set its onload to the 'all content is loaded'
-        //  function we defined above.
-        if (TP.isElement(lastSourcedScript)) {
+    //  Invoke the function once manually to 'kick start' everything.
+    loadFunc();
 
-            //  Unfortunately, Mozilla does a poor job in firing the 'onload'
-            //  for the last script element in an XHTML environment, so we have
-            //  to play the setTimeout() game here.
-            if (TP.sys.isUA('GECKO')) {
-                onloadTimer = setTimeout(
-                        function() {
-                            onloadTimer = null;
-                            lastSourcedScript.onload = null;
-                            allContentLoadedFunc();
-                        }, 100);
-                lastSourcedScript.onload =
-                    function() {
-                        if (onloadTimer) {
-                            clearTimeout(onloadTimer);
-                            allContentLoadedFunc();
-                        }
-                    };
-            } else {
-                //  Other environments seem to do this properly.
-                lastSourcedScript.onload = allContentLoadedFunc;
-            }
-        }
-
-        //  Loop over all of the script elements and replace the old version
-        //  of themselves with the new version. This is the action that
-        //  actually causes the scripts to execute.
-        for (i = 0; i < scripts.length; i++) {
-            TP.nodeReplaceChild(scripts[i].parentNode,
-                                newScripts.at(i), scripts[i],
-                                false);
-        }
-    }
-
-    //  If we didn't find at least one script element with a 'src', then
+    //  If we didn't process at least one script element with a 'src', then
     //  manually invoke the 'all content is loaded' function.
-    if (!TP.isElement(lastSourcedScript)) {
+    if (count === 0) {
         allContentLoadedFunc();
     }
 
