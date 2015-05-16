@@ -2164,6 +2164,9 @@ function(target, name, value, track, desc, display, owner) {
             var oldCallee,
                 oldArgs,
 
+                args,
+                i,
+
                 retVal;
 
             //  Capture the current values of callee and args - we might already
@@ -2171,12 +2174,21 @@ function(target, name, value, track, desc, display, owner) {
             oldCallee = TP.$$currentCallee$$;
             oldArgs = TP.$$currentArgs$$;
 
-            //  Set the value of callee and args.
+            //  Set the value of callee.
             TP.$$currentCallee$$ = value;
-            TP.$$currentArgs$$ = arguments;
+
+            //  Set the value of args. Note the unique way we gather up the
+            //  arguments here - using very primitive Array constructs and only
+            //  touching the items in 'arguments', not the object itself. This
+            //  allows engines such as V8 in Chrome to optimize.
+            args = new Array(arguments.length);
+            for (i = 0; i < args.length; i++) {
+                args[i] = arguments[i];
+            }
+            TP.$$currentArgs$$ = args;
 
             //  Now, call the method
-            retVal = value.apply(this, arguments);
+            retVal = value.apply(this, TP.$$currentArgs$$);
 
             //  Restore the old values for callee and args
             TP.$$currentCallee$$ = oldCallee;
