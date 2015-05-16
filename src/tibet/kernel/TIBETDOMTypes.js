@@ -8861,6 +8861,9 @@ function(aRequest) {
 
         nodeGID,
 
+        workNode,
+        newNode,
+
         type;
 
     TP.stop('break.content_process');
@@ -8895,12 +8898,38 @@ function(aRequest) {
         processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                         TP.core.TagProcessor.COMPILE_PHASES);
 
-        //  Capture this before processing - processing this node might very
-        //  well detach it.
+        //  Capture this before processing - the following steps will virtually
+        //  detach this node.
         nodeGID = TP.gid(node);
 
+        //  If we're working with a Document, get it's document element - we
+        //  don't really process Document nodes.
+        if (TP.isDocument(node)) {
+            workNode = node.documentElement;
+        } else {
+            workNode = node;
+        }
+
+        //  Wrap the work node in a 'root element for processing'. This is
+        //  because, the way the transformation engine works, it holds onto the
+        //  root node reference as it processes and replaces, so we want to give
+        //  it a root that means nothing to the caller of this method. Also,
+        //  this facilitates processing DocumentFragments in case we are one of
+        //  those.
+        workNode = TP.elem('<processingroot>' +
+                            TP.str(workNode) +
+                            '</processingroot>');
+
+        if (!TP.isCollectionNode(workNode)) {
+            aRequest.fail('work node is not a collection node', TP.FAILED);
+            return;
+        }
+
         //  Process the tree of markup
-        processor.processTree(node, request);
+        processor.processTree(workNode, request);
+
+        //  Pluck the first child out of our faked 'root' from above.
+        newNode = workNode.firstChild;
 
         //  Signal from the node that compile processing is complete.
         TP.signal(nodeGID, 'TP.sig.CompileProcessingComplete');
@@ -8917,12 +8946,22 @@ function(aRequest) {
     //  update our internal node content. If not we'll need to get a new
     //  wrapper and return that as the result.
 
-    if (!TP.isNode(node)) {
-        return node;
-    } else if ((type = TP.core.Node.getConcreteType(node)) === this.getType()) {
-        this.setNativeNode(node);
+    if (!TP.isNode(newNode)) {
+        return newNode;
+    } else if (TP.isDocument(node)) {
+        //  The original node was a document, so set its document element to the
+        //  newly produced node.
+        TP.nodeReplaceChild(node, newNode, node.documentElement, false);
+    } else if (
+        //  if our processing produced a new native node of the same type as our
+        //  original content (so we're still the right kind of wrapper) we can
+        //  update our internal node content.
+        (type = TP.core.Node.getConcreteType(newNode)) === this.getType()) {
+        this.setNativeNode(newNode);
     } else {
-        return type.construct(node);
+        //  It's not so we'll need to get a new wrapper and return that as the
+        //  result.
+        return type.construct(newNode);
     }
 
     return this;
