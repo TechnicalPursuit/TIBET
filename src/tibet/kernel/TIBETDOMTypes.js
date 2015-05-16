@@ -762,6 +762,22 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Type.defineMethod('getNSURI',
+function() {
+
+    /**
+     * @method getNSURI
+     * @summary Returns the namespaceURI of the receiver. This is computed from
+     *     the receiver's prefix, so the prefix and namespace *must* be
+     *     registered in TIBET's central registry.
+     * @returns {String} A namespace URI or the empty string.
+     */
+
+    return TP.w3.Xmlns.getPrefixURI(this.get('nsPrefix'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Type.defineMethod('getQueryPath',
 function() {
 
