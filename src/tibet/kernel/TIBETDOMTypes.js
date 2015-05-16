@@ -10387,7 +10387,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
-function(wantsDeep) {
+function(wantsDeep, wantsCompiled) {
 
     /**
      * @method getQueryPath
@@ -10397,25 +10397,48 @@ function(wantsDeep) {
      * @param {Boolean} wantsDeep Whether or not the query should represent a
      *     'deep query' - that is, all of the occurrences of this element even
      *     under elements of the same type. This defaults to false.
+     * @param {Boolean} wantsCompiled Whether or not the query should also find
+     *     compiled representations of the receiver. This defaults to false.
      * @returns {String} The path that can be used to query for Nodes of this
      *     type.
      */
 
-    var fullName;
+    var sourceTagQuery,
+        compiledTagQuery,
+        query;
 
     //  Note here how we generate a CSS3 namespace query
-    fullName = this.get('nsPrefix') + '|' + this.get('localName');
+    sourceTagQuery = this.get('nsPrefix') + '|' + this.get('localName');
+    compiledTagQuery = '*[tibet|tag="' +
+                        this.get('nsPrefix') + ':' + this.get('localName') +
+                        '"]';
+
+    query = sourceTagQuery;
+
+    if (TP.isTrue(wantsCompiled)) {
+        query += ', ' + compiledTagQuery;
+    }
 
     //  If the caller wants a deep query, we can simply return the full name
     //  here.
     if (TP.isTrue(wantsDeep)) {
-        return fullName;
+        return query;
     }
 
     //  Otherwise, we return a query that looks for a) immediate children with
     //  this name and b) descendants with this name, but only those that don't
     //  have a parent with this name - hence giving the 'shallow' quality.
-    return '> ' + fullName + ', *:not(' + fullName + ') ' + fullName;
+    query = '> ' + sourceTagQuery +
+            ',' + ' *:not(' + sourceTagQuery + ') ' + sourceTagQuery;
+
+    if (TP.isTrue(wantsCompiled)) {
+        query += ',' +
+                    ' > ' + compiledTagQuery +
+                    ',' + ' *:not(' + compiledTagQuery + ') ' +
+                                                        compiledTagQuery;
+    }
+
+    return query;
 });
 
 //  ------------------------------------------------------------------------
