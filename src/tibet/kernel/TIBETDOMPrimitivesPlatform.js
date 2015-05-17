@@ -167,11 +167,17 @@ TP.hc(
 
         parser = new DOMParser();
 
-        //  If the caller has specified a default namespace, use it here.
+        //  If the caller has specified a default namespace, use it here. Even
+        //  if this is the empty String, that's ok - it means they wanted an
+        //  empty default namespace.
         if (TP.isString(defaultNS)) {
             str = '<root xmlns="' + defaultNS + '"';
         } else {
-            str = '<root';
+            //  Otherwise, we set the default to the XHTML namespace. This is
+            //  done for a variety of reasons, not the least of which is that
+            //  not having a default namespace has undefined behavior depending
+            //  on platform.
+            str = '<root xmlns="' + TP.w3.Xmlns.XHTML + '"';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
@@ -186,7 +192,6 @@ TP.hc(
                 TP.regex.ALL_ELEM_MARKUP,
                 str + '>$&</root>');
         }
-
 
         xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
 
@@ -303,13 +308,17 @@ TP.hc(
             return;
         }
 
-        parser = new DOMParser();
-
-        //  If the caller has specified a default namespace, use it here.
+        //  If the caller has specified a default namespace, use it here. Even
+        //  if this is the empty String, that's ok - it means they wanted an
+        //  empty default namespace.
         if (TP.isString(defaultNS)) {
             str = '<root xmlns="' + defaultNS + '"';
         } else {
-            str = '<root';
+            //  Otherwise, we set the default to the XHTML namespace. This is
+            //  done for a variety of reasons, not the least of which is that
+            //  not having a default namespace has undefined behavior depending
+            //  on platform.
+            str = '<root xmlns="' + TP.w3.Xmlns.XHTML + '"';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
@@ -422,11 +431,17 @@ TP.hc(
 
         parser = new DOMParser();
 
-        //  If the caller has specified a default namespace, use it here.
+        //  If the caller has specified a default namespace, use it here. Even
+        //  if this is the empty String, that's ok - it means they wanted an
+        //  empty default namespace.
         if (TP.isString(defaultNS)) {
             str = '<root xmlns="' + defaultNS + '"';
         } else {
-            str = '<root';
+            //  Otherwise, we set the default to the XHTML namespace. This is
+            //  done for a variety of reasons, not the least of which is that
+            //  not having a default namespace has undefined behavior depending
+            //  on platform.
+            str = '<root xmlns="' + TP.w3.Xmlns.XHTML + '"';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
