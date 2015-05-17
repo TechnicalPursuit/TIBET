@@ -11,6 +11,13 @@ html, body, #background, iframe {
     margin: 0;
     padding: 0;
     border: 0;
+
+    background-color: white;
+    color: black;
+}
+
+body {
+    font: 13px/1.231 arial,helvetica,clean,sans-serif;
 }
 
 /* iframes won't size using just trbl dimensions */
