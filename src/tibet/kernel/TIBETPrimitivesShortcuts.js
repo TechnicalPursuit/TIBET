@@ -2662,6 +2662,134 @@ function(aURI, linkContext) {
     }
 
     TP.wrap(context).setLocation(aURI);
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('switchContent',
+function(aURI, destinationPath, shouldCreate, nodeContext) {
+
+    /**
+     * @method switchContent
+     * @summary A convenience wrapper for switching (and possibly creating)
+     *     content on a destination element. This method will toggle the
+     *     'hidden' pclass of the targeted content. It will also keep track of
+     *     which parts are hidden or shown.
+     * @param {TP.core.URI|String} aURI The URI to use to uniquely identify the
+     *     content and possibly create it, if the shouldCreate flag is true.
+     * @param {String} destinationPath A CSS, XPath, XPointer, etc. path that
+     *     identifies the destination that the content will be switched in and
+     *     out of.
+     * @param {Boolean} shouldCreate Whether or not this method should attempt
+     *     to create content if it cannot find canvas created by the type
+     *     pointed to by the supplied URI.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
+     *     Default is the current canvas.
+     * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
+     */
+
+    var resource,
+        destination,
+
+        path,
+        existingTags,
+
+        switchContent,
+        refreshHandler,
+
+        oldSwitchContent;
+
+    //  Make sure that we have a valid URI to derive the type from.
+    if (TP.isValid(resource = TP.uc(aURI).getResource())) {
+
+        //  Use the supplied path to try to locate a destination for the
+        //  content.
+        destination = TP.wrap(TP.byPath(destinationPath, nodeContext, true));
+
+        if (!TP.isKindOf(destination, TP.core.UIElementNode)) {
+            TP.ifError() ?
+                TP.error('Cannot find content destination using:' +
+                            destinationPath,
+                    TP.LOG) : 0;
+
+            return false;
+        }
+
+        //  Make sure that the URI's resource points to a type.
+        if (TP.isType(resource) &&
+            TP.isKindOf(resource, TP.core.ElementNode)) {
+
+            //  Grab the query path and query from destination down. We do
+            //  not want a 'deep' search, but do want it to find 'compiled'
+            //  representations of the tag type.
+            path = resource.getQueryPath(false, true);
+            existingTags = TP.wrap(TP.byCSS(path, TP.unwrap(destination)));
+
+            //  If we couldn't find any existing tags but we should create
+            //  one, go ahead and do that.
+            if (TP.isEmpty(existingTags) && TP.isTrue(shouldCreate)) {
+
+                //  Get the tag type's 'empty markup' representation. We
+                //  wouldn't know any attributes to go on here at this point
+                //  anyway.
+                switchContent = resource.generateEmptyMarkup();
+
+                //  Add the content to ourself. This will both compile and (by
+                //  virtue of being 'add'ed and therefore mutating the DOM,
+                //  awakened) the new content.
+                switchContent = destination.addContent(switchContent);
+
+                //  Set up a handler that waits for the attaching phases
+                //  (triggered by awaken) to complete. When they do, refresh the
+                //  content. This refreshes any data bindings (amongst other
+                //  things).
+                refreshHandler = function(aSignal) {
+                    refreshHandler.ignore(
+                            aSignal.getSignalOrigin(),
+                            aSignal.getSignalName());
+
+                    switchContent.refresh(TP.hc('deep', true));
+                };
+                refreshHandler.observe(
+                        destination.getDocument(),
+                        'TP.sig.AttachProcessingComplete');
+
+            } else {
+                //  Otherwise, there was already at least one tag of that
+                //  type.
+                switchContent = existingTags.first();
+            }
+        } else {
+            TP.ifError() ?
+                TP.error('aURI does not point to a resolvable Element type.',
+                    TP.LOG) : 0;
+        }
+
+        //  If there was already content here that was placed by this method,
+        //  then find it and toggle it's 'hidden' pclass.
+        oldSwitchContent = TP.byCSS('*[tibet|switchedContent="showing"]',
+                                    TP.unwrap(destination),
+                                    true);
+
+        if (TP.isElement(oldSwitchContent)) {
+            oldSwitchContent = TP.wrap(oldSwitchContent);
+            oldSwitchContent.toggle('hidden');
+            oldSwitchContent.setAttribute('tibet:switchedContent', 'hidden');
+        }
+
+        //  Toggle the standard TIBET 'hidden' pseudoclass on the new content to
+        //  show it.
+        switchContent.toggle('hidden');
+        switchContent.setAttribute('tibet:switchedContent', 'showing');
+
+    } else {
+        TP.ifError() ?
+            TP.error('aURI does not point to a resolvable resource.',
+                TP.LOG) : 0;
+    }
+
     return false;
 });
 
