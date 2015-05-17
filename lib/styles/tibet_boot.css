@@ -28,7 +28,7 @@
     height: 12px;
     margin: 0 48px;
     background-color: #444;
-    /*background-image: url(../boot/media/dark_fiber.png);*/
+    /*background-image: url(../media/boot/dark_fiber.png);*/
 
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -62,7 +62,7 @@
                 border-top-left-radius: 4px;
              border-bottom-left-radius: 4px;
     background-color: #eee;
-    /*background-image: url(../boot/media/white_fiber.png);*/
+    /*background-image: url(../media/boot/white_fiber.png);*/
     overflow: hidden;
 }
 
@@ -172,7 +172,7 @@ body.showlog #BOOT-SPLASH {
     margin: 0 48px;
     color: white;
     overflow: hidden;
-    background: url(../boot/media/tibet_world.gif) center center no-repeat;
+    background: url(../media/boot/tibet_world.gif) center center no-repeat;
 }
 
 #BOOT-VERSION {
@@ -189,7 +189,7 @@ body.showlog #BOOT-SPLASH {
 
 .hole {
     background-color: #444;
-    /*background-image: url(../boot/media/dark_fiber.png);*/
+    /*background-image: url(../media/boot/dark_fiber.png);*/
     border-radius: 5px;
     box-shadow: 0 0 0 1px #666;
     border: 2px solid #aaa;
