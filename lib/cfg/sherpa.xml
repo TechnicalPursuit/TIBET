@@ -51,6 +51,7 @@
     <property name="path.TP.sherpa.tile.style" value="~ide_root/css/TP.sherpa.tile.css"/>
 
     <script src="./src/TP.sherpa.editortile.js"/>
+    <property name="path.TP.sherpa.editortile.style" value="~ide_root/css/TP.sherpa.tile.css"/>
 
     <script src="./src/TP.sherpa.tiledock.js"/>
     <property name="path.TP.sherpa.tiledock.template" value="~ide_root/xhtml/TP.sherpa.tiledock.xhtml"/>
