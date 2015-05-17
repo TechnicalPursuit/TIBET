@@ -133,21 +133,21 @@ div[busyFor] > span {
 }
 
 /*
-  TP.core.ActionElementNode and TP.core.ActionElementNode elements are
-  transformed into XHTML, so we can't use '.' class notation here
-*/
-
-*|*[class="tibet-action"], *|*[class="tibet-info"] {
-    display: none;
-}
-
-/*
   ========================================================================
   'Built-in' 'tibet:' elements
   ========================================================================
 */
 
 tibet|data, tibet|service, tibet|content, tibet|template, tibet|transform {
+    display: none;
+}
+
+/*
+  TP.core.ActionElementNode and TP.core.ActionElementNode elements are
+  transformed into XHTML, so we can't use '.' class notation here
+*/
+
+*|*[class="tibet-action"], *|*[class="tibet-info"] {
     display: none;
 }
 
