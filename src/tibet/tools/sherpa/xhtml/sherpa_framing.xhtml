@@ -6,6 +6,7 @@
 
     <title>TIBET 5.0</title>
 
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet_framing.css"/>
 
     <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/lib/codemirror.css"/>
@@ -27,12 +28,12 @@
             width: 100px;
             height: 20px;
 
-            display: none;
+            display: flex;
         }
 
-        #SherpaConsoleOutputToolbar:not([pclass|hidden]) {
+        #SherpaConsoleOutputToolbar[pclass|hidden] {
 
-            display: flex;
+            display: none;
         }
 
         #SherpaConsoleOutputToolbar .toolbarButton {
@@ -41,6 +42,10 @@
 
             width: 20px;
             height: 20px;
+        }
+
+        *|div.framing[pclass|hidden] {
+            display: block;
         }
         ]]>
     </style>
