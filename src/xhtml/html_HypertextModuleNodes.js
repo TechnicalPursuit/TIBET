@@ -41,7 +41,8 @@ function(aRequest) {
 
     var elem,
         target,
-        href;
+        href,
+        destPath;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(elem = aRequest.at('node'))) {
@@ -54,9 +55,10 @@ function(aRequest) {
     //  Call up the chain and force expansion and any other default processing.
     this.callNextMethod();
 
-    //  When there's a different target we're going to stay out of the way.
+    //  When there's a target, and it's not a path or '_self', we're going to
+    //  stay out of the way.
     if (TP.notEmpty(target = TP.elementGetAttribute(elem, 'target', true))) {
-        if (target !== '_self') {
+        if (!TP.regex.NON_SIMPLE_PATH.test(target) && target !== '_self') {
             return;
         }
     }
@@ -83,17 +85,13 @@ function(aRequest) {
 
     //  If the link triggers a javascript url (or is javascript: void 0) exit.
     /* eslint-disable no-script-url */
-    if (href.indexOf('javascript:') === 0) {
+    if (href.startsWith('javascript:')) {
         return;
     }
     /* eslint-enable no-script-url */
 
-    //  Rewrite the link so that it calls TP.go2() instead of just being a
-    //  standard link. This gives TIBET control so that proper routing and
-    //  history management can occur.
-
     //  If the original value wasn't a route then refetch to get the fully
-    //  expanded form so we use that for our go2 call.
+    //  expanded form so we use that for our TP.go2() or TP.switchContent() call.
     if (href.indexOf('#') !== 0 && href !== '/') {
         href = TP.elementGetAttribute(elem, 'href', true);
     }
@@ -101,10 +99,42 @@ function(aRequest) {
     //  First, just set the 'href' to '#' to avoid any traversal.
     TP.elementSetAttribute(elem, 'href', '#', true);
 
-    //  Then add an 'onclick' that will trigger TIBET.
-    TP.elementSetAttribute(elem, 'onclick',
-        'TP.go2(\'' + href + '\', window); return false;',
-        true);
+    //  If the href points to a 'urn:tibet' URN, then we use TP.switchContent()
+    if (TP.regex.TIBET_URN.test(href)) {
+
+        //  Make sure that we have a non-empty target. This will be the path to
+        //  the element that we're going to switch content in and out of.
+        if (TP.isEmpty(destPath =
+                        TP.elementGetAttribute(elem, 'data-target'))) {
+
+            TP.elementSetAttribute(
+                elem,
+                'onclick',
+                'TP.error(\'No target for content.\'); ' +
+                'return false;',
+                true);
+        } else {
+
+            TP.elementSetAttribute(
+                elem,
+                'onclick',
+                'TP.switchContent(\'' + href + '\',' +
+                                    ' \'' + destPath + '\'' + ',' +
+                                    ' true, window); ' +
+                'return false;',
+                true);
+        }
+    } else {
+
+        //  Otherwise, it's a link to a whole page. Rewrite it so that it calls
+        //  TP.go2() instead of just being a standard link. This gives TIBET
+        //  control so that proper routing and history management can occur.
+
+        //  Then add an 'onclick' that will trigger TIBET.
+        TP.elementSetAttribute(elem, 'onclick',
+            'TP.go2(\'' + href + '\', window); return false;',
+            true);
+    }
 
     return;
 });
