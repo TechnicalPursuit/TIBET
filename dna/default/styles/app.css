@@ -3,6 +3,39 @@
  */
 
 /* hello & startup styles. remove when app template has been updated */
+html, body {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    background-color: white;
+    color: black;
+
+    border: 0;
+    overflow: hidden;
+
+    font: 13px/1.231 arial,helvetica,clean,sans-serif;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 1em;
+}
+
+code {
+    padding: 0;
+    margin: 0;
+
+    font-family: monospace;
+    font-style: normal;
+    font-weight: normal;
+
+    line-height: 100%;
+}
+
 .content {
     position: absolute;
     top: 0;
@@ -13,7 +46,7 @@
     min-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    border-radius: 3px;
+    border: 0;
 }
 
 .hello {
