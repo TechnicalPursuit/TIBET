@@ -45,8 +45,6 @@ function() {
 
     this.callNextMethod();
 
-    this.setAttribute('tibet:ctrl', 'TP.sherpa.tile');
-
     return this;
 });
 
