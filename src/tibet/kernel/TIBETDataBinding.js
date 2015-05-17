@@ -2836,69 +2836,63 @@ function(aSignalOrHash) {
 
     TP.stop('break.bind_refresh');
 
-    //  If we're not a bound element, then there's nothing to do here.
-    if (!this.isBoundElement()) {
-        return this;
-    }
+    //  If our binding information is not empty, then try to refresh our
+    //  bindings.
+    if (TP.notEmpty(bindingInfos = this.get('bindInfos'))) {
 
-    //  If our binding information is empty, then we haven't been set up yet, so
-    //  there's nothing more to do here
-    if (TP.isEmpty(bindingInfos = this.get('bindInfos'))) {
-        return this;
-    }
+        //  Obtain the binding scope values by walking the DOM tree.
+        scopeVals = this.getBindingScopeValues();
 
-    //  Obtain the binding scope values by walking the DOM tree.
-    scopeVals = this.getBindingScopeValues();
+        //  Iterate over each binding entry, join paths to give us a full URI, and
+        //  then send a 'change' from that URI
 
-    //  Iterate over each binding entry, join paths to give us a full URI, and
-    //  then send a 'change' from that URI
+        //  First, process the 'in' bindings
+        if (TP.notEmpty(infoEntries = bindingInfos.at('in'))) {
+            infoEntries.perform(
+                function(kvPair) {
+                    var bindingVal,
+                        allVals,
 
-    //  First, process the 'in' bindings
-    if (TP.notEmpty(infoEntries = bindingInfos.at('in'))) {
-        infoEntries.perform(
-            function(kvPair) {
-                var bindingVal,
-                    allVals,
+                        uriPath,
+                        uri;
 
-                    uriPath,
-                    uri;
+                    bindingVal = kvPair.last();
 
-                bindingVal = kvPair.last();
+                    allVals = scopeVals.concat(bindingVal);
+                    uriPath = TP.uriJoinFragments.apply(TP, allVals);
+                    uri = TP.uc(uriPath);
 
-                allVals = scopeVals.concat(bindingVal);
-                uriPath = TP.uriJoinFragments.apply(TP, allVals);
-                uri = TP.uc(uriPath);
+                    //  NB: An explicit test for TP.core.URI here - we want to make
+                    //  sure we have that type of object, not just a String.
+                    if (TP.isKindOf(uri, TP.core.URI)) {
+                        uri.$changed();
+                    }
+                });
+        }
 
-                //  NB: An explicit test for TP.core.URI here - we want to make
-                //  sure we have that type of object, not just a String.
-                if (TP.isKindOf(uri, TP.core.URI)) {
-                    uri.$changed();
-                }
-            });
-    }
+        //  Then, process the 'io' bindings
+        if (TP.notEmpty(infoEntries = bindingInfos.at('io'))) {
+            infoEntries.perform(
+                function(kvPair) {
+                    var bindingVal,
+                        allVals,
 
-    //  Then, process the 'io' bindings
-    if (TP.notEmpty(infoEntries = bindingInfos.at('io'))) {
-        infoEntries.perform(
-            function(kvPair) {
-                var bindingVal,
-                    allVals,
+                        uriPath,
+                        uri;
 
-                    uriPath,
-                    uri;
+                    bindingVal = kvPair.last();
 
-                bindingVal = kvPair.last();
+                    allVals = scopeVals.concat(bindingVal);
+                    uriPath = TP.uriJoinFragments.apply(TP, allVals);
+                    uri = TP.uc(uriPath);
 
-                allVals = scopeVals.concat(bindingVal);
-                uriPath = TP.uriJoinFragments.apply(TP, allVals);
-                uri = TP.uc(uriPath);
-
-                //  NB: An explicit test for TP.core.URI here - we want to make
-                //  sure we have that type of object, not just a String.
-                if (TP.isKindOf(uri, TP.core.URI)) {
-                    uri.$changed();
-                }
-            });
+                    //  NB: An explicit test for TP.core.URI here - we want to make
+                    //  sure we have that type of object, not just a String.
+                    if (TP.isKindOf(uri, TP.core.URI)) {
+                        uri.$changed();
+                    }
+                });
+        }
     }
 
     //  NB: We don't process 'out' bindings here - we don't refresh from them
