@@ -3,7 +3,7 @@
 
 sherpa|typedisplay {
 
-    display: none;
+    display: block;
     position: absolute;
 
     top: 18px;
@@ -12,11 +12,6 @@ sherpa|typedisplay {
     bottom: 0px;
 
     overflow: auto;
-}
-
-sherpa|typedisplay:not([pclass|hidden]) {
-
-    display: block;
 }
 
 sherpa|typedisplay > .typelist {

@@ -3,7 +3,7 @@
 
 sherpa|logview {
 
-    display: none;
+    display: block;
 	position: absolute;
 
 	top: 55px;
@@ -15,11 +15,6 @@ sherpa|logview {
 
 	/* This should match TIBET's CONSOLE_TIER constant */
 	z-index: 15000;
-}
-
-sherpa|logview:not([pclass|hidden]) {
-
-    display: block;
 }
 
 sherpa|logview > .body {

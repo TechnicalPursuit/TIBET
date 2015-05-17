@@ -3,7 +3,7 @@
 
 sherpa|tile {
 
-    display: none;
+    display: block;
     position: absolute;
 
 	top: 0px;
@@ -35,11 +35,6 @@ sherpa|tile[attachedto="console"] {
     border: dotted 1px orange;
 
     background-color: #3F3F3F;
-}
-
-sherpa|tile:not([pclass|hidden]) {
-
-    display: block;
 }
 
 sherpa|tile > .header {

@@ -3,17 +3,12 @@
 
 sherpa|elementeditor {
 
-    display: none;
+    display: block;
 	position: relative;
 
 	top: 18px;
 	left: 0px;
 	height: 280px;
-}
-
-sherpa|elementeditor:not([pclass|hidden]) {
-
-    display: block;
 }
 
 sherpa|elementeditor > .body {

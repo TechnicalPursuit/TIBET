@@ -3,7 +3,7 @@
 
 sherpa|halo {
 
-	display: none;
+	display: block;
 	position: absolute;
 
 	top: 200px;
@@ -19,8 +19,6 @@ sherpa|halo {
 }
 
 sherpa|halo:not([pclass|hidden]) {
-
-	display: block;
 
 	width: 100px;
 	height: 100px;
