@@ -96,6 +96,11 @@ function(aName) {
 
                     TP.byOID('SherpaHUD', TP.win('UIROOT')).setAttribute(
                                                             'hidden', false);
+                    /* eslint-disable no-wrap-func,no-extra-parens */
+                    (function() {
+                        TP.byOID('SherpaConsole', TP.win('UIROOT')).refresh();
+                    }).fork(500);
+                    /* eslint-enable no-wrap-func,no-extra-parens */
 
                 }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
@@ -248,11 +253,6 @@ function() {
     tileDockTPElem.setID('tileDock');
     tileDockTPElem.awaken();
     tileDockTPElem.refresh();
-
-    (function() {
-        TP.byOID('SherpaConsole', this.get('vWin')).refresh();
-
-    }.bind(this)).fork(250);
 
     return this;
 });
