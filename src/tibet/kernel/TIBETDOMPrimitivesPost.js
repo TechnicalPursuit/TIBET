@@ -6501,7 +6501,7 @@ function(aString, defaultNS, shouldReport) {
      *     the parser errors):
      *     <code>
      *          xmlElem = TP.nodeFromString(
-     *          '<foo<bar><baz/></bar></foo>', true);
+     *          '<foo<bar><baz/></bar></foo>', null, true);
      *          <samp>(Parser error output)</samp>
      *     </code>
      * @returns {Node} The Node parsed from the supplied String.
