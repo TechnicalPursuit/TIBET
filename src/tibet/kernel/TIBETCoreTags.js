@@ -111,6 +111,16 @@ TP.core.TemplatedTag.finalizeTraits();
 TP.core.CompiledTag.defineSubtype('tibet:app');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
+//  design.
+TP.tibet.app.defineAttribute('styleURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.tibet.app.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
@@ -211,6 +221,16 @@ function(aRequest) {
 
 TP.core.CompiledTag.defineSubtype('tibet:root');
 
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
+//  design.
+TP.tibet.root.defineAttribute('styleURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.tibet.root.Type.defineMethod('computeAppTagTypeName',
