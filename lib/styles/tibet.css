@@ -38,25 +38,16 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 */
 
 /* In its natural state, the busy is 'closed' */
-div[busyFor] {
+[busyFor] {
   position: absolute;
 
-/*  border: solid 1px black; */
-
   display: none;
-
-  background-color: transparent;
 
   /* Note that this matches TP.POPUP_TIER in the TIBET kernel */
   z-index: 5000;
 }
 
-div[busyFor] > .background {
-  background-color: white;
-  opacity: .7;
-}
-
-div[busyFor] > .controlImage {
+[busyFor] > .busyImage {
   position: absolute;
 
   left: 50%;
@@ -68,10 +59,13 @@ div[busyFor] > .controlImage {
   width: 28px;
   height: 28px;
 
-  background-image: url(../media/tibet_busy.gif);
+  background-image: url(../media/tibet_busy.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
 
-div[busyFor] > span {
+[busyFor] > .busyMessage {
   position: absolute;
 
   width: 100%;
