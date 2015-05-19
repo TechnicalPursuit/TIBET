@@ -245,7 +245,7 @@ function(aRequest) {
     //  Style sheet
     stylesheetVal = top.document.styleSheets[0];
     //  Style rule
-    styleRuleVal = TP.styleSheetGetStyleRules(stylesheetVal, false)[1];
+    styleRuleVal = TP.styleSheetGetStyleRules(stylesheetVal, false)[0];
     //  Style declaration
     styleDeclVal = styleRuleVal.style;
 
