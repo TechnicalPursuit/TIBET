@@ -1805,6 +1805,13 @@ function() {
      * @returns {String} The public ID of the receiver.
      */
 
+    //  Make sure that, if the receiver is a prototype, we just return the value
+    //  of the TP.ID slot. Otherwise, we're trying to get an ID from an object
+    //  that represents only a partially formed instance for this type.
+    if (TP.isPrototype(this)) {
+        return this[TP.ID];
+    }
+
     return TP.gid(this.getNativeNode());
 });
 
@@ -11379,6 +11386,13 @@ function() {
      * @returns {String} The public ID of the receiver.
      */
 
+    //  Make sure that, if the receiver is a prototype, we just return the value
+    //  of the TP.ID slot. Otherwise, we're trying to get an ID from an object
+    //  that represents only a partially formed instance for this type.
+    if (TP.isPrototype(this)) {
+        return this[TP.ID];
+    }
+
     //  Note the difference here from the version we override from our supertype
     //  - we want to force the assignment of an ID if it's not already there.
 
@@ -13141,6 +13155,13 @@ function() {
      * @summary Returns the public ID of the receiver.
      * @returns {String} The public ID of the receiver.
      */
+
+    //  Make sure that, if the receiver is a prototype, we just return the value
+    //  of the TP.ID slot. Otherwise, we're trying to get an ID from an object
+    //  that represents only a partially formed instance for this type.
+    if (TP.isPrototype(this)) {
+        return this[TP.ID];
+    }
 
     //  Note the difference here from the version we override from our supertype
     //  - we want to force the assignment of an ID if it's not already there.

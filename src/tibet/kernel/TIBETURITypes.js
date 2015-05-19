@@ -2617,8 +2617,15 @@ function() {
 
     var id;
 
-    //  first question is do we have our *own* id (otherwise, we'll report the
-    //  value inherited from the prototype)
+    //  Make sure that, if the receiver is a prototype, we just return the value
+    //  of the TP.ID slot. Otherwise, we're trying to get an ID from an object
+    //  that represents only a partially formed instance for this type.
+    if (TP.isPrototype(this)) {
+        return this[TP.ID];
+    }
+
+    //  the next question is do we have our *own* id (otherwise, we'll report
+    //  the value inherited from the prototype)
     if (TP.owns(this, TP.ID)) {
         return this.$get(TP.ID);
     }
@@ -7431,10 +7438,17 @@ function() {
         canvas,
         loc;
 
+    //  Make sure that, if the receiver is a prototype, we just return the value
+    //  of the TP.ID slot. Otherwise, we're trying to get an ID from an object
+    //  that represents only a partially formed instance for this type.
+    if (TP.isPrototype(this)) {
+        return this[TP.ID];
+    }
+
     id = this.$get(TP.ID);
 
-    //  first question is do we have our *own* id (otherwise, we'll report the
-    //  value inherited from the prototype)
+    //  the next question is do we have our *own* id (otherwise, we'll report
+    //  the value inherited from the prototype)
     if (TP.owns(this, TP.ID)) {
         return id;
     }
