@@ -173,11 +173,7 @@ TP.hc(
         if (TP.isString(defaultNS)) {
             str = '<root xmlns="' + defaultNS + '"';
         } else {
-            //  Otherwise, we set the default to the XHTML namespace. This is
-            //  done for a variety of reasons, not the least of which is that
-            //  not having a default namespace has undefined behavior depending
-            //  on platform.
-            str = '<root xmlns="' + TP.w3.Xmlns.XHTML + '"';
+            str = '<root';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
@@ -314,11 +310,7 @@ TP.hc(
         if (TP.isString(defaultNS)) {
             str = '<root xmlns="' + defaultNS + '"';
         } else {
-            //  Otherwise, we set the default to the XHTML namespace. This is
-            //  done for a variety of reasons, not the least of which is that
-            //  not having a default namespace has undefined behavior depending
-            //  on platform.
-            str = '<root xmlns="' + TP.w3.Xmlns.XHTML + '"';
+            str = '<root';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
@@ -437,11 +429,7 @@ TP.hc(
         if (TP.isString(defaultNS)) {
             str = '<root xmlns="' + defaultNS + '"';
         } else {
-            //  Otherwise, we set the default to the XHTML namespace. This is
-            //  done for a variety of reasons, not the least of which is that
-            //  not having a default namespace has undefined behavior depending
-            //  on platform.
-            str = '<root xmlns="' + TP.w3.Xmlns.XHTML + '"';
+            str = '<root';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
