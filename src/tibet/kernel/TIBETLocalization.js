@@ -811,6 +811,9 @@ function(aString, sourceLocale, forceRefresh) {
         return aString;
     }
 
+    //  Make sure it's a primitive
+    str = '' + aString;
+
     //  source defaults to the current user language in effect
     source = TP.ifInvalid(sourceLocale, TP.sys.getSourceLanguage());
 
@@ -821,22 +824,22 @@ function(aString, sourceLocale, forceRefresh) {
     lang = this.getISOKey();
 
     if (!source || !lang || source === lang) {
-        return aString;
+        return str;
     }
 
     //  get the string representation of our translation map
     map = this.$getStringXMLString(forceRefresh);
     if (TP.notValid(map)) {
         //  apparently we don't have a string bundle to work with
-        return aString;
+        return str;
     }
 
     //  regex tests are fastest to see if we need to look deeper. if the
     //  regex fails we can just return the string without xpath overhead
-    key = aString.asString();
+    key = str;
     try {
         if (TP.notTrue(TP.rc(key).test(map))) {
-            return aString;
+            return str;
         }
     } catch (e) {
         //  typical case here is something the regex parser thinks isn't
@@ -872,10 +875,10 @@ function(aString, sourceLocale, forceRefresh) {
             seg = TP.nodeEvaluateXPath(xml, xp, TP.FIRST_NODE, false);
 
             if (TP.notValid(seg)) {
-                return aString;
+                return str;
             }
         } else {
-            return aString;
+            return str;
         }
     }
 
@@ -907,7 +910,7 @@ function(aString, sourceLocale, forceRefresh) {
         return str;
     }
 
-    return aString;
+    return str;
 });
 
 //  ------------------------------------------------------------------------
