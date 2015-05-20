@@ -383,7 +383,8 @@ function() {
 TP.core.TagProcessor.Inst.describe('TP.core.TagProcessor Inst core functionality suite',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -403,9 +404,19 @@ function() {
 
     //  ---
 
-    this.it('XML Base processing', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('XML Base processing', function(test, options) {
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xhtml');
 
@@ -442,18 +453,10 @@ function() {
                     TP.byId('area4'),
                     'href',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
     this.it('TIBET stylesheet PI processing - single level', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xhtml');
 
@@ -477,12 +480,6 @@ function() {
                     TP.core.Color.fromString(
                         tpElem.getComputedStyleProperty('backgroundColor')),
                     TP.core.Color.fromString('blue'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 });
@@ -494,15 +491,26 @@ function() {
 TP.xi.Element.Type.describe('TP.xi.Element Type processing',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
-    this.it('whole file inclusion', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('whole file inclusion', function(test, options) {
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
@@ -549,6 +557,7 @@ function() {
                         ''
                     ]);
 
+                server.xhr.filters = [];
                 server.xhr.useFilters = true;
                 server.xhr.addFilter(
                         function(method, url) {
@@ -569,19 +578,25 @@ function() {
                             request.atPut(TP.ONFAIL, rejector);
 
                             tpDoc.setContent(result, request);
-
-                            //  Put log level back to what it was
-                            TP.setLogLevel(oldLogLevel);
-
-                            //  Put the debugger setting back to what it was
-                            TP.sys.shouldUseDebugger(usingDebugger);
-
-                            test.assert.isElement(TP.byId('part1Success'));
-
-                            test.assert.isElement(TP.byId('part10Fallback'));
-
-                            server.restore();
                         });
+
+                test.then(
+                    function(result) {
+
+                        //  Put log level back to what it was
+                        TP.setLogLevel(oldLogLevel);
+
+                        //  Put the debugger setting back to what it was
+                        TP.sys.shouldUseDebugger(usingDebugger);
+
+                        test.assert.isElement(TP.byId('part1Success'));
+
+                        test.assert.isElement(TP.byId('part10Fallback'));
+
+                        server.restore();
+                        server.xhr.filters = [];
+                        server.xhr.useFilters = false;
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -590,8 +605,6 @@ function() {
     });
 
     this.it('partial file inclusion', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
 
@@ -607,12 +620,6 @@ function() {
                 //  This comes from the second XInclude with a more complex
                 //  XPointer expression.
                 test.assert.isElement(TP.byId('partialParagraph'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
