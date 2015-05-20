@@ -1091,7 +1091,17 @@ function(aNode, aProcessor, aRequest) {
     processingRequest.atPut('phases', aProcessor.get('phases'));
 
     processingRequest.atPutIfAbsent('doc', TP.nodeGetDocument(aNode));
-    processingRequest.atPut('root', aNode);
+
+    //  Some invokers of this method will have the content in a 'processing
+    //  root' element that takes into account that this engine holds onto the
+    //  same node throughout the transformation process, so that's not the node
+    //  that can itself be transformed. In any case, we want our 'root'
+    //  parameter to be set to that root element's firstChild if it's present.
+    if (TP.elementGetLocalName(aNode) === 'processingroot') {
+        processingRequest.atPut('root', aNode.firstChild);
+    } else {
+        processingRequest.atPut('root', aNode);
+    }
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
     tagTypeDict = aProcessor.get('$tagTypeDict');
