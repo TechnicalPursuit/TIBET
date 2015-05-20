@@ -1397,6 +1397,8 @@ function() {
                     ssnField,
                     gendField,
 
+                    citCheckbox,
+
                     empGroup;
 
                 srcURI = TP.uc('urn:tibet:Validation3_person');
@@ -1405,6 +1407,7 @@ function() {
 
                 ssnField = TP.byOID('SSNField');
                 gendField = TP.byOID('GenderField');
+                citCheckbox = TP.byOID('uscitizenCheckbox');
 
                 empGroup = TP.byOID('EmployeeGroup');
 
@@ -1442,7 +1445,8 @@ function() {
                 //  'structure' change - SSN URI
                 test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
 
-                //  'relevant' change - SSN
+                //  'relevant' change - SSN (there is a model value for
+                //  uscitizen, but it's empty)
                 test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
                 test.assert.didSignal(ssnField, 'DisabledChange');
@@ -1462,10 +1466,33 @@ function() {
 
                 //  Employee Group
 
-                //  'valid' change - Employee Group field
+                //  'valid' change - Employee Group field (it's invalid because
+                //  the SSN is missing)
                 test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
                 test.assert.didSignal(empGroup, 'InvalidChange');
                 test.assert.hasAttribute(empGroup, 'pclass:invalid');
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                driver.startSequence().
+                    click(citCheckbox).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  'relevant' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
+                    });
 
                 //  ---
 
@@ -1515,7 +1542,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).only();
+    });
 
     //  ---
 
@@ -1541,6 +1568,7 @@ function() {
                     gendField,
                     cityField,
                     stateField,
+                    citCheckbox,
 
                     empGroup,
                     addrGroup;
@@ -1555,6 +1583,7 @@ function() {
                 gendField = TP.byOID('GenderField');
                 cityField = TP.byOID('CityField');
                 stateField = TP.byOID('StateField');
+                citCheckbox = TP.byOID('uscitizenCheckbox');
 
                 empGroup = TP.byOID('EmployeeGroup');
                 addrGroup = TP.byOID('AddressGroup');
@@ -1725,6 +1754,28 @@ function() {
                         test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
                         test.assert.didSignal(addrGroup, 'InvalidChange');
                         test.refute.hasAttribute(addrGroup, 'pclass:invalid');
+                    });
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                driver.startSequence().
+                    click(citCheckbox).
+                    perform();
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  'relevant' change - source URI
+                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
                     });
 
                 //  ---

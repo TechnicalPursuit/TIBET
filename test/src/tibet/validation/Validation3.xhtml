@@ -40,6 +40,7 @@
                 <state>CA</state>
             </address>
             <gender>male</gender>
+            <uscitizen/>
             <SSN></SSN>
 		</person>
 	</tibet:data>
@@ -64,6 +65,10 @@
     <tibet:group id="EmployeeGroup" invalidwhen="any">
         <label for="GenderField">Gender: </label>
         <input type="text" id="GenderField" bind:io="value: urn:tibet:Validation3_person#tibet(gender)" tabindex="0"/><br/>
+
+        <label for="uscitizenField">U.S. Citizen?: </label>
+        <input type="checkbox" id="uscitizenCheckbox" bind:io="checked: urn:tibet:Validation3_person#tibet(uscitizen)" tabindex="0"/><br/>
+
         <label for="SSNField">SSN: </label>
         <input type="text" id="SSNField" bind:io="value: urn:tibet:Validation3_person#tibet(SSN)" tabindex="0"/><br/>
     </tibet:group>
