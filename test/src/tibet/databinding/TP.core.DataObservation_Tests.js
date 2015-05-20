@@ -2995,7 +2995,7 @@ function() {
                 modelURI.unregister();
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ========================================================================
 //  Run those babies!
