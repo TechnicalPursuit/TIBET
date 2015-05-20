@@ -15,7 +15,8 @@
 TP.core.ElementNode.Inst.describe('TP.core.ElementNode: ui:display attribute',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -115,11 +116,21 @@ function() {
 
     //  ---
 
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
     this.it('set content - single format - simple substitutions', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting1.xhtml');
 
@@ -132,6 +143,8 @@ function() {
                 var elem;
 
                 //  ---
+
+                TP.str(TP.sys.uidoc());
 
                 elem = TP.byOID('span');
                 test.assert.isElement(elem);
@@ -269,14 +282,6 @@ function() {
                 test.assert.contains(
                     elem.getValue(),
                     'baz');
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -288,9 +293,7 @@ function() {
 
     this.it('set content - single format - templating', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting2.xhtml');
 
@@ -345,14 +348,6 @@ function() {
                 test.assert.isEqualTo(
                     elem.getValue(),
                     '3');
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -364,9 +359,7 @@ function() {
 
     this.it('set content - multiple formats - simple substitutions', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting3.xhtml');
 
@@ -399,14 +392,6 @@ function() {
                 test.assert.isEqualTo(
                     elem.getValue(),
                     '&lt;html:li&gt;1&lt;/html:li&gt;&lt;html:li&gt;2&lt;/html:li&gt;&lt;html:li&gt;3&lt;/html:li&gt;');
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -418,9 +403,7 @@ function() {
 
     this.it('set content - using type for localization', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting4.xhtml');
 
@@ -492,14 +475,6 @@ function() {
                 test.assert.isEqualTo(
                     elem.getValue(),
                     'ja');
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -513,7 +488,8 @@ function() {
 TP.core.ElementNode.Inst.describe('TP.core.ElementNode: ui:storage attribute',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -598,9 +574,19 @@ function() {
 
     //  ---
 
-    this.it('get content - single format - simple substitutions', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('get content - single format - simple substitutions', function(test, options) {
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting5.xhtml');
 
@@ -764,14 +750,6 @@ function() {
                             //  point
                             TP.ac(TP.cc('blue'), TP.cc('yellow')));
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -782,8 +760,6 @@ function() {
     //  ---
 
     this.it('get content - single format - templating', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting6.xhtml');
 
@@ -831,14 +807,6 @@ function() {
                             textArea.get('value'),
                             'Uppercased: BILL');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -849,8 +817,6 @@ function() {
     //  ---
 
     this.it('get content - multiple formats - simple substitutions', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting7.xhtml');
 
@@ -898,14 +864,6 @@ function() {
                             textArea.get('value'),
                             '&lt;html:li&gt;foo&lt;/html:li&gt;&lt;html:li&gt;bar&lt;/html:li&gt;&lt;html:li&gt;baz&lt;/html:li&gt;');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

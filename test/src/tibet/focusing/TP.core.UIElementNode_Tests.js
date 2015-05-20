@@ -20,7 +20,8 @@
 TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focusing',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -36,6 +37,19 @@ function() {
     this.after(
         function() {
             this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
@@ -190,12 +204,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -346,12 +354,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -571,12 +573,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -803,12 +799,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1042,12 +1032,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1375,12 +1359,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1734,12 +1712,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2096,12 +2068,6 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2221,19 +2187,13 @@ function() {
                     tabOrderResults,
                     TP.ac('field_21', 'field_17', 'field_15', 'field_16',
                             'field_18', 'field_19', 'field_20', 'field_22'));
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip();
 
 //  ------------------------------------------------------------------------
 
@@ -2241,6 +2201,7 @@ TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
 function() {
 
     var unloadURI,
+        loadURI,
 
         focusStackPreTest;
 
@@ -2274,14 +2235,19 @@ function() {
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
 
     this.it('Focus stack - simple test', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/FocusingStack1.xhtml');
 
@@ -2937,12 +2903,6 @@ function() {
                         //  next step in this test.
                         TP.signal.reset();
                     });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

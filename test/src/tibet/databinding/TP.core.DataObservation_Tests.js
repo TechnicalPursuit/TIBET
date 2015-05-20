@@ -1570,6 +1570,13 @@ function() {
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
@@ -1611,12 +1618,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -1664,12 +1665,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -1720,12 +1715,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 modelURI.unregister();
             });
@@ -1785,12 +1774,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -1854,12 +1837,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -1928,12 +1905,6 @@ function() {
                             true,
                             salaryField.get('@inrange').asBoolean());
 
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
                 modelURI.unregister();
             });
     });
@@ -1979,12 +1950,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -2034,12 +1999,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -2093,12 +2052,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 modelURI.unregister();
             });
@@ -2166,12 +2119,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -2243,12 +2190,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -2325,12 +2266,6 @@ function() {
                             true,
                             salaryField.get('@inrange').asBoolean());
 
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
                 modelURI.unregister();
             });
     });
@@ -2377,12 +2312,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -2433,12 +2362,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -2493,12 +2416,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 modelURI.unregister();
             });
@@ -2566,12 +2483,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -2643,12 +2554,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -2725,12 +2630,6 @@ function() {
                             true,
                             salaryField.get('@inrange').asBoolean());
 
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
                 modelURI.unregister();
             });
     });
@@ -2776,12 +2675,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -2832,12 +2725,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -2891,12 +2778,6 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 modelURI.unregister();
             });
@@ -2964,12 +2845,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             });
     });
 
@@ -3041,12 +2916,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
@@ -3122,12 +2991,6 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@inrange').asBoolean());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
 
                 modelURI.unregister();
             });

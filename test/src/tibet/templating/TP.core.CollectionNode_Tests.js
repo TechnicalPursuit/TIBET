@@ -17,7 +17,8 @@
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -37,11 +38,22 @@ function() {
 
     //  ---
 
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
     this.it('Simple custom markup - automatic tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating1.xhtml');
 
@@ -60,12 +72,6 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(contentElem).trim(),
                     'Hello World 1');
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -77,9 +83,7 @@ function() {
 
     this.it('Pre-transformed custom markup - automatic tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating2.xhtml');
 
@@ -99,12 +103,6 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(contentElem).trim(),
                     'Hello World 1');
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -116,9 +114,7 @@ function() {
 
     this.it('Simple custom markup - manual tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating3.xhtml');
 
@@ -137,12 +133,6 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(contentElem).trim(),
                     'Hello World 2');
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -154,9 +144,7 @@ function() {
 
     this.it('Pre-transformed custom markup - manual tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating4.xhtml');
 
@@ -176,12 +164,6 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(contentElem).trim(),
                     'Hello World 2');
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -193,9 +175,7 @@ function() {
 
     this.it('Custom markup producing further custom markup - automatic tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating5.xhtml');
 
@@ -231,12 +211,6 @@ function() {
                 test.assert.isChildNodeOf(
                     contentElem2,
                     contentElem3);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -248,9 +222,7 @@ function() {
 
     this.it('Pre-transformed custom markup producing further custom markup - automatic tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating6.xhtml');
 
@@ -286,12 +258,6 @@ function() {
                 test.assert.isChildNodeOf(
                     contentElem2,
                     contentElem3);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -303,9 +269,7 @@ function() {
 
     this.it('Custom markup producing further custom markup - manual tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating7.xhtml');
 
@@ -341,12 +305,6 @@ function() {
                 test.assert.isChildNodeOf(
                     contentElem2,
                     contentElem3);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -358,9 +316,7 @@ function() {
 
     this.it('Pre-transformed custom markup producing further custom markup - manual tibet:tag stamping', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating8.xhtml');
 
@@ -396,12 +352,6 @@ function() {
                 test.assert.isChildNodeOf(
                     contentElem2,
                     contentElem3);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -415,7 +365,8 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating attribute propagation',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -435,11 +386,22 @@ function() {
 
     //  ---
 
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
     this.it('Custom markup producing further custom markup - attribute propagation', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating9.xhtml');
 
@@ -493,12 +455,6 @@ function() {
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(contentElem, 'html:attr2')),
                     TP.w3.Xmlns.XHTML);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -510,9 +466,7 @@ function() {
 
     this.it('Pre-transformed custom markup producing further custom markup - attribute propagation', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating10.xhtml');
 
@@ -566,12 +520,6 @@ function() {
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(contentElem, 'html:attr2')),
                     TP.w3.Xmlns.XHTML);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -585,7 +533,8 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating with substitutions',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -605,11 +554,22 @@ function() {
 
     //  ---
 
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
     this.it('Substitutions having variables within standard markup', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating11.xhtml');
 
@@ -647,12 +607,6 @@ function() {
                 test.assert.isEqualTo(
                     testVal,
                     correctVal);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -664,9 +618,7 @@ function() {
 
     this.it('Substitutions having variables within custom markup having substitutions', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating12.xhtml');
 
@@ -705,12 +657,6 @@ function() {
                 test.assert.isEqualTo(
                     testVal,
                     correctVal);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -722,9 +668,7 @@ function() {
 
     this.it('Substitutions having variables within pre-transformed custom markup having substitutions', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating13.xhtml');
 
@@ -806,12 +750,6 @@ function() {
                 test.assert.isEqualTo(
                     testVal,
                     correctVal);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -823,9 +761,7 @@ function() {
 
     this.it('Substitutions having variables within custom markup producing further custom markup having substitutions', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating14.xhtml');
 
@@ -864,12 +800,6 @@ function() {
                 test.assert.isEqualTo(
                     testVal,
                     correctVal);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -881,9 +811,7 @@ function() {
 
     this.it('Substitutions having variables within pre-transformed custom markup producing further custom markup having substitutions', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating15.xhtml');
 
@@ -965,12 +893,6 @@ function() {
                 test.assert.isEqualTo(
                     testVal,
                     correctVal);
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -984,9 +906,10 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - JS template',
 function() {
 
-    //var unloadURI;
+    var unloadURI,
+        loadURI;
 
-    //unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
@@ -1000,6 +923,19 @@ function() {
     this.after(
         function() {
             this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            //loadURI.unregister();
         });
 
     //  ---
@@ -1063,9 +999,10 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XML template',
 function() {
 
-    //var unloadURI;
+    var unloadURI,
+        loadURI;
 
-    //unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
@@ -1079,6 +1016,19 @@ function() {
     this.after(
         function() {
             this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            //loadURI.unregister();
         });
 
     //  ---
@@ -1142,9 +1092,10 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XSLT template',
 function() {
 
-    //var unloadURI;
+    var unloadURI,
+        loadURI;
 
-    //unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
@@ -1158,6 +1109,19 @@ function() {
     this.after(
         function() {
             this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            //loadURI.unregister();
         });
 
     //  ---

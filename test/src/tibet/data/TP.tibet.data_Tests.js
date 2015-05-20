@@ -39,7 +39,8 @@ TP.core.JSONContent.defineSubtype('test.DataTestJSONEmployee');
 TP.tibet.data.Inst.describe('TP.tibet.data',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -73,6 +74,14 @@ function() {
 
     this.afterEach(
         function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+
             //  Reset the metrics we're tracking.
             TP.signal.reset();
         });
@@ -80,8 +89,6 @@ function() {
     //  ---
 
     this.it('No specific result type - XML content', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/data/Data1.xhtml');
 
@@ -102,19 +109,10 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
 
-                //  Reset the metrics we're tracking.
-                TP.signal.reset();
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
                 test.then(
                     function() {
                         test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                     });
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -125,8 +123,6 @@ function() {
     //  ---
 
     this.it('No specific result type - JSON content', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/data/Data2.xhtml');
 
@@ -147,19 +143,10 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
 
-                //  Reset the metrics we're tracking.
-                TP.signal.reset();
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
                 test.then(
                     function() {
                         test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                     });
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -170,8 +157,6 @@ function() {
     //  ---
 
     this.it('Specific result type - XML content', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/data/Data3.xhtml');
 
@@ -192,19 +177,10 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.test.DataTestMarkupEmployee);
 
-                //  Reset the metrics we're tracking.
-                TP.signal.reset();
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
                 test.then(
                     function() {
                         test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                     });
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -215,8 +191,6 @@ function() {
     //  ---
 
     this.it('Specific result type - JSON content', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/data/Data4.xhtml');
 
@@ -237,19 +211,10 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.test.DataTestJSONEmployee);
 
-                //  Reset the metrics we're tracking.
-                TP.signal.reset();
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
                 test.then(
                     function() {
                         test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                     });
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

@@ -1059,6 +1059,7 @@ TP.lang.Object.Inst.describe('Markup level validation',
 function() {
 
     var unloadURI,
+        loadURI,
 
         usingDebugger,
         oldLogLevel;
@@ -1131,6 +1132,15 @@ function() {
 
     this.afterEach(
         function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+
+            //  ---
+
             //  Reset the metrics we're tracking.
             TP.signal.reset();
         });
@@ -1138,9 +1148,7 @@ function() {
     //  ---
 
     this.it('markup-level validation - simple and complex types', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation1.xhtml');
 
@@ -1252,14 +1260,6 @@ function() {
 
                         test.assert.didSignal(srcURI, 'AgeValidChange');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1270,9 +1270,7 @@ function() {
     //  ---
 
     this.it('markup-level validation - relevancy check', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation2.xhtml');
 
@@ -1371,14 +1369,6 @@ function() {
                         //  'US citizen' change - source URI
                         test.assert.didSignal(srcURI, 'UscitizenChange');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1389,9 +1379,7 @@ function() {
     //  ---
 
     this.it('markup-level validation - group-level validation', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation3.xhtml');
 
@@ -1522,27 +1510,17 @@ function() {
                         test.assert.didSignal(empGroup, 'InvalidChange');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).only();
 
     //  ---
 
     this.it('markup-level validation - nested group-level validation', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation4.xhtml');
 
@@ -1797,14 +1775,6 @@ function() {
                         test.assert.didSignal(empGroup, 'InvalidChange');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1815,9 +1785,7 @@ function() {
     //  ---
 
     this.it('markup-level - XML content type defined in markup', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation5.xhtml');
 
@@ -1912,14 +1880,6 @@ function() {
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1930,9 +1890,7 @@ function() {
     //  ---
 
     this.it('markup-level - JSON content type defined in markup', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation6.xhtml');
 
@@ -2027,14 +1985,6 @@ function() {
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2045,9 +1995,7 @@ function() {
     //  ---
 
     this.it('markup-level - XML content type defined in markup with a schema defined type', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation7.xhtml');
 
@@ -2142,14 +2090,6 @@ function() {
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2160,9 +2100,7 @@ function() {
     //  ---
 
     this.it('markup-level - JSON content type defined in markup with a schema defined type', function(test, options) {
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation8.xhtml');
 
@@ -2254,14 +2192,6 @@ function() {
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
                     });
-
-                //  ---
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

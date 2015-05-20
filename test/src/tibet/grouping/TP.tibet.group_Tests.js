@@ -15,15 +15,27 @@
 TP.tibet.group.Inst.describe('TP.tibet.group: registration',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
-    this.it('Explicit simple query with body context', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('Explicit simple query with body context', function(test, options) {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping1.xhtml');
 
@@ -58,12 +70,6 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('bar'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -74,8 +80,6 @@ function() {
     //  ---
 
     this.it('Explicit complex query with body context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping2.xhtml');
 
@@ -105,12 +109,6 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('foo', 'bar', 'baz'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -121,8 +119,6 @@ function() {
     //  ---
 
     this.it('Explicit complex query with body context and implicit query with element context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping3.xhtml');
 
@@ -171,12 +167,6 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('goo'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -187,8 +177,6 @@ function() {
     //  ---
 
     this.it('Implicit query with element context and explicit simple queries with element context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping4.xhtml');
 
@@ -246,12 +234,6 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('maz', 'moofy', 'moogy'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -262,8 +244,6 @@ function() {
     //  ---
 
     this.it('Explicit complex queries with element context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping5.xhtml');
 
@@ -307,12 +287,6 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('gar', 'gaz'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -323,8 +297,6 @@ function() {
     //  ---
 
     this.it('Reporting chain with implicit query with nested element context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping6.xhtml');
 
@@ -345,12 +317,6 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('gooGroup', 'fooGroup'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -361,8 +327,6 @@ function() {
     //  ---
 
     this.it('Reporting chain with implicit query with nested element context and explicit simple query with body context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping7.xhtml');
 
@@ -389,12 +353,6 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('mooGroup'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -405,8 +363,6 @@ function() {
     //  ---
 
     this.it('Reporting chain with implicit query with nested element context and explicit simple query with body context nested in element context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping8.xhtml');
 
@@ -433,12 +389,6 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('mooGroup', 'nooGroup'));
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -449,8 +399,6 @@ function() {
     //  ---
 
     this.it('Reporting chain with implicit query with multiple nested element contexts computing next and previous groups', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping9.xhtml');
 
@@ -507,12 +455,6 @@ function() {
                         TP.ac('booGroup', 'fooGroup'));
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isNull(tpElem.getNextGroupName());
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -522,8 +464,6 @@ function() {
     //  ---
 
     this.it('Reporting chain with implicit query with multiple nested element contexts computing next and previous groups with wrapping', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping10.xhtml');
 
@@ -580,12 +520,6 @@ function() {
                         TP.ac('booGroup', 'fooGroup'));
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'gooGroup');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -596,8 +530,6 @@ function() {
     //  ---
 
     this.it('Explicit complex query with body context - dynamically modified', function(test, options) {
-
-        var loadURI;
 
         TP.isFluffy = true;
 
@@ -626,12 +558,6 @@ function() {
                                 tpElem.getGroupChainNames(),
                                 TP.ac('fooGroup'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
