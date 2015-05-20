@@ -4399,6 +4399,10 @@ function(aSignal) {
 
     this.moveFocus(TP.FIRST);
 
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
+
     return;
 });
 
@@ -4414,6 +4418,10 @@ function(aSignal) {
      */
 
     this.moveFocus(TP.LAST);
+
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -4431,6 +4439,10 @@ function(aSignal) {
 
     this.moveFocus(TP.NEXT);
 
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
+
     return;
 });
 
@@ -4446,6 +4458,10 @@ function(aSignal) {
      */
 
     this.moveFocus(TP.PREVIOUS);
+
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -4463,6 +4479,10 @@ function(aSignal) {
 
     this.moveFocus(TP.FOLLOWING);
 
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
+
     return;
 });
 
@@ -4478,6 +4498,10 @@ function(aSignal) {
      */
 
     this.moveFocus(TP.PRECEDING);
+
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -4495,6 +4519,10 @@ function(aSignal) {
 
     this.moveFocus(TP.FIRST_IN_GROUP);
 
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
+
     return;
 });
 
@@ -4510,6 +4538,10 @@ function(aSignal) {
      */
 
     this.moveFocus(TP.LAST_IN_GROUP);
+
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -4527,6 +4559,10 @@ function(aSignal) {
 
     this.moveFocus(TP.FIRST_IN_PREVIOUS_GROUP);
 
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
+
     return;
 });
 
@@ -4542,6 +4578,10 @@ function(aSignal) {
      */
 
     this.moveFocus(TP.FIRST_IN_NEXT_GROUP);
+
+    //  Make sure to stop the signal propagation here - we've already moved the
+    //  focus.
+    aSignal.stopPropagation();
 
     return;
 });
