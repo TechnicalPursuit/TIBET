@@ -1020,7 +1020,7 @@ function(forceRefresh) {
         }
 
         if (TP.notValid(node)) {
-            url = TP.uc(TP.sys.cfg('tibet.string_file'));
+            url = TP.uc(TP.sys.cfg('path.string_file'));
             if (TP.isURI(url)) {
                 node = url.getNativeNode(TP.hc('async', false));
             }
