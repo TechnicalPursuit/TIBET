@@ -15,7 +15,8 @@
 TP.tibet.service.Inst.describe('TP.tibet.service',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -49,6 +50,14 @@ function() {
 
     this.afterEach(
         function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+
             //  Reset the metrics we're tracking.
             TP.signal.reset();
         });
@@ -57,8 +66,7 @@ function() {
 
     this.it('GET with static query-style parameter - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service1.xhtml');
 
@@ -129,27 +137,24 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                serviceTPElem.trigger();
+                test.then(
+                    function() {
+                        serviceTPElem.trigger();
 
-                test.assert.didSignal(serviceTPElem, 'TP.sig.UIDataSent');
+                        test.assert.didSignal(serviceTPElem,
+                                                'TP.sig.UIDataSent');
 
-                server.respond();
+                        server.respond();
 
-                //  Restore the server to the built-in functionality.
-                server.restore();
+                        //  Restore the server to the built-in functionality.
+                        server.restore();
+                    });
 
                 //  Return the Promise.
                 return promise;
@@ -164,8 +169,7 @@ function() {
 
     this.it('GET with dynamic query-style parameter - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service2.xhtml');
 
@@ -240,13 +244,6 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
@@ -284,8 +281,7 @@ function() {
 
     this.it('REST GET with no parameter, no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service3.xhtml');
 
@@ -356,27 +352,24 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                serviceTPElem.trigger();
+                test.then(
+                    function() {
+                        serviceTPElem.trigger();
 
-                test.assert.didSignal(serviceTPElem, 'TP.sig.UIDataSent');
+                        test.assert.didSignal(serviceTPElem,
+                                                'TP.sig.UIDataSent');
 
-                server.respond();
+                        server.respond();
 
-                //  Restore the server to the built-in functionality.
-                server.restore();
+                        //  Restore the server to the built-in functionality.
+                        server.restore();
+                    });
 
                 //  Return the Promise.
                 return promise;
@@ -391,8 +384,7 @@ function() {
 
     this.it('REST GET with static parameter - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service4.xhtml');
 
@@ -463,27 +455,24 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                serviceTPElem.trigger();
+                test.then(
+                    function() {
+                        serviceTPElem.trigger();
 
-                test.assert.didSignal(serviceTPElem, 'TP.sig.UIDataSent');
+                        test.assert.didSignal(serviceTPElem,
+                                                'TP.sig.UIDataSent');
 
-                server.respond();
+                        server.respond();
 
-                //  Restore the server to the built-in functionality.
-                server.restore();
+                        //  Restore the server to the built-in functionality.
+                        server.restore();
+                    });
 
                 //  Return the Promise.
                 return promise;
@@ -498,8 +487,7 @@ function() {
 
     this.it('REST GET with dynamic parameter - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service5.xhtml');
 
@@ -574,13 +562,6 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
@@ -603,10 +584,10 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
-
-                        //  Return the Promise.
-                        return promise;
                     });
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -618,8 +599,7 @@ function() {
 
     this.it('REST GET with dynamic parameter and custom headers - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service6.xhtml');
 
@@ -698,13 +678,6 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
@@ -727,10 +700,10 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
-
-                        //  Return the Promise.
-                        return promise;
                     });
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -742,8 +715,7 @@ function() {
 
     this.it('REST POST with dynamic body - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service7.xhtml');
 
@@ -817,13 +789,6 @@ function() {
                             test.assert.isKindOf(aResult, String);
                             test.assert.isEqualTo(aResult, testBody);
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
@@ -846,10 +811,10 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
-
-                        //  Return the Promise.
-                        return promise;
                     });
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -861,8 +826,7 @@ function() {
 
     this.it('REST PUT with dynamic parameter - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service8.xhtml');
 
@@ -937,13 +901,6 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
@@ -966,10 +923,10 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
-
-                        //  Return the Promise.
-                        return promise;
                     });
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -981,8 +938,7 @@ function() {
 
     this.it('REST DELETE with dynamic parameter - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service9.xhtml');
 
@@ -1057,13 +1013,6 @@ function() {
                                     aResult.get('html|body').at(0),
                                     resultElem.get('html|body').at(0));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
@@ -1086,10 +1035,10 @@ function() {
 
                         //  Restore the server to the built-in functionality.
                         server.restore();
-
-                        //  Return the Promise.
-                        return promise;
                     });
+
+                //  Return the Promise.
+                return promise;
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1101,8 +1050,7 @@ function() {
 
     this.it('FORM POST with body - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service10.xhtml');
 
@@ -1181,27 +1129,24 @@ function() {
                             test.assert.isEqualTo(
                                 aResult, testBody.get('data'));
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                serviceTPElem.trigger();
+                test.then(
+                    function() {
+                        serviceTPElem.trigger();
 
-                test.assert.didSignal(serviceTPElem, 'TP.sig.UIDataSent');
+                        test.assert.didSignal(serviceTPElem,
+                                                'TP.sig.UIDataSent');
 
-                server.respond();
+                        server.respond();
 
-                //  Restore the server to the built-in functionality.
-                server.restore();
+                        //  Restore the server to the built-in functionality.
+                        server.restore();
+                    });
 
                 //  Return the Promise.
                 return promise;
@@ -1216,8 +1161,7 @@ function() {
 
     this.it('MULTIPART FORM POST with body - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service11.xhtml');
 
@@ -1289,27 +1233,24 @@ function() {
                             test.assert.hasKey(aResult.at(0), 'body');
                             test.assert.hasKey(aResult.at(1), 'body');
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                serviceTPElem.trigger();
+                test.then(
+                    function() {
+                        serviceTPElem.trigger();
 
-                test.assert.didSignal(serviceTPElem, 'TP.sig.UIDataSent');
+                        test.assert.didSignal(serviceTPElem,
+                                                'TP.sig.UIDataSent');
 
-                server.respond();
+                        server.respond();
 
-                //  Restore the server to the built-in functionality.
-                server.restore();
+                        //  Restore the server to the built-in functionality.
+                        server.restore();
+                    });
 
                 //  Return the Promise.
                 return promise;
@@ -1324,8 +1265,7 @@ function() {
 
     this.it('MULTIPART RELATED POST with body - no specific result type', function(test, options) {
 
-        var loadURI,
-            handler;
+        var handler;
 
         loadURI = TP.uc('~lib_tst/src/tibet/service/Service12.xhtml');
 
@@ -1397,27 +1337,24 @@ function() {
                             test.assert.hasKey(aResult.at(0), 'body');
                             test.assert.hasKey(aResult.at(1), 'body');
 
-                            //  Unload the current page by setting it to the
-                            //  blank
-                            test.getDriver().setLocation(unloadURI);
-
-                            //  Unregister the URI to avoid a memory leak
-                            loadURI.unregister();
-
                             return this;
                         };
                     });
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                serviceTPElem.trigger();
+                test.then(
+                    function() {
+                        serviceTPElem.trigger();
 
-                test.assert.didSignal(serviceTPElem, 'TP.sig.UIDataSent');
+                        test.assert.didSignal(serviceTPElem,
+                                                'TP.sig.UIDataSent');
 
-                server.respond();
+                        server.respond();
 
-                //  Restore the server to the built-in functionality.
-                server.restore();
+                        //  Restore the server to the built-in functionality.
+                        server.restore();
+                    });
 
                 //  Return the Promise.
                 return promise;
