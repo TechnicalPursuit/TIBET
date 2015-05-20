@@ -12718,6 +12718,7 @@ function(aRequest) {
 
         styleTPDoc,
 
+        rootElem,
         resultNode;
 
     //  Make sure that we have a node to work from.
@@ -12798,10 +12799,21 @@ function(aRequest) {
     //  processing to avoid any problems with the XSLT engines.
     TP.nodeRemoveChild(node.parentNode, node);
 
+    //  We want to transform the element that represents the *root* of node we
+    //  were handed (as per XSLT). In regular XSLT, this will be the document
+    //  element, but in our environment we have a specially configured 'root'
+    //  element that takes into account the fact that the tag transformation
+    //  engine is holding onto the same element throughout the transformation
+    //  process.
+    if (!TP.isNode(rootElem = aRequest.at('root'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
     //  If we got an XSLT TP.core.Node, do the transform and get the result.
     if (TP.isKindOf(styleTPDoc, 'TP.core.XSLDocumentNode')) {
         resultNode = TP.node(
-                        TP.unwrap(styleTPDoc.transform(docElem, aRequest)));
+                        TP.unwrap(styleTPDoc.transform(rootElem, aRequest)));
     } else {
         TP.ifError() ?
             TP.error('Invalid stylesheet at ' + url.getLocation(),
@@ -12816,7 +12828,7 @@ function(aRequest) {
 
     //  Go ahead and replace the document element with the native node of
     //  the newly transformed content.
-    doc.replaceChild(resultNode, docElem);
+    rootElem.parentNode.replaceChild(resultNode, rootElem);
 
     TP.ifInfo() ?
         TP.sys.logTransform(
