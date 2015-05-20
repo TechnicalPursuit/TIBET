@@ -56,9 +56,7 @@ function() {
 
     this.it('No initially focused element, all tabindexes -1', function(test, options) {
 
-        var loadURI,
-
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing1.xhtml');
 
@@ -76,6 +74,8 @@ function() {
 
                     focusedElem;
 
+                //  The window-level focus handlers in TIBET will focus the body
+                //  here.
                 TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
@@ -215,8 +215,7 @@ function() {
 
     this.it('An initially focused element, some static tabindexes', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing2.xhtml');
 
@@ -232,6 +231,8 @@ function() {
 
                     focusedElem;
 
+                //  The window-level focus handlers in TIBET will focus the body
+                //  here.
                 TP.sys.uiwin(true).focus();
 
                 elem1 = TP.byId('focusTestField1');
@@ -365,8 +366,7 @@ function() {
 
     this.it('An initially focused element, complex group', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing3.xhtml');
 
@@ -382,6 +382,8 @@ function() {
 
                     focusedElem;
 
+                //  The window-level focus handlers in TIBET will focus the body
+                //  here.
                 TP.sys.uiwin(true).focus();
 
                 elem1 = TP.byId('focusTestField1');
@@ -584,8 +586,7 @@ function() {
 
     this.it('An initially focused element, complex group, group wrapping', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing4.xhtml');
 
@@ -601,6 +602,8 @@ function() {
 
                     focusedElem;
 
+                //  The window-level focus handlers in TIBET will focus the body
+                //  here.
                 TP.sys.uiwin(true).focus();
 
                 elem1 = TP.byId('focusTestField1');
@@ -810,8 +813,7 @@ function() {
 
     this.it('An initially focused group, complex group, group wrapping', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing5.xhtml');
 
@@ -827,6 +829,8 @@ function() {
 
                     focusedElem;
 
+                //  The window-level focus handlers in TIBET will focus the body
+                //  here.
                 TP.sys.uiwin(true).focus();
 
                 elem1 = TP.byId('focusTestField1');
@@ -1043,8 +1047,7 @@ function() {
 
     this.it('An initially focused group, simple nested group', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing6.xhtml');
 
@@ -1064,6 +1067,8 @@ function() {
 
                     focusedElem;
 
+                //  The window-level focus handlers in TIBET will focus the body
+                //  here.
                 TP.sys.uiwin(true).focus();
 
                 elem1 = TP.byId('focusTestField1');
@@ -1370,8 +1375,7 @@ function() {
 
     this.it('An initially focused group, simple nested group, group wrapping', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing7.xhtml');
 
@@ -1393,6 +1397,8 @@ function() {
 
                     focusedElem;
 
+                //  The window-level focus handlers in TIBET will focus the body
+                //  here.
                 TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
@@ -1723,8 +1729,7 @@ function() {
 
     this.it('An initially focused group, simple nested group, group wrapping, some static tabindexes', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing8.xhtml');
 
@@ -2079,8 +2084,7 @@ function() {
 
     this.it('Focusing tab order tests', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing9.xhtml');
 
@@ -2193,7 +2197,7 @@ function() {
                                             loadURI.getLocation()));
             });
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
