@@ -1054,6 +1054,7 @@ function(focusedTPElem, moveAction) {
         prevGroupName,
 
         resultElem,
+        focusableQuery,
 
         wantGroups;
 
@@ -1330,8 +1331,10 @@ function(focusedTPElem, moveAction) {
             //  currentGroup is.
 
             if (TP.notEmpty(TP.byCSS('tibet|group', unwrappedBody))) {
-                results = TP.byCSS(
-                        'tibet|group:first > *[tabindex]:first', unwrappedBody);
+                focusableQuery = TP.computeFocusableQuery(
+                                    'tibet|group:first > ', ':first');
+
+                results = TP.byCSS(focusableQuery, unwrappedBody);
                 results = TP.wrap(results);
             } else {
                 results = wrappedBody.findFocusableElements();
@@ -1351,8 +1354,10 @@ function(focusedTPElem, moveAction) {
             //  currentGroup is.
 
             if (TP.notEmpty(TP.byCSS('tibet|group', unwrappedBody))) {
-                results = TP.byCSS(
-                        'tibet|group:last > *[tabindex]:last', unwrappedBody);
+                focusableQuery = TP.computeFocusableQuery(
+                                    'tibet|group:last > ', ':last');
+
+                results = TP.byCSS(focusableQuery, unwrappedBody);
                 results = TP.wrap(results);
             } else {
                 results = wrappedBody.findFocusableElements();
@@ -1602,19 +1607,19 @@ function(includesGroups) {
     var selExpr,
         results;
 
-    //  Query for any elements under the context element that have an
-    //  attribute of 'tabindex'. This indicates elements that can be
-    //  focused.
+    //  Query for any elements under the context element that are focusable.
 
     //  Note here that the query only includes:
-    //  -   elements that have a tabindex that are *direct* children of the
+    //  -   elements that are focusable that are *direct* children of the
     //      receiver
-    //  -   elements that have a tabindex that are descendants of any element
+    //  -   elements that are focusable that are descendants of any element
     //      under the receiver that is *not* a tibet:group element.
-    //  This allows us to filter out elements with a tabindex but nested
+    //  This allows us to filter out elements that are focusable but nested
     //  under another tibet:group that is in the receiver (we don't want
     //  these elements).
-    selExpr = '> *[tabindex], *:not(tibet|group) *[tabindex]';
+    selExpr = TP.computeFocusableQuery('> ') +
+                ', ' +
+                TP.computeFocusableQuery('*:not(tibet|group) ');
 
     //  If we should include 'tibet:group' elements, then include them in
     //  the CSS selector (but only shallowly - not under any other group).
