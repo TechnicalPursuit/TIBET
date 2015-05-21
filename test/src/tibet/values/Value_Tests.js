@@ -62,7 +62,7 @@ function() {
         'HTMLElement',                          'body',
 
         'XMLDocument',                          'document',
-        'XMLElement',                           'element(/1)',
+        'XMLElement',                           /foo_(\w+)$/,
 
         'AttributeNode',                        'xpath1(./@foo)',
         'TextNode',                             'xpath1(./text()[contains(.,\'foo\')])',
@@ -93,7 +93,7 @@ function() {
         'TP.core.HTMLElementNode',              'body',
 
         'TP.core.XMLDocumentNode',              'document',
-        'TP.core.XMLElementNode',               'element(/1)',
+        'TP.core.XMLElementNode',               /foo_(\w+)$/,
 
         'TP.core.DocumentFragmentNode',         '#document-fragment',
         'TP.core.AttributeNode',                'xpath1(./@foo)',
