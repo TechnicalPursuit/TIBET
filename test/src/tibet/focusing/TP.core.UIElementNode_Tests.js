@@ -2409,15 +2409,23 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
 
+                        /*
+                        console.log(
+                            '--- Step #3 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
+
                         //  At this point, the focus stack should have two items
                         //  on it, because we entered a new focusing context -
                         //  the previous element (elem2) and the currently
                         //  focused element (elem3)
                         test.assert.isSizeOf($focus_stack, 2);
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem3));
                         test.assert.isIdenticalTo($focus_stack.first(),
                                                     TP.wrap(elem2));
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem3));
 
                         //  No 'Pop' event since we entered a new context.
 
@@ -2522,7 +2530,6 @@ function() {
 
                 //  ---
 
-                //  This will put us at elem4
                 driver.startSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
                         sendKeys('[Shift][Tab][Shift-Up]').
@@ -2562,10 +2569,10 @@ function() {
                         //  the previous element (elem2) and the currently
                         //  focused element (elem4)
                         test.assert.isSizeOf($focus_stack, 2);
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem3));
                         test.assert.isIdenticalTo($focus_stack.first(),
                                                     TP.wrap(elem4));
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem3));
 
                         //  No 'Pop' event since we entered a new context.
 
@@ -2774,10 +2781,10 @@ function() {
                         //  the previous element (elem2) and the currently
                         //  focused element (elem4)
                         test.assert.isSizeOf($focus_stack, 2);
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem3));
                         test.assert.isIdenticalTo($focus_stack.first(),
                                                     TP.wrap(elem2));
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem3));
 
                         //  No 'Pop' event since we entered a new context.
 
@@ -2913,7 +2920,7 @@ function() {
                                             loadURI.getLocation()));
             });
     });
-}).skip();
+});
 
 //  ========================================================================
 //  Run those babies!
