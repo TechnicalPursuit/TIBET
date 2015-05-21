@@ -222,7 +222,7 @@ function() {
     testKeys = testData.getKeys();
 
     winGID = TP.gid(testData.at('Window'));
-    docLoc = TP.documentGetLocation(testData.at('HTMLDocument'));
+    docLoc = encodeURI(TP.documentGetLocation(testData.at('HTMLDocument')));
 
     /* eslint-disable no-multi-spaces */
     correctValues = TP.hc(
