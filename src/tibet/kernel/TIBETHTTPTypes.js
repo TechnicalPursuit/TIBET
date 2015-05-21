@@ -593,6 +593,7 @@ function() {
 
     var xml,
         httpObj,
+        url,
         text,
 
         xmlnsInfo,
@@ -618,10 +619,10 @@ function() {
 
             //  Try to guess the default XML namespace from the MIME type
             //  computed from the supplied text and URL.
+            url = TP.uc(this.getRequest().at('finaluri'));
             if (TP.isValid(xmlnsInfo =
                             TP.w3.Xmlns.fromMIMEType(
-                                TP.ietf.Mime.guessMIMEType(
-                                    text, TP.uc(httpObj.responseURL))))) {
+                                TP.ietf.Mime.guessMIMEType(text, url)))) {
                 defaultNS = xmlnsInfo.at('uri');
             } else {
                 defaultNS = null;
