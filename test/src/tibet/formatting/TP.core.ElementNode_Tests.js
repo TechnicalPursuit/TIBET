@@ -287,7 +287,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).timeout(10000);
 
     //  ---
 
