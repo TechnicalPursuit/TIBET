@@ -4643,23 +4643,27 @@ function(aSignal) {
 
     var focusingTPElem;
 
-    //  The receiver is the currently focused element, but TIBET's focus
-    //  navigation machinery stashes a reference to the element we're going to
-    //  next. If we're blurring but not coming through the TIBET focus manager,
-    //  this will be null.
+    //  We only became the focused responder if we were in the UICANVAS.
+    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
 
-    focusingTPElem = this.getType().get('$focusingTPElement');
+        //  The receiver is the currently focused element, but TIBET's focus
+        //  navigation machinery stashes a reference to the element we're going
+        //  to next. If we're blurring but not coming through the TIBET focus
+        //  manager, this will be null.
 
-    if (!this.shouldPerformUIHandler(aSignal) ||
-        !this.yieldFocusedResponder(focusingTPElem)) {
+        focusingTPElem = this.getType().get('$focusingTPElement');
 
-        aSignal.preventDefault();
+        if (!this.shouldPerformUIHandler(aSignal) ||
+            !this.yieldFocusedResponder(focusingTPElem)) {
 
-        return;
+            aSignal.preventDefault();
+
+            return;
+        }
+
+        //  Go ahead and tell ourself to resign from being the focused responder
+        this.resignFocusedResponder();
     }
-
-    //  Go ahead and tell ourself to resign from being the focused responder
-    this.resignFocusedResponder();
 
     //  We're blurring... set 'focused' and 'selected' to false
     this.setAttrFocused(false);
@@ -4974,8 +4978,12 @@ function(aSignal) {
         return;
     }
 
-    //  Go ahead and tell ourself to become the focused responder
-    this.becomeFocusedResponder();
+    //  We can only become the focused responder if we're in the UICANVAS.
+    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
+
+        //  Go ahead and tell ourself to become the focused responder
+        this.becomeFocusedResponder();
+    }
 
     //  We're focusing... set 'focused' to true
     this.setAttrFocused(true);
