@@ -2323,6 +2323,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
 
+                        /*
+                        console.log(
+                            '--- Step #1 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
+
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf($focus_stack, 1);
@@ -2359,6 +2367,14 @@ function() {
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
+
+                        /*
+                        console.log(
+                            '--- Step #2 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
@@ -2475,6 +2491,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
 
+                        /*
+                        console.log(
+                            '--- Step #4 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
+
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf($focus_stack, 1);
@@ -2542,6 +2566,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
 
+                        /*
+                        console.log(
+                            '--- Step #5 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
+
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf($focus_stack, 1);
@@ -2563,6 +2595,14 @@ function() {
                     function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
+
+                        /*
+                        console.log(
+                            '--- Step #6 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
 
                         //  At this point, the focus stack should have two items
                         //  on it, because we entered a new focusing context -
@@ -2622,6 +2662,14 @@ function() {
                         //  elem4 will be refocused.
 
                         test.assert.isIdenticalTo(focusedElem, elem4);
+
+                        /*
+                        console.log(
+                            '--- Step #7 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
@@ -2690,6 +2738,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
 
+                        /*
+                        console.log(
+                            '--- Step #8 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
+
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf($focus_stack, 1);
@@ -2720,6 +2776,14 @@ function() {
                         test.assert.isSizeOf($focus_stack, 1);
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem2));
+
+                        /*
+                        console.log(
+                            '--- Step #9 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
 
                         //  TP.sig.UIActivate       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIActivate');
@@ -2775,6 +2839,14 @@ function() {
                         //  This should've put us at elem3
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
+
+                        /*
+                        console.log(
+                            '--- Step #10 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
 
                         //  At this point, the focus stack should have two items
                         //  on it, because we entered a new focusing context -
@@ -2846,6 +2918,14 @@ function() {
 
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
+
+                        /*
+                        console.log(
+                            '--- Step #11 ---' + '\n\n' +
+                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
+                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
+                        */
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
