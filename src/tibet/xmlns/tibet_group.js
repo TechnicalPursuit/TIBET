@@ -153,16 +153,14 @@ function(includesGroups) {
 
         results;
 
-    //  Query for any elements under the context element that have an
-    //  attribute of 'tabindex'. This indicates elements that can be
-    //  focused.
+    //  Query for any elements under the context element that are focusable.
 
     //  Note here that the query only includes:
-    //  -   elements that have a tabindex that are *direct* children of the
+    //  -   elements that are focusable that are *direct* children of the
     //      receiver
-    //  -   elements that have a tabindex that are descendants of any element
+    //  -   elements that are focusable that are descendants of any element
     //      under the receiver that is *not* a tibet:group element.
-    //  This allows us to filter out elements with a tabindex but nested
+    //  This allows us to filter out elements that are focusable but nested
     //  under another tibet:group that is in the receiver (we don't want
     //  these elements).
 
@@ -172,8 +170,11 @@ function(includesGroups) {
 
     lid = this.getLocalID();
 
-    selExpr = '> *[tabindex][tibet|group="' + lid + '"],' +
-                ' *[tibet|group="' + lid + '"] *:not(tibet|group) *[tabindex]';
+    selExpr = TP.computeFocusableQuery(
+                            '> ', '[tibet|group="' + lid + '"]') +
+                            ', ' +
+                TP.computeFocusableQuery(
+                            '*[tibet|group="' + lid + '"] *:not(tibet|group) ');
 
     //  If we should include 'tibet:group' elements, then include them in
     //  the CSS selector (but only shallowly - not under any other group).

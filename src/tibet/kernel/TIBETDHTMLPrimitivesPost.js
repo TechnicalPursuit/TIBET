@@ -168,6 +168,49 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('computeFocusableQuery',
+function(aPrefix, aSuffix) {
+
+    /**
+     * @method computeFocusableQuery
+     * @summary Computes a CSS query that will return focusable elements when
+     *     executed. Note that this uses the TP.FOCUSABLE_QUERIES global to
+     *     drive the construction of the query and the prefix and suffix (if
+     *     supplied) will be wrapped around *each* one of these queries to
+     *     further qualify them. The result is then joined together with a comma
+     *     (',') so that the query computes a CSS union.
+     * @returns {String} A CSS query that, when executed, will return all of the
+     *     'focusable' elements under the queried node.
+     */
+
+    var queries,
+        str,
+
+        prefix,
+        suffix,
+
+        len,
+        i;
+
+    //  A list of queries that will return focusable elements, per the HTML5
+    //  spec.
+    queries = TP.FOCUSABLE_QUERIES;
+
+    str = '';
+
+    prefix = TP.ifInvalid(aPrefix, '');
+    suffix = TP.ifInvalid(aSuffix, '');
+
+    len = queries.getSize();
+    for (i = 0; i < len; i++) {
+        str += prefix + queries.at(i) + suffix + ', ';
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getPixelsPerPoint',
 function() {
 
