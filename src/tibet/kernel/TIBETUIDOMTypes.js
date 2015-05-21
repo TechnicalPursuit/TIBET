@@ -2580,7 +2580,7 @@ function() {
     //  element, and exit here. The new element will be pushed by the
     //  becomeFocusedResponder() method.
     if (TP.notValid(newFocusContext) ||
-            newFocusContext.identicalTo(currentFocusContext.getNativeNode())) {
+        newFocusContext.identicalTo(currentFocusContext)) {
 
         $focus_stack.pop();
         this.signal('TP.sig.UIDidPopFocus');
