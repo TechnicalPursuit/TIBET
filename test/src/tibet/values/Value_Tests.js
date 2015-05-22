@@ -1219,7 +1219,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -1638,7 +1638,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -1718,7 +1718,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -1789,7 +1789,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -1872,7 +1872,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -1955,7 +1955,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 

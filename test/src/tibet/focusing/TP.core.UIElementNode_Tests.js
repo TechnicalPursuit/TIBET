@@ -2197,7 +2197,7 @@ function() {
                                             loadURI.getLocation()));
             });
     }).timeout(10000);
-}).timeout(45000);
+}).timeout(45000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -3000,7 +3000,7 @@ function() {
                                             loadURI.getLocation()));
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
