@@ -6483,7 +6483,6 @@ TP.boot.$$setupMetadata = function(aWindow) {
                 win.Object,
                 TP.ac(win.Object),
                 TP.ac('Object'));
-
     }
 
     //  Firefox
