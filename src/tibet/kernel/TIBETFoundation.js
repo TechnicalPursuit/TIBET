@@ -734,8 +734,16 @@ function() {
         return thisref.apply(thisref, arglist);
     };
 
-    //  Leverage MutationObservers if they're available
-    if (window.MutationObserver) {
+    //  Leverage Promises if they're available. This is better if we're running
+    //  in an environment where we may already have Promises scheduling since
+    //  this will use a common scheduler for everything.
+    if (TP.isDefined(TP.extern.Promise)) {
+
+        TP.extern.Promise.resolve().then(func);
+
+    } else if (window.MutationObserver) {
+
+        //  Leverage MutationObservers if they're available
 
         //  If there is no 'TP.$$unwindElem' global, then we need to set it up
         //  along with the MutationObserver that will trigger *at the top of the
