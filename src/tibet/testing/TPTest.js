@@ -1305,7 +1305,9 @@ function(options) {
         params,
         wantsOnly,
 
-        firstPromise;
+        firstPromise,
+
+        finalAfterHandler;
 
     //  Make sure to clear out any previous state.
     this.reset(options);
@@ -1418,7 +1420,9 @@ function(options) {
                     function(obj) {
                         var beforeEachMaybe,
                             lastPromise,
-                            promise;
+                            promise,
+
+                            finalAfterEachHandler;
 
                         //  This may add to the '$internalPromise'
                         beforeEachMaybe = suite.executeBeforeEach(
@@ -1460,7 +1464,7 @@ function(options) {
                             }
                         }
 
-                        return promise.then(
+                        finalAfterEachHandler =
                             function(obj) {
                                 var afterEachMaybe,
                                     lastPromise;
@@ -1492,14 +1496,15 @@ function(options) {
                                         //  promise.
                                         return lastPromise;
                                     }
-                                } else if (TP.canInvoke(afterEachMaybe, 'then')) {
+                                } else if (TP.canInvoke(
+                                                    afterEachMaybe, 'then')) {
                                     //  Returned Promise, no last promise
                                     return afterEachMaybe;
                                 }
-                            }, function(err) {
-                                current.$set('$internalPromise', null);
-                                suite.executeAfterEach(current, err, options);
-                            });
+                            };
+
+                        return promise.then(finalAfterEachHandler,
+                                            finalAfterEachHandler);
                     },
                     function(err) {
                         //  TODO: the suite run() operation errored out, now
@@ -1510,8 +1515,11 @@ function(options) {
                     });
             }, firstPromise);
 
-    //  'Finally' action for our caselist promise chain, run the 'after' hook.
-    return result.then(
+    //  If all of the Promises for the Suite succeeded, or if one of them
+    //  failed, we'll end in this handler. We define it separately so that we
+    //  can use both for the success and failure handler.
+
+    finalAfterHandler =
         function(obj) {
             var afterMaybe,
                 lastPromise;
@@ -1560,11 +1568,10 @@ function(options) {
                     suite.report(options);
                 }
             }
-        },
-        function(err) {
-            suite.$set('$internalPromise', null);
-            suite.executeAfter(err, options);
-        });
+        };
+
+    //  'Finally' action for our caselist promise chain, run the 'after' hook.
+    return result.then(finalAfterHandler, finalAfterHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -2042,6 +2049,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 
     this.set('msend', Date.now());
 
+    /*
     if (TP.isValid(aFaultStack)) {
         msg = 'not ok - ' + this.getCaseName() +
             (aFaultString ? ': ' + aFaultString : '') + '.\n' +
@@ -2050,12 +2058,20 @@ function(aFaultString, aFaultCode, aFaultStack) {
         msg = 'not ok - ' + this.getCaseName() +
             (aFaultString ? ': ' + aFaultString : '') + '.';
     }
+    */
 
     if (this.isTodo()) {
         msg += ' # TODO ';
     }
 
+    msg = 'not ok - ' + this.getCaseName() +
+        (aFaultString ? ': ' + aFaultString : '') + '.';
+
     TP.sys.logTest(msg);
+
+    if (TP.isArray(aFaultStack)) {
+        TP.sys.logTest(aFaultStack);
+    }
 
     return this;
 });
