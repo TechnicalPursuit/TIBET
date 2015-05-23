@@ -1244,9 +1244,8 @@ function(anElement) {
 
             this.set('SASLMechanisms',
                         mechanismElements.collect(
-                            function(anElement) {
-
-                                return TP.nodeGetTextContent(anElement);
+                            function(anElem) {
+                                return TP.nodeGetTextContent(anElem);
                             }));
         }
     } else {

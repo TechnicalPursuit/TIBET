@@ -1675,8 +1675,8 @@ function(aReturnValue, targetObj) {
                 retVal = packageWith.construct(retVal);
             } else if (TP.isString(packageWith)) {
                 if (TP.isType(packageType =
-                            TP.sys.getTypeByName(packageWith))
-                        && packageType !== Object) {
+                            TP.sys.getTypeByName(packageWith)) &&
+                        packageType !== Object) {
                     retVal = packageType.construct(retVal);
                 } else {
                     retVal = TP.format(retVal,
@@ -1942,8 +1942,8 @@ function(targetObj) {
             var observedAddress,
                 interestedPaths,
 
-                i,
-                j,
+                l,
+                m,
 
                 records,
 
@@ -1954,29 +1954,29 @@ function(targetObj) {
             //  Note that this is an Array of paths
             interestedPaths = addressPair.last();
 
-            for (i = 0; i < changedAddresses.getSize(); i++) {
+            for (l = 0; l < changedAddresses.getSize(); l++) {
 
-                if (changedAddresses.at(i).at('address') === observedAddress) {
+                if (changedAddresses.at(l).at('address') === observedAddress) {
 
                     //  We found an address match between changed and observed
                     //  addresses. Add the paths from the observed address and
                     //  the action from the changed address into the Array of
                     //  'changed paths'.
 
-                    for (j = 0; j < interestedPaths.getSize(); j++) {
+                    for (m = 0; m < interestedPaths.getSize(); m++) {
 
-                        record = changedAddresses.at(i);
+                        record = changedAddresses.at(l);
 
                         //  Make sure there's an Array at actions, since the
                         //  address could've been changed in more than one way.
                         if (TP.isArray(
                                 records =
-                                changedPaths.at(interestedPaths.at(j)))) {
+                                changedPaths.at(interestedPaths.at(m)))) {
 
                             records.push(record);
                         } else {
                             //  New entry - create an Array.
-                            changedPaths.atPut(interestedPaths.at(j),
+                            changedPaths.atPut(interestedPaths.at(m),
                                                 TP.ac(record));
                         }
                     }
@@ -4576,10 +4576,10 @@ function(targetObj, attributeValue, shouldSignal) {
                 targetObj.vslice(head).perform(
                     function(index, count) {
 
-                        var val,
+                        var indexVal,
                             op;
 
-                        val = targetObj.at(index);
+                        indexVal = targetObj.at(index);
 
                         thisType.startChangedAddress(index);
 
@@ -4587,11 +4587,12 @@ function(targetObj, attributeValue, shouldSignal) {
                         //  then we blow away the entry and make it a reference
                         //  type - we need to set the slot...
                         if (shouldMake &&
-                            (TP.notValid(val) || !TP.isReferenceType(val))) {
+                            (TP.notValid(indexVal) ||
+                             !TP.isReferenceType(indexVal))) {
 
                             //  If the slot was already defined, but wasn't a
                             //  reference type, then we're just updating it.
-                            if (TP.isDefined(val)) {
+                            if (TP.isDefined(indexVal)) {
                                 op = TP.UPDATE;
                             } else {
                                 op = TP.CREATE;
@@ -4599,14 +4600,14 @@ function(targetObj, attributeValue, shouldSignal) {
                             }
 
                             if (attrIsNumber) {
-                                val = TP.ac();
+                                indexVal = TP.ac();
                             } else {
-                                val = TP.lang.Object.construct();
-                                val.defineAttribute(firstSimplePath);
+                                indexVal = TP.lang.Object.construct();
+                                indexVal.defineAttribute(firstSimplePath);
                             }
 
                             //  And we set it back onto the targetObj
-                            targetObj.atPut(index, val);
+                            targetObj.atPut(index, indexVal);
 
                             //  Need to register this as a changed address
                             //  since we altered what was at this slot.
@@ -4619,7 +4620,8 @@ function(targetObj, attributeValue, shouldSignal) {
                             this.set('$createdStructure', true);
                         }
 
-                        if (TP.notValid(val) || !TP.isReferenceType(val)) {
+                        if (TP.notValid(indexVal) ||
+                            !TP.isReferenceType(indexVal)) {
                             thisType.endChangedAddress();
 
                             return;
@@ -4627,7 +4629,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
+                        indexVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
                                                                 shouldMake)),
                                 attributeValue,
                                 false);
@@ -4683,10 +4685,10 @@ function(targetObj, attributeValue, shouldSignal) {
                 targetObj.performOver(
                     function(item, index, count) {
 
-                        var val,
+                        var itemVal,
                             op;
 
-                        val = item;
+                        itemVal = item;
 
                         thisType.startChangedAddress(index);
 
@@ -4694,11 +4696,12 @@ function(targetObj, attributeValue, shouldSignal) {
                         //  then we blow away the entry and make it a reference
                         //  type - we need to set the slot...
                         if (shouldMake &&
-                            (TP.notValid(val) || !TP.isReferenceType(val))) {
+                            (TP.notValid(itemVal) ||
+                             !TP.isReferenceType(itemVal))) {
 
                             //  If the slot was already defined, but wasn't a
                             //  reference type, then we're just updating it.
-                            if (TP.isDefined(val)) {
+                            if (TP.isDefined(itemVal)) {
                                 op = TP.UPDATE;
                             } else {
                                 op = TP.CREATE;
@@ -4706,14 +4709,14 @@ function(targetObj, attributeValue, shouldSignal) {
                             }
 
                             if (attrIsNumber) {
-                                val = TP.ac();
+                                itemVal = TP.ac();
                             } else {
-                                val = TP.lang.Object.construct();
-                                val.defineAttribute(firstSimplePath);
+                                itemVal = TP.lang.Object.construct();
+                                itemVal.defineAttribute(firstSimplePath);
                             }
 
                             //  And we set it back onto the targetObj
-                            targetObj.set(index, val, false);
+                            targetObj.set(index, itemVal, false);
 
                             //  Need to register this as a changed address
                             //  since we altered what was at this slot.
@@ -4726,7 +4729,8 @@ function(targetObj, attributeValue, shouldSignal) {
                             this.set('$createdStructure', true);
                         }
 
-                        if (TP.notValid(val) || !TP.isReferenceType(val)) {
+                        if (TP.notValid(itemVal) ||
+                            !TP.isReferenceType(itemVal)) {
                             thisType.endChangedAddress();
 
                             return;
@@ -4734,7 +4738,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
+                        itemVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
                                                                 shouldMake)),
                                 attributeValue,
                                 false);
@@ -4880,10 +4884,10 @@ function(targetObj, attributeValue, shouldSignal) {
             targetObj.performOver(
                 function(item, index, count) {
 
-                    var val,
+                    var itemVal,
                         op;
 
-                    val = item;
+                    itemVal = item;
 
                     thisType.startChangedAddress(index);
 
@@ -4891,11 +4895,12 @@ function(targetObj, attributeValue, shouldSignal) {
                     //  then we blow away the entry and make it a reference
                     //  type - we need to set the slot...
                     if (shouldMake &&
-                        (TP.notValid(val) || !TP.isReferenceType(val))) {
+                        (TP.notValid(itemVal) ||
+                         !TP.isReferenceType(itemVal))) {
 
                         //  If the slot was already defined, but wasn't a
                         //  reference type, then we're just updating it.
-                        if (TP.isDefined(val)) {
+                        if (TP.isDefined(itemVal)) {
                             op = TP.UPDATE;
                         } else {
                             op = TP.CREATE;
@@ -4903,14 +4908,14 @@ function(targetObj, attributeValue, shouldSignal) {
                         }
 
                         if (attrIsNumber) {
-                            val = TP.ac();
+                            itemVal = TP.ac();
                         } else {
-                            val = TP.lang.Object.construct();
-                            val.defineAttribute(firstSimplePath);
+                            itemVal = TP.lang.Object.construct();
+                            itemVal.defineAttribute(firstSimplePath);
                         }
 
                         //  And we set it back onto the targetObj
-                        targetObj.set(index, val, false);
+                        targetObj.set(index, itemVal, false);
 
                         //  Need to register this as a changed address since we
                         //  altered what was at this slot.
@@ -4923,7 +4928,8 @@ function(targetObj, attributeValue, shouldSignal) {
                         this.set('$createdStructure', true);
                     }
 
-                    if (TP.notValid(val) || !TP.isReferenceType(val)) {
+                    if (TP.notValid(itemVal) ||
+                        !TP.isReferenceType(itemVal)) {
                         thisType.endChangedAddress();
 
                         return;
@@ -4931,7 +4937,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                     //  This 'set' call will take care of registering the
                     //  changed address.
-                    val.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
+                    itemVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
                                                                 shouldMake)),
                             attributeValue,
                             false);

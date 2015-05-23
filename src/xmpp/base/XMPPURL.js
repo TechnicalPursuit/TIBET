@@ -456,13 +456,13 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
                 createReq.defineMethod(
                     'handleRequestSucceeded',
-                    function(aResponse) {
+                    function(successResponse) {
 
                         //  Reset the request failed handler so that we
                         //  don't endlessly loop.
                         subReq.defineMethod(
                             'handleRequestFailed',
-                            function(aResponse) {
+                            function(failureResponse) {
 
                                 return this.raise(
                                         'TP.sig.InvalidXMPPPubsubNode',

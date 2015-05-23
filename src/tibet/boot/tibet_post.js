@@ -1039,11 +1039,11 @@ TP.boot.$$captureStyle = function(aDocument) {
             'DOMContentLoaded',
             handlerFunc = function() {
 
-                var head;
+                var thisHead;
 
                 //  clean up so we don't run into issues with recursions
                 //  or leaks
-                doc.removeEventListener('DOMContentLoaded',
+                this.removeEventListener('DOMContentLoaded',
                                                 handlerFunc,
                                                 false);
 
@@ -1062,9 +1062,9 @@ TP.boot.$$captureStyle = function(aDocument) {
 
                 //  Remove the DOM insertion function from the 'head'
                 //  element if we can still find it
-                head = doc.getElementsByTagName('head')[0];
-                if (head) {
-                    head.removeEventListener(
+                thisHead = doc.getElementsByTagName('head')[0];
+                if (thisHead) {
+                    thisHead.removeEventListener(
                             'DOMNodeInserted',
                             TP.$eventHandleStyleInsertion,
                             true);

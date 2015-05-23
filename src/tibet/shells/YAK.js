@@ -871,7 +871,7 @@ function(aRegistrationNode) {
     uis.addSuccessHook(
         function(aUIS) {
 
-            var yakService,
+            var service,
 
                 regValues,
 
@@ -901,10 +901,10 @@ function(aRegistrationNode) {
                 regValues.atPut(item, val);
             }
 
-            yakService = TP.core.XMPPService.getInstanceById(
+            service = TP.core.XMPPService.getInstanceById(
                                                 this.getServiceID());
 
-            res = yakService.finalizeRegistration(regValues);
+            res = service.finalizeRegistration(regValues);
 
             if (TP.notValid(res)) {
                 //  failed to get connection

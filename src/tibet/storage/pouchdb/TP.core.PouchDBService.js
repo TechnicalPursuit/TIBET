@@ -119,18 +119,18 @@ function(aRequest) {
         case 'deleteDB':
 
             theDB.destroy(
-                function(error, response) {
+                function(err, resp) {
 
                     //  There was an error - fail the request.
-                    if (TP.isValid(error)) {
+                    if (TP.isValid(err)) {
                         return request.fail(
                                 TP.sc('Trying to delete database:',
                                         dbName, ' but had an error: ',
-                                        TP.str(error)),
-                                error);
+                                        TP.str(err)),
+                                err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(response)));
+                    request.complete(TP.json2js(TP.js2json(resp)));
                 });
 
         break;
@@ -147,22 +147,22 @@ function(aRequest) {
 
             theDB.get(
                 info,
-                function(error, response) {
+                function(err, resp) {
 
                     //  If the DB had an error, report it.
-                    if (TP.isValid(error)) {
+                    if (TP.isValid(err)) {
                         return request.fail(
                                 TP.sc('Trying to delete item with id: ', id,
                                         ' from database:',
                                         dbName, ' but had an error: ',
-                                        TP.str(error)),
-                                error);
+                                        TP.str(err)),
+                                err);
                     }
 
                     //  If there wasn't a valid response or there was but it
                     //  didn't have a proper revision number, then we can't
                     //  update an object that doesn't exist.
-                    if (TP.notValid(response) || TP.notValid(response._rev)) {
+                    if (TP.notValid(resp) || TP.notValid(resp._rev)) {
                         return request.fail(
                                 TP.sc('There is no existing item with id: ',
                                         id, ' in database:', dbName, '.'));
@@ -171,22 +171,22 @@ function(aRequest) {
                     //  Go ahead and try to 'remove' the data.
                     theDB.remove(
                         id,
-                        response._rev,
-                        function(error, response) {
+                        resp._rev,
+                        function(err2, resp2) {
 
                             //  There was an error - fail the request.
-                            if (TP.isValid(error)) {
+                            if (TP.isValid(err2)) {
                                 return request.fail(
                                     TP.sc('Trying to delete item with id: ', id,
                                             ' from database:',
                                             dbName, ' but had an error: ',
-                                            TP.str(error)),
-                                    error);
+                                            TP.str(err2)),
+                                    err2);
                             }
 
                             //  We succeeded! Complete the request with the
                             //  response from PouchDB.
-                            request.complete(TP.json2js(TP.js2json(response)));
+                            request.complete(TP.json2js(TP.js2json(resp2)));
                         });
                 });
 
@@ -204,18 +204,18 @@ function(aRequest) {
 
             theDB.get(
                 id,
-                function(error, response) {
+                function(err, resp) {
 
                     //  There was an error - fail the request.
-                    if (TP.isValid(error)) {
+                    if (TP.isValid(err)) {
                         return request.fail(
                             TP.sc('Trying to retrieve an item from database:',
                                     dbName, ' but had an error: ',
-                                    TP.str(error)),
-                            error);
+                                    TP.str(err)),
+                            err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(response)));
+                    request.complete(TP.json2js(TP.js2json(resp)));
                 });
 
         break;
@@ -233,20 +233,20 @@ function(aRequest) {
 
             theDB.get(
                 id,
-                function(error, response) {
+                function(err, resp) {
 
                     var resultData;
 
                     //  There was an error - fail the request.
-                    if (TP.isValid(error)) {
+                    if (TP.isValid(err)) {
                         return request.fail(
                             TP.sc('Trying to retrieve item info from database:',
                                     dbName, ' but had an error: ',
-                                    TP.str(error)),
-                            error);
+                                    TP.str(err)),
+                            err);
                     }
 
-                    resultData = TP.json2js(TP.js2json(response));
+                    resultData = TP.json2js(TP.js2json(resp));
 
                     resultData = TP.hc(
                         '_id', resultData.at('_id'),
@@ -261,18 +261,18 @@ function(aRequest) {
         case 'retrieveDBInfo':
 
             theDB.allDocs(
-                function(error, response) {
+                function(err, resp) {
 
                     //  There was an error - fail the request.
-                    if (TP.isValid(error)) {
+                    if (TP.isValid(err)) {
                         return request.fail(
                             TP.sc('Trying to retrieve information about the',
                                     ' database:', dbName, ' but had an error: ',
-                                    TP.str(error)),
-                            error);
+                                    TP.str(err)),
+                            err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(response)));
+                    request.complete(TP.json2js(TP.js2json(resp)));
                 });
 
         break;
@@ -297,21 +297,21 @@ function(aRequest) {
                 //  Go ahead and try to 'post' the data.
                 theDB.post(
                     data,
-                    function(error, response) {
+                    function(err, resp) {
 
                         //  There was an error - fail the request.
-                        if (TP.isValid(error)) {
+                        if (TP.isValid(err)) {
                             return request.fail(
                                 TP.sc('Trying to create an item in the',
                                         ' database:', dbName,
                                         ' but had an error: ',
-                                        TP.str(error)),
-                                error);
+                                        TP.str(err)),
+                                err);
                         }
 
                         //  We succeeded! Complete the request with the
                         //  response from PouchDB.
-                        request.complete(TP.json2js(TP.js2json(response)));
+                        request.complete(TP.json2js(TP.js2json(resp)));
                     });
 
             } else {
@@ -324,22 +324,23 @@ function(aRequest) {
 
                 theDB.get(
                     id,
-                    function(error, response) {
+                    function(err, resp) {
 
                         //  If the DB had an error and it wasn't a 404 (which we
                         //  we're not interested in), report it.
-                        if (TP.isValid(error) && error.status !== 404) {
+                        if (TP.isValid(err) && err.status !== 404) {
                             return request.fail(
                                     TP.sc('Trying to create an item in the',
                                             ' database:', dbName,
                                             ' but had an error: ',
-                                            TP.str(error)),
-                                    error);
+                                            TP.str(err)),
+                                    err);
                         }
 
                         //  If there was a response and it had a proper revision
-                        //  number, then an object under that key already existed.
-                        if (TP.isValid(response) && TP.isValid(response._rev)) {
+                        //  number, then an object under that key already
+                        //  existed.
+                        if (TP.isValid(resp) && TP.isValid(resp._rev)) {
                             return request.fail(
                                     TP.sc('Already had item with id: ', id,
                                             ' in database:', dbName, '.'));
@@ -348,21 +349,21 @@ function(aRequest) {
                         //  Go ahead and try to 'put' the data.
                         theDB.put(
                             data,
-                            function(error, response) {
+                            function(err2, resp2) {
 
                                 //  There was an error - fail the request.
-                                if (TP.isValid(error)) {
+                                if (TP.isValid(err2)) {
                                     return request.fail(
                                         TP.sc('Trying to create an item in the',
                                                 ' database:', dbName,
                                                 ' but had an error: ',
-                                                TP.str(error)),
-                                        error);
+                                                TP.str(err2)),
+                                        err2);
                                 }
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.json2js(TP.js2json(response)));
+                                request.complete(TP.json2js(TP.js2json(resp2)));
                             });
                     });
             }
@@ -387,22 +388,22 @@ function(aRequest) {
 
                 theDB.get(
                     id,
-                    function(error, response) {
+                    function(err, resp) {
 
                         //  If the DB had an error report it.
-                        if (TP.isValid(error)) {
+                        if (TP.isValid(err)) {
                             return request.fail(
                                     TP.sc('Trying to update an item in the',
                                             ' database:', dbName,
                                             ' but had an error: ',
-                                            TP.str(error)),
-                                    error);
+                                            TP.str(err)),
+                                    err);
                         }
 
                         //  If there wasn't a valid response or there was but it
                         //  didn't have a proper revision number, then we can't
                         //  update an object that doesn't exist.
-                        if (TP.notValid(response) || TP.notValid(response._rev)) {
+                        if (TP.notValid(resp) || TP.notValid(resp._rev)) {
                             return request.fail(
                                     TP.sc('There is no existing item with id: ',
                                             id, ' in database:', dbName, '.'));
@@ -410,33 +411,33 @@ function(aRequest) {
 
                         //  Update the rev number in the data we're updating.
                         //  This will cause the update to happen.
-                        data.atPut('_rev', response._rev);
+                        data.atPut('_rev', resp._rev);
 
                         //  Update the date modified stamp
                         data.atPut('date_modified', TP.dc());
 
-                        //  Make sure to convert it to a POJO before handing it to
-                        //  PouchDB.
+                        //  Make sure to convert it to a POJO before handing it
+                        //  to PouchDB.
                         data = data.asObject();
 
                         //  Go ahead and try to 'put' the data.
                         theDB.put(
                             data,
-                            function(error, response) {
+                            function(err2, resp2) {
 
                                 //  There was an error - fail the request.
-                                if (TP.isValid(error)) {
+                                if (TP.isValid(err2)) {
                                     return request.fail(
                                         TP.sc('Trying to create an item in the',
                                                 ' database:', dbName,
                                                 ' but had an error: ',
-                                                TP.str(error)),
-                                        error);
+                                                TP.str(err2)),
+                                        err2);
                                 }
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.json2js(TP.js2json(response)));
+                                request.complete(TP.json2js(TP.js2json(resp2)));
                             });
                     });
             }

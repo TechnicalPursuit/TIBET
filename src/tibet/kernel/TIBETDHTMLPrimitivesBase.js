@@ -1478,22 +1478,22 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    length = function(a) {
-        return Math.sqrt(a[0] * a[0] + a[1] * a[1]);
+    length = function(val) {
+        return Math.sqrt(val[0] * val[0] + val[1] * val[1]);
     };
 
     // normalizes the length of the passed point to 1
 
-    normalize = function(a) {
-        var l = length(a);
+    normalize = function(val) {
+        var l = length(val);
 
-        return l ? [a[0] / l, a[1] / l] : [0, 0];
+        return l ? [val[0] / l, val[1] / l] : [0, 0];
     };
 
     // returns the dot product of the passed points
 
-    dot = function(a, b) {
-        return a[0] * b[0] + a[1] * b[1];
+    dot = function(left, right) {
+        return left[0] * right[0] + left[1] * right[1];
     };
 
     // returns the principal value of the arc tangent of
@@ -1504,10 +1504,10 @@ function(anElement) {
 
     /* eslint-disable no-extra-parens */
 
-    combine = function(a, b, ascl, bscl) {
+    combine = function(val1, val2, ascl, bscl) {
         return [
-            (ascl * a[0]) + (bscl * b[0]),
-            (ascl * a[1]) + (bscl * b[1])
+            (ascl * val1[0]) + (bscl * val2[0]),
+            (ascl * val1[1]) + (bscl * val2[1])
         ];
     };
 

@@ -2421,15 +2421,15 @@ function(anElement) {
         anElement,
         function(aParentElement) {
 
-            var computedStyle;
+            var compStyle;
 
-            if (TP.notValid(computedStyle =
+            if (TP.notValid(compStyle =
                             TP.elementGetComputedStyleObj(aParentElement))) {
                 return TP.raise(this, 'TP.sig.InvalidStyle');
             }
 
             //  If we found one that was not transparent, we can stop now.
-            if ((elementColor = computedStyle.backgroundColor) !==
+            if ((elementColor = compStyle.backgroundColor) !==
                                                         'transparent') {
                 return true;
             }
@@ -6321,7 +6321,7 @@ function(anElement) {
 
     TP.nodeDepthTraversal(
         anElement,
-        function(anElement) {
+        function(anElem) {
 
             //  The 'push' function for the depth traversal
 
@@ -6343,21 +6343,21 @@ function(anElement) {
 
             //  Grab the element's tag name and convert it to lowercase. It
             //  it's empty, bail out.
-            if (TP.isEmpty(elemTagName = anElement.tagName.toLowerCase())) {
+            if (TP.isEmpty(elemTagName = anElem.tagName.toLowerCase())) {
                 return;
             }
 
             //  Weird IE comment stuff because getElementsByTagName('*')
             //  returns comment nodes.
             if (elemTagName === '!') {
-                xhtmlResult.push(anElement.text);
+                xhtmlResult.push(anElem.text);
                 return;
             }
 
             //  If the tag is a 'meta' tag with a 'generator', then its
             //  unnecessary for our produced markup so we exit here.
             if (elemTagName === 'meta') {
-                if (anElement.name.toLowerCase() === 'generator') {
+                if (anElem.name.toLowerCase() === 'generator') {
                     return;
                 }
             }
@@ -6379,7 +6379,7 @@ function(anElement) {
             hasLang = false;
 
             //  Grab the element's attributes
-            elemAttrs = anElement.attributes;
+            elemAttrs = anElem.attributes;
 
             //  Loop over them and compute the name and value for them.
             for (i = 0; i < elemAttrs.length; i++) {
@@ -6431,7 +6431,7 @@ function(anElement) {
                         //  grab its 'cssText' property (we also lowercase
                         //  it here to conform to TIBET coding standards).
                         attrValue = TP.elementGetStyleObj(
-                                        anElement).cssText.toLowerCase();
+                                        anElem).cssText.toLowerCase();
                     break;
 
                     case 'class':
@@ -6439,19 +6439,19 @@ function(anElement) {
                         //  The best way (because of IE) to get the
                         //  attribute value of the 'class' attribute is to
                         //  grab its 'className' property.
-                        attrValue = anElement.className;
+                        attrValue = anElem.className;
                     break;
 
                     case 'http-equiv':
-                        attrValue = anElement.httpEquiv;
+                        attrValue = anElem.httpEquiv;
                     break;
 
                     case 'name':
-                        attrValue = anElement.name;
+                        attrValue = anElem.name;
                     break;
 
                     case 'for':
-                        attrValue = anElement.htmlFor;
+                        attrValue = anElem.htmlFor;
                     break;
 
                     case 'xmlns':
@@ -6488,7 +6488,7 @@ function(anElement) {
                             //  Note that we do *not* use
                             //  TP.elementGetAttribute() here because of the
                             //  special parameter.
-                            attrValue = anElement.getAttribute(
+                            attrValue = anElem.getAttribute(
                                                             attrName, 2);
                         } catch (e) {
                             continue;
@@ -6539,19 +6539,19 @@ function(anElement) {
             //  Clear out any current namespace prefixes we are tracking.
             currentNSPrefixes.empty();
         },
-        function(anElement) {
+        function(anElem) {
 
             //  The 'pop' function for the depth traversal
 
             //  Weird IE comment stuff because getElementsByTagName('*')
             //  returns comment nodes.
-            if (anElement.tagName === '!') {
+            if (anElem.tagName === '!') {
                 return;
             }
 
             //  End off the element by generating a closing tag.
             xhtmlResult.push('</',
-                                anElement.tagName.toLowerCase(),
+                                anElem.tagName.toLowerCase(),
                                 '>');
         },
         function(nonElementNode) {

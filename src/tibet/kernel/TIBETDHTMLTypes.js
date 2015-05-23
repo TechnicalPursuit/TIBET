@@ -4182,6 +4182,7 @@ TP.core.DragTracker.Type.defineConstant('VEND_ACCEPT',
 TP.core.DragTracker.Type.defineConstant('GLOBAL_CENTER',
     function(target) {
         var rect;
+
         if (TP.isValid(rect = this.GLOBAL_RECT(target))) {
             return rect.getCenterPoint();
         }
@@ -4201,6 +4202,7 @@ TP.core.DragTracker.Type.defineConstant('GLOBAL_RECT',
 TP.core.DragTracker.Type.defineConstant('GLOBAL_X_COORDS',
     function(target) {
         var rect;
+
         if (TP.isValid(rect = this.GLOBAL_RECT(target))) {
             return TP.ac(rect.getX(), rect.getX().addToX(rect.getWidth()));
         }
@@ -4210,6 +4212,7 @@ TP.core.DragTracker.Type.defineConstant('GLOBAL_X_COORDS',
 TP.core.DragTracker.Type.defineConstant('GLOBAL_Y_COORDS',
     function(target) {
         var rect;
+
         if (TP.isValid(rect = this.GLOBAL_RECT(target))) {
             return TP.ac(rect.getY(), rect.getY().addToY(rect.getHeight()));
         }
@@ -4219,6 +4222,7 @@ TP.core.DragTracker.Type.defineConstant('GLOBAL_Y_COORDS',
 TP.core.DragTracker.Type.defineConstant('PAGE_CENTER',
     function(target) {
         var rect;
+
         if (TP.isValid(rect = this.PAGE_RECT(target))) {
             return rect.getCenterPoint();
         }
@@ -4238,6 +4242,7 @@ TP.core.DragTracker.Type.defineConstant('PAGE_RECT',
 TP.core.DragTracker.Type.defineConstant('PAGE_X_COORDS',
     function(target) {
         var rect;
+
         if (TP.isValid(rect = this.PAGE_RECT(target))) {
             return TP.ac(rect.getX(), rect.getX().addToX(rect.getWidth()));
         }
@@ -4247,6 +4252,7 @@ TP.core.DragTracker.Type.defineConstant('PAGE_X_COORDS',
 TP.core.DragTracker.Type.defineConstant('PAGE_Y_COORDS',
     function(target) {
         var rect;
+
         if (TP.isValid(rect = this.PAGE_RECT(target))) {
             return TP.ac(rect.getY(), rect.getY().addToY(rect.getHeight()));
         }

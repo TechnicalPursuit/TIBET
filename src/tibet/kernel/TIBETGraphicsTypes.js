@@ -623,9 +623,9 @@ function(aPoint, t) {
     otherData = aPoint.$get('data');
 
     interpFunc =
-        function(a, b, t) {
+        function(a, b, factor) {
 
-            return a + (b - a) * t;
+            return a + (b - a) * factor;
         };
 
     return TP.core.Point.construct(
@@ -1849,9 +1849,9 @@ function(aRect, t) {
     otherData = aRect.$get('data');
 
     interpFunc =
-        function(a, b, t) {
+        function(a, b, factor) {
 
-            return a + (b - a) * t;
+            return a + (b - a) * factor;
         };
 
     return TP.core.Rect.construct(
@@ -8065,14 +8065,15 @@ function(job, params) {
     //  to the method..
     job.defineMethod(
         'getStepValue',
-        function(params) {
+        function(stepParams) {
 
-            var stepParams;
+            var newParams;
 
-            stepParams =
-                TP.isValid(params) ? params : transitionEntry.at('params');
+            newParams = TP.isValid(stepParams) ?
+                                    stepParams :
+                                    transitionEntry.at('params');
 
-            return transitionEntry.at('compute')(this, stepParams);
+            return transitionEntry.at('compute')(this, newParams);
         });
 
     //  Loop over each entry, and execute its 'step' method.
@@ -8176,9 +8177,9 @@ function(aTarget, propertyName, aTransitionParams) {
     //  compute some.
     if (TP.notValid(origins = transitionParams.at('targetOrigins'))) {
         origins = targets.collect(
-                            function(aTarget) {
+                            function(target) {
 
-                                return TP.gid(aTarget);
+                                return TP.gid(target);
                             });
         origins.isOriginSet(true);
     }
@@ -8290,14 +8291,14 @@ function(aTarget, propertyName, aTransitionParams) {
             }
 
             theTargets.perform(
-                function(aTarget) {
+                function(target) {
 
                     //  Clear the slot that we put on the element that
                     //  contained a reference to our job for tracking
                     //  purposes in case other animations get fired up
                     //  in the middle of this one and want to take over.
-                    if (TP.isValid(aTarget['transition_' + theProperty])) {
-                        aTarget['transition_' + theProperty] = null;
+                    if (TP.isValid(target['transition_' + theProperty])) {
+                        target['transition_' + theProperty] = null;
                     }
                 });
 
@@ -8317,11 +8318,11 @@ function(aTarget, propertyName, aTransitionParams) {
     //  same element.
 
     targets.perform(
-        function(aTarget) {
+        function(target) {
 
             var prevJob,
 
-                stepParams,
+                params,
                 allElems,
                 i;
 
@@ -8334,17 +8335,17 @@ function(aTarget, propertyName, aTransitionParams) {
             //  by 'shutting down' another element sharing the job), then we
             //  begin the process to shut down the job.
             if (TP.isValid(
-                        prevJob = aTarget['transition_' + propertyName]) &&
+                        prevJob = target['transition_' + propertyName]) &&
                 !prevJob.didComplete()) {
                 //  If the job has elements that it is animating and there
                 //  is more than 1 element in that set, then we're not the
                 //  only one, so we just remove ourself from the list of
                 //  elements.
-                if (TP.isValid(stepParams = prevJob.$get('parameters')) &&
-                    TP.isArray(allElems = stepParams.at('target')) &&
+                if (TP.isValid(params = prevJob.$get('parameters')) &&
+                    TP.isArray(allElems = params.at('target')) &&
                     allElems.length > 1) {
                     for (i = 0; i < allElems.length; i++) {
-                        if (allElems[i] === aTarget) {
+                        if (allElems[i] === target) {
                             //  Remove the element from the job's 'target'
                             //  Array so that this property is no longer
                             //  animated by that job.
@@ -8361,7 +8362,7 @@ function(aTarget, propertyName, aTransitionParams) {
 
             //  Cache the new animation job on the element, so that it can
             //  be shutdown in the future if necessary.
-            aTarget['transition_' + propertyName] = transitionJob;
+            target['transition_' + propertyName] = transitionJob;
         });
 
     //  Do the deed.

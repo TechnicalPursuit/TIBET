@@ -253,14 +253,14 @@ function() {
             href = href.split(' ');
             href.perform(
                     function(anHref) {
-                        var val;
+                        var hrefURI;
 
-                        if (!TP.isURI(val = TP.uc(anHref))) {
+                        if (!TP.isURI(hrefURI = TP.uc(anHref))) {
                             //  Raise an exception
                             return this.raise('TP.sig.InvalidURI');
                         }
 
-                        bodyURIs.push(val);
+                        bodyURIs.push(hrefURI);
                     }.bind(this));
         }
     }

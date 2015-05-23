@@ -497,15 +497,15 @@ function(target, options) {
 
                 targetKeys.perform(
                     function(suiteName) {
-                        var suites;
+                        var targetedSuites;
 
-                        suites = targetSuites.at(suiteName);
+                        targetedSuites = targetSuites.at(suiteName);
 
-                        if (!TP.isArray(suites)) {
-                            suites = TP.ac(suites);
+                        if (!TP.isArray(targetedSuites)) {
+                            targetedSuites = TP.ac(targetedSuites);
                         }
 
-                        suites.perform(
+                        targetedSuites.perform(
                             function(suite) {
 
                                 if (suite.isExclusive() &&
@@ -1465,9 +1465,9 @@ function(options) {
                         }
 
                         finalAfterEachHandler =
-                            function(obj) {
+                            function(resultObj) {
                                 var afterEachMaybe,
-                                    lastPromise;
+                                    finalPromise;
 
                                 //  Clear out *the currently executing Case's*
                                 //  built-in Promise. Then, if the 'after each'
@@ -1476,25 +1476,25 @@ function(options) {
                                 current.$set('$internalPromise', null);
 
                                 afterEachMaybe = suite.executeAfterEach(
-                                            current, obj, options);
+                                            current, resultObj, options);
 
                                 //  A last promise can be obtained which means
                                 //  that 'afterEach' must've generated one.
-                                if (TP.isValid(lastPromise = current.$get(
+                                if (TP.isValid(finalPromise = current.$get(
                                                         '$internalPromise'))) {
 
                                     //  If a Promise was also *returned* from
                                     //  executing 'afterEach', then chain it
                                     //  onto the last promise.
                                     if (TP.canInvoke(afterEachMaybe, 'then')) {
-                                        return lastPromise.then(
+                                        return finalPromise.then(
                                                 function() {
                                                     return afterEachMaybe;
                                                 });
                                     } else {
                                         //  No returned Promise, just a last
                                         //  promise.
-                                        return lastPromise;
+                                        return finalPromise;
                                     }
                                 } else if (TP.canInvoke(
                                                     afterEachMaybe, 'then')) {
@@ -1520,9 +1520,9 @@ function(options) {
     //  can use both for the success and failure handler.
 
     finalAfterHandler =
-        function(obj) {
+        function(resultObj) {
             var afterMaybe,
-                lastPromise;
+                finalPromise;
 
             //  Clear out our built-in Promise. Then, if the 'after' method
             //  schedules one, we'll check for it and return it.
@@ -1531,19 +1531,19 @@ function(options) {
             try {
                 //  Run any 'after' hook for the suite. Note that this may
                 //  generate a Promise that will be in '$internalPromise'.
-                afterMaybe = suite.executeAfter(obj, options);
+                afterMaybe = suite.executeAfter(resultObj, options);
             } finally {
                 //  Output summary
 
                 //  The 'after' method scheduled a Promise. Put a 'then()' on it
                 //  that will generate the report *after* it runs and return
                 //  that.
-                if (TP.isValid(lastPromise = suite.$get('$internalPromise'))) {
+                if (TP.isValid(finalPromise = suite.$get('$internalPromise'))) {
 
                     //  If a Promise was also *returned* from executing 'after',
                     //  then chain it on the last Promise.
                     if (TP.canInvoke(afterMaybe, 'then')) {
-                        return lastPromise.then(
+                        return finalPromise.then(
                                         function() {
                                             return afterMaybe;
                                         }).then(
@@ -1552,7 +1552,7 @@ function(options) {
                                         });
                     } else {
                         //  No returned Promise, just a last promise.
-                        return lastPromise.then(
+                        return finalPromise.then(
                                         function() {
                                             suite.report(options);
                                         });

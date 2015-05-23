@@ -1348,10 +1348,10 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
     //  the setter.
     if (TP.isValid(expandedExpr)) {
 
-        transformFunc = function(source, newVal) {
+        transformFunc = function(source, val) {
             var expr,
 
-                wrappedNewVal,
+                wrappedVal,
 
                 index,
                 params,
@@ -1362,7 +1362,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
             expr = transformFunc.$$expandedExpr;
 
-            wrappedNewVal = TP.wrap(newVal);
+            wrappedVal = TP.wrap(val);
 
             if (TP.isNumber(index = transformFunc.$$repeatIndex)) {
 
@@ -1374,7 +1374,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     '$REQUEST', null,
                     '$TAG', this,
                     '$TARGET', this.getDocument(),
-                    '$_', wrappedNewVal,
+                    '$_', wrappedVal,
                     '$INPUT', repeatResource,
                     '$INDEX', index,
                     '$#', index);
@@ -1384,11 +1384,11 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     '$REQUEST', null,
                     '$TAG', this,
                     '$TARGET', this.getDocument(),
-                    '$_', wrappedNewVal,
-                    '$INPUT', newVal);
+                    '$_', wrappedVal,
+                    '$INPUT', val);
             }
 
-            retVal = expr.transform(newVal, params);
+            retVal = expr.transform(val, params);
 
             return retVal;
         }.bind(this);
@@ -1405,10 +1405,10 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
         //  Otherwise, we install a simple transformation Function that will
         //  just return the 'reduced value'. This is necessary especially for
-        //  XML where newVal will be an Element, but we want the text value of
+        //  XML where val will be an Element, but we want the text value of
         //  the Element.
-        transformFunc = function(source, newVal) {
-            return TP.val(newVal);
+        transformFunc = function(source, val) {
+            return TP.val(val);
         };
     }
 

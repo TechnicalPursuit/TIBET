@@ -1774,7 +1774,6 @@ function() {
         searchCursor,
         lineInfo,
         retVal;
-        //marks;
 
     editor = this.get('consoleInput').$get('$editorObj');
 

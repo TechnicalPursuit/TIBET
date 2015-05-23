@@ -10734,17 +10734,17 @@ TP.boot.$uiRootConfig = function() {
 
         iFrameWrapper.firstChild.onload = function() {
 
-            var elemDoc;
+            var doc;
 
             //  grab the 'object' element by ID - that'll be the
             //  root 'iframe'.
             uiFrame = document.getElementById(uiRootID);
-            elemDoc = uiFrame.contentDocument;
+            doc = uiFrame.contentDocument;
 
             //  For some reason, these properties don't get wired on
             //  any browser.
-            uiFrame.contentWindow = elemDoc.defaultView;
-            window.frames[uiRootID] = elemDoc.defaultView;
+            uiFrame.contentWindow = doc.defaultView;
+            window.frames[uiRootID] = doc.defaultView;
 
             TP.boot.$uiRootReady();
         };

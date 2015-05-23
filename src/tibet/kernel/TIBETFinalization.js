@@ -173,7 +173,7 @@ function() {
 
     coreInits.push(
         function() {
-            var msg = 'Initializing type proxies...';
+            msg = 'Initializing type proxies...';
 
             //  Initialize type proxies for types we didn't load as a result
             //  of the boot manifest or through type initialization.
@@ -192,7 +192,7 @@ function() {
 
     coreInits.push(
         function() {
-            var msg = 'Initializing namespace support...';
+            msg = 'Initializing namespace support...';
 
             //  Install native/non-native namespace support. this may also
             //  involve loading types
@@ -214,7 +214,7 @@ function() {
 
     coreInits.push(
         function() {
-            var msg = 'Initializing default locale...';
+            msg = 'Initializing default locale...';
 
             //  Bring in any locale that might be specified
             try {
@@ -248,9 +248,7 @@ function() {
         });
 
     postCore = function(aSignal) {
-        var errors,
-
-            msg;
+        var errors;
 
         if (TP.isValid(aSignal)) {
             errors = aSignal.at('errors');

@@ -422,19 +422,19 @@ function(aValue, unionElem) {
             function(aSchemaElem) {
 
                 var typeID,
-                    type;
+                    newType;
 
                 TP.regex.INVALID_ID_CHARS.lastIndex = 0;
                 typeID = TP.genID('type_').strip(TP.regex.INVALID_ID_CHARS);
                 typeNames.push(typeID);
 
-                type = TP.xs.XMLSchemaSimpleCompositeType.defineSubtype(typeID);
-                types.push(type);
+                newType = TP.xs.XMLSchemaSimpleCompositeType.defineSubtype(typeID);
+                types.push(newType);
 
                 //  Note here how we use 'Type.set()' so that this type and all
                 //  of its subtypes can 'see' the value set here.
 
-                type.Type.set('schemaNode', aSchemaElem);
+                newType.Type.set('schemaNode', aSchemaElem);
             });
 
         TP.elementSetAttribute(unionElem, 'memberTypes', typeNames.join(' '));

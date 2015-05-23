@@ -49,7 +49,7 @@ function(aRequest) {
      *          stdin, stdout, and stderr calls.
      *
      *          {Boolean} cmdSilent Should shell output be reserved only for
-     *          the reponse (and not sent to any Logger) [true].
+     *          the reponse (and not sent to any Logger) [false].
      *
      *          {String} shellID The ID or typename of the shell to target.
      *          When a typename is given the ultimate target is that type's
@@ -179,25 +179,25 @@ function(aRequest) {
     //  get a time-ordered collection of all output from the request.
     stdioProvider = TP.lang.Object.construct();
     stdioProvider.defineMethod('notify',
-                    function(anObject, aRequest) {
+                    function(anObject, req) {
                         stdioResults.push({meta: 'notify', data: anObject});
                     });
     stdioProvider.defineMethod('stdin',
-                    function(anObject, aDefault, aRequest) {
+                    function(anObject, aDefault, req) {
                         stdioResults.push({meta: 'stdin', data: anObject});
                     });
     stdioProvider.defineMethod('stdout',
-                    function(anObject, aRequest) {
+                    function(anObject, req) {
                         stdioResults.push({meta: 'stdout', data: anObject});
                     });
     stdioProvider.defineMethod('stderr',
-                    function(anObject, aRequest) {
+                    function(anObject, req) {
                         stdioResults.push({meta: 'stderr', data: anObject});
                     });
 
     stdioProvider.defineMethod('report',
-         function(aSignal, stdioResults) {
-            stdioResults.forEach(function(item) {
+         function(aSignal, results) {
+            results.forEach(function(item) {
                 if (TP.notValid(item)) {
                     return;
                 }
@@ -1150,13 +1150,13 @@ function(anIndex, afterExpansion) {
         request = list.reverse().detect(
                             function(req) {
 
-                                var text;
+                                var histText;
 
-                                text = expanded ?
+                                histText = expanded ?
                                         req.getOriginalCmdText() :
                                         req.at('cmd');
 
-                                return histMatch.test(text);
+                                return histMatch.test(histText);
                             });
 
         if (TP.isValid(request)) {
@@ -2301,6 +2301,7 @@ function(aString) {
                 TP.regex.TSH_VARSUB,
                 function(wholeMatch, varName) {
                     var value;
+
                     value = this.getExecutionInstance().at('$' + varName);
 
                     // If the variable isn't defined in scope return it so the
@@ -2697,10 +2698,10 @@ function(aRequest, allForms) {
 
                 //  throw away spaces and tabs
                 parts = parts.select(
-                            function(item) {
+                            function(part) {
                                 /* eslint-disable no-extra-parens */
-                                return (item.name !== 'space' &&
-                                        item.name !== 'tab');
+                                return (part.name !== 'space' &&
+                                        part.name !== 'tab');
                                 /* eslint-enable no-extra-parens */
                             });
 
@@ -2708,7 +2709,7 @@ function(aRequest, allForms) {
                 //  note that we preserve values as literal when single
                 //  quoted strings were used.
                 parts = parts.collect(
-                        function(item) {
+                        function(part) {
 
                             //  Make sure to null out val and expandedVal
                             val = null;
@@ -2716,31 +2717,31 @@ function(aRequest, allForms) {
 
                             //  If it's a Number or RegExp literal string, then
                             //  try to turn it into one of those objects
-                            if (item.name === 'number') {
+                            if (part.name === 'number') {
                                 //  Handle Numbers
-                                expandedVal = item.value.asNumber();
-                            } else if (item.name === 'regexp') {
+                                expandedVal = part.value.asNumber();
+                            } else if (part.name === 'regexp') {
                                 //  Handle RegExps
-                                reParts = item.value.split('/');
+                                reParts = part.value.split('/');
                                 expandedVal = TP.rc(reParts.at(1),
                                                     reParts.at(2));
-                            } else if (item.name === 'keyword' &&
-                                        (item.value === 'true' ||
-                                         item.value === 'false')) {
+                            } else if (part.name === 'keyword' &&
+                                        (part.value === 'true' ||
+                                         part.value === 'false')) {
                                 //  Handle Booleans
-                                expandedVal = TP.bc(item.value);
-                            } else if (item.name === 'string') {
+                                expandedVal = TP.bc(part.value);
+                            } else if (part.name === 'string') {
                                 //  Handle Strings
-                                if (item.value.charAt(0) === '"') {
-                                    val = item.value.unquoted();
-                                } else if (item.value.charAt(0) === '\'') {
-                                    expandedVal = item.value;
+                                if (part.value.charAt(0) === '"') {
+                                    val = part.value.unquoted();
+                                } else if (part.value.charAt(0) === '\'') {
+                                    expandedVal = part.value;
                                 } else {
-                                    expandedVal = item.value.unquoted();
+                                    expandedVal = part.value.unquoted();
                                 }
-                            } else if (item.name === 'substitution' ||
-                                        item.name === 'identifier') {
-                                val = item.value.unquoted();
+                            } else if (part.name === 'substitution' ||
+                                        part.name === 'identifier') {
+                                val = part.value.unquoted();
                                 if (val.startsWith('${') && val.endsWith('}')) {
                                     // This might not find a value, but if it
                                     // does we essentially are resolving the
@@ -2749,7 +2750,7 @@ function(aRequest, allForms) {
                                         '$' + val.slice(2, -1));
                                 }
                             } else {
-                                expandedVal = item.value;
+                                expandedVal = part.value;
                             }
 
                             //  If we don't have an 'expanded value', then call
@@ -2769,13 +2770,13 @@ function(aRequest, allForms) {
                                 }
                             }
 
-                            return TP.ac(item.value, expandedVal);
+                            return TP.ac(part.value, expandedVal);
                         });
 
                 parts.perform(
-                    function(item, index) {
-                        dict.atPut('ARG' + index, item);
-                        argv.push(item);
+                    function(part, index) {
+                        dict.atPut('ARG' + index, part);
+                        argv.push(part);
                     });
             } else if (!TP.core.Shell.INVALID_ARGUMENT_MATCHER.test(first)) {
                 val = last;

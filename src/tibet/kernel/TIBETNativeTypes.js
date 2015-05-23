@@ -223,6 +223,7 @@ Date.Type.defineConstant('LOCALTIME_TOKENS',
     'h', function(target) {
 
         var hours = target.getHours();
+
         if (hours > 12) {
             hours -= 12;
         }
@@ -231,11 +232,13 @@ Date.Type.defineConstant('LOCALTIME_TOKENS',
     'hi', function(target) {
 
         var hours = target.getHours();
+
         return hours;
     },
     'hh', function(target) {
 
         var hours = target.getHours();
+
         if (hours > 12) {
             hours -= 12;
         }
@@ -244,6 +247,7 @@ Date.Type.defineConstant('LOCALTIME_TOKENS',
     'hhi', function(target) {
 
         var hours = target.getHours();
+
         return '#{00}'.transformNumber(hours);
     },
     'mn', function(target) {
@@ -385,6 +389,7 @@ Date.Type.defineConstant('UTC_TOKENS',
     'h', function(target) {
 
         var hours = target.getUTCHours();
+
         if (hours > 12) {
             hours -= 12;
         }
@@ -393,11 +398,13 @@ Date.Type.defineConstant('UTC_TOKENS',
     'hi', function(target) {
 
         var hours = target.getUTCHours();
+
         return hours;
     },
     'hh', function(target) {
 
         var hours = target.getUTCHours();
+
         if (hours > 12) {
             hours -= 12;
         }
@@ -406,6 +413,7 @@ Date.Type.defineConstant('UTC_TOKENS',
     'hhi', function(target) {
 
         var hours = target.getUTCHours();
+
         return '#{00}'.transformNumber(hours);
     },
     'mn', function(target) {

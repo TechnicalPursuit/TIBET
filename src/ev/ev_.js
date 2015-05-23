@@ -494,7 +494,7 @@ function(anElement, shouldRegister) {
         signalNames.perform(
             function(aSignalName) {
 
-                var signalType,
+                var theSignalType,
                     theSignalName,
                     thesigname;
 
@@ -508,11 +508,11 @@ function(anElement, shouldRegister) {
                         thesigname :
                         aSignalName;
 
-                if (TP.isType(signalType =
+                if (TP.isType(theSignalType =
                                 TP.sig.SignalMap.$getSignalType(
                                         theSignalName, TP.sig.Signal)) &&
-                    TP.canInvoke(signalType, 'getDefaultPolicy') &&
-                    signalType.getDefaultPolicy() !== TP.DOM_FIRING) {
+                    TP.canInvoke(theSignalType, 'getDefaultPolicy') &&
+                    theSignalType.getDefaultPolicy() !== TP.DOM_FIRING) {
                     nondomFirers.push(theSignalName);
                 } else {
                     domFirers.push(theSignalName);

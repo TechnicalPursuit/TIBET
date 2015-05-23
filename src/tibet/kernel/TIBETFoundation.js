@@ -8771,7 +8771,6 @@ function(aFunction, anObject) {
 
     var str,
         thisref;
-        //len;
 
     str = TP.str(anObject);
     thisref = this;
@@ -9215,6 +9214,7 @@ function(aName) {
     dnuFunc =
         function() {
             var ret;
+
             ret = TP.sys.dnu(this, aName, arguments, arguments);
             return ret;
         };

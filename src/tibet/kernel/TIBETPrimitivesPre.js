@@ -3105,6 +3105,7 @@ function() {
             function(c) {
                 var r = Math.random() * 16 | 0, v = c === 'x' ?
                     r : (r & 0x3 | 0x8);
+
                 return v.toString(16);
             });
     /* eslint-enable no-extra-parens */
@@ -3234,10 +3235,10 @@ function(aFlag, shouldSignal) {
 //  track.
 
 /* jshint -W054 */
-/* eslint-disable no-new-func,one-var,vars-on-top */
+/* eslint-disable no-new-func,one-var,vars-on-top,newline-after-var */
 var NativeTypeStub = new Function();
 NativeTypeStub.prototype = {};
-/* eslint-enable no-new-func,one-var,vars-on-top */
+/* eslint-enable no-new-func,one-var,vars-on-top,newline-after-var */
 /* jshint +W054 */
 
 //  ---
@@ -3508,10 +3509,10 @@ Window.Type[TP.OWNER] = Window;
 //  ---
 
 /* jshint -W054 */
-/* eslint-disable no-new-func,one-var,vars-on-top */
+/* eslint-disable no-new-func,one-var,vars-on-top,newline-after-var */
 var NativeInstStub = new Function();
 NativeInstStub.prototype = {};
-/* eslint-enable no-new-func,one-var,vars-on-top */
+/* eslint-enable no-new-func,one-var,vars-on-top,newline-after-var */
 /* jshint +W054 */
 
 //  ---

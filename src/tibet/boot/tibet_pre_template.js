@@ -171,8 +171,8 @@ if (!TP.sys.$nativeglobals) {
 
         //  Traverse the prototype chain using the property names of the target.
         getProps = function(target) {
-            return target ? Object.getOwnPropertyNames(target)
-                .concat(getProps(Object.getPrototypeOf(target))) : [];
+            return target ? Object.getOwnPropertyNames(target).concat(
+                            getProps(Object.getPrototypeOf(target))) : [];
         };
 
         //  Unique the property names.
@@ -1316,8 +1316,8 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
             obj = TP.hc();
         } else {
             obj = {};
-            obj.at = function(aKey) {return this[aKey]; };
-            obj.atPut = function(aKey, aValue) {this[aKey] = aValue; };
+            obj.at = function(slotKey) {return this[slotKey]; };
+            obj.atPut = function(slotKey, aValue) {this[slotKey] = aValue; };
         }
 
         len = arr.length;

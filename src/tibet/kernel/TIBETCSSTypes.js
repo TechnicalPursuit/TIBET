@@ -314,11 +314,11 @@ function(params) {
         theTargets.perform(
             function(aTarget) {
 
-                var oldVal;
+                var val;
 
-                oldVal = TP.elementGetStyleProperty(aTarget, theProperty);
+                val = TP.elementGetStyleProperty(aTarget, theProperty);
 
-                TP.elementPushStyleProperty(aTarget, theProperty, oldVal);
+                TP.elementPushStyleProperty(aTarget, theProperty, val);
             });
     } else {
         oldVal = TP.elementGetStyleProperty(theTargets, theProperty);
@@ -365,11 +365,11 @@ function(params) {
         theTargets.perform(
             function(aTarget) {
 
-                var oldVal;
+                var val;
 
-                oldVal = TP.elementPopStyleProperty(aTarget, theProperty);
+                val = TP.elementPopStyleProperty(aTarget, theProperty);
 
-                TP.elementGetStyleObj(aTarget)[theProperty] = oldVal;
+                TP.elementGetStyleObj(aTarget)[theProperty] = val;
             });
 
         //  Make sure that any drawing that needed to 'flush' to the window

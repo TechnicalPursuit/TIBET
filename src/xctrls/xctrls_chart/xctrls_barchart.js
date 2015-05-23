@@ -71,79 +71,79 @@ function(aSignal) {
     y = TP.extern.d3.scale.linear().domain([1, 0]).range([h, 0]);
     */
 
-    vis = TP.extern.d3.select(body)
-            .append('svg:svg')
-            .attr('width', w + 40)
-            .attr('height', h + 20)
-            .append('svg:g')
-            .attr('transform', 'translate(20,0)');
+    vis = TP.extern.d3.select(body).
+            append('svg:svg').
+            attr('width', w + 40).
+            attr('height', h + 20).
+            append('svg:g').
+            attr('transform', 'translate(20,0)');
 
-    bars = vis.selectAll('g.bar')
-            .data(data)
-            .enter().append('svg:g')
-            .attr('class', 'bar')
-            .attr('transform',
+    bars = vis.selectAll('g.bar').
+            data(data).
+            enter().append('svg:g').
+            attr('class', 'bar').
+            attr('transform',
                     function(d, i) {
 
                         return 'translate(0,' + y(i) + ')';
                     });
 
-    bars.append('svg:rect')
-            .attr('fill', 'steelblue')
-            .attr('width', x)
-            .attr('height', y.rangeBand());
+    bars.append('svg:rect').
+            attr('fill', 'steelblue').
+            attr('width', x).
+            attr('height', y.rangeBand());
 
-    bars.append('svg:text')
-            .attr('x', x)
-            .attr('y', y.rangeBand() / 2)
-            .attr('dx', -6)
-            .attr('dy', '.35em')
-            .attr('fill', 'white')
-            .attr('text-anchor', 'end')
-            .text(x.tickFormat(100));
+    bars.append('svg:text').
+            attr('x', x).
+            attr('y', y.rangeBand() / 2).
+            attr('dx', -6).
+            attr('dy', '.35em').
+            attr('fill', 'white').
+            attr('text-anchor', 'end').
+            text(x.tickFormat(100));
 
-    bars.append('svg:text')
-            .attr('x', 0)
-            .attr('y', y.rangeBand() / 2)
-            .attr('dx', -6)
-            .attr('dy', '.35em')
-            .attr('text-anchor', 'end')
-            .text(
+    bars.append('svg:text').
+            attr('x', 0).
+            attr('y', y.rangeBand() / 2).
+            attr('dx', -6).
+            attr('dy', '.35em').
+            attr('text-anchor', 'end').
+            text(
                 function(d, i) {
                     return String.fromCharCode(65 + i);
                 });
 
-    rules = vis.selectAll('g.rule')
-            .data(x.ticks(10))
-            .enter().append('svg:g')
-            .attr('class', 'rule')
-            .attr('transform',
+    rules = vis.selectAll('g.rule').
+            data(x.ticks(10)).
+            enter().append('svg:g').
+            attr('class', 'rule').
+            attr('transform',
                     function(d) {
 
                         return 'translate(' + x(d) + ',0)';
                     });
 
-    rules.append('svg:line')
-            .attr('y1', h)
-            .attr('y2', h + 6)
-            .attr('stroke', 'black');
+    rules.append('svg:line').
+            attr('y1', h).
+            attr('y2', h + 6).
+            attr('stroke', 'black');
 
-    rules.append('svg:line')
-            .attr('y1', 0)
-            .attr('y2', h)
-            .attr('stroke', 'white')
-            .attr('stroke-opacity', 0.3);
+    rules.append('svg:line').
+            attr('y1', 0).
+            attr('y2', h).
+            attr('stroke', 'white').
+            attr('stroke-opacity', 0.3);
 
-    rules.append('svg:text')
-            .attr('y', h + 9)
-            .attr('dy', '.71em')
-            .attr('text-anchor', 'middle')
-            .text(x.tickFormat(10));
+    rules.append('svg:text').
+            attr('y', h + 9).
+            attr('dy', '.71em').
+            attr('text-anchor', 'middle').
+            text(x.tickFormat(10));
 
-    vis.append('svg:line')
-            .attr('y1', 0)
-            .attr('y2', h)
-            .attr('stroke', 'black');
+    vis.append('svg:line').
+            attr('y1', 0).
+            attr('y2', h).
+            attr('stroke', 'black');
 
     return;
 });

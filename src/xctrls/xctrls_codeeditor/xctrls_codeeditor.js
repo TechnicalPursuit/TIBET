@@ -490,7 +490,7 @@ function(aHandlerFunc) {
         editor;
 
     cmHandlerFunc =
-        function(editor, evt) {
+        function(cmObj, evt) {
             aHandlerFunc(evt);
         };
 

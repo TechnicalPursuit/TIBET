@@ -415,15 +415,15 @@ function() {
     uiScreenIFrames = TP.byCSS('.center iframe', uiScreensWin);
     uiScreenIFrames.perform(
             function(anIFrameElem) {
-                var screenElem;
+                var elem;
 
                 //  Wrap each iframe inside of a 'sherpa:screen' element
-                screenElem = TP.documentCreateElement(uiDoc,
+                elem = TP.documentCreateElement(uiDoc,
                                                         'screen',
                                                         TP.w3.Xmlns.SHERPA);
 
-                TP.nodeAppendChild(screenElem, anIFrameElem, false);
-                TP.nodeAppendChild(worldElem, screenElem, false);
+                TP.nodeAppendChild(elem, anIFrameElem, false);
+                TP.nodeAppendChild(worldElem, elem, false);
             });
 
     //  Get the number of actual iframes vs. the number of screens configured by

@@ -1796,11 +1796,11 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
         cb,
         result;
 
-    isWhitespaceChar = function(a) {
+    isWhitespaceChar = function(char) {
 
         var charCode;
 
-        charCode = a.charCodeAt(0);
+        charCode = char.charCodeAt(0);
 
         if (charCode <= 32) {
             return true;
@@ -1809,10 +1809,11 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
         }
     };
 
-    isDigitChar = function(a) {
+    isDigitChar = function(char) {
 
         var charCode;
-        charCode = a.charCodeAt(0);
+
+        charCode = char.charCodeAt(0);
 
         if (charCode >= 48 && charCode <= 57) {
             return true;
@@ -1821,7 +1822,7 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
         }
     };
 
-    compareRight = function(a, b) {
+    compareRight = function(first, last) {
 
         var bias,
             ia2,
@@ -1839,8 +1840,8 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
         //  scanned both numbers to know that they have the same
         //  magnitude, so we remember it in BIAS.
         for (;; ia2++, ib2++) {
-            ca2 = a.charAt(ia2);
-            cb2 = b.charAt(ib2);
+            ca2 = first.charAt(ia2);
+            cb2 = last.charAt(ib2);
 
             if (!isDigitChar(ca2) && !isDigitChar(cb2)) {
                 return bias;

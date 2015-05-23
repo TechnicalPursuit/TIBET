@@ -1408,13 +1408,13 @@ function(anElement, effectName, effectParams, nodeContext) {
 
             if (TP.isArray(theElements)) {
                 theElements.perform(
-                    function(anElement) {
+                    function(anElem) {
 
                         //  If the element already had a job running that
                         //  was associated with the same effect that we're
                         //  invoking, clear it.
-                        if (TP.isValid(anElement['effect_' + effectName])) {
-                            anElement['effect_' + effectName] = null;
+                        if (TP.isValid(anElem['effect_' + effectName])) {
+                            anElem['effect_' + effectName] = null;
                         }
                     });
 
@@ -1445,7 +1445,7 @@ function(anElement, effectName, effectParams, nodeContext) {
     //  element.
 
     elems.perform(
-        function(anElement) {
+        function(anElem) {
 
             var prevJob,
                 params,
@@ -1460,7 +1460,7 @@ function(anElement, effectName, effectParams, nodeContext) {
             //  TP.core.Job hasn't already finished (or been told to finish
             //  by 'shutting down' another element sharing the job), then we
             //  begin the process to shut down the job.
-            if (TP.isValid(prevJob = anElement['effect_' + effectName]) &&
+            if (TP.isValid(prevJob = anElem['effect_' + effectName]) &&
                 !prevJob.didComplete()) {
                 //  If the job has elements that it is animating and there
                 //  is more than 1 element in that set, then we're not the
@@ -1470,7 +1470,7 @@ function(anElement, effectName, effectParams, nodeContext) {
                     TP.isArray(allElems = params.at('target')) &&
                     allElems.length > 1) {
                     for (i = 0; i < allElems.length; i++) {
-                        if (allElems[i] === anElement) {
+                        if (allElems[i] === anElem) {
                             //  Remove the element from the job's 'target'
                             //  Array so that this property is no longer
                             //  animated by that job.
@@ -1487,7 +1487,7 @@ function(anElement, effectName, effectParams, nodeContext) {
 
             //  Cache the new animation job on the element, so that it can
             //  be shutdown in the future if necessary.
-            anElement['effect_' + effectName] = transitionJob;
+            anElem['effect_' + effectName] = transitionJob;
         });
 
     //  Do the deed, supplying the step parameters.

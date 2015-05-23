@@ -444,7 +444,7 @@ function(aRequest) {
     var user,
         name,
         shell,
-        req;
+        usernameReq;
 
     //  capture 'this' for closure purposes
     shell = this;
@@ -484,42 +484,43 @@ function(aRequest) {
 
     //  SEE the YAK shell for the "other way", using a TP.sig.UserInputSeries
 
-    req = TP.sig.UserInputRequest.construct(
+    usernameReq = TP.sig.UserInputRequest.construct(
                                     TP.hc('query', 'username:',
                                             'default', name,
                                             'async', true));
 
     //  response comes as a TP.sig.UserInput signal, so add a local handler
-    req.defineMethod(
+    usernameReq.defineMethod(
         'handleUserInput',
         function(aSignal) {
 
-            var req,
-                res;
+            var invalidUsernameReq,
+                passwordReq,
+                usernameResult;
 
             //  do this so the triggering request clears the queue
             if (TP.isValid(aSignal.getRequest().get('responder'))) {
                 aSignal.getRequestID().signal('TP.sig.RequestCompleted');
             }
 
-            res = aSignal.getResult();
+            usernameResult = aSignal.getResult();
 
             //  if the response wasn't adequate we can deal with that by simply
             //  reporting via an output request
             /* eslint-disable no-extra-parens */
-            if (TP.notValid(res) ||
-                res.getSize() < TP.core.Shell.MIN_USERNAME_LEN) {
+            if (TP.notValid(usernameResult) ||
+                usernameResult.getSize() < TP.core.Shell.MIN_USERNAME_LEN) {
                 shell.isRunning(false);
             /* eslint-enable no-extra-parens */
 
-                req = TP.sig.UserOutputRequest.construct(
+                invalidUsernameReq = TP.sig.UserOutputRequest.construct(
                             TP.hc('output', 'Invalid username. Must be ' +
                                             TP.core.Shell.MIN_USERNAME_LEN +
                                             ' chars or more.',
                                     'async', true));
 
-                req.isError(true);
-                req.fire(shell);
+                invalidUsernameReq.isError(true);
+                invalidUsernameReq.fire(shell);
 
                 return;
             }
@@ -529,21 +530,21 @@ function(aRequest) {
             //  prompting for a password. NOTE that we tuck the username away in
             //  this new request to support our simple comparison in the
             //  response handler below
-            req = TP.sig.UserInputRequest.construct(
-                TP.hc('username', res,
-                        'query', res + ' password:',
+            passwordReq = TP.sig.UserInputRequest.construct(
+                TP.hc('username', usernameResult,
+                        'query', usernameResult + ' password:',
                         'default', null,
                         'hideInput', true,
                         'async', true));
 
             //  add a local input handler to the second-stage request which will
             //  be called when the password has been entered
-            req.defineMethod(
+            passwordReq.defineMethod(
                 'handleUserInput',
                 function(anotherSignal) {
 
-                    var req,
-                        res,
+                    var invalidPasswordReq,
+                        passwordResult,
                         thread;
 
                     //  do this so the current request clears the queue
@@ -553,20 +554,20 @@ function(aRequest) {
                             'TP.sig.RequestCompleted');
                     }
 
-                    res = anotherSignal.getResult();
+                    passwordResult = anotherSignal.getResult();
 
                     //  TODO: replace with decent validation hook
-                    if (TP.notValid(res) ||
-                        !res.equalTo(this.at('username'))) {
+                    if (TP.notValid(passwordResult) ||
+                        !passwordResult.equalTo(this.at('username'))) {
                         shell.isRunning(false);
 
-                        req = TP.sig.UserOutputRequest.construct(
+                        invalidPasswordReq = TP.sig.UserOutputRequest.construct(
                                     TP.hc('output', 'Login failed.' +
                                         ' Defaulting requestor settings.' +
                                         ' Use :login to try again.'));
 
-                        req.isError(true);
-                        req.fire(shell);
+                        invalidPasswordReq.isError(true);
+                        invalidPasswordReq.fire(shell);
 
                         return;
                     }
@@ -626,14 +627,14 @@ function(aRequest) {
 
             //  second-stage (password) request and response handler are
             //  defined, now trigger them using the shell as originator
-            req.fire(shell);
+            passwordReq.fire(shell);
 
             return;
         });
 
     //  first-stage request (username) and response handler are defined so
     //  initiate the sequence, using the shell as the originator
-    req.fire(shell);
+    usernameReq.fire(shell);
 
     return this;
 });
@@ -2019,10 +2020,10 @@ function(aRequest) {
         if (TP.isTrue(aRequest.at('cmdIterate'))) {
             if (TP.canInvoke(item, 'collect')) {
                 result = item.collect(
-                            function(item) {
+                            function(it) {
 
                                 return TP.format(
-                                            item,
+                                            it,
                                             format,
                                             TP.hc('repeat', repeat));
                             });
@@ -2393,6 +2394,7 @@ function(aRequest) {
                 //  variant.
                 keys.forEach(function(key) {
                     var value;
+
                     value = aliases[key];
                     // NOTE the trailing space. This ensures we don't match
                     // @description and think it's @desc etc.
@@ -2512,7 +2514,7 @@ function(aRequest) {
                     function(param) {
                         var theParam,
 
-                            type,
+                            paramType,
                             count,
                             i,
                             c,
@@ -2537,7 +2539,7 @@ function(aRequest) {
                             //  the use of nested {}'s we need to actually do a
                             //  simple count here to be certain of our result.
                             len = theParam.length;
-                            type = '';
+                            paramType = '';
                             count = 0;
                             for (i = 0; i < len; i++) {
                                 c = theParam.charAt(i);
@@ -2550,7 +2552,7 @@ function(aRequest) {
                                 } else if (c === '{') {
                                     count++;
                                 }
-                                type += c;
+                                paramType += c;
                             }
 
                             //  If the braces aren't balanced we can fall off
@@ -2563,9 +2565,10 @@ function(aRequest) {
 
                                 // Take our best guess at what the real type and
                                 // parameter name are.
-                                type = theParam.slice(
+                                paramType = theParam.slice(
                                                 1, theParam.lastIndexOf('}'));
-                                type = '{' + type.strip('{').strip('}') + '}';
+                                paramType =
+                                    '{' + paramType.strip('{').strip('}') + '}';
 
                                 theParam =
                                     theParam.slice(
@@ -2574,7 +2577,7 @@ function(aRequest) {
 
                             //  We want to use a leading '?' not 'null' in
                             //  types.
-                            if (type.match(/null/)) {
+                            if (paramType.match(/null/)) {
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push(
                                         'prefer {?...} in @param ');
@@ -2584,7 +2587,7 @@ function(aRequest) {
                             //  We want function() instead of Function for
                             //  function parameters so there's a tendency to
                             //  document signature.
-                            if (type.match(/Function/)) {
+                            if (paramType.match(/Function/)) {
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push(
                                         'prefer {function(...)} in @param ');
@@ -2592,7 +2595,7 @@ function(aRequest) {
                             }
 
                             //  We want to use Type[] rather than Array.<Type>
-                            if (type.match(/Array/)) {
+                            if (paramType.match(/Array/)) {
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push(
                                         'prefer {Type[]} in @param ');
@@ -2600,7 +2603,7 @@ function(aRequest) {
                             }
 
                             //  We want to use {key: type} rather than Object.<>
-                            if (type.match(/Object\./)) {
+                            if (paramType.match(/Object\./)) {
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push(
                                         'prefer @param name.slot for @param ');
@@ -2657,7 +2660,7 @@ function(aRequest) {
                         //  If the param is a varargs param we should see '...'
                         //  in the type definition.
                         if (pname === 'varargs' &&
-                                TP.notValid(type.match(/\.\.\./))) {
+                                TP.notValid(paramType.match(/\.\.\./))) {
                             result = TP.ifInvalid(result, error);
                             result.errors.push(
                                     '@param varargs needs \'...\' in type');

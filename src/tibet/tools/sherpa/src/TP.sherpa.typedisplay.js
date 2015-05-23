@@ -32,6 +32,9 @@ function() {
     var sourceObj,
         data,
 
+        cols,
+        wrapper,
+
         sections,
         sectionsEnter,
 
@@ -44,9 +47,9 @@ function() {
 
     data = TP.getSherpaTypeInfo(sourceObj);
 
-var cols = ['name', 'owner'];
+    cols = ['name', 'owner'];
 
-var wrapper = TP.documentCreateElement(this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
+    wrapper = TP.documentCreateElement(this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
 
     sections = TP.extern.d3.select(wrapper).selectAll('div.parent').data(data);
 
@@ -63,36 +66,36 @@ var wrapper = TP.documentCreateElement(this.getNativeDocument(), 'span', TP.w3.X
         });
 
     // append table and tr.headings row, still don't need selectAll/data/enter
-    sectionsEnter.append('table')
-        .attr('class', 'parent')
-        .append('tr')
-        .attr('class', 'headings');
+    sectionsEnter.append('table').
+        attr('class', 'parent').
+        append('tr').
+        attr('class', 'headings');
 
     // selecting tables picks up previously inherited data
     tables = sections.selectAll('table');
 
-    colHeadings = tables.select('tr.headings')
-        .selectAll('th')
-        .data(cols);
+    colHeadings = tables.select('tr.headings').
+        selectAll('th').
+        data(cols);
 
-    colHeadings.enter()
-        .append('th')
-        .text(function(d) {
+    colHeadings.enter().
+        append('th').
+        text(function(d) {
             return d;
         });
 
     // one row per child
-    rows = tables.selectAll('tr.data')
-        .data(function(d) {
+    rows = tables.selectAll('tr.data').
+        data(function(d) {
             return d.at('children');
         });
 
-    rows.enter()
-        .append('tr')
-        .attr('class', 'data');
+    rows.enter().
+        append('tr').
+        attr('class', 'data');
 
-    cells = rows.selectAll('td')
-                .data(function(d) {
+    cells = rows.selectAll('td').
+                data(function(d) {
                     // return cell data as an array of prop values,
                     // ordered according to prop names in cols
                     return cols.map(function(prop) {
@@ -101,9 +104,9 @@ var wrapper = TP.documentCreateElement(this.getNativeDocument(), 'span', TP.w3.X
                     });
                 });
 
-    cells.enter()
-        .append('td')
-        .text(function(d) {
+    cells.enter().
+        append('td').
+        text(function(d) {
             return d;
         });
 

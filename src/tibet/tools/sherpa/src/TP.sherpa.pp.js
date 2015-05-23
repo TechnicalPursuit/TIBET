@@ -173,6 +173,7 @@ function(anObject, optFormat) {
         stackStr = stackEntries.collect(
             function(infoPiece) {
                 var infoStr;
+
                 infoStr =
                     'at ' +
                     thisArg.fromString(infoPiece.at(0), optFormat) +

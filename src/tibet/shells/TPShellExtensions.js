@@ -1048,17 +1048,17 @@ function(aRequest, cmdType) {
     subrequest.defineMethod('completeJob',
         function(aResult) {
 
-            var result;
+            var res;
 
             switch (arguments.length) {
                 case 1:
                     this.$wrapupJob('Succeeded', TP.SUCCEEDED, aResult);
                     return aRequest.complete(aResult);
                 default:    //  0
-                    result = subrequest.getResult();
-                    if (TP.isDefined(result)) {
-                        this.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
-                        return aRequest.complete(result);
+                    res = subrequest.getResult();
+                    if (TP.isDefined(res)) {
+                        this.$wrapupJob('Succeeded', TP.SUCCEEDED, res);
+                        return aRequest.complete(res);
                     } else {
                         this.$wrapupJob('Succeeded', TP.SUCCEEDED);
                         return aRequest.complete();
@@ -1103,33 +1103,33 @@ function(aRequest, cmdType) {
             subrequest.defineMethod('handleRequestSucceeded',
                 function(aSignal) {
 
-                    var result,
+                    var res,
                         type,
-                        msg;
+                        failMsg;
 
-                    result = aSignal.getResult();
-                    if (TP.notValid(result)) {
-                        msg = 'Missing pipe resource: ' + href;
-                        aRequest.fail(msg);
+                    res = aSignal.getResult();
+                    if (TP.notValid(res)) {
+                        failMsg = 'Missing pipe resource: ' + href;
+                        aRequest.fail(failMsg);
 
                         return;
-                    } else if (TP.canInvoke(result, fname)) {
-                        result = result[fname](aRequest);
-                    } else if (TP.canInvoke(result, 'getType')) {
-                        type = result.getType();
+                    } else if (TP.canInvoke(res, fname)) {
+                        res = res[fname](aRequest);
+                    } else if (TP.canInvoke(res, 'getType')) {
+                        type = res.getType();
                         if (TP.canInvoke(type, fname)) {
-                            aRequest.atPut('cmdInstance', result);
-                            result = type[fname](aRequest);
+                            aRequest.atPut('cmdInstance', res);
+                            res = type[fname](aRequest);
                         }
                     } else {
-                        msg = 'Incapable pipe resource: ' + href;
-                        aRequest.fail(msg);
+                        failMsg = 'Incapable pipe resource: ' + href;
+                        aRequest.fail(failMsg);
 
                         return;
                     }
 
-                    if (TP.isDefined(result)) {
-                        aRequest.complete(result);
+                    if (TP.isDefined(res)) {
+                        aRequest.complete(res);
                     } else {
                         aRequest.complete();
                     }
@@ -1213,9 +1213,9 @@ function(aRequest, cmdType) {
                 function(aSignal) {
 
                     var input,
-                        result;
+                        res;
 
-                    result = aSignal.getResult();
+                    res = aSignal.getResult();
                     input = aRequest.stdin().at(0);
 
                     //  if ! for commit is present then we can simply queue
@@ -1228,12 +1228,12 @@ function(aRequest, cmdType) {
                         //  Note here that we use 'addResource' so that the
                         //  receiving URI can do with the new data as it sees
                         //  fit.
-                        obj.addResource(result, input, commitreq);
+                        obj.addResource(res, input, commitreq);
                     } else {
                         //  Note here that we use 'addResource' so that the
                         //  receiving URI can do with the new data as it sees
                         //  fit.
-                        obj.addResource(result, input, aRequest);
+                        obj.addResource(res, input, aRequest);
                     }
 
                     return;

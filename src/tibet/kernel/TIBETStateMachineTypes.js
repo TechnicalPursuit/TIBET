@@ -370,7 +370,6 @@ function(initialState, targetState, transitionDetails) {
         parents,
         targets,
         arr,
-        list,
         options,
         nested;
 
@@ -447,6 +446,8 @@ function(initialState, targetState, transitionDetails) {
     arr = TP.isArray(initialState) ? initialState : TP.ac(initialState);
     arr.forEach(function(key) {
 
+        var list;
+
         list = initials.at(key);
         if (TP.notValid(list)) {
             list = TP.ac();
@@ -466,6 +467,8 @@ function(initialState, targetState, transitionDetails) {
 
     arr = TP.isArray(targetState) ? targetState : TP.ac(targetState);
     arr.forEach(function(key) {
+
+        var list;
 
         list = targets.at(key);
         if (TP.notValid(list)) {

@@ -345,21 +345,21 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
     //  helper functions
     //  ---
 
-    identifier_type = function(str) {
+    identifier_type = function(ident) {
         /**
         @method     identifier_type
         @abstract   Returns the proper type for an identifier string. This
                     allows the tokenizer to fine-tune identifier recognition
                     to point out keywords, reserved words, etc.
-        @param      str         String      The identifier string to
+        @param      ident         String    The identifier string to
                                             categorize.
         @return     String      An identifier type: 'keyword', 'reserved',
                                 or 'identifier'.
         */
 
-        if (keywords.indexOf('__' + str + '__') > 0) {
+        if (keywords.indexOf('__' + ident + '__') > 0) {
             return 'keyword';
-        } else if (reserved.indexOf('__' + str + '__') > 0) {
+        } else if (reserved.indexOf('__' + ident + '__') > 0) {
             return 'reserved';
         }
 

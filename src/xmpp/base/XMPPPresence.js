@@ -273,36 +273,38 @@ function(aSignal) {
         //uir.observe(null, 'TP.sig.UserInput');
 
         uir.defineMethod('handleUserInput',
-            function(aSignal) {
+            function(sig) {
 
                 var res,
-                    msg;
+                    response;
 
                 //  turn off our observation to avoid leaking, note that
                 //  this relies on a closure around the uir symbol
                 uir.ignore(null, 'TP.sig.UserInput');
 
-                if (TP.isValid(aSignal.getRequest().get('responder'))) {
-                    aSignal.getRequestID().signal(
+                if (TP.isValid(sig.getRequest().get('responder'))) {
+                    sig.getRequestID().signal(
                                         'TP.sig.RequestCompleted');
                 }
 
-                res = aSignal.getResult();
+                res = sig.getResult();
 
                 if (TP.isValid(res) && res.getSize() > 0) {
                     if (res.toLowerCase().startsWith('y')) {
-                        msg = this.constructResponse();
-                        msg.set(
+                        response = this.constructResponse();
+                        response.set(
                             'from',
                             this.get('connection').get('jid').asString());
-                        this.get('connection').send(msg);
+                        this.get('connection').send(response);
                     } else {
-                        msg = this.constructResponse();
-                        TP.elementSetAttribute(msg, 'type', 'unsubscribed');
-                        msg.set(
+                        response = this.constructResponse();
+                        TP.elementSetAttribute(response,
+                                                'type',
+                                                'unsubscribed');
+                        response.set(
                             'from',
                             this.get('connection').get('jid').asString());
-                        this.get('connection').send(msg);
+                        this.get('connection').send(response);
                     }
                 }
             }.bind(this));

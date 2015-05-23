@@ -299,7 +299,7 @@ function(aResponse) {
         //  If the create bucket request succeeds, then retry the put item
         //  request.
         createBucketRequest.defineMethod('handleRequestSucceeded',
-            function(aResponse) {
+            function(successResponse) {
                 var putItemRetryRequest;
 
                 putItemRetryRequest =

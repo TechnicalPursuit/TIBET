@@ -4385,14 +4385,14 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     if (TP.notValid(aHandler)) {
         if (TP.isTrue(isCapturing)) {
             list = root.listeners.select(
-                    function(item) {
-                        return item.phase === 'capture';
+                    function(listener) {
+                        return listener.phase === 'capture';
                     });
 
         } else if (TP.isFalse(isCapturing)) {
             list = root.listeners.select(
-                    function(item) {
-                        return item.phase !== 'capture';
+                    function(listener) {
+                        return listener.phase !== 'capture';
                     });
         } else {
             list = root.listeners;
@@ -4412,8 +4412,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             //  If we're supposed to remove entirely next step is to compact.
             if (!TP.sys.shouldIgnoreViaFlag()) {
                 root.listeners = list.select(
-                                    function(entry) {
-                                        return entry.remove !== true;
+                                    function(listener) {
+                                        return listener.remove !== true;
                                     });
             }
         }
@@ -4422,8 +4422,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         handlerID = TP.gid(aHandler);
 
         entry = root.listeners.detect(
-                function(item) {
-                    return item.handler === handlerID;
+                function(listener) {
+                    return listener.handler === handlerID;
                 });
 
         if (TP.isValid(entry)) {
@@ -4432,8 +4432,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             if (!TP.sys.shouldIgnoreViaFlag()) {
                 list = root.listeners;
                 root.listeners = list.select(
-                                    function(item) {
-                                        return item.remove !== true;
+                                    function(listener) {
+                                        return listener.remove !== true;
                                     });
             }
         }

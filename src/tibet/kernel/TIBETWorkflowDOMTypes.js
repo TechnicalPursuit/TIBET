@@ -1173,8 +1173,8 @@ function(aNode, aProcessor, aRequest) {
         } else if (TP.isArray(result)) {
             /* eslint-disable no-loop-func */
             result.forEach(
-                    function(aNode) {
-                        producedEntries.push(TP.ac(aNode, node));
+                    function(resultNode) {
+                        producedEntries.push(TP.ac(resultNode, node));
                     });
             /* eslint-enable no-loop-func */
         }

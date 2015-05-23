@@ -209,16 +209,16 @@ function(aRequest) {
             function(aSignal) {
 
                 var result,
-                    request,
+                    req,
 
                     xhr,
                     xhrStr;
 
                 result = TP.sc('Succeeded but no data.');
 
-                request = aSignal.getPayload();
+                req = aSignal.getPayload();
 
-                if (TP.isXHR(xhr = request.at('xhr')) &&
+                if (TP.isXHR(xhr = req.at('xhr')) &&
                     TP.notEmpty(xhrStr = TP.str(xhr))) {
                     result = TP.json2js(xhrStr);
                 }
@@ -235,16 +235,16 @@ function(aRequest) {
             function(aSignal) {
 
                 var result,
-                    request,
+                    req,
 
                     xhr,
                     xhrStr;
 
                 result = TP.sc('Failed with no message');
 
-                request = aSignal.getPayload();
+                req = aSignal.getPayload();
 
-                if (TP.isXHR(xhr = request.at('xhr')) &&
+                if (TP.isXHR(xhr = req.at('xhr')) &&
                     TP.notEmpty(xhrStr = TP.str(xhr))) {
                     result = TP.sc('Failure: ') + xhrStr;
                 }
