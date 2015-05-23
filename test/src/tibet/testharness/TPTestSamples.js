@@ -221,6 +221,7 @@ TP.core.Resource.Inst.describe('getTriggerSignals',
 function() {
     this.it('wastes time', function() {
         var test = this;
+
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
@@ -230,6 +231,7 @@ function() {
     });
     this.it('wastes more time', function() {
         var test = this;
+
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
@@ -239,6 +241,7 @@ function() {
     });
     this.it('wastes more and more time', function() {
         var test = this;
+
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
@@ -248,6 +251,7 @@ function() {
     });
     this.it('wastes some more time', function() {
         var test = this;
+
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
@@ -257,6 +261,7 @@ function() {
     });
     this.it('wastes yet more time', function() {
         var test = this;
+
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
@@ -266,6 +271,7 @@ function() {
     });
     this.it('should trigger suite timeout', function() {
         var test = this;
+
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 // Fail since really this shouldn't run.

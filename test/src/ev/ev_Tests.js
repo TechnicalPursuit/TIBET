@@ -56,7 +56,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
@@ -64,7 +64,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'handler_specifies_control');
                     },
@@ -77,7 +77,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'control_specifies_handler');
                     },
@@ -138,7 +138,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'document_contentloaded_fired');
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
@@ -149,7 +149,7 @@ function() {
             });
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 //  Note that since this code is being executed immediately, we have to
@@ -159,7 +159,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'element_contentloaded_fired');
                         test.assert.didSignal(TP.byId('testDiv'), 'TP.sig.DOMContentLoaded');
@@ -217,7 +217,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
@@ -225,7 +225,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'alphakey_fired');
                         test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_A_Up');
@@ -236,7 +236,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'unicodekey_fired');
                         test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_U0062_Up');
@@ -247,7 +247,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'fnkey_fired');
                         test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_F2_Up');
@@ -311,7 +311,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
@@ -319,7 +319,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'multisignal_singleorigin');
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
@@ -336,7 +336,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'multisignal_singleorigin');
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMDblClick');
@@ -410,7 +410,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
@@ -418,7 +418,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'anysignal_singleorigin');
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
@@ -429,7 +429,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'singlesignal_anyorigin');
                         test.assert.didSignal(TP.byId('bazDiv'), 'TP.sig.DOMDblClick');
@@ -488,7 +488,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
@@ -496,7 +496,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         //  Default was being prevented - the field shouldn't
                         //  have any content.
                         test.refute.isEqualTo(TP.byId('fooField').value, 'ABCDE');
@@ -508,7 +508,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'barfield_keypress');
                         test.refute.hasAttribute(TP.byId('testResults'),
@@ -522,7 +522,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
                         var firedFirstDateVal,
                             firedSecondDateVal;
 
@@ -613,7 +613,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
@@ -621,7 +621,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         var testVal;
 
@@ -641,7 +641,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         var testVal;
 
@@ -661,7 +661,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         var testVal;
 
@@ -734,7 +734,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
 
                 //  This sequence of focusing the window and then 'typing' a Tab
                 //  key seems to have the best chance of success to then accept
@@ -750,7 +750,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'alpha_sequence_fired');
@@ -773,7 +773,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         test.assert.hasAttribute(TP.byId('testResults'),
                                                     'unicode_sequence_fired');
@@ -828,7 +828,7 @@ function() {
         driver.setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
@@ -836,7 +836,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         var testVal;
 
@@ -866,7 +866,7 @@ function() {
                         perform();
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         var testVal;
 

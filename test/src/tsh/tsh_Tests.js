@@ -4043,10 +4043,7 @@ function() {
 
     this.it('urn:tibet:FOO', function(test, options) {
 
-        var foo,
-
-            inputVal,
-            correctResult;
+        var foo;
 
         foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);
@@ -4069,9 +4066,7 @@ function() {
 
     this.it('tibet:///urn:tibet:FOO', function(test, options) {
 
-        var foo,
-            inputVal,
-            correctResult;
+        var foo;
 
         foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);

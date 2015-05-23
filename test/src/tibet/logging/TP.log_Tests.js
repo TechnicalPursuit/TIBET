@@ -34,7 +34,9 @@ function() {
 
     this.it('rejects duplicate logger registrations', function(test, options) {
         test.assert.raises(function() {
-            var logger = TP.log.Logger.construct('foofy');
+            var logger;
+
+            logger = TP.log.Logger.construct('foofy');
             TP.log.Manager.registerLogger(logger);
         }, 'DuplicateRegistration');
     });
@@ -152,7 +154,9 @@ function() {
     });
 
     this.it('can create hierarchical loggers', function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy.nested');
+        var logger;
+
+        logger = TP.log.Manager.getLogger('foofy.nested');
         test.assert.isValid(logger);
         test.assert.isEqualTo(logger.getName(), 'foofy.nested');
     });
@@ -300,15 +304,17 @@ function() {
     });
 
     this.it('loggers can restrict appenders', function(test, options) {
-        var root = TP.log.Manager.getRootLogger();
-        root.addAppender(TP.log.Appender.construct());
+        var root2;
+
+        root2 = TP.log.Manager.getRootLogger();
+        root2.addAppender(TP.log.Appender.construct());
 
         logger.inheritsAppenders(false);
         logger.addAppender(TP.log.Appender.construct());
         try {
             test.assert.isEqualTo(logger.getAppenders().length, 1);
         } finally {
-            root.appenders = null;
+            root2.appenders = null;
         }
     });
 });

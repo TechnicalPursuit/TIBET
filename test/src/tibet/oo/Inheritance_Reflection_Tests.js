@@ -104,7 +104,11 @@ function() {
 
     //  Introduce instance method
     domesticatedType.Inst.defineMethod('visitVet',
-                                function() {var happy; return happy; });
+                                function() {
+                                    var happy;
+
+                                    return happy;
+                                });
 
     //  Override instance method
     domesticatedType.Inst.defineMethod('live', function() {
@@ -1922,7 +1926,11 @@ function() {
         //  overridden
         obj = TP.test.Dog.construct();
         obj.defineMethod('visitVet',
-                            function() {var veryHappy; return veryHappy; });
+                            function() {
+                                var veryHappy;
+
+                                return veryHappy;
+                            });
 
         propName = 'visitVet';
         correctVal = TP.LOCAL;

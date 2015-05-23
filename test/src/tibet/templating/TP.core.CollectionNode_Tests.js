@@ -906,8 +906,7 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - JS template',
 function() {
 
-    var unloadURI,
-        loadURI;
+    var unloadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -999,8 +998,7 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XML template',
 function() {
 
-    var unloadURI,
-        loadURI;
+    var unloadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -1092,8 +1090,7 @@ function() {
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XSLT template',
 function() {
 
-    var unloadURI,
-        loadURI;
+    var unloadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 

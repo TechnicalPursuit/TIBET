@@ -423,7 +423,7 @@ function() {
         test.getDriver().setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
 
                 //  Note that these paths on these elements aren't real - we're
                 //  not really interested in that. What we're interested in is
@@ -463,7 +463,7 @@ function() {
         test.getDriver().setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
 
                 var elem,
                     tpElem;
@@ -581,7 +581,7 @@ function() {
                         });
 
                 test.then(
-                    function(result) {
+                    function() {
 
                         //  Put log level back to what it was
                         TP.setLogLevel(oldLogLevel);
@@ -611,7 +611,7 @@ function() {
         test.getDriver().setLocation(loadURI);
 
         test.then(
-            function(result) {
+            function() {
 
                 //  This comes from the first XInclude with a simple XPointer
                 //  expression

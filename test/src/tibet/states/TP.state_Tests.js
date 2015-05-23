@@ -185,6 +185,7 @@ function() {
     this.it('runs start state transition guard functions',
     function(test, options) {
         var called;
+
         machine.defineState(null, 'initial');
         machine.defineMethod('acceptInitial', function() {
             called = true;
@@ -197,6 +198,7 @@ function() {
     this.it('rejects activation if state guard fails',
     function(test, options) {
         var result;
+
         machine.defineState(null, 'initial');
         machine.defineMethod('acceptInitial', function() {
             return false;
@@ -223,6 +225,7 @@ function() {
 
     this.it('cannot deactivate unless in final state', function(test, options) {
         var result;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'notfinal');
         result = machine.activate();
@@ -237,6 +240,7 @@ function() {
     this.it('can force deactivate from non-final state',
     function(test, options) {
         var result;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'notfinal');
         result = machine.activate();
@@ -248,6 +252,7 @@ function() {
     this.it('automatically deactivates on final-only state completion',
     function(test, options) {
         var called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -287,6 +292,7 @@ function() {
     this.it('invokes state machine update for new trigger inputs',
     function(test, options) {
         var called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -304,6 +310,7 @@ function() {
     function(test, options) {
         var params,
             called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -321,6 +328,7 @@ function() {
     function(test, options) {
         var params,
             called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -359,6 +367,7 @@ function() {
     function(test, options) {
         var params,
             called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -378,6 +387,7 @@ function() {
     this.it('rejects transitions where guard returns false',
     function(test, options) {
         var called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -396,6 +406,7 @@ function() {
     this.it('specializes transition guard names by current state',
     function(test, options) {
         var called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -413,6 +424,7 @@ function() {
     this.it('invokes local machine methods for internal transitions',
     function(test, options) {
         var called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -434,6 +446,7 @@ function() {
     this.it('specializes internal transition methods by current state',
     function(test, options) {
         var called;
+
         TP.sys.getApplication().setStateMachine(machine);
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
@@ -458,6 +471,7 @@ function() {
     this.it('signals potential listeners for trigger inputs',
     function(test, options) {
         var called;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -482,6 +496,7 @@ function() {
         var called,
             prior,
             next;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -506,6 +521,7 @@ function() {
         var called,
             prior,
             next;
+
         TP.sys.getApplication().setStateMachine(machine);
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
@@ -532,6 +548,7 @@ function() {
         var called,
             prior,
             next;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -556,6 +573,7 @@ function() {
         var called,
             prior,
             next;
+
         TP.sys.getApplication().setStateMachine(machine);
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
@@ -582,6 +600,7 @@ function() {
         var called,
             prior,
             next;
+
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
@@ -606,6 +625,7 @@ function() {
         var called,
             prior,
             next;
+
         TP.sys.getApplication().setStateMachine(machine);
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
