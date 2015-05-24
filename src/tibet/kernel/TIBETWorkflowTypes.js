@@ -7137,6 +7137,284 @@ function(anEvent) {
 });
 
 //  ========================================================================
+//  TP.core.Worker
+//  ========================================================================
+
+/**
+ * @type {TP.core.Worker}
+ * @summary This type provides an interface to the browser's 'worker thread'
+ *     capability.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.Worker');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  a worker thread object used by this object to interface with the worker
+//  thread.
+TP.core.Worker.Inst.defineAttribute('$workerThreadObj');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('init',
+function() {
+
+    /**
+     * @method init
+     * @summary Initializes a new instance of the receiver.
+     * @returns {TP.core.Worker} A new instance.
+     */
+
+    var workerHelperURI,
+        workerThread;
+
+    //  construct the instance from the root down
+    this.callNextMethod();
+
+    //  Initialize the worker thread with the worker helper stub.
+    workerHelperURI = TP.uc('~lib_etc/workers/tibet_worker_helper.js');
+    workerThread = new Worker(workerHelperURI.getLocation());
+
+    this.set('$workerThreadObj', workerThread);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('eval',
+function(jsSrc) {
+
+    /**
+     * @method eval
+     * @summary Evaluates the supplied JavaScript source code inside of the
+     *     worker thread that this object represents.
+     * @param {String} jsSrc The source code to evaluate inside of the worker.
+     * @returns Promise A promise that will resolve when the evaluation is
+     *     complete.
+     */
+
+    var workerThread,
+        newPromise;
+
+    if (TP.isEmpty(jsSrc)) {
+        return this.raise('InvalidParameter', 'No source code provided.');
+    }
+
+    workerThread = this.get('$workerThreadObj');
+
+    //  Construct a Promise around sending the supplied source code to the
+    //  worker for evaluation.
+    newPromise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            workerThread.onmessage = function(e) {
+
+                //  Run the Promise resolver with the data returned in the
+                //  message event.
+                return resolver(e.data);
+            };
+
+            workerThread.onerror = function(e) {
+
+                var err;
+
+                //  Convert from an ErrorEvent into a real Error object
+                err = new Error(e.message, e.filename, e.lineno);
+
+                //  Run the Promise rejector with the Error object constructed
+                //  from the data returned in the error event.
+                return rejector(err);
+            };
+
+            //  Post a message telling the worker helper stub code loaded into
+            //  the thread to evaluate the supplied source code.
+            workerThread.postMessage({
+                funcRef: 'evalJS',      //  func ref in worker
+                thisRef: 'self',        //  this ref in worker
+                params: TP.ac(jsSrc)    //  params ref - JSONified structure
+            });
+        });
+
+    return newPromise;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('import',
+function(aCodeURL) {
+
+    /**
+     * @method import
+     * @summary Imports the JavaScript source code referred to by the supplied
+     *     URL into the worker thread that this object represents.
+     * @param {TP.core.URL|String} aCodeURL The URL referring to the resource
+     *     containing the source code to import inside of the worker.
+     * @returns Promise A promise that will resolve when the importation is
+     *     complete.
+     */
+
+    var url,
+
+        workerThread,
+        newPromise;
+
+    if (!TP.isURI(aCodeURL)) {
+        return this.raise('InvalidURL',
+                            'Not a valid URL to JavaScript source code.');
+    }
+
+    url = TP.uc(aCodeURL).getLocation();
+
+    workerThread = this.get('$workerThreadObj');
+
+    newPromise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            workerThread.onmessage = function(e) {
+
+                //  Run the Promise resolver with the data returned in the
+                //  message event.
+                return resolver(e.data);
+            };
+
+            workerThread.onerror = function(e) {
+
+                var err;
+
+                //  Convert from an ErrorEvent into a real Error object
+                err = new Error(e.message, e.filename, e.lineno);
+
+                //  Run the Promise rejector with the Error object constructed
+                //  from the data returned in the error event.
+                return rejector(err);
+            };
+
+            //  Post a message telling the worker helper stub code loaded into
+            //  the thread to import source code from the supplied URL.
+            workerThread.postMessage({
+                funcRef: 'importJS',    //  func ref in worker
+                thisRef: 'self',        //  'this' ref in worker
+                params: TP.ac(url)      //  params ref - JSONified structure
+            });
+        });
+
+    return newPromise;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('defineWorkerMethod',
+function(name, body, async) {
+
+    /**
+     * @method defineWorkerMethod
+     * @summary Defines a method inside of the worker represented by the
+     *     receiver and a peer method on the receiver that calls it, thereby
+     *     presenting a seamless interface to it. The peer method will return a
+     *     Promise that will resolve when the worker has posted results back for
+     *     that call.
+     * @param {String} name The name of the method.
+     * @param {Function} body The body of the method.
+     * @param {Boolean} async Whether or not the method is itself asynchronous.
+     *     If so, it is important that it be written in such a way to take a
+     *     callback as it's last formal parameter. In that way, it can inform
+     *     the worker it is done and the worker can post the results back to
+     *     this object. The default is false.
+     * @returns Promise A promise that will resolve when the definition is
+     *     complete.
+     */
+
+    var methodSrc,
+        isAsync,
+
+        promise;
+
+    if (TP.isEmpty(name)) {
+        return this.raise('InvalidString', 'Invalid method name');
+    }
+
+    if (!TP.isCallable(body)) {
+        return this.raise('InvalidFunction', 'Invalid method body');
+    }
+
+    //  Get the source of the method body handed in and prepend
+    //  'self.<methodName>' onto the front.
+    methodSrc = 'self.' + name + ' = ' + body.toString();
+
+    isAsync = TP.ifInvalid(async, false);
+
+    //  Use our 'eval' method to evaluate the code. This is *not* the regular JS
+    //  'eval' global call - this method evaluates the code over in worker
+    //  thread and returns a Promise that will resolve when that is done.
+    promise = this.eval(methodSrc);
+
+    //  Attach to the Promise that was returned from evaluating the code.
+    promise.then(
+        function() {
+
+            var peerMethod;
+
+            //  Now, define that method on *this* object to call over into the
+            //  worker thread to invoke what we just eval()'ed over there.
+            peerMethod = function() {
+                var args,
+                    workerThread,
+                    newPromise;
+
+                args = Array.prototype.slice.call(arguments);
+
+                workerThread = this.get('$workerThreadObj');
+
+                newPromise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+
+                        workerThread.onmessage = function(e) {
+
+                            //  Run the Promise resolver with the result data
+                            //  returned in the message event.
+                            return resolver(e.data.result);
+                        };
+
+                        workerThread.onerror = function(e) {
+
+                            var err;
+
+                            //  Convert from an ErrorEvent into a real Error
+                            //  object
+                            err = new Error(e.message, e.filename, e.lineno);
+
+                            //  Run the Promise rejector with the Error object
+                            //  constructed from the data returned in the error
+                            //  event.
+                            return rejector(err);
+                        };
+
+                        workerThread.postMessage({
+                            funcRef: name,      //  func ref in worker
+                            thisRef: 'self',    //  this ref in worker
+                            params: args,       //  params ref - JSONified
+                                                //  structure
+                            async: isAsync
+                        });
+                    });
+
+                return newPromise;
+            };
+
+            //  Install that method on ourself.
+            this.defineMethod(name, peerMethod);
+        }.bind(this));
+
+    return promise;
+});
+
 //  TIBET convenience methods
 //  ========================================================================
 
