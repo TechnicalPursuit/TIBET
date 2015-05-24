@@ -168,13 +168,6 @@ function() {
 
     info = TP.ac();
 
-    val = this.getLocalName();
-    if (TP.notEmpty(id = this.getAttribute('id'))) {
-        val += '#' + id;
-    }
-
-    info.push(TP.ac('path', val));
-
     this.ancestorsPerform(
             function(aNode) {
                 var tpElem;
@@ -191,7 +184,15 @@ function() {
 
                     info.push(TP.ac('path', val));
                 }
-            });
+            },
+            true);
+
+    val = this.getLocalName();
+    if (TP.notEmpty(id = this.getAttribute('id'))) {
+        val += '#' + id;
+    }
+
+    info.push(TP.ac('path', val));
 
     return info;
 });
