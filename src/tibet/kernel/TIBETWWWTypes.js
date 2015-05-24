@@ -958,8 +958,8 @@ function(aContent, aURI, defaultMIME) {
         } else if (TP.isNode(content)) {
             node = content;
         } else {
-            //  Otherwise, try to turn it into a node (note here we pass
-            //  'false' to avoid reporting errors)
+            //  Otherwise, try to turn it into a node (note here we pass 'false'
+            //  to avoid reporting errors)
             node = TP.node(content, null, false);
         }
     } else {
@@ -975,13 +975,17 @@ function(aContent, aURI, defaultMIME) {
 
         if (TP.isElement(elem)) {
 
-            //  If the element has a valid namespace, then use that
-            //  to try to look up a 'mimetype' entry in the XMLNS 'info'
+            //  If the element has a valid namespace, then use that to try to
+            //  look up a 'mimetype' entry in the XMLNS 'info'
             ns = TP.nodeGetNSURI(elem);
             if (TP.notEmpty(ns) &&
                 TP.isValid(info = TP.w3.Xmlns.get('info').at(ns))) {
                 mime = info.at('mimetype');
+            }
 
+            //  If it's not just 'bland' XML, then we go ahead return the
+            //  computed MIME type here - otherwise, we go on trying.
+            if (TP.notEmpty(mime) && mime !== TP.XML_ENCODED) {
                 TP.ifTrace() && TP.$DEBUG ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
@@ -1005,7 +1009,11 @@ function(aContent, aURI, defaultMIME) {
 
             if (TP.isValid(item)) {
                 mime = item.last().at('mimetype');
+            }
 
+            //  If it's not just 'bland' XML, then we go ahead return the
+            //  computed MIME type here - otherwise, we go on trying.
+            if (TP.notEmpty(mime) && mime !== TP.XML_ENCODED) {
                 TP.ifTrace() && TP.$DEBUG ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
