@@ -61,6 +61,7 @@
         "jsDAV": "*",
         "jshint": "*",
         "jxon": "TechnicalPursuit/jxon",
+        "less": "TechnicalPursuit/less.js",
         "mocha": "*",
         "morgan": "*",
         "minimist": "*",

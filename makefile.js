@@ -140,6 +140,7 @@ targets.build_deps = function(make) {
         targets.rollup_jjv).then(
         targets.rollup_jquery).then(
         targets.rollup_jxon).then(
+        targets.rollup_less).then(
         targets.rollup_pouchdb).then(
         targets.rollup_q).then(
         targets.rollup_sinon).then(
@@ -293,6 +294,22 @@ targets.rollup_jxon = function(make) {
     sh.exec('cp -f index.js  ../../deps/jxon-tpi.js');
 
     targets.rollup_jxon.resolve();
+};
+
+/**
+ */
+targets.rollup_less = function(make) {
+    var npmdir;
+
+    sh.exec('npm update less');
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'less'));
+
+    sh.exec('cp -f dist/less.js  ../../deps/less-tpi.js');
+    sh.exec('cp -f dist/less.min.js  ../../deps/less-tpi.min.js');
+
+    targets.rollup_less.resolve();
 };
 
 /**

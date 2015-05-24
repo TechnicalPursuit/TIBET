@@ -7415,6 +7415,126 @@ function(name, body, async) {
     return promise;
 });
 
+//  ========================================================================
+//  TP.core.LESSWorker
+//  ========================================================================
+
+/**
+ * @type {TP.core.LESSWorker}
+ * @summary A subtype of TP.core.Worker that manages a LESSCSS engine.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.defineSubtype('core.LESSWorker');
+
+//  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+//  used to 'initialize' the worker since LESSCSS makes some assumptions on
+//  startup which are not valid for our environment (i.e. trying to process
+//  LESS stylesheets found on the document - a web worker has no DOM environment
+//  of any kind).
+TP.core.LESSWorker.Type.defineConstant('SETUP_STRING',
+'window = self; window.document = { getElementsByTagName: function(tagName) { if (tagName === "script") { return [{dataset: {}}]; } else if (tagName === "style") { return []; } else if (tagName === "link") { return []; } } };');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  a worker thread object used by this object to interface with the worker
+//  thread.
+TP.core.LESSWorker.Inst.defineAttribute('$workerIsSetUp');
+
+//  ------------------------------------------------------------------------
+
+TP.core.LESSWorker.Inst.defineMethod('compile',
+function(srcText, options) {
+
+    /**
+     * @method compile
+     * @summary Compiles the supplied LESS source text into regular CSS.
+     * @param {String} srcText The LESS source text to compile.
+     * @param {TP.lang.Hash} options Options to the LESS engine. This is
+     *     optional.
+     * @returns Promise A promise that will resolve when the compilation is
+     *     complete.
+     */
+
+    var opts,
+        resultFunc;
+
+    if (TP.isEmpty(srcText)) {
+        return this.raise('InvalidString', 'Invalid LESSCSS source text');
+    }
+
+    if (TP.notEmpty(options)) {
+        opts = options.asObject();
+    } else {
+        opts = {};
+    }
+
+    //  Define a Function that will process the result.
+    resultFunc = function(results) {
+                    var error,
+                        output;
+
+                    error = results[0];
+                    output = results[1];
+
+                    if (TP.notEmpty(error)) {
+                        TP.ifError() ?
+                            TP.error('Error processing LESSCSS: ' +
+                                                            TP.str(error),
+                                        TP.LOG) : 0;
+                        return;
+                    }
+
+                    return output.css;
+                };
+
+    //  If our worker isn't set up, do so and then call our 'compileLESS' method
+    //  that will dispatch over into the worker.
+    if (!this.get('$workerIsSetUp')) {
+
+        //  Evaluate the setup String, then import the copy of LESSCSS in the
+        //  dependencies directory, then define a worker method that will
+        //  'render' the LESSCSS code we hand to it (automagically sent over to
+        //  the worker by this type).
+        return this.eval(this.getType().SETUP_STRING).then(
+            function() {
+
+                //  Import the LESS library
+                return this.import(TP.uc('~lib_deps/less-tpi.min.js'));
+            }.bind(this)).then(
+            function() {
+
+                //  Flip our flag so that we don't do this again.
+                this.set('$workerIsSetUp', true);
+
+                //  Define the compilation 'worker method'.
+                /* eslint-disable no-undef,no-shadow */
+                return this.defineWorkerMethod(
+                        'compileLESS',
+                        function(lessSrc, options, callback) {
+                            window.less.render(lessSrc, options, callback);
+                        },
+                        true);
+                /* eslint-enable no-undef,no-shadow */
+            }.bind(this)).then(
+            function() {
+                //  Then run the compilation 'worker method'.
+                return this.compileLESS(srcText, opts).then(resultFunc);
+            }.bind(this));
+    } else {
+
+        //  Otherwise, just run the compilation 'worker method'.
+        return this.compileLESS(srcText, opts).then(resultFunc);
+    }
+});
+
+//  ========================================================================
 //  TIBET convenience methods
 //  ========================================================================
 
