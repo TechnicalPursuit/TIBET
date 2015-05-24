@@ -10950,6 +10950,10 @@ function(aRequest) {
 
                 attrVal = TP.elementGetAttribute(elem, attrName, true);
 
+                //  Just in case the URI was encoded, as it is by some browsers
+                //  (Firefox), make sure to decode it.
+                attrVal = decodeURIComponent(attrVal);
+
                 //  If its an absolute URI, check to see if it needs to be
                 //  rewritten.
                 if (TP.uriIsAbsolute(attrVal)) {

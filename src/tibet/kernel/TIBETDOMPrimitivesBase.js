@@ -155,7 +155,12 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
             continue;
         }
 
-        // <a href="#">...</a> should not be rewritten.
+
+        //  Just in case the URI was encoded, as it is by some browsers
+        //  (Firefox), make sure to decode it.
+        baseVal = decodeURIComponent(baseVal);
+
+        //  <a href="#">...</a> should not be rewritten.
         if (baseVal === '#' && uriAttrNames.at(i) === 'href') {
             return;
         }
