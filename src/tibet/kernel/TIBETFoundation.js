@@ -919,45 +919,47 @@ function() {
     //  Simplistic cleansing of the comment text to make processing content tags
     //  a little easier.
     lines = text.split('\n');
-    lines = lines.map(function(line) {
-        var str;
+    lines = lines.map(
+            function(aLine) {
+                var str;
 
-        str = line.trim();
+                str = aLine.trim();
 
-        // Ignore the opening and closing lines for a doc comment.
-        if (str.startsWith('/**') || str.startsWith('*/')) {
-            return;
-        }
+                //  Ignore the opening and closing lines for a doc comment.
+                if (str.startsWith('/**') || str.startsWith('*/')) {
+                    return;
+                }
 
-        //  If the line's starting text is @example turn off whitespace
-        //  stripping until we come to the next tag.
-        if (str.match(/^\s*\*\s*@example/)) {
-            example = true;
-            return str.replace(/^\s*\*\s*@example/, '@example');
-        }
+                //  If the line's starting text is @example turn off whitespace
+                //  stripping until we come to the next tag.
+                if (str.match(/^\s*\*\s*@example/)) {
+                    example = true;
+                    return str.replace(/^\s*\*\s*@example/, '@example');
+                }
 
-        //  Check to see if we're in example mode but have hit a new tag.
-        //  If so we flip back out of example mode so we trim whitespace.
-        if (example && str.match(/^\s*\*\s*@/)) {
-            example = false;
-        }
+                //  Check to see if we're in example mode but have hit a new
+                //  tag. If so we flip back out of example mode so we trim
+                //  whitespace.
+                if (example && str.match(/^\s*\*\s*@/)) {
+                    example = false;
+                }
 
-        if (!example) {
-            // str is already trimmed, just remove any leading '*' etc.
-            str = str.replace(/^\*\s*/, '');
-        } else {
-            str = line;
-            // Replace any * in the text with a space, preserving any other
-            // whitespace on that line.
-            str = str.replace(/^(\s*)\*(\s*)/, '$1 $2');
-        }
+                if (!example) {
+                    // str is already trimmed, just remove any leading '*' etc.
+                    str = str.replace(/^\*\s*/, '');
+                } else {
+                    str = aLine;
+                    //  Replace any * in the text with a space, preserving any
+                    //  other whitespace on that line.
+                    str = str.replace(/^(\s*)\*(\s*)/, '$1 $2');
+                }
 
-        return str;
-    }).compact();   // Compact removes null-valued lines.
+                return str;
+            }).compact();   //  Compact removes null-valued lines.
 
     //  Might be an empty comment, in which case we return an empty array rather
     //  than null to signify there was a comment, but it was empty.
-    if (lines.length === 0) {
+    if (TP.isEmpty(lines)) {
         return lines;
     }
 
@@ -967,10 +969,10 @@ function() {
 
     //  Join "blocks" of text with their associated tag. Also watch out for
     //  opening block which may not start with @name or a similar tag.
-    clean = [];
+    clean = TP.ac();
 
-    //  First line. Should start with @name or similar but some authors
-    //  put in description without an opening tag.
+    //  First line. Should start with @name or similar but some authors put in
+    //  description without an opening tag.
     if (lines[0].charAt(0) !== '@') {
         lines[0] = '@summary ' + lines[0];
     }
@@ -982,8 +984,11 @@ function() {
     //  join any which don't start with '@' to the currently open tag.
     len = lines.length;
     for (i = 0; i < len; i++) {
+
         line = lines.at(i);
+
         if (line.charAt(0) === '@') {
+
             if (i !== 0) {
                 clean.push(joined);
             }
@@ -1030,9 +1035,12 @@ function() {
 
     text = this.toString();
     tokens = TP.$tokenize(text);
-    comment = tokens.detect(function(token) {
-        return token.name === 'comment' && token.value.startsWith('/**');
-    });
+
+    comment = tokens.detect(
+                function(token) {
+                    return token.name === 'comment' &&
+                            token.value.startsWith('/**');
+                });
 
     if (TP.isValid(comment)) {
         return comment.value;
@@ -1211,21 +1219,24 @@ function() {
     //  Warn about any comments in parameter lists. This is done here since the
     //  largest invocation of this method occurs as part of the :doclint
     //  command in TIBET which tries to lint comments.
-    comments = tokens.filter(function(token) {
-        return token.name === 'comment';
-    });
+    comments = tokens.filter(
+                    function(token) {
+                        return token.name === 'comment';
+                    });
 
     if (TP.notEmpty(comments)) {
         TP.warn('Comment(s) in parameter list for ' + this.getName());
     }
 
-    tokens = tokens.filter(function(token) {
-        return token.name === 'identifier';
-    });
+    tokens = tokens.filter(
+                    function(token) {
+                        return token.name === 'identifier';
+                    });
 
-    return tokens.map(function(token) {
-        return token.value;
-    });
+    return tokens.map(
+                function(token) {
+                    return token.value;
+                });
 });
 
 //  ------------------------------------------------------------------------
@@ -1271,13 +1282,16 @@ function() {
 
     text = this.toString();
     tokens = TP.$tokenize(text);
-    tokens = tokens.filter(function(token) {
-        return token.name !== 'comment';
-    });
+    tokens = tokens.filter(
+                    function(token) {
+                        return token.name !== 'comment';
+                    });
 
-    text = tokens.reduce(function(previous, current) {
-        return previous + current.value;
-    }, '');
+    text = tokens.reduce(
+                    function(previous, current) {
+                        return previous + current.value;
+                    },
+                    '');
 
     return text;
 });
