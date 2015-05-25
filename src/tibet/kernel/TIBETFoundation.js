@@ -1107,7 +1107,7 @@ function(methodText) {
     }
 
     //  Get the current method's body text...
-    str = this.toString().trim();
+    str = TP.src(this);
 
     //  Convert the body text into a RegExp we can use as a way of indexing
     //  into the original source file text.
