@@ -399,6 +399,8 @@ function(aValue) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    var editorObj;
+
     //  TODO: Detect CSS and set the proper parser
 
     if (TP.regex.CONTAINS_ELEM_MARKUP.test(aValue)) {
@@ -407,7 +409,12 @@ function(aValue) {
         this.setEditorMode(this.getType().JS_MODE);
     }
 
-    this.$get('$editorObj').setValue(aValue);
+    editorObj = this.$get('$editorObj');
+    editorObj.setValue(aValue);
+
+    (function() {
+        editorObj.refresh();
+    }).afterUnwind();
 
     return this;
 });

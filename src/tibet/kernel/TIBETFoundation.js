@@ -919,45 +919,47 @@ function() {
     //  Simplistic cleansing of the comment text to make processing content tags
     //  a little easier.
     lines = text.split('\n');
-    lines = lines.map(function(item) {
-        var str;
+    lines = lines.map(
+            function(aLine) {
+                var str;
 
-        str = item.trim();
+                str = aLine.trim();
 
-        // Ignore the opening and closing lines for a doc comment.
-        if (str.startsWith('/**') || str.startsWith('*/')) {
-            return;
-        }
+                //  Ignore the opening and closing lines for a doc comment.
+                if (str.startsWith('/**') || str.startsWith('*/')) {
+                    return;
+                }
 
-        //  If the line's starting text is @example turn off whitespace
-        //  stripping until we come to the next tag.
-        if (str.match(/^\s*\*\s*@example/)) {
-            example = true;
-            return str.replace(/^\s*\*\s*@example/, '@example');
-        }
+                //  If the line's starting text is @example turn off whitespace
+                //  stripping until we come to the next tag.
+                if (str.match(/^\s*\*\s*@example/)) {
+                    example = true;
+                    return str.replace(/^\s*\*\s*@example/, '@example');
+                }
 
-        //  Check to see if we're in example mode but have hit a new tag.
-        //  If so we flip back out of example mode so we trim whitespace.
-        if (example && str.match(/^\s*\*\s*@/)) {
-            example = false;
-        }
+                //  Check to see if we're in example mode but have hit a new
+                //  tag. If so we flip back out of example mode so we trim
+                //  whitespace.
+                if (example && str.match(/^\s*\*\s*@/)) {
+                    example = false;
+                }
 
-        if (!example) {
-            // str is already trimmed, just remove any leading '*' etc.
-            str = str.replace(/^\*\s*/, '');
-        } else {
-            str = item;
-            // Replace any * in the text with a space, preserving any other
-            // whitespace on that line.
-            str = str.replace(/^(\s*)\*(\s*)/, '$1 $2');
-        }
+                if (!example) {
+                    // str is already trimmed, just remove any leading '*' etc.
+                    str = str.replace(/^\*\s*/, '');
+                } else {
+                    str = aLine;
+                    //  Replace any * in the text with a space, preserving any
+                    //  other whitespace on that line.
+                    str = str.replace(/^(\s*)\*(\s*)/, '$1 $2');
+                }
 
-        return str;
-    }).compact();   // Compact removes null-valued lines.
+                return str;
+            }).compact();   //  Compact removes null-valued lines.
 
     //  Might be an empty comment, in which case we return an empty array rather
     //  than null to signify there was a comment, but it was empty.
-    if (lines.length === 0) {
+    if (TP.isEmpty(lines)) {
         return lines;
     }
 
@@ -967,10 +969,10 @@ function() {
 
     //  Join "blocks" of text with their associated tag. Also watch out for
     //  opening block which may not start with @name or a similar tag.
-    clean = [];
+    clean = TP.ac();
 
-    //  First line. Should start with @name or similar but some authors
-    //  put in description without an opening tag.
+    //  First line. Should start with @name or similar but some authors put in
+    //  description without an opening tag.
     if (lines[0].charAt(0) !== '@') {
         lines[0] = '@summary ' + lines[0];
     }
@@ -982,8 +984,11 @@ function() {
     //  join any which don't start with '@' to the currently open tag.
     len = lines.length;
     for (i = 0; i < len; i++) {
+
         line = lines.at(i);
+
         if (line.charAt(0) === '@') {
+
             if (i !== 0) {
                 clean.push(joined);
             }
@@ -1030,9 +1035,12 @@ function() {
 
     text = this.toString();
     tokens = TP.$tokenize(text);
-    comment = tokens.detect(function(token) {
-        return token.name === 'comment' && token.value.startsWith('/**');
-    });
+
+    comment = tokens.detect(
+                function(token) {
+                    return token.name === 'comment' &&
+                            token.value.startsWith('/**');
+                });
 
     if (TP.isValid(comment)) {
         return comment.value;
@@ -1042,7 +1050,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('getMethodPatch',
-function(methodText) {
+function(newMethodText) {
 
     /**
      * @method getMethodPatch
@@ -1050,7 +1058,7 @@ function(methodText) {
      *     receiver's source file. The JsDiff package must be loaded for this
      *     operation to work. The JsDiff package is typically loaded by the
      *     Sherpa config.
-     * @param {String} methodText The new method text.
+     * @param {String} newMethodText The new method text.
      * @returns {String} A string representing patch file content.
      */
 
@@ -1065,10 +1073,10 @@ function(methodText) {
 
     //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getMethodPatch(methodText);
+        return this.$realFunc.getMethodPatch(newMethodText);
     }
 
-    if (TP.notValid(self.JsDiff)) {
+    if (TP.notValid(TP.extern.JsDiff)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. JsDiff not loaded.',
                     TP.LOG) : 0;
@@ -1084,10 +1092,12 @@ function(methodText) {
         return;
     }
 
+    //  Get the original source text. Note here how we do this asynchronously
+    //  and we set 'refresh' to true, thereby forcing the browser to go back to
+    //  the server for the latest version of the file. This is so that we can
+    //  compute the diff against the latest version that is real.
     url = TP.uc(path);
-    content = url.getContent(); // .then(function(resolve, reject) {
-        // Yay promises!!!....almost...TODO
-    // });
+    content = url.getContent(TP.hc('async', false, 'refresh', true));
 
     if (TP.isEmpty(content)) {
         TP.ifWarn() ?
@@ -1097,13 +1107,13 @@ function(methodText) {
     }
 
     //  Get the current method's body text...
-    str = this.toString().trim();
+    str = TP.src(this);
 
     //  Convert the body text into a RegExp we can use as a way of indexing
     //  into the original source file text.
     matcher = TP.rc(RegExp.escapeMetachars(
-                str.replace(/[\u0009\u000A\u0020\u000D]+/g,
-                    'SECRET_SAUCE')).replace(/SECRET_SAUCE/g, '\\s*'));
+                str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
+                    replace(/SECRET_SAUCE/g, '\\s*'));
 
     match = content.match(matcher);
     if (TP.notValid(match)) {
@@ -1114,7 +1124,7 @@ function(methodText) {
     }
 
     newtext = content.slice(0, match.index) +
-                methodText +
+                newMethodText +
                 content.slice(match.index + match.at(0).length);
 
     //  NOTE we use the original srcPath string here to retain relative address.
@@ -1211,21 +1221,24 @@ function() {
     //  Warn about any comments in parameter lists. This is done here since the
     //  largest invocation of this method occurs as part of the :doclint
     //  command in TIBET which tries to lint comments.
-    comments = tokens.filter(function(token) {
-        return token.name === 'comment';
-    });
+    comments = tokens.filter(
+                    function(token) {
+                        return token.name === 'comment';
+                    });
 
     if (TP.notEmpty(comments)) {
         TP.warn('Comment(s) in parameter list for ' + this.getName());
     }
 
-    tokens = tokens.filter(function(token) {
-        return token.name === 'identifier';
-    });
+    tokens = tokens.filter(
+                    function(token) {
+                        return token.name === 'identifier';
+                    });
 
-    return tokens.map(function(token) {
-        return token.value;
-    });
+    return tokens.map(
+                function(token) {
+                    return token.value;
+                });
 });
 
 //  ------------------------------------------------------------------------
@@ -1271,64 +1284,18 @@ function() {
 
     text = this.toString();
     tokens = TP.$tokenize(text);
-    tokens = tokens.filter(function(token) {
-        return token.name !== 'comment';
-    });
+    tokens = tokens.filter(
+                    function(token) {
+                        return token.name !== 'comment';
+                    });
 
-    text = tokens.reduce(function(previous, current) {
-        return previous + current.value;
-    }, '');
+    text = tokens.reduce(
+                    function(previous, current) {
+                        return previous + current.value;
+                    },
+                    '');
 
     return text;
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('postMethodPatch',
-function(methodText, onsuccess, onfailure) {
-    var patch,
-        url,
-        target,
-        req;
-
-    patch = this.getMethodPatch(methodText);
-    if (TP.isEmpty(patch)) {
-        return;
-    }
-
-    url = TP.uc(TP.sys.cfg('tds.patch.uri'));
-    if (TP.notValid(url)) {
-        TP.error('Unable to create URL for patch server.');
-        return;
-    }
-
-    target = TP.objectGetSourcePath(this);
-    if (TP.isEmpty(target)) {
-        TP.error('Unable to locate source path for function.');
-        return;
-    }
-
-    req = TP.sig.HTTPRequest.construct(
-        TP.hc('uri', url,
-                'verb', TP.HTTP_POST,
-                'async', false,
-                'body',
-                    TP.hc('type', 'patch', 'target', target, 'content', patch),
-                'mimetype', TP.JSON_ENCODED));
-
-    req.defineMethod('handleRequestSucceeded', function() {
-        if (onsuccess) {
-            onsuccess(req);
-        }
-    });
-
-    req.defineMethod('handleRequestFailed', function() {
-        if (onfailure) {
-            onfailure(req);
-        }
-    });
-
-    return req.fire();
 });
 
 //  ------------------------------------------------------------------------
@@ -5128,7 +5095,15 @@ function(aFilterName, aLevel) {
         return 'function() {}';
     }
 
-    src = this.asString();
+    if (TP.sys.cfg('tibet.func_src_leading_space') === true) {
+        src = this.asString();
+    } else {
+        //  NB: We're only interested in the first occurrence of the 'function'
+        //  keyword here - it's the only one that's reconstructed from the
+        //  system - the rest of the Function source is brought in as-is on all
+        //  platforms we care about.
+        src = this.asString().replace('function (', 'function(');
+    }
 
     str = TP.ac();
 
