@@ -1092,10 +1092,12 @@ function(methodText) {
         return;
     }
 
+    //  Get the original source text. Note here how we do this asynchronously
+    //  and we set 'refresh' to true, thereby forcing the browser to go back to
+    //  the server for the latest version of the file. This is so that we can
+    //  compute the diff against the latest version that is real.
     url = TP.uc(path);
-    content = url.getContent(); // .then(function(resolve, reject) {
-        // Yay promises!!!....almost...TODO
-    // });
+    content = url.getContent(TP.hc('async', false, 'refresh', true));
 
     if (TP.isEmpty(content)) {
         TP.ifWarn() ?
