@@ -1299,55 +1299,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('postMethodPatch',
-function(methodText, onsuccess, onfailure) {
-    var patch,
-        url,
-        target,
-        req;
-
-    patch = this.getMethodPatch(methodText);
-    if (TP.isEmpty(patch)) {
-        return;
-    }
-
-    url = TP.uc(TP.sys.cfg('tds.patch.uri'));
-    if (TP.notValid(url)) {
-        TP.error('Unable to create URL for patch server.');
-        return;
-    }
-
-    target = TP.objectGetSourcePath(this);
-    if (TP.isEmpty(target)) {
-        TP.error('Unable to locate source path for function.');
-        return;
-    }
-
-    req = TP.sig.HTTPRequest.construct(
-        TP.hc('uri', url,
-                'verb', TP.HTTP_POST,
-                'async', false,
-                'body',
-                    TP.hc('type', 'patch', 'target', target, 'content', patch),
-                'mimetype', TP.JSON_ENCODED));
-
-    req.defineMethod('handleRequestSucceeded', function() {
-        if (onsuccess) {
-            onsuccess(req);
-        }
-    });
-
-    req.defineMethod('handleRequestFailed', function() {
-        if (onfailure) {
-            onfailure(req);
-        }
-    });
-
-    return req.fire();
-});
-
-//  ------------------------------------------------------------------------
 //  TYPE MEMBERSHIP
 //  ------------------------------------------------------------------------
 
