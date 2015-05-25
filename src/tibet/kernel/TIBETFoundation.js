@@ -5144,7 +5144,15 @@ function(aFilterName, aLevel) {
         return 'function() {}';
     }
 
-    src = this.asString();
+    if (TP.sys.cfg('tibet.func_src_leading_space') === true) {
+        src = this.asString();
+    } else {
+        //  NB: We're only interested in the first occurrence of the 'function'
+        //  keyword here - it's the only one that's reconstructed from the
+        //  system - the rest of the Function source is brought in as-is on all
+        //  platforms we care about.
+        src = this.asString().replace('function (', 'function(');
+    }
 
     str = TP.ac();
 

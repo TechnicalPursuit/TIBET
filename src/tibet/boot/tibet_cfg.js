@@ -1452,6 +1452,11 @@
     // Ensure we use the tibetdir approach to computing root paths.
     TP.sys.setcfg('boot.rootcomp', 'tibetdir');
 
+    //  should TIBET render the 'source' representation of a Function/Method
+    //  with a space between the word 'function' and the leading '(' (i.e.
+    //  'function ('. The default is false (i.e. 'function(').
+    TP.sys.setcfg('tibet.func_src_leading_space', false);
+
     //  ---
     //  tibet internal
     //  ---
