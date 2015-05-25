@@ -1050,7 +1050,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('getMethodPatch',
-function(methodText) {
+function(newMethodText) {
 
     /**
      * @method getMethodPatch
@@ -1058,7 +1058,7 @@ function(methodText) {
      *     receiver's source file. The JsDiff package must be loaded for this
      *     operation to work. The JsDiff package is typically loaded by the
      *     Sherpa config.
-     * @param {String} methodText The new method text.
+     * @param {String} newMethodText The new method text.
      * @returns {String} A string representing patch file content.
      */
 
@@ -1073,7 +1073,7 @@ function(methodText) {
 
     //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
-        return this.$realFunc.getMethodPatch(methodText);
+        return this.$realFunc.getMethodPatch(newMethodText);
     }
 
     if (TP.notValid(TP.extern.JsDiff)) {
@@ -1124,7 +1124,7 @@ function(methodText) {
     }
 
     newtext = content.slice(0, match.index) +
-                methodText +
+                newMethodText +
                 content.slice(match.index + match.at(0).length);
 
     //  NOTE we use the original srcPath string here to retain relative address.
