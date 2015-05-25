@@ -1076,7 +1076,7 @@ function(methodText) {
         return this.$realFunc.getMethodPatch(methodText);
     }
 
-    if (TP.notValid(self.JsDiff)) {
+    if (TP.notValid(TP.extern.JsDiff)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. JsDiff not loaded.',
                     TP.LOG) : 0;
