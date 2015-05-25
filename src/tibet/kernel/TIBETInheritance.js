@@ -10164,47 +10164,126 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.FunctionProto.defineMethod('replaceWith',
-function(aFunction) {
+function(aFunction, copySourceInfo) {
 
     /**
      * @method replaceWith
-     * @summary Replaces the receiver with an alternate function.
+     * @summary Replaces the receiver with an alternate method function.
      * @description This method provides an easy way to reinstall a function
      *     in the proper context, particularly when you don't know the original
      *     context. In other words, you can ask a function to
      *     'replaceWith(aReplacement)' and the proper 'defineMethod' call will
      *     be constructed for you and executed.
      * @param {Function} aFunction The replacement Function.
-     * @returns {Function} The new Function.
+     * @param {Boolean} copySourceInfo Whether or not to copy 'source'
+     *     information such as the load node and source path. The default is
+     *     true.
+     * @returns {Function} The new method.
      */
 
-    var owner,
-        track;
+    var track,
+        owner,
+
+        newMethod;
 
     if (TP.notValid(aFunction)) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    if (TP.isType(this)) {
+    if (!TP.isMethod(this)) {
         return this.raise('TP.sig.InvalidOperation',
-                                                'Cannot replace types');
+                            'Cannot replace non-methods');
     }
 
-    owner = this[TP.OWNER];
+    //  In case this Function is bound
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.replaceWith(aFunction, copySourceInfo);
+    }
+
     track = this[TP.TRACK];
 
-    if (TP.isValid(owner) && TP.isValid(track)) {
+    //  If the track is not either 'Type' or 'Inst', then we just use the owner.
+    if (track === TP.GLOBAL_TRACK ||
+        track === TP.PRIMITIVE_TRACK ||
+        track === TP.META_TYPE_TRACK ||
+        track === TP.META_INST_TRACK ||
+        track === TP.TYPE_LOCAL_TRACK ||
+        track === TP.LOCAL_TRACK) {
 
-        try {
-            owner.defineMethod(this.getName(), aFunction);
-        } catch (e) {
-            return this.raise(
-                'TP.sig.InvalidFunction',
-                TP.ec(e, TP.id(owner) + '.defineMethod(func); failed.'));
-        }
+        owner = this[TP.OWNER];
+    } else {
+        //  Otherwise, we qualify the owner with the 'Type' or 'Inst' prototype
+        //  object.
+        owner = this[TP.OWNER][this[TP.TRACK]];
     }
 
-    return this;
+    //  Redefine the method.
+    try {
+        newMethod = owner.defineMethod(this.getName(), aFunction);
+    } catch (e) {
+        return this.raise(
+            'TP.sig.InvalidFunction',
+            TP.ec(e, TP.id(owner) + '.defineMethod(func); failed.'));
+    }
+
+    //  If the caller hasn't supplied false to the copySourceInfo parameter
+    //  copy over the 'path information' slots about this method
+    if (TP.notFalse(copySourceInfo)) {
+        newMethod[TP.LOAD_NODE] = this[TP.LOAD_NODE];
+        newMethod[TP.SOURCE_PATH] = this[TP.SOURCE_PATH];
+    }
+
+    //  Return the new method object here - the caller already has a handle to
+    //  this object, so this will give them both.
+    return newMethod;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.FunctionProto.defineMethod('replaceWithSourceText',
+function(newSourceText, copySourceInfo) {
+
+    /**
+     * @method replaceWithSourceText
+     * @summary Replaces the receiver with an alternate method function.
+     * @param {String} newSourceText The new method text.
+     * @param {Boolean} copySourceInfo Whether or not to copy 'source'
+     *     information such as the load node and source path. The default is
+     *     true.
+     * @returns {Function} The new method.
+     */
+
+    var srcTextStart,
+        srcTextEnd,
+        srcText,
+
+        $$newinst;
+
+    if (!TP.isString(newSourceText)) {
+        //  TODO: Exception
+        return null;
+    }
+
+    //  In case this Function is bound
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.replaceWithSourceText(newSourceText,
+                                                    copySourceInfo);
+    }
+
+    //  Note that the source text might have been supplied with a 'method head'
+    //  (i.e. 'Foo.Inst.defineMethod') and 'method tail' (');'). We want to
+    //  slice these off to just have the 'function() {...}' body.
+    srcTextStart = newSourceText.indexOf('function');
+    srcTextEnd = newSourceText.lastIndexOf('}') + 1;
+    srcText = newSourceText.slice(srcTextStart, srcTextEnd);
+
+    /* eslint-disable no-eval */
+    eval('$$newinst = ' + srcText);
+    /* eslint-enable no-eval */
+
+    //  Call the machinery defined above to replace the method and return the
+    //  newly defined replacement.
+    return this.replaceWith($$newinst, copySourceInfo);
 });
 
 //  ------------------------------------------------------------------------
