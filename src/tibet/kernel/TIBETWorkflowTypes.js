@@ -6389,7 +6389,7 @@ function(aDocument) {
 
     loc = TP.uriCompose(locParts);
 
-    return TP.sys.getHistory().pushLocation(loc);
+    return TP.sys.getHistory().pushLocation(loc, true);
 });
 
 //  ------------------------------------------------------------------------
@@ -6753,7 +6753,7 @@ function(anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('pushLocation',
-function(aURL) {
+function(aURL, fromDoc) {
 
     /**
      * @method pushLocation
@@ -6763,6 +6763,8 @@ function(aURL) {
      *     so the actual home page location is not pushed, but instead the
      *     project's launch URL is pushed in keeping with the idea of "/".
      * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
+     *     coming from a loaded document handler.
      */
 
     var url,
@@ -6817,19 +6819,21 @@ function(aURL) {
     url = TP.uriCompose(urlParts);
 
     //  Dampening happens in pushState so we can just pass value through.
-    return this.pushState({}, '', url);
+    return this.pushState({}, '', url, fromDoc);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('pushState',
-function(stateObj, title, aURL) {
+function(stateObj, title, aURL, fromDoc) {
 
     /**
      * @method pushState
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
      * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
+     *     coming from a loaded document handler.
      * @returns {TP.core.History} The receiver.
      */
 
@@ -6883,6 +6887,10 @@ function(stateObj, title, aURL) {
                 ', \'' + entry.at(1) + '\', \'' + url + '\')');
         result = this.getNativeWindow().history.pushState(
             state, title || '', url);
+
+        if (TP.isTrue(fromDoc)) {
+            return;
+        }
 
         router = TP.sys.getRouter();
         if (TP.canInvoke(router, 'route')) {
