@@ -100,7 +100,7 @@ TP.definePrimitive('uriBasePath', function(aURI) {
         path = path.slice(0, -1);
     }
 
-    return path.charAt(0) === '/' ? path : '/' + path;
+    return path;
 });
 
 //  ------------------------------------------------------------------------
@@ -251,18 +251,12 @@ TP.definePrimitive('uriCompose', function(parts) {
         return;
     }
 
+    //  This should be scheme etc. as in http(s):// or file://
     url = root;
 
-    //  Root and base path join via '/' as needed. The standard join routines
-    //  won't do this because they focus on absolute paths distinct from the
-    //  root host:port portions.
-    if (/\/$/.test(url)) {
-        url = url.slice(0, -1);
-    }
-
-    if (basePath !== '/' && TP.notEmpty(basePath)) {
-        //  Force '/' here since we will have stripped any trailing / earlier.
-        url += basePath.charAt(0) === '/' ? basePath : '/' + basePath;
+    //  If this has any value at all it should be placed right behind root.
+    if (TP.notEmpty(basePath)) {
+        url += basePath;
     }
 
     if (TP.notEmpty(baseParams)) {

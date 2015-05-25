@@ -9253,7 +9253,7 @@ function(aURI, aDirection) {
     //  and or launch with the home page. Those aren't considered "different".
     if (lastParts) {
         home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
-        if (lastParts.at('basePath') === '/') {
+        if (TP.isEmpty(lastParts.at('basePath'))) {
             lastParts.atPut('basePath', TP.uriBasePath(home));
         }
     }
