@@ -6408,7 +6408,6 @@ function(anIndex) {
      */
 
     var win,
-        history,
         index,
         state,
         entry,
@@ -6417,7 +6416,6 @@ function(anIndex) {
 
     //  Capture startup history information.
     win = this.getNativeWindow();
-    history = win.history;
     title = win.title || '';
     url = win.location.toString();
 
@@ -7056,7 +7054,6 @@ function(anEvent) {
 
     var last,
         next,
-        current,
         native,
         history,
         index,
@@ -7113,7 +7110,6 @@ function(anEvent) {
 
     last = this.getLastLocation();
     next = this.getNextLocation();
-    current = this.getLocation();
     native = this.getNativeLocation();
 
     if (native === last) {
