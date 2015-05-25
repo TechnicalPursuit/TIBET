@@ -37,8 +37,7 @@ function() {
         initialScreenHeight,
 
         allIFrames,
-
-        screen0Loc,
+        homeURL,
 
         defaultURL,
         loadRequest;
@@ -55,16 +54,26 @@ function() {
 
     allIFrames = TP.byCSS('sherpa|screen > iframe', this.getNativeWindow());
 
-    screen0Loc = TP.ifEmpty(
-                        TP.sys.cfg('path.sherpa.screen_0'),
-                        TP.sys.cfg('project.homepage'));
+    //  Check for startup home page override if possible.
+    if (top.sessionStorage) {
+        homeURL = top.sessionStorage.getItem('TIBET.project.homepage');
+        if (TP.notEmpty(homeURL)) {
+            top.sessionStorage.removeItem('TIBET.project.homepage');
+        }
+    }
+
+    //  Work through list of possible page urls to use for screen 0.
+    homeURL = homeURL ||
+        TP.sys.cfg('project.homepage') ||
+        TP.sys.cfg('path.sherpa.screen_0') ||
+        TP.sys.cfg('path.blank_page');
 
     //  If a specific URL isn't specified for 'path.sherpa.screen_0', then load
     //  the project root page into screen_0 and put some markup in there that
     //  will render the core app tag content.
-    if (TP.notEmpty(screen0Loc)) {
+    if (TP.notEmpty(homeURL)) {
 
-        defaultURL = TP.uc(screen0Loc);
+        defaultURL = TP.uc(homeURL);
 
         loadRequest = TP.request();
 

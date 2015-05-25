@@ -785,11 +785,11 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                 TP.LOG) : 0;
                     }
                 }
+            }
 
-                //  Execute any loaded function that we were handed.
-                if (TP.isCallable(loadedFunction)) {
-                    loadedFunction(aDocument);
-                }
+            //  Execute any loaded function that we were handed.
+            if (TP.isCallable(loadedFunction)) {
+                loadedFunction(aDocument);
             }
 
             //  clear the flag once we process our load function
@@ -842,6 +842,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             count++;
         } else {
 
+            //  Make sure window listeners etc for content loaded are ready.
+            TP.core.Window.installLoadUnloadHooks(TP.nodeGetWindow(aDocument));
+
             //  There are no more scripts - invoke the Function that signals
             //  that all content has been loaded.
             allContentLoadedFunc();
@@ -850,12 +853,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     //  Invoke the function once manually to 'kick start' everything.
     loadFunc();
-
-    //  If we didn't process at least one script element with a 'src', then
-    //  manually invoke the 'all content is loaded' function.
-    if (count === 0) {
-        allContentLoadedFunc();
-    }
 
     //  Return the document's documentElement, which should be the new
     //  element.

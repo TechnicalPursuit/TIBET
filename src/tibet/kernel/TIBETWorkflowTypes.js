@@ -6095,166 +6095,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleBootConfigChange',
-function(aSignal) {
-
-    /**
-     * @method handleBootConfigChange
-     * @summary Responds to notification that the boot parameters were changed,
-     *     implying a restart with the new configuration is desired.
-     * @param {TP.sig.Signal} aSignal The triggering signal.
-     */
-
-    //  The change implies the current location bar value is the one we want so
-    //  just ask for a reload.
-    top.location.reload();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('handleDocumentLoaded',
-function(aSignal) {
-
-    /**
-     */
-
-    //  If the system hasn't started we don't want to process anything.
-    if (!TP.sys.hasStarted()) {
-        return;
-    }
-
-    //  Use the document location to update the system's idea of the current
-    //  route. This keeps us up to date with changes to the main UICANVAS etc
-    //  which might occur via link traversal or other means.
-    /* eslint-disable no-wrap-func,no-extra-parens */
-    (function() {
-        var route;
-
-        //  We need a signal to get a document location.
-        if (TP.notValid(aSignal)) {
-            return;
-        }
-
-        route = TP.documentGetRouteName(
-            TP.sys.getWindowById(aSignal.getOrigin()).document);
-
-        TP.sys.getRouter().setRoute(route);
-    }).afterUnwind();
-    /* eslint-enable no-wrap-func,no-extra-parens */
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('handleLocationChange',
-function(aSignal) {
-
-    /**
-     * @method handleLocationChange
-     * @summary A handler that is called when the user has changed the location
-     *     and changed history in some way, either by using the forward or
-     *     backward controls in the browser or by attempting to load a bookmark.
-     * @param {TP.sig.LocationChange} aSignal The signal that caused this
-     *     handler to trip.
-     * @returns {TP.core.Application} The receiver.
-     */
-
-    var router;
-
-    router = this.getRouter();
-    if (TP.canInvoke(router, 'route')) {
-        router.route(this.getHistory().getNativeLocation(), aSignal);
-    }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('handleRouteChange',
-function(aSignal) {
-
-    /**
-     * @method handleRouteChange
-     * @summary Default handler for a change to the URL path component.
-     * @param {TP.sig.RouteChange} aSignal The signal whose name indicates
-     *     the route name and whose payload contains any URL parameters.
-     */
-
-    var route,
-        val,
-        type,
-        url;
-
-    val = aSignal.at('route');
-
-    //  See if the value is a route configuration key.
-    route = TP.sys.cfg('route.' + val);
-    if (TP.isEmpty(route)) {
-        route = val;
-    }
-
-    //  See if the value is a tag type for injection.
-    type = TP.sys.getTypeByName(route);
-    if (TP.isType(type)) {
-        TP.info('setting content to: ' + TP.str(type));
-        // BILL: make this work :)
-        //TP.sys.getUICanvas().setContentFromTagType(type);
-        return;
-    }
-
-    //  See if the value looks like a URL for set location.
-    url = TP.uc(route);
-    if (TP.isURI(url)) {
-        TP.info('setting location to: ' + TP.str(url));
-        TP.sys.getUICanvas().setLocation(url);
-        return;
-    }
-
-    //  No default other than tag or url content update.
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('handleRouteHome',
-function(aSignal) {
-
-    /**
-     * @method handleRouteHome
-     * @summary Default handler for routing requests targeting the home or "/"
-     *     path. This method is typically triggered when the index.html file has
-     *     been forced into UIROOT via a link.
-     * @param {TP.sig.RouteChange} aSignal The triggering signal, which is
-     *     usually a RouteChange set to have 'RouteHome' as a signal name.
-     */
-
-    var win,
-        url;
-
-    //  We'll be setting the location of the UICANVAS so we'll need that.
-    win = TP.sys.getUICanvas();
-    url = TP.uc(TP.sys.cfg('project.homepage'));
-
-    //  Don't bother if the URL won't be changing. We need to use a TIBET call
-    //  here since the location will normally be fixed due to setContent.
-    if (win.getLocation() === url.getLocation()) {
-        return;
-    }
-
-    //  If you do this when running phantomjs tests etc. bad things happen.
-    if (TP.sys.cfg('boot.context') !== 'phantomjs' &&
-        TP.sys.cfg('test.running') !== true) {
-        win.setLocation(url);
-    }
-
-    //  Don't let the signal continue since we've handled it.
-    aSignal.stopPropagation();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Application.Inst.defineMethod('isResponderFor',
 function(aSignal, isCapturing) {
 
@@ -6392,9 +6232,9 @@ function(aSignal) {
             }
         }
 
-        //  Signal that we are starting. This provides a hook point for extensions
-        //  etc. to tap into the startup sequence before routing or other behaviors
-        //  but after we're sure the UI has been finalized.
+        //  Signal that we are starting. This provides a hook point for
+        //  extensions etc. to tap into the startup sequence before routing or
+        //  other behaviors but after we're sure the UI has been finalized.
         this.signal('TP.sig.AppStart');
 
         //  If we're asked to trigger routing on startup do that to properly set
@@ -6428,9 +6268,9 @@ function(aSignal) {
  * @type {TP.core.History}
  * @summary This type provides an interface to the window history for use
  *     in managing history-related events and activities. Its most important
- *     role is in handling low-level onhashchange and onpopstate events and
- *     triggering the application URI routing machinery as well as tracking any
- *     back/forward button operations.
+ *     role is in handling low-level onpopstate events and triggering the
+ *     application URI routing machinery as well as tracking any back/forward
+ *     button operations.
  */
 
 //  ------------------------------------------------------------------------
@@ -6444,6 +6284,10 @@ TP.lang.Object.defineSubtype('core.History');
 //  tracks the last direction of history traversal recorded.
 TP.core.History.Type.defineAttribute('direction', null);
 
+//  the last URI in place prior to any action by the history object. this value
+//  is used for comparison during route() calls in the URIRouter.
+TP.core.History.Type.defineAttribute('lastURI', null);
+
 //  a list of the locations which this object has traversed.
 TP.core.History.Type.defineAttribute('history');
 
@@ -6454,6 +6298,10 @@ TP.core.History.Type.defineAttribute('index', 0);
 //  an index offset used to help track direction of any operation in progress.
 //  Should be null when computation of an offset can't be done properly.
 TP.core.History.Type.defineAttribute('offset', null);
+
+//  a flag to turn off onpopstate handing during operations which incorrectly
+//  fire it on Chrome et. al.
+TP.core.History.Type.defineAttribute('popstate', true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -6467,11 +6315,6 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    //  Install a hashchange handler to catch changes due to hash changes.
-    top.addEventListener('hashchange', function(evt) {
-        this.onhashchange(evt);
-    }.bind(this), false);
-
     //  Install a popstate handler to catch changes due to history API.
     top.addEventListener('popstate', function(evt) {
         this.onpopstate(evt);
@@ -6479,6 +6322,8 @@ function() {
 
     //  Create a history list the size of the current native list.
     this.$set('history', TP.ac());
+
+    //  Capture initial history location as our starting point.
     this.captureHistory();
 
     return;
@@ -6494,11 +6339,57 @@ function() {
      * @summary Causes the receiver to go back a page in browser history.
      */
 
-    this.set('offset', -1);
+    this.set('direction', 'back', false);
+    this.set('lastURI', this.getLocation(), false);
 
     this.getNativeWindow().history.back();
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('captureDocumentLocation',
+function(aDocument) {
+
+    /**
+     * @method captureDocumentLocation
+     * @summary Captures history information from the document provided. This is
+     *     typically called in response to document changes in the UICANVAS to
+     *     ensure the top-level history reflects the content page.
+     * @param {DocumentNode} aDocument The native document to capture from.
+     * @returns {Array[Object, String, String]} The history entry with state
+     *     object, title, and url.
+     */
+
+    var loc,
+        locParts,
+        url,
+        urlParts;
+
+    if (!TP.isDocument(aDocument)) {
+        this.raise('InvalidDocument');
+        return;
+    }
+
+    loc = TP.documentGetLocation(aDocument);
+    if (TP.isEmpty(loc)) {
+        return;
+    }
+
+    //  The pushLocation call can handle parameters but it won't get the route
+    //  rebuilt from "last" properly so we do that here.
+    url = TP.sys.getHistory().getLocation();
+    urlParts = TP.uriDecompose(url);
+
+    locParts = TP.uriDecompose(loc);
+    if (locParts.at('fragmentPath') === '/') {
+        locParts.atPut('fragmentPath', urlParts.at('fragmentPath'));
+    }
+
+    loc = TP.uriCompose(locParts);
+
+    return TP.sys.getHistory().pushLocation(loc);
 });
 
 //  ------------------------------------------------------------------------
@@ -6510,7 +6401,7 @@ function(anIndex) {
      * @method captureHistory
      * @summary Captures the current state, title, and url data for the browser
      *     at the moment of invocation. Used internally to capture state when
-     *     a history event occurs.
+     *     a history event occurs which affects the top URL bar value.
      * @param {Number} [anIndex] The index to update. Default is current index.
      * @returns {Array[Object, String, String]} The history entry with state
      *     object, title, and url.
@@ -6527,16 +6418,22 @@ function(anIndex) {
     //  Capture startup history information.
     win = this.getNativeWindow();
     history = win.history;
-    state = history.state || {};
     title = win.title || '';
     url = win.location.toString();
 
     index = TP.ifInvalid(anIndex, this.get('index'));
+    state = {};
+    state.index = index;
+
     entry = TP.ac(state, title, url);
 
     //  Save the entry as our current entry for current index. This should
     //  update our history list as we traverse back/forth.
     this.get('history').atPut(index, entry);
+
+    if (TP.sys.cfg('log.history')) {
+        this.reportLocation();
+    }
 
     return entry;
 });
@@ -6551,7 +6448,8 @@ function() {
      * @summary Causes the receiver to go forward a page in browser history.
      */
 
-    this.set('offset', 1);
+    this.set('direction', 'forward', false);
+    this.set('lastURI', this.getLocation(), false);
 
     this.getNativeWindow().history.forward();
 
@@ -6648,14 +6546,14 @@ function(aLocation) {
      * @returns {String} The location at the current history index.
      */
 
-    var location,
+    var loc,
         list;
 
-    location = TP.str(aLocation) || this.getNativeLocation();
+    loc = TP.str(aLocation) || this.getNativeLocation();
     list = TP.ac();
 
     this.get('history').forEach(function(entry, index) {
-        if (entry.at(2) === location) {
+        if (entry.at(2) === loc) {
             list.push(index);
         }
     });
@@ -6783,52 +6681,31 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('go',
-function(anIndex) {
+function(anOffset) {
 
     /**
      * @method go
      * @summary Causes the receiver to go to a specific offset from the current
      *     location in window history.
-     * @param {Number} anIndex A positive or negative number of pages to go in
+     * @param {Number} anOffset A positive or negative number of pages to go in
      *     the browser history.
      */
 
-    if (!TP.isNumber(anIndex)) {
-        return this.raise('InvalidParameter', anIndex);
+    if (!TP.isNumber(anOffset)) {
+        return this.raise('InvalidParameter', anOffset);
     }
 
-    this.set('offset', anIndex);
+    //  no-op
+    if (anOffset === 0) {
+        return;
+    }
 
-    this.getNativeWindow().history.go(anIndex);
+    this.set('direction', anOffset < 0 ? 'back' : 'forward', false);
+    this.set('lastURI', this.getLocation(), false);
+
+    this.getNativeWindow().history.go(anOffset);
 
     return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.History.Type.defineMethod('onhashchange',
-function(anEvent) {
-
-    /**
-     * @method onhashchange
-     * @summary A native browser-level event handler that is called when the
-     *     user has changed the top-level window hash in some fashion. For
-     *     TIBET, this usually means they've navigated with the forward or back
-     *     buttons, used a bookmark or double-clicked on a file from the file
-     *     system.
-     * @param {Event} anEvent The native event that caused this handler to trip.
-     * @returns {TP.core.History} The receiver.
-     */
-
-    if (TP.sys.cfg('uri.routing.trigger') !== 'hashchange') {
-        return this;
-    }
-
-    this.updateIndex(anEvent);
-
-    this.signal('TP.sig.LocationChange', this.getNativeLocation());
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6838,20 +6715,39 @@ function(anEvent) {
 
     /**
      * @method onpopstate
-     * @summary A native browser-level event handler that is called when the
-     *     user has changed the top-level window URL through back(), forward(),
-     *     or go() calls.
+     * @summary A native browser-level event handler invoked when the user
+     *     has changed the window URL through use of the back or forward buttons
+     *     or the developer used back(), forward(), go(), or 'location' slot.
      * @param {Event} anEvent The native event that caused this handler to trip.
      * @returns {TP.core.History} The receiver.
      */
 
-    if (TP.sys.cfg('uri.routing.trigger') !== 'popstate') {
+    var router;
+
+    //  We use a flag to turn off handling on Chrome in particular since it has
+    //  a habit of signaling this for a number of incorrect cases.
+    if (TP.isFalse(this.get('popstate'))) {
+        return;
+    }
+
+    //  Just because we got this event doesn't mean location actually changed.
+    //  At least one browser will trigger these even if you set the window
+    //  location to the same value it currently holds so we have to verify a
+    //  true change to avoid extra overhead/duplicate work.
+    if (anEvent.target.location.toString() ===
+            TP.sys.getHistory().getLocation()) {
         return this;
     }
 
+    //  The popstate event can come from a number of sources so we need to
+    //  ensure we get the right index adjustments in our internal history.
     this.updateIndex(anEvent);
 
-    this.signal('TP.sig.LocationChange', this.getNativeLocation());
+    //  Trigger the router.
+    router = TP.sys.getRouter();
+    if (TP.canInvoke(router, 'route')) {
+        router.route(anEvent.target.location.toString());
+    }
 
     return this;
 });
@@ -6864,12 +6760,66 @@ function(aURL) {
     /**
      * @method pushLocation
      * @summary Pushes a new URL onto the history stack using the native
-     *     pushState operation while keeping a local version of the stack.
+     *     pushState operation while keeping a local version of the stack. Note
+     *     that URI values which refer to the project home page are translated
+     *     so the actual home page location is not pushed, but instead the
+     *     project's launch URL is pushed in keeping with the idea of "/".
      * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
-     * @returns {TP.core.History} The receiver.
      */
 
-    return this.pushState({}, '', aURL);
+    var url,
+        urlParts,
+        home,
+        launch,
+        launchParts;
+
+    if (TP.notValid(aURL)) {
+        TP.raise(this, 'TP.sig.InvalidURI');
+        return;
+    }
+
+    //  For our expansion testing and history tracking we want a fully-expanded
+    //  and normalized version of the URL here.
+    url = TP.str(aURL);
+    url = TP.uriExpandPath(url);
+    url = decodeURIComponent(url);
+
+    if (!TP.isURI(url)) {
+        TP.raise(this, 'TP.sig.InvalidURI');
+        return;
+    }
+
+    //  We need launch parameters to be mapped in all cases to avoid changes to
+    //  the boot parameters which would otherwise trigger a relaunch.
+    launch = TP.sys.getLaunchURL();
+    launchParts = TP.uriDecompose(launch);
+
+    //  Convert urls pointing to the home page into their "normalized" form.
+    home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+    if (TP.uriHead(url) === TP.uriHead(home)) {
+        urlParts = TP.uriDecompose(url);
+        urlParts.atPut('basePath', launchParts.at('basePath'));
+        urlParts.atPut('baseParams', launchParts.at('baseParams'));
+    }
+
+    //  Make sure we can deal with URL parts below.
+    urlParts = TP.ifInvalid(urlParts, TP.uriDecompose(url));
+
+    //  For both path and parameters migrate any from the launch URL as long as
+    //  we don't overlay anything specific from the inbound URL. NOTE that the
+    //  fragmentPath is never "empty", it's "/" when there's no path/route data.
+    if (urlParts.at('fragmentPath') === '/') {
+        urlParts.atPut('fragmentPath', launchParts.at('fragmentPath'));
+    }
+
+    if (TP.isEmpty(urlParts.at('fragmentParams'))) {
+        urlParts.atPut('fragmentParams', launchParts.at('fragmentParams'));
+    }
+
+    url = TP.uriCompose(urlParts);
+
+    //  Dampening happens in pushState so we can just pass value through.
+    return this.pushState({}, '', url);
 });
 
 //  ------------------------------------------------------------------------
@@ -6886,34 +6836,62 @@ function(stateObj, title, aURL) {
      */
 
     var url,
+        state,
         current,
-        result,
         entry,
         index,
+        router,
+        result,
         history;
 
-    url = TP.str(aURL);
+    if (!TP.isURI(aURL)) {
+        TP.raise(this, 'TP.sig.InvalidURI');
+        return;
+    }
 
-    //  Capture this before the replace so we have something to compare.
+    url = TP.str(aURL);
     current = this.getLocation();
 
-    //  TODO: do we want to do some simulation of this if not implemented?
-    result = this.getNativeWindow().history.pushState(stateObj, title, url);
+    //  Dampen changes that aren't really changes.
+    if (current === url) {
+        return;
+    }
 
-    url = this.getNativeLocation();
-    entry = TP.ac(stateObj || {}, title || '', url);
+    this.set('direction', 'forward', false);
+    this.set('lastURI', current, false);
 
-    //  NOTE that pushState truncates the history behind the push, effectively
-    //  trimming history to the current location.
+    //  Update our internal history, and track the index in the state object so
+    //  we can update when we get notifications.
     history = this.get('history');
     index = this.get('index');
-    history.length = index + 1;
-    history.push(entry);
-    this.set('index', this.get('index') + 1);
 
-    //  If the url changed our API should trigger a routing event.
-    if (url !== current && TP.sys.hasStarted()) {
-        this.signal('TP.sig.LocationChange', url);
+    //  Truncate the list to current location. This seems consistent with
+    //  browser behavior where if you use back() or go(-n) to back up in the
+    //  list and then set location='url' you can't go forward, the list ends.
+    history.length = index + 1;
+
+    state = stateObj || {};
+    state.index = index + 1;
+
+    entry = TP.ac(state, title || '', url);
+    history.push(entry);
+
+    this.set('index', index + 1);
+
+    //  work around bug(s) on chrome et. al. which fire popstate on pushState
+    try {
+        this.set('popstate', false);
+        TP.info('pushState(' + JSON.stringify(state) +
+                ', \'' + entry.at(1) + '\', \'' + url + '\')');
+        result = this.getNativeWindow().history.pushState(
+            state, title || '', url);
+
+        router = TP.sys.getRouter();
+        if (TP.canInvoke(router, 'route')) {
+            router.route(url, 'forward');
+        }
+    } finally {
+        this.set('popstate', true);
     }
 
     if (TP.sys.cfg('log.history')) {
@@ -6953,26 +6931,51 @@ function(stateObj, title, aURL) {
      */
 
     var url,
+        state,
+        index,
         current,
-        history,
-        result;
+        result,
+        entry,
+        router,
+        history;
 
     url = TP.str(aURL);
+    url = decodeURIComponent(url);
 
     //  Capture this before the replace so we have something to compare.
     current = this.getLocation();
 
-    //  TODO: do we want to do some simulation of this if not implemented?
-    result = this.getNativeWindow().history.replaceState(stateObj, title, url);
+    //  Dampen changes that aren't really changes.
+    if (current === url) {
+        return;
+    }
 
-    url = this.getNativeLocation();
+    this.set('direction', 'replace', false);
+    this.set('lastURI', current, false);
 
     history = this.get('history');
-    history[this.get('index')] = TP.ac(stateObj || {}, title || '', url);
+    index = this.get('index');
 
-    //  If the url changed our API should trigger a routing event.
-    if (url !== current) {
-        this.signal('TP.sig.LocationChange', url);
+    state = stateObj || {};
+    state.index = index;
+
+    entry = TP.ac(state, title || '', url);
+    history.atPut(index, entry);
+
+    //  work around bug(s) on chrome et. al. which fire popstate on pushState
+    try {
+        this.set('popstate', false);
+        TP.info('replaceState(' + JSON.stringify(state) +
+            ', \'' + entry.at(1) + '\', \'' + url + '\')');
+        result = this.getNativeWindow().history.replaceState(
+            state, title || '', url);
+
+        router = TP.sys.getRouter();
+        if (TP.canInvoke(router, 'route')) {
+            router.route(url, 'replace');
+        }
+    } finally {
+        this.set('popstate', true);
     }
 
     if (TP.sys.cfg('log.history')) {
@@ -7044,19 +7047,27 @@ function(anEvent) {
     /**
      * @method updateIndex
      * @summary Updates the current history index by comparing data for the
-     *     current location with known history entries.
-     * @param {Event} anEvent The hashchange or popstate event triggering this
-     *     update request.
+     *     current location with known history entries. The event
+     * @param {PopState} anEvent The history PopState event triggering this
+     *     update request. The index value of this event, if available, will
+     *     identify the new index traversed to.
      * @returns {Number} The new index.
      */
 
     var last,
         next,
         current,
+        native,
         history,
         index,
+        state,
+        stateIndex,
         offset,
-        indexes;
+        indexes,
+        min,
+        max,
+        len,
+        i;
 
     //  Ensure it's for the window we're watching.
     if (!anEvent || anEvent.target !== this.getNativeWindow()) {
@@ -7066,13 +7077,25 @@ function(anEvent) {
     history = this.get('history');
     index = this.get('index');
 
-    //  API calls back(), forward() and go() all set an offset we can use rather
-    //  than trying to guess what we're doing.
+    //  The state in anEvent may include an index...which would be our
+    //  answer. We just need to compute the offset.
+    if (TP.isValid(anEvent)) {
+        state = anEvent.state;
+        if (TP.isValid(state)) {
+            stateIndex = state.index;
+            if (TP.isNumber(stateIndex)) {
+                this.set('offset', stateIndex - index);
+            }
+        }
+    }
+
     offset = this.get('offset');
     if (TP.isValid(offset)) {
 
         if (offset > 0) {
             this.set('direction', 'forward');
+        } else if (offset === 0) {
+            this.set('direction', 'replace');
         } else {
             this.set('direction', 'back');
         }
@@ -7081,57 +7104,77 @@ function(anEvent) {
         this.set('offset', null);
         this.set('index', index + offset);
 
-        this.captureHistory();
-
-        if (TP.sys.cfg('log.history')) {
-            this.reportLocation();
-        }
-
         return this.get('index');
     }
 
-    //  No offset so we need to look for the current location ahead and behind
-    //  and try to make an educated guess.
+    //  Shouldn't be here...all operations should route back through a popstate
+    //  event only after we've been able to pushState or somehow otherwise
+    //  ensured there's always an offset...but hey, it's a browser :)...
 
-    //  Capture the entries ahead and behind for comparison.
     last = this.getLastLocation();
     next = this.getNextLocation();
-    current = this.getNativeLocation();
+    current = this.getLocation();
+    native = this.getNativeLocation();
 
-    if (current === last) {
-        //  Obscure, but just in case...
-        if (current === next) {
-            TP.warn('Ambiguous history change. Defaulting to back().');
+    if (native === last) {
+        if (native !== next) {
+            //  back
+            this.set('direction', 'back');
+            this.set('index', index - 1);
+        } else {
+            //  in-between a cyclic entry...have to pick one. We go back since
+            //  you can always navigate forward by retracing steps, but you
+            //  can't get back if we keep forcing a true back "forward".
+            TP.warn('Ambiguous history event. Defaulting to back.');
+            this.set('direction', 'back');
+            this.set('index', index - 1);
         }
-        this.set('index', index - 1);
-        this.set('direction', 'back');
-    } else if (current === next) {
-        this.set('index', index + 1);
+    } else if (native === next) {
+        //  forward
         this.set('direction', 'forward');
+        this.set('index', index + 1);
     } else {
-        //  Still complicated. Could be new, could be more than 1 index away
-        //  from our current location.
-        indexes = this.getLocationIndexes(current);
+        //  either brand new, or more than one index away...go(n);
+        indexes = this.getLocationIndexes(native);
         if (TP.isEmpty(indexes)) {
             //  Never seen it...must be forward.
-            history.push(TP.ac({}, '', current));
-            this.set('index', index + 1);
+            history.push(TP.ac({index: index + 1}, '', native));
             this.set('direction', 'forward');
+            this.set('index', index + 1);
         } else {
-            //  In the history already. We may have a "go()" without using our
-            //  API or it may simply be a new entry. No way to know.
-            TP.warn('Ambiguous history change. Defaulting to push.');
-            history.push(TP.ac({}, '', current));
-            this.set('index', index + 1);
-            this.set('direction', 'forward');
+            //  If all indexes are > than ours it's got to be a forward jump. If
+            //  they're all < ours it has to be a backward jump.
+            min = indexes.length + 1;
+            max = -1;
+            indexes.forEach(function(ind) {
+                min = Math.min(min, ind);
+                max = Math.max(max, ind);
+            });
+
+            if (min > index) {
+                this.set('direction', 'forward');
+                this.set('index', index + 1);
+            } else if (max < index) {
+                this.set('direction', 'back');
+                this.set('index', index - 1);
+            } else {
+                TP.warn('Ambiguous history event. Defaulting to back.');
+                this.set('direction', 'back');
+
+                //  Have to locate the index closest to us that's prior to the
+                //  current index.
+                len = indexes.length;
+                for (i = 0; i < len; i++) {
+                    if (indexes[i] < index && indexes[i + 1] > index) {
+                        stateIndex = indexes[i];
+                    }
+                }
+                this.set('index', stateIndex);
+            }
         }
     }
 
     this.captureHistory();
-
-    if (TP.sys.cfg('log.history')) {
-        this.reportLocation();
-    }
 
     return this.get('index');
 });

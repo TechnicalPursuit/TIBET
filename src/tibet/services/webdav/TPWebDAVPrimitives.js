@@ -97,7 +97,7 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will get all of the properties for the
      *     resource named 'foo.txt' in the application's directory.
@@ -383,7 +383,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will get the 'creationdate' property for the
      *     resource named 'foo.txt' in the 'wdtst' directory.
@@ -562,7 +562,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will set the 'getlastmodified' property for
      *     the resource named 'foo.txt' in the 'wdtst' directory.
@@ -731,7 +731,7 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes additional
      *     parameters of 'destination' and 'overwrite' which should contain a
      *     URL and a Boolean value respectively.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will copy a directory named 'wdtest' in the
      *     application's directory to a directory named 'wdtest2':
@@ -822,7 +822,7 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes additional
      *     parameters of 'lockscope', 'locktype', 'lockowner' and 'locktimeout'
      *     as described in the method comment.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will lock a file named 'foo.txt' in the 'boo'
      *     directory (note how the 'owner' is supplied as an 'href'):
@@ -909,7 +909,7 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
      *     additional parameters.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will create a directory named 'wdtst' in the
      *     application's directory:
@@ -949,7 +949,7 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes additional
      *     parameters of 'destination' and 'overwrite' which should contain a
      *     URL and a Boolean value respectively.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will move a directory named 'wdtst' in the
      *     application's directory to a directory named 'wdtst2':
@@ -1213,7 +1213,7 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'locktoken' containing the lock token previously
      *     acquired when the resource was locked.
-     * @example Assume that the TDS (TIBET Development Server) is running after
+     * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
      *     on port 8080. This code will unlock a file named 'foo.txt' in the
      *     'boo' directory (note how the 'owner' is supplied as an 'href'):

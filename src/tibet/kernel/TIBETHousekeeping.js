@@ -77,6 +77,7 @@ TP.sys.defineMethod('isObsolete', TP.sys.isObsolete);
 TP.sys.defineMethod('isSupported', TP.sys.isSupported);
 
 TP.sys.defineMethod('getLaunchRoot', TP.sys.getLaunchRoot);
+TP.sys.defineMethod('getLaunchURL', TP.sys.getLaunchURL);
 TP.sys.defineMethod('getHost', TP.sys.getHost);
 TP.sys.defineMethod('getPathname', TP.sys.getPathname);
 TP.sys.defineMethod('getPort', TP.sys.getPort);

@@ -333,9 +333,19 @@ function(aRequest) {
     }
 
     //  Grab the URI that corresponds to the project's homepage. If it's not
-    //  present, use the blank page instead.
-    homeURL = TP.uc(TP.ifEmpty(TP.sys.cfg('project.homepage'),
-                                TP.sys.cfg('path.blank_page')));
+    //  present, use the blank page instead. We check the session storage in
+    //  case the launch started from a bookmarked content page.
+    if (window.sessionStorage) {
+        homeURL = window.sessionStorage.getItem('TIBET.project.homepage');
+        if (TP.notEmpty(homeURL)) {
+            top.sessionStorage.removeItem('TIBET.project.homepage');
+        }
+    }
+
+    homeURL = homeURL ||
+        TP.sys.cfg('project.homepage') ||
+        TP.sys.cfg('path.blank_page');
+    homeURL = TP.uc(homeURL);
 
     request = TP.request();
     request.atPut(TP.ONLOAD,

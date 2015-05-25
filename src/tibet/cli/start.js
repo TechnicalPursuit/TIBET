@@ -5,9 +5,9 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet start' command. Starts any local TIBET development
- *     server which might exist, or simply runs 'npm start' to start any
- *     process associated with npm via the current package.json file.
+ * @overview The 'tibet start' command. Starts any local TIBET Data Server
+ *     which might exist, or simply runs 'npm start' to start any process
+ *     associated with npm via the current package.json file.
  */
 //  ========================================================================
 
@@ -55,7 +55,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Starts the current TIBET project development server, if any.\n\n' +
+'Starts the current TIBET project data server, if any.\n\n' +
 
 'Many TIBET dna templates provide a simple Node.js-based server\n' +
 'based on Connect and/or Express for use during development. If\n' +
@@ -66,8 +66,8 @@ Cmd.prototype.HELP =
 'the default (which is port 1407).\n\n' +
 
 'When a local server.js file is used it can be augmented with code\n' +
-'for TIBET Development Server (TDS) functionality. Use require()\n' +
-'with the path \'tibet/etc/tds/tds-middleware\' to load that module.\n\n' +
+'for TIBET Data Server (TDS) functionality. Use require() with the\n' +
+'path \'tibet/etc/tds/tds-middleware\' to load that module.\n\n' +
 
 'If your server includes TDS features you can optionally add\n' +
 'command-line parameters to provide the various modules of the TDS\n' +

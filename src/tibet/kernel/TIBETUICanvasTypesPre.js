@@ -1474,6 +1474,9 @@ function(aURL, aRequest) {
     //  loading a blank.xhtml file and hooking into the onload (which works if
     //  we're dealing with an iframe).
     if (TP.isXMLDocument(this.getNativeDocument())) {
+        //  NOTE that we strip any fragment here to avoid having the setContent
+        //  call attempt to resolve XPointer content slices etc. We're setting a
+        //  location so the key is the root URL value.
         this.setContent(url, aRequest);
     } else if (TP.isIFrameWindow(win)) {
 

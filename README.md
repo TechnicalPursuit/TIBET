@@ -162,8 +162,8 @@ to clone, initialize, and start your first TIBET application.
     START THE DEMO SERVER
 
     The 'default' template used by clone includes a simple Node.js-based HTTP
-    server we call the TIBET Development Server or TDS. By default the TDS will
-    use port 1407 so assuming that port isn't busy on your system you can start
+    server we call the TIBET Data Server or TDS. By default the TDS will use
+    port 1407 so assuming that port isn't busy on your system you can start
     the server using 'tibet start' without any parameters:
 
         $ tibet start

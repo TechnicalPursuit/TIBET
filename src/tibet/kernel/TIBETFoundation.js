@@ -919,10 +919,10 @@ function() {
     //  Simplistic cleansing of the comment text to make processing content tags
     //  a little easier.
     lines = text.split('\n');
-    lines = lines.map(function(line) {
+    lines = lines.map(function(item) {
         var str;
 
-        str = line.trim();
+        str = item.trim();
 
         // Ignore the opening and closing lines for a doc comment.
         if (str.startsWith('/**') || str.startsWith('*/')) {
@@ -946,7 +946,7 @@ function() {
             // str is already trimmed, just remove any leading '*' etc.
             str = str.replace(/^\*\s*/, '');
         } else {
-            str = line;
+            str = item;
             // Replace any * in the text with a space, preserving any other
             // whitespace on that line.
             str = str.replace(/^(\s*)\*(\s*)/, '$1 $2');

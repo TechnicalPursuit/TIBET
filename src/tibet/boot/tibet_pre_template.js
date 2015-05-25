@@ -74,7 +74,7 @@ if (window === top) {
             //  Set a flag the remaining portions of tibet_loader and the
             //  containing file (such as index.html) which might try to invoke
             //  TP.boot.launch() can check.
-            top.TP.$$routing = true;
+            top.TP.$$nested_loader = true;
 
             //  Clear the TIBET global. We don't want any new content confused
             //  about where it's loading.

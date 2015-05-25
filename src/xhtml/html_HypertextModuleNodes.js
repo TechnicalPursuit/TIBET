@@ -41,8 +41,7 @@ function(aRequest) {
 
     var elem,
         target,
-        href,
-        destPath;
+        href;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(elem = aRequest.at('node'))) {
@@ -55,8 +54,9 @@ function(aRequest) {
     //  Call up the chain and force expansion and any other default processing.
     this.callNextMethod();
 
-    //  When there's a target, and it's not a path or '_self', we're going to
-    //  stay out of the way.
+    //  If the target is a local reference (a path or _self) it means we're
+    //  targeting a TIBET-controlled surface. If not then we dont' want to
+    //  interfere with normal processing so we don't rewrite.
     if (TP.notEmpty(target = TP.elementGetAttribute(elem, 'target', true))) {
         if (!TP.regex.NON_SIMPLE_PATH.test(target) && target !== '_self') {
             return;
@@ -71,7 +71,7 @@ function(aRequest) {
 
     //  Links with an empty HREF will try to reload the page. We really don't
     //  want that, we want to have them do nothing. We set '#' here and let the
-    //  following check add a return false click handler.
+    //  check further down add a return false click handler.
     if (TP.isEmpty(href)) {
         TP.elementSetAttribute(elem, 'href', '#');
     }
@@ -91,50 +91,19 @@ function(aRequest) {
     /* eslint-enable no-script-url */
 
     //  If the original value wasn't a route then refetch to get the fully
-    //  expanded form so we use that for our TP.go2() or TP.switchContent() call.
+    //  expanded form so we use that for our TP.go2() call.
     if (href.indexOf('#') !== 0 && href !== '/') {
         href = TP.elementGetAttribute(elem, 'href', true);
     }
 
-    //  First, just set the 'href' to '#' to avoid any traversal.
+    //  First, just set the 'href' to '#' to limit traversal and link display.
     TP.elementSetAttribute(elem, 'href', '#', true);
 
-    //  If the href points to a 'urn:tibet' URN, then we use TP.switchContent()
-    if (TP.regex.TIBET_URN.test(href)) {
-
-        //  Make sure that we have a non-empty target. This will be the path to
-        //  the element that we're going to switch content in and out of.
-        if (TP.isEmpty(destPath =
-                        TP.elementGetAttribute(elem, 'data-target'))) {
-
-            TP.elementSetAttribute(
-                elem,
-                'onclick',
-                'TP.error(\'No target for content.\'); ' +
-                'return false;',
-                true);
-        } else {
-
-            TP.elementSetAttribute(
-                elem,
-                'onclick',
-                'TP.switchContent(\'' + href + '\',' +
-                                    ' \'' + destPath + '\'' + ',' +
-                                    ' true, window); ' +
-                'return false;',
-                true);
-        }
-    } else {
-
-        //  Otherwise, it's a link to a whole page. Rewrite it so that it calls
-        //  TP.go2() instead of just being a standard link. This gives TIBET
-        //  control so that proper routing and history management can occur.
-
-        //  Then add an 'onclick' that will trigger TIBET.
-        TP.elementSetAttribute(elem, 'onclick',
-            'TP.go2(\'' + href + '\', window); return false;',
-            true);
-    }
+    //  Then add an 'onclick' that will trigger TIBET's go2 call to process the
+    //  link at runtime. Note the '; return false' to help ensure no traversal.
+    TP.elementSetAttribute(elem, 'onclick',
+        'TP.go2(\'' + href + '\', window); return false;',
+        true);
 
     return;
 });

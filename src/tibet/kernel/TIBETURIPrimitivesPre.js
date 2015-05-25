@@ -25,6 +25,84 @@
  *     contained in the *Moz.js and *IE.js versions of this file.
  */
 
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriBaseParameters', function(aURI, textOnly) {
+
+    /**
+     * @method uriBaseParameters
+     * @summary Returns the parameters found on the base URL, if any. Base
+     *     parameters are effectively server-side parameters since they are not
+     *     part of the fragment and hence not processed by the TIBET client.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {Boolean} [textOnly=true] Return just the text parameter string
+     *     if any.
+     * @returns {String} The URI base parameter values.
+     */
+
+    var url,
+        base,
+        params;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        this.raise('InvalidParameter');
+    }
+
+    base = TP.uriHead(url);
+
+    if (/\?/.test(base)) {
+        params = base.slice(base.indexOf('?') + 1);
+        if (TP.notFalse(textOnly)) {
+            return params;
+        }
+    }
+
+    if (params) {
+        return TP.hc(TP.boot.$parseURIParameters(params));
+    }
+
+    return TP.notFalse(textOnly) ? '' : {};
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriBasePath', function(aURI) {
+
+    /**
+     * @method uriBasePath
+     * @summary Returns the path portion of the URL base, the portion of the URL
+     *     after the uriRoot and before any uriBaseParams. This essentially is
+     *     the "server route" component.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @returns {String} The URI base path value.
+     */
+
+    var url,
+        path;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        this.raise('InvalidParameter');
+    }
+
+    path = TP.uriHead(url);
+
+    if (/\?/.test(path)) {
+        path = path.slice(0, path.indexOf('?'));
+    }
+
+    //  Remove the root portion since we only want "path" segment.
+    path = path.replace(TP.uriRoot(url), '');
+
+    //  Remove any trailing /
+    if (path.last() === '/') {
+        path = path.slice(0, -1);
+    }
+
+    return path.charAt(0) === '/' ? path : '/' + path;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uriCollapsePath',
@@ -136,6 +214,183 @@ function(aPath) {
     return path;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriCompose', function(parts) {
+
+    /**
+     * @method uriCompose
+     * @summary Builds up a proper URL from the parts provided. This routine
+     *     is often used to compose new URLs from parts of other URLs such
+     *     as the base components of a link combined with the fragment
+     *     parameters of the launch url (boot parameters).
+     * @param {TP.lang.Hash|Object} parts An object containing strings for root,
+     *     basePath, baseParams, fragmentPath, and fragmentParams. Missing
+     *     parameters are ignored.
+     * @return {String} A new url assembled from the parts provided.
+     */
+
+    var url,
+        root,
+        basePath,
+        baseParams,
+        fragPath,
+        fragParams;
+
+    if (TP.isEmpty(parts)) {
+        this.raise('InvalidParameter');
+    }
+
+    root = parts.at('root');
+    basePath = parts.at('basePath');
+    baseParams = parts.at('baseParams');
+    fragPath = parts.at('fragmentPath');
+    fragParams = parts.at('fragmentParams');
+
+    if (TP.isEmpty(root)) {
+        return;
+    }
+
+    url = root;
+
+    //  Root and base path join via '/' as needed. The standard join routines
+    //  won't do this because they focus on absolute paths distinct from the
+    //  root host:port portions.
+    if (/\/$/.test(url)) {
+        url = url.slice(0, -1);
+    }
+
+    if (basePath !== '/' && TP.notEmpty(basePath)) {
+        //  Force '/' here since we will have stripped any trailing / earlier.
+        url += basePath.charAt(0) === '/' ? basePath : '/' + basePath;
+    }
+
+    if (TP.notEmpty(baseParams)) {
+        url += '?' + (TP.isString(baseParams) ? baseParams :
+            baseParams.asQueryString());
+    }
+
+    if (fragPath !== '/' && TP.notEmpty(fragPath)) {
+        if (url.last() !== '/') {
+            url += '/';
+        }
+        url += '#' +
+            (fragPath.charAt(0) === '/' ? fragPath.slice(1) : fragPath);
+    }
+
+    if (TP.notEmpty(fragParams)) {
+        if (!/#/.test(url)) {
+            if (url.last() !== '/') {
+                url += '/';
+            }
+            url += '#';
+        }
+
+        url += '?' + (TP.isString(fragParams) ? fragParams :
+            fragParams.asQueryString());
+    }
+
+    return url;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriDecompose', function(aURI, textOnly) {
+
+    /**
+     * @method uriDecompose
+     * @summary Splits a URL into constituent parts suitable for passing them to
+     *     the uriCompose routine.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {Boolean} [textOnly=true] Return just text parameter strings
+     *     rather than objects in the result object.
+     * @return {Object.<String, String>} The URI parts in key/value form.
+     */
+
+    var url,
+        root,
+        basePath,
+        baseParams,
+        fragPath,
+        fragParams;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        this.raise('InvalidParameter');
+    }
+
+    root = TP.uriRoot(url);
+    basePath = TP.uriBasePath(url);
+    baseParams = TP.uriBaseParameters(url, textOnly);
+    fragPath = TP.uriFragmentPath(url);
+    fragParams = TP.uriFragmentParameters(url, textOnly);
+
+    return TP.hc('root', root,
+        'basePath', basePath,
+        'baseParams', baseParams,
+        'fragmentPath', fragPath,
+        'fragmentParams', fragParams
+    );
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriExpandHome', function(aURI) {
+
+    /**
+     * @method uriExpandHome
+     * @summary Returns a URI representing the home page for any URI which is an
+     *     implicit path to that page. Examples are "/" and the launch URL. NOTE
+     *     that the resulting URL will include any path/parameter portions from
+     *     the launch URL as needed.
+     * @param {String|URI} aURI The uri to expand.
+     * @return {String} The expanded uri.
+     */
+
+    var url,
+        home,
+        homeParts;
+
+    //  For our expansion testing and history tracking we want a fully-expanded
+    //  and normalized version of the URL here.
+    url = TP.str(aURI);
+    url = TP.uriExpandPath(url);
+    url = decodeURIComponent(url);
+
+    //  The pushState handlers in TIBET don't push homepage URLs directly, they
+    //  always short to '/' or the launch URL. We need to actually setLocation
+    //  with a real URI for the related home page tho so we convert here.
+    if (url === '/' || TP.uriHead(url) === TP.uriHead(TP.sys.getLaunchURL())) {
+
+        //  From a route perspective '/' means UICANVAS should get the home
+        //  page. We don't want launch URLs here since this isn't about top.
+        home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+        homeParts = TP.uriDecompose(home);
+
+        //  Preserve any base parameters from launch if not overridden.
+        if (TP.isEmpty(homeParts.at('baseParams'))) {
+            homeParts.atPut('baseParams',
+                TP.uriBaseParameters(TP.sys.getLaunchURL(), true));
+        }
+
+        //  Preserve any fragment path (route) from the original URL provided.
+        if (homeParts.at('fragmentPath') === '/') {
+            homeParts.atPut('fragmentPath', TP.uriFragmentPath(url));
+        }
+
+        //  Have to add any launch parameters here as well or the rewrite will
+        //  cause our reboot trigger on boot parameters to fire.
+        if (TP.isEmpty(homeParts.at('fragmentParams'))) {
+            homeParts.atPut('fragmentParams',
+                TP.uriFragmentParameters(TP.sys.getLaunchURL(), true));
+        }
+
+        url = TP.uriCompose(homeParts);
+    }
+
+    return url;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uriExpandPath',
@@ -241,39 +496,118 @@ function(aPath) {
     return path;
 });
 
-//  ------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriGetRouteName',
-function(aURI) {
+TP.definePrimitive('uriFragment', function(aURI) {
 
     /**
-     * @method uriGetRouteName
-     * @summary Returns the route name, which is essentially the last
-     *     document location path component without any extension.
-     * @param {String} aURI A uri String defining the URI to parse.
-     * @return {String} The route name.
+     * @method uriFragment
+     * @summary Returns the fragment portion, if any, from the URL.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @returns {String} The fragment portion or the empty string.
+     */
+
+    var url;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        this.raise('InvalidParameter');
+    }
+
+    if (/#/.test(url)) {
+        return url.slice(url.indexOf('#') + 1);
+    }
+
+    return '';
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriFragmentParameters', function(aURI, textOnly) {
+
+    /**
+     * @method uriFragmentParameters
+     * @summary Parses the given URL for any TIBET-specific argument block.
+     *     The URL hash is checked for any & segment and that segment is
+     *     split just as if it were a set of server parameters. For example,
+     *     http://localhost/index.html#foo&boot.debug=true results in the
+     *     argument object containing {'boot.debug':true};
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {Boolean} [textOnly=true] Return just the text parameter string
+     *     if any.
+     * @returns {Object}
      */
 
     var url,
-        route;
+        hash,
+        params;
 
-    url = TP.uc(aURI);
-    if (TP.notValid(url)) {
-        return '';
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        this.raise('InvalidParameter');
     }
 
-    //  Get the path portion of the URL since that's what we route by.
-    route = url.getPath();
+    //  Process any hash portion of the URL string.
+    if (!/#/.test(url)) {
+        return TP.notFalse(textOnly) ? '' : {};
+    }
+    hash = url.slice(url.indexOf('#') + 1);
+    hash = decodeURIComponent(hash);
 
-    //  Strip off any leading path segments.
-    if (/\//.test(route)) {
-        route = route.slice(route.lastIndexOf('/') + 1);
+    if (hash.indexOf('?') === -1) {
+        return TP.notFalse(textOnly) ? '' : {};
+    } else {
+        params = hash.slice(hash.indexOf('?') + 1);
+        if (TP.notFalse(textOnly)) {
+            return params;
+        }
     }
 
-    //  Remove any file extension that might be attached.
-    route = route.split('.')[0];
+    if (params) {
+        return TP.hc(TP.boot.$parseURIParameters(params));
+    }
 
-    return route.asCamelCase();
+    return TP.notFalse(textOnly) ? '' : {};
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriFragmentPath', function(aURI) {
+
+    /**
+     * @method uriFragmentPath
+     * @summary Returns the path portion of the URL fragment if any. Note that
+     *     the fragment path value is always returned as a "path" in that it
+     *     always includes a leading '/', even if that was not present on the
+     *     original URL. For example, '#foo' will produce '/foo' for a path.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @returns {String} The fragment path value.
+     */
+
+    var fragment,
+        url;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        this.raise('InvalidParameter');
+    }
+
+    fragment = TP.uriFragment(url);
+    if (TP.isEmpty(fragment)) {
+        return '/';
+    }
+
+    //  Remove any trailing parameter content.
+    if (/\?/.test(fragment)) {
+        fragment = fragment.slice(0, fragment.indexOf('?'));
+    }
+
+    //  Remove any trailing /
+    if (fragment.last() === '/') {
+        fragment = fragment.slice(0, -1);
+    }
+
+    return fragment.charAt(0) === '/' ? fragment : '/' + fragment;
 });
 
 //  ------------------------------------------------------------------------
@@ -432,6 +766,35 @@ function(aURI, aNode, shouldClone) {
     } else {
         return resultElements;
     }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriHead', function(aURI) {
+
+    /**
+     * @method uriHead
+     * @summary Returns the "head" portion of the URL fragment, the portion
+     *     prior to any fragment. The return value includes both the base path
+     *     and base parameters, if any.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @returns {String} The URI base value.
+     */
+
+    var url;
+
+    url = TP.str(aURI);
+
+    if (TP.isEmpty(url)) {
+        return;
+    }
+
+    if (/#/.test(url)) {
+        url = url.slice(0, url.indexOf('#'));
+        return url.last() === '/' ? url.slice(0, -1) : url;
+    }
+
+    return url;
 });
 
 //  ------------------------------------------------------------------------
@@ -1630,6 +1993,62 @@ function(targetUrl, resultType) {
     }
 
     return resultType;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriRoot', function(aURI) {
+
+    /**
+     * @method uriRoot
+     * @summary Returns the root of the URL, essentially the scheme and
+     *     scheme-specific lead-in content. This routine essentially gives you
+     *     back the http://, https://, or file:// portion which does not include
+     *     any of the path.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @return {String} The root of the URI.
+     */
+
+    var url,
+        path,
+        str,
+        parts;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        this.raise('InvalidParameter');
+    }
+
+    path = TP.uriHead(url);
+    if (TP.isEmpty(path)) {
+        return;
+    }
+
+    //  If there's no :// portion this won't provide interesting results.
+    if (!/:\/\//.test(path)) {
+        return;
+    }
+
+    if (TP.sys.isHTTPBased() || TP.sys.isWin()) {
+        //  On HTTP uris you need the host:port portion as a root. To find that
+        //  we essentially scan for the 3rd '/' since that sets off the root
+        //  from the remaining portions of the URL. On windows if you don't
+        //  include the drive spec in the root the files won't be found. This is
+        //  consistent with IE behavior.
+        parts = path.split('://');
+        if (/\//.test(parts[1])) {
+            //  If there's a path portion split that off.
+            str = parts[0] + '://' + parts[1].slice(0, parts[1].indexOf('/'));
+        } else {
+            str = path;
+        }
+    } else {
+        //  on unix-style platforms there's no drive spec to mess things up
+        //  when resolving 'absolute' paths starting with '/'
+        str = 'file://';
+    }
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------

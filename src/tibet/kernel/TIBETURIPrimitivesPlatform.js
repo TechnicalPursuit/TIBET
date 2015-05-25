@@ -1260,9 +1260,9 @@ TP.hc(
 
 /*
 Primitive functions supporting file save operations. Note that the HTTP
-versions require the assistance of the TIBET Development Server components
-or an equivalent set of CGI scripts/Servlets on the server side while the
-FILE versions require varying permissions.
+versions require the assistance of the TIBET Data Server components or an
+equivalent set of CGI scripts/Servlets on the server side while the FILE
+versions require varying permissions.
 
 Primitive functions supporting file save operations. Note that the HTTP
 versions require the assistance of server-side components such as a WebDAV

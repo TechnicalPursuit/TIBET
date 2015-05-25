@@ -2518,31 +2518,8 @@ function(textOnly) {
     if (textOnly) {
         return params;
     }
-    params = params.split('&');
-    params.forEach(function(item) {
-        var parts,
-            key,
-            value;
 
-        if (/\=/.test(item)) {
-            parts = item.split('=');
-            key = parts[0];
-            value = parts[1];
-
-            //  Strip any external quoting off value.
-            if (value.length > 1 &&
-                    (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
-                value = value.slice(1, -1);
-            }
-        } else {
-            key = item;
-            value = true;
-        }
-
-        hash.atPut(key, TP.boot.$getArgumentPrimitive(value));
-    });
-
-    return hash;
+    return TP.boot.$parseURIParameters(params);
 });
 
 //  ------------------------------------------------------------------------
@@ -8808,9 +8785,7 @@ function(aURI, aRequest) {
  * @summary TP.core.URIRouter types process changes to the client URL and
  *     respond by triggering an appropriate handler either directly or
  *     indirectly via signaling. A URIRouter is typically triggered from the
- *     current application history object via onhashchange or popstate event
- *     handlers but they can also be invoked directly via route(url) or by
- *     signaling LocationChange.
+ *     current application history object in response to URI changes.
  */
 
 //  ------------------------------------------------------------------------
@@ -9060,19 +9035,19 @@ function(pattern) {
 
     parts = parts.map(
             function(item, index) {
-                var pattern,
-                    str;
+                var re,
+                    val;
 
                 //  Check for a token pattern of this name.
                 if (item.charAt(0) === ':') {
 
                     names.atPut(index, item.slice(1));
-                    pattern = tokens.at(item.slice(1));
+                    re = tokens.at(item.slice(1));
 
-                    if (TP.isValid(pattern)) {
-                        str = TP.str(pattern);
+                    if (TP.isValid(re)) {
+                        val = TP.str(re);
 
-                        return '(' + str.slice(1, str.lastIndexOf('/') + ')');
+                        return '(' + val.slice(1, val.lastIndexOf('/') + ')');
                     } else {
                         return '(.*?)';
                     }
@@ -9133,164 +9108,244 @@ function(route) {
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('route',
-function(aURI) {
+function(aURI, aDirection) {
 
     /**
      * @method route
      * @summary Checks a URI for potentially routable changes and triggers the
-     *     appropriate response to any changes found. If the only changes were
-     *     to fragment parameters this method will signal a BootConfigChange
-     *     which can cause a restart of the application. If the path changes
-     *     represent a routable event the processRoute call is invoked to look
-     *     for a matching route handler.
-     * @param {String} aURI The full URI which should be routed.
-     * @fires {RouteChange} If the URI has changed path values.
-     * @fires {BootConfigChange} If the URI has changed fragment parameters.
+     *     appropriate response to any changes found. This method is invoked in
+     *     response to popstate events and whenever TIBET is asked to push or
+     *     replace state on the native history object.
+     * @param {String} aURI The full URI which should be processed for routing.
+     * @param {String} [aDirection] An optional direction hint provided by some
+     *     invocation pathways. It is always used when available.
+     * @fires {RouteChange} If the URI has changed the fragment path (route).
      */
 
-    var direction,
+    var history,
+        direction,
         last,
-
+        lastParts,
         url,
-        lastUrl,
-
-        trigger,
-
-        path,
-        params,
-
-        lastPath,
-        lastParams,
-
+        urlParts,
+        canvas,
+        val,
         result,
         name,
         payload,
-
         type,
-        signal;
+        signal,
+        home,
+        route;
 
-    //  The direction of change determines whether we compare our URL to the
-    //  "next" or "last" URL in the history list to see if it really changed the
-    //  routable portion or not.
-    direction = TP.sys.getHistory().get('direction');
-
-    if (direction === 'back') {
-        last = TP.sys.getHistory().getNextLocation();
-    } else if (direction === 'forward') {
-        last = TP.sys.getHistory().getLastLocation();
+    //  Report what we're being asked to route.
+    if (TP.sys.cfg('log.routes')) {
+        TP.info('route(\'' + TP.str(aURI) + '\');');
     }
 
-    if (last === aURI) {
+    history = TP.sys.getHistory();
+
+    //  ---
+    //  Determine direction so we know what to compare
+    //  ---
+
+    direction = TP.ifEmpty(aDirection, history.get('direction'));
+    switch (direction) {
+        case 'back':
+            last = TP.ifEmpty(history.get('lastURI'),
+                history.getNextLocation());
+            break;
+        case 'forward':
+            last = TP.ifEmpty(history.get('lastURI'),
+                history.getLastLocation());
+            break;
+        case 'replace':
+            last = history.get('lastURI');
+            break;
+        default:
+            //  Oops. Shouldn't be here...except if we're starting up.
+            if (TP.sys.hasStarted()) {
+                TP.warn('Invalid route direction.');
+            }
+            break;
+    }
+
+    //  Clear the direction and URI so we have to reset/recompute with each
+    //  change and don't end up working from obsolete data.
+    history.set('direction', null);
+    history.set('lastURI', null);
+
+    //  For our expansion testing and history tracking we want a fully-expanded
+    //  and normalized version of the URL here.
+    url = TP.str(aURI);
+    url = TP.uriExpandPath(url);
+    url = decodeURIComponent(url);
+
+    //  The pushState handlers in TIBET don't push homepage URLs directly, they
+    //  always short to '/' or the launch URL. We need to actually setLocation
+    //  with a real URI for the related home page tho so we convert here.
+    if (TP.$$nested_loader || url === '/' ||
+            TP.uriHead(url) === TP.uriHead(TP.sys.getLaunchURL())) {
+
+        //  Clear any flag regarding loading the index or other loader page.
+        //  Those are all considered variations on 'load the home page'.
+        TP.$$nested_loader = false;
+
+        url = TP.uriExpandHome(url);
+    }
+
+    //  No change? No work to do.
+    if (last === url) {
         return;
     }
 
-    url = TP.uc(aURI);
-    if (TP.notValid(url)) {
-        return this.raise('InvalidURI', aURI);
+    //  ---
+    //  Compare paths to determine what aspect(s) changed
+    //  ---
+
+    urlParts = TP.uriDecompose(url);
+    if (TP.notEmpty(last)) {
+        lastParts = TP.uriDecompose(last);
     }
 
-    lastUrl = TP.uc(last);
+    //  ---
+    //  If root domain change we reboot...normally.
+    //  ---
 
-    trigger = TP.sys.cfg('uri.routing.trigger');
-
-    switch (trigger) {
-
-        case 'popstate':
-
-            path = url.getPath() || '';
-            params = url.get('query') || '';
-
-            if (TP.isValid(lastUrl)) {
-                lastPath = lastUrl.getPath();
-                lastParams = lastUrl.getParameters();
-            }
-
-            lastPath = TP.ifInvalid(lastPath, '');
-            lastParams = TP.ifInvalid(lastParams, '');
-
-            break;
-
-        default:
-
-            path = url.getFragmentPath() || '/';
-            params = url.getFragmentParameters(true) || '';
-
-            if (TP.isValid(lastUrl)) {
-                lastPath = lastUrl.getFragmentPath();
-                lastParams = lastUrl.getFragmentParameters(true);
-            }
-
-            lastPath = TP.ifInvalid(lastPath, '/');
-            lastParams = TP.ifInvalid(lastParams, '');
-
-            break;
-    }
-
-    if (TP.$$routing) {
-        //  Clear the last path since it's not relevant, we want to route and
-        //  not trigger a reboot via config below, even if reloading home page.
-        lastPath = null;
-    }
-
-    //  Is this a routable change?
-    if (path === lastPath) {
-        //  If there's no last then we can't really be changing params.
-        if (!last) {
-            return;
+    if (lastParts && urlParts.at('root') !== lastParts.at('root')) {
+        //  TODO: could verify subdomains etc. here.
+        if (top.location.toString() !== url) {
+            top.location = url;
         }
+        return;
+    }
 
-        //  If the params didn't change nothing else to do.
-        if (params === lastParams) {
-            return;
+    //  ---
+    //  If base params changed only the server can determine what to do.
+    //  ---
+
+    if (lastParts && urlParts.at('baseParams') !== lastParts.at('baseParams')) {
+        if (top.location.toString() !== url) {
+            top.location = url;
         }
+        return;
+    }
 
-        //  Likely a parameter change since path didn't shift. If the boot
-        //  parameters did change then we'll request a restart.
-        this.signal('BootConfigChange', url.getFragmentParameters());
+    //  ---
+    //  If fragment (boot) params change we reboot...sometimes
+    //  ---
+
+    if (lastParts && urlParts.at('fragmentParams') !==
+            lastParts.at('fragmentParams')) {
+        if (top.location.toString() !== url) {
+            top.location = url;
+        }
+        return;
+    }
+
+    //  ---
+    //  If base path changed but not root domain it's a canvas uri.
+    //  ---
+
+    canvas = TP.sys.getUICanvas();
+
+    //  Tricky part here is that we have to watch for comparisons regarding '/'
+    //  and or launch with the home page. Those aren't considered "different".
+    if (lastParts) {
+        home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+        if (lastParts.at('basePath') === '/') {
+            lastParts.atPut('basePath', TP.uriBasePath(home));
+        }
+    }
+
+    if (lastParts && urlParts.at('basePath') !== lastParts.at('basePath')) {
+        if (canvas.getLocation() !== url) {
+            canvas.setLocation(TP.uriHead(url));
+        }
+        return;
+    }
+
+    //  ---
+    //  If fragment path changed it's a route
+    //  ---
+
+    val = urlParts.at('fragmentPath');
+    if (val === '/') {
+        val = 'home';
     } else {
-        //  Routable path change. In this case we ignore boot param shifts since
-        //  that could simply be failure to duplicate them during pushState.
-        result = this.processRoute(path);
-
-        if (TP.isEmpty(result)) {
-            return;
-        }
-
-        name = TP.str(result.at(0));
-        payload = result.at(1);
-
-        //  Try to find a custom route change subtype for the named route.
-        type = TP.sys.getTypeByName('TP.sig.' + name);
-        if (TP.notValid(type)) {
-            type = TP.sys.getTypeByName('APP.sig.' + name);
-        }
-
-        //  Build the signal instance we'll fire and set its name as needed.
-        if (TP.isValid(type)) {
-            signal = type.construct(payload);
-        } else {
-
-            signal = TP.sig.RouteChange.construct(payload);
-
-            //  Adjust the name to be a "route" name for consistency.
-            if (!/^Route/.test(name)) {
-                name = 'Route' + name;
-            }
-
-            signal.setSignalName(name);
-        }
-
-        //  For origin we use ANY since all routes are from 'top' anyway. This
-        //  also helps avoid multiple dispatch for origin differences.
-        signal.setOrigin(TP.ANY);
-
-        if (TP.sys.cfg('log.routes')) {
-            TP.info('RouteChange: ' + signal.getSignalName() + ' with: ' +
-                TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
-        }
-
-        signal.fire();
+        //  remove leading '/' for route name work.
+        val = val.slice(1);
     }
+
+    //  See if the value is a route configuration key.
+    route = TP.sys.cfg('route.' + val);
+    if (TP.isEmpty(route)) {
+        route = val;
+    }
+
+    //  See if the value is a tag type for injection.
+    type = TP.sys.getTypeByName(route);
+    if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
+        TP.info('setting content (not really) to: ' + TP.str(type));
+        // BILL: make this work :)
+        //TP.sys.getUICanvas().setContentFromTagType(type);
+        return;
+    }
+
+    //  See if the value looks like a URL for set location.
+    url = TP.uc(route);
+    if (TP.isURI(url)) {
+        url = TP.uriExpandHome(url);
+        TP.info('setting location to: ' + TP.str(url));
+
+        canvas.setLocation(TP.uriHead(url));
+        return;
+    }
+
+    //  Routable path change. In this case we ignore boot param shifts since
+    //  that could simply be failure to duplicate them during pushState.
+    result = this.processRoute('/' + val);
+
+    if (TP.isEmpty(result)) {
+        return;
+    }
+
+    name = TP.str(result.at(0));
+    payload = result.at(1);
+
+    //  Try to find a custom route change subtype for the named route.
+    type = TP.sys.getTypeByName('TP.sig.' + name);
+    if (TP.notValid(type)) {
+        type = TP.sys.getTypeByName('APP.sig.' + name);
+    }
+
+    //  Build the signal instance we'll fire and set its name as needed.
+    if (TP.isValid(type)) {
+        signal = type.construct(payload);
+    } else {
+
+        signal = TP.sig.RouteChange.construct(payload);
+
+        //  Adjust the name to be a "route" name for consistency.
+        if (!/^Route/.test(name)) {
+            name = 'Route' + name;
+        }
+
+        signal.setSignalName(name);
+    }
+
+    //  For origin we use ANY since all routes are from 'top' anyway. This
+    //  also helps avoid multiple dispatch for origin differences.
+    signal.setOrigin(TP.ANY);
+
+    if (TP.sys.cfg('log.routes')) {
+        TP.info('RouteChange: ' + signal.getSignalName() + ' with: ' +
+            TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
+    }
+
+    signal.fire();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -9303,28 +9358,23 @@ function(aRoute) {
      * @summary Updates the fragment path portion which defines the current
      *     route in TIBET terms. Any boot parameters on the existing URL are
      *     preserved by this call.
+     * @discussion Routes in TIBET are signified by the "fragment path" portion
+     *     of the URI which we define as the section of the URI fragment prior
+     *     to any '?' which sets off the "fragment parameters" (aka boot
+     *     parameters). Changes to this section of the URI result in a Route
+     *     signal being fired so application logic can respond to route changes.
      * @param {String} aRoute The route information.
      */
 
-    var hash,
+    var route,
+        loc,
         path,
-        params,
-        route,
-        homeURL,
-        homeRoute;
-
-    hash = top.location.hash.replace('#', '');
-
-    //  The hash can include TIBET boot parameters so pull those off as needed.
-    if (/\?/.test(hash)) {
-        path = hash.slice(0, hash.indexOf('?'));
-        params = hash.slice(hash.indexOf('?') + 1);
-    } else {
-        path = hash;
-        params = '';
-    }
+        parts;
 
     route = TP.str(aRoute).asCamelCase();
+
+    loc = TP.core.History.getLocation();
+    path = TP.uriFragmentPath(loc);
 
     //  If we're about to set the same route don't bother.
     if (route === path) {
@@ -9334,27 +9384,12 @@ function(aRoute) {
         return;
     }
 
-    //  Capture the route for the home page for comparison.
-    homeURL = TP.ifEmpty(TP.sys.cfg('project.homepage'),
-        TP.sys.cfg('path.blank_page'));
-    homeRoute = TP.uriGetRouteName(homeURL);
+    //  Rebuild a version of the current URI with the new route portion.
+    parts = TP.uriDecompose(loc);
+    parts.atPut('fragmentPath', route);
+    route = TP.uriCompose(parts);
 
-    //  If we're about to set the route to the home page and we're on the home
-    //  page (either explicitly or implicitly) don't do the work.
-    if (route === homeRoute && path === '') {
-        if (TP.sys.cfg('log.routes')) {
-            TP.trace('setRoute ignoring existing home route of: ' + route);
-        }
-        return;
-    }
-
-    //  If we're going to set the route we need to include any params from the
-    //  original sequence.
-    if (TP.notEmpty(params)) {
-        route = route + '?' + params;
-    }
-
-    top.location.hash = route;
+    TP.sys.getHistory().pushLocation(route);
 
     return;
 });

@@ -108,9 +108,9 @@ Cmd.prototype.execute = function() {
 'START THE DEMO SERVER\n\n' +
 
 'The \'default\' template used by clone includes a simple Node.js-based HTTP\n' +
-'server we call the TIBET Development Server or TDS. By default the TDS will\n' +
-'use port 1407 so assuming that port isn\'t busy on your system you can start\n' +
-'the server using \'tibet start\' without any parameters:\n\n' +
+'server we call the TIBET Data Server or TDS. By default the TDS will use\n' +
+'port 1407 so assuming that port isn\'t busy on your system you can start the\n' +
+'server using \'tibet start\' without any parameters:\n\n' +
 
 '    $ tibet start\n' +
 '    Starting server at http://127.0.0.1:1407/index.html\n\n' +

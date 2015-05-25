@@ -758,26 +758,6 @@ function(aDocument, aFontSize) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentGetRouteName',
-function(aDocument) {
-
-    /**
-     * @method documentGetRouteName
-     * @summary Returns the route name, which is essentially the last
-     *     document location path component without any extension.
-     * @param {Document} aDocument The document to parse the route for.
-     * @return {String} The route name.
-     */
-
-    var loc;
-
-    loc = TP.documentGetLocation(aDocument);
-
-    return TP.uriGetRouteName(loc);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('documentGetScriptFileNames',
 function(aDocument) {
 
@@ -8367,6 +8347,17 @@ function(aWindow) {
     //  TIBET so that the user experiences 'proper' behavior when using the
     //  keyboard during application execution.
     TP.windowSetupFocusHandlers(aWindow);
+
+    //  Update the top-level window title if we loaded into the UICANVAS and
+    //  push the URI into our history record.
+    if (TP.sys.hasStarted() &&
+            TP.gid(aWindow) === TP.sys.getUICanvas().getName()) {
+
+        TP.core.History.captureDocumentLocation(aWindow.document);
+
+        docTitle = TP.documentGetTitleContent(aWindow.document);
+        TP.documentSetTitleContent(top.document, docTitle);
+    }
 
     //  final operation is to signal that we've done the work
     try {

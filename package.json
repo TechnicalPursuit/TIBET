@@ -1,8 +1,8 @@
 {
     "name": "tibet",
     "version": "v5.0.0-dev.7",
-    "description": "The TIBET Environment.",
-    "keywords": ["CLI", "IDE", "JavaScript", "Environment", "Platform", "Framework", "TIBET"],
+    "description": "The TIBET Platform.",
+    "keywords": ["CLI", "CouchDB", "Framework", "IDE", "MVC", "MVVC", "TIBET"],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
@@ -83,8 +83,8 @@
     "devDependencies": {
     },
     "engines": {
-        "node": ">=0.8",
-        "npm": ">=1"
+        "node": ">=0.10",
+        "npm": ">=2"
     },
     "scripts": {
         "prepublish": "./bin/tibet build",

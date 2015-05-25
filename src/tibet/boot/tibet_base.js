@@ -38,7 +38,7 @@
 
     //  If we can't find the TP reference, or we're part of tibet_loader and
     //  we're loading due to a location change that should route we exit.
-    if (!TP || TP.$$routing) {
+    if (!TP || TP.$$nested_loader) {
         return;
     }
 
@@ -1785,6 +1785,49 @@ names to meet platform requirements and deal with "virtualized" paths.
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$parseURIParameters = function(uriParams) {
+
+    /**
+     * @method $parseURIParameters
+     * @summary Processes a URL parameter string and returns it in dictionary
+     *     form meaning key/value pairs in an object.
+     * @param {String} uriParams The URI parameter string to process.
+     * @return {Object} The parameters in primitive object key/value form.
+     */
+
+    var params,
+        args;
+
+    args = {};
+    params = uriParams.split('&');
+    params.forEach(function(item) {
+        var parts,
+            key,
+            value;
+
+        if (/\=/.test(item)) {
+            parts = item.split('=');
+            key = parts[0];
+            value = parts[1];
+
+            //  Strip any external quoting off value.
+            if (value.length > 1 &&
+                    (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
+                value = value.slice(1, -1);
+            }
+        } else {
+            key = item;
+            value = true;
+        }
+
+        args[key] = TP.boot.$getArgumentPrimitive(value);
+    });
+
+    return args;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$uriCollapsePath = function(aPath) {
 
     /**
@@ -1935,6 +1978,51 @@ TP.boot.$uriExpandPath = function(aPath) {
     TP.boot.$$fullPaths[aPath] = path;
 
     return path;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$uriFragmentParameters = function(url, textOnly) {
+
+    /**
+     * @method $uriFragmentParameters
+     * @summary Parses the given URL for any TIBET-specific argument block.
+     *     The URL hash is checked for any & segment and that segment is
+     *     split just as if it were a set of server parameters. For example,
+     *     http://localhost/index.html#foo&boot.debug=true results in the
+     *     argument object containing {'boot.debug':true};
+     * @param {String} url The url to process.
+     * @param {Boolean} [textOnly=false] Return just the text parameter string
+     *     if any.
+     * @returns {Object}
+     */
+
+    var hash,
+        params,
+        args;
+
+    //  Process any hash portion of the URL string.
+    if (!/#/.test(url)) {
+        return {};
+    }
+    hash = url.slice(url.indexOf('#') + 1);
+    hash = decodeURIComponent(hash);
+
+    args = {};
+    if (hash.indexOf('?') === -1) {
+        return args;
+    } else {
+        params = hash.slice(hash.indexOf('?') + 1);
+        if (textOnly) {
+            return params;
+        }
+    }
+
+    if (params) {
+        return TP.boot.$parseURIParameters(params);
+    }
+
+    return textOnly ? '' : {};
 };
 
 //  ----------------------------------------------------------------------------
@@ -3526,9 +3614,9 @@ TP.boot.$uriResultType = function(targetUrl, resultType) {
 
 /*
 Primitive functions supporting resource save operations. Note that the HTTP
-versions require the assistance of the TIBET Development Server components
-or an equivalent set of CGI scripts/Servlets on the server side while the
-file-system versions require varying permissions.
+versions require the assistance of the TIBET Data Server components or an
+equivalent set of CGI scripts/Servlets on the server side while the file-system
+versions require varying permissions.
 */
 
 //  ----------------------------------------------------------------------------
@@ -7682,66 +7770,6 @@ TP.boot.$getArgumentPrimitive = function(value) {
     }
 };
 
-//  ----------------------------------------------------------------------------
-
-TP.boot.getURLArguments = function(url) {
-
-    /**
-     * @method getURLArguments
-     * @summary Parses the URL for any TIBET-specific argument block. When
-     *     parsing the hash is checked for any & segment and that segment is
-     *     split just as if it were a set of server parameters. For example,
-     *     http://localhost/index.html#foo&boot.debug=true results in the
-     *     argument object containing {'boot.debug':true};
-     * @param {string} url The url string to decode for arguments.
-     * @returns {Object}
-     */
-
-    var hash,
-        params,
-        args;
-
-    //  Process any hash portion of the URL string.
-    if (!/#/.test(url)) {
-        return {};
-    }
-    hash = url.slice(url.indexOf('#') + 1);
-    hash = decodeURIComponent(hash);
-
-    args = {};
-    if (hash.indexOf('?') === -1) {
-        return args;
-    } else {
-        params = hash.slice(hash.indexOf('?') + 1);
-        params = params.split('&');
-    }
-
-    params.forEach(function(item) {
-        var parts,
-            key,
-            value;
-
-        if (/\=/.test(item)) {
-            parts = item.split('=');
-            key = parts[0];
-            value = parts[1];
-
-            //  Strip any external quoting off value.
-            if (value.length > 1 &&
-                    (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
-                value = value.slice(1, -1);
-            }
-        } else {
-            key = item;
-            value = true;
-        }
-
-        args[key] = TP.boot.$getArgumentPrimitive(value);
-    });
-
-    return args;
-};
-
 //  ============================================================================
 //  ROOT PATHS
 //  ============================================================================
@@ -10459,8 +10487,8 @@ TP.boot.launch = function(options) {
     //  into a non-TOP frame exit after clearing that flag. The launch() call
     //  will have been triggered by the index.html file for a default TIBET app
     //  but we don't want to honor launch when we're not in TOP.
-    if (TP.$$routing) {
-        delete TP.$$routing;
+    if (TP.$$nested_loader) {
+        delete TP.$$nested_loader;
         return;
     }
 
@@ -10519,7 +10547,7 @@ TP.boot.launch = function(options) {
     //  argument 'true' here tells the system to activate override checking.
     if (TP.sys.cfg('boot.nourlargs') !== true) {
         TP.boot.$$configureOverrides(
-            TP.boot.getURLArguments(top.location.toString()), true);
+            TP.boot.$uriFragmentParameters(TP.sys.getLaunchURL()), true);
         TP.boot.$updateDependentVars();
     }
 

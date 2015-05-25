@@ -1,8 +1,7 @@
 /**
  * @overview Connect/Express middleware supporting the various aspects of TDS
- *     (TIBET Development Server) functionality. Primary goals of the TDS are
- *     to provide a way to load changes from server to client, patch changes
- *     from client to server, and allow the client to invoke the TIBET cli.
+ *     (TIBET Data Server) functionality. Primary goals of the TDS are to
+ *     provide focused REST data access and support TIBET development.
  * @author Scott Shattuck (ss), William J. Edney (wje)
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the

@@ -1383,11 +1383,6 @@ TP.boot.initializeCanvasWindow = function(aWindow) {
     //  install basic TIBET feature set
     TP.core.Window.instrument(win);
 
-    //  Install a hashchange handler for changes due to hash changes.
-    win.addEventListener('hashchange', function(evt) {
-        TP.core.History.onhashchange(evt);
-    }, false);
-
     //  Install a popstate handler to catch changes via history API.
     win.addEventListener('popstate', function(evt) {
         TP.core.History.onpopstate(evt);

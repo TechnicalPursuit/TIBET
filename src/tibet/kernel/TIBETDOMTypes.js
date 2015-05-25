@@ -4892,8 +4892,8 @@ function(newContent, aRequest, stdinContent) {
     request.atPutIfAbsent('targetPhase', this.getTargetPhase());
 
     //  If the content to be set is a URI, then track it via the 'uri'
-    //  property on the request. This allows us to use it later when
-    //  attempting to add to the history mechanism.
+    //  property on the request. This helps downstream routines check to see if
+    //  the content changes are URI/document level.
     if (TP.isURI(newContent)) {
         request.atPutIfAbsent('uri', newContent);
     }
@@ -5476,20 +5476,13 @@ function(newContent, aRequest, shouldSignal) {
      */
 
     var node,
-
         content,
         request,
-
         arrContent,
-
         func,
         thisref,
-
-        historyFunc,
-
         reqLoadFunc,
         loadFunc,
-
         result;
 
     node = this.getNativeNode();
@@ -5524,42 +5517,10 @@ function(newContent, aRequest, shouldSignal) {
     func = this.getContentPrimitive(TP.UPDATE);
     thisref = this;
 
-    //  Define a function that will be used during 'load processing' that
-    //  will configure the document title and possibly the history mechanism
-    //  if the request contains a 'uri' property.
-    historyFunc =
-        function(aNode) {
-
-            var win,
-                docTitle,
-                docURI;
-
-            //  If we're setting the content of a 'whole Document' and that
-            //  Document has a Window and that Window is the current UI
-            //  canvas, then set the top-level document's title to this
-            //  content's title. If the content has a 'uri' property, add to
-            //  TP.core.History's history-tracking mechanism as well.
-            if (TP.isDocument(aNode) &&
-                TP.isWindow(win = TP.nodeGetWindow(aNode)) &&
-                TP.gid(win) === TP.sys.getUICanvasName()) {
-
-                docTitle = TP.documentGetTitleContent(aNode);
-                TP.documentSetTitleContent(document, docTitle);
-
-                if (TP.notEmpty(docURI = request.at('uri'))) {
-                    TP.core.History.pushLocation(docURI);
-                }
-            }
-        };
-
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
             function(aNode) {
-
                 reqLoadFunc(aNode);
-
-                historyFunc(aNode);
-
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
                 }
@@ -5567,11 +5528,7 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(aNode) {
-
                 thisref.contentReplaceCallback(aNode);
-
-                historyFunc(aNode);
-
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
                 }

@@ -28,7 +28,7 @@
 
     //  If we can't find the TP reference, or we're part of tibet_loader and
     //  we're loading due to a location change that should route we exit.
-    if (!TP || TP.$$routing) {
+    if (!TP || TP.$$nested_loader) {
         return;
     }
 
@@ -1569,9 +1569,6 @@
 
     //  should we try to route any initial path content on startup?
     TP.sys.setcfg('uri.routing.onstart', true);
-
-    //  are we routing on hashchange or popstate?
-    TP.sys.setcfg('uri.routing.trigger', 'hashchange');
 
     //  ---
     //  xpath/xslt

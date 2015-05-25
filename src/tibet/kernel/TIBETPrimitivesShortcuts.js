@@ -2618,36 +2618,39 @@ function(anObject, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('go2',
-function(aURI, linkContext) {
+function(aURIOrRoute, linkContext) {
 
     /**
      * @method go2
-     * @summary Sets the window's location to the URI provided. The value of
-     *     this method is that it tracks history and link access which isn't
-     *     done by a typical href or location= invocation.
-     * @param {TP.core.URI|String} aURI The URI to focus on.
+     * @summary A general wrapper function used during processing of link
+     *     elements to give TIBET control over the link traversal process. The
+     *     go2 call ultimately results in either a route change or page change
+     *     depending on the content of the original href value.
+     * @param {TP.core.URI|String} aURIOrRoute The URI or route to go to.
      * @param {Window} linkContext The window with the original link element.
      * @exception TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      */
 
     var context,
-        router,
-        url;
+        router;
 
-    url = TP.str(aURI);
+    if (TP.notValid(aURIOrRoute)) {
+        TP.raise(TP.go2, 'TP.sig.InvalidURI');
+        return false;
+    }
 
     //  If we get a "route" rather than a full URI update the hash and let the
     //  system respond to that to route correctly.
-    if (url === '/' || /^#/.test(url)) {
+    if (/^#/.test(aURIOrRoute)) {
         router = TP.sys.getRouter();
         if (TP.isValid(router)) {
-            router.setRoute(TP.str(url).slice(1));
+            router.setRoute(TP.str(aURIOrRoute).slice(1));
         }
         return false;
     }
 
-    if (!TP.isURI(aURI)) {
+    if (!TP.isURI(aURIOrRoute)) {
         TP.raise(TP.go2, 'TP.sig.InvalidURI');
         return false;
     }
@@ -2661,7 +2664,9 @@ function(aURI, linkContext) {
         return false;
     }
 
-    TP.wrap(context).setLocation(aURI);
+    //  Push the location. This will trigger TIBET's route() machinery to handle
+    //  the actual page/canvas update.
+    TP.sys.getHistory().pushLocation(aURIOrRoute);
 
     return false;
 });

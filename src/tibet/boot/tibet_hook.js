@@ -27,6 +27,7 @@
 (function(root) {
 
     var $$location,
+        $$fragment,
         $$root,
         $$msg,
         tibet;
@@ -80,6 +81,23 @@ if (window.$$hooked === true) {
         //  No TIBET and no config. Log to system console.
         top.console.log('TIBET hook in \'' + window.name +
             '\' unable to find TIBET.');
+
+        //  "redirect" to the root location. This may cause TIBET to boot if the
+        //  current file was a bookmarked content page.
+        if (top.sessionStorage) {
+            top.sessionStorage.setItem('TIBET.project.homepage',
+                top.location.protocol + '//' + top.location.host +
+                    top.location.pathname);
+        }
+
+        //  Rebuild the URL, minus any server path portion.
+        $$fragment = /#/.test($$location) ?
+            $$location.slice($$location.indexOf('#')) : '';
+
+        $$location = '' + top.location.protocol + '//' + top.location.host +
+            $$fragment;
+
+        top.location = $$location;
         return;
     }
 }
