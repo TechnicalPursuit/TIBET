@@ -343,8 +343,8 @@ function(aRequest) {
     }
 
     homeURL = homeURL ||
-        TP.sys.cfg('project.homepage') ||
-        TP.sys.cfg('path.blank_page');
+                TP.sys.cfg('project.homepage') ||
+                TP.sys.cfg('path.blank_page');
     homeURL = TP.uc(homeURL);
 
     request = TP.request();

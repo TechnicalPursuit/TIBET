@@ -6971,10 +6971,13 @@ function(stateObj, title, aURL) {
     //  work around bug(s) on chrome et. al. which fire popstate on pushState
     try {
         this.set('popstate', false);
-        TP.info('replaceState(' + JSON.stringify(state) +
-            ', \'' + entry.at(1) + '\', \'' + url + '\')');
+
+        TP.info('replaceState(' +
+                JSON.stringify(state) +
+                ', \'' + entry.at(1) + '\', \'' + url + '\')');
+
         result = this.getNativeWindow().history.replaceState(
-            state, title || '', url);
+                                            state, title || '', url);
 
         router = TP.sys.getRouter();
         if (TP.canInvoke(router, 'route')) {
@@ -7086,8 +7089,10 @@ function(anEvent) {
     //  answer. We just need to compute the offset.
     if (TP.isValid(anEvent)) {
         state = anEvent.state;
+
         if (TP.isValid(state)) {
             stateIndex = state.index;
+
             if (TP.isNumber(stateIndex)) {
                 this.set('offset', stateIndex - index);
             }
@@ -7121,6 +7126,7 @@ function(anEvent) {
     native = this.getNativeLocation();
 
     if (native === last) {
+
         if (native !== next) {
             //  back
             this.set('direction', 'back');
@@ -7130,6 +7136,7 @@ function(anEvent) {
             //  you can always navigate forward by retracing steps, but you
             //  can't get back if we keep forcing a true back "forward".
             TP.warn('Ambiguous history event. Defaulting to back.');
+
             this.set('direction', 'back');
             this.set('index', index - 1);
         }
@@ -7140,9 +7147,11 @@ function(anEvent) {
     } else {
         //  either brand new, or more than one index away...go(n);
         indexes = this.getLocationIndexes(native);
+
         if (TP.isEmpty(indexes)) {
             //  Never seen it...must be forward.
             history.push(TP.ac({index: index + 1}, '', native));
+
             this.set('direction', 'forward');
             this.set('index', index + 1);
         } else {
@@ -7150,10 +7159,11 @@ function(anEvent) {
             //  they're all < ours it has to be a backward jump.
             min = indexes.length + 1;
             max = -1;
+
             indexes.forEach(function(ind) {
-                min = Math.min(min, ind);
-                max = Math.max(max, ind);
-            });
+                                min = Math.min(min, ind);
+                                max = Math.max(max, ind);
+                            });
 
             if (min > index) {
                 this.set('direction', 'forward');
@@ -7163,6 +7173,7 @@ function(anEvent) {
                 this.set('index', index - 1);
             } else {
                 TP.warn('Ambiguous history event. Defaulting to back.');
+
                 this.set('direction', 'back');
 
                 //  Have to locate the index closest to us that's prior to the
@@ -7173,6 +7184,7 @@ function(anEvent) {
                         stateIndex = indexes[i];
                     }
                 }
+
                 this.set('index', stateIndex);
             }
         }

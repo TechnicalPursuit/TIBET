@@ -9065,7 +9065,7 @@ function(anObj) {
         }
     }
 
-    return Object.keys(anObj).length === 0;
+    return Object.keys(anObj).getSize() === 0;
 });
 
 //  ------------------------------------------------------------------------

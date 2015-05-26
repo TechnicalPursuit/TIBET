@@ -9212,7 +9212,8 @@ function(aURI, aDirection) {
     //  If root domain change we reboot...normally.
     //  ---
 
-    if (lastParts && urlParts.at('root') !== lastParts.at('root')) {
+    if (TP.isValid(lastParts) &&
+        urlParts.at('root') !== lastParts.at('root')) {
         //  TODO: could verify subdomains etc. here.
         if (top.location.toString() !== url) {
             top.location = url;
@@ -9224,7 +9225,8 @@ function(aURI, aDirection) {
     //  If base params changed only the server can determine what to do.
     //  ---
 
-    if (lastParts && urlParts.at('baseParams') !== lastParts.at('baseParams')) {
+    if (TP.isValid(lastParts) &&
+        urlParts.at('baseParams') !== lastParts.at('baseParams')) {
         if (top.location.toString() !== url) {
             top.location = url;
         }
@@ -9235,8 +9237,8 @@ function(aURI, aDirection) {
     //  If fragment (boot) params change we reboot...sometimes
     //  ---
 
-    if (lastParts && urlParts.at('fragmentParams') !==
-            lastParts.at('fragmentParams')) {
+    if (TP.isValid(lastParts) &&
+        urlParts.at('fragmentParams') !== lastParts.at('fragmentParams')) {
         if (top.location.toString() !== url) {
             top.location = url;
         }
@@ -9251,14 +9253,18 @@ function(aURI, aDirection) {
 
     //  Tricky part here is that we have to watch for comparisons regarding '/'
     //  and or launch with the home page. Those aren't considered "different".
-    if (lastParts) {
+    if (TP.isValid(lastParts)) {
+
         home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+
         if (TP.isEmpty(lastParts.at('basePath'))) {
             lastParts.atPut('basePath', TP.uriBasePath(home));
         }
     }
 
-    if (lastParts && urlParts.at('basePath') !== lastParts.at('basePath')) {
+    if (TP.isValid(lastParts) &&
+        urlParts.at('basePath') !== lastParts.at('basePath')) {
+
         if (canvas.getLocation() !== url) {
             canvas.setLocation(TP.uriHead(url));
         }
@@ -9270,6 +9276,7 @@ function(aURI, aDirection) {
     //  ---
 
     val = urlParts.at('fragmentPath');
+
     if (val === '/') {
         val = 'home';
     } else {
@@ -9279,13 +9286,16 @@ function(aURI, aDirection) {
 
     //  See if the value is a route configuration key.
     route = TP.sys.cfg('route.' + val);
+
     if (TP.isEmpty(route)) {
         route = val;
     }
 
     //  See if the value is a tag type for injection.
     type = TP.sys.getTypeByName(route);
+
     if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
+
         TP.info('setting content (not really) to: ' + TP.str(type));
         // BILL: make this work :)
         //TP.sys.getUICanvas().setContentFromTagType(type);
@@ -9294,11 +9304,15 @@ function(aURI, aDirection) {
 
     //  See if the value looks like a URL for set location.
     url = TP.uc(route);
+
     if (TP.isURI(url)) {
+
         url = TP.uriExpandHome(url);
+
         TP.info('setting location to: ' + TP.str(url));
 
         canvas.setLocation(TP.uriHead(url));
+
         return;
     }
 

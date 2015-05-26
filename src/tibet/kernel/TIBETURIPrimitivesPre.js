@@ -46,7 +46,7 @@ TP.definePrimitive('uriBaseParameters', function(aURI, textOnly) {
 
     url = TP.str(aURI);
     if (TP.isEmpty(url)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     base = TP.uriHead(url);
@@ -83,7 +83,7 @@ TP.definePrimitive('uriBasePath', function(aURI) {
 
     url = TP.str(aURI);
     if (TP.isEmpty(url)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     path = TP.uriHead(url);
@@ -216,7 +216,8 @@ function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriCompose', function(parts) {
+TP.definePrimitive('uriCompose',
+function(parts) {
 
     /**
      * @method uriCompose
@@ -230,15 +231,16 @@ TP.definePrimitive('uriCompose', function(parts) {
      * @return {String} A new url assembled from the parts provided.
      */
 
-    var url,
-        root,
+    var root,
         basePath,
         baseParams,
         fragPath,
-        fragParams;
+        fragParams,
+
+        url;
 
     if (TP.isEmpty(parts)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     root = parts.at('root');
@@ -260,28 +262,33 @@ TP.definePrimitive('uriCompose', function(parts) {
     }
 
     if (TP.notEmpty(baseParams)) {
-        url += '?' + (TP.isString(baseParams) ? baseParams :
-            baseParams.asQueryString());
+        url += '?' +
+            (TP.isString(baseParams) ? baseParams : baseParams.asQueryString());
     }
 
     if (fragPath !== '/' && TP.notEmpty(fragPath)) {
+
         if (url.last() !== '/') {
             url += '/';
         }
+
         url += '#' +
             (fragPath.charAt(0) === '/' ? fragPath.slice(1) : fragPath);
     }
 
     if (TP.notEmpty(fragParams)) {
+
         if (!/#/.test(url)) {
+
             if (url.last() !== '/') {
                 url += '/';
             }
+
             url += '#';
         }
 
-        url += '?' + (TP.isString(fragParams) ? fragParams :
-            fragParams.asQueryString());
+        url += '?' +
+            (TP.isString(fragParams) ? fragParams : fragParams.asQueryString());
     }
 
     return url;
@@ -289,7 +296,8 @@ TP.definePrimitive('uriCompose', function(parts) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriDecompose', function(aURI, textOnly) {
+TP.definePrimitive('uriDecompose',
+function(aURI, textOnly) {
 
     /**
      * @method uriDecompose
@@ -310,7 +318,7 @@ TP.definePrimitive('uriDecompose', function(aURI, textOnly) {
 
     url = TP.str(aURI);
     if (TP.isEmpty(url)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     root = TP.uriRoot(url);
@@ -320,16 +328,16 @@ TP.definePrimitive('uriDecompose', function(aURI, textOnly) {
     fragParams = TP.uriFragmentParameters(url, textOnly);
 
     return TP.hc('root', root,
-        'basePath', basePath,
-        'baseParams', baseParams,
-        'fragmentPath', fragPath,
-        'fragmentParams', fragParams
-    );
+                    'basePath', basePath,
+                    'baseParams', baseParams,
+                    'fragmentPath', fragPath,
+                    'fragmentParams', fragParams);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriExpandHome', function(aURI) {
+TP.definePrimitive('uriExpandHome',
+function(aURI) {
 
     /**
      * @method uriExpandHome
@@ -364,7 +372,7 @@ TP.definePrimitive('uriExpandHome', function(aURI) {
         //  Preserve any base parameters from launch if not overridden.
         if (TP.isEmpty(homeParts.at('baseParams'))) {
             homeParts.atPut('baseParams',
-                TP.uriBaseParameters(TP.sys.getLaunchURL(), true));
+                            TP.uriBaseParameters(TP.sys.getLaunchURL(), true));
         }
 
         //  Preserve any fragment path (route) from the original URL provided.
@@ -376,7 +384,8 @@ TP.definePrimitive('uriExpandHome', function(aURI) {
         //  cause our reboot trigger on boot parameters to fire.
         if (TP.isEmpty(homeParts.at('fragmentParams'))) {
             homeParts.atPut('fragmentParams',
-                TP.uriFragmentParameters(TP.sys.getLaunchURL(), true));
+                            TP.uriFragmentParameters(
+                                TP.sys.getLaunchURL(), true));
         }
 
         url = TP.uriCompose(homeParts);
@@ -492,7 +501,8 @@ function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriFragment', function(aURI) {
+TP.definePrimitive('uriFragment',
+function(aURI) {
 
     /**
      * @method uriFragment
@@ -505,7 +515,7 @@ TP.definePrimitive('uriFragment', function(aURI) {
 
     url = TP.str(aURI);
     if (TP.isEmpty(url)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (/#/.test(url)) {
@@ -517,7 +527,8 @@ TP.definePrimitive('uriFragment', function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriFragmentParameters', function(aURI, textOnly) {
+TP.definePrimitive('uriFragmentParameters',
+function(aURI, textOnly) {
 
     /**
      * @method uriFragmentParameters
@@ -529,7 +540,7 @@ TP.definePrimitive('uriFragmentParameters', function(aURI, textOnly) {
      * @param {String|TP.core.URI} aURI The URI to process.
      * @param {Boolean} [textOnly=true] Return just the text parameter string
      *     if any.
-     * @returns {Object}
+     * @returns {Object||TP.lang.Hash} The fragment parameters.
      */
 
     var url,
@@ -538,7 +549,7 @@ TP.definePrimitive('uriFragmentParameters', function(aURI, textOnly) {
 
     url = TP.str(aURI);
     if (TP.isEmpty(url)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Process any hash portion of the URL string.
@@ -549,9 +560,12 @@ TP.definePrimitive('uriFragmentParameters', function(aURI, textOnly) {
     hash = decodeURIComponent(hash);
 
     if (hash.indexOf('?') === -1) {
+
         return TP.notFalse(textOnly) ? '' : {};
     } else {
+
         params = hash.slice(hash.indexOf('?') + 1);
+
         if (TP.notFalse(textOnly)) {
             return params;
         }
@@ -566,7 +580,8 @@ TP.definePrimitive('uriFragmentParameters', function(aURI, textOnly) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriFragmentPath', function(aURI) {
+TP.definePrimitive('uriFragmentPath',
+function(aURI) {
 
     /**
      * @method uriFragmentPath
@@ -583,7 +598,7 @@ TP.definePrimitive('uriFragmentPath', function(aURI) {
 
     url = TP.str(aURI);
     if (TP.isEmpty(url)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     fragment = TP.uriFragment(url);
@@ -601,7 +616,9 @@ TP.definePrimitive('uriFragmentPath', function(aURI) {
         fragment = fragment.slice(0, -1);
     }
 
-    return fragment.charAt(0) === '/' ? fragment : '/' + fragment;
+    return fragment.charAt(0) === '/' ?
+                            fragment :
+                            '/' + fragment;
 });
 
 //  ------------------------------------------------------------------------
@@ -764,7 +781,8 @@ function(aURI, aNode, shouldClone) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriHead', function(aURI) {
+TP.definePrimitive('uriHead',
+function(aURI) {
 
     /**
      * @method uriHead
@@ -785,7 +803,10 @@ TP.definePrimitive('uriHead', function(aURI) {
 
     if (/#/.test(url)) {
         url = url.slice(0, url.indexOf('#'));
-        return url.last() === '/' ? url.slice(0, -1) : url;
+
+        return url.last() === '/' ?
+                url.slice(0, -1) :
+                url;
     }
 
     return url;
@@ -1991,7 +2012,8 @@ function(targetUrl, resultType) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriRoot', function(aURI) {
+TP.definePrimitive('uriRoot',
+function(aURI) {
 
     /**
      * @method uriRoot
@@ -2010,7 +2032,7 @@ TP.definePrimitive('uriRoot', function(aURI) {
 
     url = TP.str(aURI);
     if (TP.isEmpty(url)) {
-        this.raise('InvalidParameter');
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     path = TP.uriHead(url);
@@ -2030,9 +2052,12 @@ TP.definePrimitive('uriRoot', function(aURI) {
         //  include the drive spec in the root the files won't be found. This is
         //  consistent with IE behavior.
         parts = path.split('://');
-        if (/\//.test(parts[1])) {
+
+        if (/\//.test(parts.at(1))) {
             //  If there's a path portion split that off.
-            str = parts[0] + '://' + parts[1].slice(0, parts[1].indexOf('/'));
+            str = parts.at(0) +
+                    '://' +
+                    parts.at(1).slice(0, parts.at(1).indexOf('/'));
         } else {
             str = path;
         }
