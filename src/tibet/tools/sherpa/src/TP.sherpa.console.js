@@ -609,6 +609,8 @@ function(aPrompt, aCSSClass) {
 
     doc = this.getNativeDocument();
 
+    editor = this.get('consoleInput').$get('$editorObj');
+
     if (!TP.isElement(
                 elem = TP.byId(TP.sys.cfg('sherpa.console_prompt'), doc))) {
 
@@ -622,13 +624,15 @@ function(aPrompt, aCSSClass) {
         marker = this.generatePromptMarkAt(range, cssClass, promptStr);
         this.set('currentPromptMarker', marker);
 
-        editor = this.get('consoleInput').$get('$editorObj');
         editor.setCursor(range.to);
     } else {
         TP.elementSetClass(elem, cssClass);
         TP.elementAddClass(elem, 'noselect');
         TP.htmlElementSetContent(elem, promptStr);
     }
+
+    //  We probably resized the prompt mark - tell the editor to refresh.
+    editor.refresh();
 
     return this;
 });
