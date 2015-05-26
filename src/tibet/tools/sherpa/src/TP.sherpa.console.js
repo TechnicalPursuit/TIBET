@@ -752,7 +752,21 @@ function() {
 
     consoleInput = this.get('consoleInput');
 
-    consoleInput.setKeyHandler(TP.core.Keyboard.$$handleKeyEvent);
+    consoleInput.setKeyHandler(
+            function(evt) {
+                var end;
+
+                if (TP.notValid(this.get('currentInputMarker'))) {
+
+                    end = consoleInput.getCursor();
+
+                    this.set('currentInputMarker',
+                        this.generateInputMarkAt(
+                            {anchor: {line: 0, ch: 0}, head: end}));
+                }
+
+                return TP.core.Keyboard.$$handleKeyEvent(evt);
+            }.bind(this));
 
     return this;
 });
@@ -1642,11 +1656,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('getEvalValue',
+TP.sherpa.console.Inst.defineMethod('getInputContent',
 function() {
 
     /**
-     * @method getEvalValue
+     * @method getInputContent
      * @summary Returns the value currently considered the 'input value'
      * @returns {String} The user's input.
      */
@@ -1660,18 +1674,13 @@ function() {
 
     inputText = null;
 
-    //  Try to set up an eval mark
-    if (TP.notValid(this.get('currentEvalMarker'))) {
-        this.setupEvalMark();
-    }
-
     //  Only compute the text if you get a valid range
-    if (TP.isValid(marker = this.get('currentEvalMarker'))) {
+    if (TP.isValid(marker = this.get('currentInputMarker'))) {
         range = marker.find();
         editor = this.get('consoleInput').$get('$editorObj');
         inputText = editor.getRange(range.from, range.to);
     } else {
-        this.teardownEvalMark();
+        this.teardownInputMark();
     }
 
     return inputText;
@@ -1733,6 +1742,7 @@ function() {
             retVal = {line: 0, ch: 0};
         }
 
+        /*
         //  See if there are any output marks between the anchor and head
         marks = this.findOutputMarks(retVal, head);
         if (marks.length > 0) {
@@ -1753,6 +1763,7 @@ function() {
             retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
                         ch: 0};
         }
+        */
     }
 
     return retVal;
