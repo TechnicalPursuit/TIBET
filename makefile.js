@@ -138,6 +138,7 @@ targets.build_deps = function(make) {
         targets.rollup_diff).then(
         targets.rollup_forge).then(
         targets.rollup_jjv).then(
+        targets.rollup_jsdiff).then(
         targets.rollup_jquery).then(
         targets.rollup_jxon).then(
         targets.rollup_less).then(
@@ -264,6 +265,21 @@ targets.rollup_jjv = function(make) {
     sh.exec('cp -f build/jjv.min.js  ../../deps/jjv-tpi.min.js');
 
     targets.rollup_jjv.resolve();
+};
+
+/**
+ */
+targets.rollup_jsdiff = function(make) {
+    var npmdir;
+
+    sh.exec('npm update jsdiff');
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'diff'));
+    sh.exec('npm install -d');
+    sh.exec('cp -f diff.js  ../../deps/diff-tpi.js');
+
+    targets.rollup_jsdiff.resolve();
 };
 
 /**

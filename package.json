@@ -59,6 +59,7 @@
         "jjv": "TechnicalPursuit/jjv",
         "js-beautify": "*",
         "jsDAV": "*",
+        "jsdiff": "TechnicalPursuit/jsdiff",
         "jshint": "*",
         "jxon": "TechnicalPursuit/jxon",
         "less": "TechnicalPursuit/less.js",
