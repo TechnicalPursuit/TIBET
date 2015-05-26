@@ -37,9 +37,7 @@ TP.sherpa.console.Inst.defineAttribute(
         'consoleInput',
         {value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput', TP.hc('shouldCollapse', true))});
 
-TP.sherpa.console.Inst.defineAttribute(
-        'consoleOutput');
-  //      {'value': TP.cpc('xctrls|codeeditor#SherpaConsoleOutput', TP.hc('shouldCollapse', true))});
+TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
 TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
 TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
@@ -243,6 +241,8 @@ function(aSignal) {
 
     this.focusInput();
     this.setInputCursorToEnd();
+
+    aSignal.stopPropagation();
 
     return this;
 });
