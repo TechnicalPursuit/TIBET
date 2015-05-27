@@ -5570,9 +5570,9 @@ function(aNode) {
     /**
      * @method nodeGetControlElement
      * @summary Finds the control element for aNode and returns it. This is
-     *     typically invoked by pseudo-element children of the control during
-     *     various processing which requires them to find the overall control
-     *     (widget) element.
+     *     typically invoked by element children of the control during various
+     *     operations which requires them to find the overall control (widget)
+     *     element.
      * @param {Node} aNode The DOM node to operate on.
      * @returns {Element} A valid element or null.
      */
@@ -5682,6 +5682,31 @@ function(aNode, joinChar) {
     }
 
     return path.reverse().join(joinChar || '.');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetHandlerElement',
+function(aNode) {
+
+    /**
+     * @method nodeGetHandlerElement
+     * @summary Finds the 'handler' element for aNode and returns it. This is
+     *     typically invoked by DOM elements during event processing which
+     *     requires them to find a handler to handle an event.
+     * @param {Node} aNode The DOM node to operate on.
+     * @returns {Element} A valid element or null.
+     */
+
+    if (TP.isElement(aNode) &&
+        (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
+            TP.elementHasAttribute(aNode, 'tibet:ctrl', true) ||
+            TP.elementHasAttribute(aNode, 'tibet:handler', true))) {
+        return aNode;
+    }
+
+    return TP.nodeGetFirstAncestorByAttribute(
+                            aNode, 'tibet:tag tibet:ctrl tibet:handler');
 });
 
 //  ------------------------------------------------------------------------

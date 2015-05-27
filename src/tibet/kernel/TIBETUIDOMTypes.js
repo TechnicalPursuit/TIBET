@@ -2002,10 +2002,13 @@ function(aSignal, isCapturing) {
     /**
      * @method getNextResponder
      * @summary Returns the next responder as computed by the receiver.
-     * @description The default implementation of this method is to get the
-     *     receiver's 'next closest ancestor control element' (i.e. not itself,
-     *     but its closest ancestor that has either a 'tibet:tag' or
-     *     'tibet:ctrl' attribute) and TP.wrap() it.
+     * @description The default implementation of this method is to check to see
+     *     if the receiver has defined a 'tibet:handler' attribute. If so, a
+     *     handler reference is derived from that. If it does not have this
+     *     attribute or a handler cannot be derived from that, then the
+     *     receiver's 'next closest ancestor handler element' (i.e. its closest
+     *     ancestor that has either a 'tibet:tag', a 'tibet:ctrl' or a
+     *     'tibet:handler' attribute) and TP.wrap() it.
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
      * @param {Boolean} isCapturing Whether or not the responder computation
@@ -2014,22 +2017,34 @@ function(aSignal, isCapturing) {
      * @returns {Object} The next responder as computed by the receiver.
      */
 
-    var node,
+    var handler,
+
+        node,
         parentNode,
-        ancestorControl,
         elementWin,
         frame,
         frameElem;
 
+    //  If we have a 'tibet:handler' attribute, then try to obtain an object
+    //  reference from it. If that's valid, then use it - otherwise, move on.
+    if (this.hasAttribute('tibet:handler')) {
+
+        handler = TP.byOID(this.getAttribute('tibet:handler'),
+                            this.getNativeWindow());
+
+        if (TP.isValid(handler)) {
+            return handler;
+        }
+    }
+
     node = this.getNativeNode();
 
-    //  Check for a parent node or node controller we can wrap.
+    //  Check for a parent node or ancestor element handler we can wrap.
     parentNode = node.parentNode;
     if (TP.isElement(parentNode) &&
-            TP.isElement(
-                ancestorControl = TP.nodeGetControlElement(parentNode))) {
+            TP.isElement(handler = TP.nodeGetHandlerElement(parentNode))) {
 
-        return TP.wrap(ancestorControl);
+        return TP.wrap(handler);
     }
 
     //  Check for a containing iframe element we can leverage as a "screen". We
