@@ -412,9 +412,11 @@ function(aValue) {
     editorObj = this.$get('$editorObj');
     editorObj.setValue(aValue);
 
+    /* eslint-disable no-extra-parens */
     (function() {
         editorObj.refresh();
     }).afterUnwind();
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
