@@ -592,7 +592,7 @@ function(aRequest) {
 
                     //  space down from current location/announce
                     TP.sig.UserOutputRequest.construct(
-                        TP.hc('output', '<br/>',
+                        TP.hc('output', '\n',
                             'render', true
                             )).fire(shell);
 
