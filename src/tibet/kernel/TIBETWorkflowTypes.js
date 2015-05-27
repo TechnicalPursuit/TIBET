@@ -4687,6 +4687,11 @@ function() {
         i,
         j;
 
+    //  Make sure to register this object with the system, if necessary, before
+    //  we start observing things so that our registration URI will not be
+    //  created as a 'handler URI' that will be cleared when 'ignore' is called.
+    TP.sys.registerObject(this, null, true);
+
     signals = this.get('triggerSignals');
     if (TP.isValid(signals)) {
         origins = this.get('triggerOrigins') || TP.ANY;
@@ -4766,6 +4771,9 @@ function() {
     }
 
     this.isRegistered(false);
+
+    //  Reverse what we did above.
+    TP.sys.unregisterObject(this);
 
     return this;
 });
