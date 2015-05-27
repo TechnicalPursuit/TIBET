@@ -1355,8 +1355,7 @@ function(aRequest) {
     //  If the request does not wish to run silently, we build a 'construct
     //  out UI' request and tie it back to the original request using the
     //  'cmdID'.
-    if (TP.isTrue(aRequest.at('cmdInteractive')) &&
-        TP.notTrue(aRequest.at('cmdSilent')) &&
+    if (TP.notTrue(aRequest.at('cmdSilent')) &&
         TP.notValid(aRequest.at('cmdPeer'))) {
         //  ensure we've got a unique ID for the overall request. this will
         //  be propagated down to all subrequests which help in processing.
