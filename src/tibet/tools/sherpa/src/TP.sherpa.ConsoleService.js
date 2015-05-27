@@ -229,7 +229,7 @@ function(aFlag) {
 
     var val;
 
-    val = this.get('$consoleGUI').getEvalValue();
+    val = this.get('$consoleGUI').getInputContent();
 
     if (TP.isBoolean(aFlag)) {
         this.$set('awaitingInput', aFlag);
@@ -1226,7 +1226,7 @@ function(anEvent) {
 
     //  capture the text content of the input cell. we'll be passing this
     //  along to the responder if it's got any content
-    input = consoleGUI.getEvalValue();
+    input = consoleGUI.getInputContent();
     if (TP.notValid(input)) {
         //  oops, not even an empty string value - the value must not be 'ready'
         return;
