@@ -464,12 +464,14 @@ function(anObj, anID, forceRegistration, observeResource) {
     //  If the object is a type, then it can be found by using it's global name,
     //  either literally or via a URI or via the TP.sys.getTypeByName() call
     //  (which is what the TP.sys.getObjectById() call above uses).
-    if (TP.isType(anObj)) {
+    //  But go ahead and do the registration if caller is forcing it.
+    if (TP.isType(anObj) && TP.notTrue(forceRegistration)) {
         return false;
     }
 
     //  A URI can be found directly by using the TP.uc() call and its registry.
-    if (TP.isKindOf(anObj, TP.core.URI)) {
+    //  But go ahead and do the registration if caller is forcing it.
+    if (TP.isKindOf(anObj, TP.core.URI) && TP.notTrue(forceRegistration)) {
         return false;
     }
 
