@@ -88,60 +88,74 @@ function(aString) {
      *     is:
      *          {index:1,position:TP.BEFORE}
      *     from which this method will produce:
-     *          {"index":1,position:"before"}
+     *          {"index":1,"position":"before"}
      * @param {String} aString The string to reformat into proper JSON.
      * @returns {String} A properly quoted JSON string.
      */
 
-    var data,
-        entries,
+    var tokens,
 
         str,
 
-        i,
-        kvPair,
+        token,
+        val,
 
-        val;
+        context,
 
-    //  Extract the value from the surrounding '{' ... '}'
-    data = /^\{(.+)\}$/.exec(aString);
-    data = data.at(1);
+        i;
 
-    //  Split along commas (',') and start rebuilding.
+    tokens = TP.$tokenize(aString);
 
-    entries = data.split(',');
+    str = '';
 
-    str = '{';
+    //  Note that we track a 'context' in this method so that values to our
+    //  "JSON" (so to speak) can be things like 'TP.sys.foo' that will resolve
+    //  properly.
+    context = null;
 
-    for (i = 0; i < entries.getSize(); i++) {
+    for (i = 0; i < tokens.getSize(); i++) {
 
-        //  Split out the values on either side of the colon (':'). Note here
-        //  how we throw away surrounding whitespace on either side of these
-        //  values.
-        kvPair = /\s*(.+)\s*:\s*(.+)\s*/.exec(entries.at(i));
+        token = tokens.at(i);
+        val = token.value;
 
-        //  If the value corresponds to a 'TP.' value, then slice off the 'TP.'
-        //  and look for it on the TP object.
-        if (/^TP\./.test(val = kvPair.at(2))) {
-            val = TP[val.slice(3)];
-            val = '"' + val + '"';
-        } else if (TP.isNumber(val = parseFloat(val)) ||
-                    (val === 'true' || val === 'false')) {
-            //  Its a Number or Boolean - we don't surround it with double
-            //  quotes.
-            //  empty
-        } else {
-            //  Its a String - surround it with quotes.
-            val = '"' + val + '"';
+        switch (token.name) {
+
+            case 'identifier':
+            case 'string':
+                if (TP.isValid(context)) {
+                    context = context[val];
+                } else {
+                    if (self[val]) {
+                        context = self[val];
+                    } else {
+                        //  identifier (key) or String - quote it.
+                        str += val.quoted('"');
+                    }
+                }
+                break;
+
+            case 'operator':
+                if (val === '.' && TP.isValid(tokens.at(i - 1))) {
+                    if (TP.notValid(context)) {
+                        context = tokens.at(i - 1).value;
+                    }
+                    break;
+                } else if (val === '}' && TP.isValid(context)) {
+                    val = context;
+                    str += val.quoted('"') + '}';
+                    context = null;
+                } else {
+                    str += val;
+                }
+                break;
+
+            default:
+                //  leave everything else alone.
+                str += val;
+
+                break;
         }
-
-        //  Reassemble it.
-        str += '"' + kvPair.at(1) + '":' + val + ',';
     }
-
-    //  Make sure to slice off the last comma and then append the trailing
-    //  bracket.
-    str = str.slice(0, -1) + '}';
 
     return str;
 });
