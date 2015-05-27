@@ -46,7 +46,8 @@ function(aRequest) {
      *
      *          {Object} cmdStdio The object type or ID to use for handling
      *          any stdio for the request. This object should implement notify,
-     *          stdin, stdout, and stderr calls.
+     *          stdin, stdout, and stderr calls. This call with install a
+     *          standard version that uses the standard TIBET logs for these.
      *
      *          {Boolean} cmdSilent Should shell output be reserved only for
      *          the reponse (and not sent to any Logger) [false].
@@ -171,55 +172,60 @@ function(aRequest) {
     //  Whether or not to echo the request information
     request.atPut('cmdEcho', params.at('cmdEcho') === true);
 
-    //  Build a hash that will hold stdio results for various commands.
-    stdioResults = TP.ac();
+    if (!params.hasKey('cmdStdio')) {
+        //  Build a hash that will hold stdio results for various commands.
+        stdioResults = TP.ac();
 
-    //  Configure STDIO on the shell to capture it for providing to the handler
-    //  functions. Note that we push entries in the order they occur so callers
-    //  get a time-ordered collection of all output from the request.
-    stdioProvider = TP.lang.Object.construct();
-    stdioProvider.defineMethod('notify',
-                    function(anObject, req) {
-                        stdioResults.push({meta: 'notify', data: anObject});
-                    });
-    stdioProvider.defineMethod('stdin',
-                    function(anObject, aDefault, req) {
-                        stdioResults.push({meta: 'stdin', data: anObject});
-                    });
-    stdioProvider.defineMethod('stdout',
-                    function(anObject, req) {
-                        stdioResults.push({meta: 'stdout', data: anObject});
-                    });
-    stdioProvider.defineMethod('stderr',
-                    function(anObject, req) {
-                        stdioResults.push({meta: 'stderr', data: anObject});
-                    });
+        //  Configure STDIO on the shell to capture it for providing to the
+        //  handler functions. Note that we push entries in the order they occur
+        //  so callers get a time-ordered collection of all output from the
+        //  request.
+        stdioProvider = TP.lang.Object.construct();
+        stdioProvider.defineMethod('notify',
+                        function(anObject, req) {
+                            stdioResults.push({meta: 'notify', data: anObject});
+                        });
+        stdioProvider.defineMethod('stdin',
+                        function(anObject, aDefault, req) {
+                            stdioResults.push({meta: 'stdin', data: anObject});
+                        });
+        stdioProvider.defineMethod('stdout',
+                        function(anObject, req) {
+                            stdioResults.push({meta: 'stdout', data: anObject});
+                        });
+        stdioProvider.defineMethod('stderr',
+                        function(anObject, req) {
+                            stdioResults.push({meta: 'stderr', data: anObject});
+                        });
 
-    stdioProvider.defineMethod('report',
-         function(aSignal, results) {
-            results.forEach(function(item) {
-                if (TP.notValid(item)) {
-                    return;
-                }
+        stdioProvider.defineMethod('report',
+             function(aSignal, results) {
+                results.forEach(function(item) {
+                    if (TP.notValid(item)) {
+                        return;
+                    }
 
-                switch (item.meta) {
-                    case 'notify':
-                        top.console.info(TP.str(item.data));
-                        break;
-                    case 'stdin':
-                        top.console.log(TP.str(item.data));
-                        break;
-                    case 'stdout':
-                        top.console.log(TP.str(item.data));
-                        break;
-                    case 'stderr':
-                        top.console.error(TP.str(item.data));
-                        break;
-                    default:
-                        break;
-                }
+                    switch (item.meta) {
+                        case 'notify':
+                            top.console.info(TP.str(item.data));
+                            break;
+                        case 'stdin':
+                            top.console.log(TP.str(item.data));
+                            break;
+                        case 'stdout':
+                            top.console.log(TP.str(item.data));
+                            break;
+                        case 'stderr':
+                            top.console.error(TP.str(item.data));
+                            break;
+                        default:
+                            break;
+                    }
+                });
             });
-        });
+    } else {
+        stdioProvider = aRequest.at('cmdStdio');
+    }
 
     //  Install our object as the STDIO provider
     shell.attachSTDIO(stdioProvider);
@@ -228,9 +234,11 @@ function(aRequest) {
     success = params.at('success');
     if (TP.notValid(success)) {
         if (request.at('cmdSilent') !== true) {
-            success = stdioProvider.report;
+            success = TP.isCallable(stdioProvider.report) ?
+                                                stdioProvider :
+                                                TP.RETURN_NULL;
         } else {
-            success = function() {};
+            success = TP.RETURN_NULL;
         }
     }
     successHandler = function(aSignal) {
@@ -250,9 +258,11 @@ function(aRequest) {
     failure = params.at('failure');
     if (TP.notValid(failure)) {
         if (request.at('cmdSilent') !== true) {
-            failure = stdioProvider.report;
+            failure = TP.isCallable(stdioProvider.report) ?
+                                                stdioProvider :
+                                                TP.RETURN_NULL;
         } else {
-            failure = function() {};
+            failure = TP.RETURN_NULL;
         }
     }
     failureHandler = function(aSignal) {
