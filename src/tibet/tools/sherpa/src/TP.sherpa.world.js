@@ -33,6 +33,10 @@ TP.sherpa.world.Inst.defineAttribute('currentFocus');
 TP.sherpa.world.Inst.defineMethod('setup',
 function() {
 
+    /**
+     * @method setup
+     */
+
     var initialScreenWidth,
         initialScreenHeight,
 
