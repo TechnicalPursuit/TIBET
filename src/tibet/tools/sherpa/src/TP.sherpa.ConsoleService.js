@@ -212,6 +212,27 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('sendShellCommand',
+function(cmdText) {
+
+    /**
+     * @method sendShellCommand
+     * @summary
+     * @returns
+     */
+
+    return TP.shell(
+                TP.hc(
+                    'cmdSrc', cmdText,
+                    'cmdEcho', true,
+                    'cmdHistory', true,
+                    'cmdSilent', false,
+                    'cmdStdio', this
+                    ));
+});
+
+//  ------------------------------------------------------------------------
 //  Display Primitives
 //  ------------------------------------------------------------------------
 

@@ -36,7 +36,36 @@
             display: none;
         }
 
-        #SherpaConsoleOutputToolbar .toolbarButton {
+        #SherpaConsoleCommandToolbar {
+
+            position: absolute;
+
+            top: 5px;
+            left: 0px;
+
+            width: 100px;
+            height: 20px;
+
+            display: flex;
+        }
+
+        #SherpaConsoleCommandToolbar[pclass|hidden] {
+
+            display: none;
+        }
+
+        #clearButton {
+
+            cursor: pointer;
+
+            width: 20px;
+            height: 20px;
+
+            background-size: 20px 20px;
+            background-image: url(../../../node_modules/tibet/src/tibet/tools/sherpa/media/rounded60.svg);
+        }
+
+        .toolbarButton {
 
             cursor: pointer;
 
@@ -65,6 +94,10 @@
 
   <div id="north" class="framing h-edge north center" pclass:hidden="true">
       <div class="drawer">
+        <!-- The markup used for command toolbar -->
+        <div id="SherpaConsoleCommandToolbar" pclass:hidden="true" tibet:handler="SherpaConsole">
+            <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})"/>
+        </div>
         <!-- The markup used for output toolbar -->
         <div id="SherpaConsoleOutputToolbar" pclass:hidden="true">
             <div class="toolbarButton" mode="h_split_bottom">

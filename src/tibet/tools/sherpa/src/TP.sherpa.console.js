@@ -248,6 +248,51 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('handleShellCommand',
+function(aSignal) {
+
+    var cmdText;
+
+    if (TP.notEmpty(cmdText = aSignal.at('cmdText'))) {
+
+        cmdText = cmdText.stripEnclosingQuotes();
+        TP.byOID('SherpaConsoleService').sendShellCommand(cmdText);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('handleConsoleCommand',
+function(aSignal) {
+
+    var cmdText,
+        tsh,
+        req;
+
+    if (TP.notEmpty(cmdText = aSignal.at('cmdText'))) {
+
+        cmdText = cmdText.stripEnclosingQuotes();
+
+        tsh = TP.core.TSH.getDefaultInstance();
+
+        cmdText = cmdText.slice(1);
+
+        req = TP.sig.ConsoleRequest.construct(
+                            TP.hc('cmd', cmdText,
+                                    'cmdSilent', true));
+        req.fire(tsh);
+    }
+
+    this.setPrompt(tsh.getPrompt());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
