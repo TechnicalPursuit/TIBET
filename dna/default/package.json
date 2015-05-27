@@ -15,6 +15,7 @@
     "minimist": "*",
     "morgan": "*",
     "phantomjs": "*",
+    "require-dir": "*",
     "serve-static": "*",
     "shelljs": "TechnicalPursuit/shelljs",
     "tibet": "*",

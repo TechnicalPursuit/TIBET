@@ -1,11 +1,11 @@
 /**
- * @overview A optional "development-time server for TIBET (aka the TDS).
- *     The TDS supports basic functionality for doing interactive development
- *     via the TIBET Sherpa IDE. Core features are file-watch capability that
- *     triggers a server-sent-event for edits done on the server and WebDAV
- *     support for storing edits done on the client. In combination these
- *     let you edit your application components on either side of the wire and
- *     keep them in sync with a minimum of overhead and minimum reload impact.
+ * @overview An optional server for TIBET development and deployment. The TIBET
+ *     Data Server (TDS) provides a number of features to make development
+ *     faster and more fluid including support for live sourcing and storing
+ *     client-side changes back to the server. The TDS is also engineered to be
+ *     a complementary server to a TIBET client in that it focuses on serving
+ *     data, not "pages", in a purely RESTful fashion. The TDS also has features
+ *     which allow it to act as a surrogate to CouchDB for TIBET+CouchDB apps.
  * @author Scott Shattuck (ss), William J. Edney (wje)
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -46,12 +46,16 @@
         minimist,       // Argument processing.
 
         express,        // Express web framework.
+        router,         // Express route processor.
         bodyParser,     // Express body parser.
         compression,    // Express gzip/compression.
         //csurf,          // Express cross-site protection.
         morgan,         // Express logging.
         session,        // Express session management.
         serveStatic,    // Express file-system serving.
+
+        requireDir,     // Directory loader.
+        routes,         // Loaded route handlers.
 
         TDS,            // TIBET middleware addons.
 
@@ -64,12 +68,18 @@
     http = require('http');
     minimist = require('minimist');
     express = require('express');
+
     bodyParser = require('body-parser');
     compression = require('compression');
     //csurf = require('csurf');
     morgan = require('morgan');
+    router = express.Router();
     session = require('express-session');
     serveStatic = require('serve-static');
+
+    requireDir = require('require-dir');
+    routes = requireDir('./routes');
+
     TDS = require('tibet/etc/tds/tds-middleware');
 
     //  ---
@@ -124,6 +134,11 @@
     //  Express logger.
     //  TODO: Add options control in tibet.json.
     app.use(morgan('dev', {skip: TDS.logFilter}));
+
+    //  Load the routes found in the route subdirectory.
+    Object.keys(routes).forEach(function(route) {
+        app.use('/', routes[route]);
+    });
 
     //  ---
     //  ---
