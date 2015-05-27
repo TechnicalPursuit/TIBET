@@ -119,6 +119,12 @@ function(aResourceID, aRequest) {
 
     this.callNextMethod();
 
+    //  make to register ourself before we start signing up for signals... this
+    //  way, our registration is not considered a 'handler' registration and
+    //  won't be GC'ed when we ignore those signals. This observe/ignore cycle
+    //  happens frequently throughout the run of this service.
+    this.register();
+
     //  make sure we have a proper request object and a shell that can
     //  assist us with producing both our user interface and responses
     request = TP.request(aRequest);
