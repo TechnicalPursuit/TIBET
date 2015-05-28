@@ -8497,7 +8497,13 @@ function(aSignal, isCapturing) {
      *     false.
      */
 
-    return false;
+    //  The default is that we don't participate in capturing responder chains
+    //  unless there is an 'ev:phase' attribute on us that says otherwise.
+    if (TP.isTrue(isCapturing)) {
+        return false;
+    }
+
+    return TP.isCallable(this.getHandler(aSignal));
 });
 
 //  ------------------------------------------------------------------------
