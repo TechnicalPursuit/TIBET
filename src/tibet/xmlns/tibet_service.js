@@ -19,6 +19,42 @@
 TP.core.UIElementNode.defineSubtype('tibet.service');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Type.defineMethod('tagAttachData',
+function(aRequest) {
+
+    /**
+     * @method tagAttachData
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    if (TP.bc(tpElem.getAttribute('triggerOnAttach')) === true) {
+        tpElem.trigger();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
