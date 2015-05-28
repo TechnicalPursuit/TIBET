@@ -2448,14 +2448,13 @@ function(aSignal, isCapturing) {
      *     the supplied signal and capturing mode.
      */
 
-    //  The default is that we don't participate in capturing responder
-    //  chains unless there is an 'ev:phase' attribute on us that says
-    //  otherwise.
+    //  The default is that we don't participate in capturing responder chains
+    //  unless there is an 'ev:phase' attribute on us that says otherwise.
     if (TP.isTrue(isCapturing) && !this.shouldCaptureSignal(aSignal)) {
         return false;
     }
 
-    return TP.isFunction(this.getHandler(aSignal));
+    return TP.isCallable(this.getHandler(aSignal));
 });
 
 //  ------------------------------------------------------------------------
