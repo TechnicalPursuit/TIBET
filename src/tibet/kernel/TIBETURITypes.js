@@ -9136,7 +9136,10 @@ function(aURI, aDirection) {
         type,
         signal,
         home,
-        route;
+
+        route,
+        routeParts,
+        routeTarget;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
@@ -9291,14 +9294,38 @@ function(aURI, aDirection) {
         route = val;
     }
 
-    //  See if the value is a tag type for injection.
+    //  If the route has an '=' in it, then it's a 'directed injection'
+    if (/\=/.test(route)) {
+        routeParts = route.split('=');
+
+        //  The target will be the ID of the element to inject the content into
+        //  and the 'route' is the type name of the TP.core.ElementNode to
+        //  inject in there.
+        routeTarget = routeParts.first();
+        route = routeParts.last();
+    }
+
+    //  See if the value is a tag type for injection. It may be whether it's a
+    //  'directed' or 'undirected' injection (undirected injections go into the
+    //  'body' element of the UI canvas).
     type = TP.sys.getTypeByName(route);
 
     if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
 
-        TP.info('setting content (not really) to: ' + TP.str(type));
-        // BILL: make this work :)
-        //TP.sys.getUICanvas().setContentFromTagType(type);
+        //  If we got a routeTarget above, then its a directed injection.
+        if (TP.notEmpty(routeTarget)) {
+            routeTarget = TP.byOID(routeTarget);
+        }
+
+        //  If we can't resolve a routeTarget, then just grab the body element
+        //  for an undirected injection.
+        if (!TP.isKindOf(routeTarget, 'TP.core.ElementNode')) {
+            routeTarget = TP.sys.getUICanvas().getDocument().getBody();
+        }
+
+        //  Inject the content.
+        routeTarget.setContentFromTagType(type);
+
         return;
     }
 

@@ -5457,6 +5457,39 @@ function(newContent, aRequest, stdinContent) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('setContentFromTagType',
+function(tagType, aRequest) {
+
+    /**
+     * @method setContent
+     * @summary Sets the content of the receiver's native DOM counterpart to
+     *     the content supplied.
+     * @param {TP.meta.core.ElementNode} tagType The subtype of
+     *     TP.meta.ElementNode which will be asked for it's "empty markup".
+     * @param {TP.sig.Request} aRequest An optional request object which defines
+     *     further parameters.
+     * @returns {TP.core.ElementNode} The result of setting the content of the
+     *     receiver.
+     */
+
+    var content;
+
+    if (!TP.isSubtypeOf(tagType, 'TP.core.ElementNode')) {
+        return this.raise('TP.sig.InvalidType',
+                            'Not a subtype of TP.core.ElementNode.');
+    }
+
+    content = tagType.generateEmptyMarkup();
+
+    if (TP.isEmpty(content)) {
+        return this;
+    }
+
+    return this.setContent(content, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('setRawContent',
 function(newContent, aRequest, shouldSignal) {
 
