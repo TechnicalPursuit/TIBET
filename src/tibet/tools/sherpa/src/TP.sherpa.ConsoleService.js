@@ -495,6 +495,48 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleConsoleCommand',
+function(aSignal) {
+
+    var cmdText,
+        req;
+
+    if (TP.notEmpty(cmdText = aSignal.at('cmdText'))) {
+
+        cmdText = cmdText.stripEnclosingQuotes();
+
+        if (this.isShellCommand(cmdText)) {
+
+            this.sendShellCommand(cmdText);
+        } else {
+            cmdText = cmdText.slice(1);
+
+            req = TP.sig.ConsoleRequest.construct(
+                                TP.hc('cmd', cmdText,
+                                        'cmdSilent', true));
+            req.fire(this.get('model'));
+
+            this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('isShellCommand',
+function(aCommand) {
+
+    if (aCommand === ':clear') {
+        return false;
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
 //  Key Handling
 //  ------------------------------------------------------------------------
 
