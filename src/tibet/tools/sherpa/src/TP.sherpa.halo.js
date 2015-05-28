@@ -66,6 +66,15 @@ function() {
             this.handleHaloClick(aSignal);
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
+
+    (function(aSignal) {
+        if (TP.notTrue(this.getAttribute('hidden'))) {
+            aSignal.preventDefault();
+            aSignal.stopPropagation();
+
+            TP.byOID('SherpaConsoleService').sendShellCommand(':edit $HALO');
+        }
+    }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMDblClick');
     /* eslint-disable no-wrap-func,no-extra-parens */
 
     return this;
@@ -211,12 +220,6 @@ function(aSignal) {
             case 'North':
                 break;
             case 'Northeast':
-                TP.shell(TP.hc(
-                            //'cmdSrc', ':edit $HALO',
-                            'cmdSrc', '1 + 2',
-                            'cmdEcho', true,
-                            'cmdHistory', true,
-                            'cmdSilent', false));
                 break;
             case 'East':
                 break;
