@@ -39,6 +39,8 @@ TP.sherpa.console.Inst.defineAttribute(
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
+TP.sherpa.console.Inst.defineAttribute('searcherTile');
+
 TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
 TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
 
@@ -249,9 +251,12 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('handleDOMQuestionMarkUp__DOMQuestionMarkUp',
 function(aSignal) {
 
+    this.toggleSearcher();
 
+    aSignal.stopPropagation();
 
     return this;
 });
@@ -333,6 +338,10 @@ function(beHidden) {
             TP.core.Keyboard,
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
+        this.ignore(
+            TP.core.Keyboard,
+            'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
+
         TP.wrap(TP.byId('content', this.getNativeWindow())).hide();
 
         //  Execute the supertype's method and capture the return value *after*
@@ -357,6 +366,10 @@ function(beHidden) {
         this.observe(
             TP.core.Keyboard,
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+
+        this.observe(
+            TP.core.Keyboard,
+            'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
     }
 
     return retVal;
@@ -1067,6 +1080,48 @@ function(aFlag) {
      */
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('toggleSearcher',
+function() {
+
+    /**
+     * @method toggleSearcher
+     * @summary Returns false for now.
+     * @param {Boolean} aFlag The new value to set.
+     * @returns {Boolean}
+     */
+
+    var searcherTile,
+
+        tileBody,
+        searcherContent;
+
+    if (TP.notValid(searcherTile = this.get('searcherTile'))) {
+        searcherTile = TP.byOID('Sherpa', this.get('vWin')).makeTile(
+                                    'searcher_tile',
+                                    this.get('consoleOutput'));
+        searcherTile.setAttribute('contenttype', 'sherpa:searcher');
+
+        this.set('searcherTile', searcherTile);
+
+        tileBody = searcherTile.get('body');
+
+        searcherContent = tileBody.addContent(
+                            TP.sherpa.searcher.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML));
+
+        searcherContent.awaken();
+        searcherContent.setup();
+    }
+
+    searcherTile.toggle('hidden');
+    searcherContent.toggle('hidden');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
