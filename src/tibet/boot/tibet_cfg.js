@@ -1313,7 +1313,7 @@
     TP.sys.setcfg('tds.webdav.root', '~app_src');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
-    TP.sys.setcfg('tds.patch.root', '~app_src');
+    TP.sys.setcfg('tds.patch.root', '~');
     TP.sys.setcfg('tds.patch.uri', '/tds/patch');
 
     TP.sys.setcfg('tds.port', 1407);

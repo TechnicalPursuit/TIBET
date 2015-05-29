@@ -17,6 +17,8 @@
 TP.sherpa.Element.defineSubtype('sherpa:methodeditor');
 
 TP.sherpa.methodeditor.Inst.defineAttribute('didSetup');
+
+TP.sherpa.methodeditor.Inst.defineAttribute('serverSourceObject');
 TP.sherpa.methodeditor.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.methodeditor.Inst.defineAttribute(
@@ -39,6 +41,26 @@ TP.sherpa.methodeditor.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.methodeditor.Inst.defineMethod('acceptMethod',
+function() {
+
+    var newSourceText,
+        newMethodObj;
+
+    newSourceText = this.get('editor').getDisplayValue();
+
+    newMethodObj = this.get('sourceObject').replaceWithSourceText(
+                                                        newSourceText);
+
+    //  Note that we *must* use '$set()' here to avoid using our setter and
+    //  resetting the server source object.
+    this.$set('sourceObject', newMethodObj);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.methodeditor.Inst.defineMethod('setup',
 function() {
 
@@ -56,9 +78,50 @@ function() {
     editorObj.setOption('lineNumbers', true);
     editorObj.setOption('lineWrapping', true);
 
-    editorObj.refresh();
-
     this.$set('didSetup', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('handleTP_sig_MethodAccept',
+function(aSignal) {
+
+    this.acceptMethod();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('handleTP_sig_MethodPush',
+function(aSignal) {
+
+    var newSourceText,
+
+        serverSourceObject,
+
+        patchText,
+        patchPath;
+
+    this.acceptMethod();
+
+    newSourceText = this.get('editor').getDisplayValue();
+
+    serverSourceObject = this.get('serverSourceObject');
+
+    patchText = serverSourceObject.getMethodPatch(newSourceText);
+
+    if (TP.notEmpty(patchText)) {
+
+        patchPath = TP.objectGetSourcePath(this.get('sourceObject'));
+
+        TP.byOID('Sherpa').postPatch(patchText, patchPath);
+
+        //  TODO: Only do this if the patch operation succeeded
+        this.set('serverSourceObject', this.get('sourceObject'));
+    }
 
     return this;
 });
@@ -99,6 +162,7 @@ TP.sherpa.methodeditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
     this.$set('sourceObject', anObj);
+    this.$set('serverSourceObject', anObj);
 
     this.refresh();
 

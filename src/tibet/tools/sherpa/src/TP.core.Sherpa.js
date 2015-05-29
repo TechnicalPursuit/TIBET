@@ -457,6 +457,42 @@ function() {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('postPatch',
+function(patchText, patchVirtualPath, onsuccess, onfailure) {
+
+    var patchURL,
+
+        postRequest;
+
+    if (TP.isEmpty(patchText)) {
+        return;
+    }
+
+    patchURL = TP.uc(TP.sys.cfg('tds.patch.uri'));
+    if (TP.notValid(patchURL)) {
+        TP.error('Unable to create URL for patch server.');
+        return;
+    }
+
+    if (TP.isEmpty(patchVirtualPath)) {
+        TP.error('Unable to locate source path for function.');
+        return;
+    }
+
+    postRequest = patchURL.constructRequest(
+                    TP.hc('async', false, 'mimetype', TP.JSON_ENCODED));
+
+    patchURL.setResource(TP.hc('type', 'patch',
+                                'target', patchVirtualPath,
+                                'content', patchText));
+
+    patchURL.save(postRequest);
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('toggle',
