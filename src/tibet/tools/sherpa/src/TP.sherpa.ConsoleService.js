@@ -519,6 +519,8 @@ function(aSignal) {
 
             this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
         }
+
+        this.get('$consoleGUI').focusInput();
     }
 
     return this;
