@@ -54,17 +54,6 @@
             display: none;
         }
 
-        #clearButton {
-
-            cursor: pointer;
-
-            width: 20px;
-            height: 20px;
-
-            background-size: 20px 20px;
-            background-image: url(../../../node_modules/tibet/src/tibet/tools/sherpa/media/rounded60.svg);
-        }
-
         .toolbarButton {
 
             cursor: pointer;
@@ -76,6 +65,33 @@
         *|div.framing[pclass|hidden] {
             display: block;
         }
+
+        .bordered-input {
+            border-top: dashed 1px #2AA198;
+            border-bottom: dashed 1px #2AA198;
+        }
+
+        .bordered-input-left {
+            border-left: dashed 1px #2AA198;
+        }
+
+        .bordered-input-right {
+            border-right: dashed 1px #2AA198;
+        }
+
+        .bordered-eval {
+            border-top: dashed 1px #D33682;
+            border-bottom: dashed 1px #D33682;
+        }
+
+        .bordered-eval-left {
+            border-left: dashed 1px #D33682;
+        }
+
+        .bordered-eval-right {
+            border-right: dashed 1px #D33682;
+        }
+
         ]]>
     </style>
 
@@ -96,7 +112,12 @@
       <div class="drawer">
         <!-- The markup used for command toolbar -->
         <div id="SherpaConsoleCommandToolbar" pclass:hidden="true" tibet:handler="SherpaConsoleService">
-            <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})"/>
+            <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})">
+                <img src="~ide_root/media/rounded60.svg" width="20" height="20"/>
+            </div>
+            <div id="watchButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':watchFS --auto'})">
+                <img src="~ide_root/media/eye.svg" width="20" height="20"/>
+            </div>
         </div>
         <!-- The markup used for output toolbar -->
         <div id="SherpaConsoleOutputToolbar" pclass:hidden="true">
