@@ -1103,7 +1103,7 @@
     TP.sys.setcfg('log.request_signals', false);
 
     //  should we log route (url path) changes?
-    TP.sys.setcfg('log.routes', true);
+    TP.sys.setcfg('log.routes', false);
 
     //  should scans of object properties be logged/warned?
     TP.sys.setcfg('log.scans', false);
