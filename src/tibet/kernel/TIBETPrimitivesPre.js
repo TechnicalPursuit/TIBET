@@ -7777,7 +7777,8 @@ function(anObj) {
     //  The ECMA-402 i18n spec for ECMAScript defines that these objects should
     //  return 'Invalid Date' (and ECMAScript edition 5 specifies 'NaN' if they
     //  were created with an invalid number).
-    if (anObj.toString() === 'Invalid Date' || anObj.toString() === 'NaN') {
+    if (anObj.toString &&
+        (anObj.toString() === 'Invalid Date' || anObj.toString() === 'NaN')) {
         return true;
     }
 
