@@ -10318,6 +10318,218 @@ function() {
 });
 
 //  -----------------------------------------------------------------------
+//  TP.lang.Namespace
+//  -----------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('lang.Namespace');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineAttribute('$$isNamespace');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('init',
+function(namespaceName, root, fullName) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} namespaceName A String of 1 or more period-separated
+     *     names that will define the name of a namespace.
+     * @param {String} root The top-level namespace owner.
+     * @param {String} fullName The 'full name' of the receiver. This is the
+     *     name that will be used by the system for the receiver's TP.ID and
+     *     TP.NAME.
+     * @returns {TP.lang.Namespace} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.$set('$$isNamespace', true, false);
+
+    this.$set(TP.NAME, fullName, false);
+    this.$set(TP.ID, fullName, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getTypeNames',
+function() {
+
+    /**
+     * @method getTypeNames
+     * @summary Returns the list of type names attached to this namespace
+     *     object.
+     * @returns {Array[TP.meta.*]} A list of type names attached to (or 'under')
+     *     the receiver.
+     */
+
+    var keys,
+        namelist,
+        len,
+        j,
+        typename;
+
+    //  Grab the keys from ourself. This will not grab internal slot keys, but
+    //  that's ok since no types should be registered under those kind of keys.
+    keys = TP.keys(this);
+
+    namelist = TP.ac();
+
+    //  Iterate over the keys, prepend our name and a '.' onto the front of it,
+    //  which should be the 'full' type name. If resolving that String as a type
+    //  name results in a real type, then push that name onto our results.
+    len = keys.getSize();
+    for (j = 0; j < len; j++) {
+
+        typename = this[TP.NAME] + '.' + keys.at(j);
+
+        if (TP.isType(typename.asType())) {
+            namelist.push(typename);
+        }
+    }
+
+    return namelist;
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('defineNamespace',
+function(namespaceName, root, forceDefinition) {
+
+    /**
+     * @method defineNamespace
+     * @summary Defines a namespace named by the supplied name, defined as a
+     *     'namespace' on the root provided.
+     * @description The name supplied to this method defines a namespace list
+     *     from the root object to the last name at the end of the supplied
+     *     namespace name.
+     *     Note that this method is a replacement for the bootstrap version of
+     *     TP.defineNamespace() that defines namespaces using real
+     *     TP.lang.Namespace objects. See below for logic that upconverts any
+     *     existing namespaces to be real TP.lang.Namespace objects.
+     * @param {String} namespaceName A String of 1 or more period-separated
+     *     names that will define the name of a namespace.
+     * @param {String} root The top-level namespace owner.
+     * @param {Boolean} [forceDefinition=false] Whether or not to force the
+     *     definition of the namespace whether it is already defined or not.
+     * @returns {TP.lang.Namespace} The newly defined namespace.
+     */
+
+    var names,
+        currentObj,
+        prefix,
+        fullName,
+        i;
+
+    currentObj = self[root];
+    if (!currentObj) {
+        TP.boot.$stderr('Invalid namespace root.', TP.FATAL);
+        return;
+    }
+
+    prefix = root + '.';
+
+    names = namespaceName.split('.');
+
+    //  Descend through the names, making sure that there's a real Object at
+    //  each level.
+    for (i = 0; i < names.length; i++) {
+
+        if (!currentObj[names[i]] || TP.isTrue(forceDefinition)) {
+
+            fullName = prefix + names.slice(0, i + 1).join('.');
+            currentObj[names[i]] = TP.lang.Namespace.construct(
+                                                namespaceName, root, fullName);
+        }
+
+        currentObj = currentObj[names[i]];
+    }
+
+    //  Return the 'last' Object that we created - that'll be the namespace that
+    //  the caller wants.
+    return currentObj;
+});
+
+//  ------------------------------------------------------------------------
+
+//  Wrap the following logic in an IIFE to avoid introducing variables into the
+//  global scope.
+
+/* eslint-disable wrap-iife */
+(function() {
+
+    //  This function upconverts existing namespaces. Because it is very easy to
+    //  have circular dependencies here, it is important to keep this code in
+    //  the exact order it was written.
+
+    var len,
+        i,
+
+        oldNamespace,
+        oldKeys,
+
+        names,
+        root,
+        name,
+
+        newNamespace,
+
+        len2,
+        j;
+
+    len = TP.$$bootstrap_namespaces.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        //  Grab the existing namespace *object* (i.e. POJO) that was registered
+        //  using the bootstrap version of TP.defineNamespace().
+        oldNamespace = TP.$$bootstrap_namespaces.at(i);
+
+        //  Get the old namespace's name and split it into two parts: the root
+        //  and the name (which might itself be dot-separated, but we join
+        //  together to form a full name - minus the root, which is how the
+        //  TP.defineNamespace call expects it).
+        names = oldNamespace[TP.NAME].split('.');
+        root = names.at(0);
+        name = names.slice(1).join('.');
+
+        //  Define a new real namespace object to supplant the old namespace.
+        //  Note that after this call, our only handle to the old namespace is
+        //  our local variable holding it here.
+        newNamespace = TP.defineNamespace(name, root, true);
+
+        //  Fetch the keys using the primitive Object.keys() call. It is
+        //  important to use this call, since our TP.keys() call omits internal
+        //  slots but this routine must copy *all* slots, internal or otherwise.
+        oldKeys = Object.keys(oldNamespace);
+
+        //  Loop over the keys and copy all of those slots from the old
+        //  namespace to the new namespace, except for the locally-programmed
+        //  'getTypeNames' method - we already have a similar one defined as an
+        //  instance method on the real TP.lang.Namespace type.
+        len2 = oldKeys.getSize();
+        for (j = 0; j < len2; j++) {
+            if (oldKeys.at(j) !== 'getTypeNames') {
+                newNamespace[oldKeys.at(j)] = oldNamespace[oldKeys.at(j)];
+            }
+        }
+    }
+
+    //  Clear the Array that was holding our list of old namespaces.
+    TP.$$bootstrap_namespaces = null;
+})();
+/* eslint-enable wrap-iife */
+
+//  -----------------------------------------------------------------------
 //  API OBJECT SUPPORT
 //  -----------------------------------------------------------------------
 
