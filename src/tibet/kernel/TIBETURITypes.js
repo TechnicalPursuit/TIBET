@@ -9129,14 +9129,14 @@ function(aURI, aDirection) {
         url,
         urlParts,
         canvas,
-        val,
+        fragPath,
         result,
         name,
         payload,
         type,
         signal,
         home,
-
+        config,
         route,
         routeParts,
         routeTarget;
@@ -9218,7 +9218,7 @@ function(aURI, aDirection) {
     if (TP.isValid(lastParts) &&
         urlParts.at('root') !== lastParts.at('root')) {
         //  TODO: could verify subdomains etc. here.
-        if (top.location.toString() !== url) {
+        if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
         return;
@@ -9230,7 +9230,7 @@ function(aURI, aDirection) {
 
     if (TP.isValid(lastParts) &&
         urlParts.at('baseParams') !== lastParts.at('baseParams')) {
-        if (top.location.toString() !== url) {
+        if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
         return;
@@ -9242,7 +9242,7 @@ function(aURI, aDirection) {
 
     if (TP.isValid(lastParts) &&
         urlParts.at('fragmentParams') !== lastParts.at('fragmentParams')) {
-        if (top.location.toString() !== url) {
+        if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
         return;
@@ -9278,20 +9278,29 @@ function(aURI, aDirection) {
     //  If fragment path changed it's a route
     //  ---
 
-    val = urlParts.at('fragmentPath');
+    fragPath = urlParts.at('fragmentPath');
 
-    if (val === '/') {
-        val = 'home';
+    if (fragPath === '/') {
+        fragPath = 'home';
     } else {
         //  remove leading '/' for route name work.
-        val = val.slice(1);
+        fragPath = fragPath.slice(1);
+    }
+
+    if (TP.sys.cfg('log.routes')) {
+        TP.info('checking \'' + fragPath + '\' route configuration...');
     }
 
     //  See if the value is a route configuration key.
-    route = TP.sys.cfg('route.' + val);
+    config = TP.sys.cfg('route.' + fragPath.toLowerCase() + '.content');
 
-    if (TP.isEmpty(route)) {
-        route = val;
+    if (TP.notEmpty(config)) {
+        if (TP.sys.cfg('log.routes')) {
+            TP.info('route \'' + route + '\' mapped to: ' + config);
+        }
+        route = config;
+    } else {
+        route = fragPath;
     }
 
     //  If the route has an '=' in it, then it's a 'directed injection'
@@ -9311,7 +9320,6 @@ function(aURI, aDirection) {
     type = TP.sys.getTypeByName(route);
 
     if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
-
         //  If we got a routeTarget above, then its a directed injection.
         if (TP.notEmpty(routeTarget)) {
             routeTarget = TP.byOID(routeTarget);
@@ -9326,27 +9334,21 @@ function(aURI, aDirection) {
         //  Inject the content.
         routeTarget.setContentFromTagType(type);
 
-        return;
+    } else {
+
+        //  See if the value looks like a URL for set location.
+        url = TP.uc(route);
+        if (TP.isURI(url)) {
+
+            url = TP.uriExpandHome(url);
+            TP.info('setting location to: ' + TP.str(url));
+            canvas.setLocation(TP.uriHead(url));
+        }
     }
 
-    //  See if the value looks like a URL for set location.
-    url = TP.uc(route);
-
-    if (TP.isURI(url)) {
-
-        url = TP.uriExpandHome(url);
-
-        TP.info('setting location to: ' + TP.str(url));
-
-        canvas.setLocation(TP.uriHead(url));
-
-        return;
-    }
-
-    //  Routable path change. In this case we ignore boot param shifts since
-    //  that could simply be failure to duplicate them during pushState.
-    result = this.processRoute('/' + val);
-
+    //  Try to produce a useful signal reference for the route. If we can then
+    //  we'll signal that regardless of whether it mapped via config or not.
+    result = this.processRoute('/' + fragPath);
     if (TP.isEmpty(result)) {
         return;
     }
@@ -10029,3 +10031,4 @@ function(targetURI, aRequest) {
 //  ========================================================================
 //  end
 //  ========================================================================
+

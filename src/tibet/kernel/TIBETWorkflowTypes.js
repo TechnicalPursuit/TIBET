@@ -6388,9 +6388,10 @@ function(aDocument) {
     //  The pushLocation call can handle parameters but it won't get the route
     //  rebuilt from "last" properly so we do that here.
     url = TP.sys.getHistory().getLocation();
-    urlParts = TP.uriDecompose(url);
 
     locParts = TP.uriDecompose(loc);
+    urlParts = TP.uriDecompose(url);
+
     if (locParts.at('fragmentPath') === '/') {
         locParts.atPut('fragmentPath', urlParts.at('fragmentPath'));
     }
@@ -6425,7 +6426,7 @@ function(anIndex) {
     //  Capture startup history information.
     win = this.getNativeWindow();
     title = win.title || '';
-    url = win.location.toString();
+    url = TP.uriNormalize(win.location.toString());
 
     index = TP.ifInvalid(anIndex, this.get('index'));
     state = {};
@@ -6578,7 +6579,7 @@ function() {
      * @returns {String} The current native window location.
      */
 
-    return this.getNativeWindow().location.toString();
+    return TP.uriNormalize(this.getNativeWindow().location.toString());
 });
 
 //  ------------------------------------------------------------------------
@@ -6725,7 +6726,6 @@ function(anEvent) {
      *     has changed the window URL through use of the back or forward buttons
      *     or the developer used back(), forward(), go(), or 'location' slot.
      * @param {Event} anEvent The native event that caused this handler to trip.
-     * @returns {TP.core.History} The receiver.
      */
 
     var router;
@@ -6740,9 +6740,9 @@ function(anEvent) {
     //  At least one browser will trigger these even if you set the window
     //  location to the same value it currently holds so we have to verify a
     //  true change to avoid extra overhead/duplicate work.
-    if (anEvent.target.location.toString() ===
+    if (TP.uriNormalize(anEvent.target.location.toString()) ===
             TP.sys.getHistory().getLocation()) {
-        return this;
+        return;
     }
 
     //  The popstate event can come from a number of sources so we need to
@@ -6752,10 +6752,10 @@ function(anEvent) {
     //  Trigger the router.
     router = TP.sys.getRouter();
     if (TP.canInvoke(router, 'route')) {
-        router.route(anEvent.target.location.toString());
+        router.route(TP.uriNormalize(anEvent.target.location.toString()));
     }
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -7656,3 +7656,4 @@ function() {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
+

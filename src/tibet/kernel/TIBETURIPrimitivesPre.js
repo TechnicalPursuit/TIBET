@@ -1398,6 +1398,30 @@ function(aPath) {
     /* eslint-enable no-extra-parens */
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriNormalize',
+function(aURI) {
+
+    /**
+     * @method uriNormalize
+     * @summary Processes a URL to produce a value we can rely on to have a
+     *     consistent form. This is typically used on window.location values to
+     *     remove trailing '/' from certain path forms et.
+     * @param {String|TP.core.URI} aURI The URI to process.
+     * @returns {String} The normalized URI value.
+     */
+
+    var url;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        return;
+    }
+
+    return url.last() === '/' ? url.slice(0, -1) : url;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uriPlusFileScheme',
@@ -2303,3 +2327,4 @@ function(targetUrl, filePrefix, fileSuffix) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
+

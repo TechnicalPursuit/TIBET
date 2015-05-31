@@ -1403,6 +1403,9 @@ which were used to load TIBET, as well as the 'launch path'.
 //  Store the full launch url so we know the starting point prior to pushState
 //  invocations which might alter it.
 TP.sys.$launchURL = window.location.toString();
+if (TP.sys.$launchURL.charAt(TP.sys.$launchURL.length - 1) === '/') {
+    TP.sys.$launchURL = TP.sys.$launchURL.slice(0, -1);
+}
 
 //  first define whether we were loaded from file url or a web server
 TP.sys.$httpBased = window.location.protocol.indexOf('file') !== 0;
