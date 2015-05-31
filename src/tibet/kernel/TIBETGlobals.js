@@ -2247,11 +2247,11 @@ TP.regex.ATTRIBUTE_NAME = /^[_$][a-zA-Z0-9_$]*$|^[A-Z]/;
 
 TP.regex.PUBLIC_SLOT = /^_/;
 TP.regex.PRIVATE_SLOT = /^\$[^$]/;
-TP.regex.INTERNAL_SLOT = /^\$\$|\$\$[Inst|Type]|^__(.*)__$/;
+TP.regex.INTERNAL_SLOT = /^\$\$|\$\$(Inst|Type)|^__(.*)__$/;
 
-TP.regex.PRIVATE_OR_INTERNAL_SLOT = /^\$|\$\$[Inst|Type]|^__(.*)__$/;
+TP.regex.PRIVATE_OR_INTERNAL_SLOT = /^\$|\$\$(Inst|Type)|^__(.*)__$/;
 
-TP.regex.ANY_TYPE_SLOT = /^_|^\$|\$\$[Inst|Type]|^__(.*)__$/;
+TP.regex.ANY_TYPE_SLOT = /^_|^\$|\$\$(Inst|Type)|^__(.*)__$/;
 
 TP.regex.NATIVE_CODE = /\[native code\]/;
 TP.regex.UNDERSCORES = /_/g;            //  needs reset
