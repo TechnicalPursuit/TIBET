@@ -849,7 +849,7 @@ function(aRequest) {
         shell,
         str;
 
-    interactive = TP.ifKeyInvalid(aRequest, 'cmdInteractive', false);
+    interactive = TP.ifKeyInvalid(aRequest, 'cmdBuildGUI', false);
     if (interactive) {
         shell = aRequest.at('cmdShell');
         node = shell.updateCommandNode(aRequest);

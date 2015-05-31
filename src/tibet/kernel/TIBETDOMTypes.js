@@ -14250,7 +14250,7 @@ function(aRequest) {
         node,
         str;
 
-    interactive = TP.ifKeyInvalid(aRequest, 'cmdInteractive', false);
+    interactive = TP.ifKeyInvalid(aRequest, 'cmdBuildGUI', false);
     if (interactive) {
         node = aRequest.at('cmdNode');
         if (TP.notEmpty(TP.elementGetAttribute(node, 'ev:event', true))) {
@@ -15030,7 +15030,7 @@ function(aRequest) {
         node,
         str;
 
-    interactive = TP.ifKeyInvalid(aRequest, 'cmdInteractive', false);
+    interactive = TP.ifKeyInvalid(aRequest, 'cmdBuildGUI', false);
     if (interactive) {
         node = aRequest.at('cmdNode');
         if (TP.notEmpty(TP.elementGetAttribute(node, 'ev:event', true))) {

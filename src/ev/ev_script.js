@@ -118,7 +118,7 @@ function(aRequest) {
                     'cmdAsIs', aRequest.at('cmdAsIs'),
                     'cmdExecute', true,
                     'cmdHistory', false,
-                    'cmdInteractive', false,
+                    'cmdBuildGUI', false,
                     'cmdLiteral', aRequest.at('cmdLiteral'),
                     'cmdPhases', 'nocache',
                     'cmdShell', aRequest.at('cmdShell'),

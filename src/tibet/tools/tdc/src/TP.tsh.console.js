@@ -2012,7 +2012,7 @@ function(rawInput) {
                     'cmdAllowSubs', true,
                     'cmdExecute', true,
                     'cmdHistory', true,
-                    'cmdInteractive', true,
+                    'cmdBuildGUI', true,
                     'cmdLogin', true,
                     'cmdPhases', 'nocache',
                     'cmdEcho', true

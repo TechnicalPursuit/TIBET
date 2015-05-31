@@ -2059,7 +2059,7 @@ function(aRequest) {
                             //  'cmdExecute' is implied
                             'cmdHistory', aRequest.at('cmdHistory'),
                             'cmdID', cmdID,
-                            'cmdInteractive', aRequest.at('cmdInteractive'),
+                            'cmdBuildGUI', aRequest.at('cmdBuildGUI'),
                             'cmdLast', cmds.last(),
                             'cmdLiteral', aRequest.at('cmdLiteral'),
                             'cmdNode', command,
@@ -2157,7 +2157,7 @@ function(aRequest) {
                             //  'cmdExecute' is implied
                             'cmdHistory', cmdRequest.at('cmdHistory'),
                             'cmdID', cmdID,
-                            'cmdInteractive', cmdRequest.at('cmdInteractive'),
+                            'cmdBuildGUI', cmdRequest.at('cmdBuildGUI'),
                             'cmdIOName', '$_' + inputIndex,
                             'cmdLiteral', cmdRequest.at('cmdLiteral'),
                             'cmdNode', next,
@@ -2264,7 +2264,7 @@ function(aRequest) {
                         //  'cmdExecute' is implied
                         'cmdHistory', cmdRequest.at('cmdHistory'),
                         'cmdID', cmdID,
-                        'cmdInteractive', cmdRequest.at('cmdInteractive'),
+                        'cmdBuildGUI', cmdRequest.at('cmdBuildGUI'),
                         'cmdLiteral', cmdRequest.at('cmdLiteral'),
                         'cmdNode', next,
                         //  'cmdPhases' is implied

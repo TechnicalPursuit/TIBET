@@ -228,6 +228,7 @@ function(cmdText) {
                     'cmdEcho', true,
                     'cmdHistory', true,
                     'cmdSilent', false,
+                    'cmdBuildGUI', true,
                     'cmdStdio', this
                     ));
 });
@@ -1375,7 +1376,7 @@ function(rawInput) {
                     'cmdAllowSubs', true,
                     'cmdExecute', true,
                     'cmdHistory', true,
-                    'cmdInteractive', true,
+                    'cmdBuildGUI', true,
                     'cmdLogin', true,
                     'cmdPhases', 'nocache',
                     'cmdEcho', true

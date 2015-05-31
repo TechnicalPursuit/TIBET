@@ -140,10 +140,6 @@ function(aRequest) {
                             //  well as 'process' this content :-)
                             'cmdExecute', true,
 
-                            //  This won't be an interactive environment, so
-                            //  don't allow prompting for it.
-                            'cmdInteractive', false,
-
                             //  Because we turn off interactive environment, we
                             //  have to turn this flag on to allow the
                             //  environment to properly process command
@@ -171,6 +167,9 @@ function(aRequest) {
 
     //  Whether or not to echo the request information
     request.atPut('cmdEcho', params.at('cmdEcho') === true);
+
+    //  Whether or not to build a GUI output for this command
+    request.atPut('cmdBuildGUI', params.at('cmdBuildGUI') === true);
 
     if (!params.hasKey('cmdStdio')) {
         //  Build a hash that will hold stdio results for various commands.
@@ -235,7 +234,7 @@ function(aRequest) {
     if (TP.notValid(success)) {
         if (request.at('cmdSilent') !== true) {
             success = TP.isCallable(stdioProvider.report) ?
-                                                stdioProvider :
+                                                stdioProvider.report :
                                                 TP.RETURN_NULL;
         } else {
             success = TP.RETURN_NULL;
@@ -259,7 +258,7 @@ function(aRequest) {
     if (TP.notValid(failure)) {
         if (request.at('cmdSilent') !== true) {
             failure = TP.isCallable(stdioProvider.report) ?
-                                                stdioProvider :
+                                                stdioProvider.report :
                                                 TP.RETURN_NULL;
         } else {
             failure = TP.RETURN_NULL;
@@ -842,8 +841,8 @@ function() {
                                 //  We're not creating a history of
                                 //  commands that restore history ;-).
                                 'cmdHistory', false,
-                                'cmdInteractive',
-                                    anEntry.at('cmdInteractive'),
+                                'cmdBuildGUI',
+                                    anEntry.at('cmdBuildGUI'),
                                 'cmdLiteral',
                                     anEntry.at('cmdLiteral'),
                                 'cmdPhases',
@@ -899,7 +898,7 @@ function() {
                         'cmd', aShellReq.at('cmd'),
                         'cmdAllowSubs', aShellReq.at('cmdAllowSubs'),
                         'cmdExecute', aShellReq.at('cmdExecute'),
-                        'cmdInteractive', aShellReq.at('cmdInteractive'),
+                        'cmdBuildGUI', aShellReq.at('cmdBuildGUI'),
                         'cmdLiteral', aShellReq.at('cmdLiteral'),
                         'cmdPhases', aShellReq.at('cmdPhases'),
                         'cmdRecycle', aShellReq.at('cmdRecycle'),
@@ -1352,11 +1351,13 @@ function(aRequest) {
     this.$set('previous', this.$get('current'));
     this.$set('current', aRequest);
 
-    //  If the request does not wish to run silently, we build a 'construct
-    //  out UI' request and tie it back to the original request using the
-    //  'cmdID'.
-    if (TP.notTrue(aRequest.at('cmdSilent')) &&
+    //  If there is a GUI and the request does not wish to run silently, we
+    //  build a 'construct out UI' request and tie it back to the original
+    //  request using the 'cmdID'.
+    if (TP.isTrue(aRequest.at('cmdBuildGUI')) &&
+        TP.notTrue(aRequest.at('cmdSilent')) &&
         TP.notValid(aRequest.at('cmdPeer'))) {
+
         //  ensure we've got a unique ID for the overall request. this will
         //  be propagated down to all subrequests which help in processing.
         aRequest.atPutIfAbsent('cmdID', aRequest.getRequestID());

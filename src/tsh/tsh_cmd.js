@@ -170,7 +170,7 @@ function(aString, aShell, aRequest, asTokens) {
                                 'cmdAsIs', aRequest.at('cmdAsIs'),
                                 'cmdExecute', true,
                                 'cmdHistory', aRequest.at('cmdHistory'),
-                                'cmdInteractive', aRequest.at('cmdInteractive'),
+                                'cmdBuildGUI', aRequest.at('cmdBuildGUI'),
                                 'cmdLiteral', aRequest.at('cmdLiteral'),
                                 'cmdPeer', aRequest,
                                 'cmdPhases', aRequest.at('cmdPhases'),
@@ -269,7 +269,7 @@ function(aString, aShell, aRequest, asTokens) {
                                 'cmdAsIs', aRequest.at('cmdAsIs'),
                                 'cmdExecute', true,
                                 'cmdHistory', aRequest.at('cmdHistory'),
-                                'cmdInteractive', aRequest.at('cmdInteractive'),
+                                'cmdBuildGUI', aRequest.at('cmdBuildGUI'),
                                 'cmdLiteral', aRequest.at('cmdLiteral'),
                                 'cmdPeer', aRequest,
                                 'cmdPhases', aRequest.at('cmdPhases'),
@@ -1832,7 +1832,7 @@ function(aString, aShell, aRequest) {
     //  command text is positioned.
     if (wasCommandSubstitution === true) {
 
-        if (TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdInteractive', false)) &&
+        if (TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdBuildGUI', false)) &&
             TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdAllowSubs', false))) {
             aRequest.fail(
                 new Error(

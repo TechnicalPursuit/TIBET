@@ -136,7 +136,7 @@ function(aRequest) {
                     'cmdAsIs', aRequest.at('cmdAsIs'),
                     'cmdExecute', true,
                     'cmdHistory', aRequest.at('cmdHistory'),
-                    'cmdInteractive', aRequest.at('cmdInteractive'),
+                    'cmdBuildGUI', aRequest.at('cmdBuildGUI'),
                     'cmdLiteral', aRequest.at('cmdLiteral'),
                     'cmdPeer', aRequest,
                     'cmdPhases', aRequest.at('cmdPhases'),
