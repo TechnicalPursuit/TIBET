@@ -157,8 +157,6 @@ TP.defineNamespace = function(namespaceName, root) {
         name,
         i;
 
-    names = namespaceName.split('.');
-
     currentObj = self[root];
     if (!currentObj) {
         TP.boot.$stderr('Invalid namespace root.', TP.FATAL);
@@ -167,13 +165,21 @@ TP.defineNamespace = function(namespaceName, root) {
 
     prefix = root + '.';
 
+    names = namespaceName.split('.');
+
     //  Descend through the names, making sure that there's a real Object at
     //  each level.
     for (i = 0; i < names.length; i++) {
 
         if (!currentObj[names[i]]) {
+
             currentObj[names[i]] = {};
             currentObj[names[i]].$$isNamespace = true;
+
+            //  Collect up the namespaces defined here. This will be used later
+            //  in the boot process when we upconvert these namespace objects to
+            //  real TP.lang.Namespace objects.
+            TP.$$bootstrap_namespaces.push(currentObj[names[i]]);
 
             name = prefix + names.slice(0, i + 1).join('.');
             currentObj[names[i]][TP.NAME] = name;
@@ -213,10 +219,13 @@ TP.defineNamespace = function(namespaceName, root) {
         currentObj = currentObj[names[i]];
     }
 
-    //  Return the 'last' Object that we created - that'll be the module
-    //  that the caller wants.
+    //  Return the 'last' Object that we created - that'll be the namespace that
+    //  the caller wants.
     return currentObj;
 };
+
+//  Define an Array to collect primitive namespace objects.
+TP.$$bootstrap_namespaces = [];
 
 //  Manual setup
 TP.defineNamespace[TP.NAME] = 'defineNamespace';
