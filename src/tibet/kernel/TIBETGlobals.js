@@ -224,8 +224,10 @@ TP.defineNamespace = function(namespaceName, root) {
     return currentObj;
 };
 
-//  Define an Array to collect primitive namespace objects.
-TP.$$bootstrap_namespaces = [];
+//  Define an Array to collect primitive namespace objects. Note how we
+//  pre-populate with the 'special namespaces' that didn't get added via
+//  TP.defineNamespace().
+TP.$$bootstrap_namespaces = [self.TP, self.APP, self.TP.sys, self.TP.boot];
 
 //  Manual setup
 TP.defineNamespace[TP.NAME] = 'defineNamespace';

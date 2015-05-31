@@ -10334,14 +10334,11 @@ TP.lang.Namespace.Inst.defineAttribute('$$isNamespace');
 //  ------------------------------------------------------------------------
 
 TP.lang.Namespace.Inst.defineMethod('init',
-function(namespaceName, root, fullName) {
+function(fullName) {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {String} namespaceName A String of 1 or more period-separated
-     *     names that will define the name of a namespace.
-     * @param {String} root The top-level namespace owner.
      * @param {String} fullName The 'full name' of the receiver. This is the
      *     name that will be used by the system for the receiver's TP.ID and
      *     TP.NAME.
@@ -10356,6 +10353,32 @@ function(namespaceName, root, fullName) {
     this.$set(TP.ID, fullName, false);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getKeys',
+function() {
+
+    /**
+     * @method getKeys
+     * @summary Returns the set of keys which represent attribute values for
+     *     the receiver.
+     * @returns {Array} An array containing the keys of the receiver.
+     */
+
+    var keys;
+
+    keys = TP.$getOwnKeys(this);
+
+    //  For the 'TP' namespace, we filter out the 'boot' and 'sys' keys, since
+    //  they point to special 'system namespaces'.
+    if (this.get(TP.NAME) === 'TP') {
+        keys.splice(keys.indexOf('boot'), 1);
+        keys.splice(keys.indexOf('sys'), 1);
+    }
+
+    return keys;
 });
 
 //  ------------------------------------------------------------------------
@@ -10431,27 +10454,47 @@ function(namespaceName, root, forceDefinition) {
         i;
 
     currentObj = self[root];
-    if (!currentObj) {
+
+    //  No resolvable root namespace and we're not trying to define just a root.
+    if (!currentObj && TP.notEmpty(namespaceName)) {
         TP.boot.$stderr('Invalid namespace root.', TP.FATAL);
         return;
     }
 
-    prefix = root + '.';
+    if (TP.isEmpty(namespaceName)) {
 
-    names = namespaceName.split('.');
+        //  We're defining a root
 
-    //  Descend through the names, making sure that there's a real Object at
-    //  each level.
-    for (i = 0; i < names.length; i++) {
+        currentObj = self[root];
 
-        if (!currentObj[names[i]] || TP.isTrue(forceDefinition)) {
-
-            fullName = prefix + names.slice(0, i + 1).join('.');
-            currentObj[names[i]] = TP.lang.Namespace.construct(
-                                                namespaceName, root, fullName);
+        //  Only define if either the name is not defined or if the
+        //  forceDefinition flag is true.
+        if (!currentObj || TP.isTrue(forceDefinition)) {
+            self[root] = TP.lang.Namespace.construct(root);
+            currentObj = self[root];
         }
+    } else {
 
-        currentObj = currentObj[names[i]];
+        //  We're defining a sub root namespace
+
+        prefix = root + '.';
+
+        names = namespaceName.split('.');
+
+        //  Descend through the names, making sure that there's a real Object at
+        //  each level.
+        for (i = 0; i < names.length; i++) {
+
+            //  Only define if either the name is not defined or if the
+            //  forceDefinition flag is true.
+            if (!currentObj[names[i]] || TP.isTrue(forceDefinition)) {
+
+                fullName = prefix + names.slice(0, i + 1).join('.');
+                currentObj[names[i]] = TP.lang.Namespace.construct(fullName);
+            }
+
+            currentObj = currentObj[names[i]];
+        }
     }
 
     //  Return the 'last' Object that we created - that'll be the namespace that
@@ -10507,6 +10550,37 @@ function(namespaceName, root, forceDefinition) {
         //  our local variable holding it here.
         newNamespace = TP.defineNamespace(name, root, true);
 
+        //  For certain namespaces, TP, TP.sys, TP.boot and APP, we configure
+        //  them a bit differently. We define a 'getTypeNames()' that returns an
+        //  empty Array and we (re)define them as non-writeable properties on
+        //  their respective receivers to prevent them from being blown away
+        //  during system execution, which would be very bad.
+
+        //  The reason these are in two blocks is because of the different value
+        //  for the receiver in Object.defineProperty.
+
+        /* eslint-disable no-loop-func */
+        if (newNamespace[TP.NAME] === 'TP' ||
+            newNamespace[TP.NAME] === 'APP') {
+
+            newNamespace.getTypeNames = function() {return []; };
+
+            Object.defineProperty(window,
+                                    name,
+                                    {value: newNamespace, writable: false});
+        }
+
+        if (newNamespace[TP.NAME] === 'TP.sys' ||
+            newNamespace[TP.NAME] === 'TP.boot') {
+
+            newNamespace.getTypeNames = function() {return []; };
+
+            Object.defineProperty(TP,
+                                    name,
+                                    {value: newNamespace, writable: false});
+        }
+        /* eslint-enable no-loop-func */
+
         //  Fetch the keys using the primitive Object.keys() call. It is
         //  important to use this call, since our TP.keys() call omits internal
         //  slots but this routine must copy *all* slots, internal or otherwise.
@@ -10518,8 +10592,12 @@ function(namespaceName, root, forceDefinition) {
         //  instance method on the real TP.lang.Namespace type.
         len2 = oldKeys.getSize();
         for (j = 0; j < len2; j++) {
-            if (oldKeys.at(j) !== 'getTypeNames') {
-                newNamespace[oldKeys.at(j)] = oldNamespace[oldKeys.at(j)];
+
+            //  Note here how we use primitive '[]' syntax to access the key
+            //  Array. If we try to use '.at()', we'll run into problems when
+            //  upconverting the 'TP' object, so we just leave it this way.
+            if (oldKeys[j] !== 'getTypeNames') {
+                newNamespace[oldKeys[j]] = oldNamespace[oldKeys[j]];
             }
         }
     }

@@ -111,19 +111,19 @@ if (Object.defineProperty) {
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(window, 'TP', {value: {}, writable: false});
+    Object.defineProperty(window, 'TP', {value: {}});
 
     //  The TP.boot object, which holds functions and data needed
     //  for booting and for loading code dynamically.
-    Object.defineProperty(TP, 'boot', {value: {}, writable: false});
+    Object.defineProperty(TP, 'boot', {value: {}});
 
     //  The TP.sys object, which is responsible for system data,
     //  metadata, control parameters, etc.
-    Object.defineProperty(TP, 'sys', {value: {}, writable: false});
+    Object.defineProperty(TP, 'sys', {value: {}});
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(window, 'APP', {value: {}, writable: false});
+    Object.defineProperty(window, 'APP', {value: {}});
 
     //  No... just no. Get a copy of Mavis Beacon and practice :).
     Object.defineProperty(TP, '$', {value: null, writable: false});
@@ -203,19 +203,19 @@ if (TP.sys.$globals == null) {
 
 TP.$$isNamespace = true;
 TP.$$name = 'TP';
-TP.getTypeNames = function() {return []; };
+TP.$$id = 'TP';
 
 TP.boot.$$isNamespace = true;
 TP.boot.$$name = 'TP.boot';
-TP.boot.getTypeNames = function() {return []; };
+TP.boot.$$id = 'TP.boot';
 
 TP.sys.$$isNamespace = true;
 TP.sys.$$name = 'TP.sys';
-TP.sys.getTypeNames = function() {return []; };
+TP.sys.$$id = 'TP.sys';
 
 APP.$$isNamespace = true;
 APP.$$name = 'APP';
-APP.getTypeNames = function() {return []; };
+APP.$$id = 'APP';
 
 //  ---
 //  Configure baseline log/debug levels.
