@@ -4529,7 +4529,9 @@ function() {
         attrs,
 
         keys,
-        len;
+        len,
+
+        newHash;
 
     this.callNextMethod();
 
@@ -4587,10 +4589,12 @@ function() {
                 return obj;
             } else {
                 if (TP.isPlainObject(obj)) {
-                    /* eslint-disable no-proto */
-                    obj.__proto__ = null;
-                    /* eslint-enable no-proto */
-                    this.$set('$$hash', obj);
+                    newHash = TP.constructOrphanObject();
+                    this.$set('$$hash', newHash);
+                    Object.keys(obj).forEach(
+                            function(aKey) {
+                                newHash[aKey] = obj[aKey];
+                            });
                 } else {
                     //  allocate internal hash - note that it is a
                     //  prototype-less object.
