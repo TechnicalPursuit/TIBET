@@ -8918,6 +8918,61 @@ function(token, pattern) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URIRouter.Type.defineMethod('getRoute',
+function(aURI) {
+
+    /**
+     * @method getRoute
+     * @summary Returns the currently active route, if any. Note that when the
+     *     application is currently on the home page the route is 'home' even
+     *     though that value will not be visible in the URI fragment path. On
+     *     any other URI if the fragment path is empty the route is empty.
+     * @param {TP.core.URI|String} [aURI] The URI to test. Defaults to the
+     *     value of TP.uriNormalize(top.location.toString()).
+     * @return {String} The route name or empty string.
+     */
+
+    var route,
+        path,
+        home,
+        url;
+
+    if (TP.isValid(aURI)) {
+        url = TP.uriNormalize(TP.str(aURI));
+    } else {
+        url = TP.uriNormalize(TP.sys.getHistory().getLocation());
+    }
+
+    path = TP.uriFragmentPath(url);
+
+    if (path === '/' || TP.isEmpty(path)) {
+
+        //  Compare against home page to see if this is 'home'.
+        home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+        if (TP.uriHead(TP.uriExpandHome(url)) === TP.uriHead(home)) {
+            route = 'Home';
+        }
+
+    } else {
+
+        //  Process the route against any registered route matchers.
+        route = this.processRoute(path);
+        if (TP.notEmpty(route)) {
+            //  Route matches are returned as an array containing the route name
+            //  and a hash of route parameters. We just want the name.
+            return route.at(0);
+        }
+
+        //  If not matched just remove any leading '/'. Hopefully the route is
+        //  simple enough to pass.
+        route = path.charAt(0) === '/' ? path.slice(1) : path;
+    }
+
+    return route;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URIRouter.Type.defineMethod('processMatch',
 function(path, match, names) {
 
@@ -8933,7 +8988,7 @@ function(path, match, names) {
      * @param {String[]} names An array of token names for any named path
      *     segments in the pattern which matched the path.
      * @returns {Array[String, TP.lang.Hash]} An ordered pair containing the
-     *     signal name and signal payload the parameters imply.
+     *     route name and hash containing parameters from the match.
      */
 
     var parts,
@@ -8965,7 +9020,7 @@ function(path, match, names) {
                     return prev;
 
                 },
-                'Route');
+                '');
     } else {
 
         //  Throw away the full-match portion. This will also shift the list so
@@ -8988,7 +9043,7 @@ function(path, match, names) {
                     return prev;
 
                 },
-                'Route');
+                '');
     }
 
     return TP.ac(name, params);
@@ -9078,6 +9133,10 @@ function(route) {
     var paths,
         result;
 
+    if (route === '/') {
+        return TP.ac('Home', TP.hc());
+    }
+
     paths = this.get('paths');
     paths.detect(
         function(path) {
@@ -9094,7 +9153,20 @@ function(route) {
 
                 if (TP.isValid(match)) {
                     // NOTE we update the outer variable here.
-                    result = processor(route, match, names);
+                    if (TP.isFunction(processor)) {
+                        try {
+                            result = processor(route, match, names);
+                        } catch (e) {
+                            this.raise('RouteProcessingException', e);
+                            return false;
+                        }
+                    } else if (TP.isString(processor)) {
+                        result = processor;
+                        return true;
+                    } else {
+                        this.raise('InvalidRouteProcessor', processor);
+                        return false;
+                    }
 
                     return true;
                 }
@@ -9136,6 +9208,7 @@ function(aURI, aDirection) {
         type,
         signal,
         home,
+        launch,
         config,
         route,
         routeParts,
@@ -9143,7 +9216,7 @@ function(aURI, aDirection) {
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
-        TP.info('route(\'' + TP.str(aURI) + '\');');
+        TP.debug('route(\'' + TP.str(aURI) + '\');');
     }
 
     history = TP.sys.getHistory();
@@ -9260,6 +9333,9 @@ function(aURI, aDirection) {
 
         home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
 
+        //  if basePath was '/' that's essentially the index/home page. We
+        //  update last so a comparison below will see homepage and '/' as the
+        //  same URI.
         if (TP.isEmpty(lastParts.at('basePath'))) {
             lastParts.atPut('basePath', TP.uriBasePath(home));
         }
@@ -9271,7 +9347,14 @@ function(aURI, aDirection) {
         if (canvas.getLocation() !== url) {
             canvas.setLocation(TP.uriHead(url));
         }
-        return;
+
+        //  We changed pages. The question is, did we change back to the home
+        //  page? If so we want to fall through and let it signal RouteHome.
+        if (TP.uriExpandPath(url) !== home &&
+                TP.uriExpandPath(url) !==
+                TP.uriExpandHome(TP.sys.getLaunchURL())) {
+            return;
+        }
     }
 
     //  ---
@@ -9280,15 +9363,19 @@ function(aURI, aDirection) {
 
     fragPath = urlParts.at('fragmentPath');
 
-    if (fragPath === '/') {
-        fragPath = 'home';
+    //  Run the route through our route matching process to see if there's a
+    //  matcher for it.
+    result = this.processRoute(fragPath);
+    if (TP.notEmpty(result)) {
+        fragPath = result.at(0);
     } else {
-        //  remove leading '/' for route name work.
+        //  No processed result. Remove the leading '/' for checks we need to
+        //  run below for type names, urls, etc.
         fragPath = fragPath.slice(1);
     }
 
     if (TP.sys.cfg('log.routes')) {
-        TP.info('checking \'' + fragPath + '\' route configuration...');
+        TP.debug('checking \'' + fragPath + '\' route configuration...');
     }
 
     //  See if the value is a route configuration key.
@@ -9296,7 +9383,7 @@ function(aURI, aDirection) {
 
     if (TP.notEmpty(config)) {
         if (TP.sys.cfg('log.routes')) {
-            TP.info('route \'' + route + '\' mapped to: ' + config);
+            TP.debug('route \'' + route + '\' mapped to: ' + config);
         }
         route = config;
     } else {
@@ -9341,20 +9428,25 @@ function(aURI, aDirection) {
         if (TP.isURI(url)) {
 
             url = TP.uriExpandHome(url);
-            TP.info('setting location to: ' + TP.str(url));
+            if (TP.sys.cfg('log.routes')) {
+                TP.debug('setting location to: ' + TP.str(url));
+            }
             canvas.setLocation(TP.uriHead(url));
         }
     }
 
-    //  Try to produce a useful signal reference for the route. If we can then
-    //  we'll signal that regardless of whether it mapped via config or not.
-    result = this.processRoute('/' + fragPath);
-    if (TP.isEmpty(result)) {
+    if (TP.isEmpty(route)) {
         return;
     }
 
-    name = TP.str(result.at(0));
-    payload = result.at(1);
+    name = TP.str(route);
+    payload = TP.isValid(result) ? result.at(1) : TP.hc();
+
+    //  All route signals should be prefixed with 'Route'. Add that prefix here
+    //  as needed.
+    if (!/^Route/.test(name)) {
+        name = 'Route' + name.asTitleCase();
+    }
 
     //  Try to find a custom route change subtype for the named route.
     type = TP.sys.getTypeByName('TP.sig.' + name);
@@ -9366,14 +9458,7 @@ function(aURI, aDirection) {
     if (TP.isValid(type)) {
         signal = type.construct(payload);
     } else {
-
         signal = TP.sig.RouteChange.construct(payload);
-
-        //  Adjust the name to be a "route" name for consistency.
-        if (!/^Route/.test(name)) {
-            name = 'Route' + name;
-        }
-
         signal.setSignalName(name);
     }
 

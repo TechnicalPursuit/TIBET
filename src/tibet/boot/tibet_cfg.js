@@ -1048,7 +1048,7 @@
     TP.sys.setcfg('log.errors', true);
 
     //  should we log history changes?
-    TP.sys.setcfg('log.history', true);
+    TP.sys.setcfg('log.history', false);
 
     //  should the inferencer log its activity?
     TP.sys.setcfg('log.inferences', false);

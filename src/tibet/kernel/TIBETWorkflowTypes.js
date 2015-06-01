@@ -6029,6 +6029,50 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Application.Inst.defineMethod('getControllers',
+function() {
+
+    /**
+     * @method getControllers
+     * @summary Returns a list of controllers that are currently active.
+     * @returns {Array} The list of controllers.
+     */
+
+    var controllers,
+        route,
+        config,
+        controller;
+
+    controllers = this.$get('controllers');
+
+    if (!TP.sys.hasStarted()) {
+        return controllers;
+    }
+
+    route = this.getRouter().getRoute();
+    if (TP.isEmpty(route)) {
+        return controllers;
+    }
+
+    config = TP.sys.cfg('route.' + route.toLowerCase() + '.controller');
+    if (TP.isEmpty(config)) {
+        return controllers;
+    }
+
+    controller = TP.sys.getObjectById(config);
+    if (TP.notValid(controller)) {
+        TP.warn('InvalidRouteController', config);
+        return controllers;
+    }
+
+    controllers = controllers.slice(0);
+    controllers.unshift(controller);
+
+    return controllers;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Application.Inst.defineMethod('getHistory',
 function() {
 
@@ -6891,8 +6935,10 @@ function(stateObj, title, aURL, fromDoc) {
     //  work around bug(s) on chrome et. al. which fire popstate on pushState
     try {
         this.set('popstate', false);
-        TP.info('pushState(' + JSON.stringify(state) +
-                ', \'' + entry.at(1) + '\', \'' + url + '\')');
+        if (TP.sys.cfg('log.history')) {
+            TP.debug('pushState(' + JSON.stringify(state) +
+                    ', \'' + entry.at(1) + '\', \'' + url + '\')');
+        }
         result = this.getNativeWindow().history.pushState(
             state, title || '', url);
 
@@ -6980,9 +7026,11 @@ function(stateObj, title, aURL) {
     try {
         this.set('popstate', false);
 
-        TP.info('replaceState(' +
+        if (TP.sys.cfg('log.history')) {
+            TP.debug('replaceState(' +
                 JSON.stringify(state) +
                 ', \'' + entry.at(1) + '\', \'' + url + '\')');
+        }
 
         result = this.getNativeWindow().history.replaceState(
                                             state, title || '', url);
@@ -7024,7 +7072,7 @@ function(anIndex) {
     entry = this.get('history').at(index);
     local = entry.at(2);
 
-    method = local === native ? 'info' : 'error';
+    method = local === native ? 'debug' : 'error';
 
     if (TP.isValid(entry)) {
         TP[method]('history.at(' + index + ') -> ' + local + '.');
@@ -7637,6 +7685,20 @@ function() {
      */
 
     return this.getApplication().getHistory();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getRoute',
+function() {
+
+    /**
+     * @method getRoute
+     * @summary Retrieves the current application route name.
+     * @returns {String} The current route.
+     */
+
+    return this.getRouter().getRoute();
 });
 
 //  ------------------------------------------------------------------------
