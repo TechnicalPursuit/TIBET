@@ -9156,6 +9156,13 @@ function(route) {
                     if (TP.isFunction(processor)) {
                         try {
                             result = processor(route, match, names);
+                            if (TP.isValid(result) &&
+                                    TP.notEmpty(result.at(0))) {
+                                return true;
+                            } else {
+                                result = null;
+                                return false;
+                            }
                         } catch (e) {
                             this.raise('RouteProcessingException', e);
                             return false;
@@ -9167,8 +9174,6 @@ function(route) {
                         this.raise('InvalidRouteProcessor', processor);
                         return false;
                     }
-
-                    return true;
                 }
 
                 return false;
