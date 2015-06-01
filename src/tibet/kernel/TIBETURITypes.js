@@ -9504,7 +9504,7 @@ function(aRoute) {
         path,
         parts;
 
-    route = TP.str(aRoute).asCamelCase();
+    route = TP.str(aRoute);
 
     loc = TP.core.History.getLocation();
     path = TP.uriFragmentPath(loc);
