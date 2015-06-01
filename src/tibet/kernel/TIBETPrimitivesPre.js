@@ -9685,7 +9685,7 @@ function() {
         re;
 
     str = this.toString();
-    re = /[-\s_.]/;
+    re = /[-\s_.:]/;
     up = false;
 
     return str.replace(/./g,
