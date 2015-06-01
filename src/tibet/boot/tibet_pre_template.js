@@ -111,23 +111,32 @@ if (Object.defineProperty) {
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(window, 'TP', {value: {}});
+    Object.defineProperty(window,
+                            'TP',
+                            {value: {}, writable: true, configurable: true});
 
     //  The TP.boot object, which holds functions and data needed
     //  for booting and for loading code dynamically.
-    Object.defineProperty(TP, 'boot', {value: {}});
+    Object.defineProperty(TP,
+                            'boot',
+                            {value: {}, writable: true, configurable: true});
 
     //  The TP.sys object, which is responsible for system data,
     //  metadata, control parameters, etc.
-    Object.defineProperty(TP, 'sys', {value: {}});
+    Object.defineProperty(TP,
+                            'sys',
+                            {value: {}, writable: true, configurable: true});
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(window, 'APP', {value: {}});
+    Object.defineProperty(window,
+                            'APP',
+                            {value: {}, writable: true, configurable: true});
 
     //  No... just no. Get a copy of Mavis Beacon and practice :).
-    Object.defineProperty(TP, '$', {value: null, writable: false});
-    Object.defineProperty(TP, '_', {value: null, writable: false});
+    //  By default, writable and configurable are false.
+    Object.defineProperty(TP, '$', {value: null});
+    Object.defineProperty(TP, '_', {value: null});
 
 } else {
     TP = window.TP || {};
