@@ -6041,7 +6041,8 @@ function() {
     var controllers,
         route,
         config,
-        controller;
+        controller,
+        url;
 
     controllers = this.$get('controllers');
 
@@ -6059,7 +6060,14 @@ function() {
         return controllers;
     }
 
-    controller = TP.sys.getObjectById(config);
+    controller = TP.sys.getTypeByName(config);
+    if (TP.notValid(controller)) {
+        url = TP.uc(config);
+        if (TP.isValid(url)) {
+            controller = url.getResource();
+        }
+    }
+
     if (TP.notValid(controller)) {
         TP.warn('InvalidRouteController', config);
         return controllers;
