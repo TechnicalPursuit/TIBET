@@ -10527,6 +10527,8 @@ function(namespaceName, root, forceDefinition) {
 
         newNamespace,
 
+        propertyDescriptor,
+
         len2,
         j;
 
@@ -10566,9 +10568,12 @@ function(namespaceName, root, forceDefinition) {
 
             newNamespace.getTypeNames = function() {return []; };
 
-            Object.defineProperty(window,
-                                    name,
-                                    {value: newNamespace, writable: false});
+            propertyDescriptor = Object.getOwnPropertyDescriptor(self, root);
+            propertyDescriptor.value = newNamespace;
+            propertyDescriptor.writable = false;
+            propertyDescriptor.configurable = false;
+
+            Object.defineProperty(self, root, propertyDescriptor);
         }
 
         if (newNamespace[TP.NAME] === 'TP.sys' ||
@@ -10576,9 +10581,12 @@ function(namespaceName, root, forceDefinition) {
 
             newNamespace.getTypeNames = function() {return []; };
 
-            Object.defineProperty(TP,
-                                    name,
-                                    {value: newNamespace, writable: false});
+            propertyDescriptor = Object.getOwnPropertyDescriptor(TP, name);
+            propertyDescriptor.value = newNamespace;
+            propertyDescriptor.writable = false;
+            propertyDescriptor.configurable = false;
+
+            Object.defineProperty(TP, name, propertyDescriptor);
         }
         /* eslint-enable no-loop-func */
 
