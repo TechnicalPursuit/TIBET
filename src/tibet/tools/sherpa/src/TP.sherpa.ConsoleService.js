@@ -341,6 +341,10 @@ function(anEvent) {
         case 'DOM_Ctrl_U_Press':
         case 'DOM_Ctrl_U_Up':
 
+        case 'DOM_Ctrl_K_Down':
+        case 'DOM_Ctrl_K_Press':
+        case 'DOM_Ctrl_K_Up':
+
         case 'DOM_Shift_Esc_Down':
         case 'DOM_Shift_Esc_Up':
 
@@ -431,6 +435,10 @@ function(anEvent) {
 
         case 'DOM_Ctrl_U_Up':
             this.handleClearInput(anEvent);
+            break;
+
+        case 'DOM_Ctrl_K_Up':
+            this.clearConsole(true);
             break;
 
         case 'DOM_Shift_Esc_Up':
@@ -1314,12 +1322,13 @@ function(anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('clearConsole',
-function() {
+function(resetPrompt) {
 
     /**
      * @method clearConsole
      * @summary Clears the receiver's content, removing all HTML elements and
      *     resetting the console to an empty input field.
+     * @param {Boolean} [resetPrompt=false] Whether or not to reset the prompt.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
@@ -1332,6 +1341,10 @@ function() {
 
     consoleGUI.focusInput();
     consoleGUI.setInputCursorToEnd();
+
+    if (resetPrompt) {
+        this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
+    }
 
     return this;
 });
