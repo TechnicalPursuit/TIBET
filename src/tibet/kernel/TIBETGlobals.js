@@ -102,9 +102,7 @@ TP.constructOrphanObject = function() {
     //  not hooked up to the prototype chain. NOTE we could have unhooked the
     //  __proto__ on certain older browsers but since we only support
     //  EC5-compliant browsers we don't bother.
-    if (Object.create) {
-        newObj = Object.create(null);
-    }
+    newObj = Object.create(null);
 
     return newObj;
 };
