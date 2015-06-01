@@ -10470,8 +10470,9 @@ function(namespaceName, root, forceDefinition) {
         //  Only define if either the name is not defined or if the
         //  forceDefinition flag is true.
         if (!currentObj || TP.isTrue(forceDefinition)) {
-            self[root] = TP.lang.Namespace.construct(root);
-            currentObj = self[root];
+            currentObj = TP.lang.Namespace.construct(root);
+            //  NB: The caller is responsible for installing this rooted
+            //  namespace.
         }
     } else {
 
