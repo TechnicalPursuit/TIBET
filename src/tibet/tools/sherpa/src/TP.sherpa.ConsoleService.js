@@ -337,9 +337,9 @@ function(anEvent) {
         case 'DOM_Alt_Shift_Left_Down':
         case 'DOM_Alt_Shift_Left_Up':
 
-        case 'DOM_Shift_Backspace_Down':
-        case 'DOM_Shift_Backspace_Press':
-        case 'DOM_Shift_Backspace_Up':
+        case 'DOM_Ctrl_U_Down':
+        case 'DOM_Ctrl_U_Press':
+        case 'DOM_Ctrl_U_Up':
 
         case 'DOM_Shift_Esc_Down':
         case 'DOM_Shift_Esc_Up':
@@ -429,7 +429,7 @@ function(anEvent) {
             }
             break;
 
-        case 'DOM_Shift_Backspace_Up':
+        case 'DOM_Ctrl_U_Up':
             this.handleClearInput(anEvent);
             break;
 
