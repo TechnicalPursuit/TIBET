@@ -9450,7 +9450,7 @@ function(aURI, aDirection) {
     //  All route signals should be prefixed with 'Route'. Add that prefix here
     //  as needed.
     if (!/^Route/.test(name)) {
-        name = 'Route' + name.asTitleCase();
+        name = 'Route' + name.asCamelCase().asTitleCase();
     }
 
     //  Try to find a custom route change subtype for the named route.
