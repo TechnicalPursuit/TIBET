@@ -59,7 +59,8 @@ function(aDocument) {
      * @param {The} aDocument document to add the stylesheet to.
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {Element} Any newly created style element or the existing style
+     *     element for the receiver, if one exists.
      */
 
     var ourID,
@@ -68,7 +69,12 @@ function(aDocument) {
         resource,
         styleElem,
         styleURI,
-        existingStyleElems;
+
+        docHead,
+        existingStyleElems,
+        insertionPoint,
+
+        hrefVal;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -102,8 +108,8 @@ function(aDocument) {
     //  that stylesheet in the document. We don't want the same stylesheet
     //  placed into the document over and over for each occurrence of the
     //  same type of element node.
-    if (TP.isElement(TP.byId(sheetID, aDocument))) {
-        return this;
+    if (TP.isElement(styleElem = TP.byId(sheetID, aDocument))) {
+        return styleElem;
     }
 
     //  Couldn't find that CSS style sheet, so we ask ourself to compute a
@@ -111,22 +117,63 @@ function(aDocument) {
     //  computation here will automatically adjust for theme.
     styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
     if (TP.notValid(styleURI)) {
-        return this;
+        return null;
     }
 
-    existingStyleElems = TP.nodeGetElementsByTagName(
-        TP.documentGetHead(aDocument), 'style');
+    //  Make sure we have a 'head' element and query it for existing 'style'
+    //  elements.
+    docHead = TP.documentEnsureHeadElement(aDocument);
+    existingStyleElems = TP.nodeGetElementsByTagName(docHead, 'style');
 
-    //  Add the stylesheet URI's location as an XHTML link element. Make
-    //  sure also to set the style element's 'id' attribute, so that the
-    //  above logic will work for future occurrences of this element being
-    //  processed.
-    styleElem = TP.documentAddLinkElement(aDocument,
-        styleURI.getLocation(), existingStyleElems.first());
+    //  If there were existing style elements, we choose the first one as our
+    //  insertion point. This is done because stylesheets added in this way
+    //  should come before any further stylesheet elements in the page, which
+    //  have probably been added by the page author to further customize the
+    //  style and that style should have higher precedence than the style we're
+    //  adding here.
+    if (TP.notEmpty(existingStyleElems)) {
+        insertionPoint = existingStyleElems.first();
+    } else {
+        //  No style element - set insertionPoint to null (which is the same as
+        //  doing an append child).
+        insertionPoint = null;
+    }
 
-    TP.elementSetAttribute(styleElem, 'id', sheetID);
+    if (styleURI.getExtension() === 'css') {
 
-    return this;
+        //  It's regular CSS - use the stylesheet URI's location and add an
+        //  XHTML link element.
+        styleElem = TP.documentAddLinkElement(
+                        aDocument,
+                        styleURI.getLocation(),
+                        insertionPoint);
+
+    } else {
+
+        //  It's another kind of style - set up a 'tibet:style' element and let
+        //  the processing machinery handle it.
+        styleElem = TP.documentCreateElement(
+                        aDocument,
+                        'tibet:style',
+                        TP.w3.Xmlns.TIBET);
+
+        TP.elementSetAttribute(styleElem, 'href', styleURI.getLocation());
+
+        TP.nodeInsertBefore(docHead, styleElem, insertionPoint);
+    }
+
+    //  Make sure also to set the style element's 'id' attribute, so that the
+    //  above 'uniquing' logic will work for future occurrences of this element
+    //  being processed (which ensures that we don't add the same element more
+    //  than once).
+    TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+
+    //  Track the original source from the URI - this is what the author
+    //  originally typed and might be a virtual URI. We'd like to track it here.
+    hrefVal = styleURI.getOriginalSource();
+    TP.elementSetAttribute(styleElem, 'tibet:originalHref', hrefVal, true);
+
+    return styleElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -5644,6 +5691,8 @@ function(aRequest) {
      * @summary Sets up runtime style for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} Any newly created style element or the existing style
+     *     element for the tag we're processing, if one exists.
      */
 
     var doc;
@@ -5655,9 +5704,7 @@ function(aRequest) {
         return;
     }
 
-    this.addStylesheetTo(doc);
-
-    return;
+    return this.addStylesheetTo(doc);
 });
 
 //  ------------------------------------------------------------------------
