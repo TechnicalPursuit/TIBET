@@ -132,7 +132,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
   ========================================================================
 */
 
-tibet|data, tibet|service, tibet|content, tibet|template, tibet|transform {
+tibet|* {
     display: none;
 }
 
