@@ -435,7 +435,6 @@ function(anObj, anID, forceRegistration, observeResource) {
 
     /**
      * @method registerObject
-     * @alias register
      * @summary Places the object into the public registry under its ID.
      * @param {Object} anObj The object to register.
      * @param {String} anID An optional ID to use instead of the object's
@@ -533,16 +532,11 @@ function(anObj, anID, forceRegistration, observeResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('register', TP.sys.registerObject);
-
-//  ------------------------------------------------------------------------
-
 TP.sys.defineMethod('unregisterObject',
 function(anObj, anID) {
 
     /**
      * @method unregisterObject
-     * @alias unregister
      * @summary Removes public registration for the object provided. This
      *     operation should be called RELIGIOUSLY to avoid memory leaks if
      *     objects are registered.
@@ -571,10 +565,6 @@ function(anObj, anID) {
     //  fail quietly
     return true;
 });
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('unregister', TP.sys.unregisterObject);
 
 //  ------------------------------------------------------------------------
 //  end
