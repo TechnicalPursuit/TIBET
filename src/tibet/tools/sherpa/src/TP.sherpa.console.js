@@ -1100,7 +1100,7 @@ function() {
         searcherContent;
 
     if (TP.notValid(searcherTile = this.get('searcherTile'))) {
-        searcherTile = TP.byOID('Sherpa', this.get('vWin')).makeTile(
+        searcherTile = TP.byOID('Sherpa').makeTile(
                                     'searcher_tile',
                                     this.get('consoleOutput'));
         searcherTile.setAttribute('contenttype', 'sherpa:searcher');
