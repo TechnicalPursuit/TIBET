@@ -2729,6 +2729,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getOriginalSource',
+function() {
+
+    /**
+     * @method getOriginalSource
+     * @summary Returns the 'original source' representation that the receiver
+     *     was constructed with.
+     * @returns {String} The receiver's original source.
+     */
+
+    //  For most TP.core.URIs, this is it's location.
+    return this.getLocation();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getPrimaryHref',
 function() {
 
@@ -7497,6 +7513,23 @@ function() {
 
     //  supertype will compute a decent default value as an alternative.
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('getOriginalSource',
+function() {
+
+    /**
+     * @method getOriginalSource
+     * @summary Returns the 'original source' representation that the receiver
+     *     was constructed with.
+     * @returns {String} The receiver's original source.
+     */
+
+    //  For TP.core.TIBETURLs, this is what the user originally initialized us
+    //  with. It can be found at the 5th position in URI parts.
+    return this.getURIParts().at(4);
 });
 
 //  ------------------------------------------------------------------------
