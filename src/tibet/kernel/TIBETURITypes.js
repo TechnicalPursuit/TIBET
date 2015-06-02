@@ -7332,87 +7332,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getNestedURI',
-function(forceRefresh) {
-
-    /**
-     * @method getNestedURI
-     * @summary Returns a concrete URI for the resource this URI references.
-     *     This is typically the file: or http: URI for the content the receiver
-     *     references.
-     * @param {Boolean} forceRefresh True will force any cached value for
-     *     resource URI to be ignored.
-     * @returns {TP.core.URI} A concrete URI if the receiver resolves to one.
-     */
-
-    var resource,
-        url,
-        parts,
-        path;
-
-    //  When there's a canvas reference the receiver is a pointer to a DOM
-    //  element and not an indirect reference to some other concrete URI. In
-    //  that case we will grab the resource, get it's global ID and then compute
-    //  a new URL from that.
-    if (TP.notEmpty(this.getCanvasName())) {
-        if (TP.isValid(resource = this.getResource())) {
-            //  If it's a Window, hand back a TIBET URI, but pointing to the
-            //  'more concrete' URI that includes the Window's global ID.
-            if (TP.isKindOf(resource, TP.core.Window)) {
-                return TP.uc('tibet://' + TP.gid(resource));
-            } else {
-                return TP.uc(TP.gid(resource));
-            }
-        }
-
-        return;
-    }
-
-    //  we don't allow runtime alteration to virtual paths largely due to
-    //  the fact that we cache this value. clearing it should allow a URI to
-    //  "float" again
-    if (TP.notTrue(forceRefresh)) {
-        if (TP.isURI(url = this.$get('nestedURI'))) {
-            return url;
-        }
-    }
-
-    //  work from the path...NOTE NOTE NOTE do not work from ID, that will
-    //  recurse since our ID is built in part from the expanded resource URI
-    parts = this.getURIParts();
-    if (TP.isEmpty(parts)) {
-        path = TP.uriResolveVirtualPath(this.$get('uri'), true);
-        parts = path.match(TP.regex.TIBET_URL_SPLITTER);
-    }
-
-    path = parts.at(TP.core.TIBETURL.URL_INDEX);
-    if (TP.isEmpty(path)) {
-        return;
-    }
-
-    //  this resolves the path as cleanly as possible, returning a path that
-    //  typically starts with one of the schemes we consider "resource"
-    //  schemes. NOTE we pass true for resourceOnly here to strip tibet:
-    //  prefixes for canvased URIs
-    path = TP.uriResolveVirtualPath(path, true);
-    if (TP.regex.SCHEME.test(path)) {
-        url = TP.uc(path);
-        if (TP.isURI(url)) {
-            this.set('nestedURI', url);
-        } else {
-            TP.ifWarn() ?
-                TP.warn('Invalid URI specification: ' + path,
-                        TP.LOG) : 0;
-
-            return;
-        }
-    }
-
-    return url;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TIBETURL.Inst.defineMethod('getID',
 function() {
 
@@ -7530,6 +7449,87 @@ function() {
     //  For TP.core.TIBETURLs, this is what the user originally initialized us
     //  with. It can be found at the 5th position in URI parts.
     return this.getURIParts().at(4);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('getNestedURI',
+function(forceRefresh) {
+
+    /**
+     * @method getNestedURI
+     * @summary Returns a concrete URI for the resource this URI references.
+     *     This is typically the file: or http: URI for the content the receiver
+     *     references.
+     * @param {Boolean} forceRefresh True will force any cached value for
+     *     resource URI to be ignored.
+     * @returns {TP.core.URI} A concrete URI if the receiver resolves to one.
+     */
+
+    var resource,
+        url,
+        parts,
+        path;
+
+    //  When there's a canvas reference the receiver is a pointer to a DOM
+    //  element and not an indirect reference to some other concrete URI. In
+    //  that case we will grab the resource, get it's global ID and then compute
+    //  a new URL from that.
+    if (TP.notEmpty(this.getCanvasName())) {
+        if (TP.isValid(resource = this.getResource())) {
+            //  If it's a Window, hand back a TIBET URI, but pointing to the
+            //  'more concrete' URI that includes the Window's global ID.
+            if (TP.isKindOf(resource, TP.core.Window)) {
+                return TP.uc('tibet://' + TP.gid(resource));
+            } else {
+                return TP.uc(TP.gid(resource));
+            }
+        }
+
+        return;
+    }
+
+    //  we don't allow runtime alteration to virtual paths largely due to
+    //  the fact that we cache this value. clearing it should allow a URI to
+    //  "float" again
+    if (TP.notTrue(forceRefresh)) {
+        if (TP.isURI(url = this.$get('nestedURI'))) {
+            return url;
+        }
+    }
+
+    //  work from the path...NOTE NOTE NOTE do not work from ID, that will
+    //  recurse since our ID is built in part from the expanded resource URI
+    parts = this.getURIParts();
+    if (TP.isEmpty(parts)) {
+        path = TP.uriResolveVirtualPath(this.$get('uri'), true);
+        parts = path.match(TP.regex.TIBET_URL_SPLITTER);
+    }
+
+    path = parts.at(TP.core.TIBETURL.URL_INDEX);
+    if (TP.isEmpty(path)) {
+        return;
+    }
+
+    //  this resolves the path as cleanly as possible, returning a path that
+    //  typically starts with one of the schemes we consider "resource"
+    //  schemes. NOTE we pass true for resourceOnly here to strip tibet:
+    //  prefixes for canvased URIs
+    path = TP.uriResolveVirtualPath(path, true);
+    if (TP.regex.SCHEME.test(path)) {
+        url = TP.uc(path);
+        if (TP.isURI(url)) {
+            this.set('nestedURI', url);
+        } else {
+            TP.ifWarn() ?
+                TP.warn('Invalid URI specification: ' + path,
+                        TP.LOG) : 0;
+
+            return;
+        }
+    }
+
+    return url;
 });
 
 //  ------------------------------------------------------------------------
