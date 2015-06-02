@@ -130,7 +130,7 @@ Cmd.prototype.execute = function() {
         if (cfg === undefined) {
             cfg = CLI.getcfg();
             keys = Object.keys(cfg).filter(function(key) {
-                return key.indexOf(option.replace(/\./g, '_')) === 0;
+                return key.indexOf(option) === 0; //option.replace(/\./g, '_')) === 0;
             });
             newcfg = {};
             keys.forEach(function(key) {
@@ -165,7 +165,7 @@ Cmd.prototype.execute = function() {
             str += '\t"~lib": "' + CLI.getLibRoot() + '",\n';
         }
         Object.keys(cfg).sort().forEach(function(key) {
-            str += '\t"' + key.replace(/_/g, '.') + '": ' +
+            str += '\t"' + key + '": ' + // key.replace(/_/g, '.') + '": ' +
             // TODO: if this is a nested object from tibet.json etc. we'll dump
             // the entire subtree. Probably should come up with a routine to
             // "flatten" the keys out for output purposes.

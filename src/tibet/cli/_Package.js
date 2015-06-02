@@ -142,7 +142,7 @@ Package = function(options) {
     TP = {};
     TP.sys = {};
     TP.sys.setcfg = function(property, value) {
-        var name = property.replace(/\./g, '_');
+        var name = property; // property.replace(/\./g, '_');
         pkg.cfg[name] = value;
     };
     this.setcfg = TP.sys.setcfg;
