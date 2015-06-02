@@ -454,8 +454,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod(
-'handleHiddenChangeFromSherpaConsole',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleHiddenChangeFromSherpaConsole',
 function(aSignal) {
 
     /**
@@ -482,7 +481,7 @@ function(aSignal) {
 
     //this.show();
 
-    TP.info('got to halo did focus', TP.LOG);
+    //TP.info('got to halo did focus', TP.LOG);
 
     this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
 
@@ -496,7 +495,7 @@ function(aSignal) {
 
     //this.hide();
 
-    TP.info('got to halo did blur', TP.LOG);
+    //TP.info('got to halo did blur', TP.LOG);
 
     this.get('model').setVariable('HALO', null);
 
