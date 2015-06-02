@@ -439,9 +439,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
 
         cssText,
 
-        newNativeElem,
-
-        destWindow;
+        newNativeElem;
 
     if (!TP.isDocument(targetDoc)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -484,31 +482,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
                             TP.documentGetLocation(
                                 TP.nodeGetDocument(anElement)));
 
-    //  If we're processing CSS and the element hasn't been marked as
-    //  'opaque', then we go ahead and add the content of the 'link' as a
-    //  'style' element. This is so that we get the benefit of loading the
-    //  stylesheet from the href in a 'synchronous manner'. We then process
-    //  the new style element that we just added.
-    //  NOTE: Due to the way the processing machinery works, there's no
-    //  shortcut here... because of pathing considerations, etc. we need to
-    //  have added a native 'style' element first.
-    if (TP.sys.shouldProcessCSS() &&
-        !TP.elementHasAttribute(anElement, 'tibet:opaque', true) &&
-        !TP.elementHasAttribute(anElement, 'dontprocess')) {
-        cssText = TP.uc(linkHref).getResourceText(TP.hc('async', false));
-
-        newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
-
-        //  Grab the 'destination window' - that is, the window that we're
-        //  processing the style in.
-        destWindow = TP.nodeGetWindow(targetDoc);
-
-        //  Go ahead and process it as a 'style' element.
-        TP.$windowProcessCSSStyleElement(destWindow, newNativeElem,
-                                            sourceDirectory);
-
-        return;
-    } else if (TP.isTrue(inlineRuleText)) {
+    if (TP.isTrue(inlineRuleText)) {
         //  If inlineRuleText is true, then we load the style rule text
         //  synchronously, if its not empty, we use that style text to add
         //  under a 'style' element.
@@ -547,10 +521,7 @@ function(anElement, targetDoc) {
 
     var cssText,
 
-        newNativeElem,
-
-        destWindow,
-        sourceDirectory;
+        newNativeElem;
 
     if (!TP.isDocument(targetDoc)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -568,35 +539,7 @@ function(anElement, targetDoc) {
 
     newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
 
-    //  If we're processing CSS and the element hasn't been marked as
-    //  'opaque', then we go ahead and process the new style element that we
-    //  just added.
-    //  NOTE: Due to the way the processing machinery works, there's no
-    //  shortcut here... because of pathing considerations, etc. we need to
-    //  have added a native 'style' element like we just did above.
-    if (TP.sys.shouldProcessCSS() &&
-        !TP.elementHasAttribute(anElement, 'tibet:opaque', true) &&
-        !TP.elementHasAttribute(anElement, 'dontprocess')) {
-        //  Grab the 'destination window' - that is, the window that we're
-        //  processing the style in.
-        destWindow = TP.nodeGetWindow(targetDoc);
-
-        //  Grab the 'source directory' of the text. To do this, we go back
-        //  to the document *of the original style element*, grab its
-        //  location and then get the collection (i.e. 'directory') URL of
-        //  that path.
-        sourceDirectory = TP.uriCollectionPath(
-                                TP.documentGetLocation(
-                                    TP.nodeGetDocument(anElement)));
-
-        //  Go ahead and process it.
-        TP.$windowProcessCSSStyleElement(destWindow, newNativeElem,
-                                            sourceDirectory);
-    } else {
-        return newNativeElem;
-    }
-
-    return;
+    return newNativeElem;
 });
 
 //  ------------------------------------------------------------------------

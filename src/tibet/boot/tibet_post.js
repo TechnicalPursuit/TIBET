@@ -1002,79 +1002,6 @@ TP.boot.$$removeMutationSource = function(aDocument) {
 };
 
 //  ------------------------------------------------------------------------
-//  CSS STYLE MODIFICATION HOOK
-//  ------------------------------------------------------------------------
-
-TP.boot.$$captureStyle = function(aDocument) {
-
-    /**
-     * @method $$captureStyle
-     * @summary Hides style elements from the browser to keep it from
-     *     reporting "errors" for namespaces other than HTML.
-     * @returns {null}
-     */
-
-    var doc,
-        head,
-        handlerFunc;
-
-    doc = aDocument;
-
-    //  Add our DOM insertion function as an Event handler for the
-    //  DOMNodeInserted event on the head element. See the
-    //  TP.$eventHandleStyleInsertion function for more information on
-    //  why we do this.
-    head = doc.getElementsByTagName('head')[0];
-    if (head) {
-        head.addEventListener(
-            'DOMNodeInserted',
-            TP.$eventHandleStyleInsertion,
-            true);
-
-        //  Add a listener for DOMContentLoaded so that when we know
-        //  when all of the DOM elements have been constructed (even if
-        //  all external resources like images, script, etc. might not
-        //  have loaded yet).
-        doc.addEventListener(
-            'DOMContentLoaded',
-            handlerFunc = function() {
-
-                var thisHead;
-
-                //  clean up so we don't run into issues with recursions
-                //  or leaks
-                this.removeEventListener('DOMContentLoaded',
-                                                handlerFunc,
-                                                false);
-
-                if (doc.body) {
-                //  Hide the body so that we can do style processing
-                //  without having it flicker around.
-                //  doc.body.style.visibility = 'hidden';
-                    void 0;
-                }
-
-                //  We don't do this on Mozilla in lieu of the logic in
-                //  TP.$eventHandleStyleInsertion function due to
-                //  Mozilla 1.8's CSS validation logic (which causes a
-                //  lot of spurious errors for us).
-                //TP.$windowDisableStyleSheets(window);
-
-                //  Remove the DOM insertion function from the 'head'
-                //  element if we can still find it
-                thisHead = doc.getElementsByTagName('head')[0];
-                if (thisHead) {
-                    thisHead.removeEventListener(
-                            'DOMNodeInserted',
-                            TP.$eventHandleStyleInsertion,
-                            true);
-                }
-            },
-            false);
-    }
-};
-
-//  ------------------------------------------------------------------------
 //  PAGE SETUP/TEARDOWN
 //  ------------------------------------------------------------------------
 
@@ -1314,24 +1241,6 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
             return;
         }
     }
-
-    //  document stuff here...
-
-    //  Install any style-specific trap functions. Primarily this helps us
-    //  avoid flickering when the style is processed by hiding the document
-    //  body and then letting the kernel show it again. This also helps with
-    //  mozilla errors that will show up when using non-standard style
-    //  (style that would require the CSS processor). This does *not*
-    //  actually do the style processing, it simply ensures that the style
-    //  nodes are captured to avoid error messages from an overzealous and
-    //  non-conforming Mozilla CSS parser.
-    /*
-    if (tibet &&
-        (tibet['TP'] != null) &&
-        TP.sys.shouldProcessCSS()) {
-        TP.boot.$$captureStyle(doc);
-    };
-    */
 
     //  NOTE: special case here, when processing documents into the ui
     //  frame in particular we want to manage the title

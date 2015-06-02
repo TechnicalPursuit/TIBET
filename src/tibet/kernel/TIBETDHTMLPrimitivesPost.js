@@ -1303,26 +1303,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         }
     }
 
-    /*
-    if (TP.sys.shouldProcessCSS()) {
-        //  Because browsers, in general, like to take control of their
-        //  style content 'early' and muck with it, we capture the content
-        //  of 'style' elements here and strip them out the document. These
-        //  will get processed just like link elements do when the
-        //  TP.$$processDocumentLoaded() is called.
-        theStyleChunks = TP.ac();
-        TP.regex.STYLE_CAPTURE.lastIndex = 0;
-        str = str.replace(
-                TP.regex.STYLE_CAPTURE,
-                function(wholeMatch, styleBody) {
-
-                    theStyleChunks.push(styleBody);
-
-                    return '';
-                });
-    };
-    */
-
     //  Go ahead and register an 'onload' function that will call the proper
     //  machinery to set up the document from a CSS perspective and call a
     //  passed in 'loaded' function, if one is available.
@@ -1363,18 +1343,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         }
 
         aDocument.write(str);
-
-        /*
-        if (TP.sys.shouldProcessCSS()) {
-            //  Make sure to assign the style chunks to a window variable
-            //  *after the document is opened* (when the browser machinery
-            //  clears all variables on the window) but *before the
-            //  document.close() is called* (when the 'onload' machinery is
-            //  called and the CSS processor is expecting to have these
-            //  entries to process).
-            win.$globalStyleCaptures = theStyleChunks;
-        };
-        */
     } finally {
         aDocument.close();
     }
@@ -8299,19 +8267,6 @@ function(aWindow) {
                             TP.LOG) : 0;
         }
     }
-
-    /*
-    //  process the CSS styles as needed/directed
-    try {
-        if (TP.sys.shouldProcessCSS()) {
-            TP.$windowStyleSetup(aWindow);
-        };
-    } catch (e) {
-        TP.ifError() ?
-            TP.error(TP.ec(e, 'Window style setup generated error.'),
-                            TP.LOG): 0;
-    };
-    */
 
     //  If the flag that should get set in htmlDocumentSetContent() for
     //  awakening is 'true', then go ahead and awaken the content.

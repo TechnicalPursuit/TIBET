@@ -11131,35 +11131,6 @@ function(aFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('shouldProcessCSS',
-function(aFlag, shouldSignal) {
-
-    /**
-     * @method shouldProcessCSS
-     * @summary Controls and returns TIBET's CSS Processor.
-     * @description When this flag is on, TIBET will translate selectors and
-     *     create runtime data structures to repair most common CSS selector
-     *     limitations.
-     * @param {Boolean} aFlag Turn behavior on or off? Default is true.
-     * @param {Boolean} shouldSignal False to turn off configuration change
-     *     signaling for this call.
-     * @example Configure TIBET to not process CSS through its CSS processor:
-     *     <code>
-     *          TP.sys.shouldProcessCSS(false);
-     *          <samp>false</samp>
-     *     </code>
-     * @returns {Boolean} Whether or not TIBET should process CSS structures.
-     */
-
-    if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('css.process_styles', aFlag, shouldSignal);
-    }
-
-    return TP.sys.cfg('css.process_styles');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sys.defineMethod('shouldRegisterLoggers',
 function(aFlag, shouldSignal) {
 
