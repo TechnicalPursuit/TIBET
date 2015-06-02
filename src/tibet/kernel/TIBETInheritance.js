@@ -10559,8 +10559,9 @@ function(namespaceName, root, forceDefinition) {
         //  their respective receivers to prevent them from being blown away
         //  during system execution, which would be very bad.
 
-        //  The reason these are in two blocks is because of the different value
-        //  for the receiver in Object.defineProperty.
+        //  The reason these are in two blocks is because of the different
+        //  values for the property receiver and property name in
+        //  Object.defineProperty.
 
         /* eslint-disable no-loop-func */
         if (newNamespace[TP.NAME] === 'TP' ||
