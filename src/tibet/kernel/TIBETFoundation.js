@@ -5088,7 +5088,7 @@ function(aFilterName, aLevel) {
     }
 
     lvl = TP.notDefined(aLevel) ?
-            TP.sys.cfg('stack.descent_max') :
+            TP.sys.cfg('stack.max_descent') :
             Math.max(0, aLevel);
 
     if (lvl === 0) {
@@ -9021,7 +9021,7 @@ function(aValue) {
 
     len = this.length;
 
-    if (len < TP.sys.cfg('array.contains_loop_max')) {
+    if (len < TP.sys.cfg('array.max_contains_loop')) {
         for (i = 0; i < len; i++) {
             if (this[i] === aValue) {
                 return true;
