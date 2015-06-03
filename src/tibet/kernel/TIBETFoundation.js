@@ -9013,55 +9013,8 @@ function(aValue) {
      *     provided.
      */
 
-    var len,
-        re,
-        str,
-        i,
-        val;
-
-    len = this.length;
-
-    if (len < TP.sys.cfg('array.max_contains_loop')) {
-        for (i = 0; i < len; i++) {
-            if (this[i] === aValue) {
-                return true;
-            }
-        }
-
-        //  We didn't find it using a pendantic strict equality compare -
-        //  we're sure not going to find it below.
-        return false;
-    }
-
-    //  one issue is that things like literal $, '.', or other quantifiers
-    //  won't match unless we escape them in the regular expression string
-    TP.regex.QUANTIFIERS.lastIndex = 0;
-    if (TP.regex.QUANTIFIERS.test(aValue)) {
-        val = aValue.replace(/\$/g, '\\$');
-        val = val.replace(/\./g, '\\.');
-        val = val.replace(/\?/g, '\\?');
-        val = val.replace(/\(/g, '\\(');
-        val = val.replace(/\)/g, '\\)');
-    } else {
-        val = aValue;
-    }
-
-    //  trick here is to create a bounded string so we can search via regex
-    try {
-        str = TP.JOIN + this.join(TP.JOIN) + TP.JOIN;
-        re = TP.rc(TP.JOIN + val + TP.JOIN);
-
-        return re.test(str);
-    } catch (e) {
-        //  old-fashioned way, just iterate
-        for (i = 0; i < this.length; i++) {
-            if (this[i] === aValue) {
-                return true;
-            }
-        }
-    }
-
-    return false;
+    //  ECMA5 provides a nice indexOf() method on Array.
+    return this.indexOf(aValue) !== TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------
