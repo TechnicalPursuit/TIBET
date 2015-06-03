@@ -714,7 +714,7 @@ function() {
     }
 
     //  sort by depth so we work from most specific to least specific
-    subtypes.sort(TP.SUBTYPE_SORT).reverse();
+    subtypes.sort(TP.sort.SUBTYPE).reverse();
 
     //  capture arguments in this scope for passage to inner scope. if we
     //  don't do this the "arguments" reference in the inner function will

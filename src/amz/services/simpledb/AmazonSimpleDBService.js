@@ -319,7 +319,7 @@ function(aRequest) {
     }
 
     //  Grab the keys and sort them using a natural order sort.
-    resourceKeys = TP.keys(resourceComponents).sort(TP.NATURAL_ORDER_SORT);
+    resourceKeys = TP.keys(resourceComponents).sort(TP.sort.NATURAL_ORDER);
 
     //  Build up an Array to turn into the 'signature string' that will be
     //  hashed to become the request's 'signature'.

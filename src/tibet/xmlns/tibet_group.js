@@ -196,7 +196,7 @@ function(includesGroups) {
 
     //  Sort the Array of elements by their 'tabindex' according to the
     //  HTML5 tabindex rules.
-    results.sort(TP.TABINDEX_ORDER_SORT);
+    results.sort(TP.sort.TABINDEX_ORDER);
 
     //  Wrap the results to make TP.core.ElementNodes
     return TP.wrap(results);

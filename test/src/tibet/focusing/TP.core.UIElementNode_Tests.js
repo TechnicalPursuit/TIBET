@@ -2109,7 +2109,7 @@ function() {
                     TP.ac('field_1', 'field_2', 'field_3', 'field_4'));
 
                 tabOrderResults = TP.byCSS('#testGroup1 input').sort(
-                                                    TP.TABINDEX_ORDER_SORT);
+                                                    TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');
@@ -2132,7 +2132,7 @@ function() {
                     TP.ac('field_5', 'field_6', 'field_7', 'field_8'));
 
                 tabOrderResults = TP.byCSS('#testGroup2 input').sort(
-                                                    TP.TABINDEX_ORDER_SORT);
+                                                    TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');
@@ -2156,7 +2156,7 @@ function() {
                             'field_12', 'field_13', 'field_14'));
 
                 tabOrderResults = TP.byCSS('#testGroup3 input').sort(
-                                                    TP.TABINDEX_ORDER_SORT);
+                                                    TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');
@@ -2181,7 +2181,7 @@ function() {
                             'field_19', 'field_20', 'field_21', 'field_22'));
 
                 tabOrderResults = TP.byCSS('#testGroup4 input').sort(
-                                                    TP.TABINDEX_ORDER_SORT);
+                                                    TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');

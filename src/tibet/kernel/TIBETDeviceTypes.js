@@ -1679,7 +1679,7 @@ function(anEvent) {
         //  (least to most specific) are towards the end of the list and use the
         //  last one.
         if (elems.getSize() > 1) {
-            elems.sort(TP.KEYMAP_ELEMENT_SORT);
+            elems.sort(TP.sort.KEYMAP_ELEMENT);
             elem = elems.last();
         } else {
             //  There was only one.
@@ -1764,7 +1764,7 @@ function(keyNameOrGlyph) {
     //  (least to most specific) are towards the end of the list and use the
     //  last one.
     if (elems.getSize() > 1) {
-        elems.sort(TP.KEYMAP_ELEMENT_SORT);
+        elems.sort(TP.sort.KEYMAP_ELEMENT);
         elem = elems.last();
     } else {
         //  There was only one.
@@ -1890,7 +1890,7 @@ function(normalizedEvent) {
                 //  browser and platform (least to most specific) are towards
                 //  the end of the list and use the last one.
                 if (elems.getSize() > 1) {
-                    elems.sort(TP.KEYMAP_ELEMENT_SORT);
+                    elems.sort(TP.sort.KEYMAP_ELEMENT);
                     elem = elems.last();
                 } else {
                     //  There was only one.

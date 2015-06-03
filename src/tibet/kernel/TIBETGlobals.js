@@ -1739,9 +1739,13 @@ Somewhat brute-force, but useful sort functions that come up often.
 
 //  ------------------------------------------------------------------------
 
+TP.defineNamespace('sort', 'TP');
+
+//  ------------------------------------------------------------------------
+
 //  a sort that works just like the built-in alphabetic sort, but ignores
 //  case-sensitivity
-TP.CASE_INSENSITIVE_SORT = function(a, b) {
+TP.sort.CASE_INSENSITIVE = function(a, b) {
 
     var aLower,
         bLower;
@@ -1791,7 +1795,7 @@ misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
 
-TP.NATURAL_ORDER_SORT = function(a, b) {
+TP.sort.NATURAL_ORDER = function(a, b) {
 
     var isWhitespaceChar,
         isDigitChar,
@@ -1935,13 +1939,13 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
 };
 
 //  compareTo sort block which sorts based on "magnitude"
-TP.COMPARE_SORT = function(a, b) {
+TP.sort.COMPARE = function(a, b) {
 
     return a.compareTo(b);
 };
 
 //  sort block that pushes "deleted" elements to the end for truncation
-TP.DELETION_SORT = function(a, b) {
+TP.sort.DELETION = function(a, b) {
 
     if (a !== TP.DELETED && b === TP.DELETED) {
         return -1;
@@ -1953,7 +1957,7 @@ TP.DELETION_SORT = function(a, b) {
 };
 
 //  nodes can be sorted in document order using this sort
-TP.DOCUMENT_ORDER_SORT = function(a, b) {
+TP.sort.DOCUMENT_ORDER = function(a, b) {
 
     /* jshint bitwise:false */
     if (a.sourceIndex) {
@@ -1967,7 +1971,7 @@ TP.DOCUMENT_ORDER_SORT = function(a, b) {
 };
 
 //  elements can be sorted in tabindex order using this sort
-TP.TABINDEX_ORDER_SORT = function(a, b) {
+TP.sort.TABINDEX_ORDER = function(a, b) {
 
     var aVal,
         bVal;
@@ -2019,7 +2023,7 @@ TP.TABINDEX_ORDER_SORT = function(a, b) {
 };
 
 //  sort objects by their "equality values" often their string values
-TP.EQUALITY_SORT = function(a, b) {
+TP.sort.EQUALITY = function(a, b) {
 
     var arep,
         brep;
@@ -2050,7 +2054,7 @@ TP.EQUALITY_SORT = function(a, b) {
 };
 
 //  a simple sort for arrays containing ordered pairs by their "key" slot
-TP.FIRST_ITEM_SORT = function(a, b) {
+TP.sort.FIRST_ITEM = function(a, b) {
 
     if (!a && b) {
         return 1;
@@ -2066,7 +2070,7 @@ TP.FIRST_ITEM_SORT = function(a, b) {
 };
 
 //  sort objects by their "identity values" (aka their IDs or pointers)
-TP.IDENTITY_SORT = function(a, b) {
+TP.sort.IDENTITY = function(a, b) {
 
     var arep,
         brep;
@@ -2097,12 +2101,12 @@ TP.IDENTITY_SORT = function(a, b) {
 };
 
 //  numerical sort block
-TP.NUMERIC_SORT = function(a, b) {
+TP.sort.NUMERIC = function(a, b) {
     return a - b;
 };
 
 //  a simple sort for arrays containing ordered pairs by their "value" slot
-TP.SECOND_ITEM_SORT = function(a, b) {
+TP.sort.SECOND_ITEM = function(a, b) {
 
     if (!a && b) {
         return 1;
@@ -2119,7 +2123,7 @@ TP.SECOND_ITEM_SORT = function(a, b) {
 
 //  sort to order a list by number of supertypes which effectively sorts
 //  from parent to child (across one or more branches)
-TP.SUBTYPE_SORT = function(a, b) {
+TP.sort.SUBTYPE = function(a, b) {
 
     var asize,
         bsize;
@@ -2137,7 +2141,7 @@ TP.SUBTYPE_SORT = function(a, b) {
 };
 
 //  simple unicode-value sort
-TP.UNICODE_SORT = function(a, b) {
+TP.sort.UNICODE = function(a, b) {
 
     var au,
         bu;
@@ -2155,7 +2159,7 @@ TP.UNICODE_SORT = function(a, b) {
 };
 
 //  simple element sort
-TP.ELEMENT_SORT = function(a, b) {
+TP.sort.ELEMENT = function(a, b) {
 
     var atag,
         btag;
@@ -2175,7 +2179,7 @@ TP.ELEMENT_SORT = function(a, b) {
 //  Sorts keymap XML elements by whether they have no qualifier, just
 //  'platform', just 'browser' or 'platform' AND 'browser'. This is considered
 //  'least to most specific' for keymaps.
-TP.KEYMAP_ELEMENT_SORT = function(a, b) {
+TP.sort.KEYMAP_ELEMENT = function(a, b) {
 
     var aHasPlatform,
         aHasBrowser,

@@ -4087,7 +4087,7 @@ function() {
     }
 
     if (TP.isNumber(keys[0])) {
-        keys.sort(TP.NUMERIC_SORT);
+        keys.sort(TP.sort.NUMERIC);
     } else {
         keys.sort();
     }
@@ -4799,7 +4799,7 @@ function(aHash, aLevel) {
         } else if (TP.notFalse(sorter)) {
             if (TP.isValid(k.at(0))) {
                 if (TP.isArray(this)) {
-                    k.sort(TP.NUMERIC_SORT);
+                    k.sort(TP.sort.NUMERIC);
                 } else {
                     k.sort();
                 }
@@ -4808,7 +4808,7 @@ function(aHash, aLevel) {
     } else {
         if (TP.isValid(k.at(0))) {
             if (TP.isArray(this)) {
-                k.sort(TP.NUMERIC_SORT);
+                k.sort(TP.sort.NUMERIC);
             } else {
                 k.sort();
             }
@@ -8025,7 +8025,7 @@ function(aFunction) {
             return TP.ac(item, aFunction(item, index));
         });
 
-    return items.sort(TP.SECOND_ITEM_SORT);
+    return items.sort(TP.sort.SECOND_ITEM);
 });
 
 //  ------------------------------------------------------------------------

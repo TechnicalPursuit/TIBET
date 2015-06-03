@@ -1123,11 +1123,11 @@ function(aCollection, aTest) {
     copy = this.copy();
 
     if (aTest === TP.IDENTITY) {
-        copy.sort(TP.IDENTITY_SORT);
-        comp.sort(TP.IDENTITY_SORT);
+        copy.sort(TP.sort.IDENTITY);
+        comp.sort(TP.sort.IDENTITY);
     } else {
-        copy.sort(TP.EQUALITY_SORT);
-        comp.sort(TP.EQUALITY_SORT);
+        copy.sort(TP.sort.EQUALITY);
+        comp.sort(TP.sort.EQUALITY);
     }
 
     //  iterating on the incoming data means item is what we'll be looking
@@ -1186,11 +1186,11 @@ function(aCollection, aTest) {
     copy = this.copy();
 
     if (aTest === TP.IDENTITY) {
-        copy.sort(TP.IDENTITY_SORT);
-        comp.sort(TP.IDENTITY_SORT);
+        copy.sort(TP.sort.IDENTITY);
+        comp.sort(TP.sort.IDENTITY);
     } else {
-        copy.sort(TP.EQUALITY_SORT);
-        comp.sort(TP.EQUALITY_SORT);
+        copy.sort(TP.sort.EQUALITY);
+        comp.sort(TP.sort.EQUALITY);
     }
 
     //  iterating on the incoming data means item is what we'll be looking
