@@ -53,7 +53,7 @@ function(targetUrl, aRequest) {
      *     keys which define the actual data used for the current WebSocket
      *     call.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI,WebSocketException,WebSocketSendException
      * @throws Error Various WebSocket-related errors.
@@ -403,7 +403,7 @@ function(targetUrl, aSignal, aRequest) {
      * @param {String} targetUrl The URL being accessed when the error occurred.
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
      *     by this call.
-     * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
+     * @param {TP.core.Hash|TP.sig.Request} aRequest A request/hash with keys.
      * @exception WebSocketException
      * @throws Error Throws an Error containing aString.
      */

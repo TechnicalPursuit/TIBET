@@ -24,7 +24,7 @@
  *     Defining request parameters:
  *
  *     - Request parameters need to include an 'action', which should be either
- *          'getItem' or 'putItem'. The data should be a TP.lang.Hash that is
+ *          'getItem' or 'putItem'. The data should be a TP.core.Hash that is
  *          placed in the 'body' parameter.
  *
  *     req = TP.sig.LocalDBStorageRequest.construct(

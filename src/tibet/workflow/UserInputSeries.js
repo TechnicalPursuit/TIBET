@@ -255,7 +255,7 @@ function(aParamHash) {
      * @method addQuery
      * @summary Adds a query, optional default value, and optional validator to
      *     the list of queries this request should manage.
-     * @param {TP.lang.Hash} aParamHash A hash containing optional parameter
+     * @param {TP.core.Hash} aParamHash A hash containing optional parameter
      *     keys including: 'query': A string or function which can generate a
      *     string used as the query string. 'count': The number of times this
      *     validator should be attempted before failing. Default is 3.

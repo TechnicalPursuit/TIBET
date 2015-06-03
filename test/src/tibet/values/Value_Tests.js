@@ -84,7 +84,7 @@ function() {
 
         'TIBETType',                            'TP.core.Node',
         'TP.lang.Object',                       /^TP\.lang\.Object\$(\w+)$/,
-        'TP.lang.Hash',                         /^TP\.lang\.Hash\$(\w+)$/,
+        'TP.core.Hash',                         /^TP\.core\.Hash\$(\w+)$/,
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
@@ -271,7 +271,7 @@ function() {
 
         'TIBETType',                            'TP.core.Node',
         'TP.lang.Object',                       /^TP\.lang\.Object\$(\w+)$/,
-        'TP.lang.Hash',                         /^TP\.lang\.Hash\$(\w+)$/,
+        'TP.core.Hash',                         /^TP\.core\.Hash\$(\w+)$/,
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
@@ -452,7 +452,7 @@ function() {
 
         'TIBETType',                            true,
         'TP.lang.Object',                       false,
-        'TP.lang.Hash',                         false,
+        'TP.core.Hash',                         false,
         'TP.sig.Signal',                        false,
         'TP.sig.Exception',                     false,
 
@@ -623,7 +623,7 @@ function() {
 
         'TIBETType',                            false,
         'TP.lang.Object',                       false,
-        'TP.lang.Hash',                         false,
+        'TP.core.Hash',                         false,
         'TP.sig.Signal',                        false,
         'TP.sig.Exception',                     false,
 

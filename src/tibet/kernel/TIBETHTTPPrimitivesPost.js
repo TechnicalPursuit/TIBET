@@ -58,7 +58,7 @@ function(targetUrl, aRequest) {
      *     specifically add a key of 'redirect' with a value of true to the
      *     request.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI, HTTPException
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
@@ -92,7 +92,7 @@ function(targetUrl, aRequest) {
      *     consistency.
      * @param {String} targetUrl The request's target URL, or the root of that
      *     URL, ready for the addition of any encoded data values.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI, HTTPException
      * @returns {XMLHttpRequest} The result object. On success this object's
@@ -138,7 +138,7 @@ function(targetUrl, aRequest) {
      * @summary Returns an XMLHttpRequest containing the result of a HEAD call
      *     with the specified URL.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
@@ -159,7 +159,7 @@ function(targetUrl, aRequest) {
      *     header from the response, available via getResponseHeader, provides
      *     the option list.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
@@ -179,7 +179,7 @@ function(targetUrl, aRequest) {
      * @summary Sends the data contained in the 'body' parameter of the request
      *     to the targetUrl using an HTTP POST.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
@@ -199,7 +199,7 @@ function(targetUrl, aRequest) {
      * @summary Sends the data contained in the 'body' parameter of the request
      *     to the targetUrl using an HTTP PUT.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
@@ -220,7 +220,7 @@ function(targetUrl, aRequest) {
      *     the specified URL. Response headers and resultText of that object
      *     will contain the requested data.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
@@ -247,7 +247,7 @@ function(httpVerb, targetUrl, aRequest) {
      * @param {String} httpVerb TP.HTTP_GET, TP.HTTP_HEAD, TP.HTTP_OPTIONS, or
      *     TP.HTTP_TRACE.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's
@@ -296,7 +296,7 @@ function(httpVerb, targetUrl, aRequest) {
      *     TP.HTTP_POST or TP.HTTP_PUT).
      * @param {String} httpVerb TP.HTTP_POST, TP.HTTP_PUT, etc.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @returns {XMLHttpRequest} The result object. On success this object's

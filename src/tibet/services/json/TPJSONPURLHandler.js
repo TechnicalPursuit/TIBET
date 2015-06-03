@@ -41,7 +41,7 @@ function(targetURI, aRequest) {
      *     'callback'.
      * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -113,7 +113,7 @@ function(targetURI, aRequest) {
      *     JSONP URL. NOTE: 'jsonp://' URIs don't implement this functionality.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -143,7 +143,7 @@ function(targetURI, aRequest) {
      *     don't implement this functionality.
      * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.

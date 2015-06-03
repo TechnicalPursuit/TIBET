@@ -360,7 +360,7 @@ function(initialState, targetState, transitionDetails) {
      *     Defaults to null since start states may not have an initial state.
      * @param {String|String[]} [targetState] The name of the target state(s).
      *     Defaults to null since final states may not have target states.
-     * @param {TP.lang.Hash} [transitionDetails] A hash containing details on
+     * @param {TP.core.Hash} [transitionDetails] A hash containing details on
      *     the transition such as triggers and nested machine activation.
      * @param {TP.core.StateMachine|String} [options.nested]. The type name
      *     for a nested state machine, or the state machine itself.
@@ -499,7 +499,7 @@ function(transitionDetails, nested) {
      * @method exit
      * @summary Performs exit processing, ensuring that any nested state
      *     machines exit before their outer composite state machines.
-     * @param {TP.lang.Hash} transitionDetails Transition information including
+     * @param {TP.core.Hash} transitionDetails Transition information including
      *     'state' (the new state), and 'trigger' (usually a signal).
      * @param {Boolean} [nested] True if the call is being invoked by a parent
      *     on a nested child state machine.
@@ -801,7 +801,7 @@ function(transitionDetails) {
      *     For general transitions this method simply coordinates signaling of
      *     the proper transition events to allow observers to update based on
      *     the new state and to run any enter/exit/transition methods they have.
-     * @param {TP.lang.Hash} transitionDetails Transition information including
+     * @param {TP.core.Hash} transitionDetails Transition information including
      *     'state' (the new state), and 'trigger' (usually a signal).
      */
 

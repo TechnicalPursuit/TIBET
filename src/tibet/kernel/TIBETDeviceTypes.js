@@ -639,7 +639,7 @@ function(aSignal, shouldBuild) {
      * @param {Object|Array} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Boolean} shouldBuild
-     * @returns {TP.lang.Hash} The shortcut data.
+     * @returns {TP.core.Hash} The shortcut data.
      */
 
     var shortcuts,

@@ -36,7 +36,7 @@ TP.$$pluginVersionFunction = function(plugin, pluginEntry) {
      *     pluginEntry with it.
      * @param {Object} plugin The native plugin Object from the browser's
      *     'navigator.plugins' Array.
-     * @param {TP.lang.Hash} pluginEntry The entry to populate with the version
+     * @param {TP.core.Hash} pluginEntry The entry to populate with the version
      *     information.
      */
 
@@ -76,11 +76,11 @@ function(pluginKey) {
 
     /**
      * @method getPluginInfo
-     * @summary Returns a TP.lang.Hash containing information about the plugin
+     * @summary Returns a TP.core.Hash containing information about the plugin
      *     matching the supplied plugin key.
      * @param {String} pluginKey The key for a particular key matching keys in
      *     the TP.PLUGIN_INFO hash.
-     * @returns {TP.lang.Hash} The plugin's information entry.
+     * @returns {TP.core.Hash} The plugin's information entry.
      */
 
     var pluginInfo,

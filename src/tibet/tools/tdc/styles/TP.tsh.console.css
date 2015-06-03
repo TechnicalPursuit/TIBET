@@ -287,7 +287,7 @@ body #BOOT-PROGRESS {
 
 .tsh_pp > span.Array span,
 .tsh_pp > span.Object span,
-.tsh_pp > span.TP_lang_Hash span
+.tsh_pp > span.TP_core_Hash span
 {
     display: table-row;
     line-height: 1.5em;
@@ -295,7 +295,7 @@ body #BOOT-PROGRESS {
 }
 
 .tsh_pp > span.Object span[data-name]:before,
-.tsh_pp > span.TP_lang_Hash span[data-name]:before
+.tsh_pp > span.TP_core_Hash span[data-name]:before
 {
     vertical-align: top;
 }

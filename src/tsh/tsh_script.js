@@ -3066,7 +3066,7 @@ function(output, request) {
      * @summary Standard function for notifying of "out of band" content during
      *     request execution.
      * @param {Object} output The object to write to stderr.
-     * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
+     * @param {TP.sig.Request|TP.core.Hash} request Optional request/parameters.
      *     Defaults to the receiver.
      */
 
@@ -3087,7 +3087,7 @@ function(output, request) {
      * @summary Standard function for writing error output during shell
      *     execution.
      * @param {Object} output The object to write to stderr.
-     * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
+     * @param {TP.sig.Request|TP.core.Hash} request Optional request/parameters.
      *     Defaults to the receiver.
      */
 
@@ -3318,7 +3318,7 @@ function(output, request) {
      * @summary Standard function for writing valid output during shell
      *     execution.
      * @param {Object} output The object to write to stdout.
-     * @param {TP.sig.Request|TP.lang.Hash} request Optional request/parameters.
+     * @param {TP.sig.Request|TP.core.Hash} request Optional request/parameters.
      *     Defaults to the receiver.
      */
 

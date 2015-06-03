@@ -514,7 +514,7 @@ function(aURI, aRequest) {
      *     function may be provided.
      * @param {TP.core.URI|String} aURI A TP.core.URI or String referencing the
      *     script location.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A set of request
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
      * @returns {html:script} The HTML Script node holding the script.

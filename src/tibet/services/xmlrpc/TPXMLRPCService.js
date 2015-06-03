@@ -88,12 +88,12 @@ function(aRequest) {
 
     /**
      * @method rewriteRequestHeaders
-     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @summary Returns a TP.core.Hash of HTTP headers appropriate for the
      *     service. XMLRPC requires Host and User-Agent headers to be defined so
      *     we ensure those are configured here.
      * @param {TP.sig.XMLRPCRequest} aRequest The request whose parameters
      *     define the HTTP request.
-     * @returns {TP.lang.Hash} The hash of HTTP headers.
+     * @returns {TP.core.Hash} The hash of HTTP headers.
      */
 
     var headers,

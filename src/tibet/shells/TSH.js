@@ -374,7 +374,7 @@ function(aResourceID, aRequest) {
      * @method init
      * @summary Initializes a new instance.
      * @param {String} aResourceID A unique identifier for this instance.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing an optional "parentShell" key used to define a parent for
      *     the newly constructed shell instance.
      * @returns {TP.core.TSH} A new instance.
@@ -407,7 +407,7 @@ function(aRequest) {
     /**
      * @method isLoginShell
      * @summary Returns true if the receiver is a top-level login shell.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {Boolean}
      */
@@ -436,7 +436,7 @@ function(aRequest) {
      *     the starting point for the login sequence. When that data is empty
      *     the current 'username' cookie for the application is used to define a
      *     default username whose profile should load.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {TP.core.TSH} The receiver.
      */

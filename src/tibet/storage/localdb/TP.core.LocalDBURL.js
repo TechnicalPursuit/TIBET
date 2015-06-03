@@ -234,7 +234,7 @@ function(aURIString) {
         this.set('query', uriQuery);
 
         //  Create a hash from the query string.
-        queryDict = TP.lang.Hash.fromString(uriQuery);
+        queryDict = TP.core.Hash.fromString(uriQuery);
 
         this.set('queryDict', queryDict);
     }
@@ -255,7 +255,7 @@ function(existingResource, newResource, aRequest) {
      *     object, if available.
      * @param {Object} newResource The resource object to add to the resource of
      *     the receiver.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
@@ -280,7 +280,7 @@ function(aRequest) {
      *     parameter to true, which is inverted from the base URI type's value
      *     of 'false'. This is because most of the time the requestor won't want
      *     the cached value of the URI, but will want to query the database.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Object}

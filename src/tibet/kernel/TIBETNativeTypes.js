@@ -4286,19 +4286,19 @@ function() {
 
     /**
      * @method asHash
-     * @summary Returns the receiver as a TP.lang.Hash using parsers
-     *     available for the TP.lang.Hash type. Strings conforming to query
-     *     strings, CSS declarations, and other forms depend on TP.lang.Hash to
+     * @summary Returns the receiver as a TP.core.Hash using parsers
+     *     available for the TP.core.Hash type. Strings conforming to query
+     *     strings, CSS declarations, and other forms depend on TP.core.Hash to
      *     parse them properly. If no parser can convert the string into a
-     *     proper TP.lang.Hash instance then a TP.lang.Hash containing the
+     *     proper TP.core.Hash instance then a TP.core.Hash containing the
      *     receiver as the only key will be returned.
-     * @returns {TP.lang.Hash} A hash of key/value pairs represented by the
+     * @returns {TP.core.Hash} A hash of key/value pairs represented by the
      *     receiver.
      */
 
     var hash;
 
-    hash = TP.lang.Hash.fromString(this.asString());
+    hash = TP.core.Hash.fromString(this.asString());
 
     if (TP.notValid(hash)) {
         return TP.hc(this.asString(), null);
@@ -4722,7 +4722,7 @@ function(aHash) {
      *     replacements for those sequences as keys and values.
      * @description This method replaces the String found as each key in the
      *     supplied hash with the corresponding value found there.
-     * @param {TP.lang.Hash} aHash The replacements to perform on the receiver.
+     * @param {TP.core.Hash} aHash The replacements to perform on the receiver.
      * @returns {String} The receiver with any Strings found by matching each
      *     key in the supplied hash replaced by their corresponding value in the
      *     hash.
@@ -5246,7 +5246,7 @@ function(aRequest) {
      *     control parameters. If the string can be converted into a valid XML
      *     node that node is processed, otherwise the processing is performed
      *     via the substitute method.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing control parameters.
      * @returns {TP.core.URL} The receiver.
      */
@@ -6040,10 +6040,10 @@ function(aDataSource, aKeySource, aScope) {
      *
      *     to act as format strings. The symbol defines which string
      *     substitution code should be used (see registerSubstitution()). The
-     *     substitute method takes a TP.lang.Hash for aDataSource and aKeySource
+     *     substitute method takes a TP.core.Hash for aDataSource and aKeySource
      *     unless the data source is atomic.
-     * @param {TP.lang.Hash} aDataSource An object or hash to be used for data.
-     * @param {TP.lang.Hash} aKeySource An object or hash to be used for
+     * @param {TP.core.Hash} aDataSource An object or hash to be used for data.
+     * @param {TP.core.Hash} aKeySource An object or hash to be used for
      *     resolving % {} entity keys. The values in the key hash can be simple
      *     objects which return a value or functions which operate on the
      *     corresponding data source value and return an appropriate value.
@@ -6102,7 +6102,7 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
      *     registration.
      * @param {TP.api.CollectionAPI} aDataSource The data source(s) being
      *     formatted.
-     * @param {TP.lang.Hash} aKeySource The hash for keyed formatters.
+     * @param {TP.core.Hash} aKeySource The hash for keyed formatters.
      * @param {Object} aScope The object to be used for the context of
      *     evaluating embedded JS expressions.
      * @returns {String} A formatted string.

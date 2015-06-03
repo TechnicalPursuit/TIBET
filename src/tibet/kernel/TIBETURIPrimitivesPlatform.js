@@ -52,7 +52,7 @@ TP.hc(
          * @summary Returns true if the url provided represents a directory.
          *     This function operates on file-based URLs only.
          * @param {String} targetUrl URL of the file to test.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI,TP.sig.UnsupportedFeature,
          *     TP.sig.URIException
@@ -145,7 +145,7 @@ TP.hc(
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
@@ -244,7 +244,7 @@ TP.hc(
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
@@ -316,7 +316,7 @@ TP.hc(
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
@@ -342,7 +342,7 @@ TP.hc(
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
          *     TP.sig.URIException
@@ -388,7 +388,7 @@ TP.hc(
          * @method $fileExists
          * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI
          * @returns {Boolean}
@@ -433,7 +433,7 @@ TP.hc(
          * @method $fileExists
          * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI
          * @returns {Boolean}
@@ -575,7 +575,7 @@ TP.hc(
          * @method $fileExists
          * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI
          * @returns {Boolean}
@@ -654,7 +654,7 @@ TP.hc(
          * @method $fileExists
          * @summary Returns true if targetUrl exists in the file system.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI
          * @returns {Boolean}
@@ -727,7 +727,7 @@ TP.hc(
          * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
@@ -883,7 +883,7 @@ TP.hc(
          * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
@@ -1053,7 +1053,7 @@ TP.hc(
          * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
@@ -1172,7 +1172,7 @@ TP.hc(
          * @summary Loads the content of targetUrl, returning data in the form
          *     defined by the 'resultType' property of aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
@@ -1283,7 +1283,7 @@ TP.hc(
          * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     parameters which control the operation including: body String The
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
@@ -1489,7 +1489,7 @@ TP.hc(
          * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     parameters which control the operation including: body String The
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
@@ -1618,7 +1618,7 @@ TP.hc(
          * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     parameters which control the operation including: body String The
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
@@ -1648,7 +1648,7 @@ TP.hc(
          * @summary Saves content to the targetUrl provided using parameters
          *     and content taken from aRequest.
          * @param {String} targetUrl URL of the target file.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     parameters which control the operation including: body String The
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
@@ -1703,7 +1703,7 @@ TP.hc(
          * @param {String} shellUrl URL of the command shell you want to use.
          *     Examples are file:///bin/bash or perhaps
          *     file:///c:/.../powershell.exe.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     keys which can/should include: shellFlags String One or more
          *     shell arguments or flags such as "/c" (cmd.exe), "-c" (bash),
          *     "-Command" (powershell), or "/NOWINDOW" (hstart.exe). These
@@ -1876,7 +1876,7 @@ TP.hc(
                     args = commandArgs;
                 } else if (TP.isArray(commandArgs)) {
                     args = commandArgs.join(' ');
-                } else if (TP.isKindOf(commandArgs, TP.lang.Hash)) {
+                } else if (TP.isKindOf(commandArgs, TP.core.Hash)) {
                     args = commandArgs.asArray().flatten().join(' ');
                 } else {
                     args = '';
@@ -2248,7 +2248,7 @@ TP.hc(
          * @param {String} shellUrl URL of the command shell you want to use.
          *     Examples are file:///bin/bash or perhaps
          *     file:///c:/.../powershell.exe.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     keys which can/should include: shellFlags String One or more
          *     shell arguments or flags such as "/c" (cmd.exe), "-c" (bash),
          *     "-Command" (powershell), or "/NOWINDOW" (hstart.exe). These
@@ -2394,7 +2394,7 @@ TP.hc(
                 args = commandArgs;
             } else if (TP.isArray(commandArgs)) {
                 args = commandArgs.join(' ');
-            } else if (TP.isKindOf(commandArgs, TP.lang.Hash)) {
+            } else if (TP.isKindOf(commandArgs, TP.core.Hash)) {
                 args = commandArgs.asArray().flatten().join(' ');
             } else {
                 args = '';
@@ -2660,7 +2660,7 @@ TP.hc(
          * @param {String} shellUrl URL of the command shell you want to use.
          *     Examples are file:///bin/bash or perhaps
          *     file:///c:/.../powershell.exe.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     keys which can/should include: shellFlags String One or more
          *     shell arguments or flags such as "/c" (cmd.exe), "-c" (bash),
          *     "-Command" (powershell), or "/NOWINDOW" (hstart.exe). These
@@ -2712,7 +2712,7 @@ TP.hc(
          * @param {String} shellUrl URL of the command shell you want to use.
          *     Examples are file:///bin/bash or perhaps
          *     file:///c:/.../powershell.exe.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     keys which can/should include: shellFlags String One or more
          *     shell arguments or flags such as "/c" (cmd.exe), "-c" (bash),
          *     "-Command" (powershell), or "/NOWINDOW" (hstart.exe). These

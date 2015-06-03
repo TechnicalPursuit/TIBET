@@ -873,17 +873,17 @@ function(aAttributeString) {
     /**
      * @method attributeStringAsHash
      * @summary Converts a properly formatted attribute string into the
-     *     equivalent TP.lang.Hash.
+     *     equivalent TP.core.Hash.
      * @param {String} aAttributeString A string of the form key="value"
      *     key="value".
-     * @returns {TP.lang.Hash} A new hash of attribute property/value pairs.
+     * @returns {TP.core.Hash} A new hash of attribute property/value pairs.
      */
 
     if (TP.isEmpty(aAttributeString)) {
         return TP.hc();
     }
 
-    return TP.lang.Hash.fromString(aAttributeString);
+    return TP.core.Hash.fromString(aAttributeString);
 });
 
 //  ------------------------------------------------------------------------
@@ -895,7 +895,7 @@ function(aHash) {
      * @method attributeStringFromHash
      * @summary Returns the provided hash's key/value pairs as a valid XML
      *     element attribute string.
-     * @param {TP.lang.Hash} aHash A valid TP.lang.Hash containing keys suitable
+     * @param {TP.core.Hash} aHash A valid TP.core.Hash containing keys suitable
      *     for a XML element.
      * @returns {String} A String in the format of an XML element attribute
      *     string.
@@ -1382,7 +1382,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
      * @param {Element} anElement The original element to be transformed.
      * @param {String} tagName The local or full tag name to use for the new
      *     element.
-     * @param {TP.lang.Hash} attrHash An optional hash containing additional
+     * @param {TP.core.Hash} attrHash An optional hash containing additional
      *     attributes for the new element. Note that if a same-named attribute
      *     already exists on the element, the value for that attribute will be
      *     updated to the value in this hash.
@@ -2137,7 +2137,7 @@ function(anElement, includeDefault) {
      *     for.
      * @param {Boolean} includeDefault Whether or not to return any default
      *     'xmlns' attributes defined on the element. The default is false.
-     * @returns {TP.lang.Hash} A hash of xmlns attribute names and attribute
+     * @returns {TP.core.Hash} A hash of xmlns attribute names and attribute
      *     values. Note that the names will be the attribute 'full name' (i.e.
      *     including the 'xmlns:' prefix).
      */
@@ -2477,7 +2477,7 @@ function(anElement, attributeName, stripPrefixes) {
      *          <samp>(hash of 'bar:*' attributes from the document
      *         element)</samp>
      *     </code>
-     * @returns {TP.lang.Hash} A collection of name/value pairs.
+     * @returns {TP.core.Hash} A collection of name/value pairs.
      * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
      */
@@ -2697,7 +2697,7 @@ function(anElement, attributeName, stripPrefixes) {
      *          <samp>(hash of 'bar:*' attributes from the document
      *         element)</samp>
      *     </code>
-     * @returns {TP.lang.Hash} A collection of name/value pairs. The value part
+     * @returns {TP.core.Hash} A collection of name/value pairs. The value part
      *     of the pair is returned as a Number.
      * @exception TP.sig.InvalidElement Raised when an invalid element is provided
      *     to the method.
@@ -4300,9 +4300,9 @@ function(anElement, attributeHash, checkAttrNSURI) {
     /**
      * @method elementSetAttributes
      * @summary Sets the value of the attributes provided using the supplied
-     *     TP.lang.Hash.
+     *     TP.core.Hash.
      * @param {Element} anElement The element to set the attributes on.
-     * @param {TP.lang.Hash} attributeHash The attributes to set.
+     * @param {TP.core.Hash} attributeHash The attributes to set.
      * @param {Boolean} checkAttrNSURI True will cause this method to be more
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to

@@ -147,7 +147,7 @@ function(aURIString) {
         this.set('query', uriQuery);
 
         //  Create a hash from the query string.
-        queryDict = TP.lang.Hash.fromString(uriQuery);
+        queryDict = TP.core.Hash.fromString(uriQuery);
         this.set('queryDict', queryDict);
     }
 

@@ -155,7 +155,7 @@ function(aStyle) {
      * @method setStyle
      * @summary Sets the style of this component to the style parameters given
      *     in aStyleString.
-     * @param {String|TP.lang.Hash} aStyle The description of the style in CSS
+     * @param {String|TP.core.Hash} aStyle The description of the style in CSS
      *     format, or a hash of style strings.
      * @returns {TP.html.Element} The receiver.
      */

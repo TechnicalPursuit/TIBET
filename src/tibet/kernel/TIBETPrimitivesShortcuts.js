@@ -1231,7 +1231,7 @@ function(anElement, propertyName, animationParams, nodeContext) {
      * @param {Array|String|Element} anElement An element specification, or
      *     element, suitable for TP.byId().
      * @param {String} propertyName The name of the property to transition.
-     * @param {TP.lang.Hash} animationParams A hash of parameters to use for the
+     * @param {TP.core.Hash} animationParams A hash of parameters to use for the
      *     transition.
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
@@ -1278,7 +1278,7 @@ function(anElement, effectName, effectParams, nodeContext) {
      * @param {Array|String|Element} anElement An element specification, or
      *     element, suitable for TP.byId().
      * @param {String} effectName The name of the effect to use.
-     * @param {TP.lang.Hash} effectParams A hash of parameters to use for the
+     * @param {TP.core.Hash} effectParams A hash of parameters to use for the
      *     effect.
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
@@ -1591,7 +1591,7 @@ function(anObject, nodeContext) {
      * @summary Returns the 'document-level' X and Y for the supplied event or
      *     element object.
      * @param {Event|String|} anObject An event object or an
-     *     Element|TP.lang.Hash| element specification, Array|TP.core.Point or
+     *     Element|TP.core.Hash| element specification, Array|TP.core.Point or
      *     element, suitable for TP.byId() or a hash or point with 'x' and 'y'
      *     values or an array with an X 'value' in the first position and a Y
      *     value in the second.
@@ -1610,7 +1610,7 @@ function(anObject, nodeContext) {
         return anObject;
     }
 
-    if (TP.isKindOf(anObject, TP.lang.Hash) ||
+    if (TP.isKindOf(anObject, TP.core.Hash) ||
         TP.isKindOf(anObject, TP.core.Point)) {
         return TP.ac(anObject.at('x'), anObject.at('y'));
     }
@@ -1772,7 +1772,7 @@ function(anObject, aFilter) {
      * @summary Returns a compacted version of the object. For arrays this
      *     removes nulls, for Strings it removes consecutive sequences of
      *     whitespace (and trims the string). Other objects may have their own
-     *     approach to this, for example, a TP.lang.Hash will remove keys whose
+     *     approach to this, for example, a TP.core.Hash will remove keys whose
      *     values are undefined or null.
      * @param {Object} anObject The object to compact.
      * @param {Function} aFilter An optional filtering function defining which
@@ -2760,7 +2760,7 @@ function(varargs) {
     //  make sure the request will find at least one possible service
     TP.sys.require('TP.core.RESTService');
 
-    hash = TP.lang.Hash.construct.apply(TP.lang.Hash, arguments);
+    hash = TP.core.Hash.construct.apply(TP.core.Hash, arguments);
     request = TP.sys.require('TP.sig.RESTRequest').construct(hash);
 
     return request;

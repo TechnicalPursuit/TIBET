@@ -690,13 +690,13 @@ function(aURI, aCatalog, aFilter) {
      *     or delegateURI entry).
      * @param {TP.core.URI|String} aURI A URI defining a specific catalog file
      *     to access and process as needed.
-     * @param {TP.lang.Hash} aCatalog A TIBET URL Catalog to merge the data
+     * @param {TP.core.Hash} aCatalog A TIBET URL Catalog to merge the data
      *     into. This is normally the root catalog during nextCatalog processing
      *     since order is maintained in this process.
      * @param {String} aFilter An optional regular expression string used only
      *     when integrating delegateURI node content to ensure matches observe
      *     the delegation test.
-     * @returns {TP.lang.Hash} A hash of URI rewriting/routing information.
+     * @returns {TP.core.Hash} A hash of URI rewriting/routing information.
      */
 
     var cat,
@@ -917,7 +917,7 @@ function(aURI) {
      *     filtering is required other than checking the current runtime
      *     profile.
      * @param {TP.core.URI|String} aURI A URI to obtain the catalog entry for.
-     * @returns {TP.lang.Hash} A URI Catalog entry hash.
+     * @returns {TP.core.Hash} A URI Catalog entry hash.
      */
 
     var cat,
@@ -1102,7 +1102,7 @@ function(url, entry, key) {
      * @param {String} url The url to search for as the primary key.
      * @param {Object} entry The URI catalog hash entry to leverage.
      * @param {String} key The specific hash entry key to look up.
-     * @returns {TP.lang.Hash} A URI Catalog entry hash.
+     * @returns {TP.core.Hash} A URI Catalog entry hash.
      */
 
     var map,
@@ -1237,7 +1237,7 @@ function(forceRefresh) {
      *     information too often.
      * @param {Boolean} forceRefresh True to ignore any current setting and
      *     rebuild it.
-     * @returns {TP.lang.Hash} The shared hash.
+     * @returns {TP.core.Hash} The shared hash.
      */
 
     var hash,
@@ -1318,7 +1318,7 @@ function(aProfile, useWildcards) {
      *     TIBET's extended XML Catalog file format. The second parameter
      *     determines whether missing keys are defaulted to the values at the
      *     time of the call or wildcarded for use in testing against a range.
-     * @param {TP.lang.Hash} aProfile A hash providing parameters. These values
+     * @param {TP.core.Hash} aProfile A hash providing parameters. These values
      *     default to their current runtime states. Keys include:
      *     'tibet:browser'. 'tibet:browserUI'. 'tibet:offline', 'tibet:env',
      *     'tibet:state', 'tibet:unit', 'tibet:role', 'tibet:user', 'xml:lang'.
@@ -1641,7 +1641,7 @@ function(existingResource, newResource, aRequest) {
      *     object, if available.
      * @param {Object} newResource The resource object to add to the resource of
      *     the receiver.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
@@ -1676,7 +1676,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing. The
      *     default routine simply returns.
-     * @param {TP.lang.Hash} parts The parsed URI components.
+     * @param {TP.core.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -1697,7 +1697,7 @@ function(schemeSpecificString) {
      *     done via override.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     var primaryHref,
@@ -1746,7 +1746,7 @@ function(aRequest) {
      *     optionally provided request as input. If the request provided is
      *     truly a TP.sig.Request then the original request is simply returned
      *     for use.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object defining
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object defining
      *     control parameters.
      * @returns {TP.sig.Request} The original request or a suitable new request
      *     for use.
@@ -1767,7 +1767,7 @@ function(aRequest) {
      * @description Subrequest creation differs from 'root' request creation in
      *     that subrequests are always new request objects which simply use the
      *     original request payload (when available).
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object defining
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object defining
      *     control parameters.
      * @returns {TP.sig.Request} The original request or a suitable new request
      *     for use.
@@ -1963,7 +1963,7 @@ function(anAspect, anAction, aDescription) {
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
      *     'add', 'remove', etc.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {TP.core.URI} The receiver.
      * @fires Change
@@ -2214,7 +2214,7 @@ function(aRequest) {
      *     receiver. The basic approach is to invoke a getResource() operation
      *     to get the resource, then invoke getContent() on that resource to
      *     acquire its content.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Object} The receiver's resource object.
@@ -2235,7 +2235,7 @@ function(aRequest) {
      * @summary Returns the content of the receiver's resource in native Node
      *     form. Note that like all variants of getContent* this method can be
      *     asynchronous.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {Node} The receiver's content in node form.
      */
@@ -2258,7 +2258,7 @@ function(aRequest) {
      * @summary Returns the content of the receiver's resource in text (String)
      *     form. Note that like all variants of getContent* this method can be
      *     asynchronous.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {String} The receiver's content in text form.
      */
@@ -2489,7 +2489,7 @@ function(textOnly) {
      *     URI and processing it using normal parsing based on ?, &, and =.
      * @param {Boolean} [textOnly=false] Return just the text parameter string
      *     if any.
-     * @returns {TP.lang.Hash} The fragment parameters if any.
+     * @returns {TP.core.Hash} The fragment parameters if any.
      */
 
     var text,
@@ -2788,7 +2788,7 @@ function(aRequest, filterResult) {
      *     override to perform their low-level data access. Fragment processing
      *     is typically done by the getResource() call which can usually be
      *     defaulted.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @param {Boolean} filterResult True if the resource result will be used
@@ -2846,7 +2846,7 @@ function(aRequest) {
      *     resource path subset identified by any fragment portion. If there is
      *     no fragment this method returns the same value as
      *     $getPrimaryResource()).
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Object} The resource or TP.sig.Response when async.
@@ -2875,7 +2875,7 @@ function(aRequest) {
      * @summary Returns the resource of the receiver in native Node form. Note
      *     that like all variants of getResource* this method can be
      *     asynchronous depending on the nature of the resource.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {Node} The receiver's resource in node form.
      */
@@ -2897,7 +2897,7 @@ function(aRequest) {
      * @method getResourceText
      * @summary Returns the resource of the receiver in text (String) form,
      *     provided that the resource is a String.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @returns {String} The receiver's content in text form.
      */
@@ -2920,7 +2920,7 @@ function(aRequest, aResult, aResource) {
      * @summary Invoked as a "success body" function for the getContent call
      *     with the purpose of returning the content of the result object being
      *     provided.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} aResource Optional data from set* invocations.
@@ -2954,7 +2954,7 @@ function(aRequest, aResult, aResource) {
      * @summary Invoked as a "success body" function for the getResource call
      *     with the purpose of returning the secondary resource of the result
      *     object being provided.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} aResource Optional data from set* invocations.
@@ -3474,7 +3474,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
      * @summary A generic sync/async content request processing routine used by
      *     the various get/set calls dealing with content, resource, or primary
      *     resource access.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @param {String} contentFName A content access function name such as
@@ -3618,7 +3618,7 @@ function(contentData, aRequest) {
      * @method setContent
      * @summary Sets the receiver's content to the object provided.
      * @param {Object} contentData A new content object.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
@@ -3730,7 +3730,7 @@ function(aResource, aRequest) {
      * @summary Sets the receiver's resource object, the object TIBET will
      *     treat as the primary resource for any subsequent processing.
      * @param {Object} aResource The resource object to assign.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
@@ -3816,7 +3816,7 @@ function(aResource, aRequest) {
      * @summary Sets the receiver's resource object, the object TIBET will
      *     treat as the resource for any subsequent processing.
      * @param {Object} aResource The resource object to assign.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
@@ -3851,7 +3851,7 @@ function(aRequest, aResult, aResource) {
      * @summary Invoked as a "success body" function for the setContent call
      *     with the purpose of updating the content of the result object being
      *     provided.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} aResource Optional data used for set* methods.
@@ -3892,7 +3892,7 @@ function(aRequest, aResult, aResource) {
      * @method $setResultFragment
      * @summary Invoked as a "success body" function for the setResource call
      *     with the purpose of setting the secondary resource.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} aResource Optional data used for set* methods.
@@ -4021,7 +4021,7 @@ function(aDataSource, aRequest) {
      *     separately.
      * @param {Object} aDataSource The object supplying the data to use in the
      *     transformation.
-     * @param {TP.lang.Hash|TP.sig.Request} aRequest A parameter container
+     * @param {TP.core.Hash|TP.sig.Request} aRequest A parameter container
      *     responding to at(). For string transformations a key of 'repeat' with
      *     a value of true will cause iteration to occur (if aDataSource is an
      *     'ordered collection' this flag needs to be set to 'true' in order to
@@ -4168,7 +4168,7 @@ function(headerData) {
 
     dict = this.$get('headers');
 
-    if (TP.isKindOf(headerData, TP.lang.Hash)) {
+    if (TP.isKindOf(headerData, TP.core.Hash)) {
         if (TP.isValid(dict)) {
             dict.addAll(headerData);
         } else {
@@ -4361,7 +4361,7 @@ function(parts) {
      * @method $initURIComponents
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
-     * @param {TP.lang.Hash} parts The parsed URI components.
+     * @param {TP.core.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -4389,7 +4389,7 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     var match,
@@ -4423,7 +4423,7 @@ function(aRequest, filterResult) {
     /**
      * @method $getPrimaryResource
      * @summary Returns the object registered under the receiver's "name".
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @param {Boolean} filterResult True if the resource result will be used
@@ -4551,7 +4551,7 @@ function(aRequest) {
     /**
      * @method load
      * @summary For the most part, no-op for URNs.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
@@ -4587,7 +4587,7 @@ function(aRequest) {
     /**
      * @method nuke
      * @summary For the most part, a no-op for URNs.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
@@ -4623,7 +4623,7 @@ function(aRequest) {
     /**
      * @method save
      * @summary For the most part, a no-op for URNs.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -4728,7 +4728,7 @@ function(aResource, aRequest) {
      * @summary Sets the receiver's resource object, the object TIBET will
      *     treat as the primary resource for any subsequent processing.
      * @param {Object} aResource The resource object to assign.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
@@ -4882,7 +4882,7 @@ function(aRequest) {
      *     to provide more direct access to the underlying resource, since
      *     TIBETURNs are really just memory locations and are always available
      *     synchronously.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Object} The resource or TP.sig.Response when async.
@@ -5080,7 +5080,7 @@ function(aRequest) {
      *     TP.core.Node wrapper. This value may vary from the text value of the
      *     receiver if ACP-enhanced markup was provided to initialize the
      *     content.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Node} The node value of the receiver's content.
@@ -5250,7 +5250,7 @@ function(aRequest, filterResult) {
      * @summary Returns the resource referenced by the receiver's primary href,
      *     the portion prior to any #-delimited fragment for those schemes for
      *     which a fragment is valid.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @param {Boolean} filterResult True if the resource result will be used
@@ -5395,7 +5395,7 @@ function(aRequest) {
      * @summary Refreshes the receiver's content caches using the result data
      *     found in aRequest. This method is called from both the asynchronous
      *     and synchronous forks of the getResource call.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Object} The resource stored in the cache on completion.
@@ -5578,7 +5578,7 @@ function(aRequest) {
             //  No concrete handler type for the MIME type? Use the string.
             result = dat;
         }
-    } else if (TP.isKindOf(dat, 'TP.lang.Hash')) {
+    } else if (TP.isKindOf(dat, 'TP.core.Hash')) {
         tname = dat.at('type');
         if (TP.isString(tname) &&
             TP.isType(type = TP.sys.getTypeByName(tname)) &&
@@ -5675,7 +5675,7 @@ function(aRequest) {
      * @method processTP_sig_Request
      * @summary Processes the receiver's content, typically by dispatching to
      *     the receiver's content object itself.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or parameter
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or parameter
      *     hash with control parameters. The 'targetPhase' parameter is the most
      *     important here. Default is 'Finalized'.
      * @returns {Object} The processing results.
@@ -5790,7 +5790,7 @@ function(aRequest) {
      *     loaded, or when a refresh is being requested. Note that this is a
      *     "mapped" action, meaning the URI undergoes rewriting and mapping as
      *     part of the load process.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
@@ -5840,7 +5840,7 @@ function(aRequest) {
      *     might expect, alter the physical location being targeted for
      *     destruction. You should probably verify these targets before invoking
      *     nuke.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
@@ -5879,7 +5879,7 @@ function(aRequest) {
      *     rewriting and routing as part of the save process. This may, as you
      *     might expect, alter the physical location in which the data is
      *     stored.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
@@ -5966,18 +5966,18 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     this.callNextMethod();
 
     //  TODO TODO TODO TODO TODO
-    //  TODO: relying on TP.lang.Hash for parsing is a poor design, we
+    //  TODO: relying on TP.core.Hash for parsing is a poor design, we
     //  should change that so the parsing is local to this type. Here, we
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
     /* eslint-disable new-cap */
-    return TP.lang.Hash.URI_STRING_PARSER('chrome-extension:' +
+    return TP.core.Hash.URI_STRING_PARSER('chrome-extension:' +
         schemeSpecificString);
     /* eslint-enable new-cap */
 });
@@ -6064,7 +6064,7 @@ function(parts) {
      * @method $initURIComponents
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
-     * @param {TP.lang.Hash} parts The parsed URI components.
+     * @param {TP.core.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -6099,20 +6099,20 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     this.callNextMethod();
 
     //  TODO TODO TODO TODO TODO
-    //  TODO: relying on TP.lang.Hash for parsing is a poor design, we
+    //  TODO: relying on TP.core.Hash for parsing is a poor design, we
     //  should change that so the parsing is local to this type. Here, we
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
 
     //  TODO: Also, what about 'https:' URLs here - we're ASSuming 'http:'
     /* eslint-disable new-cap */
-    return TP.lang.Hash.URI_STRING_PARSER('http:' + schemeSpecificString);
+    return TP.core.Hash.URI_STRING_PARSER('http:' + schemeSpecificString);
     /* eslint-enable new-cap */
 });
 
@@ -6306,7 +6306,7 @@ function(parts) {
      * @method $initURIComponents
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
-     * @param {TP.lang.Hash} parts The parsed URI components.
+     * @param {TP.core.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -6343,18 +6343,18 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     this.callNextMethod();
 
     //  TODO TODO TODO TODO TODO
-    //  TODO: relying on TP.lang.Hash for parsing is a poor design, we
+    //  TODO: relying on TP.core.Hash for parsing is a poor design, we
     //  should change that so the parsing is local to this type. Here, we
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
     /* eslint-disable new-cap */
-    return TP.lang.Hash.URI_STRING_PARSER('file:' + schemeSpecificString);
+    return TP.core.Hash.URI_STRING_PARSER('file:' + schemeSpecificString);
     /* eslint-enable new-cap */
 });
 
@@ -6515,7 +6515,7 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     TP.stop('break.uri_parse');
@@ -6543,7 +6543,7 @@ function(aRequest, filterResult) {
      *     by the receiver. Note that while the async flag in aRequest is used
      *     to determine whether the return value is a TP.sig.Response object or
      *     the actual result there's no truly asynchronous processing occurring.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @param {Boolean} filterResult True if the resource result will be used
@@ -6650,7 +6650,7 @@ function(aRequest) {
     /**
      * @method load
      * @summary For the most part, no-op for JSURIs.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
@@ -6686,7 +6686,7 @@ function(aRequest) {
     /**
      * @method nuke
      * @summary For the most part, a no-op for JSURIs.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The request's response object.
@@ -6722,7 +6722,7 @@ function(aRequest) {
     /**
      * @method save
      * @summary For the most part, a no-op for JSURIs.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -6805,7 +6805,7 @@ function(parts) {
      * @method $initURIComponents
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
-     * @param {TP.lang.Hash} parts The parsed URI components.
+     * @param {TP.core.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -6833,18 +6833,18 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     this.callNextMethod();
 
     //  TODO TODO TODO TODO TODO
-    //  TODO: relying on TP.lang.Hash for parsing is a poor design, we
+    //  TODO: relying on TP.core.Hash for parsing is a poor design, we
     //  should change that so the parsing is local to this type. Here, we
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
     /* eslint-disable new-cap */
-    return TP.lang.Hash.URI_STRING_PARSER('ws:' + schemeSpecificString);
+    return TP.core.Hash.URI_STRING_PARSER('ws:' + schemeSpecificString);
     /* eslint-enable new-cap */
 });
 
@@ -7102,7 +7102,7 @@ function(parts) {
      *     URI components which were parsed during scheme-specific parsing. Note
      *     that TP.core.URI's implementation ensures that the uri, scheme,
      *     primary, and fragment portions of a URI string will be set.
-     * @param {TP.lang.Hash} parts The parsed URI components.
+     * @param {TP.core.Hash} parts The parsed URI components.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -7124,7 +7124,7 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.lang.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
     //  TODO:   replace with logic from getID() and related parsing.
@@ -7569,7 +7569,7 @@ function(aRequest, filterResult) {
      *     is given here to the kinds of object references most likely to be
      *     used relative to the UI since that's typically the most
      *     time-sensitive object access path.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @param {Boolean} filterResult True if the resource result will be used
@@ -8260,7 +8260,7 @@ function(aRequest) {
      * @method updateResourceCache
      * @summary TIBET URLs containing valid resource URIs respond to this
      *     method by updating the content cache for that URI.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {Object} The resource stored in the cache on completion.
@@ -8316,7 +8316,7 @@ function(targetURI, aRequest) {
      * @param {TP.core.URI} targetURI The URI to load. Note that this call is
      *     typically made via the load call of a URI and so rewriting and
      *     routing have already occurred.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The response.
@@ -8343,7 +8343,7 @@ function(targetURI, aRequest) {
      * @param {TP.core.URI} targetURI The URI to delete. Note that this call is
      *     typically made via the nuke call of a URI and so rewriting and
      *     routing have already occurred.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The response.
@@ -8386,7 +8386,7 @@ function(targetURI, aRequest) {
      *     what content is being saved, and whether a backup should be created
      *     if possible (for 'file' scheme uris).
      * @param {String|TP.core.URI} targetURI A target URI.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} The response.
@@ -8844,7 +8844,7 @@ TP.core.URIRouter.Type.defineAttribute('root', 'Home');
 
 /**
  * A list of token patterns used for parsing token values found in routes.
- * @type {TP.lang.Hash}
+ * @type {TP.core.Hash}
  */
 TP.core.URIRouter.Type.defineAttribute('tokens');
 
@@ -9020,7 +9020,7 @@ function(path, match, names) {
      *     portions will populate slots 1 through N.
      * @param {String[]} names An array of token names for any named path
      *     segments in the pattern which matched the path.
-     * @returns {Array[String, TP.lang.Hash]} An ordered pair containing the
+     * @returns {Array[String, TP.core.Hash]} An ordered pair containing the
      *     route name and hash containing parameters from the match.
      */
 
@@ -9579,7 +9579,7 @@ function(targetURI, aRequest) {
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -9696,7 +9696,7 @@ function(targetURI, aRequest) {
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -9791,7 +9791,7 @@ function(targetURI, aRequest) {
      *     if possible (for 'file' scheme uris).
      * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -9910,7 +9910,7 @@ function(targetURI, aRequest) {
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -9975,7 +9975,7 @@ function(targetURI, aRequest) {
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -10062,7 +10062,7 @@ function(targetURI, aRequest) {
      *     itself.
      * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.

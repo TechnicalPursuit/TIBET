@@ -95,10 +95,10 @@ function(nodeSpec, varargs) {
      *     transformation using the source node as the source object to the
      *     transformation. If a third argument is supplied to this method, it is
      *     supplied to the transformation as a 'transform hash'. - If a varargs
-     *     argument is supplied and it is a TP.lang.Hash, then the source node
+     *     argument is supplied and it is a TP.core.Hash, then the source node
      *     is wrapped in an instance of this type (i.e. this type's 'init'
      *     method is called) and then '.setAttribute()' is called on it for each
-     *     item in the TP.lang.Hash. That value is then returned.
+     *     item in the TP.core.Hash. That value is then returned.
      *
      *
      * @param {Node|URI|String|TP.core.Node} nodeSpec Some suitable object to
@@ -161,7 +161,7 @@ function(nodeSpec, varargs) {
         }
 
         //  We only do this if varargs is either a URI (or URI String) or a
-        //  String. If its a TP.lang.Hash, it will be processed against a
+        //  String. If its a TP.core.Hash, it will be processed against a
         //  wrapped version of the node later in this method.
         if (TP.isValid(varargs) &&
             (TP.isURI(varargs) || TP.isString(varargs))) {
@@ -294,10 +294,10 @@ function(nodeSpec, varargs) {
     args.atPut(0, node);
     inst = this.callNextMethod.apply(this, args);
 
-    //  If varargs is a TP.lang.Hash and inst is an instance of some subtype
+    //  If varargs is a TP.core.Hash and inst is an instance of some subtype
     //  of TP.core.ElementNode, then try to execute '.setAttribute()'
     //  against the new instance for each key in the hash.
-    if (TP.isKindOf(varargs, 'TP.lang.Hash') &&
+    if (TP.isKindOf(varargs, 'TP.core.Hash') &&
         TP.isKindOf(inst, 'TP.core.ElementNode')) {
         varargs.perform(
             function(kvPair) {
@@ -824,7 +824,7 @@ function(aRequest) {
      *          $@          ->  An alias for $FOCUS
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {TP.lang.Hash} The hash containing the substitution info as
+     * @returns {TP.core.Hash} The hash containing the substitution info as
      *     detailed in the description.
      */
 
@@ -1580,7 +1580,7 @@ function(aRequest) {
      * @description At this level, this method merely returns the text content
      *     of its native node. Subtypes should override this method to provide a
      *     more specific version of this.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
      * @returns {String} The text content of the native node.
      */
@@ -1597,7 +1597,7 @@ function(aRequest) {
      * @method getContentNode
      * @summary Returns the receiver's native node. This method is provided for
      *     API compatibility with other types.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
      * @returns {Node} A native node.
      */
@@ -1614,7 +1614,7 @@ function(aRequest) {
      * @method getContentText
      * @summary Returns the receiver's content in text form. This method is
      *     provided for API compatibility with other types.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
      * @returns {String} The receiver's content as a String.
      */
@@ -1882,7 +1882,7 @@ function(aRequest) {
      * @method getOuterContent
      * @summary Returns the receiver's 'outer' content - that is, its entire
      *     representation, including any childNode representations.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
      * @returns {String} The outer content of the native node.
      */
@@ -2539,7 +2539,7 @@ function(aContentObject, aRequest) {
                 result.atPut(i, TP.val(input.at(i)));
             }
             value = result;
-        } else if (TP.isKindOf(input, TP.lang.Hash)) {
+        } else if (TP.isKindOf(input, TP.core.Hash)) {
             result = TP.hc();
             keys = input.getKeys();
             len = keys.getSize();
@@ -2577,7 +2577,7 @@ function(theContent, anIndex) {
      * @summary Reduces the content value to a 'single value'.
      * @description When the receiver isSingleValued() this method will return a
      *     single object from a content result set (a collection of some sort -
-     *     usually an Array, Object, TP.lang.Hash, NodeList or NamedNodeMap).
+     *     usually an Array, Object, TP.core.Hash, NodeList or NamedNodeMap).
      *     The result set must be a collection for this method to operate
      *     correctly. In all other cases the original content object is
      *     returned. What this method returns depends on the type of content
@@ -2587,7 +2587,7 @@ function(theContent, anIndex) {
      *                      index was supplied.
      *     Object           The *value* of the content at the index supplied or
      *                      at the first key if no index was supplied.
-     *     TP.lang.Hash     The *value* of the content at the index supplied or
+     *     TP.core.Hash     The *value* of the content at the index supplied or
      *                      at the first key if no index was supplied.
      *     NodeList         The content at the index supplied or at 0 if no
      *                      index was supplied.
@@ -2637,11 +2637,11 @@ function(theContent, anIndex) {
             result = undefined;
         }
     } else {
-        //  This handles TP.lang.Hash, Objects and NamedNodeMaps
+        //  This handles TP.core.Hash, Objects and NamedNodeMaps
 
         index = TP.ifInvalid(anIndex, TP.keys(result).first());
 
-        if (TP.isKindOf(result, TP.lang.Hash)) {
+        if (TP.isKindOf(result, TP.core.Hash)) {
             result = result.at(index);
         } else {
             result = result[index];
@@ -3351,7 +3351,7 @@ function(anAspect, anAction, aDescription) {
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This is
      *     usually 'add', 'remove', etc.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {TP.core.Node} The receiver.
      * @fires Change
@@ -3941,7 +3941,7 @@ function(aURI, force, aParamHash) {
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
-     * @param {TP.lang.Hash|TP.sig.Request} aParamHash A set of key/value pairs
+     * @param {TP.core.Hash|TP.sig.Request} aParamHash A set of key/value pairs
      *     which should be used to control the transformation. If the 'aURI'
      *     value is null and a 'uri' slot is defined on this object, that
      *     object's String value will be used as the XML Base value.
@@ -4145,7 +4145,7 @@ function(attributeName, stripPrefixes) {
      * @param {Boolean} stripPrefixes Whether or not to strip any namespace
      *     prefixes from the attribute names as they are populated into the
      *     return value.
-     * @returns {TP.lang.Hash} A collection of name/value pairs.
+     * @returns {TP.core.Hash} A collection of name/value pairs.
      */
 
     var node;
@@ -4170,7 +4170,7 @@ function(aRequest) {
      * @description At this level, this method returns its 'inner content',
      *     which is basically all of its child nodes serialized as a document
      *     fragment.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
      * @returns {String} The text content of the native node.
      */
@@ -4625,9 +4625,9 @@ function(attributeHash) {
     /**
      * @method setAttributes
      * @summary Sets the value of the attributes provided using the supplied
-     *     TP.lang.Hash. For document nodes this operation effectively operates
+     *     TP.core.Hash. For document nodes this operation effectively operates
      *     on the document's documentElement.
-     * @param {TP.lang.Hash} attributeHash The attributes to set.
+     * @param {TP.core.Hash} attributeHash The attributes to set.
      */
 
     attributeHash.perform(
@@ -4736,7 +4736,7 @@ function(anObject, aParamHash) {
      *     content of the receiver.
      * @param {Object} anObject The object supplying the data to use in the
      *     transformation.
-     * @param {TP.lang.Hash|TP.sig.Request} aParamHash A parameter container
+     * @param {TP.core.Hash|TP.sig.Request} aParamHash A parameter container
      *     responding to at(). For string transformations a key of 'repeat' with
      *     a value of true will cause iteration to occur (if anObject is an
      *     'ordered collection' this flag needs to be set to 'true' in order to
@@ -5361,7 +5361,7 @@ function(aParamHash) {
      * @summary Causes the receiver to perform whatever steps are necessary to
      *     revive its content, presuming that it has just been read in from a
      *     compiled cache representation.
-     * @param {TP.lang.Hash} aParamHash A set of key/value pairs which should be
+     * @param {TP.core.Hash} aParamHash A set of key/value pairs which should be
      *     used to control the transformation.
      * @returns {TP.core.Node} The receiver.
      */
@@ -9077,7 +9077,7 @@ function(aURI, force, aParamHash) {
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
-     * @param {TP.lang.Hash|TP.sig.Request} aParamHash A set of key/value pairs
+     * @param {TP.core.Hash|TP.sig.Request} aParamHash A set of key/value pairs
      *     which should be used to control the transformation. If the 'aURI'
      *     value is null and a 'uri' slot is defined on this object, that
      *     object's String value will be used as the XML Base value.
@@ -9135,7 +9135,7 @@ function(attributeName, stripPrefixes) {
      * @param {Boolean} stripPrefixes Whether or not to strip any namespace
      *     prefixes from the attribute names as they are populated into the
      *     return value.
-     * @returns {TP.lang.Hash} A collection of name/value pairs.
+     * @returns {TP.core.Hash} A collection of name/value pairs.
      */
 
     return;
@@ -9239,10 +9239,10 @@ function(attributeHash) {
     /**
      * @method setAttributes
      * @summary Sets the value of the attributes provided using the supplied
-     *     TP.lang.Hash. For document nodes this operation effectively operates
+     *     TP.core.Hash. For document nodes this operation effectively operates
      *     on the document's documentElement.
      * @description At this level, this method is a no-op.
-     * @param {TP.lang.Hash} attributeHash The attributes to set.
+     * @param {TP.core.Hash} attributeHash The attributes to set.
      */
 
     return;
@@ -9376,7 +9376,7 @@ TP.core.ElementNode.Type.defineAttribute('booleanAttrs', TP.ac());
 TP.core.ElementNode.Type.defineAttribute('uriAttrs', TP.ac());
 
 //  the node's template. this will be used when instances are constructed
-//  with a TP.lang.Hash incoming value
+//  with a TP.core.Hash incoming value
 TP.core.ElementNode.Type.defineAttribute('template');
 
 //  ------------------------------------------------------------------------
@@ -9679,7 +9679,7 @@ function(anObject, aRequest) {
      * @summary Returns a formatted XML String with the supplied Boolean object
      *     as the content.
      * @param {Boolean} anObject The Object to wrap in the elements.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
      */
@@ -9705,7 +9705,7 @@ function(anObject, aRequest) {
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
      *     if it has embedded markup). This defaults to false.
      * @param {Boolean} anObject The Object to wrap in the elements.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
      */
@@ -9734,7 +9734,7 @@ function(anObject, aRequest) {
      * @summary Returns a formatted XML String with the supplied Number object
      *     as the content.
      * @param {Boolean} anObject The Object to wrap in the elements.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
      */
@@ -9757,7 +9757,7 @@ function(anObject, aRequest) {
      * @description The supplied request can contain the following keys and
      *     values that are used in this method:
      *
-     *     'attrInfo' TP.lang.Hash|Function The Hash or Function to use to
+     *     'attrInfo' TP.core.Hash|Function The Hash or Function to use to
      *     compute attributes for the main element. 'format' String How items
      *     should be formatted when this routine loops. 'autowrap' Boolean
      *     Whether or not this routine iterates over an item list, generating
@@ -9783,7 +9783,7 @@ function(anObject, aRequest) {
      *     where the item is the item itself at that position in the Array. It
      *     should return a String as demonstrated.
      * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
      */
@@ -9840,7 +9840,7 @@ function(anObject, aRequest) {
     }
 
     //  Note that for these configuration parameters, 'levelInfo' very well
-    //  maybe be an empty TP.lang.Hash.
+    //  maybe be an empty TP.core.Hash.
 
     //  Grab the attribute info from the level info
     attrInfo = levelInfo.at('$attrInfo');
@@ -9871,13 +9871,13 @@ function(anObject, aRequest) {
             attrStr = '';
         } else {
             //  If attrInfo isn't a Function, then see if its a String or
-            //  TP.lang.Hash.
+            //  TP.core.Hash.
             if (!TP.isCallable(attrInfo)) {
                 if (TP.isString(attrInfo)) {
                     //  It's a String - just use it.
                     attrStr = ' ' + attrInfo;
                 } else if (TP.isValid(attrInfo)) {
-                    //  It should be a TP.lang.Hash at this point - convert
+                    //  It should be a TP.core.Hash at this point - convert
                     //  to a String.
                     attrStr = ' ' + attrInfo.asAttributeString();
                 } else {
@@ -9901,7 +9901,7 @@ function(anObject, aRequest) {
             attrStr = '';
         } else {
             //  If attrInfo isn't a Function, then see if its a String or
-            //  TP.lang.Hash.
+            //  TP.core.Hash.
             if (!TP.isCallable(attrInfo)) {
                 attrStr = ' {{$attrStr}}';
 
@@ -9911,7 +9911,7 @@ function(anObject, aRequest) {
                                 '$attrStr',
                                 attrInfo);
                 } else if (TP.isValid(attrInfo)) {
-                    //  It should be a TP.lang.Hash at this point - convert
+                    //  It should be a TP.core.Hash at this point - convert
                     //  to a String.
                     theRequest.atPut('$attrStr',
                                         attrInfo.asAttributeString());
@@ -9953,7 +9953,7 @@ function(anObject, aRequest) {
      *     'escapeContent' Boolean Whether or not to 'escape' the content (i.e.
      *     if it has embedded markup). This defaults to false.
      * @param {Boolean} anObject The Object to wrap in the elements.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {String} The content formatted as markup.
      */
@@ -10021,9 +10021,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
      * @param {Boolean} shouldAutoWrap Whether or not the markup generation
      *     machinery should 'autowrap' items of the supplied object (each item
      *     in an Array or each key/value pair in an Object).
-     * @param {TP.lang.Hash} formatArgs The 'formatting arguments' used by this
+     * @param {TP.core.Hash} formatArgs The 'formatting arguments' used by this
      *     machinery to generate item markup.
-     * @param {TP.sig.Request|TP.lang.Hash} theRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} theRequest An optional object
      *     containing parameters.
      * @returns {String} The markup generated by taking the supplied Object and
      *     iterating over its items.
@@ -10306,7 +10306,7 @@ function(anObject, formatArgs) {
      * @summary Returns the 'default item tag name' for use it the
      *     fromArray()/fromObject() methods.
      * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.lang.Hash} formatArgs The 'formatting arguments' used by this
+     * @param {TP.core.Hash} formatArgs The 'formatting arguments' used by this
      *     machinery to generate item markup.
      * @returns {String} The item tag name.
      */
@@ -10730,7 +10730,7 @@ function(anObject, formatArgs) {
      * @summary Whether or not our fromArray() / fromObject() methods
      *     'auto-wrap items'. See those methods for more information.
      * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.lang.Hash} formatArgs An optional object containing
+     * @param {TP.core.Hash} formatArgs An optional object containing
      *     parameters.
      * @returns {Boolean} Whether or not we automatically wrap items.
      */
@@ -13990,7 +13990,7 @@ function(anObject, aParamHash) {
      *     content of the receiver.
      * @param {Object} anObject The object supplying the data to use in the
      *     transformation.
-     * @param {TP.lang.Hash|TP.sig.Request} aParamHash A parameter container
+     * @param {TP.core.Hash|TP.sig.Request} aParamHash A parameter container
      *     responding to at(). For string transformations a key of 'repeat' with
      *     a value of true will cause iteration to occur (if anObject is an
      *     'ordered collection' this flag needs to be set to 'true' in order to
@@ -14695,7 +14695,7 @@ function(aSignal) {
      * @summary Returns a TP.sig.Request subtype instance suitable for the
      *     receiver's requirements. This is typically a TP.sig.ShellRequest so
      *     the TIBET Shell can be used to process/execute the tag.
-     * @param {TP.sig.Signal|TP.lang.Hash} aSignal A signal or hash containing
+     * @param {TP.sig.Signal|TP.core.Hash} aSignal A signal or hash containing
      *     parameter data.
      * @returns {TP.sig.Request} A proper TP.sig.Request for the action.
      */
@@ -15964,7 +15964,7 @@ function(aRequest) {
      * @description Tags that trait-in this type are supposed to be "EMPTY",
      *     according to some definition (maybe a DTD or something). Therefore,
      *     for this type, this method does nothing and returns null.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
      * @returns {null}
      */
@@ -16026,7 +16026,7 @@ function(anObj, filter, useNil) {
      * @method fromArray
      * @summary Returns a Node that represents anObj in the XML-RPC format.
      * @param {Object} anObj The object to format.
-     * @param {TP.lang.Hash} filter The filter parameters that determine which
+     * @param {TP.core.Hash} filter The filter parameters that determine which
      *     attributes of anObj to include in the output. The default is
      *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the
@@ -16108,7 +16108,7 @@ function(anObj, filter, useNil) {
      * @method fromBoolean
      * @summary Returns a Node that represents anObj in the XML-RPC format.
      * @param {Object} anObj The object to format.
-     * @param {TP.lang.Hash} filter The filter parameters that determine which
+     * @param {TP.core.Hash} filter The filter parameters that determine which
      *     attributes of anObj to include in the output. The default is
      *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the
@@ -16139,7 +16139,7 @@ function(anObj, filter, useNil) {
      * @method fromDate
      * @summary Returns a Node that represents anObj in the XML-RPC format.
      * @param {Object} anObj The object to format.
-     * @param {TP.lang.Hash} filter The filter parameters that determine which
+     * @param {TP.core.Hash} filter The filter parameters that determine which
      *     attributes of anObj to include in the output. The default is
      *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the
@@ -16171,7 +16171,7 @@ function(anObj, filter, useNil) {
      * @method fromNumber
      * @summary Returns a Node that represents anObj in the XML-RPC format.
      * @param {Object} anObj The object to format.
-     * @param {TP.lang.Hash} filter The filter parameters that determine which
+     * @param {TP.core.Hash} filter The filter parameters that determine which
      *     attributes of anObj to include in the output. The default is
      *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the
@@ -16206,7 +16206,7 @@ function(anObj, filter, useNil) {
      * @summary Returns an instance that encodes anObj in the format according
      *     to the type description.
      * @param {Object} anObj The object to format.
-     * @param {TP.lang.Hash} filter The filter parameters that determine which
+     * @param {TP.core.Hash} filter The filter parameters that determine which
      *     attributes of anObj to include in the output. The default is
      *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the
@@ -16312,7 +16312,7 @@ function(anObj, filter, useNil) {
      * @method fromString
      * @summary Returns a Node that represents anObj in the XML-RPC format.
      * @param {Object} anObj The object to format.
-     * @param {TP.lang.Hash} filter The filter parameters that determine which
+     * @param {TP.core.Hash} filter The filter parameters that determine which
      *     attributes of anObj to include in the output. The default is
      *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the
@@ -16336,14 +16336,14 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromTP_lang_Hash',
+TP.core.XMLRPCNode.Type.defineMethod('fromTP_core_Hash',
 function(anObj, filter, useNil) {
 
     /**
-     * @method fromTP.lang.Hash
+     * @method fromTP_core_Hash
      * @summary Returns a Node that represents anObj in the XML-RPC format.
      * @param {Object} anObj The object to format.
-     * @param {TP.lang.Hash} filter The filter parameters that determine which
+     * @param {TP.core.Hash} filter The filter parameters that determine which
      *     attributes of anObj to include in the output. The default is
      *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the

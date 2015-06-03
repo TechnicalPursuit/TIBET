@@ -8,7 +8,7 @@
 .sherpa_pp.NamedNodeMap,
 .sherpa_pp.NodeList,
 .sherpa_pp.Object,
-.sherpa_pp.TP_lang_Hash {
+.sherpa_pp.TP_core_Hash {
 
     display: table;
     width: 100%;
@@ -20,7 +20,7 @@
 .sherpa_pp.NamedNodeMap > span[data-name],
 .sherpa_pp.NodeList > span[data-name],
 .sherpa_pp.Object > span[data-name],
-.sherpa_pp.TP_lang_Hash > span[data-name] {
+.sherpa_pp.TP_core_Hash > span[data-name] {
 
     display: table-row;
     text-align: left;
@@ -36,7 +36,7 @@
 .sherpa_pp.NamedNodeMap > span[data-name]:before,
 .sherpa_pp.NodeList > span[data-name]:before,
 .sherpa_pp.Object > span[data-name]:before,
-.sherpa_pp.TP_lang_Hash > span[data-name]:before {
+.sherpa_pp.TP_core_Hash > span[data-name]:before {
 
     display: table-cell;
 	vertical-align: top;
@@ -56,7 +56,7 @@
 .sherpa_pp.NamedNodeMap > span[data-name] > .sherpa_pp,
 .sherpa_pp.NodeList > span[data-name] > .sherpa_pp,
 .sherpa_pp.Object > span[data-name] > .sherpa_pp,
-.sherpa_pp.TP_lang_Hash > span[data-name] > .sherpa_pp {
+.sherpa_pp.TP_core_Hash > span[data-name] > .sherpa_pp {
 
     display: table-cell;
 	vertical-align: top;

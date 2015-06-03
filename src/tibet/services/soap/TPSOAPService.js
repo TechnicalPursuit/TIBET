@@ -103,12 +103,12 @@ function(aRequest) {
 
     /**
      * @method rewriteRequestHeaders
-     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @summary Returns a TP.core.Hash of HTTP headers appropriate for the
      *     service. SOAP requires a specific Content-Type and a SOAPAction
      *     header for older versions of the specification.
      * @param {TP.sig.SOAPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {TP.lang.Hash} The hash of HTTP headers.
+     * @returns {TP.core.Hash} The hash of HTTP headers.
      */
 
     var headers,

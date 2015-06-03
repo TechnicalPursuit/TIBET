@@ -58,7 +58,7 @@ function(aRequest) {
 
     /**
      * @method getCompilationAttrs
-     * @summary Returns a TP.lang.Hash of any attributes to be added to what is
+     * @summary Returns a TP.core.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled.
      * @description This type produces custom values for the 'tibet:ctrl'
      *     attribute (matching the type of the map based on the 'type'
@@ -66,7 +66,7 @@ function(aRequest) {
      *     created.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {TP.lang.Hash} A TP.lang.Hash of attributes to be added to the
+     * @returns {TP.core.Hash} A TP.core.Hash of attributes to be added to the
      *     compiled output from this type.
      */
 
@@ -361,7 +361,7 @@ function(aSignal) {
      * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specified a
      *     'deep' refresh then descendant elements are also updated.
-     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash.
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.

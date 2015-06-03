@@ -42,7 +42,7 @@ function(aPayload) {
      * @method construct
      * @summary Constructs a new instance of the receiver, ensuring it is
      *     properly configured for use.
-     * @param {String|TP.lang.Hash|TP.sig.Request} aPayload A string, hash, or
+     * @param {String|TP.core.Hash|TP.sig.Request} aPayload A string, hash, or
      *     other request whose value(s) will populate this new request.
      * @returns {TP.sig.ShellRequest} A new instance.
      */
@@ -312,7 +312,7 @@ function(output, request) {
      * @summary Standard function for writing error output during shell
      *     execution.
      * @param {Object} output The object to write to stderr.
-     * @param {TP.sig.Request|TP.lang.Hash} request Optional
+     * @param {TP.sig.Request|TP.core.Hash} request Optional
      *     request/parameters. Defaults to the receiver.
      */
 
@@ -363,7 +363,7 @@ function(output, request) {
      * @summary Standard function for writing valid output during shell
      *     execution.
      * @param {Object} output The object to write to stdout.
-     * @param {TP.sig.Request|TP.lang.Hash} request Optional
+     * @param {TP.sig.Request|TP.core.Hash} request Optional
      *     request/parameters. Defaults to the receiver.
      */
 

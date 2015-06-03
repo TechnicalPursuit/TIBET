@@ -77,7 +77,7 @@ function(aConnectionInfo) {
     /**
      * @method init
      * @summary Initializes a new instance.
-     * @param {TP.lang.Hash} aConnectionInfo A hash of connection information.
+     * @param {TP.core.Hash} aConnectionInfo A hash of connection information.
      *     This hash should contain values for: 'httpServerURI', 'serverName',
      *     'inStream', 'outStream'.
      * @exception TP.sig.InvalidParameter
@@ -442,7 +442,7 @@ function(aHref, aRequest) {
      * @summary Processes any results returned by the server.
      * @param {String} aHref The href that was used to communicate with the
      *     server.
-     * @param {TP.lang.Hash|TP.sig.Request} aRequest The request object used
+     * @param {TP.core.Hash|TP.sig.Request} aRequest The request object used
      *     for the http call. This should contain a key of 'xhr' with the native
      *     http request.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
@@ -680,7 +680,7 @@ function(aStr, extraAttrs) {
      * @method transmit
      * @summary Sends the raw data provided to the server.
      * @param {String} aStr The raw data to be sent over the transport.
-     * @param {TP.lang.Hash} extraAttrs Any extra attributes to be added to the
+     * @param {TP.core.Hash} extraAttrs Any extra attributes to be added to the
      *     '<body>' start tag.
      * @exception TP.sig.XMPPTransportException
      */
@@ -980,7 +980,7 @@ function(aStr, extraAttrs) {
      *     required by the BOSH specification, including the session ID and a
      *     computed request ID.
      * @param {String} aStr The content to wrap.
-     * @param {TP.lang.Hash} extraAttrs Any extra attributes to be added to the
+     * @param {TP.core.Hash} extraAttrs Any extra attributes to be added to the
      *     '<body>' start tag.
      * @returns {String} The content wrapped with a 'body' tag.
      */
@@ -1031,7 +1031,7 @@ function(logInfo) {
      *     under the auspices of a 'receive message'. Note that this logging is
      *     in addition to the low-level IO logging that TIBET will do if you
      *     have IO logging switched on.
-     * @param {TP.lang.Hash} logInfo A hash of information to log. This hash
+     * @param {TP.core.Hash} logInfo A hash of information to log. This hash
      *     should contain values for: 'async', 'body', 'xhr'.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
      */
@@ -1071,7 +1071,7 @@ function(logInfo) {
      *     under the auspices of a 'send message'. Note that this logging is in
      *     addition to the low-level IO logging that TIBET will do if you have
      *     IO logging switched on.
-     * @param {TP.lang.Hash} logInfo A hash of information to log. This hash
+     * @param {TP.core.Hash} logInfo A hash of information to log. This hash
      *     should contain values for: 'async', 'body', 'xhr'.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
      */

@@ -225,7 +225,7 @@ function(parts) {
      *     is often used to compose new URLs from parts of other URLs such
      *     as the base components of a link combined with the fragment
      *     parameters of the launch url (boot parameters).
-     * @param {TP.lang.Hash|Object} parts An object containing strings for root,
+     * @param {TP.core.Hash|Object} parts An object containing strings for root,
      *     basePath, baseParams, fragmentPath, and fragmentParams. Missing
      *     parameters are ignored.
      * @return {String} A new url assembled from the parts provided.
@@ -540,7 +540,7 @@ function(aURI, textOnly) {
      * @param {String|TP.core.URI} aURI The URI to process.
      * @param {Boolean} [textOnly=true] Return just the text parameter string
      *     if any.
-     * @returns {Object||TP.lang.Hash} The fragment parameters.
+     * @returns {Object||TP.core.Hash} The fragment parameters.
      */
 
     var url,

@@ -24,7 +24,7 @@ function(targetUrl, aRequest) {
      * @summary Gets the ACL information for the versioned controlled WebDAV
      *     resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -49,7 +49,7 @@ function(targetUrl, aRequest) {
      * @summary Reports on all set properties for the principals involved with
      *     the versioned controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -95,7 +95,7 @@ function(targetUrl, aRequest) {
      * @method webdavGetAllProperties
      * @summary Gets all properties defined on the resource at the target URL.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
@@ -130,7 +130,7 @@ function(targetUrl, aRequest) {
      *     3253 for the versioned controlled WebDAV resource at the target URL
      *     specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -162,7 +162,7 @@ function(targetUrl, aRequest) {
      *     user for the versioned controlled WebDAV resource at the target URL
      *     specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -190,7 +190,7 @@ function(targetUrl, aRequest) {
      *     called 'propertyNames' that contains an Array with the names of the
      *     properties to retrieve values for.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request additional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request additional
      *     parameters. For this method, this includes an additional parameter of
      *     'propertyNames'.
      * @exception TP.sig.InvalidParameter
@@ -240,7 +240,7 @@ function(targetUrl, aRequest) {
      * @summary Reports in one request all properties linked using 'href's for
      *     the versioned controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -282,7 +282,7 @@ function(targetUrl, aRequest) {
      * @summary Reports on all principals that match the current user for the
      *     versioned controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -329,7 +329,7 @@ function(targetUrl, aRequest) {
      * @summary Reports on the set of searchable properties for the versioned
      *     controlled WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -372,7 +372,7 @@ function(targetUrl, aRequest) {
      * @summary Gets the supplied property(s) of a versioned controlled WebDAV
      *     resource at the target URL specified.
      * @description This call expects an additional parameter in the request
-     *     called 'property' that contains a TP.lang.Hash with the following
+     *     called 'property' that contains a TP.core.Hash with the following
      *     format:
      *
      *     TP.hc('name', 'author', 'ns',
@@ -380,7 +380,7 @@ function(targetUrl, aRequest) {
      *
      *
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
      * @example Assume that the TDS (TIBET Data Server) is running after
@@ -409,7 +409,7 @@ function(targetUrl, aRequest) {
     propertyEntry = request.at('property');
     if (TP.notValid(propertyEntry)) {
         TP.raise('TP.sig.InvalidParameter',
-                    'Must provide property TP.lang.Hash for WebDAV get ' +
+                    'Must provide property TP.core.Hash for WebDAV get ' +
                     'property operation.');
 
         return;
@@ -441,7 +441,7 @@ function(targetUrl, aRequest) {
      * @method webdavGetPropertyNames
      * @summary Returns all of the property names for the resource.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -466,7 +466,7 @@ function(targetUrl, aRequest) {
      * @summary Reports on the version tree of a versioned controlled WebDAV
      *     resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -504,7 +504,7 @@ function(targetUrl, aRequest) {
      * @summary Removes the supplied property(s) from a versioned controlled
      *     WebDAV resource at the target URL specified.
      * @description This call expects an additional parameter in the request
-     *     called 'property' that contains a TP.lang.Hash with the following
+     *     called 'property' that contains a TP.core.Hash with the following
      *     format:
      *
      *     TP.hc('name', 'author', 'value', 'Roy Fielding', 'ns',
@@ -512,7 +512,7 @@ function(targetUrl, aRequest) {
      *
      *
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
      * @exception TP.sig.InvalidParameter
@@ -530,7 +530,7 @@ function(targetUrl, aRequest) {
     propertyEntry = request.at('property');
     if (TP.notValid(propertyEntry)) {
         TP.raise('TP.sig.InvalidParameter',
-                    'Must provide property TP.lang.Hash for WebDAV get ' +
+                    'Must provide property TP.core.Hash for WebDAV get ' +
                     'property operation.');
 
         return;
@@ -551,7 +551,7 @@ function(targetUrl, aRequest) {
      * @summary Sets the supplied property(s) of a versioned controlled WebDAV
      *     resource at the target URL specified.
      * @description This call expects an additional parameter in the request
-     *     called 'property' that contains a TP.lang.Hash with the following
+     *     called 'property' that contains a TP.core.Hash with the following
      *     format:
      *
      *     TP.hc('name', 'author', 'value', 'Roy Fielding', 'ns',
@@ -559,7 +559,7 @@ function(targetUrl, aRequest) {
      *
      *
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
      * @example Assume that the TDS (TIBET Data Server) is running after
@@ -588,7 +588,7 @@ function(targetUrl, aRequest) {
     propertyEntry = request.at('property');
     if (TP.notValid(propertyEntry)) {
         TP.raise('TP.sig.InvalidParameter',
-                    'Must provide property TP.lang.Hash for WebDAV get ' +
+                    'Must provide property TP.core.Hash for WebDAV get ' +
                     'property operation.');
 
         return;
@@ -612,7 +612,7 @@ function(targetUrl, aRequest, useQuery) {
      *     functionality used when making all WebDAV calls, such as setting
      *     common headers, etc.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For most WebDAV operations these include the
      *     normal HTTP parameters for headers, timeout, username, and password.
      * @param {Boolean} useQuery Whether or not to use a TP.$httpQuery() call or
@@ -671,7 +671,7 @@ function(targetUrl, aRequest) {
      * @summary Checks in a versioned controlled WebDAV resource at the target
      *     URL specified to produce a new version.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -699,7 +699,7 @@ function(targetUrl, aRequest) {
      * @summary Checks out a versioned controlled WebDAV resource at the target
      *     URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -727,7 +727,7 @@ function(targetUrl, aRequest) {
      * @summary Copies a resource from the source path (given in the target
      *     URL) to the destination path.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes additional
      *     parameters of 'destination' and 'overwrite' which should contain a
      *     URL and a Boolean value respectively.
@@ -818,7 +818,7 @@ function(targetUrl, aRequest) {
      *
      *
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes additional
      *     parameters of 'lockscope', 'locktype', 'lockowner' and 'locktimeout'
      *     as described in the method comment.
@@ -907,7 +907,7 @@ function(targetUrl, aRequest) {
      *     specification states that *all* ancestors (i.e. parent directories)
      *     must exist in order for this call to succeed.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @example Assume that the TDS (TIBET Data Server) is running after
      *     having been launched in ~app_inf/bin and is running on localhost
@@ -945,7 +945,7 @@ function(targetUrl, aRequest) {
      *     to the destination path provided in the request's 'destination' URL
      *     value.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes additional
      *     parameters of 'destination' and 'overwrite' which should contain a
      *     URL and a Boolean value respectively.
@@ -1032,7 +1032,7 @@ function(targetUrl, aRequest) {
      *     Otherwise, this call will return the values of all of the properties
      *     of the resource.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'propertyXML' which should be a string or node
      *     containing the property information being queried for.
@@ -1098,7 +1098,7 @@ function(targetUrl, aRequest) {
      *
      *
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes additional
      *     parameters of either 'setList' or 'removeList' (or both) parameters,
      *     containing entries of the form shown in the discussion section.
@@ -1180,7 +1180,7 @@ function(targetUrl, aRequest) {
      * @method webdavReport
      * @summary Reports on the WebDAV resource at the target URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
@@ -1209,7 +1209,7 @@ function(targetUrl, aRequest) {
      *     identified by the supplied unique lock token. The token is typically
      *     acquired via a previous webdavLock request.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'locktoken' containing the lock token previously
      *     acquired when the resource was locked.
@@ -1268,7 +1268,7 @@ function(targetUrl, aRequest) {
      * @summary Creates a versioned controlled WebDAV resource at the target
      *     URL specified.
      * @param {String} targetUrl The request's target URL.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.

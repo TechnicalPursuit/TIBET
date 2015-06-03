@@ -72,7 +72,7 @@ function(aResourceID, aRequest) {
      *     such instance is the SystemConsole.
      * @param {String} aResourceID The unique resource ID for this resource
      *     instance.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request object or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request object or hash
      *     containing parameters including: consoleWindow and consoleNode which
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
@@ -107,7 +107,7 @@ function(aResourceID, aRequest) {
      * @summary Constructor for new instances.
      * @param {String} aResourceID The unique resource ID for this resource
      *     instance.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request object or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request object or hash
      *     containing parameters including: consoleWindow and consoleNode which
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
@@ -1557,7 +1557,7 @@ function(anObject, aRequest) {
      *     converted as well as possible and use the optional level parameter
      *     when they can't provide one.
      * @param {Object} anObject The message and level source.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      */
 
@@ -1575,7 +1575,7 @@ function(anError, aRequest) {
      *     to assist with formatting etc. Parameters include messageType,
      *     messageLevel, cmdAsIs, etc.
      * @param {String} anError The error to output.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
@@ -1666,7 +1666,7 @@ function(anObject, aRequest) {
      *     to assist with formatting etc. Parameters include messageType,
      *     cmdAsIs, etc.
      * @param {Object} anObject The object to output in string form.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
@@ -1756,7 +1756,7 @@ function(aRequest) {
 
     /**
      * @method writeInputContent
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.tsh.ConsoleOutputCell} The receiver.
      * @abstract
@@ -1840,7 +1840,7 @@ function(anObject, aRequest) {
     /**
      * @method writeOutputContent
      * @param {Object} anObject The object to output in string form.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.sherpa.Console} The receiver.
      * @abstract

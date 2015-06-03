@@ -216,7 +216,7 @@ function(aString, smartConversion, shouldReport) {
      * @param {Boolean} smartConversion Whether or not to 'smart convert' the
      *     JSON into JS. This includes detecting for Date data to construct Date
      *     objects, detecting for RegExp data to construct RegExp objects and
-     *     construct TP.lang.Hashes instead of Objects. This defaults to true.
+     *     construct TP.core.Hashes instead of Objects. This defaults to true.
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
      * @returns {Object} A JavaScript object containing the JSON data.
      * @exception InvalidJSON
@@ -247,15 +247,15 @@ function(aString, smartConversion, shouldReport) {
 
         //  Otherwise, we play some serious trickery here to make any Objects
         //  that would be created by turning JSON into JavaScript into
-        //  TP.lang.Hashes so that they can fully participate in TIBET.
+        //  TP.core.Hashes so that they can fully participate in TIBET.
 
         //  Note that this technique relies on being able to manipulate (both
         //  read and write) the __proto__ slot of a JavaScript object instance.
         //  This is now supported in all environments we run in.
 
-        //  To do this, we first create a real TP.lang.Hash and grab the value
+        //  To do this, we first create a real TP.core.Hash and grab the value
         //  in it's __proto__ slot.
-        tpHashProto = TP.lang.Hash.construct().__proto__;
+        tpHashProto = TP.core.Hash.construct().__proto__;
 
         //  NB: Some of the constructs in the following loop are 'bare JS' to
         //  get the required performance.
@@ -270,7 +270,7 @@ function(aString, smartConversion, shouldReport) {
                         //  If the value is real and it's an Object (note here
                         //  that we can do this direct test since the JSON parse
                         //  routine is guaranteed to create plain JS objects),
-                        //  then set its '$$type' to TP.lang.Hash and rewire its
+                        //  then set its '$$type' to TP.core.Hash and rewire its
                         //  __proto__ to be that of the hash that we created
                         //  above.
                         if (value &&
@@ -280,15 +280,15 @@ function(aString, smartConversion, shouldReport) {
                             //  to us by the parse routine.
                             newVal = {};
 
-                            newVal.$$type = TP.lang.Hash;
+                            newVal.$$type = TP.core.Hash;
                             newVal.__proto__ = tpHashProto;
 
                             //  Note here that set an ID here because real
-                            //  TP.lang.Hashes are required to have an unique ID
+                            //  TP.core.Hashes are required to have an unique ID
                             //  from the start (but we tweak the ID prefix to
                             //  let inspectors/debuggers know that they're
-                            //  dealing with a 'sort of' TP.lang.Hash).
-                            newVal.$$id = TP.genID('Pseudo_TP.lang.Hash');
+                            //  dealing with a 'sort of' TP.core.Hash).
+                            newVal.$$id = TP.genID('Pseudo_TP.core.Hash');
 
                             //  We set the '$$hash' of the new object to the
                             //  object handed to us.
@@ -296,7 +296,7 @@ function(aString, smartConversion, shouldReport) {
 
                             //  Make sure to null out that object's __proto__ so
                             //  that it's not participating in any prototype
-                            //  chain. This matches the normal TP.lang.Hash
+                            //  chain. This matches the normal TP.core.Hash
                             //  behavior where it creates an 'orphan' object as
                             //  it's $$hash.
                             value.__proto__ = null;

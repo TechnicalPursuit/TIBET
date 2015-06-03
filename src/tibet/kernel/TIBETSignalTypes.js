@@ -227,7 +227,7 @@ function(controlParameters) {
      * @method constructJob
      * @summary Constructs the job instance used to manage the work of the
      *     monitor in terms of scheduling etc.
-     * @param {TP.lang.Hash} controlParameters The job's control parameters, set
+     * @param {TP.core.Hash} controlParameters The job's control parameters, set
      *     when the job is first constructed.
      * @returns {TP.core.Job} The newly constructed job instance.
      */
@@ -382,9 +382,9 @@ function(controlParameters) {
      *     underlying job instance. The return value is a merged copy of the
      *     receiving type's default parameters and any parameter information
      *     passed in.
-     * @param {TP.lang.Hash} controlParameters An optional set of parameters
+     * @param {TP.core.Hash} controlParameters An optional set of parameters
      *     used during job creation.
-     * @returns {TP.lang.Hash} The control parameters for this monitor.
+     * @returns {TP.core.Hash} The control parameters for this monitor.
      */
 
     var params;
@@ -423,9 +423,9 @@ function(stepParameters) {
      * @summary Returns a hash of step parameters for the receiver's underlying
      *     job instance. The return value is a merged copy of the receiving
      *     type's default parameters and any parameter information passed in.
-     * @param {TP.lang.Hash} stepParameters An optional set of parameters used
+     * @param {TP.core.Hash} stepParameters An optional set of parameters used
      *     to control job steps.
-     * @returns {TP.lang.Hash} The step parameters for this monitor.
+     * @returns {TP.core.Hash} The step parameters for this monitor.
      */
 
     var params;
@@ -507,7 +507,7 @@ function(stepParameters) {
      * @method start
      * @summary Starts the monitor, causing it to begin monitoring its targets
      *     for monitor events.
-     * @param {TP.lang.Hash} stepParameters An optional set of parameters used
+     * @param {TP.core.Hash} stepParameters An optional set of parameters used
      *     to control job steps.
      * @returns {TP.core.Monitor} The receiver.
      */
@@ -1129,7 +1129,7 @@ function(aPayload, noEvent) {
      * @summary Initialize the instance.
      * @description For a TP.sig.DOMUISignal the typical payload is a native
      *     event object or an array whose first item is the native event. You
-     *     can also provide a TP.lang.Hash as the payload and it will be treated
+     *     can also provide a TP.core.Hash as the payload and it will be treated
      *     as a container for the event properties normally associated with an
      *     Event.
      * @param {Object} aPayload A subtype-specific argument object.
@@ -1162,7 +1162,7 @@ function(aPayload, noEvent) {
     }
 
     //  if we don't have a native event its a little trickier since we want
-    //  to allow TP.lang.Hash input, or potentially native object input and
+    //  to allow TP.core.Hash input, or potentially native object input and
     //  we want to end up with an object that simulates all the event slots
     if (TP.notValid(this.getEvent())) {
         obj = this.$fabricateEvent(aPayload);
@@ -1210,7 +1210,7 @@ function(aPayload) {
 
     var hash;
 
-    hash = TP.isKindOf(aPayload, TP.lang.Hash) ? aPayload : TP.hc();
+    hash = TP.isKindOf(aPayload, TP.core.Hash) ? aPayload : TP.hc();
     hash.addIfAbsent(
             'target', null,
             'currentTarget', null,

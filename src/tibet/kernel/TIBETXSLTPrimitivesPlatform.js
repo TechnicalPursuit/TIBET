@@ -618,7 +618,7 @@ TP.hc(
          *     provided, returning a node with the result data.
          * @param {XMLDocument} styleDoc The XSLT style document.
          * @param {Node} inputNode The input data element.
-         * @param {TP.lang.Hash} paramHash A hash of optional parameters to be
+         * @param {TP.core.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
          * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument
@@ -1226,7 +1226,7 @@ TP.hc(
          *     provided, returning a node with the result data.
          * @param {XMLDocument} styleDoc The XSLT style document.
          * @param {Node} inputNode The input data element.
-         * @param {TP.lang.Hash} paramHash A hash of optional parameters to be
+         * @param {TP.core.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
          * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument

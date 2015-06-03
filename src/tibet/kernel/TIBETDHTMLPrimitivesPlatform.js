@@ -298,7 +298,7 @@ TP.hc(
          *     making this method somewhat touchy with respect to input.
          * @param {Document} aDocument The native document the event will be
          *     created within. Default is TIBET's current UI canvas document.
-         * @param {Event|TP.lang.Hash} anEventSpec A hash containing the event
+         * @param {Event|TP.core.Hash} anEventSpec A hash containing the event
          *     specification as key/value pairs.
          * @returns {Event} The newly constructed native Event.
          */
@@ -533,7 +533,7 @@ TP.hc(
          *     making this method somewhat touchy with respect to input.
          * @param {Document} aDocument The native document the event will be
          *     created within. Default is TIBET's current UI canvas document.
-         * @param {Event|TP.lang.Hash} anEventSpec A hash containing the event
+         * @param {Event|TP.core.Hash} anEventSpec A hash containing the event
          *     specification as key/value pairs.
          * @returns {Event} The newly constructed native Event.
          */
@@ -757,7 +757,7 @@ TP.hc(
          *     making this method somewhat touchy with respect to input.
          * @param {Document} aDocument The native document the event will be
          *     created within. Default is TIBET's current UI canvas document.
-         * @param {Event|TP.lang.Hash} anEventSpec A hash containing the event
+         * @param {Event|TP.core.Hash} anEventSpec A hash containing the event
          *     specification as key/value pairs.
          * @returns {Event} The newly constructed native Event.
          */

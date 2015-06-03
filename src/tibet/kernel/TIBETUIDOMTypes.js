@@ -183,13 +183,13 @@ function(aRequest) {
 
     /**
      * @method getCompilationAttrs
-     * @summary Returns a TP.lang.Hash of any attributes to be added to what is
+     * @summary Returns a TP.core.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled. The default is to compute
      *     an XHTML class name from this type's typename and supply it under the
      *     'class' key.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {TP.lang.Hash} A hash of attributes to be added to the compiled
+     * @returns {TP.core.Hash} A hash of attributes to be added to the compiled
      *     output from this type.
      */
 
@@ -2977,7 +2977,7 @@ function(aPointOrObject) {
      * @summary Sets the position of the receiver by manipulating its top, and
      *     left style properties. This method assumes the receiver is positioned
      *     in some fashion.
-     * @param {TP.core.Point|TP.lang.Hash|Array} aPointOrObject A TP.core.Point
+     * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
      *     to use or an object that has 'x' and 'y', slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.core.UIElementNode} The receiver.
@@ -2990,7 +2990,7 @@ function(aPointOrObject) {
     if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
         styleObj.left = aPointOrObject.getX() + 'px';
         styleObj.top = aPointOrObject.getY() + 'px';
-    } else if (TP.isKindOf(aPointOrObject, TP.lang.Hash)) {
+    } else if (TP.isKindOf(aPointOrObject, TP.core.Hash)) {
         styleObj.left = aPointOrObject.at('x') + 'px';
         styleObj.top = aPointOrObject.at('y') + 'px';
     } else if (TP.isArray(aPointOrObject)) {
@@ -3014,7 +3014,7 @@ function(aRectOrObject) {
      * @summary Sets the position of the receiver by manipulating its top,
      *     right, bottom and left style properties. This method assumes the
      *     receiver is positioned in some fashion.
-     * @param {TP.core.Rect|TP.lang.Hash|Array} aRectOrObject A TP.core.Rect to
+     * @param {TP.core.Rect|TP.core.Hash|Array} aRectOrObject A TP.core.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
@@ -3030,7 +3030,7 @@ function(aRectOrObject) {
         styleObj.top = aRectOrObject.getY() + 'px';
         styleObj.width = aRectOrObject.getWidth() + 'px';
         styleObj.height = aRectOrObject.getHeight() + 'px';
-    } else if (TP.isKindOf(aRectOrObject, TP.lang.Hash)) {
+    } else if (TP.isKindOf(aRectOrObject, TP.core.Hash)) {
         styleObj.left = aRectOrObject.at('x') + 'px';
         styleObj.top = aRectOrObject.at('y') + 'px';
         styleObj.width = aRectOrObject.at('width') + 'px';
@@ -3214,7 +3214,7 @@ function(transformType, varargs) {
         localTransforms = TP.json2js(localTransforms);
     }
 
-    //  Push on a TP.lang.Hash containing the transform type and an Array
+    //  Push on a TP.core.Hash containing the transform type and an Array
     //  containing the arguments to this method (after slicing off the transform
     //  type).
     localTransforms.push(
@@ -3238,11 +3238,11 @@ function(aTransformRecord) {
     /**
      * @method generateCSSValueFromTransformRecord
      * @summary Generates a CSS value from the supplied transform 'record'.
-     * @description A transform record consists of a TP.lang.Hash that has two
+     * @description A transform record consists of a TP.core.Hash that has two
      *     keys: the transform 'type' that should consist of one of the
      *     following values: TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE and the
      *     transform 'args', which are arguments to the transformation.
-     * @param {TP.lang.Hash} aTransformRecord The transformation record to use
+     * @param {TP.core.Hash} aTransformRecord The transformation record to use
      *     to generate the CSS value.
      * @exception TP.sig.InvalidParameter
      * @returns {String} The generated CSS value String.
@@ -3576,7 +3576,7 @@ function(transformType, transformIndex, varargs) {
         return this;
     }
 
-    //  Get the first TP.lang.Hash in the result array and put new arguments
+    //  Get the first TP.core.Hash in the result array and put new arguments
     //  into it's 'args' Array that are the arguments to this method (after
     //  slicing off the transform type and index).
     transformRecords.first().atPut('args', TP.ac(arguments).slice(2));

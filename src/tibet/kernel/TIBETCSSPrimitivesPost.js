@@ -220,7 +220,7 @@ TP.CSS_DISALLOW_NEGATIVE_VALUES = TP.ac('borderWidth',
 
 TP.regex.CSS_COLOR_PROPERTY = /color/i;
 
-//  A TP.lang.Hash of CSS color names. Note that the CSS3 color module
+//  A TP.core.Hash of CSS color names. Note that the CSS3 color module
 //  specification states that these should be case-insensitive, but for
 //  comparison purposes, we lowercase them all.
 TP.CSS_COLOR_NAMES = TP.hc(
@@ -1253,8 +1253,8 @@ function(anElement, aProperty) {
      * @method elementGetComputedStyle
      * @summary Returns the element's computed style as a String, or the value
      *     of a specific property if one is provided. When acquiring the entire
-     *     style string you can get a TP.lang.Hash of those values using
-     *     TP.lang.Hash.fromCSSString(str);
+     *     style string you can get a TP.core.Hash of those values using
+     *     TP.core.Hash.fromCSSString(str);
      * @param {HTMLElement} anElement The element to retrieve the computed style
      *     for.
      * @param {String|Array} aProperty An optional property name or names to
@@ -1352,8 +1352,8 @@ function(anElement, aProperty) {
      * @method elementGetStyle
      * @summary Returns the element's CSS style (its 'inline style') as a
      *     String, or the value of a specific property if one is provided. When
-     *     acquiring the entire style string you can get a TP.lang.Hash of those
-     *     values using TP.lang.Hash.fromCSSString(str);
+     *     acquiring the entire style string you can get a TP.core.Hash of those
+     *     values using TP.core.Hash.fromCSSString(str);
      * @param {HTMLElement} anElement The element to retrieve the inline CSS
      *     style for.
      * @param {String|Array} aProperty An optional property name or names to
@@ -1823,7 +1823,7 @@ function(anElement, theStyle) {
      *     supplied CSS-formatted style String.
      * @param {HTMLElement} anElement The element to set the inline CSS style
      *     for.
-     * @param {String|TP.lang.Hash} theStyle A string or hash of style content.
+     * @param {String|TP.core.Hash} theStyle A string or hash of style content.
      * @exception TP.sig.InvalidElement
      * @returns {Element} The element.
      */
@@ -1840,12 +1840,12 @@ function(anElement, theStyle) {
         styleObj.cssText = null;
     } else if (TP.isString(theStyle)) {
         styleObj.cssText = theStyle;
-    } else if (TP.isKindOf(theStyle, 'TP.lang.Hash')) {
+    } else if (TP.isKindOf(theStyle, 'TP.core.Hash')) {
         //  Pass 'false' to not quote values with whitespace.
         styleObj.cssText = TP.styleStringFromHash(theStyle, false);
     } else {
         return TP.raise(this, 'InvalidStyle',
-                        'Style content must be string or TP.lang.Hash');
+                        'Style content must be string or TP.core.Hash');
     }
 
     return anElement;
@@ -1905,17 +1905,17 @@ function(aStyleString) {
     /**
      * @method styleStringAsHash
      * @summary Converts a properly formatted CSS style string into the
-     *     equivalent TP.lang.Hash. The keys in the hash are in their "DOM"
+     *     equivalent TP.core.Hash. The keys in the hash are in their "DOM"
      *     form, i.e. 'float' becomes 'cssFloat', etc.
      * @param {String} aStyleString A string of the form key:value;key:value;.
-     * @returns {TP.lang.Hash} A new hash of CSS property/value pairs.
+     * @returns {TP.core.Hash} A new hash of CSS property/value pairs.
      */
 
     if (TP.isEmpty(aStyleString)) {
         return TP.hc();
     }
 
-    return TP.lang.Hash.fromString(aStyleString);
+    return TP.core.Hash.fromString(aStyleString);
 });
 
 //  ------------------------------------------------------------------------
@@ -1928,7 +1928,7 @@ function(aHash, quoteWhitespaceValues) {
      * @summary Returns the provided hash's key/value pairs as a valid CSS
      *     style string. Each key in the hash is processed via the asCSSName()
      *     String method to try to ensure a valid result.
-     * @param {TP.lang.Hash} aHash A valid TP.lang.Hash containing keys suitable
+     * @param {TP.core.Hash} aHash A valid TP.core.Hash containing keys suitable
      *     for a CSS string.
      * @param {Boolean} quoteWhitespaceValues Whether or not whitespace values
      *     should be quoted.
@@ -2447,7 +2447,7 @@ function(strSelectorText, strictPseudos) {
     /**
      * @method parseCSSSelector
      * @summary Parses the supplied selector text into a data structure
-     *     containing an Array of alternating TP.lang.Hashes (representing each
+     *     containing an Array of alternating TP.core.Hashes (representing each
      *     'simple' selector) and constant values representing the combinators
      *     separating them.
      * @description The returned data structure has the following keys (note
@@ -2457,8 +2457,8 @@ function(strSelectorText, strictPseudos) {
      *     'namespace' -> The selector's CSS3 namespace. 'tagName' -> The
      *     selector's tag name (could be '*' for the universal selector). 'id'
      *     -> The selector's tag name. 'classes' -> An Array of the selector's
-     *     classes. 'attributes' -> A TP.lang.Hash of TP.lang.Hashes, keyed by
-     *     the attribute name. Each TP.lang.Hash entry contains information of
+     *     classes. 'attributes' -> A TP.core.Hash of TP.core.Hashes, keyed by
+     *     the attribute name. Each TP.core.Hash entry contains information of
      *     that portion of the attribute description: 'op' -> The attribute
      *     operator. 'value' -> The attribute value. 'pseudoClasses' -> An Array
      *     of the selector's pseudoclasses. Each item in this Array may be a
@@ -2475,7 +2475,7 @@ function(strSelectorText, strictPseudos) {
      *     pseudoelements in the CSS specification will be matched. If false,
      *     any 'invented' pseudoclass or pseudoelement can be captured. By
      *     default this is false.
-     * @returns {Array} An Array of TP.lang.Hashes containing the keys described
+     * @returns {Array} An Array of TP.core.Hashes containing the keys described
      *     above alternated with the constant value containing the combinator
      *     separating them.
      */

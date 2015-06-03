@@ -28,7 +28,7 @@ function(aDataSource, transformParams) {
      *     transform method, transformObject() will be called as the default.
      * @param {Object} aDataSource The object supplying the data to use in the
      *     transformation.
-     * @param {TP.lang.Hash|TP.sig.Request} transformParams A parameter
+     * @param {TP.core.Hash|TP.sig.Request} transformParams A parameter
      *     container responding to at(). For string transformations a key of
      *     'repeat' with a value of true will cause iteration to occur (if
      *     aDataSource is an 'ordered collection' this flag needs to be set to
@@ -59,7 +59,7 @@ function(aDataSource, transformParams) {
      *     the 'transform()' method. It provides no functionality.
      * @param {Object} aDataSource The object supplying the data to use in the
      *     transformation.
-     * @param {TP.lang.Hash|TP.sig.Request} transformParams A parameter
+     * @param {TP.core.Hash|TP.sig.Request} transformParams A parameter
      *     container responding to at(). For string transformations a key of
      *     'repeat' with a value of true will cause iteration to occur (if
      *     aDataSource is an 'ordered collection' this flag needs to be set to
@@ -671,7 +671,7 @@ function(aDataSource, transformParams) {
      *     transform() works.
      * @param {Object} aDataSource The object supplying the data to use in the
      *     transformation.
-     * @param {TP.lang.Hash|TP.sig.Request} transformParams A parameter
+     * @param {TP.core.Hash|TP.sig.Request} transformParams A parameter
      *     container responding to at(). For string transformations a key of
      *     'repeat' with a value of true will cause iteration to occur (if
      *     aDataSource is an 'ordered collection' this flag needs to be set to
@@ -796,7 +796,7 @@ function(aDataSource, transformParams) {
      *     JavaScript objects.
      * @param {Object} aDataSource The object supplying the data to use in the
      *     transformation.
-     * @param {TP.lang.Hash|TP.sig.Request} transformParams A parameter
+     * @param {TP.core.Hash|TP.sig.Request} transformParams A parameter
      *     container responding to at(). For string transformations a key of
      *     'repeat' with a value of true will cause iteration to occur (if
      *     aDataSource is an 'ordered collection' this flag needs to be set to
@@ -831,7 +831,7 @@ function(aDataSource, transformParams) {
 
     //  NOTE!!! We do *not* change for validity of the data source. Some
     //  templating expressions can be executed without a data source. If no data
-    //  source was supplied, we just use an empty TP.lang.Hash.
+    //  source was supplied, we just use an empty TP.core.Hash.
     if (TP.notValid(dataSource = aDataSource)) {
         dataSource = TP.hc();
     }

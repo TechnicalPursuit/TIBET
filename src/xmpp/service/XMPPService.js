@@ -85,13 +85,13 @@
  *     Register with a server:
  *
  *     if (xmppService.openConnection()) { // initiateRegistration does return
- *     a TP.lang.Hash // containing the names and current values of any extra //
+ *     a TP.core.Hash // containing the names and current values of any extra //
  *     fields that may be required by a particular server so // that you can
  *     process those. We don't use those here - we // just assume that username
  *     and password are all that's // required. regFields =
  *     xmppService.initiateRegistration();
  *
- *     // Normally, we'd be supplying a TP.lang.Hash here that had // a key for
+ *     // Normally, we'd be supplying a TP.core.Hash here that had // a key for
  *     every key we found in regFields above, but for // this example we just
  *     assume 'username' and 'password'. xmppService.finalizeRegistration(
  *     TP.hc('username', 'foorat', 'password', 'foorat'));
@@ -182,7 +182,7 @@ function(resourceID, aRequest) {
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
      * @param {String} resourceID A unique service identifier.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.URIService} A new instance.
@@ -227,7 +227,7 @@ function(aRequest) {
     /**
      * @method configureAuthData
      * @summary Configures authentication data for the receiver.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.Service} The receiver.
@@ -562,7 +562,7 @@ function() {
     //  as part of the 'session start' procedure when the connection is
     //  authenticated. If so, then the 'remoteSubscriptions' instance
     //  variable of the currently effective user will contain a (maybe
-    //  empty) TP.lang.Hash. If there's nothing valid there, though, then we
+    //  empty) TP.core.Hash. If there's nothing valid there, though, then we
     //  go fetch the user's pubsub subscriptions.
 
     pubsubServiceJID = this.get('pubsubJID');
@@ -702,12 +702,12 @@ function(regNode) {
 
     /**
      * @method getRegistrationFieldsFrom
-     * @summary Returns a TP.lang.Hash of 'registration fields' according to
+     * @summary Returns a TP.core.Hash of 'registration fields' according to
      *     XEP-77 of the XMPP protocol extensions.
      * @param {TP.xmpp.IqResult} regNode The element containing the
      *     TP.xmpp.IqRegister payload.
      * @exception TP.sig.InvalidParameter,TP.sig.XMPPConnectionNotOpen
-     * @returns {TP.lang.Hash} A hash of key/value pairs containing field names
+     * @returns {TP.core.Hash} A hash of key/value pairs containing field names
      *     and (current) field values.
      */
 
@@ -761,7 +761,7 @@ function(registrationValues) {
      * @returns {TP.xmpp.Packet} An TP.xmpp.Packet containing either an
      *     acknowledgement that the registration worked or an error indicating
      *     why it didn't.
-     * @params registrationValues TP.lang.Hash A hash containing the various
+     * @params registrationValues TP.core.Hash A hash containing the various
      *     fields and their values for registering with the server (like
      *     username and password).
      */
@@ -2019,7 +2019,7 @@ function(aSignal) {
     //  subscriptions on.
     theUser = TP.core.User.getEffectiveUser();
 
-    //  This will be a TP.lang.Hash of serverName -> Array of subscription
+    //  This will be a TP.core.Hash of serverName -> Array of subscription
     //  names
     remoteSubscriptions = theUser.get('remoteSubscriptions');
 

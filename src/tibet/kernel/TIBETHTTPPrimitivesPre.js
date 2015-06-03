@@ -451,12 +451,12 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
             //  an upload element, but maybe in the future...
 
             //  if the data is an Array, then each item in the Array should
-            //  be a TP.lang.Hash containing keys that would be the same as
+            //  be a TP.core.Hash containing keys that would be the same as
             //  a regular data request, such as 'body', 'multipartypes',
             //  'encoding', 'separator', etc.
 
             //  We then loop over those, encoding each one using the
-            //  encoding data and information in each TP.lang.Hash.
+            //  encoding data and information in each TP.core.Hash.
             if (TP.isArray(data)) {
                 data.perform(
                     function(anItem, anIndex) {
@@ -750,7 +750,7 @@ function(targetUrl, aSignal, aRequest) {
      * @param {String} targetUrl The URL being accessed when the error occurred.
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
      *     by this call.
-     * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
+     * @param {TP.core.Hash|TP.sig.Request} aRequest A request/hash with keys.
      * @exception HTTPException
      * @throws Error Throws an Error containing aString.
      */
@@ -797,7 +797,7 @@ function() {
     /**
      * @method httpGetDefaultHeaders
      * @summary Builds and returns a set of default headers for a web call.
-     * @returns {TP.lang.Hash} A hash of default headers which can be used for a
+     * @returns {TP.core.Hash} A hash of default headers which can be used for a
      *     standard web call.
      */
 
@@ -835,7 +835,7 @@ function(targetUrl, aRequest, httpObj) {
      *     type to help ensure that ETag processing and other cache-related
      *     behavior is done properly.
      * @param {String} targetUrl The URL accessed by the request.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @param {XMLHttpRequest} httpObj The request object to configure.
      * @returns {String} The headers in string form, for logging. Note that the

@@ -141,7 +141,7 @@ function(aRequest) {
         case 'uploadDoc':
 
             //  If we're uploading a document, we need to rework it so that
-            //  it consists of an Array of TP.lang.Hashes, each contains a
+            //  it consists of an Array of TP.core.Hashes, each contains a
             //  'part' of a multipart submission. Each part will have its
             //  own 'body' and 'mimetype'. Google Docs wants a chunk of Atom
             //  metadata that describes the document being uploaded and then

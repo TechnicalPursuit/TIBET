@@ -117,10 +117,10 @@ function() {
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
 
-        //  TP.lang.Hash
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
+        test.assert.isEqualTo(content, TP.str(testData.at('TP.core.Hash')));
     });
 
     //  ---
@@ -209,10 +209,10 @@ function() {
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
 
-        //  TP.lang.Hash
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
+        test.assert.isEqualTo(content, TP.str(testData.at('TP.core.Hash')));
     });
 
     //  ---
@@ -295,8 +295,8 @@ function() {
         content = tpElem.get('content');
         test.assert.isNull(content);
 
-        //  TP.lang.Hash (won't alter content)
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash (won't alter content)
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
@@ -386,10 +386,10 @@ function() {
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
 
-        //  TP.lang.Hash
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
+        test.assert.isEqualTo(content, TP.str(testData.at('TP.core.Hash')));
     });
 
     //  ---
@@ -481,10 +481,10 @@ function() {
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
         tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
-        //  TP.lang.Hash
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
+        test.assert.isEqualTo(content, TP.str(testData.at('TP.core.Hash')));
         tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
 
@@ -577,10 +577,10 @@ function() {
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
         tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
-        //  TP.lang.Hash
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
+        test.assert.isEqualTo(content, TP.str(testData.at('TP.core.Hash')));
         tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
 
@@ -664,8 +664,8 @@ function() {
         content = tpElem.get('content');
         test.assert.isNull(content);
 
-        //  TP.lang.Hash (won't alter content)
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash (won't alter content)
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
@@ -749,8 +749,8 @@ function() {
         content = tpElem.get('content');
         test.assert.isNull(content);
 
-        //  TP.lang.Hash (won't alter content)
-        tpElem.set('content', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash (won't alter content)
+        tpElem.set('content', testData.at('TP.core.Hash'));
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
@@ -855,10 +855,10 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.str(testData.at('Object')));
 
-        //  TP.lang.Hash
-        tpElem.set('value', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('value', testData.at('TP.core.Hash'));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.str(testData.at('TP.lang.Hash')));
+        test.assert.isEqualTo(value, TP.str(testData.at('TP.core.Hash')));
     });
 
     //  ---
@@ -991,10 +991,10 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.str(testData.at('Object')));
 
-        //  TP.lang.Hash
-        tpElem.set('value', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('value', testData.at('TP.core.Hash'));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.str(testData.at('TP.lang.Hash')));
+        test.assert.isEqualTo(value, TP.str(testData.at('TP.core.Hash')));
     });
 
     //  ---
@@ -1129,8 +1129,8 @@ function() {
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, 'bar');
 
-        //  TP.lang.Hash
-        tpElem.set('value', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('value', testData.at('TP.core.Hash'));
         value = tpElem.get('value');
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, 'bar');
@@ -1272,8 +1272,8 @@ function() {
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, 'bar');
 
-        //  TP.lang.Hash
-        tpElem.set('value', testData.at('TP.lang.Hash'));
+        //  TP.core.Hash
+        tpElem.set('value', testData.at('TP.core.Hash'));
         value = tpElem.get('value');
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, 'bar');
@@ -1419,7 +1419,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 
-        //  TP.lang.Hash
+        //  TP.core.Hash
         tpElem.set('value', TP.hc('foo', 'bar'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'bar');
@@ -1560,7 +1560,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
 
-        //  TP.lang.Hash
+        //  TP.core.Hash
         tpElem.set('value', TP.hc('foo', 'bar'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('bar'));
@@ -1696,7 +1696,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 
-        //  TP.lang.Hash
+        //  TP.core.Hash
         tpElem.set('value', TP.hc('foo', 'bar'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'bar');
@@ -1837,7 +1837,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
 
-        //  TP.lang.Hash
+        //  TP.core.Hash
         tpElem.set('value', TP.hc('foo', 'bar'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('bar'));

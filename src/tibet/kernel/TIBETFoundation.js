@@ -37,7 +37,7 @@ function(params, windowContext) {
      *     other words, a property on a window that's truly a property of a
      *     Window isn't returned by this search, but a function on Window
      *     intended as a Global function would be.
-     * @param {TP.lang.Hash} params A hash of various parameters that will
+     * @param {TP.core.Hash} params A hash of various parameters that will
      *     affect the return value in the following way: 'internal' Return
      *     global slots that are internal - that is, they start with '$$'
      *     'hidden' Return global slots that are internal - that is, they start
@@ -181,7 +181,7 @@ function(typeName, customType) {
 
     //  Note that we use a primitive hash here since that way all of the
     //  metadata is stored using the same kind of data structure (and also to
-    //  avoid booting problems when TP.lang.Hash is only 'half loaded')
+    //  avoid booting problems when TP.core.Hash is only 'half loaded')
 
     TP.sys.getMetadata('types').atPut(typeName, customType);
     /*
@@ -249,8 +249,8 @@ function() {
 
     //  convert to a full hash as soon as possible
     if (TP.isFalse(this.$missingTypes.$isHash) &&
-        TP.isType(TP.sys.getTypeByName('TP.lang.Hash'))) {
-        this.$missingTypes = this.$missingTypes.asTP_lang_Hash();
+        TP.isType(TP.sys.getTypeByName('TP.core.Hash'))) {
+        this.$missingTypes = this.$missingTypes.asTP_core_Hash();
         this.$missingTypes.$isHash = true;
     }
 
@@ -377,7 +377,7 @@ function() {
      *     actual implementations in the current environment. This is a
      *     combination of custom types and those native types which have true
      *     type object implementations.
-     * @returns {TP.lang.Hash} A hash of types, keyed by name, that have actual
+     * @returns {TP.core.Hash} A hash of types, keyed by name, that have actual
      *     implementations.
      */
 
@@ -3597,7 +3597,7 @@ function() {
     /**
      * @method $$isPair
      * @summary Returns true if the object is considered an ordered pair.
-     *     Objects (and TP.lang.Hashes) are never considered ordered pairs.
+     *     Objects (and TP.core.Hashes) are never considered ordered pairs.
      * @returns {Boolean} Whether or not the receiver is considered to be an
      *     ordered pair.
      */
@@ -3820,7 +3820,7 @@ function(aSelectFunction) {
      *     form [['a',1], ['b',2]] will simply return its content wrapped in a
      *     new container, while an array of the form ['a','b','c'] will return
      *     [['a','b'],['c',null]]. This is the inverse operation a flatten would
-     *     have had on the results of a getPairs on a TP.lang.Hash.
+     *     have had on the results of a getPairs on a TP.core.Hash.
      * @description To allow Arrays to serve as a form of interchange format
      *     between collections of various types they have special behavior when
      *     it comes to managing "items" and "pairs". In particular, although the
@@ -4269,7 +4269,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
      *     'add', 'remove', etc.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
      * @fires Change
@@ -4362,7 +4362,7 @@ TP.changed = function(anAspect, anAction, aDescription) {
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
      *     'add', 'remove', etc.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
      * @fires Change
@@ -4405,7 +4405,7 @@ function(anAspect, anAction, aDescription) {
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
      *     'add', 'remove', etc.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Array} The receiver.
      * @fires Change
@@ -4438,7 +4438,7 @@ function(anAspect, anAction, aDescription) {
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
      *     'add', 'remove', etc.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {String} The receiver.
      * @fires Change
@@ -4536,7 +4536,7 @@ function(aSelectFunction) {
      *     as select for this call.
      * @description The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
-     *     however for TP.lang.Hash in particular the "items" are more like
+     *     however for TP.core.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
      *     way to deal with the "natural item form" of each collection without
      *     concern for the specific nature of those items so this method is
@@ -4565,7 +4565,7 @@ function(aSelectFunction) {
      *     as select for this call.
      * @description The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
-     *     however for TP.lang.Hash in particular the "items" are more like
+     *     however for TP.core.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
      *     way to deal with the "natural item form" of each collection without
      *     concern for the specific nature of those items so this method is
@@ -4597,7 +4597,7 @@ function(aSelectFunction) {
      *     as select for this call.
      * @description The term "items", as opposed to "keys", "values", or "pairs"
      *     is variant in TP.sys. For most collections "items" are "values",
-     *     however for TP.lang.Hash in particular the "items" are more like
+     *     however for TP.core.Hash in particular the "items" are more like
      *     Smalltalk "associations", the key/value pairs. Using getItems is a
      *     way to deal with the "natural item form" of each collection without
      *     concern for the specific nature of those items so this method is
@@ -4663,7 +4663,7 @@ function(aHash, aLevel) {
      *     The combination of these parameters allows this method to create
      *     object formats from CSV to JS Source to HTML tables using appropriate
      *     parameter settings.
-     * @param {TP.lang.Hash} aHash A TP.lang.Hash containing one or more of the
+     * @param {TP.core.Hash} aHash A TP.core.Hash containing one or more of the
      *     previously mentioned keys.
      * @param {Number} aLevel Number of levels to descend in nested objs.
      * @returns {String} A formatted string.
@@ -6060,7 +6060,7 @@ function(attributeName, facetName) {
     if (!TP.owns(this, '$$access_paths')) {
 
         //  NB: This is a JS literal object since this operates at a very low
-        //  level and trying to use a TP.lang.Hash here causes an endless
+        //  level and trying to use a TP.core.Hash here causes an endless
         //  recursion.
         this.$$access_paths = {};
     }
@@ -6316,7 +6316,7 @@ function() {
      *     parameterized paths. At this level, this method returns null.
      * @returns {Object} The object used to resolve path references in
      *     parameterized paths. This usually should either be an Array or a
-     *     TP.lang.Hash.
+     *     TP.core.Hash.
      */
 
     return null;
@@ -7864,7 +7864,7 @@ function(keyCriteria, selectionCriteria) {
 
     /**
      * @method groupBy
-     * @summary Returns a TP.lang.Hash whose keys are the return values
+     * @summary Returns a TP.core.Hash whose keys are the return values
      *     produced by keyCriteria for each item, and whose values are arrays of
      *     the items matching that key OR an Array containing nested arrays of
      *     length N where N is the criteria you provided. To skip an element and

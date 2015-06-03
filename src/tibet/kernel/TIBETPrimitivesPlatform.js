@@ -1295,7 +1295,7 @@ TP.hc(
          *          TP.objectToString(TP.dc());
          *          <samp></samp>
          *          TP.objectToString(TP.hc('lname', 'Smith'));
-         *          <samp>TP.lang.Hash_11195e8e7fdcb31af18d399f</samp>
+         *          <samp>TP.core.Hash_11195e8e7fdcb31af18d399f</samp>
          *          TP.objectToString(window);
          *          <samp>[object DOMWindow]</samp>
          *          TP.objectToString(window.document);
@@ -1422,7 +1422,7 @@ TP.hc(
          *          TP.objectToString(TP.dc());
          *          <samp>Tue Mar 27 2007 18:17:27 GMT-0600 (MDT)</samp>
          *          TP.objectToString(TP.hc('lname', 'Smith'));
-         *          <samp>TP.lang.Hash_11195e8e7fdcb31af18d399f</samp>
+         *          <samp>TP.core.Hash_11195e8e7fdcb31af18d399f</samp>
          *          TP.objectToString(window);
          *          <samp>[object DOMWindow]</samp>
          *          TP.objectToString(window.document);
@@ -1564,7 +1564,7 @@ TP.hc(
          *          TP.objectToString(TP.dc());
          *          <samp>Tue Mar 27 2007 18:17:27 GMT-0600 (MDT)</samp>
          *          TP.objectToString(TP.hc('lname', 'Smith'));
-         *          <samp>TP.lang.Hash_11195e8e7fdcb31af18d399f</samp>
+         *          <samp>TP.core.Hash_11195e8e7fdcb31af18d399f</samp>
          *          TP.objectToString(window);
          *          <samp>[object DOMWindow]</samp>
          *          TP.objectToString(window.document);

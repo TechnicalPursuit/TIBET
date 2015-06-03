@@ -60,7 +60,7 @@ function(resourceID, aRequest) {
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
      * @param {String} resourceID A unique service identifier.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.goog.GoogleService} A new instance.
@@ -300,11 +300,11 @@ function(aRequest) {
 
     /**
      * @method rewriteRequestHeaders
-     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @summary Returns a TP.core.Hash of HTTP headers appropriate for the
      *     service.
      * @param {TP.sig.GoogleRequest} aRequest The request whose parameters
      *     define the HTTP request.
-     * @returns {TP.lang.Hash} The hash of HTTP headers.
+     * @returns {TP.core.Hash} The hash of HTTP headers.
      */
 
     var headers;

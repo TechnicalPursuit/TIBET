@@ -1123,7 +1123,7 @@ function() {
     }
 
     //  Make sure that any installed modifers get a fresh 'temp data'
-    //  TP.lang.Hash
+    //  TP.core.Hash
     modifiers.perform(
             function(aModifierFunc) {
 
@@ -1342,7 +1342,7 @@ function() {
     }
 
     //  Make sure that any installed modifers get a fresh 'temp data'
-    //  TP.lang.Hash
+    //  TP.core.Hash
     modifiers.perform(
             function(aModifierFunc) {
 

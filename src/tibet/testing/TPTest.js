@@ -206,7 +206,7 @@ function(options) {
     /**
      * Resets the receiver, putting instance variables back to their original
      * values so it can be run again.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      */
 
     this.$set('result', null);
@@ -284,7 +284,7 @@ TP.test.Root.defineSubtype('Suite');
  * The container for all defined test suites, keyed by target ID. Methods which
  * access this property refer to TP.test.Suite since it is not inherited by any
  * subtypes, it's local to the TP.test.Suite type.
- * @type {TP.lang.Hash}
+ * @type {TP.core.Hash}
  */
 TP.test.Suite.defineAttribute('suites', TP.hc());
 
@@ -301,7 +301,7 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @returns {TP.lang.Hash} The updated collection of test suites.
+     * @returns {TP.core.Hash} The updated collection of test suites.
      */
 
     var id,
@@ -349,8 +349,8 @@ function(target, options) {
      * whose top-level has a single key for the target's id is returned. This is
      * effectively a "slice" of the system suite hash.
      * @param {Object} target The object whose test suites should be returned.
-     * @param {TP.lang.Hash} options A dictionary of test options.
-     * @returns {TP.lang.Hash} A collection of test suites.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @returns {TP.core.Hash} A collection of test suites.
      */
 
     var suites,
@@ -453,7 +453,7 @@ function(target, options) {
      * Runs the test suites for a target, or all targets if no specific target
      * object is provided.
      * @param {Object} target The object whose test suites should be run.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -719,7 +719,7 @@ TP.test.Suite.Inst.defineAttribute('refuter');
 
 /**
  * A dictionary of statistics regarding pass, fail, error, and skip counts.
- * @type {TP.lang.Hash}
+ * @type {TP.core.Hash}
  */
 TP.test.Suite.Inst.defineAttribute('statistics');
 
@@ -1003,7 +1003,7 @@ function(options) {
      * Runs the internal suite functions and returns the list of specific test
      * case instances created as a result. The 'suite functions' are the
      * functions passed to describe() which define the suite.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Array.<TP.test.Case>} The case list.
      */
 
@@ -1078,7 +1078,7 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @returns {TP.lang.Hash} The new test suite instance.
+     * @returns {TP.core.Hash} The new test suite instance.
      */
 
     if (TP.notValid(target) ||
@@ -1272,7 +1272,7 @@ function(options) {
 
     /**
      * Runs the test cases for the suite.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -1293,7 +1293,7 @@ function(options) {
     /**
      * Executes the receiver's test cases, providing each with the options
      * object provided to help control execution.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -2307,7 +2307,7 @@ function(signalIndex, verbose, wantsRequests) {
      * @param {Boolean} wantsRequests Whether or not to include all of the sets
      *     of signal arguments, including TP.sig.Requests, fired since the spy
      *     was last reset when retrieving the information. The default is false.
-     * @returns {TP.lang.Hash} A hash of information about the argument set of
+     * @returns {TP.core.Hash} A hash of information about the argument set of
      *     the signal at the given index.
      */
 
@@ -2514,7 +2514,7 @@ function(options) {
      * Creates and returns a promise which runs the test case. You can leverage
      * the 'then' method of the Promise API to take action upon success or
      * failure of the test case.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -2999,7 +2999,7 @@ function(options) {
      * Returns an array of strings representing missing tests. The list is based
      * on comparing the test suite names with the receiver's method names. Test
      * suite names matching method names serve as tests for that method.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Array.<String>} An array of method names without tests.
      */
 
@@ -3037,7 +3037,7 @@ function(options) {
      * Creates and returns test fixture data suitable for the receiver. This
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Object} A test fixture for the receiver.
      */
 
@@ -3051,8 +3051,8 @@ function(options) {
 
     /**
      * Returns the dictionary containing test suites for the receiver.
-     * @param {TP.lang.Hash} options A dictionary of test options.
-     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this, options);
@@ -3066,7 +3066,7 @@ function(options) {
     /**
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -3222,7 +3222,7 @@ function(methodInfoDict) {
      *     installs a method chain of 'foo.baz' and 'bar.baz'. Note that
      *     'multiple paths' to a end can be constructed. The info dict above
      *     allows for both 'foo.baz' and 'not.foo.baz'.
-     * @param {TP.lang.Hash} methodInfoDict A dictionary of method information
+     * @param {TP.core.Hash} methodInfoDict A dictionary of method information
      *     used by this method to construct 'method chains'.
      * @returns {Object} The receiver.
      */

@@ -171,7 +171,7 @@ function(aSchema) {
     /**
      * @method setSchema
      * @summary Sets the receiver's schema to the supplied hash.
-     * @param {TP.lang.Hash} aSchema The schema to use for the receiver.
+     * @param {TP.core.Hash} aSchema The schema to use for the receiver.
      * @returns {TP.json.JSONSchemaType} The receiver.
      */
 

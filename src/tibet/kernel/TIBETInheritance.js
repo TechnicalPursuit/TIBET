@@ -1371,7 +1371,7 @@ function(aFormat, formatParams) {
      *     This method will also pass the optional formatParams parameter on to
      *     the 'transform' call.
      * @param {String} aFormat The format specification to format the receiver.
-     * @param {TP.lang.Hash|TP.core.Request} formatParams Optional format
+     * @param {TP.core.Hash|TP.core.Request} formatParams Optional format
      *     parameters. These are parameters to a template transform.
      * @returns {String} The formatted output.
      */
@@ -1393,7 +1393,7 @@ function(aDate, transformParams) {
      * @summary Transforms the supplied Date using the formats provided by the
      *     'substitute' call.
      * @param {Date} aDate The Date object to format.
-     * @param {TP.lang.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -1466,7 +1466,7 @@ function(aNumber, transformParams) {
      *     the 'substitute()' call. Note: This method does not use the
      *     'transformParams' parameter.
      * @param {Number} aNumber The Number object to format.
-     * @param {TP.lang.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -1495,7 +1495,7 @@ function(anObject, transformParams) {
      *     receiver, this call will perform the following substitutions (and
      *     expect the following types for anObject):
      * @param {Object} anObject The object to format.
-     * @param {TP.lang.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} A formatted string representation of the object.
@@ -1538,7 +1538,7 @@ function(aString, transformParams) {
      *     substitution' format provided by the internal 'substitute()' call.
      *     Note: This method does not use the 'transformParams' parameter.
      * @param {String} aString The String object to format.
-     * @param {TP.lang.Hash|TP.core.Request} transformParams Optional format
+     * @param {TP.core.Hash|TP.core.Request} transformParams Optional format
      *     parameters. These should have keys that are used during a keyed
      *     substitution (i.e. Date.FORMATS).
      * @returns {String} The formatted output.
@@ -4580,13 +4580,13 @@ function(targetType, conflictedTraits, track) {
      *     is not turned on, an error will be raised straightaway.
      * @param {TP.lang.RootObject} targetType The type object that the
      *     conflicted property was found on.
-     * @param {TP.lang.Hash} conflictedTraits A hash of the conflicted traits.
+     * @param {TP.core.Hash} conflictedTraits A hash of the conflicted traits.
      *     The keys in this hash are the property names that were conflicted and
      *     the values are a list of the computed possible sources of trait
      *     resolution, usually a type object.
      * @param {Constants} track The track, either TP.TYPE_TRACK or
      *     TP.INST_TRACK, that the conflicted property was found on.
-     * @returns {TP.lang.Hash} A Hash of properly-resolved traits.
+     * @returns {TP.core.Hash} A Hash of properly-resolved traits.
      */
 
     var unresolvedTraits,
@@ -6373,8 +6373,8 @@ function() {
 
     /**
      * @method asHash
-     * @summary Returns the receiver as a TP.lang.Hash.
-     * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
+     * @summary Returns the receiver as a TP.core.Hash.
+     * @returns {TP.core.Hash} The receiver converted into a TP.core.Hash.
      */
 
     return TP.hc('value', this);
@@ -6547,8 +6547,8 @@ function() {
 
     /**
      * @method asHash
-     * @summary Returns the receiver as a TP.lang.Hash.
-     * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
+     * @summary Returns the receiver as a TP.core.Hash.
+     * @returns {TP.core.Hash} The receiver converted into a TP.core.Hash.
      */
 
     return TP.hc('value', this);
@@ -6618,8 +6618,8 @@ function() {
 
     /**
      * @method asHash
-     * @summary Returns the receiver as a TP.lang.Hash.
-     * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
+     * @summary Returns the receiver as a TP.core.Hash.
+     * @returns {TP.core.Hash} The receiver converted into a TP.core.Hash.
      */
 
     return TP.hc('value', this);
@@ -6706,8 +6706,8 @@ function() {
 
     /**
      * @method asHash
-     * @summary Returns the receiver as a TP.lang.Hash.
-     * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
+     * @summary Returns the receiver as a TP.core.Hash.
+     * @returns {TP.core.Hash} The receiver converted into a TP.core.Hash.
      */
 
     return TP.hc('value', this);
@@ -6881,8 +6881,8 @@ function() {
 
     /**
      * @method asHash
-     * @summary Returns the receiver as a TP.lang.Hash.
-     * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
+     * @summary Returns the receiver as a TP.core.Hash.
+     * @returns {TP.core.Hash} The receiver converted into a TP.core.Hash.
      */
 
     return TP.hc('value', this);
@@ -7612,7 +7612,7 @@ function(anAspect, aFacet, aDescription) {
      *     usually an attribute name.
      * @param {String} aFacet The facet of the receiver that changed. This is
      * usually one of the standard TIBET facets listed in TP.FACET_NAMES.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
      * @fires Change
@@ -9674,11 +9674,11 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} methodName The method name to return information for.
-     * @returns {TP.lang.Hash} The hash containing the method information as
+     * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 
@@ -9715,11 +9715,11 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} methodName The method name to return information for.
-     * @returns {TP.lang.Hash} The hash containing the method information as
+     * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 
@@ -9771,11 +9771,11 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} methodName The method name to return information for.
-     * @returns {TP.lang.Hash} The hash containing the method information as
+     * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 
@@ -9819,11 +9819,11 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} methodName The method name to return information for.
-     * @returns {TP.lang.Hash} The hash containing the method information as
+     * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 

@@ -68,7 +68,7 @@ function(aServerName, aConnectionInfo) {
      *     information provided.
      * @param {String} aServerName The actual server name to connect to. This
      *     can be altered by the server in certain circumstances.
-     * @param {TP.lang.Hash} aConnectionInfo The hash containing 'connection
+     * @param {TP.core.Hash} aConnectionInfo The hash containing 'connection
      *     information', such as 'httpServerURI' and 'connectionType'.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.Connection} A new instance.
@@ -140,7 +140,7 @@ function(aServerName, aConnectionInfo) {
      * @summary Initializes a new instance.
      * @param {String} aServerName The actual server name to connect to. This
      *     can be altered by the server in certain circumstances.
-     * @param {TP.lang.Hash} aConnectionInfo The hash containing 'connection
+     * @param {TP.core.Hash} aConnectionInfo The hash containing 'connection
      *     information', such as 'httpServerURI' and 'connectionType'.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.Connection} A new instance.

@@ -673,7 +673,7 @@ function(aRequest) {
      *     of both the receiver and the bound content. For example, controls
      *     that bind to scalars may request a scalar value whereas controls
      *     which bind to nodelists may simply return the nodelist as the value.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     containing parameters.
      * @returns {Object} The value, scalar or otherwise, bound to this element.
      */
@@ -1465,7 +1465,7 @@ function(aRequest) {
      * @method $createBindingCaches
      * @summary Populates all bind-related information related to the receiver
      *     in the various bind information cache locations.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     containing parameters.
      * @fires bind-binding-exception
      */

@@ -94,7 +94,7 @@ function(aConnectionInfo) {
     /**
      * @method init
      * @summary Initializes a new instance.
-     * @param {TP.lang.Hash} aConnectionInfo A hash of connection information.
+     * @param {TP.core.Hash} aConnectionInfo A hash of connection information.
      *     This hash should contain values for: 'serverName', 'inStream',
      *     'outStream'.
      * @exception TP.sig.InvalidParameter

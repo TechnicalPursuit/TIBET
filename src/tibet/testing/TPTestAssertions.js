@@ -2521,7 +2521,7 @@ function() {
                         'within'        //  real implementation
                         );
 
-    //  Initialize a TP.lang.Hash that will use the defined Array as all of its
+    //  Initialize a TP.core.Hash that will use the defined Array as all of its
     //  keys and put the Array at each one of those places in the Hash. This has
     //  the effect, when used below, of creating stub chains from each name
     //  listed to every other name.

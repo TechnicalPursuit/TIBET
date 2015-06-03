@@ -123,13 +123,13 @@ function(aRequest, aResourceID, aThreadID) {
      * @method init
      * @summary Initialize a new request.
      * @description Each request is composed of a request payload (usually a
-     *     TP.lang.Hash), and optional resourceID and threadID elements. The
+     *     TP.core.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
      *     request/response 'conversation' between parties. When creating the
      *     instance TP.sig.Request will use any type-specific requestTemplate
      *     and merge it with any incoming request information.
-     * @param {TP.lang.Hash} aRequest An object containing specific request
+     * @param {TP.core.Hash} aRequest An object containing specific request
      *     parameters which will by used by the request's responder to process
      *     the request. NOTE that this takes the same parameter slot as the root
      *     payload for TP.sig.Signal. This should be specific to the signal
@@ -200,13 +200,13 @@ function(aRequest, aResourceID, aThreadID) {
      * @method init
      * @summary Initialize a new request.
      * @description Each request is composed of a request payload (usually a
-     *     TP.lang.Hash), and optional resourceID and threadID elements. The
+     *     TP.core.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
      *     request/response 'conversation' between parties. When creating the
      *     instance TP.sig.Request will use any type-specific requestTemplate
      *     and merge it with any incoming request information.
-     * @param {TP.lang.Hash} aRequest An object containing specific request
+     * @param {TP.core.Hash} aRequest An object containing specific request
      *     parameters which will by used by the request's responder to process
      *     the request. NOTE that this takes the same parameter slot as the root
      *     payload for TP.sig.Signal. This should be specific to the signal
@@ -236,13 +236,13 @@ function(aRequest, aResourceID, aThreadID) {
      * @method init
      * @summary Initialize a new request.
      * @description Each request is composed of a request payload (usually a
-     *     TP.lang.Hash), and optional resourceID and threadID elements. The
+     *     TP.core.Hash), and optional resourceID and threadID elements. The
      *     resourceID allows a request to target a particular resource while the
      *     threadID allows the request to be associated with an ongoing
      *     request/response 'conversation' between parties. When creating the
      *     instance TP.sig.Request will use any type-specific requestTemplate
      *     and merge it with any incoming request information.
-     * @param {TP.lang.Hash} aRequest An object containing specific request
+     * @param {TP.core.Hash} aRequest An object containing specific request
      *     parameters which will by used by the request's responder to process
      *     the request. NOTE that this takes the same parameter slot as the root
      *     payload for TP.sig.Signal. This should be specific to the signal
@@ -264,7 +264,7 @@ function(aResponse) {
 
     /**
      * @method handle404
-     * @param {TP.lang.Hash} aRequest An object containing specific request
+     * @param {TP.core.Hash} aRequest An object containing specific request
      *     parameters which will by used by the request's responder to process
      *     the request. NOTE that this takes the same parameter slot as the root
      *     payload for TP.sig.Signal. This should be specific to the signal

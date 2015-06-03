@@ -889,16 +889,16 @@ TP.ArrayProto.atPut = function(anIndex, aValue) {
 };
 
 //  -----------------------------------------------------------------------
-//  Primitive TP.lang.Hash support
+//  Primitive TP.core.Hash support
 //  -----------------------------------------------------------------------
 
 /*
 The following type provides a standin during the booting process for full
-TP.lang.Hash support which loads later. First, it constructs a primitive
+TP.core.Hash support which loads later. First, it constructs a primitive
 hash that handles basic at(), atPut(), get(), and set() operations TIBET
-relies upon until the more fully featured TP.lang.Hash can be loaded. Second
+relies upon until the more fully featured TP.core.Hash can be loaded. Second
 it provides a way to convert itself into one of those more fully functional
-TP.lang.Hashes so early-stage dictionaries can be upgraded to their more
+TP.core.Hashes so early-stage dictionaries can be upgraded to their more
 functional cousins.
 */
 
@@ -920,7 +920,7 @@ TP.PHash = function() {
     this.$suspended = true;
 
     //  populate the instance based on our argument list. we try to mirror
-    //  the basic semantics of the full TP.lang.Hash here, but that object
+    //  the basic semantics of the full TP.core.Hash here, but that object
     //  has a number of additional input formats
     if (arguments.length === 1) {
         obj = arguments[0];
@@ -970,7 +970,7 @@ TP.PHash = function() {
         /**
          * @method $$isCollection
          * @summary Returns true if the receiver is a collection instance. True
-         *     for TP.lang.Hash instances. NOTE that this method is invoked via
+         *     for TP.core.Hash instances. NOTE that this method is invoked via
          *     the TP.isCollection() method on objects which implement it, you
          *     shouldn't invoke it directly.
          * @returns {Boolean} True if the receiver is an instance of collection.
@@ -1002,7 +1002,7 @@ TP.PHash = function() {
          */
 
         /* eslint-disable no-extra-parens */
-        return (aType === 'TP.lang.Hash' || aType === TP.lang.Hash);
+        return (aType === 'TP.core.Hash' || aType === TP.core.Hash);
         /* eslint-enable no-extra-parens */
     };
 
@@ -1022,20 +1022,20 @@ TP.PHash = function() {
         /**
          * @method as
          * @summary Returns the receiver as an instance of aType. This
-         *     implementation is capable only of converting into a TP.lang.Hash
+         *     implementation is capable only of converting into a TP.core.Hash
          *     and potentially converting that hash into something else. The
-         *     more powerful TP.lang.Hash type may have more efficient or
+         *     more powerful TP.core.Hash type may have more efficient or
          *     comprehensive conversion routines.
          * @param {TP.lang.RootObject|String} typeOrFormat The type or format
          *     object or String desired.
          * @returns {Object} An instance of aType.
          */
 
-        if (aType === 'TP.lang.Hash' || aType === TP.lang.Hash) {
-            return this.asTP_lang_Hash();
+        if (aType === 'TP.core.Hash' || aType === TP.core.Hash) {
+            return this.asTP_core_Hash();
         }
 
-        return this.asTP_lang_Hash().as(aType);
+        return this.asTP_core_Hash().as(aType);
     };
 
     //  register with TIBET by hand
@@ -1103,7 +1103,7 @@ TP.PHash = function() {
          * @returns {String} The receiver in string form.
          */
 
-        return this.asTP_lang_Hash().asJSONSource();
+        return this.asTP_core_Hash().asJSONSource();
     };
 
     //  register with TIBET by hand
@@ -1128,7 +1128,7 @@ TP.PHash = function() {
          * @returns {String} The receiver in string form.
          */
 
-        return this.asTP_lang_Hash().asSource();
+        return this.asTP_core_Hash().asSource();
     };
 
     //  register with TIBET by hand
@@ -1139,18 +1139,18 @@ TP.PHash = function() {
             TP.INST_TRACK + '.asSource';
 
     //  ---
-    //  asTP_lang_Hash
+    //  asTP_core_Hash
     //  ---
 
-    this.asTP_lang_Hash = function() {
+    this.asTP_core_Hash = function() {
 
         /**
-         * @method asTP_lang_Hash
-         * @summary Converts the receiver to a full TP.lang.Hash type. The
+         * @method asTP_core_Hash
+         * @summary Converts the receiver to a full TP.core.Hash type. The
          *     internal hash data structures are migrated to the new instance so
          *     on completion of this method you should release any references
          *     you may have to the older primitive hash instance.
-         * @returns {TP.lang.Hash} The full TP.lang.Hash constructed from the
+         * @returns {TP.core.Hash} The full TP.core.Hash constructed from the
          *     receiver.
          */
 
@@ -1160,11 +1160,11 @@ TP.PHash = function() {
     };
 
     //  register with TIBET by hand
-    this.asTP_lang_Hash[TP.NAME] = 'asTP_lang_Hash';
-    this.asTP_lang_Hash[TP.OWNER] = TP.PHash;
-    this.asTP_lang_Hash[TP.TRACK] = TP.INST_TRACK;
-    this.asTP_lang_Hash[TP.DISPLAY] = 'TP.PHash.' +
-            TP.INST_TRACK + '.asTP_lang_Hash';
+    this.asTP_core_Hash[TP.NAME] = 'asTP_core_Hash';
+    this.asTP_core_Hash[TP.OWNER] = TP.PHash;
+    this.asTP_core_Hash[TP.TRACK] = TP.INST_TRACK;
+    this.asTP_core_Hash[TP.DISPLAY] = 'TP.PHash.' +
+            TP.INST_TRACK + '.asTP_core_Hash';
 
     //  ---
     //  at
@@ -1405,10 +1405,10 @@ TP.PHash = function() {
 
         /**
          * @method getParameters
-         * @summary Returns the receiver's parameters. For a TP.lang.Hash this
-         *     returns the hash itself since a TP.lang.Hash is a valid parameter
+         * @summary Returns the receiver's parameters. For a TP.core.Hash this
+         *     returns the hash itself since a TP.core.Hash is a valid parameter
          *     block in TIBET.
-         * @returns {Object} A TP.lang.Hash, TP.sig.Request, or Object
+         * @returns {Object} A TP.core.Hash, TP.sig.Request, or Object
          *     containing parameter data (typically).
          */
 
@@ -1681,7 +1681,7 @@ TP.PHash = function() {
          *     properties, not its content. Use atPut for content.
          * @param {String} attributeName The attribute name to set.
          * @param {Object} attributeValue The value to set.
-         * @returns {TP.lang.Hash} The receiver.
+         * @returns {TP.core.Hash} The receiver.
          */
 
         return this.$set(attributeName, attributeValue);
@@ -1713,12 +1713,12 @@ TP.hc = function() {
      *     simple key, value, key, value vararg lists.
      * @param {Array} varargs A variable list of 0 to N elements to place in
      *     the hash.
-     * @example Construct a TP.lang.Hash:
+     * @example Construct a TP.core.Hash:
      *     <code>
      *          newHash = TP.hc('lname', 'Smith');
      *          <samp>{"lname":"Smith"}</samp>
      *     </code>
-     * @returns {TP.lang.Hash} A new instance.
+     * @returns {TP.core.Hash} A new instance.
      */
 
     var dict,
@@ -1745,7 +1745,7 @@ TP.hc = function() {
 
 //  Note that we do *NOT* set up track & owner information for 'TP.hc' here.
 //  This is the *primitive* hash type. 'TP.hc()' will get overlaid later in the
-//  boot process to be a shortcut for creating a 'TP.lang.Hash' and we want all
+//  boot process to be a shortcut for creating a 'TP.core.Hash' and we want all
 //  of that to be 'clean'.
 
 //  Make sure that we alias this over to a convenient 'primitive hash create'
@@ -2623,7 +2623,7 @@ function(anObj) {
 
         //  Loop over all of the globals that were found in our startup
         //  sequence. Note that TP.sys.$nativeglobals gets redone as a
-        //  TP.lang.Hash during system finalization, but at the point the first
+        //  TP.core.Hash during system finalization, but at the point the first
         //  call to this method is made, it is still an Array.
         TP.sys.$nativeglobals.forEach(
                 function(aProp) {
@@ -3381,11 +3381,11 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
-     * @returns {TP.lang.Hash} The hash containing the method information as
+     * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 
@@ -3446,8 +3446,8 @@ function(options) {
 
     /**
      * Returns the dictionary containing test suites for the receiver.
-     * @param {TP.lang.Hash} options A dictionary of test options.
-     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -3461,7 +3461,7 @@ function(options) {
     /**
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -3656,11 +3656,11 @@ function(methodName) {
      * @method getMethodInfoFor
      * @summary Returns information for the method with the supplied name on
      *     the receiver.
-     * @description This method returns a TP.lang.Hash containing the method
+     * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
      * @param {String} aName The method name to return method information for.
-     * @returns {TP.lang.Hash} The hash containing the method information as
+     * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 
@@ -3721,8 +3721,8 @@ function(options) {
 
     /**
      * Returns the dictionary containing test suites for the receiver.
-     * @param {TP.lang.Hash} options A dictionary of test options.
-     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -3736,7 +3736,7 @@ function(options) {
     /**
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -4741,7 +4741,7 @@ function(aPrefix) {
      *          TP.ac().getID();
      *          <samp>Array_11194fef891948efcb003e0d8</samp>
      *          TP.hc().getID();
-     *          <samp>TP.lang.Hash_11194ff08b02373b76de8c7c</samp>
+     *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.dc().getID();
      *          <samp>Date_111997a9773f185a33f9280f</samp>
      *          (function() {TP.alert('foo');}).getID();
@@ -4931,7 +4931,7 @@ function() {
      * Creates and returns test fixture data suitable for the receiver. This
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Object} A test fixture for the receiver.
      */
 
@@ -4945,8 +4945,8 @@ function(options) {
 
     /**
      * Returns the dictionary containing test suites for the receiver.
-     * @param {TP.lang.Hash} options A dictionary of test options.
-     * @returns {TP.lang.Hash} A hash keyed by the receiver's ID.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
      */
 
     return TP.test.Suite.getTargetSuites(this, options);
@@ -4960,7 +4960,7 @@ function(options) {
     /**
      * Runs the test suites associated with the receiver. Options which help
      * configure and control the testing process can be provided.
-     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {Promise} A Promise to be used as necessary.
      */
 
@@ -7795,7 +7795,7 @@ function(anObj) {
     /**
      * @method isCollection
      * @summary Returns true if the value passed in is an instance of a
-     *     Collection type such as Array or TP.lang.Hash.
+     *     Collection type such as Array or TP.core.Hash.
      * @description While String instances can be thought of as collections of
      *     characters this routine will not return true for Strings. Likewise,
      *     although documents and elements can be thought of as collections of
@@ -7810,7 +7810,7 @@ function(anObj) {
     }
 
     //  have to rely on an internal method on the object to say so (which
-    //  we add to Array, TP.lang.Hash, etc.
+    //  we add to Array, TP.core.Hash, etc.
     if (TP.canInvoke(anObj, '$$isCollection')) {
         return anObj.$$isCollection();
     }
@@ -9048,7 +9048,7 @@ function(anObj) {
     }
 
     //  If something can respond to 'getSize', use it. This includes Arrays,
-    //  TP.lang.Hashes and String.
+    //  TP.core.Hashes and String.
     if (TP.canInvoke(anObj, 'getSize')) {
         try {
             return anObj.getSize() === 0;
@@ -9960,7 +9960,7 @@ function(anAspect, anAction, aDescription) {
      *     usually an attribute name.
      * @param {String} anAction The action which caused the change. This usually
      *     'add', 'remove', etc.
-     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @returns {Object} The receiver.
      * @fires Change
@@ -11778,7 +11778,7 @@ function() {
      *          "CURRENT_LTIME":"Tue Mar 27 2007 17:08:46 GMT-0600 (MDT)",
      *          "TIBET_LICENSE":"_0000000000000000"}</samp>
      *     </code>
-     * @returns {TP.lang.Hash} A collection containing data about the current
+     * @returns {TP.core.Hash} A collection containing data about the current
      *     execution environment.
      */
 

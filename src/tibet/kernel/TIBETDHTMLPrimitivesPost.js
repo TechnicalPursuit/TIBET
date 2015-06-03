@@ -1929,7 +1929,7 @@ function(anElement, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.lang.Hash} A hash containing the border box at: 'left',
+     * @returns {TP.core.Hash} A hash containing the border box at: 'left',
      *     'top', 'width', 'height'.
      */
 
@@ -2416,7 +2416,7 @@ function(anElement, boxType, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
-     * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
+     * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
      */
 
@@ -2889,7 +2889,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
+     * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
      */
 
@@ -3364,7 +3364,7 @@ function(anElement, boxType, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
-     * @returns {TP.lang.Hash} A hash containing the box at: 'left', 'top',
+     * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
      *     'width', 'height'.
      */
 
@@ -7649,11 +7649,11 @@ function(centerObj, endObj) {
      * @method computeAngleFromCenter
      * @summary Returns the angle (in degrees) between two objects one of which
      *     represents a 'center point' and the other an 'end point'.
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} centerObj
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} centerObj
      *     An event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y values or an array with
      *     an X 'value' in the first position and a Y value in the second.
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} endObj
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} endObj
      *     An event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
@@ -7700,11 +7700,11 @@ function(obj1, obj2) {
      *     degreesStandardizedTo360(atan2(y2 - y1, x2 - x1))
      *
      *
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} obj1 An
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} obj1 An
      *     event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} obj2 An
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} obj2 An
      *     event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
@@ -7852,11 +7852,11 @@ function(obj1, obj2) {
      *     d = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
      *
      *
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} obj1 An
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} obj1 An
      *     event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} obj2 An
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} obj2 An
      *     event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
@@ -7899,11 +7899,11 @@ function(obj1, obj2) {
      *     and a direction (in degrees) between two objects. The typical inputs
      *     are elements or events whose coordinates are used for the
      *     computation.
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} obj1 An
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} obj1 An
      *     event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
-     * @param {Event|String|Element|TP.lang.Hash|Array|TP.core.Point} obj2 An
+     * @param {Event|String|Element|TP.core.Hash|Array|TP.core.Point} obj2 An
      *     event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
@@ -8063,7 +8063,7 @@ function(url, name, aSpec, shouldReplace) {
      *     browsers won't fire).
      * @param {String} url The URL to load into the window.
      * @param {String} name The name to give this window. This must be unique.
-     * @param {TP.lang.Hash|String} aSpec A 'spec string' of key=value pairs or
+     * @param {TP.core.Hash|String} aSpec A 'spec string' of key=value pairs or
      *     a hash that can be used to produce a feature string. You should use
      *     'top' and 'left' on all browsers and TIBET will convert as needed.
      * @param {Boolean} shouldReplace Whether the content should be replaced if

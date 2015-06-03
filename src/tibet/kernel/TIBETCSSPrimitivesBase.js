@@ -650,7 +650,7 @@ function(aDocument) {
      * @method documentGetStyleRules
      * @summary Returns all of the CSS style rules for the supplied document.
      * @description If the TP.sys.shouldProcessCSS() flag is 'true' (the
-     *     default) this call will return an Array of TP.lang.Hashes that
+     *     default) this call will return an Array of TP.core.Hashes that
      *     represent all of the rules in this document. If it is false, this
      *     method will return the result of calling
      *     TP.documentGetNativeStyleRules() and the result will be an Array of
@@ -658,7 +658,7 @@ function(aDocument) {
      * @param {HTMLDocument} aDocument The document to retrieve all style rules
      *     for.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array} An Array of either TP.lang.Hashes or native browser
+     * @returns {Array} An Array of either TP.core.Hashes or native browser
      *     'rule' objects representing the CSS rules for the supplied document.
      */
 

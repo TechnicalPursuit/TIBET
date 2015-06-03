@@ -63,7 +63,7 @@ function(x, y) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Number|TP.core.Point|Object|TP.lang.Hash|Array} x The x value
+     * @param {Number|TP.core.Point|Object|TP.core.Hash|Array} x The x value
      *     of the receiver or a TP.core.Point to copy or an object that has 'x'
      *     and 'y' (or 'top' and 'left') slots or an Array that has x in the
      *     first position and y in the last position.
@@ -88,7 +88,7 @@ function(x, y) {
                 theData = theData.$get('data');
                 newData = {x: theData.x,
                             y: theData.y};
-            } else if (TP.isKindOf(theData, TP.lang.Hash)) {
+            } else if (TP.isKindOf(theData, TP.core.Hash)) {
                 newData = {x: theData.at('x') || theData.at('left'),
                             y: theData.at('y') || theData.at('top')};
             } else if (TP.isArray(theData)) {
@@ -972,7 +972,7 @@ function(x, y, width, height) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Number|TP.core.Rect|Object|TP.lang.Hash|Array} x The x value of
+     * @param {Number|TP.core.Rect|Object|TP.core.Hash|Array} x The x value of
      *     the receiver or a TP.core.Rect to copy or an object that has 'x', 'y'
      *     (or 'top', 'left'), 'width' and 'height' slots or an Array that has x
      *     in the first position, y in the second position, width in the third
@@ -1003,7 +1003,7 @@ function(x, y, width, height) {
                             y: theData.y,
                             width: theData.width,
                             height: theData.height};
-            } else if (TP.isKindOf(theData, TP.lang.Hash)) {
+            } else if (TP.isKindOf(theData, TP.core.Hash)) {
                 newData = {x: theData.at('x') || theData.at('left'),
                             y: theData.at('y') || theData.at('top'),
                             width: theData.at('width'),
@@ -7320,16 +7320,16 @@ function(controlParams, stepParams) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.core.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
      *     get('limit'), get('count'), etc.) for a 'built-in' value. Note that
-     *     the step params TP.lang.Hash is optional and may not be available,
+     *     the step params TP.core.Hash is optional and may not be available,
      *     especially if this job is meant to be invoked repeatedly.
-     * @param {TP.lang.Hash} controlParams A TP.lang.Hash of the following job
+     * @param {TP.core.Hash} controlParams A TP.core.Hash of the following job
      *     control parameters: delay, interval, limit, count, compute, freeze.
-     * @param {TP.lang.Hash} stepParams A TP.lang.Hash of the following job step
+     * @param {TP.core.Hash} stepParams A TP.core.Hash of the following job step
      *     parameters: target, property.
      * @returns {TP.core.Transition} A new instance.
      */
@@ -7361,7 +7361,7 @@ function(params) {
     /**
      * @method clearValues
      * @summary Clears the values for the targets given the property name.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      */
 
     return;
@@ -7381,7 +7381,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -7400,16 +7400,16 @@ function(controlParams, stepParams) {
      * @method constructJob
      * @summary Constructs a TP.core.Job to execute the receiving transition
      *     type.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.core.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
      *     get('limit'), get('count'), etc.) for a 'built-in' value. Note that
-     *     the step params TP.lang.Hash is optional and may not be available,
+     *     the step params TP.core.Hash is optional and may not be available,
      *     especially if this job is meant to be invoked repeatedly.
-     * @param {TP.lang.Hash} controlParams A TP.lang.Hash of the following job
+     * @param {TP.core.Hash} controlParams A TP.core.Hash of the following job
      *     control parameters: delay, interval, limit, count, compute, freeze.
-     * @param {TP.lang.Hash} stepParams A TP.lang.Hash of the following job step
+     * @param {TP.core.Hash} stepParams A TP.core.Hash of the following job step
      *     parameters: target, property.
      * @returns {TP.core.JobStatus} The job or job group that was constructed to
      *     service the effect.
@@ -7668,7 +7668,7 @@ function(params) {
     /**
      * @method preserveValues
      * @summary Preserves the values for the targets given the property name.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      */
 
     return;
@@ -7699,7 +7699,7 @@ function(params) {
     /**
      * @method restoreValues
      * @summary Restores the values for the targets given the property name.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      */
 
     return;
@@ -7713,7 +7713,7 @@ function(params) {
     /**
      * @method start
      * @summary Executes the transition against the supplied element.
-     * @param {TP.lang.Hash} params A TP.lang.Hash of the following stepping
+     * @param {TP.core.Hash} params A TP.core.Hash of the following stepping
      *     parameters: target.
      * @returns {TP.core.JobStatus} The job or job group that was forked to
      *     service the transition.
@@ -7754,7 +7754,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     step method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
      */
 
@@ -7791,16 +7791,16 @@ function(controlParams, stepParams) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @description Parameters supplied in the controlParams TP.lang.Hash for
+     * @description Parameters supplied in the controlParams TP.core.Hash for
      *     this method override any setting for the receiving transition. If a
      *     parameter value isn't supplied for a particular parameter, the
      *     receiving transition type will be queried via a 'get*()' method (i.e.
      *     get('limit'), get('count'), etc.) for a 'built-in' value. Note that
-     *     the step params TP.lang.Hash is optional and may not be available,
+     *     the step params TP.core.Hash is optional and may not be available,
      *     especially if this job is meant to be invoked repeatedly.
-     * @param {TP.lang.Hash} controlParams A TP.lang.Hash of the following job
+     * @param {TP.core.Hash} controlParams A TP.core.Hash of the following job
      *     control parameters: delay, interval, limit, count, compute, freeze.
-     * @param {TP.lang.Hash} stepParams A TP.lang.Hash of the following job step
+     * @param {TP.core.Hash} stepParams A TP.core.Hash of the following job step
      *     parameters: target, property.
      * @returns {TP.core.MultiTransition} A new instance.
      */
@@ -7820,7 +7820,7 @@ function(transitionEntry) {
     /**
      * @method addTransitionEntry
      * @summary Adds the supplied transition entry to the receiver.
-     * @param {TP.lang.Hash} aTransitionEntry The transition entry to add to the
+     * @param {TP.core.Hash} aTransitionEntry The transition entry to add to the
      *     list of the receiver's transitions.
      * @returns {TP.core.MultiTransition} A new instance.
      */
@@ -7852,7 +7852,7 @@ function(params) {
     /**
      * @method clearValues
      * @summary Clears the values for the targets given the property name.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      */
 
     var transitionEntries,
@@ -7899,7 +7899,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     step method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -7953,7 +7953,7 @@ function(params) {
     /**
      * @method preserveValues
      * @summary Preserves the values for the targets given the property name.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      */
 
     var transitionEntries,
@@ -7995,7 +7995,7 @@ function(params) {
     /**
      * @method restoreValues
      * @summary Restores the values for the targets given the property name.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      */
 
     var transitionEntries,
@@ -8043,7 +8043,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     step method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
      */
 
@@ -8127,7 +8127,7 @@ function(aTarget, propertyName, aTransitionParams) {
      *     TP.core.Transition to do a 'simple transition'.
      * @param {Array|Element} aTarget The target or targets to transition.
      * @param {String} propertyName The name of the property to transition.
-     * @param {TP.lang.Hash} aTransitionParams A hash of parameters to use for
+     * @param {TP.core.Hash} aTransitionParams A hash of parameters to use for
      *     the transition.
      * @exception TP.sig.InvalidObject,TP.sig.InvalidParameter
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
@@ -8387,7 +8387,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -8487,7 +8487,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     step method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
      */
 
@@ -8568,7 +8568,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      */
@@ -8666,7 +8666,7 @@ function(job, params) {
      *     by the job control system, so our method signature must match.
      * @param {TP.core.Job} job The job object that is currently processing this
      *     step method.
-     * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
      * @returns {Boolean} Whether or not the 'step' processed successfully.
      */
 

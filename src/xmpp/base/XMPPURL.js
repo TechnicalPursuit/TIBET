@@ -253,7 +253,7 @@ function(aURIString) {
     //  If there are parameters in the query, process them into a hash.
     if (TP.isValid(uriQuery = results.at(5))) {
         //  Construct a hash from the query string.
-        queryDict = TP.lang.Hash.fromString(uriQuery);
+        queryDict = TP.core.Hash.fromString(uriQuery);
 
         this.set('queryDict', queryDict, false);
     }

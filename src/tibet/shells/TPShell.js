@@ -32,7 +32,7 @@ function(aRequest) {
      *     command makes use of the current TP.core.User instance to provide
      *     profile information, if any. This ties the TP.shell() command into
      *     TIBET's user-interface permission machinery.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest The request containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest The request containing
      *     proper shell parameters. Those include:
      *
      *          {String|Node} cmdSrc The shell input content, either the sugared
@@ -469,7 +469,7 @@ function(aResourceID, aRequest) {
      *     processing. The resource ID provided will be used to register the
      *     instance for later lookup/targeting logic.
      * @param {String} aResourceID The standard service identifier.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing shell parameters etc.
      * @returns {TP.core.Shell} A new instance.
      */
@@ -619,7 +619,7 @@ function(aRequest) {
      *     request being processed. This is typically invoked by the
      *     TP.tdp.Console to emulate how standard shells announce their version
      *     etc.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      */
 
@@ -706,7 +706,7 @@ function(aRequest) {
      * @summary Performs any login sequence necessary for the receiver. The
      *     default is to take no action. Subtypes should override this to
      *     provide target-specific login/profile management features.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -728,7 +728,7 @@ function(aRequest) {
      *     values if any to save. These variables are SAVEVARS, SAVEALIAS,
      *     SAVEHIST, and SAVEDIRS. The DISCARD variable controls whether change
      *     set data should be discarded, the default is false.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -1554,7 +1554,7 @@ function(anObject, aRequest) {
      *     other UI will typically have this version overwritten so output is
      *     directed to the UI.
      * @param {Object} anObject The object to output.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for 'cmdNotifier', 'cmdAsIs', 'messageType', etc.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -1597,7 +1597,7 @@ function(anError, aRequest) {
      *     to assist with formatting etc. Parameters include messageType,
      *     cmdAsIs, etc.
      * @param {String} anError The error to output.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -1673,7 +1673,7 @@ function(anObject, aRequest) {
      *     to assist with formatting etc. Parameters include messageType,
      *     cmdAsIs, etc.
      * @param {Object} anObject The object to output.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.core.Shell} The receiver.
      */
@@ -2018,7 +2018,7 @@ function(aRequest) {
      *     frame used for eval calls. This is typically the window in which the
      *     code was loaded, and therefore virtually always the top window in a
      *     standard installation.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {Window} The execution context.
      */
@@ -2062,7 +2062,7 @@ function(aRequest) {
      * @method getExecutionInstance
      * @summary Returns the execution instance, an object used to provide
      *     scoped variable support for the shell.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {Object} The execution instance.
      */
@@ -2133,7 +2133,7 @@ function(anObjectSpec, aRequest) {
      *     well as treating it like a tibet://URI in an attempt to locate the
      *     object.
      * @param {String} anObjectSpec An object spec or TIBET URI.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {Object} The object, if found.
      */
@@ -2592,7 +2592,7 @@ function(aRequest, allForms) {
      *     the 'expanded value' (what that value might have 'expanded' into).
      *     Otherwise, it just returns the expanded value itself under each key.
      *     The default is false.
-     * @returns {TP.lang.Hash} The hash of named arguments with either
+     * @returns {TP.core.Hash} The hash of named arguments with either
      *     individual expanded values or an Array of values for each entry,
      *     depending on the setting of 'allForms'.
      */
@@ -2611,7 +2611,7 @@ function(aRequest, allForms) {
             return dict;
         }
 
-        //  Otherwise, only return the 'expanded' value in a TP.lang.Hash
+        //  Otherwise, only return the 'expanded' value in a TP.core.Hash
         newDict = TP.hc();
         dict.perform(
             function(kvPair) {
@@ -2929,7 +2929,7 @@ function(aRequest) {
      *     request command node's child <param> names and the values are the
      *     <param> values.
      * @param {TP.sig.ShellRequest} aRequest The request to query.
-     * @returns {TP.lang.Hash} The hash of named parameters.
+     * @returns {TP.core.Hash} The hash of named parameters.
      */
 
     var dict,
@@ -3039,7 +3039,7 @@ function(aRequest) {
     /**
      * @method executeAbout
      * @summary Displays information about the current shell.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
      */
 

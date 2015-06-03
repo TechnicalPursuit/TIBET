@@ -129,7 +129,7 @@ function(aRequest) {
      *     of a pipe or command sequence. For a UI element like an HTML element
      *     this effectively means to render itself onto the standard output
      *     stream.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest The request/param hash.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest The request/param hash.
      */
 
     var elem;

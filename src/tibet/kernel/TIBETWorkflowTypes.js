@@ -588,7 +588,7 @@ function() {
      * @method getAccessKeys
      * @summary Returns the receiver's permission keys, based on any vCard that
      *     may have been assigned.
-     * @returns {TP.lang.Hash} The receiver's permission keys.
+     * @returns {TP.core.Hash} The receiver's permission keys.
      */
 
     var keys,
@@ -889,7 +889,7 @@ function(aParamInfo, aRequest) {
      *     TP.hc('<name_of_param>', TP.ac('<vCard_name>', <prompt_message>'));
      *
      *
-     * @param {TP.lang.Hash} aParamInfo A parameter info hash that contains
+     * @param {TP.core.Hash} aParamInfo A parameter info hash that contains
      *     information on how to populate the request from the vCard.
      * @param {TP.sig.Request} aRequest The request to populate.
      * @returns {TP.core.URIService} The receiver.
@@ -1413,7 +1413,7 @@ function(aRequest, aResourceID, aThreadID) {
      *     an ongoing request/response 'conversation' between parties. When
      *     creating the instance TP.sig.Request will use any type-specific
      *     requestTemplate and merge it with any incoming request information.
-     * @param {TP.lang.Hash} aRequest An object containing specific request
+     * @param {TP.core.Hash} aRequest An object containing specific request
      *     parameters which will by used by the request's responder to process
      *     the request. NOTE that this takes the same parameter slot as the root
      *     payload for TP.sig.Signal. This should be specific to the signal
@@ -1449,9 +1449,9 @@ function(aRequest) {
      *     incoming payload object and any local template for the receiver. When
      *     both a template and a request are provided the keys in the template
      *     missing in the request are merged to fill in those default values.
-     * @param {TP.lang.Hash} aRequest An object containing parameters for the
+     * @param {TP.core.Hash} aRequest An object containing parameters for the
      *     request.
-     * @param {A} TP.lang.Hash viable payload object. NOTE that when no request
+     * @param {A} TP.core.Hash viable payload object. NOTE that when no request
      *     or template exist the return value is NULL so no payload is implied
      *     for the call.
      */
@@ -1473,7 +1473,7 @@ function(aRequest) {
         }
     } else if (TP.isKindOf(aRequest, TP.sig.Request)) {
         request = TP.copy(aRequest.getPayload());
-    } else if (TP.isKindOf(aRequest, TP.lang.Hash)) {
+    } else if (TP.isKindOf(aRequest, TP.core.Hash)) {
         request = aRequest;
     } else {
         request = TP.hc(aRequest);
@@ -2024,7 +2024,7 @@ function(aRequest) {
      * @method setRequest
      * @summary Sets the receiver's internal request hash. This is the same as
      *     setting the receiver's signal "payload" via setPayload.
-     * @param {TP.lang.Hash} aRequest A set of key/value pairs defining the
+     * @param {TP.core.Hash} aRequest A set of key/value pairs defining the
      *     request specifics.
      * @returns {TP.sig.Request} The receiver.
      */
@@ -3160,7 +3160,7 @@ function(aRequest, aResult) {
     //  instance as payload or a 'request hash'
     this.callNextMethod(null);
 
-    //  NOTE we force a request from either TP.sig.Request or TP.lang.Hash
+    //  NOTE we force a request from either TP.sig.Request or TP.core.Hash
     //  here to ensure we've got something we can process effectively with
     this.$set('request', TP.request(aRequest), false);
 
@@ -4284,11 +4284,11 @@ function(aUser) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  A TP.lang.Hash of remote pubsub topics that the user might be
+//  A TP.core.Hash of remote pubsub topics that the user might be
 //  subscribed.
 TP.core.User.Inst.defineAttribute('remoteSubscriptions');
 
-//  A TP.lang.Hash of credential sets that the user has available to them.
+//  A TP.core.Hash of credential sets that the user has available to them.
 //  These are sets of credentials used for things like logging into remote
 //  servers. They are keyed by a 'resource ID'.
 TP.core.User.Inst.defineAttribute('credentials');
@@ -4363,7 +4363,7 @@ function(resourceID) {
      * @param {String} resourceID A unique TIBET identifier. By unique we mean
      *     an ID which will not conflict with any other ID registered using
      *     TIBET's object registration methods.
-     * @returns {TP.lang.Hash} A hash containing the user's credentials for the
+     * @returns {TP.core.Hash} A hash containing the user's credentials for the
      *     specified resource.
      */
 
@@ -4405,7 +4405,7 @@ function(resourceID) {
             credentials = TP.hc();
         } else {
             //  We found an existing JSONified String... turn it into an object
-            //  (i.e. a TP.lang.Hash) if we can and grab the credentials at
+            //  (i.e. a TP.core.Hash) if we can and grab the credentials at
             //  the specified resource ID. If we cannot, just allocate an empty
             //  hash.
             if (TP.isValid(credentialsDB = TP.json2js(credentialsDBStr))) {
@@ -4800,7 +4800,7 @@ function(resourceID, aRequest) {
      * @param {String} resourceID A unique TIBET identifier. By unique we mean
      *     an ID which will not conflict with any other ID registered using
      *     TIBET's object registration methods.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A hash or request object
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A hash or request object
      *     that should provide any additional parameters necessary to construct
      *     an instance.
      * @exception TP.sig.InvalidResourceID
@@ -4850,7 +4850,7 @@ function(aRequest) {
      * @method configureAuthData
      * @summary Configures authentication data for the receiver. This method
      *     should be overridden by subtypes to do something real.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.Service} The receiver.
@@ -5297,7 +5297,7 @@ function(pollParams) {
      *     An example can be seen in the default Function that is used when this
      *     Function is not supplied in the polling parameters - this type's
      *     '$computeInterval' Function.
-     * @param {TP.lang.Hash|TP.sig.Request} pollParams Polling configuration
+     * @param {TP.core.Hash|TP.sig.Request} pollParams Polling configuration
      *     parameters. These may include: 'poll' [true|false|Function]
      *     'pollFirstInterval' Number 'pollMaxInterval' Number.
      * @returns {TP.core.IOService} The receiver.
@@ -5619,7 +5619,7 @@ function(resourceID, aRequest) {
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
      * @param {String} resourceID A unique service identifier.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.URIService} A new instance.
@@ -5996,7 +5996,7 @@ function(aResourceID, aRequest) {
      * @method init
      * @summary Initializes a new instance.
      * @param {String} aResourceID The unique identifier for this application.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing initialization parameters.
      * @returns {TP.core.Application} A new instance.
      */
@@ -7579,7 +7579,7 @@ function(srcText, options) {
      * @method compile
      * @summary Compiles the supplied LESS source text into regular CSS.
      * @param {String} srcText The LESS source text to compile.
-     * @param {TP.lang.Hash} options Options to the LESS engine. This is
+     * @param {TP.core.Hash} options Options to the LESS engine. This is
      *     optional.
      * @returns Promise A promise that will resolve when the compilation is
      *     complete.

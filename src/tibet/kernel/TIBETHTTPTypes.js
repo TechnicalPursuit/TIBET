@@ -451,7 +451,7 @@ function() {
     /**
      * @method getResponseHeaders
      * @summary Returns a hash containing all response header key/value pairs.
-     * @returns {TP.lang.Hash}
+     * @returns {TP.core.Hash}
      */
 
     var httpObj,
@@ -979,12 +979,12 @@ function(aRequest) {
 
     /**
      * @method rewriteRequestHeaders
-     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @summary Returns a TP.core.Hash of HTTP headers appropriate for the
      *     service. Typical headers include an X-Request-Id for the request ID
      *     to help identify "conversations" related to a particular request.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {TP.lang.Hash} The hash of rewritten request headers.
+     * @returns {TP.core.Hash} The hash of rewritten request headers.
      */
 
     var headers,

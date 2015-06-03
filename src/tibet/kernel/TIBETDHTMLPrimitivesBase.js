@@ -1294,7 +1294,7 @@ function(anElement, styleProperties, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
-     * @returns {TP.lang.Hash} A TP.lang.Hash of Numbers containing the supplied
+     * @returns {TP.core.Hash} A TP.core.Hash of Numbers containing the supplied
      *     properties as a pixel value.
      */
 
@@ -1450,7 +1450,7 @@ function(anElement) {
      * @param {Element} anElement The element to retrive the transform
      *     values from.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.lang.Hash} A hash of values, keyed by the following keys:
+     * @returns {TP.core.Hash} A hash of values, keyed by the following keys:
      *     TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE
      */
 

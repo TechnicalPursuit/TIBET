@@ -513,7 +513,7 @@ TP.hc(
          *     https://bugzilla.mozilla.org/show_bug.cgi?id=254144
          * @param {Element} anElement The element to preserve iframe content
          *     for.
-         * @returns {TP.lang.Hash} A hash containing the document Elements for
+         * @returns {TP.core.Hash} A hash containing the document Elements for
          *     each of the iframe's found under anElement (or for anElement
          *     itself if its an iframe).
          */
@@ -576,7 +576,7 @@ TP.hc(
          *     https://bugzilla.mozilla.org/show_bug.cgi?id=254144
          *     https://bugs.webkit.org/show_bug.cgi?id=13574 This version of
          *     this method just returns null.
-         * @returns {TP.lang.Hash} A hash containing the document Elements for
+         * @returns {TP.core.Hash} A hash containing the document Elements for
          *     each of the iframe's found under anElement (or for anElement
          *     itself if its an iframe).
          */
@@ -599,7 +599,7 @@ TP.hc(
          *     https://bugs.webkit.org/show_bug.cgi?id=13574
          * @param {Element} anElement The element to preserve iframe content
          *     for.
-         * @returns {TP.lang.Hash} A hash containing the document Elements for
+         * @returns {TP.core.Hash} A hash containing the document Elements for
          *     each of the iframe's found under anElement (or for anElement
          *     itself if its an iframe).
          */
@@ -670,7 +670,7 @@ TP.hc(
          *     the DOM. For more information, see:
          *     https://bugzilla.mozilla.org/show_bug.cgi?id=254144
          * @param {Element} anElement The element to restore iframe content for.
-         * @param {TP.lang.Hash} docElemsHash The hash containing the document
+         * @param {TP.core.Hash} docElemsHash The hash containing the document
          *     elements previously captured during the preserve process.
          */
 
@@ -738,7 +738,7 @@ TP.hc(
          *     https://bugs.webkit.org/show_bug.cgi?id=13574 This version of
          *     this method just returns.
          * @param {Element} anElement The element to restore iframe content for.
-         * @param {TP.lang.Hash} docElemsHash The hash containing the document
+         * @param {TP.core.Hash} docElemsHash The hash containing the document
          *     elements previously captured during the preserve process.
          */
 
@@ -759,7 +759,7 @@ TP.hc(
          *     moved around in the DOM. For more information, see:
          *     https://bugs.webkit.org/show_bug.cgi?id=13574
          * @param {Element} anElement The element to restore iframe content for.
-         * @param {TP.lang.Hash} docElemsHash The hash containing the document
+         * @param {TP.core.Hash} docElemsHash The hash containing the document
          *     elements previously captured during the preserve process.
          */
 

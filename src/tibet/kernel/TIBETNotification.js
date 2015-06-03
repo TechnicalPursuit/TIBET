@@ -95,7 +95,7 @@ function(typeOrFormat, formatParams) {
      * @method as
      * @summary Returns the receiver formatted to the type or format provided.
      * @param {Object} typeOrFormat The type, typename, or format to use.
-     * @param {TP.lang.Hash} formatParams Option parameters for the formatting
+     * @param {TP.core.Hash} formatParams Option parameters for the formatting
      *     process.
      * @returns {String}
      */
@@ -1396,7 +1396,7 @@ function() {
      *     at/atPut methods. You should not manipulate this hash to set
      *     properties since it isn't guaranteed to not be a copy or temporary
      *     empty result set.
-     * @returns {TP.lang.Hash|TP.sig.Request} Parameter data (typically).
+     * @returns {TP.core.Hash|TP.sig.Request} Parameter data (typically).
      */
 
     var params;
@@ -7913,7 +7913,7 @@ TP.core.URISignalSource.defineSubtype('core.SSESignalSource');
 //  The low-level Server-Side Events source object.
 TP.core.URISignalSource.Inst.defineAttribute('$eventSource');
 
-//  The private TP.lang.Hash containing a map of custom event names to the
+//  The private TP.core.Hash containing a map of custom event names to the
 //  handlers that were installed for each one so that we can unregister them.
 TP.core.URISignalSource.Inst.defineAttribute('$customEventHandlers');
 

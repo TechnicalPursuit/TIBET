@@ -64,7 +64,7 @@ function(anItem) {
     //  if observations have to occur in order things are much more complex
     if (this.shouldOrderMatter()) {
         //  TODO: DANGEROUS, relies on hash keeping keys in order, which
-        //  TP.lang.Hash does but it isn't really a solid guarantee
+        //  TP.core.Hash does but it isn't really a solid guarantee
         keys = TP.keys(triggers);
 
         id = this.computeSignalID(anItem.at(TP.sig.SignalCoalescer.ORIGIN_INDEX),

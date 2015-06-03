@@ -979,7 +979,7 @@ function(kind) {
      *     object.
      * @param {String} kind The subset of metadata to return. Should be one of
      *     'types', 'attributes', 'methods', 'owners', or 'pathinfo'.
-     * @returns {TP.lang.Hash} The TIBET metadata hash.
+     * @returns {TP.core.Hash} The TIBET metadata hash.
      */
 
     switch (kind) {

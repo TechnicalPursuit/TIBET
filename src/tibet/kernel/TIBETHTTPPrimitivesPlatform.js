@@ -221,7 +221,7 @@ TP.hc(
          *     with a number of keys which define the actual data used for the
          *     current HTTP call.
          * @param {String} targetUrl The request's target URL.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
          *     additional parameters.
          * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
          *     HTTPHeaderException,HTTPSendException
@@ -484,7 +484,7 @@ TP.hc(
          *     with a number of keys which define the actual data used for the
          *     current HTTP call.
          * @param {String} targetUrl The request's target URL.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
          *     additional parameters.
          * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
          *     HTTPHeaderException,HTTPSendException
@@ -701,7 +701,7 @@ TP.hc(
          *     with a number of keys which define the actual data used for the
          *     current HTTP call.
          * @param {String} targetUrl The request's target URL.
-         * @param {TP.sig.Request|TP.lang.Hash} aRequest A request containing
+         * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
          *     additional parameters.
          * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
          *     HTTPHeaderException,HTTPSendException

@@ -70,7 +70,7 @@ function(aNode) {
                             'No node provided.');
     }
 
-    //  Run a detect on the pubsub type registry (a TP.lang.Hash) which will
+    //  Run a detect on the pubsub type registry (a TP.core.Hash) which will
     //  return the XPath/type pair that matched the XPath test against the
     //  supplied node.
     pubsubTypePair = this.get('pubsubTypeRegistry').detect(

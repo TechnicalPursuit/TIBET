@@ -1125,7 +1125,7 @@ function() {
 
                             aResult = resultURI.getResource();
 
-                            test.assert.isKindOf(aResult, TP.lang.Hash);
+                            test.assert.isKindOf(aResult, TP.core.Hash);
                             test.assert.isEqualTo(
                                 aResult, testBody.get('data'));
 

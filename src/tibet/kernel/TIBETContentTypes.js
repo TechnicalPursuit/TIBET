@@ -974,7 +974,7 @@ function(aPath, config) {
      * @method apc
      * @summary Returns a newly initialized access path instance.
      * @param {String} aPath The path as a String.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.AccessPath} The new instance.
      */
 
@@ -1003,7 +1003,7 @@ function(aPath, config) {
      * @summary Returns a new instance of an access path or aPath if it is
      *     already a path.
      * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.AccessPath} A new instance or aPath if it's already a
      *     path.
      */
@@ -1160,7 +1160,7 @@ function() {
      * @summary Returns the hash to use to register executed paths. This
      *     method is supplied to avoid problems with this hash not being
      *     initialized when TIBET is starting up.
-     * @returns {TP.lang.Hash} The executed paths hash.
+     * @returns {TP.core.Hash} The executed paths hash.
      */
 
     var theHash;
@@ -1206,7 +1206,7 @@ function() {
      * @summary Returns the hash to use to register observed addresses. This
      *     method is supplied to avoid problems with this hash not being
      *     initialized when TIBET is starting up.
-     * @returns {TP.lang.Hash} The observed addresses hash.
+     * @returns {TP.core.Hash} The observed addresses hash.
      */
 
     var theHash;
@@ -1334,7 +1334,7 @@ function(aPath, config) {
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.AccessPath} The receiver.
      */
 
@@ -1342,7 +1342,7 @@ function(aPath, config) {
 
     this.set('srcPath', aPath);
 
-    if (TP.isKindOf(config, TP.lang.Hash)) {
+    if (TP.isKindOf(config, TP.core.Hash)) {
         this.set('shouldMakeStructures',
                     config.atIfInvalid('shouldMakeStructures', false));
         this.set('packageWith', config.atIfInvalid('packageWith', null));
@@ -2107,7 +2107,7 @@ function(aPath, config) {
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.CompositePath} The receiver.
      */
 
@@ -2285,7 +2285,7 @@ function(aPath, config) {
      * @method jpc
      * @summary Returns a newly initialized JSONPath instance. Note that if
      * @param {String} aPath The JSONPath as a String.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.XPathPath} The new instance.
      */
 
@@ -2335,7 +2335,7 @@ function(aPath, config) {
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
@@ -2350,7 +2350,7 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
-    if (TP.isKindOf(config, TP.lang.Hash)) {
+    if (TP.isKindOf(config, TP.core.Hash)) {
         this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
     } else {
         this.set('shouldCollapse', true);
@@ -3374,7 +3374,7 @@ function(aPath, config) {
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
@@ -3389,7 +3389,7 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
-    if (TP.isKindOf(config, TP.lang.Hash)) {
+    if (TP.isKindOf(config, TP.core.Hash)) {
         this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
     } else {
         this.set('shouldCollapse', true);
@@ -3759,7 +3759,7 @@ function(aPath, config) {
      * @summary Returns a newly initialized TIBETSimplePath or
      *     TIBETComplexPath instance.
      * @param {String} aPath The path as a String.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.SimpleTIBETPath|TP.core.ComplexTIBETPath} The new
      *     instance.
      */
@@ -5120,13 +5120,13 @@ function(aPath, config) {
      * @method init
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.XMLPath} The receiver.
      */
 
     this.callNextMethod();
 
-    if (TP.isKindOf(config, TP.lang.Hash)) {
+    if (TP.isKindOf(config, TP.core.Hash)) {
         this.set('shouldMakeValues',
                     config.atIfInvalid('shouldMakeValues', true));
     } else {
@@ -6187,7 +6187,7 @@ function(aPath, config) {
      * @method cpc
      * @summary Returns a newly initialized CSSPath instance.
      * @param {String} aPath The CSS path as a String.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.core.CSSPath} The new instance.
      */
 
@@ -6349,7 +6349,7 @@ function(aPath, config, forceNative) {
      *     loaded. The default is a native path, unless namespace-qualified
      *     extension functions are found.
      * @param {String} aPath The XPath as a String.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @param {Boolean} forceNative Whether or not the path should be 'forced'
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
@@ -6641,7 +6641,7 @@ function(aPath, config, forceNative) {
      *     default is a native path, unless namespace-qualified extension
      *     functions are found.
      * @param {String} aPath The XPath as a String.
-     * @param {TP.lang.Hash} config The configuration for this path.
+     * @param {TP.core.Hash} config The configuration for this path.
      * @param {Boolean} forceNative Whether or not the path should be 'forced'
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
@@ -6681,7 +6681,7 @@ function(aPath, config, forceNative) {
     }
 
     if (TP.regex.TEXT_NODE_ENDS.test(tnTestPath)) {
-        if (TP.isKindOf(config, TP.lang.Hash)) {
+        if (TP.isKindOf(config, TP.core.Hash)) {
             this.set('shouldCollapse',
                         config.atIfInvalid('shouldCollapse', true));
         } else {

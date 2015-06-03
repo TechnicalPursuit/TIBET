@@ -48,7 +48,7 @@ function(aResourceID, aRequest) {
      * @method init
      * @summary Initializes a new instance.
      * @param {String} aResourceID The unique identifier for this service.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a service URI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.UserIOService} A new instance.

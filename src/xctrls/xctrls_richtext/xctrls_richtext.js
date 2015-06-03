@@ -199,7 +199,7 @@ function(aSignal) {
      * @summary Updates the receiver to reflect the current value of any data
      *     binding it may have. If the signal argument's payload specified a
      *     'deep' refresh then descendant elements are also updated.
-     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash.
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.
@@ -301,7 +301,7 @@ function(aSignal) {
     var firstItem,
         itemContent;
 
-    //  The node payload is a TP.lang.Hash that has a 'node' slot that
+    //  The node payload is a TP.core.Hash that has a 'node' slot that
     //  contains an TP.xmpp.Message node. This message node contains an XMPP
     //  pubsub 'event' node which contains 1...n 'item' elements. Here we
     //  just go after the first one.

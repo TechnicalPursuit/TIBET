@@ -61,7 +61,7 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @returns {TP.lang.Hash} A hash containing 'code' and 'text' keys.
+     * @returns {TP.core.Hash} A hash containing 'code' and 'text' keys.
      */
 
     var hash;
@@ -866,7 +866,7 @@ function(parameters) {
      *     standard entry point method for activating a receiver relative to the
      *     job control subsystem. One specific effect of this call is that the
      *     job will enter the TP.ACTIVE state.
-     * @param {TP.lang.Hash} parameters A hash of parameters the job function(s)
+     * @param {TP.core.Hash} parameters A hash of parameters the job function(s)
      *     can access.
      * @returns {TP.core.JobStatus} The receiver.
      */
@@ -951,7 +951,7 @@ function(job, params) {
      *     job iteration number. The values are assumed to be in a step
      *     parameter set under the key 'values'.
      * @param {TP.core.Job} job The job instance.
-     * @param {TP.lang.Hash} params The step parameter data for the job.
+     * @param {TP.core.Hash} params The step parameter data for the job.
      * @returns {Object} The object at the computed index.
      */
 
@@ -975,7 +975,7 @@ function(job, params) {
      *     percentage of job completion. The values are assumed to be in a step
      *     parameter set under the key 'values'.
      * @param {TP.core.Job} job The job instance.
-     * @param {TP.lang.Hash} params The step parameter data for the job.
+     * @param {TP.core.Hash} params The step parameter data for the job.
      * @returns {Object} The object at the computed index.
      */
 
@@ -1006,7 +1006,7 @@ function(job, params) {
      *     based on current percentage of job completion as computed by a simple
      *     linear algorithm.
      * @param {TP.core.Job} job The job instance.
-     * @param {TP.lang.Hash} params The step parameter data for the job.
+     * @param {TP.core.Hash} params The step parameter data for the job.
      * @returns {Number} The computed value.
      */
 
@@ -1285,7 +1285,7 @@ function(controlParams) {
      * @summary Constructs and returns a new instance of the receiver. For a
      *     TP.core.Job this method also ensures that each new instance gets a
      *     unique PID and that it's properly registered with TIBET.
-     * @param {TP.lang.Hash|TP.sig.Request} controlParams An object which
+     * @param {TP.core.Hash|TP.sig.Request} controlParams An object which
      *     contains one or more keys defining job configuration. See init() for
      *     more info.
      * @returns {TP.core.Job} A new instance.
@@ -1435,7 +1435,7 @@ function(allParams) {
 
     /**
      * @method splitParams
-     * @summary Splits the supplied params into two TP.lang.Hashes, one
+     * @summary Splits the supplied params into two TP.core.Hashes, one
      *     containing the control parameters and the other containing the step
      *     parameters.
      * @description This method takes all entries from the supplied params hash
@@ -1443,7 +1443,7 @@ function(allParams) {
      *     those in the control parameters hash. All remaining parameters will
      *     be in the step parameters hash (including those not strictly listed
      *     as step parameters in TP.core.Job).
-     * @param {TP.lang.Hash|TP.sig.Request} allParams An object which contains
+     * @param {TP.core.Hash|TP.sig.Request} allParams An object which contains
      *     one or more keys defining job configuration. See init() for more
      *     info.
      * @returns {Array} The Array containing ctrlParamsHash and stepParamsHash.
@@ -1590,7 +1590,7 @@ function(controlParams) {
      *     want job statistics to be gathered.
      *
      *
-     * @param {TP.lang.Hash|TP.sig.Request} controlParams A hash of control
+     * @param {TP.core.Hash|TP.sig.Request} controlParams A hash of control
      *     parameters that control the job.
      * @returns {TP.core.Job} A new instance.
      */
@@ -2016,7 +2016,7 @@ function(stepParams) {
      *     'property' The property of the target being transformed. 'by' Used
      *     rather than the 'to' parameter above to compute the step values
      *     additively from the 'from' value.
-     * @param {TP.lang.Hash} stepParams A hash of job-specific parameters passed
+     * @param {TP.core.Hash} stepParams A hash of job-specific parameters passed
      *     to the start() function for the job. Note that this parameter is
      *     optional and will default to the parameters computed by the job.
      * @returns {Object} A step-specific value computed by the compute function.
@@ -2586,7 +2586,7 @@ function(stepParams) {
      *     'property' The property of the target being transformed. 'by' Used
      *     rather than the 'to' parameter above to compute the step values
      *     additively from the 'from' value.
-     * @param {TP.lang.Hash} stepParams A hash of job-specific parameters passed
+     * @param {TP.core.Hash} stepParams A hash of job-specific parameters passed
      *     to the start() function for the job.
      * @returns {TP.core.Job} The receiver.
      */
@@ -3445,9 +3445,9 @@ function(controlParams, stepParams) {
      *     'property' The property of the target being transformed. 'by' Used
      *     rather than the 'to' parameter above to compute the step values
      *     additively from the 'from' value.
-     * @param {TP.lang.Hash|TP.sig.Request} controlParams A hash of control
+     * @param {TP.core.Hash|TP.sig.Request} controlParams A hash of control
      *     parameters that control the job.
-     * @param {TP.lang.Hash} stepParams A hash of job-specific parameters passed
+     * @param {TP.core.Hash} stepParams A hash of job-specific parameters passed
      *     to the start() function for the job.
      * @returns {TP.core.Job} A TP.core.Job instance which represents the
      *     overall job, regardless of how many individual timeouts may be used
@@ -3760,7 +3760,7 @@ function(parameters) {
      * @summary Starts the receiver in "job control" terms. This is the
      *     standard entry point method for activating a receiver relative to the
      *     job control subsystem.
-     * @param {TP.lang.Hash} parameters A hash of parameters the job function(s)
+     * @param {TP.core.Hash} parameters A hash of parameters the job function(s)
      *     can access.
      * @returns {TP.core.JobGroup} The receiver.
      */

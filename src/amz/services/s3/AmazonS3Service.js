@@ -103,7 +103,7 @@ function(resourceID, aRequest) {
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
      * @param {String} resourceID A unique service identifier.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.URIService} A new instance.
@@ -144,7 +144,7 @@ function(aRequest) {
     /**
      * @method configureAuthData
      * @summary Configures authentication data for the receiver.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.Service} The receiver.
@@ -320,12 +320,12 @@ function(aRequest) {
 
     /**
      * @method rewriteRequestHeaders
-     * @summary Returns a TP.lang.Hash of HTTP headers appropriate for the
+     * @summary Returns a TP.core.Hash of HTTP headers appropriate for the
      *     service. Typical headers include an X-Request-Id for the request ID
      *     to help identify "conversations" related to a particular request.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {TP.lang.Hash} The hash of rewritten request headers.
+     * @returns {TP.core.Hash} The hash of rewritten request headers.
      */
 
     var headers,
@@ -432,7 +432,7 @@ function(aRequest) {
     headers.atPut('x-amz-date', headerDate);
     aclAuthStr += 'x-amz-date:' + headerDate + '\n';
 
-    //  There was a TP.lang.Hash of 'meta' data supplied.
+    //  There was a TP.core.Hash of 'meta' data supplied.
     if (TP.isValid(meta = aRequest.at('meta'))) {
         metaAuthStr = TP.ac();
 

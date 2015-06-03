@@ -267,8 +267,8 @@ function(aRequest) {
     tibetObjectVal.defineAttribute('foo');
     tibetObjectVal.set('foo', 'bar');
 
-    //  Instance of TP.lang.Hash
-    tibetHashVal = TP.lang.Hash.construct();
+    //  Instance of TP.core.Hash
+    tibetHashVal = TP.core.Hash.construct();
     tibetHashVal.atPut('foo', 'bar');
 
     //  Instance of TP.sig.Signal
@@ -449,7 +449,7 @@ function(aRequest) {
     'TIBETType',                tibetTypeVal,           //  TIBET type
 
     'TP.lang.Object',           tibetObjectVal,         //  TP.lang.Object
-    'TP.lang.Hash',             tibetHashVal,           //  TP.lang.Hash
+    'TP.core.Hash',             tibetHashVal,           //  TP.core.Hash
     'TP.sig.Signal',            tibetSignalVal,         //  TP.sig.Signal
     'TP.sig.Exception',         tibetExceptionVal,      //  TP.sig.Exception
 
@@ -684,7 +684,7 @@ function(aRequest) {
 
     tibetObjectVal = TP.ac(TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetHashVal = TP.ac(TP.lang.Hash, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetHashVal = TP.ac(TP.core.Hash, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetSignalVal = TP.ac(TP.sig.Signal, TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -791,7 +791,7 @@ function(aRequest) {
     'TIBETType',                tibetTypeVal,           //  TIBET type
 
     'TP.lang.Object',           tibetObjectVal,         //  TP.lang.Object
-    'TP.lang.Hash',             tibetHashVal,           //  TP.lang.Hash
+    'TP.core.Hash',             tibetHashVal,           //  TP.core.Hash
     'TP.sig.Signal',            tibetSignalVal,         //  TP.sig.Signal
     'TP.sig.Exception',         tibetExceptionVal,      //  TP.sig.Exception
 
@@ -988,7 +988,7 @@ function(aRequest) {
         'DocumentFragmentNode',                 'TP.core.DocumentFragmentNode',
 
         'NodeList',                             'Array',        //  contents wrapped
-        'NamedNodeMap',                         'TP.lang.Hash', //  contents wrapped
+        'NamedNodeMap',                         'TP.core.Hash', //  contents wrapped
 
         'CSSStyleSheet',                        TP.IDENTITY,
         'CSSStyleRule',                         TP.IDENTITY,
@@ -1000,7 +1000,7 @@ function(aRequest) {
 
         'TIBETType',                            TP.IDENTITY,
         'TP.lang.Object',                       TP.IDENTITY,
-        'TP.lang.Hash',                         'TP.lang.Hash', //  contents wrapped
+        'TP.core.Hash',                         'TP.core.Hash', //  contents wrapped
         'TP.sig.Signal',                        TP.IDENTITY,
         'TP.sig.Exception',                     TP.IDENTITY,
 
@@ -1121,7 +1121,7 @@ function(aRequest) {
 
         'TIBETType',                            TP.IDENTITY,
         'TP.lang.Object',                       TP.IDENTITY,
-        'TP.lang.Hash',                         'TP.lang.Hash', //  contents wrapped
+        'TP.core.Hash',                         'TP.core.Hash', //  contents wrapped
         'TP.sig.Signal',                        TP.IDENTITY,
         'TP.sig.Exception',                     TP.IDENTITY,
 
@@ -1242,7 +1242,7 @@ function(aRequest) {
 
         'TIBETType',                            TP.IDENTITY,
         'TP.lang.Object',                       TP.IDENTITY,
-        'TP.lang.Hash',                         TP.IDENTITY,
+        'TP.core.Hash',                         TP.IDENTITY,
         'TP.sig.Signal',                        TP.IDENTITY,
         'TP.sig.Exception',                     TP.IDENTITY,
 

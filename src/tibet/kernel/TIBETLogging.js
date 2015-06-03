@@ -48,7 +48,7 @@ TP.lang.Object.defineSubtype('log.Manager');
 /**
  * Dictionary of available loggers, by logger name. NOTE that this dictionary is
  * local to the TP.log.Manager type. No subtypes are expected for this type.
- * @type {TP.lang.Hash}
+ * @type {TP.core.Hash}
  */
 TP.log.Manager.defineAttribute('loggers', TP.hc());
 
@@ -123,7 +123,7 @@ function() {
      * @summary Returns the dictionary of all known loggers. The keys of this
      *     dictionary are the logger names converted to lowercase to normalize
      *     them. The entries are the logger instances themselves.
-     * @returns {TP.lang.Hash} The logger dictionary.
+     * @returns {TP.core.Hash} The logger dictionary.
      */
 
     return this.loggers;
@@ -1651,7 +1651,7 @@ TP.lang.Object.defineSubtype('log.Level');
 
 /**
  * A dictionary of the level instances which have been created, by name.
- * @type {TP.lang.Hash.<String, TP.log.Level>}
+ * @type {TP.core.Hash.<String, TP.log.Level>}
  */
 TP.log.Level.defineAttribute('levels', TP.hc());
 
@@ -1884,7 +1884,7 @@ TP.log.Nestable.defineSubtype('log.Marker');
 
 /**
  * A dictionary of the marker instances which have been created, by name.
- * @type {TP.lang.Hash.<String, TP.log.Marker>}
+ * @type {TP.core.Hash.<String, TP.log.Marker>}
  */
 TP.log.Marker.defineAttribute('markers', TP.hc());
 
@@ -1985,7 +1985,7 @@ TP.lang.Object.defineSubtype('log.Timer');
 
 /**
  * A dictionary of all known timers.
- * @type {TP.lang.Hash.<String, TP.log.Timer}
+ * @type {TP.core.Hash.<String, TP.log.Timer>}
  */
 TP.log.Timer.defineAttribute('timers', TP.hc());
 

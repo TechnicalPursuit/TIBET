@@ -293,7 +293,7 @@ function(aSalt, params) {
      * @summary Computes an encryption key using the receiver as the 'password'
      *     and the supplied 'salt'. This method uses the PBKDF2 algorithm.
      * @param {String} aSalt The salt value to supply to the PBKDF2 algorithm.
-     * @param {TP.lang.Hash} params Various optional parameters to use to
+     * @param {TP.core.Hash} params Various optional parameters to use to
      *     compute the encryption key. These include 'keySize', which defaults
      *     to TP.PBKDF2_KEYSIZE and 'iterationCount' which defaults to
      *     TP.PBKDF2_ITERATION_COUNT.
@@ -318,7 +318,7 @@ function(aSalt, params) {
     //  Default the keySize to TP.PBKDF2_KEYSIZE and the iteration count to
     //  TP.PBKDF_ITERATION_COUNT if they're not defined (or 'params' isn't
     //  defined at all).
-    if (TP.isKindOf(params, TP.lang.Hash)) {
+    if (TP.isKindOf(params, TP.core.Hash)) {
         keySize = params.atIfInvalid('keySize', TP.PBKDF2_KEYSIZE);
         iterationCount = params.atIfInvalid('iterationCount',
                                             TP.PBKDF2_ITERATION_COUNT);
@@ -342,7 +342,7 @@ function(aKey, params) {
      * @summary Performs an AES decryption on the receiver, returning the
      *     plaintext value.
      * @param {String} aKey A string used as the key.
-     * @param {TP.lang.Hash} params Various optional parameters to the
+     * @param {TP.core.Hash} params Various optional parameters to the
      *     decryption method. These include 'iv', which is the AES IV size.
      * @exception TP.sig.InvalidString
      * @returns {String} The decrypted result string.
@@ -392,7 +392,7 @@ function(aKey, params) {
      * @summary Performs an AES encryption on the receiver's string
      *     representation. The key must be a string.
      * @param {String} aKey A string used as the key.
-     * @param {TP.lang.Hash} params Various parameters to the encryption method.
+     * @param {TP.core.Hash} params Various parameters to the encryption method.
      *     These include 'iv', which is the AES 'iv' value and is required.
      * @exception TP.sig.InvalidString
      * @returns {String} The encrypted result string.

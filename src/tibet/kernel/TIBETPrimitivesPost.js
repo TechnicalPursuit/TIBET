@@ -1816,7 +1816,7 @@ function(anObject, assignIfAbsent) {
      *          TP.gid(TP.ac());
      *          <samp>Array_11194fef891948efcb003e0d8</samp>
      *          TP.gid(TP.hc());
-     *          <samp>TP.lang.Hash_11194ff08b02373b76de8c7c</samp>
+     *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.gid(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
      *          TP.gid((function() {TP.alert('foo');}));
@@ -2164,7 +2164,7 @@ function(anObject, assignIfAbsent) {
      *          TP.lid(TP.ac());
      *          <samp>Array_11194fef891948efcb003e0d8</samp>
      *          TP.lid(TP.hc());
-     *          <samp>TP.lang.Hash_11194ff08b02373b76de8c7c</samp>
+     *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.lid(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
      *          TP.lid((function() {TP.alert('foo');}));
@@ -2436,7 +2436,7 @@ function(anObject, assignIfAbsent) {
      *          TP.id(TP.ac());
      *          <samp>Array_11194fef891948efcb003e0d8</samp>
      *          TP.id(TP.hc());
-     *          <samp>TP.lang.Hash_11194ff08b02373b76de8c7c</samp>
+     *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.id(TP.dc());
      *          <samp>Date_111997a9773f185a33f9280f</samp>
      *          TP.id((function() {TP.alert('foo');}));
@@ -4986,7 +4986,7 @@ function(anObject) {
         return newObj;
     }
 
-    if (TP.isKindOf(anObject, TP.lang.Hash)) {
+    if (TP.isKindOf(anObject, TP.core.Hash)) {
         keys = TP.keys(anObject);
 
         newObj = TP.hc();
@@ -5079,7 +5079,7 @@ function(anObject) {
         return newObj;
     }
 
-    if (TP.isKindOf(anObject, TP.lang.Hash)) {
+    if (TP.isKindOf(anObject, TP.core.Hash)) {
         keys = TP.keys(anObject);
 
         newObj = TP.hc();

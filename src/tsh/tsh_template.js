@@ -358,7 +358,7 @@ function(aTemplateName, aDataSource, formatParams) {
      * @param {String} aTemplateName The template name to look up and execute.
      * @param {Object} aDataSource The object serving as the primary data
      *     source. Typically the original templated element.
-     * @param {TP.lang.Hash|TP.sig.Request} formatParams An object which can
+     * @param {TP.core.Hash|TP.sig.Request} formatParams An object which can
      *     provide additional formatting data.
      * @returns {Node} A node representing the template result data.
      */

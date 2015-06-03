@@ -863,7 +863,7 @@ isBubbling) {
      *     the event name.
      * @param {Element} anElement Usually set to 'this' in an on* method to
      *     provide the originating context object.
-     * @param {Event|TP.lang.Hash} anEventOrHash The native Event object or
+     * @param {Event|TP.core.Hash} anEventOrHash The native Event object or
      *     other signal args in a hash.
      * @param {Object} aPolicy A standard signal policy name or definition.
      *     Defaults to TP.INHERITANCE_FIRING unless the signal has a default

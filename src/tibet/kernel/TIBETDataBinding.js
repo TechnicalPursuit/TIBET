@@ -1116,7 +1116,7 @@ function(aSignalOrHash) {
      *     in the document. For an HTML document this will refresh content under
      *     the body, while in an XML document all elements including the
      *     documentElement are refreshed.
-     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash. If this is a signal, this
      *     method will try first to use 'getValue()' to get the value from the
      *     binding. If there is no value there, or this is a hash, this method
@@ -1610,7 +1610,7 @@ function(attributeName, wantsFullScope) {
      *     the binding information from.
      * @param {Boolean} [wantsFullScope=false] Whether or not to return 'fully
            scoped values'.
-     * @returns {TP.lang.Hash} A hash of binding information keyed by the
+     * @returns {TP.core.Hash} A hash of binding information keyed by the
      *     binding target name.
      */
 
@@ -1909,7 +1909,7 @@ function(aSignalOrHash) {
     /**
      * @method rebuild
      * @summary Rebuilds any bindings for the receiver.
-     * @param {TP.sig.DOMRebuild|TP.lang.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.DOMRebuild|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or hash supplied by the caller. This
      *     object should include the following keys:
      *          'deep'          ->      a value of true causes all descendant
@@ -2243,7 +2243,7 @@ function(aSignalOrHash) {
      * @method rebuildRepeat
      * @summary Rebuilds any bindings for the receiver's descendant content
      *     that is bound.
-     * @param {TP.sig.DOMRebuild|TP.lang.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.DOMRebuild|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or hash supplied by the caller. This
      *     object should include the following keys:
      *          'deep'          ->      a value of true causes all descendant
@@ -2820,7 +2820,7 @@ function(aSignalOrHash) {
      *     found by evaluating its binding aspect against its source. This
      *     method is used to update the former from the latter, typically in
      *     response to a Change notification from the underlying bound content.
-     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash.
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.

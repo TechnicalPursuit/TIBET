@@ -107,7 +107,7 @@ function(resourceID, aRequest) {
      *     default serviceURI for the receiver. This uri is used when incoming
      *     requests don't provide a specific value.
      * @param {String} resourceID A unique service identifier.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.URIService} A new instance.
@@ -148,7 +148,7 @@ function(aRequest) {
     /**
      * @method configureAuthData
      * @summary Configures authentication data for the receiver.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional request or
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
      * @returns {TP.core.Service} The receiver.
@@ -365,7 +365,7 @@ function(aRequest) {
     //  components.
     resourceComponents.atPut('Signature', signature);
 
-    //  Overwrite whatever TP.lang.Hash was at the 'uriparams' in the
+    //  Overwrite whatever TP.core.Hash was at the 'uriparams' in the
     //  request with our resource components. We added any pre-existing ones
     //  above, so this doesn't actually destroy anything originally included
     //  in the request.

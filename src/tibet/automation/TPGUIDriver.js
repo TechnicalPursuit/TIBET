@@ -1589,7 +1589,7 @@ function(eventInfo, aPath) {
      * @summary Sends the event as described in the supplied eventInfo. See the
      *     TP.documentCreateEvent() call for more information on the fields
      *     recognized ere.
-     * @param {TP.lang.Hash|Object} eventInfo The event information used to
+     * @param {TP.core.Hash|Object} eventInfo The event information used to
      *     create the event to send.
      * @param {TP.core.AccessPath} aPath The access path to the target element
      *     that should be the target of the event. If this isn't supplied,

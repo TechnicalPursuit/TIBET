@@ -152,7 +152,7 @@ function(docTypeInfo) {
      * @method docTypeForInfo
      * @summary Search for a matching document type object based on the
      *     document type information passed in.
-     * @param {TP.lang.Hash} docTypeInfo The document type information. The keys
+     * @param {TP.core.Hash} docTypeInfo The document type information. The keys
      *     needed to match are 'docTypeName' and 'publicID'.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.lang.RootObject.<TP.w3.DocType>} A TP.w3.DocType subtype
@@ -1086,7 +1086,7 @@ function(aMIMEType, aHash) {
      *     preserving other values not defined in the incoming hash.
      * @param {String} aMIMEType A TP.ietf.Mime type constant such as
      *     TP.ietf.Mime.CSS or the equivalent MIME type string (text/css).
-     * @param {TP.lang.Hash} aHash A hash whose keys match those defined for
+     * @param {TP.core.Hash} aHash A hash whose keys match those defined for
      *     this type.
      * @exception TP.sig.InvalidParameter
      */
@@ -1856,7 +1856,7 @@ function(aMimeType) {
      * @param {String} aMimeType The MIME type to use to retrieve the namespace
      *     data.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.lang.Hash} A hash of data corresponding to the 'info'
+     * @returns {TP.core.Hash} A hash of data corresponding to the 'info'
      *     entries on this type.
      */
 
@@ -2359,7 +2359,7 @@ function(anNSURI, aHash) {
      *     the data from aHash if an entry already exists for that URI.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @param {TP.lang.Hash} aHash A hash whose keys match those defined for
+     * @param {TP.core.Hash} aHash A hash whose keys match those defined for
      *     this type.
      * @exception TP.sig.InvalidURI,TP.sig.InvalidParameter
      */
@@ -2783,7 +2783,7 @@ function(aURI, aRequest, logError) {
      *     handling.
      * @param {TP.core.URI} aURI The URI to load. NOTE that this URI will not
      *     have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @param {Boolean} logError Whether or not this call logs errors if the
@@ -2825,7 +2825,7 @@ function(aURI, aRequest) {
      * @summary Deletes the target URL.
      * @param {TP.core.URI} aURI The URI to nuke. NOTE that this URI will not
      *     have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -2866,7 +2866,7 @@ function(aURI, aRequest) {
      *     the URI (after rewriting) that is provided.
      * @param {TP.core.URI} aURI The URI to save. NOTE that this URI will not
      *     have been rewritten/ resolved.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
@@ -3066,7 +3066,7 @@ function(aURIString) {
     //  If there are parameters in the query, process them into a hash.
     if (TP.notEmpty(uriQuery = results.at(3))) {
         //  Construct a hash from the query string.
-        queryDict = TP.lang.Hash.fromString(uriQuery);
+        queryDict = TP.core.Hash.fromString(uriQuery);
 
         this.set('queryDict', queryDict);
 

@@ -432,12 +432,12 @@ TP.core.Window.Type.defineAttribute('windowRegistry', TP.hc());
 //  currently being written into.
 TP.core.Window.Type.defineAttribute('$isDocumentWriting');
 
-//  a TP.lang.Hash containing either media queries or a geo query used for
+//  a TP.core.Hash containing either media queries or a geo query used for
 //  signaling either media query or geo signals, keyed by the 'origin' used to
 //  observe
 TP.core.Window.Type.defineAttribute('$queries', TP.hc());
 
-//  a TP.lang.Hash containing media query handler Functions, used to signal
+//  a TP.core.Hash containing media query handler Functions, used to signal
 //  media query changes, keyed by the 'origin' used to observe
 TP.core.Window.Type.defineAttribute('$mqEntries', TP.hc());
 
@@ -755,7 +755,7 @@ function(aWindow, aName, aSpec) {
      *     is a string the assumption is a new OS window object if no '.' is in
      *     the name.
      * @param {String} aName The name to give this window. This must be unique.
-     * @param {TP.lang.Hash|String} aSpec A 'spec string' of key=value pairs or
+     * @param {TP.core.Hash|String} aSpec A 'spec string' of key=value pairs or
      *     a hash that can be used to produce a feature string. You should use
      *     'top' and 'left' on all browsers and TIBET will convert as needed.
      * @returns {TP.core.Window} The new instance.
@@ -928,7 +928,7 @@ function() {
      * @method getWindowSpec
      * @summary Returns the window specification hash used by default when
      *     creating instances of this type.
-     * @returns {TP.lang.Hash}
+     * @returns {TP.core.Hash}
      */
 
     return this.$get('$defaultWindowSpec');
@@ -1068,7 +1068,7 @@ function(url, aName, aSpec, shouldReplace) {
      *     with TIBET).
      * @param {TP.core.URI|String} url The URL to load into the window.
      * @param {String} aName The name to give this window. This must be unique.
-     * @param {TP.lang.Hash|String} aSpec A 'spec string' of key=value pairs or
+     * @param {TP.core.Hash|String} aSpec A 'spec string' of key=value pairs or
      *     a hash that can be used to produce a feature string. You should use
      *     'top' and 'left' on all browsers and TIBET will convert as needed.
      * @param {Boolean} shouldReplace Whether the content should be replaced if
@@ -2322,7 +2322,7 @@ function(aSignalOrHash) {
      * @method refresh
      * @summary Updates the receiver's content by refreshing all bound elements
      *     in the window's document.
-     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash.
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.

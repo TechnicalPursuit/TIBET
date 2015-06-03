@@ -468,7 +468,7 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.pp.Type.defineMethod('fromTP_lang_Hash',
+TP.tsh.pp.Type.defineMethod('fromTP_core_Hash',
 function(anObject, optFormat) {
 
     var output,
@@ -500,7 +500,7 @@ function(anObject, optFormat) {
 
     output = TP.ac();
 
-    output.push('<span class="tsh_pp"><span class="TP_lang_Hash">');
+    output.push('<span class="tsh_pp"><span class="TP_core_Hash">');
 
     keys = TP.keys(anObject);
     keys.sort();

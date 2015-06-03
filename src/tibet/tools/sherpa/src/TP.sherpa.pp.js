@@ -725,7 +725,7 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.pp.Type.defineMethod('fromTP_lang_Hash',
+TP.sherpa.pp.Type.defineMethod('fromTP_core_Hash',
 function(anObject, optFormat) {
 
     var output,
@@ -773,7 +773,7 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-    output.push('<span class="sherpa_pp TP_lang_Hash">');
+    output.push('<span class="sherpa_pp TP_core_Hash">');
 
     keys = TP.keys(anObject);
     keys.sort();

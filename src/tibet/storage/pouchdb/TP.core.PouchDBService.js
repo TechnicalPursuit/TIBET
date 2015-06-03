@@ -279,7 +279,7 @@ function(aRequest) {
 
         case 'createItem':
 
-            //  Convert the object into a TP.lang.Hash and then into a plain
+            //  Convert the object into a TP.core.Hash and then into a plain
             //  Object.
             data = body.asHash();
             theDate = TP.dc();
@@ -381,7 +381,7 @@ function(aRequest) {
 
             } else {
 
-                //  Convert the object into a TP.lang.Hash and then into a plain
+                //  Convert the object into a TP.core.Hash and then into a plain
                 //  Object.
                 data = body.asHash();
                 data.atPut('_id', id);

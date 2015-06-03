@@ -199,7 +199,7 @@ TP.api.OrderedCollectionAPI =
  * @summary The API required of objects which act as ordered pairs.
  * @description TP.api.OrderedPairAPI is an interface which can be implemented
  *     by any object which may be used to hold key/value pairs. Objects in the
- *     core which implement this API include Array, Object, and TP.lang.Hash.
+ *     core which implement this API include Array, Object, and TP.core.Hash.
  */
 
 //  ------------------------------------------------------------------------
@@ -972,7 +972,7 @@ function() {
 
     /**
      * @method asHash
-     * @alias asTP_lang_Hash
+     * @alias asTP_core_Hash
      * @summary Returns a hash containing the key/value pairs of the array. The
      *     indexes of this hash are the numerical indices of the receiver for
      *     which the value TP.isDefined().
@@ -980,7 +980,7 @@ function() {
      *     0 to array.length. Note that if the receiver is an ordered pair the
      *     result is a hash containing the key/value data from the single
      *     ordered pair.
-     * @returns {TP.lang.Hash} A new TP.lang.Hash.
+     * @returns {TP.core.Hash} A new TP.core.Hash.
      */
 
     var result,
@@ -1001,7 +1001,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-Array.Inst.defineMethod('asTP_lang_Hash', Array.getInstPrototype().asHash);
+Array.Inst.defineMethod('asTP_core_Hash', Array.getInstPrototype().asHash);
 
 //  ------------------------------------------------------------------------
 
@@ -3108,7 +3108,7 @@ function(aCount, inline) {
  *     distinction between keys which are "content" and keys which are
  *     "properties" we _STRONGLY_ discourage using Objects as hashes. But for
  *     polymorphic reasons we add a few methods in the kernel so if you get an
- *     Object rather than a TP.lang.Hash once in a while it hopefully won't
+ *     Object rather than a TP.core.Hash once in a while it hopefully won't
  *     cause everything to break.
  * @subject Collection Extensions
  */
@@ -3140,7 +3140,7 @@ function() {
     /**
      * @method asHash
      * @summary Returns the receiver as a suitable hash.
-     * @returns {TP.lang.Hash} The receiver as a TP.lang.Hash.
+     * @returns {TP.core.Hash} The receiver as a TP.core.Hash.
      */
 
     var dict;
@@ -3446,8 +3446,8 @@ function() {
 
     /**
      * @method asHash
-     * @summary Returns the receiver as a TP.lang.Hash.
-     * @returns {TP.lang.Hash} The receiver converted into a TP.lang.Hash.
+     * @summary Returns the receiver as a TP.core.Hash.
+     * @returns {TP.core.Hash} The receiver converted into a TP.core.Hash.
      */
 
     //  Make sure to '.toString()' this to get the primitive value.
@@ -4236,14 +4236,14 @@ function(anItem, startIndex, aTest) {
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.lang.Hash
+//  TP.core.Hash
 //  ========================================================================
 
 /**
- * @type {TP.lang.Hash}
- * @summary Collection-oriented API's for TP.lang.Hash base class.
+ * @type {TP.core.Hash}
+ * @summary Collection-oriented API's for TP.core.Hash base class.
  * @description TIBET's hash (dictionary, associative array) type. You should
- *     always use a TP.lang.Hash (available via TP.hc()) when dealing with data
+ *     always use a TP.core.Hash (available via TP.hc()) when dealing with data
  *     in key/value form. In TIBET it's a dangerous, and potentially slow
  *     practice to use a regular object ({}) as a hash. We recommend you never
  *     use an Object as a hash since there's no clear separation between
@@ -4254,7 +4254,7 @@ function(anItem, startIndex, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('lang.Hash');
+TP.lang.Object.defineSubtype('core.Hash');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -4263,7 +4263,7 @@ TP.lang.Object.defineSubtype('lang.Hash');
 //  NOTE: Make sure this parser is installed first! Because of ambiguities
 //  in syntax, the URI parsers below will also match a 'style string' and we
 //  want to give one first crack at it.
-TP.lang.Hash.Type.defineConstant('STYLE_STRING_PARSER',
+TP.core.Hash.Type.defineConstant('STYLE_STRING_PARSER',
 function(aString) {
 
     /**
@@ -4274,7 +4274,7 @@ function(aString) {
      *     converted into their proper DOM equivalents so that 'float' in CSS
      *     becomes 'cssFloat' in the hash.
      * @param {String} aString A valid CSS style string.
-     * @returns {TP.lang.Hash} A new instance.
+     * @returns {TP.core.Hash} A new instance.
      */
 
     var dict;
@@ -4306,11 +4306,11 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.addParser(TP.lang.Hash.STYLE_STRING_PARSER);
+TP.core.Hash.addParser(TP.core.Hash.STYLE_STRING_PARSER);
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Type.defineConstant('ATTRIBUTE_STRING_PARSER',
+TP.core.Hash.Type.defineConstant('ATTRIBUTE_STRING_PARSER',
 function(aString) {
 
     /**
@@ -4319,7 +4319,7 @@ function(aString) {
      * @description The input is checked for conformance to key="value" syntax
      *     and parsed into a valid hash if it matches.
      * @param {String} aString A valid XML attribute string.
-     * @returns {TP.lang.Hash} A new instance.
+     * @returns {TP.core.Hash} A new instance.
      */
 
     var dict;
@@ -4345,18 +4345,18 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.addParser(TP.lang.Hash.ATTRIBUTE_STRING_PARSER);
+TP.core.Hash.addParser(TP.core.Hash.ATTRIBUTE_STRING_PARSER);
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Type.defineConstant('URI_STRING_PARSER',
+TP.core.Hash.Type.defineConstant('URI_STRING_PARSER',
 function(aString) {
 
     /**
      * @method URI_STRING_PARSER
      * @summary A parse function specific to URI strings.
      * @param {String} aString A valid URI string.
-     * @returns {TP.lang.Hash} A new instance.
+     * @returns {TP.core.Hash} A new instance.
      */
 
     var dict,
@@ -4405,9 +4405,9 @@ function(aString) {
                     TP.notEmpty(match.at(i)) ? match.at(i) : '');
     }
 
-    //  If we also got a query, construct a TP.lang.Hash from it.
+    //  If we also got a query, construct a TP.core.Hash from it.
     if (TP.notEmpty(queryPart = dict.at('query'))) {
-        queryDict = TP.lang.Hash.fromString(queryPart);
+        queryDict = TP.core.Hash.fromString(queryPart);
         dict.atPut('queryDict', queryDict);
     }
 
@@ -4416,11 +4416,11 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.addParser(TP.lang.Hash.URI_STRING_PARSER);
+TP.core.Hash.addParser(TP.core.Hash.URI_STRING_PARSER);
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Type.defineConstant('QUERY_STRING_PARSER',
+TP.core.Hash.Type.defineConstant('QUERY_STRING_PARSER',
 function(aString) {
 
     /**
@@ -4433,7 +4433,7 @@ function(aString) {
      *     automatically decodes query values by calling decodeURIParameter() on
      *     them.
      * @param {String} aString A valid URI query string.
-     * @returns {TP.lang.Hash} A new instance.
+     * @returns {TP.core.Hash} A new instance.
      */
 
     var dict;
@@ -4461,7 +4461,7 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.addParser(TP.lang.Hash.QUERY_STRING_PARSER);
+TP.core.Hash.addParser(TP.core.Hash.QUERY_STRING_PARSER);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -4478,31 +4478,31 @@ function() {
      *     an array of ordered pairs, an array of key, value sequences, an
      *     Object (not recommended for speed reasons), a hash of key/value
      *     pairs, or a simple argument list of key, value sequences.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      */
 
-    return TP.lang.Hash.construct.apply(TP.lang.Hash, arguments);
+    return TP.core.Hash.construct.apply(TP.core.Hash, arguments);
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineAttribute('$$hash');
+TP.core.Hash.Inst.defineAttribute('$$hash');
 
 //  what delim should be used when joining array elements into a string
-TP.lang.Hash.Inst.defineAttribute('delimiter', ', ');
+TP.core.Hash.Inst.defineAttribute('delimiter', ', ');
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Type.defineMethod('fromObject',
+TP.core.Hash.Type.defineMethod('fromObject',
 function(anObject) {
 
     /**
      * @method fromObject
      * @summary Constructs a new hash from the object(s) provided as arguments.
      * @param {Object} anObject The source object.
-     * @returns {TP.lang.Hash} A new instance.
+     * @returns {TP.core.Hash} A new instance.
      */
 
     //  the constructor handles most everything possible that'll actually
@@ -4514,13 +4514,13 @@ function(anObject) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('init',
+TP.core.Hash.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      */
 
     var obj,
@@ -4536,7 +4536,7 @@ function() {
     this.callNextMethod();
 
     //  force a unique ID
-    this.$set(TP.ID, TP.genID('TP.lang.Hash'), false);
+    this.$set(TP.ID, TP.genID('TP.core.Hash'), false);
 
     //  NB: For performance reasons, there are multiple occurrences of setting
     //  the internal hash to an orphan object here. This is due to the desire to
@@ -4573,7 +4573,7 @@ function() {
                     }
                 }
             } else if (TP.isString(obj)) {
-                return TP.lang.Hash.fromString(obj);
+                return TP.core.Hash.fromString(obj);
             } else if (TP.isElement(obj)) {
                 //  allocate internal hash - note that it is a prototype-less
                 //  object.
@@ -4585,7 +4585,7 @@ function() {
                 for (i = 0; i < len; i++) {
                     this.atPut(attrs[i].name, attrs[i].value);
                 }
-            } else if (TP.isKindOf(obj, TP.lang.Hash)) {
+            } else if (TP.isKindOf(obj, TP.core.Hash)) {
                 return obj;
             } else {
                 if (TP.isPlainObject(obj)) {
@@ -4632,7 +4632,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addAllKeys',
+TP.core.Hash.Inst.defineMethod('addAllKeys',
 function(aCollection) {
 
     /**
@@ -4644,7 +4644,7 @@ function(aCollection) {
      *     do containment checking against a hash key instead of scanning the
      *     original array by using hash.containsKey().
      * @param {TPCollection} aCollection A collection of one or more keys.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -4687,7 +4687,7 @@ function(aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asAttributeString',
+TP.core.Hash.Inst.defineMethod('asAttributeString',
 function() {
 
     /**
@@ -4704,7 +4704,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asDumpString',
+TP.core.Hash.Inst.defineMethod('asDumpString',
 function() {
 
     /**
@@ -4774,7 +4774,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asHTMLString',
+TP.core.Hash.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -4817,7 +4817,7 @@ function() {
                             '<\/span>'));
         }
 
-        joinStr = '<span class="TP_lang_Hash">' +
+        joinStr = '<span class="TP_core_Hash">' +
                      joinArr.join('') +
                      '<\/span>';
     } catch (e) {
@@ -4832,7 +4832,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asJSONSource',
+TP.core.Hash.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -4888,7 +4888,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asObject',
+TP.core.Hash.Inst.defineMethod('asObject',
 function() {
 
     /**
@@ -4945,7 +4945,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('toJSON',
+TP.core.Hash.Inst.defineMethod('toJSON',
 function() {
 
     /**
@@ -4960,7 +4960,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asPrettyString',
+TP.core.Hash.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -5026,7 +5026,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asQueryString',
+TP.core.Hash.Inst.defineMethod('asQueryString',
 function(aSeparator) {
 
     /**
@@ -5064,7 +5064,7 @@ function(aSeparator) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asSource',
+TP.core.Hash.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -5113,7 +5113,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asStyleString',
+TP.core.Hash.Inst.defineMethod('asStyleString',
 function() {
 
     /**
@@ -5129,7 +5129,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asXMLString',
+TP.core.Hash.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -5187,7 +5187,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atAllPutKeys',
+TP.core.Hash.Inst.defineMethod('atAllPutKeys',
 function() {
 
     /**
@@ -5206,7 +5206,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('clearTextContent',
+TP.core.Hash.Inst.defineMethod('clearTextContent',
 function() {
 
     /**
@@ -5214,7 +5214,7 @@ function() {
      * @summary Clears out any text content of mutable items in the receiver,
      *     thereby clearing all of the non-mutable (primitive) items and leaving
      *     just the data structure.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      */
 
     var hash,
@@ -5246,19 +5246,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('copy',
+TP.core.Hash.Inst.defineMethod('copy',
 function(aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a shallow copy of the receiver. Adequate for dealing
      *     with reference type attribute problems. If contentOnly is true then a
-     *     TP.lang.Hash is returned contains only the content values (key, val,
+     *     TP.core.Hash is returned contains only the content values (key, val,
      *     key, val ...), and no 'special values' on the receiver are copied.
      * @param {String|Array} aFilterNameOrKeys A get*Interface() filter or key
      *     array.
      * @param {Boolean} contentOnly Copy content only? Default is true.
-     * @returns {TP.lang.Hash} A shallow copy of the receiver.
+     * @returns {TP.core.Hash} A shallow copy of the receiver.
      */
 
     var content,
@@ -5313,7 +5313,7 @@ function(aFilterNameOrKeys, contentOnly) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('get',
+TP.core.Hash.Inst.defineMethod('get',
 function(attributeName) {
 
     /**
@@ -5382,7 +5382,7 @@ function(attributeName) {
             return this[funcName]();
         }
 
-        //  This part is specific to TP.lang.Hash - we check with our internal
+        //  This part is specific to TP.core.Hash - we check with our internal
         //  hash.
         if (TP.isDefined(val = this.at(attributeName))) {
             return val;
@@ -5416,7 +5416,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getContent',
+TP.core.Hash.Inst.defineMethod('getContent',
 function() {
 
     /**
@@ -5437,14 +5437,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getParameters',
+TP.core.Hash.Inst.defineMethod('getParameters',
 function() {
 
     /**
      * @method getParameters
-     * @summary Returns the receiver's parameters. For a TP.lang.Hash this
+     * @summary Returns the receiver's parameters. For a TP.core.Hash this
      *     returns the hash itself.
-     * @returns {Object} A TP.lang.Hash or TP.sig.Request containing parameter
+     * @returns {Object} A TP.core.Hash or TP.sig.Request containing parameter
      *     data (typically).
      */
 
@@ -5453,7 +5453,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('hasKey',
+TP.core.Hash.Inst.defineMethod('hasKey',
 function(aKey) {
 
     /**
@@ -5471,13 +5471,13 @@ function(aKey) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('$$isPair',
+TP.core.Hash.Inst.defineMethod('$$isPair',
 function() {
 
     /**
      * @method $$isPair
-     * @summary This method always returns false for TP.lang.Hash.
-     * @returns {Boolean} False as TP.lang.Hash is never an ordered pair.
+     * @summary This method always returns false for TP.core.Hash.
+     * @returns {Boolean} False as TP.core.Hash is never an ordered pair.
      */
 
     return false;
@@ -5485,7 +5485,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('populate',
+TP.core.Hash.Inst.defineMethod('populate',
 function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
 
     /**
@@ -5494,7 +5494,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
      *     user. Information in the propertyHash provides the keys to populate,
      *     the prompts to use, and optionally the aspects to use when querying
      *     the defaultSource for values.
-     * @param {TP.lang.Hash} propertyHash A hash whose keys are the names of the
+     * @param {TP.core.Hash} propertyHash A hash whose keys are the names of the
      *     properties to populate and whose values are either the prompts to use
      *     or arrays containing the prompt and the aspect name to use with the
      *     defaultSource for lookups.
@@ -5504,7 +5504,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
      *     prompts? Default is false.
      * @param {Boolean} onlyMissing Should all keys be updated or only those
      *     which are missing? Default is true.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @example:
             hash.populate(TP.hc('uri', TP.ac('uri', 'Enter Service URI'),
      *                          'password', 'Enter password');
@@ -5561,7 +5561,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('$removeInternalKey',
+TP.core.Hash.Inst.defineMethod('$removeInternalKey',
 function(aKey) {
 
     /**
@@ -5569,7 +5569,7 @@ function(aKey) {
      * @summary A private method that removes a key from our private, internal
      *     hash.
      * @param {Object} aKey The key value to remove.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      */
 
     var hash;
@@ -5588,7 +5588,7 @@ function(aKey) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('removeValue',
+TP.core.Hash.Inst.defineMethod('removeValue',
 function(aValue, aTest) {
 
     /**
@@ -5632,7 +5632,7 @@ function(aValue, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('replaceKey',
+TP.core.Hash.Inst.defineMethod('replaceKey',
 function(oldKey, newKey) {
 
     /**
@@ -5679,7 +5679,7 @@ function(oldKey, newKey) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('replaceValue',
+TP.core.Hash.Inst.defineMethod('replaceValue',
 function(oldValue, newValue, aTest) {
 
     /**
@@ -5747,7 +5747,7 @@ function(oldValue, newValue, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('set',
+TP.core.Hash.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
@@ -5759,7 +5759,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -5867,7 +5867,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('setDelimiter',
+TP.core.Hash.Inst.defineMethod('setDelimiter',
 function(aString) {
 
     /**
@@ -5875,7 +5875,7 @@ function(aString) {
      * @summary Sets the join delimiter to use when converting the hash to and
      *     from a string.
      * @param {String} aString The string used to join() the array.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      */
 
     var str;
@@ -5891,7 +5891,7 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('shift',
+TP.core.Hash.Inst.defineMethod('shift',
 function() {
 
     /**
@@ -5916,7 +5916,7 @@ function() {
 //  TPCollection API
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('add',
+TP.core.Hash.Inst.defineMethod('add',
 function(varargs) {
 
     /**
@@ -5928,7 +5928,7 @@ function(varargs) {
      *     list of key, value sequences.
      * @param {Array} varargs Variable-length argument list of ordered
      *     pairs.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -6008,7 +6008,7 @@ function(varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addAll',
+TP.core.Hash.Inst.defineMethod('addAll',
 function(aCollection, aFunction) {
 
     /**
@@ -6019,7 +6019,7 @@ function(aCollection, aFunction) {
      * @param {TPCollection} aCollection A collection of ordered pairs to add.
      * @param {Function} aFunction A function accepting a key and two values
      *     (key, old, new) which returns the value to use for the key.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -6078,7 +6078,7 @@ function(aCollection, aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addAllIfAbsent',
+TP.core.Hash.Inst.defineMethod('addAllIfAbsent',
 function(aCollection) {
 
     /**
@@ -6086,7 +6086,7 @@ function(aCollection) {
      * @summary Adds all the ordered pairs contained in the collection to the
      *     receiver where the keys are not already in the target collection.
      * @param {TPCollection} aCollection A collection of ordered pairs to add.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -6107,14 +6107,14 @@ function(aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addIfAbsent',
+TP.core.Hash.Inst.defineMethod('addIfAbsent',
 function(anItemOrKey, aValue, varargs) {
 
     /**
      * @method addIfAbsent
      * @summary Using the key/value pair provided assign the value to the key
      *     in the receiver if the key doesn't already exist. Additional
-     *     key/value pairs can be provided just as with the TP.lang.Hash
+     *     key/value pairs can be provided just as with the TP.core.Hash
      *     constructor to avoid having to call this routine multiple times with
      *     each pair.
      * @param {TPOrderedPair|String} anItemOrKey The ordered pair to add, or the
@@ -6172,7 +6172,7 @@ function(anItemOrKey, aValue, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addItem',
+TP.core.Hash.Inst.defineMethod('addItem',
 function(anItem) {
 
     /**
@@ -6180,7 +6180,7 @@ function(anItem) {
      * @summary Adds a single item to the receiver. If the key already exists
      *     the new value is inserted.
      * @param {The} anItem item to add.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -6195,7 +6195,7 @@ function(anItem) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addWithCount',
+TP.core.Hash.Inst.defineMethod('addWithCount',
 function(anObject, aCount) {
 
     /**
@@ -6206,7 +6206,7 @@ function(anObject, aCount) {
      *     can only occupy on location in the Hash.
      * @param {Object} anObject The object to add.
      * @param {Number} aCount A number of times to add the object. Default is 0.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -6234,7 +6234,7 @@ function(anObject, aCount) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asArray',
+TP.core.Hash.Inst.defineMethod('asArray',
 function() {
 
     /**
@@ -6250,14 +6250,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asHash',
+TP.core.Hash.Inst.defineMethod('asHash',
 function() {
 
     /**
      * @method asHash
      * @summary Returns the receiver as a suitable hash. In this type this
      *     method returns the receiver.
-     * @returns {TP.lang.Hash} The receiver as a TP.lang.Hash.
+     * @returns {TP.core.Hash} The receiver as a TP.core.Hash.
      */
 
     return this;
@@ -6265,7 +6265,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asIterator',
+TP.core.Hash.Inst.defineMethod('asIterator',
 function(aStep) {
 
     /**
@@ -6280,7 +6280,7 @@ function(aStep) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asRange',
+TP.core.Hash.Inst.defineMethod('asRange',
 function() {
 
     /**
@@ -6294,7 +6294,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('asString',
+TP.core.Hash.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
@@ -6304,7 +6304,7 @@ function(verbose) {
      *     The join is done using the receiver's current 'delimiter' value,
      *     normally ', '. Set the 'delimiter' value on the receiver to use a
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.lang.Hash's String representation. The default is true.
+     *     of the TP.core.Hash's String representation. The default is true.
      * @returns {String} The receiver as a String.
      */
 
@@ -6374,7 +6374,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('collapse',
+TP.core.Hash.Inst.defineMethod('collapse',
 function() {
 
     /**
@@ -6397,7 +6397,7 @@ function() {
 //  collectInvoke               Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('compact',
+TP.core.Hash.Inst.defineMethod('compact',
 function(aFilter) {
 
     /**
@@ -6458,7 +6458,7 @@ function(aFilter) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('conform',
+TP.core.Hash.Inst.defineMethod('conform',
 function(anInterface, inline) {
 
     /**
@@ -6471,7 +6471,7 @@ function(anInterface, inline) {
      *     test against.
      * @param {Boolean} inline False to return a new array instead of collapsing
      *     inline. Default is true.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -6507,7 +6507,7 @@ function(anInterface, inline) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('contains',
+TP.core.Hash.Inst.defineMethod('contains',
 function(anItem, aTest) {
 
     /**
@@ -6554,7 +6554,7 @@ function(anItem, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('containsAll',
+TP.core.Hash.Inst.defineMethod('containsAll',
 function(aCollection, aTest) {
 
     /**
@@ -6607,7 +6607,7 @@ function(aCollection, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('containsAny',
+TP.core.Hash.Inst.defineMethod('containsAny',
 function(aCollection, aTest) {
 
     /**
@@ -6659,7 +6659,7 @@ function(aCollection, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('containsString',
+TP.core.Hash.Inst.defineMethod('containsString',
 function(aString) {
 
     /**
@@ -6674,7 +6674,7 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('convert',
+TP.core.Hash.Inst.defineMethod('convert',
 function(aFunction) {
 
     /**
@@ -6684,7 +6684,7 @@ function(aFunction) {
      *     value for each key/value pair in the receiver.
      * @param {Function} aFunction A function which should return the new value
      *     given an item to process.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      */
 
     var thisref,
@@ -6713,7 +6713,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('countOf',
+TP.core.Hash.Inst.defineMethod('countOf',
 function(anItem, aTest) {
 
     /**
@@ -6733,7 +6733,7 @@ function(anItem, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('detect',
+TP.core.Hash.Inst.defineMethod('detect',
 function(aFunction) {
 
     /**
@@ -6770,7 +6770,7 @@ function(aFunction) {
 //  detectMin                   Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('difference',
+TP.core.Hash.Inst.defineMethod('difference',
 function(aCollection, aTest) {
 
     /**
@@ -6807,7 +6807,7 @@ function(aCollection, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('disjunction',
+TP.core.Hash.Inst.defineMethod('disjunction',
 function(aCollection, aTest) {
 
     /**
@@ -6849,13 +6849,13 @@ function(aCollection, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('empty',
+TP.core.Hash.Inst.defineMethod('empty',
 function() {
 
     /**
      * @method empty
      * @summary Empties the receiver.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -6886,7 +6886,7 @@ function() {
 //  getItems                    Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getIterator',
+TP.core.Hash.Inst.defineMethod('getIterator',
 function() {
 
     /**
@@ -6907,7 +6907,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getIteratorType',
+TP.core.Hash.Inst.defineMethod('getIteratorType',
 function() {
 
     /**
@@ -6927,7 +6927,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getSize',
+TP.core.Hash.Inst.defineMethod('getSize',
 function() {
 
     /**
@@ -6941,7 +6941,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getValues',
+TP.core.Hash.Inst.defineMethod('getValues',
 function() {
 
     /**
@@ -6977,13 +6977,13 @@ function() {
 //  injectInto                  Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('intersection',
+TP.core.Hash.Inst.defineMethod('intersection',
 function(aCollection, aTest) {
 
     /**
      * @method intersection
      * @summary Returns the intersection of the two collections as a new
-     *     TP.lang.Hash.
+     *     TP.core.Hash.
      * @description This method returns a hash of those elements which occur in
      *     BOTH the receiver and in aCollection. NOTE that both the keys and the
      *     values are used in testing.
@@ -6992,7 +6992,7 @@ function(aCollection, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
-     * @returns {TP.lang.Hash} A hash containing the elements in the
+     * @returns {TP.core.Hash} A hash containing the elements in the
      *     intersection of the two collections.
      */
 
@@ -7013,7 +7013,7 @@ function(aCollection, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('$$isCollection',
+TP.core.Hash.Inst.defineMethod('$$isCollection',
 function() {
 
     /**
@@ -7027,7 +7027,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('isSortedCollection',
+TP.core.Hash.Inst.defineMethod('isSortedCollection',
 function() {
 
     /**
@@ -7046,7 +7046,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('merge',
+TP.core.Hash.Inst.defineMethod('merge',
 function(varargs) {
 
     /**
@@ -7055,7 +7055,7 @@ function(varargs) {
      *     collections.
      * @param {Array} varargs Variable-length argument list of other
      *     collections
-     * @returns {TP.lang.Hash} A hash containing the merged values from the
+     * @returns {TP.core.Hash} A hash containing the merged values from the
      *     receiver and all of the supplied collections.
      */
 
@@ -7110,7 +7110,7 @@ function(varargs) {
 //  reject                      Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('remove',
+TP.core.Hash.Inst.defineMethod('remove',
 function(anItem, aTest) {
 
     /**
@@ -7142,7 +7142,7 @@ function(anItem, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('removeAll',
+TP.core.Hash.Inst.defineMethod('removeAll',
 function(aCollection, aTest) {
 
     /**
@@ -7208,7 +7208,7 @@ function(aCollection, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('replace',
+TP.core.Hash.Inst.defineMethod('replace',
 function(oldItem, newItem, aTest) {
 
     /**
@@ -7256,7 +7256,7 @@ function(oldItem, newItem, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('replaceAll',
+TP.core.Hash.Inst.defineMethod('replaceAll',
 function(aCollection, newItem, aTest) {
 
     /**
@@ -7320,7 +7320,7 @@ function(aCollection, newItem, aTest) {
 //  select                      Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('transpose',
+TP.core.Hash.Inst.defineMethod('transpose',
 function() {
 
     /**
@@ -7330,7 +7330,7 @@ function() {
      * @description Note that the sort order (if any) of the keys determines how
      *     duplicate values will ultimately be handled (ie. which key 'wins'
      *     when there are multiple values whose keys will collide).
-     * @returns {TP.lang.Hash} A new instance with the values and keys reversed.
+     * @returns {TP.core.Hash} A new instance with the values and keys reversed.
      */
 
     var dict;
@@ -7353,7 +7353,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('union',
+TP.core.Hash.Inst.defineMethod('union',
 function(aCollection, aFunction) {
 
     /**
@@ -7366,7 +7366,7 @@ function(aCollection, aFunction) {
      *     be combined with the receiver.
      * @param {Function} aFunction A function accepting a key and two values
      *     (key, old, new) which returns the value to use for the key.
-     * @returns {TP.lang.Hash} A new hash containing items from both
+     * @returns {TP.core.Hash} A new hash containing items from both
      *     collections.
      */
 
@@ -7412,7 +7412,7 @@ function(aCollection, aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('unique',
+TP.core.Hash.Inst.defineMethod('unique',
 function(aTest) {
 
     /**
@@ -7432,7 +7432,7 @@ function(aTest) {
 //  TPIndexedCollection Interface
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addAt',
+TP.core.Hash.Inst.defineMethod('addAt',
 function(aValue, anIndex) {
 
     /**
@@ -7454,7 +7454,7 @@ function(aValue, anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('addAllAt',
+TP.core.Hash.Inst.defineMethod('addAllAt',
 function(aCollection, anIndex) {
 
     /**
@@ -7473,7 +7473,7 @@ function(aCollection, anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('at',
+TP.core.Hash.Inst.defineMethod('at',
 function(anIndex) {
 
     /**
@@ -7501,7 +7501,7 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atAll',
+TP.core.Hash.Inst.defineMethod('atAll',
 function(aCollection) {
 
     /**
@@ -7538,7 +7538,7 @@ function(aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atAllPut',
+TP.core.Hash.Inst.defineMethod('atAllPut',
 function(aCollection, aValue) {
 
     /**
@@ -7588,7 +7588,7 @@ function(aCollection, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atIfInvalid',
+TP.core.Hash.Inst.defineMethod('atIfInvalid',
 function(anIndex, aDefault) {
 
     /**
@@ -7617,7 +7617,7 @@ function(anIndex, aDefault) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atIfNull',
+TP.core.Hash.Inst.defineMethod('atIfNull',
 function(anIndex, aDefault) {
 
     /**
@@ -7646,7 +7646,7 @@ function(anIndex, aDefault) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atIfUndefined',
+TP.core.Hash.Inst.defineMethod('atIfUndefined',
 function(anIndex, aDefault) {
 
     /**
@@ -7675,12 +7675,12 @@ function(anIndex, aDefault) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atPath',
+TP.core.Hash.Inst.defineMethod('atPath',
 function(anIndex) {
 
     /**
      * @method atPath
-     * @summary Retrieves the value at the 'end' of set of TP.lang.Hashes that
+     * @summary Retrieves the value at the 'end' of set of TP.core.Hashes that
      *     should each match an entry in the dot-separated index.
      * @param {String} anIndex The 'dot separated' path to retrieve the value
      *     from.
@@ -7714,12 +7714,12 @@ function(anIndex) {
         if (i === len - 1) {
             return entry.at(index);
         } else {
-            //  Otherwise, we see if there's a TP.lang.Hash at that
+            //  Otherwise, we see if there's a TP.core.Hash at that
             //  position. If not, we return null. Otherwise, we set the next
-            //  'entry' to be the 'next TP.lang.Hash in line'
+            //  'entry' to be the 'next TP.core.Hash in line'
             item = entry.at(index);
 
-            if (!TP.isKindOf(item, TP.lang.Hash)) {
+            if (!TP.isKindOf(item, TP.core.Hash)) {
                 return null;
             }
 
@@ -7732,18 +7732,18 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atPathPut',
+TP.core.Hash.Inst.defineMethod('atPathPut',
 function(anIndex, aValue) {
 
     /**
      * @method atPathPut
-     * @summary Places the supplied value at the 'end' of set of TP.lang.Hashes
+     * @summary Places the supplied value at the 'end' of set of TP.core.Hashes
      *     that should each match an entry in the dot-separated index. If a
-     *     TP.lang.Hash isn't found at that entry in the hash at the current
+     *     TP.core.Hash isn't found at that entry in the hash at the current
      *     entry point, one is created.
      * @param {String} anIndex The 'dot separated' path to put aValue into.
      * @param {Object} aValue The value to place at the end of the path.
-     * @example Construct a series of TP.lang.Hashes 'along a path' and place a
+     * @example Construct a series of TP.core.Hashes 'along a path' and place a
      *     value in the last one:
      *     <code>
      *          myHash = TP.hc();
@@ -7751,7 +7751,7 @@ function(anIndex, aValue) {
      *          myHash.asSource();
      *          <samp>TP.hc('foo', TP.hc('bar', TP.hc('baz', 'moo')))</samp>
      *     </code>
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -7810,12 +7810,12 @@ function(anIndex, aValue) {
 
             entry.atPut(index, aValue);
         } else {
-            //  Otherwise, we see if there's a TP.lang.Hash at that
+            //  Otherwise, we see if there's a TP.core.Hash at that
             //  position. If not, we create one. In either case, we set the
-            //  next 'entry' to be the 'next TP.lang.Hash in line'
+            //  next 'entry' to be the 'next TP.core.Hash in line'
             item = entry.at(index);
 
-            if (!TP.isKindOf(item, TP.lang.Hash)) {
+            if (!TP.isKindOf(item, TP.core.Hash)) {
                 item = TP.hc();
                 entry.atPut(index, item);
                 op = TP.INSERT;
@@ -7838,7 +7838,7 @@ function(anIndex, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atPut',
+TP.core.Hash.Inst.defineMethod('atPut',
 function(anIndex, aValue) {
 
     /**
@@ -7846,7 +7846,7 @@ function(anIndex, aValue) {
      * @summary Replaces the value at anIndex with aValue.
      * @param {Object} anIndex The index to put aValue into.
      * @param {Object} aValue The value to place at anIndex.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -7926,7 +7926,7 @@ function(anIndex, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('atPutIfAbsent',
+TP.core.Hash.Inst.defineMethod('atPutIfAbsent',
 function(aKey, aValue) {
 
     /**
@@ -7948,7 +7948,7 @@ function(aKey, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('containsKey',
+TP.core.Hash.Inst.defineMethod('containsKey',
 function(aKey) {
 
     /**
@@ -7965,7 +7965,7 @@ function(aKey) {
 //  containsValue               Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('detectKeyAt',
+TP.core.Hash.Inst.defineMethod('detectKeyAt',
 function(aKey, anIndex) {
 
     /**
@@ -7985,7 +7985,7 @@ function(aKey, anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getKeys',
+TP.core.Hash.Inst.defineMethod('getKeys',
 function(aFilterName) {
 
     /**
@@ -8018,7 +8018,7 @@ function(aFilterName) {
 //  getPairs                    Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getPosition',
+TP.core.Hash.Inst.defineMethod('getPosition',
 function(aValue, aTest) {
 
     /**
@@ -8060,7 +8060,7 @@ function(aValue, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getPositions',
+TP.core.Hash.Inst.defineMethod('getPositions',
 function(aValue, aTest) {
 
     /**
@@ -8102,7 +8102,7 @@ function(aValue, aTest) {
 //  performOver                 Kernel
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('removeAt',
+TP.core.Hash.Inst.defineMethod('removeAt',
 function(anIndex) {
 
     /**
@@ -8118,7 +8118,7 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('removeAtAll',
+TP.core.Hash.Inst.defineMethod('removeAtAll',
 function(aCollection) {
 
     /**
@@ -8177,7 +8177,7 @@ function(aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('removeKey',
+TP.core.Hash.Inst.defineMethod('removeKey',
 function(aKey) {
 
     /**
@@ -8207,7 +8207,7 @@ function(aKey) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('removeKeys',
+TP.core.Hash.Inst.defineMethod('removeKeys',
 function(aKeyArray) {
 
     /**
@@ -8249,7 +8249,7 @@ function(aKeyArray) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('transpose',
+TP.core.Hash.Inst.defineMethod('transpose',
 function() {
 
     /**
@@ -8275,7 +8275,7 @@ setting a sort function for the Hash no sort overhead is incurred.
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('getSortFunction',
+TP.core.Hash.Inst.defineMethod('getSortFunction',
 function() {
 
     /**
@@ -8289,7 +8289,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('setSortFunction',
+TP.core.Hash.Inst.defineMethod('setSortFunction',
 function(aFunction) {
 
     /**
@@ -8302,7 +8302,7 @@ function(aFunction) {
      * @param {Function} aFunction The function to set this array's sort
      *     function to.
      * @exception TP.sig.InvalidFunction
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
 
@@ -8321,7 +8321,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('sort',
+TP.core.Hash.Inst.defineMethod('sort',
 function(aSortFunction) {
 
     /**
@@ -8332,7 +8332,7 @@ function(aSortFunction) {
      *     results are sorted alphabetically by key string values.
      * @param {Function} aSortFunction A function capable of sorting the
      *     receiver's key array.
-     * @returns {TP.lang.Hash} The receiver.
+     * @returns {TP.core.Hash} The receiver.
      */
 
     var func;
@@ -8355,13 +8355,13 @@ function(aSortFunction) {
 //  DNU HANDLING
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('canResolveDNU',
+TP.core.Hash.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @method canResolveDNU
      * @summary Provides an instance that has triggered the DNU machinery with
-     *     an opportunity to handle the problem itself. For TP.lang.Hash
+     *     an opportunity to handle the problem itself. For TP.core.Hash
      *     instances this results in a test to see if the method is a getter and
      *     whether the receiver has a key fitting a pattern such that at() would
      *     resolve the query.
@@ -8394,7 +8394,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Hash.Inst.defineMethod('resolveDNU',
+TP.core.Hash.Inst.defineMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**

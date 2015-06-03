@@ -859,7 +859,7 @@ function(phases) {
 
     this.set('phases', phases);
 
-    //  Allocate a TP.lang.Hash to stick our tag types in as we find them -
+    //  Allocate a TP.core.Hash to stick our tag types in as we find them -
     //  speeds up lookup in later stages of the processing considerably.
     this.set('$tagTypeDict', TP.hc());
 

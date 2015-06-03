@@ -292,7 +292,7 @@ TP.sys.getGlobals = function(params, windowContext) {
      *     that is required you'll want to invoke the unique method on the list
      *     before using it. Also note that the parameters are only used once the
      *     full kernel has loaded and TP.sys.$getContextGlobals is available.
-     * @param {TP.lang.Hash} params A hash of various parameters that affect how
+     * @param {TP.core.Hash} params A hash of various parameters that affect how
      *     the list is filtered. For details see TP.sys.$getContextGlobals.
      * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.

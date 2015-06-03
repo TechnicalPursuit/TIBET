@@ -153,7 +153,7 @@ function(aDocument) {
      *          TP.documentGetDoctypeInfo(xmlDoc).asString();
      *          <samp>{"docTypeName":"moo", "publicID":"", "systemID":""}</samp>
      *     </code>
-     * @returns {TP.lang.Hash} The document type info for this document.
+     * @returns {TP.core.Hash} The document type info for this document.
      * @exception TP.sig.InvalidXMLDocument Raised when an invalid XML document is
      *     provided to the method.
      */
