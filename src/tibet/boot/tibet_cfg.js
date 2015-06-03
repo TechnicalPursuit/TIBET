@@ -86,14 +86,14 @@
     TP.sys.setcfg('project.version', null);
 
     //  the project's default root page. The default value is UIROOT.xhtml.
-    TP.sys.setcfg('project.rootpage', null);
+    TP.sys.setcfg('project.root_page', null);
 
     //  the project's default home page. The default value is home.xhtml.
-    TP.sys.setcfg('project.homepage', null);
+    TP.sys.setcfg('project.home_page', null);
 
     //  the application type used for this project. default is to build the name
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
-    TP.sys.setcfg('project.apptype', null);
+    TP.sys.setcfg('project.app_type', null);
 
 
     //  ---
@@ -104,11 +104,14 @@
     //  the settings in these configuration properties to control manifest
     //  generation and importing. when 'single-phase' booting is requested it
     //  simply means phase two begins immediately upon completion of phase one.
-    TP.sys.setcfg('boot.phaseone', true);
-    TP.sys.setcfg('boot.phasetwo', false);
+    TP.sys.setcfg('boot.phase_one', true);
+    TP.sys.setcfg('boot.phase_two', false);
 
     //  do we start with a login page?
-    TP.sys.setcfg('boot.uselogin', false);
+    TP.sys.setcfg('boot.use_login', false);
+
+    //  if so, what is the URL?
+    TP.sys.setcfg('boot.login_page', null);
 
     //  when using a login page do we boot in parallel, meaning we start loading
     //  the tibet code (phase one) in parallel or wait until login succeeds?
@@ -118,11 +121,11 @@
     //  boot.boostrap JSON file (tibet.json by default). turning this off means
     //  all parameters critical to booting must be given in the launch() call or
     //  on the URL.
-    TP.sys.setcfg('boot.notibetfile', false);
+    TP.sys.setcfg('boot.no_tibet_file', false);
 
     //  should we allow url-level overrides of setcfg parameters. by default
     //  this is true, but it can be to false during launch() invocation.
-    TP.sys.setcfg('boot.nourlargs', false);
+    TP.sys.setcfg('boot.no_url_args', false);
 
 
     //  ---
@@ -132,7 +135,7 @@
     //  should we log boot output to the console as well? normally false but if
     //  you're going to be pausing during startup it helps since you can avoid
     //  having to poke at the UI to see the log.
-    TP.sys.setcfg('boot.consolelog', false);
+    TP.sys.setcfg('boot.console_log', false);
 
     //  overall deferred loading flag. when false the defer attribute is ignored
     //  and all script nodes are loaded. when true the nodes are captured in the
@@ -161,7 +164,7 @@
 
     //  should we show the boot log during startup. normally we don't and we let
     //  the profile (such as developer) turn this on.
-    TP.sys.setcfg('boot.showlog', false);
+    TP.sys.setcfg('boot.show_log', false);
 
     //  should we terminate the boot process when we hit an error? by default we
     //  keep going in an attempt to get more information about the problem
@@ -173,11 +176,11 @@
     TP.sys.setcfg('boot.show_ide', false);
 
     //  the toggle key for the boot console
-    TP.sys.setcfg('boot.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
+    TP.sys.setcfg('boot.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
     //  should we boot in two phases, lib (the 'tibet' config) and then app
     //  (the 'app' config). this should be true in virtually all cases.
-    TP.sys.setcfg('boot.twophase', true);
+    TP.sys.setcfg('boot.two_phase', true);
 
     //  ---
     //  logging
@@ -208,21 +211,21 @@
     //  lib root? 'apphead' sets it to app_head. 'approot' sets it to app_root.
     //  'location' sets it to the last collection/directory on window.location.
     //  'indexed' uses a string to locate an indexed point on window.location.
-    //  'tibetdir' will look for root + tibetdir + tibetlib. 'frozen' will look
-    //  for root + tibetinf + tibetlib. 'script' will check the loader's script
-    //  src. When using 'indexed' you need to set boot.libtest to the test
-    //  string or it will default to boot.tibetlib.
+    //  'tibet_dir' will look for root + tibet_dir + tibet_lib. 'frozen' will
+    //  look for root + tibet_inf + tibet_lib. 'script' will check the loader's
+    //  script src. When using 'indexed' you need to set boot.libtest to the
+    //  test string or it will default to boot.tibet_lib.
     TP.sys.setcfg('boot.libcomp', 'script');
 
     //  these values provide search data for the getAppHead routine, which is
     //  leveraged by both app root and lib root computations.
-    TP.sys.setcfg('boot.tibetdir', 'node_modules');
-    TP.sys.setcfg('boot.tibetlib', 'tibet');
-    TP.sys.setcfg('boot.tibetinf', 'TIBET-INF');
+    TP.sys.setcfg('boot.tibet_dir', 'node_modules');
+    TP.sys.setcfg('boot.tibet_lib', 'tibet');
+    TP.sys.setcfg('boot.tibet_inf', 'TIBET-INF');
 
     //  The file here is used as our source for project configuration data. If
-    //  you don't want this loaded set boot.notibetfile to true.
-    TP.sys.setcfg('boot.tibetfile', 'tibet.json');
+    //  you don't want this loaded set boot.no_tibet_file to true.
+    TP.sys.setcfg('boot.tibet_file', 'tibet.json');
 
     //  text pattern matching the load file used to check script tags during lib
     //  root computation if no other method is specified.
@@ -244,7 +247,7 @@
     TP.sys.setcfg('boot.package', null);
 
     //  Default value for the package if no package is otherwise specified.
-    TP.sys.setcfg('boot.package_default', 'standard.xml');
+    TP.sys.setcfg('boot.default_package', 'standard.xml');
 
     //  What package config do we start from? This will default to whatever is
     //  given in the boot.package file. The package tag's "default" attribute
@@ -448,7 +451,7 @@
 
     //  should source import use the DOM or source text? DOM has to be used in
     //  certain cases to allow debuggers (like Firebuggy) to work properly.
-    TP.sys.setcfg('import.usingdom', true);
+    TP.sys.setcfg('import.use_dom', true);
 
     //  should we verify file existence prior to injecting script nodes. the
     //  browser will often fail to report 404 issues so during development it
@@ -811,11 +814,11 @@
 
     //  limit DOM replacement routines to a maximum number of elements to
     //  process unless overridden.
-    TP.sys.setcfg('content.replace_max', 30);
+    TP.sys.setcfg('content.max_replace', 30);
 
     //  limit DOM traversal routines to a maximum number of elements to process
     //  unless overridden.
-    TP.sys.setcfg('content.traversal_max', 2500);
+    TP.sys.setcfg('content.max_traversal', 2500);
 
     //  should content objects cache their generated reps on the filesystem
     //  (and then use them)? you can use caches during development but during
@@ -889,7 +892,7 @@
 
     //  should TIBET enforce the trapRecursion() call in logs etc.? This was
     //  required on Nav4 but isn't normally needed in IE/Moz unless you
-    //  configure the stack.recursion_max setting low enough to run without
+    //  configure the stack.max_recursion setting low enough to run without
     //  triggering their built-in recursion checks.
     TP.sys.setcfg('debug.trap_recursion', false);
 
@@ -944,7 +947,7 @@
     //  10ms.
     TP.sys.setcfg('job.delay', 0);
     TP.sys.setcfg('job.interval', 10);
-    TP.sys.setcfg('job.interval_max', 1000 * 60 * 10);
+    TP.sys.setcfg('job.max_interval', 1000 * 60 * 10);
 
     //  jobs can schedule themselves using a setTimeout model or a setInterval
     //  model. the decision point between the two is defined by the heartbeat
@@ -971,7 +974,7 @@
     //  number of log message entries to buffer for INFO level. This value is
     //  used as a baseline computation point. The actual level will vary based
     //  on current logging level and this value. See $computeLogBufferSize();
-    TP.sys.setcfg('log.buffersize', 5);
+    TP.sys.setcfg('log.buffer_size', 5);
 
     //  The type used to create logger instances. You can change if you really
     //  need to have a custom subtype of TP.log.Logger.
@@ -994,7 +997,7 @@
     //  log can grow before it starts eliminating the oldest entries. NOTE that
     //  the change log ignores this value as does the boot log to ensure all
     //  data for those operations is captured and maintained.
-    TP.sys.setcfg('log.size_max', 1000);
+    TP.sys.setcfg('log.max_size', 1000);
 
     //  should TIBET logging calls actually write to the activity log? When
     //  false this effectively turns off all logging.
@@ -1269,7 +1272,7 @@
     //  should the console suspend normal output?
     TP.sys.setcfg('tdc.silent', false);
 
-    TP.sys.setcfg('tdc.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
+    TP.sys.setcfg('tdc.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
     //  should the TDC output collection value types during status updates?
     TP.sys.setcfg('tdc.type_collections', true);
@@ -1297,12 +1300,12 @@
     //  the id of the element under the mark holding the prompt
     TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
 
-    TP.sys.setcfg('sherpa.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
+    TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
     //  the initial location to load into screen_0 in the Sherpa. Note this
     //  might be the same as 'project.homepage', but the Sherpa contains
     //  machinery to manually replace 'tibet:root' with the app's app tag.
-    TP.sys.setcfg('path.sherpa.screen_0', '~boot_xhtml/home.xhtml');
+    TP.sys.setcfg('path.sherpa_screen_0', '~boot_xhtml/home.xhtml');
 
     //  ---
     //  tds support
@@ -1334,22 +1337,22 @@
     TP.sys.setcfg('tsh.default_format', 'tsh:pp');
 
     //  maximum number of milliseconds in an individual lint check.
-    TP.sys.setcfg('tsh.lint_step_max', 10000);
+    TP.sys.setcfg('tsh.max_lint_step', 10000);
     //  maximum number of milliseconds in a comprehensive lint run.
-    TP.sys.setcfg('tsh.lint_series_max', 600000);
+    TP.sys.setcfg('tsh.max_lint_series', 600000);
 
     //  limit times for the tsh sleep command
-    TP.sys.setcfg('tsh.sleep_default', 3000);
-    TP.sys.setcfg('tsh.sleep_max', 3000);
+    TP.sys.setcfg('tsh.default_sleep', 3000);
+    TP.sys.setcfg('tsh.max_sleep', 3000);
 
 
     TP.sys.setcfg('tsh.split_commands', false);     //  split on semicolons?
 
     //  maximum number of milliseconds in an individual unit test.
-    TP.sys.setcfg('tsh.test_step_max', 15000);
+    TP.sys.setcfg('tsh.max_test_step', 15000);
 
     //  maximum number of milliseconds in a comprehensive test run.
-    TP.sys.setcfg('tsh.test_series_max', 600000);
+    TP.sys.setcfg('tsh.max_test_series', 600000);
 
     //  when tracing is on each individual command's status and result is pushed
     //  into a $RESULTS slot that can be inspected
@@ -1363,10 +1366,10 @@
     TP.sys.setcfg('test.running', false);
 
     //  the test case timeout
-    TP.sys.setcfg('test.case.mslimit', 5000);
+    TP.sys.setcfg('test.case_mslimit', 5000);
 
     //  the test suite timeout
-    TP.sys.setcfg('test.suite.mslimit', 30000);
+    TP.sys.setcfg('test.suite_mslimit', 30000);
 
     //  how long should we wait to give the GUI event thread a chance to be
     //  serviced? This is used in the testing and automation frameworks to
@@ -1423,13 +1426,13 @@
     //  limit on how far back to trace when building call stacks. we leave this
     //  somewhat small to avoid overhead and show 'local context'. Larger stacks
     //  are also hard to acquire in certain circumstances.
-    TP.sys.setcfg('stack.backtrace_max', 30);
+    TP.sys.setcfg('stack.max_backtrace', 30);
 
     //  when calling functions like asSource(), asDisplayString(), and other
     //  naturally recursive calls this controls the number of levels which are
     //  output before we stop our descent. This helps to avoid issues with
     //  circular object containment/references.
-    TP.sys.setcfg('stack.descent_max', 10);
+    TP.sys.setcfg('stack.max_descent', 10);
 
     //  limit on stack recursion. the setting here will define when TIBET's
     //  trapRecursion() call will trigger. values here have to be pretty small
@@ -1438,7 +1441,7 @@
     //  and then call itself will blow up in IE with a value higher than 30. At
     //  the same time TIBET has numerous stacks deeper than that so higher
     //  numbers might be necessary.
-    TP.sys.setcfg('stack.recursion_max', 30);
+    TP.sys.setcfg('stack.max_recursion', 30);
 
     //  ---
     //  tibet
@@ -1449,13 +1452,13 @@
     //  load any plugins, that's entirely up to the UI of the application.
     TP.sys.setcfg('tibet.plugins', false);
 
-    // Ensure we use the tibetdir approach to computing root paths.
-    TP.sys.setcfg('boot.rootcomp', 'tibetdir');
+    // Ensure we use the tibet_dir approach to computing root paths.
+    TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
 
     //  should TIBET render the 'source' representation of a Function/Method
     //  with a space between the word 'function' and the leading '(' (i.e.
     //  'function ('. The default is false (i.e. 'function(').
-    TP.sys.setcfg('tibet.func_src_leading_space', false);
+    TP.sys.setcfg('tibet.space_after_function_name', false);
 
     //  ---
     //  tibet internal
@@ -1504,10 +1507,10 @@
     //  ---
 
     //  should a generated uiroot page include IDE framing?
-    TP.sys.setcfg('tibet.uirootframed', false);
+    TP.sys.setcfg('tibet.uiroot_framed', false);
 
     //  should the current uiroot page support multiple screens?
-    TP.sys.setcfg('tibet.uirootmulti', false);
+    TP.sys.setcfg('tibet.uiroot_multi', false);
 
     //  what tag should be used in place of the default {{appname}}.app tag.
     TP.sys.setcfg('tibet.apptag', null);
@@ -1537,18 +1540,18 @@
 
     //  arrays can be sometimes be scanned for strings faster via regex so we
     //  set a threshold to tune between iteration and regex-based search
-    TP.sys.setcfg('array.contains_loop_max', 50);
+    TP.sys.setcfg('array.max_contains_loop', 50);
 
     //  the perform() call can instrument iterators with atStart/atEnd data
     //  and does this for all iteration sizes below this threshold. above this
     //  figure the function's string is tested to see if it makes use of this
     //  data. this figure can therefore be set to the size below which the
     //  toString test is slower than the instrumentation overhead
-    TP.sys.setcfg('perform.instrument_max', 100);
+    TP.sys.setcfg('perform.max_instrument', 100);
 
     //  limit on the maximum number of entries in the signal stats array, which
     //  tracks overall times for signal handler invocations
-    TP.sys.setcfg('signal.stats_max', 1000);
+    TP.sys.setcfg('signal.max_stats', 1000);
 
     //  ---
     //  uri/url
@@ -1556,9 +1559,9 @@
 
     //  should uri computations rely on fallbacks. the flags here are based on
     //  each resource type for finer control.
-    TP.sys.setcfg('uri.style.fallback', true);
-    TP.sys.setcfg('uri.template.fallback', true);
-    TP.sys.setcfg('uri.keybindings.fallback', false);
+    TP.sys.setcfg('uri.style_fallback', true);
+    TP.sys.setcfg('uri.template_fallback', true);
+    TP.sys.setcfg('uri.keybindings_fallback', false);
 
     //  the default type used to handle URI load/save operations.
     TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');
@@ -1573,7 +1576,7 @@
     TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
 
     //  should we try to route any initial path content on startup?
-    TP.sys.setcfg('uri.routing.onstart', true);
+    TP.sys.setcfg('uri.routing_onstart', true);
 
     //  ---
     //  xpath/xslt
@@ -1582,11 +1585,11 @@
     //  when using non-native XPaths (containing extension functions typically)
     //  we need to load the external XPath parser. Since that component is based
     //  on a non-TIBET type we can't use TIBET's autoloader so we need a path
-    TP.sys.setcfg('path.xpath.parser', '~lib_deps/xpath-tpi.js');
+    TP.sys.setcfg('path.xpath_parser', '~lib_deps/xpath-tpi.js');
 
     //  when using XSLT templates we use a boilerplate XSLT file to keep from
     //  requiring a lot of bulk in the templates themselves.
-    TP.sys.setcfg('path.xslt.boilerplate',
+    TP.sys.setcfg('path.xslt_boilerplate',
         '~lib_src/tsh/xsl/tsh_template_template.xsl');
 
 //  ----------------------------------------------------------------------------

@@ -3,15 +3,15 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="{{appname}}" default="base" basedir="~app_src">
 
-<config id="base" if="boot.phasetwo">
+<config id="base" if="boot.phase_two">
     <config ref="app_img"/>
 </config>
 
-<config id="full" if="boot.phasetwo">
+<config id="full" if="boot.phase_two">
     <config ref="base"/>
 </config>
 
-<config id="developer" if="boot.phasetwo">
+<config id="developer" if="boot.phase_two">
     <config ref="base"/>
     <package src="~lib_cfg/tdc.xml" config="standard" no-lint="true"/>
 </config>
@@ -22,7 +22,7 @@
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
 </config>
 
-<config id="test" if="boot.phasetwo">
+<config id="test" if="boot.phase_two">
     <config ref="developer"/>
     <config ref="tests"/>
 </config>

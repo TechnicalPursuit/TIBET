@@ -39,12 +39,12 @@ function(aName) {
         return this;
     }
 
-    //  Otherwise, clear the 'boot.toggle_on' flag. We don't want the boot log
+    //  Otherwise, clear the 'boot.toggle_key' flag. We don't want the boot log
     //  to be toggled. We'll be handling all of that.
-    TP.sys.setcfg('boot.toggle_on', null);
+    TP.sys.setcfg('boot.toggle_key', null);
 
     //  Register our toggle key handler to finish Sherpa setup.
-    toggleKey = TP.sys.cfg('sherpa.toggle_on');
+    toggleKey = TP.sys.cfg('sherpa.toggle_key');
     if (!toggleKey.startsWith('TP.sig.')) {
         toggleKey = 'TP.sig.' + toggleKey;
     }
@@ -215,7 +215,7 @@ function() {
     this.setupConsole();
 
     //  Configure a toggle so we can always get back to just showing the app.
-    toggleKey = TP.sys.cfg('sherpa.toggle_on');
+    toggleKey = TP.sys.cfg('sherpa.toggle_key');
 
     if (!toggleKey.startsWith('TP.sig.')) {
         toggleKey = 'TP.sig.' + toggleKey;

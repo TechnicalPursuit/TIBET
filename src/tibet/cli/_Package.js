@@ -1088,9 +1088,9 @@ Package.prototype.getAppRoot = function() {
 Package.prototype.getLibRoot = function() {
     var app_root,
         moduleDir,
-        tibetdir,
-        tibetinf,
-        tibetlib,
+        tibet_dir,
+        tibet_inf,
+        tibet_lib,
         offset,
         checks,
         check,
@@ -1125,59 +1125,59 @@ Package.prototype.getLibRoot = function() {
     moduleDir = module.filename.slice(0, module.filename.lastIndexOf('/'));
 
     // Our file checks are looking for the library so we need to leverage the
-    // standard boot settings for tibetdir, tibetinf, and tibetlib just as the
+    // standard boot settings for tibet_dir, tibet_inf, and tibet_lib just as the
     // boot system would.
 
-    if (this.options && this.options.tibetdir) {
-        tibetdir = this.options.tibetdir;
-    } else if (this.tibet.boot && this.tibet.boot.tibetdir) {
-        tibetdir = this.tibet.boot.tibetdir;
+    if (this.options && this.options.tibet_dir) {
+        tibet_dir = this.options.tibet_dir;
+    } else if (this.tibet.boot && this.tibet.boot.tibet_dir) {
+        tibet_dir = this.tibet.boot.tibet_dir;
     } else if (this.tibet.path && this.tibet.path.npm_dir) {
-        tibetdir = this.tibet.path.npm_dir;
+        tibet_dir = this.tibet.path.npm_dir;
     } else {
         // Hard-coded fallback, but we don't have a choice if no other setting
         // is provided.
-        tibetdir = 'node_modules';
+        tibet_dir = 'node_modules';
     }
 
-    if (this.options && this.options.tibetinf) {
-        tibetinf = this.options.tibetinf;
-    } else if (this.tibet.boot && this.tibet.boot.tibetinf) {
-        tibetinf = this.tibet.boot.tibetinf;
+    if (this.options && this.options.tibet_inf) {
+        tibet_inf = this.options.tibet_inf;
+    } else if (this.tibet.boot && this.tibet.boot.tibet_inf) {
+        tibet_inf = this.tibet.boot.tibet_inf;
     } else if (this.tibet.path && this.tibet.path.tibet_inf) {
-        tibetinf = this.tibet.path.tibet_inf;
+        tibet_inf = this.tibet.path.tibet_inf;
     } else {
         // Hard-coded fallback, but we don't have a choice if no other setting
         // is provided.
-        tibetinf = 'TIBET-INF';
+        tibet_inf = 'TIBET-INF';
     }
 
-    if (this.options && this.options.tibetlib) {
-        tibetlib = this.options.tibetlib;
-    } else if (this.tibet.boot && this.tibet.boot.tibetlib) {
-        tibetlib = this.tibet.boot.tibetlib;
+    if (this.options && this.options.tibet_lib) {
+        tibet_lib = this.options.tibet_lib;
+    } else if (this.tibet.boot && this.tibet.boot.tibet_lib) {
+        tibet_lib = this.tibet.boot.tibet_lib;
     } else if (this.tibet.path && this.tibet.path.tibet_lib) {
-        tibetlib = this.tibet.path.tibet_lib;
+        tibet_lib = this.tibet.path.tibet_lib;
     } else {
-        tibetlib = 'tibet';     // lowercase due to npm being default install
+        tibet_lib = 'tibet';     // lowercase due to npm being default install
     }
 
     // How far is this file from the library root?
     offset = '../../../..';
 
     checks = [
-        [moduleDir, path.join(offset, tibetlib.toUpperCase())],
-        [moduleDir, path.join(offset, tibetlib)]
+        [moduleDir, path.join(offset, tibet_lib.toUpperCase())],
+        [moduleDir, path.join(offset, tibet_lib)]
     ];
 
     if (app_root) {
-        checks.unshift([app_root, path.join(tibetinf, tibetlib)]);
+        checks.unshift([app_root, path.join(tibet_inf, tibet_lib)]);
         // NOTE node_modules does not float with app_root, it's always found at
         // the application head.
-        if (tibetdir === 'node_modules') {
-            checks.unshift([this.getAppHead(), path.join(tibetdir, tibetlib)]);
+        if (tibet_dir === 'node_modules') {
+            checks.unshift([this.getAppHead(), path.join(tibet_dir, tibet_lib)]);
         } else {
-            checks.unshift([app_root, path.join(tibetdir, tibetlib)]);
+            checks.unshift([app_root, path.join(tibet_dir, tibet_lib)]);
         }
     }
 
@@ -1195,10 +1195,10 @@ Package.prototype.getLibRoot = function() {
                 // upper/lower case issues depending on whether we're dealing
                 // with a Git clone vs. an npm install (which is always
                 // lowercase).
-                if (file.indexOf(tibetlib) === -1) {
-                    tibetlib = tibetlib.toUpperCase();
+                if (file.indexOf(tibet_lib) === -1) {
+                    tibet_lib = tibet_lib.toUpperCase();
                 }
-                dir = path.join(dir, offset, tibetlib);
+                dir = path.join(dir, offset, tibet_lib);
             } else {
                 // Have to adjust dir without offset
                 dir = path.join(dir, file);

@@ -366,7 +366,7 @@ function(aURI) {
 
         //  From a route perspective '/' means UICANVAS should get the home
         //  page. We don't want launch URLs here since this isn't about top.
-        home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+        home = TP.uriExpandPath(TP.sys.cfg('project.home_page'));
         homeParts = TP.uriDecompose(home);
 
         //  Preserve any base parameters from launch if not overridden.

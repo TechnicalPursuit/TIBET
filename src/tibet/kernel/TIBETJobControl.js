@@ -1486,7 +1486,7 @@ TP.core.Job.Inst.defineAttribute('firstInterval',
 TP.core.Job.Inst.defineAttribute('lastInterval',
                                 TP.sys.cfg('job.interval'));
 TP.core.Job.Inst.defineAttribute('maxInterval',
-                                TP.sys.cfg('job.interval_max'));
+                                TP.sys.cfg('job.max_interval'));
 
 //  the last computed offset value used to adjust timing next invocation
 TP.core.Job.Inst.defineAttribute('lastOffset', 0);
@@ -1634,7 +1634,7 @@ function(controlParams) {
     this.set('lastInterval', paramVal);
 
     if (TP.notValid(paramVal = controlParams.at('maxInterval'))) {
-        paramVal = TP.sys.cfg('job.interval_max');
+        paramVal = TP.sys.cfg('job.max_interval');
     }
     this.set('maxInterval', paramVal);
 

@@ -1979,7 +1979,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
 
     depth = TP.isNumber(stackDepth) ?
                             stackDepth :
-                            TP.sys.cfg('stack.recursion_max');
+                            TP.sys.cfg('stack.max_recursion');
 
     try {
         throw new Error();
@@ -4697,7 +4697,7 @@ function(aHash, aLevel) {
 
     params = TP.ifInvalid(aHash, TP.hc('filter', 'unique_attributes'));
 
-    lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.descent_max') :
+    lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.max_descent') :
                                 Math.max(0, aLevel);
 
     //  level 0 means no keys, nada, just the receiver
@@ -5095,7 +5095,7 @@ function(aFilterName, aLevel) {
         return 'function() {}';
     }
 
-    if (TP.sys.cfg('tibet.func_src_leading_space') === true) {
+    if (TP.sys.cfg('tibet.space_after_function_name') === true) {
         src = this.asString();
     } else {
         //  NB: We're only interested in the first occurrence of the 'function'
@@ -7273,7 +7273,7 @@ function(aFunction, shouldReverse) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
-    if (len > TP.sys.cfg('perform.instrument_max')) {
+    if (len > TP.sys.cfg('perform.max_instrument')) {
         //  Test the interior of aFunction - *not* func in case it was bound -
         //  to see if there are any calls to atStart() or atEnd().
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
@@ -7343,7 +7343,7 @@ function(aFunction, shouldReverse) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
-    if (len > TP.sys.cfg('perform.instrument_max')) {
+    if (len > TP.sys.cfg('perform.max_instrument')) {
         //  Test the interior of aFunction (*not* func in case it was bound)
         //  to see if there are any calls to atStart() or atEnd().
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
@@ -7403,7 +7403,7 @@ function(aFunction, shouldReverse) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
-    if (this > TP.sys.cfg('perform.instrument_max')) {
+    if (this > TP.sys.cfg('perform.max_instrument')) {
         //  Test the interior of aFunction (*not* func in case it was bound)
         //  to see if there are any calls to atStart() or atEnd().
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
@@ -7467,7 +7467,7 @@ function(aFunction, shouldReverse) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
-    if (len > TP.sys.cfg('perform.instrument_max')) {
+    if (len > TP.sys.cfg('perform.max_instrument')) {
         //  Test the interior of aFunction (*not* func in case it was bound)
         //  to see if there are any calls to atStart() or atEnd().
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());

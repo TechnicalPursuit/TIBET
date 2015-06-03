@@ -70,7 +70,7 @@ TP.test.Root.Inst.defineAttribute('msend');
  * @type {Number}
  */
 TP.test.Root.Inst.defineAttribute('mslimit',
-                                    TP.sys.cfg('test.suite.mslimit'));
+                                    TP.sys.cfg('test.suite_mslimit'));
 
 /**
  * The millisecond timestamp at start of the task.
@@ -1917,7 +1917,7 @@ TP.test.Case.Inst.defineAttribute('caseName');
  * @type {Number}
  */
 TP.test.Case.Inst.defineAttribute('mslimit',
-                                    TP.sys.cfg('test.case.mslimit'));
+                                    TP.sys.cfg('test.case_mslimit'));
 
 /**
  * The object that holds all of the test methods as a 'refuter'.

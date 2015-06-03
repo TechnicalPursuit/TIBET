@@ -209,7 +209,7 @@ TP.boot.defineMethod('main', TP.boot.main);
 //  ---
 
 //  whether or not we can move on to phase two processing
-TP.sys.defineGlobal('$$phasetwo', null);
+TP.sys.defineGlobal('$$phase_two', null);
 
 TP.boot.defineMethod('$isElement', TP.boot.$isElement);
 TP.boot.defineMethod('$isEmpty', TP.boot.$isEmpty);

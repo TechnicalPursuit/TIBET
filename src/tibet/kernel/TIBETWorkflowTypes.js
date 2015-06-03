@@ -6299,7 +6299,7 @@ function(aSignal) {
 
         //  If we're asked to trigger routing on startup do that to properly set
         //  the initial path context.
-        if (TP.sys.cfg('uri.routing.onstart')) {
+        if (TP.sys.cfg('uri.routing_onstart')) {
             this.getRouter().route(TP.sys.getLaunchURL());
         }
 
@@ -6855,7 +6855,7 @@ function(aURL, fromDoc) {
     launchParts = TP.uriDecompose(launch);
 
     //  Convert urls pointing to the home page into their "normalized" form.
-    home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+    home = TP.uriExpandPath(TP.sys.cfg('project.home_page'));
     if (TP.uriHead(url) === TP.uriHead(home)) {
         urlParts = TP.uriDecompose(url);
         urlParts.atPut('basePath', launchParts.at('basePath'));

@@ -648,7 +648,7 @@
 
                         timeoutFromConfig = PhantomTSH.page.evaluate(
                             function() {
-                                return TP.sys.cfg('test.case.mslimit');
+                                return TP.sys.cfg('test.case_mslimit');
                             });
 
                         if (!timeoutFromConfig) {

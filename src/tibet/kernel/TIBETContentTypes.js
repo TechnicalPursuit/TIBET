@@ -6542,7 +6542,7 @@ function() {
         if (TP.notValid(TP.extern.XPathParser)) {
             //  NOTE the dependency here because TP.extern.XPathParser isn't
             //  a true TIBET type and has no load node information
-            TP.sys.importScript(TP.sys.cfg('path.xpath.parser'));
+            TP.sys.importScript(TP.sys.cfg('path.xpath_parser'));
         }
 
         parser = new TP.extern.XPathParser();

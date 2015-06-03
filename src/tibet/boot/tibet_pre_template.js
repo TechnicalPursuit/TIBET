@@ -304,7 +304,7 @@ TP.boot.LOG_ENTRY_DELTA = 4;
 
 //  the actual buffer size used. the log.level setting is used as a starting
 //  point but adjusted based on log level to balance speed with user-feedback.
-//  Initialized to null awaiting first computation based on log.buffersize.
+//  Initialized to null awaiting first computation based on log.buffer_size.
 TP.boot.$$logbufsize = null;
 
 //  the actual logging level used. A simple cache to avoid calling on cfg() for
@@ -482,7 +482,7 @@ TP.boot.$$scriptTemplate.setAttribute('type', 'text/javascript');
 //  stack.
 TP.boot.$$basedir = [];
 
-//  where did we end up locating the boot.tibetinf directory? filled in
+//  where did we end up locating the boot.tibet_inf directory? filled in
 //  after initial computation and search locate the concrete directory name
 TP.boot.$$bootdir = null;
 

@@ -8981,7 +8981,7 @@ function(aURI) {
     if (path === '/' || TP.isEmpty(path)) {
 
         //  Compare against home page to see if this is 'home'.
-        home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+        home = TP.uriExpandPath(TP.sys.cfg('project.home_page'));
         if (TP.uriHead(TP.uriExpandHome(url)) === TP.uriHead(home)) {
             route = 'Home';
         }
@@ -9369,7 +9369,7 @@ function(aURI, aDirection) {
     //  and or launch with the home page. Those aren't considered "different".
     if (TP.isValid(lastParts)) {
 
-        home = TP.uriExpandPath(TP.sys.cfg('project.homepage'));
+        home = TP.uriExpandPath(TP.sys.cfg('project.home_page'));
 
         //  if basePath was '/' that's essentially the index/home page. We
         //  update last so a comparison below will see homepage and '/' as the

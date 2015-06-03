@@ -3200,10 +3200,10 @@ TP.boot.$uriExistsHttp = function(targetUrl) {
         }
     } catch (e) {
         //  index lookups cause problems, so if the path doesn't have an
-        //  extension (or even more specifically ends with tibetinf) then
+        //  extension (or even more specifically ends with tibet_inf) then
         //  presume a redirect/exception is "exists, but can't open"
         if (targetUrl &&
-            targetUrl.indexOf(TP.sys.cfg('boot.tibetinf')) !==
+            targetUrl.indexOf(TP.sys.cfg('boot.tibet_inf')) !==
                                                         TP.NOT_FOUND) {
             return true;
         }
@@ -6258,7 +6258,7 @@ TP.boot.Log.prototype.report = function(entry) {
     level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
     if (TP.boot.Log.isErrorLevel(level) && level >= limit ||
-            TP.sys.cfg('boot.consolelog')) {
+            TP.sys.cfg('boot.console_log')) {
         TP.boot.$consoleReporter(entry, {console: true});
     }
 
@@ -6630,7 +6630,7 @@ TP.boot.$computeLogBufferSize = function(force) {
             return size;
         }
 
-        size = parseInt(TP.sys.cfg('log.buffersize'), 10);
+        size = parseInt(TP.sys.cfg('log.buffer_size'), 10);
         size = isNaN(size) ? 1 : size;
 
         level = TP.boot.$$loglevel;
@@ -7818,7 +7818,7 @@ TP.boot.$getAppHead = function() {
 
     //  From a semantic viewpoint the app head can't be inside the library
     //  area, it has to be above it, typically where we'd think of app root
-    keys = [TP.sys.cfg('boot.tibetdir'), TP.sys.cfg('boot.tibetinf')];
+    keys = [TP.sys.cfg('boot.tibet_dir'), TP.sys.cfg('boot.tibet_inf')];
     len = keys.length;
     for (i = 0; i < len; i++) {
         key = '/' + keys[i] + '/';
@@ -7830,14 +7830,14 @@ TP.boot.$getAppHead = function() {
 
     //  Didn't find a typical project library location on the path. Check to see
     //  if we're _in_ the library.
-    lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
+    lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibet_lib');
     if (path.indexOf('/' + lib + '/') !== -1) {
         TP.boot.$$apphead = path.slice(0,
             path.indexOf('/' + lib + '/') + lib.length + 1);
         return TP.boot.$$apphead;
     }
 
-    //  Should have found boot.tibetlib but just in case we can just use an
+    //  Should have found boot.tibet_lib but just in case we can just use an
     //  offset from the current window location (minus noise for # etc.)
     offset = TP.sys.getcfg('path.head_offset');
     if (TP.boot.$notEmpty(offset)) {
@@ -7954,14 +7954,15 @@ TP.boot.$getLibRoot = function() {
         case 'frozen':
             //  frozen applications typically have TIBET-INF/tibet in them
             path = TP.boot.$uriJoinPaths(
-                    TP.boot.$uriJoinPaths(libroot, TP.sys.cfg('boot.tibetinf')),
-                    TP.sys.cfg('boot.tibetlib'));
+                    TP.boot.$uriJoinPaths(
+                                libroot, TP.sys.cfg('boot.tibet_inf')),
+                    TP.sys.cfg('boot.tibet_lib'));
 
             return TP.boot.$setLibRoot(path);
 
         case 'indexed':
             //  find location match using a string index on window location.
-            test = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
+            test = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibet_lib');
             if (TP.boot.$notEmpty(test)) {
                 ndx = libroot.lastIndexOf(test);
                 if (ndx !== -1) {
@@ -7977,11 +7978,12 @@ TP.boot.$getLibRoot = function() {
             //  force to last 'collection' in the window location.
             return TP.boot.$setLibRoot(libroot);
 
-        case 'tibetdir':
+        case 'tibet_dir':
             //  npmdir applications typically have node_modules/tibet in them
             path = TP.boot.$uriJoinPaths(
-                    TP.boot.$uriJoinPaths(libroot, TP.sys.cfg('boot.tibetdir')),
-                    TP.sys.cfg('boot.tibetlib'));
+                    TP.boot.$uriJoinPaths(
+                                libroot, TP.sys.cfg('boot.tibet_dir')),
+                    TP.sys.cfg('boot.tibet_lib'));
 
             return TP.boot.$setLibRoot(path);
 
@@ -8152,7 +8154,7 @@ TP.boot.$configurePackage = function() {
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
-            package = TP.sys.cfg('boot.package_default');
+            package = TP.sys.cfg('boot.default_package');
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
                 package + '.', TP.DEBUG);
@@ -8252,11 +8254,11 @@ TP.boot.$configureBootstrap = function() {
     //  Launch parameters can be provided directly to the launch command such
     //  that the bootstrap file isn't needed. If that's the case we can skip
     //  loading the file and cut out one more HTTP call.
-    if (TP.sys.cfg('boot.notibetfile')) {
+    if (TP.sys.cfg('boot.no_tibet_file')) {
         return;
     }
 
-    file = TP.boot.$uriJoinPaths('~app', TP.sys.cfg('boot.tibetfile'));
+    file = TP.boot.$uriJoinPaths('~app', TP.sys.cfg('boot.tibet_file'));
     logpath = TP.boot.$uriInTIBETFormat(file);
 
     file = TP.boot.$uriExpandPath(file);
@@ -8420,7 +8422,7 @@ TP.boot.$$configureOverrides = function(options, activate) {
     overrides = TP.sys.overrides;
     if (TP.boot.$isValid(overrides)) {
         //  Two key phases here are launch() params and URL values. URL values
-        //  come second (so we can honor boot.nourlargs from launch()) but do
+        //  come second (so we can honor boot.no_url_args from launch()) but do
         //  outrank launch parameters when they exist so we just map over.
         keys.forEach(function(key) {
             var value = options[key];
@@ -8488,12 +8490,12 @@ TP.boot.$configureProject = function() {
             package.getAttribute('version') || '0.0.1');
     }
 
-    if (TP.boot.$notValid(TP.sys.cfg('project.rootpage'))) {
-        TP.sys.setcfg('project.rootpage', '~boot_xhtml/UIROOT.xhtml');
+    if (TP.boot.$notValid(TP.sys.cfg('project.root_page'))) {
+        TP.sys.setcfg('project.root_page', '~boot_xhtml/UIROOT.xhtml');
     }
 
-    if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
-        TP.sys.setcfg('project.homepage', '~boot_xhtml/home.xhtml');
+    if (TP.boot.$notValid(TP.sys.cfg('project.home_page'))) {
+        TP.sys.setcfg('project.home_page', '~boot_xhtml/home.xhtml');
     }
 
     return;
@@ -8540,7 +8542,7 @@ TP.boot.$configureUI = function() {
         return;
     }
 
-    show = TP.sys.cfg('boot.showlog');
+    show = TP.sys.cfg('boot.show_log');
     if (show === true || show === 'true') {
         TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
     } else {
@@ -8593,11 +8595,11 @@ TP.boot.$updateDependentVars = function() {
     TP.boot.$$verbose = TP.sys.cfg('boot.$$verbose', false);
 
     //  one key thing regarding proper booting is that when we're not using
-    //  twophase booting we'll set phasetwo to true at the configuration
+    //  two phase booting we'll set phase_two to true at the configuration
     //  level so that no node filtering of phase two nodes is done. the
     //  result is that the system thinks we're in both phase one and phase
     //  two from a node filtering perspective
-    TP.sys.setcfg('boot.phasetwo', TP.sys.cfg('boot.twophase') === false);
+    TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
     //  Reconfigure the color scheme based on any updates to the log colors.
     TP.boot.$$theme = {
@@ -9062,12 +9064,12 @@ TP.boot.$$importComplete = function() {
         if (TP.sys.hasLoaded() !== true) {
             //  when we boot in two phases we've got to be sure we keep
             //  things moving forward until the entire boot is complete
-            if (TP.sys.cfg('boot.twophase') === true) {
+            if (TP.sys.cfg('boot.two_phase') === true) {
                 //  NOTE that this test relies on the hook file for a
                 //  "phase two page" to _NOT_ update the cfg parameter.
                 //  When they load these pages set a window global in
                 //  the UI frame and queue a monitor to observe the boot
-                if (TP.sys.cfg('boot.phasetwo') === true) {
+                if (TP.sys.cfg('boot.phase_two') === true) {
 
                     TP.boot.$stdout('', TP.SYSTEM);
 
@@ -9091,8 +9093,8 @@ TP.boot.$$importComplete = function() {
                     win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
 
                     if (win) {
-                        if (win.$$phasetwo === true ||
-                            window.$$phasetwo === true) {
+                        if (win.$$phase_two === true ||
+                            window.$$phase_two === true) {
                             //  if the page didn't find TIBET the function
                             //  we want to call won't be configured, and we
                             //  do it manually
@@ -9203,7 +9205,7 @@ TP.boot.$importComponents = function(loadSync) {
     //  default the first time through to whatever might be configured
     sync = loadSync == null ? TP.sys.cfg('tibet.sync') : loadSync;
 
-    //  keep our value so we're consistent in phase two if we're twophase
+    //  keep our value so we're consistent in phase two if we're two phase
     TP.boot.$$loadsync = sync;
 
     //  only handle four cases here: scripts, inline source, echo tags, and
@@ -9326,7 +9328,7 @@ TP.boot.$importComponents = function(loadSync) {
             //  do dom-based import here to support source-level debugging
             //  to occur. we'll keep our comments about buggy debuggers to
             //  ourselves...mostly.
-            if (TP.sys.cfg('import.usingdom')) {
+            if (TP.sys.cfg('import.use_dom')) {
                 elem = TP.boot.$$scriptTemplate.cloneNode(true);
                 elem.setAttribute(
                             'load_package',
@@ -9485,7 +9487,7 @@ TP.boot.$$importPhase = function() {
     TP.boot.$$totalwork += nodelist.length;
 
     //  TODO: this should happen based on a return value being provided.
-    window.$$phasetwo = true;
+    window.$$phase_two = true;
 
     TP.boot.$importComponents();
 /*
@@ -9508,10 +9510,10 @@ TP.boot.$$importPhaseOne = function() {
 
     TP.boot.$setStage('import_phase_one');
 
-    //  always phaseone here, phasetwo is set to filter out phase-two nodes
+    //  always phase_one here, phase_two is set to filter out phase_two nodes
     //  when we're not doing two-phased booting so we get all nodes.
-    TP.sys.setcfg('boot.phaseone', true);
-    TP.sys.setcfg('boot.phasetwo', TP.sys.cfg('boot.twophase') === false);
+    TP.sys.setcfg('boot.phase_one', true);
+    TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
     TP.boot.$$importPhase();
 
@@ -9529,16 +9531,16 @@ TP.boot.$$importPhaseTwo = function(manifest) {
      * @returns {Number} The number of phase two nodes imported.
      */
 
-    if (TP.sys.cfg('boot.twophase') !== true) {
+    if (TP.sys.cfg('boot.two_phase') !== true) {
         return;
     }
 
     TP.boot.$setStage('import_phase_two');
 
-    //  update our configuration to reflect our new state or the import
-    //  will continue to filter out phase-two nodes
-    TP.sys.setcfg('boot.phaseone', false);
-    TP.sys.setcfg('boot.phasetwo', true);
+    //  update our configuration to reflect our new state or the import will
+    //  continue to filter out phase two nodes
+    TP.sys.setcfg('boot.phase_one', false);
+    TP.sys.setcfg('boot.phase_two', true);
 
     TP.boot.$$importPhase();
 
@@ -10473,10 +10475,11 @@ TP.boot.launch = function(options) {
      *     the boot console visible, without using a login page, and assuming
      *     defaults for all other boot-prefixed startup parameters. The options
      *     here allow you to change any setting you like, however these settings
-     *     are overridden by any placed on the URL unless you specify nourlargs
-     *     in this option list (which is useful in certain production setups).
+     *     are overridden by any placed on the URL unless you specify
+     *     boot.no_url_args in this option list (which is useful in certain
+     *     production setups).
      * @param {Object} options A set of options which control the boot process.
-     *     Common keys used by this function include 'uselogin' and 'parallel'.
+     *     Common keys used by this function include 'use_login' and 'parallel'.
      *     Other keys are passed through to boot(), config() et al.
      * @returns {Window} The window the application launched in.
      */
@@ -10548,7 +10551,7 @@ TP.boot.launch = function(options) {
     //  If the initial coded launch options didn't tell us to ignore the URL
     //  we'll process it for any overrides and update based on any changes. The
     //  argument 'true' here tells the system to activate override checking.
-    if (TP.sys.cfg('boot.nourlargs') !== true) {
+    if (TP.sys.cfg('boot.no_url_args') !== true) {
         TP.boot.$$configureOverrides(
             TP.boot.$uriFragmentParameters(TP.sys.getLaunchURL()), true);
         TP.boot.$updateDependentVars();
@@ -10827,17 +10830,17 @@ TP.boot.$uiRootReady = function() {
         win = window;
     }
 
-    login = TP.sys.cfg('boot.uselogin');
+    login = TP.sys.cfg('boot.use_login');
     if (login !== true) {
         //  without a login sequence there won't be a page coming back to
         //  say that we're authenticated for phase two, we have to do that
         //  manually here.
-        win.$$phasetwo = true;
+        win.$$phase_two = true;
 
         TP.boot.boot();
     } else {
         //  login was explicitly true
-        file = TP.sys.cfg('boot.loginpage');
+        file = TP.sys.cfg('boot.login_page');
         file = TP.boot.$uriExpandPath(file);
 
         parallel = TP.sys.cfg('boot.parallel');
@@ -10852,7 +10855,7 @@ TP.boot.$uiRootReady = function() {
         } else {
             //  parallel booting means we'll put the login page into the
             //  ui canvas while booting in the background. The login
-            //  response must set $$phasetwo to allow booting to proceed
+            //  response must set $$phase_two to allow booting to proceed
             //  beyond the first phase.
             TP.boot.showUICanvas(file);
             TP.boot.boot();

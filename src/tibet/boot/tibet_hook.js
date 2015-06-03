@@ -85,7 +85,7 @@ if (window.$$hooked === true) {
         //  "redirect" to the root location. This may cause TIBET to boot if the
         //  current file was a bookmarked content page.
         if (top.sessionStorage) {
-            top.sessionStorage.setItem('TIBET.project.homepage',
+            top.sessionStorage.setItem('TIBET.project.home_page',
                 top.location.protocol + '//' + top.location.host +
                     top.location.pathname);
         }
@@ -187,7 +187,7 @@ if (window.onerror.failedlaunch === true) {
 
 
 if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
-    TP.sys.hasLoaded() === false && TP.sys.cfg('boot.twophase') === true) {
+    TP.sys.hasLoaded() === false && TP.sys.cfg('boot.two_phase') === true) {
 
     //  found and mapped over the tibet window reference and it doesn't
     //  look like the system has finished booting phase two...
@@ -202,7 +202,7 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
     //  second phase of the boot process when they represent a page that
     //  is a "phase two" page. "phase one" pages like most login_* pages
     //  don't trigger the app targets to load but the login_ok page in
-    //  particular will define phasetwo as true.
+    //  particular will define phase_two as true.
 
     //  the trick is getting the sequencing right. essentially we may
     //  have placed the phase two page in place before or after the
@@ -215,8 +215,8 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
     //  to get it to pick up with phase two.
 
     //  we're in a page that says we can move on to phase two processing
-    if (window.$$phasetwo === true) {
-        if (TP.sys.cfg('boot.phasetwo') === true) {
+    if (window.$$phase_two === true) {
+        if (TP.sys.cfg('boot.phase_two') === true) {
             //  if the load process is already working through phase two
             //  then we don't need to do anything more to ensure booting
             //  and we can be pretty sure that no matter where things

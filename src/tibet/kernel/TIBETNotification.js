@@ -7227,7 +7227,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         TP.sys.$statistics.$signals.push(delta);
 
         if (TP.sys.$statistics.$signals.length >
-                TP.sys.cfg('signal.stats_max')) {
+                TP.sys.cfg('signal.max_stats')) {
             TP.sys.$statistics.$signals.shift();
         }
     }

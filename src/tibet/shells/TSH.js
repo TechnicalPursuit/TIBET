@@ -3776,19 +3776,19 @@ function(aRequest) {
      *     script processing. Note that sleeps in excess of 30 seconds can only
      *     be achieved by setting tsh.max_sleep higher. script processing. Note
      *     that sleeps in excess of 30 seconds can only be achieved by setting
-     *     tsh.sleep_max higher.
+     *     tsh.max_sleep higher.
      */
 
     var ms;
 
-    //  NB: We supply the cfg value of 'tsh.sleep_default' as the default value
+    //  NB: We supply the cfg value of 'tsh.default_sleep' as the default value
     //  if 'tsh:ms' wasn't specified.
     ms = this.getArgument(aRequest,
                             'tsh:ms',
-                            TP.sys.cfg('tsh.sleep_default', 1000),
+                            TP.sys.cfg('tsh.default_sleep', 1000),
                             true);
 
-    ms = Math.max(ms, TP.sys.cfg('tsh.sleep_max', 30000));
+    ms = Math.max(ms, TP.sys.cfg('tsh.max_sleep', 30000));
 
     setTimeout(
         function() {

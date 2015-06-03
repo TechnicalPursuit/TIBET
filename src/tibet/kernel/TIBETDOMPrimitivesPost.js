@@ -10030,8 +10030,8 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
     }
 
     count = 0;
-    max = TP.sys.cfg('content.traversal_max');
-    repmax = TP.sys.cfg('content.replace_max');
+    max = TP.sys.cfg('content.max_traversal');
+    repmax = TP.sys.cfg('content.max_replace');
 
     //  regardless of whether we're processing the root element itself or
     //  not we terminate when we complete processing back to that node.
@@ -10060,7 +10060,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                 if (count > max) {
                     TP.ifWarn() ?
                         TP.warn('Traversal terminated at' +
-                                    ' content.traversal_max elements.',
+                                    ' content.max_traversal elements.',
                                 TP.LOG) : 0;
 
                     break;
@@ -10259,8 +10259,8 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
     rootNode = TP.nodeGetTopAncestor(terminal);
 
     count = 0;
-    max = TP.sys.cfg('content.traversal_max');
-    repmax = TP.sys.cfg('content.replace_max');
+    max = TP.sys.cfg('content.max_traversal');
+    repmax = TP.sys.cfg('content.max_replace');
 
     do {
         //  element nodes have enter/exit logic applied to them, while text
@@ -10270,7 +10270,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
             if (count > max) {
                 TP.ifWarn() ?
                     TP.warn('Traversal terminated at' +
-                                ' content.traversal_max elements.',
+                                ' content.max_traversal elements.',
                             TP.LOG) : 0;
 
                 break;
@@ -10823,7 +10823,7 @@ function(aNode, aFunction, shouldReverse) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
-    if (len > TP.sys.cfg('perform.instrument_max')) {
+    if (len > TP.sys.cfg('perform.max_instrument')) {
         //  Test the interior of aFunction (*not* func in case it was bound)
         //  to see if there are any calls to atStart() or atEnd().
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
@@ -10951,7 +10951,7 @@ function(aNode, aFunction, shouldReverse) {
 
     //  instrumenting at[Start|End] is expensive, make sure we need it
     instrument = true;
-    if (len > TP.sys.cfg('perform.instrument_max')) {
+    if (len > TP.sys.cfg('perform.max_instrument')) {
         //  Test the interior of aFunction (*not* func in case it was bound)
         //  to see if there are any calls to atStart() or atEnd().
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());

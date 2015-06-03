@@ -467,7 +467,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     // Force the most comprehensive package#config we can given our context.
     if (CLI.inProject()) {
         if (CLI.notValid(this.pkgOpts.package)) {
-            this.pkgOpts.package = CLI.getcfg('boot.package_default') ||
+            this.pkgOpts.package = CLI.getcfg('boot.default_package') ||
                 CLI.PACKAGE_FILE;
         }
     } else if (CLI.inLibrary()) {

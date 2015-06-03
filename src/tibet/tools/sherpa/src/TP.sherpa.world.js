@@ -60,19 +60,19 @@ function() {
 
     //  Check for startup home page override if possible.
     if (top.sessionStorage) {
-        homeURL = top.sessionStorage.getItem('TIBET.project.homepage');
+        homeURL = top.sessionStorage.getItem('TIBET.project.home_page');
         if (TP.notEmpty(homeURL)) {
-            top.sessionStorage.removeItem('TIBET.project.homepage');
+            top.sessionStorage.removeItem('TIBET.project.home_page');
         }
     }
 
     //  Work through list of possible page urls to use for screen 0.
     homeURL = homeURL ||
-        TP.sys.cfg('project.homepage') ||
-        TP.sys.cfg('path.sherpa.screen_0') ||
+        TP.sys.cfg('project.home_page') ||
+        TP.sys.cfg('path.sherpa_screen_0') ||
         TP.sys.cfg('path.blank_page');
 
-    //  If a specific URL isn't specified for 'path.sherpa.screen_0', then load
+    //  If a specific URL isn't specified for 'path.sherpa_screen_0', then load
     //  the project root page into screen_0 and put some markup in there that
     //  will render the core app tag content.
     if (TP.notEmpty(homeURL)) {

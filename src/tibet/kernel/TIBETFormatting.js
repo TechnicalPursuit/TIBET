@@ -708,7 +708,7 @@ function(aFilterName, aLevel) {
                         this.getLocalName(), '\');');
     }
 
-    lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.descent_max') :
+    lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.max_descent') :
                                 Math.max(0, aLevel);
 
     if (lvl === 0) {

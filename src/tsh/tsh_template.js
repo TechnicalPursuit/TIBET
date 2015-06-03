@@ -483,7 +483,7 @@ function(anElement) {
         uri,
         doc;
 
-    src = TP.sys.cfg('path.xslt.boilerplate');
+    src = TP.sys.cfg('path.xslt_boilerplate');
 
     uri = TP.uc(src);
     if (TP.notValid(uri)) {

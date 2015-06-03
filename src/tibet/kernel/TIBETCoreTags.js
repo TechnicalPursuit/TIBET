@@ -79,7 +79,7 @@ TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
 
 //  ------------------------------------------------------------------------
 
-// Mix in templating behavior, resolving compile in favor of templating.
+//  Mix in templating behavior, resolving compile in favor of templating.
 TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 TP.core.TemplatedTag.addTraits(TP.core.NonNativeUIElementNode);
 
@@ -93,7 +93,6 @@ TP.core.TemplatedTag.Inst.resolveTraits(
         TP.core.UIElementNode);
 
 TP.core.TemplatedTag.finalizeTraits();
-
 
 //  ========================================================================
 //  TP.tibet.app
@@ -302,7 +301,7 @@ function(aRequest) {
      * @method tagAttachDOM
      * @summary Sets up runtime machinery for the element in aRequest.
      * @description In this type, if the Sherpa is not 'active' this method
-     *     loads the URL pointed to by the 'project.homepage' configuration
+     *     loads the URL pointed to by the 'project.home_page' configuration
      *     variable into the UIROOT frame. If a value hasn't been configured,
      *     then the standard system blank page is loaded into that frame.
      * @param {TP.sig.Request} aRequest A request containing processing
@@ -336,14 +335,14 @@ function(aRequest) {
     //  present, use the blank page instead. We check the session storage in
     //  case the launch started from a bookmarked content page.
     if (window.sessionStorage) {
-        homeURL = window.sessionStorage.getItem('TIBET.project.homepage');
+        homeURL = window.sessionStorage.getItem('TIBET.project.home_page');
         if (TP.notEmpty(homeURL)) {
-            top.sessionStorage.removeItem('TIBET.project.homepage');
+            top.sessionStorage.removeItem('TIBET.project.home_page');
         }
     }
 
     homeURL = homeURL ||
-                TP.sys.cfg('project.homepage') ||
+                TP.sys.cfg('project.home_page') ||
                 TP.sys.cfg('path.blank_page');
     homeURL = TP.uc(homeURL);
 

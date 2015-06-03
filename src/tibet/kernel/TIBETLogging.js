@@ -2311,7 +2311,7 @@ function(argList, aLogLevel) {
         }
 
         //  keep log from growing without bound
-        if (TP.sys.$activity.getSize() > TP.sys.cfg('log.size_max')) {
+        if (TP.sys.$activity.getSize() > TP.sys.cfg('log.max_size')) {
             TP.sys.$activity.shift();
         }
 

@@ -359,7 +359,7 @@ function() {
         newAppInst;
 
     //  Configure the application type setting, defaulting the value as needed.
-    typeName = TP.sys.cfg('project.apptype');
+    typeName = TP.sys.cfg('project.app_type');
     if (TP.isEmpty(typeName)) {
         typeName = 'APP.' + TP.sys.cfg('project.name') + '.Application';
     }
@@ -402,7 +402,7 @@ function() {
         toggleKey,
         bootframe;
 
-    rootLoc = TP.uriJoinPaths('~boot_xhtml', TP.sys.cfg('project.rootpage'));
+    rootLoc = TP.uriJoinPaths('~boot_xhtml', TP.sys.cfg('project.root_page'));
 
     //  Construct a TP.core.URI wrapper around the location and perform a
     //  rewrite on it, in case its actually a URI that's been mapped using
@@ -487,7 +487,7 @@ function() {
     //  configured 'boot toggle' key, then set up an observation that will cause
     //  that key to toggle between the boot log and the application's user
     //  interface.
-    hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_on'));
+    hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_key'));
     if (TP.sys.cfg('boot.context') !== 'phantomjs' && hasBootToggle) {
 
         //  No hook file in the boot screen so we initialize manually.
@@ -499,7 +499,7 @@ function() {
 
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.
-        toggleKey = TP.sys.cfg('boot.toggle_on');
+        toggleKey = TP.sys.cfg('boot.toggle_key');
 
         if (!toggleKey.startsWith('TP.sig.')) {
             toggleKey = 'TP.sig.' + toggleKey;

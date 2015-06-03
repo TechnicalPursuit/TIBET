@@ -9492,7 +9492,7 @@ function(resource, mimeType, fallback) {
      *     word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
-     *     value of 'uri.fallbacks'.
+     *     value of 'uri.<resource type>_fallback'.
      * @returns {String} A properly computed URL in string form.
      */
 
@@ -9618,13 +9618,12 @@ function(resource, mimeType, fallback) {
     //  If forced true, or the flag is true, we'll compute a fallback value.
     res = /^style_/.test(res) ? 'style' : res;
     if (TP.isTrue(fallback) ||
-        TP.isTrue(TP.sys.cfg('uri.' + res + '.fallback'))) {
+        TP.isTrue(TP.sys.cfg('uri.' + res + '_fallback'))) {
 
         ext = this.computeResourceExtension(resource, mimeType);
 
         //  Default to receiver's load path and full type name.
-        value = TP.objectGetSourceCollectionPath(this) +
-            '/' + this.getName();
+        value = TP.objectGetSourceCollectionPath(this) + '/' + this.getName();
 
         //  Tack on theme as needed to provide theme-specific computation.
         value = TP.isEmpty(theme) ? value : value + '_' + theme;

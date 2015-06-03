@@ -42,12 +42,12 @@ function(aName) {
         return this;
     }
 
-    //  Otherwise, clear the 'boot.toggle_on' flag. We don't want the boot log
+    //  Otherwise, clear the 'boot.toggle_key' flag. We don't want the boot log
     //  to be toggled. We'll be handling all of that.
-    TP.sys.setcfg('boot.toggle_on', null);
+    TP.sys.setcfg('boot.toggle_key', null);
 
     //  Register our toggle key handler to finish TDC setup.
-    toggleKey = TP.sys.cfg('tdc.toggle_on');
+    toggleKey = TP.sys.cfg('tdc.toggle_key');
     if (!toggleKey.startsWith('TP.sig.')) {
         toggleKey = 'TP.sig.' + toggleKey;
     }
@@ -108,7 +108,7 @@ function() {
             tsh = TP.core.TSH.getDefaultInstance();
 
             //  Grab the trigger key from the pref.
-            triggerKey = TP.sys.cfg('tdc.toggle_on');
+            triggerKey = TP.sys.cfg('tdc.toggle_key');
 
             console = TP.core.ConsoleService.construct(
                 'SystemConsole',
@@ -532,7 +532,7 @@ function() {
 
     this.observe(this.get('$inputCell'), 'TP.sig.DOMUndo');
 
-    this.observe(TP.core.Keyboard, TP.sys.cfg('tdc.toggle_on'),
+    this.observe(TP.core.Keyboard, TP.sys.cfg('tdc.toggle_key'),
                     function(evt) {
                         evt.preventDefault();
                         this.focusInputCell();

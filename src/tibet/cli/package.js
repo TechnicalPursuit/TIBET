@@ -187,16 +187,16 @@ Cmd.prototype.configurePackageOptions = function(options) {
     this.pkgOpts.boot = {};
     switch (this.options.phase) {
         case 'one':
-            this.pkgOpts.boot.phaseone = true;
-            this.pkgOpts.boot.phasetwo = false;
+            this.pkgOpts.boot.phase_one = true;
+            this.pkgOpts.boot.phase_two = false;
             break;
         case 'two':
-            this.pkgOpts.boot.phaseone = false;
-            this.pkgOpts.boot.phasetwo = true;
+            this.pkgOpts.boot.phase_one = false;
+            this.pkgOpts.boot.phase_two = true;
             break;
         default:
-            this.pkgOpts.boot.phaseone = true;
-            this.pkgOpts.boot.phasetwo = true;
+            this.pkgOpts.boot.phase_one = true;
+            this.pkgOpts.boot.phase_two = true;
             break;
     }
 
@@ -310,7 +310,7 @@ Cmd.prototype.finalizePackageOptions = function() {
 
     if (!this.pkgOpts.package) {
         this.pkgOpts.package = CLI.getcfg('boot.package') ||
-            CLI.getcfg('boot.package_default') ||
+            CLI.getcfg('boot.default_package') ||
             CLI.PACKAGE_FILE;
     }
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);

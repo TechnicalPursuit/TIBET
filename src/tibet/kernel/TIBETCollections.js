@@ -8654,7 +8654,7 @@ function(aFunction) {
     instrument = true;
 
     /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
+    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
     }
 
@@ -8744,7 +8744,7 @@ function(aFunction, terminateFunction) {
     instrument = true;
 
     /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
+    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
     }
 
@@ -8828,7 +8828,7 @@ function(aFunction, terminateFunction) {
     instrument = true;
 
     /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
+    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
         instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
     }
 

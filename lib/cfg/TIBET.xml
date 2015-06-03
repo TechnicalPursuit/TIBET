@@ -26,32 +26,32 @@ build file content, one of the benefits of TIBET's boot system.
     <script src="~lib_src/tibet/boot/tibet_hook.js" />
 </config>
 
-<config id="base" if="boot.phaseone">
+<config id="base" if="boot.phase_one">
     <package src="tibet_kernel.xml" config="full"/>
     <package src="tibet_extensions.xml" config="standard"/>
     <package src="lib_namespaces.xml" config="standard"/>
 </config>
 
 <!--    typical config for autoloader, fastest loading -->
-<config id="kernel" if="boot.phaseone">
+<config id="kernel" if="boot.phase_one">
     <package src="tibet_kernel.xml" config="full"/>
 </config>
 
-<config id="small" if="boot.phaseone">
+<config id="small" if="boot.phase_one">
     <package src="tibet_kernel.xml" config="standard"/>
     <package src="tibet_extensions.xml" config="standard"/>
     <package src="tibet_graphics.xml" config="standard"/>
 </config>
 
 <!--    the code 80-90% of all projects actually use -->
-<config id="standard" if="boot.phaseone">
+<config id="standard" if="boot.phase_one">
     <config ref="small"/>
     <package src="tibet_services.xml" config="standard"/>
     <package src="lib_namespaces.xml" config="standard"/>
 </config>
 
 <!--    everything short of dev tools and unit tests -->
-<config id="full" if="boot.phaseone">
+<config id="full" if="boot.phase_one">
     <package src="tibet_kernel.xml" config="full"/>
     <package src="tibet_extensions.xml" config="full"/>
     <package src="tibet_graphics.xml" config="full"/>
@@ -60,7 +60,7 @@ build file content, one of the benefits of TIBET's boot system.
 </config>
 
 <!--    full, plus developer tools and testing -->
-<config id="developer" if="boot.phaseone">
+<config id="developer" if="boot.phase_one">
     <config ref="full"/>
 
     <!-- prerequisite for test harness code -->
@@ -70,7 +70,7 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="sherpa.xml" config="standard"/>
 </config>
 
-<config id="test" if="boot.phaseone">
+<config id="test" if="boot.phase_one">
     <config ref="developer"/>
     <package src="tibet_testing.xml" config="tests"/>
 </config>

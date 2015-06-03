@@ -101,7 +101,7 @@ Cmd.prototype.execute = function() {
 
     context.boot = {};
     context.boot.package = CLI.getcfg('boot.package') ||
-        CLI.getcfg('boot.package_default') ||
+        CLI.getcfg('boot.default_package') ||
         CLI.PACKAGE_FILE;
 
     text = sh.cat(CLI.expandPath(context.boot.package));
