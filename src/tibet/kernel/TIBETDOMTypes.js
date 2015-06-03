@@ -9580,7 +9580,11 @@ function(resource, mimeType, fallback) {
 
     //  Don't cause infinite recursion...
     if (res !== 'resource') {
-        uri = this.get(res + 'URI');
+        if (TP.notEmpty(theme)) {
+            uri = this.get('themeURI', theme);
+        } else {
+            uri = this.get(res + 'URI');
+        }
         if (TP.notEmpty(uri)) {
             if (uri === TP.NO_RESULT) {
                 return;
