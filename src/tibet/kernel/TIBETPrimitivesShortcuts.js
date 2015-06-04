@@ -376,14 +376,6 @@ function(anID, nodeContext, shouldWrap) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('byJS',
-function(selectionFunc, nodeContext, autoCollapse) {
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('bySystemId',
 function(anID, nodeContext) {
 
