@@ -768,7 +768,8 @@ function(aDocument, anHref) {
     //  query for an element's authored 'href=' value is that the '.href'
     //  property will be the *fully expanded* href value and that's the one(s)
     //  we'll need for comparison.
-    currentTopLevelLinkElems = TP.byCSS('link[rel="stylesheet"]', aDocument);
+    currentTopLevelLinkElems =
+                TP.byCSSPath('link[rel="stylesheet"]', aDocument, false, false);
     existingHrefs = currentTopLevelLinkElems.collect(
                 function(anElem) {
                     var href;
@@ -807,9 +808,11 @@ function(aDocument, anHref) {
 
         //  Re-run the query. This time, there will be a fully realized value
         //  as the href, so we can use it here.
-        currentTopLevelLinkElems = TP.byCSS(
-                'link[rel="stylesheet"][href="' + anHref + '"]',
-                aDocument);
+        currentTopLevelLinkElems =
+                TP.byCSSPath('link[rel="stylesheet"][href="' + anHref + '"]',
+                            aDocument,
+                            false,
+                            false);
 
         if (TP.isEmpty(currentTopLevelLinkElems)) {
             //  Still couldn't find it even after flattening all of the
@@ -1419,7 +1422,8 @@ function(anElement) {
     //  query for an element's authored 'href=' value is that the '.href'
     //  property will be the *fully expanded* href value and that's the one(s)
     //  we'll need for comparison.
-    currentTopLevelLinkElems = TP.byCSS('link[rel="stylesheet"]', doc);
+    currentTopLevelLinkElems =
+                TP.byCSSPath('link[rel="stylesheet"]', doc, false, false);
     existingHrefs = currentTopLevelLinkElems.collect(
                                                 function(anElem) {
                                                     return anElem.href;

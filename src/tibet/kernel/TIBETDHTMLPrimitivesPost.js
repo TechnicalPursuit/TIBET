@@ -300,7 +300,8 @@ function(aDocument) {
     }
 
     if (TP.isElement(autofocusedElem =
-                        TP.byCSS('*[autofocus]', aDocument).first())) {
+                        TP.byCSSPath('*[autofocus]', aDocument, true, false))) {
+
         //  Focus it 'the TIBET way' (so that proper highlighting, etc.
         //  takes effect)
         TP.wrap(autofocusedElem).focus();
@@ -503,9 +504,10 @@ function(aDocument) {
     if (!TP.isElement(activeElement = aDocument.activeElement)) {
         //  Note how we pass 'true' as the third argument here to auto-collapse
         //  the returned Array into the first item
-        if (!TP.isElement(activeElement = TP.byCSS('*[pclass|focus]',
+        if (!TP.isElement(activeElement = TP.byCSSPath('*[pclass|focus]',
                                                      aDocument,
-                                                     true))) {
+                                                     true,
+                                                     false))) {
             activeElement = TP.documentGetBody(aDocument);
         }
     }
@@ -8994,7 +8996,7 @@ function(aWindow, anHref) {
     //  the window.
 
     //  Get all of the elements that have a 'tibet:tag' attribute.
-    elemsWithTTag = TP.byCSS('*[tibet|tag]', doc);
+    elemsWithTTag = TP.byCSSPath('*[tibet|tag]', doc, false, false);
 
     //  Iterate over those and see if any of them match the href.
     for (i = 0; i < elemsWithTTag.getSize(); i++) {

@@ -56,7 +56,10 @@ function() {
     this.set('screenWidth', initialScreenWidth);
     this.set('screenHeight', initialScreenHeight);
 
-    allIFrames = TP.byCSS('sherpa|screen > iframe', this.getNativeWindow());
+    allIFrames = TP.byCSSPath('sherpa|screen > iframe',
+                            this.getNativeWindow(),
+                            false,
+                            false);
 
     //  Check for startup home page override if possible.
     if (top.sessionStorage) {

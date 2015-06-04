@@ -2246,8 +2246,11 @@ PathExpr.prototype.evaluate = function(c) {
                                 //  Detect if there a *child* element under the
                                 //  context node's parent node. If not, create
                                 //  one with that name and flag it as created.
-                                if (TP.byCSS('> ' + names[count],
-                                            contextParent).length === 0) {
+                                if (TP.byCSSPath(
+                                            '> ' + names[count],
+                                            contextParent,
+                                            false,
+                                            false).length === 0) {
 
                                     newNode = ownerDoc.createElement(
                                                             names[count]);

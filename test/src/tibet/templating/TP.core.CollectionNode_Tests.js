@@ -835,7 +835,9 @@ function() {
                     testVal,
                     correctVal);
 
-                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults', windowContext, false)).first();
+                contentElem = TP.byCSSPath(
+                        '*[nestedtemplateattr]',
+                        TP.byId('attrResults', windowContext, false), true, false);
                 test.assert.isElement(contentElem);
 
                 correctVal = 'templatetest:hello7';
@@ -932,7 +934,9 @@ function() {
 
                 //  Test the attribute substitutions
 
-                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults', windowContext, false)).first();
+                contentElem = TP.byCSSPath(
+                        '*[nestedtemplateattr]',
+                        TP.byId('attrResults', windowContext, false), true, false);
                 test.assert.isElement(contentElem);
 
                 correctVal = 'templatetest:hello7';

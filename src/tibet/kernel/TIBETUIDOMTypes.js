@@ -1378,11 +1378,12 @@ function(focusedTPElem, moveAction) {
             //  We always use the body here - we don't care what the
             //  currentGroup is.
 
-            if (TP.notEmpty(TP.byCSS('tibet|group', unwrappedBody))) {
+            if (TP.notEmpty(
+                    TP.byCSSPath('tibet|group', unwrappedBody, false, false))) {
                 focusableQuery = TP.computeFocusableQuery(
                                     'tibet|group:first > ', ':first');
 
-                results = TP.byCSS(focusableQuery, unwrappedBody);
+                results = TP.byCSSPath(focusableQuery, unwrappedBody);
                 results = TP.wrap(results);
             } else {
                 results = wrappedBody.findFocusableElements();
@@ -1401,12 +1402,12 @@ function(focusedTPElem, moveAction) {
             //  We always use the body here - we don't care what the
             //  currentGroup is.
 
-            if (TP.notEmpty(TP.byCSS('tibet|group', unwrappedBody))) {
+            if (TP.notEmpty(
+                    TP.byCSSPath('tibet|group', unwrappedBody, false, false))) {
                 focusableQuery = TP.computeFocusableQuery(
                                     'tibet|group:last > ', ':last');
 
-                results = TP.byCSS(focusableQuery, unwrappedBody);
-                results = TP.wrap(results);
+                results = TP.byCSSPath(focusableQuery, unwrappedBody, false);
             } else {
                 results = wrappedBody.findFocusableElements();
             }
@@ -1675,7 +1676,7 @@ function(includesGroups) {
         selExpr += ', > tibet|group, *:not(tibet|group) tibet|group';
     }
 
-    results = TP.byCSS(selExpr, this.getNativeNode());
+    results = TP.byCSSPath(selExpr, this.getNativeNode(), false, false);
 
     //  Iterate over them and see if they're displayed (not hidden by CSS -
     //  although they could currently not be visible to the user).

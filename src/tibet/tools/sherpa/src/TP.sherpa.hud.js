@@ -145,7 +145,7 @@ function() {
         hudDrawers;
 
     win = this.getNativeWindow();
-    hudDrawers = TP.wrap(TP.byCSS('.framing', win));
+    hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
@@ -172,7 +172,7 @@ function() {
         hudDrawers;
 
     win = this.getNativeWindow();
-    hudDrawers = TP.wrap(TP.byCSS('.framing', win));
+    hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {

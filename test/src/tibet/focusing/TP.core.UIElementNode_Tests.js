@@ -2125,14 +2125,18 @@ function() {
 
         test.then(
             function(result) {
-                var docOrderResults,
+                var windowContext,
+
+                    docOrderResults,
                     tabOrderResults;
 
+                windowContext = driver.get('windowContext');
+
                 //  ---
 
                 docOrderResults =
-                    TP.byCSS('#testGroup1 input').collect(
-                                function(anElem) {
+                    TP.byCSSPath('#testGroup1 input', windowContext, false, false).
+                        collect(function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2140,8 +2144,9 @@ function() {
                     docOrderResults,
                     TP.ac('field_1', 'field_2', 'field_3', 'field_4'));
 
-                tabOrderResults = TP.byCSS('#testGroup1 input').sort(
-                                                    TP.sort.TABINDEX_ORDER);
+                tabOrderResults =
+                    TP.byCSSPath('#testGroup1 input', windowContext, false, false).
+                            sort(TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');
@@ -2154,8 +2159,8 @@ function() {
                 //  ---
 
                 docOrderResults =
-                    TP.byCSS('#testGroup2 input').collect(
-                                function(anElem) {
+                    TP.byCSSPath('#testGroup2 input', windowContext, false, false).
+                        collect(function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2163,8 +2168,9 @@ function() {
                     docOrderResults,
                     TP.ac('field_5', 'field_6', 'field_7', 'field_8'));
 
-                tabOrderResults = TP.byCSS('#testGroup2 input').sort(
-                                                    TP.sort.TABINDEX_ORDER);
+                tabOrderResults =
+                    TP.byCSSPath('#testGroup2 input', windowContext, false, false).
+                        sort(TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');
@@ -2177,8 +2183,8 @@ function() {
                 //  ---
 
                 docOrderResults =
-                    TP.byCSS('#testGroup3 input').collect(
-                                function(anElem) {
+                    TP.byCSSPath('#testGroup3 input', windowContext, false, false).
+                        collect(function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2187,8 +2193,9 @@ function() {
                     TP.ac('field_9', 'field_10', 'field_11',
                             'field_12', 'field_13', 'field_14'));
 
-                tabOrderResults = TP.byCSS('#testGroup3 input').sort(
-                                                    TP.sort.TABINDEX_ORDER);
+                tabOrderResults =
+                    TP.byCSSPath('#testGroup3 input', windowContext, false, false).
+                        sort(TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');
@@ -2202,8 +2209,8 @@ function() {
                 //  ---
 
                 docOrderResults =
-                    TP.byCSS('#testGroup4 input').collect(
-                                function(anElem) {
+                    TP.byCSSPath('#testGroup4 input', windowContext, false, false).
+                        collect(function(anElem) {
                                     return anElem.getAttribute('id');
                                 });
 
@@ -2212,8 +2219,9 @@ function() {
                     TP.ac('field_15', 'field_16', 'field_17', 'field_18',
                             'field_19', 'field_20', 'field_21', 'field_22'));
 
-                tabOrderResults = TP.byCSS('#testGroup4 input').sort(
-                                                    TP.sort.TABINDEX_ORDER);
+                tabOrderResults =
+                    TP.byCSSPath('#testGroup4 input', windowContext, false, false).
+                        sort(TP.sort.TABINDEX_ORDER);
                 tabOrderResults = tabOrderResults.collect(
                                     function(anElem) {
                                         return anElem.getAttribute('id');

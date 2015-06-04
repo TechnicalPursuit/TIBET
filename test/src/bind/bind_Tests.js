@@ -3843,12 +3843,12 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                dataRows = TP.byCSS(
-                            'tr', TP.byId('people', windowContext, false));
+                dataRows = TP.byCSSPath(
+                    'tr', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS(
-                            'td', TP.byId('people', windowContext, false));
+                dataCells = TP.byCSSPath(
+                    'td', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataCells.getSize(), 8);
 
                 test.assert.isEqualTo(
@@ -3907,12 +3907,12 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                dataRows = TP.byCSS(
-                            'tr', TP.byId('people', windowContext, false));
+                dataRows = TP.byCSSPath(
+                    'tr', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS(
-                            'td', TP.byId('people', windowContext, false));
+                dataCells = TP.byCSSPath(
+                    'td', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataCells.getSize(), 8);
 
                 test.assert.isEqualTo(
@@ -5726,12 +5726,12 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                dataRows = TP.byCSS(
-                            'tr', TP.byId('people', windowContext, false));
+                dataRows = TP.byCSSPath(
+                    'tr', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS(
-                            'td', TP.byId('people', windowContext, false));
+                dataCells = TP.byCSSPath(
+                    'td', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataCells.getSize(), 12);
 
                 test.assert.isEqualTo(
@@ -5802,12 +5802,12 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                dataRows = TP.byCSS(
-                            'tr', TP.byId('people', windowContext, false));
+                dataRows = TP.byCSSPath(
+                    'tr', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS(
-                            'td', TP.byId('people', windowContext, false));
+                dataCells = TP.byCSSPath(
+                    'td', TP.byId('people', windowContext, false), false, false);
                 test.assert.isEqualTo(dataCells.getSize(), 12);
 
                 test.assert.isEqualTo(
@@ -5898,7 +5898,7 @@ function() {
 
                 var fields;
 
-                fields = TP.wrap(TP.byCSS('span[bind|in]'));
+                fields = TP.byCSSPath('span[bind|in]');
 
                 test.assert.isEqualTo(
                     fields.at(0).getValue(),
@@ -5935,7 +5935,7 @@ function() {
 
                 var fields;
 
-                fields = TP.wrap(TP.byCSS('span[bind|in]'));
+                fields = TP.byCSSPath('span[bind|in]');
 
                 test.assert.isEqualTo(
                     fields.at(0).getValue(),

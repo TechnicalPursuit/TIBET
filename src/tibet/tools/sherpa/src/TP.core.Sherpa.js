@@ -78,7 +78,7 @@ function(aName) {
             if (!TP.sys.cfg('boot.show_ide')) {
 
                 win = TP.win('UIROOT');
-                drawerElement = TP.byCSS('div#south', win, true);
+                drawerElement = TP.byCSSPath('div#south', win, true, false);
 
                 (sherpaFinishSetupFunc = function(aSignal) {
                     sherpaFinishSetupFunc.ignore(
@@ -123,7 +123,7 @@ function(aName) {
                     '...initializing TIBET Sherpa...');
 
                 //  Show the drawers.
-                TP.byCSS('.north, .south, .east, .west', win).perform(
+                TP.byCSSPath('.north, .south, .east, .west', win, false, false).perform(
                             function(anElem) {
                                 TP.elementRemoveAttribute(
                                             anElem, 'pclass:hidden', true);
@@ -178,7 +178,7 @@ function() {
     //  manually here).
     if (TP.sys.cfg('boot.show_ide')) {
         TP.elementRemoveClass(TP.byId('center', win, false), 'fullscreen');
-        TP.byCSS('.north, .south, .east, .west', win).perform(
+        TP.byCSSPath('.north, .south, .east, .west', win, false, false).perform(
                     function(anElem) {
                         TP.elementRemoveAttribute(
                                     anElem, 'pclass:hidden', true);
@@ -242,12 +242,11 @@ function() {
             TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
     */
 
-    sherpaEastDrawer = TP.byCSS('#east > .drawer',
+    sherpaEastDrawer = TP.byCSSPath('#east > .drawer',
                                     this.get('vWin').document,
                                     true);
 
-
-    tileDockTPElem = TP.wrap(sherpaEastDrawer).addContent(
+    tileDockTPElem = sherpaEastDrawer.addContent(
                         TP.sherpa.tiledock.getResourceElement(
                             'template',
                             TP.ietf.Mime.XHTML));
@@ -312,14 +311,13 @@ function() {
         //worldTPElem,
         //consoleOutTPElem;
 
-    sherpaSouthDrawer = TP.byCSS('#south > .drawer',
+    sherpaSouthDrawer = TP.byCSSPath('#south > .drawer',
                                     this.get('vWin').document,
                                     true);
 
-    consoleTPElem =
-            TP.wrap(sherpaSouthDrawer).addContent(
-                TP.sherpa.console.getResourceElement('template',
-                    TP.ietf.Mime.XHTML));
+    consoleTPElem = sherpaSouthDrawer.addContent(
+                    TP.sherpa.console.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
 
     consoleTPElem.setup();
 
@@ -413,7 +411,7 @@ function() {
     //  Grab the 1...n 'prebuilt' iframes that are available in the Sherpa
     //  template. Create a <sherpa:screen> tag and wrap them in it and place
     //  that screen tag into the world.
-    uiScreenIFrames = TP.byCSS('.center iframe', uiScreensWin);
+    uiScreenIFrames = TP.byCSSPath('.center iframe', uiScreensWin, false, false);
     uiScreenIFrames.perform(
             function(anIFrameElem) {
                 var elem;

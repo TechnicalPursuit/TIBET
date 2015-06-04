@@ -824,9 +824,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
             //  Find the 'span' placeholder element that we created above and
             //  that is standing in for this script.
-            placeholderElem = TP.byCSS('span[script_num="' + count + '"]',
+            placeholderElem = TP.byCSSPath('span[script_num="' + count + '"]',
                                         aDocument,
-                                        true);
+                                        true,
+                                        false);
 
             if (TP.isElement(placeholderElem)) {
                 TP.nodeReplaceChild(placeholderElem.parentNode,

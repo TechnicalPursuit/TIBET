@@ -457,12 +457,12 @@ function() {
         styleVals,
         offset;
 
-    cell = TP.byCSS('#consoleInput', TP.win('UIBOOT'), true);
+    cell = TP.byCSSPath('#consoleInput', TP.win('UIBOOT'), true, false);
     this.set('$inputCell', cell);
 
     //  initialize a minHeight on the elem so we never shrink smaller than
     //  what the system laid out to start things off
-    outerWrapper = TP.byCSS('#BOOT-PROGRESS', TP.win('UIBOOT'), true);
+    outerWrapper = TP.byCSSPath('#BOOT-PROGRESS', TP.win('UIBOOT'), true, false);
     this.set('$outerWrapper', outerWrapper);
 
     outerWrapper.$minHeight = TP.elementGetHeight(outerWrapper, TP.BORDER_BOX);
@@ -2636,9 +2636,9 @@ function(anObject, aRequest) {
     if (!outputData.at('empty')) {
         inputNode = request.at('cmdInputNode');
         if (TP.isValid(inputNode)) {
-            TP.wrap(TP.byCSS('.stats', inputNode)).setContent(
+            TP.byCSSPath('.stats', inputNode, true).setContent(
                                                 outputData.at('stats'));
-            TP.wrap(TP.byCSS('.typeinfo', inputNode)).setContent(
+            TP.byCSSPath('.typeinfo', inputNode, true).setContent(
                                                 outputData.at('resulttype'));
         }
     }

@@ -3092,7 +3092,10 @@ function(templateArgs) {
                 doc = TP.doc(result.first());
 
                 //  Find any new elements that were created
-                newElems = TP.byCSS('*[tibet|crud*="create"]', doc);
+                newElems = TP.byCSSPath('*[tibet|crud*="create"]',
+                                    doc,
+                                    false,
+                                    false);
 
                 //  Split the path along '/' and shift the initial 'root'
                 //  off of the path.
@@ -3109,9 +3112,11 @@ function(templateArgs) {
                         //  only*) for any elements with the same name
                         if (!anElem.hasAttribute('type')) {
 
-                            elemsWithSameName = TP.byCSS(
-                                '> ' + anElem.nodeName,
-                                anElem.parentNode);
+                            elemsWithSameName = TP.byCSSPath(
+                                                '> ' + anElem.nodeName,
+                                                anElem.parentNode,
+                                                false,
+                                                false);
 
                             //  If we found *child* elements with the same
                             //  name

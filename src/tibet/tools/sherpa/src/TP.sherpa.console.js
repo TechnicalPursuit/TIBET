@@ -1428,11 +1428,11 @@ function(uniqueID, dataRecord) {
             }
 
             TP.xmlElementSetContent(
-                    TP.byCSS('.typeinfo', cellGroupElem, true),
+                    TP.byCSSPath('.typeinfo', cellGroupElem, true, false),
                     resultTypeStr);
 
             TP.xmlElementSetContent(
-                    TP.byCSS('.stats', cellGroupElem, true),
+                    TP.byCSSPath('.stats', cellGroupElem, true, false),
                     statsStr);
         }.bind(this);
 

@@ -259,34 +259,41 @@ function(textOrRegExp, nodeContext, autoCollapse) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('byCSS',
-function(cssExpr, nodeContext, autoCollapse) {
+TP.definePrimitive('byCSSPath',
+function(cssExpr, nodeContext, autoCollapse, shouldWrap) {
 
     /**
-     * @method byCSS
+     * @method byCSSPath
      * @summary Returns the result of running a TP.nodeEvaluateCSS() call using
      *     the context provided, or the current window's document.
      * @param {String} cssExpr The CSS expression to use for the query.
      * @param {Object} nodeContext A context in which to resolve the CSS
      *     query.
      *     Default is the current canvas.
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them.
+     * @param {Boolean} [shouldWrap=true] Whether or not the results should
+     *     wrapped into a TIBET wrapper object.
      * @exception TP.sig.InvalidString
-     * @returns {Element|Array} The Array of matched Elements or a single
-     *     Element if single-item Arrays are being collapsed.
+     * @returns {TP.core.Element|Element|Array} The Array of matched wrapped
+     *     elements or unwrapped elements or a single wrapped or unwrapped
+     *     element if single-item Arrays are being collapsed.
      */
 
     var node;
 
     if (TP.notValid(cssExpr)) {
-        return TP.raise(TP.byCSS, 'TP.sig.InvalidString',
+        return TP.raise(TP.byCSSPath, 'TP.sig.InvalidString',
                         'Empty CSS expression not allowed.');
     }
 
     node = TP.context(nodeContext);
 
-    return TP.nodeEvaluateCSS(node, cssExpr, autoCollapse);
+    if (TP.isFalse(shouldWrap)) {
+        return TP.nodeEvaluateCSS(node, cssExpr, autoCollapse);
+    }
+
+    return TP.wrap(TP.nodeEvaluateCSS(node, cssExpr, autoCollapse));
 });
 
 //  ------------------------------------------------------------------------
@@ -302,10 +309,10 @@ function(anID, nodeContext, shouldWrap) {
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @param {Boolean} [shouldWrap=true] Whether or not the results should
-     *     wrapped into a TIBET wrapper object. The default is true.
+     *     wrapped into a TIBET wrapper object.
      * @exception TP.sig.InvalidID
-     * @returns {Element|Array} The element, if found, or an array when more
-     *     than one ID was provided.
+     * @returns {TP.core.Element|Element|Array} The wrapped element, unwrapped
+     *     element, if found, or an array when more than one ID was provided.
      */
 
     var id,

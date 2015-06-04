@@ -132,8 +132,7 @@ function(aRequest) {
 
     //  Grab all of the members of this content, iterate over them and build up
     //  a set of aspect facet settings for the newly-defined type.
-    if (TP.notEmpty(aspectTPElems =
-                    TP.wrap(TP.byCSS('> tibet|aspect', elem)))) {
+    if (TP.notEmpty(aspectTPElems = TP.byCSSPath('> tibet|aspect', elem))) {
 
         aspectTPElems.perform(
                 function(aTPElem) {

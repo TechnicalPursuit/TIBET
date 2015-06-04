@@ -1724,10 +1724,10 @@ function(aValue, elementProperty) {
         switch (aspect) {
             case 'label':
                 if (TP.isElement(
-                    labelElem = TP.byCSS(
-                                    'label[for="' + item.id + '"]',
-                                    this.getNativeDocument(),
-                                    true))) {
+                    labelElem = TP.byCSSPath('label[for="' + item.id + '"]',
+                                                this.getNativeDocument(),
+                                                true,
+                                                false))) {
 
                     val = TP.nodeGetTextContent(labelElem);
                 }
@@ -2108,7 +2108,10 @@ function() {
     //  Run a CSS selector, which will return an Array of all of the elements
     //  (including the receiver's native node) that share the same name as the
     //  receiver.
-    results = TP.byCSS('input[name="' + name + '"]', this.getNativeDocument());
+    results = TP.byCSSPath('input[name="' + name + '"]',
+                            this.getNativeDocument(),
+                            false,
+                            false);
 
     //  If we didn't get any nodes back from our query, at least return an Array
     //  with 1 item - our native node.
@@ -2411,10 +2414,10 @@ function(aValue, elementProperty) {
         switch (aspect) {
             case 'label':
                 if (TP.isElement(
-                    labelElem = TP.byCSS(
-                                    'label[for="' + item.id + '"]',
-                                    this.getNativeDocument(),
-                                    true))) {
+                    labelElem = TP.byCSSPath('label[for="' + item.id + '"]',
+                                                this.getNativeDocument(),
+                                                true,
+                                                false))) {
 
                     val = TP.nodeGetTextContent(labelElem);
                 }
@@ -3910,7 +3913,7 @@ function() {
     //  returns the native node of the receiver.
 
     //  So we query by CSS instead.
-    return TP.byCSS('option', node);
+    return TP.byCSSPath('option', node, false, false);
 });
 
 //  ------------------------------------------------------------------------

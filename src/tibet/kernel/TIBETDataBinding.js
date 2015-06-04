@@ -2587,7 +2587,7 @@ function(aResource) {
 
         //  Grab all of the elements with a 'bind scope' attribute and rebuild
         //  them.
-        TP.byCSS('[bind|scope]', elem).perform(
+        TP.byCSSPath('[bind|scope]', elem, false, false).perform(
                 function(anElem) {
                     TP.wrap(anElem).rebuild(
                             TP.hc('shouldDefine', true,
@@ -2608,9 +2608,11 @@ function(aResource) {
     //  'bind:scope' attribute on them, but *not* if they're under an
     //  element that has a 'bind:repeat' - we're only interested in our
     //  descendants, not any nested repeat's descendants.
-    scopedDescendants = TP.byCSS(
-        '> *[bind|scope], *:not(*[bind|repeat]) *[bind|scope]',
-        this.getNativeNode());
+    scopedDescendants = TP.byCSSPath(
+                        '> *[bind|scope], *:not(*[bind|repeat]) *[bind|scope]',
+                        this.getNativeNode(),
+                        false,
+                        false);
 
     //  The grouping size is the number of *scoped* descendants we have
     //  divided by the totalDisplaySize.

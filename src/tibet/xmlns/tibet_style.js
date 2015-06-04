@@ -120,7 +120,7 @@ function(aRequest) {
                 //  its content.
                 if (!TP.isElement(
                         existingStyleElem =
-                                TP.byCSS('[for="' + ourID + '"]', doc))) {
+                        TP.byCSSPath('[for="' + ourID + '"]', doc, false, false))) {
 
                     //  Just some CSS
                     newStyleElem = TP.documentAddStyleElement(
@@ -181,7 +181,7 @@ function(aRequest) {
                 //  its content.
                 if (!TP.isElement(
                         existingStyleElem =
-                                TP.byCSS('[for="' + ourID + '"]', doc))) {
+                        TP.byCSSPath('[for="' + ourID + '"]', doc, false, false))) {
 
                     //  Just some CSS - link it in.
                     newStyleElem = TP.documentAddLinkElement(
@@ -287,8 +287,8 @@ function(lessLoc, lessText) {
                 //  If there is no existing 'style' element, create one and set
                 //  its content.
                 if (!TP.isElement(
-                        existingStyleElem =
-                                TP.byCSS('[for="' + ourID + '"]', ourDoc))) {
+                    existingStyleElem =
+                    TP.byCSSPath('[for="' + ourID + '"]', ourDoc, false, false))) {
 
                     compiledStyleElem = TP.documentAddStyleElement(
                                             ourDoc,
